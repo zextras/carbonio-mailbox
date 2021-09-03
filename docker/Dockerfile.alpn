@@ -1,0 +1,28 @@
+FROM alpine
+LABEL maintainer="gianluca.boiano@zextras.com"
+
+RUN \
+  apk update; \
+  apk add \
+  perl-data-uuid \
+  perl-dbi \
+  perl-file-grep \
+  perl-ldap \
+  perl-net-dns \
+  perl-net-http \
+  perl-netaddr-ip \
+  perl-unix-syslog \
+  perl-xml-parser \
+  perl-xml-sax \
+  perl-xml-sax-base \
+  perl-xml-simple \
+  maven \
+  ant \
+  java-hamcrest \
+  jdk8-openjdk \
+  junit \
+  lsb-release \
+  rsync \
+  ruby
+
+ENTRYPOINT ["/bin/bash"]

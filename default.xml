@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+    <remote name="bb-zx" fetch="ssh://git@bitbucket.org/zextras" />
+
+    <!-- Remotes reported here in case of backup and for completeness -->
+    <remote name="gh-zm" fetch="https://github.com/Zimbra" />
+    <remote name="gh-ko" fetch="https://github.com/kohlschutter" />
+
+    <!-- Everything is fetched by our org by default -->
+    <default remote="bb-zx" sync-c="true" sync-j="4" />
+
+    <!-- Carbonio base repos -->
+    <project name="zm-build" revision="refs/heads/zextras/9.0.0p18" />
+    <project name="zimbra-package-stub" revision="refs/heads/9.0.0p16" />
+    <project name="zm-pkg-tool" revision="refs/heads/zextras/9.0.0p16" />
+
+    <!-- Carbonio packaging spec files -->
+    <project name="carbonio-core" revision="refs/heads/zextras/9.0.0p18" />
+
+    <!-- Carbonio modules repo -->
+    <project name="ant-1.7.0-ziputil-patched" revision="refs/tags/9.0.0" />
+    <project name="ant-tar-patched" revision="refs/tags/9.0.0" />
+    <project name="ical4j-0.9.16-patched" revision="refs/tags/9.0.0" />
+    <project name="junixsocket" revision="refs/tags/junixsocket-parent-2.0.4" />
+    <project name="nekohtml-1.9.13" revision="refs/tags/zextras/9.0.0" />
+    <project name="java-html-sanitizer-release-20190610.1" revision="refs/tags/9.0.0.p17" />
+    <project name="antisamy" revision="refs/tags/9.0.0.p16" />
+    <project name="zm-admin-console" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-admin-help-common" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-ajax" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-admin-ajax" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-amavis" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-aspell" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-bulkprovision-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-bulkprovision-store" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-certificate-manager-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-certificate-manager-store" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-charset" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-clam-scanner-store" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-clientuploader-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-clientuploader-store" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-core-utils" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-db-conf" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-dnscache" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-downloads" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-freshclam" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-help" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-helptooltip-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-jetty-conf" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-jython" revision="refs/tags/zextras/9.0.0.p17" />
+    <project name="zm-launcher" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-ldap-utils-store" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-licenses" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-migration-tools" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-mta" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-nginx-conf" revision="refs/tags/zextras/9.0.0.p17" />
+    <project name="zm-nginx-lookup-store" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-openid-consumer-store" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-postfix" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-proxy-config-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-ssdb-ephemeral-store" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-taglib" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-timezones" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-versioncheck-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-versioncheck-store" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-versioncheck-utilities" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-viewmail-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-web-client" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-webclient-portal-example" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-zcs" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-zcs-lib" revision="refs/tags/zextras/9.0.0.p17" />
+    <project name="zm-zimlets" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-oauth-social" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-gql" revision="refs/tags/zextras/9.0.0.p16" />
+
+    <!-- Zextras Theme for Carbonio -->
+    <project name="iris-transitional-theme" path="zm-web-client/WebRoot/skins/zextras" revision="refs/heads/zextras-logos" />
+
+</manifest>
