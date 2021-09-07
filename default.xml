@@ -25,7 +25,7 @@
     <project name="nekohtml-1.9.13" revision="refs/tags/zextras/9.0.0" />
     <project name="java-html-sanitizer-release-20190610.1" revision="refs/tags/9.0.0.p17" />
     <project name="antisamy" revision="refs/tags/9.0.0.p16" />
-    <project name="zm-admin-console" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-admin-console" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-admin-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-amavis" revision="refs/tags/zextras/9.0.0.p16" />
@@ -63,11 +63,15 @@
     <project name="zm-timezones" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-viewmail-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-web-client" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-zcs" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-zcs" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-zcs-lib" revision="refs/tags/zextras/9.0.0.p17" />
     <project name="zm-zimlets" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-oauth-social" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-gql" revision="refs/tags/zextras/9.0.0.p16" />
+
+    <!-- YUI 2.9.0-alfresco-20140211 -->
+    <project name="yui-internal-mirror" path="zm-admin-console/WebRoot/yui" revision="refs/heads/master" />
+    <project name="yui-internal-mirror" path="zm-web-client/WebRoot/yui" revision="refs/heads/master" />
 
     <!-- Zextras Theme for Carbonio -->
     <project name="iris-transitional-theme" path="zm-web-client/WebRoot/skins/zextras" revision="refs/heads/zextras-logos" />
