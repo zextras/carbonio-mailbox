@@ -93,8 +93,6 @@ package() {
   cd "${SRCDIR}/zm-timezones/build/stage"
   find . -type d -name "opt" -exec rsync -av {} "${PKGDIR}" \;
 
-  install -Dm644 "${SRCDIR}/zm-dnscache/conf/dns/zextras-unbound" \
-    "${PKGDIR}/etc/resolvconf/update.d/zextras-unbound"
   chmod 750 -R "${PKGDIR}/etc/sudoers.d"
   chmod +x "${PKGDIR}"/opt/zextras/bin/*
 }

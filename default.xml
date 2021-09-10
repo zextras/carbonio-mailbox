@@ -40,12 +40,11 @@
     <project name="zm-clientuploader-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-core-utils" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-db-conf" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-dnscache" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-downloads" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-freshclam" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-helptooltip-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-jetty-conf" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-jython" revision="refs/tags/zextras/9.0.0.p17" />
+    <project name="zm-jython" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-launcher" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-ldap-utils-store" revision="refs/tags/zextras/9.0.0.p16" />
