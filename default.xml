@@ -11,7 +11,6 @@
 
     <!-- Carbonio base repos -->
     <project name="zm-build" revision="refs/heads/zextras/9.0.0p18" />
-    <project name="zimbra-package-stub" revision="refs/heads/9.0.0p16" />
     <project name="zm-pkg-tool" revision="refs/heads/zextras/9.0.0p16" />
 
     <!-- Carbonio packaging spec files -->
@@ -59,7 +58,7 @@
     <project name="zm-proxy-config-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-ssdb-ephemeral-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-taglib" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-timezones" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-timezones" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-viewmail-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-web-client" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-zcs" revision="refs/tags/zextras/9.0.0.p18" />
