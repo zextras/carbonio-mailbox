@@ -27,8 +27,8 @@
     <project name="zm-admin-console" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-admin-ajax" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-amavis" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-aspell" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-amavis" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-aspell" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-bulkprovision-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-bulkprovision-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-certificate-manager-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
@@ -40,18 +40,18 @@
     <project name="zm-core-utils" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-db-conf" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-downloads" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-freshclam" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-freshclam" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-helptooltip-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-jetty-conf" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-jython" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-launcher" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-launcher" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-ldap-utils-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-licenses" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-migration-tools" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-mta" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-nginx-conf" revision="refs/tags/zextras/9.0.0.p17" />
+    <project name="zm-mta" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-nginx-conf" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-nginx-lookup-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-openid-consumer-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-postfix" revision="refs/tags/zextras/9.0.0.p16" />
