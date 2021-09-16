@@ -32,7 +32,7 @@
     <project name="zm-bulkprovision-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-bulkprovision-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-certificate-manager-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-certificate-manager-store" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-certificate-manager-store" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-charset" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-clam-scanner-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-clientuploader-admin-zimlet" revision="refs/tags/zextras/9.0.0.p18" />
