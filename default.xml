@@ -27,7 +27,7 @@
     <project name="zm-admin-console" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-admin-ajax" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-amavis" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-amavis" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-aspell" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-bulkprovision-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-bulkprovision-store" revision="refs/tags/zextras/9.0.0.p16" />
@@ -43,7 +43,7 @@
     <project name="zm-jetty-conf" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-jython" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-launcher" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-ldap-utils-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-licenses" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p19" />
