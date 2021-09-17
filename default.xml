@@ -10,11 +10,11 @@
     <default remote="bb-zx" sync-c="true" sync-j="4" />
 
     <!-- Carbonio base repos -->
-    <project name="zm-build" revision="refs/heads/zextras/9.0.0p18" />
+    <project name="zm-build" revision="refs/heads/zextras/9.0.0p19" />
     <project name="zm-pkg-tool" revision="refs/heads/zextras/9.0.0p16" />
 
     <!-- Carbonio packaging spec files -->
-    <project name="carbonio-core" revision="refs/heads/zextras/9.0.0p18" />
+    <project name="carbonio-core" revision="refs/heads/zextras/9.0.0p19" />
 
     <!-- Carbonio modules repo -->
     <project name="ant-1.7.0-ziputil-patched" revision="refs/tags/9.0.0" />
@@ -24,7 +24,7 @@
     <project name="nekohtml-1.9.13" revision="refs/tags/zextras/9.0.0" />
     <project name="java-html-sanitizer-release-20190610.1" revision="refs/tags/9.0.0.p17" />
     <project name="antisamy" revision="refs/tags/9.0.0.p16" />
-    <project name="zm-admin-console" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-admin-console" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-admin-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-amavis" revision="refs/tags/zextras/9.0.0.p18" />
@@ -35,7 +35,7 @@
     <project name="zm-certificate-manager-store" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-charset" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-clam-scanner-store" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-core-utils" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-core-utils" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-db-conf" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-downloads" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-freshclam" revision="refs/tags/zextras/9.0.0.p18" />
@@ -46,7 +46,7 @@
     <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-ldap-utils-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-licenses" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-migration-tools" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-mta" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-nginx-conf" revision="refs/tags/zextras/9.0.0.p18" />
@@ -58,7 +58,7 @@
     <project name="zm-taglib" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-timezones" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-viewmail-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-web-client" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-web-client" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-zcs" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-zcs-lib" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-zimlets" revision="refs/tags/zextras/9.0.0.p18" />
