@@ -38,7 +38,7 @@
     <project name="zm-core-utils" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-db-conf" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-downloads" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-freshclam" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-freshclam" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-helptooltip-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-jetty-conf" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-jython" revision="refs/tags/zextras/9.0.0.p18" />
@@ -48,7 +48,7 @@
     <project name="zm-licenses" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-migration-tools" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-mta" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-mta" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-nginx-conf" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-nginx-lookup-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-openid-consumer-store" revision="refs/tags/zextras/9.0.0.p16" />
