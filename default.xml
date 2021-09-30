@@ -53,7 +53,7 @@
     <project name="zm-nginx-lookup-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-openid-consumer-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-postfix" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-proxy-config-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="zm-proxy-config-admin-zimlet" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-ssdb-ephemeral-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-taglib" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-timezones" revision="refs/tags/zextras/9.0.0.p18" />
