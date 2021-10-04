@@ -29,8 +29,6 @@
     <project name="zm-admin-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-amavis" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-aspell" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-bulkprovision-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-bulkprovision-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-certificate-manager-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-certificate-manager-store" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-charset" revision="refs/tags/zextras/9.0.0.p16" />
