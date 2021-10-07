@@ -5,9 +5,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 LABEL maintainer="gianluca.boiano@zextras.com"
 
 RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections; \
-    # Set the apt HTTP proxy
-    echo 'Acquire::HTTP::Proxy "http://aptproxy.local.studiostorti.com:3142";' > /etc/apt/apt.conf.d/01proxy; \
-    echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy; \
     apt-get -y update; \
     apt-get install --no-install-recommends -y \
     ant \
@@ -38,8 +35,6 @@ RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-
     sudo \
     wget;
 
-# Proxy cache within cluster (let's speed up all da sheet:)
-ENV http_proxy=http://build-proxy.dev.zextras.com
 ADD docker/build_all.sh /usr/bin
 ADD build.config /usr/bin
 ENTRYPOINT ["/bin/bash"]
