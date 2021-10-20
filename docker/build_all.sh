@@ -68,8 +68,7 @@ build() {
   ./build.pl --build-ts="${_timestamp}" --build-no="${_buildno}" \
     --build-release=${_release} --build-release-no=${_releaseno} \
     --build-os="${os_tag%%.*}" --build-release-candidate=${_rc} --build-type=${_buildtype} \
-    --build-arch="amd64" --build-os="${os_tag%%.*}" \
-    --build-thirdparty-server=files.zimbra.com --no-interactive \
+    --build-arch="amd64" --build-os="${os_tag%%.*}" --no-interactive \
     --build-prod-flag --disable-bundle --ant-options="-DskipTests=1"
 }
 

@@ -28,7 +28,6 @@
     <project name="zm-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-admin-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-amavis" revision="refs/tags/zextras/9.0.0.p19" />
-    <project name="zm-aspell" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-certificate-manager-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-certificate-manager-store" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-charset" revision="refs/tags/zextras/9.0.0.p16" />
@@ -43,7 +42,6 @@
     <project name="zm-launcher" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-ldap-utils-store" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-licenses" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-migration-tools" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-mta" revision="refs/tags/zextras/9.0.0.p19" />
@@ -52,7 +50,6 @@
     <project name="zm-openid-consumer-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-postfix" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-proxy-config-admin-zimlet" revision="refs/tags/zextras/9.0.0.p19" />
-    <project name="zm-ssdb-ephemeral-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-taglib" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-timezones" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-viewmail-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />

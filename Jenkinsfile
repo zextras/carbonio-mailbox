@@ -120,21 +120,6 @@ python3 repo sync -vc -j 5
                                 "props": "deb.distribution=bionic;deb.component=main;deb.architecture=amd64"
                             },
                             {
-                                "pattern": "artifacts/(carbonio-apache)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-apache-base)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-apache-components)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
                                 "pattern": "artifacts/(carbonio-base)-(*).rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
@@ -196,26 +181,6 @@ python3 repo sync -vc -j 5
                             },
                             {
                                 "pattern": "artifacts/(carbonio-core-components)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-dnscache)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-dnscache-base)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-dnscache-components)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-imapd)-(*).rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
@@ -326,36 +291,6 @@ python3 repo sync -vc -j 5
                             },
                             {
                                 "pattern": "artifacts/(carbonio-server)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-snmp)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-snmp-base)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-snmp-components)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-spell)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-spell-base)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-spell-components)-(*).rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
