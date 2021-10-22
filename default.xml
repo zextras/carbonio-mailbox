@@ -11,7 +11,7 @@
 
     <!-- Carbonio base repos -->
     <project name="zm-build" revision="refs/heads/zextras/9.0.0p19" />
-    <project name="zm-pkg-tool" revision="refs/heads/zextras/9.0.0p16" />
+    <project name="zm-pkg-tool" revision="refs/heads/zextras/9.0.0p19" />
 
     <!-- Carbonio packaging spec files -->
     <project name="carbonio-core" revision="refs/heads/zextras/9.0.0p19" />

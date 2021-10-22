@@ -100,7 +100,6 @@ python3 repo sync -vc -j 5
         stage('Upload To Playground') {
             when {
                 anyOf {
-                    branch 'zextras/*'
                     expression { params.PLAYGROUND == true }
                 }
             }
