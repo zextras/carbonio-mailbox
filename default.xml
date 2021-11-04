@@ -10,7 +10,7 @@
     <default remote="bb-zx" sync-c="true" sync-j="4" />
 
     <!-- Carbonio base repos -->
-    <project name="zm-build" revision="refs/heads/zextras/9.0.0p19" />
+    <project name="zm-build" revision="refs/heads/zextras/9.0.0p20" />
     <project name="zm-pkg-tool" revision="refs/heads/zextras/9.0.0p19" />
 
     <!-- Carbonio packaging spec files -->
@@ -40,7 +40,7 @@
     <project name="zm-jetty-conf" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-jython" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-launcher" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p19" />
+    <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p20" />
     <project name="zm-ldap-utils-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p20" />
     <project name="zm-migration-tools" revision="refs/tags/zextras/9.0.0.p16" />
@@ -61,8 +61,8 @@
     <project name="zm-gql" revision="refs/tags/zextras/9.0.0.p16" />
 
     <!-- YUI 2.9.0-alfresco-20140211 -->
-    <!-- <project name="yui-internal-mirror" path="zm-admin-console/WebRoot/yui" revision="refs/heads/master" /> -->
-    <!-- <project name="yui-internal-mirror" path="zm-web-client/WebRoot/yui" revision="refs/heads/master" /> -->
+    <project name="yui-internal-mirror" path="zm-admin-console/WebRoot/yui" revision="refs/heads/master" />
+    <project name="yui-internal-mirror" path="zm-web-client/WebRoot/yui" revision="refs/heads/master" />
 
     <!-- Zextras Theme for Carbonio -->
     <project name="iris-transitional-theme" path="zm-web-client/WebRoot/skins/zextras" revision="refs/heads/zextras-logos" />
