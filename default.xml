@@ -55,7 +55,7 @@
     <project name="zm-viewmail-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-web-client" revision="refs/tags/zextras/9.0.0.p20" />
     <project name="zm-zcs" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-zcs-lib" revision="refs/tags/zextras/9.0.0.p18" />
+    <project name="zm-zcs-lib" revision="refs/tags/zextras/9.0.0.p20" />
     <project name="zm-zimlets" revision="refs/tags/zextras/9.0.0.p20" />
     <project name="zm-oauth-social" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-gql" revision="refs/tags/zextras/9.0.0.p16" />
