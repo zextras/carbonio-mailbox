@@ -14,7 +14,7 @@
     <project name="zm-pkg-tool" revision="refs/heads/zextras/9.0.0p19" />
 
     <!-- Carbonio packaging spec files -->
-    <project name="carbonio-core" revision="refs/heads/zextras/9.0.0p20" />
+    <project name="carbonio-core" revision="refs/heads/zextras/9.0.0p21" />
 
     <!-- Carbonio modules repo -->
     <project name="ant-1.7.0-ziputil-patched" revision="refs/tags/9.0.0" />
@@ -32,7 +32,7 @@
     <project name="zm-certificate-manager-store" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-charset" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-clam-scanner-store" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-core-utils" revision="refs/tags/zextras/9.0.0.p20" />
+    <project name="zm-core-utils" revision="refs/tags/zextras/9.0.0.p21" />
     <project name="zm-db-conf" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-downloads" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-freshclam" revision="refs/tags/zextras/9.0.0.p19" />
@@ -53,7 +53,7 @@
     <project name="zm-taglib" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-timezones" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-viewmail-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-web-client" revision="refs/tags/zextras/9.0.0.p20" />
+    <project name="zm-web-client" revision="refs/tags/zextras/9.0.0.p21" />
     <project name="zm-zcs" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-zcs-lib" revision="refs/tags/zextras/9.0.0.p20" />
     <project name="zm-zimlets" revision="refs/tags/zextras/9.0.0.p20" />
