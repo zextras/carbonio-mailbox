@@ -17,6 +17,11 @@ pipeline {
     }
     stages {
         stage('Fetch git-repo and sources') {
+            when{
+              not{
+                buildingTag()
+              }
+            }
             agent {
                 node {
                     label 'python3-agent-v1'
@@ -31,6 +36,26 @@ python3 repo sync -vc -j 5
                 stash includes: '**', name: 'project'
             }
         }
+
+        stage('Fetch git-repo and sources for tagged build') {
+            when{
+                buildingTag()
+            }
+            agent {
+                node {
+                    label 'python3-agent-v1'
+                }
+            }
+            steps {
+                sh '''
+curl https://storage.googleapis.com/git-repo-downloads/repo > repo
+python3 repo init -u ssh://git@bitbucket.org/zextras/carbonio-ce -b refs/tags/${BRANCH_NAME}
+python3 repo sync -vc -j 5
+'''
+                stash includes: '**', name: 'project'
+            }
+        }
+
         stage('Build Carbonio CE') {
             agent {
                 node {
