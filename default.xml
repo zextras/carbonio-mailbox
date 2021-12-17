@@ -24,7 +24,7 @@
     <project name="nekohtml-1.9.13" revision="refs/tags/zextras/9.0.0" />
     <project name="java-html-sanitizer-release-20190610.1" revision="refs/tags/9.0.0.p17" />
     <project name="antisamy" revision="refs/tags/9.0.0.p16" />
-    <project name="zm-admin-console" revision="refs/tags/zextras/9.0.0.p19" />
+    <project name="zm-admin-console" revision="refs/tags/zextras/9.0.0.p22" />
     <project name="zm-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-admin-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-amavis" revision="refs/tags/zextras/9.0.0.p19" />
@@ -42,7 +42,7 @@
     <project name="zm-launcher" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p20" />
     <project name="zm-ldap-utils-store" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p20" />
+    <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p22" />
     <project name="zm-migration-tools" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-mta" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-nginx-conf" revision="refs/tags/zextras/9.0.0.p19" />
@@ -53,7 +53,7 @@
     <project name="zm-taglib" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-timezones" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-viewmail-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-web-client" revision="refs/tags/zextras/9.0.0.p21" />
+    <project name="zm-web-client" revision="refs/tags/zextras/9.0.0.p22" />
     <project name="zm-zcs" revision="refs/tags/zextras/9.0.0.p18" />
     <project name="zm-zcs-lib" revision="refs/tags/zextras/9.0.0.p20" />
     <project name="zm-zimlets" revision="refs/tags/zextras/9.0.0.p20" />
