@@ -34,7 +34,6 @@
     <project name="zm-clam-scanner-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-core-utils" revision="refs/tags/zextras/9.0.0.p21" />
     <project name="zm-db-conf" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-downloads" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-freshclam" revision="refs/tags/zextras/9.0.0.p19" />
     <project name="zm-helptooltip-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-jetty-conf" revision="refs/tags/zextras/9.0.0.p18" />
