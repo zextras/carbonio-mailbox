@@ -24,15 +24,15 @@ build() {
   # Let's build for real now
   cd "${SRCDIR}"/zm-build || exit
   ./build.pl --build-no="${_buildno}" \
-    --build-release=${_release} --build-release-no=${_releaseno} \
-    --build-release-candidate=${_rc} \
+    --build-release-no="${_releaseno}" \
+    --build-release-candidate="${_rc}" \
     --build-prod-flag --ant-options="-DskipTests=1"
 }
 
 package() {
   # Let's package core files
   cd "${SRCDIR}"/ || exit
-  cd .staging/"${_release}-${_major}${_minor}${_micro}-FOSS-${_buildno}" || exit
+  cd .staging/"${_major}${_minor}${_micro}-FOSS-${_buildno}" || exit
   find . -type d -name "opt" -exec rsync -av {} "${PKGDIR}" \;
   find . -type d -name "opt" | xargs rm -rf
   find . -type d -name "etc" -exec rsync -av {} "${PKGDIR}" \;

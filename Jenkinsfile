@@ -102,6 +102,24 @@ python3 repo sync -vc -j 5
                         }
                     }
                 }
+                stage('Ubuntu 20.04') {
+                    agent {
+                        node {
+                            label 'pacur-agent-ubuntu-20.04-v1'
+                        }
+                    }
+                    steps {
+                        unstash 'staging'
+                        sh 'cp -r staging/* /tmp'
+                        sh 'sudo pacur build ubuntu-focal /tmp/carbonio-core'
+                        stash includes: 'artifacts/', name: 'artifacts-ubuntu-focal'
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
+                        }
+                    }
+                }
                 stage('Centos 8') {
                     agent {
                         node {
@@ -130,6 +148,7 @@ python3 repo sync -vc -j 5
             }
             steps {
                 unstash 'artifacts-ubuntu-bionic'
+                unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-centos-8'
                 script {
                     def server = Artifactory.server 'zextras-artifactory'
@@ -142,6 +161,11 @@ python3 repo sync -vc -j 5
                                 "pattern": "artifacts/*bionic*.deb",
                                 "target": "ubuntu-playground/pool/",
                                 "props": "deb.distribution=bionic;deb.component=main;deb.architecture=amd64"
+                            },
+                            {
+                                "pattern": "artifacts/*focal*.deb",
+                                "target": "ubuntu-playground/pool/",
+                                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             },
                             {
                                 "pattern": "artifacts/(carbonio-appserver-admin-console-war)-(*).rpm",
@@ -265,6 +289,7 @@ python3 repo sync -vc -j 5
             }
             steps {
                 unstash 'artifacts-ubuntu-bionic'
+                unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-centos-8'
                 script {
                     def server = Artifactory.server 'zextras-artifactory'
@@ -281,8 +306,12 @@ python3 repo sync -vc -j 5
                                 "pattern": "artifacts/*bionic*.deb",
                                 "target": "ubuntu-rc/pool/",
                                 "props": "deb.distribution=bionic;deb.component=main;deb.architecture=amd64"
+                            },
+                            {
+                                "pattern": "artifacts/*focal*.deb",
+                                "target": "ubuntu-rc/pool/",
+                                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             }
-
                         ]
                     }"""
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
