@@ -20,7 +20,7 @@
     <project name="ant-1.7.0-ziputil-patched" revision="refs/tags/9.0.0" />
     <project name="ant-tar-patched" revision="refs/tags/9.0.0" />
     <project name="ical4j-0.9.16-patched" revision="refs/tags/9.0.0" />
-    <project name="junixsocket" revision="refs/tags/junixsocket-parent-2.0.4" />
+    <project remote="gh-ko" name="junixsocket" revision="refs/tags/junixsocket-parent-2.0.4" />
     <project name="zm-admin-console" revision="refs/tags/zextras/9.0.0.p22" />
     <project name="zm-ajax" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-admin-ajax" revision="refs/tags/zextras/9.0.0.p16" />
