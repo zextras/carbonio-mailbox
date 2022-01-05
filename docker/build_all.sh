@@ -38,8 +38,6 @@ package() {
   find . -type d -name "etc" -exec rsync -av {} "${PKGDIR}" \;
   find . -type d -name "etc" | xargs rm -rf
 
-  cd "${SRCDIR}/zm-mailbox/build/stage/"
-  find . -type d -name "opt" -exec rsync -av {} "${PKGDIR}" \;
   cd "${SRCDIR}/zm-admin-console/build/stage/"
   find . -type d -name "opt" -exec rsync -av {} "${PKGDIR}" \;
   cd "${SRCDIR}/zm-web-client/build/stage/"
