@@ -1,6 +1,8 @@
 pipeline {
     parameters {
-        booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
+        booleanParam defaultValue: false,
+        description: 'Whether to upload the packages in playground repositories',
+        name: 'PLAYGROUND'
     }
     options {
         skipDefaultCheckout()
@@ -17,10 +19,10 @@ pipeline {
     }
     stages {
         stage('Fetch git-repo and sources') {
-            when{
-              not{
-                buildingTag()
-              }
+            when {
+                not {
+                    buildingTag()
+                }
             }
             agent {
                 node {
@@ -28,17 +30,15 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-curl https://storage.googleapis.com/git-repo-downloads/repo > repo
-python3 repo init -u ssh://git@bitbucket.org/zextras/carbonio-ce -b ${BRANCH_NAME}
-python3 repo sync -vc -j 5
-'''
+                sh 'curl https://storage.googleapis.com/git-repo-downloads/repo > repo'
+                sh 'python3 repo init -u ssh://git@bitbucket.org/zextras/carbonio-ce -b ${BRANCH_NAME}'
+                sh 'python3 repo sync -vc -j 5'
                 stash includes: '**', name: 'project'
             }
         }
 
         stage('Fetch git-repo and sources for tagged build') {
-            when{
+            when {
                 buildingTag()
             }
             agent {
@@ -47,12 +47,11 @@ python3 repo sync -vc -j 5
                 }
             }
             steps {
-                sh '''
-curl https://storage.googleapis.com/git-repo-downloads/repo > repo
-python3 repo init -u ssh://git@bitbucket.org/zextras/carbonio-ce -b refs/tags/${BRANCH_NAME}
-python3 repo sync -vc -j 5
-'''
-                stash includes: '**', name: 'project'
+                sh 'curl https://storage.googleapis.com/git-repo-downloads/repo > repo'
+                sh 'python3 repo init -u ssh://git@bitbucket.org/zextras/carbonio-ce -b refs/tags/${BRANCH_NAME}'
+                sh 'python3 repo sync -vc -j 5'
+                stash includes: '**',
+                name: 'project'
             }
         }
 
@@ -67,14 +66,16 @@ python3 repo sync -vc -j 5
                 sh './build'
                 unstash 'project'
                 script {
-                    env.CONTAINER_ID = sh(returnStdout: true, script: "docker run -dt ${NETWORK_OPTS} carbonio-builder").trim()
+                    env.CONTAINER_ID = sh(returnStdout: true,
+                    script: "docker run -dt ${NETWORK_OPTS} carbonio-builder").trim()
                 }
                 sh "docker cp ${WORKSPACE} ${env.CONTAINER_ID}:/src"
                 sh "docker exec -t ${env.CONTAINER_ID} bash -c \"build_all.sh ${BUILD_NUMBER}\""
                 sh "docker exec -t ${env.CONTAINER_ID} bash -c \"cp -r /src/carbonio-core /pkg\""
                 sh 'mkdir staging'
                 sh "docker cp ${env.CONTAINER_ID}:/pkg/. staging"
-                stash includes: 'staging/**', name: 'staging'
+                stash includes: 'staging/**',
+                name: 'staging'
             }
             post {
                 always {
@@ -94,7 +95,8 @@ python3 repo sync -vc -j 5
                         unstash 'staging'
                         sh 'cp -r staging/* /tmp'
                         sh 'sudo pacur build ubuntu-bionic /tmp/carbonio-core'
-                        stash includes: 'artifacts/', name: 'artifacts-ubuntu-bionic'
+                        stash includes: 'artifacts/',
+                        name: 'artifacts-ubuntu-bionic'
                     }
                     post {
                         always {
@@ -112,11 +114,13 @@ python3 repo sync -vc -j 5
                         unstash 'staging'
                         sh 'cp -r staging/* /tmp'
                         sh 'sudo pacur build ubuntu-focal /tmp/carbonio-core'
-                        stash includes: 'artifacts/', name: 'artifacts-ubuntu-focal'
+                        stash includes: 'artifacts/',
+                        name: 'artifacts-ubuntu-focal'
                     }
                     post {
                         always {
-                            archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
+                            archiveArtifacts artifacts: 'artifacts/*.deb',
+                            fingerprint: true
                         }
                     }
                 }
@@ -130,7 +134,8 @@ python3 repo sync -vc -j 5
                         unstash 'staging'
                         sh 'cp -r staging/* /tmp'
                         sh 'sudo pacur build centos /tmp/carbonio-core'
-                        stash includes: 'artifacts/', name: 'artifacts-centos-8'
+                        stash includes: 'artifacts/',
+                        name: 'artifacts-centos-8'
                     }
                     post {
                         always {
@@ -259,8 +264,8 @@ python3 repo sync -vc -j 5
 
                     //ubuntu
                     buildInfo = Artifactory.newBuildInfo()
-                    buildInfo.name += "-ubuntu"
-                    uploadSpec = """{
+                    buildInfo.name += '-ubuntu'
+                    uploadSpec = '''{
                         "files": [
                             {
                                 "pattern": "artifacts/*bionic*.deb",
@@ -273,7 +278,7 @@ python3 repo sync -vc -j 5
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             }
                         ]
-                    }"""
+                    }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                     config = [
                             'buildName'          : buildInfo.name,
@@ -286,14 +291,15 @@ python3 repo sync -vc -j 5
                             'copy'               : true,
                             'failFast'           : true
                     ]
-                    Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: "Ubuntu Promotion to Release"
+                    Artifactory.addInteractivePromotion server: server,
+                    promotionConfig: config,
+                    displayName: 'Ubuntu Promotion to Release'
                     server.publishBuildInfo buildInfo
-
 
                     //centos8
                     buildInfo = Artifactory.newBuildInfo()
-                    buildInfo.name += "-centos8"
-                    uploadSpec= """{
+                    buildInfo.name += '-centos8'
+                    uploadSpec= '''{
                         "files": [
                             {
                                 "pattern": "artifacts/(carbonio-appserver-admin-console-war)-(*).rpm",
@@ -366,7 +372,7 @@ python3 repo sync -vc -j 5
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
                         ]
-                    }"""
+                    }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                     config = [
                             'buildName'          : buildInfo.name,
@@ -379,11 +385,12 @@ python3 repo sync -vc -j 5
                             'copy'               : true,
                             'failFast'           : true
                     ]
-                    Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: "Centos8 Promotion to Release"
+                    Artifactory.addInteractivePromotion server: server,
+                    promotionConfig: config,
+                    displayName: 'Centos8 Promotion to Release'
                     server.publishBuildInfo buildInfo
                 }
             }
         }
     }
 }
-
