@@ -21,7 +21,7 @@
         Commented entries are now detached from the monolithic build process.
         They are now standalone and reported only for completeness.
     -->
-    <project name="ant-1.7.0-ziputil-patched" revision="refs/tags/9.0.0" />
+    <project name="ant-1.7.0-ziputil-patched" revision="refs/tags/zextras/9.0.0" />
     <project name="ant-tar-patched" revision="refs/tags/9.0.0" />
     <project name="ical4j-0.9.16-patched" revision="refs/tags/9.0.0" />
     <project remote="gh-ko" name="junixsocket" revision="refs/tags/junixsocket-parent-2.0.4" />
@@ -43,7 +43,6 @@
     <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p20" />
     <project name="zm-ldap-utils-store" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p22" />
-    <project name="zm-migration-tools" revision="refs/tags/zextras/9.0.0.p16" />
     <project name="zm-mta" revision="refs/tags/zextras/9.0.0.p19" />
     <!-- <project name="zm-nginx-conf" revision="refs/tags/zextras/9.0.0.p19" /> -->
     <project name="zm-nginx-lookup-store" revision="refs/tags/zextras/9.0.0.p16" />
