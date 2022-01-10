@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.account.ldap;
 
@@ -6657,35 +6645,36 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     protected void renameAddressesInAllDistributionLists(Map<String, String> changedPairs) {
 
-        String oldAddrs[] = changedPairs.keySet().toArray(new String[0]);
-        String newAddrs[] = changedPairs.values().toArray(new String[0]);
-
         List<DistributionList> lists = null;
         Map<String, String[]> attrs = null;
 
-        try {
-            lists = getAllDistributionListsForAddresses(oldAddrs, false);
-        } catch (ServiceException se) {
-            ZimbraLog.account.warn("unable to rename addr "+oldAddrs.toString()+" in all DLs ", se);
-            return;
-        }
+        for (String oldAddress: changedPairs.keySet()) {
 
-        for (DistributionList list: lists) {
-            // should we just call removeMember/addMember? This might be quicker, because calling
-            // removeMember/addMember might have to update an entry's zimbraMemberId twice
-            if (attrs == null) {
-                attrs = new HashMap<String, String[]>();
-                attrs.put("-" + Provisioning.A_zimbraMailForwardingAddress, oldAddrs);
-                attrs.put("+" + Provisioning.A_zimbraMailForwardingAddress, newAddrs);
-            }
+            String newAddress = changedPairs.get(oldAddress);
             try {
-                modifyAttrs(list, attrs);
-                //list.removeMember(oldName)
-                //list.addMember(newName);
+                lists = getAllDistributionListsForAddresses( new String[]{ oldAddress }, false);
             } catch (ServiceException se) {
-                // log warning an continue
-                ZimbraLog.account.warn("unable to rename "+oldAddrs.toString()+" to " +
-                        newAddrs.toString()+" in DL "+list.getName(), se);
+                ZimbraLog.account.warn("unable to rename addr "+oldAddress+" in all DLs ", se);
+                continue;
+            }
+
+            for (DistributionList list: lists) {
+                // should we just call removeMember/addMember? This might be quicker, because calling
+                // removeMember/addMember might have to update an entry's zimbraMemberId twice
+                if (attrs == null) {
+                    attrs = new HashMap<String, String[]>();
+                    attrs.put("-" + Provisioning.A_zimbraMailForwardingAddress, new String[]{ oldAddress });
+                    attrs.put("+" + Provisioning.A_zimbraMailForwardingAddress, new String[]{ newAddress });
+                }
+                try {
+                    modifyAttrs(list, attrs);
+                    //list.removeMember(oldName)
+                    //list.addMember(newName);
+                } catch (ServiceException se) {
+                    // log warning an continue
+                    ZimbraLog.account.warn("unable to rename "+oldAddress+" to " +
+                            newAddress +" in DL "+list.getName(), se);
+                }
             }
         }
     }

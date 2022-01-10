@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2010, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.common.net;
 
 import com.zimbra.common.localconfig.LC;
@@ -26,7 +15,6 @@ public final class NetConfig {
     private boolean allowUntrustedCerts;
     private boolean allowMismatchedCerts;
     private boolean allowAcceptUntrustedCerts;
-    private boolean useNativeProxySelector;
 
     private static NetConfig INSTANCE = new NetConfig();
 
@@ -39,7 +27,6 @@ public final class NetConfig {
         allowUntrustedCerts = LC.ssl_allow_untrusted_certs.booleanValue();
         allowMismatchedCerts = LC.ssl_allow_mismatched_certs.booleanValue();
         allowAcceptUntrustedCerts = LC.ssl_allow_accept_untrusted_certs.booleanValue();
-        useNativeProxySelector = LC.client_use_native_proxy_selector.booleanValue();
     }
 
     public boolean isSocksEnabled() {
@@ -75,15 +62,6 @@ public final class NetConfig {
 
     public NetConfig setAllowAcceptUntrustedCerts(boolean allowAcceptUntrustedCerts) {
         this.allowAcceptUntrustedCerts = allowAcceptUntrustedCerts;
-        return this;
-    }
-
-    public boolean isUseNativeProxySelector() {
-        return useNativeProxySelector;
-    }
-
-    public NetConfig setUseNativeProxySelector(boolean useNativeProxySelector) {
-        this.useNativeProxySelector = useNativeProxySelector;
         return this;
     }
 }

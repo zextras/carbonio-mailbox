@@ -1045,7 +1045,7 @@ For adding an profile image, you need to upload the image first and provide the 
 </CreateIdentityResponse>
 
 
-Allowed attributes (see objectclass zimbraIdentity in zimbra.schema)
+Allowed attributes (see objectclass zimbraIdentity in carbonio.schema)
 
   zimbraPrefBccAddress
     zimbraPrefForwardIncludeOriginalText
@@ -1370,7 +1370,7 @@ Folders:
        u="{unread}" [i4u="{imap-unread}"] n="{msg-count}" [i4n="{imap-count}"] s="{total-size}" [view="{default-type}"]
        [url="{remote-url}"] [activesyncdisabled="0|1"] [deletable="0|1"] [perm="{effective-perms}"] [rest="{rest-url}"] [webOfflineSyncDays="num-days"]>
     <acl [internalGrantExpiry="{millis-since-epoch}"] [guestGrantExpiry="{millis-since-epoch}"]>
-      <grant perm="{rights}" gt="{grantee-type}" zid="{zimbra-id}" [expiry="{millis-since-epoch}"] [d="{grantee-name}"] [pw="{password-for-guest}"] [key="{access-key}"]/>*
+      <grant perm="{rights}" gt="{grantee-type}" zid="{id}" [expiry="{millis-since-epoch}"] [d="{grantee-name}"] [pw="{password-for-guest}"] [key="{access-key}"]/>*
     </acl>?
     <retentionPolicy> ... </retentionPolicy>?
   </folder>
@@ -1391,7 +1391,7 @@ Folders:
   {effective-perms} = for remote folders, the access rights the authenticated user has on the folder
                         - will contain the calculated (c)reate folder permission if the user has
                           both (i)nsert and (r)ead access on the folder
-  {zimbra-id}    = the Zimbra account id, or if the {grantee-type} is "guest", the user's email address
+  {id}    = the Zimbra account id, or if the {grantee-type} is "guest", the user's email address
 
     folders can have an optional ACL set on them for sharing.  if they do (and the authenticated
     user has (a)dminister rights on the folder), an <acl> element will be returned containing
@@ -1455,7 +1455,7 @@ attributes are required.
 
 Mountpoints:
 
-  <link id="{folder-id}" name="{folder-name}" l="{parent-id}" [f="{flags}"] owner="{owner's-display-name}" zid="{owner's-zimbra-id}"
+  <link id="{folder-id}" name="{folder-name}" l="{parent-id}" [f="{flags}"] owner="{owner's-display-name}" zid="{owner's-id}"
         rid="{id-of-shared-item}" ruuid="{UUID-of-shared-item}" oname="{owner's-name-for-item}" [color="{color}"] [view="{default-type}"]
         reminder="{reminder-enabled}"/>
 
@@ -1463,7 +1463,7 @@ Mountpoints:
   {parent-id}    = id of parent folder (absent for root folder)
   {flags}        = checked in UI (#), exclude free/(b)usy info, IMAP subscribed (*)
   {owner's-display-name} = primary email address of the owner of the linked-to resource
-  {owner's-zimbra-id} = Zimbra id (guid) of the owner of the linked-to resource
+  {owner's-id} = Zimbra id (guid) of the owner of the linked-to resource
   {id-of-shared-item} = item id of the linked-to resource in the remote mailbox
   {UUID-of-shared-item} = UUID of the linked-to resource in the remote mailbox
   {owner's-name-for-item} = The name presently used for the item by the owner
@@ -2148,7 +2148,7 @@ If needExp is "1" in the request, two additional flags will be included in <e> e
 <CreateFolderRequest>
   <folder name="..." [l="{parent-folder}"] [fie="1"] [view="{default-type}"] [color="{color}"] [rgb="{rgb-color}"] [f="{flags}"] [url="{url}"] [sync="1"]>
     <acl [internalGrantExpiry="{millis-since-epoch}"] [guestGrantExpiry="{millis-since-epoch}"]>
-      <grant perm="{rights}" gt="{grantee-type}" zid="{zimbra-id}" [expiry="{millis-since-epoch}"] [d="{grantee-name}"] [key="{access-key}"]/>*
+      <grant perm="{rights}" gt="{grantee-type}" zid="{id}" [expiry="{millis-since-epoch}"] [d="{grantee-name}"] [key="{access-key}"]/>*
     </acl>?
   </folder>
 </CreateFolderRequest>
@@ -2274,7 +2274,7 @@ If needExp is "1" in the request, two additional flags will be included in <e> e
 
 <FolderActionRequest>
   <action id="{list}" op="read|delete|rename|move|trash|empty|color|[!]grant|revokeorphangrants|url|import|sync|fb|[!]check|update|[!]syncon|retentionpolicy|[!]disableactivesync|webofflinesyncdays" [l="{target-folder}"]
-                      [name="{new-name}"] [color="{new-color}"] [rgb="{rgb-color}"] [zid="{grantee-zimbra-id}"] [url="{target-url}"]
+                      [name="{new-name}"] [color="{new-color}"] [rgb="{rgb-color}"] [zid="{grantee-id}"] [url="{target-url}"]
                       [excludeFreeBusy="{exclude-free-busy-boolean}"] [numDays="{web-offline-sync-days}"]>
     [<grant perm="..." gt="..." zid="..." [expiry="{millis-since-epoch}"] [d="..."] [key="..."]/>]
     [<retentionPolicy> ... </retentionPolicy>]
@@ -2282,7 +2282,7 @@ If needExp is "1" in the request, two additional flags will be included in <e> e
 </FolderActionRequest>
 
 <FolderActionResponse>
-  <action id="{list}" op="read|delete|empty|rename|move|trash|color|grant|url|import|sync|fb|[!]check|update" [zid="{grantee-zimbra-id}"]/>
+  <action id="{list}" op="read|delete|empty|rename|move|trash|color|grant|url|import|sync|fb|[!]check|update" [zid="{grantee-id}"]/>
 </FolderActionResponse>
 
 Actions:
@@ -2314,12 +2314,12 @@ Actions:
   </action>
     - add the <grant> object to the folder
 
-  <action op="!grant" id="{list}" zid="{grantee-zimbra-id}"/>
-    - revoke access from {grantee-zimbra-id}
+  <action op="!grant" id="{list}" zid="{grantee-id}"/>
+    - revoke access from {grantee-id}
         (you can use "00000000-0000-0000-0000-000000000000" to revoke acces granted to "all"
         or use "99999999-9999-9999-9999-999999999999" to revoke acces granted to "pub" )
 
-  <action op="revokeorphangrants" id="{folder-id}" zid="{grantee-zimbra-id}" gt="{grantee-type}"/>
+  <action op="revokeorphangrants" id="{folder-id}" zid="{grantee-id}" gt="{grantee-type}"/>
     - revoke orphan grants on the folder hierarchy granted to the grantee specified by zid and gt
       "orphan grant" is a grant whose grantee object is deleted/non-existing.  Server will throw
       INVALID_REQUEST if zid points to an existing object,
@@ -2442,7 +2442,7 @@ u,n attributes present iff count > 0
 
 <CreateMountpointRequest>
   <link l="{folder}" name="{mountpoint-name}" [view="..."] [color="{color}"] [rgb="{rgb-color}"] [f="{flags}"] [fie="1"]
-         [zid="{owner's-zimbra-id}" | owner="{owner's-email-address}"] [rid="{id-of-shared-item}" | path="{path-to-shared-item}"]
+         [zid="{owner's-id}" | owner="{owner's-email-address}"] [rid="{id-of-shared-item}" | path="{path-to-shared-item}"]
          [reminder="0"]/>
 </CreateMountpointRequest>
 
@@ -2987,7 +2987,7 @@ for op="update", caller can specify any or all of: l="{folder}", tn="{tag-names}
 {attach-upload-id} = attachment id from upload server. If specified, then body of content is ignored.
 {csv-format} = the format of csv being imported.  when it's not defined Zimbra
                format is assumed.  the supported formats are defined in
-               $ZIMBRA_HOME/conf/zimbra-contact-fields.xml
+               $ZIMBRA_HOME/conf/contact-fields.xml
 {csv-locale} = The locale to use when there are multiple {csv-format} locales defined.  When it is not
                specified, the {csv-format} with no locale specification is used.
 
@@ -3004,7 +3004,7 @@ TODO: should have an option on import that matches email addresses to existing c
 {content-type} = currently, the only supported content type is "csv" (comma-separated values)
 {folder-id} = optional folder id to export contacts from
 {csv-format} = optional csv format for exported contacts.  the supported formats
-               are defined in $ZIMBRA_HOME/conf/zimbra-contact-fields.xml
+               are defined in $ZIMBRA_HOME/conf/contact-fields.xml
 {csv-locale} = The locale to use when there are multiple {csv-format} locales defined.  When it is not
                specified, the {csv-format} with no locale specification is used.
 {csv-delimiter} = optional delimiter to use in the resulting csv file
@@ -3800,7 +3800,7 @@ If no <ace> elements are provided, all ACEs are returned in the response.
 If <ace> elements are provided, only those ACEs with specified rights are returned in the response.
 
 <GetPermissionResponse>
-  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{zimbra-id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
+  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
 </GetPermissionResponse>
 
     {right}        = viewFreeBusy | invite
@@ -3816,7 +3816,7 @@ If <ace> elements are provided, only those ACEs with specified rights are return
                      key - external user with an accesskey
                      pub - public authenticated and unauthenticated access
 
-    {zimbra-id}    = zimbraId of the grantee
+    {id}    = zimbraId of the grantee
 
     {grantee-name} = name or email address of the grantee.
                      ot present if {grantee-type} is "all" or "pub"
@@ -3832,7 +3832,7 @@ Grant account level permissions.
 Note: to be deprecated in Zimbra 9.  Use zimbraAccount GrantRights instead.
 
 <GrantPermissionRequest>
-  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" [zid="{zimbra-id}"] [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>+
+  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" [zid="{id}"] [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>+
 </GrantPermissionRequest>
 
   If gt is:
@@ -3856,7 +3856,7 @@ Note: to be deprecated in Zimbra 9.  Use zimbraAccount GrantRights instead.
 GrantPermissionResponse returns permissions that are successfully granted.
 
 <GrantPermissionResponse>
-  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{zimbra-id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
+  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
 </GrantPermissionResponse>
 ---------------------------
 
@@ -3865,7 +3865,7 @@ Revoke account level permissions.
 Note: to be deprecated in Zimbra 9.  Use zimbraAccount RevokeRights instead.
 
 <RevokePermissionRequest>
-  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" [zid="{zimbra-id}"] [d="{grantee-name}"]/>*
+  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" [zid="{id}"] [d="{grantee-name}"]/>*
 </RevokePermissionRequest>
 
   Same notes as those for GrantPermissionRequest about identifying the grantee.
@@ -3873,7 +3873,7 @@ Note: to be deprecated in Zimbra 9.  Use zimbraAccount RevokeRights instead.
 RevokePermissionResponse returns permissions that are successfully revoked.
 
 <RevokePermissionResponse>
-  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{zimbra-id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
+  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
 </RevokePermissionResponse>
 
 ---------------------------
@@ -3930,7 +3930,7 @@ If no <ace> elements are provided, all ACEs are returned in the response.
 If <ace> elements are provided, only those ACEs with specified rights are returned in the response.
 
 <GetRightsResponse>
-  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{zimbra-id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
+  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
 </GetRightsResponse>
 
     {right}        = viewFreeBusy | invite
@@ -3946,7 +3946,7 @@ If <ace> elements are provided, only those ACEs with specified rights are return
                      key - external user with an accesskey
                      pub - public authenticated and unauthenticated access
 
-    {zimbra-id}    = zimbraId of the grantee
+    {id}    = zimbraId of the grantee
 
     {grantee-name} = name or email address of the grantee.
                      ot present if {grantee-type} is "all" or "pub"
@@ -3960,7 +3960,7 @@ If <ace> elements are provided, only those ACEs with specified rights are return
 Grant account level rights.
 
 <GrantRightsRequest>
-  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" [zid="{zimbra-id}"] [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"] [chkgt="{checkGranteeType}"]/>+
+  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" [zid="{id}"] [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"] [chkgt="{checkGranteeType}"]/>+
 </GrantRightsRequest>
 
   If gt is:
@@ -3985,14 +3985,14 @@ Grant account level rights.
 GrantRightsResponse returns rights that are successfully granted.
 
 <GrantRightsResponse>
-  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{zimbra-id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
+  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
 </GrantRightsResponse>
 ---------------------------
 
 Revoke account level rights.
 
 <RevokeRightsRequest>
-  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" [zid="{zimbra-id}"] [d="{grantee-name}"]/>*
+  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" [zid="{id}"] [d="{grantee-name}"]/>*
 </RevokeRightsRequest>
 
   Same notes as those for GrantRightsRequest about identifying the grantee.
@@ -4000,7 +4000,7 @@ Revoke account level rights.
 RevokeRightsResponse returns rights that are successfully revoked.
 
 <RevokeRightsResponse>
-  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{zimbra-id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
+  <ace right="{right}" [deny="{deny}"] gt="{grantee-type}" zid="{id}" [d="{grantee-name}"] [pw="{password}"] [key="{accesskey}"]/>*
 </RevokeRightsResponse>
 
 ---------------------------
@@ -4419,11 +4419,11 @@ added to Documents only.
 
 <GetShareNotificationsResponse>
    [<share id="{notification-item-id}" d="{date}" status="new|seen">
-      <grantor id="{zimbra-id}" email="{email-address}" name="{display-name}"/>
+      <grantor id="{id}" email="{email-address}" name="{display-name}"/>
       <link id="{shared-item-id}" name="{item-name}" view="{item-type}" perm="{permissions-granted}"/>
     </share>]*
    [<revoke id="{notification-item-id}" d="{date}" [expire="1"]>
-      <grantor id="{zimbra-id}" email="{email-address}" name="{display-name}"/>
+      <grantor id="{id}" email="{email-address}" name="{display-name}"/>
       <link id="{revoked-item-id}" name="{item-name}" view="{item-type}"/>
     </revoke>]*
 </GetShareNotificationsResponse>

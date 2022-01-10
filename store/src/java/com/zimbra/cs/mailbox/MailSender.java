@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.mailbox;
 
@@ -579,8 +567,17 @@ public class MailSender {
             // contact later before we add the message to sent folder.
             Collection<Address> newAddrs = Collections.emptySet();
             Address[] rcptAddresses = getRecipients(mm);
-            if (rcptAddresses != null && rcptAddresses.length > 0)
-                newAddrs = mbox.newContactAddrs(Arrays.asList(rcptAddresses));
+            if (rcptAddresses != null && rcptAddresses.length > 0) {
+                //remove sender domain from createAutoContact()
+                String sender_domain = "";
+                try {
+                    int sender_last_match = mEnvelopeFrom.lastIndexOf("@");
+                    sender_domain = mEnvelopeFrom.substring(sender_last_match);
+                } catch (Exception e) {
+                    ZimbraLog.smtp.error("Can't catch sender domain!");
+                }
+                newAddrs = mbox.newContactAddrs(Arrays.asList(rcptAddresses),sender_domain);
+            }
 
             if (mimeProcessor != null) {
                 try {
@@ -724,10 +721,10 @@ public class MailSender {
                 } catch (Exception e) {
                     ZimbraLog.smtp.error("Failed to update contact rankings", e);
                 }
+
                 if (authuser.isPrefAutoAddAddressEnabled()) {
                     //intersect the lists;
                     newAddrs.retainAll(sentAddresses);
-
                     // convert JavaMail Address to Zimbra InternetAddress
                     List<com.zimbra.common.mime.InternetAddress> iaddrs =
                         new ArrayList<com.zimbra.common.mime.InternetAddress>(newAddrs.size());
@@ -942,6 +939,7 @@ public class MailSender {
         if (addMailer) {
             String ua = octxt != null ? octxt.getUserAgent() : null;
             String mailer = "Zimbra " + BuildInfo.VERSION + (ua == null ? "" : " (" + ua + ")");
+            mailer = mailer.replaceAll("(?i)zimbra","Carbonio"); // replace zimbra with Carbonio
             mm.addHeader(X_MAILER, mailer);
         }
 

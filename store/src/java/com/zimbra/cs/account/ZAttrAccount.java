@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.cs.account;
 
 import static com.zimbra.common.account.ProvisioningConstants.FALSE;
@@ -12965,13 +12954,13 @@ public abstract class ZAttrAccount  extends MailTarget {
     /**
      * Docs features enabled in briefcase
      *
-     * @return zimbraFeatureBriefcaseDocsEnabled, or true if unset
+     * @return zimbraFeatureBriefcaseDocsEnabled, or false if unset
      *
      * @since ZCS 6.0.2
      */
     @ZAttr(id=1055)
     public boolean isFeatureBriefcaseDocsEnabled() {
-        return getBooleanAttr(Provisioning.A_zimbraFeatureBriefcaseDocsEnabled, true, true);
+        return getBooleanAttr(Provisioning.A_zimbraFeatureBriefcaseDocsEnabled, false, true);
     }
 
     /**
@@ -13181,11 +13170,11 @@ public abstract class ZAttrAccount  extends MailTarget {
     /**
      * whether to allow use of briefcase feature
      *
-     * @return zimbraFeatureBriefcasesEnabled, or true if unset
+     * @return zimbraFeatureBriefcasesEnabled, or false if unset
      */
     @ZAttr(id=498)
     public boolean isFeatureBriefcasesEnabled() {
-        return getBooleanAttr(Provisioning.A_zimbraFeatureBriefcasesEnabled, true, true);
+        return getBooleanAttr(Provisioning.A_zimbraFeatureBriefcasesEnabled, false, true);
     }
 
     /**
@@ -26579,11 +26568,11 @@ public abstract class ZAttrAccount  extends MailTarget {
      *
      * @see #getMailIdleSessionTimeoutAsString()
      *
-     * @return zimbraMailIdleSessionTimeout in millseconds, or 0 (0)  if unset
+     * @return zimbraMailIdleSessionTimeout in millseconds, or 86400000 (1d) if unset
      */
     @ZAttr(id=147)
     public long getMailIdleSessionTimeout() {
-        return getTimeInterval(Provisioning.A_zimbraMailIdleSessionTimeout, 0L, true);
+        return getTimeInterval(Provisioning.A_zimbraMailIdleSessionTimeout, 86400000L, true);
     }
 
     /**
@@ -26592,11 +26581,11 @@ public abstract class ZAttrAccount  extends MailTarget {
      * seconds, d - days, ms - milliseconds. If time unit is not specified,
      * the default is s(seconds).
      *
-     * @return zimbraMailIdleSessionTimeout, or "0" if unset
+     * @return zimbraMailIdleSessionTimeout, or "1d" if unset
      */
     @ZAttr(id=147)
     public String getMailIdleSessionTimeoutAsString() {
-        return getAttr(Provisioning.A_zimbraMailIdleSessionTimeout, "0", true);
+        return getAttr(Provisioning.A_zimbraMailIdleSessionTimeout, "1d", true);
     }
 
     /**
@@ -47609,13 +47598,13 @@ public abstract class ZAttrAccount  extends MailTarget {
     /**
      * whether to include shared items in search
      *
-     * @return zimbraPrefIncludeSharedItemsInSearch, or false if unset
+     * @return zimbraPrefIncludeSharedItemsInSearch, or true if unset
      *
      * @since ZCS 8.0.0
      */
     @ZAttr(id=1338)
     public boolean isPrefIncludeSharedItemsInSearch() {
-        return getBooleanAttr(Provisioning.A_zimbraPrefIncludeSharedItemsInSearch, false, true);
+        return getBooleanAttr(Provisioning.A_zimbraPrefIncludeSharedItemsInSearch, true, true);
     }
 
     /**
@@ -47681,11 +47670,11 @@ public abstract class ZAttrAccount  extends MailTarget {
     /**
      * whether or not to include spam in search by default
      *
-     * @return zimbraPrefIncludeSpamInSearch, or false if unset
+     * @return zimbraPrefIncludeSpamInSearch, or true if unset
      */
     @ZAttr(id=55)
     public boolean isPrefIncludeSpamInSearch() {
-        return getBooleanAttr(Provisioning.A_zimbraPrefIncludeSpamInSearch, false, true);
+        return getBooleanAttr(Provisioning.A_zimbraPrefIncludeSpamInSearch, true, true);
     }
 
     /**
@@ -47743,11 +47732,11 @@ public abstract class ZAttrAccount  extends MailTarget {
     /**
      * whether or not to include trash in search by default
      *
-     * @return zimbraPrefIncludeTrashInSearch, or false if unset
+     * @return zimbraPrefIncludeTrashInSearch, or true if unset
      */
     @ZAttr(id=56)
     public boolean isPrefIncludeTrashInSearch() {
-        return getBooleanAttr(Provisioning.A_zimbraPrefIncludeTrashInSearch, false, true);
+        return getBooleanAttr(Provisioning.A_zimbraPrefIncludeTrashInSearch, true, true);
     }
 
     /**
@@ -50445,11 +50434,11 @@ public abstract class ZAttrAccount  extends MailTarget {
      *
      * @see #getPrefOutOfOfficeCacheDurationAsString()
      *
-     * @return zimbraPrefOutOfOfficeCacheDuration in millseconds, or 604800000 (7d)  if unset
+     * @return zimbraPrefOutOfOfficeCacheDuration in millseconds, or 172800000 (2d)  if unset
      */
     @ZAttr(id=386)
     public long getPrefOutOfOfficeCacheDuration() {
-        return getTimeInterval(Provisioning.A_zimbraPrefOutOfOfficeCacheDuration, 604800000L, true);
+        return getTimeInterval(Provisioning.A_zimbraPrefOutOfOfficeCacheDuration, 172800000L, true);
     }
 
     /**
@@ -50460,11 +50449,11 @@ public abstract class ZAttrAccount  extends MailTarget {
      * seconds, d - days, ms - milliseconds. If time unit is not specified,
      * the default is s(seconds).
      *
-     * @return zimbraPrefOutOfOfficeCacheDuration, or "7d" if unset
+     * @return zimbraPrefOutOfOfficeCacheDuration, or "2d" if unset
      */
     @ZAttr(id=386)
     public String getPrefOutOfOfficeCacheDurationAsString() {
-        return getAttr(Provisioning.A_zimbraPrefOutOfOfficeCacheDuration, "7d", true);
+        return getAttr(Provisioning.A_zimbraPrefOutOfOfficeCacheDuration, "2d", true);
     }
 
     /**
@@ -54027,11 +54016,11 @@ public abstract class ZAttrAccount  extends MailTarget {
     /**
      * Skin to use for this account
      *
-     * @return zimbraPrefSkin, or "harmony" if unset
+     * @return zimbraPrefSkin, or "zextras" if unset
      */
     @ZAttr(id=355)
     public String getPrefSkin() {
-        return getAttr(Provisioning.A_zimbraPrefSkin, "harmony", true);
+        return getAttr(Provisioning.A_zimbraPrefSkin, "zextras", true);
     }
 
     /**

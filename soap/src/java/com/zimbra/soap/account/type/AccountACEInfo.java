@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2011, 2012, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.soap.account.type;
 
@@ -30,7 +18,7 @@ import com.zimbra.soap.type.ZmBoolean;
 public class AccountACEInfo {
 
     /**
-     * @zm-api-field-tag zimbra-id
+     * @zm-api-field-tag id
      * @zm-api-field-description Zimbra ID of the grantee
      */
     @XmlAttribute(name=AccountConstants.A_ZIMBRA_ID /* zid */, required=false)
@@ -50,17 +38,17 @@ public class AccountACEInfo {
      *
      * If the value is:
      * <ul>
-     * <li> <b>usr</b> - either <b>{zimbra-id}</b> or <b>{grantee-name}</b> is required
-     * <li> <b>grp</b> - either <b>{zimbra-id}</b> or <b>{grantee-name}</b> is required
-     * <li> <b>all</b> - <b>{zimbra-id}</b>, <b>{grantee-name}</b> and <b>{password}</b> are ignored
-     * <li> <b>gst</b> - <b>{zimbra-id}</b> is ignored, <b>{grantee-name}</b> is required, <b>{password}</b> is optional
-     * <li> <b>key</b> - <b>{zimbra-id}</b> is ignored, <b>{grantee-name}</b> is required
-     * <li> <b>pub</b> - <b>{zimbra-id}</b>, <b>{grantee-name}</b> and <b>{password}</b> are ignored
+     * <li> <b>usr</b> - either <b>{id}</b> or <b>{grantee-name}</b> is required
+     * <li> <b>grp</b> - either <b>{id}</b> or <b>{grantee-name}</b> is required
+     * <li> <b>all</b> - <b>{id}</b>, <b>{grantee-name}</b> and <b>{password}</b> are ignored
+     * <li> <b>gst</b> - <b>{id}</b> is ignored, <b>{grantee-name}</b> is required, <b>{password}</b> is optional
+     * <li> <b>key</b> - <b>{id}</b> is ignored, <b>{grantee-name}</b> is required
+     * <li> <b>pub</b> - <b>{id}</b>, <b>{grantee-name}</b> and <b>{password}</b> are ignored
      * </ul>
      * For <b>usr</b> and <b>grp</b>:
      * <ul>
-     * <li> if <b>{zimbra-id}</b> is provided, server will lookup the entry by <b>{zimbra-id}</b> and
-     * <li> if <b>{zimbra-id}</b> is not provided, server will lookup the grantee by <b>{grantee-type}</b> and
+     * <li> if <b>{id}</b> is provided, server will lookup the entry by <b>{id}</b> and
+     * <li> if <b>{id}</b> is not provided, server will lookup the grantee by <b>{grantee-type}</b> and
      *      <b>{grantee-name}</b>
      * <li>if the lookup fails, NO_SUCH_ACCOUNT/NO_SUCH_DISTRIBUTION_LIST will be thrown.
      * </ul>

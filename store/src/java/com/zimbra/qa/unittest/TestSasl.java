@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2007, 2009, 2010, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.qa.unittest;
 
@@ -75,7 +63,7 @@ public class TestSasl extends TestCase {
         String host = "localhost";
         String principle = "imap@" + host;
         LoginContext lc = Krb5Login.withKeyTab(
-            "imap/localhost", "/opt/zimbra/conf/krb5.keytab");
+            "imap/localhost", "/opt/zextras/conf/krb5.keytab");
         lc.login();
         GSSManager mgr = GSSManager.getInstance();
         Oid krb5Oid = new Oid("1.2.840.113554.1.2.2");
@@ -90,7 +78,7 @@ public class TestSasl extends TestCase {
     public void testKeytab() throws Exception {
         System.setProperty("sun.security.krb5.debug", "true");
         System.setProperty("sun.security.jgss.debug", "true");
-        Krb5Keytab keytab = new Krb5Keytab("/opt/zimbra/conf/krb5.keytab");
+        Krb5Keytab keytab = new Krb5Keytab("/opt/zextras/conf/krb5.keytab");
         KerberosPrincipal kp = new KerberosPrincipal("imap/localhost");
         List<KerberosKey> keys = keytab.getKeys(kp);
         System.out.println("len = " + keys.size());

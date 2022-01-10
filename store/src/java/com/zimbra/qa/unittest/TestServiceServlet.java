@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
 package com.zimbra.qa.unittest;
 
 import java.io.File;
@@ -47,7 +51,7 @@ public class TestServiceServlet {
     private static String DELEGATED_ADMIN_WITH_RIGHTS = "TestServiceServletDelegatedAdmin1";
     private static String DELEGATED_ADMIN_WITHOUT_RIGHTS = "TestServiceServletDelegatedAdmin2";
     private static String TEST_ZIMLET = "com_zimbra_unittest";
-    private static String TEST_ZIMLET_PATH = "/opt/zimbra/unittest/zimlets/com_zimbra_unittest.zip";
+    private static String TEST_ZIMLET_PATH = "/opt/zextras/unittest/zimlets/com_zimbra_unittest.zip";
     private static Provisioning prov;
     private static Server localServer;
     private static String baseURL;
@@ -193,7 +197,7 @@ public class TestServiceServlet {
         HttpPost method = new HttpPost(url);
         addAuthTokenHeader(method, AuthProvider.getAdminAuthToken().getEncoded());
         method.addHeader(ZimletUtil.PARAM_ZIMLET, "com_zimbra_adminversioncheck");
-        File zimletFile = new File("/opt/zimbra/zimlets/com_zimbra_adminversioncheck.zip"); //standard admin extension, should always be there. No harm in redeploying it
+        File zimletFile = new File("/opt/zextras/zimlets/com_zimbra_adminversioncheck.zip"); //standard admin extension, should always be there. No harm in redeploying it
         if(zimletFile.exists()) {
             InputStream targetStream = new FileInputStream(zimletFile);
             method.setEntity(new InputStreamEntity(targetStream));
@@ -377,7 +381,7 @@ public class TestServiceServlet {
         HttpPost method = new HttpPost(url);
         addAuthTokenHeader(method, mbox.getAuthToken().getValue());
         method.addHeader(ZimletUtil.PARAM_ZIMLET, "com_zimbra_phone");
-        File zimletFile = new File("/opt/zimbra/zimlets/com_zimbra_adminversioncheck.zip"); //standard zimlet, should always be there. No harm in redeploying it
+        File zimletFile = new File("/opt/zextras/zimlets/com_zimbra_adminversioncheck.zip"); //standard zimlet, should always be there. No harm in redeploying it
         if(zimletFile.exists()) {
             InputStream targetStream = new FileInputStream(zimletFile);
             method.setEntity(new InputStreamEntity(targetStream));

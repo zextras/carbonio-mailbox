@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 /*
  * Created on Sep 23, 2004
@@ -4378,13 +4366,13 @@ public abstract class ZAttrDomain extends NamedEntry {
     /**
      * Realm for the basic auth challenge (WWW-Authenticate) header
      *
-     * @return zimbraBasicAuthRealm, or "Zimbra" if unset
+     * @return zimbraBasicAuthRealm, or "Carbonio" if unset
      *
      * @since ZCS 7.0.0
      */
     @ZAttr(id=1098)
     public String getBasicAuthRealm() {
-        return getAttr(Provisioning.A_zimbraBasicAuthRealm, "Zimbra", true);
+        return getAttr(Provisioning.A_zimbraBasicAuthRealm, "Carbonio", true);
     }
 
     /**
@@ -15661,8 +15649,8 @@ public abstract class ZAttrDomain extends NamedEntry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-zimbra-key-map} | {LDAP-filter}
-     * cert-field-to-zimbra-key-map: {certificate-field}={Zimbra-account-key}
+     * {cert-field-to-key-map} | {LDAP-filter}
+     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
      * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
      * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
      * UPN(aka Principal Name) in otherName in subjectAltName extension
@@ -15701,8 +15689,8 @@ public abstract class ZAttrDomain extends NamedEntry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-zimbra-key-map} | {LDAP-filter}
-     * cert-field-to-zimbra-key-map: {certificate-field}={Zimbra-account-key}
+     * {cert-field-to-key-map} | {LDAP-filter}
+     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
      * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
      * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
      * UPN(aka Principal Name) in otherName in subjectAltName extension
@@ -15744,8 +15732,8 @@ public abstract class ZAttrDomain extends NamedEntry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-zimbra-key-map} | {LDAP-filter}
-     * cert-field-to-zimbra-key-map: {certificate-field}={Zimbra-account-key}
+     * {cert-field-to-key-map} | {LDAP-filter}
+     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
      * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
      * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
      * UPN(aka Principal Name) in otherName in subjectAltName extension
@@ -15788,8 +15776,8 @@ public abstract class ZAttrDomain extends NamedEntry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-zimbra-key-map} | {LDAP-filter}
-     * cert-field-to-zimbra-key-map: {certificate-field}={Zimbra-account-key}
+     * {cert-field-to-key-map} | {LDAP-filter}
+     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
      * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
      * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
      * UPN(aka Principal Name) in otherName in subjectAltName extension
@@ -15830,8 +15818,8 @@ public abstract class ZAttrDomain extends NamedEntry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-zimbra-key-map} | {LDAP-filter}
-     * cert-field-to-zimbra-key-map: {certificate-field}={Zimbra-account-key}
+     * {cert-field-to-key-map} | {LDAP-filter}
+     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
      * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
      * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
      * UPN(aka Principal Name) in otherName in subjectAltName extension
@@ -24107,7 +24095,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @return zimbraWebClientSupportedHelps, or empty array if unset
      *
@@ -24130,7 +24118,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -24156,7 +24144,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new value
      * @param attrs existing map to populate, or null to create a new map
@@ -24183,7 +24171,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -24209,7 +24197,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -24236,7 +24224,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -24262,7 +24250,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -24289,7 +24277,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -24314,7 +24302,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

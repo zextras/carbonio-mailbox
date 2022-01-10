@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2010, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.qa.unittest;
 
 import com.zimbra.common.net.ProxySelectors;
@@ -54,13 +43,6 @@ public class TestSocks extends TestCase {
     }
 
     public void testSystemProxy() throws Exception {
-        ProxySelector ps = ProxySelectors.nativeProxySelector();
-        assertNotNull(ps);
-        List<Proxy> proxies = ps.select(new URI("socket://www.vmware.com"));
-        assertEquals(1, proxies.size());
-        Proxy proxy = proxies.get(0);
-        assertEquals(Proxy.Type.SOCKS, proxy.type());
-        assertEquals(PROXY_ADDR, proxy.address());
     }
 
     public void testHttpProxy() throws Exception {

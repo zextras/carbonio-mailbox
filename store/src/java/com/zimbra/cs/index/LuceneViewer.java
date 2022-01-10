@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2010, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.cs.index;
 
 import java.io.File;
@@ -487,9 +476,9 @@ public class LuceneViewer {
             System.err.println();
             System.err.println();
             System.err.println("Sample command lines:");
-            System.err.println("zmjava com.zimbra.cs.index.LuceneViewer -a dump -i /opt/zimbra/index/0/2/index/0 -o /tmp/user1-index-dump.txt");
-            System.err.println("zmjava com.zimbra.cs.index.LuceneViewer -a dump -v -f1 l.content -t1 jay -f2 subject -t2 howdy -i /opt/zimbra/index/0/2/index/0 -o /tmp/user1-index-dump.txt");
-            System.err.println("zmjava com.zimbra.cs.index.LuceneViewer -a dump -f1 from jay@test.com -i /opt/zimbra/index/0/2/index/0 -o /tmp/user1-index-dump.txt");
+            System.err.println("zmjava com.zimbra.cs.index.LuceneViewer -a dump -i /opt/zextras/index/0/2/index/0 -o /tmp/user1-index-dump.txt");
+            System.err.println("zmjava com.zimbra.cs.index.LuceneViewer -a dump -v -f1 l.content -t1 jay -f2 subject -t2 howdy -i /opt/zextras/index/0/2/index/0 -o /tmp/user1-index-dump.txt");
+            System.err.println("zmjava com.zimbra.cs.index.LuceneViewer -a dump -f1 from jay@test.com -i /opt/zextras/index/0/2/index/0 -o /tmp/user1-index-dump.txt");
 
             if (exit) {
                 System.exit(1);

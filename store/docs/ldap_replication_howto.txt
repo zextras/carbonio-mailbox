@@ -18,7 +18,7 @@ NOTE: replication setup will stop and start the services on the
 
 - On hosts that will run LDAP replica servers:
 
-  - When selecting packages to install, select zimbra-ldap (in addition to
+  - When selecting packages to install, select ldap (in addition to
     any other packages you may wish to install)
 
   - During the configuration phase, the LDAP service will be enabled by
@@ -33,11 +33,11 @@ NOTE: replication setup will stop and start the services on the
     expected.  The LDAP service will NOT be started on the replica host at
     this stage.
 	
-  - On the LDAP MASTER host, as the zimbra user, run the command 
+  - On the LDAP MASTER host, as the zextras user, run the command 
     zmupdateauthkeys.  This will allow the replica to communicate with
     the master for initial setup.
 
-  - On the LDAP REPLICA host, as the zimbra user, run the command
+  - On the LDAP REPLICA host, as the zextras user, run the command
     zmldapenablereplica.
 
 	The following sequence of actions will be performed:
@@ -63,7 +63,7 @@ NOTE: replication setup will stop and start the services on the
 - Pointing other hosts at the replica servers
 
   - To point other ZCS hosts at your replica servers, modify the ldap_url
-    config key (as the zimbra user):
+    config key (as the zextras user):
     zmcontrol stop
     zmlocalconfig -e ldap_url="new url"
 
@@ -71,7 +71,7 @@ NOTE: replication setup will stop and start the services on the
     The ldap master url should be the last in the list:
     "ldap://ld1.mydomain.com ldap://ld2.mydomain.com ldap://master.mydomain.com"
 
-  - If the mta is configured on this host, run (as the zimbra user):
+  - If the mta is configured on this host, run (as the zextras user):
     zmmtainit hostname
     where hostname is the name of the ldap replica you wish to use for mta
     lookups.

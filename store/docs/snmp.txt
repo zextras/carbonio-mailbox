@@ -21,6 +21,6 @@ When snmp is configured to run, traps will be generated every
 time the status of a service changes.
 
 Snmp configuration:
-	- install the zimbra-snmp package.
+	- install the snmp package.
 	- run the createsnmp script, provide requested information (trap host)
 	- start services (zmcontrol startup)

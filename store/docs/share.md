@@ -12,10 +12,10 @@ following hierarchy:
     multipart/alternative
         text/plain
         text/html
-        xml/x-zimbra-share
+        xml/x-share
 
 The text/plain and text/html parts are human-readable messages
-describing the share, whereas the xml/x-zimbra-share part is an
+describing the share, whereas the xml/x-share part is an
 XML document meant for processing by the server/client.
 
 The XML part of the message conforms to the following DTD grammar:
@@ -45,7 +45,7 @@ The XML part of the message conforms to the following DTD grammar:
 
     <!ELEMENT notes (#PCDATA)>
 
-So an xml/x-zimbra-share part will take the following form:
+So an xml/x-share part will take the following form:
 
     <share xmlns="urn:zimbraShare" version="0.1" action="{action}" >
       <grantee id="{zid}" email="{email}" name="{display name}" />
@@ -112,7 +112,7 @@ shared calendar:
     </tr>
     </table>
     ------=_Part_0_4397075.1175285542201
-    Content-Type: xml/x-zimbra-share; charset=utf-8
+    Content-Type: xml/x-share; charset=utf-8
     Content-Transfer-Encoding: 7bit
 
     <share xmlns="urn:zimbraShare" version="0.1" action="new" >

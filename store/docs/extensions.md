@@ -15,7 +15,7 @@ the server's own classloader (since we use jetty, the parent is a
 WebappClassLoader object).  The classloader parenting relationship is:
 
     (Zimbra) ZimbraExtensionClassLoader ->
-    (Zimbra) URLClassLoader for loading /opt/zimbra/lib/ext-common/ ->
+    (Zimbra) URLClassLoader for loading /opt/zextras/lib/ext-common/ ->
     (Jetty) WebappClassLoader (and others jetty classloaders) -> 
     (JRE) Application ClassLoader ->
     (JRE) Extension ClassLoader ->
@@ -41,15 +41,15 @@ To write an extension:
 
    - Drop myext.jar into:
 
-        /opt/zimbra/lib/ext/myext/myext.jar
+        /opt/zextras/lib/ext/myext/myext.jar
 
 We have multiple ZimbraExtensionClassLoader objects - as many as there
 are extension directories.  Suppose you had two extensions:
 
-     (a) /opt/zimbra/lib/ext/eone/eone.jar
-         /opt/zimbra/lib/ext/eone/libfooForEOne.jar
+     (a) /opt/zextras/lib/ext/eone/eone.jar
+         /opt/zextras/lib/ext/eone/libfooForEOne.jar
       
-     (b) /opt/zimbra/lib/ext/etwo/etwo.jar
+     (b) /opt/zextras/lib/ext/etwo/etwo.jar
 
 In (a), both jars are loaded by the same classloader instance, but (b)
 is loaded by a different instance of ZimbraExtensionClassLoader.  This

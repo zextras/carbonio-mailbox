@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2011, 2012, 2013, 2014, 2015, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.qa.unittest.prov.ldap;
 
 import static org.junit.Assert.assertEquals;
@@ -52,7 +41,7 @@ public class ACLTestUtil {
      * if not running from ZimbraServer/build.xml, do:
      *
      * zmlocalconfig -e debug_running_unittest=true
-     * cp /Users/pshao/p4/main/ZimbraServer/data/unittest/ldap/rights-unittest.xml /opt/zimbra/conf/rights
+     * cp /Users/pshao/p4/main/ZimbraServer/data/unittest/ldap/rights-unittest.xml /opt/zextras/conf/rights
      *
      */
 
@@ -515,11 +504,11 @@ public class ACLTestUtil {
 
     /*
     static void installUnitTestRights() throws Exception {
-        FileUtil.copy("data/unittest/ldap/rights-unittest.xml", "/opt/zimbra/conf/rights/rights-unittest.xml");
+        FileUtil.copy("data/unittest/ldap/rights-unittest.xml", "/opt/zextras/conf/rights/rights-unittest.xml");
     }
 
     static void uninstallUnitTestRights() throws Exception {
-        FileUtil.delete(new File("/opt/zimbra/conf/rights/rights-unittest.xml"));
+        FileUtil.delete(new File("/opt/zextras/conf/rights/rights-unittest.xml"));
     }
     */
 

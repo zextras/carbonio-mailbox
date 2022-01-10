@@ -468,7 +468,6 @@ e.g.
               ...
               <a n="zimbraZimletAvailableZimlets">
                 <default>
-                  <v>com_zimbra_ymemoticons</v>
                   <v>com_zimbra_local</v>
                 </default>
               </a>

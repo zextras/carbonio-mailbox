@@ -110,13 +110,13 @@ Principal "imap/macpro.local@MACPRO.LOCAL" created.
 
 For each server, a keytab file must be created with the service principle
 key. This file should be located in $ZIMBRA_ROOT/conf/krb5.keytab where
-ZIMBRA_ROOT is the Zimbra installation directory (i.e. /opt/zimbra).
+ZIMBRA_ROOT is the Zimbra installation directory (i.e. /opt/zextras).
 
 macpro:/usr/local schemers$ /usr/local/sbin/kadmin.local
 Authenticating as principal schemers/admin@MACPRO.LOCAL with password.
-kadmin:  ktadd -keytab /opt/zimbra/conf/krb5.keytab imap/macpro.local@MACPRO.LOCAL
-Entry for principal imap/macpro.local@MACPRO.LOCAL with kvno 3, encryption type Triple DES cbc mode with HMAC/sha1 added to keytab WRFILE:/opt/zimbra/conf/krb5.keytab.
-Entry for principal imap/macpro.local@MACPRO.LOCAL with kvno 3, encryption type DES cbc mode with CRC-32 added to keytab WRFILE:/opt/zimbra/conf/krb5.
+kadmin:  ktadd -keytab /opt/zextras/conf/krb5.keytab imap/macpro.local@MACPRO.LOCAL
+Entry for principal imap/macpro.local@MACPRO.LOCAL with kvno 3, encryption type Triple DES cbc mode with HMAC/sha1 added to keytab WRFILE:/opt/zextras/conf/krb5.keytab.
+Entry for principal imap/macpro.local@MACPRO.LOCAL with kvno 3, encryption type DES cbc mode with CRC-32 added to keytab WRFILE:/opt/zextras/conf/krb5.
 
 15. Set ZIMBRA_KERBEROS_REALM environment variable
 

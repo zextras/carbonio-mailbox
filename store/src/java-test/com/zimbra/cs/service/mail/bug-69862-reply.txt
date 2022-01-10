@@ -2,7 +2,7 @@ From: rcpt@zimbra.com
 To: <test@zimbra.com>
 Subject: Accepted: from ajax 1
 Date: Tue, 24 Apr 2012 15:38:01 -0700 (PDT)
-Message-ID: <0bec6dce.0000097c.00000018@zimbra-PC7632>
+Message-ID: <0bec6dce.0000097c.00000018@PC7632>
 MIME-Version: 1.0
 X-Mailer: Microsoft Outlook 14.0
 X-Mailer: Zimbra 8.0.0_BETA4_5065 (ZimbraConnectorForOutlook/7.2.0.509)

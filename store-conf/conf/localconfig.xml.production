@@ -1,4 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <localconfig>
+  <!-- Hardening -->
+  <key name="postfix_smtpd_tls_mandatory_exclude_ciphers">
+    <value>aNULL, eNULL, EXPORT, DES, MD5, PSK</value>
+  </key>
+  <key name="postfix_tls_high_cipherlist">
+    <value>:EDH+AESGCM:AES256+EECDH:AES256+EDH:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:AES256+EECDH:AES256+EDH:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES256-GCM-SHA384:DHE-DSS-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-DSS-AES128-GCM-SHA256:DHE-DSS-AES128-SHA256:kEDH+AESGCM:AES256:AES128:HIGH:!DHE-RSA-AES128-SHA:!DHE-RSA-CAMELLIA256-SHA:!DHE-RSA-CAMELLIA128-SHA:!AES256-SHA:!AES128-SHA:!CAMELLIA256-SHA:!CAMELLIA128-SHA:!ECDHE-RSA-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4</value>
+  </key>
+  <key name="postfix_smtp_starttls_timeout">
+    <value>300s</value>
+  </key>
+  <key name="postfix_tls_random_source">
+    <value>dev:/dev/urandom</value>
+  </key>
+  <key name="postfix_smtpd_tls_session_cache_timeout">
+    <value>1800s</value>
+  </key>
+  <key name="postfix_tls_eecdh_strong_curve">
+    <value>prime256v1</value>
+  </key>
+  <key name="postfix_smtpd_tls_eecdh_grade">
+    <value>ultra</value>
+  </key>
+  <key name="postfix_smtp_tls_policy_maps">
+    <value>lmdb:/opt/zextras/conf/postfix_tls_policy_file</value>
+  </key>
+  <key name="postfix_smtpd_tls_dh1024_param_file">
+    <value>/opt/zextras/conf/postfix_4096_dhparams.pem</value>
+  </key>
+  <key name="postfix_smtp_tls_exclude_ciphers">
+    <value>aNULL, eNULL, EXPORT, DES, MD5, PSK</value>
+  </key>
+  <key name="postfix_tls_preempt_cipherlist">
+    <value>yes</value>
+  </key>
+  <key name="postfix_tls_eecdh_ultra_curve">
+    <value>secp384r1</value>
+  </key>
+  <key name="postfix_smtpd_tls_dh512_param_file">
+    <value>/opt/zextras/conf/postfix_2048_dhparams.pem</value>
+  </key>
+  <!-- End Hardening -->
 </localconfig>

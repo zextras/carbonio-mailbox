@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2018 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.cs.zimlet;
 
 import java.io.ByteArrayInputStream;
@@ -106,7 +95,7 @@ public class ZimletUtil {
     public static final String ZIMLET_DEFAULT_COS = "default";
     public static final String PARAM_ZIMLET = "Zimlet";
     public static final String ZIMLET_NAME_REGEX = "^[\\w.-]+$";
-    private static final String ZIMLET_CACHE_DIR = "/opt/zimbra/jetty/work/resource-cache/zimletres/latest";
+    private static final String ZIMLET_CACHE_DIR = "/opt/zextras/jetty/work/resource-cache/zimletres/latest";
 
     private static int P_MAX = Integer.MAX_VALUE;
     private static boolean sZimletsLoaded = false;

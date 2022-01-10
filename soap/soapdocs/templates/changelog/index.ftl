@@ -1,10 +1,15 @@
+<#--
+SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" class="js">
 
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 <link href="./images/favicon.ico" rel="shortcut icon">
 <title>Zimbra SOAP API : Change Log</title>
-<link href="./master.css" media="all" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -12,11 +17,9 @@
 <div class="super-nav">
     <div class="container">
         <ul>
-            <li><a href="http://www.zimbra.com">zimbra.com</a></li>
-            <li><a href="http://wiki.zimbra.com">wiki</a></li>
-            <li><a href="http://www.zimbra.com/forums">forums</a></li>
-            <li><a href="http://gallery.zimbra.com">gallery</a></li>
-            <li class="last"><a href="http://www.zimbrablog.com">blog</a></li>
+            <li><a href="https://www.zextras.com">zextras.com</a></li>
+            <li><a href="https://community.zextras.com">forums</a></li>
+            <li class="last"><a href="https://community.zextras.com/zextras-carbonio/">blog</a></li>
         </ul>
     </div>
 </div>
@@ -154,7 +157,7 @@
         <p>Copyright &copy; 2012 Zimbra, Inc. All rights reserved</p>
     </div>
     <div class="span-12 last right">
-        <p><a href="http://www.zimbra.com/forums/">Forums</a> | <a href="http://www.zimbra.com/about/">About</a> | <a href="http://www.zimbra.com/legal.html#copyright">Copyright</a> | <a href="http://www.zimbra.com/privacy.html">Privacy</a> | <a href="http://www.zimbra.com/license/">License</a> | <a href="http://www.zimbra.com/legal.html">Trademarks</a></p>
+        <p><a href="https://community.zextras.com/">Forums</a> | <a href="https://www.zextras.com/about/">About</a> | <a href="https://www.zextras.com/legal.html#copyright">Copyright</a> | <a href="https://www.zextras.com/privacy.html">Privacy</a> | <a href="https://www.zextras.com/licenses/">License</a> | <a href="https://www.zextras.com/legal.html">Trademarks</a></p>
     </div>
 </div>
 </body

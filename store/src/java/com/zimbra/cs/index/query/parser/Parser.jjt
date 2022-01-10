@@ -1,29 +1,24 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2010, 2011, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
-options {    JDK_VERSION = "1.6";    STATIC = false;
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+options {
+    JDK_VERSION = "1.6";
+    STATIC = false;
     UNICODE_INPUT = true;
     IGNORE_CASE = true;
     ERROR_REPORTING = true;
     TRACK_TOKENS = true;
     SUPPORT_CLASS_VISIBILITY_PUBLIC = false;
-}PARSER_BEGIN(Parser)package com.zimbra.cs.index.query.parser;
+}
+
+PARSER_BEGIN(Parser)
+package com.zimbra.cs.index.query.parser;
 
 final class Parser {
-}PARSER_END(Parser)
+}
+PARSER_END(Parser)
+
 <*> SKIP : {
     " " | "\t"
 }
@@ -81,7 +76,8 @@ final class Parser {
 |   <#_FIELD2: "#" <TERM> ":">
 }
 
-<DEFAULT> TOKEN : {    <DATE: "date:">
+<DEFAULT> TOKEN : {
+    <DATE: "date:">
 |   <MDATE: "mdate:">
 |   <DAY: "day:">
 |   <WEEK: "week:">
@@ -112,9 +108,13 @@ final class Parser {
 |   <SORTBY: "sortby:">
 |   <SORT: "sort:">
 }
-SimpleNode parse() #Root : {
-}{    Query() ["\r" | <EOF>] { return jjtThis; }
-}
+
+SimpleNode parse() #Root : {
+}
+{
+    Query() ["\r" | <EOF>] { return jjtThis; }
+}
+
 private void Query() : {
 }
 {
@@ -125,7 +125,8 @@ private void Clause() : {
 }
 {
     [Modifier()]
-    (        <LPAREN> Query() <RPAREN>
+    (
+        <LPAREN> Query() <RPAREN>
     |   TextClause()
     |   ItemClause()
     |   DateClause()
@@ -136,19 +137,25 @@ private void Clause() : {
 private void DefaultClause() : {
 }
 {
-    <TERM> | <QUOTED_TERM>}
+    <TERM> | <QUOTED_TERM>
+}
 
 private void TextClause() : {
 }
-{    TextField() TextTerm()
+{
+    TextField() TextTerm()
 }
 
-private void ItemClause() : {}
+private void ItemClause() : {
+}
 {
-    <ITEM> ItemTerm()}
+    <ITEM> ItemTerm()
+}
 
-private void DateClause() : {}
-{    DateField() DateTerm()
+private void DateClause() : {
+}
+{
+    DateField() DateTerm()
 }
 
 private void TextField() #void : {
@@ -167,7 +174,8 @@ private void TextField() #void : {
 
 private void DateField() #void : {
 }
-{    <DATE> | <MDATE> | <DAY> | <MONTH> | <WEEK> | <YEAR>
+{
+    <DATE> | <MDATE> | <DAY> | <MONTH> | <WEEK> | <YEAR>
 |   <AFTER> | <BEFORE> | <CONV_START> | <CONV_END> | <APPT_START> | <APPT_END>
 }
 

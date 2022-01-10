@@ -1,5 +1,5 @@
 0. If this is the first time you setup your dev env, follow steps in
-   INSTALL*.txt to setup /opt/zimbra with mysql, ldap, etc.
+   INSTALL*.txt to setup /opt/zextras with mysql, ldap, etc.
 
 1. You can run "ant reset-all" target of ZimbraServer project to build
    and start up the dev webapps including serivce/zimbra/zimbraAdmin.
@@ -64,15 +64,15 @@ I. Conventional Debugging
    --ini OPTIONS=Server,servlet,servlets,jsp,jmx,resources,websocket,ext,plus,rewrite,monitor etc/jetty.xml
    
    and VM arguments to (without quotes)
-   "-DSTART=/opt/zimbra/jetty/etc/start.config -DSTOP.PORT=7867
-   -DSTOP.KEY=stop -Dzimbra.config=/opt/zimbra/conf/localconfig.xml
-   -Djava.library.path=/opt/zimbra/lib  -XX:PermSize=128m
+   "-DSTART=/opt/zextras/jetty/etc/start.config -DSTOP.PORT=7867
+   -DSTOP.KEY=stop -Dzimbra.config=/opt/zextras/conf/localconfig.xml
+   -Djava.library.path=/opt/zextras/lib  -XX:PermSize=128m
    -XX:MaxPermSize=350m". Then choose "Other" under
-   working directory and set it to /opt/zimbra/jetty.
+   working directory and set it to /opt/zextras/jetty.
 
 4. Swtich to the Classpath tab and add the following jar files to User Entries.
-   /opt/zimbra/jetty/start.jar
-   /opt/zimbra/jetty/lib/monitor/jetty-monitor*.jar
+   /opt/zextras/jetty/start.jar
+   /opt/zextras/jetty/lib/monitor/jetty-monitor*.jar
 
 5. Switch to the Source tab and add all the java projects in your
    workspace that you care about to debug.
@@ -109,7 +109,7 @@ ANT_OPTS="-Djava.library.path=~/zimbra/zdesktop/lib"
 
 To debug, run the jetty.run target with ANT_OPTS like this:
 
-ANT_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Djava.library.path=/opt/zimbra/lib -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=y" ant -buildfile jetty-ant.xml jetty.run
+ANT_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Djava.library.path=/opt/zextras/lib -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=y" ant -buildfile jetty-ant.xml jetty.run
 
 This will start jetty-ant plugin but blocks on listening on port 4000.
 
@@ -117,7 +117,7 @@ If you run into Out Of Memory errors, you may also want to increase the memory s
 
 The command line will look like this with additional memory allocation options:
 
-ANT_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Djava.library.path=/opt/zimbra/lib -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=y, -XX:PermSize=64M -XX:MaxPermSize=256M" ant -buildfile jetty-ant.xml jetty.run 
+ANT_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Djava.library.path=/opt/zextras/lib -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=y, -XX:PermSize=64M -XX:MaxPermSize=256M" ant -buildfile jetty-ant.xml jetty.run 
 
 Now go to Eclipse and select Run/Debug... and right click on Remote
 Java Application to "New" a configuration.  Call it anything you want

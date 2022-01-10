@@ -25,13 +25,13 @@ production ZCS jetty install.
 
    1.6) jar uvf sqlitejdbc-v054-native.jar linux-amd64.lib
 
-   1.7) cp sqlitejdbc-v054-native.jar /opt/zimbra/lib/jars/
+   1.7) cp sqlitejdbc-v054-native.jar /opt/zextras/lib/jars/
 
-   1.8) cp sqlitejdbc-v054-native.jar /opt/zimbra/jetty-6.1.15/common/lib/
+   1.8) cp sqlitejdbc-v054-native.jar /opt/zextras/jetty-6.1.15/common/lib/
 
-2) Setup /opt/zimbra/.gdbinit as root and chown it to zimbra:zimbra:
+2) Setup /opt/zextras/.gdbinit as root and chown it to zextras:zextras:
 
-   $ cat /opt/zimbra/.gdbinit 
+   $ cat /opt/zextras/.gdbinit 
    set history filename /var/tmp/zimbra_gdb_history
    set history save on
    set history expansion on
@@ -54,9 +54,9 @@ production ZCS jetty install.
    (gdb doesn't seem to work across setuid).  What you save should
    look something like this:
 
-   -Xms4784m -Xmx4784m -client -XX:NewRatio=2 -Djava.awt.headless=true -XX:MaxPermSize=128m -XX:SoftRefLRUPolicyMSPerMB=1 -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationStoppedTime -Xss256k -Djava.io.tmpdir=/opt/zimbra/mailboxd/work -Djava.library.path=/opt/zimbra/lib -Djava.endorsed.dirs=/opt/zimbra/mailboxd/common/endorsed -Dzimbra.config=/opt/zimbra/conf/localconfig.xml -Djetty.home=/opt/zimbra/mailboxd -DSTART=/opt/zimbra/mailboxd/etc/start.config -jar /opt/zimbra/mailboxd/start.jar /opt/zimbra/mailboxd/etc/jetty.properties /opt/zimbra/mailboxd/etc/jetty.xml
+   -Xms4784m -Xmx4784m -client -XX:NewRatio=2 -Djava.awt.headless=true -XX:MaxPermSize=128m -XX:SoftRefLRUPolicyMSPerMB=1 -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationStoppedTime -Xss256k -Djava.io.tmpdir=/opt/zextras/mailboxd/work -Djava.library.path=/opt/zextras/lib -Djava.endorsed.dirs=/opt/zextras/mailboxd/common/endorsed -Dzimbra.config=/opt/zextras/conf/localconfig.xml -Djetty.home=/opt/zextras/mailboxd -DSTART=/opt/zextras/mailboxd/etc/start.config -jar /opt/zextras/mailboxd/start.jar /opt/zextras/mailboxd/etc/jetty.properties /opt/zextras/mailboxd/etc/jetty.xml
 
-5) gdb /opt/zimbra/java/bin/java
+5) gdb /opt/zextras/java/bin/java
 
    5.1) let gdb know where sqlite3/sqlitejdbc source code is:
 
@@ -74,7 +74,7 @@ production ZCS jetty install.
 
    5.4) run the program with the long jetty argument list:
 
-         (gdb) run -Xms4784m ... /opt/zimbra/mailboxd/etc/jetty.xml
+         (gdb) run -Xms4784m ... /opt/zextras/mailboxd/etc/jetty.xml
 
    5.5) You will hit a SIGSEGV pretty soon.  This is the JVM doing
         NullPointerException checks with SIGSEGVs.

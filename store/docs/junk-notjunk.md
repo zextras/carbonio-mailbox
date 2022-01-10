@@ -109,7 +109,7 @@ the original message.
     1  Received: from ...
     1  Message-ID: <26499674.231142039856777.JavaMail@phillip.liquidsys.com>
     1  To: spam-sink@phillip.liquidsys.com
-    1  Subject: zimbra-spam-report: user1@phillip.liquidsys.com: spam
+    1  Subject: spam-report: user1@phillip.liquidsys.com: spam
     1  MIME-Version: 1.0
     1  Content-Type: multipart/mixed; boundary="----=_Part_23_13878940.114203"
     1  Date: Fri, 10 Mar 2006 17:17:36 -0800 (PST)

@@ -4,7 +4,7 @@
 
   <!-- Targets -->
   <target name="jar" depends="compile" description="Creates the jar file">
-    <antcall target="zimbra-jar">
+    <antcall target="zextras-jar">
       <param name="implementation.title" value="Zimbra Common"/>
     </antcall>
   </target>

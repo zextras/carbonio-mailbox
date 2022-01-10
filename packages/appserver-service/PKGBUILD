@@ -1,0 +1,33 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-appserver-service"
+pkgver="4.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Mailbox Service"
+pkgdesclong=(
+  "Carbonio Mailbox Service"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-common-core-jar"
+  "carbonio-common-appserver-conf"
+  "carbonio-common-appserver-db"
+  "carbonio-common-appserver-native-lib"
+  "carbonio-appserver-conf"
+  "carbonio-appserver-war"
+  "carbonio-appserver"
+)
+optdepends=(
+  "carbonio-common-appserver-docs"
+)
+
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../staging
+}

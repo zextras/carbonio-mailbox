@@ -115,8 +115,8 @@ http://bugzilla.zimbra.com/show_bug.cgi?id=14225
            (B) attributes containing IDN domain names or email addresses are always returned in unicode(in utf8 encoding)
                    Server will convert the values from ACE to unicode and return unicode values in SOAP responses for 
                    attributes that are either:
-                       - of type email or emailp, (declared in zimbra-attrs.xml) or
-                       - has idn flag (in zimbra-attrs.xml)
+                       - of type email or emailp, (declared in attrs.xml) or
+                       - has idn flag (in attrs.xml)
    
                    e.g.
                    (a) <GetDomainResponse xmlns="urn:zimbraAdmin">

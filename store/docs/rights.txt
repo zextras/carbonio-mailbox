@@ -1235,7 +1235,7 @@ GetGrantsRequest
         Needs a get attr right of zimbraACE on each the target entry. Granting
         the viewGrants is one way to do it, which will give the right on all
         target types. Use inline right if more granularity is needed. See doc
-        for the viewGrants right in zimbra-rights.xml for more details.
+        for the viewGrants right in rights.xml for more details.
 
 
 ------------------------------

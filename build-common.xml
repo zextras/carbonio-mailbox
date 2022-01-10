@@ -11,8 +11,8 @@
     <!-- Add "init-ivy" depends to your "resolve" target and the following will
          automatically download and install ivy if necessary. -->
     <property name="ivy.jar.dir" location="${dev.home}/.ant/lib" />
-    <property name="ivy.install.version" value="2.3.0" />
-    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-2.3.0.jar" />
+    <property name="ivy.install.version" value="2.5.0" />
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-2.5.0.jar" />
     <property name="ivy.status" value="integration" />
     <property name="ivy.organisation" value="zimbra" />
     <property name="ivy.publish.src.artifacts.pattern" value="build/[artifact]-[revision].[ext]" />
@@ -32,7 +32,7 @@
      </target>
 
     <target name="init-ivy" depends="download-ivy">
-      <!-- If ivy is not downloaded yet, try to load ivy here from ivy home. -->
+        <!-- If ivy is not downloaded yet, try to load ivy here from ivy home. -->
         <path id="ivy.lib.path">
             <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
         </path>
@@ -82,7 +82,7 @@
     <property name="build.deps.dir" location="${dev.home}/.zcs-deps"/>
 
     <!-- Standard install paths -->
-    <property name="zimbra.home.dir" location="/opt/zimbra" />
+    <property name="zimbra.home.dir" location="/opt/zextras" />
     <property name="jetty.home.dir" location="${zimbra.home.dir}/jetty"/>
     <property name="jetty.webapps.dir" location="${jetty.home.dir}/webapps"/>
     <property name="common.jars.dir" location="${zimbra.home.dir}/lib/jars"/>
@@ -251,7 +251,7 @@
           <property name="zimbra.buildinfo.all"
                     value="Version: ${zimbra.buildinfo.version}; Type: ${zimbra.buildinfo.type}; Release: ${zimbra.buildinfo.release}; Built: ${zimbra.buildinfo.date}; Host: ${zimbra.buildinfo.host}"/>
 
-          <property name="dev.version" value="${zimbra.buildinfo.majorversion}.${zimbra.buildinfo.minorversion}.${zimbra.buildinfo.microversion}.${git.timestamp}"/>
+          <property name="dev.version" value="${zimbra.buildinfo.majorversion}.${zimbra.buildinfo.minorversion}.${zimbra.buildinfo.microversion}"/>
           <property name="jar.file" value="${ant.project.name}-${dev.version}.jar"/>
         </then>
       </antcontrib:if>
@@ -509,7 +509,7 @@
         <javac destdir="${build.classes.dir}" debug="true" target="${javac.target}" srcdir="${build.dir}/buildinfo" />
     </target>
 
-    <target name="zimbra-jar" depends="generate-jar-version,set-dev-version,3rd-party-defines" description="Builds a standard jar file that prints its version info when executed.  Optionally sets the Zimbra-Extension-Class attribute in the manifest if the zimbra.extension.class property is set.">
+    <target name="zextras-jar" depends="generate-jar-version,set-dev-version,3rd-party-defines" description="Builds a standard jar file that prints its version info when executed.  Optionally sets the Zimbra-Extension-Class attribute in the manifest if the zimbra.extension.class property is set.">
         <condition property="jar.file" value="${ant.project.name}-${dev.version}.jar">
           <not><isset property="jar.file"/></not>
         </condition>
@@ -581,6 +581,19 @@
 
     <target name="publish-local" depends="clean-cache,jar,set-dev-version,init-ivy">
       <ivy:publish settingsRef="dev.settings" pubrevision="${dev.version}" resolver="local" overwrite="true" />
+    </target>
+
+    <target name="publish-maven" depends="publish-local">
+        <ivy:resolve settingsref="dev.settings"  resolveid="build-tmp" />
+        <ivy:deliver settingsRef="dev.settings" pubrevision="${dev.version}" replacedynamicrev="true" resolveid="build-tmp" />
+        <ivy:makepom ivyfile="${dev.home}/.zcs-deps/${ivy.organisation}/${ant.project.name}/${ant.project.name}-${dev.version}.xml"
+                     pomfile="${basedir}/build/${ant.project.name}-${dev.version}.pom">
+            <mapping conf="runtime" scope="runtime"/>
+            <mapping conf="*" scope="compile"/>
+        </ivy:makepom>
+        <ivy:publish settingsRef="dev.settings" pubrevision="${dev.version}" resolver="public-maven" overwrite="true">
+            <artifact name="${ant.project.name}" type="pom" ext="pom" />
+        </ivy:publish>
     </target>
 
     <target name="zmlocalconfig">

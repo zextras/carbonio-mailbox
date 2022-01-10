@@ -47,7 +47,7 @@ Note: Steps and examples used below are mainly for QA and dev environment.
 ----------------
 
 (A) Create a private key
-$ /opt/zimbra/openssl/bin/openssl genrsa -out ca.key 2048
+$ /opt/zextras/openssl/bin/openssl genrsa -out ca.key 2048
 Generating RSA private key, 2048 bit long modulus
 ....+++
 ...............................+++
@@ -55,7 +55,7 @@ e is 65537 (0x10001)
 
 
 (B) Create a certificate request
-$ /opt/zimbra/openssl/bin/openssl req -new -key ca.key -out ca.csr
+$ /opt/zextras/openssl/bin/openssl req -new -key ca.key -out ca.csr
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -78,14 +78,14 @@ An optional company name []:
 
 
 (C) Create and sign(self-sign) a certificate from the certificate request
-$ /opt/zimbra/openssl/bin/openssl x509 -extfile /opt/zimbra/openssl/ssl/openssl.cnf -extensions v3_ca -req -days 365 -in ca.csr -out ca.crt -signkey ca.key
+$ /opt/zextras/openssl/bin/openssl x509 -extfile /opt/zextras/openssl/ssl/openssl.cnf -extensions v3_ca -req -days 365 -in ca.csr -out ca.crt -signkey ca.key
 Signature ok
 subject=/C=US/ST=California/L=Palo Alto/O=VMWare/OU=Zimbra/CN=MyCA
 Getting Private key
 
 
 (D) Verify that X509v3 extensions are present in the CA cert.
-/opt/zimbra/openssl/bin/openssl x509 -in ca.crt -noout -text
+/opt/zextras/openssl/bin/openssl x509 -in ca.crt -noout -text
 
 Version: 3 (0x2)
 ...
@@ -104,7 +104,7 @@ Version: 3 (0x2)
 ----------------
 
 (A) Create a private key
-$ /opt/zimbra/openssl/bin/openssl genrsa -out user1.key 2048
+$ /opt/zextras/openssl/bin/openssl genrsa -out user1.key 2048
 Generating RSA private key, 2048 bit long modulus
 ........................................................................................................+++
 ....+++
@@ -114,7 +114,7 @@ e is 65537 (0x10001)
 (B) Create a certificate request
 Note: the most important information is the Email Address.  It must be the email address of the Zimbra user.
 
-$ /opt/zimbra/openssl/bin/openssl req -new -key user1.key -out user1.csr
+$ /opt/zextras/openssl/bin/openssl req -new -key user1.key -out user1.csr
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -137,10 +137,10 @@ An optional company name []:
 
 
 (C) Sign the user certificate request using the CA created in 1 and create the user certificate
-$ /opt/zimbra/openssl/bin/openssl ca -in user1.csr -cert ca.crt -keyfile ca.key -out user1.crt -policy policy_anything
+$ /opt/zextras/openssl/bin/openssl ca -in user1.csr -cert ca.crt -keyfile ca.key -out user1.crt -policy policy_anything
 
 If you see:
-Using configuration from /opt/zimbra/openssl-1.0.0d/ssl/openssl.cnf
+Using configuration from /opt/zextras/openssl-1.0.0d/ssl/openssl.cnf
 I am unable to access the ./demoCA/newcerts directory
 ./demoCA/newcerts: No such file or directory
 
@@ -156,8 +156,8 @@ $ touch index.txt (create an empty index.txt file)
 $ cd ..  (so we are back in our temporary directory)
 
 Now issue the command to sign the user certificate again.
-$ /opt/zimbra/openssl/bin/openssl ca -in user1.csr -cert ca.crt -keyfile ca.key -out user1.crt -policy policy_anything
-Using configuration from /opt/zimbra/openssl-1.0.0d/ssl/openssl.cnf
+$ /opt/zextras/openssl/bin/openssl ca -in user1.csr -cert ca.crt -keyfile ca.key -out user1.crt -policy policy_anything
+Using configuration from /opt/zextras/openssl-1.0.0d/ssl/openssl.cnf
 Check that the request matches the signature
 Signature ok
 Certificate Details:
@@ -204,7 +204,7 @@ Consequently, we'll need to export the user certificate to file formats that can
 Firefox and Internet Explorer 6.0 support the PKCS#12 certificate format. 
 Use the following command to convert the user certificate to this format.
 
-$ /opt/zimbra/openssl/bin/openssl pkcs12 -export -clcerts -in user1.crt -inkey user1.key -out user1.p12
+$ /opt/zextras/openssl/bin/openssl pkcs12 -export -clcerts -in user1.crt -inkey user1.key -out user1.p12
 Enter Export Password:
 Verifying - Enter Export Password:
  
@@ -229,7 +229,7 @@ This can be done by either of the following two ways.
 
 (A) If the client_ssl_truststore localconfig property points to Java's cacerts file:
 
-$ /opt/zimbra/bin/zmcertmgr addcacert <certfile>
+$ /opt/zextras/bin/zmcertmgr addcacert <certfile>
 
     addcacert appends an otherwise untrusted ssl certificate to the cacerts file. 
     This is the preferred way.
@@ -261,7 +261,7 @@ $ keytool -list -keystore `zmlocalconfig -x -m nokey mailboxd_truststore` -v -al
 For dev env on mac, to test providing CA certs from the trust manager, uncomment:
   <Set name="Truststore">/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home/lib/security/cacerts</Set>
   <Set name="TrustPassword">changeit</Set>
-on the ssl-clientcert SslSelectChannelConnector in /opt/zimbra/jetty/etc/jetty.xml.
+on the ssl-clientcert SslSelectChannelConnector in /opt/zextras/jetty/etc/jetty.xml.
 
 [========== End For dev env only ==========]
 
@@ -351,9 +351,9 @@ $ zmprov md {domain} zimbraMailSSLClientCertPrincipalMap {mappings}
         comma-separated mapping-rule
     
     mapping-rule:
-        {cert-field-to-zimbra-key-map} | {LDAP-filter}
+        {cert-field-to-key-map} | {LDAP-filter}
         
-    cert-field-to-zimbra-key-map:     
+    cert-field-to-key-map:     
         {certificate-field}={Zimbra-account-key}
     
     certificate-field:

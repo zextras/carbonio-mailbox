@@ -12,9 +12,9 @@ ZimbraTag
 ZimbraWebClient
 Zimlet
 
-To build, cd into ZimbraOffline and run "ant offline-reset-the-world".  At the end of the build, the dev version of desktop will be deployed to /opt/zimbra/zdesktop dev.  Note there's a space in the path, which is intentional.
+To build, cd into ZimbraOffline and run "ant offline-reset-the-world".  At the end of the build, the dev version of desktop will be deployed to /opt/zextras/zdesktop dev.  Note there's a space in the path, which is intentional.
 
-The dev build can be started or stopped using a shell script called offline.  This script is copied to /opt/zimbra/zdesktop dev/bin.
+The dev build can be started or stopped using a shell script called offline.  This script is copied to /opt/zextras/zdesktop dev/bin.
 
 The dev build listens on port 7733, as opposed to 7633 used by the produciton build.  Therefore it's OK to run both installed production build and dev build on the same box.  The dev build doesn't come with prism, so use a browser to point to http://localhost:7733 to access the UI.
 

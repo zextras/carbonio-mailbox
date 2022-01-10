@@ -219,7 +219,7 @@
       <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7072, 7443</param-value>
     </init-param>
     <multipart-config>
-      <location>/opt/zimbra/data/tmp</location>
+      <location>/opt/zextras/data/tmp</location>
       <max-file-size>%%zimbraFileUploadMaxSize%%</max-file-size>
       <max-request-size>%%zimbraMailContentMaxSize%%</max-request-size>
       <file-size-threshold>%%zimbraFileUploadMaxSize%%</file-size-threshold>
@@ -467,16 +467,6 @@
   </servlet>
 
   <servlet>
-    <servlet-name>AdminFileDownload</servlet-name>
-    <servlet-class>com.zimbra.cs.service.admin.AdminFileDownload</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>%%zimbraAdminPort%%, 7071</param-value>
-    </init-param>
-  </servlet>
-
-  <servlet>
     <servlet-name>CollectConfigFiles</servlet-name>
     <servlet-class>com.zimbra.cs.service.admin.CollectConfigFiles</servlet-class>
     <async-supported>true</async-supported>
@@ -526,8 +516,8 @@
     <init-param>
       <param-name>basename-patterns</param-name>
       <param-value>
-        /opt/zimbra/zimlets-deployed/${name}/${name},
-        /opt/zimbra/zimlets-deployed/_dev/${name}/${name}
+        /opt/zextras/zimlets-deployed/${name}/${name},
+        /opt/zextras/zimlets-deployed/_dev/${name}/${name}
       </param-value>
     </init-param>
   </servlet>
@@ -660,11 +650,6 @@
   <servlet-mapping>
     <servlet-name>CollectLDAPConfigZimbra</servlet-name>
     <url-pattern>/collectldapconfig/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>AdminFileDownload</servlet-name>
-    <url-pattern>/afd/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

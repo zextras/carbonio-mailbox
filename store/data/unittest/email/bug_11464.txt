@@ -8,13 +8,13 @@ Content-Transfer-Encoding: 7bit
 
 <html>
  <head>
-  <base href="http://www.zimbra.com/" />
+  <base href="https://www.zextras.com/" />
  </head>
  <body>
   <p>zimbra logo:</p>
   <img src="_media/zimbra_logo.gif" width="150" height="50">
   <p>zimbra logo 2:</p>
-  <img src="http://www.zimbra.com/_media/zimbra_logo.gif" width="150" height="50">
+  <img src="https://www.zextras.com/_media/zimbra_logo.gif" width="150" height="50">
   <p>zimbra link:</p>
 <a href="forums">forums</a>
  </body>

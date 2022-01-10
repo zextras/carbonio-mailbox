@@ -130,19 +130,19 @@ On the Windows Server AD domain controller:
     - Fill in the following:
           Full name: {a display name}
 
-          User Logon Name: HTTP/{zimbra-mailbox-server-name} (the domain is automatically filled)
-          (Note: this is the value for the {zimbra-mailbox-server-name} parameter in the setspn command (see below), and 
+          User Logon Name: HTTP/{mailbox-server-name} (the domain is automatically filled)
+          (Note: this is the value for the {mailbox-server-name} parameter in the setspn command (see below), and 
                  this is the value to be set for the zimbraSpnegoAuthTargetName server attribute in LDAP.)
 
           User Logon Name (pre-Windows 2000): {Active Directory service account name} 
           (Note: this is the name you use for the -mapUser {AD-user} parameter in the setspn and ktpass commands (see below).)
 
       e.g.
-          Full name: zimbra-dogfood
+          Full name: dogfood
 
           User Logon Name: HTTP/dogfood.zimbra.com
 
-          User Logon Name (pre-Windows 2000): zimbra-dogfood 
+          User Logon Name (pre-Windows 2000): dogfood 
       
     - click on Next
 
@@ -158,21 +158,21 @@ On the Windows Server AD domain controller:
 
 (B) Add the Service Principal Names (SPN) directory property for an Active Directory service account. 
 
-    setspn -A {zimbra-mailbox-server-name} {AD-user}
+    setspn -A {mailbox-server-name} {AD-user}
     
     e.g.
     - list registered SPNs (there is none)
-      C:\>setspn -L zimbra-dogfood
-      Registered ServicePrincipalNames for CN=zimbra-dogfood,CN=Users,DC=vmware,DC=com:
+      C:\>setspn -L dogfood
+      Registered ServicePrincipalNames for CN=dogfood,CN=Users,DC=vmware,DC=com:
 
     - add SPN for the service account
-      C:\>setspn -A HTTP/dogfood.zimbra.com zimbra-dogfood
-      Registering ServicePrincipalNames for CN=zimbra-dogfood,CN=Users,DC=vmware,DC=com HTTP/dogfood.zimbra.com
+      C:\>setspn -A HTTP/dogfood.zimbra.com dogfood
+      Registering ServicePrincipalNames for CN=dogfood,CN=Users,DC=vmware,DC=com HTTP/dogfood.zimbra.com
       Updated object
 
     - list registered SPNs (should see the one we just added)
-      C:\>setspn -L zimbra-dogfood
-      Registered ServicePrincipalNames for CN=zimbra-dogfood,CN=Users,DC=vmware,DC=com:
+      C:\>setspn -L dogfood
+      Registered ServicePrincipalNames for CN=dogfood,CN=Users,DC=vmware,DC=com:
       HTTP/dogfood.zimbra.com
 
 
@@ -183,10 +183,10 @@ On the Windows Server AD domain controller:
     e.g.
     The following will create jetty.keytab file under c:\Temp\spnego:
     
-    C:\>ktpass -out c:\Temp\spnego\jetty.keytab -princ HTTP/dogfood.zimbra.com@VMWARE.COM -mapUser zimbra-dogfood -mapOp set -pass test123 -crypto RC4-HMAC-NT -pType KRB5_NT_PRINCIPAL
+    C:\>ktpass -out c:\Temp\spnego\jetty.keytab -princ HTTP/dogfood.zimbra.com@VMWARE.COM -mapUser dogfood -mapOp set -pass test123 -crypto RC4-HMAC-NT -pType KRB5_NT_PRINCIPAL
     Targeting domain controller: test-dc.vmware.com
     Using legacy password setting method
-    Successfully mapped HTTP/dogfood.zimbra.com to zimbra-dogfood.
+    Successfully mapped HTTP/dogfood.zimbra.com to dogfood.
     Key created.
     Output keytab to c:\Temp\spnego\jetty.keytab:
     Keytab version: 0x502
@@ -194,7 +194,7 @@ On the Windows Server AD domain controller:
     
     
 (D) Place the Keytab File on Zimbraserver   
-    copy jetty.keytab created in step (C) to the zimbra server (e.g. dogfood.zimbra.com) as /opt/zimbra/data/mailboxd/spnego/jetty.keytab
+    copy jetty.keytab created in step (C) to the zimbra server (e.g. dogfood.zimbra.com) as /opt/zextras/data/mailboxd/spnego/jetty.keytab
 
     Note: Do not rename the keytab file, the name(jetty.keytab) is referenced from various configuration files.
 
@@ -264,7 +264,7 @@ zimbraSpnegoAuthPrincipal   : {zimbraSpnegoAuthTargetName}@{zimbraSpnegoAuthReal
               A kerberos principal: 
                    {localpart-of-kerberos-principal}@{kerberos-realm}
               is mapped to Zimbra account: 
-                   {localpart-of-kerberos-principal}@{zimbra-domain-with-zimbraAuthKerberos5Realm-set-to-the-kerberos-realm}
+                   {localpart-of-kerberos-principal}@{domain-with-zimbraAuthKerberos5Realm-set-to-the-kerberos-realm}
               
               For example, 
               The setting: zmprov md zimbra.com zimbraAuthKerberos5Realm VMWARE.COM
@@ -495,19 +495,19 @@ validate principal+password.   For java kerberos client (i.e. Zimbra mailbox ser
 the default realm and KDC for the realm is specify in a kerberos config file.  Location of 
 this config file can be specified in JVM argument java.security.krb5.conf. If not specified,
 default is /etc/krb5.conf.   When SPNEGO is enabled in Zimbra, java.security.krb5.conf 
-for mailbox server is set to "/opt/zimbra/jetty/etc/krb5.ini".   Therefore, that is the 
+for mailbox server is set to "/opt/zextras/jetty/etc/krb5.ini".   Therefore, that is the 
 effective file for configuring kerberos auth.
 
-/opt/zimbra/jetty/etc/krb5.ini is rewritten from /opt/zimbra/jetty/etc/krb5.ini.in 
+/opt/zextras/jetty/etc/krb5.ini is rewritten from /opt/zextras/jetty/etc/krb5.ini.in 
 each time when mailbox server restarts.  To configure, you need to modify the 
-/opt/zimbra/jetty/etc/krb5.ini.in file, not /opt/zimbra/jetty/etc/krb5.ini.
+/opt/zextras/jetty/etc/krb5.ini.in file, not /opt/zextras/jetty/etc/krb5.ini.
 
 Under [realms] section, kdc and admin_server are not set for SPNEGO auth, but they are 
 required for kerberos auth.   
 
 To configure:
 
-(1) Edit /opt/zimbra/jetty/etc/krb5.ini.in
+(1) Edit /opt/zextras/jetty/etc/krb5.ini.in
 
 change:
 
@@ -641,7 +641,7 @@ Appendix B: Scripts to setup SPNEGO SSO on dogfood.zimbra.com and catfood.zimbra
 - Obtaining the keytab files
   https://helpzilla.eng.vmware.com/show_bug.cgi?id=652768
 
-  then place the corresponding keytab file under /opt/zimbra/jetty/etc on dogfood/catfood.
+  then place the corresponding keytab file under /opt/zextras/jetty/etc on dogfood/catfood.
   
 
 - Configuring Zimbra

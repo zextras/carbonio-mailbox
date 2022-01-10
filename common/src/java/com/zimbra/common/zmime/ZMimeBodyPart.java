@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2011, 2012, 2013, 2014, 2016, 2017 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.common.zmime;
 
 import java.io.ByteArrayOutputStream;
@@ -50,7 +39,7 @@ public class ZMimeBodyPart extends MimeBodyPart implements ZMimePart {
         mc.addMailcap("application/xml;;x-java-content-handler=com.sun.mail.handlers.text_xml");
         mc.addMailcap("text/xml;;x-java-content-handler=com.sun.mail.handlers.text_xml");
         mc.addMailcap("text/plain;;x-java-content-handler=com.sun.mail.handlers.text_plain");
-        mc.addMailcap("xml/x-zimbra-share;;x-java-content-handler=com.sun.mail.handlers.text_plain");
+        mc.addMailcap("xml/x-share;;x-java-content-handler=com.sun.mail.handlers.text_plain");
         CommandMap.setDefaultCommandMap(mc);
     }
 

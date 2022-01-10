@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+
 <!--
-  Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
+Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
+SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+
+SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
@@ -459,16 +463,6 @@
   </servlet>
 
   <servlet>
-    <servlet-name>AdminFileDownload</servlet-name>
-    <servlet-class>com.zimbra.cs.service.admin.AdminFileDownload</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>7071</param-value>
-    </init-param>
-  </servlet>
-
-  <servlet>
     <servlet-name>CollectConfigFiles</servlet-name>
     <servlet-class>com.zimbra.cs.service.admin.CollectConfigFiles</servlet-class>
     <async-supported>true</async-supported>
@@ -515,8 +509,8 @@
     <init-param>
       <param-name>basename-patterns</param-name>
       <param-value>
-        /opt/zimbra/zimlets-deployed/${name}/${name},
-        /opt/zimbra/zimlets-deployed/_dev/${name}/${name}
+        /opt/zextras/zimlets-deployed/${name}/${name},
+        /opt/zextras/zimlets-deployed/_dev/${name}/${name}
       </param-value>
     </init-param>
   </servlet>
@@ -647,11 +641,6 @@
   <servlet-mapping>
     <servlet-name>CollectLDAPConfigZimbra</servlet-name>
     <url-pattern>/collectldapconfig/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>AdminFileDownload</servlet-name>
-    <url-pattern>/afd/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

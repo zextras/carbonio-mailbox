@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2015, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.cs.imap;
 
 import java.nio.ByteBuffer;
@@ -58,7 +47,7 @@ public class ImapPath implements Comparable<ImapPath> {
             FOLDER_ENCODING_CHARSET = Charset.forName("imap-utf-7");
         } catch (Exception e) {
             ZimbraLog.imap.error(
-                "could not load imap-utf-7 charset (perhaps zimbra-charset.jar is not in the jetty endorsed directory)",
+                "could not load imap-utf-7 charset (perhaps charset.jar is not in the jetty endorsed directory)",
                 e);
             FOLDER_ENCODING_CHARSET = Charset.forName("utf-8");
         }

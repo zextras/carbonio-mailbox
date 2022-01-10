@@ -1,0 +1,26 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-common-appserver-db"
+pkgver="4.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Core Mailbox DB Files"
+pkgdesclong=(
+  "Carbonio Core Mailbox DB Files"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-core"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../staging
+
+  install -D "store/build/dist/versions-init.sql" \
+    "${pkgdir}/opt/zextras/db/versions-init.sql"
+}

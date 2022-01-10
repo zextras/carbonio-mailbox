@@ -1,0 +1,32 @@
+{
+  "name": "carbonio-mailbox",
+  "description": "Zextras Suite",
+  "build_dir": "/tmp",
+  "output": "artifacts",
+  "projects": [
+    {
+      "name": "appserver-conf"
+    },
+    {
+      "name": "appserver-service"
+    },
+    {
+      "name": "appserver-war"
+    },
+    {
+      "name": "common-appserver-conf"
+    },
+    {
+      "name": "common-appserver-db"
+    },
+    {
+      "name": "common-appserver-docs"
+    },
+    {
+      "name": "common-appserver-native-lib"
+    },
+    {
+      "name": "common-core-jar"
+    }
+  ]
+}

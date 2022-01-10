@@ -5,7 +5,7 @@
     <target name="all" depends="publish-local,generate-native-headers"/>
 
     <target name="jar" depends="compile" description="Creates the jar file">
-        <antcall target="zimbra-jar">
+        <antcall target="zextras-jar">
             <param name="implementation.title" value="Zimbra Native"/>
         </antcall>
     </target>
@@ -13,8 +13,8 @@
   <!-- mailboxd will not start without zm-native library, so this target does not attempt to start it -->
   <target name="undeploy-no-stop">
     <delete verbose="true">
-      <fileset dir="${common.jars.dir}" includes="zm-native*.jar,zimbra-native*.jar"/>
-      <fileset dir="${jetty.common.jars.dir}" includes="zm-native*.jar,zimbra-native*.jar"/>
+      <fileset dir="${common.jars.dir}" includes="zm-native*.jar,native*.jar"/>
+      <fileset dir="${jetty.common.jars.dir}" includes="zm-native*.jar,native*.jar"/>
     </delete>
   </target>
 
@@ -24,8 +24,8 @@
 
   <!-- relies on undeploy to stop the webserver -->
   <target name="deploy-no-start" depends="jar,set-dev-version,undeploy">
-    <!-- until /opt/zimbra/bin/zm* scripts are fixed to use versioned zm-* jars, we have to deploy this jar with a fixed name -->
-    <copy file="${build.dir}/${jar.file}" tofile="${common.jars.dir}/zimbra-native.jar"/>
+    <!-- until /opt/zextras/bin/zm* scripts are fixed to use versioned zm-* jars, we have to deploy this jar with a fixed name -->
+    <copy file="${build.dir}/${jar.file}" tofile="${common.jars.dir}/native.jar"/>
     <copy file="${build.dir}/${jar.file}" tofile="${jetty.common.jars.dir}/${jar.file}"/>
   </target>
 
@@ -40,11 +40,6 @@
 
    <target name="generate-native-headers" depends="compile,resolve" description="Java to Native">
             <javah class="com.zimbra.znative.IO" outputfile="${build.dir}/IO.h" classpathref="build.class.path"/>
-            <javah class="com.zimbra.znative.Process" outputfile="${build.dir}/Process.h" classpathref="build.class.path" />
-            <javah class="com.zimbra.znative.ProcessorUsage" outputfile="${build.dir}/ProcessorUsage.h" classpathref="build.class.path" />
-            <javah class="com.zimbra.znative.ResourceUsage" outputfile="${build.dir}/ResourceUsage.h" classpathref="build.class.path" />
-            <javah class="com.zimbra.znative.Util" outputfile="${build.dir}/Util.h" classpathref="build.class.path" />
-            <javah class="com.zimbra.znative.ProxyInfo" outputfile="${build.dir}/ProxyInfo.h" classpathref="build.class.path" />
    </target>
 
    <target name="clean" description="Removes build files and undeploys extension">

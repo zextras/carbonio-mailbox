@@ -2,7 +2,7 @@
 
 <rights>
 
-<include file="zimbra-rights.xml"/>
+<include file="rights.xml"/>
 
 <!-- 
 ========================================================

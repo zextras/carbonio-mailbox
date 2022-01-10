@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2011, 2012, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.qa.unittest.prov.ldap;
 
 import static org.junit.Assert.assertEquals;
@@ -65,22 +54,22 @@ public class TestLdapConnectivity {
 
     /*
      * To run this test:
-       1. To enable TLS, modifying /opt/zimbra/conf/slapd.conf to uncomment the three lines:
-          TLSCertificateFile /opt/zimbra/conf/slapd.crt
-          TLSCertificateKeyFile /opt/zimbra/conf/slapd.key
+       1. To enable TLS, modifying /opt/zextras/conf/slapd.conf to uncomment the three lines:
+          TLSCertificateFile /opt/zextras/conf/slapd.crt
+          TLSCertificateKeyFile /opt/zextras/conf/slapd.key
           TLSVerifyClient never
 
        2. To listen to ldaps
-          edit /opt/zimbra/bin/ldap
+          edit /opt/zextras/bin/ldap
           modify the line:
 
-          sudo /opt/zimbra/libexec/zmslapd -l LOCAL0 -4 -u `whoami` -h "ldap://:389/" \
-                        -f /opt/zimbra/conf/slapd.conf
+          sudo /opt/zextras/libexec/zmslapd -l LOCAL0 -4 -u `whoami` -h "ldap://:389/" \
+                        -f /opt/zextras/conf/slapd.conf
 
           to:
 
-          sudo /opt/zimbra/libexec/zmslapd -l LOCAL0 -4 -u `whoami` -h "ldap://:389/ ldaps://:636/" \
-                        -f /opt/zimbra/conf/slapd.conf
+          sudo /opt/zextras/libexec/zmslapd -l LOCAL0 -4 -u `whoami` -h "ldap://:389/ ldaps://:636/" \
+                        -f /opt/zextras/conf/slapd.conf
 
         StartTLS and ldaps cannot co-exist in production, because if ldap url contains ldaps,
         then startTLS will never be used regardless of the LC keys.
@@ -353,7 +342,7 @@ public class TestLdapConnectivity {
      */
 
     /**
-     * Needs -Djava.library.path=/opt/zimbra/lib (where the native lib is) when running in Eclipse.
+     * Needs -Djava.library.path=/opt/zextras/lib (where the native lib is) when running in Eclipse.
      *
      * A simple junixsocket demo server
      *
@@ -394,7 +383,7 @@ public class TestLdapConnectivity {
     }
 
     /**
-     * Needs -Djava.library.path=/opt/zimbra/lib (where the native lib is) when running in Eclipse.
+     * Needs -Djava.library.path=/opt/zextras/lib (where the native lib is) when running in Eclipse.
      *
      * A simple junixsocket demo client.
      *

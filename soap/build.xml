@@ -3,7 +3,7 @@
   <!-- Most interesting targets:
        jar                     - source package which is part of the product.
        package-docs            - SOAP API documentation and changelog.  Should be posted to Wiki
-                     https://wiki.zimbra.com/wiki/SOAP_API_Reference_Material_Beginning_with_ZCS_8.0
+                     https://docs.zextras.com/wiki/SOAP_API_Reference_Material_Beginning_with_ZCS_8.0
        update-baseline-apidesc - Run this and checkin the results after a major release.
                                  Future changelog info will be relative to this
     -->
@@ -11,7 +11,7 @@
 
   <property name="xml.schema.dir" location="${build.classes.dir}/com/zimbra/soap"/>
 
-  <!-- implementation.title is used by the "zimbra-jar" target -->
+  <!-- implementation.title is used by the "zextras-jar" target -->
   <property name="implementation.title" value="zm-soap"/>
 
   <!-- START ZimbraSoapDocs Properties -->
@@ -23,7 +23,7 @@
   <property name="soapdocs.apidesc.file" location="${build.dir}/soapapi-desc.json"/>
   <property name="soapdocs.apidesc.baseline.file" location="soapdocs/baseline-soapapi-desc.json.gz"/>
   <property name="soapapi.changelog.output.dir" location="${soapdocs.output.dir}/api-changelog"/>
-  <property name="soapapi.doc.file" location="${build.dir}/docs/soapapi-zimbra-doc.zip"/>
+  <property name="soapapi.doc.file" location="${build.dir}/docs/soapapi-doc.zip"/>
   <property name="soapapi.changelog.file" location="${build.dir}/docs/soapapi-changelog.zip"/>
   <property name="soapdocs.test.dir" location="${build.dir}/soapdocs-test"/>
   <property name="soapdocs.test.src.dir" location="soapdocs/src/java-test"/>
@@ -66,7 +66,7 @@
   </path>
 
   <!-- Targets -->
-  <target name="jar" depends="compile,wsdl-file,zimbra-jar" description="Creates the jar"/>
+  <target name="jar" depends="compile,wsdl-file,zextras-jar" description="Creates the jar"/>
 
   <target name="wsdl-file" depends="compile,generate-schema" description="Generates WSDL file">
     <mkdir dir="${xml.schema.dir}"/>
@@ -97,12 +97,12 @@
     </java>
   </target>
 
-  <target name="check-zimbra-identity">
-    <available file="/opt/zimbra/.ssh/zimbra_identity" property="ssh.zimbra.identity.present"/>
+  <target name="check-identity">
+    <available file="/opt/zextras/.ssh/zimbra_identity" property="ssh.zimbra.identity.present"/>
   </target>
 
-  <target name="zimbra-identity" depends="check-zimbra-identity" unless="ssh.zimbra.identity.present">
-    <exec failonerror="true" executable="/opt/zimbra/bin/zmsshkeygen"/>
+  <target name="identity" depends="check-identity" unless="ssh.zimbra.identity.present">
+    <exec failonerror="true" executable="/opt/zextras/bin/zmsshkeygen"/>
   </target>
 
   <target name="soap-api-doc-compile" depends="compile,resolve-soapdocs">

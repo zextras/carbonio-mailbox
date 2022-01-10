@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.cs.util;
 
 import java.io.BufferedReader;
@@ -1308,12 +1297,7 @@ class ZMLookupHandlerVar extends ProxyConfVar{
                 if (s != null) {
                     String sn = s.getAttr(Provisioning.A_zimbraServiceHostname, "");
                     int port = s.getIntAttr(Provisioning.A_zimbraExtensionBindPort, 7072);
-                    String proto = "http://";
-                    int major = s.getIntAttr(Provisioning.A_zimbraServerVersionMajor, 0);
-                    int minor = s.getIntAttr(Provisioning.A_zimbraServerVersionMinor, 0);
-                    if ((major == 8 && minor >= 7) || (major > 8)) {
-                        proto = "https://";
-                    }
+                    String proto = "https://";
                     boolean isTarget = s.getBooleanAttr(Provisioning.A_zimbraReverseProxyLookupTarget, false);
                     if (isTarget) {
                         try {
@@ -1347,12 +1331,7 @@ class ZMLookupHandlerVar extends ProxyConfVar{
             {
                 String sn = s.getAttr(Provisioning.A_zimbraServiceHostname, "");
                 int port = s.getIntAttr(Provisioning.A_zimbraExtensionBindPort, 7072);
-                String proto = "http://";
-                int major = s.getIntAttr(Provisioning.A_zimbraServerVersionMajor, 0);
-                int minor = s.getIntAttr(Provisioning.A_zimbraServerVersionMinor, 0);
-                if ((major == 8 && minor >= 7) || (major > 8)) {
-                    proto = "https://";
-                }
+                String proto = "https://";
                 boolean isTarget = s.getBooleanAttr(Provisioning.A_zimbraReverseProxyLookupTarget, false);
                 if (isTarget) {
                     try {
@@ -1911,9 +1890,8 @@ class WebSSLProtocolsVar extends ProxyConfVar {
 
     static ArrayList<String> getEnabledSSLProtocols () {
         ArrayList<String> sslProtocols = new ArrayList<String> ();
-        sslProtocols.add("TLSv1");
-        sslProtocols.add("TLSv1.1");
         sslProtocols.add("TLSv1.2");
+        sslProtocols.add("TLSv1.3");
         return sslProtocols;
     }
 
@@ -1961,9 +1939,8 @@ class MailSSLProtocolsVar extends ProxyConfVar {
 
     static ArrayList<String> getEnabledSSLProtocols () {
         ArrayList<String> sslProtocols = new ArrayList<String> ();
-        sslProtocols.add("TLSv1");
-        sslProtocols.add("TLSv1.1");
         sslProtocols.add("TLSv1.2");
+        sslProtocols.add("TLSv1.3");
         return sslProtocols;
     }
 
@@ -2050,7 +2027,7 @@ public class ProxyConfGen
     private static Options mOptions = new Options();
     private static boolean mDryRun = false;
     private static boolean mEnforceDNSResolution = false;
-    private static String mWorkingDir = "/opt/zimbra";
+    private static String mWorkingDir = "/opt/zextras";
     private static String mTemplateDir = mWorkingDir + "/conf/nginx/templates";
     private static String mConfDir = mWorkingDir + "/conf";
     private static String mResolverfile = mConfDir + "/nginx/resolvers.conf";
@@ -2078,6 +2055,7 @@ public class ProxyConfGen
     static List<ServerAttrItem> mServerAttrs;
     static Set<String> mListenAddresses = new HashSet<String>();
 
+    static final String ZIMBRA_USER = "zextras";
     static final String ZIMBRA_UPSTREAM_NAME = "zimbra";
     static final String ZIMBRA_UPSTREAM_WEBCLIENT_NAME = "zimbra_webclient";
     static final String ZIMBRA_SSL_UPSTREAM_NAME = "zimbra_ssl";
@@ -2101,7 +2079,7 @@ public class ProxyConfGen
         mOptions.addOption("h", "help", false, "show this usage text");
         mOptions.addOption("v", "verbose", false, "be verbose");
 
-        mOptions.addOption("w", "workdir", true, "Proxy Working Directory (defaults to /opt/zimbra)");
+        mOptions.addOption("w", "workdir", true, "Proxy Working Directory (defaults to /opt/zextras)");
         mOptions.addOption("t", "templatedir", true, "Proxy Template Directory (defaults to $workdir/conf/nginx/templates)");
         mOptions.addOption("n", "dry-run", false, "Do not write any configuration, just show which files would be written");
         mOptions.addOption("d", "defaults", false, "Print default variable map");
@@ -2554,7 +2532,7 @@ public class ProxyConfGen
     /**
      * Iterate all server of type `serviceName` and populate server_id and server_hostname when exploding
      * with !{explode server(docs)}
-     * initially created for zimbra-docs.
+     * initially created for docs.
      *
      * @param temp Reader of the file which will be exploded per server
      * @param conf Target buffer where generated configuration will be written
@@ -2650,7 +2628,7 @@ public class ProxyConfGen
             }
         }
 
-        boolean sni = ProxyConfVar.serverSource.getBooleanAttr(Provisioning.A_zimbraReverseProxySNIEnabled, false);
+        boolean sni = ProxyConfVar.serverSource.getBooleanAttr(Provisioning.A_zimbraReverseProxySNIEnabled, true);
         if (vip instanceof Inet6Address) {
             //ipv6 address has to be enclosed with [ ]
             if (sni || vip == null) {
@@ -2809,14 +2787,14 @@ public class ProxyConfGen
         mConfVars.put("ssl.clientcertmode.default", new ProxyConfVar("ssl.clientcertmode.default", Provisioning.A_zimbraReverseProxyClientCertMode, "off", ProxyConfValueType.STRING, ProxyConfOverride.SERVER,"enable authentication via X.509 Client Certificate in nginx proxy (https only)"));
         mConfVars.put("ssl.clientcertca.default", new ClientCertAuthDefaultCAVar());
         mConfVars.put("ssl.clientcertdepth.default", new ProxyConfVar("ssl.clientcertdepth.default", "zimbraReverseProxyClientCertDepth", new Integer(10), ProxyConfValueType.INTEGER, ProxyConfOverride.NONE,"indicate how depth the verification will load the ca chain. This is useful when client crt is signed by multiple intermediate ca"));
-        mConfVars.put("main.user", new ProxyConfVar("main.user", null, ZIMBRA_UPSTREAM_NAME, ProxyConfValueType.STRING, ProxyConfOverride.NONE, "The user as which the worker processes will run"));
-        mConfVars.put("main.group", new ProxyConfVar("main.group", null, ZIMBRA_UPSTREAM_NAME, ProxyConfValueType.STRING, ProxyConfOverride.NONE, "The group as which the worker processes will run"));
+        mConfVars.put("main.user", new ProxyConfVar("main.user", null, ZIMBRA_USER, ProxyConfValueType.STRING, ProxyConfOverride.NONE, "The user as which the worker processes will run"));
+        mConfVars.put("main.group", new ProxyConfVar("main.group", null, ZIMBRA_USER, ProxyConfValueType.STRING, ProxyConfOverride.NONE, "The group as which the worker processes will run"));
         mConfVars.put("main.workers", new ProxyConfVar("main.workers", Provisioning.A_zimbraReverseProxyWorkerProcesses, new Integer(4), ProxyConfValueType.INTEGER, ProxyConfOverride.SERVER, "Number of worker processes"));
         mConfVars.put("main.pidfile", new ProxyConfVar("main.pidfile", null, mWorkingDir + "/log/nginx.pid", ProxyConfValueType.STRING, ProxyConfOverride.NONE, "PID file path (relative to ${core.workdir})"));
         mConfVars.put("main.logfile", new ProxyConfVar("main.logfile", null, mWorkingDir + "/log/nginx.log", ProxyConfValueType.STRING, ProxyConfOverride.NONE, "Log file path (relative to ${core.workdir})"));
         mConfVars.put("main.loglevel", new ProxyConfVar("main.loglevel", Provisioning.A_zimbraReverseProxyLogLevel, "info", ProxyConfValueType.STRING, ProxyConfOverride.SERVER, "Log level - can be debug|info|notice|warn|error|crit"));
         mConfVars.put("main.connections", new ProxyConfVar("main.connections", Provisioning.A_zimbraReverseProxyWorkerConnections, new Integer(10240), ProxyConfValueType.INTEGER, ProxyConfOverride.SERVER, "Maximum number of simultaneous connections per worker process"));
-        mConfVars.put("main.krb5keytab", new ProxyConfVar("main.krb5keytab", "krb5_keytab", "/opt/zimbra/conf/krb5.keytab", ProxyConfValueType.STRING, ProxyConfOverride.LOCALCONFIG, "Path to kerberos keytab file used for GSSAPI authentication"));
+        mConfVars.put("main.krb5keytab", new ProxyConfVar("main.krb5keytab", "krb5_keytab", "/opt/zextras/conf/krb5.keytab", ProxyConfValueType.STRING, ProxyConfOverride.LOCALCONFIG, "Path to kerberos keytab file used for GSSAPI authentication"));
         mConfVars.put("memcache.:servers", new MemcacheServersVar());
         mConfVars.put("memcache.timeout", new ProxyConfVar("memcache.timeout", Provisioning.A_zimbraReverseProxyCacheFetchTimeout, new Long(3000), ProxyConfValueType.TIME, ProxyConfOverride.CONFIG, "Time (ms) given to a cache-fetch operation to complete"));
         mConfVars.put("memcache.reconnect", new ProxyConfVar("memcache.reconnect", Provisioning.A_zimbraReverseProxyCacheReconnectInterval, new Long(60000), ProxyConfValueType.TIME, ProxyConfOverride.CONFIG, "Time (ms) after which NGINX will attempt to re-establish a broken connection to a memcache server"));
@@ -2849,10 +2827,8 @@ public class ProxyConfGen
         mConfVars.put("mail.upstream.imapid", new ProxyConfVar("mail.upstream.imapid", Provisioning.A_zimbraReverseProxySendImapId, true, ProxyConfValueType.BOOLEAN, ProxyConfOverride.CONFIG,"Whether NGINX issues the IMAP ID command to the upstream server prior to logging in (audit purpose)"));
         mConfVars.put("mail.ssl.protocols", new MailSSLProtocolsVar());
         mConfVars.put("mail.ssl.preferserverciphers", new ProxyConfVar("mail.ssl.preferserverciphers", null, true, ProxyConfValueType.BOOLEAN, ProxyConfOverride.CONFIG,"Requires TLS protocol server ciphers be preferred over the client's ciphers"));
-        mConfVars.put("mail.ssl.ciphers", new ProxyConfVar("mail.ssl.ciphers", Provisioning.A_zimbraReverseProxySSLCiphers, "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:"
-                + "ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:"
-                + "DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128:AES256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4", ProxyConfValueType.STRING, ProxyConfOverride.CONFIG,"Permitted ciphers for mail proxy"));
-        mConfVars.put("mail.ssl.ecdh.curve", new ProxyConfVar("mail.ssl.ecdh.curve", Provisioning.A_zimbraReverseProxySSLECDHCurve, "prime256v1", ProxyConfValueType.STRING, ProxyConfOverride.CONFIG,"SSL ECDH cipher curve for mail proxy"));
+        mConfVars.put("mail.ssl.ciphers", new ProxyConfVar("mail.ssl.ciphers", Provisioning.A_zimbraReverseProxySSLCiphers, "EECDH+AESGCM:EDH+AESGCM", ProxyConfValueType.STRING, ProxyConfOverride.CONFIG,"Permitted ciphers for mail proxy"));
+        mConfVars.put("mail.ssl.ecdh.curve", new ProxyConfVar("mail.ssl.ecdh.curve", Provisioning.A_zimbraReverseProxySSLECDHCurve, "auto", ProxyConfValueType.STRING, ProxyConfOverride.CONFIG,"SSL ECDH cipher curve for mail proxy"));
         mConfVars.put("mail.imap.authplain.enabled", new ProxyConfVar("mail.imap.authplain.enabled", Provisioning.A_zimbraReverseProxyImapSaslPlainEnabled, true, ProxyConfValueType.ENABLER, ProxyConfOverride.SERVER,"Whether SASL PLAIN is enabled for IMAP"));
         mConfVars.put("mail.imap.authgssapi.enabled", new ProxyConfVar("mail.imap.authgssapi.enabled", Provisioning.A_zimbraReverseProxyImapSaslGssapiEnabled, false, ProxyConfValueType.ENABLER, ProxyConfOverride.SERVER,"Whether SASL GSSAPI is enabled for IMAP"));
         mConfVars.put("mail.pop3.authplain.enabled", new ProxyConfVar("mail.pop3.authplain.enabled", Provisioning.A_zimbraReverseProxyPop3SaslPlainEnabled, true, ProxyConfValueType.ENABLER, ProxyConfOverride.SERVER,"Whether SASL PLAIN is enabled for POP3"));
@@ -2895,10 +2871,8 @@ public class ProxyConfGen
         mConfVars.put("web.https.maxbody", new ProxyConfVar("web.https.maxbody", Provisioning.A_zimbraFileUploadMaxSize, new Long(10485760), ProxyConfValueType.LONG, ProxyConfOverride.SERVER,"Maximum accepted client request body size (indicated by Content-Length) - if content length exceeds this limit, then request fails with HTTP 413"));
         mConfVars.put("web.ssl.protocols", new WebSSLProtocolsVar());
         mConfVars.put("web.ssl.preferserverciphers", new ProxyConfVar("web.ssl.preferserverciphers", null, true, ProxyConfValueType.BOOLEAN, ProxyConfOverride.CONFIG,"Requires TLS protocol server ciphers be preferred over the client's ciphers"));
-        mConfVars.put("web.ssl.ciphers", new ProxyConfVar("web.ssl.ciphers", Provisioning.A_zimbraReverseProxySSLCiphers, "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:"
-                + "ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:"
-                + "DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128:AES256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4", ProxyConfValueType.STRING, ProxyConfOverride.CONFIG,"Permitted ciphers for web proxy"));
-        mConfVars.put("web.ssl.ecdh.curve", new ProxyConfVar("web.ssl.ecdh.curve", Provisioning.A_zimbraReverseProxySSLECDHCurve, "prime256v1", ProxyConfValueType.STRING, ProxyConfOverride.CONFIG,"SSL ECDH cipher curve for web proxy"));
+        mConfVars.put("web.ssl.ciphers", new ProxyConfVar("web.ssl.ciphers", Provisioning.A_zimbraReverseProxySSLCiphers, "EECDH+AESGCM:EDH+AESGCM", ProxyConfValueType.STRING, ProxyConfOverride.CONFIG,"Permitted ciphers for web proxy"));
+        mConfVars.put("web.ssl.ecdh.curve", new ProxyConfVar("web.ssl.ecdh.curve", Provisioning.A_zimbraReverseProxySSLECDHCurve, "auto", ProxyConfValueType.STRING, ProxyConfOverride.CONFIG,"SSL ECDH cipher curve for web proxy"));
         mConfVars.put("web.http.uport", new ProxyConfVar("web.http.uport", Provisioning.A_zimbraMailPort, new Integer(80), ProxyConfValueType.INTEGER, ProxyConfOverride.SERVER,"Web upstream server port"));
         mConfVars.put("web.upstream.connect.timeout", new ProxyConfVar("web.upstream.connect.timeout", Provisioning.A_zimbraReverseProxyUpstreamConnectTimeout, new Integer(25), ProxyConfValueType.INTEGER, ProxyConfOverride.SERVER, "upstream connect timeout"));
         mConfVars.put("web.upstream.read.timeout", new TimeInSecVarWrapper(new ProxyConfVar("web.upstream.read.timeout", Provisioning.A_zimbraReverseProxyUpstreamReadTimeout, new Long(60), ProxyConfValueType.TIME, ProxyConfOverride.SERVER, "upstream read timeout")));

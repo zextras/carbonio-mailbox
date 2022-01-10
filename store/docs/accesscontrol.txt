@@ -356,14 +356,14 @@ GRANTING TOOLS
      e.g. - grant the invite right on a domain to public
             > zmprov grr domain test.com pub invite
           
-     e.g. - grant the viewFreeBusy right on a domain to all zimbra users in the same domain
+     e.g. - grant the viewFreeBusy right on a domain to all zextras users in the same domain
             zmprov grr domain test.com dom test.com viewFreeBusy
             
-     e.g. - grant the viewFreeBusy right on a domain to all zimbra users in another domain
+     e.g. - grant the viewFreeBusy right on a domain to all zextras users in another domain
             (all users in domain test2.com can access fb data on all users in domain test1.com)
             zmprov grr domain test1.com dom test2.com viewFreeBusy 
             
-     e.g. - grant the viewFreeBusy right on the global target to all zimbra users on the system
+     e.g. - grant the viewFreeBusy right on the global target to all zextras users on the system
             zmprov grr global all viewFreeBusy
             
      e.g. - grant negative viewFreeBusy on the global target to all users in a domain  

@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.qa.unittest;
 
 import static org.junit.Assert.assertEquals;
@@ -455,7 +444,7 @@ public final class TestFilter {
     public void testConversion()
     throws Exception {
         // Load script.
-        String scriptPath = "/opt/zimbra/unittest/test.sieve";
+        String scriptPath = "/opt/zextras/unittest/test.sieve";
         String script = new String(ByteUtil.getContent(new File(scriptPath)));
         assertNotNull(script);
         assertTrue(script.length() > 0);
@@ -1248,7 +1237,7 @@ public final class TestFilter {
      */
     @Test
     public void testBodyContains() throws Exception {
-        assertTrue("To run this test copy data/unittest/TestFilter-testBodyContains.msg to /opt/zimbra/unittest", Files.exists(Paths.get("/opt/zimbra/unittest/TestFilter-testBodyContains.msg")));
+        assertTrue("To run this test copy data/unittest/TestFilter-testBodyContains.msg to /opt/zextras/unittest", Files.exists(Paths.get("/opt/zextras/unittest/TestFilter-testBodyContains.msg")));
         doBodyContainsTest("text version of the main body", true);
         doBodyContainsTest("HTML version of the main body", true);
         doBodyContainsTest("text attachment", false);
@@ -1285,7 +1274,7 @@ public final class TestFilter {
         // Add a message and test the flagged state.
         String address = TestUtil.getAddress(USER_NAME);
         String msgContent = new String(
-            ByteUtil.getContent(new File("/opt/zimbra/unittest/TestFilter-testBodyContains.msg")));
+            ByteUtil.getContent(new File("/opt/zextras/unittest/TestFilter-testBodyContains.msg")));
         TestUtil.addMessageLmtp(new String[] { address }, address, msgContent);
         ZMessage msg = TestUtil.getMessage(mMbox, "in:inbox subject:testBodyContains");
         assertEquals("Unexpected message flag state", contains, msg.isFlagged());
@@ -1321,7 +1310,7 @@ public final class TestFilter {
      */
     @Test
     public void testSpecialCharInBody() throws Exception {
-        assertTrue("To run this test copy data/unittest/TestFilter-testSpecialCharInBody.msg to /opt/zimbra/unittest", Files.exists(Paths.get("/opt/zimbra/unittest/TestFilter-testSpecialCharInBody.msg")));
+        assertTrue("To run this test copy data/unittest/TestFilter-testSpecialCharInBody.msg to /opt/zextras/unittest", Files.exists(Paths.get("/opt/zextras/unittest/TestFilter-testSpecialCharInBody.msg")));
         List<ZFilterCondition> conditions = new ArrayList<ZFilterCondition>();
         List<ZFilterAction> actions = new ArrayList<ZFilterAction>();
         List<ZFilterRule> rules = new ArrayList<ZFilterRule>();
@@ -1337,7 +1326,7 @@ public final class TestFilter {
         String address = TestUtil.getAddress(USER_NAME);
         // TestFilter-testSpecialCharInBody.msg's body contains base64 encoded content (containing "Andr\u00e9")
         String msgContent = new String(
-            ByteUtil.getContent(new File("/opt/zimbra/unittest/TestFilter-testSpecialCharInBody.msg")));
+            ByteUtil.getContent(new File("/opt/zextras/unittest/TestFilter-testSpecialCharInBody.msg")));
         TestUtil.addMessageLmtp(new String[] { address }, address, msgContent);
         ZMessage msg = TestUtil.getMessage(mMbox, "in:inbox subject:testSpecialCharInBody");
         assertTrue("Unexpected message flag state", msg.isFlagged());
@@ -1559,8 +1548,8 @@ public final class TestFilter {
      */
     @Test
     public void testPositiveAndNegative() throws Exception {
-        assertTrue("To run this test copy data/unittest/bug46007.sieve to /opt/zimbra/unittest", Files.exists(Paths.get("/opt/zimbra/unittest/bug46007.sieve")));
-        String script = new String(ByteUtil.getContent(new File("/opt/zimbra/unittest/bug46007.sieve")));
+        assertTrue("To run this test copy data/unittest/bug46007.sieve to /opt/zextras/unittest", Files.exists(Paths.get("/opt/zextras/unittest/bug46007.sieve")));
+        String script = new String(ByteUtil.getContent(new File("/opt/zextras/unittest/bug46007.sieve")));
         String normalized = normalize(script); // Convert to XML and back again.
         assertEquals(normalizeWhiteSpace(script), normalizeWhiteSpace(normalized));
     }

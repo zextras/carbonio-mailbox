@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2012, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.cs.account.ldap.upgrade;
 
 import java.util.HashMap;
@@ -40,16 +29,13 @@ public class BUG_76427 extends UpgradeOp {
     public static Set<String> standardZimlets = new HashSet<String>();
 
     static {
-        standardZimlets.add("com_zimbra_adminversioncheck");
         standardZimlets.add("com_zimbra_archive");
         standardZimlets.add("com_zimbra_attachcontacts");
         standardZimlets.add("com_zimbra_attachmail");
         standardZimlets.add("com_zimbra_backuprestore");
-        standardZimlets.add("com_zimbra_bulkprovision");
         standardZimlets.add("com_zimbra_cert_manager");
         standardZimlets.add("com_zimbra_click2call_cisco");
         standardZimlets.add("com_zimbra_click2call_mitel");
-        standardZimlets.add("com_zimbra_clientuploader");
         standardZimlets.add("com_zimbra_convertd");
         standardZimlets.add("com_zimbra_date");
         standardZimlets.add("com_zimbra_delegatedadmin");
@@ -57,7 +43,6 @@ public class BUG_76427 extends UpgradeOp {
         standardZimlets.add("com_zimbra_hsm");
         standardZimlets.add("com_zimbra_license");
         standardZimlets.add("com_zimbra_mobilesync");
-        standardZimlets.add("com_zimbra_phone");
         standardZimlets.add("com_zimbra_proxy_config");
         standardZimlets.add("com_zimbra_smime");
         standardZimlets.add("com_zimbra_smime_cert_admin");
@@ -67,9 +52,7 @@ public class BUG_76427 extends UpgradeOp {
         standardZimlets.add("com_zimbra_url");
         standardZimlets.add("com_zimbra_viewmail");
         standardZimlets.add("com_zimbra_voiceprefs");
-        standardZimlets.add("com_zimbra_webex");
         standardZimlets.add("com_zimbra_xmbxsearch");
-        standardZimlets.add("com_zimbra_ymemoticons");
     }
 
     @Override

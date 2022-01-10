@@ -1,0 +1,158 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-common-appserver-docs"
+pkgver="4.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Core Mailbox Docs"
+pkgdesclong=(
+  "Carbonio Core Mailbox Docs"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-core"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../staging
+
+  install -D "store/docs/Notification.md" \
+    "${pkgdir}/opt/zextras/docs/Notification.md"
+  install -D "store/docs/OAuthConsumer.txt" \
+    "${pkgdir}/opt/zextras/docs/OAuthConsumer.txt"
+  install -D "store/docs/RedoableOperations.txt" \
+    "${pkgdir}/opt/zextras/docs/RedoableOperations.txt"
+  install -D "store/docs/ServerLocalization.txt" \
+    "${pkgdir}/opt/zextras/docs/ServerLocalization.txt"
+  install -D "store/docs/abook.md" \
+    "${pkgdir}/opt/zextras/docs/abook.md"
+  install -D "store/docs/accesscontrol.txt" \
+    "${pkgdir}/opt/zextras/docs/accesscontrol.txt"
+  install -D "store/docs/acl.md" \
+    "${pkgdir}/opt/zextras/docs/acl.md"
+  install -D "store/docs/admin_soap_white_list.txt" \
+    "${pkgdir}/opt/zextras/docs/admin_soap_white_list.txt"
+  install -D "store/docs/alarm.md" \
+    "${pkgdir}/opt/zextras/docs/alarm.md"
+  install -D "store/docs/autoprov.txt" \
+    "${pkgdir}/opt/zextras/docs/autoprov.txt"
+  install -D "store/docs/caches.txt" \
+    "${pkgdir}/opt/zextras/docs/caches.txt"
+  install -D "store/docs/cal-todos.md" \
+    "${pkgdir}/opt/zextras/docs/cal-todos.md"
+  install -D "store/docs/certauth.txt" \
+    "${pkgdir}/opt/zextras/docs/certauth.txt"
+  install -D "store/docs/changepasswordlistener.txt" \
+    "${pkgdir}/opt/zextras/docs/changepasswordlistener.txt"
+  install -D "store/docs/clienturls.txt" \
+    "${pkgdir}/opt/zextras/docs/clienturls.txt"
+  install -D "store/docs/customauth-hosted.txt" \
+    "${pkgdir}/opt/zextras/docs/customauth-hosted.txt"
+  install -D "store/docs/customauth.txt" \
+    "${pkgdir}/opt/zextras/docs/customauth.txt"
+  install -D "store/docs/dav.txt" \
+    "${pkgdir}/opt/zextras/docs/dav.txt"
+  install -D "store/docs/delegatedadmin.txt" \
+    "${pkgdir}/opt/zextras/docs/delegatedadmin.txt"
+  install -D "store/docs/extensions.md" \
+    "${pkgdir}/opt/zextras/docs/extensions.md"
+  install -D "store/docs/externalldapauth.txt" \
+    "${pkgdir}/opt/zextras/docs/externalldapauth.txt"
+  install -D "store/docs/familymailboxes.md" \
+    "${pkgdir}/opt/zextras/docs/familymailboxes.md"
+  install -D "store/docs/file-upload.txt" \
+    "${pkgdir}/opt/zextras/docs/file-upload.txt"
+  install -D "store/docs/freebusy-interop.md" \
+    "${pkgdir}/opt/zextras/docs/freebusy-interop.md"
+  install -D "store/docs/gal.txt" \
+    "${pkgdir}/opt/zextras/docs/gal.txt"
+  install -D "store/docs/groups.md" \
+    "${pkgdir}/opt/zextras/docs/groups.md"
+  install -D "store/docs/idn.txt" \
+    "${pkgdir}/opt/zextras/docs/idn.txt"
+  install -D "store/docs/jetty.txt" \
+    "${pkgdir}/opt/zextras/docs/jetty.txt"
+  install -D "store/docs/junk-notjunk.md" \
+    "${pkgdir}/opt/zextras/docs/junk-notjunk.md"
+  install -D "store/docs/krb5.txt" \
+    "${pkgdir}/opt/zextras/docs/krb5.txt"
+  install -D "store/docs/ldap.txt" \
+    "${pkgdir}/opt/zextras/docs/ldap.txt"
+  install -D "store/docs/ldap_replication_howto.txt" \
+    "${pkgdir}/opt/zextras/docs/ldap_replication_howto.txt"
+  install -D "store/docs/lockout.txt" \
+    "${pkgdir}/opt/zextras/docs/lockout.txt"
+  install -D "store/docs/logging.md" \
+    "${pkgdir}/opt/zextras/docs/logging.md"
+  install -D "store/docs/login.txt" \
+    "${pkgdir}/opt/zextras/docs/login.txt"
+  install -D "store/docs/mysql-monitoring.txt" \
+    "${pkgdir}/opt/zextras/docs/mysql-monitoring.txt"
+  install -D "store/docs/notes.txt" \
+    "${pkgdir}/opt/zextras/docs/notes.txt"
+  install -D "store/docs/open_source_licenses_zcs-windows.txt" \
+    "${pkgdir}/opt/zextras/docs/open_source_licenses_zcs-windows.txt"
+  install -D "store/docs/pop-imap.txt" \
+    "${pkgdir}/opt/zextras/docs/pop-imap.txt"
+  install -D "store/docs/postfix-ldap-tables.txt" \
+    "${pkgdir}/opt/zextras/docs/postfix-ldap-tables.txt"
+  install -D "store/docs/postfix-split-domain.md" \
+    "${pkgdir}/opt/zextras/docs/postfix-split-domain.md"
+  install -D "store/docs/preauth.md" \
+    "${pkgdir}/opt/zextras/docs/preauth.md"
+  install -D "store/docs/qatests.txt" \
+    "${pkgdir}/opt/zextras/docs/qatests.txt"
+  install -D "store/docs/query.md" \
+    "${pkgdir}/opt/zextras/docs/query.md"
+  install -D "store/docs/rest-admin.txt" \
+    "${pkgdir}/opt/zextras/docs/rest-admin.txt"
+  install -D "store/docs/rest.txt" \
+    "${pkgdir}/opt/zextras/docs/rest.txt"
+  install -D "store/docs/rights-adminconsole.txt" \
+    "${pkgdir}/opt/zextras/docs/rights-adminconsole.txt"
+  install -D "store/docs/rights-ext.txt" \
+    "${pkgdir}/opt/zextras/docs/rights-ext.txt"
+  install -D "store/docs/rights.txt" \
+    "${pkgdir}/opt/zextras/docs/rights.txt"
+  install -D "store/docs/share.md" \
+    "${pkgdir}/opt/zextras/docs/share.md"
+  install -D "store/docs/snmp.txt" \
+    "${pkgdir}/opt/zextras/docs/snmp.txt"
+  install -D "store/docs/soap-admin.txt" \
+    "${pkgdir}/opt/zextras/docs/soap-admin.txt"
+  install -D "store/docs/soap-calendar.txt" \
+    "${pkgdir}/opt/zextras/docs/soap-calendar.txt"
+  install -D "store/docs/soap-context-extension.txt" \
+    "${pkgdir}/opt/zextras/docs/soap-context-extension.txt"
+  install -D "store/docs/soap-document.txt" \
+    "${pkgdir}/opt/zextras/docs/soap-document.txt"
+  install -D "store/docs/soap-im.txt" \
+    "${pkgdir}/opt/zextras/docs/soap-im.txt"
+  install -D "store/docs/soap-mobile.txt" \
+    "${pkgdir}/opt/zextras/docs/soap-mobile.txt"
+  install -D "store/docs/soap-right.txt" \
+    "${pkgdir}/opt/zextras/docs/soap-right.txt"
+  install -D "store/docs/soap-waitset.txt" \
+    "${pkgdir}/opt/zextras/docs/soap-waitset.txt"
+  install -D "store/docs/soap.txt" \
+    "${pkgdir}/opt/zextras/docs/soap.txt"
+  install -D "store/docs/spnego.txt" \
+    "${pkgdir}/opt/zextras/docs/spnego.txt"
+  install -D "store/docs/sync.txt" \
+    "${pkgdir}/opt/zextras/docs/sync.txt"
+  install -D "store/docs/testharness.txt" \
+    "${pkgdir}/opt/zextras/docs/testharness.txt"
+  install -D "store/docs/urls.md" \
+    "${pkgdir}/opt/zextras/docs/urls.md"
+  install -D "store/docs/using-gdb.txt" \
+    "${pkgdir}/opt/zextras/docs/using-gdb.txt"
+  install -D "store/docs/webdav-mountpoint.txt" \
+    "${pkgdir}/opt/zextras/docs/webdav-mountpoint.txt"
+  install -D "store/docs/zdesktop-dev-howto.txt" \
+    "${pkgdir}/opt/zextras/docs/zdesktop-dev-howto.txt"
+}

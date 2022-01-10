@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2018 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.account;
 
@@ -1924,7 +1912,7 @@ public class ProvUtil implements HttpDebugListener {
         printOutput("domain " + args[1] + " renamed to " + args[2]);
         printOutput("Note: use zmlocalconfig to check and update any localconfig settings referencing domain '"
                 + args[1] + "' on all servers.");
-        printOutput("Use /opt/zimbra/libexec/zmdkimkeyutil to recreate the DKIM entries for new domain name if required.");
+        printOutput("Use /opt/zextras/libexec/zmdkimkeyutil to recreate the DKIM entries for new domain name if required.");
     }
 
     private void doGetQuotaUsage(String[] args) throws ServiceException {
@@ -3917,8 +3905,8 @@ public class ProvUtil implements HttpDebugListener {
      *
      * value is written to: {LC.zmprov_tmp_directory}/{attr-name}[_{index-if-multi-valued}]{timestamp}
      *
-     * e.g. /opt/zimbra/data/tmp/zmprov/zimbraFoo_20110202161621 /opt/zimbra/data/tmp/zmprov/zimbraBar_0_20110202161507
-     * /opt/zimbra/data/tmp/zmprov/zimbraBar_1_20110202161507
+     * e.g. /opt/zextras/data/tmp/zmprov/zimbraFoo_20110202161621 /opt/zextras/data/tmp/zmprov/zimbraBar_0_20110202161507
+     * /opt/zextras/data/tmp/zmprov/zimbraBar_1_20110202161507
      */
     private void outputBinaryAttrToFile(String attrName, Integer idx, byte[] value, String timestamp)
             throws ServiceException {

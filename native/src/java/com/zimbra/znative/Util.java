@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2005, 2006, 2007, 2009, 2010, 2012, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.znative;
 
@@ -23,8 +11,6 @@ import java.io.StringWriter;
 public final class Util {
 
     private static final boolean mHaveNativeCode;
-
-    public static final long TICKS_PER_SECOND;
 
     public static boolean loadLibrary() {
         if (mHaveNativeCode) {
@@ -37,7 +23,7 @@ public final class Util {
             return false;
         } else {
             try {
-                System.loadLibrary("zimbra-native");
+                System.loadLibrary("native");
                 return true;
             } catch (UnsatisfiedLinkError ule) {
                 //this lets unit tests run from command line (i.e. 'ant test') without setting up native
@@ -55,7 +41,7 @@ public final class Util {
                      * and (b) if tomcat is started as root, and the
                      * shared library did not load for some reason, drop
                      * privileges would not work. */
-                    halt("Failed to loadLibrary(zimbra-native)", ule);
+                    halt("Failed to loadLibrary(native)", ule);
                 }
             }
             return false;
@@ -64,14 +50,7 @@ public final class Util {
 
     static {
         mHaveNativeCode = loadLibrary();
-        if (mHaveNativeCode) {
-            TICKS_PER_SECOND = getTicksPerSecond0();
-        } else {
-            TICKS_PER_SECOND = 1;
-        }
     }
-
-    private static native long getTicksPerSecond0();
 
     public static boolean haveNativeCode() {
         return mHaveNativeCode;

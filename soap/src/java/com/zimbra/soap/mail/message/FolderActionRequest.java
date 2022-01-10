@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2011, 2012, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.soap.mail.message;
 
@@ -62,12 +50,12 @@ import com.zimbra.soap.json.jackson.annotate.ZimbraUniqueElement;
  *   &lt;/action>
  *     - add the &lt;grant> object to the folder
  *
- *   &lt;action op="!grant" id="{list}" zid="{grantee-zimbra-id}"/>
- *     - revoke access from {grantee-zimbra-id}
+ *   &lt;action op="!grant" id="{list}" zid="{grantee-id}"/>
+ *     - revoke access from {grantee-id}
  *         (you can use "00000000-0000-0000-0000-000000000000" to revoke acces granted to "all"
  *         or use "99999999-9999-9999-9999-999999999999" to revoke acces granted to "pub" )
  *
- *   &lt;action op="revokeorphangrants" id="{folder-id}" zid="{grantee-zimbra-id}" gt="{grantee-type}"/>
+ *   &lt;action op="revokeorphangrants" id="{folder-id}" zid="{grantee-id}" gt="{grantee-type}"/>
  *     - revoke orphan grants on the folder hierarchy granted to the grantee specified by zid and gt
  *       "orphan grant" is a grant whose grantee object is deleted/non-existing.  Server will throw
  *       INVALID_REQUEST if zid points to an existing object,

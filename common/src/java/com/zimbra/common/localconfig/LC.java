@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.common.localconfig;
 
@@ -45,7 +33,7 @@ public final class LC {
     public static final KnownKey zimbra_minimize_resources = KnownKey.newKey(false);
 
     @Supported
-    public static final KnownKey zimbra_home = KnownKey.newKey("/opt/zimbra").protect();
+    public static final KnownKey zimbra_home = KnownKey.newKey("/opt/zextras").protect();
     @Supported
     public static final KnownKey zimbra_java_home = KnownKey.newKey("${zimbra_home}/common/lib/jvm/java");
 
@@ -73,10 +61,10 @@ public final class LC {
     public static final KnownKey zimbra_extension_common_directory = KnownKey.newKey("${zimbra_home}/lib/ext-common");
 
     @Supported
-    public static final KnownKey zimbra_mysql_user = KnownKey.newKey("zimbra");
+    public static final KnownKey zimbra_mysql_user = KnownKey.newKey("zextras");
 
     @Supported
-    public static final KnownKey zimbra_mysql_password = KnownKey.newKey("zimbra").protect();
+    public static final KnownKey zimbra_mysql_password = KnownKey.newKey("zextras").protect();
 
     @Supported
     public static final KnownKey zimbra_mysql_shutdown_timeout = KnownKey.newKey(60);
@@ -98,7 +86,7 @@ public final class LC {
     public static final KnownKey zimbra_rights_directory = KnownKey.newKey("${zimbra_home}/conf/rights");
 
     @Supported
-    public static final KnownKey zimbra_user = KnownKey.newKey("zimbra");
+    public static final KnownKey zimbra_user = KnownKey.newKey("zextras");
 
     @Supported
     public static final KnownKey zimbra_uid = KnownKey.newKey(-1);
@@ -129,7 +117,7 @@ public final class LC {
 
     public static final KnownKey zmprov_safeguarded_attrs = KnownKey.newKey("zimbraServiceEnabled,zimbraServiceInstalled");
 
-    public static final KnownKey zimbra_require_interprocess_security = KnownKey.newKey(1);
+    public static final KnownKey zimbra_require_interprocess_security = KnownKey.newKey(0);
     public static final KnownKey zimbra_relative_volume_path = KnownKey.newKey(false);
 
     @Supported
@@ -267,7 +255,7 @@ public final class LC {
     public static final KnownKey zimbra_session_limit_sync = KnownKey.newKey(5);
 
     @Supported
-    public static final KnownKey zimbra_session_limit_soap = KnownKey.newKey(5);
+    public static final KnownKey zimbra_session_limit_soap = KnownKey.newKey(20);
 
     @Supported
     public static final KnownKey zimbra_session_timeout_soap = KnownKey.newKey(600);
@@ -378,7 +366,6 @@ public final class LC {
     @Supported
     public static final KnownKey ldap_amavis_password = KnownKey.newKey("zmamavis");
     public static final KnownKey ldap_nginx_password = KnownKey.newKey("zmnginx");
-    public static final KnownKey ldap_bes_searcher_password = KnownKey.newKey("zmbes-searcher");
 
     @Supported
     public static final KnownKey ldap_starttls_supported = KnownKey.newKey(0);
@@ -507,16 +494,16 @@ public final class LC {
     public static final KnownKey mysql_data_directory = KnownKey.newKey("${zimbra_db_directory}/data");
 
     @Supported
-    public static final KnownKey mysql_socket = KnownKey.newKey("/opt/zimbra/data/tmp/mysql/mysql.sock");
+    public static final KnownKey mysql_socket = KnownKey.newKey("/opt/zextras/data/tmp/mysql/mysql.sock");
 
     @Supported
-    public static final KnownKey mysql_pidfile = KnownKey.newKey("/opt/zimbra/log/mysql.pid");
+    public static final KnownKey mysql_pidfile = KnownKey.newKey("/opt/zextras/log/mysql.pid");
 
     @Supported
-    public static final KnownKey mysql_mycnf = KnownKey.newKey("/opt/zimbra/conf/my.cnf");
+    public static final KnownKey mysql_mycnf = KnownKey.newKey("/opt/zextras/conf/my.cnf");
 
     @Supported
-    public static final KnownKey mysql_errlogfile = KnownKey.newKey("/opt/zimbra/log/mysql_error.log");
+    public static final KnownKey mysql_errlogfile = KnownKey.newKey("/opt/zextras/log/mysql_error.log");
 
     @Supported
     public static final KnownKey mysql_bind_address = KnownKey.newKey(null);
@@ -570,9 +557,10 @@ public final class LC {
 
     @Supported
     public static final KnownKey mailboxd_java_options = KnownKey.newKey("-server" +
-            " -Dhttps.protocols=TLSv1.2" +
-            " -Djdk.tls.client.protocols=TLSv1.2" +
+            " -Dhttps.protocols=TLSv1.2,TLSv1.3" +
+            " -Djdk.tls.client.protocols=TLSv1.2,TLSv1.3" +
             " -Djava.awt.headless=true" +
+            " -Djava.net.preferIPv4Stack=true" +
             " -Dsun.net.inetaddr.ttl=${networkaddress_cache_ttl}" +
             " -Dorg.apache.jasper.compiler.disablejsr199=true" +
             " -XX:+UseG1GC" +
@@ -582,7 +570,7 @@ public final class LC {
             " -XX:G1MaxNewSizePercent=45" +
             " -XX:-OmitStackTraceInFastThrow" +
             " -verbose:gc" +
-            " -Xlog:gc*=info,safepoint=info:file=/opt/zimbra/log/gc.log:time:filecount=20,filesize=10m");
+            " -Xlog:gc*=info,safepoint=info:file=/opt/zextras/log/gc.log:time:filecount=20,filesize=10m");
     @Supported
     public static final KnownKey mailboxd_pidfile = KnownKey.newKey("${zimbra_log_directory}/mailboxd.pid");
 
@@ -616,7 +604,7 @@ public final class LC {
     public static final KnownKey client_ssl_truststore_password = KnownKey.newKey("${mailboxd_truststore_password}");
 
     @Supported
-    public static final KnownKey ssl_allow_untrusted_certs = KnownKey.newKey(false);
+    public static final KnownKey ssl_allow_untrusted_certs = KnownKey.newKey(true);
 
     public static final KnownKey ssl_allow_mismatched_certs = KnownKey.newKey(true);
 
@@ -700,7 +688,7 @@ public final class LC {
     public static final KnownKey data_source_imap_reuse_connections = KnownKey.newKey(false);
 
     @Supported
-    public static final KnownKey imapd_keystore = KnownKey.newKey("/opt/zimbra/conf/imapd.keystore");
+    public static final KnownKey imapd_keystore = KnownKey.newKey("/opt/zextras/conf/imapd.keystore");
     @Supported
     public static final KnownKey imapd_keystore_password = KnownKey.newKey("${mailboxd_keystore_password}");
     @Supported
@@ -815,8 +803,8 @@ public final class LC {
     public static final KnownKey search_tagged_item_count_join_query_cutoff = KnownKey.newKey(1000); //beyond this limit server will not use join in the query while fetching unread items
 
     public static final KnownKey zmstat_interval = KnownKey.newKey(30);
-    public static final KnownKey zmstat_disk_interval = KnownKey.newKey(600);
-    public static final KnownKey zmstat_max_retention = KnownKey.newKey(0);
+    public static final KnownKey zmstat_disk_interval = KnownKey.newKey(6000);
+    public static final KnownKey zmstat_max_retention = KnownKey.newKey(365);
 
     public static final KnownKey zmstat_df_excludes = KnownKey.newKey("");
 
@@ -855,7 +843,7 @@ public final class LC {
     public static final KnownKey zimbra_waitset_initial_sleep_time = KnownKey.newKey(1000);
     public static final KnownKey zimbra_waitset_nodata_sleep_time = KnownKey.newKey(3000);
 
-    public static final KnownKey zimbra_csv_mapping_file = KnownKey.newKey("${zimbra_home}/conf/zimbra-contact-fields.xml");
+    public static final KnownKey zimbra_csv_mapping_file = KnownKey.newKey("${zimbra_home}/conf/contact-fields.xml");
 
     public static final KnownKey zimbra_auth_provider = KnownKey.newKey("");
     public static final KnownKey zimbra_authtoken_cache_size = KnownKey.newKey(5000);
@@ -863,8 +851,9 @@ public final class LC {
     public static final KnownKey zimbra_jwt_cookie_size_limit = KnownKey.newKey(4096);
     public static final KnownKey zimbra_authtoken_cookie_domain = KnownKey.newKey("");
     public static final KnownKey zimbra_zmjava_options = KnownKey.newKey("-Xmx256m" +
-            " -Dhttps.protocols=TLSv1.2" +
-            " -Djdk.tls.client.protocols=TLSv1.2");
+            " -Dhttps.protocols=TLSv1.2,TLSv1.3" +
+            " -Djdk.tls.client.protocols=TLSv1.2,TLSv1.3" +
+            " -Djava.net.preferIPv4Stack=true");
     public static final KnownKey zimbra_zmjava_java_library_path = KnownKey.newKey("");
     public static final KnownKey zimbra_zmjava_java_ext_dirs = KnownKey.newKey("");
     public static final KnownKey debug_xmpp_disable_client_tls = KnownKey.newKey(0);
@@ -1130,8 +1119,8 @@ public final class LC {
     public static final KnownKey antispam_mysql_root_password = KnownKey.newKey("");
     public static final KnownKey antispam_mysql_password = KnownKey.newKey("");
 
-    public static final KnownKey antispam_enable_restarts = KnownKey.newKey(false);
-    public static final KnownKey antispam_enable_rule_updates = KnownKey.newKey(false);
+    public static final KnownKey antispam_enable_restarts = KnownKey.newKey(true);
+    public static final KnownKey antispam_enable_rule_updates = KnownKey.newKey(true);
     public static final KnownKey antispam_enable_rule_compilation = KnownKey.newKey(false);
 
     @Supported
@@ -1294,7 +1283,7 @@ public final class LC {
     public static final KnownKey search_put_hits_chunk_size = KnownKey.newKey(100);
 
     @Supported
-    public static final KnownKey mailbox_healthcheck_touchpoint_file = KnownKey.newKey("/opt/zimbra/healthcheck_touchpoint");
+    public static final KnownKey mailbox_healthcheck_touchpoint_file = KnownKey.newKey("/opt/zextras/healthcheck_touchpoint");
 
     @Supported
     public static final KnownKey outside_transaction_threadlocal_cache_expiry_seconds = KnownKey.newKey(30);
@@ -1377,9 +1366,7 @@ public final class LC {
 
     //EWS web service
     public static final KnownKey ews_service_wsdl_location =
-        KnownKey.newKey("/opt/zimbra/lib/ext/zimbraews/");
-    public static final KnownKey ews_service_log_file =
-        KnownKey.newKey("/opt/zimbra/log/ews.log");
+        KnownKey.newKey("/opt/zextras/lib/ext/zimbraews/");
 
     public static final KnownKey zimbra_ews_autodiscover_use_service_url =
         KnownKey.newKey(false);
@@ -1444,6 +1431,9 @@ public final class LC {
 
     // imap folder pagination enabled
     public static final KnownKey zimbra_imap_folder_pagination_enabled =  KnownKey.newKey(false);
+
+    // imap different message size than postfix mta ( useful for import )
+    public static final KnownKey imap_max_message_size = KnownKey.newKey(null);
 
     // unsubscribe folder creation enabled
     public static final KnownKey zimbra_feature_safe_unsubscribe_folder_enabled =  KnownKey.newKey(false);

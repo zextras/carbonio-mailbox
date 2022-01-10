@@ -2,7 +2,7 @@
   <import file="../build-common.xml"/>
   <property name="service.webapp.dir" location="${jetty.webapps.dir}/service"/>
   <property name="zimbra.webapp.dir" location="${jetty.webapps.dir}/zimbra"/>
-  <property name="zimbra-admin.webapp.dir" location="${jetty.webapps.dir}/zimbraAdmin"/>
+  <property name="admin.webapp.dir" location="${jetty.webapps.dir}/zimbraAdmin"/>
   <property name="config.dir" location="conf"/>
   <property name="warfilename" value="service.war"/>
   <property name="warfile" location="${build.dir}/${warfilename}"/>
@@ -99,8 +99,6 @@
     <mkdir dir="${build.dir}/data"/>
     <mkdir dir="${build.dir}/zimbra"/>
     <mkdir dir="${build.dir}/zimbra/conf"/>
-    <copy file="${zm-mailbox.basedir}/store-conf/conf/antisamy.xml" todir="${build.dir}/zimbra/conf/"/>
-    <copy file="${zm-mailbox.basedir}/store-conf/conf/owasp_policy.xml" todir="${build.dir}/zimbra/conf/"/>
     <antcall target="make-dirs">
       <param name="base.dir" value="${dist.dir}"/>
     </antcall>
@@ -125,7 +123,7 @@
     </echo>
     <javac includeantruntime="false" destdir="${build.classes.dir}" debug="true" target="${javac.target}" srcdir="${build.dir}/buildinfo"/>
   </target>
-  <target name="generate-getters" depends="compile,resolve" description="generate methods for attributes in zimbra-attrs.xml">
+  <target name="generate-getters" depends="compile,resolve" description="generate methods for attributes in attrs.xml">
     <antcall target="generate-getter">
       <param name="getter.class" value="account"/>
       <param name="getter.output" value="ZAttrAccount.java"/>
@@ -187,7 +185,7 @@
     </java>
   </target>
   <target name="jar" depends="generate-buildinfo,compile" description="Creates the jar file">
-    <antcall target="zimbra-jar">
+    <antcall target="zextras-jar">
       <param name="implementation.title" value="Zimbra Server"/>
     </antcall>
   </target>
@@ -210,7 +208,7 @@
 	  <available file="${jetty.webapps.dir}/zimbraAdmin/" type="dir" property="zimbraadmin.webapp.installed"/>
 	  <then>
 	    <delete verbose="true">
-	      <fileset dir="${zimbra-admin.webapp.dir}/WEB-INF/lib/" includes="zm-store*.jar,zimbrastore*.jar"/>
+	      <fileset dir="${admin.webapp.dir}/WEB-INF/lib/" includes="zm-store*.jar,zimbrastore*.jar"/>
 	    </delete>
 	  </then>
 	</antcontrib:if>
@@ -238,7 +236,7 @@
 	<antcontrib:if>
 	  <available file="${jetty.webapps.dir}/zimbraAdmin/" type="dir" property="zimbraadmin.webapp.installed"/>
 	  <then>
-        <copy file="${build.dir}/${jar.file}" todir="${zimbra-admin.webapp.dir}/WEB-INF/lib/"/>
+        <copy file="${build.dir}/${jar.file}" todir="${admin.webapp.dir}/WEB-INF/lib/"/>
 	  </then>
 	</antcontrib:if>
     <antcontrib:if>
@@ -315,7 +313,7 @@
     <ivy:install organisation="com.sun.jersey" module="jersey-servlet" revision="1.11" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
     <ivy:install organisation="com.sun.jersey" module="jersey-server" revision="1.11" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
     <ivy:install organisation="com.sun.jersey.contribs" module="jersey-multipart" revision="1.12" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
-    <ivy:install organisation="javax.jws" module="jsr181-api" revision="2.2.6" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+    <ivy:install organisation="javax.jws" module="jsr181-api" revision="1.0-MR1" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
     <ivy:install organisation="org.ehcache" module="ehcache" revision="3.1.2" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
     <ivy:install organisation="javax.ws.rs" module="jsr311-api" revision="1.1.1" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
     <ivy:install organisation="com.fasterxml.jackson.core" module="jackson-core" revision="2.9.2" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
@@ -334,8 +332,8 @@
     <ivy:install organisation="com.graphql-java" module="graphql-java" revision="9.0" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
     <ivy:install organisation="org.reactivestreams" module="reactive-streams" revision="1.0.2" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
     <ivy:install organisation="org.antlr" module="antlr4-runtime" revision="4.7.1" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
-    <ivy:install organisation="org.eclipse.jetty" module="jetty-servlets" revision="9.4.18.v20190429" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
-    <ivy:install organisation="org.eclipse.jetty" module="jetty-servlet" revision="9.4.18.v20190429" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+    <ivy:install organisation="org.eclipse.jetty" module="jetty-servlets" revision="9.4.44.v20210927" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+    <ivy:install organisation="org.eclipse.jetty" module="jetty-servlet" revision="9.4.44.v20210927" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
     <ivy:install organisation="org.tukaani" module="xz" revision="1.8" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
     <ivy:install organisation="org.apache.commons" module="commons-compress" revision="1.20" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
     
@@ -348,7 +346,7 @@
     </war>
   </target>
   <target name="test-jar" depends="test-compile" description="creates the jar file needed for testing">
-    <antcall target="zimbra-jar">
+    <antcall target="zextras-jar">
       <param name="jar.file" value="zimbrastore-test.jar"/>
       <param name="implementation.title" value="zm-store test"/>
       <param name="jar.build.dir" value="${server.dir}/build/test-classes/"/>
@@ -370,15 +368,15 @@
     </copy>
     <mkdir dir="${build.dir}/ldap-config"/>
     <mkdir dir="${build.dir}/ldap-config/config"/>
-    <!-- Zimbra schema for pre OpenLDAP 2.4 - uses zimbra.schema-template, should eventually retire zimbra.schema-template and only use zimbra-ocs.xml -->
+    <!-- Schema for pre OpenLDAP 2.4 - uses carbonio.schema-template, should eventually retire carbonio.schema-template and only use ocs.xml -->
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="run.class.path" failonerror="true">
       <sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}"/>
-      <arg line="-a generateLdapSchema -i ${build.dir}/attrs -t ${ldap.config.dir}/zimbra.schema-template -o ${build.dir}/ldap-config/zimbra.schema"/>
+      <arg line="-a generateLdapSchema -i ${build.dir}/attrs -t ${ldap.config.dir}/carbonio.schema-template -o ${build.dir}/ldap-config/carbonio.schema"/>
     </java>
-    <!-- Zimbra schema for OpenLDAP 2.4 - use zimbra-ocs.xml -->
+    <!-- Schema for OpenLDAP 2.4 - use ocs.xml -->
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="run.class.path" failonerror="true">
       <sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}"/>
-      <arg line="-a generateSchemaLdif -i ${build.dir}/attrs -o ${build.dir}/ldap-config/config/zimbra.ldif"/>
+      <arg line="-a generateSchemaLdif -i ${build.dir}/attrs -o ${build.dir}/ldap-config/config/zextras.ldif"/>
     </java>
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="run.class.path" failonerror="true">
       <sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}"/>
@@ -402,10 +400,10 @@
     <copy todir="${zimbra.home.dir}/${slapd.etc.dir}/zimbra/" file="${build.dir}/ldap-config/zimbra_globalconfig.ldif" overwrite="true"/>
     <copy todir="${zimbra.home.dir}/${slapd.etc.dir}/zimbra/" file="${build.dir}/ldap-config/zimbra_defaultcos.ldif" overwrite="true"/>
     <copy todir="${zimbra.home.dir}/${slapd.etc.dir}/zimbra/" file="${build.dir}/ldap-config/zimbra_defaultexternalcos.ldif" overwrite="true"/>
-    <copy todir="${zimbra.home.dir}/${slapd.etc.dir}/zimbra/schema/" file="${build.dir}/ldap-config/zimbra.schema" overwrite="true"/>
-    <copy todir="${zimbra.home.dir}/${slapd.etc.dir}/zimbra/schema/" file="${build.dir}/ldap-config/config/zimbra.ldif" overwrite="true"/>
+    <copy todir="${zimbra.home.dir}/${slapd.etc.dir}/zimbra/schema/" file="${build.dir}/ldap-config/carbonio.schema" overwrite="true"/>
+    <copy todir="${zimbra.home.dir}/${slapd.etc.dir}/zimbra/schema/" file="${build.dir}/ldap-config/config/carbonio.ldif" overwrite="true"/>
     <!-- apply ldap schema changes -->
-    <exec executable="/opt/zimbra/libexec/zmldapschema"/>
+    <exec executable="/opt/zextras/libexec/zmldapschema"/>
     <antcall target="start-zimbra"/>
   </target>
   <target name="create-version-sql" depends="build-init, compile, set-dev-version" description="Creates version-init.sql">
@@ -416,25 +414,25 @@
        <arg line="-o ${dist.dir}"/>
     </java>
   </target>
-  <target name="create-version-ldap" depends="build-init" description="Creates ldap schema version: zimbra-attrs-schema">
-    <exec executable="git" failonerror="false" output="${dist.dir}/conf/attrs/zimbra-attrs-schema">
+  <target name="create-version-ldap" depends="build-init" description="Creates ldap schema version: attrs-schema">
+    <exec executable="git" failonerror="false" output="${dist.dir}/conf/attrs/attrs-schema">
       <arg value="log"/>
       <arg value="-1"/>
       <arg value="--pretty=format:%at"/>
-      <arg value="conf/attrs/zimbra-attrs.xml"/>
+      <arg value="conf/attrs/attrs.xml"/>
     </exec>
   </target>
   <target name="setup-for-soap-tests" description="Does necessary setup for RunUnitTestsRequests">
     <exec executable="sudo" failonerror="false">
       <arg value="mkdir"/>
-      <arg value="/opt/zimbra/unittest"/>
+      <arg value="/opt/zextras/unittest"/>
     </exec>
     <exec executable="sudo" failonerror="false">
       <arg value="chown"/>
       <arg value="zimbra"/>
-      <arg value="/opt/zimbra/unittest"/>
+      <arg value="/opt/zextras/unittest"/>
     </exec>
-    <copy todir="/opt/zimbra/unittest" >
+    <copy todir="/opt/zextras/unittest" >
       <fileset dir="data/unittest" includes="**"/>
     </copy>
   </target>

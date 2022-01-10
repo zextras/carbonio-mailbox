@@ -95,7 +95,7 @@ Note that the value Org is from legacyExchangeDN attribute of the user,
 not the DN of the user object.
 
 Use zmprov tool to set the global config variables.  For example, assuming
-the user zimbra exists on the Exchange server on exchange.mycompany.com
+the user zextras exists on the Exchange server on exchange.mycompany.com
 with password 'changeme' :
 
     zmprov mcf zimbraFreebusyExchangeAuthUsername zimbra

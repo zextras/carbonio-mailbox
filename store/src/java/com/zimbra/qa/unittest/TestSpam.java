@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.qa.unittest;
 
 import static org.junit.Assert.assertEquals;
@@ -169,7 +158,7 @@ public class TestSpam {
         TestUtil.addMessageLmtp(subject, USER_NAME, USER_NAME);
         ZMessage msg = TestUtil.getMessage(mbox, "in:" + spamFolder.getPath() + " subject:\"" + subject + "\"");
         ZMailbox spamMbox = TestUtil.getZMailbox(SPAM_NAME);
-        ZMessage reportMsg = TestUtil.waitForMessage(spamMbox, "zimbra-spam-report spam");
+        ZMessage reportMsg = TestUtil.waitForMessage(spamMbox, "spam-report spam");
         // Note: ZimbraMailAdapter.fileInto now strips leading and trailing '/' from the target folder path
         validateSpamReport(TestUtil.getContent(spamMbox, reportMsg.getId()),
             TestUtil.getAddress(USER_NAME), "spam", "filter", null, spamFolder.getPath().substring(1), null);
@@ -178,14 +167,14 @@ public class TestSpam {
         // Move out of spam folder.
         mbox.moveMessage(msg.getId(), Integer.toString(Mailbox.ID_FOLDER_INBOX));
         ZMailbox hamMbox = TestUtil.getZMailbox(HAM_NAME);
-        reportMsg = TestUtil.waitForMessage(hamMbox, "zimbra-spam-report ham");
+        reportMsg = TestUtil.waitForMessage(hamMbox, "spam-report ham");
         validateSpamReport(TestUtil.getContent(hamMbox, reportMsg.getId()),
             TestUtil.getAddress(USER_NAME), "ham", "move", spamFolder.getPath(), inboxFolder.getPath(), null);
         hamMbox.deleteMessage(reportMsg.getId());
 
         // Move back to spam folder.
         mbox.moveMessage(msg.getId(), Integer.toString(Mailbox.ID_FOLDER_SPAM));
-        reportMsg = TestUtil.waitForMessage(spamMbox, "zimbra-spam-report spam");
+        reportMsg = TestUtil.waitForMessage(spamMbox, "spam-report spam");
         validateSpamReport(TestUtil.getContent(spamMbox, reportMsg.getId()),
             TestUtil.getAddress(USER_NAME), "spam", "move", inboxFolder.getPath(), spamFolder.getPath(), null);
         spamMbox.deleteMessage(reportMsg.getId());
@@ -196,7 +185,7 @@ public class TestSpam {
         TestUtil.createMountpoint(remoteMbox, "/Inbox", mbox, mountpointPath);
         ZFolder mountpoint = mbox.getFolderByPath(mountpointPath);
         mbox.moveMessage(msg.getId(), mountpoint.getId());
-        reportMsg = TestUtil.waitForMessage(hamMbox, "zimbra-spam-report ham");
+        reportMsg = TestUtil.waitForMessage(hamMbox, "spam-report ham");
         validateSpamReport(TestUtil.getContent(hamMbox, reportMsg.getId()),
             TestUtil.getAddress(USER_NAME), "ham", "remote move", spamFolder.getPath(),
             inboxFolder.getPath(), TestUtil.getAddress(REMOTE_USER_NAME));

@@ -1,0 +1,38 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-appserver-conf"
+pkgver="4.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Mailbox Service Configuration"
+pkgdesclong=(
+  "Carbonio Mailbox Service Configuration"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-appserver"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../staging
+
+  install -D "store-conf/conf/globs2" \
+    "${pkgdir}/opt/zextras/conf/globs2"
+  install -D "store-conf/conf/magic" \
+    "${pkgdir}/opt/zextras/conf/magic"
+  install -D "store-conf/conf/magic.zimbra" \
+    "${pkgdir}/opt/zextras/conf/magic.zimbra"
+  install -D "store-conf/conf/globs2.zimbra" \
+    "${pkgdir}/opt/zextras/conf/globs2.zimbra"
+  install -D "store-conf/conf/spnego_java_options.in" \
+    "${pkgdir}/opt/zextras/conf/spnego_java_options.in"
+  install -D "store-conf/conf/contacts/contact-fields.xml" \
+    "${pkgdir}/opt/zextras/conf/contact-fields.xml"
+  install -D "store-conf/conf/common-passwords.txt" \
+    "${pkgdir}/opt/zextras/conf/common-passwords.txt"
+}

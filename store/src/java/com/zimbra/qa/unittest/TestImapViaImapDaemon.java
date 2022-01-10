@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
  package com.zimbra.qa.unittest;
 
 import static org.junit.Assert.assertEquals;
@@ -39,8 +43,8 @@ import com.zimbra.soap.admin.type.CacheEntryType;
    * The actual tests that are run are in {@link SharedImapTests}
    */
   public class TestImapViaImapDaemon extends SharedImapTests {
-      private static String IMAPD_CSV_FILE = "/opt/zimbra/zmstat/imapd.csv";
-      private static String IMAPD_CSV_STATS_FILE = "/opt/zimbra/zmstat/imapd_stats.csv";
+      private static String IMAPD_CSV_FILE = "/opt/zextras/zmstat/imapd.csv";
+      private static String IMAPD_CSV_STATS_FILE = "/opt/zextras/zmstat/imapd_stats.csv";
 
       @Before
       public void setUp() throws Exception  {
@@ -51,7 +55,7 @@ import com.zimbra.soap.admin.type.CacheEntryType;
           // As we're connecting to the IMAP daemon's port directly, there is no harm
           // in having the other IMAP daemon running.  Also, currently, changing the value of these
           // settings may result in zmconfigd restarting mailboxd (due to attrs having
-          // requiresRestart="mailbox" in zimbra-attrs.xml).  Obviously, that results in RunUnitTestsRequest
+          // requiresRestart="mailbox" in attrs.xml).  Obviously, that results in RunUnitTestsRequest
           // failing because the process it was talking to has disappeared!
           // imapServer.setImapServerEnabled(false);
           // imapServer.setImapSSLServerEnabled(false);

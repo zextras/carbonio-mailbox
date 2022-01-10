@@ -1,9 +1,4 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite, Network Edition.
- * Copyright (C) 2013, 2014 Zimbra, Inc.  All Rights Reserved.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2014 Zimbra, Inc.
 package com.zimbra.cs.service;
 
 import java.io.IOException;

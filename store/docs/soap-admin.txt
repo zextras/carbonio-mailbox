@@ -302,7 +302,7 @@ Access: domain admin sufficient
 
 <ResetAllLoggersResponse/>
 
-Removes all account loggers and reloads /opt/zimbra/conf/log4j.properties.
+Removes all account loggers and reloads /opt/zextras/conf/log4j.properties.
 
 -----------------------------
 NOTE: SearchAccountsRequest is deprecated. See SearchDirectoryRequest.
@@ -1222,7 +1222,7 @@ Notes:
         2 = secondary message volume
         10 = index volume
   name: name or description of volume
-  rootPath: absolute path to root of volume, e.g. /opt/zimbra/store
+  rootPath: absolute path to root of volume, e.g. /opt/zextras/store
   compressBlobs: boolean value that specifies whether blobs in this
     volume are compressed
   compressionThreshold: long value that specifies the maximum uncompressed
@@ -2372,7 +2372,7 @@ Note: For account/alias/dl, if a <domain> is specified, only entries on the
 
 ---------------------------------------------------------------------------
 # Get server's network interfaces. Returns IP  addresses and net masks
-# This call will use zmrcd to call /opt/zimbra/libexec/zmserverips
+# This call will use zmrcd to call /opt/zextras/libexec/zmserverips
 
 <GetServerNIfsRequest [type="{ipv4|ipv6|both}"]>
  <server by="id|name|serviceHostname">...</server>
@@ -3266,7 +3266,7 @@ Returns list of address lists.
       </GetAllAddressListsResponse>
 ------------------------
 API to delete address list.
-<DeleteAddressListRequest id={address-list-zimbra-Id} xmlns="urn:zimbraAdmin"/>
+<DeleteAddressListRequest id={address-list-Id} xmlns="urn:zimbraAdmin"/>
 
 Response:
 <DeleteAddressListResponse xmlns="urn:zimbraAdmin"/>

@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.common.mime;
 
 import com.google.common.collect.ImmutableSet;
@@ -47,9 +36,9 @@ public class MimeConstants {
     public static final String CT_APPLICATION_SMIME_SIGNATURE_OLD = "application/x-pkcs7-signature";
     public static final String CT_APPLICATION_TNEF = "application/ms-tnef";
     public static final String CT_APPLICATION_XHTML = "application/xhtml+xml";
-    public static final String CT_APPLICATION_ZIMBRA_DOC = "application/x-zimbra-doc";
-    public static final String CT_APPLICATION_ZIMBRA_SLIDES = "application/x-zimbra-slides";
-    public static final String CT_APPLICATION_ZIMBRA_SPREADSHEET = "application/x-zimbra-xls";
+    public static final String CT_APPLICATION_ZIMBRA_DOC = "application/x-doc";
+    public static final String CT_APPLICATION_ZIMBRA_SLIDES = "application/x-slides";
+    public static final String CT_APPLICATION_ZIMBRA_SPREADSHEET = "application/x-xls";
     public static final String CT_MULTIPART_ALTERNATIVE = "multipart/alternative";
     public static final String CT_MULTIPART_DIGEST = "multipart/digest";
     public static final String CT_MULTIPART_ENCRYPTED = "multipart/encrypted";
@@ -58,8 +47,8 @@ public class MimeConstants {
     public static final String CT_MULTIPART_RELATED = "multipart/related";
     public static final String CT_MULTIPART_SIGNED = "multipart/signed";
     public static final String CT_MULTIPART_APPLEDOUBLE = "multipart/appledouble";
-    public static final String CT_XML_ZIMBRA_SHARE = "xml/x-zimbra-share";
-    public static final String CT_XML_ZIMBRA_DL_SUBSCRIPTION = "xml/x-zimbra-dl-subscription";
+    public static final String CT_XML_ZIMBRA_SHARE = "xml/x-share";
+    public static final String CT_XML_ZIMBRA_DL_SUBSCRIPTION = "xml/x-dl-subscription";
     public static final String CT_MULTIPART_PREFIX = "multipart/";
     public static final String CT_TEXT_PREFIX = "text/";
     public static final String CT_MESSAGE_PREFIX = "message/";

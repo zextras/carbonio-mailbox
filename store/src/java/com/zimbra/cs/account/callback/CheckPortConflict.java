@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.cs.account.callback;
 
 import java.util.HashMap;
@@ -39,7 +28,7 @@ public class CheckPortConflict extends AttributeCallback {
     private static final Set<String> ProxyPortAttrs = new HashSet<String>();
 
     static {
-        // TODO: use a flag in zimbra-attrs.xml and generate this map automatically
+        // TODO: use a flag in attrs.xml and generate this map automatically
         ProxyPortAttrs.add(Provisioning.A_zimbraAdminProxyPort);
 
         ProxyPortAttrs.add(Provisioning.A_zimbraImapProxyBindPort);
@@ -56,7 +45,7 @@ public class CheckPortConflict extends AttributeCallback {
     private static final Set<String> NonProxyPortAttrs = new HashSet<String>();
 
     static {
-        // TODO: use a flag in zimbra-attrs.xml and generate this map automatically
+        // TODO: use a flag in attrs.xml and generate this map automatically
         NonProxyPortAttrs.add(Provisioning.A_zimbraAdminPort);
 
         NonProxyPortAttrs.add(Provisioning.A_zimbraImapBindPort);
@@ -94,7 +83,7 @@ public class CheckPortConflict extends AttributeCallback {
         // Have sPortAttrs as a union of NonProxyPortAttrs & ProxyPortAttrs
         sPortAttrs.addAll(ProxyPortAttrs);
 
-        // sanity check, zimbra-attrs.xml and the sPortAttrsToCheck map has to be in sync
+        // sanity check, attrs.xml and the sPortAttrsToCheck map has to be in sync
         if (!sPortAttrs.contains(attrName) ||
             !AttributeManager.getInstance().isServerInherited(attrName))
             assert(false);

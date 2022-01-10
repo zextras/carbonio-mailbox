@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2008, 2009, 2010, 2012, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.redolog.util;
 
@@ -61,12 +49,12 @@ import com.zimbra.cs.util.Zimbra;
  *
  * This program is intended to be run with mailboxd process stopped.
  * Some diagnostic information is logged to stdout/stderr.  Most of
- * the logging goes to /opt/zimbra/log/mailbox.log, with log level
- * controlled by /opt/zimbra/conf/log4j.properties file.
+ * the logging goes to /opt/zextras/log/mailbox.log, with log level
+ * controlled by /opt/zextras/conf/log4j.properties file.
  *
  * When it is run without options it replays all redologs found under
- * /opt/zimbra/redolog/archive directory, in sequence order, followed
- * by /opt/zimbra/redolog/redo.log.  For each redolog all committed
+ * /opt/zextras/redolog/archive directory, in sequence order, followed
+ * by /opt/zextras/redolog/redo.log.  For each redolog all committed
  * operations are replayed.
  *
  * Specify --mailboxId <mailbox id> option to replay committed operations
@@ -272,7 +260,7 @@ public class PlaybackUtil {
                     throw new FileNotFoundException("No such file: " + f.getAbsolutePath());
             }
         } else {
-            // By default, use /opt/zimbra/redolog/archive/*, then /opt/zimbra/redolog/redo.log,
+            // By default, use /opt/zextras/redolog/archive/*, then /opt/zextras/redolog/redo.log,
             // ordered by log sequence.
             Provisioning prov = Provisioning.getInstance();
             Server server = prov.getLocalServer();

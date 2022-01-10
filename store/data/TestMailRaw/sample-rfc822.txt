@@ -16,5 +16,5 @@ or equivalent function to see your message in its RFC822
 form.
 
 If you have any questions about the build, do not hesitate
-to search for answers on our forums (http://www.zimbra.com/forums),
+to search for answers on our forums (https://community.zextras.com),
 or to ask us a question of your own!

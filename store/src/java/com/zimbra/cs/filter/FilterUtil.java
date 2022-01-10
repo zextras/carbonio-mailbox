@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.cs.filter;
 
 import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_VARIABLES;
@@ -278,7 +267,7 @@ public final class FilterUtil {
 
         try {
             if (!isMailLoop(sourceMbox, msg, new String[]{HEADER_FORWARDED})) {
-                outgoingMsg = new Mime.FixedMimeMessage(msg);
+                outgoingMsg = new MimeMessage(msg);
                 Mime.recursiveRepairTransferEncoding(outgoingMsg);
                 outgoingMsg.addHeader(HEADER_FORWARDED, sourceMbox.getAccount().getName());
                 outgoingMsg.saveChanges();
@@ -703,7 +692,7 @@ public final class FilterUtil {
                   "from".equalsIgnoreCase(headerName) ||
                   "subject".equalsIgnoreCase(headerName) ||
                   "auto-submitted".equalsIgnoreCase(headerName) ||
-                  "x-zimbra-forwarded".equalsIgnoreCase(headerName) ||
+                  "x-forwarded".equalsIgnoreCase(headerName) ||
                   "message-id".equalsIgnoreCase(headerName) ||
                   "date".equalsIgnoreCase(headerName) ||
                   "body".equalsIgnoreCase(headerName))) {

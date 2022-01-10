@@ -167,5 +167,5 @@ said user some information that the user can use to remotely access protected da
 
 - ACLs on DLs to control who can manage them
 
-- well known DLs - could use WKD for fine-grained access control (i.e., zimbra-account-read DL
+- well known DLs - could use WKD for fine-grained access control (i.e., account-read DL
   membership could allow its members read access to accounts in the admin console).

@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2011, 2012, 2013, 2014, 2016, 2017 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.common.zmime;
 
 import org.apache.commons.lang.StringUtils;
@@ -47,7 +36,7 @@ public class ZMimeBodyPartTest {
         mbp.setText(content, "utf-8");
         Assert.assertArrayEquals(content.getBytes("utf-8"), ByteUtil.getContent(mbp.getInputStream(), -1));
 
-        mbp.setHeader("Content-Type", "xml/x-zimbra-share");
+        mbp.setHeader("Content-Type", "xml/x-share");
         Assert.assertArrayEquals(content.getBytes(), ByteUtil.getContent(mbp.getInputStream(), -1));
 
         mbp.writeTo(System.out);
@@ -58,7 +47,7 @@ public class ZMimeBodyPartTest {
         String content = "\u30d6\u30ea\u30fc\u30d5\u30b1\u30fc\u30b9";
         ZMimeBodyPart mbp = new ZMimeBodyPart();
 
-        mbp.setContent(content, "xml/x-zimbra-share;charset=ISO-2022-JP");
+        mbp.setContent(content, "xml/x-share;charset=ISO-2022-JP");
         mbp.setHeader("Content-Transfer-Encoding", "base64");
         mbp.updateHeaders();
         mbp.writeTo(System.out);

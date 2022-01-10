@@ -1,0 +1,211 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-common-appserver-conf"
+pkgver="4.0.0"
+pkgrel="1"
+pkgdesc="Carbonio Core Mailbox Configuration"
+pkgdesclong=(
+  "Carbonio Core Mailbox Configuration"
+)
+arch="amd64"
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+depends=(
+  "carbonio-core"
+)
+section="mail"
+priority="optional"
+sources=(
+  "attrs-schema"
+)
+backup=(
+  "/opt/zextras/conf/localconfig.xml"
+)
+hashsums=(
+  "SKIP"
+)
+
+package() {
+  cd "${srcdir}"/../../staging
+
+  install -D "${srcdir}"/attrs-schema \
+    "${pkgdir}/opt/zextras/conf/attrs-schema"
+
+  install -D "milter-conf/conf/milter.log4j.properties" \
+    "${pkgdir}/opt/zextras/conf/milter.log4j.properties"
+  install -D "milter-conf/conf/mta_milter_options.in" \
+    "${pkgdir}/opt/zextras/conf/mta_milter_options.in"
+  install -D "store-conf/conf/datasource.xml" \
+    "${pkgdir}/opt/zextras/conf/datasource.xml"
+  install -D "store-conf/conf/localconfig.xml.production" \
+    "${pkgdir}/opt/zextras/conf/localconfig.xml"
+  install -D "store-conf/conf/log4j.properties.production" \
+    "${pkgdir}/opt/zextras/conf/log4j.properties.in"
+  install -D "store-conf/conf/stats.conf.in" \
+    "${pkgdir}/opt/zextras/conf/stats.conf.in"
+  install -D "store/conf/unbound.conf.in" \
+    "${pkgdir}/opt/zextras/conf/unbound.conf.in"
+
+  install -D "store/conf/attrs/amavisd-new-attrs.xml" \
+    "${pkgdir}/opt/zextras/conf/attrs/amavisd-new-attrs.xml"
+  install -D "store/conf/attrs/attrs.xml" \
+    "${pkgdir}/opt/zextras/conf/attrs/attrs.xml"
+  install -D "store/conf/attrs/ocs.xml" \
+    "${pkgdir}/opt/zextras/conf/attrs/ocs.xml"
+
+  install -D "store-conf/conf/msgs/L10nMsg.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/L10nMsg.properties"
+  install -D "store-conf/conf/msgs/ZsMsg.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_ar.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_ar.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_da.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_da.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_de.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_de.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_en_AU.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_en_AU.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_en_GB.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_en_GB.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_es.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_es.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_eu.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_eu.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_fr.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_fr.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_fr_CA.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_fr_CA.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_hi.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_hi.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_hu.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_hu.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_in.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_in.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_it.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_it.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_iw.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_iw.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_ja.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_ja.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_ko.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_ko.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_lo.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_lo.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_ms.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_ms.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_nl.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_nl.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_pl.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_pl.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_pt.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_pt.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_pt_BR.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_pt_BR.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_ro.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_ro.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_ru.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_ru.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_sl.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_sl.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_sv.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_sv.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_th.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_th.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_tr.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_tr.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_uk.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_uk.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_zh_CN.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_zh_CN.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_zh_HK.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_zh_HK.properties"
+  install -D "store-conf/conf/msgs/ZsMsgRights_zh_TW.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_zh_TW.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_ar.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_ar.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_da.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_da.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_de.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_de.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_en.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_en.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_en_AU.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_en_AU.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_en_GB.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_en_GB.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_es.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_es.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_eu.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_eu.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_fr.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_fr.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_fr_CA.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_fr_CA.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_fr_FR.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_fr_FR.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_hi.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_hi.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_hu.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_hu.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_in.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_in.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_it.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_it.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_iw.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_iw.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_ja.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_ja.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_ko.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_ko.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_lo.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_lo.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_ms.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_ms.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_nl.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_nl.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_pl.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_pl.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_pt.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_pt.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_pt_BR.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_pt_BR.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_ro.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_ro.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_ru.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_ru.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_sl.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_sl.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_sv.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_sv.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_th.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_th.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_tr.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_tr.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_uk.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_uk.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_zh_CN.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_zh_CN.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_zh_HK.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_zh_HK.properties"
+  install -D "store-conf/conf/msgs/ZsMsg_zh_TW.properties" \
+    "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_zh_TW.properties"
+
+  install -D "store-conf/conf/rights/adminconsole-ui.xml" \
+    "${pkgdir}/opt/zextras/conf/rights/adminconsole-ui.xml"
+  install -D "store-conf/conf/rights/rights-adminconsole-domainadmin.xml" \
+    "${pkgdir}/opt/zextras/conf/rights/rights-adminconsole-domainadmin.xml"
+  install -D "store-conf/conf/rights/rights-adminconsole.xml" \
+    "${pkgdir}/opt/zextras/conf/rights/rights-adminconsole.xml"
+  install -D "store-conf/conf/rights/rights-domainadmin.xml" \
+    "${pkgdir}/opt/zextras/conf/rights/rights-domainadmin.xml"
+  install -D "store-conf/conf/rights/rights-roles.xml" \
+    "${pkgdir}/opt/zextras/conf/rights/rights-roles.xml"
+  install -D "store-conf/conf/rights/rights.xml" \
+    "${pkgdir}/opt/zextras/conf/rights/rights.xml"
+  install -D "store-conf/conf/rights/user-rights.xml" \
+    "${pkgdir}/opt/zextras/conf/rights/user-rights.xml"
+}

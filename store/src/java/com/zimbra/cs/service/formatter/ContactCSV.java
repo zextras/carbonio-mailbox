@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.service.formatter;
 
@@ -736,7 +724,7 @@ public final class ContactCSV {
             String order = origOrder.toLowerCase();
             if (! (order.equals("ymd") || order.equals("ydm") || order.equals("myd") ||
                     order.equals("mdy") || order.equals("dmy") || order.equals("dym")) ) {
-                LOG.debug("invalid \"order\" %s in zimbra-contact-fields.xml", origOrder);
+                LOG.debug("invalid \"order\" %s in contact-fields.xml", origOrder);
                 continue;
             }
             String format = dateFormat.attributeValue(ATTR_FORMAT);

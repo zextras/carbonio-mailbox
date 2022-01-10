@@ -1,19 +1,7 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
 
 /*
  * Created on Sep 23, 2004
@@ -5664,11 +5652,11 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Default backup target path
      *
-     * @return zimbraBackupTarget, or "/opt/zimbra/backup" if unset
+     * @return zimbraBackupTarget, or "/opt/zextras/backup" if unset
      */
     @ZAttr(id=458)
     public String getBackupTarget() {
-        return getAttr(Provisioning.A_zimbraBackupTarget, "/opt/zimbra/backup", true);
+        return getAttr(Provisioning.A_zimbraBackupTarget, "/opt/zextras/backup", true);
     }
 
     /**
@@ -5726,13 +5714,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Realm for the basic auth challenge (WWW-Authenticate) header
      *
-     * @return zimbraBasicAuthRealm, or "Zimbra" if unset
+     * @return zimbraBasicAuthRealm, or "Carbonio" if unset
      *
      * @since ZCS 7.0.0
      */
     @ZAttr(id=1098)
     public String getBasicAuthRealm() {
-        return getAttr(Provisioning.A_zimbraBasicAuthRealm, "Zimbra", true);
+        return getAttr(Provisioning.A_zimbraBasicAuthRealm, "Carbonio", true);
     }
 
     /**
@@ -9964,169 +9952,6 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Whether or not to enable the Safe Browsing feature. If enabled,
-     * freshclam will download Google&#039;s safe browsing database. See
-     * http://www.google.com/transparencyreport/safebrowsing and
-     * http://www.clamav.net/documentation.html#safebrowsing for more
-     * information about this service.
-     *
-     * <p>Valid values: [yes, no]
-     *
-     * @return zimbraClamAVSafeBrowsing, or ZAttrProvisioning.ClamAVSafeBrowsing.no if unset and/or has invalid value
-     *
-     * @since ZCS 8.7.0,9.0.0
-     */
-    @ZAttr(id=2074)
-    public ZAttrProvisioning.ClamAVSafeBrowsing getClamAVSafeBrowsing() {
-        try { String v = getAttr(Provisioning.A_zimbraClamAVSafeBrowsing, true, true); return v == null ? ZAttrProvisioning.ClamAVSafeBrowsing.no : ZAttrProvisioning.ClamAVSafeBrowsing.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.ClamAVSafeBrowsing.no; }
-    }
-
-    /**
-     * Whether or not to enable the Safe Browsing feature. If enabled,
-     * freshclam will download Google&#039;s safe browsing database. See
-     * http://www.google.com/transparencyreport/safebrowsing and
-     * http://www.clamav.net/documentation.html#safebrowsing for more
-     * information about this service.
-     *
-     * <p>Valid values: [yes, no]
-     *
-     * @return zimbraClamAVSafeBrowsing, or "no" if unset
-     *
-     * @since ZCS 8.7.0,9.0.0
-     */
-    @ZAttr(id=2074)
-    public String getClamAVSafeBrowsingAsString() {
-        return getAttr(Provisioning.A_zimbraClamAVSafeBrowsing, "no", true);
-    }
-
-    /**
-     * Whether or not to enable the Safe Browsing feature. If enabled,
-     * freshclam will download Google&#039;s safe browsing database. See
-     * http://www.google.com/transparencyreport/safebrowsing and
-     * http://www.clamav.net/documentation.html#safebrowsing for more
-     * information about this service.
-     *
-     * <p>Valid values: [yes, no]
-     *
-     * @param zimbraClamAVSafeBrowsing new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 8.7.0,9.0.0
-     */
-    @ZAttr(id=2074)
-    public void setClamAVSafeBrowsing(ZAttrProvisioning.ClamAVSafeBrowsing zimbraClamAVSafeBrowsing) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraClamAVSafeBrowsing, zimbraClamAVSafeBrowsing.toString());
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Whether or not to enable the Safe Browsing feature. If enabled,
-     * freshclam will download Google&#039;s safe browsing database. See
-     * http://www.google.com/transparencyreport/safebrowsing and
-     * http://www.clamav.net/documentation.html#safebrowsing for more
-     * information about this service.
-     *
-     * <p>Valid values: [yes, no]
-     *
-     * @param zimbraClamAVSafeBrowsing new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 8.7.0,9.0.0
-     */
-    @ZAttr(id=2074)
-    public Map<String,Object> setClamAVSafeBrowsing(ZAttrProvisioning.ClamAVSafeBrowsing zimbraClamAVSafeBrowsing, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraClamAVSafeBrowsing, zimbraClamAVSafeBrowsing.toString());
-        return attrs;
-    }
-
-    /**
-     * Whether or not to enable the Safe Browsing feature. If enabled,
-     * freshclam will download Google&#039;s safe browsing database. See
-     * http://www.google.com/transparencyreport/safebrowsing and
-     * http://www.clamav.net/documentation.html#safebrowsing for more
-     * information about this service.
-     *
-     * <p>Valid values: [yes, no]
-     *
-     * @param zimbraClamAVSafeBrowsing new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 8.7.0,9.0.0
-     */
-    @ZAttr(id=2074)
-    public void setClamAVSafeBrowsingAsString(String zimbraClamAVSafeBrowsing) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraClamAVSafeBrowsing, zimbraClamAVSafeBrowsing);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Whether or not to enable the Safe Browsing feature. If enabled,
-     * freshclam will download Google&#039;s safe browsing database. See
-     * http://www.google.com/transparencyreport/safebrowsing and
-     * http://www.clamav.net/documentation.html#safebrowsing for more
-     * information about this service.
-     *
-     * <p>Valid values: [yes, no]
-     *
-     * @param zimbraClamAVSafeBrowsing new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 8.7.0,9.0.0
-     */
-    @ZAttr(id=2074)
-    public Map<String,Object> setClamAVSafeBrowsingAsString(String zimbraClamAVSafeBrowsing, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraClamAVSafeBrowsing, zimbraClamAVSafeBrowsing);
-        return attrs;
-    }
-
-    /**
-     * Whether or not to enable the Safe Browsing feature. If enabled,
-     * freshclam will download Google&#039;s safe browsing database. See
-     * http://www.google.com/transparencyreport/safebrowsing and
-     * http://www.clamav.net/documentation.html#safebrowsing for more
-     * information about this service.
-     *
-     * <p>Valid values: [yes, no]
-     *
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 8.7.0,9.0.0
-     */
-    @ZAttr(id=2074)
-    public void unsetClamAVSafeBrowsing() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraClamAVSafeBrowsing, "");
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Whether or not to enable the Safe Browsing feature. If enabled,
-     * freshclam will download Google&#039;s safe browsing database. See
-     * http://www.google.com/transparencyreport/safebrowsing and
-     * http://www.clamav.net/documentation.html#safebrowsing for more
-     * information about this service.
-     *
-     * <p>Valid values: [yes, no]
-     *
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 8.7.0,9.0.0
-     */
-    @ZAttr(id=2074)
-    public Map<String,Object> unsetClamAVSafeBrowsing(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraClamAVSafeBrowsing, "");
-        return attrs;
-    }
-
-    /**
      * Regex for identifying client types
      *
      * @return zimbraClientTypeRegex, or empty array if unset
@@ -12095,13 +11920,13 @@ public abstract class ZAttrConfig extends Entry {
      * no CSRF check happens. When set to true both CSRF referer and CSRF
      * token change is effective.
      *
-     * @return zimbraCsrfTokenCheckEnabled, or true if unset
+     * @return zimbraCsrfTokenCheckEnabled, or false if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1628)
     public boolean isCsrfTokenCheckEnabled() {
-        return getBooleanAttr(Provisioning.A_zimbraCsrfTokenCheckEnabled, true, true);
+        return getBooleanAttr(Provisioning.A_zimbraCsrfTokenCheckEnabled, false, true);
     }
 
     /**
@@ -20634,13 +20459,13 @@ public abstract class ZAttrConfig extends Entry {
      * Maximum number of requests from a connection per second. Requests in
      * excess of this are throttled.
      *
-     * @return zimbraHttpDosFilterMaxRequestsPerSec, or 30 if unset
+     * @return zimbraHttpDosFilterMaxRequestsPerSec, or 100 if unset
      *
      * @since ZCS 8.0.3
      */
     @ZAttr(id=1431)
     public int getHttpDosFilterMaxRequestsPerSec() {
-        return getIntAttr(Provisioning.A_zimbraHttpDosFilterMaxRequestsPerSec, 30, true);
+        return getIntAttr(Provisioning.A_zimbraHttpDosFilterMaxRequestsPerSec, 100, true);
     }
 
     /**
@@ -25089,13 +24914,13 @@ public abstract class ZAttrConfig extends Entry {
      * If true, a permanent failure (552) is returned when the user is over
      * quota. If false, a temporary failure (452) is returned.
      *
-     * @return zimbraLmtpPermanentFailureWhenOverQuota, or false if unset
+     * @return zimbraLmtpPermanentFailureWhenOverQuota, or true if unset
      *
      * @since ZCS 5.0.6
      */
     @ZAttr(id=657)
     public boolean isLmtpPermanentFailureWhenOverQuota() {
-        return getBooleanAttr(Provisioning.A_zimbraLmtpPermanentFailureWhenOverQuota, false, true);
+        return getBooleanAttr(Provisioning.A_zimbraLmtpPermanentFailureWhenOverQuota, true, true);
     }
 
     /**
@@ -25495,11 +25320,11 @@ public abstract class ZAttrConfig extends Entry {
      *
      * @see #getLogRawLifetimeAsString()
      *
-     * @return zimbraLogRawLifetime in millseconds, or 2678400000 (31d)  if unset
+     * @return zimbraLogRawLifetime in millseconds, or 604800000 (7d)  if unset
      */
     @ZAttr(id=263)
     public long getLogRawLifetime() {
-        return getTimeInterval(Provisioning.A_zimbraLogRawLifetime, 2678400000L, true);
+        return getTimeInterval(Provisioning.A_zimbraLogRawLifetime, 604800000L, true);
     }
 
     /**
@@ -25509,11 +25334,11 @@ public abstract class ZAttrConfig extends Entry {
      * milliseconds. If time unit is not specified, the default is
      * s(seconds).
      *
-     * @return zimbraLogRawLifetime, or "31d" if unset
+     * @return zimbraLogRawLifetime, or "7d" if unset
      */
     @ZAttr(id=263)
     public String getLogRawLifetimeAsString() {
-        return getAttr(Provisioning.A_zimbraLogRawLifetime, "31d", true);
+        return getAttr(Provisioning.A_zimbraLogRawLifetime, "7d", true);
     }
 
     /**
@@ -25595,11 +25420,11 @@ public abstract class ZAttrConfig extends Entry {
      *
      * @see #getLogSummaryLifetimeAsString()
      *
-     * @return zimbraLogSummaryLifetime in millseconds, or 63072000000 (730d)  if unset
+     * @return zimbraLogSummaryLifetime in millseconds, or 2592000000 (30d)  if unset
      */
     @ZAttr(id=264)
     public long getLogSummaryLifetime() {
-        return getTimeInterval(Provisioning.A_zimbraLogSummaryLifetime, 63072000000L, true);
+        return getTimeInterval(Provisioning.A_zimbraLogSummaryLifetime, 2592000000L, true);
     }
 
     /**
@@ -25609,11 +25434,11 @@ public abstract class ZAttrConfig extends Entry {
      * milliseconds. If time unit is not specified, the default is
      * s(seconds).
      *
-     * @return zimbraLogSummaryLifetime, or "730d" if unset
+     * @return zimbraLogSummaryLifetime, or "30d" if unset
      */
     @ZAttr(id=264)
     public String getLogSummaryLifetimeAsString() {
-        return getAttr(Provisioning.A_zimbraLogSummaryLifetime, "730d", true);
+        return getAttr(Provisioning.A_zimbraLogSummaryLifetime, "30d", true);
     }
 
     /**
@@ -26607,13 +26432,13 @@ public abstract class ZAttrConfig extends Entry {
      * When set to true, robots.txt on mailboxd will be set up to keep web
      * crawlers out
      *
-     * @return zimbraMailKeepOutWebCrawlers, or false if unset
+     * @return zimbraMailKeepOutWebCrawlers, or true if unset
      *
      * @since ZCS 7.0.1
      */
     @ZAttr(id=1161)
     public boolean isMailKeepOutWebCrawlers() {
-        return getBooleanAttr(Provisioning.A_zimbraMailKeepOutWebCrawlers, false, true);
+        return getBooleanAttr(Provisioning.A_zimbraMailKeepOutWebCrawlers, true, true);
     }
 
     /**
@@ -28138,8 +27963,8 @@ public abstract class ZAttrConfig extends Entry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-zimbra-key-map} | {LDAP-filter}
-     * cert-field-to-zimbra-key-map: {certificate-field}={Zimbra-account-key}
+     * {cert-field-to-key-map} | {LDAP-filter}
+     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
      * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
      * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
      * UPN(aka Principal Name) in otherName in subjectAltName extension
@@ -28178,8 +28003,8 @@ public abstract class ZAttrConfig extends Entry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-zimbra-key-map} | {LDAP-filter}
-     * cert-field-to-zimbra-key-map: {certificate-field}={Zimbra-account-key}
+     * {cert-field-to-key-map} | {LDAP-filter}
+     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
      * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
      * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
      * UPN(aka Principal Name) in otherName in subjectAltName extension
@@ -28221,8 +28046,8 @@ public abstract class ZAttrConfig extends Entry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-zimbra-key-map} | {LDAP-filter}
-     * cert-field-to-zimbra-key-map: {certificate-field}={Zimbra-account-key}
+     * {cert-field-to-key-map} | {LDAP-filter}
+     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
      * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
      * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
      * UPN(aka Principal Name) in otherName in subjectAltName extension
@@ -28265,8 +28090,8 @@ public abstract class ZAttrConfig extends Entry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-zimbra-key-map} | {LDAP-filter}
-     * cert-field-to-zimbra-key-map: {certificate-field}={Zimbra-account-key}
+     * {cert-field-to-key-map} | {LDAP-filter}
+     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
      * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
      * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
      * UPN(aka Principal Name) in otherName in subjectAltName extension
@@ -28307,8 +28132,8 @@ public abstract class ZAttrConfig extends Entry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-zimbra-key-map} | {LDAP-filter}
-     * cert-field-to-zimbra-key-map: {certificate-field}={Zimbra-account-key}
+     * {cert-field-to-key-map} | {LDAP-filter}
+     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
      * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
      * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
      * UPN(aka Principal Name) in otherName in subjectAltName extension
@@ -29739,13 +29564,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * temp directory for mailbox move
      *
-     * @return zimbraMailboxMoveTempDir, or "/opt/zimbra/backup/tmp/mboxmove" if unset
+     * @return zimbraMailboxMoveTempDir, or "/opt/zextras/backup/tmp/mboxmove" if unset
      *
      * @since ZCS 7.0.1
      */
     @ZAttr(id=1175)
     public String getMailboxMoveTempDir() {
-        return getAttr(Provisioning.A_zimbraMailboxMoveTempDir, "/opt/zimbra/backup/tmp/mboxmove", true);
+        return getAttr(Provisioning.A_zimbraMailboxMoveTempDir, "/opt/zextras/backup/tmp/mboxmove", true);
     }
 
     /**
@@ -29931,7 +29756,7 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=1657)
     public String[] getMailboxdSSLProtocols() {
-        String[] value = getMultiAttr(Provisioning.A_zimbraMailboxdSSLProtocols, true, true); return value.length > 0 ? value : new String[] {"TLSv1.2"};
+        String[] value = getMultiAttr(Provisioning.A_zimbraMailboxdSSLProtocols, true, true); return value.length > 0 ? value : new String[] {"TLSv1.2","TLSv1.3"};
     }
 
     /**
@@ -31376,13 +31201,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * whether milter server is enabled for a given server
      *
-     * @return zimbraMilterServerEnabled, or false if unset
+     * @return zimbraMilterServerEnabled, or true if unset
      *
      * @since ZCS 7.0.0
      */
     @ZAttr(id=1116)
     public boolean isMilterServerEnabled() {
-        return getBooleanAttr(Provisioning.A_zimbraMilterServerEnabled, false, true);
+        return getBooleanAttr(Provisioning.A_zimbraMilterServerEnabled, true, true);
     }
 
     /**
@@ -34425,13 +34250,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf canonical_maps. Comma separated list.
      *
-     * @return zimbraMtaCanonicalMaps, or "proxy:ldap:/opt/zimbra/conf/ldap-canonical.cf" if unset
+     * @return zimbraMtaCanonicalMaps, or "proxy:ldap:/opt/zextras/conf/ldap-canonical.cf" if unset
      *
      * @since ZCS 8.7.0,9.0.0
      */
     @ZAttr(id=2080)
     public String getMtaCanonicalMaps() {
-        return getAttr(Provisioning.A_zimbraMtaCanonicalMaps, "proxy:ldap:/opt/zimbra/conf/ldap-canonical.cf", true);
+        return getAttr(Provisioning.A_zimbraMtaCanonicalMaps, "proxy:ldap:/opt/zextras/conf/ldap-canonical.cf", true);
     }
 
     /**
@@ -34497,13 +34322,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf command_directory
      *
-     * @return zimbraMtaCommandDirectory, or "/opt/zimbra/common/sbin" if unset
+     * @return zimbraMtaCommandDirectory, or "/opt/zextras/common/sbin" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1498)
     public String getMtaCommandDirectory() {
-        return getAttr(Provisioning.A_zimbraMtaCommandDirectory, "/opt/zimbra/common/sbin", true);
+        return getAttr(Provisioning.A_zimbraMtaCommandDirectory, "/opt/zextras/common/sbin", true);
     }
 
     /**
@@ -34685,13 +34510,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf daemon_directory
      *
-     * @return zimbraMtaDaemonDirectory, or "/opt/zimbra/common/libexec" if unset
+     * @return zimbraMtaDaemonDirectory, or "/opt/zextras/common/libexec" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1499)
     public String getMtaDaemonDirectory() {
-        return getAttr(Provisioning.A_zimbraMtaDaemonDirectory, "/opt/zimbra/common/libexec", true);
+        return getAttr(Provisioning.A_zimbraMtaDaemonDirectory, "/opt/zextras/common/libexec", true);
     }
 
     /**
@@ -35123,7 +34948,7 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=1502)
     public String[] getMtaHeaderChecks() {
-        String[] value = getMultiAttr(Provisioning.A_zimbraMtaHeaderChecks, true, true); return value.length > 0 ? value : new String[] {"pcre:/opt/zimbra/conf/postfix_header_checks"};
+        String[] value = getMultiAttr(Provisioning.A_zimbraMtaHeaderChecks, true, true); return value.length > 0 ? value : new String[] {"pcre:/opt/zextras/conf/postfix_header_checks"};
     }
 
     /**
@@ -36759,13 +36584,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf mailq_path
      *
-     * @return zimbraMtaMailqPath, or "/opt/zimbra/common/sbin/mailq" if unset
+     * @return zimbraMtaMailqPath, or "/opt/zextras/common/sbin/mailq" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1508)
     public String getMtaMailqPath() {
-        return getAttr(Provisioning.A_zimbraMtaMailqPath, "/opt/zimbra/common/sbin/mailq", true);
+        return getAttr(Provisioning.A_zimbraMtaMailqPath, "/opt/zextras/common/sbin/mailq", true);
     }
 
     /**
@@ -36831,13 +36656,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf manpage_directory
      *
-     * @return zimbraMtaManpageDirectory, or "/opt/zimbra/common/share/man" if unset
+     * @return zimbraMtaManpageDirectory, or "/opt/zextras/common/share/man" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1509)
     public String getMtaManpageDirectory() {
-        return getAttr(Provisioning.A_zimbraMtaManpageDirectory, "/opt/zimbra/common/share/man", true);
+        return getAttr(Provisioning.A_zimbraMtaManpageDirectory, "/opt/zextras/common/share/man", true);
     }
 
     /**
@@ -37912,13 +37737,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf newaliases_path
      *
-     * @return zimbraMtaNewaliasesPath, or "/opt/zimbra/common/sbin/newaliases" if unset
+     * @return zimbraMtaNewaliasesPath, or "/opt/zextras/common/sbin/newaliases" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1510)
     public String getMtaNewaliasesPath() {
-        return getAttr(Provisioning.A_zimbraMtaNewaliasesPath, "/opt/zimbra/common/sbin/newaliases", true);
+        return getAttr(Provisioning.A_zimbraMtaNewaliasesPath, "/opt/zextras/common/sbin/newaliases", true);
     }
 
     /**
@@ -41054,13 +40879,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf queue_directory
      *
-     * @return zimbraMtaQueueDirectory, or "/opt/zimbra/data/postfix/spool" if unset
+     * @return zimbraMtaQueueDirectory, or "/opt/zextras/data/postfix/spool" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1511)
     public String getMtaQueueDirectory() {
-        return getAttr(Provisioning.A_zimbraMtaQueueDirectory, "/opt/zimbra/data/postfix/spool", true);
+        return getAttr(Provisioning.A_zimbraMtaQueueDirectory, "/opt/zextras/data/postfix/spool", true);
     }
 
     /**
@@ -41452,7 +41277,7 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=226)
     public String[] getMtaRestriction() {
-        String[] value = getMultiAttr(Provisioning.A_zimbraMtaRestriction, true, true); return value.length > 0 ? value : new String[] {"reject_invalid_helo_hostname","reject_non_fqdn_sender"};
+        String[] value = getMultiAttr(Provisioning.A_zimbraMtaRestriction, true, true); return value.length > 0 ? value : new String[] {"reject_invalid_helo_hostname","reject_non_fqdn_sender","reject_unknown_sender_domain"};
     }
 
     /**
@@ -41910,13 +41735,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf sendmail_path
      *
-     * @return zimbraMtaSendmailPath, or "/opt/zimbra/common/sbin/sendmail" if unset
+     * @return zimbraMtaSendmailPath, or "/opt/zextras/common/sbin/sendmail" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1512)
     public String getMtaSendmailPath() {
-        return getAttr(Provisioning.A_zimbraMtaSendmailPath, "/opt/zimbra/common/sbin/sendmail", true);
+        return getAttr(Provisioning.A_zimbraMtaSendmailPath, "/opt/zextras/common/sbin/sendmail", true);
     }
 
     /**
@@ -43002,13 +42827,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpTlsCiphers, or "export" if unset
+     * @return zimbraMtaSmtpTlsCiphers, or "high" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1513)
     public String getMtaSmtpTlsCiphersAsString() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpTlsCiphers, "export", true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpTlsCiphers, "high", true);
     }
 
     /**
@@ -43341,13 +43166,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpTlsMandatoryCiphers, or "medium" if unset
+     * @return zimbraMtaSmtpTlsMandatoryCiphers, or "high" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1514)
     public String getMtaSmtpTlsMandatoryCiphersAsString() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpTlsMandatoryCiphers, "medium", true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpTlsMandatoryCiphers, "high", true);
     }
 
     /**
@@ -43456,13 +43281,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf smtp_tls_mandatory_protocols
      *
-     * @return zimbraMtaSmtpTlsMandatoryProtocols, or "!SSLv2, !SSLv3" if unset
+     * @return zimbraMtaSmtpTlsMandatoryProtocols, or "!SSLv2, !SSLv3, !TLSv1, !TLSv1.1 if unset
      *
      * @since ZCS 8.7.0
      */
     @ZAttr(id=1782)
     public String getMtaSmtpTlsMandatoryProtocols() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpTlsMandatoryProtocols, "!SSLv2, !SSLv3", true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpTlsMandatoryProtocols, "!SSLv2, !SSLv3, !TLSv1, !TLSv1.1", true);
     }
 
     /**
@@ -43528,13 +43353,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf smtp_tls_protocols
      *
-     * @return zimbraMtaSmtpTlsProtocols, or "!SSLv2, !SSLv3" if unset
+     * @return zimbraMtaSmtpTlsProtocols, or "!SSLv2, !SSLv3, !TLSv1, !TLSv1.1" if unset
      *
      * @since ZCS 8.6.0
      */
     @ZAttr(id=1670)
     public String getMtaSmtpTlsProtocols() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpTlsProtocols, "!SSLv2, !SSLv3", true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpTlsProtocols, "!SSLv2, !SSLv3, !TLSv1, !TLSv1.1", true);
     }
 
     /**
@@ -45864,13 +45689,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpdTlsCiphers, or "export" if unset
+     * @return zimbraMtaSmtpdTlsCiphers, or "high" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1515)
     public String getMtaSmtpdTlsCiphersAsString() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpdTlsCiphers, "export", true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpdTlsCiphers, "high", true);
     }
 
     /**
@@ -46144,13 +45969,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpdTlsMandatoryCiphers, or "medium" if unset
+     * @return zimbraMtaSmtpdTlsMandatoryCiphers, or "high" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1516)
     public String getMtaSmtpdTlsMandatoryCiphersAsString() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpdTlsMandatoryCiphers, "medium", true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpdTlsMandatoryCiphers, "high", true);
     }
 
     /**
@@ -46259,13 +46084,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf smtpd_tls_mandatory_protocols
      *
-     * @return zimbraMtaSmtpdTlsMandatoryProtocols, or "!SSLv2, !SSLv3" if unset
+     * @return zimbraMtaSmtpdTlsMandatoryProtocols, or "!SSLv2, !SSLv3, !TLSv1, !TLSv1.1" if unset
      *
      * @since ZCS 8.7.0
      */
     @ZAttr(id=1783)
     public String getMtaSmtpdTlsMandatoryProtocols() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpdTlsMandatoryProtocols, "!SSLv2, !SSLv3", true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpdTlsMandatoryProtocols, "!SSLv2, !SSLv3, !TLSv1, !TLSv1.1", true);
     }
 
     /**
@@ -46331,13 +46156,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf smtpd_tls_protocols
      *
-     * @return zimbraMtaSmtpdTlsProtocols, or "!SSLv2, !SSLv3" if unset
+     * @return zimbraMtaSmtpdTlsProtocols, or "!SSLv2, !SSLv3, !TLSv1, !TLSv1.1" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1646)
     public String getMtaSmtpdTlsProtocols() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpdTlsProtocols, "!SSLv2, !SSLv3", true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpdTlsProtocols, "!SSLv2, !SSLv3, !TLSv1, !TLSv1.1", true);
     }
 
     /**
@@ -46405,13 +46230,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [yes, no]
      *
-     * @return zimbraMtaSmtpdTlsReceivedHeader, or ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.no if unset and/or has invalid value
+     * @return zimbraMtaSmtpdTlsReceivedHeader, or ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.yes if unset and/or has invalid value
      *
      * @since ZCS 8.7.0,9.0.0
      */
     @ZAttr(id=2076)
     public ZAttrProvisioning.MtaSmtpdTlsReceivedHeader getMtaSmtpdTlsReceivedHeader() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsReceivedHeader, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.no : ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.no; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsReceivedHeader, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.no : ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.yes; }
     }
 
     /**
@@ -46419,13 +46244,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [yes, no]
      *
-     * @return zimbraMtaSmtpdTlsReceivedHeader, or "no" if unset
+     * @return zimbraMtaSmtpdTlsReceivedHeader, or "yes" if unset
      *
      * @since ZCS 8.7.0,9.0.0
      */
     @ZAttr(id=2076)
     public String getMtaSmtpdTlsReceivedHeaderAsString() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpdTlsReceivedHeader, "no", true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpdTlsReceivedHeader, "yes", true);
     }
 
     /**
@@ -47007,13 +46832,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf transport_maps. Comma separated list.
      *
-     * @return zimbraMtaTransportMaps, or "proxy:ldap:/opt/zimbra/conf/ldap-transport.cf" if unset
+     * @return zimbraMtaTransportMaps, or "proxy:ldap:/opt/zextras/conf/ldap-transport.cf" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1555)
     public String getMtaTransportMaps() {
-        return getAttr(Provisioning.A_zimbraMtaTransportMaps, "proxy:ldap:/opt/zimbra/conf/ldap-transport.cf", true);
+        return getAttr(Provisioning.A_zimbraMtaTransportMaps, "proxy:ldap:/opt/zextras/conf/ldap-transport.cf", true);
     }
 
     /**
@@ -47151,13 +46976,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf virtual_alias_domains. Comma separated list.
      *
-     * @return zimbraMtaVirtualAliasDomains, or "proxy:ldap:/opt/zimbra/conf/ldap-vad.cf" if unset
+     * @return zimbraMtaVirtualAliasDomains, or "proxy:ldap:/opt/zextras/conf/ldap-vad.cf" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1556)
     public String getMtaVirtualAliasDomains() {
-        return getAttr(Provisioning.A_zimbraMtaVirtualAliasDomains, "proxy:ldap:/opt/zimbra/conf/ldap-vad.cf", true);
+        return getAttr(Provisioning.A_zimbraMtaVirtualAliasDomains, "proxy:ldap:/opt/zextras/conf/ldap-vad.cf", true);
     }
 
     /**
@@ -47295,13 +47120,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf virtual_alias_maps. Comma separated list.
      *
-     * @return zimbraMtaVirtualAliasMaps, or "proxy:ldap:/opt/zimbra/conf/ldap-vam.cf" if unset
+     * @return zimbraMtaVirtualAliasMaps, or "proxy:ldap:/opt/zextras/conf/ldap-vam.cf" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1557)
     public String getMtaVirtualAliasMaps() {
-        return getAttr(Provisioning.A_zimbraMtaVirtualAliasMaps, "proxy:ldap:/opt/zimbra/conf/ldap-vam.cf", true);
+        return getAttr(Provisioning.A_zimbraMtaVirtualAliasMaps, "proxy:ldap:/opt/zextras/conf/ldap-vam.cf", true);
     }
 
     /**
@@ -47367,13 +47192,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf virtual_mailbox_domains. Comma separated list.
      *
-     * @return zimbraMtaVirtualMailboxDomains, or "proxy:ldap:/opt/zimbra/conf/ldap-vmd.cf" if unset
+     * @return zimbraMtaVirtualMailboxDomains, or "proxy:ldap:/opt/zextras/conf/ldap-vmd.cf" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1558)
     public String getMtaVirtualMailboxDomains() {
-        return getAttr(Provisioning.A_zimbraMtaVirtualMailboxDomains, "proxy:ldap:/opt/zimbra/conf/ldap-vmd.cf", true);
+        return getAttr(Provisioning.A_zimbraMtaVirtualMailboxDomains, "proxy:ldap:/opt/zextras/conf/ldap-vmd.cf", true);
     }
 
     /**
@@ -47439,13 +47264,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf virtual_mailbox_maps. Comma separated list.
      *
-     * @return zimbraMtaVirtualMailboxMaps, or "proxy:ldap:/opt/zimbra/conf/ldap-vmm.cf" if unset
+     * @return zimbraMtaVirtualMailboxMaps, or "proxy:ldap:/opt/zextras/conf/ldap-vmm.cf" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1559)
     public String getMtaVirtualMailboxMaps() {
-        return getAttr(Provisioning.A_zimbraMtaVirtualMailboxMaps, "proxy:ldap:/opt/zimbra/conf/ldap-vmm.cf", true);
+        return getAttr(Provisioning.A_zimbraMtaVirtualMailboxMaps, "proxy:ldap:/opt/zextras/conf/ldap-vmm.cf", true);
     }
 
     /**
@@ -52545,11 +52370,11 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Path to remote management command to execute on this server
      *
-     * @return zimbraRemoteManagementCommand, or "/opt/zimbra/libexec/zmrcd" if unset
+     * @return zimbraRemoteManagementCommand, or "/opt/zextras/libexec/zmrcd" if unset
      */
     @ZAttr(id=336)
     public String getRemoteManagementCommand() {
-        return getAttr(Provisioning.A_zimbraRemoteManagementCommand, "/opt/zimbra/libexec/zmrcd", true);
+        return getAttr(Provisioning.A_zimbraRemoteManagementCommand, "/opt/zextras/libexec/zmrcd", true);
     }
 
     /**
@@ -52669,11 +52494,11 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Private key this server should use to access another server
      *
-     * @return zimbraRemoteManagementPrivateKeyPath, or "/opt/zimbra/.ssh/zimbra_identity" if unset
+     * @return zimbraRemoteManagementPrivateKeyPath, or "/opt/zextras/.ssh/zimbra_identity" if unset
      */
     @ZAttr(id=338)
     public String getRemoteManagementPrivateKeyPath() {
-        return getAttr(Provisioning.A_zimbraRemoteManagementPrivateKeyPath, "/opt/zimbra/.ssh/zimbra_identity", true);
+        return getAttr(Provisioning.A_zimbraRemoteManagementPrivateKeyPath, "/opt/zextras/.ssh/zimbra_identity", true);
     }
 
     /**
@@ -52731,11 +52556,11 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Login name of user allowed to execute remote management command
      *
-     * @return zimbraRemoteManagementUser, or "zimbra" if unset
+     * @return zimbraRemoteManagementUser, or "zextras" if unset
      */
     @ZAttr(id=337)
     public String getRemoteManagementUser() {
-        return getAttr(Provisioning.A_zimbraRemoteManagementUser, "zimbra", true);
+        return getAttr(Provisioning.A_zimbraRemoteManagementUser, "zextras", true);
     }
 
     /**
@@ -59284,13 +59109,13 @@ public abstract class ZAttrConfig extends Entry {
      * proxy. When set to TRUE, and using SNI capable clients, there is no
      * need for a separate IP address per domain (zimbraVirtualIPAddress)
      *
-     * @return zimbraReverseProxySNIEnabled, or false if unset
+     * @return zimbraReverseProxySNIEnabled, or true if unset
      *
      * @since ZCS 8.7.0,9.0.0
      */
     @ZAttr(id=1818)
     public boolean isReverseProxySNIEnabled() {
-        return getBooleanAttr(Provisioning.A_zimbraReverseProxySNIEnabled, false, true);
+        return getBooleanAttr(Provisioning.A_zimbraReverseProxySNIEnabled, true, true);
     }
 
     /**
@@ -59367,13 +59192,13 @@ public abstract class ZAttrConfig extends Entry {
      * ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP; if not set,
      * default ciphers permitted by nginx will apply
      *
-     * @return zimbraReverseProxySSLCiphers, or "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128:AES256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4" if unset
+     * @return zimbraReverseProxySSLCiphers, or "EECDH+AESGCM:EDH+AESGCM" if unset
      *
      * @since ZCS 5.0.5
      */
     @ZAttr(id=640)
     public String getReverseProxySSLCiphers() {
-        return getAttr(Provisioning.A_zimbraReverseProxySSLCiphers, "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128:AES256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4", true);
+        return getAttr(Provisioning.A_zimbraReverseProxySSLCiphers, "EECDH+AESGCM:EDH+AESGCM", true);
     }
 
     /**
@@ -59451,13 +59276,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * SSL ECDH cipher curve for web proxy
      *
-     * @return zimbraReverseProxySSLECDHCurve, or "prime256v1" if unset
+     * @return zimbraReverseProxySSLECDHCurve, or "auto" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1626)
     public String getReverseProxySSLECDHCurve() {
-        return getAttr(Provisioning.A_zimbraReverseProxySSLECDHCurve, "prime256v1", true);
+        return getAttr(Provisioning.A_zimbraReverseProxySSLECDHCurve, "auto", true);
     }
 
     /**
@@ -59529,7 +59354,7 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=1653)
     public String[] getReverseProxySSLProtocols() {
-        String[] value = getMultiAttr(Provisioning.A_zimbraReverseProxySSLProtocols, true, true); return value.length > 0 ? value : new String[] {"TLSv1.2"};
+        String[] value = getMultiAttr(Provisioning.A_zimbraReverseProxySSLProtocols, true, true); return value.length > 0 ? value : new String[] {"TLSv1.2","TLSv1.3"};
     }
 
     /**
@@ -69831,11 +69656,11 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Spaminess percentage beyond which a message is marked as spam
      *
-     * @return zimbraSpamTagPercent, or 33 if unset
+     * @return zimbraSpamTagPercent, or 16 if unset
      */
     @ZAttr(id=204)
     public int getSpamTagPercent() {
-        return getIntAttr(Provisioning.A_zimbraSpamTagPercent, 33, true);
+        return getIntAttr(Provisioning.A_zimbraSpamTagPercent, 16, true);
     }
 
     /**
@@ -69894,13 +69719,13 @@ public abstract class ZAttrConfig extends Entry {
      * Subject prefix for the spam training messages used to sent to the
      * zimbraSpamIsSpamAccount/zimbraSpamIsNotSpamAccount account.
      *
-     * @return zimbraSpamTrainingSubjectPrefix, or "zimbra-spam-report:" if unset
+     * @return zimbraSpamTrainingSubjectPrefix, or "spam-report:" if unset
      *
      * @since ZCS 8.7.0,9.0.0
      */
     @ZAttr(id=2020)
     public String getSpamTrainingSubjectPrefix() {
-        return getAttr(Provisioning.A_zimbraSpamTrainingSubjectPrefix, "zimbra-spam-report:", true);
+        return getAttr(Provisioning.A_zimbraSpamTrainingSubjectPrefix, "spam-report:", true);
     }
 
     /**
@@ -73727,13 +73552,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * URL of the Zimbra version check script
      *
-     * @return zimbraVersionCheckURL, or "https://www.zimbra.com/aus/universal/update.php" if unset
+     * @return zimbraVersionCheckURL, or "https://docs.zextras.com/check-version" if unset
      *
      * @since ZCS 6.0.2
      */
     @ZAttr(id=1061)
     public String getVersionCheckURL() {
-        return getAttr(Provisioning.A_zimbraVersionCheckURL, "https://www.zimbra.com/aus/universal/update.php", true);
+        return getAttr(Provisioning.A_zimbraVersionCheckURL, "https://docs.zextras.com/check-version", true);
     }
 
     /**
@@ -75195,7 +75020,7 @@ public abstract class ZAttrConfig extends Entry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @return zimbraWebClientSupportedHelps, or empty array if unset
      *
@@ -75218,7 +75043,7 @@ public abstract class ZAttrConfig extends Entry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -75244,7 +75069,7 @@ public abstract class ZAttrConfig extends Entry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new value
      * @param attrs existing map to populate, or null to create a new map
@@ -75271,7 +75096,7 @@ public abstract class ZAttrConfig extends Entry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -75297,7 +75122,7 @@ public abstract class ZAttrConfig extends Entry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -75324,7 +75149,7 @@ public abstract class ZAttrConfig extends Entry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -75350,7 +75175,7 @@ public abstract class ZAttrConfig extends Entry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -75377,7 +75202,7 @@ public abstract class ZAttrConfig extends Entry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -75402,7 +75227,7 @@ public abstract class ZAttrConfig extends Entry {
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
      * item will be available to link to
-     * http://www.zimbra.com/products/whats_new.html.
+     * https://docs.zextras.com.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

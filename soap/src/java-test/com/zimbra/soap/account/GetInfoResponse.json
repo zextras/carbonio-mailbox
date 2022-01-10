@@ -36,7 +36,7 @@
       "zimbraPrefCalendarDefaultApptDuration": "60m",
       "zimbraPrefWarnOnExit": "TRUE",
       "zimbraPrefGetMailAction": "default",
-      "zimbraPrefOutOfOfficeCacheDuration": "7d",
+      "zimbraPrefOutOfOfficeCacheDuration": "2d",
       "zimbraPrefConversationOrder": "dateDesc",
       "zimbraPrefIMHideBlockedBuddies": "FALSE",
       "zimbraPrefShowCalendarWeek": "FALSE",
@@ -58,7 +58,7 @@
       "zimbraPrefImapSearchFoldersEnabled": "TRUE",
       "zimbraPrefContactsDisableAutocompleteOnContactGroupMembers": "FALSE",
       "zimbraPrefVoiceItemsPerPage": "25",
-      "zimbraPrefIncludeSharedItemsInSearch": "FALSE",
+      "zimbraPrefIncludeSharedItemsInSearch": "TRUE",
       "zimbraPrefIMNotifyPresence": "TRUE",
       "zimbraPrefOpenMailInNewWindow": "FALSE",
       "zimbraPrefHtmlEditorDefaultFontColor": "#000000",
@@ -139,7 +139,7 @@
       "zimbraPrefAutoCompleteQuickCompletionOnComma": "TRUE",
       "zimbraPrefHtmlEditorDefaultFontSize": "12pt",
       "zimbraPrefCalendarAllowForwardedInvite": "TRUE",
-      "zimbraPrefIncludeSpamInSearch": "FALSE",
+      "zimbraPrefIncludeSpamInSearch": "TRUE",
       "zimbraPrefMailItemsPerPage": "25",
       "zimbraPrefReplyIncludeOriginalText": "includeBody",
       "zimbraPrefCalendarFirstDayOfWeek": "0",
@@ -168,11 +168,8 @@
         "+com_zimbra_url",
         "+com_zimbra_email",
         "+com_zimbra_date",
-        "+com_zimbra_webex",
         "+com_zimbra_dnd",
-        "+com_zimbra_ymemoticons",
         "+com_zimbra_srchhighlighter",
-        "+com_zimbra_phone",
         "+com_zimbra_attachcontacts",
         "+com_zimbra_attachmail"],
       "zimbraMailTrustedSenderListMaxNumEntries": "500",
@@ -183,7 +180,7 @@
       "zimbraPasswordMinUpperCaseChars": "0",
       "zimbraAllowAnyFromAddress": "FALSE",
       "zimbraFeatureDistributionListExpandMembersEnabled": "TRUE",
-      "zimbraFeatureBriefcasesEnabled": "TRUE",
+      "zimbraFeatureBriefcasesEnabled": "FALSE",
       "zimbraFeatureContactsEnabled": "TRUE",
       "zimbraExternalSharingEnabled": "TRUE",
       "zimbraPasswordMinLowerCaseChars": "0",
@@ -220,7 +217,7 @@
       "zimbraFeatureMailUpsellEnabled": "FALSE",
       "zimbraMailHighlightObjectsMaxSize": "70",
       "zimbraFeaturePortalEnabled": "FALSE",
-      "zimbraMailIdleSessionTimeout": "0",
+      "zimbraMailIdleSessionTimeout": "1d",
       "zimbraFileShareLifetime": "0",
       "zimbraIdentityMaxNumEntries": "20",
       "zimbraFeatureMobileSyncEnabled": "TRUE",
@@ -259,7 +256,7 @@
       "zimbraFeatureAdvancedSearchEnabled": "TRUE",
       "zimbraFileUploadMaxSize": "10485760",
       "zimbraPublicShareLifetime": "0",
-      "zimbraFeatureBriefcaseDocsEnabled": "TRUE",
+      "zimbraFeatureBriefcaseDocsEnabled": "FALSE",
       "zimbraFeatureGalAutoCompleteEnabled": "TRUE",
       "zimbraPasswordMaxLength": "64",
       "zimbraFeatureShortcutAliasesEnabled": "TRUE",
@@ -329,71 +326,6 @@
   },
   "zimlets": {
     "zimlet": [
-      {
-        "zimletContext": [{
-            "baseUrl": "/service/zimlet/com_zimbra_phone/",
-            "priority": 0,
-            "presence": "enabled"
-          }],
-        "zimlet": [{
-            "description": "${msg.description}",
-            "name": "com_zimbra_phone",
-            "target": "main view-window",
-            "label": "${msg.label}",
-            "version": "2.7_6.0.0.20120528.082808",
-            "include": [
-              {
-                "_content": "phone.js"
-              },
-              {
-                "_content": "templates/Phone.template.js"
-              }],
-            "handlerObject": [{
-                "_content": "Com_Zimbra_Phone"
-              }],
-            "serverExtension": [{
-                "extensionClass": "com.zimbra.cs.zimlet.handler.NANPHandler",
-                "hasKeyword": "phone"
-              }],
-            "contentObject": [{
-                "type": "phone",
-                "contextMenu": [{
-                    "menuItem": [
-                      {
-                        "icon": "Search",
-                        "id": "SEARCH",
-                        "label": "${msg.search}"
-                      },
-                      {
-                        "icon": "NewContact",
-                        "id": "ADDCONTACT",
-                        "label": "${msg.addToContacts}"
-                      },
-                      {
-                        "icon": "Telephone",
-                        "id": "CALL",
-                        "label": "${msg.call}"
-                      }]
-                  }],
-                "matchOn": [{
-                    "regex": [{
-                        "attrs": "g",
-                        "_content": "\\+?\\(?\\b\\d(([((0-9){2,3})\\(\\)\\.\\s\\-]){10,20}|\\d{8})\\d\\b"
-                      }]
-                  }]
-              }]
-          }],
-        "zimletConfig": [{
-            "name": "com_zimbra_phone",
-            "version": "2.7",
-            "global": [{
-                "property": [{
-                    "name": "defaultContactField",
-                    "_content": "companyPhone"
-                  }]
-              }]
-          }]
-      },
       {
         "zimletContext": [{
             "baseUrl": "/service/zimlet/com_zimbra_url/",
@@ -609,61 +541,6 @@
       },
       {
         "zimletContext": [{
-            "baseUrl": "/service/zimlet/com_zimbra_ymemoticons/",
-            "priority": 4,
-            "presence": "enabled"
-          }],
-        "zimlet": [{
-            "description": "${msg.description}",
-            "name": "com_zimbra_ymemoticons",
-            "target": "main compose-window view-window",
-            "label": "${msg.label}",
-            "version": "2.9_6.0.0.20120528.082808",
-            "include": [
-              {
-                "_content": "ymemoticons.js"
-              },
-              {
-                "_content": "smileys.js"
-              },
-              {
-                "_content": "ymemoticonspicker.js"
-              }],
-            "includeCSS": [{
-                "_content": "yemoticons.css"
-              }],
-            "handlerObject": [{
-                "_content": "Com_Zimbra_YMEmoticons"
-              }],
-            "zimletPanelItem": [{
-                "icon": "yemoticons-panelIcon",
-                "label": "Emoticons",
-                "contextMenu": [{
-                    "menuItem": [
-                      {
-                        "id": "YE_TEMP_DISABLE",
-                        "label": "${msg.temporarilyDisableInMail}"
-                      },
-                      {
-                        "id": "YE_PREFERENCES",
-                        "label": "${msg.preferences}"
-                      }]
-                  }],
-                "toolTipText": [{
-                    "_content": "${msg.yahooEmoticons}"
-                  }]
-              }],
-            "userProperties": [{
-                "property": [{
-                    "name": "yemoticons_enableInMail",
-                    "type": "string",
-                    "value": "true"
-                  }]
-              }]
-          }]
-      },
-      {
-        "zimletContext": [{
             "baseUrl": "/service/zimlet/com_zimbra_dnd/",
             "priority": 5,
             "presence": "enabled"
@@ -769,94 +646,6 @@
             "contentObject": [{
                 "matchOn": [{
                     "regex": [{}]
-                  }]
-              }]
-          }]
-      },
-      {
-        "zimletContext": [{
-            "baseUrl": "/service/zimlet/com_zimbra_webex/",
-            "priority": 9,
-            "presence": "enabled"
-          }],
-        "zimlet": [{
-            "description": "${msg.description}",
-            "name": "com_zimbra_webex",
-            "label": "${msg.label}",
-            "version": "3.3_6.0.0.20120528.082808",
-            "include": [{
-                "_content": "webex.js"
-              }],
-            "includeCSS": [{
-                "_content": "webex.css"
-              }],
-            "handlerObject": [{
-                "_content": "com_zimbra_webex_HandlerObject"
-              }],
-            "zimletPanelItem": [{
-                "icon": "WEBEX-panelIcon",
-                "label": "${msg.WebExZimlet_label}",
-                "contextMenu": [{
-                    "menuItem": [
-                      {
-                        "icon": "WEBEX-panelIcon",
-                        "id": "START_QUICK_MEETING",
-                        "label": "${msg.WebExZimlet_quickMeeting}"
-                      },
-                      {
-                        "icon": "WEBEX-panelIcon",
-                        "id": "START_JOIN_MEETING",
-                        "label": "${msg.WebExZimlet_startJoinExistingMeeting}"
-                      },
-                      {},
-                      {
-                        "icon": "Group",
-                        "id": "ACCOUNT_PREFERENCES",
-                        "label": "${msg.WebExZimlet_manageAccounts}"
-                      },
-                      {
-                        "icon": "Preferences",
-                        "id": "GENERAL_PREFERENCES",
-                        "label": "${msg.WebExZimlet_preferences}"
-                      }]
-                  }],
-                "dragSource": [
-                  {
-                    "type": "ZmContact"
-                  },
-                  {
-                    "type": "ZmConv"
-                  },
-                  {
-                    "type": "ZmMailMsg"
-                  },
-                  {
-                    "type": "ZmAppt"
-                  }],
-                "toolTipText": [{
-                    "_content": "${msg.WebExZimlet_toolTip}"
-                  }]
-              }],
-            "userProperties": [{
-                "property": [{
-                    "name": "webexZimlet_companyId",
-                    "type": "string",
-                    "value": "vmware"
-                  }]
-              }]
-          }],
-        "zimletConfig": [{
-            "name": "com_zimbra_webex",
-            "version": "3.3",
-            "global": [{
-                "property": [
-                  {
-                    "name": "allowedDomains",
-                    "_content": "*.webex.com"
-                  },
-                  {
-                    "name": "hasSensitiveData",
-                    "_content": "true"
                   }]
               }]
           }]

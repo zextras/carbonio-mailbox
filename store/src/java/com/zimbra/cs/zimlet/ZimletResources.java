@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.cs.zimlet;
 
 import java.io.BufferedReader;
@@ -28,6 +17,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -82,6 +72,7 @@ public class ZimletResources extends DiskCacheServlet {
     private static final Pattern RE_CSS_URL = Pattern.compile("(url\\(['\"]?)([^'\"\\)]*)", Pattern.CASE_INSENSITIVE);
 
     private boolean supportsGzip = true;
+    private static final ReentrantLock mZimletCompressionLock = new ReentrantLock();
 
     static {
         TYPES.put("css", "text/css");
@@ -163,115 +154,127 @@ public class ZimletResources extends DiskCacheServlet {
         String text = null;
 
         if (file == null || !file.exists()) {
-            StringWriter writer = new StringWriter();
-            PrintWriter printer = new PrintWriter(writer);
-
-            // zimlet messages
-            if (type.equals(T_JAVASCRIPT)) {
-                ServletConfig config = this.getServletConfig();
-                ServletContext baseContext = config.getServletContext();
-                RequestDispatcher dispatcher = baseContext.getRequestDispatcher(RESOURCE_PATH);
-
-                // NOTE: We have to return the messages for *all* of the zimlets,
-                // NOTE: not just the enabled ones, because their names and
-                // NOTE: descriptions can be translated.
-                for (String zimletName : allZimletNames) {
-                    RequestWrapper wrappedReq = new RequestWrapper(req, RESOURCE_PATH + zimletName);
-                    ResponseWrapper wrappedResp = new ResponseWrapper(resp, printer);
-                    wrappedReq.setParameter("debug", "1"); // bug 45922: avoid cached messages
-                    dispatcher.include(wrappedReq, wrappedResp); //this will activate ZimletProps2JsServlet
-                }
+            if( !debug ) {
+                mZimletCompressionLock.lock();
             }
+            try
+            {
+                StringWriter writer = new StringWriter();
+                PrintWriter printer = new PrintWriter(writer);
 
-            // zimlet resources
-            if (ZimbraLog.zimlet.isDebugEnabled()) {
-                ZimbraLog.zimlet.debug("DEBUG: generating buffer");
-            }
-            generate(zimletNames, type, printer);
-            text = writer.toString();
+                // zimlet messages
+                if (type.equals(T_JAVASCRIPT)) {
+                    ServletConfig config = this.getServletConfig();
+                    ServletContext baseContext = config.getServletContext();
+                    RequestDispatcher dispatcher = baseContext.getRequestDispatcher(RESOURCE_PATH);
 
-            // minimize css
-            if (type.equals(T_CSS) && !debug) {
-                CssCompressor compressor = new CssCompressor(new StringReader(text));
-                StringWriter out = new StringWriter();
-                compressor.compress(out, 0);
-                text = out.toString();
-            }
-
-            if (type.equals(T_JAVASCRIPT) && !debug) {
-                // compress JS code
-				text = text.replaceAll("(^|\n)\\s*DBG\\.\\w+\\(.*\\);\\s*(\n|$)", "\n");
-                String mintext = null;
-                if (zimbraXZimletCompatibleWith != null) {
-                    mintext = compile(text);
-                } else {
-                    JavaScriptCompressor compressor = new JavaScriptCompressor(
-                        new StringReader(text), new ErrorReporter() {
-
-                            @Override
-                            public void warning(String message, String sourceName, int line,
-                                String lineSource, int lineOffset) {
-                                if (line < 0) {
-                                    ZimbraLog.zimlet.warn("\n" + message);
-                                } else {
-                                    ZimbraLog.zimlet
-                                        .warn("\n" + line + ':' + lineOffset + ':' + message);
-                                }
-                            }
-
-                            @Override
-                            public void error(String message, String sourceName, int line,
-                                String lineSource, int lineOffset) {
-                                if (line < 0) {
-                                    ZimbraLog.zimlet.error("\n" + message);
-                                } else {
-                                    ZimbraLog.zimlet
-                                        .error("\n" + line + ':' + lineOffset + ':' + message);
-                                }
-                            }
-
-                            @Override
-                            public EvaluatorException runtimeError(String message,
-                                String sourceName, int line, String lineSource, int lineOffset) {
-                                error(message, sourceName, line, lineSource, lineOffset);
-                                return new EvaluatorException(message);
-                            }
-                        });
-                    StringWriter out = new StringWriter();
-                    compressor.compress(out, 0, true, false, false, false);
-                    mintext = out.toString();
-                }
-                if (mintext == null) {
-                    ZimbraLog.zimlet.info("unable to minimize zimlet JS source");
-                } else {
-                    text = mintext;
-                }
-            }
-
-            // store buffer
-            if (!debug) {
-                // NOTE: This assumes that the cacheId will *end* with the compressed
-                // NOTE: extension. Therefore, make sure to keep getCacheId in sync.
-                String uncompressedCacheId = compress ?
-                    cacheId.substring(0, cacheId.length() - COMPRESSED_EXT.length()) : cacheId;
-
-                // store uncompressed file in cache
-                file = createCacheFile(uncompressedCacheId, type);
-                if (ZimbraLog.zimlet.isDebugEnabled()) {
-                    ZimbraLog.zimlet.debug("DEBUG: buffer file: " + file);
-                }
-                copy(text, file);
-                putCacheFile(uncompressedCacheId, file);
-
-                // store compressed file in cache
-                if (compress) {
-                    String compressedCacheId = cacheId;
-                    File gzfile = createCacheFile(compressedCacheId, type+DiskCacheServlet.EXT_COMPRESSED);
-                    if (ZimbraLog.zimlet.isDebugEnabled()) {
-                        ZimbraLog.zimlet.debug("DEBUG: buffer file: " + gzfile);
+                    // NOTE: We have to return the messages for *all* of the zimlets,
+                    // NOTE: not just the enabled ones, because their names and
+                    // NOTE: descriptions can be translated.
+                    for (String zimletName : allZimletNames) {
+                        RequestWrapper wrappedReq = new RequestWrapper(req, RESOURCE_PATH + zimletName);
+                        ResponseWrapper wrappedResp = new ResponseWrapper(resp, printer);
+                        wrappedReq.setParameter("debug", "1"); // bug 45922: avoid cached messages
+                        dispatcher.include(wrappedReq, wrappedResp); //this will activate ZimletProps2JsServlet
                     }
-                    file = compress(file, gzfile);
-                    putCacheFile(compressedCacheId, file);
+                }
+
+                // zimlet resources
+                if (ZimbraLog.zimlet.isDebugEnabled()) {
+                    ZimbraLog.zimlet.debug("DEBUG: generating buffer");
+                }
+                generate(zimletNames, type, printer);
+                text = writer.toString();
+
+                // minimize css
+                if (type.equals(T_CSS) && !debug) {
+                    CssCompressor compressor = new CssCompressor(new StringReader(text));
+                    StringWriter out = new StringWriter();
+                    compressor.compress(out, 0);
+                    text = out.toString();
+                }
+
+                if (type.equals(T_JAVASCRIPT) && !debug) {
+                    // compress JS code
+            text = text.replaceAll("(^|\n)\\s*DBG\\.\\w+\\(.*\\);\\s*(\n|$)", "\n");
+                    String mintext = null;
+                    if (zimbraXZimletCompatibleWith != null) {
+                        mintext = compile(text);
+                    } else {
+                        JavaScriptCompressor compressor = new JavaScriptCompressor(
+                            new StringReader(text), new ErrorReporter() {
+
+                                @Override
+                                public void warning(String message, String sourceName, int line,
+                                    String lineSource, int lineOffset) {
+                                    if (line < 0) {
+                                        ZimbraLog.zimlet.warn("\n" + message);
+                                    } else {
+                                        ZimbraLog.zimlet
+                                            .warn("\n" + line + ':' + lineOffset + ':' + message);
+                                    }
+                                }
+
+                                @Override
+                                public void error(String message, String sourceName, int line,
+                                    String lineSource, int lineOffset) {
+                                    if (line < 0) {
+                                        ZimbraLog.zimlet.error("\n" + message);
+                                    } else {
+                                        ZimbraLog.zimlet
+                                            .error("\n" + line + ':' + lineOffset + ':' + message);
+                                    }
+                                }
+
+                                @Override
+                                public EvaluatorException runtimeError(String message,
+                                    String sourceName, int line, String lineSource, int lineOffset) {
+                                    error(message, sourceName, line, lineSource, lineOffset);
+                                    return new EvaluatorException(message);
+                                }
+                            });
+                        StringWriter out = new StringWriter();
+                        compressor.compress(out, 0, true, false, false, false);
+                        mintext = out.toString();
+                    }
+                    if (mintext == null) {
+                        ZimbraLog.zimlet.info("unable to minimize zimlet JS source");
+                    } else {
+                        text = mintext;
+                    }
+                }
+
+                // store buffer
+                if (!debug) {
+                    // NOTE: This assumes that the cacheId will *end* with the compressed
+                    // NOTE: extension. Therefore, make sure to keep getCacheId in sync.
+                    String uncompressedCacheId = compress ?
+                        cacheId.substring(0, cacheId.length() - COMPRESSED_EXT.length()) : cacheId;
+
+                    // store uncompressed file in cache
+                    file = createCacheFile(uncompressedCacheId, type);
+                    if (ZimbraLog.zimlet.isDebugEnabled()) {
+                        ZimbraLog.zimlet.debug("DEBUG: buffer file: " + file);
+                    }
+                    copy(text, file);
+                    putCacheFile(uncompressedCacheId, file);
+
+                    // store compressed file in cache
+                    if (compress) {
+                        String compressedCacheId = cacheId;
+                        File gzfile = createCacheFile(compressedCacheId, type+DiskCacheServlet.EXT_COMPRESSED);
+                        if (ZimbraLog.zimlet.isDebugEnabled()) {
+                            ZimbraLog.zimlet.debug("DEBUG: buffer file: " + gzfile);
+                        }
+                        file = compress(file, gzfile);
+                        putCacheFile(compressedCacheId, file);
+                    }
+                }
+            }
+            finally
+            {
+                if( !debug ) {
+                    mZimletCompressionLock.unlock();
                 }
             }
         } else {

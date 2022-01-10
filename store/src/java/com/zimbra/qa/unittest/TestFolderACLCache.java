@@ -1,19 +1,8 @@
-/*
- * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite Server
- * Copyright (C) 2009, 2010, 2011, 2013, 2014, 2016 Synacor, Inc.
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
- * ***** END LICENSE BLOCK *****
- */
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.qa.unittest;
 
 import org.junit.After;
@@ -68,7 +57,7 @@ public class TestFolderACLCache {
      *
      * To setup memcached:
      * zmprov mcf zimbraMemcachedClientServerList 'localhost:11211'
-     * /opt/zimbra/memcached/bin/memcached -vv
+     * /opt/zextras/memcached/bin/memcached -vv
      *
      * To test all scenarios, after reset-the-world:
      *
@@ -88,7 +77,7 @@ public class TestFolderACLCache {
      * 2. Test the case when memcached is configured/running.
      *    zmprov mcf zimbraMemcachedClientServerList 'localhost:11211'
      *    (restart server)
-     *    /opt/zimbra/memcached/bin/memcached -vv
+     *    /opt/zextras/memcached/bin/memcached -vv
      *    ==> run the test
      */
 
