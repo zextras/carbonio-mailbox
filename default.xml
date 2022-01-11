@@ -1,68 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
     <remote name="bb-zx" fetch="ssh://git@bitbucket.org/zextras" />
+    <remote name="gh-zx" fetch="ssh://git@github.com/zextras" />
 
     <!-- Remotes reported here in case of backup and for completeness -->
     <remote name="gh-zm" fetch="https://github.com/Zimbra" />
     <remote name="gh-ko" fetch="https://github.com/kohlschutter" />
 
-    <!-- Everything is fetched by our org by default -->
-    <default remote="bb-zx" sync-c="true" sync-j="4" />
+    <!-- Everything is fetched by our org (external) by default -->
+    <default remote="gh-zx" sync-c="true" sync-j="4" />
 
     <!-- Carbonio base repos -->
-    <project name="zm-build" revision="refs/heads/zextras/9.0.0p22" />
-    <project name="zm-pkg-tool" revision="refs/heads/zextras/9.0.0p19" />
+    <project name="carbonio-build" path="zm-build" revision="refs/tags/4.0.0" />
+    <project name="carbonio-pkg-tool" path="zm-pkg-tool" revision="refs/tags/4.0.0" />
 
     <!-- Carbonio packaging spec files -->
-    <project name="carbonio-core" revision="refs/heads/zextras/9.0.0p22" />
+    <project remote="bb-zx" name="carbonio-core" revision="refs/tags/4.0.0" />
+
 
     <!-- 
         Carbonio modules repo 
         Commented entries are now detached from the monolithic build process.
         They are now standalone and reported only for completeness.
     -->
-    <project name="ant-1.7.0-ziputil-patched" revision="refs/tags/zextras/9.0.0" />
-    <project name="ant-tar-patched" revision="refs/tags/9.0.0" />
-    <project name="ical4j-0.9.16-patched" revision="refs/tags/9.0.0" />
+    <project remote="bb-zx" name="ant-1.7.0-ziputil-patched" revision="refs/tags/9.0.0" />
+    <project remote="bb-zx" name="ant-tar-patched" revision="refs/tags/9.0.0" />
+    <project remote="bb-zx" name="ical4j-0.9.16-patched" revision="refs/tags/9.0.0" />
     <project remote="gh-ko" name="junixsocket" revision="refs/tags/junixsocket-parent-2.0.4" />
-    <project name="zm-admin-console" revision="refs/tags/zextras/9.0.0.p22" />
-    <project name="zm-ajax" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-admin-ajax" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-amavis" revision="refs/tags/zextras/9.0.0.p19" />
-    <project name="zm-certificate-manager-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-certificate-manager-store" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-charset" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-clam-scanner-store" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-core-utils" revision="refs/tags/zextras/9.0.0.p21" />
-    <project name="zm-db-conf" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-freshclam" revision="refs/tags/zextras/9.0.0.p19" />
-    <project name="zm-helptooltip-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-jetty-conf" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-jython" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-launcher" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-ldap-utilities" revision="refs/tags/zextras/9.0.0.p20" />
-    <project name="zm-ldap-utils-store" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-mailbox" revision="refs/tags/zextras/9.0.0.p22" />
-    <project name="zm-mta" revision="refs/tags/zextras/9.0.0.p19" />
+    <project name="carbonio-admin-console" path="zm-admin-console" revision="refs/tags/4.0.0" />
+    <project name="carbonio-ajax" path="zm-ajax" revision="refs/tags/4.0.0" />
+    <project name="carbonio-admin-ajax" path="zm-admin-ajax" revision="refs/tags/4.0.0" />
+    <project name="carbonio-amavis" path="zm-amavis" revision="refs/tags/4.0.0" />
+    <project name="carbonio-certificate-manager-admin-zimlet" path="zm-certificate-manager-admin-zimlet" revision="refs/tags/4.0.0" />
+    <project name="carbonio-certificate-manager-store" path="zm-certificate-manager-store" revision="refs/tags/4.0.0" />
+    <project name="carbonio-charset" path="zm-charset" revision="refs/tags/4.0.0" />
+    <project name="carbonio-clam-scanner-store" path="zm-clam-scanner-store" revision="refs/tags/4.0.0" />
+    <project name="carbonio-core-utils" path="zm-core-utils" revision="refs/tags/4.0.0" />
+    <project name="carbonio-db-conf" path="zm-db-conf" revision="refs/tags/4.0.0" />
+    <project name="carbonio-freshclam" path="zm-freshclam" revision="refs/tags/4.0.0" />
+    <project name="carbonio-helptooltip-zimlet" path="zm-helptooltip-zimlet" revision="refs/tags/4.0.0" />
+    <project name="carbonio-jetty-conf" path="zm-jetty-conf" revision="refs/tags/4.0.0" />
+    <project name="carbonio-jython" path="zm-jython" revision="refs/tags/4.0.0" />
+    <project name="carbonio-launcher" path="zm-launcher" revision="refs/tags/4.0.0" />
+    <project name="carbonio-ldap-utilities" path="zm-ldap-utilities" revision="refs/tags/4.0.0" />
+    <project name="carbonio-ldap-utils-store" path="zm-ldap-utils-store" revision="refs/tags/4.0.0" />
+    <project name="carbonio-mailbox" path="zm-mailbox" revision="refs/tags/4.0.0" />
+    <project name="carbonio-mta" path="zm-mta" revision="refs/tags/4.0.0" />
     <!-- <project name="zm-nginx-conf" revision="refs/tags/zextras/9.0.0.p19" /> -->
-    <project name="zm-nginx-lookup-store" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-openid-consumer-store" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-postfix" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-proxy-config-admin-zimlet" revision="refs/tags/zextras/9.0.0.p19" />
-    <project name="zm-taglib" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-timezones" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-viewmail-admin-zimlet" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-web-client" revision="refs/tags/zextras/9.0.0.p22" />
-    <project name="zm-zcs" revision="refs/tags/zextras/9.0.0.p18" />
-    <project name="zm-zcs-lib" revision="refs/tags/zextras/9.0.0.p20" />
-    <project name="zm-zimlets" revision="refs/tags/zextras/9.0.0.p20" />
-    <project name="zm-oauth-social" revision="refs/tags/zextras/9.0.0.p16" />
-    <project name="zm-gql" revision="refs/tags/zextras/9.0.0.p16" />
+    <project name="carbonio-nginx-lookup-store" path="zm-nginx-lookup-store" revision="refs/tags/4.0.0" />
+    <project name="carbonio-openid-consumer-store" path="zm-openid-consumer-store" revision="refs/tags/4.0.0" />
+    <project name="carbonio-postfix" path="zm-postfix" revision="refs/tags/4.0.0" />
+    <project name="carbonio-proxy-config-admin-zimlet" path="zm-proxy-config-admin-zimlet" revision="refs/tags/4.0.0" />
+    <project name="carbonio-taglib" path="zm-taglib" revision="refs/tags/4.0.0" />
+    <project name="carbonio-timezones" path="zm-timezones" revision="refs/tags/4.0.0" />
+    <project name="carbonio-viewmail-admin-zimlet" path="zm-viewmail-admin-zimlet" revision="refs/tags/4.0.0" />
+    <project name="carbonio-web-client" path="zm-web-client" revision="refs/tags/4.0.0" />
+    <project name="carbonio-zcs" path="zm-zcs" revision="refs/tags/4.0.0" />
+    <project name="carbonio-zcs-lib" path="zm-zcs-lib" revision="refs/tags/4.0.0" />
+    <project name="carbonio-zimlets" path="zm-zimlets" revision="refs/tags/4.0.0" />
+    <project name="carbonio-oauth-social" path="zm-oauth-social" revision="refs/tags/4.0.0" />
+    <project name="carbonio-gql" path="zm-gql" revision="refs/tags/4.0.0" />
 
     <!-- YUI 2.9.0-alfresco-20140211 -->
-    <project name="yui-internal-mirror" path="zm-admin-console/WebRoot/yui" revision="refs/heads/master" />
-    <project name="yui-internal-mirror" path="zm-web-client/WebRoot/yui" revision="refs/heads/master" />
+    <project remote="bb-zx" name="yui-internal-mirror" path="zm-admin-console/WebRoot/yui" revision="refs/heads/master" />
+    <project remote="bb-zx" name="yui-internal-mirror" path="zm-web-client/WebRoot/yui" revision="refs/heads/master" />
 
     <!-- Zextras Theme for Carbonio -->
-    <project name="iris-transitional-theme" path="zm-web-client/WebRoot/skins/zextras" revision="refs/heads/zextras-logos" />
+    <project remote="bb-zx" name="iris-transitional-theme" path="zm-web-client/WebRoot/skins/zextras" revision="refs/heads/zextras-logos" />
 </manifest>
