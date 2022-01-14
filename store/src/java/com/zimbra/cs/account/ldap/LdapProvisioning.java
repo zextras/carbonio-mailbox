@@ -5,33 +5,6 @@
 
 package com.zimbra.cs.account.ldap;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
-
-import java.util.stream.Stream;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang.StringUtils;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -47,7 +20,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.service.ServiceException.Argument;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.util.UnmodifiableBloomFilter;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.EmailUtil;
 import com.zimbra.common.util.L10nUtil;
@@ -221,6 +193,31 @@ import com.zimbra.soap.type.AutoProvPrincipalBy;
 import com.zimbra.soap.type.GalSearchType;
 import com.zimbra.soap.type.NamedValue;
 import com.zimbra.soap.type.TargetBy;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -6243,38 +6240,41 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         }
     }
 
-    // validate that user is not using personal data in his password
-    private void validatePasswordEntropy(String password, Account acct)
-        throws AccountServiceException {
-        String username = acct.getAttr(Provisioning.A_sn); // "Natalie";
-        String fullname = acct.getAttr(Provisioning.A_cn); // "Natalie Leesa";
-        String initials = acct.getAttr(Provisioning.A_initials); // "Rose";
-        String email = acct.getAttr(Provisioning.A_mail); // "natalie.leesa@example.com";
+  // validate that user is not using personal data in his password
+  private void validatePasswordEntropy(String password, Account acct)
+      throws AccountServiceException {
+    String username = acct.getAttr(Provisioning.A_sn);
+    String fullname = acct.getAttr(Provisioning.A_cn);
+    String initials = acct.getAttr(Provisioning.A_initials);
+    String email = acct.getAttr(Provisioning.A_mail);
 
-        String[] fullNameExploded = fullname.toLowerCase().split(" ");
-        String[] emailExploded = email.split("[@._]");
-        String[] cleanEmailExploded = Arrays.copyOf(emailExploded,emailExploded.length -1 ); // remove the top level domain(TLD)
-        String passwordLower = password.toLowerCase();
+    String[] fullNameExploded = fullname.toLowerCase().split(" ");
+    String[] emailExploded = email.split("[@._]");
+    String[] cleanEmailExploded =
+        Arrays.copyOf(emailExploded, emailExploded.length - 1); // remove the top level domain(TLD)
+    String passwordLower = password.toLowerCase();
 
-        String[] personalDataImploded = {
-            username.toLowerCase(),
-            fullname.toLowerCase(),
-            fullname.replace(" ", "").toLowerCase(),
-            initials.toLowerCase()
-        };
+    String[] personalDataImploded = {
+      username.toLowerCase(),
+      fullname.toLowerCase(),
+      fullname.replace(" ", "").toLowerCase(),
+      initials.toLowerCase()
+    };
 
-        String[] dictionary = Stream.of(personalDataImploded, cleanEmailExploded, fullNameExploded)
+    String[] dictionary =
+        Stream.of(personalDataImploded, cleanEmailExploded, fullNameExploded)
             .flatMap(Stream::of)
             .toArray(String[]::new);
 
-        for (String part : dictionary) {
-            if (part.length() > 2 && (part.contains(passwordLower) || passwordLower.contains(part))) {
-                throw AccountServiceException.INVALID_PASSWORD(
-                    "password contains username or other personal data: " + part,
-                    new Argument(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, part, Argument.Type.STR));
-            }
-        }
+    for (String part : dictionary) {
+      if (part.length() > 2 && (part.contains(passwordLower) || passwordLower.contains(part))) {
+        throw AccountServiceException.INVALID_PASSWORD(
+            "password contains username or other personal data: " + part,
+            new Argument(
+                Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, part, Argument.Type.STR));
+      }
     }
+  }
 
     private boolean isAsciiPunc(char ch) {
         return
