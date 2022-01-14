@@ -225,6 +225,7 @@
       "zimbraFeatureDiscardInFiltersEnabled": "TRUE",
       "zimbraFeatureNewMailNotificationEnabled": "TRUE",
       "zimbraPasswordMinDigitsOrPuncs": "0",
+      "zimbraBlockPersonalDataInPasswordEnabled": "TRUE",
       "zimbraExternalShareLifetime": "0",
       "zimbraFeatureAdminMailEnabled": "TRUE",
       "zimbraShareLifetime": "0",

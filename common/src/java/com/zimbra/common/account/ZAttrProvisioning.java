@@ -12057,6 +12057,13 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPasswordLocked = "zimbraPasswordLocked";
 
     /**
+     * block personal data in password string
+     */
+    @ZAttr(id=3089)
+    public static final String A_zimbraBlockPersonalDataInPasswordEnabled = "zimbraBlockPersonalDataInPasswordEnabled";
+
+
+    /**
      * how long an account is locked out. Use 0 to lockout an account until
      * admin resets it. Must be in valid duration format:
      * {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h - hours, m -

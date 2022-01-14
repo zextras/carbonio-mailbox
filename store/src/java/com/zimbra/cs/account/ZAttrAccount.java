@@ -34784,6 +34784,68 @@ public abstract class ZAttrAccount  extends MailTarget {
     }
 
     /**
+     * personal data allowed in password
+     *
+     * @return zimbraBlockPersonalDataInPasswordEnabled, or true if unset
+     */
+    @ZAttr(id=3089)
+    public boolean isBlockPersonalDataInPasswordEnabled() {
+      return getBooleanAttr(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, true, true);
+    }
+
+    /**
+     * personal data allowed in password
+     *
+     * @param zimbraBlockPersonalDataInPasswordEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=3089)
+    public void setBlockPersonalDataInPasswordEnabled(boolean zimbraBlockPersonalDataInPasswordEnabled) throws com.zimbra.common.service.ServiceException {
+      HashMap<String,Object> attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, zimbraBlockPersonalDataInPasswordEnabled ? TRUE : FALSE);
+      getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * personal data allowed in password
+     *
+     * @param zimbraBlockPersonalDataInPasswordEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> setBlockPersonalDataInPasswordEnabled(boolean zimbraBlockPersonalDataInPasswordEnabled, Map<String,Object> attrs) {
+      if (attrs == null) attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, zimbraBlockPersonalDataInPasswordEnabled ? TRUE : FALSE);
+      return attrs;
+    }
+
+    /**
+     * personal data allowed in password
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=3089)
+    public void unsetBlockPersonalDataInPasswordEnabled() throws com.zimbra.common.service.ServiceException {
+      HashMap<String,Object> attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, "");
+      getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * personal data allowed in password
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> unsetBlockPersonalDataInPasswordEnabled(Map<String,Object> attrs) {
+      if (attrs == null) attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, "");
+      return attrs;
+    }
+
+    /**
      * regex of allowed punctuation characters in password
      *
      * @return zimbraPasswordAllowedPunctuationChars, or null if unset

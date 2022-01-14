@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
+import java.util.stream.Stream;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
 
@@ -6093,6 +6094,23 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         return cos.getAttr(name);
     }
 
+    private boolean getBoolean(Account acct, Cos cos, ZMutableEntry entry, String name, boolean defaultValue)
+        throws ServiceException {
+        if (acct != null) {
+            return acct.getBooleanAttr(name, defaultValue);
+        }
+
+        try {
+            String v = entry.getAttrString(name);
+            if (v != null) {
+                return Boolean.parseBoolean(v);
+            }
+        } catch (ServiceException ne) {
+            throw ServiceException.FAILURE(ne.getMessage(), ne);
+        }
+        return cos.getBooleanAttr(name, defaultValue);
+    }
+
     /**
      * called to check password strength. Should pass in either an Account, or Cos/Attributes (during creation).
      *
@@ -6118,6 +6136,12 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
         if (blockCommonPasswordsEnabled && commonPasswordFilter.mightContain(password)) {
             throw AccountServiceException.INVALID_PASSWORD("password is known to be too common");
+        }
+
+        boolean blockPersonalDataInPasswordEnabled = getBoolean(acct, cos, entry, Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, true);
+
+        if (acct != null && blockPersonalDataInPasswordEnabled) {
+            validatePasswordEntropy(password, acct);
         }
 
         int minUpperCase = getInt(acct, cos, entry, Provisioning.A_zimbraPasswordMinUpperCaseChars, 0);
@@ -6216,6 +6240,39 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         if (numeric + punctuation < minNumOrPunc) {
             throw AccountServiceException.INVALID_PASSWORD("not enough numeric or punctuation characters",
                     new Argument(Provisioning.A_zimbraPasswordMinDigitsOrPuncs, minNumOrPunc, Argument.Type.NUM));
+        }
+    }
+
+    // validate that user is not using personal data in his password
+    private void validatePasswordEntropy(String password, Account acct)
+        throws AccountServiceException {
+        String username = acct.getAttr(Provisioning.A_sn); // "Natalie";
+        String fullname = acct.getAttr(Provisioning.A_cn); // "Natalie Leesa";
+        String initials = acct.getAttr(Provisioning.A_initials); // "Rose";
+        String email = acct.getAttr(Provisioning.A_mail); // "natalie.leesa@example.com";
+
+        String[] fullNameExploded = fullname.toLowerCase().split(" ");
+        String[] emailExploded = email.split("[@._]");
+        String[] cleanEmailExploded = Arrays.copyOf(emailExploded,emailExploded.length -1 ); // remove the top level domain(TLD)
+        String passwordLower = password.toLowerCase();
+
+        String[] personalDataImploded = {
+            username.toLowerCase(),
+            fullname.toLowerCase(),
+            fullname.replace(" ", "").toLowerCase(),
+            initials.toLowerCase()
+        };
+
+        String[] dictionary = Stream.of(personalDataImploded, cleanEmailExploded, fullNameExploded)
+            .flatMap(Stream::of)
+            .toArray(String[]::new);
+
+        for (String part : dictionary) {
+            if (part.length() > 2 && (part.contains(passwordLower) || passwordLower.contains(part))) {
+                throw AccountServiceException.INVALID_PASSWORD(
+                    "password contains username or other personal data: " + part,
+                    new Argument(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, part, Argument.Type.STR));
+            }
         }
     }
 

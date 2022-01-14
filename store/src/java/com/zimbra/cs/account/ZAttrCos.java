@@ -27288,6 +27288,68 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * personal data allowed in password
+     *
+     * @return zimbraBlockPersonalDataInPasswordEnabled, or false if unset
+     */
+    @ZAttr(id=3089)
+    public boolean isBlockPersonalDataInPasswordEnabled() {
+      return getBooleanAttr(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, false, true);
+    }
+
+    /**
+     * personal data allowed in password
+     *
+     * @param zimbraBlockPersonalDataInPasswordEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=3089)
+    public void setBlockPersonalDataInPasswordEnabled(boolean zimbraBlockPersonalDataInPasswordEnabled) throws com.zimbra.common.service.ServiceException {
+      HashMap<String,Object> attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, zimbraBlockPersonalDataInPasswordEnabled ? TRUE : FALSE);
+      getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * personal data allowed in password
+     *
+     * @param zimbraBlockPersonalDataInPasswordEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> setBlockPersonalDataInPasswordEnabled(boolean zimbraBlockPersonalDataInPasswordEnabled, Map<String,Object> attrs) {
+      if (attrs == null) attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, zimbraBlockPersonalDataInPasswordEnabled ? TRUE : FALSE);
+      return attrs;
+    }
+
+    /**
+     * personal data allowed in password
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=3089)
+    public void unsetBlockPersonalDataInPasswordEnabled() throws com.zimbra.common.service.ServiceException {
+      HashMap<String,Object> attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, "");
+      getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * personal data allowed in password
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> unsetBlockPersonalDataInPasswordEnabled(Map<String,Object> attrs) {
+      if (attrs == null) attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraBlockPersonalDataInPasswordEnabled, "");
+      return attrs;
+    }
+
+    /**
      * how long an account is locked out. Use 0 to lockout an account until
      * admin resets it. Must be in valid duration format:
      * {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h - hours, m -

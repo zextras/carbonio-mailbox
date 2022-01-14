@@ -169,6 +169,7 @@
     <a n="zimbraPasswordAllowedChars"/>
     <a n="zimbraPasswordAllowedPunctuationChars"/>
     <a n="zimbraPasswordEnforceHistory"/>
+    <a n="zimbraBlockPersonalDataInPasswordEnabled"/>
     <a n="zimbraPasswordLocked"/>
     <a n="zimbraPasswordLockoutDuration"/>
     <a n="zimbraPasswordLockoutEnabled"/>
