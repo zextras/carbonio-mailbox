@@ -78,7 +78,7 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
             return (Integer) value;
         } else if (value instanceof String) {
             try {
-                return new Integer((String) value);
+                return Integer.valueOf((String) value);
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(String.format("Argument='%s' of class String", value));
             }

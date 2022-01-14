@@ -3,7 +3,7 @@
     <dirname property="zimbra.root.dir" file="${ant.file.build-common}/../"/>
     <dirname property="zm-mailbox.basedir" file="${ant.file.build-common}"/>
     <!-- Java -->
-    <property name="javac.target" value="1.8"/>
+    <property name="javac.target" value="11"/>
     <!-- base path for ivy cache, local repository, ant libraries, etc -->
 
     <property name="dev.home"  value="${user.home}"/>
@@ -276,6 +276,8 @@
         <mkdir dir="${build.classes.dir}" />
         <javac destdir="${build.classes.dir}" debug="true" classpathref="class.path" target="${javac.target}" encoding="utf-8">
             <src refid="all.java.path" />
+            <compilerarg value="-Xlint:deprecation" />
+            <compilerarg value="-Xlint:unchecked" />
         </javac>
     </target>
 
@@ -285,7 +287,10 @@
         <antcontrib:then>
           <mkdir dir="${test.classes.dir}"/>
             <javac destdir="${test.classes.dir}" srcdir="${test.src.dir}" classpathref="test.class.path"
-               debug="true" target="${javac.target}" encoding="utf-8" />
+               debug="true" target="${javac.target}" encoding="utf-8">
+               <compilerarg value="-Xlint:deprecation" />
+               <compilerarg value="-Xlint:unchecked" />
+            </javac>
             <copy todir="${test.classes.dir}">
               <fileset dir="${test.src.dir}" excludes="**/*.java"/>
             </copy>
@@ -315,16 +320,27 @@
             <jvmarg value="-Dserver.dir=${server.dir}"/>
             <jvmarg value="-Dzimbra.config=${server.dir}/src/java-test/localconfig-test.xml"/>
             <jvmarg value="-Dfile.encoding=UTF-8"/>
+            <jvmarg value="-Djava.locale.providers=COMPAT,SPI"/>
             <batchtest todir="${test.dir}/output">
                 <fileset dir="${test.src.dir}">
                     <include name="${test.pattern}"/>
                     <exclude name="**/Abstract*Test.java"/>
                     <exclude name="**/mailbox/ContactTest.java"/>
                     <exclude name="**/filter/FileIntoCopyTest.java"/>
-                    <exclude name="**/cs/redolog/op/CreateMessageTest.java"/>
-                    <exclude name="**/cs/service/mail/SearchActionTest.java"/>
-                    <exclude name="**/cs/filter/RuleManagerWithCustomActionFilterTest.java"/>
-                    <exclude name="**/html/owasp/OwaspHtmlSanitizerTest.java"/>
+                    <exclude name="**/filter/RuleManagerWithCustomActionFilterTest.java"/>
+                    <exclude name="**/filter/ZimbraMailAdapterTest.java"/>
+                    <exclude name="**/dav/UrlNamespaceTest.java"/>
+                    <exclude name="**/ldap/unboundid/UBIDUserCertificateAttributeTest.java"/>
+                    <exclude name="**/GetMsgTest.java"/>
+                    <exclude name="**/SearchActionTest.java"/>
+                    <exclude name="**/SendMsgTest.java"/>
+                    <exclude name="**/CalendarItemTest.java"/>
+                    <exclude name="**/CalendarRequestTest.java"/>
+                    <exclude name="**/ModifyPrefsTest.java"/>
+                    <exclude name="**/UserServletTest.java"/>
+                    <exclude name="**/ModifyFilterRulesAdminTest.java"/>
+                    <exclude name="**/ModifyProfileImageTest.java"/>
+                    <exclude name="**/JWTBasedAuthTest.java"/>
                 </fileset>
             </batchtest>
           </junit>
@@ -511,7 +527,10 @@
                 </echo>
             </then>
         </antcontrib:if>
-        <javac destdir="${build.classes.dir}" debug="true" target="${javac.target}" srcdir="${build.dir}/buildinfo" />
+        <javac destdir="${build.classes.dir}" debug="true" target="${javac.target}" srcdir="${build.dir}/buildinfo">
+          <compilerarg value="-Xlint:deprecation" />
+          <compilerarg value="-Xlint:unchecked" />
+        </javac>
     </target>
 
     <target name="zextras-jar" depends="generate-jar-version,set-dev-version,3rd-party-defines" description="Builds a standard jar file that prints its version info when executed.  Optionally sets the Zimbra-Extension-Class attribute in the manifest if the zimbra.extension.class property is set.">

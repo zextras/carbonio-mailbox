@@ -32,9 +32,9 @@ pipeline {
                     carbonio.buildinfo.version=22.1.0_ZEXTRAS_202201
                     EOF
                    """
-
+				sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
                 sh """
-                    ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ ant \
+                    ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant \
                          -propertyfile build.properties \
                          dist
                     """
@@ -51,7 +51,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
                     sh "cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties"
                     sh """
-                        ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ ant \
+                        ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant \
                              -propertyfile build.properties \
                              publish-maven-all
                         """

@@ -121,7 +121,10 @@
                 public static final String HOST = "${zimbra.buildinfo.host}";
             }
     </echo>
-    <javac includeantruntime="false" destdir="${build.classes.dir}" debug="true" target="${javac.target}" srcdir="${build.dir}/buildinfo"/>
+    <javac includeantruntime="false" destdir="${build.classes.dir}" debug="true" target="${javac.target}" srcdir="${build.dir}/buildinfo">
+      <compilerarg value="-Xlint:deprecation" />
+      <compilerarg value="-Xlint:unchecked" />
+    </javac>
   </target>
   <target name="generate-getters" depends="compile,resolve" description="generate methods for attributes in attrs.xml">
     <antcall target="generate-getter">

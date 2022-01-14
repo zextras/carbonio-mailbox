@@ -46,19 +46,19 @@ public class HardLinkTest {
 			System.out.println("ERROR: args for loop test are { loop count, oldpath, linkdir } ");
 			return;
 		}
-		int n = Integer.valueOf(args[0]).intValue();
+		var n = Integer.valueOf(args[0]).intValue();
 		String oldpath = args[1];
 		String outdir = args[2];
 		
 		int fname = 0;
 		for (int i = 0; i < n; i++) {
 			try {
-				String fstr = new Integer(fname).toString();
+				String fstr = Integer.toString(fname);
 				IO.link(oldpath, new File(outdir, fstr).getPath());
 				fname++;
 				if ((fname % 30000) == 0) {
 					for (int x = 0; x < fname; x++) {
-						String xstr = new Integer(x).toString();
+						String xstr = Integer.toString(x);
 						new File(outdir, xstr).delete();
 					}
 				}

@@ -107,7 +107,10 @@
 
   <target name="soap-api-doc-compile" depends="compile,resolve-soapdocs">
     <mkdir dir="${soapdocs.classes.dir}"/>
-    <javac srcdir="${soapdocs.src.dir}" destdir="${soapdocs.classes.dir}" debug="true" classpathref="soapdocs.class.path" target="${javac.target}"/>
+    <javac srcdir="${soapdocs.src.dir}" destdir="${soapdocs.classes.dir}" debug="true" classpathref="soapdocs.class.path" target="${javac.target}">
+      <compilerarg value="-Xlint:deprecation" />
+      <compilerarg value="-Xlint:unchecked" />
+    </javac>
   </target>
 
   <target name="generate-soap-api-doc" depends="soap-api-doc-compile, resolve-soapdoclet">
@@ -167,8 +170,12 @@
 
   <target name="soapdocs-test-compile" depends="soap-api-doc-compile">
     <mkdir dir="${soapdocs.test.classes.dir}"/>
-    <javac srcdir="${soapdocs.test.src.dir}" destdir="${soapdocs.test.classes.dir}" debug="true" classpathref="soapdocs.class.path" target="${javac.target}"/>
-    <copy todir="${soapdocs.test.classes.dir}">
+    <javac srcdir="${soapdocs.test.src.dir}" destdir="${soapdocs.test.classes.dir}" debug="true" classpathref="soapdocs.class.path" target="${javac.target}">
+      <compilerarg value="-Xlint:deprecation" />
+      <compilerarg value="-Xlint:unchecked" />
+    </javac>
+
+  <copy todir="${soapdocs.test.classes.dir}">
       <fileset dir="${soapdocs.test.src.dir}" excludes="**/*.java"/>
     </copy>
   </target>

@@ -39,7 +39,14 @@
   </path>
 
    <target name="generate-native-headers" depends="compile,resolve" description="Java to Native">
-            <javah class="com.zimbra.znative.IO" outputfile="${build.dir}/IO.h" classpathref="build.class.path"/>
+     <javac srcdir="src/java/com/zimbra/znative" nativeheaderdir="${build.dir}" classpathref="build.class.path" destdir="${build.dir}" includes="IO.java">
+         <compilerarg value="-Xlint:deprecation" />
+         <compilerarg value="-Xlint:unchecked" />
+     </javac>
+     <javac srcdir="src/java/com/zimbra/znative" nativeheaderdir="${build.dir}" classpathref="build.class.path" destdir="${build.dir}" includes="Util.java">
+         <compilerarg value="-Xlint:deprecation" />
+         <compilerarg value="-Xlint:unchecked" />
+     </javac>
    </target>
 
    <target name="clean" description="Removes build files and undeploys extension">
