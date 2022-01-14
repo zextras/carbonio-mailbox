@@ -6243,21 +6243,21 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   // validate that user is not using personal data in his password
   private void validatePasswordEntropy(String password, Account acct)
       throws AccountServiceException {
-    String username = acct.getAttr(Provisioning.A_sn);
-    String fullname = acct.getAttr(Provisioning.A_cn);
-    String initials = acct.getAttr(Provisioning.A_initials);
+    String s_name = acct.getAttr(Provisioning.A_sn) == null ? "" : acct.getAttr(Provisioning.A_sn);
+    String c_name = acct.getAttr(Provisioning.A_cn) == null ? "" : acct.getAttr(Provisioning.A_cn);
+    String initials = acct.getAttr(Provisioning.A_initials) == null ? "" : acct.getAttr(Provisioning.A_initials); //could be null
     String email = acct.getAttr(Provisioning.A_mail);
 
-    String[] fullNameExploded = fullname.toLowerCase().split(" ");
+    String[] fullNameExploded = c_name.toLowerCase().split(" ");
     String[] emailExploded = email.split("[@._]");
     String[] cleanEmailExploded =
         Arrays.copyOf(emailExploded, emailExploded.length - 1); // remove the top level domain(TLD)
     String passwordLower = password.toLowerCase();
 
     String[] personalDataImploded = {
-      username.toLowerCase(),
-      fullname.toLowerCase(),
-      fullname.replace(" ", "").toLowerCase(),
+      s_name.toLowerCase(),
+      c_name.toLowerCase(),
+      c_name.replace(" ", "").toLowerCase(),
       initials.toLowerCase()
     };
 
