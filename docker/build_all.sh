@@ -42,8 +42,6 @@ package() {
   find . -type d -name "opt" -exec rsync -av {} "${PKGDIR}" \;
   cd "${SRCDIR}/zm-web-client/build/stage/"
   find . -type d -name "opt" -exec rsync -av {} "${PKGDIR}" \;
-  cd "${SRCDIR}/zm-timezones/build/stage"
-  find . -type d -name "opt" -exec rsync -av {} "${PKGDIR}" \;
 
   chmod 750 -R "${PKGDIR}/etc/sudoers.d"
   chmod +x "${PKGDIR}"/opt/zextras/bin/*
