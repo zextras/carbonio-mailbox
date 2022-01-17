@@ -33,11 +33,11 @@ priority="optional"
 package() {
   cd "${srcdir}"/../../staging
   install -D packages/appserver-service/carbonio-mailbox-sidecar.service \
-  "${pkgdir}/lib/systemd/system/carbonio-mailbox-sidecar.service"
+    "${pkgdir}/lib/systemd/system/carbonio-mailbox-sidecar.service"
   install -D packages/appserver-service/carbonio-mailbox.hcl \
-  "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox.hcl"
+    "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox.hcl"
   install -D packages/appserver-service/carbonio-mailbox \
-  "${pkgdir}/usr/bin/carbonio-mailbox"
+    "${pkgdir}/usr/bin/carbonio-mailbox"
 }
 
 postinst() {
