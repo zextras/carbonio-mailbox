@@ -20,6 +20,8 @@ depends=(
   "carbonio-appserver-conf"
   "carbonio-appserver-war"
   "carbonio-appserver"
+  "service-discover"
+  "pending-setups"
 )
 optdepends=(
   "carbonio-common-appserver-docs"
@@ -30,4 +32,28 @@ priority="optional"
 
 package() {
   cd "${srcdir}"/../../staging
+  install -D packages/appserver-service/carbonio-mailbox-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-mailbox-sidecar.service"
+  install -D packages/appserver-service/carbonio-mailbox.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox.hcl"
+  install -D packages/appserver-service/carbonio-mailbox "${pkgdir}/usr/bin/carbonio-mailbox"
+}
+
+postinst() {
+  getent group 'carbonio-mailbox' >/dev/null ||
+    groupadd -r 'carbonio-mailbox'
+  getent passwd 'carbonio-mailbox' >/dev/null ||
+    useradd -r -M -g 'carbonio-mailbox' -s /sbin/nologin 'carbonio-mailbox'
+
+  mkdir -p '/etc/zextras/carbonio-mailbox/'
+  chown 'carbonio-mailbox:carbonio-mailbox' '/etc/zextras/carbonio-mailbox/'
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    systemctl enable carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
+  fi
+
+  echo "Installed, you must now run pending-setups."
+  cat > /etc/zextras/pending-setups.d/carbonio-mailbox-setup.sh <<EOF
+#!/usr/bin/env bash
+carbonio-mailbox setup
+EOF
 }
