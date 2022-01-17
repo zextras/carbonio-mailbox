@@ -742,7 +742,7 @@ class MemcacheServersVar extends ProxyConfVar {
         List<Server> mcs = mProv.getAllServers(Provisioning.SERVICE_MEMCACHED);
         for (Server mc : mcs) {
             String serverName = mc.getAttr(
-                    Provisioning.A_zimbraServiceHostname, "");
+                    Provisioning.A_zimbraMemcachedBindAddress, "");
             int serverPort = mc.getIntAttr(
                     Provisioning.A_zimbraMemcachedBindPort, 11211);
             try {

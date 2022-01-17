@@ -74,7 +74,7 @@ public class ProxyPurgeUtil
 
         for (Iterator<Server> it=memcachedServers.iterator(); it.hasNext();) {
             Server s = it.next();
-            String serverName = s.getAttr (Provisioning.A_zimbraServiceHostname, "localhost");
+            String serverName = s.getAttr (Provisioning.A_zimbraMemcachedBindAddress, "localhost");
             String servicePort = s.getAttr (Provisioning.A_zimbraMemcachedBindPort, memcachedPort);
             servers.add (serverName + ":" + servicePort);
         }
@@ -141,7 +141,7 @@ public class ProxyPurgeUtil
             
             for (Iterator<Server> it=memcachedServers.iterator(); it.hasNext();) {
                 Server s = it.next();
-                String serverName = s.getAttr (Provisioning.A_zimbraServiceHostname, "localhost");
+                String serverName = s.getAttr (Provisioning.A_zimbraMemcachedBindAddress, "localhost");
                 String servicePort = s.getAttr (Provisioning.A_zimbraMemcachedBindPort, memcachedPort);
                 servers.add (serverName + ":" + servicePort);
             }

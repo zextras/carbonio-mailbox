@@ -4766,7 +4766,7 @@ public class ProvUtil implements HttpDebugListener {
     private void doGetAllMemcachedServers() throws ServiceException {
         List<Server> servers = prov.getAllServers(Provisioning.SERVICE_MEMCACHED);
         for (Server server : servers) {
-            console.print(server.getAttr(Provisioning.A_zimbraServiceHostname, "") + ":"
+            console.print(server.getAttr(Provisioning.A_zimbraMemcachedBindAddress, "") + ":"
                     + server.getAttr(Provisioning.A_zimbraMemcachedBindPort, "") + " ");
         }
         console.println();
