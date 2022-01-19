@@ -63,16 +63,6 @@ pipeline {
             }
         }
         stage('Build deb/rpm') {
-            when {
-                anyOf {
-                    branch 'release/*'
-                    branch 'custom/*'
-                    branch 'beta/*'
-                    branch 'playground/*'
-                    expression { params.PLAYGROUND == true }
-                    buildingTag()
-                }
-            }
             stages {
                 stage('pacur') {
                     parallel {
