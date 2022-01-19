@@ -18,3 +18,4 @@ eclipse-ivysettings.xml
 store/tmp/
 common-passwords.txt
 *.deb
+**.iml
