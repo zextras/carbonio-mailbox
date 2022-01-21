@@ -6222,11 +6222,14 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
 
   /**
+   * Validate user password and fails if passed password string contains any of their personal data
+   *
    * @param password Password string against which checks to be performed
-   * @param acct {@link Account} from where personal data like: last name({@value
-   *     Provisioning#A_sn}), common name({@value Provisioning#A_cn}), initials of some or all
-   *     names, but not the surname({@value Provisioning#A_initials}) and email address({@value
-   *     Provisioning#A_mail}) will be compared
+   * @param acct {@link Account} from where personal data like:
+   *     last name({@value Provisioning#A_sn});
+   *     common name({@value Provisioning#A_cn});
+   *     initials of some or all names, but not the surname({@value Provisioning#A_initials})
+   *     and email address({@value Provisioning#A_mail}) will be compared
    * @throws AccountServiceException
    */
   private void validatePasswordEntropyForPersonalData(String password, Account acct)
@@ -6238,11 +6241,12 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         Optional.of(Optional.ofNullable(acct.getAttr(Provisioning.A_cn)).orElse(""));
     Optional<String> initials =
         Optional.of(Optional.ofNullable(acct.getAttr(Provisioning.A_initials)).orElse(""));
-    String email = acct.getAttr(Provisioning.A_mail);
+    Optional<String> email =
+      Optional.of(Optional.ofNullable(acct.getAttr(Provisioning.A_mail)).orElse(""));
 
     // prepare dictionary
     String[] fullNameExploded = cName.get().toLowerCase().split(" ");
-    String[] emailExploded = email.split("[@._]");
+    String[] emailExploded = email.get().split("[@._]");
     String[] cleanEmailExploded =
         Arrays.copyOf(emailExploded, emailExploded.length - 1); // remove the top level domain(TLD)
     String passwordLower = password.toLowerCase();
