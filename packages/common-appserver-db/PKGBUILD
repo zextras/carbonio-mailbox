@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-common-appserver-db"
-pkgver="4.0.0"
+pkgver="4.0.1"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox DB Files"
 pkgdesclong=(
@@ -12,9 +12,6 @@ pkgdesclong=(
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
-depends=(
-  "carbonio-core"
-)
 section="mail"
 priority="optional"
 
