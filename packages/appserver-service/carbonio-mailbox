@@ -59,20 +59,18 @@ if [[ "$?" != "0" ]]; then
 fi
 
 # allow user-management service to access mailbox
-UM_SERVICE="user-management"
-MAILBOX_SERVICE="carbonio-mailbox"
-
-INTENTION=$(consul intention check ${UM_SERVICE} ${MAILBOX_SERVICE} 2>&1)
-
-if [[ "$INTENTION" != "Allowed" ]]; then
-    echo "Found existing denying intention for ${UM_SERVICE} -> ${MAILBOX_SERVICE}. Deleting and recreating..."
-    consul intention delete "${UM_SERVICE}" "${MAILBOX_SERVICE}"
-    consul intention create -allow "${UM_SERVICE}" "${MAILBOX_SERVICE}"
-    if [[ "$?" != "0" ]]; then
-      echo "Setup failed: Cannot create intention for ${UM_SERVICE} ${MAILBOX_SERVICE}"
-      exit 1
-    fi
-fi
+cat <<EOF | consul config write -
+{
+  "kind": "service-intentions",
+  "name": "carbonio-mailbox",
+  "sources": [
+    {
+      "name": "user-management",
+      "action": "allow"
+    }
+  ]
+}
+EOF
 
 # declare the service as http
 cat <<EOF | consul config write -
