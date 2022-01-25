@@ -1,0 +1,23 @@
+[Unit]
+Description=Mailbox carbonio proxy sidecar
+Documentation=https://docs.zextras.com/
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/consul connect envoy \
+    -token-file /etc/zextras/carbonio-mailbox/token \
+    -admin-bind localhost:0 \
+    -sidecar-for carbonio-mailbox
+Restart=on-failure
+RestartSec=15
+User=carbonio-mailbox
+KillMode=process
+KillSignal=SIGKILL
+LimitNOFILE=65536
+TimeoutSec=120
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target
