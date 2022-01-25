@@ -47,7 +47,6 @@ public class LdapProvisioningTest {
   @Test
   public void shouldFindPersonalDataInPassword() throws ServiceException {
 
-    //Account acct = Provisioning.getInstance().get(AccountBy.id, "natalie.leesa@example.com");
     Account acct = Provisioning.getInstance().getAccount("natalie.leesa@example.com");
 
     //fake passwords for test against created user account
