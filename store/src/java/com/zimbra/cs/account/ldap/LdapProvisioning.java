@@ -6232,7 +6232,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
    *     and email address({@value Provisioning#A_mail}) will be compared
    * @throws AccountServiceException
    */
-  private void validatePasswordEntropyForPersonalData(String password, Account acct)
+  public static void validatePasswordEntropyForPersonalData(String password, Account acct)
       throws AccountServiceException {
     // get possible personal data for account
     Optional<String> sName =
