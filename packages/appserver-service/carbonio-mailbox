@@ -65,7 +65,7 @@ cat <<EOF | consul config write -
   "name": "carbonio-mailbox",
   "sources": [
     {
-      "name": "user-management",
+      "name": "carbonio-user-management",
       "action": "allow"
     }
   ]
