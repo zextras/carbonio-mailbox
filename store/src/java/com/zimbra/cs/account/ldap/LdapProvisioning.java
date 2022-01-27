@@ -6235,26 +6235,22 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   public static void validatePasswordEntropyForPersonalData(String password, Account acct)
       throws AccountServiceException {
     // get possible personal data for account
-    Optional<String> sName =
-        Optional.of(Optional.ofNullable(acct.getAttr(Provisioning.A_sn)).orElse(""));
-    Optional<String> cName =
-        Optional.of(Optional.ofNullable(acct.getAttr(Provisioning.A_cn)).orElse(""));
-    Optional<String> initials =
-        Optional.of(Optional.ofNullable(acct.getAttr(Provisioning.A_initials)).orElse(""));
-    Optional<String> email =
-      Optional.of(Optional.ofNullable(acct.getAttr(Provisioning.A_mail)).orElse(""));
+    String sName = Optional.ofNullable(acct.getAttr(Provisioning.A_sn)).orElse("");
+    String cName = Optional.ofNullable(acct.getAttr(Provisioning.A_cn)).orElse("");
+    String initials = Optional.ofNullable(acct.getAttr(Provisioning.A_initials)).orElse("");
+    String email = Optional.ofNullable(acct.getAttr(Provisioning.A_mail)).orElse("");
 
     // prepare dictionary
-    String[] fullNameExploded = cName.get().toLowerCase().split(" ");
-    String[] emailExploded = email.get().split("[@._]");
+    String[] fullNameExploded = cName.toLowerCase().split(" ");
+    String[] emailExploded = email.split("[@._]");
     String[] cleanEmailExploded =
         Arrays.copyOf(emailExploded, emailExploded.length - 1); // remove the top level domain(TLD)
     String passwordLower = password.toLowerCase();
     String[] personalDataImploded = {
-      sName.get().toLowerCase(),
-      cName.get().toLowerCase(),
-      cName.get().replace(" ", "").toLowerCase(),
-      initials.get().toLowerCase()
+      sName.toLowerCase(),
+      cName.toLowerCase(),
+      cName.replace(" ", "").toLowerCase(),
+      initials.toLowerCase()
     };
 
     // find match in dictionary and password
