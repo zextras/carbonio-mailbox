@@ -18,23 +18,24 @@ public class LdapProvisioningTest {
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
-    HashMap<String, Object> attrs;
-    attrs = new HashMap<>();
-    attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-    attrs.put(Provisioning.A_sn, "Leesa");
-    attrs.put(Provisioning.A_cn, "Natalie Leesa");
-    attrs.put(Provisioning.A_initials, "James");
-    attrs.put(Provisioning.A_mail, "natalie.leesa@example.com");
-    prov.createAccount("natalie.leesa@example.com", "testpassword", attrs);
 
-    HashMap<String, Object> attrs2;
-    attrs2 = new HashMap<>();
-    attrs2.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-    attrs2.put(Provisioning.A_sn, "Lamborghini");
-    attrs2.put(Provisioning.A_cn, "Milano");
-    attrs2.put(Provisioning.A_initials, "Cars");
-    attrs2.put(Provisioning.A_mail, "milano@lamborghini");
-    prov.createAccount("milano@lamborghini", "testpassword", attrs2);
+    HashMap<String, Object> exampleAccountAttrs;
+    exampleAccountAttrs = new HashMap<>();
+    exampleAccountAttrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+    exampleAccountAttrs.put(Provisioning.A_sn, "Leesa");
+    exampleAccountAttrs.put(Provisioning.A_cn, "Natalie Leesa");
+    exampleAccountAttrs.put(Provisioning.A_initials, "James");
+    exampleAccountAttrs.put(Provisioning.A_mail, "natalie.leesa@example.com");
+    prov.createAccount("natalie.leesa@example.com", "testpassword", exampleAccountAttrs);
+
+    HashMap<String, Object> exampleAccountAttrs2;
+    exampleAccountAttrs2 = new HashMap<>();
+    exampleAccountAttrs2.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+    exampleAccountAttrs2.put(Provisioning.A_sn, "Lamborghini");
+    exampleAccountAttrs2.put(Provisioning.A_cn, "Milano");
+    exampleAccountAttrs2.put(Provisioning.A_initials, "Cars");
+    exampleAccountAttrs2.put(Provisioning.A_mail, "milano@lamborghini");
+    prov.createAccount("milano@lamborghini", "testpassword", exampleAccountAttrs2);
   }
 
   @Before
