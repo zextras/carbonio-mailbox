@@ -6267,7 +6267,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       throw AccountServiceException.INVALID_PASSWORD(
           "password contains username or other personal data: " + matchedSensitivePart.get(),
           new Argument(
-              "BlockPersonalDataInPasswordPolicy", matchedSensitivePart.get(), Argument.Type.STR));
+              "blockPersonalDataInPasswordPolicy", matchedSensitivePart.get(), Argument.Type.STR));
     }
   }
 
