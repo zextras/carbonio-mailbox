@@ -5,32 +5,6 @@
 
 package com.zimbra.cs.account.ldap;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
-
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang.StringUtils;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -46,7 +20,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.service.ServiceException.Argument;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.util.UnmodifiableBloomFilter;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.EmailUtil;
 import com.zimbra.common.util.L10nUtil;
@@ -220,6 +193,32 @@ import com.zimbra.soap.type.AutoProvPrincipalBy;
 import com.zimbra.soap.type.GalSearchType;
 import com.zimbra.soap.type.NamedValue;
 import com.zimbra.soap.type.TargetBy;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -6137,6 +6136,11 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
                         " is not valid regex: " + e.getMessage());
             }
         }
+
+        if(acct != null){
+            validatePasswordEntropyForPersonalData(password, acct);
+        }
+
         String allowedPuncChars = getString(acct, cos, entry, Provisioning.A_zimbraPasswordAllowedPunctuationChars);
         Pattern allowedPuncCharsPattern = null;
         if (allowedPuncChars != null) {
@@ -6218,6 +6222,60 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
                     new Argument(Provisioning.A_zimbraPasswordMinDigitsOrPuncs, minNumOrPunc, Argument.Type.NUM));
         }
     }
+
+  /**
+   * Validate user password and fails if passed password string contains any of their personal data
+   *
+   * @param password Password string against which checks to be performed
+   * @param acct {@link Account} from where personal data like:
+   *     last name({@value Provisioning#A_sn});
+   *     common name({@value Provisioning#A_cn});
+   *     initials of some or all names, but not the surname({@value Provisioning#A_initials})
+   *     and email address({@value Provisioning#A_mail}) will be compared
+   * @throws AccountServiceException
+   */
+  public static void validatePasswordEntropyForPersonalData(String password, Account acct)
+      throws AccountServiceException {
+    // get possible personal data for account
+    String sName = Optional.ofNullable(acct.getAttr(Provisioning.A_sn)).orElse("");
+    String cName = Optional.ofNullable(acct.getAttr(Provisioning.A_cn)).orElse("");
+    String initials = Optional.ofNullable(acct.getAttr(Provisioning.A_initials)).orElse("");
+    String email = Optional.ofNullable(acct.getAttr(Provisioning.A_mail)).orElse("");
+    String domain = Optional.ofNullable(acct.getDomainName()).orElse("");
+
+    // prepare dictionary
+    String[] fullNameExploded = cName.toLowerCase().split(" ");
+    String[] emailExploded = email.split("[@._]");
+    String[] cleanEmailExploded =
+        Arrays.copyOf(emailExploded, emailExploded.length - 1); // remove the top level domain(TLD)
+    String[] domainExploded = domain.split("[\\s@&.?$+-_]+");
+    String passwordLower = password.toLowerCase();
+
+    String[] personalDataImploded = {
+      sName.toLowerCase(),
+      cName.toLowerCase(),
+      cName.replace(" ", "").toLowerCase(),
+      initials.toLowerCase(),
+      domain.toLowerCase()
+    };
+
+    // find match in dictionary and password
+    Optional<String> matchedSensitivePart =
+        Stream.of(personalDataImploded, cleanEmailExploded, fullNameExploded, domainExploded)
+            .flatMap(Stream::of)
+            .parallel()
+            .filter(
+                part ->
+                    (part.length() > 2
+                        && (part.contains(passwordLower) || passwordLower.contains(part))))
+            .findAny();
+    if (matchedSensitivePart.isPresent()) {
+      throw AccountServiceException.INVALID_PASSWORD(
+          "password contains username or other personal data: " + matchedSensitivePart.get(),
+          new Argument(
+              "blockPersonalDataInPasswordPolicy", matchedSensitivePart.get(), Argument.Type.STR));
+    }
+  }
 
     private boolean isAsciiPunc(char ch) {
         return
