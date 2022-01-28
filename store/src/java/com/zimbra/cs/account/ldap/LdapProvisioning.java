@@ -6137,7 +6137,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             }
         }
 
-        validatePasswordEntropyForPersonalData(password, acct);
+        if(acct != null){
+            validatePasswordEntropyForPersonalData(password, acct);
+        }
 
         String allowedPuncChars = getString(acct, cos, entry, Provisioning.A_zimbraPasswordAllowedPunctuationChars);
         Pattern allowedPuncCharsPattern = null;
