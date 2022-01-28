@@ -6241,6 +6241,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     String cName = Optional.ofNullable(acct.getAttr(Provisioning.A_cn)).orElse("");
     String initials = Optional.ofNullable(acct.getAttr(Provisioning.A_initials)).orElse("");
     String email = Optional.ofNullable(acct.getAttr(Provisioning.A_mail)).orElse("");
+    String domain = Optional.ofNullable(acct.getDomainName()).orElse("");
 
     // prepare dictionary
     String[] fullNameExploded = cName.toLowerCase().split(" ");
@@ -6252,7 +6253,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       sName.toLowerCase(),
       cName.toLowerCase(),
       cName.replace(" ", "").toLowerCase(),
-      initials.toLowerCase()
+      initials.toLowerCase(),
+      domain.toLowerCase()
     };
 
     // find match in dictionary and password
