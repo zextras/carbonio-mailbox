@@ -36,6 +36,15 @@ public class LdapProvisioningTest {
     exampleAccountAttrs2.put(Provisioning.A_initials, "Cars");
     exampleAccountAttrs2.put(Provisioning.A_mail, "milano@lamborghini");
     prov.createAccount("milano@lamborghini", "testpassword", exampleAccountAttrs2);
+
+    HashMap<String, Object> exampleAccountAttrs3;
+    exampleAccountAttrs3 = new HashMap<>();
+    exampleAccountAttrs3.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+    exampleAccountAttrs3.put(Provisioning.A_sn, "Lamborghini");
+    exampleAccountAttrs3.put(Provisioning.A_cn, "Milano");
+    exampleAccountAttrs3.put(Provisioning.A_initials, "Cars");
+    exampleAccountAttrs3.put(Provisioning.A_mail, "milano@lamborghini-europe.com");
+    prov.createAccount("milano@lamborghini-europe.com", "testpassword", exampleAccountAttrs3);
   }
 
   @Before
@@ -46,7 +55,7 @@ public class LdapProvisioningTest {
   /**
    * This test is to validate functionality of ({@link
    * com.zimbra.cs.account.ldap.LdapProvisioning#validatePasswordEntropyForPersonalData(String,
-   * Account)})
+   * Account)}) for personal data
    *
    * @throws ServiceException
    */
@@ -68,7 +77,7 @@ public class LdapProvisioningTest {
   /**
    * This test is to validate functionality of ({@link
    * com.zimbra.cs.account.ldap.LdapProvisioning#validatePasswordEntropyForPersonalData(String,
-   * Account)}) for specific case in which user might be using a dotless domain
+   * Account)}) for specific case in which user might be <b>using a dotless domain</b>
    *
    * @throws ServiceException
    */
@@ -80,6 +89,29 @@ public class LdapProvisioningTest {
     // fake passwords for test against created user account
     String[] testPasswords = {
       "milano", "Lamborghini123", "Milano34", "lamborghini01", "Milano.Lamborghini", "lAmbOrgHini", "2022cars"
+    };
+
+    for (String testPassword : testPasswords) {
+      String passwordLower = testPassword.toLowerCase();
+      LdapProvisioning.validatePasswordEntropyForPersonalData(passwordLower, acct);
+    }
+  }
+
+  /**
+   * This test is to validate functionality of ({@link
+   * com.zimbra.cs.account.ldap.LdapProvisioning#validatePasswordEntropyForPersonalData(String,
+   * Account)}) for specific case in which user's <b>domain name contains special chars</b>
+   *
+   * @throws ServiceException
+   */
+  @Test(expected = AccountServiceException.class)
+  public void shouldFindPersonalDataInPasswordForDomainsContainingSpecialChars() throws ServiceException {
+
+    Account acct = Provisioning.getInstance().getAccount("milano@lamborghini-europe.com");
+
+    // fake passwords for test against created user account
+    String[] testPasswords = {
+        "Adjbiuhkl2022europe", "Lamborghini123"
     };
 
     for (String testPassword : testPasswords) {
