@@ -6248,7 +6248,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     String[] emailExploded = email.split("[@._]");
     String[] cleanEmailExploded =
         Arrays.copyOf(emailExploded, emailExploded.length - 1); // remove the top level domain(TLD)
+    String[] domainExploded = domain.split("[\\s@&.?$+-_]+");
     String passwordLower = password.toLowerCase();
+
     String[] personalDataImploded = {
       sName.toLowerCase(),
       cName.toLowerCase(),
@@ -6259,7 +6261,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     // find match in dictionary and password
     Optional<String> matchedSensitivePart =
-        Stream.of(personalDataImploded, cleanEmailExploded, fullNameExploded)
+        Stream.of(personalDataImploded, cleanEmailExploded, fullNameExploded, domainExploded)
             .flatMap(Stream::of)
             .parallel()
             .filter(
