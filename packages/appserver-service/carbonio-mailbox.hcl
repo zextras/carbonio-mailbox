@@ -6,7 +6,6 @@ services {
   }
   connect {
     sidecar_service {
-      port = 10000
       proxy {
         upstreams = [
           {
