@@ -15,7 +15,7 @@
     <project name="carbonio-pkg-tool" path="zm-pkg-tool" revision="refs/tags/4.0.1" />
 
     <!-- Carbonio packaging spec files -->
-    <project remote="bb-zx" name="carbonio-core" revision="refs/tags/4.0.1" />
+    <project remote="bb-zx" name="carbonio-core" revision="refs/tags/4.0.2" />
 
 
     <!-- 
@@ -52,7 +52,7 @@
     <project name="carbonio-proxy-config-admin-zimlet" path="zm-proxy-config-admin-zimlet" revision="refs/tags/4.0.1" />
     <project name="carbonio-taglib" path="zm-taglib" revision="refs/tags/4.0.1" />
     <project name="carbonio-viewmail-admin-zimlet" path="zm-viewmail-admin-zimlet" revision="refs/tags/4.0.1" />
-    <project name="carbonio-web-client" path="zm-web-client" revision="refs/tags/4.0.1" />
+    <project name="carbonio-web-client" path="zm-web-client" revision="refs/tags/4.0.2" />
     <project name="carbonio-zcs" path="zm-zcs" revision="refs/tags/4.0.1" />
     <project name="carbonio-zcs-lib" path="zm-zcs-lib" revision="refs/tags/4.0.1" />
     <project name="carbonio-zimlets" path="zm-zimlets" revision="refs/tags/4.0.1" />
