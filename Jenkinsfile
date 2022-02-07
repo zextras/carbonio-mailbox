@@ -124,25 +124,25 @@ pipeline {
                         }
                     }
                 }
-                stage('Centos 8') {
-                    agent {
-                        node {
-                            label 'pacur-agent-centos-8-v1'
-                        }
-                    }
-                    steps {
-                        unstash 'staging'
-                        sh 'cp -r staging/* /tmp'
-                        sh 'sudo pacur build centos /tmp/carbonio-core'
-                        stash includes: 'artifacts/',
-                        name: 'artifacts-centos-8'
-                    }
-                    post {
-                        always {
-                            archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
-                        }
-                    }
-                }
+                // stage('Centos 8') {
+                //     agent {
+                //         node {
+                //             label 'pacur-agent-centos-8-v1'
+                //         }
+                //     }
+                //     steps {
+                //         unstash 'staging'
+                //         sh 'cp -r staging/* /tmp'
+                //         sh 'sudo pacur build centos /tmp/carbonio-core'
+                //         stash includes: 'artifacts/',
+                //         name: 'artifacts-centos-8'
+                //     }
+                //     post {
+                //         always {
+                //             archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
+                //         }
+                //     }
+                // }
             }
         }
         stage('Upload To Playground') {
@@ -154,7 +154,7 @@ pipeline {
             steps {
                 unstash 'artifacts-ubuntu-bionic'
                 unstash 'artifacts-ubuntu-focal'
-                unstash 'artifacts-centos-8'
+                // unstash 'artifacts-centos-8'
                 script {
                     def server = Artifactory.server 'zextras-artifactory'
                     def buildInfo
@@ -171,71 +171,6 @@ pipeline {
                                 "pattern": "artifacts/*focal*.deb",
                                 "target": "ubuntu-playground/pool/",
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-appserver-admin-console-war)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-appserver-appstore-libs)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-appserver-webclient-war)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-ce)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-common-core-libs)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-core)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-directory-server)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-logger)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-mta)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-perl)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-proxy)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-appstore)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-webui)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
                         ]
                     }'''
@@ -250,7 +185,7 @@ pipeline {
             steps {
                 unstash 'artifacts-ubuntu-bionic'
                 unstash 'artifacts-ubuntu-focal'
-                unstash 'artifacts-centos-8'
+                // unstash 'artifacts-centos-8'
                 script {
                     def server = Artifactory.server 'zextras-artifactory'
                     def buildInfo
@@ -292,93 +227,93 @@ pipeline {
                     server.publishBuildInfo buildInfo
 
                     //centos8
-                    buildInfo = Artifactory.newBuildInfo()
-                    buildInfo.name += '-centos8'
-                    uploadSpec= '''{
-                        "files": [
-                            {
-                                "pattern": "artifacts/(carbonio-appserver-admin-console-war)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-appserver-appstore-libs)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-appserver-webclient-war)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-ce)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-common-core-libs)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-core)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-directory-server)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-logger)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-mta)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-perl)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-proxy)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-appstore)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-webui)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            }
-                        ]
-                    }'''
-                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
-                    config = [
-                            'buildName'          : buildInfo.name,
-                            'buildNumber'        : buildInfo.number,
-                            'sourceRepo'         : 'centos8-rc',
-                            'targetRepo'         : 'centos8-release',
-                            'comment'            : 'Do not change anything! Just press the button',
-                            'status'             : 'Released',
-                            'includeDependencies': false,
-                            'copy'               : true,
-                            'failFast'           : true
-                    ]
-                    Artifactory.addInteractivePromotion server: server,
-                    promotionConfig: config,
-                    displayName: 'Centos8 Promotion to Release'
-                    server.publishBuildInfo buildInfo
+                    // buildInfo = Artifactory.newBuildInfo()
+                    // buildInfo.name += '-centos8'
+                    // uploadSpec= '''{
+                    //     "files": [
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-appserver-admin-console-war)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-appserver-appstore-libs)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-appserver-webclient-war)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-ce)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-common-core-libs)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-core)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-directory-server)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-logger)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-mta)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-perl)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-proxy)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-appstore)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         },
+                    //         {
+                    //             "pattern": "artifacts/(carbonio-webui)-(*).rpm",
+                    //             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                    //             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                    //         }
+                    //     ]
+                    // }'''
+                    // server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+                    // config = [
+                    //         'buildName'          : buildInfo.name,
+                    //         'buildNumber'        : buildInfo.number,
+                    //         'sourceRepo'         : 'centos8-rc',
+                    //         'targetRepo'         : 'centos8-release',
+                    //         'comment'            : 'Do not change anything! Just press the button',
+                    //         'status'             : 'Released',
+                    //         'includeDependencies': false,
+                    //         'copy'               : true,
+                    //         'failFast'           : true
+                    // ]
+                    // Artifactory.addInteractivePromotion server: server,
+                    // promotionConfig: config,
+                    // displayName: 'Centos8 Promotion to Release'
+                    // server.publishBuildInfo buildInfo
                 }
             }
         }
