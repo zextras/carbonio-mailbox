@@ -8,9 +8,6 @@ pkgrel="1"
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
-depends=(
-  "carbonio-appserver"
-)
 makedepends=(
   "unzip"
 )
