@@ -6,7 +6,7 @@
 
 Mailbox is the core component of Carbonio.
 
-This repository contains the source code of Carbonio Mailbox which consists of several subcomponents few important components and their roles are as follows:
+This repository contains the source code of Carbonio Mailbox which consists of several subcomponents and their roles are as follows
 
 - **client**: package to interact with the mailbox
 - **common**: package providing classes of common use, like utilities, clients and common parameters
