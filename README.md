@@ -22,12 +22,15 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
 
 - Clone the carbonio-mailbox repository:
+
     `git clone https://github.com/Zextras/carbonio-mailbox.git`
 
 - Enter into source directory:
+
     `cd carbonio-mailbox/`
 
 - Build the code:
+
 	`ant all -Dzimbra.buildinfo.version=21.00.0_ZEXTRAS_202111`
 
 	Tips:
