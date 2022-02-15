@@ -39,7 +39,7 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
 
 ## Contribute to Carbonio Mailbox
-All contributions are accepted! Please refer to the CONTRIBUTING file (if present in this repository) for more details on how to contribute. If the repository has a Code of Conduct, we kindly ask to follow that one as well.
+All contributions are accepted! Please refer to the CONTRIBUTING file (if present in this repository) for more details on how to contribute. If the repository has a Code of Conduct, we kindly ask to follow that as well.
 
 ## License
 
