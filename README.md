@@ -35,7 +35,7 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
 	Tips:
 	- You can list all ant build targets present in build.xml file using `ant -p build.xml`
-	- You can avoid passing `zimbra.buildinfo.version` on every time you invoke ant build command by exporting them with `export ANT_OPTS="-Ddev.home=/home/zimbra -Dzimbra.buildinfo.version=21.00.0_ZEXTRAS_202111"`
+	- You can avoid passing `zimbra.buildinfo.version` on every time you invoke ant build command by exporting them with `export ANT_OPTS="-Dzimbra.buildinfo.version=21.00.0_ZEXTRAS_202111"`
 
 
 ## Contribute to Carbonio Mailbox
