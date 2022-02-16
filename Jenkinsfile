@@ -29,7 +29,7 @@ pipeline {
                     cat <<EOF > build.properties
                     debug=0
                     is-production=1
-                    zimbra.buildinfo.version=22.1.0_ZEXTRAS_202201
+                    carbonio.buildinfo.version=22.1.0_ZEXTRAS_202201
                     zimbra.buildinfo.majorversion=22
                     zimbra.buildinfo.minorversion=1
                     zimbra.buildinfo.microversion=0
