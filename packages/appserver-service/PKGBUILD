@@ -12,17 +12,6 @@ pkgdesclong=(
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
-depends=(
-  "carbonio-common-core-jar"
-  "carbonio-common-appserver-conf"
-  "carbonio-common-appserver-db"
-  "carbonio-common-appserver-native-lib"
-  "carbonio-appserver-conf"
-  "carbonio-appserver-war"
-  "carbonio-appserver"
-  "service-discover"
-  "pending-setups"
-)
 optdepends=(
   "carbonio-common-appserver-docs"
 )
