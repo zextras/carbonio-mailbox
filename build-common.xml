@@ -170,15 +170,20 @@
         <not><os family="windows"/></not>
     </condition>
 
-    <target name="require-version">
-      <fail message="Missing build version. use ant proper ZCS version like -Dzimbra.buildinfo.version=8.7.6_GA_1001">
-       <condition>
-         <not>
-           <isset property="zimbra.buildinfo.version"/>
-         </not>
-       </condition>
-      </fail>
+    <target depends="carbonio-version" name="require-version">
       <echo message="Using version ${zimbra.buildinfo.version}"/>
+      <property name="zimbra.buildinfo.version" value="${carbonio.buildinfo.version}"/>
+    </target>
+
+    <target name="carbonio-version">
+      <fail
+        message="Missing build version. use ant proper ZCS version like -Dcarbonio.buildinfo.version=22.00.0_ZEXTRAS_202211">
+        <condition>
+          <not>
+            <isset property="carbonio.buildinfo.version"/>
+          </not>
+        </condition>
+      </fail>
     </target>
 
     <target name="set-dev-version" depends="require-version,3rd-party-defines">
