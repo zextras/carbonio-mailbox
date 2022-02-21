@@ -173,12 +173,17 @@ pipeline {
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             },
                             {
+                                "pattern": "artifacts/(carbonio-appserver)-(*).rpm",
+                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                            },
+                            {
                                 "pattern": "artifacts/(carbonio-appserver-admin-console-war)-(*).rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
                             {
-                                "pattern": "artifacts/(carbonio-appserver-appstore-libs)-(*).rpm",
+                                "pattern": "artifacts/(carbonio-appserver-store-libs)-(*).rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
@@ -214,16 +219,6 @@ pipeline {
                             },
                             {
                                 "pattern": "artifacts/(carbonio-mta)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-proxy)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-appstore)-(*).rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
@@ -292,12 +287,17 @@ pipeline {
                     uploadSpec= '''{
                         "files": [
                             {
+                                "pattern": "artifacts/(carbonio-appserver)-(*).rpm",
+                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                            },
+                            {
                                 "pattern": "artifacts/(carbonio-appserver-admin-console-war)-(*).rpm",
                                 "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
                             {
-                                "pattern": "artifacts/(carbonio-appserver-appstore-libs)-(*).rpm",
+                                "pattern": "artifacts/(carbonio-appserver-store-libs)-(*).rpm",
                                 "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
@@ -333,16 +333,6 @@ pipeline {
                             },
                             {
                                 "pattern": "artifacts/(carbonio-mta)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-proxy)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-appstore)-(*).rpm",
                                 "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
