@@ -6037,9 +6037,12 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         setPassword(acct, newPassword, enforcePasswordPolicy, false);
 
         if (msg != null) {
-            msg = L10nUtil.getMessage(L10nUtil.MsgKey.passwordViolation,
+            if(newPassword.isEmpty()){
+                msg = "Cannot set password, provided new password value is empty.";
+            }else{
+                msg = L10nUtil.getMessage(L10nUtil.MsgKey.passwordViolation,
                     acct.getLocale(), acct.getName(), msg);
-
+            }
             result.setMessage(msg);
         }
 
