@@ -124,7 +124,7 @@ pipeline {
                         }
                     }
                 }
-                stage('Centos 8') {
+                stage('Rocky 8') {
                     agent {
                         node {
                             label 'pacur-agent-centos-8-v1'
@@ -133,9 +133,9 @@ pipeline {
                     steps {
                         unstash 'staging'
                         sh 'cp -r staging/* /tmp'
-                        sh 'sudo pacur build centos /tmp/carbonio-core'
+                        sh 'sudo pacur build rocky-8 /tmp/carbonio-core'
                         stash includes: 'artifacts/',
-                        name: 'artifacts-centos-8'
+                        name: 'artifacts-rocky-8'
                     }
                     post {
                         always {
@@ -154,7 +154,7 @@ pipeline {
             steps {
                 unstash 'artifacts-ubuntu-bionic'
                 unstash 'artifacts-ubuntu-focal'
-                unstash 'artifacts-centos-8'
+                unstash 'artifacts-rocky-8'
                 script {
                     def server = Artifactory.server 'zextras-artifactory'
                     def buildInfo
@@ -173,12 +173,17 @@ pipeline {
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             },
                             {
+                                "pattern": "artifacts/(carbonio-appserver)-(*).rpm",
+                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                            },
+                            {
                                 "pattern": "artifacts/(carbonio-appserver-admin-console-war)-(*).rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
                             {
-                                "pattern": "artifacts/(carbonio-appserver-appstore-libs)-(*).rpm",
+                                "pattern": "artifacts/(carbonio-appserver-store-libs)-(*).rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
@@ -218,21 +223,6 @@ pipeline {
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
                             {
-                                "pattern": "artifacts/(carbonio-perl)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-proxy)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-appstore)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
                                 "pattern": "artifacts/(carbonio-webui)-(*).rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
@@ -250,7 +240,7 @@ pipeline {
             steps {
                 unstash 'artifacts-ubuntu-bionic'
                 unstash 'artifacts-ubuntu-focal'
-                unstash 'artifacts-centos-8'
+                unstash 'artifacts-rocky-8'
                 script {
                     def server = Artifactory.server 'zextras-artifactory'
                     def buildInfo
@@ -297,12 +287,17 @@ pipeline {
                     uploadSpec= '''{
                         "files": [
                             {
+                                "pattern": "artifacts/(carbonio-appserver)-(*).rpm",
+                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                            },
+                            {
                                 "pattern": "artifacts/(carbonio-appserver-admin-console-war)-(*).rpm",
                                 "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
                             {
-                                "pattern": "artifacts/(carbonio-appserver-appstore-libs)-(*).rpm",
+                                "pattern": "artifacts/(carbonio-appserver-store-libs)-(*).rpm",
                                 "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
@@ -338,21 +333,6 @@ pipeline {
                             },
                             {
                                 "pattern": "artifacts/(carbonio-mta)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-perl)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-proxy)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-appstore)-(*).rpm",
                                 "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             },
