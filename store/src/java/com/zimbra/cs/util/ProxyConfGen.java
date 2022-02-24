@@ -2940,7 +2940,7 @@ public class ProxyConfGen
         mConfVars.put("web.ssl.upstream.zx.name", new ProxyConfVar("web.ssl.upstream.zx.name", null, ZIMBRA_SSL_UPSTREAM_ZX_NAME, ProxyConfValueType.STRING, ProxyConfOverride.CONFIG,"Symbolic name for HTTPS zx upstream"));
         mConfVars.put("web.upstream.zx.:servers", new WebUpstreamZxServersVar());
         mConfVars.put("web.ssl.upstream.zx.:servers", new WebSslUpstreamZxServersVar());
-        mConfVars.put("web.admin.login.port", new ProxyConfVar("web.admin.login.port", Provisioning.A_carbonioAdminProxyPort, new Integer(6071), ProxyConfValueType.INTEGER, ProxyConfOverride.SERVER, "Carbonio proxy admin login port"));
+        mConfVars.put("web.carbonio.admin.port", new ProxyConfVar("web.admin.login.port", Provisioning.A_carbonioAdminProxyPort, new Integer(6071), ProxyConfValueType.INTEGER, ProxyConfOverride.SERVER, "Carbonio proxy admin login port"));
 
         //Get the response headers list from globalconfig
         String[] rspHeaders = ProxyConfVar.configSource.getMultiAttr(Provisioning.A_zimbraReverseProxyResponseHeaders);
