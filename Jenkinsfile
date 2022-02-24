@@ -29,7 +29,7 @@ pipeline {
                     cat <<EOF > build.properties
                     debug=0
                     is-production=1
-                    carbonio.buildinfo.version=22.1.0_ZEXTRAS_202201
+                    carbonio.buildinfo.version=22.3.0_ZEXTRAS_202203
                     EOF
                    """
 				sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
