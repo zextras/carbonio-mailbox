@@ -8,11 +8,13 @@
  */
 package com.zimbra.cs.service.admin;
 
+import com.zimbra.common.soap.AdminConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,8 +44,7 @@ public class GetServiceStatus extends AdminDocumentHandler {
   private static final String ZMRRDFETCH = LC.zimbra_home.value() + "/libexec/zmrrdfetch";
   private static final String ZMSTATUSLOG_CSV = "zmstatuslog";
 
-  public Element handle(Element request, Map<String, Object> context)
-      throws ServiceException {
+  public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     ZimbraSoapContext zsc = getZimbraSoapContext(context);
 
     // this command can only execute on the monitor host, so proxy if necessary
@@ -88,7 +89,7 @@ public class GetServiceStatus extends AdminDocumentHandler {
         ProcessBuilder pb = new ProcessBuilder(ZMRRDFETCH, "-f", ZMSTATUSLOG_CSV);
         Process p = pb.start();
         in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        Map<String, CsvReader> hostStatus = new HashMap<String, CsvReader>();
+        Map<String, CsvReader> hostStatus = new HashMap<>();
         StringWriter currentWriter = null;
         String currentHost = null;
         String line;
@@ -104,12 +105,27 @@ public class GetServiceStatus extends AdminDocumentHandler {
             if (currentWriter != null) currentWriter.write(line + "\n");
           }
         }
-        if (currentHost != null && currentWriter != null)
+        if (currentHost != null)
           hostStatus.put(currentHost, new CsvReader(new StringReader(currentWriter.toString())));
         List<ServiceStatus> status = ServiceStatus.parseData(hostStatus);
+        String[] skippedServices = {"zimlet", "zimbra", "zimbraAdmin", "zmconfigd"};
+        Element onlyCarbonioServicesEl =
+            request.getOptionalElement(AdminConstants.A_CARBONIO_SERVICES_ONLY);
+        String onlyCarbonioServicesElStr =
+            onlyCarbonioServicesEl != null ? onlyCarbonioServicesEl.getText() : "0";
+        boolean reqContainsOnlyCarbonioServices =
+            onlyCarbonioServicesElStr.equalsIgnoreCase("true")
+                || onlyCarbonioServicesElStr.equalsIgnoreCase("1");
+
         for (ServiceStatus stat : status) {
           serviceStatus.remove(stat);
-          serviceStatus.add(stat);
+          if (reqContainsOnlyCarbonioServices){
+            if(Arrays.stream(skippedServices).noneMatch(stat.getService()::equals)) {
+              serviceStatus.add(stat);
+            }
+          }else{
+            serviceStatus.add(stat);
+          }
         }
         for (ServiceStatus stat : serviceStatus) {
           if (!checkRights(zsc, stat.getServer())) {
@@ -122,7 +138,7 @@ public class GetServiceStatus extends AdminDocumentHandler {
       } catch (IOException e) {
         try {
           if (in != null) in.close();
-        } catch (IOException x) {
+        } catch (IOException ignored) {
         }
         ServiceException.FAILURE("Unable to read logger stats", e);
       }

@@ -1213,6 +1213,7 @@ public final class AdminConstants {
     public static final String A_VIA = "via";
     public static final String A_EXCLUDE = "exclude";
     public static final String A_REFRESH = "refresh";
+    public static final String A_CARBONIO_SERVICES_ONLY = "carbonioServicesOnly";
     public static final String A_TARGETNAME = "targetName";
     public static final String A_FOLDER = "l";  // to be consistent with MailConstants.A_FOLDER
     public static final String A_FOLDER_IDS = "folderIds";

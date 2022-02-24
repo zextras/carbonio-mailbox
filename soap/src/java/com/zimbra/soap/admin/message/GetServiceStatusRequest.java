@@ -5,6 +5,8 @@
 
 package com.zimbra.soap.admin.message;
 
+import com.zimbra.soap.type.ZmBoolean;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import com.zimbra.common.soap.AdminConstants;
 
@@ -15,6 +17,16 @@ import com.zimbra.common.soap.AdminConstants;
  */
 @XmlRootElement(name=AdminConstants.E_GET_SERVICE_STATUS_REQUEST)
 public class GetServiceStatusRequest {
+
+    public ZmBoolean getCarbonioServicesOnly() {
+        return carbonioServicesOnly;
+    }
+
+    /**
+     * @zm-api-field-description carbonioServicesOnly. If <b>1 (true)</b>, only return carbonio services status.
+     */
+    @XmlAttribute(name=AdminConstants.A_CARBONIO_SERVICES_ONLY, required=false)
+    private ZmBoolean carbonioServicesOnly;
 
     public GetServiceStatusRequest() {
     }
