@@ -11,6 +11,7 @@ RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-
     ant-contrib \
     ant-optional \
     build-essential \
+    clang-10 \
     debhelper \
     git \
     libdata-uuid-perl \
@@ -27,7 +28,7 @@ RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-
     libxml-simple-perl \
     lsb-release \ 
     maven \
-    openjdk-8-jdk-headless \
+    openjdk-11-jdk-headless \
     openssh-client \
     rsync \
     ruby \
@@ -36,5 +37,6 @@ RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-
     wget;
 
 ADD docker/build_all.sh /usr/bin
+ADD docker/clang-switch.sh /usr/bin
 ADD build.config /usr/bin
 ENTRYPOINT ["/bin/bash"]

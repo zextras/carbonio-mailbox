@@ -18,8 +18,11 @@ build() {
   # Alpine JAVA_HOME & JAVA_PATH
   # export JAVA_HOME=/lib/jvm/java-8-openjdk-amd64
   # export JAVA_PATH=/lib/jvm/java-8-openjdk-amd64
-  export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
-  export JAVA_PATH=/usr/lib/jvm/java-8-openjdk-amd64/bin
+  export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
+  export JAVA_PATH=/usr/lib/jvm/java-11-openjdk-amd64/bin
+
+  # Use a custom script to use a defined clang version and a priority
+  clang-switch.sh 10 100
 
   # Let's build for real now
   cd "${SRCDIR}"/zm-build || exit

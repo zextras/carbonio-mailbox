@@ -19,7 +19,7 @@ RUN \
   maven \
   ant \
   java-hamcrest \
-  jdk8-openjdk \
+  jdk11-openjdk \
   junit \
   lsb-release \
   rsync \
