@@ -3226,7 +3226,7 @@ public class ProxyConfGen
             expandTemplate(new File(mTemplateDir, getWebHttpSModeConfTemplate("mixed")), new File(mConfIncludesDir, getWebHttpSModeConf("mixed")));
             expandTemplate(new File(mTemplateDir, getConfTemplateFileName("docs.common")), new File(mConfIncludesDir, getConfFileName("docs.common")));
             expandTemplate(new File(mTemplateDir, getConfTemplateFileName("docs.upstream")), new File(mConfIncludesDir, getConfFileName("docs.upstream")));
-            expandTemplate(new File(mTemplateDir, getConfTemplateFileName("web.admin.login.default")), new File(mConfIncludesDir, getConfFileName("web.admin.login.default")));
+            expandTemplate(new File(mTemplateDir, getConfTemplateFileName("web.carbonio.admin.default")), new File(mConfIncludesDir, getConfFileName("web.carbonio.admin.default")));
         } catch (ProxyConfException pe) {
             handleException(pe);
             exitCode = 1;
