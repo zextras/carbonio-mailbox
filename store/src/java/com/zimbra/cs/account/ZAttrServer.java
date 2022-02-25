@@ -50977,7 +50977,7 @@ public abstract class ZAttrServer extends NamedEntry {
      */
     @ZAttr(id=3089)
     public int getCarbonioAdminProxyPort() {
-        return getIntAttr(Provisioning.A_CarbonioAdminProxyPort, 30899, true);
+        return getIntAttr(Provisioning.A_carbonioAdminProxyPort, 30899, true);
     }
 
     /**
@@ -50987,7 +50987,7 @@ public abstract class ZAttrServer extends NamedEntry {
      */
     @ZAttr(id=3089)
     public String getCarbonioAdminProxyPortAsString() {
-        return getAttr(Provisioning.A_CarbonioAdminProxyPort, "30899", true);
+        return getAttr(Provisioning.A_carbonioAdminProxyPort, "30899", true);
     }
 
     /**
@@ -50999,7 +50999,7 @@ public abstract class ZAttrServer extends NamedEntry {
     @ZAttr(id=3089)
     public void setCarbonioAdminProxyPort(int CarbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_CarbonioAdminProxyPort, Integer.toString(CarbonioAdminProxyPort));
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(CarbonioAdminProxyPort));
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -51013,7 +51013,7 @@ public abstract class ZAttrServer extends NamedEntry {
     @ZAttr(id=3089)
     public Map<String,Object> setCarbonioAdminProxyPort(int CarbonioAdminProxyPort, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_CarbonioAdminProxyPort, Integer.toString(CarbonioAdminProxyPort));
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(CarbonioAdminProxyPort));
         return attrs;
     }
 
@@ -51026,7 +51026,7 @@ public abstract class ZAttrServer extends NamedEntry {
     @ZAttr(id=3089)
     public void setCarbonioAdminProxyPortAsString(String CarbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_CarbonioAdminProxyPort, CarbonioAdminProxyPort);
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, CarbonioAdminProxyPort);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -51040,7 +51040,7 @@ public abstract class ZAttrServer extends NamedEntry {
     @ZAttr(id=3089)
     public Map<String,Object> setCarbonioAdminProxyPortAsString(String CarbonioAdminProxyPort, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_CarbonioAdminProxyPort, CarbonioAdminProxyPort);
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, CarbonioAdminProxyPort);
         return attrs;
     }
 
@@ -51052,7 +51052,7 @@ public abstract class ZAttrServer extends NamedEntry {
     @ZAttr(id=3089)
     public void unsetCarbonioAdminProxyPort() throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_CarbonioAdminProxyPort, "");
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -51065,7 +51065,7 @@ public abstract class ZAttrServer extends NamedEntry {
     @ZAttr(id=3089)
     public Map<String,Object> unsetCarbonioAdminProxyPort(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_CarbonioAdminProxyPort, "");
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
         return attrs;
     }
 
