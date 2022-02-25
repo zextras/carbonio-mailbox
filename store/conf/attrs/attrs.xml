@@ -9759,7 +9759,7 @@ TODO: delete them permanently from here
 </attr>
 
 
-  <attr id="3089" name="carbonioAdminProxyPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" callback="CheckPortConflict" since="9.0.0">
+  <attr id="3089" name="carbonioAdminProxyPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" callback="CheckPortConflict" since="9.0.0">
     <globalConfigValue>6071</globalConfigValue>
     <desc>SSL proxy port for Carbonio admin console UI</desc>
   </attr>
