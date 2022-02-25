@@ -26,7 +26,7 @@
     <project remote="bb-zx" name="ant-1.7.0-ziputil-patched" revision="refs/tags/9.0.0" />
     <project remote="bb-zx" name="ant-tar-patched" revision="refs/tags/9.0.0" />
     <project remote="bb-zx" name="ical4j-0.9.16-patched" revision="refs/tags/9.0.0" />
-    <project remote="gh-ko" name="junixsocket" revision="refs/tags/junixsocket-parent-2.0.4" />
+    <project remote="gh-ko" name="junixsocket" revision="refs/tags/junixsocket-parent-2.4.0" />
     <project name="carbonio-admin-console" path="zm-admin-console" revision="refs/heads/main" />
     <project name="carbonio-ajax" path="zm-ajax" revision="refs/heads/main" />
     <project name="carbonio-admin-ajax" path="zm-admin-ajax" revision="refs/heads/main" />
