@@ -40,6 +40,8 @@ public class CheckPortConflict extends AttributeCallback {
         ProxyPortAttrs.add(Provisioning.A_zimbraMailProxyPort);
         ProxyPortAttrs.add(Provisioning.A_zimbraMailSSLProxyPort);
         ProxyPortAttrs.add(Provisioning.A_zimbraMailSSLProxyClientCertPort);
+
+        ProxyPortAttrs.add(Provisioning.A_carbonioAdminProxyPort);
     }
 
     private static final Set<String> NonProxyPortAttrs = new HashSet<String>();
