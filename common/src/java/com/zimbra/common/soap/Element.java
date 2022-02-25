@@ -1008,14 +1008,14 @@ public abstract class Element implements Cloneable {
         @Override
         public Element addAttribute(String key, double value, Disposition disp) throws ContainerException {
             checkNamingConflict(key);
-            mAttributes.put(key, new Double(value));
+            mAttributes.put(key, Double.valueOf(value));
             return this;
         }
 
         @Override
         public Element addAttribute(String key, boolean value, Disposition disp) throws ContainerException {
             checkNamingConflict(key);
-            mAttributes.put(key, new Boolean(value));
+            mAttributes.put(key, Boolean.valueOf(value));
             return this;
         }
 
@@ -1283,7 +1283,7 @@ public abstract class Element implements Cloneable {
                         return Long.decode(literal);
                     } catch (NumberFormatException nfe) { }
                     try {
-                        return new Double(literal);
+                        return Double.valueOf(literal);
                     } catch (NumberFormatException nfe) { }
                 }
                 return literal;

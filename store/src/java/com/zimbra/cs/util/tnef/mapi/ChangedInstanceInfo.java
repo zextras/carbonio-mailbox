@@ -345,7 +345,7 @@ public class ChangedInstanceInfo {
         if (!overrideFlags.contains(ExceptionInfoOverrideFlag.ARO_SUBTYPE)) {
             return null;
         }
-        return new Boolean(subType != 0);
+        return Boolean.valueOf(subType != 0);
     }
 
     /**
