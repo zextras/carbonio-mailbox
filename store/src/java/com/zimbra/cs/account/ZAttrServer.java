@@ -50977,7 +50977,7 @@ public abstract class ZAttrServer extends NamedEntry {
      */
     @ZAttr(id=3089)
     public int getCarbonioAdminProxyPort() {
-        return getIntAttr(Provisioning.A_carbonioAdminProxyPort, 30899, true);
+        return getIntAttr(Provisioning.A_carbonioAdminProxyPort, 6071, true);
     }
 
     /**
@@ -50987,7 +50987,7 @@ public abstract class ZAttrServer extends NamedEntry {
      */
     @ZAttr(id=3089)
     public String getCarbonioAdminProxyPortAsString() {
-        return getAttr(Provisioning.A_carbonioAdminProxyPort, "30899", true);
+        return getAttr(Provisioning.A_carbonioAdminProxyPort, "6071", true);
     }
 
     /**
