@@ -1365,7 +1365,7 @@ public final class MailConstants {
     public static final String E_MODIFY_PROFILE_IMAGE_RESPONSE = "ModifyProfileImageResponse";
     public static final QName MODIFY_PROFILE_IMAGE_REQUEST = QName.get(E_MODIFY_PROFILE_IMAGE_REQUEST, NAMESPACE);
     public static final QName MODIFY_PROFILE_IMAGE_RESPONSE = QName.get(E_MODIFY_PROFILE_IMAGE_RESPONSE, NAMESPACE);
-    
+
     // Password reset API
     public static final String E_SET_RECOVERY_ACCOUNT_REQUEST = "SetRecoveryAccountRequest";
     public static final String E_SET_RECOVERY_ACCOUNT_RESPONSE = "SetRecoveryAccountResponse";
@@ -1379,4 +1379,10 @@ public final class MailConstants {
     public static final QName RECOVER_ACCOUNT_RESPONSE = QName.get(E_RECOVER_ACCOUNT_RESPONSE, NAMESPACE);
     public static final String A_RECOVERY_ACCOUNT = "recoveryAccount";
     public static final String A_CHANNEL = "channel";
+
+    // Upload attachment API
+    public static final String E_UPLOAD_EMAIL_ATTACHMENT_REQUEST = "UploadEmailAttachmentRequest";
+    public static final String E_UPLOAD_EMAIL_ATTACHMENT_RESPONSE = "UploadEmailAttachmentResponse";
+    public static final QName UPLOAD_EMAIL_ATTACHMENT_REQUEST = QName.get(E_UPLOAD_EMAIL_ATTACHMENT_REQUEST, NAMESPACE);
+    public static final QName UPLOAD_EMAIL_ATTACHMENT_RESPONSE = QName.get(E_UPLOAD_EMAIL_ATTACHMENT_RESPONSE, NAMESPACE);
 }
