@@ -261,6 +261,8 @@ public final class MailConstants {
     public static final String E_GET_SHARE_NOTIFICATIONS_RESPONSE = "GetShareNotificationsResponse";
     public static final String E_GET_DATA_SOURCE_USAGE_REQUEST = "GetDataSourceUsageRequest";
     public static final String E_GET_DATA_SOURCE_USAGE_RESPONSE = "GetDataSourceUsageResponse";
+    public static final String E_GET_PREVIEW_REQUEST = "GetPreviewRequest";
+    public static final String E_GET_PREVIEW_RESPONSE = "GetPreviewResponse";
 
     // IMAP
     public static final String E_LIST_IMAP_SUBSCRIPTIONS_REQUEST = "ListIMAPSubscriptionsRequest";
@@ -585,6 +587,9 @@ public final class MailConstants {
     public static final QName RECORD_IMAP_SESSION_RESPONSE = QName.get(E_RECORD_IMAP_SESSION_RESPONSE, NAMESPACE);
     public static final QName IMAP_COPY_REQUEST = QName.get(E_IMAP_COPY_REQUEST, NAMESPACE);
     public static final QName IMAP_COPY_RESPONSE = QName.get(E_IMAP_COPY_RESPONSE, NAMESPACE);
+
+    // Previewer API
+    public static final QName GET_PREVIEW_REQUEST = QName.get(E_GET_PREVIEW_REQUEST, NAMESPACE);
 
     public static final String E_MAILBOX = "mbx";
     public static final String E_ITEM = "item";
