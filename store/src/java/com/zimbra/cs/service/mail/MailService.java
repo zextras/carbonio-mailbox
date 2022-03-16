@@ -232,5 +232,9 @@ public final class MailService implements DocumentService {
         // Password reset API
         dispatcher.registerHandler(MailConstants.RECOVER_ACCOUNT_REQUEST, new RecoverAccount());
         dispatcher.registerHandler(MailConstants.SET_RECOVERY_EMAIL_REQUEST, new SetRecoveryAccount());
+
+        // Drive attachment upload
+        dispatcher.registerHandler(MailConstants.UPLOAD_EMAIL_ATTACHMENT_REQUEST,
+            new UploadEmailAttachment());
     }
 }
