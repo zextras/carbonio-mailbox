@@ -1,39 +1,29 @@
 // SPDX-FileCopyrightText: 2014 Zimbra, Inc.
 package com.zimbra.cs.service;
 
+import com.zimbra.common.util.L10nUtil;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.servlet.ZimbraServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.ResourceBundle;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-import com.zimbra.common.util.L10nUtil;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.cs.servlet.ZimbraServlet;
-import com.zimbra.cs.servlet.util.AuthUtil;
+import org.mockito.Mockito;
 
 
 /**
  * @author zimbra
  *
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({UserServlet.class, ZimbraServlet.class, L10nUtil.class, ResourceBundle.class, AuthUtil.class})
 public class UserServletTest {
 
 
@@ -55,25 +45,25 @@ public class UserServletTest {
 
     @Test
     public void testDoGet() {
-        HttpServletRequest request = PowerMockito.mock(HttpServletRequest.class);
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         MockHttpServletResponse response = new MockHttpServletResponse();
         UserServlet userServlet = new UserServlet();
         try {
             
-            PowerMockito.spy(ZimbraServlet.class);
-            PowerMockito.spy(UserServlet.class);
+            Mockito.spy(ZimbraServlet.class);
+            Mockito.spy(UserServlet.class);
 
-            PowerMockito.mockStatic(L10nUtil.class);
+            Mockito.mockStatic(L10nUtil.class);
 //            Commenting until we can figure out why this fails in CI env.
-//            PowerMockito.doReturn("must authenticate").when(L10nUtil.class, "getMessage", MsgKey.errMustAuthenticate, request);
-//            PowerMockito.doReturn("must authenticate").when(L10nUtil.class, "getMessage", "errMustAuthenticate", request);
+//            Mockito.doReturn("must authenticate").when(L10nUtil.class, "getMessage", MsgKey.errMustAuthenticate, request);
+//            Mockito.doReturn("must authenticate").when(L10nUtil.class, "getMessage", "errMustAuthenticate", request);
 
-            PowerMockito.when(request.getPathInfo()).thenReturn("/testbug3948@zimbra.com");
-            PowerMockito.when(request.getRequestURI()).thenReturn("service/home/");
-            PowerMockito.when(request.getParameter("auth")).thenReturn("basic");
-            PowerMockito.when(request.getParameter("loc")).thenReturn("en_US");
-            PowerMockito.when(request.getHeader("Authorization")).thenReturn("Basic dGVzdDM0ODg6dGVzdDEyMw==");
-            PowerMockito.when(request.getQueryString()).thenReturn("auth=basic&view=text&id=261");
+            Mockito.when(request.getPathInfo()).thenReturn("/testbug3948@zimbra.com");
+            Mockito.when(request.getRequestURI()).thenReturn("service/home/");
+            Mockito.when(request.getParameter("auth")).thenReturn("basic");
+            Mockito.when(request.getParameter("loc")).thenReturn("en_US");
+            Mockito.when(request.getHeader("Authorization")).thenReturn("Basic dGVzdDM0ODg6dGVzdDEyMw==");
+            Mockito.when(request.getQueryString()).thenReturn("auth=basic&view=text&id=261");
 
             userServlet.doGet(request, response);
             Assert.assertEquals(401, response.getStatus());

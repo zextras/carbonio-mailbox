@@ -1111,7 +1111,9 @@ public final class JaxbUtil {
             com.zimbra.soap.account.message.GetAddressListMembersRequest.class,
             com.zimbra.soap.account.message.GetAddressListMemberResponse.class,
             com.zimbra.soap.admin.message.GetAddressListInfoRequest.class,
-            com.zimbra.soap.admin.message.GetAddressListInfoResponse.class
+            com.zimbra.soap.admin.message.GetAddressListInfoResponse.class,
+            com.zimbra.soap.mail.message.UploadAttachmentRequest.class,
+            com.zimbra.soap.mail.message.UploadAttachmentResponse.class
         };
 
         try {

@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name= MailConstants.E_UPLOAD_EMAIL_ATTACHMENT_REQUEST)
+@XmlRootElement(name= MailConstants.E_UPLOAD_EMAIL_ATTACHMENT_RESPONSE)
 public class UploadAttachmentResponse {
 
 }

@@ -17,22 +17,17 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.zimbra.common.util.memcached.ZimbraMemcachedClient;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.memcached.MemcachedConnector;
 import com.zimbra.cs.util.ZTestWatchman;
+import org.mockito.Mockito;
 
 /**
  * @author zimbra
  *
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ImapFolder.class, MemcachedImapCache.class, MemcachedConnector.class, ZimbraMemcachedClient.class})
 public class MemcachedImapCacheTest {
 
     @Rule public TestName testName = new TestName();
@@ -56,10 +51,10 @@ public class MemcachedImapCacheTest {
     public void testInvalidObject() {
         try {
 
-            PowerMockito.mockStatic(MemcachedConnector.class);
+            Mockito.mockStatic(MemcachedConnector.class);
             ZimbraMemcachedClient  memcachedClient = new MockZimbraMemcachedClient();
-            PowerMockito.when(MemcachedConnector.getClient()).thenReturn(memcachedClient);
-            ImapFolder folder = PowerMockito.mock(ImapFolder.class);
+            Mockito.when(MemcachedConnector.getClient()).thenReturn(memcachedClient);
+            ImapFolder folder = Mockito.mock(ImapFolder.class);
             MemcachedImapCache imapCache = new MemcachedImapCache();
             imapCache.put("trash", folder);
             ImapFolder folderDeserz =  imapCache.get("trash");

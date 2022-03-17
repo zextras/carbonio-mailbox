@@ -7,6 +7,7 @@ package com.zimbra.cs.service.mail;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 
@@ -235,6 +236,6 @@ public final class MailService implements DocumentService {
 
         // Drive attachment upload
         dispatcher.registerHandler(MailConstants.UPLOAD_EMAIL_ATTACHMENT_REQUEST,
-            new UploadEmailAttachment());
+            new UploadEmailAttachment(FileUploadServlet::fetchUpload));
     }
 }

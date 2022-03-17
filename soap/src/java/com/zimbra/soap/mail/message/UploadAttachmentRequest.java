@@ -8,10 +8,25 @@ package com.zimbra.soap.mail.message;
 import com.zimbra.common.soap.MailConstants;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name= MailConstants.E_UPLOAD_EMAIL_ATTACHMENT_REQUEST)
 public class UploadAttachmentRequest {
 
+  /**
+   * @zm-api-field-tag uid
+   * @zm-api-field-description Upload ID of uploaded file to use
+   */
+  @XmlAttribute(name=MailConstants.A_UID /* uid */, required=false)
+  private String uploadId;
+
+  public String getUploadId() {
+    return uploadId;
+  }
+
+  public void setUploadId(String uploadId) {
+    this.uploadId = uploadId;
+  }
 }

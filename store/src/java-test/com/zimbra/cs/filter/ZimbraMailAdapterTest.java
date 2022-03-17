@@ -11,9 +11,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -23,8 +20,6 @@ import com.zimbra.cs.store.Blob;
 
 import junit.framework.Assert;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ IncomingMessageHandler.class, Mailbox.class})
 public class ZimbraMailAdapterTest {
 
     @BeforeClass
@@ -36,7 +31,7 @@ public class ZimbraMailAdapterTest {
     public void testUpdateIncomingBlob() throws Exception{
         int mboxId = 10;
 
-        Mailbox mbox = PowerMockito.mock(Mailbox.class);
+        Mailbox mbox = Mockito.mock(Mailbox.class);
         Mockito.when(mbox.getId()).thenReturn(mboxId);
 
         List<Integer> targetMailboxIds = new ArrayList<Integer>(1);
@@ -45,7 +40,7 @@ public class ZimbraMailAdapterTest {
 
         String testStr = "test";
         ParsedMessage pm = new ParsedMessage(testStr.getBytes(), false);
-        IncomingMessageHandler handler = PowerMockito.mock(IncomingMessageHandler.class);
+        IncomingMessageHandler handler = Mockito.mock(IncomingMessageHandler.class);
         Mockito.when(handler.getDeliveryContext()).thenReturn(sharedDeliveryCtxt);
         Mockito.when(handler.getParsedMessage()).thenReturn(pm);
         ZimbraMailAdapter mailAdapter = new ZimbraMailAdapter(mbox, handler);

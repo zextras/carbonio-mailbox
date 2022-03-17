@@ -11,16 +11,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
+import org.mockito.Mockito;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({OperationContext.class, Mailbox.class, CalendarItem.class})
 public class CalendarItemTest {
     private OperationContext octxt;
     private CalendarItem calItem;
@@ -41,9 +37,10 @@ public class CalendarItemTest {
      */
     @Before
     public void setUp() throws Exception {
-        octxt = PowerMockito.mock(OperationContext.class);
+        octxt = Mockito.mock(OperationContext.class);
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        calItem = PowerMockito.mock(CalendarItem.class);
+        // have to spy because later real method is called
+        calItem = Mockito.mock(CalendarItem.class, Mockito.CALLS_REAL_METHODS);
         calItem.mData = new UnderlyingData();
         calItem.mMailbox = mbox;
     }
@@ -53,9 +50,7 @@ public class CalendarItemTest {
      */
     @Test
     public void testPerformSetPrevFoldersOperation() throws Exception {
-        PowerMockito.when(calItem.getModifiedSequence()).thenReturn(SEQ);
-        PowerMockito.when(calItem, "performSetPrevFoldersOperation", octxt).thenCallRealMethod();
-        PowerMockito.when(calItem, "getPrevFolders").thenCallRealMethod();
+        Mockito.when(calItem.getModifiedSequence()).thenReturn(SEQ);
 
         calItem.performSetPrevFoldersOperation(octxt);
         // above method adds 2 in mod sequence, so verify SEQ+2 and Mailbox.ID_FOLDER_TRASH

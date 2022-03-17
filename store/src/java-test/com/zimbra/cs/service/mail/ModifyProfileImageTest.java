@@ -22,10 +22,6 @@ import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -49,10 +45,8 @@ import com.zimbra.soap.mail.message.ModifyProfileImageRequest;
 import com.zimbra.soap.mail.message.ModifyProfileImageResponse;
 
 import junit.framework.Assert;
+import org.mockito.Mockito;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({MimeDetect.class, NativeFormatter.class})
-@PowerMockIgnore({ "javax.crypto.*", "javax.xml.bind.annotation.*" })
 public class ModifyProfileImageTest {
 
     @Rule
@@ -109,13 +103,13 @@ public class ModifyProfileImageTest {
         InputStream is = getClass().getResourceAsStream("img.jpg");
         FileUploadServlet.Upload up = FileUploadServlet.saveUpload(is, "img.jpg", "image/jpeg",
             acct.getId());
-        PowerMockito.stub(PowerMockito.method(MimeDetect.class, "detect", InputStream.class))
-            .toReturn("image/jpeg");
+//        Mockito.stub(Mockito.method(MimeDetect.class, "detect", InputStream.class))
+//            .toReturn("image/jpeg");
         byte[] bytes = IOUtils.toByteArray(up.getInputStream());
-        PowerMockito
-            .stub(PowerMockito.method(NativeFormatter.class, "getResizedImageData",
-                InputStream.class, String.class, String.class, Integer.class, Integer.class))
-            .toReturn(bytes);
+//        Mockito
+//            .stub(Mockito.method(NativeFormatter.class, "getResizedImageData",
+//                InputStream.class, String.class, String.class, Integer.class, Integer.class))
+//            .toReturn(bytes);
         ModifyProfileImageRequest requestJaxb = new ModifyProfileImageRequest();
         requestJaxb.setUploadId(up.getId());
         Element request = JaxbUtil.jaxbToElement(requestJaxb);
@@ -141,13 +135,13 @@ public class ModifyProfileImageTest {
         InputStream is = getClass().getResourceAsStream("img.jpg");
         FileUploadServlet.Upload up = FileUploadServlet.saveUpload(is, "img.jpg", "image/jpeg",
             acct.getId());
-        PowerMockito.stub(PowerMockito.method(MimeDetect.class, "detect", InputStream.class))
-            .toReturn("image/jpeg");
+//        Mockito.stub(Mockito.method(MimeDetect.class, "detect", InputStream.class))
+//            .toReturn("image/jpeg");
         byte[] bytes = IOUtils.toByteArray(up.getInputStream());
-        PowerMockito
-            .stub(PowerMockito.method(NativeFormatter.class, "getResizedImageData",
-                InputStream.class, String.class, String.class, Integer.class, Integer.class))
-            .toReturn(bytes);
+//        Mockito
+//            .stub(Mockito.method(NativeFormatter.class, "getResizedImageData",
+//                InputStream.class, String.class, String.class, Integer.class, Integer.class))
+//            .toReturn(bytes);
         // Upload an profile image first
         ModifyProfileImageRequest requestJaxb = new ModifyProfileImageRequest();
         requestJaxb.setUploadId(up.getId());

@@ -69,7 +69,7 @@ public class UrlNamespace {
 
     /**
      * Parse the given url into user and path information.
-     * @param url must be passed as decoded
+     * @param urlToParse must be passed as decoded
      * @return user and path info as UrlComponents
      */
 
@@ -582,6 +582,11 @@ public class UrlNamespace {
         return null;
     }
 
+    public static RemoteCalendarCollection getRemoteCalendarCollection(DavContext ctx, Mountpoint mountpoint)
+        throws ServiceException, DavException {
+        return new RemoteCalendarCollection(ctx, mountpoint);
+    }
+
     /* Returns DavResource for the MailItem. */
     public static DavResource getResourceFromMailItem(DavContext ctxt, MailItem item) throws DavException {
         DavResource resource = null;
@@ -599,7 +604,7 @@ public class UrlNamespace {
                 // don't expose mounted calendars when using iCal style delegation model.
                 if (!ctxt.useIcalDelegation() &&
                         (viewType == MailItem.Type.APPOINTMENT || viewType == MailItem.Type.TASK)) {
-                    resource = new RemoteCalendarCollection(ctxt, mp);
+                    resource = getRemoteCalendarCollection(ctxt, mp);
                 } else if (viewType == MailItem.Type.CONTACT) {
                     resource = new RemoteAddressbookCollection(ctxt, mp);
                 } else {
