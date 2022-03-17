@@ -12,11 +12,9 @@
 
     <!-- Carbonio base repos -->
     <project name="carbonio-build" path="zm-build" revision="refs/heads/main" />
-    <project name="carbonio-pkg-tool" path="zm-pkg-tool" revision="refs/heads/main" />
 
     <!-- Carbonio packaging spec files -->
     <project remote="bb-zx" name="carbonio-core" revision="refs/heads/main" />
-
 
     <!-- 
         Carbonio modules repo 
@@ -27,7 +25,6 @@
     <project remote="bb-zx" name="ant-tar-patched" revision="refs/tags/9.0.0" />
     <project remote="bb-zx" name="ical4j-0.9.16-patched" revision="refs/tags/9.0.0" />
     <project remote="gh-ko" name="junixsocket" revision="refs/tags/junixsocket-parent-2.4.0" />
-    <project name="carbonio-admin-console" path="zm-admin-console" revision="refs/heads/main" />
     <project name="carbonio-ajax" path="zm-ajax" revision="refs/heads/main" />
     <project name="carbonio-admin-ajax" path="zm-admin-ajax" revision="refs/heads/main" />
     <project name="carbonio-amavis" path="zm-amavis" revision="refs/heads/main" />
@@ -46,25 +43,14 @@
     <project name="carbonio-ldap-utils-store" path="zm-ldap-utils-store" revision="refs/heads/main" />
     <project name="carbonio-mailbox" path="zm-mailbox" revision="refs/heads/main" />
     <project name="carbonio-mta" path="zm-mta" revision="refs/heads/main" />
-    <!-- <project name="zm-nginx-conf" revision="refs/heads/main" /> -->
     <project name="carbonio-nginx-lookup-store" path="zm-nginx-lookup-store" revision="refs/heads/main" />
     <project name="carbonio-openid-consumer-store" path="zm-openid-consumer-store" revision="refs/heads/main" />
     <project name="carbonio-postfix" path="zm-postfix" revision="refs/heads/main" />
     <project name="carbonio-proxy-config-admin-zimlet" path="zm-proxy-config-admin-zimlet" revision="refs/heads/main" />
     <project name="carbonio-taglib" path="zm-taglib" revision="refs/heads/main" />
-    <!-- <project name="carbonio-timezones" path="zm-timezones" revision="refs/tags/4.0.0" /> -->
     <project name="carbonio-viewmail-admin-zimlet" path="zm-viewmail-admin-zimlet" revision="refs/heads/main" />
-    <project name="carbonio-web-client" path="zm-web-client" revision="refs/heads/main" />
     <project name="carbonio-zcs" path="zm-zcs" revision="refs/heads/main" />
-    <project name="carbonio-zcs-lib" path="zm-zcs-lib" revision="refs/heads/main" />
     <project name="carbonio-zimlets" path="zm-zimlets" revision="refs/heads/main" />
     <project name="carbonio-oauth-social" path="zm-oauth-social" revision="refs/heads/main" />
     <project name="carbonio-gql" path="zm-gql" revision="refs/heads/main" />
-
-    <!-- YUI 2.9.0-alfresco-20140211 -->
-    <project remote="bb-zx" name="yui-internal-mirror" path="zm-admin-console/WebRoot/yui" revision="refs/heads/master" />
-    <project remote="bb-zx" name="yui-internal-mirror" path="zm-web-client/WebRoot/yui" revision="refs/heads/master" />
-
-    <!-- Zextras Theme for Carbonio -->
-    <project remote="bb-zx" name="iris-transitional-theme" path="zm-web-client/WebRoot/skins/zextras" revision="refs/heads/zextras-logos" />
 </manifest>
