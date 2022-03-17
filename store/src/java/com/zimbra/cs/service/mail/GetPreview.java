@@ -48,7 +48,6 @@ public class GetPreview extends MailDocumentHandler {
   static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.6:10000/";
   private final Log log = ZimbraLog.misc;
   private final String serverBaseUrl = getServerBaseUrl(null, false);
-  Element requestElement = null;
 
   /**
    * Helper function to return the URL of server
@@ -75,7 +74,6 @@ public class GetPreview extends MailDocumentHandler {
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
 
-    requestElement = request;
     ZimbraSoapContext zc = getZimbraSoapContext(context);
     ZAuthToken authToken = zc.getRawAuthToken();
     LmcSession session = new LmcSession(authToken, null);
@@ -110,7 +108,7 @@ public class GetPreview extends MailDocumentHandler {
     //Post it to the preview service with he passed parameters
     if (attachmentResponse != null && attachmentResponse.statusCode == 200) {
       try {
-        previewResponse = getPreview(new File(attachmentResponse.getTempFilePath()));
+        previewResponse = getPreview(request, new File(attachmentResponse.getTempFilePath()));
         previewResponse.setOrigFileName(attachmentResponse.getOrigFileName());
       } catch (HttpException | IOException e) {
         log.error("An exception occurred while making preview request, trace: ", e.getMessage());
@@ -146,7 +144,7 @@ public class GetPreview extends MailDocumentHandler {
    * @throws HttpException http exception
    * @throws IOException   IO exception
    */
-  private ServiceResponse getPreview(File f) throws HttpException, IOException {
+  private ServiceResponse getPreview(Element requestElement, File f) throws HttpException, IOException {
     ServiceResponse serviceResponse = new ServiceResponse();
     HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr()
         .newHttpClient();
@@ -168,13 +166,13 @@ public class GetPreview extends MailDocumentHandler {
       if (contentType == null || contentType.isEmpty()) {
         //TODO raise exception here and return
         contentType = "application/pdf";
-        url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParams();
+        url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParams(requestElement);
       } else {
         if (contentType.equalsIgnoreCase("image/png") || contentType.equalsIgnoreCase(
             "image/jpeg")) {
-          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/image/" + getImageParams();
+          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/image/" + getImageParams(requestElement);
         } else {
-          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParams();
+          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParams(requestElement);
         }
       }
       post.setURI(URI.create(url));
@@ -191,7 +189,7 @@ public class GetPreview extends MailDocumentHandler {
     return serviceResponse;
   }
 
-  private String getImageParams() {
+  private String getImageParams(Element requestElement) {
     String imageParams = "";
     Element imageEle = requestElement.getOptionalElement("image");
     if (imageEle != null) {
@@ -218,7 +216,7 @@ public class GetPreview extends MailDocumentHandler {
   }
 
 
-  private String getPdfParams() {
+  private String getPdfParams(Element requestElement) {
     String pdfParams = "";
     Element pdfEle = requestElement.getOptionalElement("pdf");
     if (pdfEle != null) {
@@ -325,46 +323,46 @@ public class GetPreview extends MailDocumentHandler {
     error.setText(errorMessage);
     return response;
   }
+}
 
-  private static class ServiceResponse {
+class ServiceResponse {
 
-    int statusCode;
-    byte[] content;
-    String origFileName;
-    String tempFilePath;
+  int statusCode;
+  byte[] content;
+  String origFileName;
+  String tempFilePath;
 
-    public String getOrigFileName() {
-      return origFileName;
+  public String getOrigFileName() {
+    return origFileName;
+  }
+
+  public void setOrigFileName(String origFileName) {
+    this.origFileName = origFileName;
+  }
+
+  public String getTempFilePath() {
+    return tempFilePath;
+  }
+
+  public byte[] getContent() {
+    return content;
+  }
+
+  public boolean storeContent(String filename, byte[] content) {
+    boolean stored;
+    origFileName = filename;
+    try {
+      File tempFile = File.createTempFile("preview_", "_" + filename);
+      tempFilePath = tempFile.getAbsolutePath();
+      ZimbraLog.misc.info("K_PREVIEWER stored attachment in: " + tempFilePath);
+      tempFile.deleteOnExit();
+      FileOutputStream fos = new FileOutputStream(tempFile);
+      fos.write(content);
+      fos.close();
+      stored = true;
+    } catch (IOException ie) {
+      stored = false;
     }
-
-    public void setOrigFileName(String origFileName) {
-      this.origFileName = origFileName;
-    }
-
-    public String getTempFilePath() {
-      return tempFilePath;
-    }
-
-    public byte[] getContent() {
-      return content;
-    }
-
-    public boolean storeContent(String filename, byte[] content) {
-      boolean stored;
-      origFileName = filename;
-      try {
-        File tempFile = File.createTempFile("preview_", "_" + filename);
-        tempFilePath = tempFile.getAbsolutePath();
-        ZimbraLog.misc.info("K_PREVIEWER stored attachment in: " + tempFilePath);
-        tempFile.deleteOnExit();
-        FileOutputStream fos = new FileOutputStream(tempFile);
-        fos.write(content);
-        fos.close();
-        stored = true;
-      } catch (IOException ie) {
-        stored = false;
-      }
-      return stored;
-    }
+    return stored;
   }
 }
