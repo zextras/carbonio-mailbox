@@ -590,6 +590,7 @@ public final class MailConstants {
 
     // Previewer API
     public static final QName GET_PREVIEW_REQUEST = QName.get(E_GET_PREVIEW_REQUEST, NAMESPACE);
+    public static final QName GET_PREVIEW_RESPONSE = QName.get(E_GET_PREVIEW_RESPONSE, NAMESPACE);
 
     public static final String E_MAILBOX = "mbx";
     public static final String E_ITEM = "item";
