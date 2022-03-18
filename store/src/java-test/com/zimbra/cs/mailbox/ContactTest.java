@@ -326,6 +326,8 @@ public final class ContactTest {
                 .when(galGroupInfoProvider).getGroupInfo(Mockito.anyString(), Mockito.anyBoolean(),
                     Mockito.any(Account.class), Mockito.any(Account.class));
             toXMLMockedStatic.when(ToXML::getGalGroupInfoProvider).thenReturn(galGroupInfoProvider);
+            toXMLMockedStatic.when(() -> ToXML.hasDLViewRight("mydl@zimbra.com", account, account))
+                .thenCallRealMethod();
             Assert.assertFalse(ToXML.hasDLViewRight("mydl@zimbra.com", account, account));
         }
     }
@@ -340,6 +342,7 @@ public final class ContactTest {
                 .when(galGroupInfoProvider).getGroupInfo(Mockito.anyString(), Mockito.anyBoolean(),
                     Mockito.any(Account.class), Mockito.any(Account.class));
             toXMLMockedStatic.when(ToXML::getGalGroupInfoProvider).thenReturn(galGroupInfoProvider);
+            toXMLMockedStatic.when(() -> ToXML.hasDLViewRight(null, account, account)).thenCallRealMethod();
             Assert.assertTrue(ToXML.hasDLViewRight(null, account, account));
         }
     }

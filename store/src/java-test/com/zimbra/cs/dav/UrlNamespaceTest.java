@@ -55,9 +55,12 @@ public class UrlNamespaceTest {
         Mockito.when(ctxt.useIcalDelegation()).thenReturn(Boolean.FALSE);
         Mockito.when(item.getType()).thenReturn(MailItem.Type.MOUNTPOINT);
         Mockito.when(item.getDefaultView()).thenReturn(MailItem.Type.TASK);
-        try (MockedStatic<UrlNamespace> urlNamespaceMockedStatic = Mockito.mockStatic(UrlNamespace.class)) {
+        try (MockedStatic<UrlNamespace> urlNamespaceMockedStatic =
+            Mockito.mockStatic(UrlNamespace.class)) {
             urlNamespaceMockedStatic.when(() -> UrlNamespace.getRemoteCalendarCollection(ctxt, item))
-                .thenReturn(rcc);
+                    .thenReturn(rcc);
+            urlNamespaceMockedStatic.when(() -> UrlNamespace.getResourceFromMailItem(ctxt, item))
+                .thenCallRealMethod();
             DavResource resource = UrlNamespace.getResourceFromMailItem(ctxt, item);
             Assert.assertTrue(resource instanceof RemoteCalendarCollection);
         }
