@@ -37,7 +37,7 @@ public class MemcachedImapCacheTest {
      */
     @Before
     public void setUp() throws Exception {
-        MailboxTestUtil.initProvisioning("store/");
+        MailboxTestUtil.initProvisioning("./");
     }
 
     /**
