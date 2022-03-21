@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
@@ -86,10 +87,16 @@ public class GetPreview extends MailDocumentHandler {
     Element response = zc.createElement(MailConstants.GET_PREVIEW_RESPONSE);
     Map<Integer, String> serviceStatus = getPreviewServiceStatus();
     Optional<Entry<Integer, String>> first = serviceStatus.entrySet().stream().findFirst();
-    first.ifPresent(entry -> response.addUniqueElement("previewServiceStatus")
-        .addAttribute("error-code", entry.getKey()).addAttribute("error-reason", entry.getValue()));
+    AtomicInteger previewServiceStatusCode = new AtomicInteger(-1);
+    first.ifPresent(entry -> {
+          response.addUniqueElement("previewServiceStatus")
+              .addAttribute("status-code", entry.getKey())
+              .addAttribute("status-message", entry.getValue());
+          previewServiceStatusCode.set(entry.getKey());
+        }
+    );
 
-    if (serverBaseUrl.isEmpty()) {
+    if (serverBaseUrl.isEmpty() || previewServiceStatusCode.intValue() != 200) {
       return appendError(response, "Unable to get preview. Not able to get the server URL.");
     }
 
@@ -146,7 +153,7 @@ public class GetPreview extends MailDocumentHandler {
    * @param f file to post to preview service(downloaded attachment in this case)
    * @return ServiceResponse ({@link ServiceResponse })
    * @throws HttpException HTTP exceptions occurred during the transport
-   * @throws IOException IO exception occurred during the transport
+   * @throws IOException   IO exception occurred during the transport
    */
   private ServiceResponse getPreview(Element requestElement, File f)
       throws HttpException, IOException {
@@ -169,7 +176,6 @@ public class GetPreview extends MailDocumentHandler {
       String contentType = URLConnection.getFileNameMap().getContentTypeFor(f.getName());
       String url;
       if (contentType == null || contentType.isEmpty()) {
-        //TODO raise exception here and return
         contentType = "application/pdf";
         url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParams(requestElement);
       } else {
@@ -197,6 +203,7 @@ public class GetPreview extends MailDocumentHandler {
 
   /**
    * Helper method to form request parameters for request type Image
+   *
    * @param requestElement referenced IMage request element
    * @return string containing request parameters
    */
@@ -228,6 +235,7 @@ public class GetPreview extends MailDocumentHandler {
 
   /**
    * Helper method to form request parameters for request type PDF
+   *
    * @param requestElement referenced PDF request element
    * @return string containing request parameters
    */
@@ -258,6 +266,7 @@ public class GetPreview extends MailDocumentHandler {
 
   /**
    * Method used to get the status(health/live) of PreviewService
+   *
    * @return HashMap of containing StatusCode(int) and ReasonString(string)
    */
   private Map<Integer, String> getPreviewServiceStatus() {
@@ -282,14 +291,16 @@ public class GetPreview extends MailDocumentHandler {
 
   /**
    * Get the attachment content as ({@link ServiceResponse}) from mailbox's content servlet service
-   * @param itemId item's ID (attachment id)
-   * @param partNo attachment's part number
-   * @param baseURL base URL of server where mailbox is hosted
-   * @param session ({@link LmcSession}) active session which has to be used to authenticate with request
+   *
+   * @param itemId       item's ID (attachment id)
+   * @param partNo       attachment's part number
+   * @param baseURL      base URL of server where mailbox is hosted
+   * @param session      ({@link LmcSession}) active session which has to be used to authenticate
+   *                     with request
    * @param cookieDomain cookie domain is domain base for the mailbox server
    * @return ServiceResponse ({@link ServiceResponse})
    * @throws HttpException HTTP exceptions occurred during the transport
-   * @throws IOException IO exception occurred during the transport
+   * @throws IOException   IO exception occurred during the transport
    */
   private ServiceResponse getAttachment(String itemId, String partNo, String baseURL,
       LmcSession session, String cookieDomain) throws HttpException, IOException {
@@ -338,7 +349,7 @@ public class GetPreview extends MailDocumentHandler {
           Header header = response.getFirstHeader("Content-Disposition");
           String disposition = header == null ? "" : header.getValue();
           String fileName = disposition.replaceFirst("(?i)^.*filename=\"([^\"]+)\".*$", "$1");
-          serviceResponse.storeContent(fileName , EntityUtils.toByteArray(entity));
+          serviceResponse.storeContent(fileName, EntityUtils.toByteArray(entity));
         }
       } finally {
         get.releaseConnection();
@@ -349,7 +360,8 @@ public class GetPreview extends MailDocumentHandler {
 
   /**
    * append error element to the response and return the modified response
-   * @param response response element to be appended with error element
+   *
+   * @param response     response element to be appended with error element
    * @param errorMessage error message that will set to text of error element
    * @return modified response
    */
@@ -361,11 +373,10 @@ public class GetPreview extends MailDocumentHandler {
 
 }
 
-/** Represent response received from services
- * this class stores the data we receive from
- * various services, it can store the response
- * received in bytearray and have ability to
- * store the response in temporary file.
+/**
+ * Represent response received from services this class stores the data we receive from various
+ * services, it can store the response received in bytearray and have ability to store the response
+ * in temporary file.
  */
 class ServiceResponse {
 
@@ -404,8 +415,9 @@ class ServiceResponse {
 
   /**
    * stores content in a temp file.
+   *
    * @param fileName filename received in content-disposition header whose data is being stored
-   * @param bytes data in form of byte array
+   * @param bytes    data in form of byte array
    * @return true if content was stored correctly
    */
   public boolean storeContent(String fileName, byte[] bytes) {
