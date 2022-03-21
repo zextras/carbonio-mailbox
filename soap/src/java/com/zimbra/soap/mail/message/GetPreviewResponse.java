@@ -29,12 +29,32 @@ public class GetPreviewResponse {
   @XmlAttribute(name = "file-name", required = false)
   private String fileName;
   /**
+   * @zm-api-field-tag status-code
+   * @zm-api-field-description status code of preview service
+   */
+  @XmlAttribute(name = "status-code", required = false)
+  private String statusCode;
+  /**
+   * @zm-api-field-tag status-message
+   * @zm-api-field-description status message of preview service
+   */
+  @XmlAttribute(name = "status-message", required = false)
+  private String statusMessage;
+  /**
    * @zm-api-field-description preview data stream returned from the Carbonio previewer service
    */
   @XmlElement(name = "error", required = false)
   private String error;
 
   private GetPreviewResponse() {
+  }
+
+  public String getStatusCode() {
+    return statusCode;
+  }
+
+  public String getStatusMessage() {
+    return statusMessage;
   }
 
   public String getError() {
