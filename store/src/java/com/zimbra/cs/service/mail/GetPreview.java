@@ -188,7 +188,6 @@ public class GetPreview extends MailDocumentHandler {
         }
       }
       post.setURI(URI.create(url));
-      log.info("K_PREVIEWER preview URL: " + url);
       MultipartEntityBuilder builder = MultipartEntityBuilder.create();
       builder.addBinaryBody("file", f, ContentType.create(contentType, "UTF-8"), f.getName());
       post.setEntity(builder.build());
@@ -312,7 +311,6 @@ public class GetPreview extends MailDocumentHandler {
       HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr()
           .newHttpClient();
       String url = baseURL + "/service/content/get?id=" + itemId + "&part=" + partNo + "&auth=co";
-      log.info("K_PREVIEWER using getAttachment URL: " + url);
       HttpGet get = new HttpGet(url);
       ZAuthToken zat = session.getAuthToken();
       Map<String, String> cookieMap = zat.cookieMap(false);
@@ -427,7 +425,6 @@ class ServiceResponse {
     try {
       File tempFile = File.createTempFile("preview_", "_" + origFileName);
       tempFilePath = tempFile.getAbsolutePath();
-      ZimbraLog.misc.info("K_PREVIEWER stored attachment in: " + tempFilePath);
       tempFile.deleteOnExit();
       FileOutputStream fos = new FileOutputStream(tempFile);
       fos.write(content);
