@@ -11,7 +11,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +24,6 @@ import org.junit.Test;
 import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
-import org.newsclub.net.unix.AFUNIXSocketException;
 
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionPoolStatistics;
@@ -342,89 +344,140 @@ public class TestLdapConnectivity {
      */
 
     /**
-     * Needs -Djava.library.path=/opt/zextras/lib (where the native lib is) when running in Eclipse.
+     * Needs -Djava.library.path=/opt/zextras/lib (where the native lib is) when running in Eclipse
+     * A simple demo server.
      *
-     * A simple junixsocket demo server
-     *
+     * @author Christian Kohlschütter
      * @see SimpleTestClient
      */
-    public static class SimpleTestServer {
-        public static void main(String[] args) throws IOException {
-            final File socketFile = new File(new File(System
-                    .getProperty("java.io.tmpdir")), "junixsocket-test.sock");
+    public final class SimpleTestServer {
+        private static final int MAX_NUMBER = 5;
 
-            AFUNIXServerSocket server = AFUNIXServerSocket.newInstance();
-            server.bind(new AFUNIXSocketAddress(socketFile));
-            System.out.println("server: " + server);
+        private SimpleTestServer() {
+            throw new UnsupportedOperationException("No instances");
+        }
 
-            while (!Thread.interrupted()) {
-                System.out.println("Waiting for connection...");
-                Socket sock = server.accept();
-                System.out.println("Connected: " + sock);
+        public void main(String[] args) throws IOException {
+            final File socketFile = new File(new File(System.getProperty("java.io.tmpdir")),
+                    "junixsocket-test.sock");
+            System.out.println(socketFile);
 
-                InputStream is = sock.getInputStream();
-                OutputStream os = sock.getOutputStream();
+            try (AFUNIXServerSocket server = AFUNIXServerSocket.newInstance()) {
+                // server.setReuseAddress(false);
+                server.bind(AFUNIXSocketAddress.of(socketFile));
+                System.out.println("server: " + server);
 
-                System.out.println("Saying hello to client " + os);
-                os.write("Hello, dear Client".getBytes());
-                os.flush();
+                while (!Thread.interrupted()) {
+                    System.out.println("Waiting for connection...");
+                    try (Socket sock = server.accept()) {
+                        System.out.println("Connected: " + sock);
 
-                byte[] buf = new byte[128];
-                int read = is.read(buf);
-                System.out
-                        .println("Client's response: " + new String(buf, 0, read));
+                        try (InputStream is = sock.getInputStream(); //
+                             OutputStream os = sock.getOutputStream()) {
+                            System.out.println("Saying hello to client " + os);
+                            os.write("Hello, dear Client".getBytes("UTF-8"));
+                            os.flush();
 
-                os.close();
-                is.close();
+                            byte[] buf = new byte[128];
+                            int read = is.read(buf);
+                            System.out.println("Client's response: " + new String(buf, 0, read, "UTF-8"));
 
-                sock.close();
+                            System.out.println("Now counting to 5...");
+                            DataOutputStream dout = new DataOutputStream(os);
+                            DataInputStream din = new DataInputStream(is);
+                            int number = 0;
+                            while (!Thread.interrupted()) {
+                                number++;
+                                System.out.println("write " + number);
+                                dout.writeInt(number);
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                    break;
+                                }
+                                if (number > MAX_NUMBER) {
+                                    System.out.println("write -123 (end of numbers)");
+                                    dout.writeInt(-123); // in this demo, -123 is our magic number to indicate the end
+                                    break;
+                                }
+
+                                // verify the number from the client
+                                // in the demo, the client just sends 2 * our number
+                                int theirNumber = din.readInt();
+                                System.out.println("received " + theirNumber);
+                                if (theirNumber != (number * 2)) {
+                                    throw new IllegalStateException("Received the wrong number: " + theirNumber);
+                                }
+                            }
+                        }
+                    } catch (IOException e) {
+                        if (server.isClosed()) {
+                            throw e;
+                        } else {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         }
     }
 
     /**
-     * Needs -Djava.library.path=/opt/zextras/lib (where the native lib is) when running in Eclipse.
+     * Needs -Djava.library.path=/opt/zextras/lib (where the native lib is) when running in Eclipse
+     * A simple demo client.
      *
-     * A simple junixsocket demo client.
-     *
-     * @author Christian Kohlsch&#x00FC;tter
+     * @author Christian Kohlschütter
      * @see SimpleTestServer
      */
-    public static class SimpleTestClient {
-        public static void main(String[] args) throws IOException {
-            final File socketFile = new File(new File(System
-                    .getProperty("java.io.tmpdir")), "junixsocket-test.sock");
+    public class SimpleTestClient {
+        public void main(String[] args) throws IOException {
+            final File socketFile = new File(new File(System.getProperty("java.io.tmpdir")),
+                    "junixsocket-test.sock");
 
-            AFUNIXSocket sock = AFUNIXSocket.newInstance();
-            try {
-                sock.connect(new AFUNIXSocketAddress(socketFile));
-            } catch (AFUNIXSocketException e) {
-                System.out.println("Cannot connect to server. Have you started it?");
-                System.out.flush();
-                throw e;
+            try (AFUNIXSocket sock = AFUNIXSocket.newInstance()) {
+                try {
+                    sock.connect(AFUNIXSocketAddress.of(socketFile));
+                } catch (SocketException e) {
+                    System.out.println("Cannot connect to server. Have you started it?");
+                    System.out.println();
+                    throw e;
+                }
+                System.out.println("Connected");
+
+                try (InputStream is = sock.getInputStream(); //
+                     OutputStream os = sock.getOutputStream();) {
+
+                    byte[] buf = new byte[128];
+
+                    int read = is.read(buf);
+                    System.out.println("Server says: " + new String(buf, 0, read, "UTF-8"));
+
+                    System.out.println("Replying to server...");
+                    os.write("Hello Server".getBytes("UTF-8"));
+                    os.flush();
+
+                    System.out.println("Now reading numbers from the server...");
+                    DataInputStream din = new DataInputStream(is);
+                    DataOutputStream dout = new DataOutputStream(os);
+                    while (!Thread.interrupted()) {
+                        int number = din.readInt();
+                        if (number == -123) {
+                            // by convention of this demo, if the number is -123, we stop.
+                            // If we don't do this, we'll get an EOFException upon the next unsuccessful read.
+                            break;
+                        }
+                        System.out.println(number);
+
+                        int ourNumber = number * 2;
+
+                        System.out.println("Sending back " + ourNumber);
+                        dout.writeInt(ourNumber);
+                    }
+                }
             }
-            System.out.println("Connected");
-
-            InputStream is = sock.getInputStream();
-            OutputStream os = sock.getOutputStream();
-
-            byte[] buf = new byte[128];
-
-            int read = is.read(buf);
-            System.out.println("Server says: " + new String(buf, 0, read));
-
-            System.out.println("Replying to server...");
-            os.write("Hello Server".getBytes());
-            os.flush();
-
-            os.close();
-            is.close();
-
-            sock.close();
 
             System.out.println("End of communication.");
         }
     }
-
-
 }

@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: CC0-1.0
 
 .classpath
+*.iml
 .project
 .settings/
 .idea/
@@ -17,5 +18,5 @@ store/.ruleset
 eclipse-ivysettings.xml
 store/tmp/
 common-passwords.txt
+build.properties
 *.deb
-**.iml

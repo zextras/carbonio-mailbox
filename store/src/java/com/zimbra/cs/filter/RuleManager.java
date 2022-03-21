@@ -622,7 +622,7 @@ public final class RuleManager {
             try {
                 node = parse(script);
             } catch (ParseException e) {
-                ZimbraLog.filter.warn("Unable to update filter rules with new folder path '%s'.", e);
+                ZimbraLog.filter.warn("Unable to update filter rules with new folder path '%s'.", newPath, e);
                 return;
             }
             FolderRenamer renamer = new FolderRenamer(originalPath, newPath);

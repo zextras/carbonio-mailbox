@@ -1,44 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivysettings>
-  <property name="httpclient.version" value="4.5.8"/>
-  <property name="httpclient.httpcore.version" value="4.4.11"/>
-  <property name="httpclient.async.version" value="4.1.4"/>
-  <property name="jetty.version" value="9.4.44.v20210927"/>
-  <property name="dom4j.version" value="2.1.1"/>
-  <property name="com.google.guava.version" value="28.1-jre"/>
-  <property name="dev.home" value="${user.home}"/>
+  <property name="httpclient.version" value="4.5.8" />
+  <property name="httpclient.httpcore.version" value="4.4.11" />
+  <property name="httpclient.async.version" value="4.1.4" />
+  <property name="jetty.version" value="9.4.44.v20210927" />
+  <property name="dom4j.version" value="2.1.1" />
+  <property name="com.google.guava.version" value="28.1-jre" />
+  <property name="dev.home" value="${user.home}" />
   <property name="build.dir" value="${basedir}/build" />
   <property name="build.tmp.dir" value="${build.dir}/tmp" />
   <property name="dist.dir" value="${build.dir}/dist" />
 
-  <credentials
-    host="zextras.jfrog.io"
-    realm="Artifactory Realm"
-    username="${artifactory_user}"
-    passwd="${artifactory_password}" />
+  <credentials host="zextras.jfrog.io" realm="Artifactory Realm" username="${artifactory_user}" passwd="${artifactory_password}" />
 
   <settings defaultResolver="chain-resolver" />
-  <caches defaultCacheDir="${dev.home}/.ivy2/cache"/>
+  <caches defaultCacheDir="${dev.home}/.ivy2/cache" />
   <resolvers>
     <ibiblio name="public-maven" m2compatible="true" root="https://zextras.jfrog.io/artifactory/public-maven-repo" />
     <chain name="chain-resolver" returnFirst="true">
       <filesystem name="local">
-        <artifact pattern= "${dev.home}/.zcs-deps/[organisation]/[module]/[module]-[revision].[ext]" />
-        <artifact pattern= "${dev.home}/.zcs-deps/[organisation]-[revision].[ext]" />
-        <artifact pattern= "${dev.home}/.zcs-deps/[organisation].[ext]" />
+        <artifact pattern="${dev.home}/.zcs-deps/[organisation]/[module]/[module]-[revision].[ext]" />
+        <artifact pattern="${dev.home}/.zcs-deps/[organisation]-[revision].[ext]" />
+        <artifact pattern="${dev.home}/.zcs-deps/[organisation].[ext]" />
 
       </filesystem>
-       <url name="maven-https-org">
+      <url name="maven-https-org">
         <artifact pattern="https://repo1.maven.org/maven2/[organization]/[module]/[revision]/[artifact]-[revision].[ext]" />
       </url>
       <url name="maven-https-orgPath">
         <artifact pattern="https://repo1.maven.org/maven2/[orgPath]/[module]/[revision]/[artifact]-[revision].[ext]" />
       </url>
-      <ibiblio name="maven" m2compatible="true" usepoms="false"/>
-      <ibiblio name="maven-redhat" root="https://maven.repository.redhat.com/ga/" pattern="[organisation]/[module]/[revision]/[module]-[revision].[ext]"/>
-      <url name="bedatadriven-https-orgPath">
-        <artifact pattern="https://nexus.bedatadriven.com/content/groups/public/[orgPath]/[module]/[revision]/[artifact]-[revision].[ext]" />
-      </url>
+      <ibiblio name="maven" m2compatible="true" usepoms="false" />
+      <ibiblio name="maven-redhat" root="https://maven.repository.redhat.com/ga/" pattern="[organisation]/[module]/[revision]/[module]-[revision].[ext]" />
       <url name="zimbra">
         <artifact pattern="https://files.zimbra.com/repository/[module]/[artifact]-[revision].[ext]" />
         <artifact pattern="https://files.zimbra.com/repository/[module]/[artifact].[ext]" />
@@ -53,7 +46,7 @@
       <artifact pattern="${dist.dir}/[module]-[revision].[ext]" />
     </filesystem>
   </resolvers>
-     <modules>
-      <module organisation="xerces" name="xercesImpl" revision="2.9.1-patch-01" resolver="maven-redhat"/>
-    </modules>
+  <modules>
+    <module organisation="xerces" name="xercesImpl" revision="2.9.1-patch-01" resolver="maven-redhat" />
+  </modules>
 </ivysettings>

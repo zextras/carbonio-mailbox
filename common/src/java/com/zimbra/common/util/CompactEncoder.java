@@ -225,13 +225,13 @@ public class CompactEncoder {
         } case 'l': {
             return Long.valueOf(bb.getLong());
         } case 'F': {
-            return new Float(Float.parseFloat(getString(bb)));
+            return Float.valueOf(Float.parseFloat(getString(bb)));
         } case 'f': {
-            return new Float(bb.getFloat());
+            return Float.valueOf(bb.getFloat());
         } case 'D': {
-            return new Double(Double.parseDouble(getString(bb)));
+            return Double.valueOf(Double.parseDouble(getString(bb)));
         } case 'd': {
-            return new Double(bb.getDouble());
+            return Double.valueOf(bb.getDouble());
         } case 'E': {
             return Integer.valueOf((int)getStringLong(bb));
         } case 'e': {
@@ -284,9 +284,9 @@ public class CompactEncoder {
                 array.add(i, decode(bb));
             return array;
         } case '{': {
-            return new Boolean(true);
+            return Boolean.valueOf(true);
         } case '}': {
-            return new Boolean(false);
+            return Boolean.valueOf(false);
         } default:
             throw new CompactEncoderException("invalid data type");
         }
