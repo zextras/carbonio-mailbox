@@ -17563,7 +17563,7 @@ public class ZAttrProvisioning {
     /**
      * SSL proxy port for Carbonio admin console UI
      *
-     * @since ZCS 8.0.0
+     * @since ZCS 9.0.0
      */
     @ZAttr(id=3089)
     public static final String A_carbonioAdminProxyPort = "carbonioAdminProxyPort";

@@ -76057,21 +76057,21 @@ public abstract class ZAttrConfig extends Entry {
      *
      * @see #getCarbonioAdminProxyPortAsString()
      *
-     * @return CarbonioAdminProxyPort, or 30899 if unset
+     * @return CarbonioAdminProxyPort, or 6071 if unset
      */
     @ZAttr(id=3089)
     public int getCarbonioAdminProxyPort() {
-        return getIntAttr(Provisioning.A_carbonioAdminProxyPort, 30899, true);
+        return getIntAttr(Provisioning.A_carbonioAdminProxyPort, 6071, true);
     }
 
     /**
      * SSL port for Carbonio admin UI
      *
-     * @return CarbonioAdminProxyPort, or "30899" if unset
+     * @return CarbonioAdminProxyPort, or "6071" if unset
      */
     @ZAttr(id=3089)
     public String getCarbonioAdminProxyPortAsString() {
-        return getAttr(Provisioning.A_carbonioAdminProxyPort, "30899", true);
+        return getAttr(Provisioning.A_carbonioAdminProxyPort, "6071", true);
     }
 
     /**
