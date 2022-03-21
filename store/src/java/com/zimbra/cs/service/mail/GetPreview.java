@@ -357,7 +357,7 @@ public class GetPreview extends MailDocumentHandler {
   }
 
   /**
-   * append error element to the response and return the modified response
+   * Append error element to the response and return the modified response
    *
    * @param response     response element to be appended with error element
    * @param errorMessage error message that will set to text of error element
@@ -372,9 +372,12 @@ public class GetPreview extends MailDocumentHandler {
 }
 
 /**
- * Represent response received from services this class stores the data we receive from various
- * services, it can store the response received in bytearray and have ability to store the response
- * in temporary file.
+ * Represent response received from services.
+ * <p>
+ * This class stores the data we receive from various services, it can store the response received
+ * in bytearray and provides a method to store the response in temporary file.
+ * <p>
+ * This class is used to create sharable objects while passing response of one service to other
  */
 class ServiceResponse {
 
