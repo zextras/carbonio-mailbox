@@ -43,19 +43,23 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
 
+/**
+ * GetPreview class is registered to dispatch response to the requests coming from the
+ * GetPreviewRequest SOAP endpoint
+ */
 public class GetPreview extends MailDocumentHandler {
 
-  static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.6:10000/";
+  private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.6:10000/";
   private final Log log = ZimbraLog.misc;
   private final String serverBaseUrl = getServerBaseUrl(null, false);
 
   /**
-   * Helper function to return the URL of server
+   * Helper method to return the baseURL for mailbox server
    *
    * @param server ({@link com.zimbra.cs.account.Server})
-   * @return url of server
+   * @return URL string of mailbox server
    */
-  public static String getServerBaseUrl(Server server, boolean withPort) {
+  private String getServerBaseUrl(Server server, boolean withPort) {
     String scheme = "https";
     try {
       server = server == null ? Provisioning.getInstance().getLocalServer() : server;
@@ -106,7 +110,7 @@ public class GetPreview extends MailDocumentHandler {
     }
 
     //Post it to the preview service with he passed parameters
-    if (attachmentResponse != null && attachmentResponse.statusCode == 200) {
+    if (attachmentResponse != null && attachmentResponse.getStatusCode() == 200) {
       try {
         previewResponse = getPreview(request, new File(attachmentResponse.getTempFilePath()));
         previewResponse.setOrigFileName(attachmentResponse.getOrigFileName());
@@ -124,8 +128,8 @@ public class GetPreview extends MailDocumentHandler {
     }
 
     //Pass the response in the soap response
-    if (previewResponse != null && previewResponse.statusCode == 200) {
-      String previewStream = Base64.getEncoder().encodeToString(previewResponse.content);
+    if (previewResponse != null && previewResponse.getStatusCode() == 200) {
+      String previewStream = Base64.getEncoder().encodeToString(previewResponse.getContent());
       Element previewDataStream = response.addUniqueElement("previewDataStream");
       previewDataStream.setText(previewStream);
       previewDataStream.addAttribute("file-name", previewResponse.getOrigFileName());
@@ -141,11 +145,12 @@ public class GetPreview extends MailDocumentHandler {
    *
    * @param f file to post to preview service(downloaded attachment in this case)
    * @return ServiceResponse ({@link ServiceResponse })
-   * @throws HttpException http exception
-   * @throws IOException   IO exception
+   * @throws HttpException HTTP exceptions occurred during the transport
+   * @throws IOException IO exception occurred during the transport
    */
-  private ServiceResponse getPreview(Element requestElement, File f) throws HttpException, IOException {
-    ServiceResponse serviceResponse = new ServiceResponse();
+  private ServiceResponse getPreview(Element requestElement, File f)
+      throws HttpException, IOException {
+    ServiceResponse previewServiceResponse = new ServiceResponse();
     HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr()
         .newHttpClient();
 
@@ -170,7 +175,8 @@ public class GetPreview extends MailDocumentHandler {
       } else {
         if (contentType.equalsIgnoreCase("image/png") || contentType.equalsIgnoreCase(
             "image/jpeg")) {
-          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/image/" + getImageParams(requestElement);
+          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/image/" + getImageParams(
+              requestElement);
         } else {
           url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParams(requestElement);
         }
@@ -181,14 +187,19 @@ public class GetPreview extends MailDocumentHandler {
       builder.addBinaryBody("file", f, ContentType.create(contentType, "UTF-8"), f.getName());
       post.setEntity(builder.build());
       HttpResponse response = HttpClientUtil.executeMethod(client, post);
-      serviceResponse.statusCode = response.getStatusLine().getStatusCode();
-      serviceResponse.content = EntityUtils.toByteArray(response.getEntity());
+      previewServiceResponse.setStatusCode(response.getStatusLine().getStatusCode());
+      previewServiceResponse.setContent(EntityUtils.toByteArray(response.getEntity()));
     } finally {
       post.releaseConnection();
     }
-    return serviceResponse;
+    return previewServiceResponse;
   }
 
+  /**
+   * Helper method to form request parameters for request type Image
+   * @param requestElement referenced IMage request element
+   * @return string containing request parameters
+   */
   private String getImageParams(Element requestElement) {
     String imageParams = "";
     Element imageEle = requestElement.getOptionalElement("image");
@@ -215,7 +226,11 @@ public class GetPreview extends MailDocumentHandler {
     return imageParams;
   }
 
-
+  /**
+   * Helper method to form request parameters for request type PDF
+   * @param requestElement referenced PDF request element
+   * @return string containing request parameters
+   */
   private String getPdfParams(Element requestElement) {
     String pdfParams = "";
     Element pdfEle = requestElement.getOptionalElement("pdf");
@@ -240,8 +255,12 @@ public class GetPreview extends MailDocumentHandler {
     return pdfParams;
   }
 
-  private Map<Integer, String> getPreviewServiceStatus() {
 
+  /**
+   * Method used to get the status(health/live) of PreviewService
+   * @return HashMap of containing StatusCode(int) and ReasonString(string)
+   */
+  private Map<Integer, String> getPreviewServiceStatus() {
     Map<Integer, String> status = new LinkedHashMap<>();
     HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr()
         .newHttpClient();
@@ -261,6 +280,17 @@ public class GetPreview extends MailDocumentHandler {
     return status;
   }
 
+  /**
+   * Get the attachment content as ({@link ServiceResponse}) from mailbox's content servlet service
+   * @param itemId item's ID (attachment id)
+   * @param partNo attachment's part number
+   * @param baseURL base URL of server where mailbox is hosted
+   * @param session ({@link LmcSession}) active session which has to be used to authenticate with request
+   * @param cookieDomain cookie domain is domain base for the mailbox server
+   * @return ServiceResponse ({@link ServiceResponse})
+   * @throws HttpException HTTP exceptions occurred during the transport
+   * @throws IOException IO exception occurred during the transport
+   */
   private ServiceResponse getAttachment(String itemId, String partNo, String baseURL,
       LmcSession session, String cookieDomain) throws HttpException, IOException {
     ServiceResponse serviceResponse = new ServiceResponse();
@@ -302,14 +332,13 @@ public class GetPreview extends MailDocumentHandler {
       HttpClient client = clientBuilder.build();
       try {
         HttpResponse response = HttpClientUtil.executeMethod(client, get);
-        serviceResponse.statusCode = response.getStatusLine().getStatusCode();
+        serviceResponse.setStatusCode(response.getStatusLine().getStatusCode());
         HttpEntity entity = response.getEntity();
         if (entity != null) {
           Header header = response.getFirstHeader("Content-Disposition");
           String disposition = header == null ? "" : header.getValue();
           String fileName = disposition.replaceFirst("(?i)^.*filename=\"([^\"]+)\".*$", "$1");
-          serviceResponse.content = EntityUtils.toByteArray(entity);
-          serviceResponse.storeContent(fileName, serviceResponse.content);
+          serviceResponse.storeContent(fileName , EntityUtils.toByteArray(entity));
         }
       } finally {
         get.releaseConnection();
@@ -318,19 +347,40 @@ public class GetPreview extends MailDocumentHandler {
     return serviceResponse;
   }
 
+  /**
+   * append error element to the response and return the modified response
+   * @param response response element to be appended with error element
+   * @param errorMessage error message that will set to text of error element
+   * @return modified response
+   */
   private Element appendError(Element response, String errorMessage) {
     Element error = response.addNonUniqueElement("error");
     error.setText(errorMessage);
     return response;
   }
+
 }
 
+/** Represent response received from services
+ * this class stores the data we receive from
+ * various services, it can store the response
+ * received in bytearray and have ability to
+ * store the response in temporary file.
+ */
 class ServiceResponse {
 
-  int statusCode;
-  byte[] content;
-  String origFileName;
-  String tempFilePath;
+  private int statusCode;
+  private byte[] content;
+  private String origFileName;
+  private String tempFilePath;
+
+  public int getStatusCode() {
+    return statusCode;
+  }
+
+  public void setStatusCode(int statusCode) {
+    this.statusCode = statusCode;
+  }
 
   public String getOrigFileName() {
     return origFileName;
@@ -348,11 +398,22 @@ class ServiceResponse {
     return content;
   }
 
-  public boolean storeContent(String filename, byte[] content) {
+  public void setContent(byte[] content) {
+    this.content = content;
+  }
+
+  /**
+   * stores content in a temp file.
+   * @param fileName filename received in content-disposition header whose data is being stored
+   * @param bytes data in form of byte array
+   * @return true if content was stored correctly
+   */
+  public boolean storeContent(String fileName, byte[] bytes) {
     boolean stored;
-    origFileName = filename;
+    origFileName = fileName;
+    content = bytes;
     try {
-      File tempFile = File.createTempFile("preview_", "_" + filename);
+      File tempFile = File.createTempFile("preview_", "_" + origFileName);
       tempFilePath = tempFile.getAbsolutePath();
       ZimbraLog.misc.info("K_PREVIEWER stored attachment in: " + tempFilePath);
       tempFile.deleteOnExit();
