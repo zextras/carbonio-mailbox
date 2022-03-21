@@ -50965,6 +50965,111 @@ public abstract class ZAttrServer extends NamedEntry {
         return attrs;
     }
 
+
+    /**
+     * SSL port for Carbonio admin UI
+     *
+     * <p>Use getCarbonioAdminProxyPortAsString to access value as a string.
+     *
+     * @see #getAdminPortAsString()
+     *
+     * @return CarbonioAdminProxyPort, or 7071 if unset
+     */
+    @ZAttr(id=3089)
+    public int getCarbonioAdminProxyPort() {
+        return getIntAttr(Provisioning.A_carbonioAdminProxyPort, 6071, true);
+    }
+
+    /**
+     * SSL port for Carbonio admin UI
+     *
+     * @return CarbonioAdminProxyPort, or "30899" if unset
+     */
+    @ZAttr(id=3089)
+    public String getCarbonioAdminProxyPortAsString() {
+        return getAttr(Provisioning.A_carbonioAdminProxyPort, "6071", true);
+    }
+
+    /**
+     * SSL port for Carbonio admin UI
+     *
+     * @param CarbonioAdminProxyPort new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=3089)
+    public void setCarbonioAdminProxyPort(int CarbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(CarbonioAdminProxyPort));
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * SSL port for Carbonio admin UI
+     *
+     * @param CarbonioAdminProxyPort new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> setCarbonioAdminProxyPort(int CarbonioAdminProxyPort, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(CarbonioAdminProxyPort));
+        return attrs;
+    }
+
+    /**
+     * SSL port for Carbonio admin UI
+     *
+     * @param CarbonioAdminProxyPort new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=3089)
+    public void setCarbonioAdminProxyPortAsString(String CarbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, CarbonioAdminProxyPort);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * SSL port for Carbonio admin UI
+     *
+     * @param CarbonioAdminProxyPort new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> setCarbonioAdminProxyPortAsString(String CarbonioAdminProxyPort, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, CarbonioAdminProxyPort);
+        return attrs;
+    }
+
+    /**
+     * SSL port for Carbonio admin UI
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=3089)
+    public void unsetCarbonioAdminProxyPort() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * SSL port for Carbonio admin UI
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> unsetCarbonioAdminProxyPort(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
+        return attrs;
+    }
+
+
     ///// END-AUTO-GEN-REPLACE
 
 }
