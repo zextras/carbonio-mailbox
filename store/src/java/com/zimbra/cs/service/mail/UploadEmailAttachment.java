@@ -3,6 +3,7 @@ package com.zimbra.cs.service.mail;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.cs.account.AuthToken;
@@ -36,12 +37,24 @@ public class UploadEmailAttachment extends MailDocumentHandler {
 
 
   @Override
-  public Element handle(Element request, Map<String, Object> context) throws ServiceException {
+  public Element handle(Element request, Map<String, Object> context) throws SoapFaultException {
     ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    UploadAttachmentRequest uploadAttachmentRequest = zsc.elementToJaxb(request);
+    UploadAttachmentRequest uploadAttachmentRequest = null;
+    try {
+      uploadAttachmentRequest = zsc.elementToJaxb(request);
+    } catch (ServiceException e) {
+      //TODO: return error
+      mLog.debug(e.getMessage());
+      throw new SoapFaultException("Malformed request.", request);
+    }
     String uploadId = uploadAttachmentRequest.getUploadId();
-    Upload up = fileUploadProvider.getUpload(zsc.getAuthtokenAccountId(), uploadId,
-        zsc.getAuthToken());
+    Upload up = null;
+    try {
+      up = fileUploadProvider.getUpload(zsc.getAuthtokenAccountId(), uploadId,
+          zsc.getAuthToken());
+    } catch (ServiceException e) {
+      throw new SoapFaultException("The file with uid " + uploadId + "does not exist.", request);
+    }
     String upName = up.getName();
     BlobInputStream upContent = up.getBlobInputStream();
     //TODO: POST to file api with file content and fileName attachment
