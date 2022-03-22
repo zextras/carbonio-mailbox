@@ -15,28 +15,28 @@ public class GetPreviewResponse {
    * @zm-api-field-description The previewServiceStatus element specifies whether the Carbonio
    * preview service is available or not. It provides status-code(int) and status-message(string)
    */
-  @XmlElement(name = "previewServiceStatus", required = true)
+  @XmlElement(name = MailConstants.E_P_PREVIEW_SERVICE_STATUS, required = true)
   private String previewServiceStatus;
 
   /**
    * @zm-api-field-description Preview data stream returned from the Carbonio Previewer service
    * is base64 encoded stream of data representing the preview
    */
-  @XmlElement(name = "previewDataStream", required = false)
+  @XmlElement(name = MailConstants.E_P_PREVIEW_DATA_STREAM, required = false)
   private String previewDataStream;
 
   /**
    * @zm-api-field-description Error element provides the error message that the previewer service
    * experienced while generating preview
    */
-  @XmlElement(name = "error", required = false)
+  @XmlElement(name = MailConstants.E_P_ERROR, required = false)
   private String error;
 
   /**
    * @zm-api-field-tag file-name
    * @zm-api-field-description Original Name of the file whose preview is being returned
    */
-  @XmlAttribute(name = "file-name", required = false)
+  @XmlAttribute(name = MailConstants.A_P_FILE_NAME, required = false)
   private String fileName;
 
   /**
@@ -44,7 +44,7 @@ public class GetPreviewResponse {
    * @zm-api-field-description Status code returned while checking health/live status of Carbonio
    * Previewer service
    */
-  @XmlAttribute(name = "status-code", required = false)
+  @XmlAttribute(name = MailConstants.A_P_STATUS_CODE, required = false)
   private String statusCode;
 
   /**
@@ -52,7 +52,7 @@ public class GetPreviewResponse {
    * @zm-api-field-description Status message returned while checking health/live status of Carbonio
    * Previewer service
    */
-  @XmlAttribute(name = "status-message", required = false)
+  @XmlAttribute(name = MailConstants.E_P_STATUS_MESSAGE, required = false)
   private String statusMessage;
 
 

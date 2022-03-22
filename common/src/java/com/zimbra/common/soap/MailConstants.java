@@ -1175,7 +1175,7 @@ public final class MailConstants {
     public static final String A_DICTIONARY = "dictionary";
     public static final String A_IGNORE = "ignore";
 
-    // previewer service
+    // previewer service request
     public static  final String E_P_ITEM_ID = "itemId";
     public static  final String E_P_PART = "part";
     public static  final String E_P_PDF = "pdf";
@@ -1187,6 +1187,14 @@ public final class MailConstants {
     public static  final String A_P_OUTPUT_FORMAT = "output_format";
     public static  final String A_P_FIRST_PAGE = "first_page";
     public static  final String A_P_LAST_PAGE = "last_page";
+
+    // previewer service response
+    public static  final String E_P_PREVIEW_SERVICE_STATUS = "previewServiceStatus";
+    public static  final String E_P_PREVIEW_DATA_STREAM = "previewDataStream";
+    public static  final String E_P_ERROR = "error";
+    public static  final String A_P_FILE_NAME = "file-name";
+    public static  final String A_P_STATUS_CODE = "status-code";
+    public static  final String E_P_STATUS_MESSAGE = "status-message";
 
     // data sources
     public static final String E_DS = "dsrc";
