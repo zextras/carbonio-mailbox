@@ -52,7 +52,7 @@ public class GetPreviewResponse {
    * @zm-api-field-description Status message returned while checking health/live status of Carbonio
    * Previewer service
    */
-  @XmlAttribute(name = MailConstants.E_P_STATUS_MESSAGE, required = false)
+  @XmlAttribute(name = MailConstants.A_P_STATUS_MESSAGE, required = false)
   private String statusMessage;
 
 
