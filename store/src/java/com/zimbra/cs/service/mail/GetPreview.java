@@ -91,9 +91,9 @@ public class GetPreview extends MailDocumentHandler {
     Optional<Entry<Integer, String>> first = serviceStatus.entrySet().stream().findFirst();
     AtomicInteger previewServiceStatusCode = new AtomicInteger(-1);
     first.ifPresent(entry -> {
-          response.addUniqueElement("previewServiceStatus")
-              .addAttribute("status-code", entry.getKey())
-              .addAttribute("status-message", entry.getValue());
+          response.addUniqueElement(MailConstants.E_P_PREVIEW_SERVICE_STATUS)
+              .addAttribute(MailConstants.A_P_STATUS_CODE, entry.getKey())
+              .addAttribute(MailConstants.A_P_STATUS_MESSAGE, entry.getValue());
           previewServiceStatusCode.set(entry.getKey());
         }
     );
@@ -139,9 +139,9 @@ public class GetPreview extends MailDocumentHandler {
     //Pass the response in the soap response
     if (previewResponse != null && previewResponse.getStatusCode() == 200) {
       String previewStream = Base64.getEncoder().encodeToString(previewResponse.getContent());
-      Element previewDataStream = response.addUniqueElement("previewDataStream");
+      Element previewDataStream = response.addUniqueElement(MailConstants.E_P_PREVIEW_DATA_STREAM);
       previewDataStream.setText(previewStream);
-      previewDataStream.addAttribute("file-name", previewResponse.getOrigFileName());
+      previewDataStream.addAttribute(MailConstants.A_P_FILE_NAME, previewResponse.getOrigFileName());
     } else {
       return appendError(response,
           "Failed to generate preview.");
@@ -211,12 +211,12 @@ public class GetPreview extends MailDocumentHandler {
    */
   private String getImageParamsAsQueryString(Element requestElement) {
     String imageParams = "";
-    Element imageEle = requestElement.getOptionalElement("image");
+    Element imageEle = requestElement.getOptionalElement(MailConstants.E_P_IMAGE);
     if (imageEle != null) {
-      String previewType = imageEle.getAttribute("preview_type", ""); //mn
-      String area = imageEle.getAttribute("area", ""); //mn
-      String quality = imageEle.getAttribute("quality", ""); //on
-      String outputFormat = imageEle.getAttribute("output_format", "jpeg"); //od
+      String previewType = imageEle.getAttribute(MailConstants.A_P_PREVIEW_TYPE, ""); //mn
+      String area = imageEle.getAttribute(MailConstants.A_P_AREA, ""); //mn
+      String quality = imageEle.getAttribute(MailConstants.A_P_QUALITY, ""); //on
+      String outputFormat = imageEle.getAttribute(MailConstants.A_P_OUTPUT_FORMAT, "jpeg"); //od
       if (previewType.equals("thumbnail")) {
         //add path arguments
         imageParams = "/" + area + "/" + previewType + "/";
@@ -224,7 +224,7 @@ public class GetPreview extends MailDocumentHandler {
         imageParams += (quality.isEmpty() ? "?" : "?quality=" + quality + "&") + "output_format="
             + outputFormat;
       } else {
-        String crop = imageEle.getAttribute("crop", "false"); //od
+        String crop = imageEle.getAttribute(MailConstants.A_P_CROP, "false"); //od
         //add path arguments
         imageParams = "/" + area + "/";
         //add query params
@@ -243,21 +243,21 @@ public class GetPreview extends MailDocumentHandler {
    */
   private String getPdfParamsAsQueryString(Element requestElement) {
     String pdfParams = "";
-    Element pdfEle = requestElement.getOptionalElement("pdf");
+    Element pdfEle = requestElement.getOptionalElement(MailConstants.E_P_PDF);
     if (pdfEle != null) {
-      String previewType = pdfEle.getAttribute("preview_type", ""); //mn
+      String previewType = pdfEle.getAttribute(MailConstants.A_P_PREVIEW_TYPE, ""); //mn
       if (previewType.equals("thumbnail")) {
-        String quality = pdfEle.getAttribute("quality", ""); //on
-        String outputFormat = pdfEle.getAttribute("output_format", "jpeg"); //od
-        String area = pdfEle.getAttribute("area", ""); //mn
+        String quality = pdfEle.getAttribute(MailConstants.A_P_QUALITY, ""); //on
+        String outputFormat = pdfEle.getAttribute(MailConstants.A_P_OUTPUT_FORMAT, "jpeg"); //od
+        String area = pdfEle.getAttribute(MailConstants.A_P_AREA, ""); //mn
         //add path arguments
         pdfParams += "/" + area + "/" + previewType + "/";
         //add query params
         pdfParams += (quality.isEmpty() ? "?" : "?quality=" + quality + "&") + "output_format="
             + outputFormat;
       } else {
-        String firstPage = pdfEle.getAttribute("first_page", "1"); //od
-        String lastPage = pdfEle.getAttribute("last_page", "1"); //od
+        String firstPage = pdfEle.getAttribute(MailConstants.A_P_FIRST_PAGE, "1"); //od
+        String lastPage = pdfEle.getAttribute(MailConstants.A_P_LAST_PAGE, "1"); //od
         //add query params
         pdfParams = "?first_page=" + firstPage + "&last_page=" + lastPage;
       }
@@ -367,7 +367,7 @@ public class GetPreview extends MailDocumentHandler {
    * @return modified response
    */
   private Element appendError(Element response, String errorMessage) {
-    Element error = response.addNonUniqueElement("error");
+    Element error = response.addNonUniqueElement(MailConstants.E_P_ERROR);
     error.setText(errorMessage);
     return response;
   }
