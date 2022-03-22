@@ -26,13 +26,6 @@ public class GetPreviewResponse {
   private String previewDataStream;
 
   /**
-   * @zm-api-field-description Error element provides the error message that the previewer service
-   * experienced while generating preview
-   */
-  @XmlElement(name = MailConstants.E_P_ERROR, required = false)
-  private String error;
-
-  /**
    * @zm-api-field-tag file-name
    * @zm-api-field-description Original Name of the file whose preview is being returned
    */
@@ -65,14 +58,6 @@ public class GetPreviewResponse {
 
   public String getStatusMessage() {
     return statusMessage;
-  }
-
-  public String getError() {
-    return error;
-  }
-
-  public void setError(String error) {
-    this.error = error;
   }
 
   public String getPreviewServiceStatus() {

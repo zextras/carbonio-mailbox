@@ -1191,7 +1191,6 @@ public final class MailConstants {
     // previewer service response
     public static  final String E_P_PREVIEW_SERVICE_STATUS = "previewServiceStatus";
     public static  final String E_P_PREVIEW_DATA_STREAM = "previewDataStream";
-    public static  final String E_P_ERROR = "error";
     public static  final String A_P_FILE_NAME = "file-name";
     public static  final String A_P_STATUS_CODE = "status-code";
     public static  final String A_P_STATUS_MESSAGE = "status-message";

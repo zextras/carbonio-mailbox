@@ -7,9 +7,9 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.FileUtil;
 import com.zimbra.common.util.Log;
+import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraHttpConnectionManager;
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.client.LmcSession;
@@ -52,7 +52,9 @@ import org.apache.http.util.EntityUtils;
 public class GetPreview extends MailDocumentHandler {
 
   private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.6:10000/";
-  private final Log log = ZimbraLog.misc;
+  //private final Log log = ZimbraLog.soap;
+  private static final Log LOG = LogFactory.getLog(GetPreview.class);
+
   private final String serverBaseUrl = getServerBaseUrl(null, false);
 
   /**
@@ -83,8 +85,8 @@ public class GetPreview extends MailDocumentHandler {
     ZimbraSoapContext zc = getZimbraSoapContext(context);
     ZAuthToken authToken = zc.getRawAuthToken();
     LmcSession session = new LmcSession(authToken, null);
-    ServiceResponse attachmentResponse = null;
-    ServiceResponse previewResponse = null;
+    ServiceResponse attachmentResponse;
+    ServiceResponse previewResponse;
     GetPreviewRequest getPreviewRequest = zc.elementToJaxb(request);
     Element response = zc.createElement(MailConstants.GET_PREVIEW_RESPONSE);
     Map<Integer, String> serviceStatus = getPreviewServiceStatus();
@@ -98,53 +100,46 @@ public class GetPreview extends MailDocumentHandler {
         }
     );
 
-    if (serverBaseUrl.isEmpty() || previewServiceStatusCode.intValue() != 200) {
-      return appendError(response, "Unable to get preview. Not able to get the server URL.");
+    if (serverBaseUrl.isEmpty()) {
+      throw ServiceException.RESOURCE_UNREACHABLE("Unable to get preview. Not able to get the mailbox server URL.", null);
+    }
+
+    if(previewServiceStatusCode.intValue() != 200){
+      throw ServiceException.TEMPORARILY_UNAVAILABLE();
     }
 
     String itemId = getPreviewRequest.getItemId();
     String partNo = getPreviewRequest.getPart();
 
     if (StringUtil.isNullOrEmpty(itemId) || StringUtil.isNullOrEmpty(partNo)) {
-      return appendError(response, "Unable to get preview. Missing required parameters.");
+      throw ServiceException.INVALID_REQUEST("Unable to get preview. Missing required parameters.", null);
     }
 
     //Get the attachment
     try {
       attachmentResponse = getAttachment(itemId, partNo, serverBaseUrl,
           session, serverBaseUrl);
-    } catch (HttpException | IOException e) {
-      log.error("An exception occurred while making getAttachment request, trace: ",
-          e.getMessage());
-    }
-
-    //Post it to the preview service with he passed parameters
-    if (attachmentResponse != null && attachmentResponse.getStatusCode() == 200) {
-      try {
+      //Post it to the preview service with he passed parameters
+      if (attachmentResponse.getStatusCode() == 200) {
         previewResponse = getPreview(request, new File(attachmentResponse.getTempFilePath()));
         previewResponse.setOrigFileName(attachmentResponse.getOrigFileName());
-      } catch (HttpException | IOException e) {
-        log.error("An exception occurred while making preview request, trace: ", e.getMessage());
-      } finally {
-        try {
-          FileUtil.delete(new File(attachmentResponse.getTempFilePath()));
-        } catch (IOException e) {
-          //ignore
+        FileUtil.delete(new File(attachmentResponse.getTempFilePath()));
+        //Pass the response in the soap response
+        if (previewResponse.getStatusCode() == 200) {
+          String previewStream = Base64.getEncoder().encodeToString(previewResponse.getContent());
+          Element previewDataStream = response.addUniqueElement(
+              MailConstants.E_P_PREVIEW_DATA_STREAM);
+          previewDataStream.setText(previewStream);
+          previewDataStream.addAttribute(MailConstants.A_P_FILE_NAME,
+              previewResponse.getOrigFileName());
+        } else {
+          throw ServiceException.RESOURCE_UNREACHABLE("Failed to generate preview.", null);
         }
+      } else {
+        throw ServiceException.RESOURCE_UNREACHABLE("Failed to get the attachment.", null);
       }
-    } else {
-      return appendError(response, "Failed to get the attachment.");
-    }
-
-    //Pass the response in the soap response
-    if (previewResponse != null && previewResponse.getStatusCode() == 200) {
-      String previewStream = Base64.getEncoder().encodeToString(previewResponse.getContent());
-      Element previewDataStream = response.addUniqueElement(MailConstants.E_P_PREVIEW_DATA_STREAM);
-      previewDataStream.setText(previewStream);
-      previewDataStream.addAttribute(MailConstants.A_P_FILE_NAME, previewResponse.getOrigFileName());
-    } else {
-      return appendError(response,
-          "Failed to generate preview.");
+    } catch (HttpException | IOException e) {
+      throw ServiceException.RESOURCE_UNREACHABLE("An exception occurred while completing your request." ,null);
     }
     return response;
   }
@@ -180,14 +175,17 @@ public class GetPreview extends MailDocumentHandler {
       String url;
       if (contentType == null || contentType.isEmpty()) {
         contentType = "application/pdf";
-        url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(requestElement);
+        url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(
+            requestElement);
       } else {
         if (contentType.equalsIgnoreCase("image/png") || contentType.equalsIgnoreCase(
             "image/jpeg")) {
-          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/image/" + getImageParamsAsQueryString(
-              requestElement);
+          url =
+              GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/image/" + getImageParamsAsQueryString(
+                  requestElement);
         } else {
-          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(requestElement);
+          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(
+              requestElement);
         }
       }
       post.setURI(URI.create(url));
@@ -308,7 +306,7 @@ public class GetPreview extends MailDocumentHandler {
       LmcSession session, String cookieDomain) throws HttpException, IOException {
     ServiceResponse serviceResponse = new ServiceResponse();
     if (session == null) {
-      log.error(System.currentTimeMillis() + " " + Thread.currentThread()
+      LOG.error(System.currentTimeMillis() + " " + Thread.currentThread()
           + " getAttachment session=null");
     } else {
       HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr()
@@ -358,20 +356,6 @@ public class GetPreview extends MailDocumentHandler {
     }
     return serviceResponse;
   }
-
-  /**
-   * Append error element to the response and return the modified response
-   *
-   * @param response     response element to be appended with error element
-   * @param errorMessage error message that will set to text of error element
-   * @return modified response
-   */
-  private Element appendError(Element response, String errorMessage) {
-    Element error = response.addNonUniqueElement(MailConstants.E_P_ERROR);
-    error.setText(errorMessage);
-    return response;
-  }
-
 }
 
 /**
