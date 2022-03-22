@@ -101,10 +101,11 @@ public class GetPreview extends MailDocumentHandler {
     );
 
     if (serverBaseUrl.isEmpty()) {
-      throw ServiceException.RESOURCE_UNREACHABLE("Unable to get preview. Not able to get the mailbox server URL.", null);
+      throw ServiceException.RESOURCE_UNREACHABLE(
+          "Unable to get preview. Not able to get the mailbox server URL.", null);
     }
 
-    if(previewServiceStatusCode.intValue() != 200){
+    if (previewServiceStatusCode.intValue() != 200) {
       throw ServiceException.TEMPORARILY_UNAVAILABLE();
     }
 
@@ -112,7 +113,8 @@ public class GetPreview extends MailDocumentHandler {
     String partNo = getPreviewRequest.getPart();
 
     if (StringUtil.isNullOrEmpty(itemId) || StringUtil.isNullOrEmpty(partNo)) {
-      throw ServiceException.INVALID_REQUEST("Unable to get preview. Missing required parameters.", null);
+      throw ServiceException.INVALID_REQUEST("Unable to get preview. Missing required parameters.",
+          null);
     }
 
     //Get the attachment
@@ -133,13 +135,18 @@ public class GetPreview extends MailDocumentHandler {
           previewDataStream.addAttribute(MailConstants.A_P_FILE_NAME,
               previewResponse.getOrigFileName());
         } else {
-          throw ServiceException.RESOURCE_UNREACHABLE("Failed to generate preview.", null);
+          throw ServiceException.RESOURCE_UNREACHABLE(
+              "Failed to generate preview. Preview service returned with code "
+                  + previewResponse.getStatusCode(), null);
         }
       } else {
-        throw ServiceException.RESOURCE_UNREACHABLE("Failed to get the attachment.", null);
+        throw ServiceException.RESOURCE_UNREACHABLE(
+            "Failed to get the attachment. Attachment provider service returned with code "
+                + attachmentResponse.getStatusCode(), null);
       }
     } catch (HttpException | IOException e) {
-      throw ServiceException.RESOURCE_UNREACHABLE("An exception occurred while completing your request." ,null);
+      throw ServiceException.RESOURCE_UNREACHABLE(
+          "An exception occurred while completing your request.", e);
     }
     return response;
   }
