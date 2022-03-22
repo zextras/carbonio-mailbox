@@ -1175,6 +1175,19 @@ public final class MailConstants {
     public static final String A_DICTIONARY = "dictionary";
     public static final String A_IGNORE = "ignore";
 
+    // previewer service
+    public static  final String E_P_ITEM_ID = "itemId";
+    public static  final String E_P_PART = "part";
+    public static  final String E_P_PDF = "pdf";
+    public static  final String E_P_IMAGE = "image";
+    public static  final String A_P_CROP = "crop";
+    public static  final String A_P_PREVIEW_TYPE = "preview_type";
+    public static  final String A_P_AREA = "area";
+    public static  final String A_P_QUALITY = "quality";
+    public static  final String A_P_OUTPUT_FORMAT = "output_format";
+    public static  final String A_P_FIRST_PAGE = "first_page";
+    public static  final String A_P_LAST_PAGE = "last_page";
+
     // data sources
     public static final String E_DS = "dsrc";
     public static final String E_DS_POP3 = "pop3";
