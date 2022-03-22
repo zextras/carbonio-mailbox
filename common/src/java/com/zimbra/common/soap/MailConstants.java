@@ -1194,7 +1194,7 @@ public final class MailConstants {
     public static  final String E_P_ERROR = "error";
     public static  final String A_P_FILE_NAME = "file-name";
     public static  final String A_P_STATUS_CODE = "status-code";
-    public static  final String E_P_STATUS_MESSAGE = "status-message";
+    public static  final String A_P_STATUS_MESSAGE = "status-message";
 
     // data sources
     public static final String E_DS = "dsrc";
