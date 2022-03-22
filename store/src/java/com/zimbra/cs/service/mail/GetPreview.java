@@ -14,6 +14,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.client.LmcSession;
 import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.mail.message.GetPreviewRequest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -84,6 +85,7 @@ public class GetPreview extends MailDocumentHandler {
     LmcSession session = new LmcSession(authToken, null);
     ServiceResponse attachmentResponse = null;
     ServiceResponse previewResponse = null;
+    GetPreviewRequest getPreviewRequest = zc.elementToJaxb(request);
     Element response = zc.createElement(MailConstants.GET_PREVIEW_RESPONSE);
     Map<Integer, String> serviceStatus = getPreviewServiceStatus();
     Optional<Entry<Integer, String>> first = serviceStatus.entrySet().stream().findFirst();
@@ -100,8 +102,8 @@ public class GetPreview extends MailDocumentHandler {
       return appendError(response, "Unable to get preview. Not able to get the server URL.");
     }
 
-    String itemId = request.getAttribute("itemId", null);
-    String partNo = request.getAttribute("part", null);
+    String itemId = getPreviewRequest.getItemId();
+    String partNo = getPreviewRequest.getPart();
 
     if (StringUtil.isNullOrEmpty(itemId) || StringUtil.isNullOrEmpty(partNo)) {
       return appendError(response, "Unable to get preview. Missing required parameters.");
@@ -150,7 +152,8 @@ public class GetPreview extends MailDocumentHandler {
   /**
    * Get Preview from previewer service for attachment file passed
    *
-   * @param f file to post to preview service(downloaded attachment in this case)
+   * @param requestElement the request element
+   * @param f              file to post to preview service(downloaded attachment in this case)
    * @return ServiceResponse ({@link ServiceResponse })
    * @throws HttpException HTTP exceptions occurred during the transport
    * @throws IOException   IO exception occurred during the transport
@@ -177,14 +180,14 @@ public class GetPreview extends MailDocumentHandler {
       String url;
       if (contentType == null || contentType.isEmpty()) {
         contentType = "application/pdf";
-        url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParams(requestElement);
+        url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(requestElement);
       } else {
         if (contentType.equalsIgnoreCase("image/png") || contentType.equalsIgnoreCase(
             "image/jpeg")) {
-          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/image/" + getImageParams(
+          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/image/" + getImageParamsAsQueryString(
               requestElement);
         } else {
-          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParams(requestElement);
+          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(requestElement);
         }
       }
       post.setURI(URI.create(url));
@@ -206,7 +209,7 @@ public class GetPreview extends MailDocumentHandler {
    * @param requestElement referenced IMage request element
    * @return string containing request parameters
    */
-  private String getImageParams(Element requestElement) {
+  private String getImageParamsAsQueryString(Element requestElement) {
     String imageParams = "";
     Element imageEle = requestElement.getOptionalElement("image");
     if (imageEle != null) {
@@ -238,7 +241,7 @@ public class GetPreview extends MailDocumentHandler {
    * @param requestElement referenced PDF request element
    * @return string containing request parameters
    */
-  private String getPdfParams(Element requestElement) {
+  private String getPdfParamsAsQueryString(Element requestElement) {
     String pdfParams = "";
     Element pdfEle = requestElement.getOptionalElement("pdf");
     if (pdfEle != null) {
