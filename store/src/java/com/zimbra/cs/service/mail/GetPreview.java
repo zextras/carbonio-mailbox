@@ -52,9 +52,7 @@ import org.apache.http.util.EntityUtils;
 public class GetPreview extends MailDocumentHandler {
 
   private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.6:10000/";
-  //private final Log log = ZimbraLog.soap;
   private static final Log LOG = LogFactory.getLog(GetPreview.class);
-
   private final String serverBaseUrl = getServerBaseUrl(null, false);
 
   /**
