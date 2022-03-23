@@ -214,7 +214,7 @@ public class GetPreview extends MailDocumentHandler {
       String area = imageEle.getAttribute(MailConstants.A_P_AREA, ""); //mn
       String quality = imageEle.getAttribute(MailConstants.A_P_QUALITY, ""); //on
       String outputFormat = imageEle.getAttribute(MailConstants.A_P_OUTPUT_FORMAT, "jpeg"); //od
-      if (previewType.equals("thumbnail")) {
+      if ("thumbnail".equals(previewType)) {
         //add path arguments
         imageParams = "/" + area + "/" + previewType + "/";
         //add query params
