@@ -100,7 +100,7 @@ public class GetPreview extends MailDocumentHandler {
           "Unable to get preview. Not able to get the mailbox server URL.", null);
     }
 
-    if (previewServiceStatusCode.intValue() != 200) {
+    if (previewServiceStatusCode != 200) {
       throw ServiceException.TEMPORARILY_UNAVAILABLE();
     }
 
