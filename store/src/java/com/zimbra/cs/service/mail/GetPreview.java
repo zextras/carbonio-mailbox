@@ -24,9 +24,6 @@ import java.net.URLConnection;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
@@ -93,7 +90,7 @@ public class GetPreview extends MailDocumentHandler {
               .addAttribute(MailConstants.A_P_STATUS_MESSAGE, entry.getValue());
           return entry.getKey();
         }
-    ).orElseGet(-1);
+    ).orElse(-1);
 
     if (serverBaseUrl.isEmpty()) {
       throw ServiceException.RESOURCE_UNREACHABLE(
