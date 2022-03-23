@@ -61,7 +61,7 @@ public class GetPreview extends MailDocumentHandler {
    * @param server ({@link com.zimbra.cs.account.Server})
    * @return URL string of mailbox server
    */
-  private String getServerBaseUrl(Server server, boolean withPort) {
+  public static String getServerBaseUrl(Server server, boolean withPort) {
     String scheme = "https";
     try {
       server = server == null ? Provisioning.getInstance().getLocalServer() : server;
@@ -72,7 +72,7 @@ public class GetPreview extends MailDocumentHandler {
         scheme = "http";
       }
       return scheme + "://" + hostname + (withPort ? ":" + port : "");
-    } catch (ServiceException e) {
+    } catch (ServiceException ignored) {
       return "";
     }
   }
