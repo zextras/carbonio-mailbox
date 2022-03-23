@@ -174,22 +174,32 @@ public class GetPreview extends MailDocumentHandler {
     HttpPost post = new HttpPost();
     try {
       String contentType = URLConnection.getFileNameMap().getContentTypeFor(f.getName());
-      String url;
-      if (contentType == null || contentType.isEmpty()) {
-        contentType = "application/pdf";
-        url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(
-            requestElement);
-      } else {
-        if (contentType.equalsIgnoreCase("image/png") || contentType.equalsIgnoreCase(
-            "image/jpeg")) {
-          url =
-              GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/image/" + getImageParamsAsQueryString(
+      final String url = Optional.ofNullable(contentType)
+                .map(String::toLowerCase)
+                .filter(cntType -> !cntType.isEmpty() && !cntType.isBlank())
+                .map(cntType -> {
+            switch (contentType) {
+                case "image/png":
+                case "image/jpeg":
+                case "image/jpg":
+                {
+                    // ...
+                    return GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/image/" + getImageParamsAsQueryString(
                   requestElement);
-        } else {
-          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(
+                }
+                case "application/pdf":
+                {
+                  return GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(
               requestElement);
-        }
-      }
+                }
+                default:
+                {
+                    // This means we don't support preview for this file type
+                    throw new RuntimeException("Preview for this file type is not supported"); // FIXME use correct exception
+                }
+            }
+        }).orElse(GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(
+              requestElement)); // FIXME Are you sure here you wanna return PDFs? In case fix this
       post.setURI(URI.create(url));
       MultipartEntityBuilder builder = MultipartEntityBuilder.create();
       builder.addBinaryBody("file", f, ContentType.create(contentType, "UTF-8"), f.getName());
