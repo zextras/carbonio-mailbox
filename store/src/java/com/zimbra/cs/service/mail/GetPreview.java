@@ -87,16 +87,13 @@ public class GetPreview extends MailDocumentHandler {
     ServiceResponse previewResponse;
     GetPreviewRequest getPreviewRequest = zc.elementToJaxb(request);
     Element response = zc.createElement(MailConstants.GET_PREVIEW_RESPONSE);
-    Map<Integer, String> serviceStatus = getPreviewServiceStatus();
-    Optional<Entry<Integer, String>> first = serviceStatus.entrySet().stream().findFirst();
-    AtomicInteger previewServiceStatusCode = new AtomicInteger(-1);
-    first.ifPresent(entry -> {
+    final int previewServiceStatusCode = getPreviewServiceStatus().entrySet().stream().findFirst().map(entry -> {
           response.addUniqueElement(MailConstants.E_P_PREVIEW_SERVICE_STATUS)
               .addAttribute(MailConstants.A_P_STATUS_CODE, entry.getKey())
               .addAttribute(MailConstants.A_P_STATUS_MESSAGE, entry.getValue());
-          previewServiceStatusCode.set(entry.getKey());
+          return entry.getKey();
         }
-    );
+    ).orElseGet(-1);
 
     if (serverBaseUrl.isEmpty()) {
       throw ServiceException.RESOURCE_UNREACHABLE(
