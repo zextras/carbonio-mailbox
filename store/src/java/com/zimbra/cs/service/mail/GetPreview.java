@@ -212,7 +212,7 @@ public class GetPreview extends MailDocumentHandler {
    * @param requestElement referenced IMage request element
    * @return string containing request parameters
    */
-  private String getImageParamsAsQueryString(Element requestElement) {
+  public static String getImageParamsAsQueryString(Element requestElement) {
     String imageParams = "";
     Element imageEle = requestElement.getOptionalElement(MailConstants.E_P_IMAGE);
     if (imageEle != null) {
@@ -244,7 +244,7 @@ public class GetPreview extends MailDocumentHandler {
    * @param requestElement referenced PDF request element
    * @return string containing request parameters
    */
-  private String getPdfParamsAsQueryString(Element requestElement) {
+  public static String getPdfParamsAsQueryString(Element requestElement) {
     String pdfParams = "";
     Element pdfEle = requestElement.getOptionalElement(MailConstants.E_P_PDF);
     if (pdfEle != null) {
