@@ -7,6 +7,7 @@ import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.service.FileUploadProvider;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.service.FileUploadServlet.Upload;
@@ -37,9 +38,12 @@ public class UploadEmailAttachment extends MailDocumentHandler {
 
 
   @Override
-  public Element handle(Element request, Map<String, Object> context) throws SoapFaultException {
+  public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     ZimbraSoapContext zsc = getZimbraSoapContext(context);
     UploadAttachmentRequest uploadAttachmentRequest = null;
+    if (true) {
+      throw MailServiceException.NOT_IMPLEMENTED();
+    }
     try {
       uploadAttachmentRequest = zsc.elementToJaxb(request);
     } catch (ServiceException e) {
