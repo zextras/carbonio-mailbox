@@ -2,6 +2,7 @@ package com.zimbra.cs.service.mail;
 
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.httpclient.HttpClientUtil;
+import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -56,9 +57,10 @@ public class GetPreview extends MailDocumentHandler {
    * Helper method to return the baseURL for mailbox server
    *
    * @param server ({@link com.zimbra.cs.account.Server})
+   * @param withPort true if we want the base URL with port
    * @return URL string of mailbox server
    */
-  public static String getServerBaseUrl(Server server, boolean withPort) {
+  static String getServerBaseUrl(Server server, boolean withPort) {
     String scheme = "https";
     try {
       server = server == null ? Provisioning.getInstance().getLocalServer() : server;
@@ -74,6 +76,76 @@ public class GetPreview extends MailDocumentHandler {
     }
   }
 
+  /**
+   * Helper method to form request parameters for request type Image
+   *
+   * @param requestElement referenced IMage request element
+   * @return string containing request parameters
+   */
+  static String getImageParamsAsQueryString(Element requestElement) {
+    String imageParams = "";
+
+    Element imageEle = requestElement.getOptionalElement(MailConstants.E_P_IMAGE);
+    if (imageEle != null) {
+      String previewType = imageEle.getAttribute(MailConstants.A_P_PREVIEW_TYPE, ""); // mn
+      String area = imageEle.getAttribute(MailConstants.A_P_AREA, ""); // mn
+      String quality = imageEle.getAttribute(MailConstants.A_P_QUALITY, ""); // on
+      String outputFormat = imageEle.getAttribute(MailConstants.A_P_OUTPUT_FORMAT, "jpeg"); // od
+      if ("thumbnail".equals(previewType)) {
+        // add path arguments
+        imageParams = "/" + area + "/" + previewType + "/";
+        // add query params
+        imageParams +=
+            (quality.isEmpty() ? "?" : "?quality=" + quality + "&")
+                + "output_format="
+                + outputFormat;
+      } else {
+        String crop = imageEle.getAttribute(MailConstants.A_P_CROP, "false"); // od
+        // add path arguments
+        imageParams = "/" + area + "/";
+        // add query params
+        imageParams +=
+            (crop.isEmpty() ? "" : "?crop=" + crop)
+                + (quality.isEmpty() ? "" : "&quality=" + quality)
+                + "&output_format="
+                + outputFormat;
+      }
+    }
+    return imageParams;
+  }
+
+  /**
+   * Helper method to form request parameters for request type PDF
+   *
+   * @param requestElement referenced PDF request element
+   * @return string containing request parameters
+   */
+  static String getPdfParamsAsQueryString(Element requestElement) {
+    String pdfParams = "";
+    Element pdfEle = requestElement.getOptionalElement(MailConstants.E_P_PDF);
+    if (pdfEle != null) {
+      String previewType = pdfEle.getAttribute(MailConstants.A_P_PREVIEW_TYPE, ""); // mn
+      if (previewType.equals("thumbnail")) {
+        String quality = pdfEle.getAttribute(MailConstants.A_P_QUALITY, ""); // on
+        String outputFormat = pdfEle.getAttribute(MailConstants.A_P_OUTPUT_FORMAT, "jpeg"); // od
+        String area = pdfEle.getAttribute(MailConstants.A_P_AREA, ""); // mn
+        // add path arguments
+        pdfParams += "/" + area + "/" + previewType + "/";
+        // add query params
+        pdfParams +=
+            (quality.isEmpty() ? "?" : "?quality=" + quality + "&")
+                + "output_format="
+                + outputFormat;
+      } else {
+        String firstPage = pdfEle.getAttribute(MailConstants.A_P_FIRST_PAGE, "1"); // od
+        String lastPage = pdfEle.getAttribute(MailConstants.A_P_LAST_PAGE, "1"); // od
+        // add query params
+        pdfParams = "?first_page=" + firstPage + "&last_page=" + lastPage;
+      }
+    }
+    return pdfParams;
+  }
+
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
 
@@ -84,13 +156,18 @@ public class GetPreview extends MailDocumentHandler {
     ServiceResponse previewResponse;
     GetPreviewRequest getPreviewRequest = zc.elementToJaxb(request);
     Element response = zc.createElement(MailConstants.GET_PREVIEW_RESPONSE);
-    final int previewServiceStatusCode = getPreviewServiceStatus().entrySet().stream().findFirst().map(entry -> {
-          response.addUniqueElement(MailConstants.E_P_PREVIEW_SERVICE_STATUS)
-              .addAttribute(MailConstants.A_P_STATUS_CODE, entry.getKey())
-              .addAttribute(MailConstants.A_P_STATUS_MESSAGE, entry.getValue());
-          return entry.getKey();
-        }
-    ).orElse(-1);
+    final int previewServiceStatusCode =
+        getPreviewServiceStatus().entrySet().stream()
+            .findFirst()
+            .map(
+                entry -> {
+                  response
+                      .addUniqueElement(MailConstants.E_P_PREVIEW_SERVICE_STATUS)
+                      .addAttribute(MailConstants.A_P_STATUS_CODE, entry.getKey())
+                      .addAttribute(MailConstants.A_P_STATUS_MESSAGE, entry.getValue());
+                  return entry.getKey();
+                })
+            .orElse(-1);
 
     if (serverBaseUrl.isEmpty()) {
       throw ServiceException.RESOURCE_UNREACHABLE(
@@ -105,40 +182,40 @@ public class GetPreview extends MailDocumentHandler {
     String partNo = getPreviewRequest.getPart();
 
     if (StringUtil.isNullOrEmpty(itemId) || StringUtil.isNullOrEmpty(partNo)) {
-      throw ServiceException.INVALID_REQUEST("Unable to get preview. Missing required parameters.",
-          null);
+      throw ServiceException.INVALID_REQUEST(
+          "Unable to get preview. Missing required parameters.", null);
     }
 
-    //Get the attachment
+    // Get the attachment
     try {
-      attachmentResponse = getAttachment(itemId, partNo, serverBaseUrl,
-          session, serverBaseUrl);
-      //Post it to the preview service with he passed parameters
+      attachmentResponse = getAttachment(itemId, partNo, serverBaseUrl, session, serverBaseUrl);
+      // Post it to the preview service with he passed parameters
       if (attachmentResponse.getStatusCode() == 200) {
         previewResponse = getPreview(request, new File(attachmentResponse.getTempFilePath()));
         previewResponse.setOrigFileName(attachmentResponse.getOrigFileName());
         FileUtil.delete(new File(attachmentResponse.getTempFilePath()));
-        //Pass the response in the soap response
+        // Pass the response in the soap response
         if (previewResponse.getStatusCode() == 200) {
           String previewStream = Base64.getEncoder().encodeToString(previewResponse.getContent());
-          Element previewDataStream = response.addUniqueElement(
-              MailConstants.E_P_PREVIEW_DATA_STREAM);
+          Element previewDataStream =
+              response.addUniqueElement(MailConstants.E_P_PREVIEW_DATA_STREAM);
           previewDataStream.setText(previewStream);
-          previewDataStream.addAttribute(MailConstants.A_P_FILE_NAME,
-              previewResponse.getOrigFileName());
+          previewDataStream.addAttribute(
+              MailConstants.A_P_FILE_NAME, previewResponse.getOrigFileName());
         } else {
-          throw ServiceException.RESOURCE_UNREACHABLE(
-              "Failed to generate preview. Preview service returned with code "
-                  + previewResponse.getStatusCode(), null);
+          throw new Exception(
+              "Failed to generate preview. Preview service returned with code: "
+                  + previewResponse.getStatusCode(),
+              null);
         }
       } else {
-        throw ServiceException.RESOURCE_UNREACHABLE(
-            "Failed to get the attachment. Attachment provider service returned with code "
-                + attachmentResponse.getStatusCode(), null);
+        throw new Exception(
+            "Failed to get the attachment. Attachment provider service returned with code: "
+                + attachmentResponse.getStatusCode(),
+            null);
       }
-    } catch (HttpException | IOException e) {
-      throw ServiceException.RESOURCE_UNREACHABLE(
-          "An exception occurred while completing your request.", e);
+    } catch (Exception e) {
+      throw ServiceException.RESOURCE_UNREACHABLE(e.getMessage(), e);
     }
     return response;
   }
@@ -147,21 +224,23 @@ public class GetPreview extends MailDocumentHandler {
    * Get Preview from previewer service for attachment file passed
    *
    * @param requestElement the request element
-   * @param f              file to post to preview service(downloaded attachment in this case)
+   * @param f file to post to preview service(downloaded attachment in this case)
    * @return ServiceResponse ({@link ServiceResponse })
-   * @throws HttpException HTTP exceptions occurred during the transport
-   * @throws IOException   IO exception occurred during the transport
+   * @throws ServiceException Service Exception if unable to determine mimetype of attachment or
+   *     service do not support the preview for mime type
    */
-  private ServiceResponse getPreview(Element requestElement, File f)
-      throws HttpException, IOException {
+  private ServiceResponse getPreview(Element requestElement, File f) throws ServiceException {
     ServiceResponse previewServiceResponse = new ServiceResponse();
-    HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr()
-        .newHttpClient();
+    HttpClientBuilder clientBuilder =
+        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
 
-    RequestConfig reqConfig = RequestConfig.copy(
-            ZimbraHttpConnectionManager.getInternalHttpConnMgr().getZimbraConnMgrParams()
-                .getReqConfig())
-        .setCookieSpec(CookieSpecs.DEFAULT).build();
+    RequestConfig reqConfig =
+        RequestConfig.copy(
+                ZimbraHttpConnectionManager.getInternalHttpConnMgr()
+                    .getZimbraConnMgrParams()
+                    .getReqConfig())
+            .setCookieSpec(CookieSpecs.DEFAULT)
+            .build();
 
     clientBuilder.setDefaultRequestConfig(reqConfig);
     SocketConfig config = SocketConfig.custom().setSoTimeout(5000).build();
@@ -171,21 +250,23 @@ public class GetPreview extends MailDocumentHandler {
     HttpPost post = new HttpPost();
     try {
       String contentType = URLConnection.getFileNameMap().getContentTypeFor(f.getName());
-      String url;
-      if (contentType == null || contentType.isEmpty()) {
-        contentType = "application/pdf";
-        url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(
-            requestElement);
-      } else {
-        if (contentType.equalsIgnoreCase("image/png") || contentType.equalsIgnoreCase(
-            "image/jpeg")) {
+      String url = "";
+      if (contentType != null) {
+        if (contentType.equalsIgnoreCase(MimeConstants.CT_IMAGE_PNG)
+            || contentType.equalsIgnoreCase(MimeConstants.CT_IMAGE_JPEG)) {
           url =
-              GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/image/" + getImageParamsAsQueryString(
-                  requestElement);
-        } else {
-          url = GetPreview.PREVIEW_SERVICE_BASE_URL + "preview/pdf/" + getPdfParamsAsQueryString(
-              requestElement);
+              GetPreview.PREVIEW_SERVICE_BASE_URL
+                  + "preview/image/"
+                  + getImageParamsAsQueryString(requestElement);
+        } else if (contentType.equalsIgnoreCase(MimeConstants.CT_APPLICATION_PDF)) {
+          url =
+              GetPreview.PREVIEW_SERVICE_BASE_URL
+                  + "preview/pdf/"
+                  + getPdfParamsAsQueryString(requestElement);
         }
+      } else {
+        throw new Exception(
+            "Unable to determine the mime type of attachment or mime type not supported.", null);
       }
       post.setURI(URI.create(url));
       MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -194,74 +275,13 @@ public class GetPreview extends MailDocumentHandler {
       HttpResponse response = HttpClientUtil.executeMethod(client, post);
       previewServiceResponse.setStatusCode(response.getStatusLine().getStatusCode());
       previewServiceResponse.setContent(EntityUtils.toByteArray(response.getEntity()));
+    } catch (Exception e) {
+      throw ServiceException.FAILURE(e.getMessage(), null);
     } finally {
       post.releaseConnection();
     }
     return previewServiceResponse;
   }
-
-  /**
-   * Helper method to form request parameters for request type Image
-   *
-   * @param requestElement referenced IMage request element
-   * @return string containing request parameters
-   */
-  public static String getImageParamsAsQueryString(Element requestElement) {
-    String imageParams = "";
-    Element imageEle = requestElement.getOptionalElement(MailConstants.E_P_IMAGE);
-    if (imageEle != null) {
-      String previewType = imageEle.getAttribute(MailConstants.A_P_PREVIEW_TYPE, ""); //mn
-      String area = imageEle.getAttribute(MailConstants.A_P_AREA, ""); //mn
-      String quality = imageEle.getAttribute(MailConstants.A_P_QUALITY, ""); //on
-      String outputFormat = imageEle.getAttribute(MailConstants.A_P_OUTPUT_FORMAT, "jpeg"); //od
-      if ("thumbnail".equals(previewType)) {
-        //add path arguments
-        imageParams = "/" + area + "/" + previewType + "/";
-        //add query params
-        imageParams += (quality.isEmpty() ? "?" : "?quality=" + quality + "&") + "output_format="
-            + outputFormat;
-      } else {
-        String crop = imageEle.getAttribute(MailConstants.A_P_CROP, "false"); //od
-        //add path arguments
-        imageParams = "/" + area + "/";
-        //add query params
-        imageParams += (crop.isEmpty() ? "" : "?crop=" + crop) + (quality.isEmpty() ? ""
-            : "&quality=" + quality) + "&output_format=" + outputFormat;
-      }
-    }
-    return imageParams;
-  }
-
-  /**
-   * Helper method to form request parameters for request type PDF
-   *
-   * @param requestElement referenced PDF request element
-   * @return string containing request parameters
-   */
-  public static String getPdfParamsAsQueryString(Element requestElement) {
-    String pdfParams = "";
-    Element pdfEle = requestElement.getOptionalElement(MailConstants.E_P_PDF);
-    if (pdfEle != null) {
-      String previewType = pdfEle.getAttribute(MailConstants.A_P_PREVIEW_TYPE, ""); //mn
-      if (previewType.equals("thumbnail")) {
-        String quality = pdfEle.getAttribute(MailConstants.A_P_QUALITY, ""); //on
-        String outputFormat = pdfEle.getAttribute(MailConstants.A_P_OUTPUT_FORMAT, "jpeg"); //od
-        String area = pdfEle.getAttribute(MailConstants.A_P_AREA, ""); //mn
-        //add path arguments
-        pdfParams += "/" + area + "/" + previewType + "/";
-        //add query params
-        pdfParams += (quality.isEmpty() ? "?" : "?quality=" + quality + "&") + "output_format="
-            + outputFormat;
-      } else {
-        String firstPage = pdfEle.getAttribute(MailConstants.A_P_FIRST_PAGE, "1"); //od
-        String lastPage = pdfEle.getAttribute(MailConstants.A_P_LAST_PAGE, "1"); //od
-        //add query params
-        pdfParams = "?first_page=" + firstPage + "&last_page=" + lastPage;
-      }
-    }
-    return pdfParams;
-  }
-
 
   /**
    * Method used to get the status(health/live) of PreviewService
@@ -270,8 +290,8 @@ public class GetPreview extends MailDocumentHandler {
    */
   private Map<Integer, String> getPreviewServiceStatus() {
     Map<Integer, String> status = new LinkedHashMap<>();
-    HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr()
-        .newHttpClient();
+    HttpClientBuilder clientBuilder =
+        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
     HttpGet get = new HttpGet(PREVIEW_SERVICE_BASE_URL + "health/live/");
     get.addHeader("accept", "application/json");
     HttpClient client = clientBuilder.build();
@@ -291,25 +311,29 @@ public class GetPreview extends MailDocumentHandler {
   /**
    * Get the attachment content as ({@link ServiceResponse}) from mailbox's content servlet service
    *
-   * @param itemId       item's ID (attachment id)
-   * @param partNo       attachment's part number
-   * @param baseURL      base URL of server where mailbox is hosted
-   * @param session      ({@link LmcSession}) active session which has to be used to authenticate
-   *                     with request
+   * @param itemId item's ID (attachment id)
+   * @param partNo attachment's part number
+   * @param baseURL base URL of server where mailbox is hosted
+   * @param session ({@link LmcSession}) active session which has to be used to authenticate with
+   *     request
    * @param cookieDomain cookie domain is domain base for the mailbox server
    * @return ServiceResponse ({@link ServiceResponse})
    * @throws HttpException HTTP exceptions occurred during the transport
-   * @throws IOException   IO exception occurred during the transport
+   * @throws IOException IO exception occurred during the transport
    */
-  private ServiceResponse getAttachment(String itemId, String partNo, String baseURL,
-      LmcSession session, String cookieDomain) throws HttpException, IOException {
+  private ServiceResponse getAttachment(
+      String itemId, String partNo, String baseURL, LmcSession session, String cookieDomain)
+      throws HttpException, IOException {
     ServiceResponse serviceResponse = new ServiceResponse();
     if (session == null) {
-      LOG.error(System.currentTimeMillis() + " " + Thread.currentThread()
-          + " getAttachment session=null");
+      LOG.error(
+          System.currentTimeMillis()
+              + " "
+              + Thread.currentThread()
+              + " getAttachment session=null");
     } else {
-      HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr()
-          .newHttpClient();
+      HttpClientBuilder clientBuilder =
+          ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
       String url = baseURL + "/service/content/get?id=" + itemId + "&part=" + partNo + "&auth=co";
       HttpGet get = new HttpGet(url);
       ZAuthToken zat = session.getAuthToken();
@@ -330,10 +354,13 @@ public class GetPreview extends MailDocumentHandler {
           cookieStore.addCookie(cookie);
         }
         clientBuilder.setDefaultCookieStore(cookieStore);
-        RequestConfig reqConfig = RequestConfig.copy(
-                ZimbraHttpConnectionManager.getInternalHttpConnMgr().getZimbraConnMgrParams()
-                    .getReqConfig())
-            .setCookieSpec(CookieSpecs.DEFAULT).build();
+        RequestConfig reqConfig =
+            RequestConfig.copy(
+                    ZimbraHttpConnectionManager.getInternalHttpConnMgr()
+                        .getZimbraConnMgrParams()
+                        .getReqConfig())
+                .setCookieSpec(CookieSpecs.DEFAULT)
+                .build();
         clientBuilder.setDefaultRequestConfig(reqConfig);
       }
       SocketConfig config = SocketConfig.custom().setSoTimeout(5000).build();
@@ -359,11 +386,11 @@ public class GetPreview extends MailDocumentHandler {
 
 /**
  * Represent response received from services.
- * <p>
- * This class stores the data we receive from various services, it can store the response received
- * in bytearray and provides a method to store the response in temporary file.
- * <p>
- * This class is used to create sharable objects while passing response of one service to other
+ *
+ * <p>This class stores the data we receive from various services, it can store the response
+ * received in bytearray and provides a method to store the response in temporary file.
+ *
+ * <p>This class is used to create sharable objects while passing response of one service to other
  */
 class ServiceResponse {
 
@@ -404,7 +431,7 @@ class ServiceResponse {
    * stores content in a temp file.
    *
    * @param fileName filename received in content-disposition header whose data is being stored
-   * @param bytes    data in form of byte array
+   * @param bytes data in form of byte array
    * @return true if content was stored correctly
    */
   public boolean storeContent(String fileName, byte[] bytes) {
