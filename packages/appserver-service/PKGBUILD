@@ -44,6 +44,9 @@ postinst() {
   fi
 
   echo "Installed, you must now run pending-setups."
+  if [ ! -d /etc/zextras/pending-setups.d ]; then
+    mkdir -p /etc/zextras/pending-setups.d
+  fi
   cat > /etc/zextras/pending-setups.d/carbonio-mailbox-setup.sh <<EOF
 #!/usr/bin/env bash
 carbonio-mailbox setup
