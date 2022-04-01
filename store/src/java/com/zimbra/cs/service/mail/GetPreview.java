@@ -152,8 +152,8 @@ public class GetPreview extends MailDocumentHandler {
     ZimbraSoapContext zc = getZimbraSoapContext(context);
     ZAuthToken authToken = zc.getRawAuthToken();
     LmcSession session = new LmcSession(authToken, null);
-    ServiceResponse attachmentResponse;
-    ServiceResponse previewResponse;
+    ServiceResponseStorer attachmentResponse;
+    ServiceResponseStorer previewResponse;
     GetPreviewRequest getPreviewRequest = zc.elementToJaxb(request);
     Element response = zc.createElement(MailConstants.GET_PREVIEW_RESPONSE);
     final int previewServiceStatusCode =
@@ -225,12 +225,12 @@ public class GetPreview extends MailDocumentHandler {
    *
    * @param requestElement the request element
    * @param f file to post to preview service(downloaded attachment in this case)
-   * @return ServiceResponse ({@link ServiceResponse })
+   * @return ServiceResponse ({@link ServiceResponseStorer })
    * @throws ServiceException Service Exception if unable to determine mimetype of attachment or
    *     service do not support the preview for mime type
    */
-  private ServiceResponse getPreview(Element requestElement, File f) throws ServiceException {
-    ServiceResponse previewServiceResponse = new ServiceResponse();
+  private ServiceResponseStorer getPreview(Element requestElement, File f) throws ServiceException {
+    ServiceResponseStorer previewServiceResponseStorer = new ServiceResponseStorer();
     HttpClientBuilder clientBuilder =
         ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
 
@@ -273,14 +273,14 @@ public class GetPreview extends MailDocumentHandler {
       builder.addBinaryBody("file", f, ContentType.create(contentType, "UTF-8"), f.getName());
       post.setEntity(builder.build());
       HttpResponse response = HttpClientUtil.executeMethod(client, post);
-      previewServiceResponse.setStatusCode(response.getStatusLine().getStatusCode());
-      previewServiceResponse.setContent(EntityUtils.toByteArray(response.getEntity()));
+      previewServiceResponseStorer.setStatusCode(response.getStatusLine().getStatusCode());
+      previewServiceResponseStorer.setContent(EntityUtils.toByteArray(response.getEntity()));
     } catch (Exception e) {
       throw ServiceException.FAILURE(e.getMessage(), null);
     } finally {
       post.releaseConnection();
     }
-    return previewServiceResponse;
+    return previewServiceResponseStorer;
   }
 
   /**
@@ -309,7 +309,7 @@ public class GetPreview extends MailDocumentHandler {
   }
 
   /**
-   * Get the attachment content as ({@link ServiceResponse}) from mailbox's content servlet service
+   * Get the attachment content as ({@link ServiceResponseStorer}) from mailbox's content servlet service
    *
    * @param itemId item's ID (attachment id)
    * @param partNo attachment's part number
@@ -317,14 +317,14 @@ public class GetPreview extends MailDocumentHandler {
    * @param session ({@link LmcSession}) active session which has to be used to authenticate with
    *     request
    * @param cookieDomain cookie domain is domain base for the mailbox server
-   * @return ServiceResponse ({@link ServiceResponse})
+   * @return ServiceResponse ({@link ServiceResponseStorer})
    * @throws HttpException HTTP exceptions occurred during the transport
    * @throws IOException IO exception occurred during the transport
    */
-  private ServiceResponse getAttachment(
+  private ServiceResponseStorer getAttachment(
       String itemId, String partNo, String baseURL, LmcSession session, String cookieDomain)
       throws HttpException, IOException {
-    ServiceResponse serviceResponse = new ServiceResponse();
+    ServiceResponseStorer serviceResponseStorer = new ServiceResponseStorer();
     if (session == null) {
       LOG.error(
           System.currentTimeMillis()
@@ -368,19 +368,19 @@ public class GetPreview extends MailDocumentHandler {
       HttpClient client = clientBuilder.build();
       try {
         HttpResponse response = HttpClientUtil.executeMethod(client, get);
-        serviceResponse.setStatusCode(response.getStatusLine().getStatusCode());
+        serviceResponseStorer.setStatusCode(response.getStatusLine().getStatusCode());
         HttpEntity entity = response.getEntity();
         if (entity != null) {
           Header header = response.getFirstHeader("Content-Disposition");
           String disposition = header == null ? "" : header.getValue();
           String fileName = disposition.replaceFirst("(?i)^.*filename=\"([^\"]+)\".*$", "$1");
-          serviceResponse.storeContent(fileName, EntityUtils.toByteArray(entity));
+          serviceResponseStorer.storeContent(fileName, EntityUtils.toByteArray(entity));
         }
       } finally {
         get.releaseConnection();
       }
     }
-    return serviceResponse;
+    return serviceResponseStorer;
   }
 }
 
@@ -392,7 +392,7 @@ public class GetPreview extends MailDocumentHandler {
  *
  * <p>This class is used to create sharable objects while passing response of one service to other
  */
-class ServiceResponse {
+class ServiceResponseStorer {
 
   private int statusCode;
   private byte[] content;
