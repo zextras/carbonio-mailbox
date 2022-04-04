@@ -111,7 +111,7 @@ public class CopyToDriveTest {
       copyToDrive.handle(element, context);
       Assert.fail("UploadEmailAttachment did not throw SoapFault exception.");
     } catch (SoapFaultException soapFaultException) {
-      Assert.assertEquals("The file with uid " + randomUuid + " does not exist.", soapFaultException.getMessage());
+      Assert.assertEquals("File not found.", soapFaultException.getMessage());
     }
   }
 
