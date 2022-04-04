@@ -84,7 +84,7 @@ public class CopyToDriveTest {
     // call SOAP API
     Element el = copyToDrive.handle(element, context);
     CopyToDriveResponse response = zsc.elementToJaxb(el);
-    Assert.assertNotNull(response);
+    Assert.assertEquals(nodeId, response.getNodeId());
   }
 
   /**

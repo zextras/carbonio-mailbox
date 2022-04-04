@@ -1381,6 +1381,7 @@ public final class MailConstants {
     public static final String A_CHANNEL = "channel";
 
     // Upload attachment API
+    public static final String A_NODE_ID = "nodeId";
     public static final String E_COPY_TO_DRIVE_REQUEST = "CopyToDriveRequest";
     public static final String E_COPY_TO_DRIVE_RESPONSE = "CopyToDriveResponse";
     public static final QName COPY_TO_DRIVE_REQUEST = QName.get(E_COPY_TO_DRIVE_REQUEST, NAMESPACE);

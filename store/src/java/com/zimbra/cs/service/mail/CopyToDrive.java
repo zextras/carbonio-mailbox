@@ -55,11 +55,14 @@ public class CopyToDrive extends MailDocumentHandler {
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     final ZimbraSoapContext zsc = getZimbraSoapContext(context);
     // throw exception if failure or nodeId null
-    Optional.ofNullable(
+    String nodeId = Optional.ofNullable(
             this.getNodeId(request, zsc)
                 .getOrElseThrow(ex -> new SoapFaultException("Service failure.", request)))
-        .orElseThrow(() -> new SoapFaultException("Service failure.", request));
-    return zsc.createElement(MailConstants.COPY_TO_DRIVE_RESPONSE);
+        .orElseThrow(() -> new SoapFaultException("Service failure.", request))
+        .getNodeId();
+    CopyToDriveResponse copyToDriveResponse = new CopyToDriveResponse();
+    copyToDriveResponse.setNodeId(nodeId);
+    return zsc.jaxbToElement(copyToDriveResponse);
   }
 
   /**
