@@ -17,7 +17,12 @@ services {
             destination_name   = "carbonio-preview"
             local_bind_port    = 20001
             local_bind_address = "127.78.0.7"
-          }
+          },
+          {
+            destination_name   = "carbonio-files"
+            local_bind_port    = 20002
+            local_bind_address = "127.78.0.7"
+          },
         ]
       }
     }
