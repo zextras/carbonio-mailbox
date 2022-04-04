@@ -2940,6 +2940,7 @@ public class ProxyConfGen
         mConfVars.put("web.ssl.upstream.zx.name", new ProxyConfVar("web.ssl.upstream.zx.name", null, ZIMBRA_SSL_UPSTREAM_ZX_NAME, ProxyConfValueType.STRING, ProxyConfOverride.CONFIG,"Symbolic name for HTTPS zx upstream"));
         mConfVars.put("web.upstream.zx.:servers", new WebUpstreamZxServersVar());
         mConfVars.put("web.ssl.upstream.zx.:servers", new WebSslUpstreamZxServersVar());
+        mConfVars.put("web.carbonio.admin.port", new ProxyConfVar("web.admin.login.port", Provisioning.A_carbonioAdminProxyPort, new Integer(6071), ProxyConfValueType.INTEGER, ProxyConfOverride.SERVER, "Carbonio proxy admin login port"));
 
         //Get the response headers list from globalconfig
         String[] rspHeaders = ProxyConfVar.configSource.getMultiAttr(Provisioning.A_zimbraReverseProxyResponseHeaders);
@@ -3225,6 +3226,7 @@ public class ProxyConfGen
             expandTemplate(new File(mTemplateDir, getWebHttpSModeConfTemplate("mixed")), new File(mConfIncludesDir, getWebHttpSModeConf("mixed")));
             expandTemplate(new File(mTemplateDir, getConfTemplateFileName("docs.common")), new File(mConfIncludesDir, getConfFileName("docs.common")));
             expandTemplate(new File(mTemplateDir, getConfTemplateFileName("docs.upstream")), new File(mConfIncludesDir, getConfFileName("docs.upstream")));
+            expandTemplate(new File(mTemplateDir, getConfTemplateFileName("web.carbonio.admin.default")), new File(mConfIncludesDir, getConfFileName("web.carbonio.admin.default")));
         } catch (ProxyConfException pe) {
             handleException(pe);
             exitCode = 1;
