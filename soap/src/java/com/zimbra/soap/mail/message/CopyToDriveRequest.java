@@ -12,8 +12,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name= MailConstants.E_UPLOAD_EMAIL_ATTACHMENT_REQUEST)
-public class UploadAttachmentRequest {
+@XmlRootElement(name= MailConstants.E_COPY_TO_DRIVE_REQUEST)
+public class CopyToDriveRequest {
 
   /**
    * @zm-api-field-tag uid

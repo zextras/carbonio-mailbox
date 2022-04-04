@@ -9,7 +9,8 @@
 <!--        <dependency org="org.powermock" name="powermock-core" rev="${org.powermock.version}" />-->
 <!--        <dependency org="org.powermock" name="powermock-api-support" rev="${org.powermock.version}" />-->
 <!--        <dependency org="org.powermock" name="powermock-reflect" rev="${org.powermock.version}" />-->
-        <dependency org="org.mockito" name="mockito-core" rev="4.4.0" />
+            <dependency org="com.zextras.carbonio.files" name="carbonio-files-sdk" rev="0.0.1" />
+            <dependency org="org.mockito" name="mockito-core" rev="4.4.0" />
         <dependency org="net.bytebuddy" name="byte-buddy" rev="1.12.8" />
         <dependency org="net.bytebuddy" name="byte-buddy-agent" rev="1.12.8" />
         <dependency org="org.mockito" name="mockito-inline" rev="4.4.0" />
