@@ -17559,7 +17559,6 @@ public class ZAttrProvisioning {
     @ZAttr(id=1447)
     public static final String A_zimbraZookeeperClientServerList = "zimbraZookeeperClientServerList";
 
-
     /**
      * SSL proxy port for Carbonio admin console UI
      *
@@ -17567,6 +17566,12 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3089)
     public static final String A_carbonioAdminProxyPort = "carbonioAdminProxyPort";
+
+    /**
+     * block common keywords in password string
+     */
+    @ZAttr(id=3090)
+    public static final String A_zimbraPasswordBlockCommonEnabled = "zimbraPasswordBlockCommonEnabled";
 
     ///// END-AUTO-GEN-REPLACE
 }
