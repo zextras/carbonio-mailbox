@@ -56,8 +56,8 @@ public class CopyToDrive extends MailDocumentHandler {
     // throw exception if failure or nodeId null
     String nodeId = Optional.ofNullable(
             this.getNodeId(request, zsc)
-                .getOrElseThrow(ex -> new SoapFaultException("Service failure.", request)))
-        .orElseThrow(() -> new SoapFaultException("Service failure.", request))
+                .getOrElseThrow(ex -> new SoapFaultException("Service failure.", "", true)))
+        .orElseThrow(() -> new SoapFaultException("Service failure.", "", true))
         .getNodeId();
     CopyToDriveResponse copyToDriveResponse = new CopyToDriveResponse();
     copyToDriveResponse.setNodeId(nodeId);
@@ -79,7 +79,7 @@ public class CopyToDrive extends MailDocumentHandler {
         Try.<CopyToDriveRequest>of(() -> context.elementToJaxb(request))
             .onFailure(ex -> mLog.debug(ex.getMessage()))
             .mapFailure(Case($(instanceOf(Exception.class)),
-                new SoapFaultException("Malformed request.", request)));
+                new SoapFaultException("Malformed request.", "", false)));
     // get file from mailbox
     Try<FileUploadServlet.Upload> upload =
         copyToDriveReq.mapTry(
@@ -88,12 +88,12 @@ public class CopyToDrive extends MailDocumentHandler {
                     context.getAuthToken()))
             .onFailure(ex -> mLog.debug(ex.getMessage()))
             .mapFailure(Case($(instanceOf(Exception.class)),
-                new SoapFaultException("File not found.", request)));
+                new SoapFaultException("File not found.", "", false)));
     // get file content
     Try<InputStream> uploadContentStream = upload.mapTry(up -> up.getInputStream())
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
-            new SoapFaultException("Cannot read file content.", request)));
+            new SoapFaultException("Cannot read file content.", "", true)));
     // execute Files api call
     return API.For(upload, uploadContentStream).yield((up, stream) ->
         filesClient.uploadFile(context.getAuthToken().toString(), "LOCAL_ROOT", up.getName(),
