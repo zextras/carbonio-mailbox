@@ -6121,7 +6121,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
                     new Argument(Provisioning.A_zimbraPasswordMaxLength, maxLength, Argument.Type.NUM));
         }
 
-        blockCommonPasswordsEnabled = acct.getBooleanAttr(Provisioning.A_zimbraPasswordLocked, false);
+        blockCommonPasswordsEnabled = acct.getBooleanAttr(Provisioning.A_zimbraPasswordBlockCommonEnabled, false);
         if (blockCommonPasswordsEnabled && commonPasswordFilter.mightContain(password)) {
             throw AccountServiceException.INVALID_PASSWORD("password is known to be too common");
         }
