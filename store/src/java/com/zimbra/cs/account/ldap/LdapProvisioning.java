@@ -309,7 +309,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
         commonPasswordFilter = UnmodifiableBloomFilter
             .createLazyFilterFromFile(LC.common_passwords_txt.value());
-        blockCommonPasswordsEnabled = LC.zimbra_block_common_passwords_enabled.booleanValue();
 
         setDIT();
         setHelper(new ZLdapHelper(this));
@@ -6122,6 +6121,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
                     new Argument(Provisioning.A_zimbraPasswordMaxLength, maxLength, Argument.Type.NUM));
         }
 
+        blockCommonPasswordsEnabled = acct.getBooleanAttr(Provisioning.A_zimbraPasswordLocked, false);
         if (blockCommonPasswordsEnabled && commonPasswordFilter.mightContain(password)) {
             throw AccountServiceException.INVALID_PASSWORD("password is known to be too common");
         }
