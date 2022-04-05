@@ -5,8 +5,6 @@
 
 package com.zimbra.soap;
 
-import com.zimbra.soap.mail.message.CopyToDriveRequest;
-import com.zimbra.soap.mail.message.CopyToDriveResponse;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1114,8 +1112,8 @@ public final class JaxbUtil {
             com.zimbra.soap.account.message.GetAddressListMemberResponse.class,
             com.zimbra.soap.admin.message.GetAddressListInfoRequest.class,
             com.zimbra.soap.admin.message.GetAddressListInfoResponse.class,
-            CopyToDriveRequest.class,
-            CopyToDriveResponse.class
+            com.zimbra.soap.mail.message.CopyToDriveRequest.class,
+            com.zimbra.soap.mail.message.CopyToDriveResponse.class
         };
 
         try {
