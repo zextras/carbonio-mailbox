@@ -9763,7 +9763,7 @@ TODO: delete them permanently from here
   <desc>SSL proxy port for Carbonio admin console UI</desc>
 </attr>
 
-<attr id="3090" name="zimbraPasswordBlockCommonEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable">
+<attr id="3090" name="zimbraPasswordBlockCommonEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="9.0.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>block common keywords in password string</desc>
 </attr>
