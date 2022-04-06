@@ -8,7 +8,7 @@ package com.zimbra.cs.service.mail;
 import com.zextras.carbonio.files.FilesClient;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.cs.service.FileUploadServlet;
+import com.zimbra.cs.service.MailboxAttachmentProvider;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 
@@ -240,6 +240,7 @@ public final class MailService implements DocumentService {
 
         // Drive attachment upload
         dispatcher.registerHandler(MailConstants.COPY_TO_DRIVE_REQUEST,
-            new CopyToDrive(FileUploadServlet::fetchUpload, FilesClient.atURL("http://127.78.0.7:20002")));
+            new CopyToDrive(
+                new MailboxAttachmentProvider(), FilesClient.atURL("http://127.78.0.7:20002")));
     }
 }
