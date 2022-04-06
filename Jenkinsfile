@@ -25,6 +25,9 @@ pipeline {
         }
         stage('Build') {
             steps {
+              withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
+                sh "cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties"
+              }
                 sh """
                     cat <<EOF > build.properties
                     debug=0
@@ -48,14 +51,11 @@ pipeline {
                 buildingTag()
             }
             steps {
-                withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
-                    sh "cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties"
-                    sh """
+                  sh """
                         ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant \
                              -propertyfile build.properties \
                              publish-maven-all
                         """
-                }
             }
         }
         stage('Build deb/rpm') {
