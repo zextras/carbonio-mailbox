@@ -197,6 +197,19 @@ public class SoapServlet extends ZimbraServlet {
         service.registerHandlers(mEngine.getDocumentDispatcher());
     }
 
+    @Override
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        ZimbraLog.clearContext();
+        long startTime = ZimbraPerf.STOPWATCH_SOAP.start();
+
+        try {
+            doWork(req, resp);
+        } finally {
+            ZimbraLog.clearContext();
+            ZimbraPerf.STOPWATCH_SOAP.stop(startTime);
+        }
+    }
+
     @Override public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ZimbraLog.clearContext();
         long startTime = ZimbraPerf.STOPWATCH_SOAP.start();

@@ -235,6 +235,9 @@ public final class MailService implements DocumentService {
         dispatcher.registerHandler(MailConstants.RECOVER_ACCOUNT_REQUEST, new RecoverAccount());
         dispatcher.registerHandler(MailConstants.SET_RECOVERY_EMAIL_REQUEST, new SetRecoveryAccount());
 
+        // Previewer API
+        dispatcher.registerHandler(MailConstants.GET_PREVIEW_REQUEST, new GetPreview());
+
         // Drive attachment upload
         dispatcher.registerHandler(MailConstants.COPY_TO_DRIVE_REQUEST,
             new CopyToDrive(FileUploadServlet::fetchUpload, FilesClient.atURL("http://127.78.0.7:20002")));

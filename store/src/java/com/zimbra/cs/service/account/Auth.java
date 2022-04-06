@@ -8,17 +8,6 @@
  */
 package com.zimbra.cs.service.account;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.ZAttrProvisioning.AutoProvAuthMech;
@@ -63,8 +52,15 @@ import com.zimbra.cs.util.SkinUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.ZimbraSoapContext;
-
 import io.jsonwebtoken.Claims;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author schemers
@@ -422,7 +418,7 @@ public class Auth extends AccountDocumentHandler {
         if (jwtElem != null && authElem != null) {
             ZimbraLog.account.debug("both jwt and auth element can not be present in auth request");
             return Boolean.FALSE;
-        } 
+        }
         if (jwtElem == null && authElem != null && TokenType.JWT.equals(tokenType)) {
             ZimbraLog.account.debug("jwt token type not supported with auth element");
             return Boolean.FALSE;
@@ -440,7 +436,7 @@ public class Auth extends AccountDocumentHandler {
     }
 
     private Element needTwoFactorAuth(Map<String, Object> context, Element requestElement, Account account, TwoFactorAuth auth,
-            ZimbraSoapContext zsc, TokenType tokenType, String recoveryCode) throws ServiceException {
+        ZimbraSoapContext zsc, TokenType tokenType, String recoveryCode) throws ServiceException {
         /* two cases here:
          * 1) the user needs to provide a two-factor code.
          *    in this case, the server returns a two-factor auth token in the response header that the client
@@ -468,8 +464,8 @@ public class Auth extends AccountDocumentHandler {
     }
 
     private Element doResponse(Element request, AuthToken at, ZimbraSoapContext zsc,
-            Map<String, Object> context, Account acct, boolean csrfSupport, TrustedDeviceToken td, String deviceId)
-    throws ServiceException {
+        Map<String, Object> context, Account acct, boolean csrfSupport, TrustedDeviceToken td, String deviceId)
+        throws ServiceException {
         Element response = zsc.createElement(AccountConstants.AUTH_RESPONSE);
         at.encodeAuthResp(response, false);
 
@@ -554,14 +550,15 @@ public class Auth extends AccountDocumentHandler {
         }
 
         Element productQueryEl = request.getOptionalElement(AccountConstants.E_PRODUCT_QUERY);
-        String productQueryElStr = productQueryEl != null ? productQueryEl.getText() : "0" ;
-        boolean reqContainsProductQuery = productQueryElStr.equalsIgnoreCase("true") || productQueryElStr.equalsIgnoreCase("1");
+        String productQueryElStr = productQueryEl != null ? productQueryEl.getText() : "0";
+        boolean reqContainsProductQuery =
+            productQueryElStr.equalsIgnoreCase("true") || productQueryElStr.equalsIgnoreCase("1");
         if (reqContainsProductQuery) {
-           Element res = response.addNonUniqueElement(AccountConstants.E_PRODUCT_QUERY);
-           res.addNonUniqueElement("productName").setText("Carbonio");
-           response.addUniqueElement(res);
+            response
+                .addUniqueElement(AccountConstants.E_PRODUCT_QUERY)
+                .addUniqueElement("productName")
+                .setText("Carbonio");
         }
-
         return response;
     }
 
