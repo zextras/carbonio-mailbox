@@ -237,6 +237,6 @@ public final class MailService implements DocumentService {
 
         // Drive attachment upload
         dispatcher.registerHandler(MailConstants.COPY_TO_DRIVE_REQUEST,
-            new CopyToDrive(FileUploadServlet::fetchUpload, FilesClient.atURL("127.78.0.7:20002")));
+            new CopyToDrive(FileUploadServlet::fetchUpload, FilesClient.atURL("http://127.78.0.7:20002")));
     }
 }

@@ -12,7 +12,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.FileUploadServlet;
-import com.zimbra.cs.service.FileUploadServlet.Upload;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -78,7 +77,7 @@ public class CopyToDriveTest {
     Mockito.doReturn(Try.of(() -> new NodeId(nodeId)))
         .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any());
     CopyToDriveRequest up = new CopyToDriveRequest();
-    up.setUploadId(UUID.randomUUID().toString());
+    up.setMessageId(UUID.randomUUID().toString());
     Element element = JaxbUtil.jaxbToElement(up);
 
     // call SOAP API
@@ -104,7 +103,7 @@ public class CopyToDriveTest {
     // request unknown file -> SoapFault
     CopyToDrive copyToDrive = new CopyToDrive(FileUploadServlet::fetchUpload, mockFilesClient);
     CopyToDriveRequest up = new CopyToDriveRequest();
-    up.setUploadId(randomUuid);
+    up.setMessageId(randomUuid);
     Element element = JaxbUtil.jaxbToElement(up);
 
     try {
@@ -140,7 +139,7 @@ public class CopyToDriveTest {
     Mockito.doReturn(Try.failure(new RuntimeException("Oops, something went wrong.")))
         .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any());
     CopyToDriveRequest up = new CopyToDriveRequest();
-    up.setUploadId(UUID.randomUUID().toString());
+    up.setMessageId(UUID.randomUUID().toString());
     Element element = JaxbUtil.jaxbToElement(up);
 
     try {
@@ -176,7 +175,7 @@ public class CopyToDriveTest {
     Mockito.doReturn(Try.of(() -> null))
         .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any());
     CopyToDriveRequest up = new CopyToDriveRequest();
-    up.setUploadId(UUID.randomUUID().toString());
+    up.setMessageId(UUID.randomUUID().toString());
     Element element = JaxbUtil.jaxbToElement(up);
 
     try {

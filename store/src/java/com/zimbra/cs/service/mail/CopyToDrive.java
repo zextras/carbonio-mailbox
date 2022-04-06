@@ -12,8 +12,10 @@ import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.service.FileUploadProvider;
-import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.service.FileUploadServlet.Upload;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CopyToDriveRequest;
@@ -23,6 +25,7 @@ import io.vavr.control.Try;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
+import javax.mail.internet.MimePart;
 
 /**
  * Service class to handle copy item to drive.
@@ -65,6 +68,22 @@ public class CopyToDrive extends MailDocumentHandler {
   }
 
   /**
+   * Get attachment for a mail message on a mailbox given account and authorization info.
+   * TODO: consider making this method part of an AttachmentService or similar (or MimeService)
+   *
+   * @param accountId id of the account that is requesting the attachment
+   * @param token authorization token for the account
+   * @param messageId id of the message where attachment lies
+   * @param part part number that identifies attachment in the mail
+   * @return try of {@link javax.mail.internet.MimePart}
+   */
+  private Try<MimePart> getMessageAttachment(String accountId, AuthToken token, int messageId, String part) {
+    return Try.of(() -> MailboxManager.getInstance().getMailboxByAccountId(accountId))
+        .mapTry(mailbox -> mailbox.getMessageById(new OperationContext(token), messageId))
+        .mapTry(message -> Mime.getMimePart(message.getMimeMessage(), part));
+  }
+
+  /**
    * Perform call to Files upload API using request input and context.
    *
    * @param request Element request
@@ -81,11 +100,9 @@ public class CopyToDrive extends MailDocumentHandler {
             .mapFailure(Case($(instanceOf(Exception.class)),
                 new SoapFaultException("Malformed request.", "", false)));
     // get file from mailbox
-    Try<FileUploadServlet.Upload> upload =
-        copyToDriveReq.mapTry(
-                jaxbEl -> fileUploadProvider.getUpload(context.getAuthtokenAccountId(),
-                    jaxbEl.getUploadId(),
-                    context.getAuthToken()))
+    Try<MimePart> upload = API.For(copyToDriveReq).yield(req ->
+            getMessageAttachment(context.getAuthtokenAccountId(), context.getAuthToken(),
+                Integer.parseInt(req.getMessageId()), req.getPart()).get())
             .onFailure(ex -> mLog.debug(ex.getMessage()))
             .mapFailure(Case($(instanceOf(Exception.class)),
                 new SoapFaultException("File not found.", "", false)));
@@ -94,10 +111,18 @@ public class CopyToDrive extends MailDocumentHandler {
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("Cannot read file content.", "", true)));
+    Try<String> contentTypeTry = upload.mapTry(up -> up.getContentType())
+        .onFailure(ex -> mLog.debug(ex.getMessage()))
+        .mapFailure(Case($(instanceOf(Exception.class)),
+            new SoapFaultException("Cannot get file content-type.", "", true)));
+    Try<String> fileNameTry = upload.mapTry(up -> up.getFileName())
+        .onFailure(ex -> mLog.debug(ex.getMessage()))
+        .mapFailure(Case($(instanceOf(Exception.class)),
+            new SoapFaultException("Cannot get file name.", "", true)));
     // execute Files api call
-    return API.For(upload, uploadContentStream).yield((up, stream) ->
-        filesClient.uploadFile(context.getAuthToken().toString(), "LOCAL_ROOT", up.getName(),
-                up.getContentType(), stream)
+    return API.For(upload, uploadContentStream, fileNameTry, contentTypeTry).yield((up, stream, fileName, contentType) ->
+        filesClient.uploadFile(context.getAuthToken().toString(), "LOCAL_ROOT", fileName,
+                contentType, stream)
             .onFailure(ex -> mLog.debug(ex.getMessage()))).get();
   }
 
