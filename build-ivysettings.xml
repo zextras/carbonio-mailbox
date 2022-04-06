@@ -17,7 +17,6 @@
   <settings defaultResolver="chain-resolver" />
   <caches defaultCacheDir="${dev.home}/.ivy2/cache" />
   <resolvers>
-    <ibiblio name="public-maven" m2compatible="true" root="https://zextras.jfrog.io/artifactory/public-maven-repo" />
     <chain name="chain-resolver" returnFirst="true">
       <filesystem name="local">
         <artifact pattern="${dev.home}/.zcs-deps/[organisation]/[module]/[module]-[revision].[ext]" />
@@ -36,6 +35,13 @@
         <artifact pattern="https://files.zimbra.com/repository/[module]/[artifact]-[revision].[ext]" />
         <artifact pattern="https://files.zimbra.com/repository/[module]/[artifact].[ext]" />
         <artifact pattern="https://files.zimbra.com/repository/[organisation]/[module]/[module]-[revision].[ext]" />
+      </url>
+      <ibiblio name="public-maven" m2compatible="true" root="https://zextras.jfrog.io/artifactory/public-maven-repo" />
+      <url name="zextras">
+        <artifact pattern="https://zextras.jfrog.io/artifactory/public-maven-repo/[organisation]/[module]/[module]-[revision].[ext]" />
+        <artifact pattern="https://zextras.jfrog.io/artifactory/public-maven-repo/[organisation]-[revision].[ext]" />
+        <artifact pattern="https://zextras.jfrog.io/artifactory/public-maven-repo/[organisation].[ext]" />
+        <artifact pattern="https://zextras.jfrog.io/artifactory/public-maven-repo/[orgPath]/[module]/[baseRev](-[folderItegRev])/[module]-[baseRev](-[fileItegRev])(-[classifier]).[ext]" />
       </url>
     </chain>
     <!-- 'build-tmp' resolver is not part of the chain and is used only for packaging war files -->
