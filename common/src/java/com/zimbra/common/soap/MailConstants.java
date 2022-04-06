@@ -261,6 +261,8 @@ public final class MailConstants {
     public static final String E_GET_SHARE_NOTIFICATIONS_RESPONSE = "GetShareNotificationsResponse";
     public static final String E_GET_DATA_SOURCE_USAGE_REQUEST = "GetDataSourceUsageRequest";
     public static final String E_GET_DATA_SOURCE_USAGE_RESPONSE = "GetDataSourceUsageResponse";
+    public static final String E_GET_PREVIEW_REQUEST = "GetPreviewRequest";
+    public static final String E_GET_PREVIEW_RESPONSE = "GetPreviewResponse";
 
     // IMAP
     public static final String E_LIST_IMAP_SUBSCRIPTIONS_REQUEST = "ListIMAPSubscriptionsRequest";
@@ -585,6 +587,10 @@ public final class MailConstants {
     public static final QName RECORD_IMAP_SESSION_RESPONSE = QName.get(E_RECORD_IMAP_SESSION_RESPONSE, NAMESPACE);
     public static final QName IMAP_COPY_REQUEST = QName.get(E_IMAP_COPY_REQUEST, NAMESPACE);
     public static final QName IMAP_COPY_RESPONSE = QName.get(E_IMAP_COPY_RESPONSE, NAMESPACE);
+
+    // Previewer API
+    public static final QName GET_PREVIEW_REQUEST = QName.get(E_GET_PREVIEW_REQUEST, NAMESPACE);
+    public static final QName GET_PREVIEW_RESPONSE = QName.get(E_GET_PREVIEW_RESPONSE, NAMESPACE);
 
     public static final String E_MAILBOX = "mbx";
     public static final String E_ITEM = "item";
@@ -1168,6 +1174,26 @@ public final class MailConstants {
     public static final String E_DICTIONARY = "dictionary";
     public static final String A_DICTIONARY = "dictionary";
     public static final String A_IGNORE = "ignore";
+
+    // previewer service request
+    public static  final String E_P_ITEM_ID = "itemId";
+    public static  final String E_P_PART = "part";
+    public static  final String E_P_PDF = "pdf";
+    public static  final String E_P_IMAGE = "image";
+    public static  final String A_P_CROP = "crop";
+    public static  final String A_P_PREVIEW_TYPE = "preview_type";
+    public static  final String A_P_AREA = "area";
+    public static  final String A_P_QUALITY = "quality";
+    public static  final String A_P_OUTPUT_FORMAT = "output_format";
+    public static  final String A_P_FIRST_PAGE = "first_page";
+    public static  final String A_P_LAST_PAGE = "last_page";
+
+    // previewer service response
+    public static  final String E_P_PREVIEW_SERVICE_STATUS = "previewServiceStatus";
+    public static  final String E_P_PREVIEW_DATA_STREAM = "previewDataStream";
+    public static  final String A_P_FILE_NAME = "file-name";
+    public static  final String A_P_STATUS_CODE = "status-code";
+    public static  final String A_P_STATUS_MESSAGE = "status-message";
 
     // data sources
     public static final String E_DS = "dsrc";
