@@ -10,8 +10,9 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.service.MailboxAttachmentProvider;
+import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -36,6 +37,8 @@ import org.mockito.Mockito;
 public class CopyToDriveTest {
 
   private final FilesClient mockFilesClient = Mockito.mock(FilesClient.class);
+  private final AttachmentService mockAttachmentService = Mockito.mock(
+      AttachmentService.class);
 
   @BeforeClass
   public static void init() throws Exception {
@@ -50,6 +53,7 @@ public class CopyToDriveTest {
   public void setUp() throws Exception {
     MailboxTestUtil.clearData();
     Mockito.reset(mockFilesClient);
+    Mockito.reset(mockAttachmentService);
   }
 
   /**
@@ -72,14 +76,17 @@ public class CopyToDriveTest {
     Mockito.when(mockUpload.getFileName()).thenReturn("My_file.csv");
     Mockito.when(mockUpload.getContentType()).thenReturn("text/csv");
     Mockito.when(mockUpload.getInputStream()).thenReturn(uploadContent);
-    CopyToDrive copyToDrive = new CopyToDrive((a,b,c,d) ->
-        Try.success(mockUpload), mockFilesClient);
+    Mockito.when(
+            mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
+        .thenReturn(Try.success(mockUpload));
+    CopyToDrive copyToDrive = new CopyToDrive(mockAttachmentService, mockFilesClient);
     // mock files api
     String nodeId = UUID.randomUUID().toString();
     Mockito.doReturn(Try.of(() -> new NodeId(nodeId)))
         .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any());
     CopyToDriveRequest up = new CopyToDriveRequest();
     up.setMessageId("1");
+    up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
 
     // call SOAP API
@@ -102,7 +109,7 @@ public class CopyToDriveTest {
     context.put(SoapEngine.ZIMBRA_CONTEXT, new ZimbraSoapContext(AuthProvider.getAuthToken(acct),
         acct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
     // request unknown file -> SoapFault
-    CopyToDrive copyToDrive = new CopyToDrive(new MailboxAttachmentProvider(), mockFilesClient);
+    CopyToDrive copyToDrive = new CopyToDrive(new MailboxAttachmentService(), mockFilesClient);
     CopyToDriveRequest up = new CopyToDriveRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -137,11 +144,15 @@ public class CopyToDriveTest {
     Mockito.when(mockAttachment.getFileName()).thenReturn("My_file.csv");
     Mockito.when(mockAttachment.getContentType()).thenReturn("text/csv");
     Mockito.when(mockAttachment.getInputStream()).thenReturn(uploadContent);
-    CopyToDrive copyToDrive = new CopyToDrive((a,b,c, d) -> Try.success(mockAttachment), mockFilesClient);
+    Mockito.when(
+            mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
+        .thenReturn(Try.success(mockAttachment));
+    CopyToDrive copyToDrive = new CopyToDrive(mockAttachmentService, mockFilesClient);
     Mockito.doReturn(Try.failure(new RuntimeException("Oops, something went wrong.")))
         .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any());
     CopyToDriveRequest up = new CopyToDriveRequest();
     up.setMessageId("1");
+    up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
 
     try {
@@ -173,12 +184,15 @@ public class CopyToDriveTest {
     Mockito.when(mockUpload.getFileName()).thenReturn("My_file.csv");
     Mockito.when(mockUpload.getContentType()).thenReturn("text/csv");
     Mockito.when(mockUpload.getInputStream()).thenReturn(uploadContent);
-    CopyToDrive copyToDrive = new CopyToDrive((a,b,c, d) ->
-        Try.success(mockUpload), mockFilesClient);
+    Mockito.when(
+            mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
+        .thenReturn(Try.success(mockUpload));
+    CopyToDrive copyToDrive = new CopyToDrive(mockAttachmentService, mockFilesClient);
     Mockito.doReturn(Try.of(() -> null))
         .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any());
     CopyToDriveRequest up = new CopyToDriveRequest();
     up.setMessageId("123");
+    up.setPart("Whatever you want");
     Element element = JaxbUtil.jaxbToElement(up);
 
     try {

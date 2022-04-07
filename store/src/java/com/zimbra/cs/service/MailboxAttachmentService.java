@@ -10,7 +10,7 @@ import javax.mail.internet.MimePart;
 /**
  * Mailbox attachment provider
  */
-public class MailboxAttachmentProvider implements AttachmentProvider {
+public class MailboxAttachmentService implements AttachmentService {
 
   public Try<MimePart> getAttachment(String accountId, AuthToken token, int messageId,
       String part) {

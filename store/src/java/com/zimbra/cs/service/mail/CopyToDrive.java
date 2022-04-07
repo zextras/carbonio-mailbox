@@ -12,7 +12,7 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
-import com.zimbra.cs.service.AttachmentProvider;
+import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CopyToDriveRequest;
 import com.zimbra.soap.mail.message.CopyToDriveResponse;
@@ -31,13 +31,13 @@ import javax.mail.internet.MimePart;
 public class CopyToDrive extends MailDocumentHandler {
 
   private static final Log mLog = LogFactory.getLog(CopyToDrive.class);
-  private final AttachmentProvider attachmentProvider;
+  private final AttachmentService attachmentService;
   private final FilesClient filesClient;
 
   public CopyToDrive(
-      AttachmentProvider attachmentProvider,
+      AttachmentService attachmentService,
       FilesClient filesClient) {
-    this.attachmentProvider = attachmentProvider;
+    this.attachmentService = attachmentService;
     this.filesClient = filesClient;
   }
 
@@ -80,15 +80,17 @@ public class CopyToDrive extends MailDocumentHandler {
     Try<Integer> messageIdTry = copyToDriveReq.mapTry(req -> Integer.parseInt(req.getMessageId()))
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
-            new SoapFaultException(MailConstants.A_MESSAGE_ID + " must ne an integer.", "", false)));
+            new SoapFaultException(MailConstants.A_MESSAGE_ID + " must ne an integer.", "",
+                false)));
     Try<MimePart> attachmentTry = API.For(copyToDriveReq, messageIdTry).yield((req, messageId) ->
-            attachmentProvider.getAttachment(context.getAuthtokenAccountId(), context.getAuthToken(),
-        messageId, req.getPart()).get())
+            attachmentService.getAttachment(context.getAuthtokenAccountId(), context.getAuthToken(),
+                messageId, req.getPart()).get())
         .onFailure(ex -> mLog.debug(ex.getMessage()))
-            .mapFailure(Case($(instanceOf(Exception.class)),
-                new SoapFaultException("File not found.", "", false)));
+        .mapFailure(Case($(instanceOf(Exception.class)),
+            new SoapFaultException("File not found.", "", false)));
     // get file content
-    Try<InputStream> uploadContentStream = attachmentTry.mapTry(attachment -> attachment.getInputStream())
+    Try<InputStream> uploadContentStream = attachmentTry.mapTry(
+            attachment -> attachment.getInputStream())
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("Cannot read file content.", "", true)));
@@ -101,9 +103,9 @@ public class CopyToDrive extends MailDocumentHandler {
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("Cannot get file name.", "", true)));
     // execute Files api call
-    return API.For(attachmentTry, uploadContentStream, fileNameTry, contentTypeTry).yield((up, stream, fileName, contentType) ->
-        filesClient.uploadFile(context.getAuthToken().toString(), "LOCAL_ROOT", fileName,
-                contentType, stream)
-            .onFailure(ex -> mLog.debug(ex.getMessage()))).get();
+    return API.For(attachmentTry, uploadContentStream, fileNameTry, contentTypeTry)
+        .yield((attachment, stream, fileName, contentType) ->
+            filesClient.uploadFile(context.getAuthToken().toString(), "LOCAL_ROOT", fileName, contentType, stream)
+                .onFailure(ex -> mLog.debug(ex.getMessage()))).get();
   }
 }
