@@ -12,6 +12,7 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
+import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CopyToDriveRequest;
@@ -102,10 +103,11 @@ public class CopyToDrive extends MailDocumentHandler {
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("Cannot get file name.", "", true)));
+    Try<String> authCookieTry = Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + context.getAuthToken().getEncoded());
     // execute Files api call
-    return API.For(attachmentTry, uploadContentStream, fileNameTry, contentTypeTry)
-        .yield((attachment, stream, fileName, contentType) ->
-            filesClient.uploadFile(context.getAuthToken().toString(), "LOCAL_ROOT", fileName, contentType, stream)
+    return API.For(authCookieTry, attachmentTry, uploadContentStream, fileNameTry, contentTypeTry)
+        .yield((authCookie, attachment, stream, fileName, contentType) ->
+            filesClient.uploadFile(authCookie, "LOCAL_ROOT", fileName, contentType, stream)
                 .onFailure(ex -> mLog.debug(ex.getMessage()))).get();
   }
 }
