@@ -61723,6 +61723,68 @@ public abstract class ZAttrAccount  extends MailTarget {
         return attrs;
     }
 
-    ///// END-AUTO-GEN-REPLACE
+    /**
+     * block common keywords in password string
+     *
+     * @return zimbraPasswordBlockCommonEnabled, or false if unset
+     */
+    @ZAttr(id=3090)
+    public boolean isPasswordBlockCommonEnabled() {
+      return getBooleanAttr(Provisioning.A_zimbraPasswordBlockCommonEnabled, false, true);
+    }
+
+    /**
+     * block common keywords in password string
+     *
+     * @param zimbraPasswordBlockCommonEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=3090)
+    public void setPasswordBlockCommonEnabled(boolean zimbraPasswordBlockCommonEnabled) throws com.zimbra.common.service.ServiceException {
+      HashMap<String,Object> attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, zimbraPasswordBlockCommonEnabled ? TRUE : FALSE);
+      getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * block common keywords in password string
+     *
+     * @param zimbraPasswordBlockCommonEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=3090)
+    public Map<String,Object> setPasswordBlockCommonEnabled(boolean zimbraPasswordBlockCommonEnabled, Map<String,Object> attrs) {
+      if (attrs == null) attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, zimbraPasswordBlockCommonEnabled ? TRUE : FALSE);
+      return attrs;
+    }
+
+    /**
+     * block common keywords in password string
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=3090)
+    public void unsetPasswordBlockCommonEnabled() throws com.zimbra.common.service.ServiceException {
+      HashMap<String,Object> attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, "");
+      getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * block common keywords in password string
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=3090)
+    public Map<String,Object> unsetPasswordBlockCommonEnabled(Map<String,Object> attrs) {
+      if (attrs == null) attrs = new HashMap<String,Object>();
+      attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, "");
+      return attrs;
+    }
+
+  ///// END-AUTO-GEN-REPLACE
 
 }

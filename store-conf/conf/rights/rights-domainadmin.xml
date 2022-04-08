@@ -397,6 +397,7 @@
     <a n="zimbraFeatureWebClientEnabled"/>
     <a n="zimbraPrefImapEnabled"/>
     <a n="zimbraPrefPop3Enabled"/>
+    <a n="zimbraPasswordBlockCommonEnabled"/>
   </attrs>
 </right>
 

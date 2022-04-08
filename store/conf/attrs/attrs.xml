@@ -9758,9 +9758,13 @@ TODO: delete them permanently from here
   <desc>whether to use Web Client feature</desc>
 </attr>
 
+<attr id="3089" name="carbonioAdminProxyPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" callback="CheckPortConflict" since="9.0.0">
+  <globalConfigValue>6071</globalConfigValue>
+  <desc>SSL proxy port for Carbonio admin console UI</desc>
+</attr>
 
-  <attr id="3089" name="carbonioAdminProxyPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" callback="CheckPortConflict" since="9.0.0">
-    <globalConfigValue>6071</globalConfigValue>
-    <desc>SSL proxy port for Carbonio admin console UI</desc>
-  </attr>
+<attr id="3090" name="zimbraPasswordBlockCommonEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="9.0.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>block common keywords in password string</desc>
+</attr>
 </attrs>
