@@ -1,6 +1,5 @@
 package com.zimbra.cs.service.mail;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
 import com.zimbra.common.account.Key;
@@ -8,18 +7,19 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.soap.SoapProtocol;
+import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.service.AuthProviderException;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
-import com.zimbra.soap.mail.message.CopyToDriveRequest;
-import com.zimbra.soap.mail.message.CopyToDriveResponse;
+import com.zimbra.soap.mail.message.CopyToFilesRequest;
+import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.control.Try;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -31,33 +31,16 @@ import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimePart;
 import junit.framework.Assert;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
-import org.apache.commons.io.IOUtils;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class CopyToDriveTest {
+public class CopyToFilesTest {
 
   private final FilesClient mockFilesClient = Mockito.mock(FilesClient.class);
   private final AttachmentService mockAttachmentService = Mockito.mock(
       AttachmentService.class);
-  public static MockWebServer mockBackEnd;
-
-  @BeforeClass
-  public static void startServer() throws IOException {
-    mockBackEnd = new MockWebServer();
-    mockBackEnd.start();
-  }
-
-  @AfterClass
-  public static void stopSever() throws IOException {
-    mockBackEnd.shutdown();
-  }
 
   @BeforeClass
   public static void init() throws Exception {
@@ -98,20 +81,20 @@ public class CopyToDriveTest {
     Mockito.when(
             mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
         .thenReturn(Try.success(mockUpload));
-    CopyToDrive copyToDrive = new CopyToDrive(mockAttachmentService, mockFilesClient);
+    CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
     // mock files api
     String nodeId = UUID.randomUUID().toString();
     Mockito.doReturn(Try.of(() -> new NodeId(nodeId)))
         .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),
             Mockito.anyString(),Mockito.anyString(),Mockito.any(), Mockito.anyLong());
-    CopyToDriveRequest up = new CopyToDriveRequest();
+    CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
 
     // call SOAP API
-    Element el = copyToDrive.handle(element, context);
-    CopyToDriveResponse response = zsc.elementToJaxb(el);
+    Element el = copyToFiles.handle(element, context);
+    CopyToFilesResponse response = zsc.elementToJaxb(el);
     Assert.assertEquals(nodeId, response.getNodeId());
   }
 
@@ -129,14 +112,14 @@ public class CopyToDriveTest {
     context.put(SoapEngine.ZIMBRA_CONTEXT, new ZimbraSoapContext(AuthProvider.getAuthToken(acct),
         acct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
     // request unknown file -> SoapFault
-    CopyToDrive copyToDrive = new CopyToDrive(new MailboxAttachmentService(), mockFilesClient);
-    CopyToDriveRequest up = new CopyToDriveRequest();
+    CopyToFiles copyToFiles = new CopyToFiles(new MailboxAttachmentService(), mockFilesClient);
+    CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
 
     try {
-      copyToDrive.handle(element, context);
+      copyToFiles.handle(element, context);
       Assert.fail("Did not throw SoapFault exception.");
     } catch (SoapFaultException soapFaultException) {
       Assert.assertEquals("File not found.", soapFaultException.getMessage());
@@ -167,17 +150,17 @@ public class CopyToDriveTest {
     Mockito.when(
             mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
         .thenReturn(Try.success(mockAttachment));
-    CopyToDrive copyToDrive = new CopyToDrive(mockAttachmentService, mockFilesClient);
+    CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
     Mockito.doReturn(Try.failure(new RuntimeException("Oops, something went wrong.")))
         .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),
             Mockito.anyString(), Mockito.any(), Mockito.anyLong());
-    CopyToDriveRequest up = new CopyToDriveRequest();
+    CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
 
     try {
-      copyToDrive.handle(element, context);
+      copyToFiles.handle(element, context);
       Assert.fail("Did not throw SoapFault exception.");
     } catch (SoapFaultException soapFaultException) {
       Assert.assertEquals("Service failure.", soapFaultException.getMessage());
@@ -208,17 +191,17 @@ public class CopyToDriveTest {
     Mockito.when(
             mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
         .thenReturn(Try.success(mockUpload));
-    CopyToDrive copyToDrive = new CopyToDrive(mockAttachmentService, mockFilesClient);
+    CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
     Mockito.doReturn(Try.of(() -> null))
         .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),
             Mockito.any(), Mockito.anyLong());
-    CopyToDriveRequest up = new CopyToDriveRequest();
+    CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("123");
     up.setPart("Whatever you want");
     Element element = JaxbUtil.jaxbToElement(up);
 
     try {
-      copyToDrive.handle(element, context);
+      copyToFiles.handle(element, context);
       Assert.fail("Did not throw SoapFault exception.");
     } catch (SoapFaultException soapFaultException) {
       Assert.assertEquals("Service failure.", soapFaultException.getMessage());
@@ -226,42 +209,46 @@ public class CopyToDriveTest {
   }
 
   /**
-   * Test case if file service returns null {@link com.zextras.carbonio.files.entities.NodeId}
+   * Test call on files sdk is done right
    * @throws ServiceException
    * @throws IOException
    */
   @Test
   public void shouldSendUploadedFile() throws Exception {
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
-
+    AuthToken authToken = AuthProvider.getAuthToken(acct);
     // prepare request
     Map<String, Object> context = new HashMap<String, Object>();
-    context.put(SoapEngine.ZIMBRA_CONTEXT, new ZimbraSoapContext(AuthProvider.getAuthToken(acct),
+    context.put(SoapEngine.ZIMBRA_CONTEXT, new ZimbraSoapContext(authToken,
         acct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
     // have to mock because even the Upload object has some logic in it
     MimePart mockUpload =  Mockito.mock(MimePart.class);
     String body = "Hi, how, are, ye, ?";
     InputStream uploadContent = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
-    Mockito.when(mockUpload.getFileName()).thenReturn("My_file.csv");
-    Mockito.when(mockUpload.getContentType()).thenReturn("text/csv");
+    String fileName = "My_file.csv";
+    int fileSize = 30;
+    String contentType = "text/csv";
+    Mockito.when(mockUpload.getFileName()).thenReturn(fileName);
+    Mockito.when(mockUpload.getContentType()).thenReturn(contentType);
     Mockito.when(mockUpload.getInputStream()).thenReturn(uploadContent);
+    Mockito.when(mockUpload.getSize()).thenReturn(fileSize);
     Mockito.when(
             mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
         .thenReturn(Try.success(mockUpload));
-    CopyToDrive copyToDrive = new CopyToDrive(mockAttachmentService,
-        FilesClient.atURL(String.format("http://%s:%d", mockBackEnd.getHostName(), mockBackEnd.getPort())));
-    mockBackEnd.enqueue(new MockResponse().setResponseCode(200).setBody(new ObjectMapper().writeValueAsString(new NodeId()))
-        .addHeader("Content-Type", "application/json"));
+    CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService,
+        mockFilesClient);
     Mockito.doReturn(Try.of(() -> null))
         .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any(), Mockito.anyLong());
-    CopyToDriveRequest up = new CopyToDriveRequest();
+    CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("123");
     up.setPart("Whatever you want");
     Element element = JaxbUtil.jaxbToElement(up);
-    copyToDrive.handle(element, context);
-    RecordedRequest recordedRequest = mockBackEnd.takeRequest();
-    String receivedBody = IOUtils.toString(recordedRequest.getBody().inputStream().readAllBytes());
-    Assert.assertEquals(receivedBody,body);
+    try {
+      copyToFiles.handle(element, context);
+    } catch (SoapFaultException ignored) {}
+    Mockito.verify(mockFilesClient, Mockito.times(1))
+        .uploadFile(ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + authToken.getEncoded(),
+            "LOCAL_ROOT", fileName, contentType, uploadContent, fileSize);
   }
 
 

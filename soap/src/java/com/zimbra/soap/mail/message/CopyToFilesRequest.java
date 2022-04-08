@@ -12,8 +12,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name= MailConstants.E_COPY_TO_DRIVE_REQUEST)
-public class CopyToDriveRequest {
+@XmlRootElement(name= MailConstants.E_COPY_TO_FILES_REQUEST)
+public class CopyToFilesRequest {
 
   /**
    * @zm-api-field-tag messageId
