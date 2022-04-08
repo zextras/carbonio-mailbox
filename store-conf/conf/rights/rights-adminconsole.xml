@@ -1410,6 +1410,7 @@
       <a n="zimbraPasswordMinAge"/>
       <a n="zimbraPasswordMaxAge"/>
       <a n="zimbraPasswordEnforceHistory"/>
+      <a n="zimbraPasswordBlockCommonEnabled"/>
       <!-- Failed Login Policy -->
       <a n="zimbraPasswordLockoutEnabled"/>
       <a n="zimbraPasswordLockoutMaxFailures"/>
@@ -1453,6 +1454,7 @@
       <a n="zimbraPasswordMinAge"/>
       <a n="zimbraPasswordMaxAge"/>
       <a n="zimbraPasswordEnforceHistory"/>
+      <a n="zimbraPasswordBlockCommonEnabled"/>
       <!-- Failed Login Policy -->
       <a n="zimbraPasswordLockoutEnabled"/>
       <a n="zimbraPasswordLockoutMaxFailures"/>

@@ -309,7 +309,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
         commonPasswordFilter = UnmodifiableBloomFilter
             .createLazyFilterFromFile(LC.common_passwords_txt.value());
-        blockCommonPasswordsEnabled = LC.zimbra_block_common_passwords_enabled.booleanValue();
 
         setDIT();
         setHelper(new ZLdapHelper(this));
@@ -6122,8 +6121,15 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
                     new Argument(Provisioning.A_zimbraPasswordMaxLength, maxLength, Argument.Type.NUM));
         }
 
-        if (blockCommonPasswordsEnabled && commonPasswordFilter.mightContain(password)) {
-            throw AccountServiceException.INVALID_PASSWORD("password is known to be too common");
+        //keep this check, to prevent the method execution while creating new accounts
+        if(acct != null){
+            blockCommonPasswordsEnabled =
+                acct.getBooleanAttr(Provisioning.A_zimbraPasswordBlockCommonEnabled, false);
+            if (blockCommonPasswordsEnabled && commonPasswordFilter.mightContain(password)) {
+                throw AccountServiceException.INVALID_PASSWORD(
+                    "password is known to be too common",
+                    new Argument("blockCommonWordsInPasswordPolicy", password, Argument.Type.STR));
+            }
         }
 
         int minUpperCase = getInt(acct, cos, entry, Provisioning.A_zimbraPasswordMinUpperCaseChars, 0);
@@ -6144,6 +6150,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             }
         }
 
+        //keep this check, to prevent the method execution while creating new accounts
         if(acct != null){
             validatePasswordEntropyForPersonalData(password, acct);
         }

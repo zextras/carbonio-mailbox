@@ -1052,8 +1052,6 @@ public final class JaxbUtil {
             com.zimbra.soap.mail.message.VerifyCodeResponse.class,
             com.zimbra.soap.mail.message.WaitSetRequest.class,
             com.zimbra.soap.mail.message.WaitSetResponse.class,
-            com.zimbra.soap.mail.message.GetPreviewRequest.class,
-            com.zimbra.soap.mail.message.GetPreviewResponse.class,
             com.zimbra.soap.replication.message.BecomeMasterRequest.class,
             com.zimbra.soap.replication.message.BecomeMasterResponse.class,
             com.zimbra.soap.replication.message.BringDownServiceIPRequest.class,
