@@ -17,8 +17,7 @@ public class MailboxAttachmentService implements AttachmentService {
       String part) {
     return Try.of(() -> MailboxManager.getInstance().getMailboxByAccountId(accountId))
         .mapTry(mailbox -> mailbox.getMessageById(new OperationContext(token), messageId))
-        .mapTry(message -> Mime.getMimePart(message.getMimeMessage(), part))
-        .andThenTry(mimePart -> IOUtils.toByteArray(mimePart.getInputStream())) // have to read content to load the stream
+        .mapTry(message -> Mime.getMimePart(message.getMimeMessage(), part))// have to read content to load the stream
         ;
   }
 

@@ -3,6 +3,11 @@
   xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
   <info organisation="zimbra" module="zm-store" status="integration"></info>
   <dependencies>
+    <dependency org="org.jetbrains.kotlin" name="kotlin-stdlib-common" rev="1.6.20"/>
+    <dependency org="org.jetbrains.kotlin" name="kotlin-stdlib" rev="1.6.20"/>
+    <dependency org="com.squareup.okhttp3" name="okhttp" rev="4.0.1"/>
+    <dependency org="com.squareup.okio" name="okio" rev="2.9.0"/>
+    <dependency org="com.squareup.okhttp3" name="mockwebserver" rev="4.0.1"/>
     <dependency org="com.zextras.carbonio.files" name="carbonio-files-sdk" rev="0.0.1"/>
     <dependency org="org.mockito" name="mockito-core" rev="4.4.0"/>
     <dependency org="net.bytebuddy" name="byte-buddy" rev="1.12.8"/>

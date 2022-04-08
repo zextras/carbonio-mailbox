@@ -1,5 +1,6 @@
 package com.zimbra.cs.service.mail;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
 import com.zimbra.common.account.Key;
@@ -12,6 +13,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.cs.service.AuthProvider;
+import com.zimbra.cs.service.AuthProviderException;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
@@ -29,6 +31,11 @@ import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimePart;
 import junit.framework.Assert;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
+import org.apache.commons.io.IOUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,6 +46,18 @@ public class CopyToDriveTest {
   private final FilesClient mockFilesClient = Mockito.mock(FilesClient.class);
   private final AttachmentService mockAttachmentService = Mockito.mock(
       AttachmentService.class);
+  public static MockWebServer mockBackEnd;
+
+  @BeforeClass
+  public static void startServer() throws IOException {
+    mockBackEnd = new MockWebServer();
+    mockBackEnd.start();
+  }
+
+  @AfterClass
+  public static void stopSever() throws IOException {
+    mockBackEnd.shutdown();
+  }
 
   @BeforeClass
   public static void init() throws Exception {
@@ -201,6 +220,45 @@ public class CopyToDriveTest {
     } catch (SoapFaultException soapFaultException) {
       Assert.assertEquals("Service failure.", soapFaultException.getMessage());
     }
+  }
+
+  /**
+   * Test case if file service returns null {@link com.zextras.carbonio.files.entities.NodeId}
+   * @throws ServiceException
+   * @throws IOException
+   */
+  @Test
+  public void shouldSendUploadedFile() throws Exception {
+    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+
+    // prepare request
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put(SoapEngine.ZIMBRA_CONTEXT, new ZimbraSoapContext(AuthProvider.getAuthToken(acct),
+        acct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
+    // have to mock because even the Upload object has some logic in it
+    MimePart mockUpload =  Mockito.mock(MimePart.class);
+    String body = "Hi, how, are, ye, ?";
+    InputStream uploadContent = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+    Mockito.when(mockUpload.getFileName()).thenReturn("My_file.csv");
+    Mockito.when(mockUpload.getContentType()).thenReturn("text/csv");
+    Mockito.when(mockUpload.getInputStream()).thenReturn(uploadContent);
+    Mockito.when(
+            mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
+        .thenReturn(Try.success(mockUpload));
+    CopyToDrive copyToDrive = new CopyToDrive(mockAttachmentService,
+        FilesClient.atURL(String.format("http://%s:%d", mockBackEnd.getHostName(), mockBackEnd.getPort())));
+    mockBackEnd.enqueue(new MockResponse().setResponseCode(200).setBody(new ObjectMapper().writeValueAsString(new NodeId()))
+        .addHeader("Content-Type", "application/json"));
+    Mockito.doReturn(Try.of(() -> null))
+        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any());
+    CopyToDriveRequest up = new CopyToDriveRequest();
+    up.setMessageId("123");
+    up.setPart("Whatever you want");
+    Element element = JaxbUtil.jaxbToElement(up);
+    copyToDrive.handle(element, context);
+    RecordedRequest recordedRequest = mockBackEnd.takeRequest();
+    String receivedBody = IOUtils.toString(recordedRequest.getBody().inputStream().readAllBytes());
+    Assert.assertEquals(receivedBody,body);
   }
 
 
