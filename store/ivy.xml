@@ -8,7 +8,7 @@
     <dependency org="com.squareup.okhttp3" name="okhttp" rev="4.0.1"/>
     <dependency org="com.squareup.okio" name="okio" rev="2.9.0"/>
     <dependency org="com.squareup.okhttp3" name="mockwebserver" rev="4.0.1"/>
-    <dependency org="com.zextras.carbonio.files" name="carbonio-files-sdk" rev="0.0.1"/>
+    <dependency org="com.zextras.carbonio.files" name="carbonio-files-sdk" rev="0.0.3"/>
     <dependency org="org.mockito" name="mockito-core" rev="4.4.0"/>
     <dependency org="net.bytebuddy" name="byte-buddy" rev="1.12.8"/>
     <dependency org="net.bytebuddy" name="byte-buddy-agent" rev="1.12.8"/>

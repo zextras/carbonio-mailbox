@@ -6,7 +6,6 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.Mime;
 import io.vavr.control.Try;
 import javax.mail.internet.MimePart;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Mailbox attachment provider
