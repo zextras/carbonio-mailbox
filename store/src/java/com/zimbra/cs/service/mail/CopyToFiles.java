@@ -25,7 +25,7 @@ import java.util.Optional;
 import javax.mail.internet.MimePart;
 
 /**
- * Service class to handle copy item to drive.
+ * Service class to handle copy item to Files.
  *
  * @author davidefrison
  */
