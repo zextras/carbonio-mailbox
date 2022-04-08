@@ -102,7 +102,8 @@ public class CopyToDriveTest {
     // mock files api
     String nodeId = UUID.randomUUID().toString();
     Mockito.doReturn(Try.of(() -> new NodeId(nodeId)))
-        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any());
+        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),
+            Mockito.anyString(),Mockito.anyString(),Mockito.any(), Mockito.anyLong());
     CopyToDriveRequest up = new CopyToDriveRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -168,7 +169,8 @@ public class CopyToDriveTest {
         .thenReturn(Try.success(mockAttachment));
     CopyToDrive copyToDrive = new CopyToDrive(mockAttachmentService, mockFilesClient);
     Mockito.doReturn(Try.failure(new RuntimeException("Oops, something went wrong.")))
-        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any());
+        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),
+            Mockito.anyString(), Mockito.any(), Mockito.anyLong());
     CopyToDriveRequest up = new CopyToDriveRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -208,7 +210,8 @@ public class CopyToDriveTest {
         .thenReturn(Try.success(mockUpload));
     CopyToDrive copyToDrive = new CopyToDrive(mockAttachmentService, mockFilesClient);
     Mockito.doReturn(Try.of(() -> null))
-        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any());
+        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),
+            Mockito.any(), Mockito.anyLong());
     CopyToDriveRequest up = new CopyToDriveRequest();
     up.setMessageId("123");
     up.setPart("Whatever you want");
@@ -250,7 +253,7 @@ public class CopyToDriveTest {
     mockBackEnd.enqueue(new MockResponse().setResponseCode(200).setBody(new ObjectMapper().writeValueAsString(new NodeId()))
         .addHeader("Content-Type", "application/json"));
     Mockito.doReturn(Try.of(() -> null))
-        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any());
+        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any(), Mockito.anyLong());
     CopyToDriveRequest up = new CopyToDriveRequest();
     up.setMessageId("123");
     up.setPart("Whatever you want");

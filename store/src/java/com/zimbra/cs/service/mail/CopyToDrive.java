@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 import javax.mail.internet.MimePart;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Service class to handle copy item to drive.
@@ -90,7 +91,7 @@ public class CopyToDrive extends MailDocumentHandler {
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("File not found.", "", false)));
     // get file content
-    Try<InputStream> uploadContentStream = attachmentTry.mapTry(
+    Try<InputStream> attachmentStream = attachmentTry.mapTry(
             attachment -> attachment.getInputStream())
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
@@ -104,10 +105,16 @@ public class CopyToDrive extends MailDocumentHandler {
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("Cannot get file name.", "", true)));
     Try<String> authCookieTry = Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + context.getAuthToken().getEncoded());
+    Try<Long> attachmentSize = attachmentTry.mapTry(
+            attachment -> (long) IOUtils.toByteArray(attachment.getInputStream()).length)
+        .onFailure(ex -> mLog.debug(ex.getMessage()))
+        .mapFailure(Case($(instanceOf(Exception.class)),
+            new SoapFaultException("Cannot read file content.", "", true)));
     // execute Files api call
-    return API.For(authCookieTry, attachmentTry, uploadContentStream, fileNameTry, contentTypeTry)
-        .yield((authCookie, attachment, stream, fileName, contentType) ->
-            filesClient.uploadFile(authCookie, "LOCAL_ROOT", fileName, contentType, stream)
+
+    return API.For(authCookieTry, attachmentTry, attachmentStream, attachmentSize, fileNameTry, contentTypeTry)
+        .yield((authCookie, attachment, stream, streamSize, fileName, contentType) ->
+            filesClient.uploadFile(authCookie, "LOCAL_ROOT", fileName, contentType, stream, streamSize)
                 .onFailure(ex -> mLog.debug(ex.getMessage()))).get();
   }
 }
