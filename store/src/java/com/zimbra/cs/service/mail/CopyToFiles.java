@@ -14,6 +14,7 @@ import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.service.AttachmentService;
+import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
@@ -23,6 +24,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 import javax.mail.internet.MimePart;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Service class to handle copy item to Files.
@@ -53,72 +55,92 @@ public class CopyToFiles extends MailDocumentHandler {
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     final ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    // throw exception if failure or nodeId null
-    String nodeId = Optional.ofNullable(
-            this.getNodeId(request, zsc)
-                .getOrElseThrow(ex -> new SoapFaultException("Service failure.", "", true)))
+
+    // throws exception if failure or nodeId null
+    String nodeId = Optional.ofNullable(getRequestObject(request)
+            .flatMap(req -> getAttachmentToCopy(req, zsc))
+            .flatMap(attachment -> getNodeId(attachment, zsc))
+            .mapFailure(Case($(ex -> !(ex instanceof SoapFaultException)), new SoapFaultException("Service failure.", "", true)))
+            .get())
         .orElseThrow(() -> new SoapFaultException("Service failure.", "", true))
         .getNodeId();
+
     CopyToFilesResponse copyToFilesResponse = new CopyToFilesResponse();
     copyToFilesResponse.setNodeId(nodeId);
     return zsc.jaxbToElement(copyToFilesResponse);
   }
 
   /**
-   * Perform call to Files upload API using request input and context.
+   * Transforms the SOAP request in object representation
    *
-   * @param request Element request
-   * @param context zimbra soap context
-   * @return {@link NodeId} response from Flies client
+   * @param request soap {@link Element} as received from client
+   * @return try of {@link CopyToFilesRequest}
    */
-  private Try<NodeId> getNodeId(Element request, ZimbraSoapContext context) {
-    // get auth cookie
-    Try<String> authCookieTry = Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + context.getAuthToken().getEncoded());
-
-    // map to request
-    Try<CopyToFilesRequest> copyToDriveReq =
-        Try.<CopyToFilesRequest>of(() -> context.elementToJaxb(request))
-            .onFailure(ex -> mLog.debug(ex.getMessage()))
-            .mapFailure(Case($(instanceOf(Exception.class)),
-                new SoapFaultException("Malformed request.", "", false)));
-    // get mail message
-    Try<Integer> messageIdTry = copyToDriveReq.mapTry(req -> Integer.parseInt(req.getMessageId()))
+  Try<CopyToFilesRequest> getRequestObject(Element request) {
+    return Try.<CopyToFilesRequest>of(() -> JaxbUtil.elementToJaxb(request))
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
-            new SoapFaultException(MailConstants.A_MESSAGE_ID + " must ne an integer.", "",
+            new SoapFaultException("Malformed request.", "", false)));
+  }
+
+  /**
+   * Get attachment using request and context authorization info.
+   *
+   * @param request try of {@link CopyToFilesRequest}
+   * @param context
+   * @return
+   */
+  Try<MimePart> getAttachmentToCopy(CopyToFilesRequest request, ZimbraSoapContext context) {
+    // get mail message
+    Try<Integer> messageIdTry = Try.of(() -> Integer.parseInt(request.getMessageId()))
+        .onFailure(ex -> mLog.debug(ex.getMessage()))
+        .mapFailure(Case($(instanceOf(Exception.class)),
+            new SoapFaultException(MailConstants.A_MESSAGE_ID + " must be an integer.", "",
                 false)));
     // get mail attachment
-    Try<MimePart> attachmentTry = API.For(copyToDriveReq, messageIdTry).yield((req, messageId) ->
-            attachmentService.getAttachment(context.getAuthtokenAccountId(), context.getAuthToken(),
-                messageId, req.getPart()).get())
-        .onFailure(ex -> mLog.debug(ex.getMessage()))
-        .mapFailure(Case($(instanceOf(Exception.class)),
-            new SoapFaultException("File not found.", "", false)));
+    return API.For(Try.of(() -> request), messageIdTry).yield((req, messageId) ->
+        attachmentService.getAttachment(context.getAuthtokenAccountId(), context.getAuthToken(), messageId, req.getPart())
+            .onFailure(ex -> mLog.debug(ex.getMessage()))
+            .mapFailure(Case($(instanceOf(Exception.class)), new SoapFaultException("File not found.", "", false)))
+            .get());
+  }
+
+  /**
+   * Perform call to Files upload API using request input and context.
+   *
+   * @param attachment a {@link MimePart} object instance
+   * @param context    zimbra soap context
+   * @return {@link NodeId} response from Flies client
+   */
+  Try<NodeId> getNodeId(MimePart attachment, ZimbraSoapContext context) {
+    // get auth cookie
+    Try<String> authCookieTry = Try.of(
+        () -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + context.getAuthToken().getEncoded());
     // get attachment content as stream
-    Try<InputStream> attachmentStream = attachmentTry.mapTry(
-            attachment -> attachment.getInputStream())
+    Try<InputStream> attachmentStream = Try.of(() -> attachment.getInputStream())
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("Cannot read file content.", "", true)));
     // get attachment content-type
-    Try<String> contentTypeTry = attachmentTry.mapTry(attachment -> attachment.getContentType())
+    Try<String> contentTypeTry = Try.of(() -> attachment.getContentType())
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("Cannot get file content-type.", "", true)));
     // get attachment name
-    Try<String> fileNameTry = attachmentTry.mapTry(attachment -> attachment.getFileName())
+    Try<String> fileNameTry = Try.of(() -> attachment.getFileName())
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("Cannot get file name.", "", true)));
     // get attachment size (have to read the attachment)
-    Try<Long> attachmentSize = attachmentTry.mapTry(
-            attachment -> (long) attachment.getSize())
+    Try<Long> attachmentSize = Try.of(
+            () -> (long) attachment.getSize())
         .onFailure(ex -> mLog.debug(ex.getMessage()));
 
-    // execute Files api call with all previous values
-    return API.For(authCookieTry, attachmentTry, attachmentStream, attachmentSize, fileNameTry, contentTypeTry)
-        .yield((authCookie, attachment, stream, streamSize, fileName, contentType) ->
-            filesClient.uploadFile(authCookie, "LOCAL_ROOT", fileName, contentType, stream, streamSize)
+    // execute Files api call
+    return API.For(authCookieTry, attachmentStream, attachmentSize, fileNameTry, contentTypeTry)
+        .yield((authCookie, stream, streamSize, fileName, contentType) ->
+            filesClient.uploadFile(authCookie, "LOCAL_ROOT", fileName, contentType, stream,
+                    streamSize)
                 .onFailure(ex -> mLog.debug(ex.getMessage()))).get();
   }
 }
