@@ -29,6 +29,23 @@ public class CopyToFilesRequest {
   @XmlElement(name=MailConstants.A_PART /* part */, required=true)
   private String part;
 
+  /**
+   * @zm-api-field-tag destinationFolderId
+   * @zm-api-field-description identifies folder where to upload on files
+   */
+  @XmlElement(name=MailConstants.A_DESTINATION_FOLDER_ID /* destinationFolderId */, required=true)
+  private String destinationFolderId;
+
+  /**
+   * @zm-api-field-tag description
+   * @zm-api-field-description identifies folder where to upload on files
+   */
+  @XmlElement(name=MailConstants.A_DESCRIPTION /* description */, required=true)
+  private String description;
+
+  public CopyToFilesRequest() {
+  }
+
   public String getMessageId() {
     return messageId;
   }
@@ -43,5 +60,21 @@ public class CopyToFilesRequest {
 
   public void setPart(String part) {
     this.part = part;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getDestinationFolderId() {
+    return destinationFolderId;
+  }
+
+  public void setDestinationFolderId(String destinationFolderId) {
+    this.destinationFolderId = destinationFolderId;
   }
 }

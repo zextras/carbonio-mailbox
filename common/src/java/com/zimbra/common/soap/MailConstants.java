@@ -1382,6 +1382,8 @@ public final class MailConstants {
 
     // Upload attachment API
     public static final String A_NODE_ID = "nodeId";
+    public static final String A_DESTINATION_FOLDER_ID = "destinationFolderId";
+    public static final String A_DESCRIPTION = "description";
     public static final String E_COPY_TO_FILES_REQUEST = "CopyToFilesRequest";
     public static final String E_COPY_TO_FILES_RESPONSE = "CopyToFilesResponse";
     public static final QName COPY_TO_DRIVE_REQUEST = QName.get(E_COPY_TO_FILES_REQUEST, NAMESPACE);
