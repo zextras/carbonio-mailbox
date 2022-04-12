@@ -142,7 +142,7 @@ public class CopyToFiles extends MailDocumentHandler {
     // get destinationId
     Try<String> destFolderIdTry = Try.of(() ->
             Optional.ofNullable(request.getDestinationFolderId()))
-        .mapTry(optional -> optional.orElseThrow(() -> new SoapFaultException(MailConstants.A_DESTINATION_FOLDER_ID + " must not be null", "", true)))
+        .mapTry(optional -> optional.orElse("LOCAL_ROOT"))
         .onFailure(ex -> mLog.debug(ex.getMessage()));
 
     // execute Files api call
