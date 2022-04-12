@@ -3227,6 +3227,10 @@ public class ProxyConfGen
             expandTemplate(new File(mTemplateDir, getConfTemplateFileName("docs.common")), new File(mConfIncludesDir, getConfFileName("docs.common")));
             expandTemplate(new File(mTemplateDir, getConfTemplateFileName("docs.upstream")), new File(mConfIncludesDir, getConfFileName("docs.upstream")));
             expandTemplate(new File(mTemplateDir, getConfTemplateFileName("web.carbonio.admin.default")), new File(mConfIncludesDir, getConfFileName("web.carbonio.admin.default")));
+            expandTemplate(new File(mTemplateDir, getConfTemplateFileName("web.xmpp.default")), new File(mConfIncludesDir, getConfFileName("web.xmpp.default")));
+            expandTemplate(new File(mTemplateDir, getConfTemplateFileName("web.xmpps.default")), new File(mConfIncludesDir, getConfFileName("web.xmpps.default")));
+            expandTemplate(new File(mTemplateDir, getConfTemplateFileName("web.xmpp")), new File(mConfIncludesDir, getConfFileName("web.xmpp")));
+            expandTemplate(new File(mTemplateDir, getConfTemplateFileName("web.xmpps")), new File(mConfIncludesDir, getConfFileName("web.xmpps")));
         } catch (ProxyConfException pe) {
             handleException(pe);
             exitCode = 1;
