@@ -30,4 +30,43 @@ public class CopyToFilesTest {
     Assert.assertEquals(destinationFolderId, copyToFilesRequest.getDestinationFolderId());
   }
 
+  @Test
+  public void shouldReturnDestinationFolderIfValuePresent() {
+    CopyToFilesRequest copyToFilesRequest = new CopyToFilesRequest();
+    String mailId = "380";
+    String attachmentPart = "2";
+    String expectedFolderId = "10";
+    copyToFilesRequest.setDestinationFolderId(expectedFolderId);
+    copyToFilesRequest.setMessageId(mailId);
+    copyToFilesRequest.setPart(attachmentPart);
+    String destFolderId = new CopyToFiles(new MailboxAttachmentService(), FilesClient.atURL(""))
+          .getDestinationFolderId(copyToFilesRequest).get();
+    Assert.assertEquals(expectedFolderId, destFolderId);
+  }
+
+  @Test
+  public void shouldReturnDefaultDestinationFolderIfValueMissing() {
+    CopyToFilesRequest copyToFilesRequest = new CopyToFilesRequest();
+    String mailId = "380";
+    String attachmentPart = "2";
+    copyToFilesRequest.setMessageId(mailId);
+    copyToFilesRequest.setPart(attachmentPart);
+    String destFolderId = new CopyToFiles(new MailboxAttachmentService(), FilesClient.atURL(""))
+        .getDestinationFolderId(copyToFilesRequest).get();
+    Assert.assertEquals("LOCAL_ROOT", destFolderId);
+  }
+
+  @Test
+  public void shouldReturnDefaultDestinationFolderIfValueEmptyString() {
+    CopyToFilesRequest copyToFilesRequest = new CopyToFilesRequest();
+    String mailId = "380";
+    String attachmentPart = "2";
+    copyToFilesRequest.setMessageId(mailId);
+    copyToFilesRequest.setDestinationFolderId("");
+    copyToFilesRequest.setPart(attachmentPart);
+    String destFolderId = new CopyToFiles(new MailboxAttachmentService(), FilesClient.atURL(""))
+        .getDestinationFolderId(copyToFilesRequest).get();
+    Assert.assertEquals("LOCAL_ROOT", destFolderId);
+  }
+
 }

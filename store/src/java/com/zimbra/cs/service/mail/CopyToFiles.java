@@ -22,6 +22,7 @@ import io.vavr.API;
 import io.vavr.control.Try;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import javax.mail.internet.MimePart;
 
@@ -139,11 +140,9 @@ public class CopyToFiles extends MailDocumentHandler {
     Try<Long> attachmentSize = Try.of(
             () -> (long) attachment.getSize())
         .onFailure(ex -> mLog.debug(ex.getMessage()));
+
     // get destinationId
-    Try<String> destFolderIdTry = Try.of(() ->
-            Optional.ofNullable(request.getDestinationFolderId()))
-        .mapTry(optional -> optional.orElse("LOCAL_ROOT"))
-        .onFailure(ex -> mLog.debug(ex.getMessage()));
+    Try<String> destFolderIdTry = getDestinationFolderId(request);
 
     // execute Files api call
     return API.For(authCookieTry, destFolderIdTry, attachmentStream, attachmentSize, fileNameTry, contentTypeTry)
@@ -151,5 +150,22 @@ public class CopyToFiles extends MailDocumentHandler {
             filesClient.uploadFile(authCookie, destFolderId, fileName, contentType, stream,
                     streamSize).get())
                 .onFailure(ex -> mLog.debug(ex.getMessage()));
+  }
+
+  /**
+   * Returns value from request with some logic on defaults and validation.
+   *
+   * @param request {@link CopyToFilesRequest}
+   * @return destination folder id from request
+   */
+  Try<String> getDestinationFolderId(CopyToFilesRequest request) {
+    // get destinationId
+    return Try.of(() ->
+            Optional.ofNullable(request.getDestinationFolderId()))
+        .mapTry(optional -> {
+          String destId = optional.orElse("LOCAL_ROOT");
+          return Objects.equals("", destId) ? "LOCAL_ROOT" : destId;
+        })
+        .onFailure(ex -> mLog.debug(ex.getMessage()));
   }
 }
