@@ -136,8 +136,10 @@ public class CopyToFiles extends MailDocumentHandler {
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("Cannot get file name.", "", true)));
-    // get attachment size (have to read the attachment)
-    Try<Long> attachmentSize = Try.of(
+    // TODO: Files client needs content size. But mimepart content size is different from readed input stream.
+    // This is because getInputStream is decoding a base64, while size is calculated on original base64 content
+    // Solution: read in memory and calculate size? really ugly
+  Try<Long> attachmentSize = Try.of(
             () -> (long) attachment.getSize())
         .onFailure(ex -> mLog.debug(ex.getMessage()));
 

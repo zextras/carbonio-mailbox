@@ -18,10 +18,10 @@ public class CopyToFilesTest {
     String attachmentPart = "2";
     String description = "This is a description.";
     String destinationFolderId = "10";
-    element.addUniqueElement(new XMLElement(MailConstants.A_MESSAGE_ID)).setText(mailId);
-    element.addUniqueElement(new XMLElement(MailConstants.A_PART)).setText(attachmentPart);
-    element.addUniqueElement(new XMLElement(MailConstants.A_DESCRIPTION)).setText(description);
-    element.addUniqueElement(new XMLElement(MailConstants.A_DESTINATION_FOLDER_ID)).setText(destinationFolderId);
+    element.addAttribute(MailConstants.A_MESSAGE_ID,mailId);
+    element.addAttribute(MailConstants.A_PART,attachmentPart);
+    element.addUniqueElement(new XMLElement(MailConstants.E_FILE_DESCRIPTION)).setText(description);
+    element.addUniqueElement(new XMLElement(MailConstants.E_DESTINATION_FOLDER_ID)).setText(destinationFolderId);
     CopyToFiles copyToFiles =  new CopyToFiles(new MailboxAttachmentService(), FilesClient.atURL(""));
     CopyToFilesRequest copyToFilesRequest = copyToFiles.getRequestObject(element).get();
     Assert.assertEquals(mailId, copyToFilesRequest.getMessageId());
