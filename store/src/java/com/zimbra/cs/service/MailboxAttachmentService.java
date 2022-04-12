@@ -11,6 +11,7 @@ import javax.mail.internet.MimePart;
 
 /**
  * Mailbox attachment provider
+ * @author davidefrison
  */
 public class MailboxAttachmentService implements AttachmentService {
 
@@ -23,14 +24,13 @@ public class MailboxAttachmentService implements AttachmentService {
         ;
   }
 
+  /**
+   * For the mailbox the input stream is already the decoded version of the base64 original content
+   * @param attachment attachment to get original content of
+   * @return
+   */
   @Override
   public Try<InputStream> getAttachmentRawContent(MimePart attachment) {
-    return Try.of(() -> {
-          if (attachment instanceof ZMimeBodyPart) {
-            return ((ZMimeBodyPart) attachment).getRawInputStream();
-          }
-          return attachment.getInputStream();
-        }
-    );
+    return Try.of(attachment::getInputStream);
   }
 }

@@ -7,6 +7,7 @@ import javax.mail.internet.MimePart;
 
 /**
  * Interface for attachment content provider (get).
+ * @author davidefrison
  */
 public interface AttachmentService {
 
