@@ -3,6 +3,9 @@ package com.zimbra.cs.service;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.preview.PreviewClient;
+import com.zextras.carbonio.preview.exceptions.BadRequest;
+import com.zextras.carbonio.preview.exceptions.ItemNotFound;
+import com.zextras.carbonio.preview.exceptions.ValidationError;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.Query;
 import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
@@ -72,13 +75,13 @@ public class PreviewServlet extends ZimbraServlet {
   /**
    * This method is used to retrieve the attachment from mailbox
    *
-   * @param accountId the accountId of user
    * @param token the {@link AuthToken} of user
    * @param messageId the messageId that we want to get attachment from
    * @param part the part number of the attachment in email
    * @return the {@link MimePart} object
    */
-  Try<MimePart> getAttachment(String accountId, AuthToken token, int messageId, String part) {
+  Try<MimePart> getAttachment(AuthToken token, int messageId, String part) {
+    final String accountId = token.getAccountId();
     final Try<MimePart> mimePart =
         Try.of(() -> MailboxManager.getInstance().getMailboxByAccountId(accountId))
             .mapTry(mailbox -> mailbox.getMessageById(new OperationContext(token), messageId))
@@ -204,11 +207,11 @@ public class PreviewServlet extends ZimbraServlet {
       Try<BlobResponse> response, String fileName) {
     return (response.isSuccess())
         ? Try.success(
-        new BlobResponseStore(
-            response.get().getContent(),
-            fileName,
-            response.get().getLength(),
-            response.get().getMimeType()))
+            new BlobResponseStore(
+                response.get().getContent(),
+                fileName,
+                response.get().getLength(),
+                response.get().getMimeType()))
         : Try.failure(response.failed().get());
   }
 
@@ -321,11 +324,9 @@ public class PreviewServlet extends ZimbraServlet {
     } else {
       final int messageId = Integer.parseInt(requiredQueryParametersMatcher.group(2));
       final String partNo = requiredQueryParametersMatcher.group(3);
-      final String accountId = authToken.getAccountId();
 
       // get attachment
-      final Try<MimePart> attachmentMimePart =
-          getAttachment(accountId, authToken, messageId, partNo);
+      final Try<MimePart> attachmentMimePart = getAttachment(authToken, messageId, partNo);
       if (attachmentMimePart.isFailure()) {
         respondWithError(
             resp, HttpServletResponse.SC_ACCEPTED, attachmentMimePart.failed().get().getMessage());
@@ -335,8 +336,27 @@ public class PreviewServlet extends ZimbraServlet {
       final Try<BlobResponseStore> previewOfAttachment =
           getAttachmentPreview(getUrlWithQueryParams(req), attachmentMimePart.get());
       if (previewOfAttachment.isFailure()) {
-        respondWithError(
-            resp, HttpServletResponse.SC_ACCEPTED, previewOfAttachment.failed().get().getMessage());
+        if (previewOfAttachment.failed().get() instanceof BadRequest) {
+          respondWithError(
+              resp,
+              HttpServletResponse.SC_BAD_REQUEST,
+              previewOfAttachment.failed().get().getMessage());
+        } else if (previewOfAttachment.failed().get() instanceof ItemNotFound) {
+          respondWithError(
+              resp,
+              HttpServletResponse.SC_NOT_FOUND,
+              previewOfAttachment.failed().get().getMessage());
+        } else if (previewOfAttachment.failed().get() instanceof ValidationError) {
+          respondWithError(
+              resp,
+              HttpServletResponse.SC_UNAUTHORIZED,
+              previewOfAttachment.failed().get().getMessage());
+        } else {
+          respondWithError(
+              resp,
+              HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+              previewOfAttachment.failed().get().getMessage());
+        }
       }
 
       // send preview response
