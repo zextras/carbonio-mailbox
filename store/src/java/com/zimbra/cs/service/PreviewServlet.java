@@ -364,6 +364,12 @@ public class PreviewServlet extends ZimbraServlet {
     }
   }
 
+  /**
+   * @param authToken the {@link AuthToken} we want to check
+   * @param req the {@link HttpServletRequest} object that will be used to provide req metadata in
+   *     error message
+   * @param resp the {@link HttpServletResponse} to send the error response
+   */
   void checkAuthTokenFromCookieOrRespondWithError(
       AuthToken authToken, HttpServletRequest req, HttpServletResponse resp) {
     if (authToken == null) {
@@ -387,6 +393,7 @@ public class PreviewServlet extends ZimbraServlet {
   }
 }
 
+/** {@link PreviewQueryParameters} class is used to map the url parameter as java object */
 class PreviewQueryParameters {
   @JsonProperty("quality")
   private Quality quality;
@@ -464,6 +471,11 @@ class PreviewQueryParameters {
   }
 }
 
+/**
+ * {@link BlobResponseStore} class is used to store responses we get from preview service It
+ * basically act as intermediate object with all metadata we get from attachment and preview
+ * service.
+ */
 class BlobResponseStore {
   private final String filename;
   private final Long size;
