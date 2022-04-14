@@ -39,11 +39,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * The preview service servlet - serves preview for requested mail attachment using Carbonio
+ * The preview service servlet - serves preview for requested mail attachments using Carbonio
  * previewer service
  *
  * <pre>
- *   The API is almost same as of preview service(https://zextras.atlassian.net/wiki/spaces/SW/pages/2353430753/Preview+API)
+ *   The API is the almost same as of preview service(https://zextras.atlassian.net/wiki/spaces/SW/pages/2353430753/Preview+API)
  *   with few modification that let us make it use as preview service for mailbox attachments.
  *
  *   itemId, partNo, disposition(disp) are notable new parameters, their usage can be found in the URL given below:
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletResponse;
  *                      area  =  width of the output image (>=0) x height of the output image (>=0),
  *                               width x height => 100x200. The first is width, the latter height, the order is important!
  *                 thumbnail  =  omit for full preview type
- *                               'thumbnail' if requesting for preview type
+ *                               'thumbnail' if requesting the preview type
  *                                thumbnail
  *
  *          Query parameters:
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  *                first_page  =  integer value of first page to preview (n>=1)
  *                 last_page  =  integer value of last page to preview (0 = last of the pdf)
  *
- *            Authentication  =  expects ZM_AUTH_TOKEN cookie passed in request
+ *            Authentication  =  expects ZM_AUTH_TOKEN cookie passed in the request
  *                               headers
  *
  * </pre>
@@ -81,7 +81,7 @@ public class PreviewServlet extends ZimbraServlet {
 
   public static final String SERVLET_PATH = "/preview";
   private static final long serialVersionUID = -4834966842520538743L;
-  private static final Log mLog = LogFactory.getLog(PreviewServlet.class);
+  private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
   private static final String PREVIEW_SERVICE_BASE_URL = "127.78.0.7:20001";//"http://127.78.0.6:10000/";
 
   /**
@@ -312,7 +312,7 @@ public class PreviewServlet extends ZimbraServlet {
               + URLEncoder.encode(attachmentFilename, StandardCharsets.UTF_8));
       ByteUtil.copy(blobResponseStore.getBlobStream(), true, resp.getOutputStream(), false);
     } catch (Exception e) {
-      mLog.error(e.getMessage(), e);
+      LOG.error(e.getMessage(), e);
     }
   }
 
@@ -328,7 +328,7 @@ public class PreviewServlet extends ZimbraServlet {
     try {
       resp.sendError(errCode, reason);
     } catch (IOException e) {
-      mLog.error(e.getMessage(), e);
+      LOG.error(e.getMessage(), e);
     }
   }
 
@@ -341,14 +341,15 @@ public class PreviewServlet extends ZimbraServlet {
     final AuthToken authToken = getAuthTokenFromCookie(req, resp);
     checkAuthTokenFromCookieOrRespondWithError(authToken, req, resp);
 
-    final Pattern requiredQueryParametersPattern =
+     final Pattern requiredQueryParametersPattern =
         Pattern.compile(SERVLET_PATH + "/([a-zA-Z]+)/([0-9]+)/([0-9]+)");
     final Matcher requiredQueryParametersMatcher =
         requiredQueryParametersPattern.matcher(getUrlWithQueryParams(req));
 
-    // check url for required parameters
-    if (!requiredQueryParametersMatcher.find()
-        || requiredQueryParametersMatcher.groupCount() != 3) {
+    // check url for the presence of required parameters and query string
+    // send error otherwise
+    if (!req.getQueryString().isEmpty() && (!requiredQueryParametersMatcher.find()
+        || requiredQueryParametersMatcher.groupCount() != 3)) {
       respondWithError(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters");
     } else {
       final int messageId = Integer.parseInt(requiredQueryParametersMatcher.group(2));
@@ -358,7 +359,7 @@ public class PreviewServlet extends ZimbraServlet {
       final Try<MimePart> attachmentMimePart = getAttachment(authToken, messageId, partNo);
       if (attachmentMimePart.isFailure()) {
         respondWithError(
-            resp, HttpServletResponse.SC_ACCEPTED, attachmentMimePart.failed().get().getMessage());
+            resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, attachmentMimePart.failed().get().getMessage());
       }
 
       // get preview
@@ -411,13 +412,13 @@ public class PreviewServlet extends ZimbraServlet {
 
   @Override
   public void init() throws ServletException {
-    mLog.info("Servlet " + getServletName() + " starting up");
+    LOG.info("Servlet " + getServletName() + " starting up");
     super.init();
   }
 
   @Override
   public void destroy() {
-    mLog.info("Servlet " + getServletName() + " shutting down");
+    LOG.info("Servlet " + getServletName() + " shutting down");
     super.destroy();
   }
 }
