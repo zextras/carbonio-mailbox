@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.mail.internet.MimePart;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -54,9 +55,12 @@ import javax.servlet.http.HttpServletResponse;
  *                                thumbnail
  *
  *          Query parameters:
+ *                      disp  =  attachment(a) | inline(i) ; default inline
  *                     shape  =  rounded | rectangular
  *                   quality  =  lowest | low | medium | high | highest
  *             output_format  =  jpeg | png
+ *                first_page  =  integer value of first page to preview (n>=1)
+ *                 last_page  =  integer value of last page to preview (0 = last of the pdf)
  *
  *            Authentication  =  expects ZM_AUTH_TOKEN cookie passed in request
  *                               headers
@@ -75,16 +79,16 @@ public class PreviewServlet extends ZimbraServlet {
   /**
    * This method is used to retrieve the attachment from mailbox
    *
-   * @param token the {@link AuthToken} of user
+   * @param authToken the {@link AuthToken} of user
    * @param messageId the messageId that we want to get attachment from
    * @param part the part number of the attachment in email
    * @return the {@link MimePart} object
    */
-  Try<MimePart> getAttachment(AuthToken token, int messageId, String part) {
-    final String accountId = token.getAccountId();
+  Try<MimePart> getAttachment(AuthToken authToken, int messageId, String part) {
+    final String accountId = authToken.getAccountId();
     final Try<MimePart> mimePart =
         Try.of(() -> MailboxManager.getInstance().getMailboxByAccountId(accountId))
-            .mapTry(mailbox -> mailbox.getMessageById(new OperationContext(token), messageId))
+            .mapTry(mailbox -> mailbox.getMessageById(new OperationContext(authToken), messageId))
             .mapTry(message -> Mime.getMimePart(message.getMimeMessage(), part));
     if (mimePart.isSuccess()) {
       return mimePart;
@@ -102,6 +106,14 @@ public class PreviewServlet extends ZimbraServlet {
   Try<BlobResponseStore> getAttachmentPreview(String requestUrl, MimePart attachmentMimePart) {
 
     PreviewClient previewClient = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
+
+    final String dispositionType =
+        Stream.of(requestUrl.split("\\?")[1].split("&"))
+            .map(kv -> kv.split("="))
+            .filter(kv -> "disp".equalsIgnoreCase(kv[0]))
+            .map(kv -> kv[1])
+            .findFirst()
+            .orElse("i");
 
     final String attachmentFileName = Try.of(attachmentMimePart::getFileName).getOrElse("unknown");
     final Try<InputStream> attachmentMimePartInputStream =
@@ -143,7 +155,8 @@ public class PreviewServlet extends ZimbraServlet {
               generateQuery(previewArea, queryParameters),
               attachmentFileName);
       if (thumbnailOfImage.isSuccess()) {
-        return mapResponseToBlobResponseStore(thumbnailOfImage, attachmentFileName);
+        return mapResponseToBlobResponseStore(
+            thumbnailOfImage, attachmentFileName, dispositionType);
       } else {
         return Try.failure(thumbnailOfImage.failed().get());
       }
@@ -158,7 +171,7 @@ public class PreviewServlet extends ZimbraServlet {
               generateQuery(previewArea, queryParameters),
               attachmentFileName);
       if (thumbnailOfPdf.isSuccess()) {
-        return mapResponseToBlobResponseStore(thumbnailOfPdf, attachmentFileName);
+        return mapResponseToBlobResponseStore(thumbnailOfPdf, attachmentFileName, dispositionType);
       } else {
         return Try.failure(thumbnailOfPdf.failed().get());
       }
@@ -173,7 +186,7 @@ public class PreviewServlet extends ZimbraServlet {
               generateQuery(previewArea, queryParameters),
               attachmentFileName);
       if (previewOfImage.isSuccess()) {
-        return mapResponseToBlobResponseStore(previewOfImage, attachmentFileName);
+        return mapResponseToBlobResponseStore(previewOfImage, attachmentFileName, dispositionType);
       } else {
         return Try.failure(previewOfImage.failed().get());
       }
@@ -187,7 +200,7 @@ public class PreviewServlet extends ZimbraServlet {
               generateQuery(null, queryParameters),
               attachmentFileName);
       if (previewOfPdf.isSuccess()) {
-        return mapResponseToBlobResponseStore(previewOfPdf, attachmentFileName);
+        return mapResponseToBlobResponseStore(previewOfPdf, attachmentFileName, dispositionType);
       } else {
         return Try.failure(previewOfPdf.failed().get());
       }
@@ -201,17 +214,19 @@ public class PreviewServlet extends ZimbraServlet {
    *
    * @param response preview service's {@link BlobResponse}
    * @param fileName filename that we want to assign to our {@link BlobResponseStore} object
+   * @param dispositionType disposition will be: attachment or inline(default)
    * @return mapped {@link BlobResponseStore} object
    */
   Try<BlobResponseStore> mapResponseToBlobResponseStore(
-      Try<BlobResponse> response, String fileName) {
+      Try<BlobResponse> response, String fileName, String dispositionType) {
     return (response.isSuccess())
         ? Try.success(
             new BlobResponseStore(
                 response.get().getContent(),
                 fileName,
                 response.get().getLength(),
-                response.get().getMimeType()))
+                response.get().getMimeType(),
+                dispositionType))
         : Try.failure(response.failed().get());
   }
 
@@ -251,7 +266,8 @@ public class PreviewServlet extends ZimbraServlet {
   }
 
   /**
-   * This method is used to get the complete URL from {@link HttpServletRequest}
+   * This method is used to reconstruct the URL from {@link HttpServletRequest}, complete with query
+   * string (if any)
    *
    * @param request the {@link HttpServletRequest} object
    * @return {@link String} complete URL (
@@ -259,9 +275,12 @@ public class PreviewServlet extends ZimbraServlet {
    *     )
    */
   String getUrlWithQueryParams(final HttpServletRequest request) {
-    return request.getQueryString() == null
-        ? request.getRequestURL().toString()
-        : request.getRequestURL().append("?").append(request.getQueryString()).toString();
+    StringBuffer url = request.getRequestURL();
+    String queryString = request.getQueryString();
+    if (queryString != null) {
+      url.append("?").append(queryString);
+    }
+    return url.toString();
   }
 
   /**
@@ -275,12 +294,14 @@ public class PreviewServlet extends ZimbraServlet {
     resp.addHeader("connection", "close");
     resp.addHeader("content-length", String.valueOf(blobResponseStore.getSize()));
     resp.addHeader("content-type", blobResponseStore.getMimeType());
-
+    final String dispositionType = blobResponseStore.getDispositionType();
+    final String attachmentFilename = blobResponseStore.getFilename();
     try {
       resp.addHeader(
           "content-disposition",
-          "attachment; filename*=UTF-8''"
-              + URLEncoder.encode(blobResponseStore.getFilename(), StandardCharsets.UTF_8));
+          (dispositionType.startsWith("a") ? "attachment;" : "inline;")
+              + " filename*=UTF-8''"
+              + URLEncoder.encode(attachmentFilename, StandardCharsets.UTF_8));
       ByteUtil.copy(blobResponseStore.getBlobStream(), true, resp.getOutputStream(), false);
     } catch (Exception e) {
       mLog.error(e.getMessage(), e);
@@ -295,7 +316,7 @@ public class PreviewServlet extends ZimbraServlet {
    * @param reason message string for {@link HttpServletResponse}
    */
   void respondWithError(HttpServletResponse resp, int errCode, String reason) {
-    resp.setContentType("text/html; charset=utf-8");
+    resp.setContentType("text/html; charset=UTF-8");
     try {
       resp.sendError(errCode, reason);
     } catch (IOException e) {
@@ -393,7 +414,10 @@ public class PreviewServlet extends ZimbraServlet {
   }
 }
 
-/** {@link PreviewQueryParameters} class is used to map the url parameter as java object */
+/**
+ * {@link PreviewQueryParameters} class is used to map the url parameter as java object and form a
+ * final {@link Query} object for preview service
+ */
 class PreviewQueryParameters {
   @JsonProperty("quality")
   private Quality quality;
@@ -412,6 +436,17 @@ class PreviewQueryParameters {
 
   @JsonProperty("last_page")
   private Integer lastPage;
+
+  public PreviewQueryParameters(Quality quality, Format outputFormat, Shape shape) {
+    this.quality = quality;
+    this.outputFormat = outputFormat;
+    this.shape = shape;
+    this.crop = false;
+    this.firstPage = 0;
+    this.lastPage = 0;
+  }
+
+  public PreviewQueryParameters() {}
 
   public Optional<String> getQuality() {
     return Optional.ofNullable(quality == null ? null : quality.name());
@@ -437,7 +472,7 @@ class PreviewQueryParameters {
     return Optional.ofNullable(lastPage);
   }
 
-  private enum Quality {
+  enum Quality {
     @JsonProperty("lowest")
     LOWEST,
 
@@ -454,7 +489,7 @@ class PreviewQueryParameters {
     HIGHEST
   }
 
-  private enum Format {
+  enum Format {
     @JsonProperty("jpeg")
     JPEG,
 
@@ -462,7 +497,7 @@ class PreviewQueryParameters {
     PNG
   }
 
-  private enum Shape {
+  enum Shape {
     @JsonProperty("rounded")
     ROUNDED,
 
@@ -481,12 +516,19 @@ class BlobResponseStore {
   private final Long size;
   private final String mimeType;
   private final InputStream blobStream;
+  private final String dispositionType;
 
-  public BlobResponseStore(InputStream blobStream, String filename, Long size, String mimeType) {
+  public BlobResponseStore(
+      InputStream blobStream, String filename, Long size, String mimeType, String disposition) {
     this.blobStream = blobStream;
     this.filename = filename;
     this.size = size;
     this.mimeType = mimeType;
+    this.dispositionType = disposition;
+  }
+
+  public String getDispositionType() {
+    return dispositionType;
   }
 
   public InputStream getBlobStream() {
