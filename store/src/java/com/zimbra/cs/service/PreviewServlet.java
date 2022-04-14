@@ -446,6 +446,7 @@ class PreviewQueryParameters {
     this.lastPage = 0;
   }
 
+  @SuppressWarnings("unused") // unused but required for testing
   public PreviewQueryParameters() {}
 
   public Optional<String> getQuality() {
