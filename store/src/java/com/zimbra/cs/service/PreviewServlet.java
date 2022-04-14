@@ -82,7 +82,7 @@ public class PreviewServlet extends ZimbraServlet {
   public static final String SERVLET_PATH = "/preview";
   private static final long serialVersionUID = -4834966842520538743L;
   private static final Log mLog = LogFactory.getLog(PreviewServlet.class);
-  private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.6:10000/";
+  private static final String PREVIEW_SERVICE_BASE_URL = "127.78.0.7:20001";//"http://127.78.0.6:10000/";
 
   /**
    * This method is used to retrieve the attachment from mailbox
