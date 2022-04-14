@@ -82,7 +82,7 @@ public class PreviewServlet extends ZimbraServlet {
   public static final String SERVLET_PATH = "/preview";
   private static final long serialVersionUID = -4834966842520538743L;
   private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
-  private static final String PREVIEW_SERVICE_BASE_URL = "127.78.0.7:20001";//"http://127.78.0.6:10000/";
+  private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.7:20001/";
 
   /**
    * This method is used to retrieve the attachment from mailbox
@@ -348,7 +348,7 @@ public class PreviewServlet extends ZimbraServlet {
 
     // check url for the presence of required parameters and query string
     // send error otherwise
-    if (!req.getQueryString().isEmpty() && (!requiredQueryParametersMatcher.find()
+    if (req.getQueryString() == null || (!requiredQueryParametersMatcher.find()
         || requiredQueryParametersMatcher.groupCount() != 3)) {
       respondWithError(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters");
     } else {
