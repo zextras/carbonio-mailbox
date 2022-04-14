@@ -43,22 +43,30 @@ import javax.servlet.http.HttpServletResponse;
  * previewer service
  *
  * <pre>
+ *   The API is almost same as of preview service(https://zextras.atlassian.net/wiki/spaces/SW/pages/2353430753/Preview+API)
+ *   with few modification that let us make it use as preview service for mailbox attachments.
+ *
+ *   itemId, partNo, disposition(disp) are notable new parameters, their usage can be found in the URL given below:
+ *
  *   https://nbm-s01.demo.zextras.io/service/preview/{format}/{itemId}/{partNo}/{area}/{thumbnail}/?[{query-params}]
  *
  *          Path parameters:
  *                    format  =  image | pdf
  *                    itemId  =  mail-item-id
  *                    partNo  =  mail-item-part-number
- *                      area  =  500x500
+ *                      area  =  width of the output image (>=0) x height of the output image (>=0),
+ *                               width x height => 100x200. The first is width, the latter height, the order is important!
  *                 thumbnail  =  omit for full preview type
  *                               'thumbnail' if requesting for preview type
  *                                thumbnail
  *
  *          Query parameters:
- *                      disp  =  attachment(a) | inline(i) ; default inline
+ *                      disp  =  attachment(a) | inline(i) ; default inline(i)
  *                     shape  =  rounded | rectangular
  *                   quality  =  lowest | low | medium | high | highest
  *             output_format  =  jpeg | png
+ *                      crop  =  True will crop the picture starting from the borders.
+ *                               This option will lose information, leaving it False will scale and have borders to fill the requested size.
  *                first_page  =  integer value of first page to preview (n>=1)
  *                 last_page  =  integer value of last page to preview (0 = last of the pdf)
  *
