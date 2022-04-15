@@ -94,14 +94,9 @@ public class PreviewServlet extends ZimbraServlet {
    */
   Try<MimePart> getAttachment(AuthToken authToken, int messageId, String part) {
     final String accountId = authToken.getAccountId();
-    final Try<MimePart> mimePart =
-        Try.of(() -> MailboxManager.getInstance().getMailboxByAccountId(accountId))
-            .mapTry(mailbox -> mailbox.getMessageById(new OperationContext(authToken), messageId))
-            .mapTry(message -> Mime.getMimePart(message.getMimeMessage(), part));
-    if (mimePart.isSuccess()) {
-      return mimePart;
-    }
-    return Try.failure(mimePart.failed().get());
+    return Try.of(() -> MailboxManager.getInstance().getMailboxByAccountId(accountId))
+        .mapTry(mailbox -> mailbox.getMessageById(new OperationContext(authToken), messageId))
+        .mapTry(message -> Mime.getMimePart(message.getMimeMessage(), part));
   }
 
   /**
@@ -113,8 +108,10 @@ public class PreviewServlet extends ZimbraServlet {
    */
   Try<BlobResponseStore> getAttachmentPreview(String requestUrl, MimePart attachmentMimePart) {
 
+    // preview client from preview SDK
     PreviewClient previewClient = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
 
+    // get disposition type query parameter from url
     final String dispositionType =
         Stream.of(requestUrl.split("\\?")[1].split("&"))
             .map(kv -> kv.split("="))
@@ -123,15 +120,22 @@ public class PreviewServlet extends ZimbraServlet {
             .findFirst()
             .orElse("i");
 
+    // get attachment filename from attachment MimePart
     final String attachmentFileName = Try.of(attachmentMimePart::getFileName).getOrElse("unknown");
+
+    // get attachment inputStream
     final Try<InputStream> attachmentMimePartInputStream =
         Try.of(attachmentMimePart::getInputStream);
 
+    // break if attachmentMimePartInputStream has encountered a failure
     if (attachmentMimePartInputStream.isFailure()) {
       return Try.failure(
           ServiceException.FAILURE(
               "Cannot process attachment", attachmentMimePartInputStream.getCause()));
     }
+
+    // Start Preview API
+    // Controller==========================================================================
 
     Matcher previewImage =
         Pattern.compile(
@@ -154,66 +158,89 @@ public class PreviewServlet extends ZimbraServlet {
                 SERVLET_PATH + "/pdf/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)")
             .matcher((requestUrl));
 
+    // Handle Image thumbnail request
     if (thumbnailImage.find()) {
       String previewArea = thumbnailImage.group(3);
       PreviewQueryParameters queryParameters = parseQueryParameters(thumbnailImage.group(4));
-      Try<BlobResponse> thumbnailOfImage =
-          previewClient.postThumbnailOfImage(
-              attachmentMimePartInputStream.get(),
-              generateQuery(previewArea, queryParameters),
-              attachmentFileName);
-      if (thumbnailOfImage.isSuccess()) {
-        return mapResponseToBlobResponseStore(
-            thumbnailOfImage, attachmentFileName, dispositionType);
-      } else {
-        return Try.failure(thumbnailOfImage.failed().get());
-      }
+      return returnPreviewResponse(
+          previewClient,
+          attachmentFileName,
+          dispositionType,
+          attachmentMimePartInputStream.get(),
+          previewArea,
+          queryParameters);
     }
 
+    // Handle PDF thumbnail request
     if (thumbnailPdf.find()) {
       String previewArea = thumbnailPdf.group(3);
       PreviewQueryParameters queryParameters = parseQueryParameters(thumbnailPdf.group(4));
-      Try<BlobResponse> thumbnailOfPdf =
-          previewClient.postThumbnailOfPdf(
-              attachmentMimePartInputStream.get(),
-              generateQuery(previewArea, queryParameters),
-              attachmentFileName);
-      if (thumbnailOfPdf.isSuccess()) {
-        return mapResponseToBlobResponseStore(thumbnailOfPdf, attachmentFileName, dispositionType);
-      } else {
-        return Try.failure(thumbnailOfPdf.failed().get());
-      }
+      return returnPreviewResponse(
+          previewClient,
+          attachmentFileName,
+          dispositionType,
+          attachmentMimePartInputStream.get(),
+          previewArea,
+          queryParameters);
     }
 
+    // Handle Preview Image request
     if (previewImage.find()) {
       String previewArea = previewImage.group(3);
       PreviewQueryParameters queryParameters = parseQueryParameters(previewImage.group(5));
-      final Try<BlobResponse> previewOfImage =
-          previewClient.postPreviewOfImage(
-              attachmentMimePartInputStream.get(),
-              generateQuery(previewArea, queryParameters),
-              attachmentFileName);
-      if (previewOfImage.isSuccess()) {
-        return mapResponseToBlobResponseStore(previewOfImage, attachmentFileName, dispositionType);
-      } else {
-        return Try.failure(previewOfImage.failed().get());
-      }
+      return returnPreviewResponse(
+          previewClient,
+          attachmentFileName,
+          dispositionType,
+          attachmentMimePartInputStream.get(),
+          previewArea,
+          queryParameters);
     }
 
+    // Handle Preview PDF request
     if (previewPdf.find()) {
       PreviewQueryParameters queryParameters = parseQueryParameters(previewPdf.group(4));
-      final Try<BlobResponse> previewOfPdf =
-          previewClient.postPreviewOfPdf(
-              attachmentMimePartInputStream.get(),
-              generateQuery(null, queryParameters),
-              attachmentFileName);
-      if (previewOfPdf.isSuccess()) {
-        return mapResponseToBlobResponseStore(previewOfPdf, attachmentFileName, dispositionType);
-      } else {
-        return Try.failure(previewOfPdf.failed().get());
-      }
+      return returnPreviewResponse(
+          previewClient,
+          attachmentFileName,
+          dispositionType,
+          attachmentMimePartInputStream.get(),
+          null,
+          queryParameters);
     }
+    // End Preview API
+    // Controller==========================================================================
+
+    // return failure if controller reached the end
     return Try.failure(ServiceException.INVALID_REQUEST("Cannot handle request", null));
+  }
+
+  /**
+   * @param previewClient The {@link PreviewClient}
+   * @param attachmentFileName Attachment filename {@link String}
+   * @param dispositionType content disposition type {@link String}
+   * @param attachmentMimePartInputStream attachment inputStream {@link InputStream}
+   * @param previewArea previewArea {@link String}
+   * @param queryParameters queryParameters {@link PreviewQueryParameters}
+   * @return mapped response {@link BlobResponseStore} of preview's {@link BlobResponse}
+   */
+  Try<BlobResponseStore> returnPreviewResponse(
+      PreviewClient previewClient,
+      String attachmentFileName,
+      String dispositionType,
+      InputStream attachmentMimePartInputStream,
+      String previewArea,
+      PreviewQueryParameters queryParameters) {
+    return Try.of(
+            () ->
+                previewClient.postThumbnailOfImage(
+                    attachmentMimePartInputStream,
+                    generateQuery(previewArea, queryParameters),
+                    attachmentFileName))
+        .flatMapTry(
+            thumbnailOfImage ->
+                mapResponseToBlobResponseStore(
+                    thumbnailOfImage.get(), attachmentFileName, dispositionType));
   }
 
   /**
@@ -226,16 +253,14 @@ public class PreviewServlet extends ZimbraServlet {
    * @return mapped {@link BlobResponseStore} object
    */
   Try<BlobResponseStore> mapResponseToBlobResponseStore(
-      Try<BlobResponse> response, String fileName, String dispositionType) {
-    return (response.isSuccess())
-        ? Try.success(
-            new BlobResponseStore(
-                response.get().getContent(),
-                fileName,
-                response.get().getLength(),
-                response.get().getMimeType(),
-                dispositionType))
-        : Try.failure(response.failed().get());
+      BlobResponse response, String fileName, String dispositionType) {
+    return Try.success(
+        new BlobResponseStore(
+            response.getContent(),
+            fileName,
+            response.getLength(),
+            response.getMimeType(),
+            dispositionType));
   }
 
   /**
@@ -248,7 +273,9 @@ public class PreviewServlet extends ZimbraServlet {
    */
   Query generateQuery(String optArea, PreviewQueryParameters queryParameters) {
     QueryBuilder parameterBuilder = new QueryBuilder();
-    if (optArea != null) parameterBuilder.setPreviewArea(optArea);
+    if (optArea != null) {
+      parameterBuilder.setPreviewArea(optArea);
+    }
     queryParameters.getQuality().ifPresent(parameterBuilder::setQuality);
     queryParameters.getOutputFormat().ifPresent(parameterBuilder::setOutputFormat);
     queryParameters.getCrop().ifPresent(parameterBuilder::setCrop);
@@ -341,15 +368,16 @@ public class PreviewServlet extends ZimbraServlet {
     final AuthToken authToken = getAuthTokenFromCookie(req, resp);
     checkAuthTokenFromCookieOrRespondWithError(authToken, req, resp);
 
-     final Pattern requiredQueryParametersPattern =
+    final Pattern requiredQueryParametersPattern =
         Pattern.compile(SERVLET_PATH + "/([a-zA-Z]+)/([0-9]+)/([0-9]+)");
     final Matcher requiredQueryParametersMatcher =
         requiredQueryParametersPattern.matcher(getUrlWithQueryParams(req));
 
     // check url for the presence of required parameters and query string
     // send error otherwise
-    if (req.getQueryString() == null || (!requiredQueryParametersMatcher.find()
-        || requiredQueryParametersMatcher.groupCount() != 3)) {
+    if (req.getQueryString() == null
+        || (!requiredQueryParametersMatcher.find()
+            || requiredQueryParametersMatcher.groupCount() != 3)) {
       respondWithError(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters");
     } else {
       final int messageId = Integer.parseInt(requiredQueryParametersMatcher.group(2));
@@ -359,38 +387,27 @@ public class PreviewServlet extends ZimbraServlet {
       final Try<MimePart> attachmentMimePart = getAttachment(authToken, messageId, partNo);
       if (attachmentMimePart.isFailure()) {
         respondWithError(
-            resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, attachmentMimePart.failed().get().getMessage());
+            resp,
+            HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+            attachmentMimePart.failed().get().getMessage());
       }
 
-      // get preview
-      final Try<BlobResponseStore> previewOfAttachment =
-          getAttachmentPreview(getUrlWithQueryParams(req), attachmentMimePart.get());
-      if (previewOfAttachment.isFailure()) {
-        if (previewOfAttachment.failed().get() instanceof BadRequest) {
-          respondWithError(
-              resp,
-              HttpServletResponse.SC_BAD_REQUEST,
-              previewOfAttachment.failed().get().getMessage());
-        } else if (previewOfAttachment.failed().get() instanceof ItemNotFound) {
-          respondWithError(
-              resp,
-              HttpServletResponse.SC_NOT_FOUND,
-              previewOfAttachment.failed().get().getMessage());
-        } else if (previewOfAttachment.failed().get() instanceof ValidationError) {
-          respondWithError(
-              resp,
-              HttpServletResponse.SC_UNAUTHORIZED,
-              previewOfAttachment.failed().get().getMessage());
-        } else {
-          respondWithError(
-              resp,
-              HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-              previewOfAttachment.failed().get().getMessage());
-        }
-      }
-
-      // send preview response
-      respondWithSuccess(resp, previewOfAttachment.get());
+      // send preview response or commit preview api error as response
+      Try.of(() -> getAttachmentPreview(getUrlWithQueryParams(req), attachmentMimePart.get()))
+          .onSuccess(previewOfAttachment -> respondWithSuccess(resp, previewOfAttachment.get()))
+          .onFailure(
+              ex -> {
+                if (ex instanceof BadRequest) {
+                  respondWithError(resp, HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+                } else if (ex instanceof ItemNotFound) {
+                  respondWithError(resp, HttpServletResponse.SC_NOT_FOUND, ex.getMessage());
+                } else if (ex instanceof ValidationError) {
+                  respondWithError(resp, HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+                } else {
+                  respondWithError(
+                      resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+                }
+              });
     }
   }
 
