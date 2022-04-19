@@ -1245,7 +1245,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         String baseDn = specialAttrs.getLdapBaseDn();
 
         emailAddress = emailAddress.toLowerCase().trim();
-        String parts[] = emailAddress.split("@");
+        String[] parts = emailAddress.split("@");
         if (parts.length != 2) {
             throw ServiceException.INVALID_REQUEST("must be valid email address: " +
                     emailAddress, null);
@@ -1295,10 +1295,10 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             ZMutableEntry entry = LdapClient.createMutableEntry();
             entry.mapToAttrs(acctAttrs);
 
-            for (int i=0; i < sInvalidAccountCreateModifyAttrs.length; i++) {
-                String a = sInvalidAccountCreateModifyAttrs[i];
+            for (String a : sInvalidAccountCreateModifyAttrs) {
                 if (entry.hasAttribute(a))
-                    throw ServiceException.INVALID_REQUEST("invalid attribute for CreateAccount: "+a, null);
+                    throw ServiceException.INVALID_REQUEST(
+                        "invalid attribute for CreateAccount: " + a, null);
             }
 
             Set<String> ocs;
@@ -1332,8 +1332,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
                 //       entry is created, any object classes in the backed up data
                 //       will be in the attr map passed to modifyAttrs.
                 ocs = LdapObjectClass.getAccountObjectClasses(this, true);
-                for (int i = 0; i < additionalObjectClasses.length; i++)
-                    ocs.add(additionalObjectClasses[i]);
+                Collections.addAll(ocs, additionalObjectClasses);
             }
 
             boolean skipCountingLicenseQuota = false;
@@ -1371,12 +1370,13 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
             entry.addAttr(A_objectClass, ocs);
 
-            String zimbraIdStr;
-            if (uuid == null) {
-                zimbraIdStr = LdapUtil.generateUUID();
-            } else {
-                zimbraIdStr = uuid;
+            //fail account creation if zimbraId attribute is passed in create account(ca) command
+            if (uuid != null) {
+                throw ServiceException.FAILURE(
+                    "Sailed to create account,  passing account zimbraId in attributes is not allowed.", null);
             }
+
+            String zimbraIdStr = LdapUtil.generateUUID();
             entry.setAttr(A_zimbraId, zimbraIdStr);
             entry.setAttr(A_zimbraCreateTimestamp, LdapDateUtil.toGeneralizedTime(new Date()));
 
@@ -1494,9 +1494,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             return acct;
         } catch (LdapEntryAlreadyExistException e) {
             throw AccountServiceException.ACCOUNT_EXISTS(emailAddress, dn, e);
-        } catch (LdapException e) {
-            throw e;
-        } catch (AccountServiceException e) {
+        } catch (LdapException | AccountServiceException e) {
             throw e;
         } catch (ServiceException e) {
            throw ServiceException.FAILURE("unable to create account: "+emailAddress, e);
