@@ -1,6 +1,5 @@
 package com.zimbra.cs.service.mail;
 
-import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.instanceOf;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -10,7 +9,6 @@ import com.zextras.carbonio.files.entities.NodeId;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.ZimbraCookie;
@@ -22,13 +20,11 @@ import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.API;
 import io.vavr.control.Try;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import javax.mail.internet.MimePart;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.CountingInputStream;
 
 /**
  * Service class to handle copy item to Files.
@@ -66,10 +62,10 @@ public class CopyToFiles extends MailDocumentHandler {
     String nodeId = Optional.ofNullable(
             API.For(mimePartTry, copyToFilesRequestTry, Try.success(zsc))
                 .yield((mimePart, req, ctx) -> copyToFiles(mimePart, req, ctx).get())
-                .mapFailure(Case($(ex -> !(ex instanceof SoapFaultException)),
-                    new SoapFaultException("Service failure.", "", true)))
+                .mapFailure(Case($(ex -> !(ex instanceof ServiceException)),
+                    ex -> ServiceException.FAILURE("internal error.", ex)))
                 .get())
-        .orElseThrow(() -> new SoapFaultException("Service failure.", "", true))
+        .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."))
         .getNodeId();
 
     CopyToFilesResponse copyToFilesResponse = new CopyToFilesResponse();
@@ -87,7 +83,7 @@ public class CopyToFiles extends MailDocumentHandler {
     return Try.<CopyToFilesRequest>of(() -> JaxbUtil.elementToJaxb(request))
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
-            new SoapFaultException("Malformed request.", "", false)));
+            ex -> ServiceException.PARSE_ERROR("Malformed request.", ex)));
   }
 
   /**
@@ -102,15 +98,14 @@ public class CopyToFiles extends MailDocumentHandler {
     Try<Integer> messageIdTry = Try.of(() -> Integer.parseInt(request.getMessageId()))
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
-            new SoapFaultException(MailConstants.A_MESSAGE_ID + " must be an integer.", "",
-                false)));
+            ex -> ServiceException.PARSE_ERROR(MailConstants.A_MESSAGE_ID + " must be an integer.", ex)));
     // get mail attachment
     return API.For(Try.of(() -> request), messageIdTry).yield((req, messageId) ->
         attachmentService.getAttachment(context.getAuthtokenAccountId(), context.getAuthToken(),
                 messageId, req.getPart())
             .onFailure(ex -> mLog.debug(ex.getMessage()))
             .mapFailure(Case($(instanceOf(Exception.class)),
-                new SoapFaultException("File not found.", "", false)))).get();
+                ex -> ServiceException.NOT_FOUND("File not found.", ex)))).get();
   }
 
   /**
@@ -125,22 +120,22 @@ public class CopyToFiles extends MailDocumentHandler {
     // get auth cookie
     Try<String> authCookieTry = Try.of(
         () -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + context.getAuthToken().getEncoded());
-    // TODO: Files client needs content size. But mimepart content size is different from size given readed stream.
-    // Solution: read in memory and calculate size? really ugly
+    // Files client needs content size. But MimePart content size is different from size from read stream.
+    // Solution: read in memory and calculate size
     Try<byte[]> fileContentTry = Try.of(() -> IOUtils.toByteArray(attachment.getInputStream()))
     // get attachment content as stream
         .mapFailure(Case($(instanceOf(Exception.class)),
-            new SoapFaultException("Cannot read file content.", "", true)));
+            ex -> ServiceException.FAILURE("Cannot read file content.", ex)));
     // get attachment content-type
     Try<String> contentTypeTry = Try.of(() -> attachment.getContentType())
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
-            new SoapFaultException("Cannot get file content-type.", "", true)));
+            ex -> ServiceException.FAILURE("Cannot get file content-type.", ex)));
     // get attachment name
     Try<String> fileNameTry = Try.of(() -> attachment.getFileName())
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
-            new SoapFaultException("Cannot get file name.", "", true)));
+            ex -> ServiceException.FAILURE("Cannot get file name.", ex)));
 
     // get destinationId
     Try<String> destFolderIdTry = getDestinationFolderId(request);

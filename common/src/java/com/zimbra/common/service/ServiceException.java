@@ -270,6 +270,16 @@ public class ServiceException extends Exception {
     }
 
     /**
+     * Returns a generic service exception but without tracing the cause.
+     * This is useful for when something bad happens but is handled and there is no underlying exception.
+     * @param message message for failure
+     * @return service exception with receiver fault
+     */
+    public static ServiceException FAILURE(String message) {
+        return new ServiceException("system failure: "+message, FAILURE, RECEIVERS_FAULT);
+    }
+
+    /**
      * generic system failure. most likely a temporary situation.
      */
     public static ServiceException FAILURE(String message, Throwable cause) {

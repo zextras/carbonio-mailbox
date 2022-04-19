@@ -129,8 +129,8 @@ public class CopyToFilesIT {
     try {
       copyToFiles.handle(element, context);
       Assert.fail("Did not throw SoapFault exception.");
-    } catch (SoapFaultException soapFaultException) {
-      Assert.assertEquals("File not found.", soapFaultException.getMessage());
+    } catch (ServiceException serviceException) {
+      Assert.assertEquals("File not found.", serviceException.getMessage());
     }
   }
 
@@ -170,8 +170,8 @@ public class CopyToFilesIT {
     try {
       copyToFiles.handle(element, context);
       Assert.fail("Did not throw SoapFault exception.");
-    } catch (SoapFaultException soapFaultException) {
-      Assert.assertEquals("Service failure.", soapFaultException.getMessage());
+    } catch (ServiceException serviceException) {
+      Assert.assertEquals("system failure: internal error.", serviceException.getMessage());
     }
   }
 
@@ -211,8 +211,8 @@ public class CopyToFilesIT {
     try {
       copyToFiles.handle(element, context);
       Assert.fail("Did not throw SoapFault exception.");
-    } catch (SoapFaultException soapFaultException) {
-      Assert.assertEquals("Service failure.", soapFaultException.getMessage());
+    } catch (ServiceException serviceException) {
+      Assert.assertEquals("system failure: got null response from Files server.", serviceException.getMessage());
     }
   }
 
@@ -259,7 +259,7 @@ public class CopyToFilesIT {
     Element element = JaxbUtil.jaxbToElement(up);
     try {
       new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context);
-    } catch (SoapFaultException ignored) {}
+    } catch (ServiceException ignored) {}
     Mockito.verify(mockFilesClient, Mockito.times(1))
         .uploadFile(ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + authToken.getEncoded(),
             "FOLDER_1", fileName, contentType, uploadContent, fileSize);
