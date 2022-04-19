@@ -86,8 +86,8 @@ public class CopyToFilesIT {
             mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
         .thenReturn(Try.success(mockUpload));
     Mockito.when(
-            mockAttachmentService.getAttachmentRawContent(Mockito.any()))
-        .thenReturn(Try.success(attachmentContent));
+            mockUpload.getInputStream())
+        .thenReturn(attachmentContent);
     CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
     // mock files api
     String nodeId = UUID.randomUUID().toString();
@@ -246,8 +246,8 @@ public class CopyToFilesIT {
     Mockito.when(
             mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
         .thenReturn(Try.success(mockUpload));
-    Mockito.when(mockAttachmentService.getAttachmentRawContent(mockUpload))
-        .thenReturn(Try.success(uploadContent));
+    Mockito.when(mockUpload.getInputStream())
+        .thenReturn(uploadContent);
     // mock Files client
     Mockito.doReturn(Try.of(() -> null))
         .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.any(), Mockito.anyLong());

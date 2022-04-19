@@ -1,5 +1,6 @@
 package com.zimbra.cs.service.mail;
 
+import static com.google.common.base.Predicates.in;
 import static com.google.common.base.Predicates.instanceOf;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -20,11 +21,14 @@ import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.API;
 import io.vavr.control.Try;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import javax.mail.internet.MimePart;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.CountingInputStream;
 
 /**
  * Service class to handle copy item to Files.
@@ -121,9 +125,10 @@ public class CopyToFiles extends MailDocumentHandler {
     // get auth cookie
     Try<String> authCookieTry = Try.of(
         () -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + context.getAuthToken().getEncoded());
+    // TODO: Files client needs content size. But mimepart content size is different from size given readed stream.
+    // Solution: read in memory and calculate size? really ugly
+    Try<byte[]> fileContentTry = Try.of(() -> IOUtils.toByteArray(attachment.getInputStream()))
     // get attachment content as stream
-    Try<InputStream> attachmentStream = attachmentService.getAttachmentRawContent(attachment)
-        .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("Cannot read file content.", "", true)));
     // get attachment content-type
@@ -136,21 +141,15 @@ public class CopyToFiles extends MailDocumentHandler {
         .onFailure(ex -> mLog.debug(ex.getMessage()))
         .mapFailure(Case($(instanceOf(Exception.class)),
             new SoapFaultException("Cannot get file name.", "", true)));
-    // TODO: Files client needs content size. But mimepart content size is different from readed input stream.
-    // This is because getInputStream is decoding a base64, while size is calculated on original base64 content
-    // Solution: read in memory and calculate size? really ugly
-  Try<Long> attachmentSize = Try.of(
-            () -> (long) attachment.getSize())
-        .onFailure(ex -> mLog.debug(ex.getMessage()));
 
     // get destinationId
     Try<String> destFolderIdTry = getDestinationFolderId(request);
 
     // execute Files api call
-    return API.For(authCookieTry, destFolderIdTry, attachmentStream, attachmentSize, fileNameTry, contentTypeTry)
-        .yield((authCookie, destFolderId, stream, streamSize, fileName, contentType) ->
-            filesClient.uploadFile(authCookie, destFolderId, fileName, contentType, stream,
-                    streamSize).get())
+    return API.For(authCookieTry, destFolderIdTry, fileContentTry, fileNameTry, contentTypeTry)
+        .yield((authCookie, destFolderId, fileContent, fileName, contentType) ->
+            filesClient.uploadFile(authCookie, destFolderId, fileName, contentType, new ByteArrayInputStream(fileContent),
+                    fileContent.length).get())
                 .onFailure(ex -> mLog.debug(ex.getMessage()));
   }
 

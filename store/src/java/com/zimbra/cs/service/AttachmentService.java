@@ -21,13 +21,4 @@ public interface AttachmentService {
    * @return try of {@link javax.mail.internet.MimePart} representing the attachment
    */
   Try<MimePart> getAttachment(String accountId, AuthToken token, int messageId, String part);
-
-  /**
-   * Get raw content of mime part attachment.
-   * In some cases the attachment inputStream is not equal the original content a byte representation of the actual content,
-   * but a base64 of it.
-   * @param attachment attachment to get original content of
-   * @return stream of original content
-   */
-  Try<InputStream> getAttachmentRawContent(MimePart attachment);
 }
