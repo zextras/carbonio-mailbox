@@ -1373,7 +1373,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             //fail account creation if zimbraId attribute is passed in create account(ca) command
             if (uuid != null) {
                 throw ServiceException.FAILURE(
-                    "Sailed to create account,  passing account zimbraId in attributes is not allowed.", null);
+                    "Failed to create account, passing account zimbraId in attributes is not allowed.", null);
             }
 
             String zimbraIdStr = LdapUtil.generateUUID();
