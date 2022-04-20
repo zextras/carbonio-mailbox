@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="clean" type="AntRunConfiguration">
+    <antsettings antfile="file://$PROJECT_DIR$/build.xml" target="clean">
+      <property name="zimbra.buildinfo.buildnum" value="202112" />
+      <property name="debug" value="0" />
+      <property name="is-production" value="1" />
+      <property name="zimbra.buildinfo.version" value="21.0.0_ZEXTRAS_202112" />
+      <property name="zimbra.buildinfo.majorversion" value="21" />
+      <property name="zimbra.buildinfo.minorversion" value="0" />
+    </antsettings>
+    <method v="2" />
+  </configuration>
+</component>
