@@ -195,7 +195,7 @@ public class PreviewServletTest {
   /**
    * Wrapper around {@link HttpServletResponse} class to enable mocking with desired customizations
    */
-  public static class MockHttpServletResponse implements HttpServletResponse {
+  private static class MockHttpServletResponse implements HttpServletResponse {
 
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     private int status = 0;
