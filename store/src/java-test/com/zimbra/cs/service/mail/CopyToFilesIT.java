@@ -1,6 +1,5 @@
 package com.zimbra.cs.service.mail;
 
-import static org.easymock.EasyMock.reset;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
@@ -36,66 +35,69 @@ import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimePart;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-/**
- * Integration tests for CopyToFiles
- */
+/** Integration tests for CopyToFiles */
 public class CopyToFilesIT {
 
-  private final FilesClient mockFilesClient = Mockito.mock(FilesClient.class);
-  private final AttachmentService mockAttachmentService = Mockito.mock(AttachmentService.class);
+  private FilesClient mockFilesClient;
+  private AttachmentService mockAttachmentService;
 
-  @BeforeClass
-  public static void init() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
     prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     prov.createAccount("test1@zimbra.com", "secret", new HashMap<String, Object>());
     prov.createAccount("test2@zimbra.com", "secret", new HashMap<String, Object>());
-  }
-
-  @Before
-  public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
-    reset(mockFilesClient);
-    reset(mockAttachmentService);
+    mockFilesClient = Mockito.mock(FilesClient.class);
+    mockAttachmentService = Mockito.mock(AttachmentService.class);
   }
 
   /**
    * Test response for when request is handled correctly
+   *
    * @throws ServiceException
    */
   @Test
-  public void shouldHandleEmailAttachment() throws ServiceException, IOException, MessagingException {
+  public void shouldHandleEmailAttachment()
+      throws ServiceException, IOException, MessagingException {
     // get account that will do the SOAP request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
 
     // prepare request
     Map<String, Object> context = new HashMap<String, Object>();
-    ZimbraSoapContext zsc = new ZimbraSoapContext(AuthProvider.getAuthToken(acct),
-        acct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12);
+    ZimbraSoapContext zsc =
+        new ZimbraSoapContext(
+            AuthProvider.getAuthToken(acct),
+            acct.getId(),
+            SoapProtocol.Soap12,
+            SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
     // mock get upload
-    MimePart mockUpload =  Mockito.mock(MimePart.class);
-    InputStream attachmentContent = new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
+    MimePart mockUpload = Mockito.mock(MimePart.class);
+    InputStream attachmentContent =
+        new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
     when(mockUpload.getFileName()).thenReturn("My_file.csv");
     when(mockUpload.getContentType()).thenReturn("text/csv");
     when(mockUpload.getInputStream()).thenReturn(attachmentContent);
-    when(
-            mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
+    when(mockAttachmentService.getAttachment(
+            Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
         .thenReturn(Try.success(mockUpload));
-    when(
-            mockUpload.getInputStream())
-        .thenReturn(attachmentContent);
+    when(mockUpload.getInputStream()).thenReturn(attachmentContent);
     CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
     // mock files api
     String nodeId = UUID.randomUUID().toString();
     Mockito.doReturn(Try.of(() -> new NodeId(nodeId)))
-        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),
-            Mockito.anyString(),Mockito.anyString(),Mockito.any(), Mockito.anyLong());
+        .when(mockFilesClient)
+        .uploadFile(
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.any(),
+            Mockito.anyLong());
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -110,6 +112,7 @@ public class CopyToFilesIT {
 
   /**
    * Test SoapException for when upload file not found on mailbox.
+   *
    * @throws ServiceException
    */
   @Test
@@ -119,8 +122,13 @@ public class CopyToFilesIT {
 
     // prepare request
     Map<String, Object> context = new HashMap<String, Object>();
-    context.put(SoapEngine.ZIMBRA_CONTEXT, new ZimbraSoapContext(AuthProvider.getAuthToken(acct),
-        acct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
+    context.put(
+        SoapEngine.ZIMBRA_CONTEXT,
+        new ZimbraSoapContext(
+            AuthProvider.getAuthToken(acct),
+            acct.getId(),
+            SoapProtocol.Soap12,
+            SoapProtocol.Soap12));
     // request unknown file -> SoapFault
     CopyToFiles copyToFiles = new CopyToFiles(new MailboxAttachmentService(), mockFilesClient);
     CopyToFilesRequest up = new CopyToFilesRequest();
@@ -138,6 +146,7 @@ public class CopyToFilesIT {
 
   /**
    * Test exception handling for when File upload fails
+   *
    * @throws ServiceException
    * @throws IOException
    */
@@ -149,21 +158,33 @@ public class CopyToFilesIT {
 
     // prepare request
     Map<String, Object> context = new HashMap<String, Object>();
-    context.put(SoapEngine.ZIMBRA_CONTEXT, new ZimbraSoapContext(AuthProvider.getAuthToken(acct),
-        acct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
+    context.put(
+        SoapEngine.ZIMBRA_CONTEXT,
+        new ZimbraSoapContext(
+            AuthProvider.getAuthToken(acct),
+            acct.getId(),
+            SoapProtocol.Soap12,
+            SoapProtocol.Soap12));
     // have to mock because even the Upload object has some logic in it
-    MimePart mockAttachment =  Mockito.mock(MimePart.class);
-    InputStream uploadContent = new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
+    MimePart mockAttachment = Mockito.mock(MimePart.class);
+    InputStream uploadContent =
+        new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
     when(mockAttachment.getFileName()).thenReturn("My_file.csv");
     when(mockAttachment.getContentType()).thenReturn("text/csv");
     when(mockAttachment.getInputStream()).thenReturn(uploadContent);
-    when(
-            mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
+    when(mockAttachmentService.getAttachment(
+            Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
         .thenReturn(Try.success(mockAttachment));
     CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
     Mockito.doReturn(Try.failure(new RuntimeException("Oops, something went wrong.")))
-        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),
-            Mockito.anyString(), Mockito.any(), Mockito.anyLong());
+        .when(mockFilesClient)
+        .uploadFile(
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.any(),
+            Mockito.anyLong());
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -179,6 +200,7 @@ public class CopyToFilesIT {
 
   /**
    * Test case if file service returns null {@link com.zextras.carbonio.files.entities.NodeId}
+   *
    * @throws ServiceException
    * @throws IOException
    */
@@ -190,21 +212,33 @@ public class CopyToFilesIT {
 
     // prepare request
     Map<String, Object> context = new HashMap<String, Object>();
-    context.put(SoapEngine.ZIMBRA_CONTEXT, new ZimbraSoapContext(AuthProvider.getAuthToken(acct),
-        acct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
+    context.put(
+        SoapEngine.ZIMBRA_CONTEXT,
+        new ZimbraSoapContext(
+            AuthProvider.getAuthToken(acct),
+            acct.getId(),
+            SoapProtocol.Soap12,
+            SoapProtocol.Soap12));
     // have to mock because even the Upload object has some logic in it
-    MimePart mockUpload =  Mockito.mock(MimePart.class);
-    InputStream uploadContent = new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
+    MimePart mockUpload = Mockito.mock(MimePart.class);
+    InputStream uploadContent =
+        new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
     when(mockUpload.getFileName()).thenReturn("My_file.csv");
     when(mockUpload.getContentType()).thenReturn("text/csv");
     when(mockUpload.getInputStream()).thenReturn(uploadContent);
-    when(
-            mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
+    when(mockAttachmentService.getAttachment(
+            Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
         .thenReturn(Try.success(mockUpload));
     CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
     Mockito.doReturn(Try.of(() -> null))
-        .when(mockFilesClient).uploadFile(Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),Mockito.anyString(),
-            Mockito.any(), Mockito.anyLong());
+        .when(mockFilesClient)
+        .uploadFile(
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.any(),
+            Mockito.anyLong());
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("123");
     up.setPart("Whatever you want");
@@ -214,12 +248,14 @@ public class CopyToFilesIT {
       copyToFiles.handle(element, context);
       fail("Did not throw SoapFault exception.");
     } catch (ServiceException serviceException) {
-      assertEquals("system failure: got null response from Files server.", serviceException.getMessage());
+      assertEquals(
+          "system failure: got null response from Files server.", serviceException.getMessage());
     }
   }
 
   /**
    * Test call on files sdk is done right
+   *
    * @throws ServiceException
    * @throws IOException
    */
@@ -229,8 +265,9 @@ public class CopyToFilesIT {
     AuthToken authToken = AuthProvider.getAuthToken(acct);
     // prepare request
     Map<String, Object> context = new HashMap<String, Object>();
-    context.put(SoapEngine.ZIMBRA_CONTEXT, new ZimbraSoapContext(authToken,
-        acct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
+    context.put(
+        SoapEngine.ZIMBRA_CONTEXT,
+        new ZimbraSoapContext(authToken, acct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
     // have to mock because even the Upload object has some logic in it
     MimePart mockUpload = Mockito.mock(MimePart.class);
     String body = "Hi, how, are, ye, ?";
@@ -245,19 +282,21 @@ public class CopyToFilesIT {
     when(mockUpload.getInputStream()).thenReturn(uploadContent);
     when(mockUpload.getSize()).thenReturn(fileSize);
     // mock attachment service
-    when(
-            mockAttachmentService.getAttachment(Mockito.anyString(), Mockito.any(), Mockito.anyInt(),
-                Mockito.anyString()))
+    when(mockAttachmentService.getAttachment(
+            Mockito.anyString(), Mockito.any(), Mockito.anyInt(), Mockito.anyString()))
         .thenReturn(Try.success(mockUpload))
-        .thenReturn(Try.success(mockUpload))
-    ;
-    when(mockUpload.getInputStream())
-        .thenReturn(uploadContent);
+        .thenReturn(Try.success(mockUpload));
+    when(mockUpload.getInputStream()).thenReturn(uploadContent);
     // mock Files client
     Mockito.doReturn(Try.of(() -> null))
         .when(mockFilesClient)
-        .uploadFile(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-            Mockito.anyString(), Mockito.any(), Mockito.anyLong());
+        .uploadFile(
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.any(),
+            Mockito.anyLong());
     // build request
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("123");
@@ -271,8 +310,12 @@ public class CopyToFilesIT {
     }
 
     verify(mockFilesClient, Mockito.times(1))
-        .uploadFile(ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + authToken.getEncoded(),
-            "FOLDER_1", fileName, contentType, uploadContent, fileSize);
+        .uploadFile(
+            ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + authToken.getEncoded(),
+            "FOLDER_1",
+            fileName,
+            contentType,
+            uploadContent,
+            fileSize);
   }
-
 }
