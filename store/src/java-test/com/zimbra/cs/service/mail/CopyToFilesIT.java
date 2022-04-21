@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,7 +44,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.Mockito;
 
 /** Integration tests for CopyToFiles */
 public class CopyToFilesIT {
@@ -277,7 +277,7 @@ public class CopyToFilesIT {
     } catch (ServiceException ignored) {
     }
 
-    verify(mockFilesClient, Mockito.times(1))
+    verify(mockFilesClient, times(1))
         .uploadFile(
             ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + authToken.getEncoded(),
             "FOLDER_1",
