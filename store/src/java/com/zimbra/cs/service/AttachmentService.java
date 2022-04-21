@@ -2,12 +2,13 @@ package com.zimbra.cs.service;
 
 import com.zimbra.cs.account.AuthToken;
 import io.vavr.control.Try;
-import java.io.InputStream;
 import javax.mail.internet.MimePart;
 
 /**
  * Interface for attachment content provider (get).
+ *
  * @author davidefrison
+ * @since 4.0.7
  */
 public interface AttachmentService {
 

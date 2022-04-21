@@ -1,7 +1,6 @@
 package com.zimbra.cs.service.mail;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -41,7 +40,9 @@ import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimePart;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
 /** Integration tests for CopyToFiles */
@@ -49,6 +50,8 @@ public class CopyToFilesIT {
 
   private FilesClient mockFilesClient;
   private AttachmentService mockAttachmentService;
+
+  @Rule public ExpectedException exceptionRule = ExpectedException.none();
 
   @Before
   public void setUp() throws Exception {
@@ -67,7 +70,7 @@ public class CopyToFilesIT {
    * @throws ServiceException
    */
   @Test
-  public void shouldHandleEmailAttachment()
+  public void shouldHandleCopyToFilesCall()
       throws ServiceException, IOException, MessagingException {
     // get account that will do the SOAP request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
@@ -115,7 +118,7 @@ public class CopyToFilesIT {
    * @throws ServiceException
    */
   @Test
-  public void shouldThrowSoapFaultExceptionIfFileNotFound() throws ServiceException {
+  public void shouldThrowServiceExceptionIfFileNotFound() throws ServiceException {
     // get account that will do the SOAP request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
 
@@ -134,13 +137,9 @@ public class CopyToFilesIT {
     up.setMessageId("1");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
-
-    try {
-      copyToFiles.handle(element, context);
-      fail("Did not throw SoapFault exception.");
-    } catch (ServiceException serviceException) {
-      assertEquals("File not found.", serviceException.getMessage());
-    }
+    exceptionRule.expect(ServiceException.class);
+    exceptionRule.expectMessage("File not found.");
+    copyToFiles.handle(element, context);
   }
 
   /**
@@ -150,7 +149,7 @@ public class CopyToFilesIT {
    * @throws IOException
    */
   @Test
-  public void shouldThrowSoapFaultExceptionIfFileServiceFails()
+  public void shouldThrowServiceExceptionIfFileServiceFails()
       throws ServiceException, IOException, MessagingException {
     // get account that will do the SOAP request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
@@ -181,13 +180,9 @@ public class CopyToFilesIT {
     up.setMessageId("1");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
-
-    try {
-      copyToFiles.handle(element, context);
-      fail("Did not throw SoapFault exception.");
-    } catch (ServiceException serviceException) {
-      assertEquals("system failure: internal error.", serviceException.getMessage());
-    }
+    exceptionRule.expect(ServiceException.class);
+    exceptionRule.expectMessage("system failure: internal error.");
+    copyToFiles.handle(element, context);
   }
 
   /**
@@ -197,7 +192,7 @@ public class CopyToFilesIT {
    * @throws IOException
    */
   @Test
-  public void shouldThrowSoapFaultExceptionIfFileServiceReturnsNull()
+  public void shouldThrowServiceExceptionIfFileServiceReturnsNull()
       throws ServiceException, IOException, MessagingException {
     // get account that will do the SOAP request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
@@ -228,14 +223,9 @@ public class CopyToFilesIT {
     up.setMessageId("123");
     up.setPart("Whatever you want");
     Element element = JaxbUtil.jaxbToElement(up);
-
-    try {
-      copyToFiles.handle(element, context);
-      fail("Did not throw SoapFault exception.");
-    } catch (ServiceException serviceException) {
-      assertEquals(
-          "system failure: got null response from Files server.", serviceException.getMessage());
-    }
+    exceptionRule.expect(ServiceException.class);
+    exceptionRule.expectMessage("system failure: got null response from Files server.");
+    copyToFiles.handle(element, context);
   }
 
   /**
@@ -245,7 +235,7 @@ public class CopyToFilesIT {
    * @throws IOException
    */
   @Test
-  public void shouldSendUploadedFile() throws Exception {
+  public void shouldCallFilesUploadWithCorrectParameters() throws Exception {
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
     AuthToken authToken = AuthProvider.getAuthToken(acct);
     // prepare request

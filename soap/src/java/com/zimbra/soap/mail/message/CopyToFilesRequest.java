@@ -12,46 +12,47 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Class that identifies a CopyToFiles request.
- * The idea is that message id and part are identifiers, so they are attributes.
- * File description and folder id are elements of the request.
- * @author davidefrison
+ * Class that identifies a CopyToFiles request. The idea is that message id and part are
+ * identifiers, so they are attributes. File description and folder id are elements of the request.
  *
+ * @author davidefrison
+ * @since 4.0.7
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name= MailConstants.E_COPY_TO_FILES_REQUEST)
+@XmlRootElement(name = MailConstants.E_COPY_TO_FILES_REQUEST)
 public class CopyToFilesRequest {
 
   /**
    * @zm-api-field-tag messageId
    * @zm-api-field-description ID of the email
    */
-  @XmlAttribute(name=MailConstants.A_MESSAGE_ID /* messageId */, required=true)
+  @XmlAttribute(name = MailConstants.A_MESSAGE_ID /* messageId */, required = true)
   private String messageId;
 
   /**
    * @zm-api-field-tag part
    * @zm-api-field-description attachment part identifier
    */
-  @XmlAttribute(name=MailConstants.A_PART /* part */, required=true)
+  @XmlAttribute(name = MailConstants.A_PART /* part */, required = true)
   private String part;
 
   /**
    * @zm-api-field-tag destinationFolderId
    * @zm-api-field-description identifies folder where to upload on files
    */
-  @XmlElement(name=MailConstants.E_DESTINATION_FOLDER_ID /* destinationFolderId */, required=true)
+  @XmlElement(
+      name = MailConstants.E_DESTINATION_FOLDER_ID /* destinationFolderId */,
+      required = true)
   private String destinationFolderId;
 
   /**
    * @zm-api-field-tag description
    * @zm-api-field-description identifies folder where to upload on files
    */
-  @XmlElement(name=MailConstants.E_FILE_DESCRIPTION /* description */, required=true)
+  @XmlElement(name = MailConstants.E_FILE_DESCRIPTION /* description */, required = true)
   private String description;
 
-  public CopyToFilesRequest() {
-  }
+  public CopyToFilesRequest() {}
 
   public String getMessageId() {
     return messageId;

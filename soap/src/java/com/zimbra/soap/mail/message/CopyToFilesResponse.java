@@ -10,15 +10,21 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Represents a copy to files api response
+ *
+ * @author davidefrison
+ * @since 4.0.7
+ */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name= MailConstants.E_COPY_TO_FILES_RESPONSE)
+@XmlRootElement(name = MailConstants.E_COPY_TO_FILES_RESPONSE)
 public class CopyToFilesResponse {
 
   /**
    * @zm-api-field-tag nodeId
    * @zm-api-field-description NodeId of files API upload response
    */
-  @XmlAttribute(name=MailConstants.A_NODE_ID, required=true)
+  @XmlAttribute(name = MailConstants.A_NODE_ID, required = true)
   private String nodeId;
 
   public String getNodeId() {
@@ -28,5 +34,4 @@ public class CopyToFilesResponse {
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
-
 }

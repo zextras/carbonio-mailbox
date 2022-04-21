@@ -29,6 +29,7 @@ import javax.mail.internet.MimePart;
  * Service class to handle copy item to Files.
  *
  * @author davidefrison
+ * @since 4.0.7
  */
 public class CopyToFiles extends MailDocumentHandler {
 
@@ -36,9 +37,7 @@ public class CopyToFiles extends MailDocumentHandler {
   private final AttachmentService attachmentService;
   private final FilesClient filesClient;
 
-  public CopyToFiles(
-      AttachmentService attachmentService,
-      FilesClient filesClient) {
+  public CopyToFiles(AttachmentService attachmentService, FilesClient filesClient) {
     this.attachmentService = attachmentService;
     this.filesClient = filesClient;
   }
@@ -55,44 +54,75 @@ public class CopyToFiles extends MailDocumentHandler {
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     final ZimbraSoapContext zsc = getZimbraSoapContext(context);
     // get auth token
-    final Try<String> authCookieTry = Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded());
+    final Try<String> authCookieTry =
+        Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded());
     // map element to copy-to-files request object
     final Try<CopyToFilesRequest> copyToFilesRequestTry = getRequestObject(request);
     // get Files destination folder
     final Try<String> destFolderIdTry = copyToFilesRequestTry.flatMap(this::getDestinationFolderId);
     // get attachment
-    final Try<MimePart> attachmentTry = copyToFilesRequestTry.flatMap(copyToFilesRequest -> getAttachmentToCopy(copyToFilesRequest, zsc));
+    final Try<MimePart> attachmentTry =
+        copyToFilesRequestTry.flatMap(
+            copyToFilesRequest -> getAttachmentToCopy(copyToFilesRequest, zsc));
     // get attachment size
-    final Try<Long> attachmentSizeTry = attachmentTry.mapTry(Part::getInputStream).flatMap(this::getAttachmentSize);
+    final Try<Long> attachmentSizeTry =
+        attachmentTry.mapTry(Part::getInputStream).flatMap(this::getAttachmentSize);
     // get attachment content-type
-    final Try<String> contentTypeTry = attachmentTry.mapTry(attachment -> attachment.getContentType())
-        .onFailure(ex -> mLog.debug(ex.getMessage()))
-        .mapFailure(Case($(instanceOf(Exception.class)),
-            ex -> ServiceException.FAILURE("Cannot get file content-type.", ex)));
+    final Try<String> contentTypeTry =
+        attachmentTry
+            .mapTry(attachment -> attachment.getContentType())
+            .onFailure(ex -> mLog.debug(ex.getMessage()))
+            .mapFailure(
+                Case(
+                    $(instanceOf(Exception.class)),
+                    ex -> ServiceException.FAILURE("Cannot get file content-type.", ex)));
     // get attachment name
-    final Try<String> fileNameTry = attachmentTry.mapTry(attachment -> attachment.getFileName())
-        .onFailure(ex -> mLog.debug(ex.getMessage()))
-        .mapFailure(Case($(instanceOf(Exception.class)),
-            ex -> ServiceException.FAILURE("Cannot get file name.", ex)));
+    final Try<String> fileNameTry =
+        attachmentTry
+            .mapTry(attachment -> attachment.getFileName())
+            .onFailure(ex -> mLog.debug(ex.getMessage()))
+            .mapFailure(
+                Case(
+                    $(instanceOf(Exception.class)),
+                    ex -> ServiceException.FAILURE("Cannot get file name.", ex)));
     // get attachment content stream
-    final Try<InputStream> attachmentStreamTry = attachmentTry.mapTry(Part::getInputStream)
-        .onFailure(ex -> mLog.debug(ex.getMessage()));
+    final Try<InputStream> attachmentStreamTry =
+        attachmentTry.mapTry(Part::getInputStream).onFailure(ex -> mLog.debug(ex.getMessage()));
 
     // execute Files api call
-    String nodeId = Optional.ofNullable(
-            For(authCookieTry, destFolderIdTry, attachmentStreamTry, attachmentSizeTry, fileNameTry,
-                    contentTypeTry)
-                .yield(
-                    (authCookie, destFolderId, attachmentStream, attachmentSize, fileName, contentType) ->
-                        filesClient.uploadFile(authCookie, destFolderId, fileName, contentType,
+    String nodeId =
+        Optional.ofNullable(
+                For(
+                        authCookieTry,
+                        destFolderIdTry,
+                        attachmentStreamTry,
+                        attachmentSizeTry,
+                        fileNameTry,
+                        contentTypeTry)
+                    .yield(
+                        (authCookie,
+                            destFolderId,
                             attachmentStream,
-                            attachmentSize).get())
-                .onFailure(ex -> mLog.debug(ex.getMessage()))
-                .mapFailure(Case($(ex -> !(ex instanceof ServiceException)),
-                    ex -> ServiceException.FAILURE("internal error.", ex)))
-                .get())
-        .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."))
-        .getNodeId();
+                            attachmentSize,
+                            fileName,
+                            contentType) ->
+                            filesClient
+                                .uploadFile(
+                                    authCookie,
+                                    destFolderId,
+                                    fileName,
+                                    contentType,
+                                    attachmentStream,
+                                    attachmentSize)
+                                .get())
+                    .onFailure(ex -> mLog.debug(ex.getMessage()))
+                    .mapFailure(
+                        Case(
+                            $(ex -> !(ex instanceof ServiceException)),
+                            ex -> ServiceException.FAILURE("internal error.", ex)))
+                    .get())
+            .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."))
+            .getNodeId();
 
     CopyToFilesResponse copyToFilesResponse = new CopyToFilesResponse();
     copyToFilesResponse.setNodeId(nodeId);
@@ -100,7 +130,7 @@ public class CopyToFiles extends MailDocumentHandler {
   }
 
   /**
-   * Transforms the SOAP request in object representation
+   * Transforms the SOAP request in {@link CopyToFilesRequest} instance
    *
    * @param request soap {@link Element} as received from client
    * @return try of {@link CopyToFilesRequest}
@@ -108,8 +138,10 @@ public class CopyToFiles extends MailDocumentHandler {
   private Try<CopyToFilesRequest> getRequestObject(Element request) {
     return Try.<CopyToFilesRequest>of(() -> JaxbUtil.elementToJaxb(request))
         .onFailure(ex -> mLog.debug(ex.getMessage()))
-        .mapFailure(Case($(instanceOf(Exception.class)),
-            ex -> ServiceException.PARSE_ERROR("Malformed request.", ex)));
+        .mapFailure(
+            Case(
+                $(instanceOf(Exception.class)),
+                ex -> ServiceException.PARSE_ERROR("Malformed request.", ex)));
   }
 
   /**
@@ -121,38 +153,50 @@ public class CopyToFiles extends MailDocumentHandler {
    */
   private Try<MimePart> getAttachmentToCopy(CopyToFilesRequest request, ZimbraSoapContext context) {
     // get mail message
-    final Try<Integer> messageIdTry = Try.of(() -> Integer.parseInt(request.getMessageId()))
-        .onFailure(ex -> mLog.debug(ex.getMessage()))
-        .mapFailure(Case($(instanceOf(Exception.class)),
-            ex -> ServiceException.PARSE_ERROR(MailConstants.A_MESSAGE_ID + " must be an integer.",
-                ex)));
-    // get mail attachment
-    return For(Try.of(() -> request), messageIdTry).yield((req, messageId) ->
-        attachmentService.getAttachment(context.getAuthtokenAccountId(), context.getAuthToken(),
-                messageId, req.getPart())
+    final Try<Integer> messageIdTry =
+        Try.of(() -> Integer.parseInt(request.getMessageId()))
             .onFailure(ex -> mLog.debug(ex.getMessage()))
-            .mapFailure(Case($(instanceOf(Exception.class)),
-                ex -> ServiceException.NOT_FOUND("File not found.", ex)))).get();
+            .mapFailure(
+                Case(
+                    $(instanceOf(Exception.class)),
+                    ex ->
+                        ServiceException.PARSE_ERROR(
+                            MailConstants.A_MESSAGE_ID + " must be an integer.", ex)));
+    // get mail attachment
+    return For(Try.of(() -> request), messageIdTry)
+        .yield(
+            (req, messageId) ->
+                attachmentService
+                    .getAttachment(
+                        context.getAuthtokenAccountId(),
+                        context.getAuthToken(),
+                        messageId,
+                        req.getPart())
+                    .onFailure(ex -> mLog.debug(ex.getMessage()))
+                    .mapFailure(
+                        Case(
+                            $(instanceOf(Exception.class)),
+                            ex -> ServiceException.NOT_FOUND("File not found.", ex))))
+        .get();
   }
 
   /**
-   * Calculates size of input stream by reading it.
-   * The operation is done by reading chunks of 8kb.
+   * Calculates size of input stream by reading it. The operation is done by reading chunks of 8kb.
    *
    * @param inputStream input stream to calculate size of
    * @return size of given input stream
    */
-
   private Try<Long> getAttachmentSize(InputStream inputStream) {
 
-    return Try.<Long>of(() -> {
-      long fileSize = 0;
-      byte[] buffer = new byte[8192];
-      for (int read = inputStream.read(buffer); read != -1; read = inputStream.read(buffer)) {
-        fileSize += read;
-      }
-      return fileSize;
-    });
+    return Try.<Long>of(
+        () -> {
+          long fileSize = 0;
+          byte[] buffer = new byte[8192];
+          for (int read = inputStream.read(buffer); read != -1; read = inputStream.read(buffer)) {
+            fileSize += read;
+          }
+          return fileSize;
+        });
   }
 
   /**
@@ -163,12 +207,12 @@ public class CopyToFiles extends MailDocumentHandler {
    */
   private Try<String> getDestinationFolderId(CopyToFilesRequest request) {
     // get destinationId
-    return Try.of(() ->
-            Optional.ofNullable(request.getDestinationFolderId()))
-        .mapTry(optional -> {
-          String destId = optional.orElse("LOCAL_ROOT");
-          return Objects.equals("", destId) ? "LOCAL_ROOT" : destId;
-        })
+    return Try.of(() -> Optional.ofNullable(request.getDestinationFolderId()))
+        .mapTry(
+            optional -> {
+              String destId = optional.orElse("LOCAL_ROOT");
+              return Objects.equals("", destId) ? "LOCAL_ROOT" : destId;
+            })
         .onFailure(ex -> mLog.debug(ex.getMessage()));
   }
 }

@@ -9,15 +9,16 @@ import javax.mail.internet.MimePart;
 
 /**
  * Mailbox attachment provider
+ *
  * @author davidefrison
+ * @since 4.0.7
  */
 public class MailboxAttachmentService implements AttachmentService {
 
-  public Try<MimePart> getAttachment(String accountId, AuthToken token, int messageId,
-      String part) {
+  public Try<MimePart> getAttachment(
+      String accountId, AuthToken token, int messageId, String part) {
     return Try.of(() -> MailboxManager.getInstance().getMailboxByAccountId(accountId))
         .mapTry(mailbox -> mailbox.getMessageById(new OperationContext(token), messageId))
-        .mapTry(message -> Mime.getMimePart(message.getMimeMessage(), part))
-        ;
+        .mapTry(message -> Mime.getMimePart(message.getMimeMessage(), part));
   }
 }

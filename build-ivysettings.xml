@@ -10,7 +10,6 @@
   <property name="build.dir" value="${basedir}/build" />
   <property name="build.tmp.dir" value="${build.dir}/tmp" />
   <property name="dist.dir" value="${build.dir}/dist" />
-  <property name="org.powermock.version" value="2.0.9" />
 
   <credentials host="zextras.jfrog.io" realm="Artifactory Realm" username="${artifactory_user}" passwd="${artifactory_password}" />
 
