@@ -68,23 +68,9 @@ public class CopyToFiles extends MailDocumentHandler {
     final Try<Long> attachmentSizeTry =
         attachmentTry.mapTry(Part::getInputStream).flatMap(this::getAttachmentSize);
     // get attachment content-type
-    final Try<String> contentTypeTry =
-        attachmentTry
-            .mapTry(attachment -> attachment.getContentType())
-            .onFailure(ex -> mLog.debug(ex.getMessage()))
-            .mapFailure(
-                Case(
-                    $(instanceOf(Exception.class)),
-                    ex -> ServiceException.FAILURE("Cannot get file content-type.", ex)));
+    final Try<String> contentTypeTry = attachmentTry.flatMap(this::getAttachmentContentType);
     // get attachment name
-    final Try<String> fileNameTry =
-        attachmentTry
-            .mapTry(attachment -> attachment.getFileName())
-            .onFailure(ex -> mLog.debug(ex.getMessage()))
-            .mapFailure(
-                Case(
-                    $(instanceOf(Exception.class)),
-                    ex -> ServiceException.FAILURE("Cannot get file name.", ex)));
+    final Try<String> fileNameTry = attachmentTry.flatMapTry(this::getAttachmentName);
     // get attachment content stream
     final Try<InputStream> attachmentStreamTry =
         attachmentTry.mapTry(Part::getInputStream).onFailure(ex -> mLog.debug(ex.getMessage()));
@@ -95,17 +81,17 @@ public class CopyToFiles extends MailDocumentHandler {
                 For(
                         authCookieTry,
                         destFolderIdTry,
-                        attachmentStreamTry,
-                        attachmentSizeTry,
                         fileNameTry,
-                        contentTypeTry)
+                        contentTypeTry,
+                        attachmentStreamTry,
+                        attachmentSizeTry)
                     .yield(
                         (authCookie,
                             destFolderId,
-                            attachmentStream,
-                            attachmentSize,
                             fileName,
-                            contentType) ->
+                            contentType,
+                            attachmentStream,
+                            attachmentSize) ->
                             filesClient
                                 .uploadFile(
                                     authCookie,
@@ -114,12 +100,12 @@ public class CopyToFiles extends MailDocumentHandler {
                                     contentType,
                                     attachmentStream,
                                     attachmentSize)
-                                .get())
-                    .onFailure(ex -> mLog.debug(ex.getMessage()))
-                    .mapFailure(
-                        Case(
-                            $(ex -> !(ex instanceof ServiceException)),
-                            ex -> ServiceException.FAILURE("internal error.", ex)))
+                                .onFailure(ex -> mLog.debug(ex.getMessage()))
+                                .mapFailure(
+                                    Case(
+                                        $(instanceOf(Exception.class)),
+                                        ex -> ServiceException.FAILURE("internal error.", ex))))
+                    .get()
                     .get())
             .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."))
             .getNodeId();
@@ -145,7 +131,7 @@ public class CopyToFiles extends MailDocumentHandler {
   }
 
   /**
-   * Get attachment using request and context authorization info.
+   * Gets an attachment using request and context authorization info.
    *
    * @param request try of {@link CopyToFilesRequest}
    * @param context the context for current session
@@ -177,7 +163,7 @@ public class CopyToFiles extends MailDocumentHandler {
                         Case(
                             $(instanceOf(Exception.class)),
                             ex -> ServiceException.NOT_FOUND("File not found.", ex))))
-        .get();
+        .flatMap(result -> result);
   }
 
   /**
@@ -188,7 +174,7 @@ public class CopyToFiles extends MailDocumentHandler {
    */
   private Try<Long> getAttachmentSize(InputStream inputStream) {
 
-    return Try.<Long>of(
+    return Try.of(
         () -> {
           long fileSize = 0;
           byte[] buffer = new byte[8192];
@@ -200,7 +186,8 @@ public class CopyToFiles extends MailDocumentHandler {
   }
 
   /**
-   * Returns value from request with some logic on defaults and validation.
+   * Get destination folder parameter from request. In case destination is null or empty a default
+   * value is returned.
    *
    * @param request {@link CopyToFilesRequest}
    * @return destination folder id from request
@@ -214,5 +201,36 @@ public class CopyToFiles extends MailDocumentHandler {
               return Objects.equals("", destId) ? "LOCAL_ROOT" : destId;
             })
         .onFailure(ex -> mLog.debug(ex.getMessage()));
+  }
+
+  /**
+   * Get an attachment file name with {@link Try} and {@link ServiceException} in case of failure.
+   *
+   * @param attachment a {@link MimePart} attachment
+   * @return attachment file name
+   */
+  private Try<String> getAttachmentName(MimePart attachment) {
+    return Try.of(() -> attachment.getFileName())
+        .onFailure(ex -> mLog.debug(ex.getMessage()))
+        .mapFailure(
+            Case(
+                $(instanceOf(Exception.class)),
+                ex -> ServiceException.FAILURE("Cannot get file name.", ex)));
+  }
+
+  /**
+   * Get an attachment content type with {@link Try} and {@link ServiceException} in case of
+   * failure.
+   *
+   * @param attachment {@link MimePart} attachment
+   * @return try of attachment content type
+   */
+  private Try<String> getAttachmentContentType(MimePart attachment) {
+    return Try.of(() -> attachment.getContentType())
+        .onFailure(ex -> mLog.debug(ex.getMessage()))
+        .mapFailure(
+            Case(
+                $(instanceOf(Exception.class)),
+                ex -> ServiceException.FAILURE("Cannot get file content-type.", ex)));
   }
 }
