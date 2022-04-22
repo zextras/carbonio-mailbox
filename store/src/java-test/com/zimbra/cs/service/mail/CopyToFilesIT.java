@@ -65,7 +65,7 @@ public class CopyToFilesIT {
   }
 
   /**
-   * Test response for when request is handled correctly
+   * Test: copy to files API handles return response with nodeId
    *
    * @throws ServiceException
    */
@@ -113,7 +113,7 @@ public class CopyToFilesIT {
   }
 
   /**
-   * Test SoapException for when upload file not found on mailbox.
+   * Test: file not found on mailbox -> file not found error.
    *
    * @throws ServiceException
    */
@@ -143,13 +143,13 @@ public class CopyToFilesIT {
   }
 
   /**
-   * Test exception handling for when File upload fails
+   * Test: Files SDK exception -> internal error
    *
    * @throws ServiceException
    * @throws IOException
    */
   @Test
-  public void shouldThrowServiceExceptionIfFileServiceFails()
+  public void shouldThrowServiceExceptionIfFileServiceReturnsFailure()
       throws ServiceException, IOException, MessagingException {
     // get account that will do the SOAP request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
@@ -186,7 +186,7 @@ public class CopyToFilesIT {
   }
 
   /**
-   * Test case if file service returns null {@link com.zextras.carbonio.files.entities.NodeId}
+   * Test: if Files SDK returns null -> error message
    *
    * @throws ServiceException
    * @throws IOException
@@ -229,7 +229,7 @@ public class CopyToFilesIT {
   }
 
   /**
-   * Test call on files sdk is done right
+   * Test: call on Files SDK is done right (parameters)
    *
    * @throws ServiceException
    * @throws IOException
@@ -285,5 +285,27 @@ public class CopyToFilesIT {
             contentType,
             uploadContent,
             fileSize);
+  }
+
+  /**
+   * Test: fail to get token from context -> internal error
+   *
+   * @throws Exception
+   */
+  @Test
+  public void shouldThrowServiceExceptionWithInternalFailureIfGetAuthTokenFails() throws Exception {
+    // prepare request
+    ZimbraSoapContext zsc = mock(ZimbraSoapContext.class);
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+    when(zsc.getAuthToken()).thenThrow(RuntimeException.class);
+    CopyToFilesRequest up = new CopyToFilesRequest();
+    up.setMessageId("123");
+    up.setPart("Whatever you want");
+    up.setDestinationFolderId("FOLDER_1");
+    Element element = JaxbUtil.jaxbToElement(up);
+    exceptionRule.expect(ServiceException.class);
+    exceptionRule.expectMessage("system failure: internal error.");
+    new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context);
   }
 }

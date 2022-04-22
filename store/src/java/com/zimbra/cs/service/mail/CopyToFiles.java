@@ -75,7 +75,8 @@ public class CopyToFiles extends MailDocumentHandler {
     final Try<InputStream> attachmentStreamTry =
         attachmentTry.mapTry(Part::getInputStream).onFailure(ex -> mLog.debug(ex.getMessage()));
 
-    // execute Files api call
+    // execute Files api call and flatten yield result
+    // maps every non-ServiceException to internal error
     String nodeId =
         Optional.ofNullable(
                 For(
@@ -92,20 +93,19 @@ public class CopyToFiles extends MailDocumentHandler {
                             contentType,
                             attachmentStream,
                             attachmentSize) ->
-                            filesClient
-                                .uploadFile(
-                                    authCookie,
-                                    destFolderId,
-                                    fileName,
-                                    contentType,
-                                    attachmentStream,
-                                    attachmentSize)
-                                .onFailure(ex -> mLog.debug(ex.getMessage()))
-                                .mapFailure(
-                                    Case(
-                                        $(instanceOf(Exception.class)),
-                                        ex -> ServiceException.FAILURE("internal error.", ex))))
-                    .get()
+                            filesClient.uploadFile(
+                                authCookie,
+                                destFolderId,
+                                fileName,
+                                contentType,
+                                attachmentStream,
+                                attachmentSize))
+                    .flatMap(x -> x)
+                    .onFailure(ex -> mLog.debug(ex.getMessage()))
+                    .mapFailure(
+                        Case(
+                            $(ex -> !(ex instanceof ServiceException)),
+                            ex -> ServiceException.FAILURE("internal error.", ex)))
                     .get())
             .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."))
             .getNodeId();
