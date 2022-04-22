@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.service.admin;
 
+import static com.zimbra.common.account.ZAttrProvisioning.A_zimbraId;
+
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +54,12 @@ public class CreateAccount extends AdminDocumentHandler {
 
         String name = req.getName().toLowerCase();
         Map<String, Object> attrs = req.getAttrsAsOldMultimap(true /* ignoreEmptyValues */);
+
+        //fail account creation if zimbraId attribute is passed in CreateAccountRequest
+        if(attrs.containsKey(A_zimbraId)){
+            throw ServiceException.INVALID_REQUEST(
+                "Failed to create account, passing account zimbraId in attributes is not allowed.", null);
+        }
 
         checkDomainRightByEmail(zsc, name, Admin.R_createAccount);
         checkSetAttrsOnCreate(zsc, TargetType.account, name, attrs);
