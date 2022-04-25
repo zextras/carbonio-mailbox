@@ -37,6 +37,8 @@ import javax.mail.internet.MimePart;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.HttpHeaders;
+import org.apache.http.protocol.HTTP;
 
 /**
  * The preview service servlet - serves preview for requested mail attachments using Carbonio
@@ -79,7 +81,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PreviewServlet extends ZimbraServlet {
 
-  public static final String SERVLET_PATH = "/preview";
+  private static final String SERVLET_PATH = "/preview";
   private static final long serialVersionUID = -4834966842520538743L;
   private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
   private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.7:20001/";
@@ -92,7 +94,7 @@ public class PreviewServlet extends ZimbraServlet {
    * @param part the part number of the attachment in email
    * @return the {@link MimePart} object
    */
-  Try<MimePart> getAttachment(AuthToken authToken, int messageId, String part) {
+  private Try<MimePart> getAttachment(AuthToken authToken, int messageId, String part) {
     final String accountId = authToken.getAccountId();
     return Try.of(() -> MailboxManager.getInstance().getMailboxByAccountId(accountId))
         .mapTry(mailbox -> mailbox.getMessageById(new OperationContext(authToken), messageId))
@@ -106,7 +108,8 @@ public class PreviewServlet extends ZimbraServlet {
    * @param requestUrl the {@link String} requestUrl
    * @return the {@link BlobResponseStore} object
    */
-  Try<BlobResponseStore> getAttachmentPreview(String requestUrl, MimePart attachmentMimePart) {
+  private Try<BlobResponseStore> getAttachmentPreview(String requestUrl,
+      MimePart attachmentMimePart) {
 
     // preview client from preview SDK
     PreviewClient previewClient = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
@@ -224,7 +227,7 @@ public class PreviewServlet extends ZimbraServlet {
    * @param queryParameters queryParameters {@link PreviewQueryParameters}
    * @return mapped response {@link BlobResponseStore} of preview's {@link BlobResponse}
    */
-  Try<BlobResponseStore> returnPreviewResponse(
+  private Try<BlobResponseStore> returnPreviewResponse(
       PreviewClient previewClient,
       String attachmentFileName,
       String dispositionType,
@@ -252,7 +255,7 @@ public class PreviewServlet extends ZimbraServlet {
    * @param dispositionType disposition will be: attachment or inline(default)
    * @return mapped {@link BlobResponseStore} object
    */
-  Try<BlobResponseStore> mapResponseToBlobResponseStore(
+  private Try<BlobResponseStore> mapResponseToBlobResponseStore(
       BlobResponse response, String fileName, String dispositionType) {
     return Try.success(
         new BlobResponseStore(
@@ -271,7 +274,7 @@ public class PreviewServlet extends ZimbraServlet {
    * @param queryParameters the {@link PreviewQueryParameters} object
    * @return {@link Query}
    */
-  Query generateQuery(String optArea, PreviewQueryParameters queryParameters) {
+  private Query generateQuery(String optArea, PreviewQueryParameters queryParameters) {
     QueryBuilder parameterBuilder = new QueryBuilder();
     if (optArea != null) {
       parameterBuilder.setPreviewArea(optArea);
@@ -291,7 +294,7 @@ public class PreviewServlet extends ZimbraServlet {
    * @param queryParameters {@link String}
    * @return {@link PreviewQueryParameters}
    */
-  PreviewQueryParameters parseQueryParameters(String queryParameters) {
+   PreviewQueryParameters parseQueryParameters(String queryParameters) {
     Map<String, String> parameters =
         Arrays.stream(queryParameters.replace("?", "").split("&"))
             .map(parameter -> parameter.split("="))
@@ -309,7 +312,7 @@ public class PreviewServlet extends ZimbraServlet {
    *     <pre> protocol + servername + port + path + query </pre>
    *     )
    */
-  String getUrlWithQueryParams(final HttpServletRequest request) {
+   String getUrlWithQueryParams(final HttpServletRequest request) {
     StringBuffer url = request.getRequestURL();
     String queryString = request.getQueryString();
     if (queryString != null) {
@@ -325,10 +328,10 @@ public class PreviewServlet extends ZimbraServlet {
    * @param resp the {@link HttpServletResponse} object
    * @param blobResponseStore the {@link BlobResponseStore} object
    */
-  void respondWithSuccess(HttpServletResponse resp, BlobResponseStore blobResponseStore) {
-    resp.addHeader("connection", "close");
-    resp.addHeader("content-length", String.valueOf(blobResponseStore.getSize()));
-    resp.addHeader("content-type", blobResponseStore.getMimeType());
+   void respondWithSuccess(HttpServletResponse resp, BlobResponseStore blobResponseStore) {
+    resp.addHeader(HttpHeaders.CONNECTION, HTTP.CONN_CLOSE);
+    resp.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(blobResponseStore.getSize()));
+    resp.addHeader(HttpHeaders.CONTENT_TYPE, blobResponseStore.getMimeType());
     final String dispositionType = blobResponseStore.getDispositionType();
     final String attachmentFilename = blobResponseStore.getFilename();
     try {
@@ -417,7 +420,7 @@ public class PreviewServlet extends ZimbraServlet {
    *     error message
    * @param resp the {@link HttpServletResponse} to send the error response
    */
-  void checkAuthTokenFromCookieOrRespondWithError(
+   void checkAuthTokenFromCookieOrRespondWithError(
       AuthToken authToken, HttpServletRequest req, HttpServletResponse resp) {
     if (authToken == null) {
       respondWithError(

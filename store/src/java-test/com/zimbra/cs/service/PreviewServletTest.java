@@ -35,8 +35,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.util.URIUtil;
-import org.junit.After;
-import org.junit.Assert;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -80,13 +79,15 @@ public class PreviewServletTest {
     return response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
   }
 
-  @Before
-  public void setUp() throws Exception {
+  @AfterClass
+  public static void tearDown() throws Exception {
+    previewServlet = null;
+    authTokenString = null;
     MailboxTestUtil.clearData();
   }
 
-  @After
-  public void tearDown() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     MailboxTestUtil.clearData();
   }
 
@@ -161,7 +162,7 @@ public class PreviewServletTest {
     PowerMockito.when(mockRequest.getRequestURL()).thenReturn(urlBuffer);
 
     final String expectedUrlWithQueryParams = previewServlet.getUrlWithQueryParams(mockRequest);
-    Assert.assertEquals(expectedUrlWithQueryParams, url.toString());
+    assertEquals(expectedUrlWithQueryParams, url.toString());
   }
 
   @Test
