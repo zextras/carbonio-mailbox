@@ -109,7 +109,10 @@ final class TcpImapHandler extends ProtocolHandler {
             if (delegate.lastCommand != null) {
                 ZimbraLog.imap.info("%s elapsed=%d (TCP)", delegate.lastCommand.toUpperCase(), elapsed);
                 ZimbraPerf.IMAP_TRACKER.addStat(delegate.lastCommand.toUpperCase(), start);
+                ZimbraPerf.IMAP_TRACKER_PROMETHEUS.addStat(delegate.lastCommand.toUpperCase(), start);
                 ZimbraPerf.IMAPD_TRACKER.addStat(delegate.lastCommand.toUpperCase(), start);
+                ZimbraPerf.IMAPD_TRACKER_PROMETHEUS.addStat(delegate.lastCommand.toUpperCase(), start);
+
             } else {
                 ZimbraLog.imap.info("(unknown) elapsed=%d (TCP)", elapsed);
             }

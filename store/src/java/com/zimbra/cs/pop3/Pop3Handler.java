@@ -136,6 +136,7 @@ abstract class Pop3Handler {
                 long elapsed = ZimbraPerf.STOPWATCH_POP.stop(startTime);
                 if (command != null) {
                     ZimbraPerf.POP_TRACKER.addStat(command.toUpperCase(), startTime);
+                    ZimbraPerf.POP_TRACKER_PROMETHEUS.addStat(command.toUpperCase(), startTime);
                     ZimbraLog.pop.info("%s elapsed=%d", command.toUpperCase(), elapsed);
                 } else {
                     ZimbraLog.pop.info("(unknown) elapsed=%d", elapsed);
