@@ -880,11 +880,15 @@ public final class ToXML {
         return el;
     }
 
+    public static GalGroupInfoProvider getGalGroupInfoProvider() {
+        return GalGroupInfoProvider.getInstance();
+    }
+
     public static boolean hasDLViewRight(String email, Account mRequestedAcct,
         Account mAuthedAcct) {
         boolean canExpand = true;
         if (mRequestedAcct != null && mAuthedAcct != null && email != null) {
-            GalGroup.GroupInfo groupInfo = GalGroupInfoProvider.getInstance().getGroupInfo(email,
+            GalGroup.GroupInfo groupInfo = getGalGroupInfoProvider().getGroupInfo(email,
                 true, mRequestedAcct, mAuthedAcct);
             if (groupInfo != null) {
                 canExpand = (GalGroup.GroupInfo.CAN_EXPAND == groupInfo);

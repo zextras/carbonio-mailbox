@@ -16,11 +16,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.soap.Element;
@@ -43,9 +41,6 @@ import com.zimbra.soap.mail.message.SearchRequest;
 import com.zimbra.soap.mail.type.BulkAction;
 import com.zimbra.soap.type.SearchHit;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ SoapHttpTransport.class })
-@PowerMockIgnore({ "javax.crypto.*", "javax.xml.bind.annotation.*", "javax.net.ssl.*" })
 
 public class SearchActionTest {
 
@@ -139,8 +134,13 @@ public class SearchActionTest {
         List<SearchHit> searchHits = sResponse.getSearchHits();
         ConvActionRequest req = SearchAction.getConvActionRequest(searchHits, "read");
         ConvAction convAction = new ConvAction();
-        PowerMockito.stub(PowerMockito.method(SoapHttpTransport.class, "invokeWithoutSession"))
-            .toReturn(
+        SoapHttpTransport mockSoapHttpTransport = Mockito.mock(SoapHttpTransport.class);
+        MockedStatic<SearchAction> searchActionMockedStatic = Mockito.mockStatic(SearchAction.class);
+        searchActionMockedStatic.when(() -> SearchAction.getSoapHttpTransportInstance(Mockito.anyString()))
+                .thenReturn(mockSoapHttpTransport);
+
+        Mockito.when(mockSoapHttpTransport.invokeWithoutSession(Mockito.any()))
+                .thenReturn(
                 convAction.handle(zsc.jaxbToElement(req), ServiceTestUtil.getRequestContext(acct)));
         SearchAction.performAction(bAction, sRequest, searchHits, mbox, null);
         // check search result message is marked read

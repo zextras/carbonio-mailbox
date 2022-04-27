@@ -29,9 +29,6 @@ import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -64,14 +61,14 @@ import com.zimbra.cs.service.mail.ToXML;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.util.JMSession;
 import com.zimbra.cs.util.ZTestWatchman;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * Unit test for {@link Contact}.
  *
  * @author ysasaki
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({GalGroupInfoProvider.class})
 public final class ContactTest {
 
     @Rule public TestName testName = new TestName();
@@ -323,17 +320,31 @@ public final class ContactTest {
     public void testZCS6232() throws Exception {
         Account account = Provisioning.getInstance().getAccountByName("test6232@zimbra.com");
         // mocking the group not to have view permission
-        PowerMockito.stub(PowerMockito.method(GalGroupInfoProvider.class, "getGroupInfo"))
-            .toReturn(GroupInfo.IS_GROUP);
-        Assert.assertFalse(ToXML.hasDLViewRight("mydl@zimbra.com", account, account));
+        try (MockedStatic<ToXML> toXMLMockedStatic = Mockito.mockStatic(ToXML.class)) {
+            GalGroupInfoProvider galGroupInfoProvider = Mockito.mock(GalGroupInfoProvider.class);
+            Mockito.doReturn(GroupInfo.IS_GROUP)
+                .when(galGroupInfoProvider).getGroupInfo(Mockito.anyString(), Mockito.anyBoolean(),
+                    Mockito.any(Account.class), Mockito.any(Account.class));
+            toXMLMockedStatic.when(ToXML::getGalGroupInfoProvider).thenReturn(galGroupInfoProvider);
+            toXMLMockedStatic.when(() -> ToXML.hasDLViewRight("mydl@zimbra.com", account, account))
+                .thenCallRealMethod();
+            Assert.assertFalse(ToXML.hasDLViewRight("mydl@zimbra.com", account, account));
+        }
     }
 
     @Test
     public void testZCS6232WithNullEmail() throws Exception {
         Account account = Provisioning.getInstance().getAccountByName("test6232@zimbra.com");
-        PowerMockito.stub(PowerMockito.method(GalGroupInfoProvider.class, "getGroupInfo"))
-            .toReturn(GroupInfo.IS_GROUP);
-        Assert.assertTrue(ToXML.hasDLViewRight(null, account, account));
+        GalGroupInfoProvider galGroupInfoProvider = Mockito.mock(GalGroupInfoProvider.class);
+        // inside try logic to avoid Mockito exception when mocking static same class (Thread scope)
+        try (MockedStatic<ToXML> toXMLMockedStatic = Mockito.mockStatic(ToXML.class)) {
+            Mockito.doReturn(GroupInfo.IS_GROUP)
+                .when(galGroupInfoProvider).getGroupInfo(Mockito.anyString(), Mockito.anyBoolean(),
+                    Mockito.any(Account.class), Mockito.any(Account.class));
+            toXMLMockedStatic.when(ToXML::getGalGroupInfoProvider).thenReturn(galGroupInfoProvider);
+            toXMLMockedStatic.when(() -> ToXML.hasDLViewRight(null, account, account)).thenCallRealMethod();
+            Assert.assertTrue(ToXML.hasDLViewRight(null, account, account));
+        }
     }
 
     @Test

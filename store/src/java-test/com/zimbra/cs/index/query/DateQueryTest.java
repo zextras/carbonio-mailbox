@@ -57,7 +57,8 @@ public final class DateQueryTest {
         query.parseDate("2010/1/23", tz, Locale.JAPANESE);
         Assert.assertEquals(expected, query.toString());
 
-        query.parseDate("2010. 1. 23", tz, Locale.KOREAN);
+        //Korean date ends with dot
+        query.parseDate("2010. 1. 23.", tz, Locale.KOREAN);
         Assert.assertEquals(expected, query.toString());
     }
 
@@ -83,7 +84,8 @@ public final class DateQueryTest {
         query.parseDate("2010/1/23", tz, Locale.JAPANESE);
         Assert.assertEquals(expected, query.toString());
 
-        query.parseDate("2010. 1. 23", tz, Locale.KOREAN);
+        // Korean date ends with dot
+        query.parseDate("2010. 1. 23.", tz, Locale.KOREAN);
         Assert.assertEquals(expected, query.toString());
     }
 
