@@ -37,28 +37,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.util.URIUtil;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
 public class PreviewServletTest {
-  private static PreviewServlet previewServlet;
-  private static String authTokenString;
-
-  @BeforeClass
-  public static void init() throws Exception {
-
-    previewServlet = new PreviewServlet();
-
-    MailboxTestUtil.initServer();
-    Provisioning prov = Provisioning.getInstance();
-
-    Map<String, Object> attrs = Maps.newHashMap();
-    attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-    prov.createAccount("test@zimbra.com", "secret", attrs);
-
-    authTokenString = getAuthTokenString();
-  }
 
   static String getAuthTokenString() throws Exception {
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
@@ -81,9 +63,17 @@ public class PreviewServletTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    previewServlet = null;
-    authTokenString = null;
     MailboxTestUtil.clearData();
+  }
+
+  @Before
+  public void init() throws Exception {
+    MailboxTestUtil.initServer();
+    Provisioning prov = Provisioning.getInstance();
+
+    Map<String, Object> attrs = Maps.newHashMap();
+    attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+    prov.createAccount("test@zimbra.com", "secret", attrs);
   }
 
   @Before
@@ -94,7 +84,7 @@ public class PreviewServletTest {
   @Test
   public void shouldReturn400WhenRequiredParametersAreNotPassedInDoGetRequest() throws Exception {
     URL url = new URL("http://localhost:7070/service/preview/");
-    Cookie cookie = new Cookie("ZM_AUTH_TOKEN", authTokenString);
+    Cookie cookie = new Cookie("ZM_AUTH_TOKEN", getAuthTokenString());
     MockHttpServletRequest mockRequest = PowerMockito.mock(MockHttpServletRequest.class);
     StringBuffer urlBuffer = new StringBuffer(128);
     urlBuffer.append(
@@ -104,6 +94,7 @@ public class PreviewServletTest {
     mockRequest.setCookies(cookie);
     MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 
+    final PreviewServlet previewServlet = new PreviewServlet();
     previewServlet.doGet(mockRequest, mockResponse);
     assertEquals(400, mockResponse.getStatus());
   }
@@ -121,6 +112,7 @@ public class PreviewServletTest {
     MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 
     final AuthToken authToken = AuthProvider.getAuthToken(mockRequest, false);
+    final PreviewServlet previewServlet = new PreviewServlet();
     previewServlet.checkAuthTokenFromCookieOrRespondWithError(authToken, mockRequest, mockResponse);
     assertEquals(401, mockResponse.getStatus());
   }
@@ -139,6 +131,7 @@ public class PreviewServletTest {
     PreviewQueryParameters expPreviewQueryParameters =
         new PreviewQueryParameters(expQuality, expFormat, expShape);
 
+    final PreviewServlet previewServlet = new PreviewServlet();
     final PreviewQueryParameters previewQueryParameters =
         previewServlet.parseQueryParameters(url.getQuery());
 
@@ -161,6 +154,7 @@ public class PreviewServletTest {
             url.toURI().getScheme(), url.getHost(), url.getPort(), url.getPath(), url.getQuery()));
     PowerMockito.when(mockRequest.getRequestURL()).thenReturn(urlBuffer);
 
+    final PreviewServlet previewServlet = new PreviewServlet();
     final String expectedUrlWithQueryParams = previewServlet.getUrlWithQueryParams(mockRequest);
     assertEquals(expectedUrlWithQueryParams, url.toString());
   }
@@ -175,6 +169,7 @@ public class PreviewServletTest {
     BlobResponseStore bs =
         new BlobResponseStore(inputStream, filename, (long) content.length(), "text/plain", "i");
 
+    final PreviewServlet previewServlet = new PreviewServlet();
     previewServlet.respondWithSuccess(mockResponse, bs);
     assertEquals(content, mockResponse.output.toString());
   }
@@ -183,6 +178,7 @@ public class PreviewServletTest {
   public void shouldRespondWithErrorWhenCalledRespondWithError() {
     // test status code
     MockHttpServletResponse mockResponse = new MockHttpServletResponse();
+    final PreviewServlet previewServlet = new PreviewServlet();
     previewServlet.respondWithError(mockResponse, HttpServletResponse.SC_NOT_FOUND, "Not Found");
     assertEquals(404, mockResponse.getStatus());
 
