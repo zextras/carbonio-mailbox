@@ -16,8 +16,7 @@ import java.util.concurrent.Callable;
 public class StatsDumperPrometheus implements Callable<Void> {
 
   private static final File STATS_DIR = new File("/opt/zextras/zmstat/prometheus");
-  private static final ThreadGroup statsGroup = new ThreadGroup("ZimbraPerf Prometheus Stats");
-
+  private static final ThreadGroup STATS_GROUP = new ThreadGroup("ZimbraPerf Prometheus Stats");
   private final StatsDumperDataSource mDataSource;
 
   private StatsDumperPrometheus(StatsDumperDataSource dataSource) {
@@ -31,7 +30,6 @@ public class StatsDumperPrometheus implements Callable<Void> {
    * @param intervalMillis interval between writes. The first write is delayed by this interval.
    */
   public static void schedule(final StatsDumperDataSource dataSource, final long intervalMillis) {
-    // Stop using TaskScheduler (bug 22978)
     final StatsDumperPrometheus dumper = new StatsDumperPrometheus(dataSource);
     Runnable r =
         () -> {
@@ -51,7 +49,7 @@ public class StatsDumperPrometheus implements Callable<Void> {
             }
           }
         };
-    new Thread(statsGroup, r, dataSource.getFilename()).start();
+    new Thread(STATS_GROUP, r, dataSource.getFilename()).start();
   }
 
   private File getFile() throws IOException {
@@ -59,7 +57,7 @@ public class StatsDumperPrometheus implements Callable<Void> {
     return new File(STATS_DIR, mDataSource.getFilename());
   }
 
-  /** Gets the latest data from the data source and writes it to the file. */
+  /** Gets the latest data from the data source and writes it to the file */
   public Void call() throws Exception {
     final Collection<String> dataLines = mDataSource.getDataLines();
     if (dataLines == null || dataLines.size() == 0) {
@@ -78,24 +76,13 @@ public class StatsDumperPrometheus implements Callable<Void> {
 
     // timestamp processing
     StringBuilder logBuffer = new StringBuilder();
-    if (mDataSource.hasTimestampColumn()
-        && !logBuffer.toString().contains(statFilePrefix + "_timestamp")) {
-      logBuffer
-          .append(statFilePrefix)
-          .append("_")
-          .append("timestamp")
-          .append(" ")
-          .append(Instant.now().toEpochMilli())
-          .append("\n");
-    }
+    final long timestamp = Instant.now().toEpochMilli();
 
     // metrics processing
     for (String line : dataLines) {
       final String[] stats = line.split(",");
-      if (statFilePrefix.equals("soap")
-          || statFilePrefix.equals("imap")
-          || statFilePrefix.equals("ldap")) {
-        processComplexStat(statFilePrefix, logBuffer, headers, stats);
+      if (headers[0].equals("command")) {
+        processComplexStat(statFilePrefix, logBuffer, headers, stats, timestamp);
       } else {
         for (int i = 0; i < stats.length; i++) {
           logBuffer
@@ -103,25 +90,33 @@ public class StatsDumperPrometheus implements Callable<Void> {
               .append("_")
               .append(headers[i])
               .append(" ")
-              .append(stats[i])
-              .append("\n");
+              .append(stats[i]);
+          if (mDataSource.hasTimestampColumn()) {
+            logBuffer.append(" ");
+            logBuffer.append(timestamp);
+          }
+          logBuffer.append("\n");
         }
       }
     }
 
-    // write log to prom file and close
+    // write metrics to prom file and close
     writeLogBuffer(logBuffer);
     return null;
   }
 
   private void processComplexStat(
-      String statFilePrefix, StringBuilder logBuffer, final String[] headers, String[] stats) {
+      String statFilePrefix,
+      StringBuilder logBuffer,
+      final String[] headers,
+      String[] stats,
+      long timestamp) {
     /*
      Input:
-       GetAllServersRequest,1,3
+       GetMsgRequest,1,11
      Output:
-       soap_exec_count {request="GetMsgRequest"} 1
-       soap_exec_ms_avg {request="GetMsgRequest"} 11
+       soap_exec_count {request="GetMsgRequest"} 1 timestamp
+       soap_exec_ms_avg {request="GetMsgRequest"} 11 timestamp
     */
     final String command = stats[0];
     final String header = headers[0];
@@ -131,14 +126,18 @@ public class StatsDumperPrometheus implements Callable<Void> {
           .append("_")
           .append(headers[i])
           .append(" ")
-          .append(" {")
+          .append("{")
           .append(header)
           .append("=\"")
           .append(command)
           .append("\"}")
           .append(" ")
-          .append(stats[i])
-          .append("\n");
+          .append(stats[i]);
+      if (mDataSource.hasTimestampColumn()) {
+        logBuffer.append(" ");
+        logBuffer.append(timestamp);
+      }
+      logBuffer.append("\n");
     }
   }
 
