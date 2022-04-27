@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.concurrent.Callable;
+import java.util.stream.IntStream;
 
 /**
- * Writes data to a file at a scheduled interval. Data and headers are retrieved from a {@link
- * StatsDumperDataSource}.
+ * Writes data to a file at a scheduled interval. Data and headers are retrieved from
+ * a {@link StatsDumperDataSource}.
  */
 public class StatsDumperPrometheus implements Callable<Void> {
 
@@ -26,7 +27,7 @@ public class StatsDumperPrometheus implements Callable<Void> {
   /**
    * Schedules a new stats task.
    *
-   * @param dataSource the data source
+   * @param dataSource the data source {@link StatsDumperDataSource}
    * @param intervalMillis interval between writes. The first write is delayed by this interval.
    */
   public static void schedule(final StatsDumperDataSource dataSource, final long intervalMillis) {
@@ -57,7 +58,11 @@ public class StatsDumperPrometheus implements Callable<Void> {
     return new File(STATS_DIR, mDataSource.getFilename());
   }
 
-  /** Gets the latest data from the data source and writes it to the file */
+  /**
+   * Gets the latest data from the data source and writes it to the file
+   *
+   * @throws Exception if any exception occurs
+   */
   public Void call() throws Exception {
     final Collection<String> dataLines = mDataSource.getDataLines();
     if (dataLines == null || dataLines.size() == 0) {
@@ -77,26 +82,32 @@ public class StatsDumperPrometheus implements Callable<Void> {
     // timestamp processing
     StringBuilder logBuffer = new StringBuilder();
     final long timestamp = Instant.now().toEpochMilli();
+    if (mDataSource.hasTimestampColumn()
+        && !logBuffer.toString().contains(statFilePrefix + "_last_extraction_timestamp")) {
+      logBuffer
+          .append(statFilePrefix)
+          .append("_last_extraction_timestamp")
+          .append(" ")
+          .append(timestamp)
+          .append("\n");
+    }
 
     // metrics processing
     for (String line : dataLines) {
       final String[] stats = line.split(",");
       if (headers[0].equals("command")) {
-        processComplexStat(statFilePrefix, logBuffer, headers, stats, timestamp);
+        processComplexStat(statFilePrefix, logBuffer, headers, stats);
       } else {
-        for (int i = 0; i < stats.length; i++) {
-          logBuffer
-              .append(statFilePrefix)
-              .append("_")
-              .append(headers[i])
-              .append(" ")
-              .append(stats[i]);
-          if (mDataSource.hasTimestampColumn()) {
-            logBuffer.append(" ");
-            logBuffer.append(timestamp);
-          }
-          logBuffer.append("\n");
-        }
+        IntStream.range(0, stats.length)
+            .forEach(
+                i ->
+                    logBuffer
+                        .append(statFilePrefix)
+                        .append("_")
+                        .append(headers[i])
+                        .append(" ")
+                        .append(stats[i])
+                        .append("\n"));
       }
     }
 
@@ -105,42 +116,38 @@ public class StatsDumperPrometheus implements Callable<Void> {
     return null;
   }
 
+  /**
+   * @param statFilePrefix stat filename prefix
+   * @param logBuffer the logBuffer to which the processed data will pe appended
+   * @param headers headers of the dataSource {@link StatsDumperDataSource}
+   * @param stats stats collected from dataSource {@link StatsDumperDataSource}
+   */
   private void processComplexStat(
-      String statFilePrefix,
-      StringBuilder logBuffer,
-      final String[] headers,
-      String[] stats,
-      long timestamp) {
-    /*
-     Input:
-       GetMsgRequest,1,11
-     Output:
-       soap_exec_count {request="GetMsgRequest"} 1 timestamp
-       soap_exec_ms_avg {request="GetMsgRequest"} 11 timestamp
-    */
+      String statFilePrefix, StringBuilder logBuffer, final String[] headers, String[] stats) {
     final String command = stats[0];
     final String header = headers[0];
-    for (int i = 1; i < headers.length; i++) {
-      logBuffer
-          .append(statFilePrefix)
-          .append("_")
-          .append(headers[i])
-          .append(" ")
-          .append("{")
-          .append(header)
-          .append("=\"")
-          .append(command)
-          .append("\"}")
-          .append(" ")
-          .append(stats[i]);
-      if (mDataSource.hasTimestampColumn()) {
-        logBuffer.append(" ");
-        logBuffer.append(timestamp);
-      }
-      logBuffer.append("\n");
-    }
+    IntStream.range(1, headers.length)
+        .forEach(
+            i ->
+                logBuffer
+                    .append(statFilePrefix)
+                    .append("_")
+                    .append(headers[i])
+                    .append(" ")
+                    .append("{")
+                    .append(header)
+                    .append("=\"")
+                    .append(command)
+                    .append("\"}")
+                    .append(" ")
+                    .append(stats[i])
+                    .append("\n"));
   }
 
+  /**
+   * @param logBuffer the logBuffer containing processed data
+   * @throws IOException exception that could occur while writing data to file
+   */
   private void writeLogBuffer(final StringBuilder logBuffer) throws IOException {
     File file = getFile();
     FileWriter writer = new FileWriter(file, false);
