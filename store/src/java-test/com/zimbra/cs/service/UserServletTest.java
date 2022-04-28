@@ -2,6 +2,8 @@
 package com.zimbra.cs.service;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
  * @author zimbra
@@ -46,7 +47,7 @@ public class UserServletTest {
    */
   @Test
   public void testDoGet() {
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    HttpServletRequest request = mock(HttpServletRequest.class);
     MockHttpServletResponse response = new MockHttpServletResponse();
     UserServlet userServlet = new UserServlet();
     try {
@@ -54,7 +55,7 @@ public class UserServletTest {
       spy(ZimbraServlet.class);
       spy(UserServlet.class);
 
-      Mockito.mockStatic(L10nUtil.class);
+      mockStatic(L10nUtil.class);
 
       when(request.getPathInfo()).thenReturn("/testbug3948@zimbra.com");
       when(request.getRequestURI()).thenReturn("service/home/");
