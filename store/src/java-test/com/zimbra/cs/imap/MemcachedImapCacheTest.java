@@ -22,7 +22,9 @@ import com.zimbra.common.util.memcached.ZimbraMemcachedClient;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.memcached.MemcachedConnector;
 import com.zimbra.cs.util.ZTestWatchman;
-import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 /**
  * @author zimbra
@@ -51,10 +53,10 @@ public class MemcachedImapCacheTest {
     public void testInvalidObject() {
         try {
 
-            Mockito.mockStatic(MemcachedConnector.class);
+            mockStatic(MemcachedConnector.class);
             ZimbraMemcachedClient  memcachedClient = new MockZimbraMemcachedClient();
-            Mockito.when(MemcachedConnector.getClient()).thenReturn(memcachedClient);
-            ImapFolder folder = Mockito.mock(ImapFolder.class);
+            when(MemcachedConnector.getClient()).thenReturn(memcachedClient);
+            ImapFolder folder = mock(ImapFolder.class);
             MemcachedImapCache imapCache = new MemcachedImapCache();
             imapCache.put("trash", folder);
             ImapFolder folderDeserz =  imapCache.get("trash");
