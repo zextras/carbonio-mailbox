@@ -4,21 +4,12 @@
 
 package com.zimbra.cs.service.mail;
 
-import static org.junit.Assert.assertEquals;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.mail.Address;
-import javax.mail.internet.InternetAddress;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
@@ -33,84 +24,104 @@ import com.zimbra.cs.mailbox.calendar.ZAttendee;
 import com.zimbra.cs.service.mail.CalendarRequest.MailSendQueue;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import javax.mail.Address;
+import javax.mail.internet.InternetAddress;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.MockedStatic;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({OperationContext.class, Mailbox.class, CalendarItem.class,
-    MailSendQueue.class, Invite.class, CalendarRequest.class, AccountUtil.class, CalendarMailSender.class,
-    MailboxLock.class})
 public class CalendarRequestTest {
-    
-    private ZimbraSoapContext zsc;
-    private OperationContext octxt;
-    private Mailbox mbox;
-    private CalendarItem calItem;
-    private ZAttendee addedAttendee1;
-    private ZAttendee addedAttendee2;
-    private MailSendQueue sendQueue;
-    private Invite invite1;
-    private Invite invite2;
-    private Account account;
-    private javax.mail.internet.MimeMessage mm;
-    private javax.mail.internet.MimeMessage mm2;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-        Field lock = Mailbox.class.getDeclaredField("lock");
-        lock.setAccessible(true);
-        MailboxLock mboxLock = PowerMockito.mock(MailboxLock.class);
-        mbox = PowerMockito.mock(Mailbox.class);
-        lock.set(mbox, mboxLock);
-        octxt = PowerMockito.mock(OperationContext.class);
-        invite1 = PowerMockito.mock(Invite.class);
-        invite2 = PowerMockito.mock(Invite.class);
-        calItem = PowerMockito.mock(CalendarItem.class);
-        sendQueue = new CalendarRequest.MailSendQueue();
-    }
+  private ZimbraSoapContext zsc;
+  private OperationContext octxt;
+  private Mailbox mbox;
+  private CalendarItem calItem;
+  private ZAttendee addedAttendee1;
+  private ZAttendee addedAttendee2;
+  private MailSendQueue sendQueue;
+  private Invite invite1;
+  private Invite invite2;
+  private Account account;
+  private javax.mail.internet.MimeMessage mm;
+  private javax.mail.internet.MimeMessage mm2;
 
-    /**
-     * Test method for {@link com.zimbra.cs.service.mail.CalendarRequest#notifyCalendarItem(com.zimbra.soap.ZimbraSoapContext, com.zimbra.cs.mailbox.OperationContext, com.zimbra.cs.account.Account, com.zimbra.cs.mailbox.Mailbox, com.zimbra.cs.mailbox.CalendarItem, boolean, java.util.List, boolean, com.zimbra.cs.service.mail.CalendarRequest.MailSendQueue)}.
-     * @throws Exception 
-     */
-    @Test
-    public void testNotifyCalendarItem() throws Exception {
+  /**
+   * @throws java.lang.Exception
+   */
+  @Before
+  public void setUp() throws Exception {
+    Field lock = Mailbox.class.getDeclaredField("lock");
+    lock.setAccessible(true);
+    MailboxLock mboxLock = mock(MailboxLock.class);
+    mbox = mock(Mailbox.class);
+    lock.set(mbox, mboxLock);
+    octxt = mock(OperationContext.class);
+    invite1 = mock(Invite.class);
+    invite2 = mock(Invite.class);
+    calItem = mock(CalendarItem.class);
+    sendQueue = new CalendarRequest.MailSendQueue();
+  }
 
-        JavaMailInternetAddress emailAddress = new JavaMailInternetAddress("test@zimbra.com", "test", MimeConstants.P_CHARSET_UTF8);
-        PowerMockito.mockStatic(AccountUtil.class);
-        PowerMockito.doReturn(emailAddress).when(AccountUtil.class, "getFriendlyEmailAddress", account);
+  /**
+   * Test method for {@link
+   * com.zimbra.cs.service.mail.CalendarRequest#notifyCalendarItem(com.zimbra.soap.ZimbraSoapContext,
+   * com.zimbra.cs.mailbox.OperationContext, com.zimbra.cs.account.Account,
+   * com.zimbra.cs.mailbox.Mailbox, com.zimbra.cs.mailbox.CalendarItem, boolean, java.util.List,
+   * boolean, com.zimbra.cs.service.mail.CalendarRequest.MailSendQueue)}.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testNotifyCalendarItem() throws Exception {
 
-        List<Address> addressList = new ArrayList<Address>();
-        addressList.add((Address)new InternetAddress("test1@zimbra.com", "Test 1"));
-        addressList.add((Address)new InternetAddress("test2@zimbra.com", "Test 2"));
-        List<ZAttendee> attendeeList = new ArrayList<ZAttendee>();
-        attendeeList.add(addedAttendee1);
-        attendeeList.add(addedAttendee2);
+    JavaMailInternetAddress emailAddress =
+        new JavaMailInternetAddress("test@zimbra.com", "test", MimeConstants.P_CHARSET_UTF8);
+    MockedStatic<AccountUtil> mockAccountUtil = mockStatic(AccountUtil.class);
+    mockAccountUtil
+        .when(() -> AccountUtil.getFriendlyEmailAddress(account))
+        .thenReturn(emailAddress);
 
-        PowerMockito.doReturn(System.currentTimeMillis()).when(octxt, "getTimestamp");
+    List<Address> addressList = new ArrayList<Address>();
+    addressList.add((Address) new InternetAddress("test1@zimbra.com", "Test 1"));
+    addressList.add((Address) new InternetAddress("test2@zimbra.com", "Test 2"));
+    List<ZAttendee> attendeeList = new ArrayList<ZAttendee>();
+    attendeeList.add(addedAttendee1);
+    attendeeList.add(addedAttendee2);
 
-        PowerMockito.doReturn(1).when(invite1).getMailItemId();
-        PowerMockito.doReturn(2).when(invite2).getMailItemId();
-        PowerMockito.doReturn(attendeeList).when(invite1).getAttendees();
-        PowerMockito.doReturn(attendeeList).when(invite2).getAttendees();
-        PowerMockito.doReturn(true).when(invite2).hasRecurId();
+    doReturn(System.currentTimeMillis()).when(octxt.getTimestamp());
 
-        PowerMockito.when(calItem.isPublic()).thenReturn(true);
-        PowerMockito.when(calItem.allowPrivateAccess(account, true)).thenReturn(true);
-        PowerMockito.when(calItem.getId()).thenReturn(1);
-        PowerMockito.when(calItem.getInvites()).thenReturn(new Invite[] {invite1, invite2});
-        PowerMockito.when(calItem.getSubpartMessage(1)).thenReturn(mm);
-        PowerMockito.when(calItem.getSubpartMessage(2)).thenReturn(mm2);
+    doReturn(1).when(invite1).getMailItemId();
+    doReturn(2).when(invite2).getMailItemId();
+    doReturn(attendeeList).when(invite1).getAttendees();
+    doReturn(attendeeList).when(invite2).getAttendees();
+    doReturn(true).when(invite2).hasRecurId();
 
-        PowerMockito.when(mbox.getCalendarItemById(octxt, calItem.getId())).thenReturn(calItem);
-        PowerMockito.mockStatic(CalendarMailSender.class);
-        PowerMockito.doReturn(addressList).when(CalendarMailSender.class, "toListFromAttendees", attendeeList);
+    when(calItem.isPublic()).thenReturn(true);
+    when(calItem.allowPrivateAccess(account, true)).thenReturn(true);
+    when(calItem.getId()).thenReturn(1);
+    when(calItem.getInvites()).thenReturn(new Invite[] {invite1, invite2});
+    when(calItem.getSubpartMessage(1)).thenReturn(mm);
+    when(calItem.getSubpartMessage(2)).thenReturn(mm2);
 
-        PowerMockito.stub(PowerMockito.method(CalendarRequest.class, "isOnBehalfOfRequest", ZimbraSoapContext.class)).toReturn(false);
-        PowerMockito.stub(PowerMockito.method(CalendarRequest.class, "getAuthenticatedAccount", ZimbraSoapContext.class)).toReturn(account);
+    when(mbox.getCalendarItemById(octxt, calItem.getId())).thenReturn(calItem);
+    MockedStatic<CalendarMailSender> calendarMailSenderMockedStatic =
+        mockStatic(CalendarMailSender.class);
+    calendarMailSenderMockedStatic
+        .when(() -> CalendarMailSender.toListFromAttendees(attendeeList))
+        .thenReturn(addressList);
+    MockedStatic<CalendarRequest> calendarRequestMockedStatic = mockStatic(CalendarRequest.class);
+    calendarRequestMockedStatic
+        .when(() -> CalendarRequest.isOnBehalfOfRequest(any(ZimbraSoapContext.class)))
+        .thenReturn(false);
+    calendarRequestMockedStatic
+        .when(() -> CalendarRequest.getAuthenticatedAccount(any(ZimbraSoapContext.class)))
+        .thenReturn(account);
 
-        CalendarRequest.notifyCalendarItem(zsc, octxt, account, mbox, calItem, true, attendeeList, true, sendQueue);
-        assertEquals(1, sendQueue.queue.size());
-    }
+    CalendarRequest.notifyCalendarItem(
+        zsc, octxt, account, mbox, calItem, true, attendeeList, true, sendQueue);
+    assertEquals(1, sendQueue.queue.size());
+  }
 }

@@ -5,6 +5,14 @@
 
 package com.zimbra.cs.mailbox;
 
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,17 +29,12 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimePart;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -64,14 +67,13 @@ import com.zimbra.cs.service.mail.ToXML;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.util.JMSession;
 import com.zimbra.cs.util.ZTestWatchman;
+import org.mockito.MockedStatic;
 
 /**
  * Unit test for {@link Contact}.
  *
  * @author ysasaki
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({GalGroupInfoProvider.class})
 public final class ContactTest {
 
     @Rule public TestName testName = new TestName();
@@ -102,7 +104,7 @@ public final class ContactTest {
 
         DbConnection conn = DbPool.getConnection(mbox);
 
-        Assert.assertEquals("Last1, First1", DbUtil.executeQuery(conn,
+        assertEquals("Last1, First1", DbUtil.executeQuery(conn,
                 "SELECT sender FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
                 mbox.getId(), contact.getId()).getString(1));
 
@@ -110,7 +112,7 @@ public final class ContactTest {
         fields.put(ContactConstants.A_lastName, "Last2");
         mbox.modifyContact(null, contact.getId(), new ParsedContact(fields));
 
-        Assert.assertEquals("Last2, First2", DbUtil.executeQuery(conn,
+        assertEquals("Last2, First2", DbUtil.executeQuery(conn,
                 "SELECT sender FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
                 mbox.getId(), contact.getId()).getString(1));
 
@@ -127,7 +129,7 @@ public final class ContactTest {
 
         DbConnection conn = DbPool.getConnection(mbox);
 
-        Assert.assertEquals(Strings.repeat("F", 128), DbUtil.executeQuery(conn,
+        assertEquals(Strings.repeat("F", 128), DbUtil.executeQuery(conn,
                 "SELECT sender FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
                 mbox.getId(), contact.getId()).getString(1));
 
@@ -135,7 +137,7 @@ public final class ContactTest {
         fields.put(ContactConstants.A_lastName, Strings.repeat("L", 129));
         mbox.modifyContact(null, contact.getId(), new ParsedContact(fields));
 
-        Assert.assertEquals(Strings.repeat("L", 128), DbUtil.executeQuery(conn,
+        assertEquals(Strings.repeat("L", 128), DbUtil.executeQuery(conn,
                 "SELECT sender FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
                 mbox.getId(), contact.getId()).getString(1));
 
@@ -160,7 +162,7 @@ public final class ContactTest {
         String vcardAsString = vcard.getFormatted();
         String expectedPattern = "N:Last;First \\; SemiColon;Middle \\, Comma;Ms.;";
         String assertMsg = String.format("Vcard\n%s\nshould contain string [%s]", vcardAsString, expectedPattern);
-        Assert.assertTrue(assertMsg, vcardAsString.contains(expectedPattern));
+        assertTrue(assertMsg, vcardAsString.contains(expectedPattern));
     }
 
     @Test
@@ -171,9 +173,9 @@ public final class ContactTest {
                 ContactConstants.A_email, "test1@zimbra.com")), Mailbox.ID_FOLDER_CONTACTS, null);
         MailboxTestUtil.index(mbox);
         Thread.sleep(500);
-        Assert.assertTrue(mbox.index.existsInContacts(ImmutableList.of(
+        assertTrue(mbox.index.existsInContacts(ImmutableList.of(
                 new InternetAddress("Test <test1@zimbra.com>"), new InternetAddress("Test <test2@zimbra.com>"))));
-        Assert.assertFalse(mbox.index.existsInContacts(ImmutableList.of(
+        assertFalse(mbox.index.existsInContacts(ImmutableList.of(
                 new InternetAddress("Test <test2@zimbra.com>"), new InternetAddress("Test <test3@zimbra.com>"))));
     }
 
@@ -184,17 +186,17 @@ public final class ContactTest {
         List<Contact> contacts = mbox.createAutoContact(null, ImmutableList.of(
                 new InternetAddress("Test 1", "TEST1@zimbra.com"), new InternetAddress("Test 2", "TEST2@zimbra.com")));
 
-        Assert.assertEquals(2, contacts.size());
-        Assert.assertEquals("1, Test", contacts.get(0).getFileAsString());
-        Assert.assertEquals("TEST1@zimbra.com", contacts.get(0).getFields().get(ContactConstants.A_email));
-        Assert.assertEquals("2, Test", contacts.get(1).getFileAsString());
-        Assert.assertEquals("TEST2@zimbra.com", contacts.get(1).getFields().get(ContactConstants.A_email));
+        assertEquals(2, contacts.size());
+        assertEquals("1, Test", contacts.get(0).getFileAsString());
+        assertEquals("TEST1@zimbra.com", contacts.get(0).getFields().get(ContactConstants.A_email));
+        assertEquals("2, Test", contacts.get(1).getFileAsString());
+        assertEquals("TEST2@zimbra.com", contacts.get(1).getFields().get(ContactConstants.A_email));
 
         Collection<javax.mail.Address> newAddrs = mbox.newContactAddrs(ImmutableList.of(
                 (javax.mail.Address)new javax.mail.internet.InternetAddress("test1@zimbra.com", "Test 1"),
                 (javax.mail.Address)new javax.mail.internet.InternetAddress("test2@zimbra.com", "Test 2")),"aaa");
 
-        Assert.assertEquals(0, newAddrs.size());
+        assertEquals(0, newAddrs.size());
     }
 
     /**
@@ -214,7 +216,7 @@ public final class ContactTest {
         String sql = String.format("SELECT COUNT(*) FROM %s WHERE type = %d AND blob_digest IS NULL AND locator IS NOT NULL",
                 DbMailItem.getMailItemTableName(mbox), MailItem.Type.CONTACT.toByte());
         DbResults results = DbUtil.executeQuery(sql);
-        Assert.assertEquals("Found non-null locator values for contacts", 0, results.getInt(1));
+        assertEquals("Found non-null locator values for contacts", 0, results.getInt(1));
     }
 
     /**
@@ -260,8 +262,8 @@ public final class ContactTest {
         ParsedContact pc = new ParsedContact(contact).modify(new ParsedContact.FieldDeltaList(), new ArrayList<Attachment>(), "ownerId");
         MimeMessage mm = new Mime.FixedMimeMessage(JMSession.getSession(), pc.getContentStream());
         MimePart mp = Mime.getMimePart(mm, "1");
-        Assert.assertEquals("text/plain", mp.getContentType());
-        Assert.assertEquals("attachment 1", mp.getContent());
+        assertEquals("text/plain", mp.getContentType());
+        assertEquals("attachment 1", mp.getContent());
     }
 
     /**
@@ -277,9 +279,9 @@ public final class ContactTest {
         Attachment attachment = new Attachment(attachData, "image/png", "image", "file1.png");
         try {
             ParsedContact pc = new ParsedContact(attrs, Lists.newArrayList(attachment));
-            Assert.fail("Expected INVALID_IMAGE exception");
+            fail("Expected INVALID_IMAGE exception");
         } catch (ServiceException se) {
-            Assert.assertEquals("check the INVALID_IMAGE exception", "mail.INVALID_IMAGE", se.getCode());
+            assertEquals("check the INVALID_IMAGE exception", "mail.INVALID_IMAGE", se.getCode());
         }
     }
 
@@ -301,7 +303,7 @@ public final class ContactTest {
         try {
             ParsedContact pc = new ParsedContact(contact).modify(new ParsedContact.FieldDeltaList(), Lists.newArrayList(attachment2), "ownerId");
         } catch (ServiceException se) {
-            Assert.assertEquals("check the INVALID_IMAGE exception", "mail.INVALID_IMAGE", se.getCode());
+            assertEquals("check the INVALID_IMAGE exception", "mail.INVALID_IMAGE", se.getCode());
         }
     }
 
@@ -316,24 +318,38 @@ public final class ContactTest {
         Element response = new Element.XMLElement(MailConstants.MODIFY_CONTACT_RESPONSE);
         Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "testCont@zimbra.com");
         ToXML.encodeContact(response, new ItemIdFormatter(), new OperationContext(acct), contact, true, null);
-        Assert.assertEquals(response.getElement("cn").getElement("a").getText(), "Cert1149638887753217");
+        assertEquals(response.getElement("cn").getElement("a").getText(), "Cert1149638887753217");
     }
 
     @Test
     public void testZCS6232() throws Exception {
         Account account = Provisioning.getInstance().getAccountByName("test6232@zimbra.com");
         // mocking the group not to have view permission
-        PowerMockito.stub(PowerMockito.method(GalGroupInfoProvider.class, "getGroupInfo"))
-            .toReturn(GroupInfo.IS_GROUP);
-        Assert.assertFalse(ToXML.hasDLViewRight("mydl@zimbra.com", account, account));
+        try (MockedStatic<ToXML> toXMLMockedStatic = mockStatic(ToXML.class)) {
+            GalGroupInfoProvider galGroupInfoProvider = mock(GalGroupInfoProvider.class);
+            doReturn(GroupInfo.IS_GROUP)
+                .when(galGroupInfoProvider).getGroupInfo(anyString(), anyBoolean(),
+                    any(Account.class), any(Account.class));
+            toXMLMockedStatic.when(ToXML::getGalGroupInfoProvider).thenReturn(galGroupInfoProvider);
+            toXMLMockedStatic.when(() -> ToXML.hasDLViewRight("mydl@zimbra.com", account, account))
+                .thenCallRealMethod();
+            assertFalse(ToXML.hasDLViewRight("mydl@zimbra.com", account, account));
+        }
     }
 
     @Test
     public void testZCS6232WithNullEmail() throws Exception {
         Account account = Provisioning.getInstance().getAccountByName("test6232@zimbra.com");
-        PowerMockito.stub(PowerMockito.method(GalGroupInfoProvider.class, "getGroupInfo"))
-            .toReturn(GroupInfo.IS_GROUP);
-        Assert.assertTrue(ToXML.hasDLViewRight(null, account, account));
+        GalGroupInfoProvider galGroupInfoProvider = mock(GalGroupInfoProvider.class);
+        // inside try logic to avoid Mockito exception when mocking static same class (Thread scope)
+        try (MockedStatic<ToXML> toXMLMockedStatic = mockStatic(ToXML.class)) {
+            doReturn(GroupInfo.IS_GROUP)
+                .when(galGroupInfoProvider).getGroupInfo(anyString(), anyBoolean(),
+                    any(Account.class), any(Account.class));
+            toXMLMockedStatic.when(ToXML::getGalGroupInfoProvider).thenReturn(galGroupInfoProvider);
+            toXMLMockedStatic.when(() -> ToXML.hasDLViewRight(null, account, account)).thenCallRealMethod();
+            assertTrue(ToXML.hasDLViewRight(null, account, account));
+        }
     }
 
     @Test
@@ -353,7 +369,7 @@ public final class ContactTest {
                 break;
             }
         }
-        Assert.assertTrue(errorCaught);
+        assertTrue(errorCaught);
     }
 
     @After

@@ -5,22 +5,24 @@
 
 package com.zimbra.cs.service.mail;
 
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.soap.Element;
@@ -43,9 +45,6 @@ import com.zimbra.soap.mail.message.SearchRequest;
 import com.zimbra.soap.mail.type.BulkAction;
 import com.zimbra.soap.type.SearchHit;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ SoapHttpTransport.class })
-@PowerMockIgnore({ "javax.crypto.*", "javax.xml.bind.annotation.*", "javax.net.ssl.*" })
 
 public class SearchActionTest {
 
@@ -82,7 +81,7 @@ public class SearchActionTest {
         mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
         mbox.addMessage(null, MailboxTestUtil.generateMessage("unmatched subject"), dopt, null);
         TypedIdList ids = mbox.getItemIds(null, 2);
-        Assert.assertEquals(2, ids.size());
+        assertEquals(2, ids.size());
         SearchRequest sRequest = new SearchRequest();
         sRequest.setSearchTypes("conversation");
         // search with query 'test'
@@ -101,13 +100,13 @@ public class SearchActionTest {
         // check inbox contains only 1 unmatched mail item after move
         List<MailItem> mailItems = mbox.getItemList(null, MailItem.Type.MESSAGE, 2,
             com.zimbra.cs.index.SortBy.DATE_DESC);
-        Assert.assertEquals(1, mailItems.size());
-        Assert.assertEquals("unmatched subject", mailItems.get(0).getSubject());
+        assertEquals(1, mailItems.size());
+        assertEquals("unmatched subject", mailItems.get(0).getSubject());
         // check trash contains mail item having 'test subject' after move
         mailItems = mbox.getItemList(null, MailItem.Type.MESSAGE, 3,
             com.zimbra.cs.index.SortBy.DATE_DESC);
-        Assert.assertEquals(1, mailItems.size());
-        Assert.assertEquals("test subject", mailItems.get(0).getSubject());
+        assertEquals(1, mailItems.size());
+        assertEquals("test subject", mailItems.get(0).getSubject());
     }
 
     @Test
@@ -121,9 +120,9 @@ public class SearchActionTest {
             dopt, null);
         Message message2 = mbox.addMessage(null, MailboxTestUtil.generateMessage("unmatched subject"), dopt, null);
         TypedIdList ids = mbox.getItemIds(null, 2);
-        Assert.assertEquals(2, ids.size());
-        Assert.assertEquals(true, message1.isUnread());
-        Assert.assertEquals(true, message2.isUnread());
+        assertEquals(2, ids.size());
+        assertEquals(true, message1.isUnread());
+        assertEquals(true, message2.isUnread());
         SearchRequest sRequest = new SearchRequest();
         sRequest.setSearchTypes("conversation");
         // search with query 'test'
@@ -139,13 +138,18 @@ public class SearchActionTest {
         List<SearchHit> searchHits = sResponse.getSearchHits();
         ConvActionRequest req = SearchAction.getConvActionRequest(searchHits, "read");
         ConvAction convAction = new ConvAction();
-        PowerMockito.stub(PowerMockito.method(SoapHttpTransport.class, "invokeWithoutSession"))
-            .toReturn(
+        SoapHttpTransport mockSoapHttpTransport = mock(SoapHttpTransport.class);
+        MockedStatic<SearchAction> searchActionMockedStatic = mockStatic(SearchAction.class);
+        searchActionMockedStatic.when(() -> SearchAction.getSoapHttpTransportInstance(anyString()))
+                .thenReturn(mockSoapHttpTransport);
+
+        when(mockSoapHttpTransport.invokeWithoutSession(any()))
+                .thenReturn(
                 convAction.handle(zsc.jaxbToElement(req), ServiceTestUtil.getRequestContext(acct)));
         SearchAction.performAction(bAction, sRequest, searchHits, mbox, null);
         // check search result message is marked read
-        Assert.assertEquals(false, message1.isUnread());
-        Assert.assertEquals(true, message2.isUnread());
+        assertEquals(false, message1.isUnread());
+        assertEquals(true, message2.isUnread());
     }
 
     @After

@@ -49,7 +49,7 @@ public class SearchAction extends MailDocumentHandler {
         String url = URLUtil.getSoapURL(server, false);
         com.zimbra.soap.mail.message.SearchResponse resp = null;
         Element searchResponse;
-        SoapHttpTransport transport = new SoapHttpTransport(url);
+        SoapHttpTransport transport = getSoapHttpTransportInstance(url);
         transport.setTargetAcctId(acct.getId());
         try {
             transport.setAuthToken(octxt.getAuthToken().getEncoded());
@@ -122,13 +122,21 @@ public class SearchAction extends MailDocumentHandler {
         }
     }
 
+    /**
+     * @param url url for soap http
+     * @return a new soap http transport instance
+     */
+    public static SoapHttpTransport getSoapHttpTransportInstance(String url) {
+        return new SoapHttpTransport(url);
+    }
+
     private static void performReadUnreadAction(SearchRequest searchRequest,
         List<SearchHit> searchHits, Mailbox mbox, String op)
         throws ServiceException, AuthTokenException, IOException, HttpException {
         Account acct = mbox.getAccount();
         Server server = Provisioning.getInstance().getServer(acct);
         String url = URLUtil.getSoapURL(server, false);
-        SoapHttpTransport transport = new SoapHttpTransport(url);
+        SoapHttpTransport transport = getSoapHttpTransportInstance(url);
         transport.setAuthToken(AuthProvider.getAuthToken(acct).getEncoded());
         transport.setTargetAcctId(acct.getId());
         if ("message".equalsIgnoreCase(searchRequest.getSearchTypes())) {

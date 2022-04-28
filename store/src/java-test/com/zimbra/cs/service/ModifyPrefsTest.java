@@ -5,33 +5,9 @@
 
 package com.zimbra.cs.service;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-
-import javax.mail.Address;
-import javax.mail.internet.MimeMessage;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.MethodRule;
-import org.junit.rules.TestName;
-import org.junit.rules.TestWatchman;
-import org.junit.runner.RunWith;
-import org.junit.runners.model.FrameworkMethod;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureAddressVerificationStatus;
-import com.zimbra.common.mime.MimeDetect;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.cs.account.Account;
@@ -46,12 +22,24 @@ import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.ModifyPrefsRequest;
 import com.zimbra.soap.account.type.Pref;
-
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import javax.mail.Address;
+import javax.mail.internet.MimeMessage;
 import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.MethodRule;
+import org.junit.rules.TestName;
+import org.junit.rules.TestWatchman;
+import org.junit.runners.model.FrameworkMethod;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(MimeDetect.class)
-@PowerMockIgnore({ "javax.crypto.*", "javax.xml.bind.annotation.*" })
 public class ModifyPrefsTest {
 
     public static String zimbraServerDir = "";

@@ -4,18 +4,6 @@
 
 package com.zimbra.cs.service.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
 import com.google.common.collect.Maps;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -25,16 +13,19 @@ import com.zimbra.cs.filter.RuleManager.AdminFilterType;
 import com.zimbra.cs.filter.RuleManager.FilterType;
 import com.zimbra.cs.filter.SoapToSieve;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.cs.service.admin.AdminDocumentHandler.AccountHarvestingCheckerBase;
-import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.type.EditheaderTest;
 import com.zimbra.soap.mail.type.FilterAction.AddheaderAction;
 import com.zimbra.soap.mail.type.FilterAction.DeleteheaderAction;
 import com.zimbra.soap.mail.type.FilterAction.ReplaceheaderAction;
 import com.zimbra.soap.mail.type.FilterRule;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({AccountHarvestingCheckerBase.class, ZimbraSoapContext.class})
 public class ModifyFilterRulesAdminTest {
     private static final String ACCOUNTNAME = "test1_zcs273_"+System.currentTimeMillis()+"@zimbra.com";
     private static Provisioning prov = null;
