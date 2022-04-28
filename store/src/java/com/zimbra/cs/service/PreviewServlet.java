@@ -108,8 +108,8 @@ public class PreviewServlet extends ZimbraServlet {
    * @param requestUrl the {@link String} requestUrl
    * @return the {@link BlobResponseStore} object
    */
-  private Try<BlobResponseStore> getAttachmentPreview(String requestUrl,
-      MimePart attachmentMimePart) {
+  private Try<BlobResponseStore> getAttachmentPreview(
+      String requestUrl, MimePart attachmentMimePart) {
 
     // preview client from preview SDK
     PreviewClient previewClient = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
@@ -165,85 +165,67 @@ public class PreviewServlet extends ZimbraServlet {
     if (thumbnailImage.find()) {
       String previewArea = thumbnailImage.group(3);
       PreviewQueryParameters queryParameters = parseQueryParameters(thumbnailImage.group(4));
-      return returnPreviewResponse(
-          previewClient,
-          attachmentFileName,
-          dispositionType,
-          attachmentMimePartInputStream.get(),
-          previewArea,
-          queryParameters);
+      return Try.of(
+              () ->
+                  previewClient.postThumbnailOfImage(
+                      attachmentMimePartInputStream.get(),
+                      generateQuery(previewArea, queryParameters),
+                      attachmentFileName))
+          .flatMapTry(
+              thumbnailOfImage ->
+                  mapResponseToBlobResponseStore(
+                      thumbnailOfImage.get(), attachmentFileName, dispositionType));
     }
 
     // Handle PDF thumbnail request
     if (thumbnailPdf.find()) {
       String previewArea = thumbnailPdf.group(3);
       PreviewQueryParameters queryParameters = parseQueryParameters(thumbnailPdf.group(4));
-      return returnPreviewResponse(
-          previewClient,
-          attachmentFileName,
-          dispositionType,
-          attachmentMimePartInputStream.get(),
-          previewArea,
-          queryParameters);
+      return Try.of(
+              () ->
+                  previewClient.postThumbnailOfPdf(
+                      attachmentMimePartInputStream.get(),
+                      generateQuery(previewArea, queryParameters),
+                      attachmentFileName))
+          .flatMapTry(
+              thumbnailOfImage ->
+                  mapResponseToBlobResponseStore(
+                      thumbnailOfImage.get(), attachmentFileName, dispositionType));
     }
-
     // Handle Preview Image request
     if (previewImage.find()) {
       String previewArea = previewImage.group(3);
       PreviewQueryParameters queryParameters = parseQueryParameters(previewImage.group(5));
-      return returnPreviewResponse(
-          previewClient,
-          attachmentFileName,
-          dispositionType,
-          attachmentMimePartInputStream.get(),
-          previewArea,
-          queryParameters);
+      return Try.of(
+              () ->
+                  previewClient.postPreviewOfImage(
+                      attachmentMimePartInputStream.get(),
+                      generateQuery(previewArea, queryParameters),
+                      attachmentFileName))
+          .flatMapTry(
+              thumbnailOfImage ->
+                  mapResponseToBlobResponseStore(
+                      thumbnailOfImage.get(), attachmentFileName, dispositionType));
     }
 
     // Handle Preview PDF request
     if (previewPdf.find()) {
       PreviewQueryParameters queryParameters = parseQueryParameters(previewPdf.group(4));
-      return returnPreviewResponse(
-          previewClient,
-          attachmentFileName,
-          dispositionType,
-          attachmentMimePartInputStream.get(),
-          null,
-          queryParameters);
+      return Try.of(
+              () ->
+                  previewClient.postPreviewOfPdf(
+                      attachmentMimePartInputStream.get(),
+                      generateQuery(null, queryParameters),
+                      attachmentFileName))
+          .flatMapTry(
+              thumbnailOfImage ->
+                  mapResponseToBlobResponseStore(
+                      thumbnailOfImage.get(), attachmentFileName, dispositionType));
     }
-    // End Preview API
-    // Controller==========================================================================
+    // End Preview API Controller=================================================================
 
     // return failure if controller reached the end
     return Try.failure(ServiceException.INVALID_REQUEST("Cannot handle request", null));
-  }
-
-  /**
-   * @param previewClient The {@link PreviewClient}
-   * @param attachmentFileName Attachment filename {@link String}
-   * @param dispositionType content disposition type {@link String}
-   * @param attachmentMimePartInputStream attachment inputStream {@link InputStream}
-   * @param previewArea previewArea {@link String}
-   * @param queryParameters queryParameters {@link PreviewQueryParameters}
-   * @return mapped response {@link BlobResponseStore} of preview's {@link BlobResponse}
-   */
-  private Try<BlobResponseStore> returnPreviewResponse(
-      PreviewClient previewClient,
-      String attachmentFileName,
-      String dispositionType,
-      InputStream attachmentMimePartInputStream,
-      String previewArea,
-      PreviewQueryParameters queryParameters) {
-    return Try.of(
-            () ->
-                previewClient.postThumbnailOfImage(
-                    attachmentMimePartInputStream,
-                    generateQuery(previewArea, queryParameters),
-                    attachmentFileName))
-        .flatMapTry(
-            thumbnailOfImage ->
-                mapResponseToBlobResponseStore(
-                    thumbnailOfImage.get(), attachmentFileName, dispositionType));
   }
 
   /**
@@ -294,7 +276,7 @@ public class PreviewServlet extends ZimbraServlet {
    * @param queryParameters {@link String}
    * @return {@link PreviewQueryParameters}
    */
-   PreviewQueryParameters parseQueryParameters(String queryParameters) {
+  PreviewQueryParameters parseQueryParameters(String queryParameters) {
     Map<String, String> parameters =
         Arrays.stream(queryParameters.replace("?", "").split("&"))
             .map(parameter -> parameter.split("="))
@@ -312,7 +294,7 @@ public class PreviewServlet extends ZimbraServlet {
    *     <pre> protocol + servername + port + path + query </pre>
    *     )
    */
-   String getUrlWithQueryParams(final HttpServletRequest request) {
+  String getUrlWithQueryParams(final HttpServletRequest request) {
     StringBuffer url = request.getRequestURL();
     String queryString = request.getQueryString();
     if (queryString != null) {
@@ -328,7 +310,7 @@ public class PreviewServlet extends ZimbraServlet {
    * @param resp the {@link HttpServletResponse} object
    * @param blobResponseStore the {@link BlobResponseStore} object
    */
-   void respondWithSuccess(HttpServletResponse resp, BlobResponseStore blobResponseStore) {
+  void respondWithSuccess(HttpServletResponse resp, BlobResponseStore blobResponseStore) {
     resp.addHeader(HttpHeaders.CONNECTION, HTTP.CONN_CLOSE);
     resp.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(blobResponseStore.getSize()));
     resp.addHeader(HttpHeaders.CONTENT_TYPE, blobResponseStore.getMimeType());
@@ -420,7 +402,7 @@ public class PreviewServlet extends ZimbraServlet {
    *     error message
    * @param resp the {@link HttpServletResponse} to send the error response
    */
-   void checkAuthTokenFromCookieOrRespondWithError(
+  void checkAuthTokenFromCookieOrRespondWithError(
       AuthToken authToken, HttpServletRequest req, HttpServletResponse resp) {
     if (authToken == null) {
       respondWithError(
