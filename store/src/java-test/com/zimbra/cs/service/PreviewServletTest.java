@@ -1,6 +1,8 @@
 package com.zimbra.cs.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.Key;
@@ -38,7 +40,6 @@ import org.eclipse.jetty.util.URIUtil;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 
 public class PreviewServletTest {
 
@@ -85,12 +86,12 @@ public class PreviewServletTest {
   public void shouldReturn400WhenRequiredParametersAreNotPassedInDoGetRequest() throws Exception {
     URL url = new URL("http://localhost:7070/service/preview/");
     Cookie cookie = new Cookie("ZM_AUTH_TOKEN", getAuthTokenString());
-    MockHttpServletRequest mockRequest = PowerMockito.mock(MockHttpServletRequest.class);
+    MockHttpServletRequest mockRequest = mock(MockHttpServletRequest.class);
     StringBuffer urlBuffer = new StringBuffer(128);
     urlBuffer.append(
         URIUtil.newURI(
             url.toURI().getScheme(), url.getHost(), url.getPort(), url.getPath(), url.getQuery()));
-    PowerMockito.when(mockRequest.getRequestURL()).thenReturn(urlBuffer);
+    when(mockRequest.getRequestURL()).thenReturn(urlBuffer);
     mockRequest.setCookies(cookie);
     MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 
@@ -103,12 +104,12 @@ public class PreviewServletTest {
   public void shouldReturn401WhenCheckAuthTokenFromCookieOrRespondWithErrorIfCookieNotSet()
       throws Exception {
     URL url = new URL("http://localhost:7070/service/preview/");
-    MockHttpServletRequest mockRequest = PowerMockito.mock(MockHttpServletRequest.class);
+    MockHttpServletRequest mockRequest = mock(MockHttpServletRequest.class);
     StringBuffer urlBuffer = new StringBuffer(128);
     urlBuffer.append(
         URIUtil.newURI(
             url.toURI().getScheme(), url.getHost(), url.getPort(), url.getPath(), url.getQuery()));
-    PowerMockito.when(mockRequest.getRequestURL()).thenReturn(urlBuffer);
+    when(mockRequest.getRequestURL()).thenReturn(urlBuffer);
     MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 
     final AuthToken authToken = AuthProvider.getAuthToken(mockRequest, false);
@@ -147,12 +148,12 @@ public class PreviewServletTest {
     URL url =
         new URL(
             "http://localhost:7070/service/preview/image/290/4/200x200/thumbnail/?quality=high&shape=rounded&output_format=png");
-    HttpServletRequest mockRequest = PowerMockito.mock(HttpServletRequest.class);
+    HttpServletRequest mockRequest = mock(HttpServletRequest.class);
     StringBuffer urlBuffer = new StringBuffer(128);
     urlBuffer.append(
         URIUtil.newURI(
             url.toURI().getScheme(), url.getHost(), url.getPort(), url.getPath(), url.getQuery()));
-    PowerMockito.when(mockRequest.getRequestURL()).thenReturn(urlBuffer);
+    when(mockRequest.getRequestURL()).thenReturn(urlBuffer);
 
     final PreviewServlet previewServlet = new PreviewServlet();
     final String expectedUrlWithQueryParams = previewServlet.getUrlWithQueryParams(mockRequest);
