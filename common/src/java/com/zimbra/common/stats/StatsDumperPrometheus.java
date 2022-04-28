@@ -104,9 +104,9 @@ public class StatsDumperPrometheus implements Callable<Void> {
                     logBuffer
                         .append(statFilePrefix)
                         .append("_")
-                        .append(headers[i])
+                        .append(sanitizeHeader(headers[i]))
                         .append(" ")
-                        .append(stats[i])
+                        .append((stats[i].equals("") ? "0" : stats[i]))
                         .append("\n"));
       }
     }
@@ -114,6 +114,16 @@ public class StatsDumperPrometheus implements Callable<Void> {
     // write metrics to prom file and close
     writeLogBuffer(logBuffer);
     return null;
+  }
+
+  /**
+   * @param headerStr header {@link String}
+   * @return sanitized header {@link String}
+   */
+  private String sanitizeHeader(String headerStr) {
+    headerStr = headerStr.replace("'", "");
+    headerStr = headerStr.replace("-", "_");
+    return  headerStr;
   }
 
   /**
@@ -132,7 +142,7 @@ public class StatsDumperPrometheus implements Callable<Void> {
                 logBuffer
                     .append(statFilePrefix)
                     .append("_")
-                    .append(headers[i])
+                    .append(sanitizeHeader(headers[i]))
                     .append(" ")
                     .append("{")
                     .append(header)
@@ -140,7 +150,7 @@ public class StatsDumperPrometheus implements Callable<Void> {
                     .append(command)
                     .append("\"}")
                     .append(" ")
-                    .append(stats[i])
+                    .append(stats[i].equals("") ? "0" : stats[i])
                     .append("\n"));
   }
 
