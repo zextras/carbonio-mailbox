@@ -11,8 +11,8 @@ import java.util.concurrent.Callable;
 import java.util.stream.IntStream;
 
 /**
- * Writes data to a file at a scheduled interval. Data and headers are retrieved from
- * a {@link StatsDumperDataSource}.
+ * Writes data to a file at a scheduled interval. Data, headers and filename are retrieved from a
+ * {@link StatsDumperDataSource}.
  */
 public class StatsDumperPrometheus implements Callable<Void> {
 
@@ -25,7 +25,8 @@ public class StatsDumperPrometheus implements Callable<Void> {
   }
 
   /**
-   * Schedules a new stats task.
+   * Schedules a new stats task in a thread & calls the dumper to write collected data to the stats
+   * file
    *
    * @param dataSource the data source {@link StatsDumperDataSource}
    * @param intervalMillis interval between writes. The first write is delayed by this interval.
@@ -53,13 +54,20 @@ public class StatsDumperPrometheus implements Callable<Void> {
     new Thread(STATS_GROUP, r, dataSource.getFilename()).start();
   }
 
+  /**
+   * Ensures that the directory to hold stat exists and return the file object for the stat file we
+   * want to write metrics to
+   *
+   * @return file object {@link File} for current dataSource
+   * @throws IOException IO exception that could occur while creating the file object
+   */
   private File getFile() throws IOException {
     FileUtil.ensureDirExists(STATS_DIR);
     return new File(STATS_DIR, mDataSource.getFilename());
   }
 
   /**
-   * Gets the latest data from the data source and writes it to the file
+   * Gets the latest data from the dataSource and writes it to the file
    *
    * @throws Exception if any exception occurs
    */
@@ -117,16 +125,20 @@ public class StatsDumperPrometheus implements Callable<Void> {
   }
 
   /**
+   * Clean up the header to make them compatible for export
+   *
    * @param headerStr header {@link String}
    * @return sanitized header {@link String}
    */
   private String sanitizeHeader(String headerStr) {
     headerStr = headerStr.replace("'", "");
     headerStr = headerStr.replace("-", "_");
-    return  headerStr;
+    return headerStr;
   }
 
   /**
+   * Process the complex metrics type
+   *
    * @param statFilePrefix stat filename prefix
    * @param logBuffer the logBuffer to which the processed data will pe appended
    * @param headers headers of the dataSource {@link StatsDumperDataSource}
@@ -155,6 +167,8 @@ public class StatsDumperPrometheus implements Callable<Void> {
   }
 
   /**
+   * Writes log buffer to metrics file
+   *
    * @param logBuffer the logBuffer containing processed data
    * @throws IOException exception that could occur while writing data to file
    */
