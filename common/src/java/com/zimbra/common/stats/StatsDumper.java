@@ -10,6 +10,8 @@ import com.zimbra.common.util.ZimbraLog;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.UUID;
@@ -79,7 +81,7 @@ public class StatsDumper implements Callable<Void> {
     File archiveDir = getArchiveDir();
     File archiveFile = new File(archiveDir, mDataSource.getFilename() + ".gz");
     FileUtil.compress(sourceFile, archiveFile, true);
-    sourceFile.delete();
+    Files.delete(Path.of(sourceFile.getPath()));
   }
 
   /**
@@ -112,19 +114,19 @@ public class StatsDumper implements Callable<Void> {
 
     // Determine if header needs to be written
     boolean writeHeader = !file.exists();
-    FileWriter writer = new FileWriter(file, true);
     String header = mDataSource.getHeader();
-    if (writeHeader) {
-      if (mDataSource.hasTimestampColumn()) {
-        writer.write("timestamp,");
+    try(FileWriter writer = new FileWriter(file, true)){
+      if (writeHeader) {
+        if (mDataSource.hasTimestampColumn()) {
+          writer.write("timestamp,");
+        }
+        writer.write(header);
+        writer.write("\n");
       }
-      writer.write(header);
-      writer.write("\n");
+      // Write data and close
+      writer.write(buf.toString());
     }
 
-    // Write data and close
-    writer.write(buf.toString());
-    writer.close();
     for (String line : lines) {
       String logLine =
           mDataSource.getFilename()

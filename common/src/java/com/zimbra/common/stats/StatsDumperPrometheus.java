@@ -174,8 +174,8 @@ public class StatsDumperPrometheus implements Callable<Void> {
    */
   private void writeLogBuffer(final StringBuilder logBuffer) throws IOException {
     File file = getFile();
-    FileWriter writer = new FileWriter(file, false);
-    writer.write(logBuffer.toString());
-    writer.close();
+    try(FileWriter writer = new FileWriter(file, false)){
+      writer.write(logBuffer.toString());
+    }
   }
 }
