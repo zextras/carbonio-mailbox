@@ -93,6 +93,10 @@ public abstract class AuthMechanism {
     public static AuthMechanism newInstance(Account acct, Map<String, Object> context)
     throws ServiceException {
         String authMechStr = AuthMech.zimbra.name();
+        // if carbonioAdvanced is registered set it as default
+        if (ZimbraCustomAuth.handlerIsRegistered(AuthMech.carbonioAdvanced.name())) {
+            authMechStr = AuthMech.carbonioAdvanced.name();
+        }
 
         // bypass domain AuthMech and always use Zimbra auth for external virtual accounts
 
