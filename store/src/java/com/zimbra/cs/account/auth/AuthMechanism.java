@@ -38,6 +38,11 @@ public abstract class AuthMechanism {
         zimbra,
 
         /**
+         * default authentication for carbonio advanced
+         */
+        carbonioAdvanced,
+
+        /**
          * zimbraAuthMech type of "ldap" means use configured LDAP attrs
          * (zimbraAuthLdapURL, zimbraAuthLdapBindDn)
          */
@@ -125,6 +130,8 @@ public abstract class AuthMechanism {
                 switch (authMech) {
                     case zimbra:
                         return new ZimbraAuth(authMech);
+                    case carbonioAdvanced:
+                        return new CustomAuth(AuthMech.carbonioAdvanced, authMechStr);
                     case ldap:
                     case ad:
                         return new LdapAuth(authMech);
