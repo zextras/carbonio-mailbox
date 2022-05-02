@@ -3,7 +3,12 @@
   xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
   <info organisation="zimbra" module="zm-store" status="integration"></info>
   <dependencies>
-    <dependency org="com.zextras.carbonio.files" name="carbonio-files-sdk" rev="0.0.3"/>
+    <dependency org="com.zextras.carbonio.files" name="carbonio-files-sdk" rev="0.0.3" transitive="false"/>
+    <!-- Use the very same Files SDK dependencies we provide in the WAR -->
+    <dependency org="io.vavr" name="vavr" rev="0.10.4"/>
+    <dependency org="com.google.inject" name="guice" rev="5.0.1"/>
+    <!-- End of SDK dependencies -->
+    <dependency org="com.zextras.carbonio.files" name="carbonio-files-sdk" rev="0.0.3" transitive="false"/>
     <dependency org="org.mockito" name="mockito-core" rev="4.4.0"/>
     <dependency org="net.bytebuddy" name="byte-buddy" rev="1.12.8"/>
     <dependency org="net.bytebuddy" name="byte-buddy-agent" rev="1.12.8"/>
