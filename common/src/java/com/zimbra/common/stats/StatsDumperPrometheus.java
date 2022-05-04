@@ -1,7 +1,6 @@
 package com.zimbra.common.stats;
 
 import com.zimbra.common.util.FileUtil;
-import com.zimbra.common.util.ZimbraLog;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,6 +12,9 @@ import java.util.stream.IntStream;
 /**
  * Writes data to a file at a scheduled interval. Data, headers and filename are retrieved from a
  * {@link StatsDumperDataSource}.
+ *
+ * @author Keshav Bhatt
+ * @since 4.0.7
  */
 public class StatsDumperPrometheus implements Callable<Void> {
 
@@ -33,24 +35,7 @@ public class StatsDumperPrometheus implements Callable<Void> {
    */
   public static void schedule(final StatsDumperDataSource dataSource, final long intervalMillis) {
     final StatsDumperPrometheus dumper = new StatsDumperPrometheus(dataSource);
-    Runnable r =
-        () -> {
-          while (true) {
-            try {
-              Thread.sleep(intervalMillis);
-              try {
-                dumper.call();
-              } catch (Exception e) {
-                ZimbraLog.perf.warn("Exception in stats thread: %s", dataSource.getFilename(), e);
-              }
-            } catch (InterruptedException e) {
-              ZimbraLog.perf.info("Stats thread interrupted: %s", dataSource.getFilename(), e);
-            }
-            if (Thread.currentThread().isInterrupted()) {
-              ZimbraLog.perf.info("Stats thread was interrupted: %s", dataSource.getFilename());
-            }
-          }
-        };
+    final StatsDumperTask r = new StatsDumperTask(intervalMillis, dataSource, dumper);
     new Thread(STATS_GROUP, r, dataSource.getFilename()).start();
   }
 
@@ -103,7 +88,7 @@ public class StatsDumperPrometheus implements Callable<Void> {
     // metrics processing
     for (String line : dataLines) {
       final String[] stats = line.split(",");
-      if (headers[0].equals("command")) {
+      if ("command".equals(headers[0])) {
         processComplexStat(statFilePrefix, logBuffer, headers, stats);
       } else {
         IntStream.range(0, stats.length)
@@ -114,7 +99,7 @@ public class StatsDumperPrometheus implements Callable<Void> {
                         .append("_")
                         .append(sanitizeHeader(headers[i]))
                         .append(" ")
-                        .append((stats[i].equals("") ? "0" : stats[i]))
+                        .append(("".equals(stats[i]) ? "0" : stats[i]))
                         .append("\n"));
       }
     }
@@ -162,7 +147,7 @@ public class StatsDumperPrometheus implements Callable<Void> {
                     .append(command)
                     .append("\"}")
                     .append(" ")
-                    .append(stats[i].equals("") ? "0" : stats[i])
+                    .append("".equals(stats[i]) ? "0" : stats[i])
                     .append("\n"));
   }
 
@@ -174,7 +159,7 @@ public class StatsDumperPrometheus implements Callable<Void> {
    */
   private void writeLogBuffer(final StringBuilder logBuffer) throws IOException {
     File file = getFile();
-    try(FileWriter writer = new FileWriter(file, false)){
+    try (FileWriter writer = new FileWriter(file, false)) {
       writer.write(logBuffer.toString());
     }
   }

@@ -43,23 +43,7 @@ public class StatsDumper implements Callable<Void> {
   public static void schedule(final StatsDumperDataSource dataSource, final long intervalMillis) {
     // Stop using TaskScheduler (bug 22978)
     final StatsDumper dumper = new StatsDumper(dataSource);
-    Runnable r =
-        () -> {
-          while (true) {
-            try {
-              Thread.sleep(intervalMillis);
-              try {
-                dumper.call();
-              } catch (Exception e) {
-                ZimbraLog.perf.warn("Exception in stats thread: %s", dataSource.getFilename(), e);
-              }
-            } catch (InterruptedException e) {
-              ZimbraLog.perf.info("Stats thread interrupted: %s", dataSource.getFilename(), e);
-            }
-            if (Thread.currentThread().isInterrupted())
-              ZimbraLog.perf.info("Stats thread was interrupted: %s", dataSource.getFilename());
-          }
-        };
+    final StatsDumperTask r = new StatsDumperTask(intervalMillis, dataSource, dumper);
     new Thread(statsGroup, r, dataSource.getFilename()).start();
   }
 
@@ -115,7 +99,7 @@ public class StatsDumper implements Callable<Void> {
     // Determine if header needs to be written
     boolean writeHeader = !file.exists();
     String header = mDataSource.getHeader();
-    try(FileWriter writer = new FileWriter(file, true)){
+    try (FileWriter writer = new FileWriter(file, true)) {
       if (writeHeader) {
         if (mDataSource.hasTimestampColumn()) {
           writer.write("timestamp,");
