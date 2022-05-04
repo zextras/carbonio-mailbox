@@ -38,7 +38,7 @@ public abstract class AuthMechanism {
         zimbra,
 
         /**
-         * default authentication for carbonio advanced
+         * zimbraAuthMech type of "carbonioAdvanced"
          */
         carbonioAdvanced,
 
