@@ -8,7 +8,7 @@ import org.junit.Test;
 public class PrometheusFormatterTest {
 
   @Test
-  public void ShouldFormatCorrectlyWhenCalledProcessComplexStat() {
+  public void shouldFormatCorrectlyWhenCalledProcessComplexStat() {
 
     StringBuilder buf = new StringBuilder();
     String[] header = {"command", "exec_count", "exec_ms_avg"};
@@ -24,7 +24,7 @@ public class PrometheusFormatterTest {
   }
 
   @Test
-  public void ShouldCleanHeaderWhenCalledSanitizeHeader() {
+  public void shouldCleanHeaderWhenCalledSanitizeHeader() {
     String[] headers = {"command", "exec-count", "exec_ms-avg", "exec's_duration"};
     StringBuilder buf = new StringBuilder();
     IntStream.range(1, headers.length)
@@ -34,7 +34,7 @@ public class PrometheusFormatterTest {
   }
 
   @Test
-  public void ShouldFormatCorrectlyWhenCalledProcessNormalStats() {
+  public void shouldFormatCorrectlyWhenCalledProcessNormalStats() {
     String[] headers = {
       "AnonymousIoService",
       "CloudRoutingReaderThread",
@@ -75,7 +75,7 @@ public class PrometheusFormatterTest {
   }
 
   @Test
-  public void AddTimestampWhenCalledAddTimeStamp() {
+  public void shouldAddTimestampWhenCalledAddTimeStamp() {
     final long timestamp = 1651670178388L;
     var logBuffer = new StringBuilder();
     PrometheusFormatter.addTimeStamp("sql", logBuffer, timestamp);
