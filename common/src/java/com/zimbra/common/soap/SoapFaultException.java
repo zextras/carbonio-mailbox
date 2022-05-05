@@ -30,6 +30,16 @@ public class SoapFaultException extends ServiceException {
         super(message, code, isReceiversFault);
     }
 
+    /**
+     * Generic SoapFaultException
+     * @param message message to set in response
+     * @param code code for the error
+     * @param isReceiversFault if the error occurred because of server/receiver fault
+     */
+    public SoapFaultException(String message, String code, boolean isReceiversFault) {
+        super(message, code, isReceiversFault);
+    }
+
     /** Create a new SoapFaultException. */
     public SoapFaultException(String message, Element detail, boolean isReceiversFault) {
         super(message, getCode(detail), isReceiversFault);
