@@ -92,6 +92,8 @@ public class MailServiceException extends ServiceException {
 
     public static final String INVALID_COMMIT_ID = "mail.INVALID_COMMIT_ID";
     public static final String INVALID_IMAGE = "mail.INVALID_IMAGE";
+    //TODO: in future we can consider moving not implemented to a more generic/shared error code
+    public static final String NOT_IMPLEMENTED = "mail.NOT_IMPLEMENTED";
 
     public static final String TEMPORARY_ANALYSIS_ERROR = "mail.TEMPORARY_ANALYSIS_ERROR";
 
@@ -618,5 +620,9 @@ public class MailServiceException extends ServiceException {
 
     public static ServiceException INVALID_IMAGE(String message) {
         return new MailServiceException(message, INVALID_IMAGE, SENDERS_FAULT);
+    }
+
+    public static ServiceException NOT_IMPLEMENTED() {
+        return new MailServiceException("Not implemented yet.", NOT_IMPLEMENTED, RECEIVERS_FAULT);
     }
 }
