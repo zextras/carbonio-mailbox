@@ -93,8 +93,6 @@ public abstract class AuthMechanism {
     public static AuthMechanism newInstance(Account acct, Map<String, Object> context)
     throws ServiceException {
         String authMechStr = AuthMech.zimbra.name();
-
-
         // bypass domain AuthMech and always use Zimbra auth for external virtual accounts
 
         if (!acct.isIsExternalVirtualAccount()) {
@@ -135,7 +133,7 @@ public abstract class AuthMechanism {
                     case zimbra:
                         return new ZimbraAuth(authMech);
                     case carbonioAdvanced:
-                        return new CustomAuth(AuthMech.carbonioAdvanced, authMechStr);
+                        return new CustomAuth(AuthMech.custom, AuthMech.custom.name() + ":" + authMechStr);
                     case ldap:
                     case ad:
                         return new LdapAuth(authMech);
