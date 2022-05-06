@@ -7,11 +7,11 @@
             <exclude org="org.apache.httpcomponents" name="httpclient"/>
             <exclude org="io.vavr" name="vavr"/>
         </dependency>
-        <dependency org="io.vavr" name="vavr" rev="0.10.4"/>
         <dependency org="com.zextras.carbonio.preview" name="carbonio-preview-sdk" rev="0.2.3">
             <exclude org="org.apache.httpcomponents" name="httpclient"/>
             <exclude org="io.vavr" name="vavr"/>
         </dependency>
+        <dependency org="io.vavr" name="vavr" rev="0.10.4"/>
         <dependency org="org.mockito" name="mockito-core" rev="4.4.0"/>
         <dependency org="net.bytebuddy" name="byte-buddy" rev="1.12.8"/>
         <dependency org="net.bytebuddy" name="byte-buddy-agent" rev="1.12.8"/>
