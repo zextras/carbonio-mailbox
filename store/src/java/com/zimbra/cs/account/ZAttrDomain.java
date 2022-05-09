@@ -1392,7 +1392,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      */
     @ZAttr(id=257)
     public boolean isAuthFallbackToLocal() {
-        return getBooleanAttr(Provisioning.A_zimbraAuthFallbackToLocal, false, true);
+        return getBooleanAttr(Provisioning.A_zimbraAuthFallbackToLocal, true, true);
     }
 
     /**
