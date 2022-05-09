@@ -32,7 +32,10 @@ pipeline {
                     carbonio.buildinfo.version=22.4.0_ZEXTRAS_202204
                     EOF
                    """
-				sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
+                 withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
+                   sh "cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties"
+                 }
+				        sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
                 sh """
                     ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant \
                          -propertyfile build.properties \
@@ -48,14 +51,11 @@ pipeline {
                 buildingTag()
             }
             steps {
-                withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
-                    sh "cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties"
-                    sh """
+                  sh """
                         ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant \
                              -propertyfile build.properties \
                              publish-maven-all
                         """
-                }
             }
         }
         stage('Build deb/rpm') {

@@ -5,8 +5,12 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zextras.carbonio.files.FilesClient;
+import com.zextras.carbonio.files.FilesClient;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.cs.service.MailboxAttachmentService;
+import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 
@@ -232,5 +236,9 @@ public final class MailService implements DocumentService {
         // Password reset API
         dispatcher.registerHandler(MailConstants.RECOVER_ACCOUNT_REQUEST, new RecoverAccount());
         dispatcher.registerHandler(MailConstants.SET_RECOVERY_EMAIL_REQUEST, new SetRecoveryAccount());
+
+        // Drive attachment upload
+        dispatcher.registerHandler(MailConstants.COPY_TO_DRIVE_REQUEST,
+            new CopyToFiles(new MailboxAttachmentService(), FilesClient.atURL("http://127.78.0.7:20002")));
     }
 }
