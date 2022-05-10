@@ -38,6 +38,11 @@ public abstract class AuthMechanism {
         zimbra,
 
         /**
+         * zimbraAuthMech type of "carbonioAdvanced"
+         */
+        carbonioAdvanced,
+
+        /**
          * zimbraAuthMech type of "ldap" means use configured LDAP attrs
          * (zimbraAuthLdapURL, zimbraAuthLdapBindDn)
          */
@@ -88,15 +93,17 @@ public abstract class AuthMechanism {
     public static AuthMechanism newInstance(Account acct, Map<String, Object> context)
     throws ServiceException {
         String authMechStr = AuthMech.zimbra.name();
-
         // bypass domain AuthMech and always use Zimbra auth for external virtual accounts
 
         if (!acct.isIsExternalVirtualAccount()) {
             Provisioning prov = Provisioning.getInstance();
             Domain domain = prov.getDomain(acct);
-
             // see if it specifies an alternate auth
             if (domain != null) {
+                // when domain defined if carbonioAdvanced is registered set it as default
+                if (ZimbraCustomAuth.handlerIsRegistered(AuthMech.carbonioAdvanced.name())) {
+                    authMechStr = AuthMech.carbonioAdvanced.name();
+                }
                 String am;
                 Boolean asAdmin = context == null ? null : (Boolean) context.get(AuthContext.AC_AS_ADMIN);
                 if (asAdmin != null && asAdmin) {
@@ -125,6 +132,8 @@ public abstract class AuthMechanism {
                 switch (authMech) {
                     case zimbra:
                         return new ZimbraAuth(authMech);
+                    case carbonioAdvanced:
+                        return new CustomAuth(AuthMech.custom, AuthMech.custom.name() + ":" + authMechStr);
                     case ldap:
                     case ad:
                         return new LdapAuth(authMech);

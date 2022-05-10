@@ -12,6 +12,7 @@ import java.util.Map;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import java.util.Objects;
 
 public abstract class ZimbraCustomAuth {
     
@@ -43,7 +44,18 @@ public abstract class ZimbraCustomAuth {
         }
         mHandlers.put(handlerName, handler);
     }
-    
+
+    /**
+     * Returns if handler is registered.
+     * Given name must not be null + must be registered.
+     *
+     * @param handlerName name of the handler
+     * @return if handler registered
+     */
+    public static boolean handlerIsRegistered(String handlerName) {
+        return !Objects.isNull(handlerName) && mHandlers.containsKey(handlerName);
+    }
+
     public synchronized static ZimbraCustomAuth getHandler(String handlerName) {
         if (mHandlers == null)
             return null;
