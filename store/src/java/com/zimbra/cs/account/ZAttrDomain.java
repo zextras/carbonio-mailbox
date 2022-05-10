@@ -1388,7 +1388,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     /**
      * fallback to local auth if external mech fails
      *
-     * @return zimbraAuthFallbackToLocal, or false if unset
+     * @return zimbraAuthFallbackToLocal, or true if unset
      */
     @ZAttr(id=257)
     public boolean isAuthFallbackToLocal() {
