@@ -30,7 +30,7 @@ implements StatsDumperDataSource
     /**
      * Creates a new <tt>ThreadStats</tt> object.
      *  
-     * @param threadsCsvFile CSV file that stats are written to 
+     * @param filename CSV file that stats are written to
      */
     public ThreadStats(String filename) {
         mFilename = filename;

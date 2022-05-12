@@ -633,6 +633,7 @@ public class SoapEngine {
                 }
                 response = handler.handle(soapReqElem, context);
                 ZimbraPerf.SOAP_TRACKER.addStat(getStatName(soapReqElem), startTime);
+                ZimbraPerf.SOAP_TRACKER_PROMETHEUS.addStat(getStatName(soapReqElem), startTime);
                 long duration = System.currentTimeMillis() - startTime;
                 if (LC.zimbra_slow_logging_enabled.booleanValue() && duration > LC.zimbra_slow_logging_threshold.longValue() &&
                         !soapReqElem.getQName().getName().equals(MailConstants.SYNC_REQUEST.getName())) {
