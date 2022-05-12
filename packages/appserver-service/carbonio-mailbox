@@ -67,6 +67,10 @@ cat <<EOF | consul config write -
     {
       "name": "carbonio-user-management",
       "action": "allow"
+    },
+    {
+      "name": "carbonio-files",
+      "action": "allow"
     }
   ]
 }
