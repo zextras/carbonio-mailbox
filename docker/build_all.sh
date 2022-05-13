@@ -29,7 +29,8 @@ build() {
   ./build.pl --build-no="${_buildno}" \
     --build-release-no="${_releaseno}" \
     --build-release-candidate="${_rc}" \
-    --build-prod-flag --ant-options="-DskipTests=1"
+    --build-prod-flag \
+    --ant-options="-DskipTests=1 -propertyfile ${SRCDIR}/build.properties"
 }
 
 package() {

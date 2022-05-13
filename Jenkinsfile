@@ -69,6 +69,11 @@ pipeline {
                     env.CONTAINER_ID = sh(returnStdout: true,
                     script: "docker run -dt ${NETWORK_OPTS} carbonio-builder").trim()
                 }
+                withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+                                                  usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PWD')]) {
+                sh 'echo "artifactory_user=${ARTIFACTORY_USER}" >> build.properties'
+                sh 'echo "artifactory_password=${ARTIFACTORY_PWD}" >> build.properties'
+                }
                 sh "docker cp ${WORKSPACE} ${env.CONTAINER_ID}:/src"
                 sh "docker exec -t ${env.CONTAINER_ID} bash -c \"build_all.sh ${BUILD_NUMBER}\""
                 sh "docker exec -t ${env.CONTAINER_ID} bash -c \"cp -r /src/carbonio-core /pkg\""
