@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * @since 4.0.7
  */
 public class StatsScheduler {
-  private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(4);
+  private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(8);
   /**
    * Schedules a new stats task.
    *
@@ -21,6 +21,7 @@ public class StatsScheduler {
    */
   public void schedule(Dumper dumper, long intervalMillis) {
     final StatsDumperTask statsDumperTask = new StatsDumperTask(dumper);
-    executor.scheduleAtFixedRate(statsDumperTask, 0, intervalMillis, TimeUnit.MILLISECONDS);
+    executor.scheduleAtFixedRate(
+        statsDumperTask, intervalMillis, intervalMillis, TimeUnit.MILLISECONDS);
   }
 }
