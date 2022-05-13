@@ -45,7 +45,6 @@ public class StatTrackingPreparedStatement implements PreparedStatement {
   private final PreparedStatement stmt;
   private String queryString;
   private ActivityTracker tracker = ZimbraPerf.SQL_TRACKER;
-  private final ActivityTracker trackerPrometheus = ZimbraPerf.SQL_TRACKER_PROMETHEUS;
 
   public StatTrackingPreparedStatement(PreparedStatement stmt) {
     this.stmt = stmt;
@@ -93,7 +92,6 @@ public class StatTrackingPreparedStatement implements PreparedStatement {
   private void trackQueryStats(String sql, long startTime) {
     if (sql != null) {
       tracker.addStat(getQueryType(sql), startTime);
-      trackerPrometheus.addStat(getQueryType(sql), startTime);
     }
   }
 
