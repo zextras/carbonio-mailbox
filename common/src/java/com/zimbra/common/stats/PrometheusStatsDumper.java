@@ -31,7 +31,12 @@ public class PrometheusStatsDumper implements Dumper {
    */
   private File getFile() throws IOException {
     FileUtil.ensureDirExists(STATS_DIR);
-    return new File(STATS_DIR, mDataSource.getFilename() + STAT_FILE_EXTENSION);
+    final File statsFile = new File(STATS_DIR, mDataSource.getFilename() + STAT_FILE_EXTENSION);
+    if (statsFile.createNewFile()) {
+      //noinspection ResultOfMethodCallIgnored
+      statsFile.setReadable(true, false);
+    }
+    return statsFile;
   }
 
   /**
