@@ -4,6 +4,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * StatsScheduler class, used for scheduling StatsDumpers {@link Dumper} tasks are executed using
+ * {@link ScheduledExecutorService} ({@link #executor}) which uses fixed number of threads.
+ *
+ * @author Keshav Bhatt
+ * @since 4.0.7
+ */
 public class StatsScheduler {
   private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(4);
   /**

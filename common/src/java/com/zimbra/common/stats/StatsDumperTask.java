@@ -14,6 +14,8 @@ public class StatsDumperTask implements Runnable {
   private final Dumper dumper;
 
   /**
+   * Construct @{link StatsDumperTask} object
+   *
    * @param dumper dumper {@link Callable} instance which the task is concerned with
    */
   public StatsDumperTask(Dumper dumper) {
