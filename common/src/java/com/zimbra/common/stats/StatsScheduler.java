@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * @since 4.0.7
  */
 public class StatsScheduler {
-  private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(8);
+  private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(4);
   /**
    * Schedules a new stats task.
    *

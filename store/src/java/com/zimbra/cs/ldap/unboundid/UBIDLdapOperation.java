@@ -57,6 +57,7 @@ abstract class UBIDLdapOperation {
   protected void searchStat(long startTime, String statString) {
     if (STATS_ENABLED) {
       ZimbraPerf.LDAP_TRACKER.addStat(statString, startTime);
+      ZimbraPerf.LDAP_TRACKER_PROMETHEUS.addStat(statString, startTime);
     }
   }
 
@@ -67,6 +68,7 @@ abstract class UBIDLdapOperation {
   private void stat(long startTime, String op) {
     if (STATS_ENABLED) {
       ZimbraPerf.LDAP_TRACKER.addStat(op, startTime);
+      ZimbraPerf.LDAP_TRACKER_PROMETHEUS.addStat(op, startTime);
     }
   }
 

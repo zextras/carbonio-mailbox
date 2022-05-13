@@ -185,8 +185,14 @@ public class ZimbraPerf {
   public static final ActivityTracker IMAPD_TRACKER = new ActivityTracker("imapd");
   public static final ActivityTracker POP_TRACKER = new ActivityTracker("pop3");
   public static final ActivityTracker LDAP_TRACKER = new ActivityTracker("ldap");
-  public static final ActivityTracker SYNC_TRACKER = new ActivityTracker("sync");
   public static final ActivityTracker SQL_TRACKER = new ActivityTracker("sql");
+
+  public static final ActivityTracker SOAP_TRACKER_PROMETHEUS = new ActivityTracker("soap");
+  public static final ActivityTracker IMAP_TRACKER_PROMETHEUS = new ActivityTracker("imap");
+  public static final ActivityTracker IMAPD_TRACKER_PROMETHEUS = new ActivityTracker("imapd");
+  public static final ActivityTracker POP_TRACKER_PROMETHEUS = new ActivityTracker("pop3");
+  public static final ActivityTracker LDAP_TRACKER_PROMETHEUS = new ActivityTracker("ldap");
+  public static final ActivityTracker SQL_TRACKER_PROMETHEUS = new ActivityTracker("sql");
 
   private static final Log log = LogFactory.getLog(ZimbraPerf.class);
   private static final String[] mboxRealtimeStatsNames =
@@ -564,18 +570,16 @@ public class ZimbraPerf {
     statsScheduler.schedule(new CsvStatsDumper(IMAP_TRACKER), DUMP_FREQUENCY);
     statsScheduler.schedule(new CsvStatsDumper(POP_TRACKER), DUMP_FREQUENCY);
     statsScheduler.schedule(new CsvStatsDumper(LDAP_TRACKER), DUMP_FREQUENCY);
-    statsScheduler.schedule(new CsvStatsDumper(SYNC_TRACKER), DUMP_FREQUENCY);
     statsScheduler.schedule(new CsvStatsDumper(SQL_TRACKER), DUMP_FREQUENCY);
     statsScheduler.schedule(new CsvStatsDumper(threadsTracker), DUMP_FREQUENCY);
 
     // PROM
     statsScheduler.schedule(new PrometheusStatsDumper(mailboxdTracker), DUMP_FREQUENCY);
-    statsScheduler.schedule(new PrometheusStatsDumper(SOAP_TRACKER), DUMP_FREQUENCY);
-    statsScheduler.schedule(new PrometheusStatsDumper(IMAP_TRACKER), DUMP_FREQUENCY);
-    statsScheduler.schedule(new PrometheusStatsDumper(POP_TRACKER), DUMP_FREQUENCY);
-    statsScheduler.schedule(new PrometheusStatsDumper(LDAP_TRACKER), DUMP_FREQUENCY);
-    statsScheduler.schedule(new PrometheusStatsDumper(SYNC_TRACKER), DUMP_FREQUENCY);
-    statsScheduler.schedule(new PrometheusStatsDumper(SQL_TRACKER), DUMP_FREQUENCY);
+    statsScheduler.schedule(new PrometheusStatsDumper(SOAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
+    statsScheduler.schedule(new PrometheusStatsDumper(IMAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
+    statsScheduler.schedule(new PrometheusStatsDumper(POP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
+    statsScheduler.schedule(new PrometheusStatsDumper(LDAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
+    statsScheduler.schedule(new PrometheusStatsDumper(SQL_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
     statsScheduler.schedule(new PrometheusStatsDumper(threadsTracker), DUMP_FREQUENCY);
   }
 
@@ -590,15 +594,16 @@ public class ZimbraPerf {
       ZimbraLog.perf.warn("Unable to register JMX interface.", e);
     }
 
-    final Stats imapdTracker = new Stats("imapd_stats", sAccumulators, jmxImapDaemonStats);
+    final Stats imapdServerStatsTracker =
+        new Stats("imapd_stats", sAccumulators, jmxImapDaemonStats);
 
     // CSV
-    statsScheduler.schedule(new CsvStatsDumper(imapdTracker), DUMP_FREQUENCY);
+    statsScheduler.schedule(new CsvStatsDumper(imapdServerStatsTracker), DUMP_FREQUENCY);
     statsScheduler.schedule(new CsvStatsDumper(IMAPD_TRACKER), DUMP_FREQUENCY);
 
     // PROM
-    statsScheduler.schedule(new PrometheusStatsDumper(imapdTracker), DUMP_FREQUENCY);
-    statsScheduler.schedule(new PrometheusStatsDumper(IMAPD_TRACKER), DUMP_FREQUENCY);
+    statsScheduler.schedule(new PrometheusStatsDumper(imapdServerStatsTracker), DUMP_FREQUENCY);
+    statsScheduler.schedule(new PrometheusStatsDumper(IMAPD_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
   }
 
   /**
