@@ -112,7 +112,7 @@ public abstract class AuthMechanism {
       }
     }
 
-    final String carbonioAdvancedMech = AuthMech.custom.name() + ":" + authMechStr;
+    final String carbonioAdvancedMech = AuthMech.custom.name() + ":" + AuthMech.carbonioAdvanced;
     if (authMechStr.startsWith(AuthMech.custom.name() + ":")) {
       return new CustomAuth(
           AuthMech.custom, authMechStr, Objects.equals(authMechStr, carbonioAdvancedMech));
