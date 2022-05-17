@@ -84,7 +84,7 @@ public class CsvStatsDumper implements Dumper {
     }
 
     // Determine if header needs to be written
-    boolean writeHeader = !file.exists();
+    final boolean writeHeader = !file.exists();
     String header = mDataSource.getHeader();
     try (FileWriter writer = new FileWriter(file, true)) {
       if (writeHeader) {
