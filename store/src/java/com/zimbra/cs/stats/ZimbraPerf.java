@@ -382,7 +382,7 @@ public class ZimbraPerf {
   public static Map<String, Object> getStats() {
     final Map<String, Object> stats = new LinkedHashMap<>();
 
-    List<Accumulator> accumulators = new ArrayList<>(sAccumulators);
+    final List<Accumulator> accumulators = new ArrayList<>(sAccumulators);
     accumulators.add(realtimeStats);
 
     for (Accumulator a : accumulators) {
