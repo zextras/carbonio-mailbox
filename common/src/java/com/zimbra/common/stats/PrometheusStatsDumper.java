@@ -59,7 +59,7 @@ public class PrometheusStatsDumper implements Dumper {
    * @throws IOException exception that could occur while writing data to file
    */
   private void writeLogBuffer(final StringBuilder logBuffer) throws IOException {
-    File file = getFile();
+    final File file = getFile();
     try (FileWriter writer = new FileWriter(file, false)) {
       writer.write(logBuffer.toString());
     }
