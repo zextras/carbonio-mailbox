@@ -670,7 +670,7 @@ public class ZimbraPerf {
 
     @Override
     public Collection<String> getDataLines() {
-      List<Object> data = new ArrayList<>();
+      final List<Object> data = new ArrayList<>();
       for (Accumulator a : accumulators) {
         //noinspection SynchronizationOnLocalVariableOrMethodParameter
         synchronized (a) {
