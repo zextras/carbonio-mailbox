@@ -47,6 +47,17 @@ import javax.management.ObjectName;
 /** A collection of methods for keeping track of server performance statistics. */
 public class ZimbraPerf {
 
+  public enum ServerID {
+    ZIMBRA,
+    IMAP_DAEMON
+  }
+
+  @Target({ElementType.FIELD})
+  @Retention(RetentionPolicy.RUNTIME)
+  private @interface Description {
+    String value();
+  }
+
   @Description("Number of database connections in use")
   public static final String RTS_DB_POOL_SIZE = "db_pool_size";
 
@@ -653,17 +664,6 @@ public class ZimbraPerf {
     for (String field : descriptions.keySet()) {
       System.out.println(field + ": " + descriptions.get(field));
     }
-  }
-
-  public enum ServerID {
-    ZIMBRA,
-    IMAP_DAEMON
-  }
-
-  @Target({ElementType.FIELD})
-  @Retention(RetentionPolicy.RUNTIME)
-  private @interface Description {
-    String value();
   }
 
   /** Scheduled task that writes a row to a CSV file with the latest <tt>Accumulator</tt> data. */
