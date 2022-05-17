@@ -23,7 +23,6 @@ import com.zimbra.cs.account.ldap.entry.LdapEntry;
 import com.zimbra.cs.listeners.AuthListener;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.security.auth.login.LoginException;
 
 public abstract class AuthMechanism {
@@ -122,7 +121,8 @@ public abstract class AuthMechanism {
           case zimbra:
             return new ZimbraAuth(authMech);
           case carbonioAdvanced:
-            return new CustomAuth(AuthMech.custom, AuthMech.custom.name() + ":" + authMechStr);
+            return new CustomAuth(
+                AuthMech.custom, AuthMech.custom.name() + ":" + authMechStr, true);
           case ldap:
           case ad:
             return new LdapAuth(authMech);
@@ -155,14 +155,12 @@ public abstract class AuthMechanism {
   }
 
   /**
-   * Get if current auth mechanism is the default for carbonio-ce or carbonio advanced
+   * Get if current auth mechanism should be treated as default
    *
    * @return if it is default
    */
   public boolean isDefaultAuth() {
-    return this.isZimbraAuth()
-        || Objects.equals(
-            this.authMech.name(), AuthMech.custom.name() + ":" + AuthMech.carbonioAdvanced.name());
+    return false;
   }
 
   public abstract boolean checkPasswordAging() throws ServiceException;
@@ -373,14 +371,19 @@ public abstract class AuthMechanism {
    */
   static class CustomAuth extends AuthMechanism {
     private String authMechStr; // value of the zimbraAuthMech attribute
-
+    private final boolean isDefault;
     private String mHandlerName = "";
     private ZimbraCustomAuth mHandler;
     List<String> mArgs;
 
     CustomAuth(AuthMech authMech, String authMechStr) {
+      this(authMech, authMechStr, false);
+    }
+
+    CustomAuth(AuthMech authMech, String authMechStr, boolean isDefault) {
       super(authMech);
       this.authMechStr = authMechStr;
+      this.isDefault = isDefault;
 
       /*
        * value is in the format of custom:{handler} [arg1 arg2 ...]
@@ -470,6 +473,11 @@ public abstract class AuthMechanism {
       if (mHandler == null)
         throw ServiceException.FAILURE("custom auth handler " + mHandlerName + " not found", null);
       return mHandler.checkPasswordAging();
+    }
+
+    @Override
+    public boolean isDefaultAuth() {
+      return isDefault;
     }
   }
 
