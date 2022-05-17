@@ -45,8 +45,7 @@ public class PrometheusStatsDumper implements Dumper {
    * @throws Exception if any exception occurs
    */
   public Void call() throws Exception {
-
-    StringBuilder logBuffer = PrometheusFormatter.format(mDataSource);
+    final StringBuilder logBuffer = PrometheusFormatter.format(mDataSource);
     if (logBuffer != null) {
       writeLogBuffer(logBuffer);
     }
