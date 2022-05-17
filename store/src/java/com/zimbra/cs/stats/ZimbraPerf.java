@@ -661,7 +661,7 @@ public class ZimbraPerf {
 
     @Override
     public String getHeader() {
-      List<String> columns = new ArrayList<>();
+      final List<String> columns = new ArrayList<>();
       for (Accumulator a : accumulators) {
         columns.addAll(a.getNames());
       }
