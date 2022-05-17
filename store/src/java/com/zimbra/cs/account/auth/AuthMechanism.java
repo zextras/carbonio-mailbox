@@ -23,6 +23,7 @@ import com.zimbra.cs.account.ldap.entry.LdapEntry;
 import com.zimbra.cs.listeners.AuthListener;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.security.auth.login.LoginException;
 
 public abstract class AuthMechanism {
@@ -111,8 +112,10 @@ public abstract class AuthMechanism {
       }
     }
 
+    final String carbonioAdvancedMech = AuthMech.custom.name() + ":" + authMechStr;
     if (authMechStr.startsWith(AuthMech.custom.name() + ":")) {
-      return new CustomAuth(AuthMech.custom, authMechStr);
+      return new CustomAuth(
+          AuthMech.custom, authMechStr, Objects.equals(authMechStr, carbonioAdvancedMech));
     } else {
       try {
         AuthMech authMech = AuthMech.fromString(authMechStr);
@@ -121,8 +124,7 @@ public abstract class AuthMechanism {
           case zimbra:
             return new ZimbraAuth(authMech);
           case carbonioAdvanced:
-            return new CustomAuth(
-                AuthMech.custom, AuthMech.custom.name() + ":" + authMechStr, true);
+            return new CustomAuth(AuthMech.custom, carbonioAdvancedMech, true);
           case ldap:
           case ad:
             return new LdapAuth(authMech);
@@ -160,7 +162,7 @@ public abstract class AuthMechanism {
    * @return if it is default
    */
   public boolean isDefaultAuth() {
-    return false;
+    return isZimbraAuth();
   }
 
   public abstract boolean checkPasswordAging() throws ServiceException;
@@ -238,11 +240,6 @@ public abstract class AuthMechanism {
 
     @Override
     public boolean isZimbraAuth() {
-      return true;
-    }
-
-    @Override
-    public boolean isDefaultAuth() {
       return true;
     }
 
