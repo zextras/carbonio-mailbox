@@ -687,8 +687,8 @@ public class ZimbraPerf {
       }
 
       // Return data
-      String line = StringUtil.join(",", data);
-      List<String> retVal = new ArrayList<>(1);
+      final String line = StringUtil.join(",", data);
+      final List<String> retVal = new ArrayList<>(1);
       retVal.add(line);
 
       // Piggyback off timer to reset realtime stats.
