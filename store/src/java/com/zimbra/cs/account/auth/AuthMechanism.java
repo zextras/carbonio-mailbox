@@ -242,6 +242,11 @@ public abstract class AuthMechanism {
     }
 
     @Override
+    public boolean isDefaultAuth() {
+      return true;
+    }
+
+    @Override
     public void doAuth(
         LdapProv prov, Domain domain, Account acct, String password, Map<String, Object> authCtxt)
         throws ServiceException {
