@@ -47,9 +47,9 @@ public class CsvStatsDumper implements Dumper {
   }
 
   private void rollover() throws IOException {
-    File sourceFile = getFile();
-    File archiveDir = getArchiveDir();
-    File archiveFile =
+    final File sourceFile = getFile();
+    final File archiveDir = getArchiveDir();
+    final File archiveFile =
         new File(archiveDir, mDataSource.getFilename() + STAT_FILE_EXTENSION + ".gz");
     FileUtil.compress(sourceFile, archiveFile, true);
     Files.delete(Path.of(sourceFile.getPath()));
