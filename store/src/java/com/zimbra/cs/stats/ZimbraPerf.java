@@ -339,7 +339,7 @@ public class ZimbraPerf {
   @Description("Number of calendars (folders) in the calendar summary cache LRU in Java heap")
   private static final String DC_CALCACHE_LRU_SIZE = "calcache_lru_size";
 
-  private static final StatsScheduler statsScheduler = new StatsScheduler();
+  private static final StatsScheduler statsScheduler = StatsScheduler.getDefault();
   private static final long DUMP_FREQUENCY = Constants.MILLIS_PER_MINUTE;
   /**
    * The number of statements that were prepared, as reported by {@link
