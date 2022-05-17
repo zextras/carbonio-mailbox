@@ -40,8 +40,8 @@ public class CsvStatsDumper implements Dumper {
 
   /** Return the archive directory, based on {@link #mLastRollover}. */
   private File getArchiveDir() throws IOException {
-    String dirName = String.format("%1$tY-%1$tm-%1$td", mLastRollover);
-    File dir = new File(STATS_DIR, dirName);
+    final String dirName = String.format("%1$tY-%1$tm-%1$td", mLastRollover);
+    final File dir = new File(STATS_DIR, dirName);
     FileUtil.ensureDirExists(dir);
     return dir;
   }
