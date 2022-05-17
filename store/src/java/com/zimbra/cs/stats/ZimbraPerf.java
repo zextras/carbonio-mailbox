@@ -348,7 +348,7 @@ public class ZimbraPerf {
   private static final AtomicInteger sPrepareCount = new AtomicInteger(0);
 
   private static int mailboxCacheSize;
-  private final static long mailboxCacheSizeTimestamp = 0;
+  private static long mailboxCacheSizeTimestamp = 0;
   private static JmxServerStats jmxServerStats;
   private static Map<String, String> descriptions = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
   private static RealtimeStats realtimeStats = null;
