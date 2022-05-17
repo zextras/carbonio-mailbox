@@ -6385,7 +6385,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         // context.put(AuthContext.AC_AUTHED_BY_MECH, authedByMech); TODO
         return;
       } catch (ServiceException e) {
-        if (!allowFallback || authMech.isZimbraAuth()) throw e;
+        if (!allowFallback || authMech.isDefaultAuth()) throw e;
         ZimbraLog.account.warn(
             authMech.getMechanism()
                 + " auth for domain "
