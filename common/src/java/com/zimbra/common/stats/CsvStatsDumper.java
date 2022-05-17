@@ -99,7 +99,7 @@ public class CsvStatsDumper implements Dumper {
     }
 
     for (String line : lines) {
-      String logLine =
+      final String logLine =
           mDataSource.getFilename()
               + ": "
               + (mDataSource.hasTimestampColumn() ? "timestamp," : "")
