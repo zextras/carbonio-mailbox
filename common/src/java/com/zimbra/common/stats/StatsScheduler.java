@@ -32,9 +32,9 @@ public class StatsScheduler {
         // Double check intended: the first one allows us to skip locking if not necessary, the
         // second one actually checks the object instance is not there yet in a thread-safe way.
         if (singleton == null) {
-          singleton =
-              new StatsScheduler(
-                  Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors()));
+          // Note: do not bump the pool size to too much, these threads gets reserved for the
+          // executor until shutdown or interrupt happens.
+          singleton = new StatsScheduler(Executors.newScheduledThreadPool(6));
         }
       } finally {
         singletonCreation.unlock();
