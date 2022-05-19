@@ -114,9 +114,13 @@ public abstract class AuthMechanism {
 
     final String carbonioAdvancedMech =
         AuthMech.custom.name() + ":" + AuthMech.carbonioAdvanced.name();
+
+    // if custom:carbonioAdvanced skip to switch case
+    if (Objects.equals(authMechStr, carbonioAdvancedMech)) {
+      authMechStr = AuthMech.carbonioAdvanced.name();
+    }
     if (authMechStr.startsWith(AuthMech.custom.name() + ":")) {
-      return new CustomAuth(
-          AuthMech.custom, authMechStr, Objects.equals(authMechStr, carbonioAdvancedMech));
+      return new CustomAuth(AuthMech.custom, authMechStr);
     } else {
       try {
         AuthMech authMech = AuthMech.fromString(authMechStr);
@@ -125,7 +129,7 @@ public abstract class AuthMechanism {
           case zimbra:
             return new ZimbraAuth(authMech);
           case carbonioAdvanced:
-            return new CustomAuth(AuthMech.custom, carbonioAdvancedMech, true);
+            return new CustomAuth(AuthMech.carbonioAdvanced, carbonioAdvancedMech);
           case ldap:
           case ad:
             return new LdapAuth(authMech);
@@ -163,7 +167,7 @@ public abstract class AuthMechanism {
    * @return if it is default
    */
   public boolean isDefaultAuth() {
-    return isZimbraAuth();
+    return isZimbraAuth() || this.authMech.equals(AuthMech.carbonioAdvanced);
   }
 
   public abstract boolean checkPasswordAging() throws ServiceException;
@@ -374,19 +378,13 @@ public abstract class AuthMechanism {
    */
   static class CustomAuth extends AuthMechanism {
     private String authMechStr; // value of the zimbraAuthMech attribute
-    private final boolean isDefault;
     private String mHandlerName = "";
     private ZimbraCustomAuth mHandler;
     List<String> mArgs;
 
     CustomAuth(AuthMech authMech, String authMechStr) {
-      this(authMech, authMechStr, false);
-    }
-
-    CustomAuth(AuthMech authMech, String authMechStr, boolean isDefault) {
       super(authMech);
       this.authMechStr = authMechStr;
-      this.isDefault = isDefault;
 
       /*
        * value is in the format of custom:{handler} [arg1 arg2 ...]
@@ -476,11 +474,6 @@ public abstract class AuthMechanism {
       if (mHandler == null)
         throw ServiceException.FAILURE("custom auth handler " + mHandlerName + " not found", null);
       return mHandler.checkPasswordAging();
-    }
-
-    @Override
-    public boolean isDefaultAuth() {
-      return isDefault;
     }
   }
 
