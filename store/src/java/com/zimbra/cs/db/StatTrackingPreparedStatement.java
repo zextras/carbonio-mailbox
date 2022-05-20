@@ -45,7 +45,7 @@ public class StatTrackingPreparedStatement implements PreparedStatement {
   private final PreparedStatement stmt;
   private String queryString;
   private ActivityTracker tracker = ZimbraPerf.SQL_TRACKER;
-  private final ActivityTracker trackerPrometheus = ZimbraPerf.SQL_TRACKER_PROMETHEUS;
+  private ActivityTracker trackerPrometheus = ZimbraPerf.SQL_TRACKER_PROMETHEUS;
 
   public StatTrackingPreparedStatement(PreparedStatement stmt) {
     this.stmt = stmt;
@@ -60,8 +60,9 @@ public class StatTrackingPreparedStatement implements PreparedStatement {
   /* This method is mainly for testing, so that a custom tracker
    * can be injected to avoid dependency on ZimbraPerf.SQL_TRACKER
    */
-  public void setTracker(ActivityTracker tracker) {
+  public void setTracker(ActivityTracker tracker, ActivityTracker trackerPrometheus) {
     this.tracker = tracker;
+    this.trackerPrometheus = trackerPrometheus;
   }
 
   /* The PreparedStatement interface doesn't allow access the actual SQL query
