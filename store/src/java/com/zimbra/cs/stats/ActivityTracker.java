@@ -21,9 +21,9 @@ import com.zimbra.common.stats.StatsDumperDataSource;
 public class ActivityTracker
 implements StatsDumperDataSource {
 
-    private String mFilename;
-    private ConcurrentHashMap<String, Counter> mCounterMap =
-        new ConcurrentHashMap<String, Counter>();
+    private final String mFilename;
+    private final ConcurrentHashMap<String, Counter> mCounterMap =
+        new ConcurrentHashMap<>();
     
     public ActivityTracker(String filename) {
         mFilename = filename;
@@ -52,10 +52,10 @@ implements StatsDumperDataSource {
     ////////////// StatsDumperDataSource implementation //////////////
     
     public Collection<String> getDataLines() {
-        if (mCounterMap == null || mCounterMap.size() == 0) {
+        if (mCounterMap.size() == 0) {
             return null;
         }
-        List<String> dataLines = new ArrayList<String>(mCounterMap.size());
+        List<String> dataLines = new ArrayList<>(mCounterMap.size());
         for (String command : mCounterMap.keySet()) {
             Counter counter = mCounterMap.get(command);
             if (counter.getCount() > 0) {
