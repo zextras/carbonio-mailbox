@@ -6,6 +6,7 @@
 package com.zimbra.cs.mailclient.smtp;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.sun.mail.smtp.SMTPMessage;
 import com.sun.mail.util.PropUtil;
@@ -129,6 +130,17 @@ public class SmtpTransport extends Transport {
     protocol = ssl ? "smtps" : "smtp";
   }
 
+  /**
+   * Connect with default SmtpConfig host and port and without user and password
+   *
+   * @since 4.0.8
+   * @throws MessagingException
+   */
+  @Override
+  public void connect() throws MessagingException {
+    this.connect(SmtpConfig.DEFAULT_HOST, SmtpConfig.DEFAULT_PORT, null, null);
+  }
+
   @Override
   protected boolean protocolConnect(String host, int port, String user, String passwd)
       throws MessagingException {
@@ -147,8 +159,9 @@ public class SmtpTransport extends Transport {
       port = ssl ? SmtpConfig.DEFAULT_SSL_PORT : SmtpConfig.DEFAULT_PORT;
     }
 
-    // mail.protocol.host is examined in Service class
-    host = SmtpConfig.DEFAULT_HOST;
+    if (Strings.isNullOrEmpty(host)) {
+      host = SmtpConfig.DEFAULT_HOST;
+    }
 
     SmtpConfig config = new SmtpConfig();
     config.setHost(host);
