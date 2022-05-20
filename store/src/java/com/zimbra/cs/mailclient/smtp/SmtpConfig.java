@@ -14,6 +14,7 @@ public final class SmtpConfig extends MailConfig {
   public static final String PROTOCOL = "smtp";
   public static final int DEFAULT_PORT = 20025;
   public static final int DEFAULT_SSL_PORT = DEFAULT_PORT;
+  public static final String DEFAULT_HOST = "127.78.0.7";
 
   private String domain;
   private boolean allowPartialSend;
