@@ -3,7 +3,9 @@
   xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="zimbra" module="zm-store" status="integration"></info>
     <configurations>
-        <conf name="test" description="Configuration for test dependencies" extends="runtime"/>
+        <conf name="compile" description="Dependencies required to compile application"/>
+        <conf name="runtime" description="Runtime dependencies" extends="compile"/>
+        <conf name="test" description="Test dependencies" extends="runtime"/>
     </configurations>
     <dependencies>
         <dependency org="com.zextras.carbonio.files" name="carbonio-files-sdk" rev="0.0.3">
