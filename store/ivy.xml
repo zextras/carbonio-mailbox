@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-    <info organisation="zimbra" module="zm-store" status="integration"></info>
+    <info organisation="zimbra" module="zm-store" status="integration"/>
     <configurations>
-        <conf name="compile" description="Dependencies required to compile application"/>
-        <conf name="runtime" description="Runtime dependencies" extends="compile"/>
-        <conf name="test" description="Test dependencies" extends="runtime"/>
+        <include file="../ivy-configuration.xml"/>
     </configurations>
     <dependencies>
         <dependency org="com.zextras.carbonio.files" name="carbonio-files-sdk" rev="0.0.3">
