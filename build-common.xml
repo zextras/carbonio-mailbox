@@ -607,13 +607,17 @@
     <ivy:publish settingsRef="dev.settings" pubrevision="${dev.version}" resolver="local" overwrite="true" />
   </target>
 
-  <target name="publish-maven" depends="publish-local">
+  <target name="publish-maven-local" depends="publish-local">
     <ivy:resolve settingsref="dev.settings" resolveid="build-tmp" />
     <ivy:deliver settingsRef="dev.settings" pubrevision="${dev.version}" replacedynamicrev="true" resolveid="build-tmp" />
     <ivy:makepom ivyfile="${dev.home}/.zcs-deps/${ivy.organisation}/${ant.project.name}/${ant.project.name}-${dev.version}.xml" pomfile="${basedir}/build/${ant.project.name}-${dev.version}.pom">
       <mapping conf="runtime" scope="runtime" />
+      <mapping conf="test" scope="test" />
       <mapping conf="*" scope="compile" />
     </ivy:makepom>
+  </target>
+
+  <target name="publish-maven" depends="publish-maven-local">
     <ivy:publish settingsRef="dev.settings" pubrevision="${dev.version}" resolver="public-maven" overwrite="true">
       <artifact name="${ant.project.name}" type="pom" ext="pom" />
     </ivy:publish>

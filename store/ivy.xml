@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-    <info organisation="zimbra" module="zm-store" status="integration"></info>
+    <info organisation="zimbra" module="zm-store" status="integration"/>
+    <configurations>
+        <include file="../ivy-configuration.xml"/>
+    </configurations>
     <dependencies>
         <dependency org="com.zextras.carbonio.files" name="carbonio-files-sdk" rev="0.0.3">
             <exclude org="org.apache.httpcomponents" name="httpclient"/>
@@ -12,14 +15,14 @@
             <exclude org="io.vavr" name="vavr"/>
         </dependency>
         <dependency org="io.vavr" name="vavr" rev="0.10.4"/>
-        <dependency org="org.mockito" name="mockito-core" rev="4.4.0"/>
-        <dependency org="net.bytebuddy" name="byte-buddy" rev="1.12.8"/>
-        <dependency org="net.bytebuddy" name="byte-buddy-agent" rev="1.12.8"/>
-        <dependency org="org.mockito" name="mockito-inline" rev="4.4.0"/>
+        <dependency org="org.mockito" name="mockito-core" rev="4.4.0" conf="test->default"/>
+        <dependency org="net.bytebuddy" name="byte-buddy" rev="1.12.8" conf="test->default"/>
+        <dependency org="net.bytebuddy" name="byte-buddy-agent" rev="1.12.8" conf="test->default"/>
+        <dependency org="org.mockito" name="mockito-inline" rev="4.4.0" conf="test->default"/>
         <dependency org="org.javassist" name="javassist" rev="3.24.0-GA"/>
         <dependency org="org.slf4j" name="slf4j-api" rev="1.7.30"/>
         <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.30"/>
-        <dependency org="junit" name="junit" rev="4.8.2"/>
+        <dependency org="junit" name="junit" rev="4.8.2" conf="test->default"/>
         <dependency org="javax.mail" name="mail" rev="1.4.5"/>
         <dependency org="jaxen" name="jaxen" rev="1.1-beta-10"/>
         <dependency org="org.dom4j" name="dom4j" rev="${dom4j.version}"/>
