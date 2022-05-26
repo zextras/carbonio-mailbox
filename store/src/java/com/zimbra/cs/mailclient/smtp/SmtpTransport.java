@@ -147,7 +147,7 @@ public class SmtpTransport extends Transport {
         // mail.protocol.host is examined in Service class
 
         if (Strings.isNullOrEmpty(host)) {
-            host = "localhost";
+            host = SmtpConfig.DEFAULT_HOST;
         }
 
         SmtpConfig config = new SmtpConfig();
