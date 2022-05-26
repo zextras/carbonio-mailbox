@@ -68184,7 +68184,6 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=97)
     public String[] getSmtpHostname() {
-        //TODO: change to new consul default value if needed
         String[] value = getMultiAttr(Provisioning.A_zimbraSmtpHostname, true, true);
         return value.length > 0 ? value : new String[] {SmtpConfig.DEFAULT_HOST};
     }
