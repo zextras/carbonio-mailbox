@@ -13,6 +13,7 @@ package com.zimbra.cs.account;
 import static com.zimbra.common.account.ProvisioningConstants.FALSE;
 import static com.zimbra.common.account.ProvisioningConstants.TRUE;
 
+import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -68184,7 +68185,8 @@ public abstract class ZAttrConfig extends Entry {
     @ZAttr(id=97)
     public String[] getSmtpHostname() {
         //TODO: change to new consul default value if needed
-        String[] value = getMultiAttr(Provisioning.A_zimbraSmtpHostname, true, true); return value.length > 0 ? value : new String[] {"localhost"};
+        String[] value = getMultiAttr(Provisioning.A_zimbraSmtpHostname, true, true);
+        return value.length > 0 ? value : new String[] {SmtpConfig.DEFAULT_HOST};
     }
 
     /**
@@ -68304,8 +68306,7 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=98)
     public int getSmtpPort() {
-        //TODO: consider reuse same method for int and string + change to new consul default
-        return getIntAttr(Provisioning.A_zimbraSmtpPort, 25, true);
+        return getIntAttr(Provisioning.A_zimbraSmtpPort, 20025, true);
     }
 
     /**
@@ -68315,7 +68316,7 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=98)
     public String getSmtpPortAsString() {
-        return getAttr(Provisioning.A_zimbraSmtpPort, "25", true);
+        return String.valueOf(getSmtpPort());
     }
 
     /**
