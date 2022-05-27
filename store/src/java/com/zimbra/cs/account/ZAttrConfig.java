@@ -68297,25 +68297,25 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * <p>Use getSmtpPortAsString to access value as a string.
+     * <p>Uses getSmtpPortAsString internally to access value as a string.
      *
      * @see #getSmtpPortAsString()
      *
-     * @return zimbraSmtpPort, or 25 if unset
+     * @return zimbraSmtpPort, or default if unset
      */
     @ZAttr(id=98)
     public int getSmtpPort() {
-        return getIntAttr(Provisioning.A_zimbraSmtpPort, 20025, true);
+        return Integer.parseInt(getSmtpPortAsString);
     }
 
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * @return zimbraSmtpPort, or "25" if unset
+     * @return zimbraSmtpPort, or default if unset
      */
     @ZAttr(id=98)
     public String getSmtpPortAsString() {
-        return String.valueOf(getSmtpPort());
+        return getAttr(Provisioning.A_zimbraSmtpPort, String.valueOf(SmtpConfig.DEFAULT_PORT), true);
     }
 
     /**
