@@ -68305,7 +68305,7 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=98)
     public int getSmtpPort() {
-        return Integer.parseInt(getSmtpPortAsString);
+        return Integer.parseInt(getSmtpPortAsString());
     }
 
     /**
