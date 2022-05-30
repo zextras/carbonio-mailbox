@@ -68301,7 +68301,7 @@ public abstract class ZAttrConfig extends Entry {
      *
      * @see #getSmtpPortAsString()
      *
-     * @return zimbraSmtpPort, or default if unset
+     * @return zimbraSmtpPort, or default value if unset
      */
     @ZAttr(id=98)
     public int getSmtpPort() {
@@ -68311,7 +68311,7 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * @return zimbraSmtpPort, or default if unset
+     * @return zimbraSmtpPort, or default value if unset
      */
     @ZAttr(id=98)
     public String getSmtpPortAsString() {
