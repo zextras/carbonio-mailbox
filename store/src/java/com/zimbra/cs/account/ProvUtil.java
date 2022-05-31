@@ -18,19 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -3873,6 +3861,8 @@ public class ProvUtil implements HttpDebugListener {
                 console.println(line);
             }
             String args[] = StringUtil.parseLine(line);
+            args = fixArgs( args );
+
             if (args.length == 0) {
                 continue;
             }
@@ -4014,6 +4004,8 @@ public class ProvUtil implements HttpDebugListener {
         boolean err = false;
 
         try {
+            args = fixArgs( args );
+
             cl = parser.parse(options, args, true);
         } catch (ParseException pe) {
             printError("error: " + pe.getMessage());
@@ -4164,6 +4156,14 @@ public class ProvUtil implements HttpDebugListener {
             }
             System.exit(2);
         }
+    }
+
+    private static String[] fixArgs( String[] args ) {
+        // if prov is the first argument remove it
+        if( ( args.length > 0 ) && ( args[0].equalsIgnoreCase( "prov" ) ) )
+            args = Arrays.copyOfRange(args, 1, args.length);
+
+        return args;
     }
 
     class ArgException extends Exception {
