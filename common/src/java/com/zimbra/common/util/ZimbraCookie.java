@@ -47,7 +47,8 @@ public class ZimbraCookie {
       String path,
       Integer maxAge,
       boolean secure) {
-    if (name.equalsIgnoreCase(COOKIE_ZM_AUTH_TOKEN)) {
+    if (name.equalsIgnoreCase(COOKIE_ZM_AUTH_TOKEN)
+        || name.equalsIgnoreCase(COOKIE_ZM_ADMIN_AUTH_TOKEN)) {
       addCookie(response, name, value, path, maxAge, true, true);
       SameSiteAttribute.addSameSiteAttribute(response, "Lax");
     } else {
