@@ -2309,16 +2309,13 @@ public class ProxyConfGen {
    * way, zmnginxctl restart can detect the problem.
    */
   private static void appendConfGenResultToConf(String text) {
-    File conf = new File(mConfDir, getCoreConf());
-    if (!conf.exists()) {
+    File confFile = new File(mConfDir, getCoreConf());
+    if (!confFile.exists()) {
       return;
     }
 
-    FileWriter writer;
-    try {
-      writer = new FileWriter(conf, true);
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(confFile, true))) {
       writer.write("\n#" + text + "\n");
-      writer.close();
     } catch (IOException e) {
       // do nothing
     }
