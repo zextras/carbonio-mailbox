@@ -119,7 +119,7 @@ public class ProxyConfGen {
         false,
         "Print variable map Definitions after loading LDAP configuration (and processing"
             + " overrides). -D requires -s upstream server. If \"-s upstream server\" is not"
-            + " specified, it just dumps the default varaible map");
+            + " specified, it just dumps the default variable map");
     mOptions.addOption("p", "prefix", true, "Config File prefix (defaults to nginx.conf)");
     mOptions.addOption("P", "template-prefix", true, "Template File prefix (defaults to $prefix)");
     mOptions.addOption(
@@ -153,9 +153,9 @@ public class ProxyConfGen {
     mOptions.addOption(cOpt);
   }
 
-  private static void usage(String errmsg) {
-    if (errmsg != null) {
-      System.out.println(errmsg);
+  private static void usage(String errors) {
+    if (errors != null) {
+      System.out.println(errors);
     }
     HelpFormatter formatter = new HelpFormatter();
     formatter.printHelp(
@@ -486,7 +486,7 @@ public class ProxyConfGen {
       while (it.hasNext()) {
         item = it.next();
         fillVarsWithDomainAttrs(item);
-        expandTempateFromCache(cache, conf);
+        expandTemplateFromCache(cache, conf);
         conf.newLine();
       }
     }
@@ -539,7 +539,7 @@ public class ProxyConfGen {
           continue;
         }
         fillVarsWithDomainAttrs(item);
-        expandTempateFromCache(cache, conf);
+        expandTemplateFromCache(cache, conf);
         conf.newLine();
       }
     }
@@ -573,7 +573,7 @@ public class ProxyConfGen {
       for (ServerAttrItem server : filteredServers) {
         mVars.put("server_id", server.zimbraId);
         mVars.put("server_hostname", server.hostname);
-        expandTempateFromCache(cache, conf);
+        expandTemplateFromCache(cache, conf);
         mVars.remove("server_id");
         mVars.remove("server_hostname");
       }
@@ -655,14 +655,16 @@ public class ProxyConfGen {
     }
 
     // Get the response headers list for this domain
-    ArrayList<String> rhdr = new ArrayList<>();
+    ArrayList<String> responseHeadersList = new ArrayList<>();
     for (i = 0; i < item.rspHeaders.length; i++) {
-      rhdr.add(item.rspHeaders[i]);
+      responseHeadersList.add(item.rspHeaders[i]);
     }
     mDomainConfVars.put(
         "web.add.headers.vhost",
         new AddHeadersVar(
-            "web.add.headers.vhost", rhdr, "add_header directive for vhost web proxy"));
+            "web.add.headers.vhost",
+            responseHeadersList,
+            "add_header directive for vhost web proxy"));
 
     mLog.debug("Updating Default Domain Variable Map");
     try {
@@ -738,7 +740,7 @@ public class ProxyConfGen {
   }
 
   /** Read from cache that holding template file's content and translate to conf */
-  private static void expandTempateFromCache(List<String> cache, BufferedWriter conf)
+  private static void expandTemplateFromCache(List<String> cache, BufferedWriter conf)
       throws IOException {
     for (String line : cache) {
       line = StringUtil.fillTemplate(line, mVars);
@@ -1318,7 +1320,7 @@ public class ProxyConfGen {
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
-            "Indicates whether Imap Mail Proxy is enabled"));
+            "Indicates whether IMAP Mail Proxy is enabled"));
     mConfVars.put(
         "mail.imaps.enabled",
         new ProxyConfVar(
@@ -1327,7 +1329,7 @@ public class ProxyConfGen {
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
-            "Indicates whether Imaps Mail Proxy is enabled"));
+            "Indicates whether IMAP Mail Proxy is enabled"));
     mConfVars.put(
         "mail.pop3.enabled",
         new ProxyConfVar(
@@ -1336,7 +1338,7 @@ public class ProxyConfGen {
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
-            "Indicates whether Pop Mail Proxy is enabled"));
+            "Indicates whether POP Mail Proxy is enabled"));
     mConfVars.put(
         "mail.pop3s.enabled",
         new ProxyConfVar(
@@ -1674,7 +1676,7 @@ public class ProxyConfGen {
             Boolean.FALSE,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
-            "Inidicate whether admin console proxy is enabled"));
+            "Indicate whether admin console proxy is enabled"));
     mConfVars.put(
         "web.admin.port",
         new ProxyConfVar(
@@ -1921,12 +1923,14 @@ public class ProxyConfGen {
     // Get the response headers list from globalconfig
     String[] rspHeaders =
         ProxyConfVar.configSource.getMultiAttr(Provisioning.A_zimbraReverseProxyResponseHeaders);
-    ArrayList<String> rhdr = new ArrayList<>();
-    Collections.addAll(rhdr, rspHeaders);
+    ArrayList<String> responseHeadersList = new ArrayList<>();
+    Collections.addAll(responseHeadersList, rspHeaders);
     mConfVars.put(
         "web.add.headers.default",
         new AddHeadersVar(
-            "web.add.headers.default", rhdr, "add_header directive for default web proxy"));
+            "web.add.headers.default",
+            responseHeadersList,
+            "add_header directive for default web proxy"));
   }
 
   /* update the default variable map from the active configuration */
@@ -2009,7 +2013,6 @@ public class ProxyConfGen {
       mLog.info("Proxy is enabled but there are no lookup handlers");
       validConf = false;
     }
-
     return validConf;
   }
 
