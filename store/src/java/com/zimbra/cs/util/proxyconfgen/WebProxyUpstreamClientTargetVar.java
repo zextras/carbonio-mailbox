@@ -1,6 +1,6 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 
 /**
  * Provide the value of "proxy_pass" for web proxy.
@@ -12,7 +12,7 @@ class WebProxyUpstreamClientTargetVar extends ProxyConfVar {
   public WebProxyUpstreamClientTargetVar() {
     super(
         "web.upstream.schema",
-        Provisioning.A_zimbraReverseProxySSLToUpstreamEnabled,
+        ZAttrProvisioning.A_zimbraReverseProxySSLToUpstreamEnabled,
         true,
         ProxyConfValueType.BOOLEAN,
         ProxyConfOverride.SERVER,
@@ -22,7 +22,7 @@ class WebProxyUpstreamClientTargetVar extends ProxyConfVar {
   @Override
   public String format(Object o) throws ProxyConfException {
     Boolean value = (Boolean) o;
-    if (!value) {
+    if (Boolean.FALSE.equals(value)) {
       return "http://" + ProxyConfGen.ZIMBRA_UPSTREAM_WEBCLIENT_NAME;
     } else {
       return "https://" + ProxyConfGen.ZIMBRA_SSL_UPSTREAM_WEBCLIENT_NAME;

@@ -12,15 +12,15 @@ class TimeInSecVarWrapper extends ProxyConfVar {
 
   protected ProxyConfVar mVar;
 
-  public TimeInSecVarWrapper(ProxyConfVar var) {
+  public TimeInSecVarWrapper(ProxyConfVar proxyConfVar) {
     super(null, null, null, null, null, null);
 
-    if (var.mValueType != ProxyConfValueType.TIME) {
+    if (proxyConfVar.mValueType != ProxyConfValueType.TIME) {
       throw new RuntimeException(
           "Only Proxy Conf Var with TIME" + " type can be used in this wrapper");
     }
 
-    mVar = var;
+    mVar = proxyConfVar;
   }
 
   @Override

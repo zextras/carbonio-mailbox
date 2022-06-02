@@ -1,5 +1,6 @@
 package com.zimbra.cs.util.proxyconfgen;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.DateUtil;
@@ -17,17 +18,17 @@ class ProxyConfVar {
 
   public static final String UNKNOWN_HEADER_NAME = "X-Zimbra-Unknown-Header";
   public static final Pattern RE_HEADER = Pattern.compile("^([^:]+):\\s+(.*)$");
-  public static Entry configSource = null;
-  public static Entry serverSource = null;
+  static Entry configSource = null;
+  static Entry serverSource = null;
   protected static Log mLog = LogFactory.getLog(ProxyConfGen.class);
   protected static Provisioning mProv = Provisioning.getInstance();
-  public String mKeyword;
-  public String mAttribute;
-  public ProxyConfValueType mValueType;
-  public Object mDefault;
-  public Object mValue;
-  public ProxyConfOverride mOverride;
-  public String mDescription;
+  String mKeyword;
+  String mAttribute;
+  ProxyConfValueType mValueType;
+  Object mDefault;
+  Object mValue;
+  ProxyConfOverride mOverride;
+  String mDescription;
 
   public ProxyConfVar(
       String keyword,
@@ -57,10 +58,11 @@ class ProxyConfVar {
     ps.println("  NGINX Keyword:         " + mKeyword);
     ps.println("  Description:           " + mDescription);
     ps.println("  Value Type:            " + mValueType.toString());
-    ps.println("  Controlling Attribute: " + ((mAttribute == null) ? "(none)" : mAttribute));
-    ps.println("  Default Value:         " + ((mDefault == null) ? "(none)" : mDefault.toString()));
-    ps.println("  Current Value:         " + ((mValue == null) ? "(none)" : mValue.toString()));
-    ps.println("  Config Text:           " + ((mValue == null) ? "(none)" : format(mValue)));
+    final String none = "(none)";
+    ps.println("  Controlling Attribute: " + ((mAttribute == null) ? none : mAttribute));
+    ps.println("  Default Value:         " + ((mDefault == null) ? none : mDefault.toString()));
+    ps.println("  Current Value:         " + ((mValue == null) ? none : mValue.toString()));
+    ps.println("  Config Text:           " + ((mValue == null) ? none : format(mValue)));
     ps.println();
   }
 
@@ -105,7 +107,7 @@ class ProxyConfVar {
       return formatEnabler(o);
     } else if (mValueType == ProxyConfValueType.TIME) {
       return formatTime(o);
-    } else /* if (mValueType == ProxyConfValueType.CUSTOM) */ {
+    } else {
       throw new ProxyConfException(
           "the custom format of ProxyConfVar with key "
               + mKeyword
@@ -126,7 +128,9 @@ class ProxyConfVar {
   public String formatString(Object o) {
     Formatter f = new Formatter();
     f.format("%s", o);
-    return f.toString();
+    final String out = f.toString();
+    f.close();
+    return out;
   }
 
   public void updateBoolean() {
@@ -170,7 +174,9 @@ class ProxyConfVar {
   public String formatTime(Object o) {
     Formatter f = new Formatter();
     f.format("%dms", (Long) o);
-    return f.toString();
+    final String out = f.toString();
+    f.close();
+    return out;
   }
 
   public void updateInteger() {
@@ -186,7 +192,9 @@ class ProxyConfVar {
   public String formatInteger(Object o) {
     Formatter f = new Formatter();
     f.format("%d", (Integer) o);
-    return f.toString();
+    final String out = f.toString();
+    f.close();
+    return out;
   }
 
   public void updateLong() {
@@ -210,7 +218,9 @@ class ProxyConfVar {
     } else {
       f.format("%d", l);
     }
-    return f.toString();
+    final String out = f.toString();
+    f.close();
+    return out;
   }
 
   private String lcValue(String key, String def) {
@@ -220,12 +230,13 @@ class ProxyConfVar {
   }
 
   boolean isValidUpstream(Server server, String serverName) {
-    boolean isTarget = server.getBooleanAttr(Provisioning.A_zimbraReverseProxyLookupTarget, false);
+    boolean isTarget =
+        server.getBooleanAttr(ZAttrProvisioning.A_zimbraReverseProxyLookupTarget, false);
     if (!isTarget) {
       return false;
     }
 
-    String mode = server.getAttr(Provisioning.A_zimbraMailMode, "");
+    String mode = server.getAttr(ZAttrProvisioning.A_zimbraMailMode, "");
     if (mode.equalsIgnoreCase(Provisioning.MailMode.http.toString())
         || mode.equalsIgnoreCase(Provisioning.MailMode.mixed.toString())
         || mode.equalsIgnoreCase(Provisioning.MailMode.both.toString())
@@ -248,9 +259,9 @@ class ProxyConfVar {
   }
 
   String generateServerDirective(Server server, String serverName, int serverPort) {
-    int timeout = server.getIntAttr(Provisioning.A_zimbraMailProxyReconnectTimeout, 60);
-    String version = server.getAttr(Provisioning.A_zimbraServerVersion, "");
-    int maxFails = server.getIntAttr(Provisioning.A_zimbraMailProxyMaxFails, 1);
+    int timeout = server.getIntAttr(ZAttrProvisioning.A_zimbraMailProxyReconnectTimeout, 60);
+    String version = server.getAttr(ZAttrProvisioning.A_zimbraServerVersion, "");
+    int maxFails = server.getIntAttr(ZAttrProvisioning.A_zimbraMailProxyMaxFails, 1);
     if (maxFails != 1 && !Objects.equals(version, "")) {
       return String.format(
           "%s:%d fail_timeout=%ds max_fails=%d version=%s",

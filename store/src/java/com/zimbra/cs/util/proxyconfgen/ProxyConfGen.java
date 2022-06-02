@@ -65,12 +65,12 @@ public class ProxyConfGen {
   static final int ZIMBRA_UPSTREAM_SSL_ZX_PORT = 8743;
   private static final int DEFAULT_SERVERS_NAME_HASH_MAX_SIZE = 512;
   private static final int DEFAULT_SERVERS_NAME_HASH_BUCKET_SIZE = 64;
-  private static final Log mLog = LogFactory.getLog(ProxyConfGen.class);
-  private static final Options mOptions = new Options();
+  private static final Log LOG = LogFactory.getLog(ProxyConfGen.class);
   private static final String SSL_CRT_EXT = ".crt";
   private static final String SSL_KEY_EXT = ".key";
   private static final String SSL_CLIENT_CERT_CA_EXT = ".client.ca.crt";
   private static final String TEMPLATE_SUFFIX = ".template";
+  private static final Options mOptions = new Options();
   private static final Map<String, ProxyConfVar> mConfVars = new HashMap<>();
   private static final Map<String, String> mVars = new HashMap<>();
   private static final Map<String, ProxyConfVar> mDomainConfVars = new HashMap<>();
@@ -400,7 +400,7 @@ public class ProxyConfGen {
 
     // return if DryRun
     if (mDryRun) {
-      mLog.info("Will expand template: " + templateFilePath + " to file: " + configFilePath);
+      LOG.info("Will expand template: " + templateFilePath + " to file: " + configFilePath);
       return;
     }
 
@@ -412,7 +412,7 @@ public class ProxyConfGen {
     try (BufferedReader bufferedReader = new BufferedReader(new FileReader(templateFilePath));
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(configFilePath))) {
 
-      mLog.info("Expanding template: " + templateFilePath + " to file: " + configFilePath);
+      LOG.info("Expanding template: " + templateFilePath + " to file: " + configFilePath);
 
       // for the first line of template, check the custom header command
       bufferedReader.mark(100); // assume the first line won't beyond 100
@@ -623,7 +623,7 @@ public class ProxyConfGen {
         throw new ProxyConfException(
             "virtual host name \"" + item.virtualHostname + "\" is not resolvable", e);
       } else {
-        mLog.warn("virtual host name \"" + item.virtualHostname + "\" is not resolvable");
+        LOG.warn("virtual host name \"" + item.virtualHostname + "\" is not resolvable");
       }
     }
 
@@ -631,14 +631,14 @@ public class ProxyConfGen {
       if (IPModeEnablerVar.getZimbraIPMode() == IPModeEnablerVar.IPMode.IPV4_ONLY
           && vip instanceof Inet6Address) {
         String msg = vip.getHostAddress() + " is an IPv6 address but zimbraIPMode is 'ipv4'";
-        mLog.error(msg);
+        LOG.error(msg);
         throw new ProxyConfException(msg);
       }
 
       if (IPModeEnablerVar.getZimbraIPMode() == IPModeEnablerVar.IPMode.IPV6_ONLY
           && vip instanceof Inet4Address) {
         String msg = vip.getHostAddress() + " is an IPv4 address but zimbraIPMode is 'ipv6'";
-        mLog.error(msg);
+        LOG.error(msg);
         throw new ProxyConfException(msg);
       }
     }
@@ -673,7 +673,7 @@ public class ProxyConfGen {
             responseHeadersList,
             "add_header directive for vhost web proxy"));
 
-    mLog.debug("Updating Default Domain Variable Map");
+    LOG.debug("Updating Default Domain Variable Map");
     try {
       updateDefaultDomainVars();
     } catch (ProxyConfException | ServiceException pe) {
@@ -1970,19 +1970,19 @@ public class ProxyConfGen {
 
     if (overrides != null) {
       for (String o : overrides) {
-        mLog.debug("Processing config override " + o);
+        LOG.debug("Processing config override " + o);
         int e = o.indexOf("=");
         if (e <= 0) {
-          mLog.info("Ignoring config override " + o + " because it is not of the form name=value");
+          LOG.info("Ignoring config override " + o + " because it is not of the form name=value");
         } else {
           String k = o.substring(0, e);
           String v = o.substring(e + 1);
 
           if (mVars.containsKey(k)) {
-            mLog.info("Overriding config variable " + k + " with " + v);
+            LOG.info("Overriding config variable " + k + " with " + v);
             mVars.put(k, v);
           } else {
-            mLog.info("Ignoring non-existent config variable " + k);
+            LOG.info("Ignoring non-existent config variable " + k);
           }
         }
       }
@@ -2013,17 +2013,17 @@ public class ProxyConfGen {
     zmLookupHandlers = (ArrayList<String>) mConfVars.get("zmlookup.:handlers").rawValue();
 
     if (webEnabled && (webUpstreamServers.isEmpty() || webUpstreamClientServers.isEmpty())) {
-      mLog.info("Web is enabled but there are no HTTP upstream webclient/mailclient servers");
+      LOG.info("Web is enabled but there are no HTTP upstream webclient/mailclient servers");
       validConf = false;
     }
 
     if (webEnabled && (webSSLUpstreamServers.isEmpty() || webSSLUpstreamClientServers.isEmpty())) {
-      mLog.info("Web is enabled but there are no HTTPS upstream webclient/mailclient servers");
+      LOG.info("Web is enabled but there are no HTTPS upstream webclient/mailclient servers");
       validConf = false;
     }
 
     if ((webEnabled || mailEnabled) && (zmLookupHandlers.isEmpty())) {
-      mLog.info("Proxy is enabled but there are no lookup handlers");
+      LOG.info("Proxy is enabled but there are no lookup handlers");
       validConf = false;
     }
     return validConf;
@@ -2073,9 +2073,9 @@ public class ProxyConfGen {
       mTemplateDir = cl.getOptionValue('t');
     }
 
-    mLog.debug("Working Directory: " + mWorkingDir);
-    mLog.debug("Template Directory: " + mTemplateDir);
-    mLog.debug("Config Includes Directory: " + mConfIncludesDir);
+    LOG.debug("Working Directory: " + mWorkingDir);
+    LOG.debug("Template Directory: " + mTemplateDir);
+    LOG.debug("Config Includes Directory: " + mConfIncludesDir);
 
     if (cl.hasOption('p')) {
       mConfPrefix = cl.getOptionValue('p');
@@ -2086,11 +2086,11 @@ public class ProxyConfGen {
       mTemplatePrefix = cl.getOptionValue('P');
     }
 
-    mLog.debug("Config File Prefix: " + mConfPrefix);
-    mLog.debug("Template File Prefix: " + mTemplatePrefix);
+    LOG.debug("Config File Prefix: " + mConfPrefix);
+    LOG.debug("Template File Prefix: " + mTemplatePrefix);
 
     /* set up the default variable map */
-    mLog.debug("Building Default Variable Map");
+    LOG.debug("Building Default Variable Map");
     buildDefaultVars();
 
     if (cl.hasOption('d')) {
@@ -2101,11 +2101,11 @@ public class ProxyConfGen {
     /* If a server object has been provided, then use that */
     if (cl.hasOption('s')) {
       String mHost = cl.getOptionValue('s');
-      mLog.info("Loading server object: " + mHost);
+      LOG.info("Loading server object: " + mHost);
       try {
         ProxyConfVar.serverSource = getServer(mHost);
       } catch (ProxyConfException pe) {
-        mLog.error("Cannot load server object. Make sure the server specified with -s exists");
+        LOG.error("Cannot load server object. Make sure the server specified with -s exists");
         exitCode = 1;
         return (exitCode);
       }
@@ -2119,15 +2119,15 @@ public class ProxyConfGen {
 
     try {
       /* upgrade the variable map from the config in force */
-      mLog.debug("Loading Attrs in Domain Level");
+      LOG.debug("Loading Attrs in Domain Level");
       mDomainReverseProxyAttrs = loadDomainReverseProxyAttrs();
       mServerAttrs = loadServerAttrs();
       updateListenAddresses();
 
-      mLog.debug("Updating Default Variable Map");
+      LOG.debug("Updating Default Variable Map");
       updateDefaultVars();
 
-      mLog.debug("Processing Config Overrides");
+      LOG.debug("Processing Config Overrides");
       overrideDefaultVars(cl);
 
       String clientCA = loadAllClientCertCA();
@@ -2138,7 +2138,7 @@ public class ProxyConfGen {
     }
 
     if (exitCode > 0) {
-      mLog.info("Proxy configuration files generation is interrupted by errors");
+      LOG.info("Proxy configuration files generation is interrupted by errors");
       return exitCode;
     }
     if (cl.hasOption('D')) {
@@ -2152,10 +2152,10 @@ public class ProxyConfGen {
     }
 
     if (!isWorkableConf()) {
-      mLog.warn(
+      LOG.warn(
           "Configuration is not valid because no route lookup handlers exist, or because no"
               + " HTTP/HTTPS upstream servers were found");
-      mLog.warn("Please ensure that the output of 'zmprov garpu/garpb' returns at least one entry");
+      LOG.warn("Please ensure that the output of 'zmprov garpu/garpb' returns at least one entry");
     }
 
     try {
@@ -2303,17 +2303,17 @@ public class ProxyConfGen {
     }
     if (!mDryRun) {
       if (exitCode == 0) {
-        mLog.info("Proxy configuration files are generated successfully");
+        LOG.info("Proxy configuration files are generated successfully");
         appendConfGenResultToConf("__SUCCESS__");
       } else {
-        mLog.info("Proxy configuration files generation is interrupted by errors");
+        LOG.info("Proxy configuration files generation is interrupted by errors");
       }
     }
     return (exitCode);
   }
 
   private static void handleException(Exception e) {
-    mLog.error("Error while expanding templates: " + e.getMessage());
+    LOG.error("Error while expanding templates: " + e.getMessage());
     appendConfGenResultToConf("__CONF_GEN_ERROR__:" + e.getMessage());
   }
 
@@ -2350,7 +2350,7 @@ public class ProxyConfGen {
               "is there valid client ca cert");
 
       if (isClientCertVerifyEnabled() || isDomainClientCertVerifyEnabled()) {
-        mLog.error("Client certificate verification is enabled but no client cert ca is provided");
+        LOG.error("Client certificate verification is enabled but no client cert ca is provided");
         exitCode = 1;
         System.exit(exitCode);
       }
@@ -2364,14 +2364,14 @@ public class ProxyConfGen {
               ProxyConfValueType.ENABLER,
               ProxyConfOverride.CUSTOM,
               "is there valid client ca cert");
-      mLog.debug("Write Client CA file");
+      LOG.debug("Write Client CA file");
       ProxyConfUtil.writeContentToFile(clientCA, getDefaultClientCertCaPath());
     }
     mConfVars.put(keyword, clientCAEnabledVar);
     try {
       mVars.put(keyword, clientCAEnabledVar.confValue());
     } catch (ProxyConfException e) {
-      mLog.error("ProxyConfException during format ssl.clientcertca.enabled", e);
+      LOG.error("ProxyConfException during format ssl.clientcertca.enabled", e);
       System.exit(1);
     }
   }

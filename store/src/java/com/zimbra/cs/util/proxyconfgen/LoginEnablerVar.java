@@ -1,6 +1,6 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 
 /**
  * @author zimbra
@@ -18,7 +18,7 @@ class LoginEnablerVar extends WebEnablerVar {
   @Override
   public String format(Object o) {
     String[] upstreams =
-        serverSource.getMultiAttr(Provisioning.A_zimbraReverseProxyUpstreamLoginServers);
+        serverSource.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyUpstreamLoginServers);
     if (upstreams.length == 0) {
       return "#";
     } else {

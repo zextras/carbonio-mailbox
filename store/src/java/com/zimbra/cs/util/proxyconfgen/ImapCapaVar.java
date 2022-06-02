@@ -1,6 +1,6 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -32,9 +32,9 @@ class ImapCapaVar extends ProxyConfVar {
 
     ArrayList<String> capabilities = new ArrayList<>();
     String[] capabilityNames =
-        serverSource.getMultiAttr(Provisioning.A_zimbraReverseProxyImapEnabledCapability);
+        serverSource.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyImapEnabledCapability);
     Collections.addAll(capabilities, capabilityNames);
-    if (capabilities.size() > 0) {
+    if (!capabilities.isEmpty()) {
       mValue = capabilities;
     } else {
       mValue = mDefault;

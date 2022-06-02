@@ -1,14 +1,14 @@
 package com.zimbra.cs.util.proxyconfgen;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Provisioning;
 
 class ZMSSODefaultEnablerVar extends ProxyConfVar {
 
   public ZMSSODefaultEnablerVar() {
     super(
         "web.sso.enabled",
-        Provisioning.A_zimbraReverseProxyClientCertMode,
+        ZAttrProvisioning.A_zimbraReverseProxyClientCertMode,
         false,
         ProxyConfValueType.ENABLER,
         ProxyConfOverride.CUSTOM,

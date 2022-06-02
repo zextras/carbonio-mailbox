@@ -1,10 +1,10 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 
 abstract class WebEnablerVar extends ProxyConfVar {
 
-  public WebEnablerVar(String keyword, Object defaultValue, String description) {
+  protected WebEnablerVar(String keyword, Object defaultValue, String description) {
     super(
         keyword,
         null,
@@ -15,6 +15,6 @@ abstract class WebEnablerVar extends ProxyConfVar {
   }
 
   static String getZimbraReverseProxyMailMode() {
-    return serverSource.getAttr(Provisioning.A_zimbraReverseProxyMailMode, "both");
+    return serverSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyMailMode, "both");
   }
 }

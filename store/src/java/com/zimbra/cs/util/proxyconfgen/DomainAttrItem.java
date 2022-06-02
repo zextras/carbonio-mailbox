@@ -8,16 +8,14 @@ package com.zimbra.cs.util.proxyconfgen;
  */
 class DomainAttrItem {
 
-  public String domainName;
-  public String virtualHostname;
-  public String virtualIPAddress;
-  public String sslCertificate;
-  public String sslPrivateKey;
-  public Boolean useDomainServerCert;
-  public Boolean useDomainClientCert;
-  public String clientCertMode;
-  public String clientCertCa;
-  public String[] rspHeaders;
+  String domainName;
+  String virtualHostname;
+  String virtualIPAddress;
+  String sslCertificate;
+  String sslPrivateKey;
+  String clientCertMode;
+  String clientCertCa;
+  String[] rspHeaders;
 
   public DomainAttrItem(
       String dn,

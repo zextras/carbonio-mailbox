@@ -12,8 +12,8 @@ class HttpsEnablerVar extends WebEnablerVar {
 
   @Override
   public void update() {
-    String mailmode = getZimbraReverseProxyMailMode();
-    if ("http".equalsIgnoreCase(mailmode)) {
+    String mailMode = getZimbraReverseProxyMailMode();
+    if ("http".equalsIgnoreCase(mailMode)) {
       mValue = false;
     } else {
       mValue = true;

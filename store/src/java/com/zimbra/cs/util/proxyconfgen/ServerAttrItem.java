@@ -7,9 +7,9 @@ package com.zimbra.cs.util.proxyconfgen;
  */
 class ServerAttrItem {
 
-  public String zimbraId;
-  public String hostname;
-  public String[] services;
+  String zimbraId;
+  String hostname;
+  String[] services;
 
   public ServerAttrItem(String zimbraId, String hostname, String[] services) {
     this.zimbraId = zimbraId;

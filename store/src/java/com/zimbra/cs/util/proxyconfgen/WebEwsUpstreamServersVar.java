@@ -1,7 +1,7 @@
 package com.zimbra.cs.util.proxyconfgen;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import java.util.ArrayList;
 
@@ -14,9 +14,10 @@ class WebEwsUpstreamServersVar extends ServersVar {
   @Override
   public void update() throws ServiceException {
     ArrayList<String> directives = new ArrayList<>();
-    String portName = configSource.getAttr(Provisioning.A_zimbraReverseProxyHttpPortAttribute, "");
+    String portName =
+        configSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyHttpPortAttribute, "");
     String[] upstreams =
-        serverSource.getMultiAttr(Provisioning.A_zimbraReverseProxyUpstreamEwsServers);
+        serverSource.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyUpstreamEwsServers);
 
     if (upstreams.length > 0) {
       for (String serverName : upstreams) {

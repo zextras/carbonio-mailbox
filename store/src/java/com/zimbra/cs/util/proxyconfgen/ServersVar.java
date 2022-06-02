@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 abstract class ServersVar extends ProxyConfVar {
 
-  public ServersVar(String key, String description) {
+  protected ServersVar(String key, String description) {
     super(key, null, null, ProxyConfValueType.CUSTOM, ProxyConfOverride.CUSTOM, description);
     /*
      The port attribute name
@@ -28,9 +28,9 @@ abstract class ServersVar extends ProxyConfVar {
     for (int i = 0; i < servers.size(); i++) {
       String s = servers.get(i);
       if (i == 0) {
-        sb.append(String.format("server    %s;\n", s));
+        sb.append(String.format("server    %s;%n", s));
       } else {
-        sb.append(String.format("        server    %s;\n", s));
+        sb.append(String.format("        server    %s;%n", s));
       }
     }
     return sb.toString();

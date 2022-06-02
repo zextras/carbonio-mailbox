@@ -1,8 +1,9 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 class Pop3CapaVar extends ProxyConfVar {
 
@@ -16,7 +17,7 @@ class Pop3CapaVar extends ProxyConfVar {
         "POP3 Capability List");
   }
 
-  public static ArrayList<String> getDefaultPop3Capabilities() {
+  public static List<String> getDefaultPop3Capabilities() {
     ArrayList<String> pop3Capabilities = new ArrayList<>();
     pop3Capabilities.add("TOP");
     pop3Capabilities.add("USER");
@@ -30,9 +31,9 @@ class Pop3CapaVar extends ProxyConfVar {
 
     ArrayList<String> capabilities = new ArrayList<>();
     String[] capabilityNames =
-        serverSource.getMultiAttr(Provisioning.A_zimbraReverseProxyPop3EnabledCapability);
+        serverSource.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyPop3EnabledCapability);
     Collections.addAll(capabilities, capabilityNames);
-    if (capabilities.size() > 0) {
+    if (!capabilities.isEmpty()) {
       mValue = capabilities;
     } else {
       mValue = mDefault;

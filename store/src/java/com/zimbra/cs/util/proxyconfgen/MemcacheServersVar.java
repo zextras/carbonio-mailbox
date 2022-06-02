@@ -1,5 +1,6 @@
 package com.zimbra.cs.util.proxyconfgen;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
@@ -28,8 +29,8 @@ class MemcacheServersVar extends ProxyConfVar {
     /* $(zmprov gamcs) */
     List<Server> mcs = mProv.getAllServers(Provisioning.SERVICE_MEMCACHED);
     for (Server mc : mcs) {
-      String serverName = mc.getAttr(Provisioning.A_zimbraMemcachedBindAddress, "");
-      int serverPort = mc.getIntAttr(Provisioning.A_zimbraMemcachedBindPort, 11211);
+      String serverName = mc.getAttr(ZAttrProvisioning.A_zimbraMemcachedBindAddress, "");
+      int serverPort = mc.getIntAttr(ZAttrProvisioning.A_zimbraMemcachedBindPort, 11211);
       try {
         InetAddress ip = ProxyConfUtil.getLookupTargetIPbyIPMode(serverName);
 

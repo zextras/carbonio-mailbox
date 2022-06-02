@@ -8,7 +8,7 @@ package com.zimbra.cs.util.proxyconfgen;
  */
 class DomainAttrExceptionItem extends DomainAttrItem {
 
-  public ProxyConfException exception;
+  ProxyConfException exception;
 
   public DomainAttrExceptionItem(ProxyConfException e) {
     super(null, null, null, null, null, null, null, null);

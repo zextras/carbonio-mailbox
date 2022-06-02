@@ -1,7 +1,7 @@
 package com.zimbra.cs.util.proxyconfgen;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Provisioning;
 
 class ZMSSOCertAuthDefaultEnablerVar extends ProxyConfVar {
 
@@ -17,7 +17,8 @@ class ZMSSOCertAuthDefaultEnablerVar extends ProxyConfVar {
 
   @Override
   public void update() throws ServiceException {
-    String certMode = serverSource.getAttr(Provisioning.A_zimbraReverseProxyClientCertMode, "off");
+    String certMode =
+        serverSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyClientCertMode, "off");
     if (certMode.equals("on") || certMode.equals("optional")) {
       mValue = true;
     } else {

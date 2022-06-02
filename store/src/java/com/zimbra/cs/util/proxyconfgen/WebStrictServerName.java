@@ -1,6 +1,6 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 
 class WebStrictServerName extends WebEnablerVar {
 
@@ -24,7 +24,7 @@ class WebStrictServerName extends WebEnablerVar {
   public boolean isStrictEnforcementEnabled() {
     boolean enforcementEnabled =
         serverSource.getBooleanAttr(
-            Provisioning.A_zimbraReverseProxyStrictServerNameEnabled, false);
+            ZAttrProvisioning.A_zimbraReverseProxyStrictServerNameEnabled, false);
     mLog.info(String.format("Strict server name enforcement enabled? %s", enforcementEnabled));
     return enforcementEnabled;
   }

@@ -23,7 +23,7 @@ class ListenAddressesVar extends ProxyConfVar {
   public String format(Object o) throws ProxyConfException {
     //noinspection unchecked
     Set<String> addresses = (Set<String>) o;
-    if (addresses.size() == 0) {
+    if (addresses.isEmpty()) {
       return "${web.strict.servername}";
     }
     StringBuilder sb = new StringBuilder();

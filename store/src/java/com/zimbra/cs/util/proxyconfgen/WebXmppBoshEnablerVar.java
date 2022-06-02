@@ -1,14 +1,14 @@
 package com.zimbra.cs.util.proxyconfgen;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Provisioning;
 
 class WebXmppBoshEnablerVar extends ProxyConfVar {
 
   public WebXmppBoshEnablerVar() {
     super(
         "web.xmpp.bosh.upstream.disable",
-        Provisioning.A_zimbraReverseProxyXmppBoshEnabled,
+        ZAttrProvisioning.A_zimbraReverseProxyXmppBoshEnabled,
         false,
         ProxyConfValueType.ENABLER,
         ProxyConfOverride.CUSTOM,
@@ -18,18 +18,19 @@ class WebXmppBoshEnablerVar extends ProxyConfVar {
   @Override
   public void update() throws ServiceException {
     String xmppEnabled =
-        serverSource.getAttr(Provisioning.A_zimbraReverseProxyXmppBoshEnabled, true);
-    String XmppBoshLocalBindURL =
-        serverSource.getAttr(Provisioning.A_zimbraReverseProxyXmppBoshLocalHttpBindURL, true);
-    String XmppBoshHostname =
-        serverSource.getAttr(Provisioning.A_zimbraReverseProxyXmppBoshHostname, true);
-    int XmppBoshPort = serverSource.getIntAttr(Provisioning.A_zimbraReverseProxyXmppBoshPort, 0);
+        serverSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyXmppBoshEnabled, true);
+    String xmppBoshLocalBindURL =
+        serverSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyXmppBoshLocalHttpBindURL, true);
+    String xmppBoshHostname =
+        serverSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyXmppBoshHostname, true);
+    int xmppBoshPort =
+        serverSource.getIntAttr(ZAttrProvisioning.A_zimbraReverseProxyXmppBoshPort, 0);
 
-    if (XmppBoshLocalBindURL == null
-        || ProxyConfUtil.isEmptyString(XmppBoshLocalBindURL)
-        || XmppBoshHostname == null
-        || ProxyConfUtil.isEmptyString(XmppBoshHostname)
-        || XmppBoshPort == 0) {
+    if (xmppBoshLocalBindURL == null
+        || ProxyConfUtil.isEmptyString(xmppBoshLocalBindURL)
+        || xmppBoshHostname == null
+        || ProxyConfUtil.isEmptyString(xmppBoshHostname)
+        || xmppBoshPort == 0) {
       mLog.debug(
           "web.xmpp.bosh.upstream.disable is false because one of the required attrs is unset");
       mValue = false;

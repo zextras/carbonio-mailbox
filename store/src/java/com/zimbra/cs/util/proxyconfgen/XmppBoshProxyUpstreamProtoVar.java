@@ -1,13 +1,13 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 
 class XmppBoshProxyUpstreamProtoVar extends ProxyConfVar {
 
   public XmppBoshProxyUpstreamProtoVar() {
     super(
         "xmpp.upstream.schema",
-        Provisioning.A_zimbraReverseProxyXmppBoshSSL,
+        ZAttrProvisioning.A_zimbraReverseProxyXmppBoshSSL,
         true,
         ProxyConfValueType.BOOLEAN,
         ProxyConfOverride.SERVER,

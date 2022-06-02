@@ -1,7 +1,7 @@
 package com.zimbra.cs.util.proxyconfgen;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +22,11 @@ class WebSSLUpstreamClientServersVar extends ProxyConfVar {
   public void update() throws ServiceException, ProxyConfException {
     ArrayList<String> directives = new ArrayList<>();
     String portName =
-        configSource.getAttr(Provisioning.A_zimbraReverseProxyHttpSSLPortAttribute, "");
+        configSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyHttpSSLPortAttribute, "");
 
     List<Server> webClientServers = mProv.getAllWebClientServers();
     for (Server server : webClientServers) {
-      String serverName = server.getAttr(Provisioning.A_zimbraServiceHostname, "");
+      String serverName = server.getAttr(ZAttrProvisioning.A_zimbraServiceHostname, "");
 
       if (isValidUpstream(server, serverName)) {
         directives.add(generateServerDirective(server, serverName, portName));
@@ -44,9 +44,9 @@ class WebSSLUpstreamClientServersVar extends ProxyConfVar {
     for (int i = 0; i < servers.size(); i++) {
       String s = servers.get(i);
       if (i == 0) {
-        sb.append(String.format("server    %s;\n", s));
+        sb.append(String.format("server    %s;%n", s));
       } else {
-        sb.append(String.format("        server    %s;\n", s));
+        sb.append(String.format("        server    %s;%n", s));
       }
     }
     return sb.toString();

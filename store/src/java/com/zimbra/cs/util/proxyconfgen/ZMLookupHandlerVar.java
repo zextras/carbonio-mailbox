@@ -1,7 +1,7 @@
 package com.zimbra.cs.util.proxyconfgen;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.extension.ExtensionDispatcherServlet;
 import java.net.Inet4Address;
@@ -15,7 +15,7 @@ class ZMLookupHandlerVar extends ProxyConfVar {
   public ZMLookupHandlerVar() {
     super(
         "zmlookup.:handlers",
-        Provisioning.A_zimbraReverseProxyLookupTarget,
+        ZAttrProvisioning.A_zimbraReverseProxyLookupTarget,
         new ArrayList<String>(),
         ProxyConfValueType.CUSTOM,
         ProxyConfOverride.CUSTOM,
@@ -29,15 +29,16 @@ class ZMLookupHandlerVar extends ProxyConfVar {
     int numFailedHandlers = 0;
 
     String[] handlerNames =
-        serverSource.getMultiAttr(Provisioning.A_zimbraReverseProxyAvailableLookupTargets);
+        serverSource.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyAvailableLookupTargets);
     if (handlerNames.length > 0) {
       for (String handlerName : handlerNames) {
         Server s = mProv.getServerByName(handlerName);
         if (s != null) {
-          String sn = s.getAttr(Provisioning.A_zimbraServiceHostname, "");
-          int port = s.getIntAttr(Provisioning.A_zimbraExtensionBindPort, 7072);
+          String sn = s.getAttr(ZAttrProvisioning.A_zimbraServiceHostname, "");
+          int port = s.getIntAttr(ZAttrProvisioning.A_zimbraExtensionBindPort, 7072);
           String proto = "https://";
-          boolean isTarget = s.getBooleanAttr(Provisioning.A_zimbraReverseProxyLookupTarget, false);
+          boolean isTarget =
+              s.getBooleanAttr(ZAttrProvisioning.A_zimbraReverseProxyLookupTarget, false);
           if (isTarget) {
             try {
               InetAddress ip = ProxyConfUtil.getLookupTargetIPbyIPMode(sn);
@@ -66,10 +67,11 @@ class ZMLookupHandlerVar extends ProxyConfVar {
       List<Server> allServers = mProv.getAllServers();
 
       for (Server s : allServers) {
-        String sn = s.getAttr(Provisioning.A_zimbraServiceHostname, "");
-        int port = s.getIntAttr(Provisioning.A_zimbraExtensionBindPort, 7072);
+        String sn = s.getAttr(ZAttrProvisioning.A_zimbraServiceHostname, "");
+        int port = s.getIntAttr(ZAttrProvisioning.A_zimbraExtensionBindPort, 7072);
         String proto = "https://";
-        boolean isTarget = s.getBooleanAttr(Provisioning.A_zimbraReverseProxyLookupTarget, false);
+        boolean isTarget =
+            s.getBooleanAttr(ZAttrProvisioning.A_zimbraReverseProxyLookupTarget, false);
         if (isTarget) {
           try {
             InetAddress ip = ProxyConfUtil.getLookupTargetIPbyIPMode(sn);
@@ -101,15 +103,15 @@ class ZMLookupHandlerVar extends ProxyConfVar {
 
   @Override
   public String format(Object o) throws ProxyConfException {
-    String REVERSE_PROXY_PATH = ExtensionDispatcherServlet.EXTENSION_PATH + "/nginx-lookup";
+    String reverseProxyPath = ExtensionDispatcherServlet.EXTENSION_PATH + "/nginx-lookup";
     @SuppressWarnings("unchecked")
     ArrayList<String> servers = (ArrayList<String>) o;
-    if (servers.size() == 0) {
+    if (servers.isEmpty()) {
       return "";
     }
     StringBuilder sb = new StringBuilder();
     for (String s : servers) {
-      sb.append(s).append(REVERSE_PROXY_PATH);
+      sb.append(s).append(reverseProxyPath);
       sb.append(' ');
     }
     sb.setLength(sb.length() - 1); // trim the last space

@@ -11,15 +11,12 @@ import java.net.UnknownHostException;
 
 class ProxyConfUtil {
 
+  private ProxyConfUtil() {}
+
   public static void writeContentToFile(String content, String filePath) throws ServiceException {
 
-    try {
-      BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
-
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath)); ) {
       bw.write(content);
-      bw.flush();
-      bw.close();
-
     } catch (IOException e) {
       throw ServiceException.FAILURE(
           "Cannot write the content (" + content + ") to " + filePath, e);

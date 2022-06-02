@@ -1,7 +1,7 @@
 package com.zimbra.cs.util.proxyconfgen;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 
 class ReverseProxyIPThrottleWhitelist extends ProxyConfVar {
@@ -19,7 +19,8 @@ class ReverseProxyIPThrottleWhitelist extends ProxyConfVar {
   @Override
   public void update() throws ServiceException {
     ArrayList<String> directives = new ArrayList<>();
-    String[] ips = serverSource.getMultiAttr(Provisioning.A_zimbraReverseProxyIPThrottleWhitelist);
+    String[] ips =
+        serverSource.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyIPThrottleWhitelist);
     for (String ip : ips) {
       directives.add(ip);
       mLog.debug("Added %s IP Throttle whitelist", ip);
@@ -35,9 +36,9 @@ class ReverseProxyIPThrottleWhitelist extends ProxyConfVar {
     for (int i = 0; i < servers.size(); i++) {
       String s = servers.get(i);
       if (i == 0) {
-        sb.append(String.format("mail_whitelist_ip    %s;\n", s));
+        sb.append(String.format("mail_whitelist_ip    %s;%n", s));
       } else {
-        sb.append(String.format("    mail_whitelist_ip    %s;\n", s));
+        sb.append(String.format("    mail_whitelist_ip    %s;%n", s));
       }
     }
     return sb.toString();

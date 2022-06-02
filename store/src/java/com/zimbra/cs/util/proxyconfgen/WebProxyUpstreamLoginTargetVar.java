@@ -1,13 +1,13 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 
 class WebProxyUpstreamLoginTargetVar extends ProxyConfVar {
 
   public WebProxyUpstreamLoginTargetVar() {
     super(
         "web.upstream.schema",
-        Provisioning.A_zimbraReverseProxySSLToUpstreamEnabled,
+        ZAttrProvisioning.A_zimbraReverseProxySSLToUpstreamEnabled,
         true,
         ProxyConfValueType.BOOLEAN,
         ProxyConfOverride.SERVER,
@@ -17,7 +17,7 @@ class WebProxyUpstreamLoginTargetVar extends ProxyConfVar {
   @Override
   public String format(Object o) throws ProxyConfException {
     Boolean value = (Boolean) o;
-    if (!value) {
+    if (Boolean.FALSE.equals(value)) {
       return "http://" + ProxyConfGen.ZIMBRA_UPSTREAM_LOGIN_NAME;
     } else {
       return "https://" + ProxyConfGen.ZIMBRA_SSL_UPSTREAM_LOGIN_NAME;

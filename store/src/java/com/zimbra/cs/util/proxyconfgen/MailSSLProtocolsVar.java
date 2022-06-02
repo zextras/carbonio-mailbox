@@ -1,6 +1,6 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -29,9 +29,9 @@ class MailSSLProtocolsVar extends ProxyConfVar {
 
     ArrayList<String> sslProtocols = new ArrayList<>();
     String[] sslProtocolsEnabled =
-        serverSource.getMultiAttr(Provisioning.A_zimbraReverseProxySSLProtocols);
+        serverSource.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxySSLProtocols);
     Collections.addAll(sslProtocols, sslProtocolsEnabled);
-    if (sslProtocols.size() > 0) {
+    if (!sslProtocols.isEmpty()) {
       mValue = sslProtocols;
     } else {
       mValue = mDefault;

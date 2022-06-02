@@ -1,14 +1,14 @@
 package com.zimbra.cs.util.proxyconfgen;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Provisioning;
 
 class ClientCertAuthDefaultCAVar extends ProxyConfVar {
 
   public ClientCertAuthDefaultCAVar() {
     super(
         "ssl.clientcertca.default",
-        Provisioning.A_zimbraReverseProxyClientCertCA,
+        ZAttrProvisioning.A_zimbraReverseProxyClientCertCA,
         ProxyConfGen.getDefaultClientCertCaPath(),
         ProxyConfValueType.STRING,
         ProxyConfOverride.CUSTOM,

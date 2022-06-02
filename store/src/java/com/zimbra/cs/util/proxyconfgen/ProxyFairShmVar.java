@@ -1,13 +1,13 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 
 class ProxyFairShmVar extends ProxyConfVar {
 
   public ProxyFairShmVar() {
     super(
         "upstream.fair.shm.size",
-        Provisioning.A_zimbraReverseProxyUpstreamFairShmSize,
+        ZAttrProvisioning.A_zimbraReverseProxyUpstreamFairShmSize,
         "",
         ProxyConfValueType.CUSTOM,
         ProxyConfOverride.CONFIG,
@@ -18,7 +18,7 @@ class ProxyFairShmVar extends ProxyConfVar {
   @Override
   public void update() {
     String setting =
-        serverSource.getAttr(Provisioning.A_zimbraReverseProxyUpstreamFairShmSize, "32");
+        serverSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyUpstreamFairShmSize, "32");
 
     try {
       if (Integer.parseInt(setting) < 32) {

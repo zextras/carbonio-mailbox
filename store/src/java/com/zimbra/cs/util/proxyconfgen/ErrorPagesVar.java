@@ -1,6 +1,6 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 
 class ErrorPagesVar extends ProxyConfVar {
 
@@ -9,7 +9,7 @@ class ErrorPagesVar extends ProxyConfVar {
   public ErrorPagesVar() {
     super(
         "web.:errorPages",
-        Provisioning.A_zimbraReverseProxyErrorHandlerURL,
+        ZAttrProvisioning.A_zimbraReverseProxyErrorHandlerURL,
         "",
         ProxyConfValueType.STRING,
         ProxyConfOverride.SERVER,

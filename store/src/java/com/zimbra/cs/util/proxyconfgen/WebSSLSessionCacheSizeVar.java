@@ -1,13 +1,13 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.ZAttrProvisioning;
 
 class WebSSLSessionCacheSizeVar extends ProxyConfVar {
 
   public WebSSLSessionCacheSizeVar() {
     super(
         "ssl.session.cachesize",
-        Provisioning.A_zimbraReverseProxySSLSessionCacheSize,
+        ZAttrProvisioning.A_zimbraReverseProxySSLSessionCacheSize,
         "10m",
         ProxyConfValueType.STRING,
         ProxyConfOverride.SERVER,
