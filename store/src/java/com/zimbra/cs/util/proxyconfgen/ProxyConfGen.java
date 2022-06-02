@@ -6,6 +6,7 @@
 package com.zimbra.cs.util.proxyconfgen;
 
 import com.zimbra.common.account.Key;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.Log;
@@ -66,10 +67,10 @@ public class ProxyConfGen {
   private static final int DEFAULT_SERVERS_NAME_HASH_BUCKET_SIZE = 64;
   private static final Log mLog = LogFactory.getLog(ProxyConfGen.class);
   private static final Options mOptions = new Options();
-  private static final String mSSLCrtExt = ".crt";
-  private static final String mSSLKeyExt = ".key";
-  private static final String mSSLClientCertCaExt = ".client.ca.crt";
-  private static final String mTemplateSuffix = ".template";
+  private static final String SSL_CRT_EXT = ".crt";
+  private static final String SSL_KEY_EXT = ".key";
+  private static final String SSL_CLIENT_CERT_CA_EXT = ".client.ca.crt";
+  private static final String TEMPLATE_SUFFIX = ".template";
   private static final Map<String, ProxyConfVar> mConfVars = new HashMap<>();
   private static final Map<String, String> mVars = new HashMap<>();
   private static final Map<String, ProxyConfVar> mDomainConfVars = new HashMap<>();
@@ -84,12 +85,12 @@ public class ProxyConfGen {
   private static String mWorkingDir = "/opt/zextras";
   private static String mTemplateDir = mWorkingDir + "/conf/nginx/templates";
   private static String mConfDir = mWorkingDir + "/conf";
-  private static final String mDomainSSLDir = mConfDir + File.separator + "domaincerts";
-  private static final String mDefaultSSLCrt = mConfDir + File.separator + "nginx.crt";
-  private static final String mDefaultSSLKey = mConfDir + File.separator + "nginx.key";
-  private static final String mDefaultSSLClientCertCa =
+  private static final String DOMAIN_SSL_DIR = mConfDir + File.separator + "domaincerts";
+  private static final String DEFAULT_SSL_CRT = mConfDir + File.separator + "nginx.crt";
+  private static final String DEFAULT_SSL_KEY = mConfDir + File.separator + "nginx.key";
+  private static final String DEFAULT_SSL_CLIENT_CERT_CA =
       mConfDir + File.separator + "nginx.client.ca.crt";
-  private static final String mDefaultDhParamFile = mConfDir + File.separator + "dhparam.pem";
+  private static final String DEFAULT_DH_PARAM_FILE = mConfDir + File.separator + "dhparam.pem";
   private static String mIncDir = "nginx/includes";
   private static String mConfIncludesDir = mConfDir + File.separator + mIncDir;
   private static String mConfPrefix = "nginx.conf";
@@ -153,9 +154,9 @@ public class ProxyConfGen {
     mOptions.addOption(cOpt);
   }
 
-  private static void usage(String errors) {
-    if (errors != null) {
-      System.out.println(errors);
+  private static void usage(String errorMsg) {
+    if (errorMsg != null) {
+      System.out.println(errorMsg);
     }
     HelpFormatter formatter = new HelpFormatter();
     formatter.printHelp(
@@ -191,9 +192,9 @@ public class ProxyConfGen {
 
     final List<ServerAttrItem> serverAttrItems = new ArrayList<>();
     for (Server server : mProv.getAllServers()) {
-      String zimbraId = server.getAttr(Provisioning.A_zimbraId);
-      String serviceHostname = server.getAttr(Provisioning.A_zimbraServiceHostname);
-      String[] services = server.getMultiAttr(Provisioning.A_zimbraServiceEnabled);
+      String zimbraId = server.getAttr(ZAttrProvisioning.A_zimbraId);
+      String serviceHostname = server.getAttr(ZAttrProvisioning.A_zimbraServiceHostname);
+      String[] services = server.getMultiAttr(ZAttrProvisioning.A_zimbraServiceEnabled);
 
       serverAttrItems.add(new ServerAttrItem(zimbraId, serviceHostname, services));
     }
@@ -219,29 +220,31 @@ public class ProxyConfGen {
           "The method can work only when LDAP is available", null);
 
     final Set<String> attrsNeeded = new HashSet<>();
-    attrsNeeded.add(Provisioning.A_zimbraVirtualHostname);
-    attrsNeeded.add(Provisioning.A_zimbraVirtualIPAddress);
-    attrsNeeded.add(Provisioning.A_zimbraSSLCertificate);
-    attrsNeeded.add(Provisioning.A_zimbraSSLPrivateKey);
-    attrsNeeded.add(Provisioning.A_zimbraReverseProxyClientCertMode);
-    attrsNeeded.add(Provisioning.A_zimbraReverseProxyClientCertCA);
-    attrsNeeded.add(Provisioning.A_zimbraWebClientLoginURL);
-    attrsNeeded.add(Provisioning.A_zimbraReverseProxyResponseHeaders);
+    attrsNeeded.add(ZAttrProvisioning.A_zimbraVirtualHostname);
+    attrsNeeded.add(ZAttrProvisioning.A_zimbraVirtualIPAddress);
+    attrsNeeded.add(ZAttrProvisioning.A_zimbraSSLCertificate);
+    attrsNeeded.add(ZAttrProvisioning.A_zimbraSSLPrivateKey);
+    attrsNeeded.add(ZAttrProvisioning.A_zimbraReverseProxyClientCertMode);
+    attrsNeeded.add(ZAttrProvisioning.A_zimbraReverseProxyClientCertCA);
+    attrsNeeded.add(ZAttrProvisioning.A_zimbraWebClientLoginURL);
+    attrsNeeded.add(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
 
     final List<DomainAttrItem> result = new ArrayList<>();
 
     // visit domains
     NamedEntry.Visitor visitor =
         entry -> {
-          String domainName = entry.getAttr(Provisioning.A_zimbraDomainName);
-          String[] virtualHostnames = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);
-          String[] virtualIPAddresses = entry.getMultiAttr(Provisioning.A_zimbraVirtualIPAddress);
-          String certificate = entry.getAttr(Provisioning.A_zimbraSSLCertificate);
-          String privateKey = entry.getAttr(Provisioning.A_zimbraSSLPrivateKey);
-          String clientCertMode = entry.getAttr(Provisioning.A_zimbraReverseProxyClientCertMode);
-          String clientCertCA = entry.getAttr(Provisioning.A_zimbraReverseProxyClientCertCA);
+          String domainName = entry.getAttr(ZAttrProvisioning.A_zimbraDomainName);
+          String[] virtualHostnames = entry.getMultiAttr(ZAttrProvisioning.A_zimbraVirtualHostname);
+          String[] virtualIPAddresses =
+              entry.getMultiAttr(ZAttrProvisioning.A_zimbraVirtualIPAddress);
+          String certificate = entry.getAttr(ZAttrProvisioning.A_zimbraSSLCertificate);
+          String privateKey = entry.getAttr(ZAttrProvisioning.A_zimbraSSLPrivateKey);
+          String clientCertMode =
+              entry.getAttr(ZAttrProvisioning.A_zimbraReverseProxyClientCertMode);
+          String clientCertCA = entry.getAttr(ZAttrProvisioning.A_zimbraReverseProxyClientCertCA);
           String[] rspHeaders =
-              entry.getMultiAttr(Provisioning.A_zimbraReverseProxyResponseHeaders);
+              entry.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
 
           if (virtualHostnames.length == 0
               || (certificate == null
@@ -262,12 +265,16 @@ public class ProxyConfGen {
 
           for (int i = 0; i < virtualHostnames.length; i++) {
             // bug 66892, only lookup IP when zimbraVirtualIPAddress is unset
-            String vip =
-                lookupVIP
-                    ? null
-                    : virtualIPAddresses.length == virtualHostnames.length
-                        ? virtualIPAddresses[i]
-                        : virtualIPAddresses[0];
+            String vip;
+            if (lookupVIP) {
+              vip = null;
+            } else {
+              if (virtualIPAddresses.length == virtualHostnames.length) {
+                vip = virtualIPAddresses[i];
+              } else {
+                vip = virtualIPAddresses[0];
+              }
+            }
 
             if (!ProxyConfUtil.isEmptyString(clientCertCA)) {
               createDomainSSLDirIfNotExists();
@@ -293,7 +300,7 @@ public class ProxyConfGen {
     // to avoid redundancy CA if some domains share the same CA
     HashSet<String> caSet = new HashSet<>();
     String globalCA =
-        ProxyConfVar.serverSource.getAttr(Provisioning.A_zimbraReverseProxyClientCertCA, "");
+        ProxyConfVar.serverSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyClientCertCA, "");
     if (!ProxyConfUtil.isEmptyString(globalCA)) {
       caSet.add(globalCA);
     }
@@ -317,7 +324,7 @@ public class ProxyConfGen {
   }
 
   public static void createDomainSSLDirIfNotExists() {
-    File domainSSLDir = new File(mDomainSSLDir);
+    File domainSSLDir = new File(DOMAIN_SSL_DIR);
     if (!domainSSLDir.exists()) {
       //noinspection ResultOfMethodCallIgnored
       domainSSLDir.mkdirs();
@@ -350,7 +357,7 @@ public class ProxyConfGen {
   }
 
   private static String getCoreConfTemplate() {
-    return mTemplatePrefix + mTemplateSuffix;
+    return mTemplatePrefix + TEMPLATE_SUFFIX;
   }
 
   private static String getConfFileName(String name) {
@@ -358,7 +365,7 @@ public class ProxyConfGen {
   }
 
   private static String getConfTemplateFileName(String name) {
-    return mTemplatePrefix + "." + name + mTemplateSuffix;
+    return mTemplatePrefix + "." + name + TEMPLATE_SUFFIX;
   }
 
   private static String getWebHttpModeConf(String mode) {
@@ -366,7 +373,7 @@ public class ProxyConfGen {
   }
 
   private static String getWebHttpModeConfTemplate(String mode) {
-    return mTemplatePrefix + ".web.http.mode-" + mode + mTemplateSuffix;
+    return mTemplatePrefix + ".web.http.mode-" + mode + TEMPLATE_SUFFIX;
   }
 
   private static String getWebHttpSModeConf(String mode) {
@@ -374,16 +381,16 @@ public class ProxyConfGen {
   }
 
   public static String getWebHttpSModeConfTemplate(String mode) {
-    return mTemplatePrefix + ".web.https.mode-" + mode + mTemplateSuffix;
+    return mTemplatePrefix + ".web.https.mode-" + mode + TEMPLATE_SUFFIX;
   }
 
   public static String getClientCertCaPathByDomain(String domainName) {
 
-    return mDomainSSLDir + File.separator + domainName + mSSLClientCertCaExt;
+    return DOMAIN_SSL_DIR + File.separator + domainName + SSL_CLIENT_CERT_CA_EXT;
   }
 
   public static String getDefaultClientCertCaPath() {
-    return mDefaultSSLClientCertCa;
+    return DEFAULT_SSL_CLIENT_CERT_CA;
   }
 
   public static void expandTemplate(File templateFile, File configFile) throws ProxyConfException {
@@ -420,11 +427,11 @@ public class ProxyConfGen {
       Matcher cmdMatcher = cmdPattern.matcher(line);
       if (cmdMatcher.matches()) {
         // the command is found
-        String[] cmd_arg = cmdMatcher.group(2).split("[ \t]+", 2);
+        String[] cmdArg = cmdMatcher.group(2).split("[ \t]+", 2);
         // command selection can be extracted if more commands are introduced
-        if (cmd_arg.length == 2 && cmd_arg[0].compareTo("explode") == 0) {
-          if (cmd_arg[1].startsWith("server(") && cmd_arg[1].endsWith(")")) {
-            String serviceName = cmd_arg[1].substring("server(".length(), cmd_arg[1].length() - 1);
+        if (cmdArg.length == 2 && cmdArg[0].compareTo("explode") == 0) {
+          if (cmdArg[1].startsWith("server(") && cmdArg[1].endsWith(")")) {
+            String serviceName = cmdArg[1].substring("server(".length(), cmdArg[1].length() - 1);
             if (serviceName.isEmpty()) {
               throw new ProxyConfException(
                   "Missing service parameter in custom header command: " + cmdMatcher.group(2));
@@ -436,9 +443,9 @@ public class ProxyConfGen {
               return;
             }
 
-            if (cmd_arg[1].startsWith("domain(") && cmd_arg[1].endsWith(")")) {
+            if (cmdArg[1].startsWith("domain(") && cmdArg[1].endsWith(")")) {
               // extract the args in "domain(arg1, arg2, ...)
-              String argList = cmd_arg[1].substring("domain(".length(), cmd_arg[1].length() - 1);
+              String argList = cmdArg[1].substring("domain(".length(), cmdArg[1].length() - 1);
               String[] args;
               if (argList.equals("")) {
                 args = new String[0];
@@ -587,12 +594,11 @@ public class ProxyConfGen {
         if (item.virtualHostname == null || item.virtualHostname.equals("")) {
           return true;
         }
-      } else if (attr.equals("sso")) {
-        if (item.clientCertMode == null
-            || item.clientCertMode.equals("")
-            || item.clientCertMode.equals("off")) {
-          return true;
-        }
+      } else if (attr.equals("sso")
+          && (item.clientCertMode == null
+              || item.clientCertMode.equals("")
+              || item.clientCertMode.equals("off"))) {
+        return true;
       }
     }
     return false;
@@ -638,7 +644,8 @@ public class ProxyConfGen {
     }
 
     boolean sni =
-        ProxyConfVar.serverSource.getBooleanAttr(Provisioning.A_zimbraReverseProxySNIEnabled, true);
+        ProxyConfVar.serverSource.getBooleanAttr(
+            ZAttrProvisioning.A_zimbraReverseProxySNIEnabled, true);
     if (vip instanceof Inet6Address) {
       // ipv6 address has to be enclosed with [ ]
       if (sni) {
@@ -674,14 +681,14 @@ public class ProxyConfGen {
     }
 
     if (item.sslCertificate != null) {
-      mVars.put("ssl.crt", mDomainSSLDir + File.separator + item.domainName + mSSLCrtExt);
+      mVars.put("ssl.crt", DOMAIN_SSL_DIR + File.separator + item.domainName + SSL_CRT_EXT);
     } else {
       defaultVal = mVars.get("ssl.crt.default");
       mVars.put("ssl.crt", defaultVal);
     }
 
     if (item.sslPrivateKey != null) {
-      mVars.put("ssl.key", mDomainSSLDir + File.separator + item.domainName + mSSLKeyExt);
+      mVars.put("ssl.key", DOMAIN_SSL_DIR + File.separator + item.domainName + SSL_KEY_EXT);
     } else {
       defaultVal = mVars.get("ssl.key.default");
       mVars.put("ssl.key", defaultVal);
@@ -751,11 +758,11 @@ public class ProxyConfGen {
 
   /* Print the default variable map */
   public static void displayDefaultVariables() throws ProxyConfException {
-    for (ProxyConfVar var : mConfVars.values()) {
-      if (var instanceof TimeInSecVarWrapper) {
-        var = ((TimeInSecVarWrapper) var).mVar;
+    for (ProxyConfVar proxyConfVar : mConfVars.values()) {
+      if (proxyConfVar instanceof TimeInSecVarWrapper) {
+        proxyConfVar = ((TimeInSecVarWrapper) proxyConfVar).mVar;
       }
-      var.write(System.out);
+      proxyConfVar.write(System.out);
     }
   }
 
@@ -763,9 +770,10 @@ public class ProxyConfGen {
   public static void displayVariables() throws ProxyConfException {
     SortedSet<String> sk = new TreeSet<>(mVars.keySet());
     for (String k : sk) {
-      ProxyConfVar var = mConfVars.get(k);
-      if (var instanceof TimeInSecVarWrapper) var = ((TimeInSecVarWrapper) var).mVar;
-      var.write(System.out);
+      ProxyConfVar proxyConfVar = mConfVars.get(k);
+      if (proxyConfVar instanceof TimeInSecVarWrapper)
+        proxyConfVar = ((TimeInSecVarWrapper) proxyConfVar).mVar;
+      proxyConfVar.write(System.out);
     }
   }
 
@@ -814,7 +822,7 @@ public class ProxyConfGen {
         new ProxyConfVar(
             "ssl.crt.default",
             null,
-            mDefaultSSLCrt,
+            DEFAULT_SSL_CRT,
             ProxyConfValueType.STRING,
             ProxyConfOverride.NONE,
             "default nginx certificate file path"));
@@ -823,7 +831,7 @@ public class ProxyConfGen {
         new ProxyConfVar(
             "ssl.key.default",
             null,
-            mDefaultSSLKey,
+            DEFAULT_SSL_KEY,
             ProxyConfValueType.STRING,
             ProxyConfOverride.NONE,
             "default nginx private key file path"));
@@ -831,7 +839,7 @@ public class ProxyConfGen {
         "ssl.clientcertmode.default",
         new ProxyConfVar(
             "ssl.clientcertmode.default",
-            Provisioning.A_zimbraReverseProxyClientCertMode,
+            ZAttrProvisioning.A_zimbraReverseProxyClientCertMode,
             "off",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -869,7 +877,7 @@ public class ProxyConfGen {
         "main.workers",
         new ProxyConfVar(
             "main.workers",
-            Provisioning.A_zimbraReverseProxyWorkerProcesses,
+            ZAttrProvisioning.A_zimbraReverseProxyWorkerProcesses,
             4,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -896,7 +904,7 @@ public class ProxyConfGen {
         "main.loglevel",
         new ProxyConfVar(
             "main.loglevel",
-            Provisioning.A_zimbraReverseProxyLogLevel,
+            ZAttrProvisioning.A_zimbraReverseProxyLogLevel,
             "info",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -905,7 +913,7 @@ public class ProxyConfGen {
         "main.connections",
         new ProxyConfVar(
             "main.connections",
-            Provisioning.A_zimbraReverseProxyWorkerConnections,
+            ZAttrProvisioning.A_zimbraReverseProxyWorkerConnections,
             10240,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -924,7 +932,7 @@ public class ProxyConfGen {
         "memcache.timeout",
         new ProxyConfVar(
             "memcache.timeout",
-            Provisioning.A_zimbraReverseProxyCacheFetchTimeout,
+            ZAttrProvisioning.A_zimbraReverseProxyCacheFetchTimeout,
             3000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.CONFIG,
@@ -933,7 +941,7 @@ public class ProxyConfGen {
         "memcache.reconnect",
         new ProxyConfVar(
             "memcache.reconnect",
-            Provisioning.A_zimbraReverseProxyCacheReconnectInterval,
+            ZAttrProvisioning.A_zimbraReverseProxyCacheReconnectInterval,
             60000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.CONFIG,
@@ -943,7 +951,7 @@ public class ProxyConfGen {
         "memcache.ttl",
         new ProxyConfVar(
             "memcache.ttl",
-            Provisioning.A_zimbraReverseProxyCacheEntryTTL,
+            ZAttrProvisioning.A_zimbraReverseProxyCacheEntryTTL,
             3600000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.CONFIG,
@@ -952,7 +960,7 @@ public class ProxyConfGen {
         "mail.ctimeout",
         new ProxyConfVar(
             "mail.ctimeout",
-            Provisioning.A_zimbraReverseProxyConnectTimeout,
+            ZAttrProvisioning.A_zimbraReverseProxyConnectTimeout,
             120000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.SERVER,
@@ -998,7 +1006,7 @@ public class ProxyConfGen {
         "mail.passerrors",
         new ProxyConfVar(
             "mail.passerrors",
-            Provisioning.A_zimbraReverseProxyPassErrors,
+            ZAttrProvisioning.A_zimbraReverseProxyPassErrors,
             true,
             ProxyConfValueType.BOOLEAN,
             ProxyConfOverride.SERVER,
@@ -1008,7 +1016,7 @@ public class ProxyConfGen {
         "mail.auth_http_timeout",
         new ProxyConfVar(
             "mail.auth_http_timeout",
-            Provisioning.A_zimbraReverseProxyRouteLookupTimeout,
+            ZAttrProvisioning.A_zimbraReverseProxyRouteLookupTimeout,
             15000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.SERVER,
@@ -1019,7 +1027,7 @@ public class ProxyConfGen {
         "mail.authwait",
         new ProxyConfVar(
             "mail.authwait",
-            Provisioning.A_zimbraReverseProxyAuthWaitInterval,
+            ZAttrProvisioning.A_zimbraReverseProxyAuthWaitInterval,
             10000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.CONFIG,
@@ -1043,7 +1051,7 @@ public class ProxyConfGen {
         "mail.defaultrealm",
         new ProxyConfVar(
             "mail.defaultrealm",
-            Provisioning.A_zimbraReverseProxyDefaultRealm,
+            ZAttrProvisioning.A_zimbraReverseProxyDefaultRealm,
             "",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -1063,7 +1071,7 @@ public class ProxyConfGen {
         "mail.ipmax",
         new ProxyConfVar(
             "mail.ipmax",
-            Provisioning.A_zimbraReverseProxyIPLoginLimit,
+            ZAttrProvisioning.A_zimbraReverseProxyIPLoginLimit,
             0,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.CONFIG,
@@ -1072,7 +1080,7 @@ public class ProxyConfGen {
         "mail.ipttl",
         new ProxyConfVar(
             "mail.ipttl",
-            Provisioning.A_zimbraReverseProxyIPLoginLimitTime,
+            ZAttrProvisioning.A_zimbraReverseProxyIPLoginLimitTime,
             3600000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.CONFIG,
@@ -1081,7 +1089,7 @@ public class ProxyConfGen {
         "mail.imapmax",
         new ProxyConfVar(
             "mail.imapmax",
-            Provisioning.A_zimbraReverseProxyIPLoginImapLimit,
+            ZAttrProvisioning.A_zimbraReverseProxyIPLoginImapLimit,
             0,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.CONFIG,
@@ -1090,7 +1098,7 @@ public class ProxyConfGen {
         "mail.imapttl",
         new ProxyConfVar(
             "mail.imapttl",
-            Provisioning.A_zimbraReverseProxyIPLoginImapLimitTime,
+            ZAttrProvisioning.A_zimbraReverseProxyIPLoginImapLimitTime,
             3600000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.CONFIG,
@@ -1099,7 +1107,7 @@ public class ProxyConfGen {
         "mail.pop3max",
         new ProxyConfVar(
             "mail.pop3max",
-            Provisioning.A_zimbraReverseProxyIPLoginPop3Limit,
+            ZAttrProvisioning.A_zimbraReverseProxyIPLoginPop3Limit,
             0,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.CONFIG,
@@ -1108,7 +1116,7 @@ public class ProxyConfGen {
         "mail.pop3ttl",
         new ProxyConfVar(
             "mail.pop3ttl",
-            Provisioning.A_zimbraReverseProxyIPLoginPop3LimitTime,
+            ZAttrProvisioning.A_zimbraReverseProxyIPLoginPop3LimitTime,
             3600000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.CONFIG,
@@ -1117,7 +1125,7 @@ public class ProxyConfGen {
         "mail.iprej",
         new ProxyConfVar(
             "mail.iprej",
-            Provisioning.A_zimbraReverseProxyIpThrottleMsg,
+            ZAttrProvisioning.A_zimbraReverseProxyIpThrottleMsg,
             "Login rejected from this IP",
             ProxyConfValueType.STRING,
             ProxyConfOverride.CONFIG,
@@ -1126,7 +1134,7 @@ public class ProxyConfGen {
         "mail.usermax",
         new ProxyConfVar(
             "mail.usermax",
-            Provisioning.A_zimbraReverseProxyUserLoginLimit,
+            ZAttrProvisioning.A_zimbraReverseProxyUserLoginLimit,
             0,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.CONFIG,
@@ -1135,7 +1143,7 @@ public class ProxyConfGen {
         "mail.userttl",
         new ProxyConfVar(
             "mail.userttl",
-            Provisioning.A_zimbraReverseProxyUserLoginLimitTime,
+            ZAttrProvisioning.A_zimbraReverseProxyUserLoginLimitTime,
             3600000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.CONFIG,
@@ -1144,7 +1152,7 @@ public class ProxyConfGen {
         "mail.userrej",
         new ProxyConfVar(
             "mail.userrej",
-            Provisioning.A_zimbraReverseProxyUserThrottleMsg,
+            ZAttrProvisioning.A_zimbraReverseProxyUserThrottleMsg,
             "Login rejected for this user",
             ProxyConfValueType.STRING,
             ProxyConfOverride.CONFIG,
@@ -1153,7 +1161,7 @@ public class ProxyConfGen {
         "mail.upstream.pop3xoip",
         new ProxyConfVar(
             "mail.upstream.pop3xoip",
-            Provisioning.A_zimbraReverseProxySendPop3Xoip,
+            ZAttrProvisioning.A_zimbraReverseProxySendPop3Xoip,
             true,
             ProxyConfValueType.BOOLEAN,
             ProxyConfOverride.CONFIG,
@@ -1163,7 +1171,7 @@ public class ProxyConfGen {
         "mail.upstream.imapid",
         new ProxyConfVar(
             "mail.upstream.imapid",
-            Provisioning.A_zimbraReverseProxySendImapId,
+            ZAttrProvisioning.A_zimbraReverseProxySendImapId,
             true,
             ProxyConfValueType.BOOLEAN,
             ProxyConfOverride.CONFIG,
@@ -1183,7 +1191,7 @@ public class ProxyConfGen {
         "mail.ssl.ciphers",
         new ProxyConfVar(
             "mail.ssl.ciphers",
-            Provisioning.A_zimbraReverseProxySSLCiphers,
+            ZAttrProvisioning.A_zimbraReverseProxySSLCiphers,
             "EECDH+AESGCM:EDH+AESGCM",
             ProxyConfValueType.STRING,
             ProxyConfOverride.CONFIG,
@@ -1192,7 +1200,7 @@ public class ProxyConfGen {
         "mail.ssl.ecdh.curve",
         new ProxyConfVar(
             "mail.ssl.ecdh.curve",
-            Provisioning.A_zimbraReverseProxySSLECDHCurve,
+            ZAttrProvisioning.A_zimbraReverseProxySSLECDHCurve,
             "auto",
             ProxyConfValueType.STRING,
             ProxyConfOverride.CONFIG,
@@ -1201,7 +1209,7 @@ public class ProxyConfGen {
         "mail.imap.authplain.enabled",
         new ProxyConfVar(
             "mail.imap.authplain.enabled",
-            Provisioning.A_zimbraReverseProxyImapSaslPlainEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxyImapSaslPlainEnabled,
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1210,7 +1218,7 @@ public class ProxyConfGen {
         "mail.imap.authgssapi.enabled",
         new ProxyConfVar(
             "mail.imap.authgssapi.enabled",
-            Provisioning.A_zimbraReverseProxyImapSaslGssapiEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxyImapSaslGssapiEnabled,
             false,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1219,7 +1227,7 @@ public class ProxyConfGen {
         "mail.pop3.authplain.enabled",
         new ProxyConfVar(
             "mail.pop3.authplain.enabled",
-            Provisioning.A_zimbraReverseProxyPop3SaslPlainEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxyPop3SaslPlainEnabled,
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1228,7 +1236,7 @@ public class ProxyConfGen {
         "mail.pop3.authgssapi.enabled",
         new ProxyConfVar(
             "mail.pop3.authgssapi.enabled",
-            Provisioning.A_zimbraReverseProxyPop3SaslGssapiEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxyPop3SaslGssapiEnabled,
             false,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1247,7 +1255,7 @@ public class ProxyConfGen {
         "mail.imap.port",
         new ProxyConfVar(
             "mail.imap.port",
-            Provisioning.A_zimbraImapProxyBindPort,
+            ZAttrProvisioning.A_zimbraImapProxyBindPort,
             143,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1256,7 +1264,7 @@ public class ProxyConfGen {
         "mail.imap.tls",
         new ProxyConfVar(
             "mail.imap.tls",
-            Provisioning.A_zimbraReverseProxyImapStartTlsMode,
+            ZAttrProvisioning.A_zimbraReverseProxyImapStartTlsMode,
             "only",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -1267,7 +1275,7 @@ public class ProxyConfGen {
         "mail.imaps.port",
         new ProxyConfVar(
             "mail.imaps.port",
-            Provisioning.A_zimbraImapSSLProxyBindPort,
+            ZAttrProvisioning.A_zimbraImapSSLProxyBindPort,
             993,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1276,7 +1284,7 @@ public class ProxyConfGen {
         "mail.pop3.port",
         new ProxyConfVar(
             "mail.pop3.port",
-            Provisioning.A_zimbraPop3ProxyBindPort,
+            ZAttrProvisioning.A_zimbraPop3ProxyBindPort,
             110,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1285,7 +1293,7 @@ public class ProxyConfGen {
         "mail.pop3.tls",
         new ProxyConfVar(
             "mail.pop3.tls",
-            Provisioning.A_zimbraReverseProxyPop3StartTlsMode,
+            ZAttrProvisioning.A_zimbraReverseProxyPop3StartTlsMode,
             "only",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -1296,18 +1304,19 @@ public class ProxyConfGen {
         "mail.pop3s.port",
         new ProxyConfVar(
             "mail.pop3s.port",
-            Provisioning.A_zimbraPop3SSLProxyBindPort,
+            ZAttrProvisioning.A_zimbraPop3SSLProxyBindPort,
             995,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
             "Mail Proxy POP3S Port"));
     mConfVars.put("mail.imap.greeting", new ImapGreetingVar());
     mConfVars.put("mail.pop3.greeting", new Pop3GreetingVar());
+    final String keyword = "mail.enabled";
     mConfVars.put(
-        "mail.enabled",
+        keyword,
         new ProxyConfVar(
-            "mail.enabled",
-            Provisioning.A_zimbraReverseProxyMailEnabled,
+            keyword,
+            ZAttrProvisioning.A_zimbraReverseProxyMailEnabled,
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1316,7 +1325,7 @@ public class ProxyConfGen {
         "mail.imap.enabled",
         new ProxyConfVar(
             "mail.imap.enabled",
-            Provisioning.A_zimbraReverseProxyMailImapEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxyMailImapEnabled,
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1325,7 +1334,7 @@ public class ProxyConfGen {
         "mail.imaps.enabled",
         new ProxyConfVar(
             "mail.imaps.enabled",
-            Provisioning.A_zimbraReverseProxyMailImapsEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxyMailImapsEnabled,
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1334,7 +1343,7 @@ public class ProxyConfGen {
         "mail.pop3.enabled",
         new ProxyConfVar(
             "mail.pop3.enabled",
-            Provisioning.A_zimbraReverseProxyMailPop3Enabled,
+            ZAttrProvisioning.A_zimbraReverseProxyMailPop3Enabled,
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1343,7 +1352,7 @@ public class ProxyConfGen {
         "mail.pop3s.enabled",
         new ProxyConfVar(
             "mail.pop3s.enabled",
-            Provisioning.A_zimbraReverseProxyMailPop3sEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxyMailPop3sEnabled,
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1352,7 +1361,7 @@ public class ProxyConfGen {
         "mail.proxy.ssl",
         new ProxyConfVar(
             "mail.proxy.ssl",
-            Provisioning.A_zimbraReverseProxySSLToUpstreamEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxySSLToUpstreamEnabled,
             true,
             ProxyConfValueType.BOOLEAN,
             ProxyConfOverride.SERVER,
@@ -1363,7 +1372,7 @@ public class ProxyConfGen {
         new TimeInSecVarWrapper(
             new ProxyConfVar(
                 "mail.whitelist.ttl",
-                Provisioning.A_zimbraReverseProxyIPThrottleWhitelistTime,
+                ZAttrProvisioning.A_zimbraReverseProxyIPThrottleWhitelistTime,
                 300000L,
                 ProxyConfValueType.TIME,
                 ProxyConfOverride.CONFIG,
@@ -1382,7 +1391,7 @@ public class ProxyConfGen {
         "web.mailmode",
         new ProxyConfVar(
             "web.mailmode",
-            Provisioning.A_zimbraReverseProxyMailMode,
+            ZAttrProvisioning.A_zimbraReverseProxyMailMode,
             "both",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -1460,7 +1469,7 @@ public class ProxyConfGen {
         "web.uploadmax",
         new ProxyConfVar(
             "web.uploadmax",
-            Provisioning.A_zimbraFileUploadMaxSize,
+            ZAttrProvisioning.A_zimbraFileUploadMaxSize,
             10485760L,
             ProxyConfValueType.LONG,
             ProxyConfOverride.SERVER,
@@ -1471,7 +1480,7 @@ public class ProxyConfGen {
         "web.http.port",
         new ProxyConfVar(
             "web.http.port",
-            Provisioning.A_zimbraMailProxyPort,
+            ZAttrProvisioning.A_zimbraMailProxyPort,
             0,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1480,7 +1489,7 @@ public class ProxyConfGen {
         "web.http.maxbody",
         new ProxyConfVar(
             "web.http.maxbody",
-            Provisioning.A_zimbraFileUploadMaxSize,
+            ZAttrProvisioning.A_zimbraFileUploadMaxSize,
             10485760L,
             ProxyConfValueType.LONG,
             ProxyConfOverride.SERVER,
@@ -1490,7 +1499,7 @@ public class ProxyConfGen {
         "web.https.port",
         new ProxyConfVar(
             "web.https.port",
-            Provisioning.A_zimbraMailSSLProxyPort,
+            ZAttrProvisioning.A_zimbraMailSSLProxyPort,
             0,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1499,7 +1508,7 @@ public class ProxyConfGen {
         "web.https.maxbody",
         new ProxyConfVar(
             "web.https.maxbody",
-            Provisioning.A_zimbraFileUploadMaxSize,
+            ZAttrProvisioning.A_zimbraFileUploadMaxSize,
             10485760L,
             ProxyConfValueType.LONG,
             ProxyConfOverride.SERVER,
@@ -1519,7 +1528,7 @@ public class ProxyConfGen {
         "web.ssl.ciphers",
         new ProxyConfVar(
             "web.ssl.ciphers",
-            Provisioning.A_zimbraReverseProxySSLCiphers,
+            ZAttrProvisioning.A_zimbraReverseProxySSLCiphers,
             "EECDH+AESGCM:EDH+AESGCM",
             ProxyConfValueType.STRING,
             ProxyConfOverride.CONFIG,
@@ -1528,7 +1537,7 @@ public class ProxyConfGen {
         "web.ssl.ecdh.curve",
         new ProxyConfVar(
             "web.ssl.ecdh.curve",
-            Provisioning.A_zimbraReverseProxySSLECDHCurve,
+            ZAttrProvisioning.A_zimbraReverseProxySSLECDHCurve,
             "auto",
             ProxyConfValueType.STRING,
             ProxyConfOverride.CONFIG,
@@ -1537,7 +1546,7 @@ public class ProxyConfGen {
         "web.http.uport",
         new ProxyConfVar(
             "web.http.uport",
-            Provisioning.A_zimbraMailPort,
+            ZAttrProvisioning.A_zimbraMailPort,
             80,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1546,7 +1555,7 @@ public class ProxyConfGen {
         "web.upstream.connect.timeout",
         new ProxyConfVar(
             "web.upstream.connect.timeout",
-            Provisioning.A_zimbraReverseProxyUpstreamConnectTimeout,
+            ZAttrProvisioning.A_zimbraReverseProxyUpstreamConnectTimeout,
             25,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1556,7 +1565,7 @@ public class ProxyConfGen {
         new TimeInSecVarWrapper(
             new ProxyConfVar(
                 "web.upstream.read.timeout",
-                Provisioning.A_zimbraReverseProxyUpstreamReadTimeout,
+                ZAttrProvisioning.A_zimbraReverseProxyUpstreamReadTimeout,
                 60L,
                 ProxyConfValueType.TIME,
                 ProxyConfOverride.SERVER,
@@ -1566,7 +1575,7 @@ public class ProxyConfGen {
         new TimeInSecVarWrapper(
             new ProxyConfVar(
                 "web.upstream.send.timeout",
-                Provisioning.A_zimbraReverseProxyUpstreamSendTimeout,
+                ZAttrProvisioning.A_zimbraReverseProxyUpstreamSendTimeout,
                 60L,
                 ProxyConfValueType.TIME,
                 ProxyConfOverride.SERVER,
@@ -1576,7 +1585,7 @@ public class ProxyConfGen {
         new TimeInSecVarWrapper(
             new ProxyConfVar(
                 "web.upstream.polling.timeout",
-                Provisioning.A_zimbraReverseProxyUpstreamPollingTimeout,
+                ZAttrProvisioning.A_zimbraReverseProxyUpstreamPollingTimeout,
                 3600L,
                 ProxyConfValueType.TIME,
                 ProxyConfOverride.SERVER,
@@ -1585,7 +1594,7 @@ public class ProxyConfGen {
         "web.enabled",
         new ProxyConfVar(
             "web.enabled",
-            Provisioning.A_zimbraReverseProxyHttpEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxyHttpEnabled,
             false,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1594,7 +1603,7 @@ public class ProxyConfGen {
         "web.upstream.exactversioncheck",
         new ProxyConfVar(
             "web.upstream.exactversioncheck",
-            Provisioning.A_zimbraReverseProxyExactServerVersionCheck,
+            ZAttrProvisioning.A_zimbraReverseProxyExactServerVersionCheck,
             "on",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -1611,7 +1620,7 @@ public class ProxyConfGen {
         "zmlookup.timeout",
         new ProxyConfVar(
             "zmlookup.timeout",
-            Provisioning.A_zimbraReverseProxyRouteLookupTimeout,
+            ZAttrProvisioning.A_zimbraReverseProxyRouteLookupTimeout,
             15000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.SERVER,
@@ -1622,7 +1631,7 @@ public class ProxyConfGen {
         "zmlookup.retryinterval",
         new ProxyConfVar(
             "zmlookup.retryinterval",
-            Provisioning.A_zimbraReverseProxyRouteLookupTimeoutCache,
+            ZAttrProvisioning.A_zimbraReverseProxyRouteLookupTimeoutCache,
             60000L,
             ProxyConfValueType.TIME,
             ProxyConfOverride.SERVER,
@@ -1642,7 +1651,7 @@ public class ProxyConfGen {
         "zmlookup.caching",
         new ProxyConfVar(
             "zmlookup.caching",
-            Provisioning.A_zimbraReverseProxyZmlookupCachingEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxyZmlookupCachingEnabled,
             true,
             ProxyConfValueType.BOOLEAN,
             ProxyConfOverride.SERVER,
@@ -1651,7 +1660,7 @@ public class ProxyConfGen {
         "zmprefix.url",
         new ProxyConfVar(
             "zmprefix.url",
-            Provisioning.A_zimbraMailURL,
+            ZAttrProvisioning.A_zimbraMailURL,
             "/",
             ProxyConfValueType.STRING,
             ProxyConfOverride.CONFIG,
@@ -1660,7 +1669,7 @@ public class ProxyConfGen {
         "web.sso.certauth.port",
         new ProxyConfVar(
             "web.sso.certauth.port",
-            Provisioning.A_zimbraMailSSLProxyClientCertPort,
+            ZAttrProvisioning.A_zimbraMailSSLProxyClientCertPort,
             0,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1672,7 +1681,7 @@ public class ProxyConfGen {
         "web.admin.default.enabled",
         new ProxyConfVar(
             "web.admin.default.enabled",
-            Provisioning.A_zimbraReverseProxyAdminEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxyAdminEnabled,
             Boolean.FALSE,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1681,7 +1690,7 @@ public class ProxyConfGen {
         "web.admin.port",
         new ProxyConfVar(
             "web.admin.port",
-            Provisioning.A_zimbraAdminProxyPort,
+            ZAttrProvisioning.A_zimbraAdminProxyPort,
             9071,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1690,7 +1699,7 @@ public class ProxyConfGen {
         "web.admin.uport",
         new ProxyConfVar(
             "web.admin.uport",
-            Provisioning.A_zimbraAdminPort,
+            ZAttrProvisioning.A_zimbraAdminPort,
             7071,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1738,7 +1747,7 @@ public class ProxyConfGen {
         "main.accept_mutex",
         new ProxyConfVar(
             "main.accept_mutex",
-            Provisioning.A_zimbraReverseProxyAcceptMutex,
+            ZAttrProvisioning.A_zimbraReverseProxyAcceptMutex,
             "on",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -1790,7 +1799,7 @@ public class ProxyConfGen {
         "web.login.upstream.url",
         new ProxyConfVar(
             "web.login.upstream.url",
-            Provisioning.A_zimbraMailURL,
+            ZAttrProvisioning.A_zimbraMailURL,
             "/",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -1802,7 +1811,7 @@ public class ProxyConfGen {
         new TimeInSecVarWrapper(
             new ProxyConfVar(
                 "ssl.session.timeout",
-                Provisioning.A_zimbraReverseProxySSLSessionTimeout,
+                ZAttrProvisioning.A_zimbraReverseProxySSLSessionTimeout,
                 600L,
                 ProxyConfValueType.TIME,
                 ProxyConfOverride.SERVER,
@@ -1814,7 +1823,7 @@ public class ProxyConfGen {
         "web.xmpp.bosh.enabled",
         new ProxyConfVar(
             "web.xmpp.bosh.enabled",
-            Provisioning.A_zimbraReverseProxyXmppBoshEnabled,
+            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshEnabled,
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1823,7 +1832,7 @@ public class ProxyConfGen {
         "web.xmpp.local.bind.url",
         new ProxyConfVar(
             "web.xmpp.local.bind.url",
-            Provisioning.A_zimbraReverseProxyXmppBoshLocalHttpBindURL,
+            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshLocalHttpBindURL,
             "/http-bind",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -1832,7 +1841,7 @@ public class ProxyConfGen {
         "web.xmpp.remote.bind.url",
         new ProxyConfVar(
             "web.xmpp.remote.bind.url",
-            Provisioning.A_zimbraReverseProxyXmppBoshRemoteHttpBindURL,
+            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshRemoteHttpBindURL,
             "",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -1842,7 +1851,7 @@ public class ProxyConfGen {
         "web.xmpp.bosh.hostname",
         new ProxyConfVar(
             "web.xmpp.bosh.hostname",
-            Provisioning.A_zimbraReverseProxyXmppBoshHostname,
+            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshHostname,
             "",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
@@ -1852,7 +1861,7 @@ public class ProxyConfGen {
         "web.xmpp.bosh.port",
         new ProxyConfVar(
             "web.xmpp.bosh.port",
-            Provisioning.A_zimbraReverseProxyXmppBoshPort,
+            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshPort,
             0,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1863,7 +1872,7 @@ public class ProxyConfGen {
         new TimeInSecVarWrapper(
             new ProxyConfVar(
                 "web.xmpp.bosh.timeout",
-                Provisioning.A_zimbraReverseProxyXmppBoshTimeout,
+                ZAttrProvisioning.A_zimbraReverseProxyXmppBoshTimeout,
                 60L,
                 ProxyConfValueType.TIME,
                 ProxyConfOverride.SERVER,
@@ -1872,7 +1881,7 @@ public class ProxyConfGen {
         "web.xmpp.bosh.use_ssl",
         new ProxyConfVar(
             "web.xmpp.bosh.use_ssl",
-            Provisioning.A_zimbraReverseProxyXmppBoshSSL,
+            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshSSL,
             true,
             ProxyConfValueType.ENABLER,
             ProxyConfOverride.SERVER,
@@ -1881,7 +1890,7 @@ public class ProxyConfGen {
         new ProxyConfVar(
             "web.ssl.dhparam.file",
             null,
-            mDefaultDhParamFile,
+            DEFAULT_DH_PARAM_FILE,
             ProxyConfValueType.STRING,
             ProxyConfOverride.NONE,
             "Filename with DH parameters for EDH ciphers to be used by the proxy");
@@ -1914,7 +1923,7 @@ public class ProxyConfGen {
         "web.carbonio.admin.port",
         new ProxyConfVar(
             "web.admin.login.port",
-            Provisioning.A_carbonioAdminProxyPort,
+            ZAttrProvisioning.A_carbonioAdminProxyPort,
             6071,
             ProxyConfValueType.INTEGER,
             ProxyConfOverride.SERVER,
@@ -1922,7 +1931,8 @@ public class ProxyConfGen {
 
     // Get the response headers list from globalconfig
     String[] rspHeaders =
-        ProxyConfVar.configSource.getMultiAttr(Provisioning.A_zimbraReverseProxyResponseHeaders);
+        ProxyConfVar.configSource.getMultiAttr(
+            ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
     ArrayList<String> responseHeadersList = new ArrayList<>();
     Collections.addAll(responseHeadersList, rspHeaders);
     mConfVars.put(
@@ -1982,12 +1992,16 @@ public class ProxyConfGen {
   /* Indicate whether configuration is valid, taking into consideration "essential" configuration values */
   @SuppressWarnings("unchecked")
   public static boolean isWorkableConf() {
-    boolean webEnabled, mailEnabled, validConf = true;
-    ArrayList<String> webUpstreamServers, webUpstreamClientServers, zmLookupHandlers;
-    ArrayList<String> webSSLUpstreamServers, webSSLUpstreamClientServers;
 
-    webEnabled = (Boolean) mConfVars.get("web.enabled").rawValue();
-    mailEnabled = (Boolean) mConfVars.get("mail.enabled").rawValue();
+    ArrayList<String> webUpstreamServers;
+    ArrayList<String> webUpstreamClientServers;
+    ArrayList<String> zmLookupHandlers;
+    ArrayList<String> webSSLUpstreamServers;
+    ArrayList<String> webSSLUpstreamClientServers;
+
+    boolean validConf = true;
+    boolean webEnabled = (Boolean) mConfVars.get("web.enabled").rawValue();
+    boolean mailEnabled = (Boolean) mConfVars.get("mail.enabled").rawValue();
 
     webUpstreamServers = (ArrayList<String>) mConfVars.get("web.upstream.:servers").rawValue();
     webUpstreamClientServers =
@@ -1998,18 +2012,17 @@ public class ProxyConfGen {
         (ArrayList<String>) mConfVars.get("web.ssl.upstream.webclient.:servers").rawValue();
     zmLookupHandlers = (ArrayList<String>) mConfVars.get("zmlookup.:handlers").rawValue();
 
-    if (webEnabled && (webUpstreamServers.size() == 0 || webUpstreamClientServers.size() == 0)) {
+    if (webEnabled && (webUpstreamServers.isEmpty() || webUpstreamClientServers.isEmpty())) {
       mLog.info("Web is enabled but there are no HTTP upstream webclient/mailclient servers");
       validConf = false;
     }
 
-    if (webEnabled
-        && (webSSLUpstreamServers.size() == 0 || webSSLUpstreamClientServers.size() == 0)) {
+    if (webEnabled && (webSSLUpstreamServers.isEmpty() || webSSLUpstreamClientServers.isEmpty())) {
       mLog.info("Web is enabled but there are no HTTPS upstream webclient/mailclient servers");
       validConf = false;
     }
 
-    if ((webEnabled || mailEnabled) && (zmLookupHandlers.size() == 0)) {
+    if ((webEnabled || mailEnabled) && (zmLookupHandlers.isEmpty())) {
       mLog.info("Proxy is enabled but there are no lookup handlers");
       validConf = false;
     }
@@ -2102,7 +2115,7 @@ public class ProxyConfGen {
 
     mGenConfPerVhn =
         ProxyConfVar.serverSource.getBooleanAttr(
-            Provisioning.A_zimbraReverseProxyGenConfigPerVirtualHostname, false);
+            ZAttrProvisioning.A_zimbraReverseProxyGenConfigPerVirtualHostname, false);
 
     try {
       /* upgrade the variable map from the config in force */
@@ -2324,11 +2337,12 @@ public class ProxyConfGen {
   private static void writeClientCAtoFile(String clientCA) throws ServiceException {
     int exitCode;
     ProxyConfVar clientCAEnabledVar;
+    final String keyword = "ssl.clientcertca.enabled";
 
     if (ProxyConfUtil.isEmptyString(clientCA)) {
       clientCAEnabledVar =
           new ProxyConfVar(
-              "ssl.clientcertca.enabled",
+              keyword,
               null,
               false,
               ProxyConfValueType.ENABLER,
@@ -2344,7 +2358,7 @@ public class ProxyConfGen {
     } else {
       clientCAEnabledVar =
           new ProxyConfVar(
-              "ssl.clientcertca.enabled",
+              keyword,
               null,
               true,
               ProxyConfValueType.ENABLER,
@@ -2353,9 +2367,9 @@ public class ProxyConfGen {
       mLog.debug("Write Client CA file");
       ProxyConfUtil.writeContentToFile(clientCA, getDefaultClientCertCaPath());
     }
-    mConfVars.put("ssl.clientcertca.enabled", clientCAEnabledVar);
+    mConfVars.put(keyword, clientCAEnabledVar);
     try {
-      mVars.put("ssl.clientcertca.enabled", clientCAEnabledVar.confValue());
+      mVars.put(keyword, clientCAEnabledVar.confValue());
     } catch (ProxyConfException e) {
       mLog.error("ProxyConfException during format ssl.clientcertca.enabled", e);
       System.exit(1);
@@ -2365,7 +2379,8 @@ public class ProxyConfGen {
   /** check whether client cert verify is enabled in server level */
   static boolean isClientCertVerifyEnabled() {
     String globalMode =
-        ProxyConfVar.serverSource.getAttr(Provisioning.A_zimbraReverseProxyClientCertMode, "off");
+        ProxyConfVar.serverSource.getAttr(
+            ZAttrProvisioning.A_zimbraReverseProxyClientCertMode, "off");
 
     return globalMode.equals("on") || globalMode.equals("optional");
   }
