@@ -10,24 +10,28 @@ import javax.servlet.http.HttpServletResponse;
  *     attribute allows us to declare if the cookie should be restricted to a first-party or
  *     same-site context
  */
-public class SameSiteAttribute {
+class SameSiteAttribute {
+
+  private static final String SET_COOKIE_HEADER = "Set-Cookie";
+
+  private SameSiteAttribute() {}
 
   /**
    * @param response the response object containing the Set-Cookies header
    * @param sameSiteValue value to be set for SameSite attribute
    */
   public static void addSameSiteAttribute(HttpServletResponse response, String sameSiteValue) {
-    Collection<String> headers = response.getHeaders("Set-Cookie");
+    Collection<String> headers = response.getHeaders(SET_COOKIE_HEADER);
     boolean firstHeader = true;
     for (String header : headers) {
       if (firstHeader) {
         response.setHeader(
-            "Set-Cookie", String.format("%s; %s", header, "SameSite=" + sameSiteValue));
+            SET_COOKIE_HEADER, String.format("%s; %s", header, "SameSite=" + sameSiteValue));
         firstHeader = false;
         continue;
       }
       response.addHeader(
-          "Set-Cookie", String.format("%s; %s", header, "SameSite=" + sameSiteValue));
+          SET_COOKIE_HEADER, String.format("%s; %s", header, "SameSite=" + sameSiteValue));
     }
   }
 }
