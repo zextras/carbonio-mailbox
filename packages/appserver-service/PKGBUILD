@@ -35,7 +35,7 @@ postinst() {
   getent passwd 'carbonio-mailbox' >/dev/null ||
     useradd -r -M -g 'carbonio-mailbox' -s /sbin/nologin 'carbonio-mailbox'
 
-  useradd -G 'carbonio-mailbox' 'zextras'
+  usermod -a -G 'carbonio-mailbox' 'zextras'
 
   mkdir -p '/etc/zextras/carbonio-mailbox/'
   chown 'carbonio-mailbox:carbonio-mailbox' '/etc/zextras/carbonio-mailbox/'
