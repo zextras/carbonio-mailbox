@@ -31,6 +31,15 @@ POLICY_RULES="$(cat <<EOF
   "carbonio-mailbox/" = {
     "policy" = "read"
   }
+  "carbonio-powerstore/"= {
+    "policy"= "read"
+  }
+  "carbonio-abq/"= {
+    "policy"= "read"
+  }
+  "carbonio-activesync/"= {
+    "policy"= "read"
+  }
 }
 "node_prefix" = {
   "" = {
