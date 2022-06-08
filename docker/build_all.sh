@@ -41,6 +41,11 @@ package() {
   find . -type d -name "opt" | xargs rm -rf
   find . -type d -name "etc" -exec rsync -av {} "${PKGDIR}" \;
   find . -type d -name "etc" | xargs rm -rf
+  # introduced to copy mta consul files
+  find . -type d -name "usr" -exec rsync -av {} "${PKGDIR}" \;
+  find . -type d -name "usr" | xargs rm -rf
+  find . -type d -name "lib" -exec rsync -av {} "${PKGDIR}" \;
+  find . -type d -name "lib" | xargs rm -rf
 
   chmod 750 -R "${PKGDIR}/etc/sudoers.d"
   chmod +x "${PKGDIR}"/opt/zextras/bin/*
