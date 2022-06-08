@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 /**
  * AUTO-GENERATED. DO NOT EDIT.
- * 
+ *
  * @author schemers
  *
  */
@@ -17572,6 +17572,12 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3090)
     public static final String A_zimbraPasswordBlockCommonEnabled = "zimbraPasswordBlockCommonEnabled";
+
+    /**
+     * Enable video server recording for Carbonio chats
+     */
+    @ZAttr(id=3091)
+    public static final String A_carbonioChatsVideoServerRecordingEnabled = "carbonioChatsVideoServerRecordingEnabled";
 
     ///// END-AUTO-GEN-REPLACE
 }
