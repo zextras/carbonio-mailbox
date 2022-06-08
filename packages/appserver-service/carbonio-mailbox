@@ -98,9 +98,10 @@ if [[ ! -f "/etc/zextras/carbonio-mailbox/token" ]]; then
     # create the token
     consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for carbonio-mailbox/$(hostname -A)" |
       jq -r '.SecretID' > /etc/zextras/carbonio-mailbox/token;
-    chown carbonio-mailbox:carbonio-mailbox /etc/zextras/carbonio-mailbox/token
-    chmod 0600 /etc/zextras/carbonio-mailbox/token
 fi
+
+chown carbonio-mailbox:carbonio-mailbox /etc/zextras/carbonio-mailbox/token
+chmod 0640 /etc/zextras/carbonio-mailbox/token
 
 consul reload
 
