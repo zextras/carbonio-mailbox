@@ -24,6 +24,11 @@ services {
             local_bind_address = "127.78.0.7"
           },
           {
+            destination_name   = "carbonio-mta"
+            local_bind_port    = 20025
+            local_bind_address = "127.78.0.7"
+          },
+          {
             destination_name   = "carbonio-mailbox-db"
             local_bind_port    = 20003
             local_bind_address = "127.78.0.7"

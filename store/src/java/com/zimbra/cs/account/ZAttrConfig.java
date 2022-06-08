@@ -13,6 +13,7 @@ package com.zimbra.cs.account;
 import static com.zimbra.common.account.ProvisioningConstants.FALSE;
 import static com.zimbra.common.account.ProvisioningConstants.TRUE;
 
+import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -68183,7 +68184,8 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=97)
     public String[] getSmtpHostname() {
-        String[] value = getMultiAttr(Provisioning.A_zimbraSmtpHostname, true, true); return value.length > 0 ? value : new String[] {"localhost"};
+        String[] value = getMultiAttr(Provisioning.A_zimbraSmtpHostname, true, true);
+        return value.length > 0 ? value : new String[] {SmtpConfig.DEFAULT_HOST};
     }
 
     /**
@@ -68295,25 +68297,25 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * <p>Use getSmtpPortAsString to access value as a string.
+     * <p>Uses getSmtpPortAsString internally to access value as a string.
      *
      * @see #getSmtpPortAsString()
      *
-     * @return zimbraSmtpPort, or 25 if unset
+     * @return zimbraSmtpPort, or default value if unset
      */
     @ZAttr(id=98)
     public int getSmtpPort() {
-        return getIntAttr(Provisioning.A_zimbraSmtpPort, 25, true);
+        return Integer.parseInt(getSmtpPortAsString());
     }
 
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * @return zimbraSmtpPort, or "25" if unset
+     * @return zimbraSmtpPort, or default value if unset
      */
     @ZAttr(id=98)
     public String getSmtpPortAsString() {
-        return getAttr(Provisioning.A_zimbraSmtpPort, "25", true);
+        return getAttr(Provisioning.A_zimbraSmtpPort, String.valueOf(SmtpConfig.DEFAULT_PORT), true);
     }
 
     /**

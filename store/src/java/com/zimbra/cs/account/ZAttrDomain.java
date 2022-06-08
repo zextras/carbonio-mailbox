@@ -13,6 +13,7 @@ package com.zimbra.cs.account;
 import static com.zimbra.common.account.ProvisioningConstants.FALSE;
 import static com.zimbra.common.account.ProvisioningConstants.TRUE;
 
+import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -22094,25 +22095,25 @@ public abstract class ZAttrDomain extends NamedEntry {
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * <p>Use getSmtpPortAsString to access value as a string.
+     * <p>Internally uses getSmtpPortAsString to access value as a string.
      *
      * @see #getSmtpPortAsString()
      *
-     * @return zimbraSmtpPort, or -1 if unset
+     * @return zimbraSmtpPort, or default value if unset
      */
     @ZAttr(id=98)
     public int getSmtpPort() {
-        return getIntAttr(Provisioning.A_zimbraSmtpPort, -1, true);
+        return Integer.parseInt(getSmtpPortAsString());
     }
 
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * @return zimbraSmtpPort, or null if unset
+     * @return zimbraSmtpPort, or default value if unset
      */
     @ZAttr(id=98)
     public String getSmtpPortAsString() {
-        return getAttr(Provisioning.A_zimbraSmtpPort, null, true);
+        return getAttr(Provisioning.A_zimbraSmtpPort, String.valueOf(SmtpConfig.DEFAULT_PORT), true);
     }
 
     /**

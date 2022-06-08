@@ -316,6 +316,8 @@ public final class JMSession {
             throw new MessagingException(msg);
         }
         Properties props = new Properties(sSession.getProperties());
+        //TODO: when prop is null set property throws null pointer exception,
+        // consider better logging and better handle request
         props.setProperty("mail.smtp.host", smtpHost);
         props.setProperty("mail.smtp.port", getValue(server, domain, Provisioning.A_zimbraSmtpPort));
         props.setProperty("mail.smtp.localhost", LC.zimbra_server_hostname.value());
