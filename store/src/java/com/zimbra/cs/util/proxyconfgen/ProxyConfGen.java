@@ -86,8 +86,8 @@ public class ProxyConfGen {
   private static boolean mDryRun = false;
   private static boolean mEnforceDNSResolution = false;
   private static String mWorkingDir = "/opt/zextras";
-  private static final String OVERRIDE_TEMPLATE_DIR = mWorkingDir + "/conf/nginx/templates_custom";
-  private static String mTemplateDir = mWorkingDir + "/conf/nginx/templates";
+  static final String OVERRIDE_TEMPLATE_DIR = mWorkingDir + "/conf/nginx/templates_custom";
+  static String mTemplateDir = mWorkingDir + "/conf/nginx/templates";
   private static String mConfDir = mWorkingDir + "/conf";
   private static final String DOMAIN_SSL_DIR = mConfDir + File.separator + "domaincerts";
   private static final String DEFAULT_SSL_CRT = mConfDir + File.separator + "nginx.crt";
@@ -408,7 +408,7 @@ public class ProxyConfGen {
     final boolean usingCustomTemplateOverride =
         !hasCustomTemplateLocationArg && Files.exists(Paths.get(overrideTemplateFilePath));
     final String templateFilePath =
-        usingCustomTemplateOverride ? overrideTemplateFilePath : templateFile.getAbsolutePath();
+        getTemplateFilePath(templateFile, overrideTemplateFilePath, usingCustomTemplateOverride);
 
     // return if DryRun
     if (mDryRun) {
@@ -481,6 +481,11 @@ public class ProxyConfGen {
     } catch (IOException | SecurityException ie) {
       throw new ProxyConfException("Cannot expand template file: " + ie.getMessage());
     }
+  }
+
+  static String getTemplateFilePath(
+      File templateFile, String overrideTemplateFilePath, boolean usingCustomTemplateOverride) {
+    return usingCustomTemplateOverride ? overrideTemplateFilePath : templateFile.getAbsolutePath();
   }
 
   /**
