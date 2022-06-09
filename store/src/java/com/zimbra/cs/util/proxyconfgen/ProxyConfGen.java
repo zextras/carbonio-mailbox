@@ -27,6 +27,8 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,16 +68,17 @@ public class ProxyConfGen {
   private static final int DEFAULT_SERVERS_NAME_HASH_MAX_SIZE = 512;
   private static final int DEFAULT_SERVERS_NAME_HASH_BUCKET_SIZE = 64;
   private static final Log LOG = LogFactory.getLog(ProxyConfGen.class);
+  private static final Options mOptions = new Options();
   private static final String SSL_CRT_EXT = ".crt";
   private static final String SSL_KEY_EXT = ".key";
   private static final String SSL_CLIENT_CERT_CA_EXT = ".client.ca.crt";
   private static final String TEMPLATE_SUFFIX = ".template";
-  private static final Options mOptions = new Options();
   private static final Map<String, ProxyConfVar> mConfVars = new HashMap<>();
   private static final Map<String, String> mVars = new HashMap<>();
   private static final Map<String, ProxyConfVar> mDomainConfVars = new HashMap<>();
   /** the pattern for custom header cmd, such as "!{explode domain} */
-  private static final Pattern cmdPattern = Pattern.compile("(.*)!\\{([^}]+)}(.*)", Pattern.DOTALL);
+  private static final Pattern CMD_PATTERN =
+      Pattern.compile("(.*)!\\{([^}]+)}(.*)", Pattern.DOTALL);
 
   static List<DomainAttrItem> mDomainReverseProxyAttrs;
   static List<ServerAttrItem> mServerAttrs;
@@ -83,7 +86,8 @@ public class ProxyConfGen {
   private static boolean mDryRun = false;
   private static boolean mEnforceDNSResolution = false;
   private static String mWorkingDir = "/opt/zextras";
-  private static String mTemplateDir = mWorkingDir + "/conf/nginx/templates";
+  static final String OVERRIDE_TEMPLATE_DIR = mWorkingDir + "/conf/nginx/templates_custom";
+  static String mTemplateDir = mWorkingDir + "/conf/nginx/templates";
   private static String mConfDir = mWorkingDir + "/conf";
   private static final String DOMAIN_SSL_DIR = mConfDir + File.separator + "domaincerts";
   private static final String DEFAULT_SSL_CRT = mConfDir + File.separator + "nginx.crt";
@@ -97,6 +101,7 @@ public class ProxyConfGen {
   private static String mTemplatePrefix = mConfPrefix;
   private static Provisioning mProv = null;
   private static boolean mGenConfPerVhn = false;
+  private static boolean hasCustomTemplateLocationArg = false;
 
   static {
     mOptions.addOption("h", "help", false, "show this usage text");
@@ -395,8 +400,15 @@ public class ProxyConfGen {
 
   public static void expandTemplate(File templateFile, File configFile) throws ProxyConfException {
 
-    String templateFilePath = templateFile.getAbsolutePath();
     String configFilePath = configFile.getAbsolutePath();
+
+    final String templateFileName = templateFile.getName();
+    final String overrideTemplateFilePath =
+        OVERRIDE_TEMPLATE_DIR + File.separator + templateFileName;
+    final boolean usingCustomTemplateOverride =
+        !hasCustomTemplateLocationArg && Files.exists(Paths.get(overrideTemplateFilePath));
+    final String templateFilePath =
+        getTemplateFilePath(templateFile, overrideTemplateFilePath, usingCustomTemplateOverride);
 
     // return if DryRun
     if (mDryRun) {
@@ -424,7 +436,9 @@ public class ProxyConfGen {
         return;
       }
 
-      Matcher cmdMatcher = cmdPattern.matcher(line);
+      addCustomTemplateWarningHeader(usingCustomTemplateOverride, templateFilePath, bufferedWriter);
+
+      Matcher cmdMatcher = CMD_PATTERN.matcher(line);
       if (cmdMatcher.matches()) {
         // the command is found
         String[] cmdArg = cmdMatcher.group(2).split("[ \t]+", 2);
@@ -467,6 +481,38 @@ public class ProxyConfGen {
     } catch (IOException | SecurityException ie) {
       throw new ProxyConfException("Cannot expand template file: " + ie.getMessage());
     }
+  }
+
+  static String getTemplateFilePath(
+      File templateFile, String overrideTemplateFilePath, boolean usingCustomTemplateOverride) {
+    return usingCustomTemplateOverride ? overrideTemplateFilePath : templateFile.getAbsolutePath();
+  }
+
+  /**
+   * If using a custom override template from CUSTOM_TEMPLATE_DIR
+   * ($workdir/conf/nginx/templates_custom) prefix the resulting conf with warning comment
+   *
+   * @param usingCustomTemplateOverride either using custom template override
+   * @param templateFilePath template file path
+   * @param bufferedWriter buffered writer
+   * @throws IOException IO exception while write
+   */
+  private static void addCustomTemplateWarningHeader(
+      boolean usingCustomTemplateOverride, String templateFilePath, BufferedWriter bufferedWriter)
+      throws IOException {
+    if (!usingCustomTemplateOverride) {
+      return;
+    }
+    String sb =
+        "# WARNING: This conf is generated using the custom template overload located at "
+            + templateFilePath
+            + "\n"
+            + "# To avoid this and use the default template from "
+            + mTemplateDir
+            + ", just delete the override template file from "
+            + OVERRIDE_TEMPLATE_DIR
+            + "\n#\n";
+    bufferedWriter.write(sb);
   }
 
   /**
@@ -2070,6 +2116,7 @@ public class ProxyConfGen {
     }
 
     if (cl.hasOption('t')) {
+      hasCustomTemplateLocationArg = true;
       mTemplateDir = cl.getOptionValue('t');
     }
 
