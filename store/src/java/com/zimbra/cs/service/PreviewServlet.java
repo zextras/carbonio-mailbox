@@ -86,6 +86,7 @@ public class PreviewServlet extends ZimbraServlet {
   private static final long serialVersionUID = -4834966842520538743L;
   private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
   private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.7:20001/";
+  private static final PreviewClient previewClient = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
 
   /**
    * This method is used to retrieve the attachment from mailbox
@@ -111,9 +112,6 @@ public class PreviewServlet extends ZimbraServlet {
    */
   private Try<BlobResponseStore> getAttachmentPreview(
       String requestUrl, MimePart attachmentMimePart) {
-
-    // preview client from preview SDK
-    PreviewClient previewClient = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
 
     // get disposition type query parameter from url
     final String dispositionType =
@@ -368,6 +366,12 @@ public class PreviewServlet extends ZimbraServlet {
       throws IOException, ServletException {
     ZimbraLog.clearContext();
     addRemoteIpToLoggingContext(req);
+
+    // respond with error instantly if preview service is not ready
+    if (!previewClient.healthReady()) {
+      respondWithError(
+          resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Preview service is down/not ready");
+    }
 
     final AuthToken authToken = getAuthTokenFromCookie(req, resp);
     checkAuthTokenFromCookieOrRespondWithError(authToken, req, resp);
