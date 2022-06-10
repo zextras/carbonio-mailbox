@@ -118,6 +118,14 @@ public class PreviewServletTest {
     assertEquals(401, mockResponse.getStatus());
   }
 
+  @Test // CO-300
+  public void shouldProxy5xxErrorsWith404() throws IOException {
+    final PreviewServlet previewServlet = new PreviewServlet();
+    MockHttpServletResponse mockResponse = new MockHttpServletResponse();
+    previewServlet.sendError(mockResponse, 500, "Internal ServerError");
+    assertEquals(HttpServletResponse.SC_NOT_FOUND, mockResponse.getStatus());
+  }
+
   @Test
   public void shouldProvideCorrectPreviewQueryParametersWhenCalledParseQueryParameters()
       throws Exception {
