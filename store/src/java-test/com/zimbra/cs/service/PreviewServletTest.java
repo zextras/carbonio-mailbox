@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.util.URIUtil;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class PreviewServletTest {
@@ -67,8 +68,8 @@ public class PreviewServletTest {
     MailboxTestUtil.clearData();
   }
 
-  @Before
-  public void init() throws Exception {
+  @BeforeClass
+  public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
 
@@ -196,6 +197,42 @@ public class PreviewServletTest {
     previewServlet.respondWithError(
         mockResponseErrorMessage, HttpServletResponse.SC_NOT_FOUND, "Not Found");
     assertEquals("Not Found", mockResponse.getMsg());
+  }
+
+  @Test
+  public void shouldReturnCorrectUrlForPreviewWhenDispQueryParameterIsAtFirstPos() {
+    String requestUrl =
+        "https://nbm-s01.demo.zextras.io/service/preview/pdf/531/2/?disp=a&first_page=1&last_page=1";
+    final String dispositionType = PreviewServlet.getDispositionType(requestUrl);
+    String requestUrlForPreview =
+        PreviewServlet.getRequestUrlForPreview(requestUrl, dispositionType);
+    assertEquals(
+        "https://nbm-s01.demo.zextras.io/service/preview/pdf/531/2/?first_page=1&last_page=1",
+        requestUrlForPreview);
+  }
+
+  @Test
+  public void shouldReturnCorrectUrlForPreviewWhenDispQueryParameterIsAtLastPos() {
+    String requestUrl =
+        "https://nbm-s01.demo.zextras.io/service/preview/pdf/531/2/?first_page=1&last_page=1&disp=a";
+    final String dispositionType = PreviewServlet.getDispositionType(requestUrl);
+    String requestUrlForPreview =
+        PreviewServlet.getRequestUrlForPreview(requestUrl, dispositionType);
+    assertEquals(
+        "https://nbm-s01.demo.zextras.io/service/preview/pdf/531/2/?first_page=1&last_page=1",
+        requestUrlForPreview);
+  }
+
+  @Test
+  public void shouldReturnCorrectUrlForPreviewWhenDispQueryParameterIsAtSecondPos() {
+    String requestUrl =
+        "https://nbm-s01.demo.zextras.io/service/preview/pdf/531/2/?first_page=1&disp=a&last_page=1";
+    final String dispositionType = PreviewServlet.getDispositionType(requestUrl);
+    String requestUrlForPreview =
+        PreviewServlet.getRequestUrlForPreview(requestUrl, dispositionType);
+    assertEquals(
+        "https://nbm-s01.demo.zextras.io/service/preview/pdf/531/2/?first_page=1&last_page=1",
+        requestUrlForPreview);
   }
 
   /**

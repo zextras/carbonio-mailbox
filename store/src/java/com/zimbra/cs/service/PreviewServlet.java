@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -89,6 +90,41 @@ public class PreviewServlet extends ZimbraServlet {
   private static final PreviewClient previewClient = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
 
   /**
+   * removes the disposition query parameter from the url
+   *
+   * @param requestUrl the requestUrl ({@link String})
+   * @param dispositionType disposition type ({@link String})
+   * @return Request Url for Preview ({@link String})
+   */
+  static String getRequestUrlForPreview(String requestUrl, String dispositionType) {
+    List<String> possibleDisposition =
+        Arrays.asList("\\?disp=" + dispositionType, "\\&disp=" + dispositionType);
+
+    return possibleDisposition.stream()
+        .reduce(
+            requestUrl,
+            (str, toRem) ->
+                str.replaceAll(
+                    toRem.contains("\\?") ? "\\?disp=" + dispositionType + "&" : toRem,
+                    toRem.contains("\\?") ? "\\?" : ""));
+  }
+
+  /**
+   * Returns the value of disposition type requested in URL's query parameter
+   *
+   * @param requestUrl the request URL
+   * @return disposition value if found else the default "i"(inline)
+   */
+  static String getDispositionType(String requestUrl) {
+    return Stream.of(requestUrl.split("\\?")[1].split("&"))
+        .map(kv -> kv.split("="))
+        .filter(kv -> "disp".equalsIgnoreCase(kv[0]))
+        .map(kv -> kv[1])
+        .findFirst()
+        .orElse("i");
+  }
+
+  /**
    * This method is used to retrieve the attachment from mailbox
    *
    * @param authToken the {@link AuthToken} of user
@@ -114,13 +150,10 @@ public class PreviewServlet extends ZimbraServlet {
       String requestUrl, MimePart attachmentMimePart) {
 
     // get disposition type query parameter from url
-    final String dispositionType =
-        Stream.of(requestUrl.split("\\?")[1].split("&"))
-            .map(kv -> kv.split("="))
-            .filter(kv -> "disp".equalsIgnoreCase(kv[0]))
-            .map(kv -> kv[1])
-            .findFirst()
-            .orElse("i");
+    final String dispositionType = getDispositionType(requestUrl);
+
+    // get clean requestUrl for preview
+    final String requestUrlForPreview = getRequestUrlForPreview(requestUrl, dispositionType);
 
     // get attachment filename from attachment MimePart
     final String attachmentFileName = Try.of(attachmentMimePart::getFileName).getOrElse("unknown");
@@ -136,30 +169,29 @@ public class PreviewServlet extends ZimbraServlet {
               "Cannot process attachment", attachmentMimePartInputStream.getCause()));
     }
 
-    // Start Preview API
-    // Controller==========================================================================
+    // Start Preview API Controller=================================================================
 
     Matcher previewImage =
         Pattern.compile(
                 SERVLET_PATH
                     + "/image/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/\\n"
                     + " ]*)))")
-            .matcher(requestUrl);
+            .matcher(requestUrlForPreview);
 
     Matcher thumbnailImage =
         Pattern.compile(
                 SERVLET_PATH + "/image/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)")
-            .matcher((requestUrl));
+            .matcher((requestUrlForPreview));
 
     Matcher previewPdf =
         Pattern.compile(
                 SERVLET_PATH + "/pdf/([0-9\\-]*)/([0-9]+)/?((?=(?!thumbnail))(?=([^/\\n ]*)))")
-            .matcher((requestUrl));
+            .matcher((requestUrlForPreview));
 
     Matcher thumbnailPdf =
         Pattern.compile(
                 SERVLET_PATH + "/pdf/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)")
-            .matcher((requestUrl));
+            .matcher((requestUrlForPreview));
 
     // Handle Image thumbnail request
     if (thumbnailImage.find()) {
