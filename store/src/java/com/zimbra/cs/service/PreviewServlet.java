@@ -143,7 +143,8 @@ public class PreviewServlet extends ZimbraServlet {
     Matcher previewImage =
         Pattern.compile(
                 SERVLET_PATH
-                    + "/image/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/\\n ]*)))")
+                    + "/image/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/\\n"
+                    + " ]*)))")
             .matcher(requestUrl);
 
     Matcher thumbnailImage =
@@ -338,9 +339,26 @@ public class PreviewServlet extends ZimbraServlet {
   void respondWithError(HttpServletResponse resp, int errCode, String reason) {
     resp.setContentType("text/html; charset=UTF-8");
     try {
-      resp.sendError(errCode, reason);
+      sendError(resp, errCode, reason);
     } catch (IOException e) {
       LOG.error(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * This override method is to proxy 5xx error with 404
+   *
+   * @param resp the {@link HttpServletResponse} object
+   * @param errCode error code for {@link HttpServletResponse}
+   * @param reason message string for {@link HttpServletResponse}
+   * @throws IOException while sendError
+   */
+  void sendError(HttpServletResponse resp, int errCode, String reason) throws IOException {
+    if (resp.getStatus() / 100 == 5 || errCode / 100 == 5) {
+      LOG.error("An internal server error occurred, user was responded with 404");
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND, reason);
+    } else {
+      resp.sendError(errCode, reason);
     }
   }
 
