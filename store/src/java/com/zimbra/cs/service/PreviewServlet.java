@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpHeaders;
 import org.apache.http.protocol.HTTP;
+import org.eclipse.jetty.http.HttpStatus;
 
 /**
  * The preview service servlet - serves preview for requested mail attachments using Carbonio
@@ -354,7 +355,7 @@ public class PreviewServlet extends ZimbraServlet {
    * @throws IOException while sendError
    */
   void sendError(HttpServletResponse resp, int errCode, String reason) throws IOException {
-    if (resp.getStatus() / 100 == 5 || errCode / 100 == 5) {
+    if (HttpStatus.isServerError(resp.getStatus()) || HttpStatus.isServerError(errCode)) {
       LOG.error("An internal server error occurred, user was responded with 404");
       resp.sendError(HttpServletResponse.SC_NOT_FOUND, reason);
     } else {
