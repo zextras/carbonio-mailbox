@@ -78,7 +78,8 @@
   <property name="build.zimlet.dir" location="${build.dir}/zimlet"/>
   <property name="test.dir" location="${build.dir}/test"/>
   <property name="itest.dir" location="${build.dir}/itest"/>
-  <property name="test.pattern" value="**/*Test.java"/>
+  <property name="test.pattern.unit" value="**/*Test.java"/>
+  <property name="test.pattern.it" value="**/*IT.java"/>
   <property name="test.src.dir" location="src/java-test"/>
   <property name="test.classes.dir" location="${build.dir}/test-classes"/>
 
@@ -312,6 +313,7 @@
         <mkdir dir="${test.dir}/output"/>
         <mkdir dir="${test.dir}/report"/>
         <mkdir dir="${test.dir}/extensions"/>
+        <mkdir dir="${build.dir}/coverage"/>
         <move todir="${test.dir}/extensions/com/zimbra/extensions" failonerror="false">
           <fileset dir="${test.classes.dir}/com/zimbra/extensions"/>
         </move>
@@ -332,7 +334,8 @@
             <jvmarg value="-Djava.locale.providers=COMPAT,SPI"/>
             <batchtest todir="${test.dir}/output">
               <fileset dir="${test.src.dir}">
-                <include name="${test.pattern}"/>
+                <include name="${test.pattern.unit}"/>
+                <include name="${test.pattern.it}"/>
                 <exclude name="**/Abstract*Test.java"/>
                 <exclude name="**/mailbox/ContactTest.java"/>
                 <exclude name="**/filter/FileIntoCopyTest.java"/>
@@ -361,7 +364,7 @@
         <antcontrib:if>
           <equals arg1="${coverage-enabled}" arg2="true"/>
           <then>
-            <echo message="Running JaCoCo report..." />
+            <echo message="Running JaCoCo report..."/>
             <jacoco:report>
               <executiondata>
                 <file file="${jacoco.exec}"/>
