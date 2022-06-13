@@ -46,6 +46,16 @@ pipeline {
                 stash includes: 'staging/**', name: 'staging'
             }
         }
+        stage("Test with coverage \(allow failure\)") {
+          steps {
+            sh """
+                   ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant \
+                   -propertyfile build.properties \
+                   test-all-coverage-plough-through
+               """
+            publishCoverage adapters: [jacocoAdapter('build/coverage/merged.xml')]
+          }
+        }
         stage("Publish to maven") {
             when {
                 buildingTag()
