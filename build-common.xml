@@ -6,8 +6,10 @@
   <!-- Java -->
   <property name="javac.target" value="11"/>
   <!-- base path for ivy cache, local repository, ant libraries, etc -->
-
   <property name="dev.home" value="${user.home}"/>
+
+  <!-- Load JaCoCo targets -->
+  <import file="./jacoco-common.xml"/>
 
   <!-- Add "init-ivy" depends to your "resolve" target and the following will
          automatically download and install ivy if necessary. -->
@@ -20,21 +22,10 @@
   <property name="ivy.deliver.ivy.pattern"
     value="${dev.home}/.zcs-deps/[organisation]/[module]/[module]-[revision].[ext]"/>
   <property name="ivy.module" value="${ant.project.name}"/>
-  <!-- Jacoco properties -->
-  <property name="jacoco.src.dir" location="${dev.home}/.ant/lib/jacoco"/>
-  <property name="jacoco.jar.dir" location="${jacoco.src.dir}/lib"/>
-  <property name="jacoco.install.version" value="0.8.8"/>
-  <property name="jacoco.jar.file" value="${jacoco.jar.dir}/jacocoant.jar"/>
 
   <target name="test.if.ivy.available">
     <condition property="ivy.installed">
       <available file="${ivy.jar.file}" type="file"/>
-    </condition>
-  </target>
-
-  <target name="test.if.jacoco.available">
-    <condition property="jacoco.installed">
-      <available file="${jacoco.jar.file}" type="file"/>
     </condition>
   </target>
 
@@ -44,24 +35,6 @@
     <get
       src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
       dest="${ivy.jar.file}" usetimestamp="true"/>
-  </target>
-
-  <target name="download-jacoco" description="Install jacoco" unless="jacoco.installed"
-    depends="test.if.jacoco.available">
-    <mkdir dir="${jacoco.jar.dir}"/>
-    <get
-      src="https://repo1.maven.org/maven2/org/jacoco/jacoco/${jacoco.install.version}/jacoco-${jacoco.install.version}.zip"
-      dest="${jacoco.src.dir}/jacoco-${jacoco.install.version}.zip" usetimestamp="true"/>
-    <unzip src="${jacoco.src.dir}/jacoco-${jacoco.install.version}.zip" dest="${jacoco.src.dir}"
-      overwrite="true"/>
-  </target>
-
-  <target name="init-jacoco" description="Load Jacoco task definitions" depends="download-jacoco">
-    <path id="jacoco.lib.path">
-      <fileset dir="${jacoco.jar.dir}" includes="*.jar"/>
-    </path>
-    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml"
-      classpathref="jacoco.lib.path"/>
   </target>
 
   <target name="init-ivy" depends="download-ivy">
@@ -102,7 +75,6 @@
   <property name="dist.lib.ext.dir" location="${dist.lib.dir}/ext"/>
   <property name="build.classes.dir" location="${build.dir}/classes"/>
   <property name="build.instrumented.dir" location="${build.dir}/classes-inst"/>
-  <property name="build.coverage.dir" location="${build.dir}/coverage"/>
   <property name="build.zimlet.dir" location="${build.dir}/zimlet"/>
   <property name="test.dir" location="${build.dir}/test"/>
   <property name="itest.dir" location="${build.dir}/itest"/>
@@ -156,18 +128,6 @@
   <property name="client.jarfile" location="${client.dir}/build/zimbraclient.jar"/>
 
   <property name="msgs.dir" location="${zm-mailbox.basedir}/store-conf/conf/msgs"/>
-
-  <!-- Emma -->
-  <property name="emma.dir" value="/usr/share/java"/>
-
-  <path id="emma.lib">
-    <pathelement location="${emma.dir}/emma.jar"/>
-    <pathelement location="${emma.dir}/emma_ant.jar"/>
-  </path>
-
-  <path id="emma.run.classpath">
-    <pathelement location="${build.classes.dir}"/>
-  </path>
 
   <!-- Classpath for running unit test, it needs classes from build dir -->
   <path id="test.class.path">
@@ -341,12 +301,13 @@
     </antcontrib:if>
   </target>
 
-  <target name="test" depends="test-compile" description="Run unit tests">
+  <target name="test" depends="test-compile, init-jacoco" description="Run unit tests">
     <property name="test-results-file" value="${zm-mailbox.basedir}/build/test-results.txt"/>
     <antcontrib:if>
       <available file="${test.src.dir}" type="dir"/>
       <then>
         <property name="test.path" refid="test.class.path"/>
+        <property name="jacoco.exec" value="${build.dir}/coverage/jacoco.exec"/>
         <delete dir="${test.dir}" quiet="true"/>
         <mkdir dir="${test.dir}/output"/>
         <mkdir dir="${test.dir}/report"/>
@@ -356,46 +317,64 @@
         </move>
         <copy file="${test.src.dir}/log4j-test.properties"
           tofile="${test.classes.dir}/log4j.properties" failonerror="false"/>
-        <junit haltonfailure="${halt-on-failure}" printsummary="on" showoutput="true"
-          failureproperty="junit.failure" tempdir="${test.dir}" fork="true">
-          <classpath refid="test.class.path"/>
-          <assertions>
-            <enable/>
-          </assertions>
-          <formatter type="xml"/>
-          <jvmarg value="-Xverify:none"/>
-          <jvmarg value="-Dserver.dir=${server.dir}"/>
-          <jvmarg value="-Dzimbra.config=${server.dir}/src/java-test/localconfig-test.xml"/>
-          <jvmarg value="-Dfile.encoding=UTF-8"/>
-          <jvmarg value="-Djava.locale.providers=COMPAT,SPI"/>
-          <batchtest todir="${test.dir}/output">
-            <fileset dir="${test.src.dir}">
-              <include name="${test.pattern}"/>
-              <exclude name="**/Abstract*Test.java"/>
-              <exclude name="**/mailbox/ContactTest.java"/>
-              <exclude name="**/filter/FileIntoCopyTest.java"/>
-              <exclude name="**/filter/RuleManagerWithCustomActionFilterTest.java"/>
-              <exclude name="**/filter/ZimbraMailAdapterTest.java"/>
-              <exclude name="**/dav/UrlNamespaceTest.java"/>
-              <exclude name="**/ldap/unboundid/UBIDUserCertificateAttributeTest.java"/>
-              <exclude name="**/GetMsgTest.java"/>
-              <exclude name="**/SearchActionTest.java"/>
-              <exclude name="**/SendMsgTest.java"/>
-              <exclude name="**/CalendarItemTest.java"/>
-              <exclude name="**/CalendarRequestTest.java"/>
-              <exclude name="**/ModifyPrefsTest.java"/>
-              <exclude name="**/UserServletTest.java"/>
-              <exclude name="**/ModifyFilterRulesAdminTest.java"/>
-              <exclude name="**/ModifyProfileImageTest.java"/>
-              <exclude name="**/JWTBasedAuthTest.java"/>
-            </fileset>
-          </batchtest>
-        </junit>
+        <jacoco:coverage enabled="${coverage-enabled}" destfile="${jacoco.exec}">
+          <junit haltonfailure="${halt-on-failure}" printsummary="on" showoutput="true"
+            failureproperty="junit.failure" tempdir="${test.dir}" fork="true">
+            <classpath refid="test.class.path"/>
+            <assertions>
+              <enable/>
+            </assertions>
+            <formatter type="xml"/>
+            <jvmarg value="-Xverify:none"/>
+            <jvmarg value="-Dserver.dir=${server.dir}"/>
+            <jvmarg value="-Dzimbra.config=${server.dir}/src/java-test/localconfig-test.xml"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
+            <jvmarg value="-Djava.locale.providers=COMPAT,SPI"/>
+            <batchtest todir="${test.dir}/output">
+              <fileset dir="${test.src.dir}">
+                <include name="${test.pattern}"/>
+                <exclude name="**/Abstract*Test.java"/>
+                <exclude name="**/mailbox/ContactTest.java"/>
+                <exclude name="**/filter/FileIntoCopyTest.java"/>
+                <exclude name="**/filter/RuleManagerWithCustomActionFilterTest.java"/>
+                <exclude name="**/filter/ZimbraMailAdapterTest.java"/>
+                <exclude name="**/dav/UrlNamespaceTest.java"/>
+                <exclude name="**/ldap/unboundid/UBIDUserCertificateAttributeTest.java"/>
+                <exclude name="**/GetMsgTest.java"/>
+                <exclude name="**/SearchActionTest.java"/>
+                <exclude name="**/SendMsgTest.java"/>
+                <exclude name="**/CalendarItemTest.java"/>
+                <exclude name="**/CalendarRequestTest.java"/>
+                <exclude name="**/ModifyPrefsTest.java"/>
+                <exclude name="**/UserServletTest.java"/>
+                <exclude name="**/ModifyFilterRulesAdminTest.java"/>
+                <exclude name="**/ModifyProfileImageTest.java"/>
+                <exclude name="**/JWTBasedAuthTest.java"/>
+              </fileset>
+            </batchtest>
+          </junit>
+        </jacoco:coverage>
         <junitreport todir="${test.dir}/report">
           <fileset dir="${test.dir}/output"/>
           <report todir="${test.dir}/report"/>
         </junitreport>
-
+        <antcontrib:if>
+          <equals arg1="${coverage-enabled}" arg2="true"/>
+          <then>
+            <echo message="Running JaCoCo report..." />
+            <jacoco:report>
+              <executiondata>
+                <file file="${jacoco.exec}"/>
+              </executiondata>
+              <structure name="Code Coverage">
+                <classfiles>
+                  <fileset dir="${build.classes.dir}"/>
+                </classfiles>
+              </structure>
+              <xml destfile="${build.dir}/coverage/coverage.xml"/>
+            </jacoco:report>
+          </then>
+        </antcontrib:if>
         <echo>Test Report: ${test.dir}/report/index.html</echo>
         <antcontrib:if>
           <isset property="junit.failure"/>
@@ -484,65 +463,6 @@
     </junitreport>
     <echo>Test Report: ${single.test.dir}/report/index.html</echo>
     <fail if="junit.failure" message="Single Unit test failed"/>
-  </target>
-
-  <target name="emma" description="Emma Instrumentation">
-
-    <taskdef resource="emma_ant.properties" classpathref="emma.lib"/>
-    <delete dir="${build.instrumented.dir}" quiet="true"/>
-    <mkdir dir="${build.instrumented.dir}"/>
-    <delete dir="${build.coverage.dir}" quiet="true"/>
-    <mkdir dir="${build.coverage.dir}"/>
-    <emma>
-      <instr instrpathref="emma.run.classpath" destdir="${build.instrumented.dir}"
-        metadatafile="${build.coverage.dir}/metadata.emma" merge="true"/>
-    </emma>
-  </target>
-
-  <target name="test-coverage" depends="test-compile,init-jacoco" description="Run unit tests">
-    <property name="test.path" refid="class.path"/>
-    <delete dir="${test.dir}" quiet="true"/>
-    <mkdir dir="${test.dir}/output"/>
-    <mkdir dir="${test.dir}/report"/>
-    <copy file="${test.src.dir}/log4j-test.properties" tofile="${test.classes.dir}/log4j.properties"
-      failonerror="false"/>
-
-    <!-- Code Coverage Report -->
-    <mkdir dir="${test.dir}/coverage"/>
-    <jacoco:coverage destfile="${test.dir}/coverage/jacoco.exec">
-      <junit fork="yes" printsummary="on" failureproperty="junit.failure" tempdir="${test.dir}">
-        <classpath location="${build.instrumented.dir}"/>
-        <classpath refid="class.path"/>
-        <classpath path="${test.classes.dir}"/>
-        <formatter type="xml"/>
-        <batchtest todir="${test.dir}/output">
-          <fileset dir="${test.src.dir}">
-            <include name="**/*Test.java"/>
-            <exclude name="**/*ITest.java"/>
-            <exclude name="**/Abstract*Test.java"/>
-            <exclude name="**/RemoteMailboxContactOpsTest.java"/>
-            <exclude name="**/yc/**/*.java"/>
-          </fileset>
-        </batchtest>
-      </junit>
-    </jacoco:coverage>
-    <jacoco:report>
-      <executiondata>
-        <file file="${test.dir}/coverage/jacoco.exec"/>
-      </executiondata>
-      <structure name="Code Coverage">
-        <classfiles>
-          <fileset dir="classes"/>
-        </classfiles>
-      </structure>
-      <html destdir="${test.dir}/coverage"/>
-    </jacoco:report>
-    <junitreport todir="${test.dir}/report">
-      <fileset dir="${test.dir}/output"/>
-      <report todir="${test.dir}/report"/>
-    </junitreport>
-    <echo>Test Report: ${test.dir}/report/index.html</echo>
-    <fail if="junit.failure" message="Unit test failed"/>
   </target>
 
   <target name="integration-test" depends="test-compile" description="Run integration tests">

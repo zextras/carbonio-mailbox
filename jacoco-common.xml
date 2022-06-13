@@ -1,0 +1,32 @@
+<project name="jacoco-common">
+  <property name="dev.home" value="${user.home}"/>
+  <!-- Jacoco properties -->
+  <property name="jacoco.src.dir" location="${dev.home}/.ant/lib/jacoco"/>
+  <property name="jacoco.jar.dir" location="${jacoco.src.dir}/lib"/>
+  <property name="jacoco.install.version" value="0.8.8"/>
+  <property name="jacoco.jar.file" value="${jacoco.jar.dir}/jacocoant.jar"/>
+
+  <target name="test.if.jacoco.available">
+    <condition property="jacoco.installed">
+      <available file="${jacoco.jar.file}" type="file"/>
+    </condition>
+  </target>
+
+  <target name="download-jacoco" description="Install jacoco" unless="jacoco.installed"
+    depends="test.if.jacoco.available">
+    <mkdir dir="${jacoco.jar.dir}"/>
+    <get
+      src="https://repo1.maven.org/maven2/org/jacoco/jacoco/${jacoco.install.version}/jacoco-${jacoco.install.version}.zip"
+      dest="${jacoco.src.dir}/jacoco-${jacoco.install.version}.zip" usetimestamp="true"/>
+    <unzip src="${jacoco.src.dir}/jacoco-${jacoco.install.version}.zip" dest="${jacoco.src.dir}"
+      overwrite="true"/>
+  </target>
+
+  <target name="init-jacoco" description="Load Jacoco task definitions" depends="download-jacoco">
+    <path id="jacoco.lib.path">
+      <fileset dir="${jacoco.jar.dir}" includes="*.jar"/>
+    </path>
+    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml"
+      classpathref="jacoco.lib.path"/>
+  </target>
+</project>
