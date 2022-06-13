@@ -45,7 +45,11 @@ postinst() {
     systemctl enable carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
   fi
 
-  echo "Installed, you must now run pending-setups."
+  echo "======================================================"
+  echo "Carbonio Mailbox Service installed successfully!"
+  echo "You must run pending-setups to configure it correctly."
+  echo "======================================================"
+
   cat > /etc/zextras/pending-setups.d/carbonio-mailbox-setup.sh <<EOF
 #!/usr/bin/env bash
 carbonio-mailbox setup
