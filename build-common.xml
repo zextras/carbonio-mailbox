@@ -139,6 +139,7 @@
     <pathelement location="${build.classes.dir}"/>
     <pathelement location="${test.classes.dir}"/>
     <pathelement location="${msgs.dir}"/>
+    <pathelement location="${dev.home}/.ant/lib/junit"/>
   </path>
 
   <!-- Platform -->

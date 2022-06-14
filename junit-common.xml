@@ -28,11 +28,5 @@
     <path id="junit.lib.path">
       <fileset dir="${junit.jar.dir}" includes="*.jar"/>
     </path>
-    <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask">
-      <classpath>
-        <pathelement location="${junit.jar.file}"/>
-        <pathelement location="${junit4.jar.file}"/>
-      </classpath>
-    </taskdef>
   </target>
 </project>
