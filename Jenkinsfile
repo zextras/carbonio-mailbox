@@ -49,7 +49,7 @@ pipeline {
         stage("Test with coverage (allow failure)") {
           steps {
             sh """
-                   ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant \
+                   ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant -d \
                    -propertyfile build.properties \
                    test-all-coverage-plough-through
                """
