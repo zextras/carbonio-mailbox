@@ -14,7 +14,7 @@
 
   <target name="download-junit" description="Install junit" unless="junit.installed"
     depends="test.if.junit.available">
-    <mkdir dir="${junit.jar.dir}"/>
+    <mkdir dir="${junit.lib.dir}"/>
     <get
       src="https://repo1.maven.org/maven2/org/apache/ant/ant-junit/${junit.install.version}/ant-junit-${junit.install.version}.jar"
       dest="${junit.jar.file}" usetimestamp="true"/>
