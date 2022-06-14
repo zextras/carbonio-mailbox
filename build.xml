@@ -46,6 +46,7 @@
 
   <target name="set-no-halt-on-failure">
     <echo message="WARNING: IGNORING UNIT TEST FAILURES"/>
+    <echo message="Ant lib dir: ${ant.library.dir}"/>
     <property name="halt-on-failure" value="no"/>
   </target>
 

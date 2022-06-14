@@ -1,10 +1,10 @@
 <project name="junit-common">
   <property name="dev.home" value="${user.home}"/>
   <!-- junit properties -->
-  <property name="junit.jar.dir" location="${dev.home}/.ant/lib/junit"/>
+  <property name="junit.lib.dir" location="${ant.library.dir}/junit"/>
   <property name="junit.install.version" value="1.10.3"/>
-  <property name="junit.jar.file" value="${junit.jar.dir}/ant-junit-${junit.install.version}.jar"/>
-  <property name="junit4.jar.file" value="${junit.jar.dir}/ant-junit4-${junit.install.version}.jar"/>
+  <property name="junit.jar.file" value="${junit.lib.dir}/ant-junit-${junit.install.version}.jar"/>
+  <property name="junit4.jar.file" value="${junit.lib.dir}/ant-junit4-${junit.install.version}.jar"/>
 
   <target name="test.if.junit.available">
     <condition property="junit.installed">
@@ -24,9 +24,5 @@
       dest="${junit4.jar.file}" usetimestamp="true"/>
   </target>
 
-  <target name="init-junit" description="Load junit task definitions" depends="download-junit">
-    <path id="junit.lib.path">
-      <fileset dir="${junit.jar.dir}" includes="*.jar"/>
-    </path>
-  </target>
+  <target name="init-junit" description="Load junit task definitions" depends="download-junit"/>
 </project>
