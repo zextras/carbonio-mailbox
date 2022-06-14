@@ -46,7 +46,7 @@ pipeline {
                 stash includes: 'staging/**', name: 'staging'
             }
         }
-        stage("Test with coverage \(allow failure\)") {
+        stage("Test with coverage (allow failure)") {
           steps {
             sh """
                    ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant \
