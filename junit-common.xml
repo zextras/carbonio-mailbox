@@ -1,7 +1,7 @@
 <project name="junit-common">
   <property name="dev.home" value="${user.home}"/>
   <!-- junit properties -->
-  <property name="junit.lib.dir" location="${ant.library.dir}/junit"/>
+  <property name="junit.lib.dir" location="${ant.library.dir}"/>
   <property name="junit.install.version" value="1.10.3"/>
   <property name="junit.jar.file" value="${junit.lib.dir}/ant-junit-${junit.install.version}.jar"/>
   <property name="junit4.jar.file" value="${junit.lib.dir}/ant-junit4-${junit.install.version}.jar"/>
@@ -14,7 +14,6 @@
 
   <target name="download-junit" description="Install junit" unless="junit.installed"
     depends="test.if.junit.available">
-    <mkdir dir="${junit.lib.dir}"/>
     <get
       src="https://repo1.maven.org/maven2/org/apache/ant/ant-junit/${junit.install.version}/ant-junit-${junit.install.version}.jar"
       dest="${junit.jar.file}" usetimestamp="true"/>
