@@ -9,7 +9,6 @@
   <target name="test.if.junit.available">
     <condition property="junit.installed">
       <available file="${junit.jar.file}" type="file"/>
-      <available file="${junit4.jar.file}" type="file"/>
     </condition>
   </target>
 
