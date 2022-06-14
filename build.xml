@@ -65,9 +65,8 @@
 
   <!-- Merge all modules' coverage in one file -->
   <target name="merge-coverage" depends="init-jacoco,set-coverage">
-    <property name="test.modules.dirs"
-      value="${basedir}/client/build,${basedir}/common/build,${basedir}/soap/build,${basedir}/store/build"/>
-    <property name="failOnError" value="true"/>
+    <property name="test.modules.dirs" value="${basedir}/client/build,${basedir}/common/build,${basedir}/soap/build,${basedir}/store/build"/>
+    <property name="failOnError" value="false"/>
     <jacoco:merge destfile="${basedir}/build/coverage/merged.exec">
       <multirootfileset basedirs="${test.modules.dirs}" erroronmissingdir="${failOnError}"
         includes="coverage/*.exec"/>
@@ -101,11 +100,11 @@
     <property name="test-results-file" value="${basedir}/build/test-results.txt"/>
 
     <echo file="${test-results-file}" message="BEGIN&#xD;&#xA;"/>
-    <ant dir="./native" target="test" inheritAll="true"/>
-    <ant dir="./common" target="test" inheritAll="true"/>
-    <ant dir="./soap" target="test" inheritAll="true"/>
     <ant dir="./client" target="test" inheritAll="true"/>
-    <ant dir="./store" target="test" inheritAll="true"/>
+<!--    <ant dir="./native" target="test" inheritAll="true"/>-->
+<!--    <ant dir="./common" target="test" inheritAll="true"/>-->
+<!--    <ant dir="./soap" target="test" inheritAll="true"/>-->
+<!--    <ant dir="./store" target="test" inheritAll="true"/>-->
     <echo append="true" file="${test-results-file}" message="END&#xD;"/>
   </target>
 

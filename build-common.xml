@@ -11,6 +11,9 @@
   <!-- Load JaCoCo targets -->
   <import file="./jacoco-common.xml"/>
 
+  <!-- Load JUnit targets -->
+  <import file="./junit-common.xml"/>
+
   <!-- Add "init-ivy" depends to your "resolve" target and the following will
          automatically download and install ivy if necessary. -->
   <property name="ivy.jar.dir" location="${dev.home}/.ant/lib"/>
@@ -285,7 +288,7 @@
     </javac>
   </target>
 
-  <target name="test-compile" depends="compile,3rd-party-defines">
+  <target name="test-compile" depends="compile,init-junit,3rd-party-defines">
     <antcontrib:if>
       <available file="${test.src.dir}" type="dir"/>
       <antcontrib:then>
