@@ -6,6 +6,7 @@ pipeline {
     }
     parameters {
         booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
+        booleanParam defaultValue: false, description: 'Whether to run tests', name: 'TEST'
     }
     environment {
         JAVA_OPTS="-Dfile.encoding=UTF8"
@@ -46,7 +47,10 @@ pipeline {
                 stash includes: 'staging/**', name: 'staging'
             }
         }
-        stage("Test with coverage (allow failure)") {
+        stage("Test all with coverage (allow failure)") {
+          when {
+               expression { params.TEST == true }
+          }
           steps {
             sh """
                    ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant -d \
