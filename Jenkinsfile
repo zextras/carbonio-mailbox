@@ -54,6 +54,7 @@ pipeline {
                    test-all-coverage-plough-through
                """
             publishCoverage adapters: [jacocoAdapter('build/coverage/merged.xml')]
+            junit '**/build/test/output/*.xml'
           }
         }
         stage("Publish to maven") {

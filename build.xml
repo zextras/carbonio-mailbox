@@ -3,6 +3,9 @@
   <!-- Load JaCoCo to merge Coverage -->
   <import file="./jacoco-common.xml"/>
 
+  <!-- Load Junit for test report -->
+  <import file="./junit-common.xml"/>
+
   <target name="all" depends="init-ivy-cache,publish-local-all">
     <ant dir="./native" target="generate-native-headers" inheritAll="true"/>
     <exec dir="./native" executable="make" failonerror="true"/>
@@ -66,12 +69,16 @@
 
   <!-- Merge all modules' coverage in one file -->
   <target name="merge-coverage" depends="init-jacoco,set-coverage">
-    <property name="test.modules.dirs" value="${basedir}/client/build,${basedir}/common/build,${basedir}/soap/build,${basedir}/store/build"/>
-    <property name="failOnError" value="true"/>
+    <property name="build.modules.dirs" value="${basedir}/client/build,${basedir}/common/build,${basedir}/soap/build,${basedir}/store/build"/>
+    <property name="failOnError" value="false"/>
+
+    <!-- Merge all JaCoCo Reports into one -->
     <jacoco:merge destfile="${basedir}/build/coverage/merged.exec">
-      <multirootfileset basedirs="${test.modules.dirs}" erroronmissingdir="${failOnError}"
+      <multirootfileset basedirs="${build.modules.dirs}" erroronmissingdir="${failOnError}"
         includes="coverage/*.exec"/>
     </jacoco:merge>
+
+    <!-- generate JaCoCo XML report from collected .exec -->
     <jacoco:report>
       <executiondata>
         <file file="${basedir}/build/coverage/merged.exec"/>
