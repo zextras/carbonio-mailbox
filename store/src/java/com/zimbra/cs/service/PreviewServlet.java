@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -39,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpHeaders;
 import org.apache.http.protocol.HTTP;
+import org.eclipse.jetty.http.HttpStatus;
 
 /**
  * The preview service servlet - serves preview for requested mail attachments using Carbonio
@@ -85,6 +87,42 @@ public class PreviewServlet extends ZimbraServlet {
   private static final long serialVersionUID = -4834966842520538743L;
   private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
   private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.7:20001/";
+  private static final PreviewClient previewClient = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
+
+  /**
+   * removes the disposition query parameter from the url
+   *
+   * @param requestUrl the requestUrl ({@link String})
+   * @param dispositionType disposition type ({@link String})
+   * @return Request Url for Preview ({@link String})
+   */
+  static String getRequestUrlForPreview(String requestUrl, String dispositionType) {
+    List<String> possibleDisposition =
+        Arrays.asList("\\?disp=" + dispositionType, "\\&disp=" + dispositionType);
+
+    return possibleDisposition.stream()
+        .reduce(
+            requestUrl,
+            (str, toRem) ->
+                str.replaceAll(
+                    toRem.contains("\\?") ? "\\?disp=" + dispositionType + "&" : toRem,
+                    toRem.contains("\\?") ? "\\?" : ""));
+  }
+
+  /**
+   * Returns the value of disposition type requested in URL's query parameter
+   *
+   * @param requestUrl the request URL
+   * @return disposition value if found else the default "i"(inline)
+   */
+  static String getDispositionType(String requestUrl) {
+    return Stream.of(requestUrl.split("\\?")[1].split("&"))
+        .map(kv -> kv.split("="))
+        .filter(kv -> "disp".equalsIgnoreCase(kv[0]))
+        .map(kv -> kv[1])
+        .findFirst()
+        .orElse("i");
+  }
 
   /**
    * This method is used to retrieve the attachment from mailbox
@@ -111,17 +149,11 @@ public class PreviewServlet extends ZimbraServlet {
   private Try<BlobResponseStore> getAttachmentPreview(
       String requestUrl, MimePart attachmentMimePart) {
 
-    // preview client from preview SDK
-    PreviewClient previewClient = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
-
     // get disposition type query parameter from url
-    final String dispositionType =
-        Stream.of(requestUrl.split("\\?")[1].split("&"))
-            .map(kv -> kv.split("="))
-            .filter(kv -> "disp".equalsIgnoreCase(kv[0]))
-            .map(kv -> kv[1])
-            .findFirst()
-            .orElse("i");
+    final String dispositionType = getDispositionType(requestUrl);
+
+    // get clean requestUrl for preview
+    final String requestUrlForPreview = getRequestUrlForPreview(requestUrl, dispositionType);
 
     // get attachment filename from attachment MimePart
     final String attachmentFileName = Try.of(attachmentMimePart::getFileName).getOrElse("unknown");
@@ -137,29 +169,29 @@ public class PreviewServlet extends ZimbraServlet {
               "Cannot process attachment", attachmentMimePartInputStream.getCause()));
     }
 
-    // Start Preview API
-    // Controller==========================================================================
+    // Start Preview API Controller=================================================================
 
     Matcher previewImage =
         Pattern.compile(
                 SERVLET_PATH
-                    + "/image/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/\\n ]*)))")
-            .matcher(requestUrl);
+                    + "/image/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/\\n"
+                    + " ]*)))")
+            .matcher(requestUrlForPreview);
 
     Matcher thumbnailImage =
         Pattern.compile(
                 SERVLET_PATH + "/image/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)")
-            .matcher((requestUrl));
+            .matcher((requestUrlForPreview));
 
     Matcher previewPdf =
         Pattern.compile(
                 SERVLET_PATH + "/pdf/([0-9\\-]*)/([0-9]+)/?((?=(?!thumbnail))(?=([^/\\n ]*)))")
-            .matcher((requestUrl));
+            .matcher((requestUrlForPreview));
 
     Matcher thumbnailPdf =
         Pattern.compile(
                 SERVLET_PATH + "/pdf/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)")
-            .matcher((requestUrl));
+            .matcher((requestUrlForPreview));
 
     // Handle Image thumbnail request
     if (thumbnailImage.find()) {
@@ -338,9 +370,26 @@ public class PreviewServlet extends ZimbraServlet {
   void respondWithError(HttpServletResponse resp, int errCode, String reason) {
     resp.setContentType("text/html; charset=UTF-8");
     try {
-      resp.sendError(errCode, reason);
+      sendError(resp, errCode, reason);
     } catch (IOException e) {
       LOG.error(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * This override method is to proxy 5xx error with 404
+   *
+   * @param resp the {@link HttpServletResponse} object
+   * @param errCode error code for {@link HttpServletResponse}
+   * @param reason message string for {@link HttpServletResponse}
+   * @throws IOException while sendError
+   */
+  void sendError(HttpServletResponse resp, int errCode, String reason) throws IOException {
+    if (HttpStatus.isServerError(resp.getStatus()) || HttpStatus.isServerError(errCode)) {
+      LOG.error("An internal server error occurred, user was responded with 404");
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND, reason);
+    } else {
+      resp.sendError(errCode, reason);
     }
   }
 
@@ -349,6 +398,12 @@ public class PreviewServlet extends ZimbraServlet {
       throws IOException, ServletException {
     ZimbraLog.clearContext();
     addRemoteIpToLoggingContext(req);
+
+    // respond with error instantly if preview service is not ready
+    if (!previewClient.healthReady()) {
+      respondWithError(
+          resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Preview service is down/not ready");
+    }
 
     final AuthToken authToken = getAuthTokenFromCookie(req, resp);
     checkAuthTokenFromCookieOrRespondWithError(authToken, req, resp);
