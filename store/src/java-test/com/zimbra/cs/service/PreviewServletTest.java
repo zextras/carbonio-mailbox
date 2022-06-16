@@ -1,7 +1,9 @@
 package com.zimbra.cs.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Maps;
@@ -125,6 +127,27 @@ public class PreviewServletTest {
     MockHttpServletResponse mockResponse = new MockHttpServletResponse();
     previewServlet.sendError(mockResponse, 500, "Internal ServerError");
     assertEquals(HttpServletResponse.SC_NOT_FOUND, mockResponse.getStatus());
+  }
+
+  @Test // CO-300
+  public void shouldProxy5xxErrorWith404WhenCalledDoGet() throws Exception {
+    URL url =
+        new URL(
+            "http://localhost:7070/service/preview/image/290/4/200x200/thumbnail/?quality=high&shape=rounded&output_format=png");
+    StringBuffer urlBuffer = new StringBuffer(128);
+    urlBuffer.append(
+        URIUtil.newURI(
+            url.toURI().getScheme(), url.getHost(), url.getPort(), url.getPath(), url.getQuery()));
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    PreviewServlet servlet = new PreviewServlet();
+    Cookie cookie = new Cookie("ZM_AUTH_TOKEN", getAuthTokenString());
+    when(request.getRequestURL()).thenReturn(urlBuffer);
+    when(request.getCookies()).thenReturn(new Cookie[] {cookie});
+    servlet.doGet(request, response);
+    // should actually throw 5xx since there is no preview client, but our proxy will handle the
+    // conversion
+    verify(response, atLeastOnce()).sendError(404, "Preview service is down/not ready");
   }
 
   @Test
