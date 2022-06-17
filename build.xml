@@ -1,99 +1,149 @@
-<project name="zm-mailbox" default="all">
+<project name="zm-mailbox" default="all" xmlns:jacoco="antlib:org.jacoco.ant">
 
-   <target name="all" depends="init-ivy-cache,publish-local-all">
-      <ant dir="./native" target="generate-native-headers" inheritAll="true" />
-      <exec dir="./native" executable="make" failonerror="true" />
-      <ant dir="./store" target="war" inheritAll="true" />
-      <ant dir="./store" target="create-version-sql" inheritAll="true" />
-      <ant dir="./store" target="create-version-ldap" inheritAll="true" />
-      <ant dir="./store-conf" target="common-passwords" inheritAll="true" />
-   </target>
+  <!-- Load JaCoCo to merge Coverage -->
+  <import file="./jacoco-common.xml"/>
 
-   <target name="publish-local-all" depends="init-ivy-cache">
-      <ant dir="./native" target="publish-local" inheritAll="true" />
-      <ant dir="./common" target="publish-local" inheritAll="true" />
-      <ant dir="./soap" target="publish-local" inheritAll="true" />
-      <ant dir="./client" target="publish-local" inheritAll="true" />
-      <ant dir="./store" target="publish-local" inheritAll="true" />
-      <ant dir="./store" target="set-dev-version" inheritAll="true" />
-      <echo>Starting package creation from war </echo>
-   </target>
+  <!-- Load Junit for test report -->
+  <import file="./junit-common.xml"/>
 
-   <target name="publish-maven-local" depends="publish-local-all">
-      <ant dir="./native" target="publish-maven-local" inheritAll="true" />
-      <ant dir="./common" target="publish-maven-local" inheritAll="true" />
-      <ant dir="./soap" target="publish-maven-local" inheritAll="true" />
-      <ant dir="./client" target="publish-maven-local" inheritAll="true" />
-      <ant dir="./store" target="publish-maven-local" inheritAll="true" />
-      <echo>Publish artifacts locally with POM definition</echo>
-   </target>
+  <target name="all" depends="init-ivy-cache,publish-local-all">
+    <ant dir="./native" target="generate-native-headers" inheritAll="true"/>
+    <exec dir="./native" executable="make" failonerror="true"/>
+    <ant dir="./store" target="war" inheritAll="true"/>
+    <ant dir="./store" target="create-version-sql" inheritAll="true"/>
+    <ant dir="./store" target="create-version-ldap" inheritAll="true"/>
+    <ant dir="./store-conf" target="common-passwords" inheritAll="true"/>
+  </target>
 
-   <target name="publish-maven-all" depends="publish-maven-local">
-      <ant dir="./native" target="publish-maven" inheritAll="true" />
-      <ant dir="./common" target="publish-maven" inheritAll="true" />
-      <ant dir="./soap" target="publish-maven" inheritAll="true" />
-      <ant dir="./client" target="publish-maven" inheritAll="true" />
-      <ant dir="./store" target="publish-maven" inheritAll="true" />
-      <echo>Publish artifacts on public maven</echo>
-   </target>
+  <target name="publish-local-all" depends="init-ivy-cache">
+    <ant dir="./native" target="publish-local" inheritAll="true"/>
+    <ant dir="./common" target="publish-local" inheritAll="true"/>
+    <ant dir="./soap" target="publish-local" inheritAll="true"/>
+    <ant dir="./client" target="publish-local" inheritAll="true"/>
+    <ant dir="./store" target="publish-local" inheritAll="true"/>
+    <ant dir="./store" target="set-dev-version" inheritAll="true"/>
+    <echo>Starting package creation from war</echo>
+  </target>
 
-   <target name="init-ivy-cache">
-      <mkdir dir="${user.home}/.ivy2/cache" />
-   </target>
+  <target name="publish-maven-local" depends="publish-local-all">
+    <ant dir="./native" target="publish-maven-local" inheritAll="true"/>
+    <ant dir="./common" target="publish-maven-local" inheritAll="true"/>
+    <ant dir="./soap" target="publish-maven-local" inheritAll="true"/>
+    <ant dir="./client" target="publish-maven-local" inheritAll="true"/>
+    <ant dir="./store" target="publish-maven-local" inheritAll="true"/>
+    <echo>Publish artifacts locally with POM definition</echo>
+  </target>
 
-   <target name="set-no-halt-on-failure">
-      <echo message="WARNING: IGNORING UNIT TEST FAILURES" />
-      <property name="halt-on-failure" value="no" />
-   </target>
+  <target name="publish-maven-all" depends="publish-maven-local">
+    <ant dir="./native" target="publish-maven" inheritAll="true"/>
+    <ant dir="./common" target="publish-maven" inheritAll="true"/>
+    <ant dir="./soap" target="publish-maven" inheritAll="true"/>
+    <ant dir="./client" target="publish-maven" inheritAll="true"/>
+    <ant dir="./store" target="publish-maven" inheritAll="true"/>
+    <echo>Publish artifacts on public maven</echo>
+  </target>
 
-   <target name="set-halt-on-failure">
-      <property name="halt-on-failure" value="yes" />
-   </target>
+  <target name="init-ivy-cache">
+    <mkdir dir="${user.home}/.ivy2/cache"/>
+  </target>
 
-   <target name="test-all-plough-through" depends="set-no-halt-on-failure,test-all" />
-   <target name="test-all" unless="skipTests" depends="set-halt-on-failure,publish-local-all">
-      <mkdir dir="${basedir}/build/zimbra" />
-      <mkdir dir="${basedir}/build/zimbra/conf" />
+  <target name="set-no-halt-on-failure">
+    <echo message="WARNING: IGNORING UNIT TEST FAILURES"/>
+    <echo message="Ant lib dir: ${ant.library.dir}"/>
+    <property name="halt-on-failure" value="no"/>
+  </target>
 
-      <property name="test-results-file" value="${basedir}/build/test-results.txt" />
+  <target name="set-halt-on-failure">
+    <property name="halt-on-failure" value="yes"/>
+  </target>
 
-      <echo file="${test-results-file}" message="BEGIN&#xD;&#xA;" />
-      <ant dir="./native" target="test" inheritAll="true" />
-      <ant dir="./common" target="test" inheritAll="true" />
-      <ant dir="./soap" target="test" inheritAll="true" />
-      <ant dir="./client" target="test" inheritAll="true" />
-      <ant dir="./store" target="test" inheritAll="true" />
-      <echo append="true" file="${test-results-file}" message="END&#xD;" />
-   </target>
+  <target name="set-coverage">
+    <property name="coverage-enabled" value="true"/>
+  </target>
 
-   <target name="dist" depends="all">
-      <ant dir="./native" target="dist" inheritAll="false" />
-      <ant dir="./common" target="dist" inheritAll="false" />
-      <ant dir="./soap" target="dist" inheritAll="false" />
-      <ant dir="./client" target="dist" inheritAll="false" />
-      <ant dir="./store" target="dist" inheritAll="false" />
-   </target>
+  <target name="unset-coverage">
+    <property name="coverage-enabled" value="false"/>
+  </target>
 
-   <property name="store.ext.patch.version" value="${zimbra.buildinfo.version}" />
-   <property name="store.ext.patch.revision" value="1" />
+  <target name="test-all-plough-through" depends="set-no-halt-on-failure,test-all"/>
 
-   <target name="clean" depends="clean-ant,clean-pkg">
-      <exec dir="./native" executable="make" failonerror="true">
-         <arg value="clean" />
-      </exec>
-      <delete dir="build" />
-   </target>
+  <!-- Merge all modules' coverage in one file -->
+  <target name="merge-coverage" depends="init-jacoco,set-coverage">
+    <property name="build.modules.dirs" value="${basedir}/client/build,${basedir}/common/build,${basedir}/soap/build,${basedir}/store/build"/>
+    <property name="failOnError" value="false"/>
 
-   <target name="clean-ant">
-      <ant dir="./native" target="clean" inheritAll="false" />
-      <ant dir="./common" target="clean" inheritAll="false" />
-      <ant dir="./soap" target="clean" inheritAll="false" />
-      <ant dir="./client" target="clean" inheritAll="false" />
-      <ant dir="./store" target="clean" inheritAll="false" />
-   </target>
+    <!-- Merge all JaCoCo Reports into one -->
+    <jacoco:merge destfile="${basedir}/build/coverage/merged.exec">
+      <multirootfileset basedirs="${build.modules.dirs}" erroronmissingdir="${failOnError}"
+        includes="coverage/*.exec"/>
+    </jacoco:merge>
 
-   <target name="clean-pkg">
-      <delete dir="build/dist" />
-      <delete dir="build/stage" />
-   </target>
+    <!-- generate JaCoCo XML report from collected .exec -->
+    <jacoco:report>
+      <executiondata>
+        <file file="${basedir}/build/coverage/merged.exec"/>
+      </executiondata>
+      <structure name="Carbonio Mailbox">
+        <classfiles>
+          <multirootfileset basedirs="${test.modules.dirs}/classes"
+            erroronmissingdir="${failOnError}"/>
+        </classfiles>
+      </structure>
+      <xml destfile="${basedir}/build/coverage/merged.xml"/>
+    </jacoco:report>
+  </target>
+
+  <!-- Run tests (allow failure) with coverage -->
+  <target name="test-all-coverage-plough-through"
+    depends="init-jacoco,set-coverage,test-all-plough-through, merge-coverage">
+  </target>
+
+  <target name="test-all" unless="skipTests"
+    depends="set-halt-on-failure,unset-coverage,publish-local-all">
+    <property name="coverage-results-dir" value="${basedir}/build/coverage/"/>
+    <mkdir dir="${basedir}/build/zimbra"/>
+    <mkdir dir="${basedir}/build/coverage"/>
+    <mkdir dir="${basedir}/build/zimbra/conf"/>
+
+    <property name="test-results-file" value="${basedir}/build/test-results.txt"/>
+
+    <echo file="${test-results-file}" message="BEGIN&#xD;&#xA;"/>
+    <ant dir="./client" target="test" inheritAll="true"/>
+    <ant dir="./native" target="test" inheritAll="true"/>
+    <ant dir="./common" target="test" inheritAll="true"/>
+    <ant dir="./soap" target="test" inheritAll="true"/>
+    <ant dir="./store" target="test" inheritAll="true"/>
+    <echo append="true" file="${test-results-file}" message="END&#xD;"/>
+  </target>
+
+  <target name="dist" depends="all">
+    <ant dir="./native" target="dist" inheritAll="false"/>
+    <ant dir="./common" target="dist" inheritAll="false"/>
+    <ant dir="./soap" target="dist" inheritAll="false"/>
+    <ant dir="./client" target="dist" inheritAll="false"/>
+    <ant dir="./store" target="dist" inheritAll="false"/>
+  </target>
+
+  <property name="store.ext.patch.version" value="${zimbra.buildinfo.version}"/>
+  <property name="store.ext.patch.revision" value="1"/>
+
+  <target name="clean" depends="clean-ant,clean-pkg">
+    <exec dir="./native" executable="make" failonerror="true">
+      <arg value="clean"/>
+    </exec>
+    <delete dir="build"/>
+  </target>
+
+  <target name="clean-ant">
+    <ant dir="./native" target="clean" inheritAll="false"/>
+    <ant dir="./common" target="clean" inheritAll="false"/>
+    <ant dir="./soap" target="clean" inheritAll="false"/>
+    <ant dir="./client" target="clean" inheritAll="false"/>
+    <ant dir="./store" target="clean" inheritAll="false"/>
+  </target>
+
+  <target name="clean-pkg">
+    <delete dir="build/dist"/>
+    <delete dir="build/stage"/>
+  </target>
 </project>
