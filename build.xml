@@ -85,7 +85,7 @@
       </executiondata>
       <structure name="Carbonio Mailbox">
         <classfiles>
-          <multirootfileset basedirs="${test.modules.dirs}/classes"
+          <multirootfileset basedirs="${build.modules.dirs}/classes"
             erroronmissingdir="${failOnError}"/>
         </classfiles>
       </structure>
