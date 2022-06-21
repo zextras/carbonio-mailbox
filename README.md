@@ -31,11 +31,11 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
 - Build the code:
 
-	`ant all -Dcarbonio.buildinfo.version=22.6.0_ZEXTRAS_202206`
+	`ant all -Dcarbonio.buildinfo.version=22.6.1_ZEXTRAS_202206`
 
 	Tips:
 	- You can list all ant build targets present in build.xml file using `ant -p build.xml`
-	- You can avoid passing `carbonio.buildinfo.version` on every time you invoke ant build command by exporting it as ANT_OPTS environment varibale with `export ANT_OPTS="-Dcarbonio.buildinfo.version=22.6.0_ZEXTRAS_202206"`
+	- You can avoid passing `carbonio.buildinfo.version` on every time you invoke ant build command by exporting it as ANT_OPTS environment varibale with `export ANT_OPTS="-Dcarbonio.buildinfo.version=22.6.1_ZEXTRAS_202206"`
 
 
 ## Contribute to Carbonio Mailbox

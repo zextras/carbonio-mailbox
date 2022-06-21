@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-appserver-war"
-pkgver="4.0.9"
+pkgver="4.0.10"
 pkgrel="1"
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
