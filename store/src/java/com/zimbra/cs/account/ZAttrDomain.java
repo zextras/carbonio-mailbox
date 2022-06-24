@@ -24633,7 +24633,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      */
     @ZAttr(id=3091)
     public boolean isCarbonioVideoServerRecordingEnabled() {
-        return getBooleanAttr(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, false);
+        return getBooleanAttr(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, false, true);
     }
 
     /**

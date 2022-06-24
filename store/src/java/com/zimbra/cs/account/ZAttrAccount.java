@@ -61792,7 +61792,7 @@ public abstract class ZAttrAccount  extends MailTarget {
      */
     @ZAttr(id=3091)
     public boolean isCarbonioChatsVideoServerRecordingEnabled() {
-      return getBooleanAttr(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, false);
+      return getBooleanAttr(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, false, true);
     }
 
     /**
