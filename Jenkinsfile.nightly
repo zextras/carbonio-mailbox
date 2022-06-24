@@ -322,4 +322,37 @@ pipeline {
             }
         }
     }
+    post {
+            always {
+                script {
+                withCredentials([string(credentialsId: 'mailing-list-notification', variable: 'EMAIL_ADDRESSES')]) {
+                    today = sh(
+                            script: 'date +%D',
+                            returnStdout: true
+                    ).trim()
+                    emailext attachLog: true,
+                            to: EMAIL_ADDRESSES,
+                            recipientProviders: [requestor()],
+                            subject: "[Carbonio-Mailbox] Jenkins nightly report for ${today}",
+                            body: """
+<p>
+Hello,</br>
+this is your daily report for nightly tests.</br>
+You can find your report at <a href="${BUILD_URL}">the following link</a>.</br>
+The current build status is ${currentBuild.currentResult}.</br>
+The build took ${currentBuild.durationString}.</br>
+</p>
+<p>
+It is strongly suggested to save possible build/test failures because the build log could be pruned in the future.
+</p>
+
+Have a nice day,</br>
+</br>
+--</br>
+Jenkins
+"""
+                }
+            }
+        }
+    }
 }
