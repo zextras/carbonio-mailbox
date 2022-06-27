@@ -197,22 +197,6 @@ public class ZAttrProvisioning {
         public boolean isPass() { return this == pass;}
     }
 
-    public static enum ClamAVSafeBrowsing {
-        yes("yes"),
-        no("no");
-        private String mValue;
-        private ClamAVSafeBrowsing(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static ClamAVSafeBrowsing fromString(String s) throws ServiceException {
-            for (ClamAVSafeBrowsing value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isYes() { return this == yes;}
-        public boolean isNo() { return this == no;}
-    }
-
     public static enum ClusterType {
         none("none"),
         RedHat("RedHat"),
@@ -2629,6 +2613,22 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=-1)
     public static final String A_c = "c";
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public static final String A_carbonioAdminProxyPort = "carbonioAdminProxyPort";
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public static final String A_carbonioChatsVideoServerRecordingEnabled = "carbonioChatsVideoServerRecordingEnabled";
 
     /**
      * RFC2256: common name(s) for which the entity is known by
@@ -9332,11 +9332,11 @@ public class ZAttrProvisioning {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -12027,6 +12027,14 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1256)
     public static final String A_zimbraPasswordAllowedPunctuationChars = "zimbraPasswordAllowedPunctuationChars";
+
+    /**
+     * block common keywords in password string
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3090)
+    public static final String A_zimbraPasswordBlockCommonEnabled = "zimbraPasswordBlockCommonEnabled";
 
     /**
      * registered change password listener name
@@ -17024,103 +17032,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersion = "zimbraVersion";
 
     /**
-     * Time interval after which Zimbra version check detects a new version.
-     * Must be in valid duration format: {digits}{time-unit}. digits: 0-9,
-     * time-unit: [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days,
-     * ms - milliseconds. If time unit is not specified, the default is
-     * s(seconds).
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1059)
-    public static final String A_zimbraVersionCheckInterval = "zimbraVersionCheckInterval";
-
-    /**
-     * time Zimbra version was last checked
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1056)
-    public static final String A_zimbraVersionCheckLastAttempt = "zimbraVersionCheckLastAttempt";
-
-    /**
-     * last response of last Zimbra version check. This will be a short XML
-     * that will contain information about available updates.
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1058)
-    public static final String A_zimbraVersionCheckLastResponse = "zimbraVersionCheckLastResponse";
-
-    /**
-     * time Zimbra version was last checked successfully
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1057)
-    public static final String A_zimbraVersionCheckLastSuccess = "zimbraVersionCheckLastSuccess";
-
-    /**
-     * template used to construct the body of an Zimbra version check
-     * notification message
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1066)
-    public static final String A_zimbraVersionCheckNotificationBody = "zimbraVersionCheckNotificationBody";
-
-    /**
-     * email address to send mail to for the Zimbra version check
-     * notification message
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1063)
-    public static final String A_zimbraVersionCheckNotificationEmail = "zimbraVersionCheckNotificationEmail";
-
-    /**
-     * from address for the Zimbra version check notification message
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1064)
-    public static final String A_zimbraVersionCheckNotificationEmailFrom = "zimbraVersionCheckNotificationEmailFrom";
-
-    /**
-     * template used to construct the subject of an Zimbra version check
-     * notification message
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1065)
-    public static final String A_zimbraVersionCheckNotificationSubject = "zimbraVersionCheckNotificationSubject";
-
-    /**
-     * whether to send a notification message if Zimbra version check detects
-     * a new version
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1062)
-    public static final String A_zimbraVersionCheckSendNotifications = "zimbraVersionCheckSendNotifications";
-
-    /**
-     * zimbraId of the server that should perform the Zimbra version checks
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1060)
-    public static final String A_zimbraVersionCheckServer = "zimbraVersionCheckServer";
-
-    /**
-     * URL of the Zimbra version check script
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1061)
-    public static final String A_zimbraVersionCheckURL = "zimbraVersionCheckURL";
-
-    /**
      * Whether virtual user set/changed his password after an external
      * virtual account for him is provisioned. This attribute is applicable
      * for accounts having zimbraIsExternalVirtualAccount set to TRUE.
@@ -17298,8 +17209,7 @@ public class ZAttrProvisioning {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -17558,26 +17468,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1447)
     public static final String A_zimbraZookeeperClientServerList = "zimbraZookeeperClientServerList";
-
-    /**
-     * SSL proxy port for Carbonio admin console UI
-     *
-     * @since ZCS 9.0.0
-     */
-    @ZAttr(id=3089)
-    public static final String A_carbonioAdminProxyPort = "carbonioAdminProxyPort";
-
-    /**
-     * block common keywords in password string
-     */
-    @ZAttr(id=3090)
-    public static final String A_zimbraPasswordBlockCommonEnabled = "zimbraPasswordBlockCommonEnabled";
-
-    /**
-     * Enable video server recording for Carbonio chats
-     */
-    @ZAttr(id=3091)
-    public static final String A_carbonioChatsVideoServerRecordingEnabled = "carbonioChatsVideoServerRecordingEnabled";
 
     ///// END-AUTO-GEN-REPLACE
 }

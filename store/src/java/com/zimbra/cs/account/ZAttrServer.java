@@ -36,6 +36,125 @@ public abstract class ZAttrServer extends NamedEntry {
     ///// BEGIN-AUTO-GEN-REPLACE
 
     /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * <p>Use getCarbonioAdminProxyPortAsString to access value as a string.
+     *
+     * @see #getCarbonioAdminProxyPortAsString()
+     *
+     * @return carbonioAdminProxyPort, or 6071 if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public int getCarbonioAdminProxyPort() {
+        return getIntAttr(Provisioning.A_carbonioAdminProxyPort, 6071, true);
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @return carbonioAdminProxyPort, or "6071" if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public String getCarbonioAdminProxyPortAsString() {
+        return getAttr(Provisioning.A_carbonioAdminProxyPort, "6071", true);
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @param carbonioAdminProxyPort new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public void setCarbonioAdminProxyPort(int carbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(carbonioAdminProxyPort));
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @param carbonioAdminProxyPort new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> setCarbonioAdminProxyPort(int carbonioAdminProxyPort, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(carbonioAdminProxyPort));
+        return attrs;
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @param carbonioAdminProxyPort new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public void setCarbonioAdminProxyPortAsString(String carbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, carbonioAdminProxyPort);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @param carbonioAdminProxyPort new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> setCarbonioAdminProxyPortAsString(String carbonioAdminProxyPort, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, carbonioAdminProxyPort);
+        return attrs;
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public void unsetCarbonioAdminProxyPort() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> unsetCarbonioAdminProxyPort(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
+        return attrs;
+    }
+
+    /**
      * RFC2256: common name(s) for which the entity is known by
      *
      * @return cn, or null if unset
@@ -1176,11 +1295,11 @@ public abstract class ZAttrServer extends NamedEntry {
     /**
      * URL prefix for where the zimbraAdmin app resides on this server
      *
-     * @return zimbraAdminURL, or "/zimbraAdmin" if unset
+     * @return zimbraAdminURL, or "/carbonioAdmin" if unset
      */
     @ZAttr(id=497)
     public String getAdminURL() {
-        return getAttr(Provisioning.A_zimbraAdminURL, "/zimbraAdmin", true);
+        return getAttr(Provisioning.A_zimbraAdminURL, "/carbonioAdmin", true);
     }
 
     /**
@@ -16339,11 +16458,11 @@ public abstract class ZAttrServer extends NamedEntry {
      *
      * <p>Valid values: [http, https, both, mixed, redirect]
      *
-     * @return zimbraMailMode, or null if unset and/or has invalid value
+     * @return zimbraMailMode, or ZAttrProvisioning.MailMode.both if unset and/or has invalid value
      */
     @ZAttr(id=308)
     public ZAttrProvisioning.MailMode getMailMode() {
-        try { String v = getAttr(Provisioning.A_zimbraMailMode, true, true); return v == null ? null : ZAttrProvisioning.MailMode.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
+        try { String v = getAttr(Provisioning.A_zimbraMailMode, true, true); return v == null ? ZAttrProvisioning.MailMode.both : ZAttrProvisioning.MailMode.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MailMode.both; }
     }
 
     /**
@@ -16352,11 +16471,11 @@ public abstract class ZAttrServer extends NamedEntry {
      *
      * <p>Valid values: [http, https, both, mixed, redirect]
      *
-     * @return zimbraMailMode, or null if unset
+     * @return zimbraMailMode, or "both" if unset
      */
     @ZAttr(id=308)
     public String getMailModeAsString() {
-        return getAttr(Provisioning.A_zimbraMailMode, null, true);
+        return getAttr(Provisioning.A_zimbraMailMode, "both", true);
     }
 
     /**
@@ -30775,13 +30894,13 @@ public abstract class ZAttrServer extends NamedEntry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpTlsCiphers, or ZAttrProvisioning.MtaSmtpTlsCiphers.export if unset and/or has invalid value
+     * @return zimbraMtaSmtpTlsCiphers, or ZAttrProvisioning.MtaSmtpTlsCiphers.high if unset and/or has invalid value
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1513)
     public ZAttrProvisioning.MtaSmtpTlsCiphers getMtaSmtpTlsCiphers() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpTlsCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpTlsCiphers.export : ZAttrProvisioning.MtaSmtpTlsCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpTlsCiphers.export; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpTlsCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpTlsCiphers.high : ZAttrProvisioning.MtaSmtpTlsCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpTlsCiphers.high; }
     }
 
     /**
@@ -31114,13 +31233,13 @@ public abstract class ZAttrServer extends NamedEntry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpTlsMandatoryCiphers, or ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.medium if unset and/or has invalid value
+     * @return zimbraMtaSmtpTlsMandatoryCiphers, or ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.high if unset and/or has invalid value
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1514)
     public ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers getMtaSmtpTlsMandatoryCiphers() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpTlsMandatoryCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.medium : ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.medium; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpTlsMandatoryCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.high : ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.high; }
     }
 
     /**
@@ -33637,13 +33756,13 @@ public abstract class ZAttrServer extends NamedEntry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpdTlsCiphers, or ZAttrProvisioning.MtaSmtpdTlsCiphers.export if unset and/or has invalid value
+     * @return zimbraMtaSmtpdTlsCiphers, or ZAttrProvisioning.MtaSmtpdTlsCiphers.high if unset and/or has invalid value
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1515)
     public ZAttrProvisioning.MtaSmtpdTlsCiphers getMtaSmtpdTlsCiphers() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsCiphers.export : ZAttrProvisioning.MtaSmtpdTlsCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsCiphers.export; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsCiphers.high : ZAttrProvisioning.MtaSmtpdTlsCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsCiphers.high; }
     }
 
     /**
@@ -33917,13 +34036,13 @@ public abstract class ZAttrServer extends NamedEntry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpdTlsMandatoryCiphers, or ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.medium if unset and/or has invalid value
+     * @return zimbraMtaSmtpdTlsMandatoryCiphers, or ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.high if unset and/or has invalid value
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1516)
     public ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers getMtaSmtpdTlsMandatoryCiphers() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsMandatoryCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.medium : ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.medium; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsMandatoryCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.high : ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.high; }
     }
 
     /**
@@ -34198,7 +34317,7 @@ public abstract class ZAttrServer extends NamedEntry {
      */
     @ZAttr(id=2076)
     public ZAttrProvisioning.MtaSmtpdTlsReceivedHeader getMtaSmtpdTlsReceivedHeader() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsReceivedHeader, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.no : ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.yes; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsReceivedHeader, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.yes : ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.yes; }
     }
 
     /**
@@ -48507,8 +48626,7 @@ public abstract class ZAttrServer extends NamedEntry {
      */
     @ZAttr(id=97)
     public String[] getSmtpHostname() {
-        String[] value = getMultiAttr(Provisioning.A_zimbraSmtpHostname, true, true);
-        return value.length > 0 ? value : new String[] {SmtpConfig.DEFAULT_HOST};
+        String[] value = getMultiAttr(Provisioning.A_zimbraSmtpHostname, true, true); return value.length > 0 ? value : new String[] {"127.78.0.7"};
     }
 
     /**
@@ -48620,25 +48738,25 @@ public abstract class ZAttrServer extends NamedEntry {
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * <p>Internally uses getSmtpPortAsString to access value as a string.
+     * <p>Use getSmtpPortAsString to access value as a string.
      *
      * @see #getSmtpPortAsString()
      *
-     * @return zimbraSmtpPort, or default value if unset
+     * @return zimbraSmtpPort, or 20025 if unset
      */
     @ZAttr(id=98)
     public int getSmtpPort() {
-        return Integer.parseInt(getSmtpPortAsString());
+        return getIntAttr(Provisioning.A_zimbraSmtpPort, 20025, true);
     }
 
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * @return zimbraSmtpPort, or default value if unset
+     * @return zimbraSmtpPort, or "20025" if unset
      */
     @ZAttr(id=98)
     public String getSmtpPortAsString() {
-        return getAttr(Provisioning.A_zimbraSmtpPort, String.valueOf(SmtpConfig.DEFAULT_PORT), true);
+        return getAttr(Provisioning.A_zimbraSmtpPort, "20025", true);
     }
 
     /**
@@ -50966,111 +51084,6 @@ public abstract class ZAttrServer extends NamedEntry {
         attrs.put(Provisioning.A_zimbraZookeeperClientServerList, "");
         return attrs;
     }
-
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * <p>Use getCarbonioAdminProxyPortAsString to access value as a string.
-     *
-     * @see #getAdminPortAsString()
-     *
-     * @return CarbonioAdminProxyPort, or 7071 if unset
-     */
-    @ZAttr(id=3089)
-    public int getCarbonioAdminProxyPort() {
-        return getIntAttr(Provisioning.A_carbonioAdminProxyPort, 6071, true);
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @return CarbonioAdminProxyPort, or "30899" if unset
-     */
-    @ZAttr(id=3089)
-    public String getCarbonioAdminProxyPortAsString() {
-        return getAttr(Provisioning.A_carbonioAdminProxyPort, "6071", true);
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @param CarbonioAdminProxyPort new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3089)
-    public void setCarbonioAdminProxyPort(int CarbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(CarbonioAdminProxyPort));
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @param CarbonioAdminProxyPort new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3089)
-    public Map<String,Object> setCarbonioAdminProxyPort(int CarbonioAdminProxyPort, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(CarbonioAdminProxyPort));
-        return attrs;
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @param CarbonioAdminProxyPort new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3089)
-    public void setCarbonioAdminProxyPortAsString(String CarbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, CarbonioAdminProxyPort);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @param CarbonioAdminProxyPort new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3089)
-    public Map<String,Object> setCarbonioAdminProxyPortAsString(String CarbonioAdminProxyPort, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, CarbonioAdminProxyPort);
-        return attrs;
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3089)
-    public void unsetCarbonioAdminProxyPort() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3089)
-    public Map<String,Object> unsetCarbonioAdminProxyPort(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
-        return attrs;
-    }
-
 
     ///// END-AUTO-GEN-REPLACE
 
