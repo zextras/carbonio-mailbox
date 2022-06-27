@@ -61817,7 +61817,9 @@ public abstract class ZAttrAccount  extends MailTarget {
      */
     @ZAttr(id=3091)
     public Map<String,Object> setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled, Map<String,Object> attrs) {
-      if (attrs == null) attrs = new HashMap<String,Object>();
+      if (attrs == null){
+        attrs = new HashMap<String,Object>();
+      }
       attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
       return attrs;
     }
@@ -61842,7 +61844,9 @@ public abstract class ZAttrAccount  extends MailTarget {
      */
     @ZAttr(id=3091)
     public Map<String,Object> unsetCarbonioChatsVideoServerRecordingEnabled(Map<String,Object> attrs) {
-      if (attrs == null) attrs = new HashMap<String,Object>();
+      if (attrs == null){
+        attrs = new HashMap<String,Object>();
+      }
       attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
       return attrs;
     }
