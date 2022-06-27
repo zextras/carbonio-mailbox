@@ -24627,6 +24627,72 @@ public abstract class ZAttrDomain extends NamedEntry {
         return attrs;
     }
 
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @return zimbraPasswordBlockCommonEnabled, or false if unset
+     */
+    @ZAttr(id=3091)
+    public boolean isCarbonioVideoServerRecordingEnabled() {
+        return getBooleanAttr(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, false, true);
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @param carbonioChatsVideoServerRecordingEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=3091)
+    public void setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @param carbonioChatsVideoServerRecordingEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=3091)
+    public Map<String,Object> setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled, Map<String,Object> attrs) {
+        if (attrs == null){
+            attrs = new HashMap<String,Object>();
+        }
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=3091)
+    public void unsetCarbonioChatsVideoServerRecordingEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=3091)
+    public Map<String,Object> unsetCarbonioChatsVideoServerRecordingEnabled(Map<String,Object> attrs) {
+        if (attrs == null){
+            attrs = new HashMap<String,Object>();
+        }
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
+        return attrs;
+    }
+
     ///// END-AUTO-GEN-REPLACE
 
 }
