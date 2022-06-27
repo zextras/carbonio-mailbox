@@ -21,7 +21,7 @@ import com.zimbra.common.util.LogFactory;
 public class JettyStats
 implements RealtimeStatsCallback {
 
-    private static Log log = LogFactory.getLog(JettyStats.class);
+    private static final Log log = LogFactory.getLog(JettyStats.class);
     
     @Override
     public Map<String, Object> getStatData() {

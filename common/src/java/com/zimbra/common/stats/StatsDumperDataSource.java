@@ -9,27 +9,21 @@ import java.util.Collection;
 
 public interface StatsDumperDataSource {
 
-    /**
-     * Returns the name of the file that stats are written to.  This is a
-     * simple filename with no directory path.  All stats files are currently
-     * written to /opt/zextras/zmstat.
-     */
-    public String getFilename();
-    
-    /**
-     * Returns the first line logged in a new stats file, or <tt>null</tt>
-     * if there is no header.
-     */
-    public String getHeader();
-    
-    /**
-     * Returns the latest set of data lines and resets counters.
-     */
-    public Collection<String> getDataLines();
-    
-    /**
-     * Specifies whether a <tt>timestamp</tt> column is prepended to the data
-     * returned by <tt>getHeader()</tt> and <tt>getDataLines()</tt>.
-     */
-    public boolean hasTimestampColumn();
+  /**
+   * Returns the name of the file that stats are written to. This is a simple filename with no
+   * directory path. All stats files are currently written to /opt/zextras/zmstat.
+   */
+  String getFilename();
+
+  /** Returns the first line logged in a new stats file, or <tt>null</tt> if there is no header. */
+  String getHeader();
+
+  /** Returns the latest set of data lines and resets counters. */
+  Collection<String> getDataLines();
+
+  /**
+   * Specifies whether a <tt>timestamp</tt> column is prepended to the data returned by
+   * <tt>getHeader()</tt> and <tt>getDataLines()</tt>.
+   */
+  boolean hasTimestampColumn();
 }

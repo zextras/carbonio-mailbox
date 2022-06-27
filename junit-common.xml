@@ -1,0 +1,44 @@
+<project name="junit-common">
+  <property name="dev.home" value="${user.home}"/>
+  <!-- junit properties -->
+  <property name="junit.jar.dir" location="${dev.home}/.ant/lib/junit"/>
+  <property name="junit.install.version" value="1.10.3"/>
+  <property name="junit.jar.file" value="${junit.jar.dir}/ant-junit-${junit.install.version}.jar"/>
+  <property name="junit4.jar.file" value="${junit.jar.dir}/ant-junit4-${junit.install.version}.jar"/>
+
+  <target name="test.if.junit.available">
+    <condition property="junit.installed">
+      <available file="${junit.jar.file}" type="file"/>
+    </condition>
+  </target>
+
+  <target name="download-junit" description="Install junit" unless="junit.installed"
+    depends="test.if.junit.available">
+    <mkdir dir="${junit.jar.dir}"/>
+    <get
+      src="https://repo1.maven.org/maven2/org/apache/ant/ant-junit/${junit.install.version}/ant-junit-${junit.install.version}.jar"
+      dest="${junit.jar.file}" usetimestamp="true"/>
+    <!-- Junit4 -->
+    <get
+      src="https://repo1.maven.org/maven2/org/apache/ant/ant-junit4/${junit.install.version}/ant-junit4-${junit.install.version}.jar"
+      dest="${junit4.jar.file}" usetimestamp="true"/>
+  </target>
+
+  <target name="init-junit" description="Load junit task definitions" depends="download-junit">
+    <path id="junit.lib.path">
+      <fileset dir="${junit.jar.dir}" includes="*.jar"/>
+    </path>
+    <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask">
+      <classpath>
+        <pathelement location="${junit.jar.file}"/>
+        <pathelement location="${junit4.jar.file}"/>
+      </classpath>
+    </taskdef>
+    <taskdef name="junitreport" classname="org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator">
+      <classpath>
+        <pathelement location="${junit.jar.file}"/>
+        <pathelement location="${junit4.jar.file}"/>
+      </classpath>
+    </taskdef>
+  </target>
+</project>

@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-appserver-service"
-pkgver="4.0.6"
+pkgver="4.0.10"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Service"
 pkgdesclong=(
@@ -35,6 +35,8 @@ postinst() {
   getent passwd 'carbonio-mailbox' >/dev/null ||
     useradd -r -M -g 'carbonio-mailbox' -s /sbin/nologin 'carbonio-mailbox'
 
+  usermod -a -G 'carbonio-mailbox' 'zextras'
+
   mkdir -p '/etc/zextras/carbonio-mailbox/'
   chown 'carbonio-mailbox:carbonio-mailbox' '/etc/zextras/carbonio-mailbox/'
 
@@ -43,7 +45,11 @@ postinst() {
     systemctl enable carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
   fi
 
-  echo "Installed, you must now run pending-setups."
+  echo "======================================================"
+  echo "Carbonio Mailbox Service installed successfully!"
+  echo "You must run pending-setups to configure it correctly."
+  echo "======================================================"
+
   cat > /etc/zextras/pending-setups.d/carbonio-mailbox-setup.sh <<EOF
 #!/usr/bin/env bash
 carbonio-mailbox setup

@@ -6,6 +6,7 @@ pipeline {
     }
     parameters {
         booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
+        booleanParam defaultValue: false, description: 'Whether to run tests', name: 'TEST'
     }
     environment {
         JAVA_OPTS="-Dfile.encoding=UTF8"
@@ -29,7 +30,7 @@ pipeline {
                     cat <<EOF > build.properties
                     debug=0
                     is-production=1
-                    carbonio.buildinfo.version=22.4.0_ZEXTRAS_202204
+                    carbonio.buildinfo.version=22.6.1_ZEXTRAS_202206
                     EOF
                    """
                  withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
@@ -45,6 +46,20 @@ pipeline {
                 sh 'cp -r store* milter* native client common packages soap staging'
                 stash includes: 'staging/**', name: 'staging'
             }
+        }
+        stage("Test all with coverage (allow failure)") {
+          when {
+               expression { params.TEST == true }
+          }
+          steps {
+            sh """
+                   ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant -d \
+                   -propertyfile build.properties \
+                   test-all-coverage-plough-through
+               """
+            publishCoverage adapters: [jacocoAdapter('build/coverage/merged.xml')], calculateDiffForChangeRequests: true, failNoReports: true
+            junit allowEmptyResults: true, testResults: '**/build/test/output/*.xml'
+          }
         }
         stage("Publish to maven") {
             when {
