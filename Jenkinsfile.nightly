@@ -5,7 +5,7 @@ pipeline {
         }
     }
     triggers {
-        cron('H 2 * * *')
+        cron('H 5 * * *')
     }
     environment {
         JAVA_OPTS="-Dfile.encoding=UTF8"
