@@ -37,6 +37,78 @@ public abstract class ZAttrDomain extends NamedEntry {
     ///// BEGIN-AUTO-GEN-REPLACE
 
     /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @return carbonioChatsVideoServerRecordingEnabled, or false if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public boolean isCarbonioChatsVideoServerRecordingEnabled() {
+        return getBooleanAttr(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, false, true);
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @param carbonioChatsVideoServerRecordingEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public void setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @param carbonioChatsVideoServerRecordingEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public Map<String,Object> setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public void unsetCarbonioChatsVideoServerRecordingEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public Map<String,Object> unsetCarbonioChatsVideoServerRecordingEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
+        return attrs;
+    }
+
+    /**
      * RFC2256: descriptive information
      *
      * @return description, or empty array if unset
@@ -1389,11 +1461,11 @@ public abstract class ZAttrDomain extends NamedEntry {
     /**
      * fallback to local auth if external mech fails
      *
-     * @return zimbraAuthFallbackToLocal, or true if unset
+     * @return zimbraAuthFallbackToLocal, or false if unset
      */
     @ZAttr(id=257)
     public boolean isAuthFallbackToLocal() {
-        return getBooleanAttr(Provisioning.A_zimbraAuthFallbackToLocal, true, true);
+        return getBooleanAttr(Provisioning.A_zimbraAuthFallbackToLocal, false, true);
     }
 
     /**
@@ -15650,11 +15722,11 @@ public abstract class ZAttrDomain extends NamedEntry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -15690,11 +15762,11 @@ public abstract class ZAttrDomain extends NamedEntry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -15733,11 +15805,11 @@ public abstract class ZAttrDomain extends NamedEntry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -15777,11 +15849,11 @@ public abstract class ZAttrDomain extends NamedEntry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -15819,11 +15891,11 @@ public abstract class ZAttrDomain extends NamedEntry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -18491,7 +18563,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      */
     @ZAttr(id=1973)
     public String[] getReverseProxyResponseHeaders() {
-        return getMultiAttr(Provisioning.A_zimbraReverseProxyResponseHeaders, true, true);
+        String[] value = getMultiAttr(Provisioning.A_zimbraReverseProxyResponseHeaders, true, true); return value.length > 0 ? value : new String[] {"Strict-Transport-Security: \"max-age=31536000; includeSubDomains; preload\"","Permissions-Policy: \"geolocation=(self), microphone=(self)\"","Referrer-Policy: \"same-origin\"","X-Content-Type-Options: nosniff\"","X-Robots-Tag: noindex\"","X-XSS-Protection: \"1; mode=block\"","Expect-CT: max-age=86400"};
     }
 
     /**
@@ -22095,25 +22167,25 @@ public abstract class ZAttrDomain extends NamedEntry {
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * <p>Internally uses getSmtpPortAsString to access value as a string.
+     * <p>Use getSmtpPortAsString to access value as a string.
      *
      * @see #getSmtpPortAsString()
      *
-     * @return zimbraSmtpPort, or default value if unset
+     * @return zimbraSmtpPort, or -1 if unset
      */
     @ZAttr(id=98)
     public int getSmtpPort() {
-        return Integer.parseInt(getSmtpPortAsString());
+        return getIntAttr(Provisioning.A_zimbraSmtpPort, -1, true);
     }
 
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * @return zimbraSmtpPort, or default value if unset
+     * @return zimbraSmtpPort, or null if unset
      */
     @ZAttr(id=98)
     public String getSmtpPortAsString() {
-        return getAttr(Provisioning.A_zimbraSmtpPort, String.valueOf(SmtpConfig.DEFAULT_PORT), true);
+        return getAttr(Provisioning.A_zimbraSmtpPort, null, true);
     }
 
     /**
@@ -24095,8 +24167,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @return zimbraWebClientSupportedHelps, or empty array if unset
      *
@@ -24118,8 +24189,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -24144,8 +24214,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new value
      * @param attrs existing map to populate, or null to create a new map
@@ -24171,8 +24240,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -24197,8 +24265,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -24224,8 +24291,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -24250,8 +24316,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -24277,8 +24342,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -24302,8 +24366,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -24624,72 +24687,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     public Map<String,Object> unsetZimletUserPropertiesMaxNumEntries(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_zimbraZimletUserPropertiesMaxNumEntries, "");
-        return attrs;
-    }
-
-    /**
-     * Enable video server recording for Carbonio chats
-     *
-     * @return zimbraPasswordBlockCommonEnabled, or false if unset
-     */
-    @ZAttr(id=3091)
-    public boolean isCarbonioVideoServerRecordingEnabled() {
-        return getBooleanAttr(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, false, true);
-    }
-
-    /**
-     * Enable video server recording for Carbonio chats
-     *
-     * @param carbonioChatsVideoServerRecordingEnabled new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3091)
-    public void setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Enable video server recording for Carbonio chats
-     *
-     * @param carbonioChatsVideoServerRecordingEnabled new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3091)
-    public Map<String,Object> setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled, Map<String,Object> attrs) {
-        if (attrs == null){
-            attrs = new HashMap<String,Object>();
-        }
-        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
-        return attrs;
-    }
-
-    /**
-     * Enable video server recording for Carbonio chats
-     *
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3091)
-    public void unsetCarbonioChatsVideoServerRecordingEnabled() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Enable video server recording for Carbonio chats
-     *
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3091)
-    public Map<String,Object> unsetCarbonioChatsVideoServerRecordingEnabled(Map<String,Object> attrs) {
-        if (attrs == null){
-            attrs = new HashMap<String,Object>();
-        }
-        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
         return attrs;
     }
 

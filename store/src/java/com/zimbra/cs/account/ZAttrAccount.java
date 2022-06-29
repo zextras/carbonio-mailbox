@@ -94,6 +94,78 @@ public abstract class ZAttrAccount  extends MailTarget {
     }
 
     /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @return carbonioChatsVideoServerRecordingEnabled, or false if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public boolean isCarbonioChatsVideoServerRecordingEnabled() {
+        return getBooleanAttr(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, false, true);
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @param carbonioChatsVideoServerRecordingEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public void setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @param carbonioChatsVideoServerRecordingEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public Map<String,Object> setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public void unsetCarbonioChatsVideoServerRecordingEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Enable video server recording for Carbonio chats
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public Map<String,Object> unsetCarbonioChatsVideoServerRecordingEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
+        return attrs;
+    }
+
+    /**
      * RFC2256: common name(s) for which the entity is known by
      *
      * @return cn, or null if unset
@@ -26568,7 +26640,7 @@ public abstract class ZAttrAccount  extends MailTarget {
      *
      * @see #getMailIdleSessionTimeoutAsString()
      *
-     * @return zimbraMailIdleSessionTimeout in millseconds, or 86400000 (1d) if unset
+     * @return zimbraMailIdleSessionTimeout in millseconds, or 86400000 (1d)  if unset
      */
     @ZAttr(id=147)
     public long getMailIdleSessionTimeout() {
@@ -34852,6 +34924,78 @@ public abstract class ZAttrAccount  extends MailTarget {
     public Map<String,Object> unsetPasswordAllowedPunctuationChars(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_zimbraPasswordAllowedPunctuationChars, "");
+        return attrs;
+    }
+
+    /**
+     * block common keywords in password string
+     *
+     * @return zimbraPasswordBlockCommonEnabled, or false if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3090)
+    public boolean isPasswordBlockCommonEnabled() {
+        return getBooleanAttr(Provisioning.A_zimbraPasswordBlockCommonEnabled, false, true);
+    }
+
+    /**
+     * block common keywords in password string
+     *
+     * @param zimbraPasswordBlockCommonEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3090)
+    public void setPasswordBlockCommonEnabled(boolean zimbraPasswordBlockCommonEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, zimbraPasswordBlockCommonEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * block common keywords in password string
+     *
+     * @param zimbraPasswordBlockCommonEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3090)
+    public Map<String,Object> setPasswordBlockCommonEnabled(boolean zimbraPasswordBlockCommonEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, zimbraPasswordBlockCommonEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * block common keywords in password string
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3090)
+    public void unsetPasswordBlockCommonEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * block common keywords in password string
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3090)
+    public Map<String,Object> unsetPasswordBlockCommonEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, "");
         return attrs;
     }
 
@@ -61721,134 +61865,6 @@ public abstract class ZAttrAccount  extends MailTarget {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_zimbraZimletUserPropertiesMaxNumEntries, "");
         return attrs;
-    }
-
-    /**
-     * block common keywords in password string
-     *
-     * @return zimbraPasswordBlockCommonEnabled, or false if unset
-     */
-    @ZAttr(id=3090)
-    public boolean isPasswordBlockCommonEnabled() {
-      return getBooleanAttr(Provisioning.A_zimbraPasswordBlockCommonEnabled, false, true);
-    }
-
-    /**
-     * block common keywords in password string
-     *
-     * @param zimbraPasswordBlockCommonEnabled new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3090)
-    public void setPasswordBlockCommonEnabled(boolean zimbraPasswordBlockCommonEnabled) throws com.zimbra.common.service.ServiceException {
-      HashMap<String,Object> attrs = new HashMap<String,Object>();
-      attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, zimbraPasswordBlockCommonEnabled ? TRUE : FALSE);
-      getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * block common keywords in password string
-     *
-     * @param zimbraPasswordBlockCommonEnabled new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3090)
-    public Map<String,Object> setPasswordBlockCommonEnabled(boolean zimbraPasswordBlockCommonEnabled, Map<String,Object> attrs) {
-      if (attrs == null) attrs = new HashMap<String,Object>();
-      attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, zimbraPasswordBlockCommonEnabled ? TRUE : FALSE);
-      return attrs;
-    }
-
-    /**
-     * block common keywords in password string
-     *
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3090)
-    public void unsetPasswordBlockCommonEnabled() throws com.zimbra.common.service.ServiceException {
-      HashMap<String,Object> attrs = new HashMap<String,Object>();
-      attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, "");
-      getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * block common keywords in password string
-     *
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3090)
-    public Map<String,Object> unsetPasswordBlockCommonEnabled(Map<String,Object> attrs) {
-      if (attrs == null) attrs = new HashMap<String,Object>();
-      attrs.put(Provisioning.A_zimbraPasswordBlockCommonEnabled, "");
-      return attrs;
-    }
-
-    /**
-     * Enable video server recording for Carbonio chats
-     *
-     * @return carbonioChatsVideoServerRecordingEnabled, or false if unset
-     */
-    @ZAttr(id=3091)
-    public boolean isCarbonioChatsVideoServerRecordingEnabled() {
-      return getBooleanAttr(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, false, true);
-    }
-
-    /**
-     * Enable video server recording for Carbonio chats
-     *
-     * @param carbonioChatsVideoServerRecordingEnabled new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3091)
-    public void setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled) throws com.zimbra.common.service.ServiceException {
-      HashMap<String,Object> attrs = new HashMap<String,Object>();
-      attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
-      getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Enable video server recording for Carbonio chats
-     *
-     * @param carbonioChatsVideoServerRecordingEnabled new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3091)
-    public Map<String,Object> setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled, Map<String,Object> attrs) {
-      if (attrs == null){
-        attrs = new HashMap<String,Object>();
-      }
-      attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
-      return attrs;
-    }
-
-    /**
-     * Enable video server recording for Carbonio chats
-     *
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3091)
-    public void unsetCarbonioChatsVideoServerRecordingEnabled() throws com.zimbra.common.service.ServiceException {
-      HashMap<String,Object> attrs = new HashMap<String,Object>();
-      attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
-      getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Enable video server recording for Carbonio chats
-     *
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3091)
-    public Map<String,Object> unsetCarbonioChatsVideoServerRecordingEnabled(Map<String,Object> attrs) {
-      if (attrs == null){
-        attrs = new HashMap<String,Object>();
-      }
-      attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
-      return attrs;
     }
 
   ///// END-AUTO-GEN-REPLACE
