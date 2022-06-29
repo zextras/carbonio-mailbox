@@ -9772,4 +9772,19 @@ TODO: delete them permanently from here
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>Enable video server recording for Carbonio chats</desc>
 </attr>
+
+<attr id="3092" name="carbonioSendFullErrorStack" type="boolean" cardinality="single" optionalIn="globalConfig" since="9.0.0">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Whether Carbonio can send the error stack</desc>
+</attr>
+
+<attr id="3093" name="carbonioSendAnalytics" type="boolean" cardinality="single" optionalIn="globalConfig" since="9.0.0">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Whether Carbonio can send analytics reports</desc>
+</attr>
+
+<attr id="3094" name="carbonioAllowFeedback" type="boolean" cardinality="single" optionalIn="globalConfig" since="9.0.0">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Whether Carbonio can take interactive feedback from users</desc>
+</attr>
 </attrs>
