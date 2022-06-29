@@ -152,6 +152,222 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @return carbonioAllowFeedback, or true if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public boolean isCarbonioAllowFeedback() {
+        return getBooleanAttr(Provisioning.A_carbonioAllowFeedback, true, true);
+    }
+
+    /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @param carbonioAllowFeedback new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public void setCarbonioAllowFeedback(boolean carbonioAllowFeedback) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAllowFeedback, carbonioAllowFeedback ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @param carbonioAllowFeedback new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public Map<String,Object> setCarbonioAllowFeedback(boolean carbonioAllowFeedback, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAllowFeedback, carbonioAllowFeedback ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public void unsetCarbonioAllowFeedback() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAllowFeedback, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public Map<String,Object> unsetCarbonioAllowFeedback(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAllowFeedback, "");
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @return carbonioSendAnalytics, or true if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public boolean isCarbonioSendAnalytics() {
+        return getBooleanAttr(Provisioning.A_carbonioSendAnalytics, true, true);
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @param carbonioSendAnalytics new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public void setCarbonioSendAnalytics(boolean carbonioSendAnalytics) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendAnalytics, carbonioSendAnalytics ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @param carbonioSendAnalytics new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public Map<String,Object> setCarbonioSendAnalytics(boolean carbonioSendAnalytics, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendAnalytics, carbonioSendAnalytics ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public void unsetCarbonioSendAnalytics() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendAnalytics, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public Map<String,Object> unsetCarbonioSendAnalytics(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendAnalytics, "");
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can send the error stack
+     *
+     * @return carbonioSendFullErrorStack, or false if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public boolean isCarbonioSendFullErrorStack() {
+        return getBooleanAttr(Provisioning.A_carbonioSendFullErrorStack, false, true);
+    }
+
+    /**
+     * Whether Carbonio can send the error stack
+     *
+     * @param carbonioSendFullErrorStack new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public void setCarbonioSendFullErrorStack(boolean carbonioSendFullErrorStack) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendFullErrorStack, carbonioSendFullErrorStack ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can send the error stack
+     *
+     * @param carbonioSendFullErrorStack new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public Map<String,Object> setCarbonioSendFullErrorStack(boolean carbonioSendFullErrorStack, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendFullErrorStack, carbonioSendFullErrorStack ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can send the error stack
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public void unsetCarbonioSendFullErrorStack() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendFullErrorStack, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can send the error stack
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public Map<String,Object> unsetCarbonioSendFullErrorStack(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendFullErrorStack, "");
+        return attrs;
+    }
+
+    /**
      * RFC2256: descriptive information
      *
      * @return description, or empty array if unset

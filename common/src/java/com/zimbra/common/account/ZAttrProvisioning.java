@@ -2623,12 +2623,36 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAdminProxyPort = "carbonioAdminProxyPort";
 
     /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public static final String A_carbonioAllowFeedback = "carbonioAllowFeedback";
+
+    /**
      * Enable video server recording for Carbonio chats
      *
      * @since ZCS 9.0.0
      */
     @ZAttr(id=3091)
     public static final String A_carbonioChatsVideoServerRecordingEnabled = "carbonioChatsVideoServerRecordingEnabled";
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public static final String A_carbonioSendAnalytics = "carbonioSendAnalytics";
+
+    /**
+     * Whether Carbonio can send the error stack
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public static final String A_carbonioSendFullErrorStack = "carbonioSendFullErrorStack";
 
     /**
      * RFC2256: common name(s) for which the entity is known by
