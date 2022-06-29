@@ -9775,7 +9775,7 @@ TODO: delete them permanently from here
 
 <attr id="3092" name="carbonioSendFullErrorStack" type="boolean" cardinality="single" optionalIn="globalConfig" since="9.0.0">
   <globalConfigValue>FALSE</globalConfigValue>
-  <desc>Whether Carbonio can send the error stack</desc>
+  <desc>Whether Carbonio can send the error stack backtrace</desc>
 </attr>
 
 <attr id="3093" name="carbonioSendAnalytics" type="boolean" cardinality="single" optionalIn="globalConfig" since="9.0.0">

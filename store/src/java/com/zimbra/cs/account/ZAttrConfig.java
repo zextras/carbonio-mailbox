@@ -296,7 +296,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Whether Carbonio can send the error stack
+     * Whether Carbonio can send the error stack backtrace
      *
      * @return carbonioSendFullErrorStack, or false if unset
      *
@@ -308,7 +308,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Whether Carbonio can send the error stack
+     * Whether Carbonio can send the error stack backtrace
      *
      * @param carbonioSendFullErrorStack new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -323,7 +323,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Whether Carbonio can send the error stack
+     * Whether Carbonio can send the error stack backtrace
      *
      * @param carbonioSendFullErrorStack new value
      * @param attrs existing map to populate, or null to create a new map
@@ -339,7 +339,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Whether Carbonio can send the error stack
+     * Whether Carbonio can send the error stack backtrace
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -353,7 +353,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Whether Carbonio can send the error stack
+     * Whether Carbonio can send the error stack backtrace
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

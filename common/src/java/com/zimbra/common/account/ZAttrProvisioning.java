@@ -2647,7 +2647,7 @@ public class ZAttrProvisioning {
     public static final String A_carbonioSendAnalytics = "carbonioSendAnalytics";
 
     /**
-     * Whether Carbonio can send the error stack
+     * Whether Carbonio can send the error stack backtrace
      *
      * @since ZCS 9.0.0
      */
