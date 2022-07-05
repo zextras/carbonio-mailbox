@@ -4,7 +4,7 @@ targets=(
 )
 pkgname="carbonio-appserver-service"
 pkgver="4.0.10"
-pkgrel="1"
+pkgrel="2"
 pkgdesc="Carbonio Mailbox Service"
 pkgdesclong=(
   "Carbonio Mailbox Service"
@@ -30,6 +30,11 @@ package() {
 }
 
 postinst() {
+  getent group 'zextras' >/dev/null ||
+    groupadd -r 'zextras'
+  getent passwd 'zextras' >/dev/null ||
+    useradd -r -M -d '/opt/zextras' -g 'zextras' -s /bin/bash 'zextras'
+
   getent group 'carbonio-mailbox' >/dev/null ||
     groupadd -r 'carbonio-mailbox'
   getent passwd 'carbonio-mailbox' >/dev/null ||
