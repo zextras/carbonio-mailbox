@@ -4,7 +4,10 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Server;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 class WebSSLUpstreamClientServersVar extends ProxyConfVar {
 
@@ -24,8 +27,18 @@ class WebSSLUpstreamClientServersVar extends ProxyConfVar {
     String portName =
         configSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyHttpSSLPortAttribute, "");
 
-    List<Server> webClientServers = mProv.getAllWebClientServers();
-    for (Server server : webClientServers) {
+    List<Server> uniqueWebClientServers =
+        mProv.getAllWebClientServers().stream()
+            .collect(
+                Collectors.collectingAndThen(
+                    Collectors.toCollection(
+                        () ->
+                            new TreeSet<>(
+                                Comparator.comparing(
+                                    server -> server.getAttr(ZAttrProvisioning.A_zimbraId)))),
+                    ArrayList::new));
+
+    for (Server server : uniqueWebClientServers) {
       String serverName = server.getAttr(ZAttrProvisioning.A_zimbraServiceHostname, "");
 
       if (isValidUpstream(server, serverName)) {
