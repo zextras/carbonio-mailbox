@@ -35,64 +35,64 @@ public abstract class ZAttrCos extends NamedEntry {
     ///// BEGIN-AUTO-GEN-REPLACE
 
     /**
-     * Enable video server recording for Carbonio chats
+     * Enable video server recording for Carbonio
      *
-     * @return carbonioChatsVideoServerRecordingEnabled, or false if unset
+     * @return carbonioVideoServerRecordingEnabled, or false if unset
      *
      * @since ZCS 9.0.0
      */
     @ZAttr(id=3091)
-    public boolean isCarbonioChatsVideoServerRecordingEnabled() {
-        return getBooleanAttr(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, false, true);
+    public boolean isCarbonioVideoServerRecordingEnabled() {
+        return getBooleanAttr(Provisioning.A_carbonioVideoServerRecordingEnabled, false, true);
     }
 
     /**
-     * Enable video server recording for Carbonio chats
+     * Enable video server recording for Carbonio
      *
-     * @param carbonioChatsVideoServerRecordingEnabled new value
+     * @param carbonioVideoServerRecordingEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
      * @since ZCS 9.0.0
      */
     @ZAttr(id=3091)
-    public void setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled) throws com.zimbra.common.service.ServiceException {
+    public void setCarbonioVideoServerRecordingEnabled(boolean carbonioVideoServerRecordingEnabled) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
+        attrs.put(Provisioning.A_carbonioVideoServerRecordingEnabled, carbonioVideoServerRecordingEnabled ? TRUE : FALSE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
-     * Enable video server recording for Carbonio chats
+     * Enable video server recording for Carbonio
      *
-     * @param carbonioChatsVideoServerRecordingEnabled new value
+     * @param carbonioVideoServerRecordingEnabled new value
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      *
      * @since ZCS 9.0.0
      */
     @ZAttr(id=3091)
-    public Map<String,Object> setCarbonioChatsVideoServerRecordingEnabled(boolean carbonioChatsVideoServerRecordingEnabled, Map<String,Object> attrs) {
+    public Map<String,Object> setCarbonioVideoServerRecordingEnabled(boolean carbonioVideoServerRecordingEnabled, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, carbonioChatsVideoServerRecordingEnabled ? TRUE : FALSE);
+        attrs.put(Provisioning.A_carbonioVideoServerRecordingEnabled, carbonioVideoServerRecordingEnabled ? TRUE : FALSE);
         return attrs;
     }
 
     /**
-     * Enable video server recording for Carbonio chats
+     * Enable video server recording for Carbonio
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
      * @since ZCS 9.0.0
      */
     @ZAttr(id=3091)
-    public void unsetCarbonioChatsVideoServerRecordingEnabled() throws com.zimbra.common.service.ServiceException {
+    public void unsetCarbonioVideoServerRecordingEnabled() throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
+        attrs.put(Provisioning.A_carbonioVideoServerRecordingEnabled, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
-     * Enable video server recording for Carbonio chats
+     * Enable video server recording for Carbonio
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -100,9 +100,9 @@ public abstract class ZAttrCos extends NamedEntry {
      * @since ZCS 9.0.0
      */
     @ZAttr(id=3091)
-    public Map<String,Object> unsetCarbonioChatsVideoServerRecordingEnabled(Map<String,Object> attrs) {
+    public Map<String,Object> unsetCarbonioVideoServerRecordingEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioChatsVideoServerRecordingEnabled, "");
+        attrs.put(Provisioning.A_carbonioVideoServerRecordingEnabled, "");
         return attrs;
     }
 

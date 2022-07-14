@@ -2631,12 +2631,12 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAllowFeedback = "carbonioAllowFeedback";
 
     /**
-     * Enable video server recording for Carbonio chats
+     * Enable video server recording for Carbonio
      *
      * @since ZCS 9.0.0
      */
     @ZAttr(id=3091)
-    public static final String A_carbonioChatsVideoServerRecordingEnabled = "carbonioChatsVideoServerRecordingEnabled";
+    public static final String A_carbonioVideoServerRecordingEnabled = "carbonioVideoServerRecordingEnabled";
 
     /**
      * Whether Carbonio can send analytics reports

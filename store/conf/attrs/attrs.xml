@@ -9768,7 +9768,7 @@ TODO: delete them permanently from here
   <desc>block common keywords in password string</desc>
 </attr>
 
-<attr id="3091" name="carbonioChatsVideoServerRecordingEnabled" type="boolean" cardinality="single" optionalIn="account,cos,domain" flags="accountCosDomainInherited,accountInfo,domainInfo" since="9.0.0">
+<attr id="3091" name="carbonioVideoServerRecordingEnabled" type="boolean" cardinality="single" optionalIn="account,cos,domain" flags="accountCosDomainInherited,accountInfo,domainInfo" since="9.0.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>Enable video server recording for Carbonio chats</desc>
 </attr>
