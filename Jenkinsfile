@@ -30,7 +30,7 @@ pipeline {
                     cat <<EOF > build.properties
                     debug=0
                     is-production=1
-                    carbonio.buildinfo.version=22.6.1_ZEXTRAS_202206
+                    carbonio.buildinfo.version=22.7.0_ZEXTRAS_202207
                     EOF
                    """
                  withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
@@ -77,24 +77,6 @@ pipeline {
             stages {
                 stage('pacur') {
                     parallel {
-                        stage('Ubuntu 18.04') {
-                            agent {
-                                node {
-                                    label 'pacur-agent-ubuntu-18.04-v1'
-                                }
-                            }
-                            steps {
-                                unstash 'staging'
-                                sh 'cp -r staging /tmp'
-                                sh 'sudo pacur build ubuntu-bionic /tmp/staging/packages'
-                                stash includes: 'artifacts/', name: 'artifacts-ubuntu-bionic'
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
-                                }
-                            }
-                        }
                         stage('Ubuntu 20.04') {
                             agent {
                                 node {
@@ -143,7 +125,6 @@ pipeline {
                 }
             }
             steps {
-                unstash 'artifacts-ubuntu-bionic'
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-rocky-8'
 
@@ -154,11 +135,6 @@ pipeline {
                     buildInfo = Artifactory.newBuildInfo()
                     uploadSpec = '''{
                         "files": [
-                            {
-                                "pattern": "artifacts/*bionic*.deb",
-                                "target": "ubuntu-playground/pool/",
-                                "props": "deb.distribution=bionic;deb.component=main;deb.architecture=amd64"
-                            },
                             {
                                 "pattern": "artifacts/*focal*.deb",
                                 "target": "ubuntu-playground/pool/",
@@ -218,7 +194,6 @@ pipeline {
                 }
             }
             steps {
-                unstash 'artifacts-ubuntu-bionic'
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-rocky-8'
 
@@ -233,11 +208,6 @@ pipeline {
                     buildInfo.name += "-ubuntu"
                     uploadSpec = """{
                         "files": [
-                            {
-                                "pattern": "artifacts/*bionic*.deb",
-                                "target": "ubuntu-rc/pool/",
-                                "props": "deb.distribution=bionic;deb.component=main;deb.architecture=amd64"
-                            },
                             {
                                 "pattern": "artifacts/*focal*.deb",
                                 "target": "ubuntu-rc/pool/",

@@ -3,8 +3,8 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-appserver-service"
-pkgver="4.0.10"
-pkgrel="2"
+pkgver="4.0.11"
+pkgrel="1"
 pkgdesc="Carbonio Mailbox Service"
 pkgdesclong=(
   "Carbonio Mailbox Service"
