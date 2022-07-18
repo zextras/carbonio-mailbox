@@ -4,10 +4,7 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Server;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 class WebSSLUpstreamServersVar extends ServersVar {
 
@@ -26,15 +23,7 @@ class WebSSLUpstreamServersVar extends ServersVar {
         configSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyHttpSSLPortAttribute, "");
 
     List<Server> uniqueMailClientServers =
-        mProv.getAllMailClientServers().stream()
-            .collect(
-                Collectors.collectingAndThen(
-                    Collectors.toCollection(
-                        () ->
-                            new TreeSet<>(
-                                Comparator.comparing(
-                                    server -> server.getAttr(ZAttrProvisioning.A_zimbraId)))),
-                    ArrayList::new));
+        Utils.getUniqueServersList(mProv.getAllMailClientServers());
 
     for (Server server : uniqueMailClientServers) {
       String serverName = server.getAttr(ZAttrProvisioning.A_zimbraServiceHostname, "");
