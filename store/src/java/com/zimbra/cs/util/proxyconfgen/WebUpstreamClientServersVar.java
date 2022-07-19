@@ -24,8 +24,10 @@ class WebUpstreamClientServersVar extends ProxyConfVar {
     String portName =
         configSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyHttpPortAttribute, "");
 
-    List<Server> webClientServers = mProv.getAllWebClientServers();
-    for (Server server : webClientServers) {
+    List<Server> uniqueWebClientServers =
+        Utils.getUniqueServersList(mProv.getAllWebClientServers());
+
+    for (Server server : uniqueWebClientServers) {
       String serverName = server.getAttr(ZAttrProvisioning.A_zimbraServiceHostname, "");
 
       if (isValidUpstream(server, serverName)) {

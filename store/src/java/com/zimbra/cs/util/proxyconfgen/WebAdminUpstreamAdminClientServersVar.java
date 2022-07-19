@@ -24,8 +24,10 @@ class WebAdminUpstreamAdminClientServersVar extends ProxyConfVar {
     String portName =
         configSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyAdminPortAttribute, "");
 
-    List<Server> adminClientServers = mProv.getAllAdminClientServers();
-    for (Server server : adminClientServers) {
+    List<Server> uniqueAdminClientServers =
+        Utils.getUniqueServersList(mProv.getAllAdminClientServers());
+
+    for (Server server : uniqueAdminClientServers) {
       String serverName = server.getAttr(ZAttrProvisioning.A_zimbraServiceHostname, "");
 
       if (isValidUpstream(server, serverName)) {

@@ -21,8 +21,10 @@ class WebAdminUpstreamServersVar extends ServersVar {
     String portName =
         configSource.getAttr(ZAttrProvisioning.A_zimbraReverseProxyAdminPortAttribute, "");
 
-    List<Server> mailClientServers = mProv.getAllMailClientServers();
-    for (Server server : mailClientServers) {
+    List<Server> uniqueMailClientServers =
+        Utils.getUniqueServersList(mProv.getAllMailClientServers());
+
+    for (Server server : uniqueMailClientServers) {
       String serverName = server.getAttr(ZAttrProvisioning.A_zimbraServiceHostname, "");
 
       if (isValidUpstream(server, serverName)) {
