@@ -30,7 +30,7 @@ pipeline {
                     cat <<EOF > build.properties
                     debug=0
                     is-production=1
-                    carbonio.buildinfo.version=22.7.0_ZEXTRAS_202207
+                    carbonio.buildinfo.version=22.7.1_ZEXTRAS_202207
                     EOF
                    """
                  withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {

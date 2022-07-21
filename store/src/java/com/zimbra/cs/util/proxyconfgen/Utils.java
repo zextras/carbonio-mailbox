@@ -21,7 +21,7 @@ public final class Utils {
    * @param servers List of Servers
    * @return return List of filtered servers
    * @author Keshav Bhatt
-   * @since 22.7.0
+   * @since 22.7.1
    */
   public static List<Server> getUniqueServersList(List<Server> servers) {
     return servers.stream()
