@@ -75,7 +75,6 @@ public class ContentServlet extends ZimbraServlet {
     protected static final String PARAM_DUMPSTER = "dumpster";
     protected static final String PARAM_SYNC = "sync";
     protected static final String PARAM_EXPUNGE = "expunge";
-    protected static final String PARAM_LOCALE_ID = L10nUtil.P_LOCALE_ID;
 
     protected static final String FORMAT_RAW = "raw";
     protected static final String FORMAT_DEFANGED_HTML = "htmldf";
