@@ -88,7 +88,7 @@ public class ContentServlet extends ZimbraServlet {
     protected static final String MSGPAGE_BLOCK = "errorpage.attachment.blocked";
     private String mBlockPage = null;
 
-    private static Log mLog = LogFactory.getLog(ContentServlet.class);
+    private static final Log mLog = LogFactory.getLog(ContentServlet.class);
 
     private void getCommand(HttpServletRequest req, HttpServletResponse resp, AuthToken token)
     throws ServletException, IOException {
