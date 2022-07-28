@@ -7,6 +7,7 @@ package com.zimbra.cs.service;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.mime.ContentDisposition;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
@@ -202,7 +203,8 @@ public class ContentServlet extends ZimbraServlet {
                     || FORMAT_DEFANGED_HTML_NOT_IMAGES.equals(fmt))) {
               sendbackDefangedHtml(mp, contentType, resp, fmt);
             } else {
-              if (!isTrue(Provisioning.A_zimbraAttachmentsViewInHtmlOnly, mbox.getAccountId())) {
+              if (!isTrue(
+                  ZAttrProvisioning.A_zimbraAttachmentsViewInHtmlOnly, mbox.getAccountId())) {
                 sendbackOriginalDoc(mp, contentType, req, resp);
               } else {
                 req.setAttribute(ATTR_MIMEPART, mp);
@@ -376,7 +378,7 @@ public class ContentServlet extends ZimbraServlet {
       return;
     }
 
-    if (isTrue(Provisioning.A_zimbraAttachmentsBlocked, authToken.getAccountId())) {
+    if (isTrue(ZAttrProvisioning.A_zimbraAttachmentsBlocked, authToken.getAccountId())) {
       sendbackBlockMessage(req, resp);
       return;
     }
