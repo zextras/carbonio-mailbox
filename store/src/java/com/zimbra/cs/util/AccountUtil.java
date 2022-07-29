@@ -9,6 +9,7 @@ import com.sun.mail.smtp.SMTPMessage;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.Key.DomainBy;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
@@ -80,11 +81,11 @@ public class AccountUtil {
    * quota and domain max mailbox quota. Returns zero for unlimited effective quota.
    */
   public static long getEffectiveQuota(Account acct) throws ServiceException {
-    long acctQuota = acct.getLongAttr(Provisioning.A_zimbraMailQuota, 0);
+    long acctQuota = acct.getLongAttr(ZAttrProvisioning.A_zimbraMailQuota, 0);
     Domain domain = Provisioning.getInstance().getDomain(acct);
     long domainQuota = 0;
     if (domain != null) {
-      domainQuota = domain.getLongAttr(Provisioning.A_zimbraMailDomainQuota, 0);
+      domainQuota = domain.getLongAttr(ZAttrProvisioning.A_zimbraMailDomainQuota, 0);
     }
     if (acctQuota == 0) {
       return domainQuota;
@@ -98,7 +99,7 @@ public class AccountUtil {
   public static boolean isOverAggregateQuota(Domain domain) {
     long quota = domain.getDomainAggregateQuota();
     return quota != 0
-        && domain.getLongAttr(Provisioning.A_zimbraAggregateQuotaLastUsage, 0) > quota;
+        && domain.getLongAttr(ZAttrProvisioning.A_zimbraAggregateQuotaLastUsage, 0) > quota;
   }
 
   public static boolean isSendAllowedOverAggregateQuota(Domain domain) {
@@ -133,8 +134,8 @@ public class AccountUtil {
 
   public static InternetAddress getFriendlyEmailAddress(Account acct) {
     // check "displayName" for personal part, and fall back to "cn" if not present
-    String personalPart = acct.getAttr(Provisioning.A_displayName);
-    if (personalPart == null) personalPart = acct.getAttr(Provisioning.A_cn);
+    String personalPart = acct.getAttr(ZAttrProvisioning.A_displayName);
+    if (personalPart == null) personalPart = acct.getAttr(ZAttrProvisioning.A_cn);
     // catch the case where no real name was present and so cn was defaulted to the username
     if (personalPart == null
         || personalPart.trim().equals("")
@@ -255,7 +256,7 @@ public class AccountUtil {
    */
   public static String getCanonicalAddress(Account account) throws ServiceException {
     // If account has a canonical address, let's use that.
-    String ca = account.getAttr(Provisioning.A_zimbraMailCanonicalAddress);
+    String ca = account.getAttr(ZAttrProvisioning.A_zimbraMailCanonicalAddress);
 
     // But we still have to canonicalize domain names, so do that with account address
     if (ca == null) ca = account.getName();
@@ -266,7 +267,7 @@ public class AccountUtil {
     Domain domain = Provisioning.getInstance().getDomain(Key.DomainBy.name, parts[1], true);
     if (domain == null) return ca;
 
-    String domainCatchAll = domain.getAttr(Provisioning.A_zimbraMailCatchAllCanonicalAddress);
+    String domainCatchAll = domain.getAttr(ZAttrProvisioning.A_zimbraMailCatchAllCanonicalAddress);
     if (domainCatchAll != null) return parts[0] + domainCatchAll;
 
     return ca;
@@ -308,7 +309,7 @@ public class AccountUtil {
     String[] accountAliases = acct.getMailAlias();
     for (String addr : accountAliases) addrs.add(addr.toLowerCase());
 
-    String[] allowedFromAddrs = acct.getMultiAttr(Provisioning.A_zimbraAllowFromAddress);
+    String[] allowedFromAddrs = acct.getMultiAttr(ZAttrProvisioning.A_zimbraAllowFromAddress);
     for (String addr : allowedFromAddrs) addrs.add(addr.toLowerCase());
 
     return addrs;
@@ -403,13 +404,13 @@ public class AccountUtil {
   public static String getBaseUri(Server server) {
     if (server == null) return null;
 
-    String host = server.getAttr(Provisioning.A_zimbraServiceHostname);
-    String mode = server.getAttr(Provisioning.A_zimbraMailMode, "http");
-    int port = server.getIntAttr(Provisioning.A_zimbraMailPort, 0);
+    String host = server.getAttr(ZAttrProvisioning.A_zimbraServiceHostname);
+    String mode = server.getAttr(ZAttrProvisioning.A_zimbraMailMode, "http");
+    int port = server.getIntAttr(ZAttrProvisioning.A_zimbraMailPort, 0);
     if (port > 0 && !mode.equalsIgnoreCase("https") && !mode.equalsIgnoreCase("redirect")) {
       return "http://" + host + ':' + port;
     } else if (!mode.equalsIgnoreCase("http")) {
-      port = server.getIntAttr(Provisioning.A_zimbraMailSSLPort, 0);
+      port = server.getIntAttr(ZAttrProvisioning.A_zimbraMailSSLPort, 0);
       if (port > 0) return "https://" + host + ':' + port;
     }
     ZimbraLog.account.warn("no service port available on host " + host);
@@ -461,7 +462,8 @@ public class AccountUtil {
   }
 
   public static String[] getAllowedSendAddresses(NamedEntry grantor) {
-    String[] addrs = grantor.getMultiAttr(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender);
+    String[] addrs =
+        grantor.getMultiAttr(ZAttrProvisioning.A_zimbraPrefAllowAddressForDelegatedSender);
     if (addrs.length == 0) {
       addrs = new String[] {grantor.getName()};
     }
@@ -768,7 +770,7 @@ public class AccountUtil {
       }
 
       if (!internalOnly) {
-        String[] addrs = account.getMultiAttr(Provisioning.A_zimbraAllowFromAddress);
+        String[] addrs = account.getMultiAttr(ZAttrProvisioning.A_zimbraAllowFromAddress);
         if (addrs != null) {
           for (String addr : addrs) {
             if (!StringUtil.isNullOrEmpty(addr)) {
