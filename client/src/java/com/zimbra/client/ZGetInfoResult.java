@@ -32,22 +32,17 @@ import org.json.JSONException;
 
 public class ZGetInfoResult implements ToZJSONObject {
 
-  private GetInfoResponse data;
-  private long expiration;
+  private final GetInfoResponse data;
+  private final long expiration;
 
   static Map<String, List<String>> getMap(Element e, String root, String elName) {
-    Map<String, List<String>> result = new HashMap<String, List<String>>();
+    Map<String, List<String>> result = new HashMap<>();
     Element attrsEl = e.getOptionalElement(root);
     if (attrsEl != null) {
 
       for (KeyValuePair pair : attrsEl.listKeyValuePairs(elName, AccountConstants.A_NAME)) {
-        // StringUtil.addToMultiMap(mAttrs, pair.getKey(), pair.getValue());
         String name = pair.getKey();
-        List<String> list = result.get(name);
-        if (list == null) {
-          list = new ArrayList<String>();
-          result.put(name, list);
-        }
+        List<String> list = result.computeIfAbsent(name, k -> new ArrayList<>());
         list.add(pair.getValue());
       }
     }
@@ -82,7 +77,7 @@ public class ZGetInfoResult implements ToZJSONObject {
   }
 
   public List<ZDataSource> getDataSources() {
-    List<ZDataSource> newList = new ArrayList<ZDataSource>();
+    List<ZDataSource> newList = new ArrayList<>();
     for (DataSource ds : data.getDataSources()) {
       if (ds instanceof Pop3DataSource) {
         newList.add(new ZPop3DataSource((Pop3DataSource) ds));
@@ -114,7 +109,7 @@ public class ZGetInfoResult implements ToZJSONObject {
    */
   public Set<String> getEmailAddresses() {
     Multimap<String, String> attrs = data.getAttrsMultimap();
-    Set<String> addresses = new HashSet<String>();
+    Set<String> addresses = new HashSet<>();
     addresses.add(getName().toLowerCase());
     for (String alias : attrs.get(ZAttrProvisioning.A_zimbraMailAlias)) {
       addresses.add(alias.toLowerCase());
