@@ -1,11 +1,14 @@
 package com.zimbra.cs.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
@@ -16,9 +19,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class AccountUtilTest {
-  Provisioning prov;
-
   static final String GLOBAL_TEST_ACCOUNT_NAME = "gloabaltestaccount@zextras.com";
+  Provisioning prov;
 
   @Before
   public void setUp() throws Exception {
@@ -63,6 +65,17 @@ public class AccountUtilTest {
     server.setServiceHostname("demo.zextras.com");
     server.setMailPort(80);
     assertEquals("http://demo.zextras.com:80/service/soap/", AccountUtil.getSoapUri(account));
+  }
+
+  @Test
+  public void shouldReturnWhenIsGalAccountCalled() throws ServiceException {
+    Account account = prov.get(Key.AccountBy.name, GLOBAL_TEST_ACCOUNT_NAME);
+    assertFalse(AccountUtil.isGalSyncAccount(account));
+
+    Domain domain = prov.getDomain(account);
+    String[] galAcctId = {account.getId()};
+    domain.setGalAccountId(galAcctId);
+    assertTrue(AccountUtil.isGalSyncAccount(account));
   }
 
   @After
