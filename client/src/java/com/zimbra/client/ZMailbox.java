@@ -1604,14 +1604,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
     }
 
-    public ZLicenses getLicenses() throws ServiceException {
-        return getLicenses(false);
-    }
-
-    public ZLicenses getLicenses(boolean refresh) throws ServiceException {
-        return getAccountInfo(refresh).getLicenses();
-    }
-
     public ZGetInfoResult getAccountInfo(boolean refresh) throws ServiceException {
         if (mGetInfoResult == null || refresh) {
             GetInfoRequest req = new GetInfoRequest(NOT_ZIMLETS);
