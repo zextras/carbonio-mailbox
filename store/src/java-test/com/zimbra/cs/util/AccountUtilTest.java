@@ -82,6 +82,26 @@ public class AccountUtilTest {
     assertTrue(AccountUtil.isGalSyncAccount(account));
   }
 
+  @Test
+  public void shouldReturnFalseWhenDomainIsExternalAndAddressHasInternalDomainCalled()
+      throws ServiceException {
+
+    Map<String, Object> attrs = Maps.newHashMap();
+    attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+    prov.createAccount("kiraplsignh@gmail.com", "secret", attrs);
+
+    Account account = prov.get(Key.AccountBy.name, "kiraplsignh@gmail.com");
+    assertFalse(AccountUtil.addressHasInternalDomain(account.getName()));
+  }
+
+  @Test
+  public void shouldReturnTrueWhenDomainIsExternalAndAddressHasInternalDomainCalled()
+      throws ServiceException {
+
+    Account account = prov.get(Key.AccountBy.name, GLOBAL_TEST_ACCOUNT_NAME);
+    assertTrue(AccountUtil.addressHasInternalDomain(account.getName()));
+  }
+
   @After
   public void tearDown() {
     try {
