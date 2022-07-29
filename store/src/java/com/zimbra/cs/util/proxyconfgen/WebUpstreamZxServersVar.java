@@ -20,8 +20,10 @@ class WebUpstreamZxServersVar extends ServersVar {
   public void update() throws ServiceException {
     ArrayList<String> directives = new ArrayList<>();
 
-    List<Server> mailClientServers = mProv.getAllMailClientServers();
-    for (Server server : mailClientServers) {
+    List<Server> uniqueMailClientServers =
+        Utils.getUniqueServersList(mProv.getAllMailClientServers());
+
+    for (Server server : uniqueMailClientServers) {
       String serverName = server.getAttr(ZAttrProvisioning.A_zimbraServiceHostname, "");
 
       if (isValidUpstream(server, serverName)) {

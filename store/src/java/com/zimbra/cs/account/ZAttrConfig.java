@@ -13,29 +13,359 @@ package com.zimbra.cs.account;
 import static com.zimbra.common.account.ProvisioningConstants.FALSE;
 import static com.zimbra.common.account.ProvisioningConstants.TRUE;
 
-import com.zimbra.cs.mailclient.smtp.SmtpConfig;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.zimbra.common.account.ZAttr;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.ldap.LdapDateUtil;
+import com.zimbra.cs.mailclient.smtp.SmtpConfig;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-
-/**
- * AUTO-GENERATED. DO NOT EDIT.
- *
- */
+/** AUTO-GENERATED. DO NOT EDIT. */
 public abstract class ZAttrConfig extends Entry {
 
-    public ZAttrConfig(Map<String, Object> attrs, Provisioning provisioning) {
-        super(attrs, null, provisioning);
+  public ZAttrConfig(Map<String, Object> attrs, Provisioning provisioning) {
+    super(attrs, null, provisioning);
+  }
+
+  ///// BEGIN-AUTO-GEN-REPLACE
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * <p>Use getCarbonioAdminProxyPortAsString to access value as a string.
+     *
+     * @see #getCarbonioAdminProxyPortAsString()
+     *
+     * @return carbonioAdminProxyPort, or 6071 if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public int getCarbonioAdminProxyPort() {
+        return getIntAttr(Provisioning.A_carbonioAdminProxyPort, 6071, true);
     }
 
-    ///// BEGIN-AUTO-GEN-REPLACE
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @return carbonioAdminProxyPort, or "6071" if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public String getCarbonioAdminProxyPortAsString() {
+        return getAttr(Provisioning.A_carbonioAdminProxyPort, "6071", true);
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @param carbonioAdminProxyPort new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public void setCarbonioAdminProxyPort(int carbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(carbonioAdminProxyPort));
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @param carbonioAdminProxyPort new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> setCarbonioAdminProxyPort(int carbonioAdminProxyPort, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(carbonioAdminProxyPort));
+        return attrs;
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @param carbonioAdminProxyPort new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public void setCarbonioAdminProxyPortAsString(String carbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, carbonioAdminProxyPort);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @param carbonioAdminProxyPort new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> setCarbonioAdminProxyPortAsString(String carbonioAdminProxyPort, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, carbonioAdminProxyPort);
+        return attrs;
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public void unsetCarbonioAdminProxyPort() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public Map<String,Object> unsetCarbonioAdminProxyPort(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @return carbonioAllowFeedback, or true if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public boolean isCarbonioAllowFeedback() {
+        return getBooleanAttr(Provisioning.A_carbonioAllowFeedback, true, true);
+    }
+
+    /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @param carbonioAllowFeedback new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public void setCarbonioAllowFeedback(boolean carbonioAllowFeedback) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAllowFeedback, carbonioAllowFeedback ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @param carbonioAllowFeedback new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public Map<String,Object> setCarbonioAllowFeedback(boolean carbonioAllowFeedback, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAllowFeedback, carbonioAllowFeedback ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public void unsetCarbonioAllowFeedback() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAllowFeedback, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public Map<String,Object> unsetCarbonioAllowFeedback(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAllowFeedback, "");
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @return carbonioSendAnalytics, or true if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public boolean isCarbonioSendAnalytics() {
+        return getBooleanAttr(Provisioning.A_carbonioSendAnalytics, true, true);
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @param carbonioSendAnalytics new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public void setCarbonioSendAnalytics(boolean carbonioSendAnalytics) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendAnalytics, carbonioSendAnalytics ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @param carbonioSendAnalytics new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public Map<String,Object> setCarbonioSendAnalytics(boolean carbonioSendAnalytics, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendAnalytics, carbonioSendAnalytics ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public void unsetCarbonioSendAnalytics() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendAnalytics, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public Map<String,Object> unsetCarbonioSendAnalytics(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendAnalytics, "");
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can send the error stack backtrace
+     *
+     * @return carbonioSendFullErrorStack, or false if unset
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public boolean isCarbonioSendFullErrorStack() {
+        return getBooleanAttr(Provisioning.A_carbonioSendFullErrorStack, false, true);
+    }
+
+    /**
+     * Whether Carbonio can send the error stack backtrace
+     *
+     * @param carbonioSendFullErrorStack new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public void setCarbonioSendFullErrorStack(boolean carbonioSendFullErrorStack) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendFullErrorStack, carbonioSendFullErrorStack ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can send the error stack backtrace
+     *
+     * @param carbonioSendFullErrorStack new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public Map<String,Object> setCarbonioSendFullErrorStack(boolean carbonioSendFullErrorStack, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendFullErrorStack, carbonioSendFullErrorStack ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can send the error stack backtrace
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public void unsetCarbonioSendFullErrorStack() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendFullErrorStack, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can send the error stack backtrace
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public Map<String,Object> unsetCarbonioSendFullErrorStack(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioSendFullErrorStack, "");
+        return attrs;
+    }
 
     /**
      * RFC2256: descriptive information
@@ -2155,11 +2485,11 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * URL prefix for where the zimbraAdmin app resides on this server
      *
-     * @return zimbraAdminURL, or "/zimbraAdmin" if unset
+     * @return zimbraAdminURL, or "/carbonioAdmin" if unset
      */
     @ZAttr(id=497)
     public String getAdminURL() {
-        return getAttr(Provisioning.A_zimbraAdminURL, "/zimbraAdmin", true);
+        return getAttr(Provisioning.A_zimbraAdminURL, "/carbonioAdmin", true);
     }
 
     /**
@@ -24134,11 +24464,11 @@ public abstract class ZAttrConfig extends Entry {
      *
      * @see #getLastLogonTimestampFrequencyAsString()
      *
-     * @return zimbraLastLogonTimestampFrequency in millseconds, or 604800000 (7d)  if unset
+     * @return zimbraLastLogonTimestampFrequency in millseconds, or 86400000 (1d)  if unset
      */
     @ZAttr(id=114)
     public long getLastLogonTimestampFrequency() {
-        return getTimeInterval(Provisioning.A_zimbraLastLogonTimestampFrequency, 604800000L, true);
+        return getTimeInterval(Provisioning.A_zimbraLastLogonTimestampFrequency, 86400000L, true);
     }
 
     /**
@@ -24149,11 +24479,11 @@ public abstract class ZAttrConfig extends Entry {
      * milliseconds. If time unit is not specified, the default is
      * s(seconds).
      *
-     * @return zimbraLastLogonTimestampFrequency, or "7d" if unset
+     * @return zimbraLastLogonTimestampFrequency, or "1d" if unset
      */
     @ZAttr(id=114)
     public String getLastLogonTimestampFrequencyAsString() {
-        return getAttr(Provisioning.A_zimbraLastLogonTimestampFrequency, "7d", true);
+        return getAttr(Provisioning.A_zimbraLastLogonTimestampFrequency, "1d", true);
     }
 
     /**
@@ -26512,11 +26842,11 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [http, https, both, mixed, redirect]
      *
-     * @return zimbraMailMode, or null if unset and/or has invalid value
+     * @return zimbraMailMode, or ZAttrProvisioning.MailMode.both if unset and/or has invalid value
      */
     @ZAttr(id=308)
     public ZAttrProvisioning.MailMode getMailMode() {
-        try { String v = getAttr(Provisioning.A_zimbraMailMode, true, true); return v == null ? null : ZAttrProvisioning.MailMode.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
+        try { String v = getAttr(Provisioning.A_zimbraMailMode, true, true); return v == null ? ZAttrProvisioning.MailMode.both : ZAttrProvisioning.MailMode.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MailMode.both; }
     }
 
     /**
@@ -26525,11 +26855,11 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [http, https, both, mixed, redirect]
      *
-     * @return zimbraMailMode, or null if unset
+     * @return zimbraMailMode, or "both" if unset
      */
     @ZAttr(id=308)
     public String getMailModeAsString() {
-        return getAttr(Provisioning.A_zimbraMailMode, null, true);
+        return getAttr(Provisioning.A_zimbraMailMode, "both", true);
     }
 
     /**
@@ -27964,11 +28294,11 @@ public abstract class ZAttrConfig extends Entry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -28004,11 +28334,11 @@ public abstract class ZAttrConfig extends Entry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -28047,11 +28377,11 @@ public abstract class ZAttrConfig extends Entry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -28091,11 +28421,11 @@ public abstract class ZAttrConfig extends Entry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -28133,11 +28463,11 @@ public abstract class ZAttrConfig extends Entry {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -42814,13 +43144,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpTlsCiphers, or ZAttrProvisioning.MtaSmtpTlsCiphers.export if unset and/or has invalid value
+     * @return zimbraMtaSmtpTlsCiphers, or ZAttrProvisioning.MtaSmtpTlsCiphers.high if unset and/or has invalid value
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1513)
     public ZAttrProvisioning.MtaSmtpTlsCiphers getMtaSmtpTlsCiphers() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpTlsCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpTlsCiphers.export : ZAttrProvisioning.MtaSmtpTlsCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpTlsCiphers.export; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpTlsCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpTlsCiphers.high : ZAttrProvisioning.MtaSmtpTlsCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpTlsCiphers.high; }
     }
 
     /**
@@ -43153,13 +43483,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpTlsMandatoryCiphers, or ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.medium if unset and/or has invalid value
+     * @return zimbraMtaSmtpTlsMandatoryCiphers, or ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.high if unset and/or has invalid value
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1514)
     public ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers getMtaSmtpTlsMandatoryCiphers() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpTlsMandatoryCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.medium : ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.medium; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpTlsMandatoryCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.high : ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpTlsMandatoryCiphers.high; }
     }
 
     /**
@@ -43282,7 +43612,7 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * Value for postconf smtp_tls_mandatory_protocols
      *
-     * @return zimbraMtaSmtpTlsMandatoryProtocols, or "!SSLv2, !SSLv3, !TLSv1, !TLSv1.1 if unset
+     * @return zimbraMtaSmtpTlsMandatoryProtocols, or "!SSLv2, !SSLv3, !TLSv1, !TLSv1.1" if unset
      *
      * @since ZCS 8.7.0
      */
@@ -45676,13 +46006,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpdTlsCiphers, or ZAttrProvisioning.MtaSmtpdTlsCiphers.export if unset and/or has invalid value
+     * @return zimbraMtaSmtpdTlsCiphers, or ZAttrProvisioning.MtaSmtpdTlsCiphers.high if unset and/or has invalid value
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1515)
     public ZAttrProvisioning.MtaSmtpdTlsCiphers getMtaSmtpdTlsCiphers() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsCiphers.export : ZAttrProvisioning.MtaSmtpdTlsCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsCiphers.export; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsCiphers.high : ZAttrProvisioning.MtaSmtpdTlsCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsCiphers.high; }
     }
 
     /**
@@ -45956,13 +46286,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [export, low, medium, high, null]
      *
-     * @return zimbraMtaSmtpdTlsMandatoryCiphers, or ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.medium if unset and/or has invalid value
+     * @return zimbraMtaSmtpdTlsMandatoryCiphers, or ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.high if unset and/or has invalid value
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1516)
     public ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers getMtaSmtpdTlsMandatoryCiphers() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsMandatoryCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.medium : ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.medium; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsMandatoryCiphers, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.high : ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsMandatoryCiphers.high; }
     }
 
     /**
@@ -46237,7 +46567,7 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=2076)
     public ZAttrProvisioning.MtaSmtpdTlsReceivedHeader getMtaSmtpdTlsReceivedHeader() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsReceivedHeader, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.no : ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.yes; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdTlsReceivedHeader, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.yes : ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdTlsReceivedHeader.yes; }
     }
 
     /**
@@ -58720,7 +59050,7 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=1973)
     public String[] getReverseProxyResponseHeaders() {
-        return getMultiAttr(Provisioning.A_zimbraReverseProxyResponseHeaders, true, true);
+        String[] value = getMultiAttr(Provisioning.A_zimbraReverseProxyResponseHeaders, true, true); return value.length > 0 ? value : new String[] {"Strict-Transport-Security: \"max-age=31536000; includeSubDomains; preload\"","Permissions-Policy: \"geolocation=(self), microphone=(self)\"","Referrer-Policy: \"same-origin\"","X-Content-Type-Options: nosniff\"","X-Robots-Tag: noindex\"","X-XSS-Protection: \"1; mode=block\"","Expect-CT: max-age=86400"};
     }
 
     /**
@@ -68184,8 +68514,7 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=97)
     public String[] getSmtpHostname() {
-        String[] value = getMultiAttr(Provisioning.A_zimbraSmtpHostname, true, true);
-        return value.length > 0 ? value : new String[] {SmtpConfig.DEFAULT_HOST};
+        String[] value = getMultiAttr(Provisioning.A_zimbraSmtpHostname, true, true); return value.length > 0 ? value : new String[] {"127.78.0.7"};
     }
 
     /**
@@ -68297,25 +68626,25 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * <p>Uses getSmtpPortAsString internally to access value as a string.
+     * <p>Use getSmtpPortAsString to access value as a string.
      *
      * @see #getSmtpPortAsString()
      *
-     * @return zimbraSmtpPort, or default value if unset
+     * @return zimbraSmtpPort, or 20025 if unset
      */
     @ZAttr(id=98)
     public int getSmtpPort() {
-        return Integer.parseInt(getSmtpPortAsString());
+        return getIntAttr(Provisioning.A_zimbraSmtpPort, 20025, true);
     }
 
     /**
      * the SMTP server port to connect to when sending mail
      *
-     * @return zimbraSmtpPort, or default value if unset
+     * @return zimbraSmtpPort, or "20025" if unset
      */
     @ZAttr(id=98)
     public String getSmtpPortAsString() {
-        return getAttr(Provisioning.A_zimbraSmtpPort, String.valueOf(SmtpConfig.DEFAULT_PORT), true);
+        return getAttr(Provisioning.A_zimbraSmtpPort, "20025", true);
     }
 
     /**
@@ -72904,8 +73233,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * last response of last Zimbra version check. This will be a short XML
-     * that will contain information about available updates.
+     * last response of last Zimbra version check
      *
      * @return zimbraVersionCheckLastResponse, or null if unset
      *
@@ -72917,8 +73245,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * last response of last Zimbra version check. This will be a short XML
-     * that will contain information about available updates.
+     * last response of last Zimbra version check
      *
      * @param zimbraVersionCheckLastResponse new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -72933,8 +73260,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * last response of last Zimbra version check. This will be a short XML
-     * that will contain information about available updates.
+     * last response of last Zimbra version check
      *
      * @param zimbraVersionCheckLastResponse new value
      * @param attrs existing map to populate, or null to create a new map
@@ -72950,8 +73276,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * last response of last Zimbra version check. This will be a short XML
-     * that will contain information about available updates.
+     * last response of last Zimbra version check
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -72965,8 +73290,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * last response of last Zimbra version check. This will be a short XML
-     * that will contain information about available updates.
+     * last response of last Zimbra version check
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -73554,13 +73878,13 @@ public abstract class ZAttrConfig extends Entry {
     /**
      * URL of the Zimbra version check script
      *
-     * @return zimbraVersionCheckURL, or "https://docs.zextras.com/check-version" if unset
+     * @return zimbraVersionCheckURL, or "updateUrl" if unset
      *
      * @since ZCS 6.0.2
      */
     @ZAttr(id=1061)
     public String getVersionCheckURL() {
-        return getAttr(Provisioning.A_zimbraVersionCheckURL, "https://docs.zextras.com/check-version", true);
+        return getAttr(Provisioning.A_zimbraVersionCheckURL, "updateUrl", true);
     }
 
     /**
@@ -75021,8 +75345,7 @@ public abstract class ZAttrConfig extends Entry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @return zimbraWebClientSupportedHelps, or empty array if unset
      *
@@ -75044,8 +75367,7 @@ public abstract class ZAttrConfig extends Entry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -75070,8 +75392,7 @@ public abstract class ZAttrConfig extends Entry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new value
      * @param attrs existing map to populate, or null to create a new map
@@ -75097,8 +75418,7 @@ public abstract class ZAttrConfig extends Entry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -75123,8 +75443,7 @@ public abstract class ZAttrConfig extends Entry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -75150,8 +75469,7 @@ public abstract class ZAttrConfig extends Entry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -75176,8 +75494,7 @@ public abstract class ZAttrConfig extends Entry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param zimbraWebClientSupportedHelps existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -75203,8 +75520,7 @@ public abstract class ZAttrConfig extends Entry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -75228,8 +75544,7 @@ public abstract class ZAttrConfig extends Entry {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -76051,112 +76366,6 @@ public abstract class ZAttrConfig extends Entry {
         return attrs;
     }
 
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * <p>Use getCarbonioAdminProxyPortAsString to access value as a string.
-     *
-     * @see #getCarbonioAdminProxyPortAsString()
-     *
-     * @return CarbonioAdminProxyPort, or 6071 if unset
-     */
-    @ZAttr(id=3089)
-    public int getCarbonioAdminProxyPort() {
-        return getIntAttr(Provisioning.A_carbonioAdminProxyPort, 6071, true);
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @return CarbonioAdminProxyPort, or "6071" if unset
-     */
-    @ZAttr(id=3089)
-    public String getCarbonioAdminProxyPortAsString() {
-        return getAttr(Provisioning.A_carbonioAdminProxyPort, "6071", true);
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @param CarbonioAdminProxyPort new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3089)
-    public void setCarbonioAdminProxyPort(int CarbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(CarbonioAdminProxyPort));
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @param CarbonioAdminProxyPort new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3089)
-    public Map<String,Object> setCarbonioAdminProxyPort(int CarbonioAdminProxyPort, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, Integer.toString(CarbonioAdminProxyPort));
-        return attrs;
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @param CarbonioAdminProxyPort new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3089)
-    public void setCarbonioAdminProxyPortAsString(String CarbonioAdminProxyPort) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, CarbonioAdminProxyPort);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @param CarbonioAdminProxyPort new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3089)
-    public Map<String,Object> setCarbonioAdminProxyPortAsString(String CarbonioAdminProxyPort, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, CarbonioAdminProxyPort);
-        return attrs;
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=3089)
-    public void unsetCarbonioAdminProxyPort() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * SSL port for Carbonio admin UI
-     *
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=3089)
-    public Map<String,Object> unsetCarbonioAdminProxyPort(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_carbonioAdminProxyPort, "");
-        return attrs;
-    }
-
-
-
-    ///// END-AUTO-GEN-REPLACE
+  ///// END-AUTO-GEN-REPLACE
 
 }

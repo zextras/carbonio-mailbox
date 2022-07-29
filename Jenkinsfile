@@ -6,6 +6,7 @@ pipeline {
     }
     parameters {
         booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
+        booleanParam defaultValue: false, description: 'Whether to run tests', name: 'TEST'
     }
     environment {
         JAVA_OPTS="-Dfile.encoding=UTF8"
@@ -29,7 +30,7 @@ pipeline {
                     cat <<EOF > build.properties
                     debug=0
                     is-production=1
-                    carbonio.buildinfo.version=22.6.0_ZEXTRAS_202206
+                    carbonio.buildinfo.version=22.7.2_ZEXTRAS_202207
                     EOF
                    """
                  withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
@@ -45,6 +46,20 @@ pipeline {
                 sh 'cp -r store* milter* native client common packages soap staging'
                 stash includes: 'staging/**', name: 'staging'
             }
+        }
+        stage("Test all with coverage (allow failure)") {
+          when {
+               expression { params.TEST == true }
+          }
+          steps {
+            sh """
+                   ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant -d \
+                   -propertyfile build.properties \
+                   test-all-coverage-plough-through
+               """
+            publishCoverage adapters: [jacocoAdapter('build/coverage/merged.xml')], calculateDiffForChangeRequests: true, failNoReports: true
+            junit allowEmptyResults: true, testResults: '**/build/test/output/*.xml'
+          }
         }
         stage("Publish to maven") {
             when {
@@ -62,24 +77,6 @@ pipeline {
             stages {
                 stage('pacur') {
                     parallel {
-                        stage('Ubuntu 18.04') {
-                            agent {
-                                node {
-                                    label 'pacur-agent-ubuntu-18.04-v1'
-                                }
-                            }
-                            steps {
-                                unstash 'staging'
-                                sh 'cp -r staging /tmp'
-                                sh 'sudo pacur build ubuntu-bionic /tmp/staging/packages'
-                                stash includes: 'artifacts/', name: 'artifacts-ubuntu-bionic'
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
-                                }
-                            }
-                        }
                         stage('Ubuntu 20.04') {
                             agent {
                                 node {
@@ -128,7 +125,6 @@ pipeline {
                 }
             }
             steps {
-                unstash 'artifacts-ubuntu-bionic'
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-rocky-8'
 
@@ -139,11 +135,6 @@ pipeline {
                     buildInfo = Artifactory.newBuildInfo()
                     uploadSpec = '''{
                         "files": [
-                            {
-                                "pattern": "artifacts/*bionic*.deb",
-                                "target": "ubuntu-playground/pool/",
-                                "props": "deb.distribution=bionic;deb.component=main;deb.architecture=amd64"
-                            },
                             {
                                 "pattern": "artifacts/*focal*.deb",
                                 "target": "ubuntu-playground/pool/",
@@ -203,7 +194,6 @@ pipeline {
                 }
             }
             steps {
-                unstash 'artifacts-ubuntu-bionic'
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-rocky-8'
 
@@ -218,11 +208,6 @@ pipeline {
                     buildInfo.name += "-ubuntu"
                     uploadSpec = """{
                         "files": [
-                            {
-                                "pattern": "artifacts/*bionic*.deb",
-                                "target": "ubuntu-rc/pool/",
-                                "props": "deb.distribution=bionic;deb.component=main;deb.architecture=amd64"
-                            },
                             {
                                 "pattern": "artifacts/*focal*.deb",
                                 "target": "ubuntu-rc/pool/",

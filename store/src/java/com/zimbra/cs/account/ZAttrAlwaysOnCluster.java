@@ -1709,13 +1709,13 @@ public abstract class ZAttrAlwaysOnCluster extends NamedEntry {
      * proxy. When set to TRUE, and using SNI capable clients, there is no
      * need for a separate IP address per domain (zimbraVirtualIPAddress)
      *
-     * @return zimbraReverseProxySNIEnabled, or true if unset
+     * @return zimbraReverseProxySNIEnabled, or false if unset
      *
      * @since ZCS 8.7.0,9.0.0
      */
     @ZAttr(id=1818)
     public boolean isReverseProxySNIEnabled() {
-        return getBooleanAttr(Provisioning.A_zimbraReverseProxySNIEnabled, true, true);
+        return getBooleanAttr(Provisioning.A_zimbraReverseProxySNIEnabled, false, true);
     }
 
     /**

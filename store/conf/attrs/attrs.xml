@@ -788,7 +788,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 </attr>
 
 <attr id="114" name="zimbraLastLogonTimestampFrequency" type="duration" cardinality="single" optionalIn="globalConfig">
-  <globalConfigValue>7d</globalConfigValue>
+  <globalConfigValue>1d</globalConfigValue>
   <desc>how often the zimbraLastLogonTimestamp is updated.  
         if set to 0, updating zimbraLastLogonTimestamp is completely disabled
   </desc>
@@ -3421,7 +3421,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 </attr>
 
 <attr id="640" name="zimbraReverseProxySSLCiphers" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="5.0.5">
-  <globalConfigValue>EECDH+AESGCM:EDH+AESGCM</globalConfigValue>
+  <globalConfigValue>ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384</globalConfigValue>
   <desc>permitted ciphers for reverse proxy. Ciphers are in the formats supported by OpenSSL 
         e.g. ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
         if not set, default ciphers permitted by nginx will apply
@@ -4886,6 +4886,55 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 <attr id="1055" name="zimbraFeatureBriefcaseDocsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="6.0.2">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>Docs features enabled in briefcase</desc>
+</attr>
+
+<attr id="1056" name="zimbraVersionCheckLastAttempt" type="gentime" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+  <desc>time Zimbra version was last checked</desc>
+</attr>
+
+<attr id="1057" name="zimbraVersionCheckLastSuccess" type="gentime" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+  <desc>time Zimbra version was last checked successfully</desc>
+</attr>
+
+<attr id="1058" name="zimbraVersionCheckLastResponse" type="string" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+  <desc>last response of last Zimbra version check</desc>
+</attr>
+
+<attr id="1059" name="zimbraVersionCheckInterval" type="duration" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+  <globalConfigValue>1d</globalConfigValue>
+  <desc>Time interval after which Zimbra version check detects a new version</desc>
+</attr>
+
+<attr id="1060" name="zimbraVersionCheckServer" type="id" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+  <desc>zimbraId of the server that should perform the Zimbra version checks</desc>
+</attr>
+
+<attr id="1061" name="zimbraVersionCheckURL" type="string" max="256" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+  <globalConfigValue>updateUrl</globalConfigValue>
+  <desc>URL of the Zimbra version check script</desc>
+</attr>
+
+<attr id="1062" name="zimbraVersionCheckSendNotifications" type="boolean" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>whether to send a notification message if Zimbra version check detects a new version</desc>
+</attr>
+
+<attr id="1063" name="zimbraVersionCheckNotificationEmail" type="cs_emailp" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+  <desc>email address to send mail to for the Zimbra version check notification message</desc>
+</attr>
+
+<attr id="1064" name="zimbraVersionCheckNotificationEmailFrom" type="string" max="1000" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+  <desc>from address for the Zimbra version check notification message</desc>
+</attr>
+
+<attr id="1065" name="zimbraVersionCheckNotificationSubject" type="string" max="1000" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+  <globalConfigValue>${IS_CRITICAL} updates are available for your Zimbra server</globalConfigValue>
+  <desc>template used to construct the subject of an Zimbra version check notification message</desc>
+</attr>
+
+<attr id="1066" name="zimbraVersionCheckNotificationBody" type="string" max="10000" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+  <globalConfigValue>${BEGIN_PREFIX}The following updates were found:${NEWLINE}${NEWLINE}${END_PREFIX}${BEGIN_UPDATE}${UPDATE_COUNTER}.  ${IS_CRITICAL}.  Version: ${UPDATE_VERSION}, URL: ${UPDATE_URL}${NEWLINE}${NEWLINE}${END_UPDATE}${BEGIN_SIGNATURE}Zimbra Updater${NEWLINE}${END_SIGNATURE}</globalConfigValue>
+  <desc>template used to construct the body of an Zimbra version check notification message</desc>
 </attr>
 
 <attr id="1067" name="zimbraPrefGetMailAction" type="enum" value="default,update" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="6.0.2">
@@ -8331,7 +8380,6 @@ TODO: delete them permanently from here
 
 <attr id="1657" name="zimbraMailboxdSSLProtocols" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.6.0">
   <globalConfigValue>TLSv1.2</globalConfigValue>
-  <globalConfigValue>TLSv1.3</globalConfigValue>
   <desc>List of SSL/TLS protocols (as documented by SunJSSE Provider Protocols and used in setEnabledProtocols) to be enabled in Jetty for HTTPS, IMAPS, POP3S, and STARTTLS (including LMTP)</desc>
 </attr>
 
@@ -9766,5 +9814,25 @@ TODO: delete them permanently from here
 <attr id="3090" name="zimbraPasswordBlockCommonEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="9.0.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>block common keywords in password string</desc>
+</attr>
+
+<attr id="3091" name="carbonioVideoServerRecordingEnabled" type="boolean" cardinality="single" optionalIn="account,cos,domain" flags="accountCosDomainInherited,accountInfo,domainInfo" since="9.0.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>Enable video server recording for Carbonio</desc>
+</attr>
+
+<attr id="3092" name="carbonioSendFullErrorStack" type="boolean" cardinality="single" optionalIn="globalConfig" since="9.0.0">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Whether Carbonio can send the error stack backtrace</desc>
+</attr>
+
+<attr id="3093" name="carbonioSendAnalytics" type="boolean" cardinality="single" optionalIn="globalConfig" since="9.0.0">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Whether Carbonio can send analytics reports</desc>
+</attr>
+
+<attr id="3094" name="carbonioAllowFeedback" type="boolean" cardinality="single" optionalIn="globalConfig" since="9.0.0">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Whether Carbonio can take interactive feedback from users</desc>
 </attr>
 </attrs>

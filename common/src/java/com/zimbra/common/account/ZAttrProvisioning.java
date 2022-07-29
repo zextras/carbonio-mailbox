@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 /**
  * AUTO-GENERATED. DO NOT EDIT.
- * 
+ *
  * @author schemers
  *
  */
@@ -195,22 +195,6 @@ public class ZAttrProvisioning {
         }
         public boolean isTempfail() { return this == tempfail;}
         public boolean isPass() { return this == pass;}
-    }
-
-    public static enum ClamAVSafeBrowsing {
-        yes("yes"),
-        no("no");
-        private String mValue;
-        private ClamAVSafeBrowsing(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static ClamAVSafeBrowsing fromString(String s) throws ServiceException {
-            for (ClamAVSafeBrowsing value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isYes() { return this == yes;}
-        public boolean isNo() { return this == no;}
     }
 
     public static enum ClusterType {
@@ -2629,6 +2613,46 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=-1)
     public static final String A_c = "c";
+
+    /**
+     * SSL proxy port for Carbonio admin console UI
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3089)
+    public static final String A_carbonioAdminProxyPort = "carbonioAdminProxyPort";
+
+    /**
+     * Whether Carbonio can take interactive feedback from users
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3094)
+    public static final String A_carbonioAllowFeedback = "carbonioAllowFeedback";
+
+    /**
+     * Whether Carbonio can send analytics reports
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3093)
+    public static final String A_carbonioSendAnalytics = "carbonioSendAnalytics";
+
+    /**
+     * Whether Carbonio can send the error stack backtrace
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3092)
+    public static final String A_carbonioSendFullErrorStack = "carbonioSendFullErrorStack";
+
+    /**
+     * Enable video server recording for Carbonio
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3091)
+    public static final String A_carbonioVideoServerRecordingEnabled = "carbonioVideoServerRecordingEnabled";
 
     /**
      * RFC2256: common name(s) for which the entity is known by
@@ -9332,11 +9356,11 @@ public class ZAttrProvisioning {
      * sequence until a unique account can be resolved. e.g. a value can be:
      * SUBJECTALTNAME_OTHERNAME_UPN=zimbraForeignPrincipal,(uid=%{SUBJECT_CN})
      * value: comma-separated mapping-rule mapping-rule:
-     * {cert-field-to-key-map} | {LDAP-filter}
-     * cert-field-to-key-map: {certificate-field}={Zimbra-account-key}
-     * certificate-field: SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of
-     * Subject SUBJECT_DN: entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN:
-     * UPN(aka Principal Name) in otherName in subjectAltName extension
+     * {cert-field-to-key-map} | {LDAP-filter} cert-field-to-key-map:
+     * {certificate-field}={Zimbra-account-key} certificate-field:
+     * SUBJECT_{an RDN attr, e.g. CN}: a RND in DN of Subject SUBJECT_DN:
+     * entire DN of Subject SUBJECTALTNAME_OTHERNAME_UPN: UPN(aka Principal
+     * Name) in otherName in subjectAltName extension
      * SUBJECTALTNAME_RFC822NAME: rfc822Name in subjectAltName extension
      * Zimbra-account-key: name: primary name or any of the aliases of an
      * account zimbraId: zimbraId of an account zimbraForeignPrincipal:
@@ -12027,6 +12051,14 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1256)
     public static final String A_zimbraPasswordAllowedPunctuationChars = "zimbraPasswordAllowedPunctuationChars";
+
+    /**
+     * block common keywords in password string
+     *
+     * @since ZCS 9.0.0
+     */
+    @ZAttr(id=3090)
+    public static final String A_zimbraPasswordBlockCommonEnabled = "zimbraPasswordBlockCommonEnabled";
 
     /**
      * registered change password listener name
@@ -17044,8 +17076,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckLastAttempt = "zimbraVersionCheckLastAttempt";
 
     /**
-     * last response of last Zimbra version check. This will be a short XML
-     * that will contain information about available updates.
+     * last response of last Zimbra version check
      *
      * @since ZCS 6.0.2
      */
@@ -17298,8 +17329,7 @@ public class ZAttrProvisioning {
      * &quot;onlineHelp&quot; is specified, &quot;Help Central Online&quot;
      * menu item will be available to link to http://help.zimbra.com/. When
      * &quot;newFeatures&quot; is specified, &quot;New Features&quot; menu
-     * item will be available to link to
-     * https://docs.zextras.com.
+     * item will be available to link to https://docs.zextras.com.
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -17558,20 +17588,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1447)
     public static final String A_zimbraZookeeperClientServerList = "zimbraZookeeperClientServerList";
-
-    /**
-     * SSL proxy port for Carbonio admin console UI
-     *
-     * @since ZCS 9.0.0
-     */
-    @ZAttr(id=3089)
-    public static final String A_carbonioAdminProxyPort = "carbonioAdminProxyPort";
-
-    /**
-     * block common keywords in password string
-     */
-    @ZAttr(id=3090)
-    public static final String A_zimbraPasswordBlockCommonEnabled = "zimbraPasswordBlockCommonEnabled";
 
     ///// END-AUTO-GEN-REPLACE
 }
