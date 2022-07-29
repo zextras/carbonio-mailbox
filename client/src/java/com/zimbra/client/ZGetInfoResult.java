@@ -188,10 +188,6 @@ public class ZGetInfoResult implements ToZJSONObject {
         return new ZFeatures(data.getAttrsMultimap().asMap());
     }
 
-    public ZLicenses getLicenses() {
-        return new ZLicenses(data.getLicense());
-    }
-
     public String getRestURLBase() {
         return data.getRestUrl();
     }
