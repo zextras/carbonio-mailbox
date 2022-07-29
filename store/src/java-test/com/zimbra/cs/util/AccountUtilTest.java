@@ -68,13 +68,17 @@ public class AccountUtilTest {
   }
 
   @Test
-  public void shouldReturnWhenIsGalAccountCalled() throws ServiceException {
+  public void shouldReturnBooleanWhenIsGalAccountCalled() throws ServiceException {
+
     Account account = prov.get(Key.AccountBy.name, GLOBAL_TEST_ACCOUNT_NAME);
+    Domain domain = prov.getDomain(account);
+
+    // galAccountId is unset in domain; isGalSyncAccount should return false
+    domain.unsetGalAccountId();
     assertFalse(AccountUtil.isGalSyncAccount(account));
 
-    Domain domain = prov.getDomain(account);
-    String[] galAcctId = {account.getId()};
-    domain.setGalAccountId(galAcctId);
+    // galAccountId is set in domain; isGalSyncAccount should return true
+    domain.setGalAccountId(new String[] {account.getId()});
     assertTrue(AccountUtil.isGalSyncAccount(account));
   }
 
