@@ -3,7 +3,7 @@
   <property name="httpclient.version" value="4.5.13" />
   <property name="httpclient.httpcore.version" value="4.4.11" />
   <property name="httpclient.async.version" value="4.1.4" />
-  <property name="jetty.version" value="9.4.44.v20210927" />
+  <property name="jetty.version" value="9.4.48.v20220622" />
   <property name="dom4j.version" value="2.1.1" />
   <property name="com.google.guava.version" value="28.1-jre" />
   <property name="dev.home" value="${user.home}" />
