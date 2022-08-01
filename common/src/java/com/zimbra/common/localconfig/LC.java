@@ -1098,8 +1098,6 @@ public final class LC {
 
     public static final KnownKey networkaddress_cache_ttl = KnownKey.newKey(60);
 
-    public static final KnownKey zdesktop_local_account_id = KnownKey.newKey(null);
-
     @Supported
     public static final KnownKey out_of_disk_error_unix = KnownKey.newKey("No space left on device");
 
