@@ -19,9 +19,7 @@ import com.zimbra.cs.mailbox.Mailbox;
  * Simple ExternalStoreManager implementation that is intended for use in storing
  * transient blobs.
  *
- * <p>This StoreManager is used by the {@link com.zimbra.cs.imap.ImapDaemon} while
- * constructing blobs for an APPEND operation.  The blobs are deleted when the
- * APPEND is finalized.
+ * TODO: check if class can be removed after removing Imapd class (daemon)
  *
  */
 public class ImapTransientStoreManager extends ExternalStoreManager {

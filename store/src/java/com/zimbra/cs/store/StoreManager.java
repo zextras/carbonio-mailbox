@@ -5,20 +5,18 @@
 
 package com.zimbra.cs.store;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.extension.ExtensionUtil;
-import com.zimbra.cs.imap.ImapDaemon;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.file.FileBlobStore;
 import com.zimbra.cs.util.Zimbra;
+import java.io.IOException;
+import java.io.InputStream;
 
 public abstract class StoreManager {
 
@@ -26,11 +24,7 @@ public abstract class StoreManager {
     private static Integer diskStreamingThreshold;
 
     public static StoreManager getInstance () {
-        if(ImapDaemon.isRunningImapInsideMailboxd()) {
-            return getInstance(LC.zimbra_class_store.value());
-        } else {
-            return getInstance(LC.imapd_class_store.value());
-        }
+        return getInstance(LC.imapd_class_store.value());
     }
 
     public static StoreManager getInstance(String className) {

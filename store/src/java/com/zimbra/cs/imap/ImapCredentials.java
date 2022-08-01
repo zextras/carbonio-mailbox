@@ -8,18 +8,12 @@
  */
 package com.zimbra.cs.imap;
 
-import java.io.ObjectInputStream;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Sets;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.client.event.ZEventHandler;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.MailboxStore;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.SoapTransport.NotificationFormat;
@@ -29,11 +23,14 @@ import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.type.AccountWithModifications;
+import java.io.ObjectInputStream;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class ImapCredentials implements java.io.Serializable {
     private static final long serialVersionUID = -3323076274740054770L;
@@ -121,10 +118,6 @@ public class ImapCredentials implements java.io.Serializable {
     protected ImapMailboxStore getImapMailboxStore() throws ServiceException {
         if(mStore != null) {
             return mStore;
-        }
-        if (mIsLocal && !LC.imap_always_use_remote_store.booleanValue() && ImapDaemon.isRunningImapInsideMailboxd()) {
-            ZimbraLog.imap.debug("ImapCredentials returning local mailbox store for %s", mAccountId);
-            return new LocalImapMailboxStore(MailboxManager.getInstance().getMailboxByAccountId(mAccountId));
         }
         try {
             Account acct = getAccount();
