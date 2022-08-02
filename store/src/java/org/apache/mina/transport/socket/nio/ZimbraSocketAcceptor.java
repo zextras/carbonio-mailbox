@@ -76,7 +76,7 @@ public final class ZimbraSocketAcceptor
 
   @Override
   protected void init(SelectorProvider selectorProvider) throws Exception {
-    selector = Selector.open();
+    this.init();
   }
 
   @Override
