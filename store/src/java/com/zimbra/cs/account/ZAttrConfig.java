@@ -30087,7 +30087,7 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=1657)
     public String[] getMailboxdSSLProtocols() {
-        String[] value = getMultiAttr(Provisioning.A_zimbraMailboxdSSLProtocols, true, true); return value.length > 0 ? value : new String[] {"TLSv1.2","TLSv1.3"};
+        String[] value = getMultiAttr(Provisioning.A_zimbraMailboxdSSLProtocols, true, true); return value.length > 0 ? value : new String[] {"TLSv1.2"};
     }
 
     /**
@@ -59523,13 +59523,13 @@ public abstract class ZAttrConfig extends Entry {
      * ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP; if not set,
      * default ciphers permitted by nginx will apply
      *
-     * @return zimbraReverseProxySSLCiphers, or "EECDH+AESGCM:EDH+AESGCM" if unset
+     * @return zimbraReverseProxySSLCiphers, or "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384" if unset
      *
      * @since ZCS 5.0.5
      */
     @ZAttr(id=640)
     public String getReverseProxySSLCiphers() {
-        return getAttr(Provisioning.A_zimbraReverseProxySSLCiphers, "EECDH+AESGCM:EDH+AESGCM", true);
+        return getAttr(Provisioning.A_zimbraReverseProxySSLCiphers, "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384", true);
     }
 
     /**
