@@ -688,16 +688,6 @@ public final class LC {
     public static final KnownKey data_source_imap_reuse_connections = KnownKey.newKey(false);
 
     @Supported
-    public static final KnownKey imapd_keystore = KnownKey.newKey("/opt/zextras/conf/imapd.keystore");
-    @Supported
-    public static final KnownKey imapd_keystore_password = KnownKey.newKey("${mailboxd_keystore_password}");
-    @Supported
-    public static final KnownKey imapd_java_options = KnownKey.newKey("");
-    @Supported
-    public static final KnownKey imapd_java_heap_size = KnownKey.newKey("");
-    @Supported
-    public static final KnownKey imapd_java_heap_new_size_percent = KnownKey.newKey("${mailboxd_java_heap_new_size_percent}");
-    @Supported
     public static final KnownKey imapd_tmp_directory = KnownKey.newKey("${zimbra_tmp_directory}/imapd");
     @Supported
     public static final KnownKey imapd_class_store = KnownKey.newKey("com.zimbra.cs.store.external.ImapTransientStoreManager");
