@@ -6377,7 +6377,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       try {
         authMech.doAuth(this, domain, acct, password, context);
-        AuthMech authedByMech = authMech.getMechanism();
         // indicate the authed by mech in the auth context
         // context.put(AuthContext.AC_AUTHED_BY_MECH, authedByMech); TODO
         return;
