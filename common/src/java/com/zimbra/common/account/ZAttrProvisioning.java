@@ -14473,7 +14473,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraRegexMaxAccessesWhenMatching = "zimbraRegexMaxAccessesWhenMatching";
 
     /**
-     * port number on which the remote IMAP server should listen
+     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
+     * Orig desc: port number on which the remote IMAP server should listen
      *
      * @since ZCS 8.8.1
      */
@@ -14481,8 +14482,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraRemoteImapBindPort = "zimbraRemoteImapBindPort";
 
     /**
-     * Controls if the remote IMAP (non-SSL) service is enabled for a given
-     * server. See also zimbraRemoteImapSSLServerEnabled and
+     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
+     * Orig desc: Controls if the remote IMAP (non-SSL) service is enabled
+     * for a given server. See also zimbraRemoteImapSSLServerEnabled and
      * zimbraReverseProxyUpstreamImapServers.
      *
      * @since ZCS 8.8.1
@@ -14491,7 +14493,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraRemoteImapServerEnabled = "zimbraRemoteImapServerEnabled";
 
     /**
-     * port number on which the remote IMAP SSL server should listen
+     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
+     * Orig desc: port number on which the remote IMAP SSL server should
+     * listen
      *
      * @since ZCS 8.8.1
      */
@@ -14499,8 +14503,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraRemoteImapSSLBindPort = "zimbraRemoteImapSSLBindPort";
 
     /**
-     * Controls if the remote IMAP SSL server is enabled for a given server.
-     * See also zimbraRemoteImapServerEnabled and
+     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
+     * Orig desc: Controls if the remote IMAP SSL server is enabled for a
+     * given server. See also zimbraRemoteImapServerEnabled and
      * zimbraReverseProxyUpstreamImapServers.
      *
      * @since ZCS 8.8.1
