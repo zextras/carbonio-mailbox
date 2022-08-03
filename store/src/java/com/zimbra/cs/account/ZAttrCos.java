@@ -13795,9 +13795,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to allow a user to access touch client. Note: touch client is
-     * a Network feature, this attribute is effective only if touch client is
-     * permitted by license.
+     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
+     * Orig desc: Whether to allow a user to access touch client. Note: touch
+     * client is a Network feature, this attribute is effective only if touch
+     * client is permitted by license.
      *
      * @return zimbraFeatureTouchClientEnabled, or false if unset
      *
@@ -13809,9 +13810,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to allow a user to access touch client. Note: touch client is
-     * a Network feature, this attribute is effective only if touch client is
-     * permitted by license.
+     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
+     * Orig desc: Whether to allow a user to access touch client. Note: touch
+     * client is a Network feature, this attribute is effective only if touch
+     * client is permitted by license.
      *
      * @param zimbraFeatureTouchClientEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -13826,9 +13828,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to allow a user to access touch client. Note: touch client is
-     * a Network feature, this attribute is effective only if touch client is
-     * permitted by license.
+     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
+     * Orig desc: Whether to allow a user to access touch client. Note: touch
+     * client is a Network feature, this attribute is effective only if touch
+     * client is permitted by license.
      *
      * @param zimbraFeatureTouchClientEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -13844,9 +13847,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to allow a user to access touch client. Note: touch client is
-     * a Network feature, this attribute is effective only if touch client is
-     * permitted by license.
+     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
+     * Orig desc: Whether to allow a user to access touch client. Note: touch
+     * client is a Network feature, this attribute is effective only if touch
+     * client is permitted by license.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -13860,9 +13864,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to allow a user to access touch client. Note: touch client is
-     * a Network feature, this attribute is effective only if touch client is
-     * permitted by license.
+     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
+     * Orig desc: Whether to allow a user to access touch client. Note: touch
+     * client is a Network feature, this attribute is effective only if touch
+     * client is permitted by license.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
