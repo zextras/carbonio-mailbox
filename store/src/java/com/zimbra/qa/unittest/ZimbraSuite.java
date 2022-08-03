@@ -135,7 +135,6 @@ public class ZimbraSuite  {
         sClasses.add(TestTrashImapMessage.class);
         sClasses.add(TestEmbeddedRemoteImapNotificationsViaWaitsets.class);
         sClasses.add(TestEmbeddedRemoteImapNotificationsViaMailbox.class);
-        sClasses.add(TestImapDaemonNotifications.class);
         sClasses.add(TestLocalImapNotifications.class);
         sClasses.add(TestImapViaEmbeddedLocal.class);
         sClasses.add(TestImapViaEmbeddedRemote.class);
