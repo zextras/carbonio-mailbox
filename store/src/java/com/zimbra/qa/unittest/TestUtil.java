@@ -6,31 +6,6 @@
 package com.zimbra.qa.unittest;
 
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.SharedByteArrayInputStream;
-
-import org.apache.http.HttpException;
-import org.dom4j.DocumentException;
-import org.junit.internal.AssumptionViolatedException;
-import org.junit.runner.JUnitCore;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.zimbra.client.ZAuthResult;
@@ -136,7 +111,6 @@ import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteMailQueue;
 import com.zimbra.cs.rmgmt.RemoteMailQueue.QueueAttr;
 import com.zimbra.cs.rmgmt.RemoteManager;
-import com.zimbra.cs.service.admin.FlushCache;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.file.FileBlobStore;
 import com.zimbra.cs.util.BuildInfo;
@@ -164,8 +138,29 @@ import com.zimbra.soap.admin.type.WaitSetSessionInfo;
 import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.TargetBy;
 import com.zimbra.soap.type.TargetType;
-
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.util.SharedByteArrayInputStream;
 import junit.framework.Assert;
+import org.apache.http.HttpException;
+import org.dom4j.DocumentException;
+import org.junit.internal.AssumptionViolatedException;
+import org.junit.runner.JUnitCore;
 
 
 /**
@@ -1628,7 +1623,4 @@ public class TestUtil extends Assert {
         }
     }
 
-    public static void flushImapDaemonCache(Server imapd) throws Exception {
-        FlushCache.flushCacheOnImapDaemon(imapd, "all", null);
-    }
 }

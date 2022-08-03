@@ -7,6 +7,35 @@ package com.zimbra.cs.ephemeral.migrate;
 import static com.zimbra.common.util.TaskUtil.newDaemonThreadFactory;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.AdminConstants;
+import com.zimbra.common.util.Pair;
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Entry;
+import com.zimbra.cs.account.NamedEntry;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.SearchDirectoryOptions;
+import com.zimbra.cs.account.SearchDirectoryOptions.ObjectType;
+import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.ldap.LdapProvisioning;
+import com.zimbra.cs.account.soap.SoapProvisioning;
+import com.zimbra.cs.ephemeral.EphemeralInput;
+import com.zimbra.cs.ephemeral.EphemeralKey;
+import com.zimbra.cs.ephemeral.EphemeralLocation;
+import com.zimbra.cs.ephemeral.EphemeralStore;
+import com.zimbra.cs.ephemeral.EphemeralStore.BackendType;
+import com.zimbra.cs.ephemeral.LdapEntryLocation;
+import com.zimbra.cs.ephemeral.migrate.MigrationInfo.Status;
+import com.zimbra.cs.httpclient.URLUtil;
+import com.zimbra.cs.ldap.ZLdapFilter;
+import com.zimbra.cs.ldap.ZLdapFilterFactory;
+import com.zimbra.soap.admin.type.CacheEntryType;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,42 +58,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.util.Pair;
-import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Entry;
-import com.zimbra.cs.account.NamedEntry;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.SearchDirectoryOptions;
-import com.zimbra.cs.account.SearchDirectoryOptions.ObjectType;
-import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.ZimbraAuthToken;
-import com.zimbra.cs.account.ldap.LdapProvisioning;
-import com.zimbra.cs.account.soap.SoapProvisioning;
-import com.zimbra.cs.ephemeral.EphemeralInput;
-import com.zimbra.cs.ephemeral.EphemeralKey;
-import com.zimbra.cs.ephemeral.EphemeralLocation;
-import com.zimbra.cs.ephemeral.EphemeralStore;
-import com.zimbra.cs.ephemeral.EphemeralStore.BackendType;
-import com.zimbra.cs.ephemeral.LdapEntryLocation;
-import com.zimbra.cs.ephemeral.migrate.MigrationInfo.Status;
-import com.zimbra.cs.httpclient.URLUtil;
-import com.zimbra.cs.ldap.ZLdapFilter;
-import com.zimbra.cs.ldap.ZLdapFilterFactory;
-import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.service.admin.FlushCache;
-import com.zimbra.soap.admin.type.CacheEntryType;
 
 /**
  * Class handling migrating attributes to ephemeral storage
@@ -110,7 +105,6 @@ public class AttributeMigration {
      * @param destUrl - ephemeral storage url to which data is transferred
      * @param attrsToMigrate - collection of attribute names to migrate
      * @param source - EntrySource implementation
-     * @param callback - MigrationCallback implementation that handles generated EphemeralInputs
      * @param numThreads - number of threads to use during migration. If null, the migration happens synchronously.
      * @throws ServiceException
      */
@@ -772,17 +766,11 @@ public class AttributeMigration {
     public static void clearConfigCacheOnAllServers(boolean includeLocal, boolean registerTokenInPrevStore) {
         ExecutorService executor = newCachedThreadPool(newDaemonThreadFactory("ClearEphemeralConfigCache"));
         List<Server> servers = null;
-        List<Server> imapServers = null;
         try {
             servers = Provisioning.getInstance().getAllMailClientServers();
         } catch (ServiceException e) {
             ZimbraLog.account.warn("cannot fetch list of servers");
             return;
-        }
-        try {
-            imapServers = Provisioning.getIMAPDaemonServersForLocalServer();
-        } catch (ServiceException e) {
-            ZimbraLog.account.warn("cannot fetch list of imapd servers");
         }
         for (Server server: servers) {
             try {
@@ -819,45 +807,6 @@ public class AttributeMigration {
 
             });
 
-        }
-
-        /* To flush the cache on imapd servers via the X-ZIMBRA-FLUSHCACHE command, in some cases, the auth token needs to be registered
-         * with the previous ephemeral backend. This is because the imapd server may still be using the previous backend.
-         */
-        EphemeralStore.Factory previousEphemeralFactory = null;
-        if (imapServers != null && imapServers.size() > 0) {
-            if (registerTokenInPrevStore) {
-                try {
-                    previousEphemeralFactory = EphemeralStore.getNewFactory(BackendType.previous);
-                } catch (ServiceException e) {
-                    ZimbraLog.ephemeral.warn("could not instantiate previous EphemeralStore; imapd servers may not recognize auth token", e);
-                }
-            }
-            final EphemeralStore previousEphemeralStore;
-            if (previousEphemeralFactory != null) {
-                previousEphemeralStore = registerTokenInPrevStore ? previousEphemeralFactory.getStore() : null;
-            } else {
-                previousEphemeralStore = null;
-            }
-            for (Server server: imapServers) {
-                executor.submit(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        try {
-                            ZimbraAuthToken token = (ZimbraAuthToken) AuthProvider.getAdminAuthToken();
-                            if (registerTokenInPrevStore && previousEphemeralStore != null) {
-                                token.registerWithEphemeralStore(previousEphemeralStore);
-                            }
-                            FlushCache.flushCacheOnImapDaemon(server, "config", null, LC.zimbra_ldap_user.value(), token);
-                            ZimbraLog.ephemeral.debug("sent X-ZIMBRA-FLUSHCACHE IMAP request to imapd server %s", server.getServiceHostname());
-                        } catch (ServiceException e) {
-                            ZimbraLog.ephemeral.error("cannot send X-ZIMBRA-FLUSHCACHE IMAP request to imapd server %s", server.getServiceHostname(), e);
-                        }
-                    }
-
-                });
-            }
         }
         executor.shutdown();
         try {

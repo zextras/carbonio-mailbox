@@ -5,26 +5,11 @@
 
 package com.zimbra.cs.service.admin;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import com.google.common.base.Joiner;
-import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.CacheExtension;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.CacheEntry;
@@ -34,9 +19,6 @@ import com.zimbra.cs.account.accesscontrol.PermissionCache;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.gal.GalGroup;
 import com.zimbra.cs.httpclient.URLUtil;
-import com.zimbra.cs.imap.ImapHandler;
-import com.zimbra.cs.mailclient.imap.ImapConnection;
-import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.util.SkinUtil;
 import com.zimbra.cs.util.WebClientL10nUtil;
 import com.zimbra.cs.util.WebClientServiceUtil;
@@ -48,6 +30,13 @@ import com.zimbra.soap.admin.message.FlushCacheResponse;
 import com.zimbra.soap.admin.type.CacheEntrySelector;
 import com.zimbra.soap.admin.type.CacheEntryType;
 import com.zimbra.soap.admin.type.CacheSelector;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 public class FlushCache extends AdminDocumentHandler {
 
@@ -99,9 +88,6 @@ public class FlushCache extends AdminDocumentHandler {
                     throw e;
                 }
             }
-        }
-        if (imapServers) {
-            flushCacheOnImapDaemons(req, zsc);
         }
         if (allServers) {
             flushCacheOnAllServers(zsc, req);
@@ -243,78 +229,5 @@ public class FlushCache extends AdminDocumentHandler {
     @Override
     public void docRights(List<AdminRight> relatedRights, List<String> notes) {
         relatedRights.add(Admin.R_flushCache);
-    }
-
-    private static void flushCacheOnImapDaemons(FlushCacheRequest req, ZimbraSoapContext zsc) throws ServiceException {
-        CacheSelector selector = req.getCache();
-        String cacheTypes = selector.getTypes();
-        CacheEntry[] cacheEntries = getCacheEntries(selector);
-        Account acct = Provisioning.getInstance().get(AccountBy.id, zsc.getAuthtokenAccountId(), zsc.getAuthToken());
-        flushCacheOnImapDaemons(cacheTypes, cacheEntries, acct.getName(), zsc.getAuthToken());
-    }
-
-    public static void flushCacheOnImapDaemons(String cacheTypes, CacheEntry[] entries, AuthToken authToken) {
-        flushCacheOnImapDaemons(cacheTypes, entries, LC.zimbra_ldap_user.value(), authToken);
-    }
-    public static void flushCacheOnImapDaemons(String cacheTypes, CacheEntry[] entries, String acctName, AuthToken authToken) {
-        List<Server> imapServers;
-        try {
-            imapServers = Provisioning.getIMAPDaemonServersForLocalServer();
-        } catch (ServiceException e) {
-            ZimbraLog.imap.warn("unable to fetch list of imapd servers", e);
-            return;
-        }
-        for (Server server: imapServers) {
-            flushCacheOnImapDaemon(server, cacheTypes, entries, acctName, authToken);
-        }
-    }
-
-    public static void flushCacheOnImapDaemon(Server server, String cacheTypes, CacheEntry[] entries) {
-        try {
-            flushCacheOnImapDaemon(server, cacheTypes, entries, LC.zimbra_ldap_user.value(), AuthProvider.getAdminAuthToken());
-        } catch (ServiceException e) {
-            ZimbraLog.imap.warn("unable to generate admin auth token to issue X-ZIMBRA-FLUSHCACHE request to imapd server '%s'", server.getServiceHostname(), e);
-        }
-    }
-
-    public static void flushCacheOnImapDaemon(Server server, String cacheTypes, CacheEntry[] entries, String userName, AuthToken authToken) {
-        ImapConnection connection = null;
-        try {
-            connection = ImapConnection.getZimbraConnection(server, userName, authToken);
-        } catch (ServiceException e) {
-            ZimbraLog.imap.warn("unable to connect to imapd server '%s' to issue X-ZIMBRA-FLUSHCACHE request", server.getServiceHostname(), e);
-            return;
-        }
-        try {
-            String imapTypes = sanitizeImapCacheTypes(cacheTypes);
-            if (imapTypes != null) {
-                ZimbraLog.imap.debug("issuing X-ZIMBRA-FLUSHCACHE request to imapd server '%s' for cache types '%s'", server.getServiceHostname(), imapTypes);
-                if (entries == null || entries.length == 0) {
-                    connection.flushCache(imapTypes);
-                } else {
-                    connection.flushCache(imapTypes, entries);
-                }
-            }
-        } catch (IOException e) {
-            ZimbraLog.imap.warn("unable to issue X-ZIMBRA-FLUSHCACHE request to imapd server '%s'", server.getServiceHostname(), e);
-        } finally {
-            connection.close();
-        }
-    }
-
-    private static String sanitizeImapCacheTypes(String cacheTypes) {
-        List<String> imapTypes = new ArrayList<String>();
-        for (String typeStr: cacheTypes.split(",")) {
-            try {
-                CacheEntryType cacheType = CacheEntryType.fromString(typeStr);
-                if (ImapHandler.IMAP_CACHE_TYPES.contains(cacheType)) {
-                    //filter out cache types that don't need to be flushed on imapd servers
-                    imapTypes.add(typeStr);
-                }
-            } catch (ServiceException e) {
-                //shouldn't encounter invalid cache types
-            }
-        }
-        return imapTypes.isEmpty() ? null : Joiner.on(",").join(imapTypes);
     }
 }
