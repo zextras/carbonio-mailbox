@@ -1526,10 +1526,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
         if (homeServer == null) {
             return Collections.emptyList();
         }
-        List<Server> imapDaemonServers = getIMAPDaemonServers(homeServer);
-        if (!imapDaemonServers.isEmpty()) {
-            return imapDaemonServers;
-        }
         return Lists.newArrayList(getInstance().getServerByServiceHostname(account.getMailHost()));
     }
 
