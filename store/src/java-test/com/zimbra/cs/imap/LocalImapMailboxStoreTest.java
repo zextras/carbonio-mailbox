@@ -85,7 +85,7 @@ public class LocalImapMailboxStoreTest {
         //verify that no subscriptions are saved yet
         LocalImapMailboxStore localStore = new LocalImapMailboxStore(mbox);
         Set<String> savedSubscriptions = localStore.listSubscriptions(null);
-        Assert.assertNull(savedSubscriptions);
+        Assert.assertEquals(0, savedSubscriptions.size());
 
         String path = "testPath";
         HashSet<String> subscriptions = new HashSet<String>();
