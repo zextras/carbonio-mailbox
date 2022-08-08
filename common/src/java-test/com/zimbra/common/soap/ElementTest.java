@@ -23,6 +23,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -38,6 +39,7 @@ import com.zimbra.common.util.ZimbraLog;
 
 /**
  */
+@Ignore("add required xml files to run")
 public class ElementTest {
 
     @Rule

@@ -21,6 +21,7 @@ import org.apache.log4j.Level;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
@@ -77,6 +78,7 @@ public class DumpSessionsTest {
     }
 
     @Test
+    @Ignore("add required xml files to run")
     public void unmarshallDumpSessionsResponseTest()
     throws Exception {
         InputStream is = getClass().getResourceAsStream("DumpSessionsResponse-listSess.xml");
@@ -98,6 +100,7 @@ public class DumpSessionsTest {
     }
 
     @Test
+    @Ignore("add required xml files to run")
     public void unmarshallDumpSessionsResponseGroupedTest()
     throws Exception {
         InputStream is = getClass().getResourceAsStream("DumpSessionsResponse-grouped.xml");
