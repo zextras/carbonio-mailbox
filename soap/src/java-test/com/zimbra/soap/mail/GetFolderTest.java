@@ -14,6 +14,7 @@ import javax.xml.bind.Unmarshaller;
 import com.zimbra.soap.mail.type.Acl;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.zimbra.soap.mail.message.GetFolderResponse;
@@ -41,6 +42,7 @@ public final class GetFolderTest {
      *      mGranteeType = GranteeType.fromString(grant.getGranteeType().toString());
      */
     @Test
+    @Ignore("add required xml files to run")
     public void unmarshallGetFolderResponseContainingGrant() throws Exception {
         GetFolderResponse result = (GetFolderResponse) unmarshaller.unmarshal(
                 getClass().getResourceAsStream("GetFolderResponseWithGrant.xml"));
@@ -80,6 +82,7 @@ public final class GetFolderTest {
     }
 
     @Test
+    @Ignore("add required xml files to run")
     public void unmarshallSearchFolderEmptyTypes() throws Exception {
         GetFolderResponse resp = (GetFolderResponse) unmarshaller.unmarshal(
                 getClass().getResourceAsStream("GetFolderResponse-SearchFolderEmptyTypes.xml"));
