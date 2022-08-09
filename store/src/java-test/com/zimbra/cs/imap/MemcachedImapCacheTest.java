@@ -19,6 +19,7 @@ import java.io.ObjectOutputStream;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
@@ -46,6 +47,7 @@ public class MemcachedImapCacheTest {
   public void tearDown() throws Exception {}
 
   @Test
+  @Ignore("add missing test-timezones-ics file in java-test")
   public void testInvalidObject() {
     try {
 

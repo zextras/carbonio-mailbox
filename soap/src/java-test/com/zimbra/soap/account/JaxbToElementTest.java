@@ -28,6 +28,7 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.dom4j.QName;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.base.Charsets;
@@ -95,6 +96,7 @@ import junit.framework.Assert;
  *
  * @author Gren Elliot
  */
+@Ignore("add required xml files to run")
 public class JaxbToElementTest {
     private static String getInfoResponseXMLfileName = "GetInfoResponse.xml";
     private static Unmarshaller unmarshaller;
