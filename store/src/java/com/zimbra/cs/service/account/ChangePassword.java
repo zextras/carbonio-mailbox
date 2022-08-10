@@ -8,8 +8,6 @@
  */
 package com.zimbra.cs.service.account;
 
-import java.util.Map;
-
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
@@ -24,92 +22,110 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.util.Map;
 
 /**
  * @author dkarp
  */
 public class ChangePassword extends AccountDocumentHandler {
 
-    @Override
-    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
+  private final Provisioning prov;
 
-        if (!checkPasswordSecurity(context))
-            throw ServiceException.INVALID_REQUEST("clear text password is not allowed", null);
+  /**
+   * @param prov provisioning class that returns a singleton
+   */
+  public ChangePassword(Provisioning prov) {
+    this.prov = prov;
+  }
 
-        ZimbraSoapContext zsc = getZimbraSoapContext(context);
-        Provisioning prov = Provisioning.getInstance();
+  /** Uses Singleton {@link Provisioning} directly */
+  public ChangePassword() {
+    this.prov = Provisioning.getInstance();
+  }
 
-        String namePassedIn = request.getAttribute(AccountConstants.E_ACCOUNT);
-        String name = namePassedIn;
+  @Override
+  public Element handle(Element request, Map<String, Object> context) throws ServiceException {
 
-        Element virtualHostEl = request.getOptionalElement(AccountConstants.E_VIRTUAL_HOST);
-        String virtualHost = virtualHostEl == null ? null : virtualHostEl.getText().toLowerCase();
+    if (!checkPasswordSecurity(context))
+      throw ServiceException.INVALID_REQUEST("clear text password is not allowed", null);
 
-        if (virtualHost != null && name.indexOf('@') == -1) {
-            Domain d = prov.get(Key.DomainBy.virtualHostname, virtualHost);
-            if (d != null)
-                name = name + "@" + d.getName();
-        }
+    ZimbraSoapContext zsc = getZimbraSoapContext(context);
 
-        String text =  request.getAttribute(AccountConstants.E_DRYRUN, null);
+    String namePassedIn = request.getAttribute(AccountConstants.E_ACCOUNT);
+    String name = namePassedIn;
 
-        boolean dryRun   = false;
-        if (!StringUtil.isNullOrEmpty(text)) {
-            if (text.equals("1") || text.equalsIgnoreCase("true")) {
-                dryRun = true;
-            }
-        }
+    Element virtualHostEl = request.getOptionalElement(AccountConstants.E_VIRTUAL_HOST);
+    String virtualHost = virtualHostEl == null ? null : virtualHostEl.getText().toLowerCase();
 
-        Account acct = prov.get(AccountBy.name, name, zsc.getAuthToken());
-        if (acct == null)
-            throw AuthFailedServiceException.AUTH_FAILED(name, namePassedIn, "account not found");
-
-        // proxyIfNecessary is called by the SOAP framework only for
-        // requests that require auth.  ChangePassword does not require
-        // an auth token.  Proxy here if this is not the home server of the account.
-        if (!Provisioning.onLocalServer(acct)) {
-            try {
-                return proxyRequest(request, context, acct.getId());
-            } catch (ServiceException e) {
-                // if something went wrong proxying the request, just execute it locally
-                if (ServiceException.PROXY_ERROR.equals(e.getCode())) {
-                    ZimbraLog.account.warn("encountered proxy error", e);
-                } else {
-                    // but if it's a real error, it's a real error
-                    throw e;
-                }
-            }
-        }
-
-        String oldPassword = request.getAttribute(AccountConstants.E_OLD_PASSWORD);
-        String newPassword = request.getAttribute(AccountConstants.E_PASSWORD);
-        if (acct.isIsExternalVirtualAccount() && StringUtil.isNullOrEmpty(oldPassword)
-                && !acct.isVirtualAccountInitialPasswordSet() && acct.getId().equals(zsc.getAuthtokenAccountId())) {
-            // need a valid auth token in this case
-            AuthProvider.validateAuthToken(prov, zsc.getAuthToken(), false);
-            prov.setPassword(acct, newPassword, true);
-            acct.setVirtualAccountInitialPasswordSet(true);
-        } else {
-            prov.changePassword(acct, oldPassword, newPassword, dryRun);
-        }
-
-        Element response = zsc.createElement(AccountConstants.CHANGE_PASSWORD_RESPONSE);
-        if (!dryRun) {
-           AuthToken at = AuthProvider.getAuthToken(acct);
-           at.encodeAuthResp(response, false);
-           response.addAttribute(AccountConstants.E_LIFETIME, at.getExpires() - System.currentTimeMillis(), Element.Disposition.CONTENT);
-        }
-        return response;
-	}
-
-    @Override
-    public boolean needsAuth(Map<String, Object> context) {
-        // This command can be sent before authenticating, so this method
-        // should return false.  The Account.changePassword() method called
-        // from handle() will internally make sure the old password provided
-        // matches the current password of the account.
-        //
-        // The user identity in the auth token, if any, is ignored.
-        return false;
+    if (virtualHost != null && name.indexOf('@') == -1) {
+      Domain d = prov.get(Key.DomainBy.virtualHostname, virtualHost);
+      if (d != null) name = name + "@" + d.getName();
     }
+
+    String text = request.getAttribute(AccountConstants.E_DRYRUN, null);
+
+    boolean dryRun = false;
+    if (!StringUtil.isNullOrEmpty(text)) {
+      if (text.equals("1") || text.equalsIgnoreCase("true")) {
+        dryRun = true;
+      }
+    }
+
+    Account acct = prov.get(AccountBy.name, name, zsc.getAuthToken());
+    if (acct == null)
+      throw AuthFailedServiceException.AUTH_FAILED(name, namePassedIn, "account not found");
+
+    // proxyIfNecessary is called by the SOAP framework only for
+    // requests that require auth.  ChangePassword does not require
+    // an auth token.  Proxy here if this is not the home server of the account.
+    if (!Provisioning.onLocalServer(acct)) {
+      try {
+        return proxyRequest(request, context, acct.getId());
+      } catch (ServiceException e) {
+        // if something went wrong proxying the request, just execute it locally
+        if (ServiceException.PROXY_ERROR.equals(e.getCode())) {
+          ZimbraLog.account.warn("encountered proxy error", e);
+        } else {
+          // but if it's a real error, it's a real error
+          throw e;
+        }
+      }
+    }
+
+    String oldPassword = request.getAttribute(AccountConstants.E_OLD_PASSWORD);
+    String newPassword = request.getAttribute(AccountConstants.E_PASSWORD);
+    if (acct.isIsExternalVirtualAccount()
+        && StringUtil.isNullOrEmpty(oldPassword)
+        && !acct.isVirtualAccountInitialPasswordSet()
+        && acct.getId().equals(zsc.getAuthtokenAccountId())) {
+      // need a valid auth token in this case
+      AuthProvider.validateAuthToken(prov, zsc.getAuthToken(), false);
+      prov.setPassword(acct, newPassword, true);
+      acct.setVirtualAccountInitialPasswordSet(true);
+    } else {
+      prov.changePassword(acct, oldPassword, newPassword, dryRun, context);
+    }
+
+    Element response = zsc.createElement(AccountConstants.CHANGE_PASSWORD_RESPONSE);
+    if (!dryRun) {
+      AuthToken at = AuthProvider.getAuthToken(acct);
+      at.encodeAuthResp(response, false);
+      response.addAttribute(
+          AccountConstants.E_LIFETIME,
+          at.getExpires() - System.currentTimeMillis(),
+          Element.Disposition.CONTENT);
+    }
+    return response;
+  }
+
+  @Override
+  public boolean needsAuth(Map<String, Object> context) {
+    // This command can be sent before authenticating, so this method
+    // should return false.  The Account.changePassword() method called
+    // from handle() will internally make sure the old password provided
+    // matches the current password of the account.
+    //
+    // The user identity in the auth token, if any, is ignored.
+    return false;
+  }
 }
