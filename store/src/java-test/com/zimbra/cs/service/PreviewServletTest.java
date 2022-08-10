@@ -1,12 +1,15 @@
 package com.zimbra.cs.service;
 
+import static com.zimbra.cs.service.PreviewServlet.THUMBNAIL_IMAGE_REGEX;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Maps;
+import com.zextras.carbonio.preview.queries.Query;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
@@ -34,6 +37,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
@@ -166,9 +171,8 @@ public class PreviewServletTest {
     PreviewQueryParameters expPreviewQueryParameters =
         new PreviewQueryParameters(expQuality, expFormat, expShape);
 
-    final PreviewServlet previewServlet = new PreviewServlet();
     final PreviewQueryParameters previewQueryParameters =
-        previewServlet.parseQueryParameters(url.getQuery());
+        PreviewServlet.parseQueryParameters(url.getQuery());
 
     assertEquals(expPreviewQueryParameters.getQuality(), previewQueryParameters.getQuality());
     assertEquals(expPreviewQueryParameters.getShape(), previewQueryParameters.getShape());
@@ -273,6 +277,27 @@ public class PreviewServletTest {
     assertEquals(
         "http://localhost:80/home/test@zimbra.com?auth=co&id=16e683a8-288b-40e2-810e-d0482363a541:315&part=2",
         contentServletResourceUrl);
+  }
+
+  @Test
+  public void shouldReturnCorrectQueryWhenCalledGenerateQuery() {
+    String requestUrlForPreview =
+        "https://nbm-s01.demo.zextras.io/service/preview/image/258/3/200x200/thumbnail?quality=high&shape=rounded&output_format=png&disp=inline";
+
+    Matcher thumbnailImageMatcher =
+        Pattern.compile(THUMBNAIL_IMAGE_REGEX)
+            .matcher(PreviewServlet.getRequestUrlForPreview(requestUrlForPreview, "inline"));
+
+    assertTrue(thumbnailImageMatcher.find());
+    String previewArea = thumbnailImageMatcher.group(3);
+    PreviewQueryParameters queryParameters =
+        PreviewServlet.parseQueryParameters(thumbnailImageMatcher.group(4));
+    final Query query = PreviewServlet.generateQuery(previewArea, queryParameters);
+
+    assertEquals("200x200", query.getPreviewArea().get());
+    assertEquals("high", query.getQuality().get());
+    assertEquals("rounded", query.getShape().get());
+    assertEquals("png", query.getOutputFormat().get());
   }
 
   /**

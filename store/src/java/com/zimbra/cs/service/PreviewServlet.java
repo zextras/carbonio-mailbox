@@ -91,7 +91,18 @@ import org.eclipse.jetty.http.HttpStatus;
  */
 public class PreviewServlet extends ZimbraServlet {
 
-  private static final String SERVLET_PATH = "/preview";
+  public static final String SERVLET_PATH = "/preview";
+  public static final String THUMBNAIL_PDF_REGEX =
+      SERVLET_PATH + "/pdf/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)";
+  public static final String PREVIEW_PDF_REGEX =
+      SERVLET_PATH + "/pdf/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/?((?=(?!thumbnail))(?=([^/\\n ]*)))";
+  public static final String THUMBNAIL_IMAGE_REGEX =
+      SERVLET_PATH
+          + "/image/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)";
+  public static final String PREVIEW_IMAGE_REGEX =
+      SERVLET_PATH
+          + "/image/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/\\n"
+          + " ]*)))";
   private static final long serialVersionUID = -4834966842520538743L;
   private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
   private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.7:20001/";
@@ -156,11 +167,48 @@ public class PreviewServlet extends ZimbraServlet {
   }
 
   /**
+   * This method generates the final query {@link Query} from passed Optional area string and {@link
+   * PreviewQueryParameters}
+   *
+   * @param optArea the optional area {@link String} parameter
+   * @param queryParameters the {@link PreviewQueryParameters} object
+   * @return {@link Query}
+   */
+  static Query generateQuery(String optArea, PreviewQueryParameters queryParameters) {
+    QueryBuilder parameterBuilder = new QueryBuilder();
+    if (optArea != null) {
+      parameterBuilder.setPreviewArea(optArea);
+    }
+    queryParameters.getQuality().ifPresent(parameterBuilder::setQuality);
+    queryParameters.getOutputFormat().ifPresent(parameterBuilder::setOutputFormat);
+    queryParameters.getCrop().ifPresent(parameterBuilder::setCrop);
+    queryParameters.getShape().ifPresent(parameterBuilder::setShape);
+    queryParameters.getFirstPage().ifPresent(parameterBuilder::setFirstPage);
+    queryParameters.getLastPage().ifPresent(parameterBuilder::setLastPage);
+    return parameterBuilder.build();
+  }
+
+  /**
+   * This method parses the passed queryParamString into {@link PreviewQueryParameters} object
+   *
+   * @param queryParameters {@link String}
+   * @return {@link PreviewQueryParameters}
+   */
+  static PreviewQueryParameters parseQueryParameters(String queryParameters) {
+    Map<String, String> parameters =
+        Arrays.stream(queryParameters.replace("?", "").split("&"))
+            .map(parameter -> parameter.split("="))
+            .filter(parameter -> parameter.length == 2)
+            .collect(Collectors.toMap(parameter -> parameter[0], parameter -> parameter[1]));
+    return new ObjectMapper().convertValue(parameters, PreviewQueryParameters.class);
+  }
+
+  /**
    * @param resp the {@link HttpServletResponse} servlet response object
    * @param authToken {@link AuthToken} authToken object
    * @return the mailHostUrl {@link String}
    */
-  String getMailHostUrl(HttpServletResponse resp, AuthToken authToken) {
+  private String getMailHostUrl(HttpServletResponse resp, AuthToken authToken) {
     return Try.of(authToken::getAccount)
         .mapTry(account -> account.getAttr(ZAttrProvisioning.A_zimbraMailHost))
         .onFailure(ex -> respondWithError(resp, HttpServletResponse.SC_NOT_FOUND, ex.getMessage()))
@@ -179,32 +227,35 @@ public class PreviewServlet extends ZimbraServlet {
   private Try<BlobResponseStore> getAttachment(
       HttpServletResponse resp, AuthToken authToken, String messageId, String part) {
     return Try.of(
-            () -> {
-              HttpClientBuilder clientBuilder =
-                  ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
-              HttpProxyUtil.configureProxy(clientBuilder);
-              HttpGet getRequest =
-                  new HttpGet(getContentServletResourceUrl(authToken, messageId, part));
-              HttpClient client =
-                  encodeClientBuilderRequest(resp, authToken, clientBuilder, getRequest).get();
-              HttpResponse httpResp = HttpClientUtil.executeMethod(client, getRequest);
+        () -> {
+          HttpClientBuilder clientBuilder =
+              ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+          HttpProxyUtil.configureProxy(clientBuilder);
+          HttpGet getRequest =
+              new HttpGet(getContentServletResourceUrl(authToken, messageId, part));
+          HttpClient client =
+              encodeClientBuilderRequest(resp, authToken, clientBuilder, getRequest).get();
+          HttpResponse httpResp = HttpClientUtil.executeMethod(client, getRequest);
+          int statusCode = httpResp.getStatusLine().getStatusCode();
+          if (statusCode != org.apache.http.HttpStatus.SC_OK) {
+            throw ServiceException.FAILURE("Cannot get attachment", null);
+          } else {
+            Header ctHeader = httpResp.getFirstHeader("Content-Type");
+            String contentType = ctHeader == null ? "text/plain" : ctHeader.getValue();
+            Header cdHeader = httpResp.getFirstHeader("Content-Disposition");
+            String filename =
+                cdHeader == null
+                    ? "unknown"
+                    : new ContentDisposition(cdHeader.getValue()).getParameter("filename");
 
-              Header ctHeader = httpResp.getFirstHeader("Content-Type");
-              String contentType = ctHeader == null ? "text/plain" : ctHeader.getValue();
-              Header cdHeader = httpResp.getFirstHeader("Content-Disposition");
-              String filename =
-                  cdHeader == null
-                      ? "unknown"
-                      : new ContentDisposition(cdHeader.getValue()).getParameter("filename");
-
-              return new BlobResponseStore(
-                  httpResp.getEntity().getContent(),
-                  filename,
-                  httpResp.getEntity().getContentLength(),
-                  contentType,
-                  "inline");
-            })
-        .onFailure(ex -> respondWithError(resp, HttpServletResponse.SC_NOT_FOUND, ex.getMessage()));
+            return new BlobResponseStore(
+                httpResp.getEntity().getContent(),
+                filename,
+                httpResp.getEntity().getContentLength(),
+                contentType,
+                "inline");
+          }
+        });
   }
 
   /**
@@ -263,35 +314,21 @@ public class PreviewServlet extends ZimbraServlet {
 
     // Start Preview API Controller=================================================================
 
-    Matcher previewImage =
-        Pattern.compile(
-                SERVLET_PATH
-                    + "/image/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/\\n"
-                    + " ]*)))")
-            .matcher(requestUrlForPreview);
+    Matcher previewImageMatcher =
+        Pattern.compile(PREVIEW_IMAGE_REGEX).matcher(requestUrlForPreview);
 
-    Matcher thumbnailImage =
-        Pattern.compile(
-                SERVLET_PATH
-                    + "/image/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)")
-            .matcher((requestUrlForPreview));
+    Matcher thumbnailImageMatcher =
+        Pattern.compile(THUMBNAIL_IMAGE_REGEX).matcher((requestUrlForPreview));
 
-    Matcher previewPdf =
-        Pattern.compile(
-                SERVLET_PATH
-                    + "/pdf/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/?((?=(?!thumbnail))(?=([^/\\n ]*)))")
-            .matcher((requestUrlForPreview));
+    Matcher previewPdfMatcher = Pattern.compile(PREVIEW_PDF_REGEX).matcher((requestUrlForPreview));
 
-    Matcher thumbnailPdf =
-        Pattern.compile(
-                SERVLET_PATH
-                    + "/pdf/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)")
-            .matcher((requestUrlForPreview));
+    Matcher thumbnailPdfMatcher =
+        Pattern.compile(THUMBNAIL_PDF_REGEX).matcher((requestUrlForPreview));
 
     // Handle Image thumbnail request
-    if (thumbnailImage.find()) {
-      String previewArea = thumbnailImage.group(3);
-      PreviewQueryParameters queryParameters = parseQueryParameters(thumbnailImage.group(4));
+    if (thumbnailImageMatcher.find()) {
+      String previewArea = thumbnailImageMatcher.group(3);
+      PreviewQueryParameters queryParameters = parseQueryParameters(thumbnailImageMatcher.group(4));
       return Try.of(
               () ->
                   previewClient.postThumbnailOfImage(
@@ -305,9 +342,9 @@ public class PreviewServlet extends ZimbraServlet {
     }
 
     // Handle PDF thumbnail request
-    if (thumbnailPdf.find()) {
-      String previewArea = thumbnailPdf.group(3);
-      PreviewQueryParameters queryParameters = parseQueryParameters(thumbnailPdf.group(4));
+    if (thumbnailPdfMatcher.find()) {
+      String previewArea = thumbnailPdfMatcher.group(3);
+      PreviewQueryParameters queryParameters = parseQueryParameters(thumbnailPdfMatcher.group(4));
       return Try.of(
               () ->
                   previewClient.postThumbnailOfPdf(
@@ -320,9 +357,9 @@ public class PreviewServlet extends ZimbraServlet {
                       thumbnailOfImage.get(), attachmentFileName, dispositionType));
     }
     // Handle Preview Image request
-    if (previewImage.find()) {
-      String previewArea = previewImage.group(3);
-      PreviewQueryParameters queryParameters = parseQueryParameters(previewImage.group(5));
+    if (previewImageMatcher.find()) {
+      String previewArea = previewImageMatcher.group(3);
+      PreviewQueryParameters queryParameters = parseQueryParameters(previewImageMatcher.group(5));
       return Try.of(
               () ->
                   previewClient.postPreviewOfImage(
@@ -336,8 +373,8 @@ public class PreviewServlet extends ZimbraServlet {
     }
 
     // Handle Preview PDF request
-    if (previewPdf.find()) {
-      PreviewQueryParameters queryParameters = parseQueryParameters(previewPdf.group(4));
+    if (previewPdfMatcher.find()) {
+      PreviewQueryParameters queryParameters = parseQueryParameters(previewPdfMatcher.group(4));
       return Try.of(
               () ->
                   previewClient.postPreviewOfPdf(
@@ -373,43 +410,6 @@ public class PreviewServlet extends ZimbraServlet {
             response.getLength(),
             response.getMimeType(),
             dispositionType));
-  }
-
-  /**
-   * This method generates the final query {@link Query} from passed Optional area string and {@link
-   * PreviewQueryParameters}
-   *
-   * @param optArea the optional area {@link String} parameter
-   * @param queryParameters the {@link PreviewQueryParameters} object
-   * @return {@link Query}
-   */
-  private Query generateQuery(String optArea, PreviewQueryParameters queryParameters) {
-    QueryBuilder parameterBuilder = new QueryBuilder();
-    if (optArea != null) {
-      parameterBuilder.setPreviewArea(optArea);
-    }
-    queryParameters.getQuality().ifPresent(parameterBuilder::setQuality);
-    queryParameters.getOutputFormat().ifPresent(parameterBuilder::setOutputFormat);
-    queryParameters.getCrop().ifPresent(parameterBuilder::setCrop);
-    queryParameters.getShape().ifPresent(parameterBuilder::setShape);
-    queryParameters.getFirstPage().ifPresent(parameterBuilder::setFirstPage);
-    queryParameters.getLastPage().ifPresent(parameterBuilder::setLastPage);
-    return parameterBuilder.build();
-  }
-
-  /**
-   * This method parses the passed queryParamString into {@link PreviewQueryParameters} object
-   *
-   * @param queryParameters {@link String}
-   * @return {@link PreviewQueryParameters}
-   */
-  PreviewQueryParameters parseQueryParameters(String queryParameters) {
-    Map<String, String> parameters =
-        Arrays.stream(queryParameters.replace("?", "").split("&"))
-            .map(parameter -> parameter.split("="))
-            .filter(parameter -> parameter.length == 2)
-            .collect(Collectors.toMap(parameter -> parameter[0], parameter -> parameter[1]));
-    return new ObjectMapper().convertValue(parameters, PreviewQueryParameters.class);
   }
 
   /**
