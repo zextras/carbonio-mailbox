@@ -38,6 +38,11 @@ public class ChangePassword extends AccountDocumentHandler {
     this.prov = prov;
   }
 
+  /** Uses Singleton {@link Provisioning} directly */
+  public ChangePassword() {
+    this.prov = Provisioning.getInstance();
+  }
+
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
 

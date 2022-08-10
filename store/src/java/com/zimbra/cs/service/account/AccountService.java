@@ -14,7 +14,6 @@ import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.KeyValuePair;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import java.util.HashMap;
@@ -32,8 +31,7 @@ public class AccountService implements DocumentService {
 
     // auth
     dispatcher.registerHandler(AccountConstants.AUTH_REQUEST, new Auth());
-    dispatcher.registerHandler(
-        AccountConstants.CHANGE_PASSWORD_REQUEST, new ChangePassword(Provisioning.getInstance()));
+    dispatcher.registerHandler(AccountConstants.CHANGE_PASSWORD_REQUEST, new ChangePassword());
     dispatcher.registerHandler(AccountConstants.END_SESSION_REQUEST, new EndSession());
 
     // client info
