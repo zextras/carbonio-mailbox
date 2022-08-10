@@ -9,18 +9,20 @@ import com.zextras.carbonio.preview.exceptions.ValidationError;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.Query;
 import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
+import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.httpclient.HttpClientUtil;
+import com.zimbra.common.mime.ContentDisposition;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.L10nUtil;
-import com.zimbra.common.util.L10nUtil.MsgKey;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
+import com.zimbra.common.util.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.mime.Mime;
+import com.zimbra.cs.httpclient.HttpProxyUtil;
 import com.zimbra.cs.servlet.ZimbraServlet;
+import com.zimbra.cs.util.AccountUtil;
 import io.vavr.control.Try;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +40,13 @@ import javax.mail.internet.MimePart;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HTTP;
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -125,18 +133,102 @@ public class PreviewServlet extends ZimbraServlet {
   }
 
   /**
+   * Return the rest resource Url for content servlet
+   *
+   * @param authToken the {@link AuthToken} passed in request
+   * @param messageId {@link String} the messageId that we want to get attachment from
+   * @param part {@link String} the part number of the attachment in email
+   * @return Try of attachment's URL {@link String} for content servlet
+   */
+  static String getContentServletResourceUrl(AuthToken authToken, String messageId, String part) {
+
+    return Try.of(
+            () -> {
+              final Account account = authToken.getAccount();
+              final String baseUrl = AccountUtil.getBaseUri(authToken.getAccount());
+              final String restUrl =
+                  UserServlet.getRestUrl(account) + "?auth=co&id=" + messageId + "&part=" + part;
+              return baseUrl == null
+                  ? restUrl
+                  : baseUrl + UserServlet.SERVLET_PATH + restUrl.split(UserServlet.SERVLET_PATH)[1];
+            })
+        .get();
+  }
+
+  /**
+   * @param resp the {@link HttpServletResponse} servlet response object
+   * @param authToken {@link AuthToken} authToken object
+   * @return the mailHostUrl {@link String}
+   */
+  String getMailHostUrl(HttpServletResponse resp, AuthToken authToken) {
+    return Try.of(authToken::getAccount)
+        .mapTry(account -> account.getAttr(ZAttrProvisioning.A_zimbraMailHost))
+        .onFailure(ex -> respondWithError(resp, HttpServletResponse.SC_NOT_FOUND, ex.getMessage()))
+        .get();
+  }
+
+  /**
    * This method is used to retrieve the attachment from mailbox
    *
-   * @param authToken the {@link AuthToken} of user
-   * @param messageId the messageId that we want to get attachment from
-   * @param part the part number of the attachment in email
+   * @param resp the {@link HttpServletResponse} servlet response object
+   * @param authToken the {@link AuthToken} passed in request
+   * @param messageId {@link String} the messageId that we want to get attachment from
+   * @param part {@link String} the part number of the attachment in email
    * @return the {@link MimePart} object
    */
-  private Try<MimePart> getAttachment(AuthToken authToken, int messageId, String part) {
-    final String accountId = authToken.getAccountId();
-    return Try.of(() -> MailboxManager.getInstance().getMailboxByAccountId(accountId))
-        .mapTry(mailbox -> mailbox.getMessageById(new OperationContext(authToken), messageId))
-        .mapTry(message -> Mime.getMimePart(message.getMimeMessage(), part));
+  private Try<BlobResponseStore> getAttachment(
+      HttpServletResponse resp, AuthToken authToken, String messageId, String part) {
+    return Try.of(
+            () -> {
+              HttpClientBuilder clientBuilder =
+                  ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+              HttpProxyUtil.configureProxy(clientBuilder);
+              HttpGet getRequest =
+                  new HttpGet(getContentServletResourceUrl(authToken, messageId, part));
+              HttpClient client =
+                  encodeClientBuilderRequest(resp, authToken, clientBuilder, getRequest).get();
+              HttpResponse httpResp = HttpClientUtil.executeMethod(client, getRequest);
+
+              Header ctHeader = httpResp.getFirstHeader("Content-Type");
+              String contentType = ctHeader == null ? "text/plain" : ctHeader.getValue();
+              Header cdHeader = httpResp.getFirstHeader("Content-Disposition");
+              String filename =
+                  cdHeader == null
+                      ? "unknown"
+                      : new ContentDisposition(cdHeader.getValue()).getParameter("filename");
+
+              return new BlobResponseStore(
+                  httpResp.getEntity().getContent(),
+                  filename,
+                  httpResp.getEntity().getContentLength(),
+                  contentType,
+                  "inline");
+            })
+        .onFailure(ex -> respondWithError(resp, HttpServletResponse.SC_NOT_FOUND, ex.getMessage()));
+  }
+
+  /**
+   * Adds request configuration to client builder
+   *
+   * @param resp the {@link HttpServletResponse} servlet response object
+   * @param authToken the {@link AuthToken} passed in request
+   * @param clientBuilder the {@link HttpClientBuilder} object
+   * @param getRequest the {@link HttpServletRequest} that has to be encoded
+   * @return Try of encoded {@link CloseableHttpClient} object
+   */
+  private Try<CloseableHttpClient> encodeClientBuilderRequest(
+      HttpServletResponse resp,
+      AuthToken authToken,
+      HttpClientBuilder clientBuilder,
+      HttpGet getRequest) {
+
+    return Try.of(
+            () -> {
+              authToken.encode(clientBuilder, getRequest, false, getMailHostUrl(resp, authToken));
+              return clientBuilder.build();
+            })
+        .onFailure(
+            ex -> respondWithError(resp, HttpServletResponse.SC_BAD_REQUEST, ex.getMessage()));
   }
 
   /**
@@ -147,7 +239,7 @@ public class PreviewServlet extends ZimbraServlet {
    * @return the {@link BlobResponseStore} object
    */
   private Try<BlobResponseStore> getAttachmentPreview(
-      String requestUrl, MimePart attachmentMimePart) {
+      String requestUrl, BlobResponseStore attachmentMimePart) {
 
     // get disposition type query parameter from url
     final String dispositionType = getDispositionType(requestUrl);
@@ -156,11 +248,11 @@ public class PreviewServlet extends ZimbraServlet {
     final String requestUrlForPreview = getRequestUrlForPreview(requestUrl, dispositionType);
 
     // get attachment filename from attachment MimePart
-    final String attachmentFileName = Try.of(attachmentMimePart::getFileName).getOrElse("unknown");
+    final String attachmentFileName = Try.of(attachmentMimePart::getFilename).getOrElse("unknown");
 
     // get attachment inputStream
     final Try<InputStream> attachmentMimePartInputStream =
-        Try.of(attachmentMimePart::getInputStream);
+        Try.of(attachmentMimePart::getBlobStream);
 
     // break if attachmentMimePartInputStream has encountered a failure
     if (attachmentMimePartInputStream.isFailure()) {
@@ -174,23 +266,26 @@ public class PreviewServlet extends ZimbraServlet {
     Matcher previewImage =
         Pattern.compile(
                 SERVLET_PATH
-                    + "/image/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/\\n"
+                    + "/image/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/\\n"
                     + " ]*)))")
             .matcher(requestUrlForPreview);
 
     Matcher thumbnailImage =
         Pattern.compile(
-                SERVLET_PATH + "/image/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)")
+                SERVLET_PATH
+                    + "/image/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)")
             .matcher((requestUrlForPreview));
 
     Matcher previewPdf =
         Pattern.compile(
-                SERVLET_PATH + "/pdf/([0-9\\-]*)/([0-9]+)/?((?=(?!thumbnail))(?=([^/\\n ]*)))")
+                SERVLET_PATH
+                    + "/pdf/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/?((?=(?!thumbnail))(?=([^/\\n ]*)))")
             .matcher((requestUrlForPreview));
 
     Matcher thumbnailPdf =
         Pattern.compile(
-                SERVLET_PATH + "/pdf/([0-9\\-]*)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)")
+                SERVLET_PATH
+                    + "/pdf/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)")
             .matcher((requestUrlForPreview));
 
     // Handle Image thumbnail request
@@ -405,11 +500,10 @@ public class PreviewServlet extends ZimbraServlet {
           resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Preview service is down/not ready");
     }
 
-    final AuthToken authToken = getAuthTokenFromCookie(req, resp);
-    checkAuthTokenFromCookieOrRespondWithError(authToken, req, resp);
+    final AuthToken authToken = getAuthTokenFromCookieOrRespondWithError(req, resp);
 
     final Pattern requiredQueryParametersPattern =
-        Pattern.compile(SERVLET_PATH + "/([a-zA-Z]+)/([0-9]+)/([0-9]+)");
+        Pattern.compile(SERVLET_PATH + "/([a-zA-Z]+)/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)");
     final Matcher requiredQueryParametersMatcher =
         requiredQueryParametersPattern.matcher(getUrlWithQueryParams(req));
 
@@ -420,11 +514,12 @@ public class PreviewServlet extends ZimbraServlet {
             || requiredQueryParametersMatcher.groupCount() != 3)) {
       respondWithError(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters");
     } else {
-      final int messageId = Integer.parseInt(requiredQueryParametersMatcher.group(2));
+      final String messageId = requiredQueryParametersMatcher.group(2);
       final String partNo = requiredQueryParametersMatcher.group(3);
 
       // get attachment
-      final Try<MimePart> attachmentMimePart = getAttachment(authToken, messageId, partNo);
+      final Try<BlobResponseStore> attachmentMimePart =
+          getAttachment(resp, authToken, messageId, partNo);
       if (attachmentMimePart.isFailure()) {
         respondWithError(
             resp,
@@ -452,19 +547,17 @@ public class PreviewServlet extends ZimbraServlet {
   }
 
   /**
-   * @param authToken the {@link AuthToken} we want to check
    * @param req the {@link HttpServletRequest} object that will be used to provide req metadata in
    *     error message
    * @param resp the {@link HttpServletResponse} to send the error response
+   * @return the {@link AuthToken} AuthToken object extracted from req metadata
    */
-  void checkAuthTokenFromCookieOrRespondWithError(
-      AuthToken authToken, HttpServletRequest req, HttpServletResponse resp) {
-    if (authToken == null) {
-      respondWithError(
-          resp,
-          HttpServletResponse.SC_UNAUTHORIZED,
-          L10nUtil.getMessage(MsgKey.errMustAuthenticate, req));
-    }
+  AuthToken getAuthTokenFromCookieOrRespondWithError(
+      HttpServletRequest req, HttpServletResponse resp) {
+    return Try.of(() -> getAuthTokenFromCookie(req, resp))
+        .onFailure(
+            ex -> respondWithError(resp, HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage()))
+        .get();
   }
 
   @Override
