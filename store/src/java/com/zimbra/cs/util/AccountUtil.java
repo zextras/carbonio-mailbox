@@ -391,7 +391,7 @@ public class AccountUtil {
     try {
       Server server = Provisioning.getInstance().getServer(account);
       if (server == null) {
-        ZimbraLog.account.warn("no server associated with acccount " + account.getName());
+        ZimbraLog.account.warn("no server associated with account " + account.getName());
         return null;
       }
       return getBaseUri(server);
