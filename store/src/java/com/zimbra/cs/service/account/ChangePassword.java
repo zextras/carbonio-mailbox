@@ -29,6 +29,15 @@ import java.util.Map;
  */
 public class ChangePassword extends AccountDocumentHandler {
 
+  private final Provisioning prov;
+
+  /**
+   * @param prov provisioning class that returns a singleton
+   */
+  public ChangePassword(Provisioning prov) {
+    this.prov = prov;
+  }
+
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
 
@@ -36,7 +45,6 @@ public class ChangePassword extends AccountDocumentHandler {
       throw ServiceException.INVALID_REQUEST("clear text password is not allowed", null);
 
     ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    Provisioning prov = Provisioning.getInstance();
 
     String namePassedIn = request.getAttribute(AccountConstants.E_ACCOUNT);
     String name = namePassedIn;
