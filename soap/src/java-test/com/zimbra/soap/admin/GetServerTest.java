@@ -5,19 +5,16 @@
 
 package com.zimbra.soap.admin;
 
+import com.zimbra.soap.admin.message.GetServerRequest;
+import com.zimbra.soap.admin.type.ServerSelector;
 import java.io.ByteArrayOutputStream;
-import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import com.zimbra.soap.admin.message.GetServerRequest;
-import com.zimbra.soap.admin.type.ServerSelector;
 
 /**
  * Unit test for {@link GetServerRequest}.
@@ -36,6 +33,7 @@ public class GetServerTest {
     }
 
     @Test
+    @Ignore("add required xml files to run")
     public void unmarshallGetServerRequest() throws Exception {
         GetServerRequest result = (GetServerRequest) unmarshaller.unmarshal(
                 getClass().getResourceAsStream("GetServerRequest.xml"));
