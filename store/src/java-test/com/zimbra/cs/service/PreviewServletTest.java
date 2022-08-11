@@ -1,13 +1,17 @@
 package com.zimbra.cs.service;
 
+import static com.zimbra.cs.service.PreviewServlet.THUMBNAIL_IMAGE_REGEX;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Maps;
+import com.zextras.carbonio.preview.queries.Query;
 import com.zimbra.common.account.Key;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
@@ -33,6 +37,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
@@ -46,8 +52,10 @@ import org.junit.Test;
 
 public class PreviewServletTest {
 
+  private static final String TEST_ACCOUNT_NAME = "test@zimbra.com";
+
   static String getAuthTokenString() throws Exception {
-    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, TEST_ACCOUNT_NAME);
     XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
     req.addAttribute(AccountConstants.A_CSRF_SUPPORT, "1");
     com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
@@ -77,7 +85,7 @@ public class PreviewServletTest {
 
     Map<String, Object> attrs = Maps.newHashMap();
     attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-    prov.createAccount("test@zimbra.com", "secret", attrs);
+    prov.createAccount(TEST_ACCOUNT_NAME, "secret", attrs);
   }
 
   @Before
@@ -104,7 +112,7 @@ public class PreviewServletTest {
   }
 
   @Test
-  public void shouldReturn401WhenCheckAuthTokenFromCookieOrRespondWithErrorIfCookieNotSet()
+  public void shouldReturn401WhenGetAuthTokenFromCookieOrRespondWithErrorIfCookieNotSet()
       throws Exception {
     URL url = new URL("http://localhost:7070/service/preview/");
     MockHttpServletRequest mockRequest = mock(MockHttpServletRequest.class);
@@ -115,9 +123,8 @@ public class PreviewServletTest {
     when(mockRequest.getRequestURL()).thenReturn(urlBuffer);
     MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 
-    final AuthToken authToken = AuthProvider.getAuthToken(mockRequest, false);
     final PreviewServlet previewServlet = new PreviewServlet();
-    previewServlet.checkAuthTokenFromCookieOrRespondWithError(authToken, mockRequest, mockResponse);
+    previewServlet.getAuthTokenFromCookieOrRespondWithError(mockRequest, mockResponse);
     assertEquals(401, mockResponse.getStatus());
   }
 
@@ -164,9 +171,8 @@ public class PreviewServletTest {
     PreviewQueryParameters expPreviewQueryParameters =
         new PreviewQueryParameters(expQuality, expFormat, expShape);
 
-    final PreviewServlet previewServlet = new PreviewServlet();
     final PreviewQueryParameters previewQueryParameters =
-        previewServlet.parseQueryParameters(url.getQuery());
+        PreviewServlet.parseQueryParameters(url.getQuery());
 
     assertEquals(expPreviewQueryParameters.getQuality(), previewQueryParameters.getQuality());
     assertEquals(expPreviewQueryParameters.getShape(), previewQueryParameters.getShape());
@@ -256,6 +262,42 @@ public class PreviewServletTest {
     assertEquals(
         "https://nbm-s01.demo.zextras.io/service/preview/pdf/531/2/?first_page=1&last_page=1",
         requestUrlForPreview);
+  }
+
+  @Test
+  public void shouldGetContentServletResourceUrlWhenCalled() throws ServiceException {
+
+    Account account = Provisioning.getInstance().get(Key.AccountBy.name, TEST_ACCOUNT_NAME);
+    AuthToken mockAuthToken = mock(AuthToken.class);
+    when(mockAuthToken.getAccount()).thenReturn(account);
+    String messageId = "16e683a8-288b-40e2-810e-d0482363a541:315";
+    String part = "2";
+    String contentServletResourceUrl =
+        PreviewServlet.getContentServletResourceUrl(mockAuthToken, messageId, part);
+    assertEquals(
+        "http://localhost:80/home/test@zimbra.com?auth=co&id=16e683a8-288b-40e2-810e-d0482363a541:315&part=2",
+        contentServletResourceUrl);
+  }
+
+  @Test
+  public void shouldReturnCorrectQueryWhenCalledGenerateQuery() {
+    String requestUrlForPreview =
+        "https://nbm-s01.demo.zextras.io/service/preview/image/258/3/200x200/thumbnail?quality=high&shape=rounded&output_format=png&disp=inline";
+
+    Matcher thumbnailImageMatcher =
+        Pattern.compile(THUMBNAIL_IMAGE_REGEX)
+            .matcher(PreviewServlet.getRequestUrlForPreview(requestUrlForPreview, "inline"));
+
+    assertTrue(thumbnailImageMatcher.find());
+    String previewArea = thumbnailImageMatcher.group(3);
+    PreviewQueryParameters queryParameters =
+        PreviewServlet.parseQueryParameters(thumbnailImageMatcher.group(4));
+    final Query query = PreviewServlet.generateQuery(previewArea, queryParameters);
+
+    assertEquals("200x200", query.getPreviewArea().get());
+    assertEquals("high", query.getQuality().get());
+    assertEquals("rounded", query.getShape().get());
+    assertEquals("png", query.getOutputFormat().get());
   }
 
   /**
