@@ -55,6 +55,9 @@ import org.eclipse.jetty.http.HttpStatus;
  * previewer service
  *
  * <pre>
+ *
+ *   Based on Carbonio Preview SDK 0.2.4
+ *
  *   The API is the almost same as of preview service(https://zextras.atlassian.net/wiki/spaces/SW/pages/2353430753/Preview+API)
  *   with few modification that let us make it use as preview service for mailbox attachments.
  *
@@ -92,17 +95,24 @@ import org.eclipse.jetty.http.HttpStatus;
 public class PreviewServlet extends ZimbraServlet {
 
   public static final String SERVLET_PATH = "/preview";
-  public static final String THUMBNAIL_PDF_REGEX =
-      SERVLET_PATH + "/pdf/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)";
-  public static final String PREVIEW_PDF_REGEX =
-      SERVLET_PATH + "/pdf/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/?((?=(?!thumbnail))(?=([^/\\n ]*)))";
-  public static final String THUMBNAIL_IMAGE_REGEX =
+  public static final String THUMBNAIL_REGEX =
+      "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)";
+  public static final String PDF_PREVIEW_REGEX =
       SERVLET_PATH
-          + "/image/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)";
-  public static final String PREVIEW_IMAGE_REGEX =
+          + "/pdf/"
+          + "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/?((?=(?!thumbnail))(?=([^/ ]*)))";
+  public static final String IMG_PREVIEW_REGEX =
       SERVLET_PATH
-          + "/image/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/\\n"
-          + " ]*)))";
+          + "/image/"
+          + "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/ ]*)))";
+  public static final String DOC_PREVIEW_REGEX =
+      SERVLET_PATH
+          + "/document/"
+          + "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/?((?=(?!thumbnail))(?=([^/ ]*)))";
+  public static final String PDF_THUMBNAIL_REGEX = SERVLET_PATH + "/pdf/" + THUMBNAIL_REGEX;
+  public static final String IMG_THUMBNAIL_REGEX = SERVLET_PATH + "/image/" + THUMBNAIL_REGEX;
+  public static final String DOC_THUMBNAIL_REGEX = SERVLET_PATH + "/document/" + THUMBNAIL_REGEX;
+
   private static final long serialVersionUID = -4834966842520538743L;
   private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
   private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.7:20001/";
@@ -135,12 +145,16 @@ public class PreviewServlet extends ZimbraServlet {
    * @return disposition value if found else the default "i"(inline)
    */
   static String getDispositionType(String requestUrl) {
-    return Stream.of(requestUrl.split("\\?")[1].split("&"))
-        .map(kv -> kv.split("="))
-        .filter(kv -> "disp".equalsIgnoreCase(kv[0]))
-        .map(kv -> kv[1])
-        .findFirst()
-        .orElse("i");
+    if (requestUrl.split("\\?").length > 1) {
+      return Stream.of(requestUrl.split("\\?")[1].split("&"))
+          .map(kv -> kv.split("="))
+          .filter(kv -> "disp".equalsIgnoreCase(kv[0]))
+          .map(kv -> kv[1])
+          .findFirst()
+          .orElse("i");
+    } else {
+      return "i";
+    }
   }
 
   /**
@@ -314,21 +328,26 @@ public class PreviewServlet extends ZimbraServlet {
 
     // Start Preview API Controller=================================================================
 
-    Matcher previewImageMatcher =
-        Pattern.compile(PREVIEW_IMAGE_REGEX).matcher(requestUrlForPreview);
+    Matcher imagePreviewMatcher = Pattern.compile(IMG_PREVIEW_REGEX).matcher(requestUrlForPreview);
 
-    Matcher thumbnailImageMatcher =
-        Pattern.compile(THUMBNAIL_IMAGE_REGEX).matcher((requestUrlForPreview));
+    Matcher imageThumbnailMatcher =
+        Pattern.compile(IMG_THUMBNAIL_REGEX).matcher((requestUrlForPreview));
 
-    Matcher previewPdfMatcher = Pattern.compile(PREVIEW_PDF_REGEX).matcher((requestUrlForPreview));
+    Matcher pdfPreviewMatcher = Pattern.compile(PDF_PREVIEW_REGEX).matcher((requestUrlForPreview));
 
-    Matcher thumbnailPdfMatcher =
-        Pattern.compile(THUMBNAIL_PDF_REGEX).matcher((requestUrlForPreview));
+    Matcher pdfThumbnailMatcher =
+        Pattern.compile(PDF_THUMBNAIL_REGEX).matcher((requestUrlForPreview));
+
+    Matcher documentPreviewMatcher =
+        Pattern.compile(DOC_PREVIEW_REGEX).matcher(requestUrlForPreview);
+
+    Matcher documentThumbnailMatcher =
+        Pattern.compile(DOC_THUMBNAIL_REGEX).matcher((requestUrlForPreview));
 
     // Handle Image thumbnail request
-    if (thumbnailImageMatcher.find()) {
-      String previewArea = thumbnailImageMatcher.group(3);
-      PreviewQueryParameters queryParameters = parseQueryParameters(thumbnailImageMatcher.group(4));
+    if (imageThumbnailMatcher.find()) {
+      String previewArea = imageThumbnailMatcher.group(3);
+      PreviewQueryParameters queryParameters = parseQueryParameters(imageThumbnailMatcher.group(4));
       return Try.of(
               () ->
                   previewClient.postThumbnailOfImage(
@@ -342,9 +361,9 @@ public class PreviewServlet extends ZimbraServlet {
     }
 
     // Handle PDF thumbnail request
-    if (thumbnailPdfMatcher.find()) {
-      String previewArea = thumbnailPdfMatcher.group(3);
-      PreviewQueryParameters queryParameters = parseQueryParameters(thumbnailPdfMatcher.group(4));
+    if (pdfThumbnailMatcher.find()) {
+      String previewArea = pdfThumbnailMatcher.group(3);
+      PreviewQueryParameters queryParameters = parseQueryParameters(pdfThumbnailMatcher.group(4));
       return Try.of(
               () ->
                   previewClient.postThumbnailOfPdf(
@@ -352,14 +371,32 @@ public class PreviewServlet extends ZimbraServlet {
                       generateQuery(previewArea, queryParameters),
                       attachmentFileName))
           .flatMapTry(
-              thumbnailOfImage ->
+              thumbnailOfPdf ->
                   mapResponseToBlobResponseStore(
-                      thumbnailOfImage.get(), attachmentFileName, dispositionType));
+                      thumbnailOfPdf.get(), attachmentFileName, dispositionType));
     }
+
+    // Handle Document thumbnail request
+    if (documentThumbnailMatcher.find()) {
+      String previewArea = documentThumbnailMatcher.group(3);
+      PreviewQueryParameters queryParameters =
+          parseQueryParameters(documentThumbnailMatcher.group(4));
+      return Try.of(
+              () ->
+                  previewClient.postThumbnailOfDocument(
+                      attachmentMimePartInputStream.get(),
+                      generateQuery(previewArea, queryParameters),
+                      attachmentFileName))
+          .flatMapTry(
+              thumbnailOfDocument ->
+                  mapResponseToBlobResponseStore(
+                      thumbnailOfDocument.get(), attachmentFileName, dispositionType));
+    }
+
     // Handle Preview Image request
-    if (previewImageMatcher.find()) {
-      String previewArea = previewImageMatcher.group(3);
-      PreviewQueryParameters queryParameters = parseQueryParameters(previewImageMatcher.group(5));
+    if (imagePreviewMatcher.find()) {
+      String previewArea = imagePreviewMatcher.group(3);
+      PreviewQueryParameters queryParameters = parseQueryParameters(imagePreviewMatcher.group(5));
       return Try.of(
               () ->
                   previewClient.postPreviewOfImage(
@@ -367,14 +404,14 @@ public class PreviewServlet extends ZimbraServlet {
                       generateQuery(previewArea, queryParameters),
                       attachmentFileName))
           .flatMapTry(
-              thumbnailOfImage ->
+              previewOfImage ->
                   mapResponseToBlobResponseStore(
-                      thumbnailOfImage.get(), attachmentFileName, dispositionType));
+                      previewOfImage.get(), attachmentFileName, dispositionType));
     }
 
     // Handle Preview PDF request
-    if (previewPdfMatcher.find()) {
-      PreviewQueryParameters queryParameters = parseQueryParameters(previewPdfMatcher.group(4));
+    if (pdfPreviewMatcher.find()) {
+      PreviewQueryParameters queryParameters = parseQueryParameters(pdfPreviewMatcher.group(4));
       return Try.of(
               () ->
                   previewClient.postPreviewOfPdf(
@@ -382,9 +419,25 @@ public class PreviewServlet extends ZimbraServlet {
                       generateQuery(null, queryParameters),
                       attachmentFileName))
           .flatMapTry(
-              thumbnailOfImage ->
+              previewOfPdf ->
                   mapResponseToBlobResponseStore(
-                      thumbnailOfImage.get(), attachmentFileName, dispositionType));
+                      previewOfPdf.get(), attachmentFileName, dispositionType));
+    }
+
+    // Handle Preview Document request
+    if (documentPreviewMatcher.find()) {
+      PreviewQueryParameters queryParameters =
+          parseQueryParameters(documentPreviewMatcher.group(4));
+      return Try.of(
+              () ->
+                  previewClient.postPreviewOfDocument(
+                      attachmentMimePartInputStream.get(),
+                      generateQuery(null, queryParameters),
+                      attachmentFileName))
+          .flatMapTry(
+              previewOfDocument ->
+                  mapResponseToBlobResponseStore(
+                      previewOfDocument.get(), attachmentFileName, dispositionType));
     }
     // End Preview API Controller=================================================================
 
@@ -504,14 +557,14 @@ public class PreviewServlet extends ZimbraServlet {
 
     final Pattern requiredQueryParametersPattern =
         Pattern.compile(SERVLET_PATH + "/([a-zA-Z]+)/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)");
+
     final Matcher requiredQueryParametersMatcher =
         requiredQueryParametersPattern.matcher(getUrlWithQueryParams(req));
 
     // check url for the presence of required parameters and query string
     // send error otherwise
-    if (req.getQueryString() == null
-        || (!requiredQueryParametersMatcher.find()
-            || requiredQueryParametersMatcher.groupCount() != 3)) {
+    if (!requiredQueryParametersMatcher.find()
+        || requiredQueryParametersMatcher.groupCount() != 3) {
       respondWithError(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters");
     } else {
       final String messageId = requiredQueryParametersMatcher.group(2);
