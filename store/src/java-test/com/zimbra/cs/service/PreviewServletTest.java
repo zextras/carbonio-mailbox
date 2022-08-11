@@ -229,6 +229,35 @@ public class PreviewServletTest {
   }
 
   @Test
+  public void shouldReturnCorrectDispositionTypeWhenCalledGetDispositionType() {
+    // case 1: inline
+    String requestUrl =
+        "https://nbm-s01.demo.zextras.io/service/preview/document/562/3/800x800/thumbnail/?disp=inline";
+    String dispositionType = PreviewServlet.getDispositionType(requestUrl);
+    assertEquals("inline", dispositionType);
+
+    // case 2: a
+    requestUrl =
+        "https://nbm-s01.demo.zextras.io/service/preview/document/562/3/800x800/thumbnail/?disp=a";
+    dispositionType = PreviewServlet.getDispositionType(requestUrl);
+    assertEquals("a", dispositionType);
+  }
+
+  @Test
+  public void
+      shouldReturnCorrectUrlForPreviewWhenDispQueryParameterIsAtFirstPosAndIsOnlyQueryParam() {
+    String requestUrl =
+        "https://nbm-s01.demo.zextras.io/service/preview/document/562/3/800x800/thumbnail/?disp=i";
+    final String dispositionType = PreviewServlet.getDispositionType(requestUrl);
+
+    String requestUrlForPreview =
+        PreviewServlet.getRequestUrlForPreview(requestUrl, dispositionType);
+    assertEquals(
+        "https://nbm-s01.demo.zextras.io/service/preview/document/562/3/800x800/thumbnail/",
+        requestUrlForPreview);
+  }
+
+  @Test
   public void shouldReturnCorrectUrlForPreviewWhenDispQueryParameterIsAtFirstPos() {
     String requestUrl =
         "https://nbm-s01.demo.zextras.io/service/preview/pdf/531/2/?disp=a&first_page=1&last_page=1";
