@@ -1,6 +1,6 @@
 package com.zimbra.cs.service;
 
-import static com.zimbra.cs.service.PreviewServlet.THUMBNAIL_IMAGE_REGEX;
+import static com.zimbra.cs.service.PreviewServlet.IMG_THUMBNAIL_REGEX;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.atLeastOnce;
@@ -229,6 +229,35 @@ public class PreviewServletTest {
   }
 
   @Test
+  public void shouldReturnCorrectDispositionTypeWhenCalledGetDispositionType() {
+    // case 1: inline
+    String requestUrl =
+        "https://nbm-s01.demo.zextras.io/service/preview/document/562/3/800x800/thumbnail/?disp=inline";
+    String dispositionType = PreviewServlet.getDispositionType(requestUrl);
+    assertEquals("inline", dispositionType);
+
+    // case 2: a
+    requestUrl =
+        "https://nbm-s01.demo.zextras.io/service/preview/document/562/3/800x800/thumbnail/?disp=a";
+    dispositionType = PreviewServlet.getDispositionType(requestUrl);
+    assertEquals("a", dispositionType);
+  }
+
+  @Test
+  public void
+      shouldReturnCorrectUrlForPreviewWhenDispQueryParameterIsAtFirstPosAndIsOnlyQueryParam() {
+    String requestUrl =
+        "https://nbm-s01.demo.zextras.io/service/preview/document/562/3/800x800/thumbnail/?disp=i";
+    final String dispositionType = PreviewServlet.getDispositionType(requestUrl);
+
+    String requestUrlForPreview =
+        PreviewServlet.getRequestUrlForPreview(requestUrl, dispositionType);
+    assertEquals(
+        "https://nbm-s01.demo.zextras.io/service/preview/document/562/3/800x800/thumbnail/",
+        requestUrlForPreview);
+  }
+
+  @Test
   public void shouldReturnCorrectUrlForPreviewWhenDispQueryParameterIsAtFirstPos() {
     String requestUrl =
         "https://nbm-s01.demo.zextras.io/service/preview/pdf/531/2/?disp=a&first_page=1&last_page=1";
@@ -265,6 +294,13 @@ public class PreviewServletTest {
   }
 
   @Test
+  public void shouldReturnDefaultDispQueryWhenQueryParameterIsMissing() {
+    String requestUrl = "https://nbm-s01.demo.zextras.io/service/preview/pdf/531/2/";
+    final String dispositionType = PreviewServlet.getDispositionType(requestUrl);
+    assertEquals("i", dispositionType);
+  }
+
+  @Test
   public void shouldGetContentServletResourceUrlWhenCalled() throws ServiceException {
 
     Account account = Provisioning.getInstance().get(Key.AccountBy.name, TEST_ACCOUNT_NAME);
@@ -285,7 +321,7 @@ public class PreviewServletTest {
         "https://nbm-s01.demo.zextras.io/service/preview/image/258/3/200x200/thumbnail?quality=high&shape=rounded&output_format=png&disp=inline";
 
     Matcher thumbnailImageMatcher =
-        Pattern.compile(THUMBNAIL_IMAGE_REGEX)
+        Pattern.compile(IMG_THUMBNAIL_REGEX)
             .matcher(PreviewServlet.getRequestUrlForPreview(requestUrlForPreview, "inline"));
 
     assertTrue(thumbnailImageMatcher.find());
