@@ -32,7 +32,6 @@ import com.zimbra.cs.gal.GalSearchParams;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.util.AccountUtil;
-import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.account.type.AddressListInfo;
 import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.admin.type.CacheEntryType;
@@ -571,26 +570,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
       }
     }
     return cos;
-  }
-
-  /**
-   * @return the AlwaysOnCluster object for this server, or null if server has no AlwaysOnCluster
-   * @throws ServiceException
-   */
-  public AlwaysOnCluster getAlwaysOnCluster(Server server) throws ServiceException {
-    // CACHE. If we get reloaded from LDAP, cached data is cleared
-    AlwaysOnCluster aoc =
-        (AlwaysOnCluster) server.getCachedData(EntryCacheDataKey.SERVER_ALWAYSONCLUSTER);
-    if (aoc == null) {
-      String id = server.getAlwaysOnClusterId();
-      if (id != null) {
-        aoc = get(Key.AlwaysOnClusterBy.id, id);
-      }
-      if (aoc != null) {
-        server.setCachedData(EntryCacheDataKey.SERVER_ALWAYSONCLUSTER, aoc);
-      }
-    }
-    return aoc;
   }
 
   /**
@@ -1564,7 +1543,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     String target = account.getAttr(Provisioning.A_zimbraMailHost);
     String localhost = getInstance().getLocalServer().getAttr(Provisioning.A_zimbraServiceHostname);
     boolean isLocal = (target != null && target.equalsIgnoreCase(localhost));
-    boolean onLocalSvr = (isLocal || isAlwaysOn(account));
+    boolean onLocalSvr = isLocal;
     if (!onLocalSvr && reasons != null) {
       reasons.addReason(
           String.format(
@@ -1630,31 +1609,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return getIMAPDaemonServers(getInstance().getLocalServer());
   }
 
-  private static boolean isAlwaysOn(Account account) throws ServiceException {
-    return isAlwaysOn(account, null);
-  }
-
-  private static boolean isAlwaysOn(Account account, Reasons reasons) throws ServiceException {
-    String localServerClusterId = Zimbra.getAlwaysOnClusterId();
-    Server server = Provisioning.getInstance().getServer(account);
-    String accountHostingServerClusterId = null;
-    if (server != null) {
-      accountHostingServerClusterId = server.getAlwaysOnClusterId();
-    }
-    boolean isAlwaysOn =
-        (server != null)
-            && localServerClusterId != null
-            && accountHostingServerClusterId != null
-            && localServerClusterId.equals(accountHostingServerClusterId);
-    if (!isAlwaysOn && reasons != null) {
-      reasons.addReason(
-          String.format(
-              "isAlwaysOn=%b server=%s localServerClusterId=%s account=%s",
-              isAlwaysOn, server, localServerClusterId, account.getName()));
-    }
-    return isAlwaysOn;
-  }
-
   public static boolean onLocalServer(Group group) throws ServiceException {
     String target = group.getAttr(Provisioning.A_zimbraMailHost);
     String localhost = getInstance().getLocalServer().getAttr(Provisioning.A_zimbraServiceHostname);
@@ -1681,9 +1635,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract List<Server> getAllServers() throws ServiceException;
 
   public abstract List<Server> getAllServers(String service) throws ServiceException;
-
-  public abstract List<Server> getAllServers(String service, String clusterId)
-      throws ServiceException;
 
   public List<Server> getAllWebClientServers() throws ServiceException {
     List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
@@ -1766,19 +1717,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   }
 
   public abstract void deleteServer(String zimbraId) throws ServiceException;
-
-  /*
-   * AlwaysOnCluster
-   */
-  public abstract AlwaysOnCluster createAlwaysOnCluster(String name, Map<String, Object> attrs)
-      throws ServiceException;
-
-  public abstract AlwaysOnCluster get(Key.AlwaysOnClusterBy keyname, String key)
-      throws ServiceException;
-
-  public abstract void deleteAlwaysOnCluster(String zimbraId) throws ServiceException;
-
-  public abstract List<AlwaysOnCluster> getAllAlwaysOnClusters() throws ServiceException;
 
   /*
    * UC service

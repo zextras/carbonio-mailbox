@@ -6,5 +6,5 @@
 package com.zimbra.cs.account;
 
 public interface CacheAwareProvisioning {
-    public boolean isCacheEnabled();
+  boolean isCacheEnabled();
 }

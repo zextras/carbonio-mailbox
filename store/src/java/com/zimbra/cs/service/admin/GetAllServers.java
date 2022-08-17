@@ -8,10 +8,6 @@
  */
 package com.zimbra.cs.service.admin;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -20,49 +16,45 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author schemers
  */
 public class GetAllServers extends AdminDocumentHandler {
 
-    public static final String BY_NAME = "name";
-    public static final String BY_ID = "id";
+  public static final String BY_NAME = "name";
+  public static final String BY_ID = "id";
 
-	@Override
-    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
+  @Override
+  public Element handle(Element request, Map<String, Object> context) throws ServiceException {
 
-        ZimbraSoapContext zsc = getZimbraSoapContext(context);
-        Provisioning prov = Provisioning.getInstance();
+    ZimbraSoapContext zsc = getZimbraSoapContext(context);
+    Provisioning prov = Provisioning.getInstance();
 
-        String service = request.getAttribute(AdminConstants.A_SERVICE, null);
-        String alwaysOnClusterId = request.getAttribute(AdminConstants.A_ALWAYSONCLUSTER_ID, null);
+    String service = request.getAttribute(AdminConstants.A_SERVICE, null);
 
-        boolean applyConfig = request.getAttributeBool(AdminConstants.A_APPLY_CONFIG, true);
-        List<Server> servers;
-        if (alwaysOnClusterId == null) {
-            servers = prov.getAllServers(service);
-        } else {
-            servers = prov.getAllServers(service, alwaysOnClusterId);
-        }
+    boolean applyConfig = request.getAttributeBool(AdminConstants.A_APPLY_CONFIG, true);
+    List<Server> servers;
+    servers = prov.getAllServers(service);
+    AdminAccessControl aac = AdminAccessControl.getAdminAccessControl(zsc);
 
-        AdminAccessControl aac = AdminAccessControl.getAdminAccessControl(zsc);
-
-        Element response = zsc.createElement(AdminConstants.GET_ALL_SERVERS_RESPONSE);
-        for (Iterator<Server> it = servers.iterator(); it.hasNext(); ) {
-            Server server = it.next();
-            if (aac.hasRightsToList(server, Admin.R_listServer, null))
-                GetServer.encodeServer(response, server, applyConfig, null, aac.getAttrRightChecker(server));
-        }
-
-	    return response;
-	}
-
-    @Override
-    public void docRights(List<AdminRight> relatedRights, List<String> notes) {
-        relatedRights.add(Admin.R_listServer);
-        relatedRights.add(Admin.R_getServer);
-
-        notes.add(AdminRightCheckPoint.Notes.LIST_ENTRY);
+    Element response = zsc.createElement(AdminConstants.GET_ALL_SERVERS_RESPONSE);
+    for (Server server : servers) {
+      if (aac.hasRightsToList(server, Admin.R_listServer, null))
+        GetServer.encodeServer(
+            response, server, applyConfig, null, aac.getAttrRightChecker(server));
     }
+
+    return response;
+  }
+
+  @Override
+  public void docRights(List<AdminRight> relatedRights, List<String> notes) {
+    relatedRights.add(Admin.R_listServer);
+    relatedRights.add(Admin.R_getServer);
+
+    notes.add(AdminRightCheckPoint.Notes.LIST_ENTRY);
+  }
 }
