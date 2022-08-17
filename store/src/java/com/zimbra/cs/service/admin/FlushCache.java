@@ -68,7 +68,6 @@ public class FlushCache extends AdminDocumentHandler {
 
         CacheSelector cacheSelector = req.getCache();
         boolean allServers = cacheSelector.isAllServers();
-        boolean imapServers = cacheSelector.isIncludeImapServers();
         String[] types = cacheSelector.getTypes().split(",");
         for (String type : types) {
             CacheEntryType cacheType = null;

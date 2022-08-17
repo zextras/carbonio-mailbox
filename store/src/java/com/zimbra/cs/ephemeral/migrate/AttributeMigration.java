@@ -797,7 +797,7 @@ public class AttributeMigration {
                     try {
                         soapProv.soapZimbraAdminAuthenticate();
                         //don't flush imap daemon cache via FlushCache forwarding, since it will be done below
-                        soapProv.flushCache(CacheEntryType.config.name(), null, false, false);
+                        soapProv.flushCache(CacheEntryType.config.name(), null, false);
                         ZimbraLog.ephemeral.debug("sent FlushCache request to server %s", server.getServiceHostname());
 
                     } catch (ServiceException e) {

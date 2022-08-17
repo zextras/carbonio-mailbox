@@ -45,18 +45,6 @@ public final class CacheSelector {
 
 
     /**
-     * @zm-api-field-tag imap-servers
-     * @zm-api-field-description
-     * <table>
-     * <tr> <td> <b>0 (false)</b> </td> <td> don't issue X-ZIMBRA-FLUSHCACHE IMAP command to upstream IMAP servers </td> </tr>
-     * <tr> <td> <b>1 (true) [default]</b> </td>
-     *      <td> flush cache on servers listed in zimbraReverseProxyUpstreamImapServers for the current server via X-ZIMBRA-FLUSHCACHE</td> </tr>
-     * </table>
-     */
-    @XmlAttribute(name=AdminConstants.A_IMAPSERVERS /* imapServers */, required=false)
-    private ZmBoolean imapServers;
-
-    /**
      * @zm-api-field-description Cache entry selectors
      */
     @XmlElement(name=AdminConstants.E_ENTRY /* entry */, required=false)
@@ -96,6 +84,4 @@ public final class CacheSelector {
     public List<CacheEntrySelector> getEntries() {
         return Collections.unmodifiableList(entries);
     }
-    public void setIncludeImapServers(boolean bool) { imapServers = ZmBoolean.fromBool(bool); }
-    public boolean isIncludeImapServers() { return ZmBoolean.toBool(imapServers, true); }
 }

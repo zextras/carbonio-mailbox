@@ -5,25 +5,6 @@
 
 package com.zimbra.cs.account.soap;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.concurrent.Future;
-
-import org.apache.http.HttpException;
-import org.apache.http.HttpResponse;
-import org.apache.http.concurrent.FutureCallback;
-
 import com.google.common.collect.Lists;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -101,7 +82,6 @@ import com.zimbra.soap.account.message.GetDistributionListMembersResponse;
 import com.zimbra.soap.account.message.GetIdentitiesRequest;
 import com.zimbra.soap.account.message.GetIdentitiesResponse;
 import com.zimbra.soap.account.message.ModifyIdentityRequest;
-import com.zimbra.soap.account.message.ResetPasswordRequest;
 import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.admin.message.AddAccountAliasRequest;
@@ -298,6 +278,23 @@ import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.GalSearchType;
 import com.zimbra.soap.type.GranteeType;
 import com.zimbra.soap.type.TargetBy;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.Future;
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
+import org.apache.http.concurrent.FutureCallback;
 
 public class SoapProvisioning extends Provisioning {
 
@@ -2777,20 +2774,15 @@ public class SoapProvisioning extends Provisioning {
      * managed by Provisioning.
      */
     public void flushCache(String type, CacheEntry[] entries, boolean allServers) throws ServiceException {
-        flushCache(type, entries, allServers, true);
-    }
-
-    public void flushCache(String type, CacheEntry[] entries, boolean allServers, boolean imapDaemons) throws ServiceException {
         CacheSelector sel = new CacheSelector(allServers, type);
 
         if (entries != null) {
             for (CacheEntry entry : entries) {
                 sel.addEntry(new CacheEntrySelector(
-                        SoapProvisioning.toJaxb(entry.mEntryBy),
-                        entry.mEntryIdentity));
+                    SoapProvisioning.toJaxb(entry.mEntryBy),
+                    entry.mEntryIdentity));
             }
         }
-        sel.setIncludeImapServers(imapDaemons);
         invokeJaxb(new FlushCacheRequest(sel));
     }
 
