@@ -75,7 +75,6 @@ import com.zimbra.cs.db.DbMailItem.QueryParams;
 import com.zimbra.cs.db.DbMailbox;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.db.DbSession;
 import com.zimbra.cs.db.DbTag;
 import com.zimbra.cs.db.DbVolumeBlobs;
 import com.zimbra.cs.fb.FreeBusy;
@@ -414,7 +413,7 @@ public class Mailbox implements MailboxStore {
         this.writeChange = write;
         ZimbraLog.mailbox.debug("beginning operation: %s", caller);
       } else {
-        assert (write == false || writeChange); // if this call is a
+        assert (!write || writeChange); // if this call is a
         // write, the first one
         // must be a write
         ZimbraLog.mailbox.debug("  increasing stack depth to %d (%s)", depth, caller);
@@ -475,12 +474,9 @@ public class Mailbox implements MailboxStore {
               > data.lastItemId / DbMailbox.ITEM_CHECKPOINT_INCREMENT) {
         return true;
       }
-      if (changeId != NO_CHANGE
+      return changeId != NO_CHANGE
           && changeId / DbMailbox.CHANGE_CHECKPOINT_INCREMENT
-              > data.lastChangeId / DbMailbox.CHANGE_CHECKPOINT_INCREMENT) {
-        return true;
-      }
-      return false;
+              > data.lastChangeId / DbMailbox.CHANGE_CHECKPOINT_INCREMENT;
     }
 
     void reset() {
@@ -528,10 +524,7 @@ public class Mailbox implements MailboxStore {
         return true;
       } else if (config != null) {
         return true;
-      } else if (deletes != null) {
-        return true;
-      }
-      return false;
+      } else return deletes != null;
     }
   }
 
@@ -540,8 +533,8 @@ public class Mailbox implements MailboxStore {
     private final Map<String, Folder> mapByUuid;
 
     public FolderCache() {
-      mapById = new ConcurrentHashMap<Integer, Folder>();
-      mapByUuid = new ConcurrentHashMap<String, Folder>();
+      mapById = new ConcurrentHashMap<>();
+      mapByUuid = new ConcurrentHashMap<>();
     }
 
     public void put(Folder folder) {
@@ -599,63 +592,33 @@ public class Mailbox implements MailboxStore {
     private final Map<Integer /* id */, MailItem> mapById;
     private final Map<String /* uuid */, Integer /* id */> uuid2id;
     private final Mailbox mbox;
-    private final boolean isAlwaysOn;
 
     public ItemCache(Mailbox mbox) {
       mapById =
           new ConcurrentLinkedHashMap.Builder<Integer, MailItem>()
               .maximumWeightedCapacity(MAX_ITEM_CACHE_WITH_LISTENERS)
               .build();
-      uuid2id = new ConcurrentHashMap<String, Integer>(MAX_ITEM_CACHE_WITH_LISTENERS);
+      uuid2id = new ConcurrentHashMap<>(MAX_ITEM_CACHE_WITH_LISTENERS);
       this.mbox = mbox;
-      this.isAlwaysOn = false;
     }
 
     public void put(MailItem item) {
-      if (isAlwaysOn) {
-        try {
-          MemcachedItemCache.getInstance().put(mbox, item);
-        } catch (ServiceException e) {
-          ZimbraLog.mailbox.error("error while writing item to cache", e);
-        }
-      } else {
-        int id = item.getId();
-        mapById.put(id, item);
-        String uuid = item.getUuid();
-        if (uuid != null) {
-          uuid2id.put(uuid, id);
-        }
+      int id = item.getId();
+      mapById.put(id, item);
+      String uuid = item.getUuid();
+      if (uuid != null) {
+        uuid2id.put(uuid, id);
       }
     }
 
     public MailItem get(int id) {
-      if (isAlwaysOn) {
-        MailItem item = null;
-        try {
-          item = MemcachedItemCache.getInstance().get(mbox, id);
-        } catch (ServiceException e) {
-          ZimbraLog.mailbox.error("error while fetching item from cache", e);
-        }
-        return item;
-      } else {
-        return mapById.get(id);
-      }
+      return mapById.get(id);
     }
 
     public MailItem get(String uuid) {
-      if (isAlwaysOn) {
-        MailItem item = null;
-        try {
-          item = MemcachedItemCache.getInstance().get(mbox, uuid);
-        } catch (ServiceException e) {
-          ZimbraLog.mailbox.error("error while fetching item from cache", e);
-        }
-        return item;
-      } else {
-        // Always fetch item from mapById map to preserve LRU's access time ordering.
-        Integer id = uuid2id.get(uuid);
-        return id != null ? mapById.get(id) : null;
-      }
+      // Always fetch item from mapById map to preserve LRU's access time ordering.
+      Integer id = uuid2id.get(uuid);
+      return id != null ? mapById.get(id) : null;
     }
 
     public MailItem remove(MailItem item) {
@@ -663,7 +626,7 @@ public class Mailbox implements MailboxStore {
     }
 
     public MailItem remove(int id) {
-      if (isAlwaysOn) {
+      if (false) {
         MailItem removed = null;
         try {
           removed = MemcachedItemCache.getInstance().remove(mbox, id);
@@ -684,33 +647,15 @@ public class Mailbox implements MailboxStore {
     }
 
     public boolean contains(MailItem item) {
-      if (isAlwaysOn) {
-        try {
-          return MemcachedItemCache.getInstance().get(mbox, item.getId()) != null;
-        } catch (ServiceException e) {
-          ZimbraLog.mailbox.error("error while checking item cache", e);
-          return false;
-        }
-      } else {
-        return mapById.containsKey(item.getId());
-      }
+      return mapById.containsKey(item.getId());
     }
 
     public Collection<MailItem> values() {
-      if (isAlwaysOn) {
-        // return empty list
-        return Collections.emptyList();
-      } else {
-        return mapById.values();
-      }
+      return mapById.values();
     }
 
     public int size() {
-      if (isAlwaysOn) {
-        return 0;
-      } else {
-        return mapById.size();
-      }
+      return mapById.size();
     }
 
     public void clear() {
@@ -739,7 +684,7 @@ public class Mailbox implements MailboxStore {
   private static final int MAX_MSGID_CACHE = 10;
 
   private final int mId;
-  private MailboxData mData;
+  private final MailboxData mData;
   private final ThreadLocal<MailboxChange> threadChange = new ThreadLocal<MailboxChange>();
   private final List<Session> mListeners = new CopyOnWriteArrayList<Session>();
 
@@ -794,11 +739,8 @@ public class Mailbox implements MailboxStore {
   boolean requiresWriteLock() {
     // mailbox currently forced to use write lock due to one of the following
     // 1. pending tag/flag reload; i.e. cache flush or initial mailbox load
-    // 2. this is an always on node (distributed lock does not support read/write currently)
-    // 3. read/write disabled by LC for debugging
-    return requiresWriteLock
-        || Zimbra.isAlwaysOn()
-        || !LC.zimbra_mailbox_lock_readwrite.booleanValue();
+    // 2. read/write disabled by LC for debugging
+    return requiresWriteLock || !LC.zimbra_mailbox_lock_readwrite.booleanValue();
   }
 
   /**
@@ -1097,35 +1039,6 @@ public class Mailbox implements MailboxStore {
       if (!mListeners.contains(session)) {
         mListeners.add(session);
       }
-
-      if (Zimbra.isAlwaysOn()) {
-        if (mListeners.size() == 1) {
-          // insert session into DB
-          DbConnection conn = DbPool.getConnection();
-          try {
-            MailboxStore sessMbox = session.getMailbox();
-            if (sessMbox instanceof Mailbox) {
-              DbSession.create(
-                  conn,
-                  ((Mailbox) sessMbox).getId(),
-                  Provisioning.getInstance().getLocalServer().getId());
-            } else {
-              throw new UnsupportedOperationException(
-                  String.format(
-                      "Operation not supported for non-Mailbox MailboxStore",
-                      sessMbox == null ? "null" : sessMbox.getClass().getName()));
-            }
-            conn.commit();
-          } catch (ServiceException e) {
-            ZimbraLog.session.info("exception while inserting session into DB", e);
-          } finally {
-            if (conn != null) {
-              conn.closeQuietly();
-            }
-          }
-          //
-        }
-      }
     } finally {
       lock.release();
     }
@@ -1141,28 +1054,7 @@ public class Mailbox implements MailboxStore {
   public void removeListener(Session session) {
     lock.lock();
     mListeners.remove(session);
-
-    try {
-      if (Zimbra.isAlwaysOn()) {
-        if (mListeners.isEmpty()) {
-          // DbSessions Cleanup
-          DbConnection conn = null;
-          try {
-            conn = DbPool.getConnection();
-            DbSession.delete(conn, getId(), Provisioning.getInstance().getLocalServer().getId());
-            conn.commit();
-          } catch (ServiceException e) {
-            ZimbraLog.mailbox.error("Deleting database session: ", e);
-          } finally {
-            if (conn != null) {
-              conn.closeQuietly();
-            }
-          }
-        }
-      }
-    } finally {
-      lock.release();
-    }
+    lock.release();
 
     if (ZimbraLog.mailbox.isDebugEnabled()) {
       ZimbraLog.mailbox.debug("clearing listener: " + session);
@@ -1929,13 +1821,6 @@ public class Mailbox implements MailboxStore {
     if (conn != null) {
       setOperationConnection(conn);
     }
-    if (Zimbra.isAlwaysOn()) {
-      // refresh mailbox stats
-      MailboxData newData = DbMailbox.getMailboxStats(getOperationConnection(), getId());
-      if (newData != null) { // Mailbox may have been deleted
-        mData = newData;
-      }
-    }
     boolean needRedo = needRedo(octxt, recorder);
     // have a single, consistent timestamp for anything affected by this
     // operation
@@ -2141,13 +2026,6 @@ public class Mailbox implements MailboxStore {
       currentChange().itemCache.clear();
     } else {
       mItemCache.clear();
-    }
-    try {
-      if (Zimbra.isAlwaysOn()) {
-        DbMailbox.incrementItemcacheCheckpoint(this);
-      }
-    } catch (ServiceException e) {
-      ZimbraLog.mailbox.error("error while clearing item cache", e);
     }
   }
 
@@ -2626,10 +2504,8 @@ public class Mailbox implements MailboxStore {
   private void loadFoldersAndTags() throws ServiceException {
     // if the persisted mailbox sizes aren't available, we *must* recalculate
     boolean initial = mData.contacts < 0 || mData.size < 0;
-    if (!Zimbra.isAlwaysOn() || lock.getHoldCount() > 1) {
-      if (mFolderCache != null && mTagCache != null && !initial) {
-        return;
-      }
+    if (mFolderCache != null && mTagCache != null && !initial) {
+      return;
     }
     if (ZimbraLog.cache.isDebugEnabled()) {
       ZimbraLog.cache.debug(
@@ -2791,7 +2667,7 @@ public class Mailbox implements MailboxStore {
     ALWAYS,
     NEVER,
     UNLESS_CENTRALIZED
-  };
+  }
 
   private static class MessageCachePurgeCallback implements DbMailItem.Callback<String> {
     @Override
@@ -3886,7 +3762,7 @@ public class Mailbox implements MailboxStore {
         name = name.substring(slash + 1);
       }
 
-      MailItem item = null;
+      MailItem item;
       if (folderId == ID_FOLDER_TAGS) {
         item = getTagByName(octxt, name);
       } else {
@@ -5784,10 +5660,10 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public static enum BrowseBy {
+  public enum BrowseBy {
     attachments,
     domains,
-    objects;
+    objects
   }
 
   /**

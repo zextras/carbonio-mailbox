@@ -38,19 +38,18 @@ import org.dom4j.Element;
 
 public class AttributeManager {
 
+  static final String A_MAX = "max";
+  static final String A_MIN = "min";
   private static final String E_ATTRS = "attrs";
   private static final String E_OBJECTCLASSES = "objectclasses";
   private static final String A_GROUP = "group";
   private static final String A_GROUP_ID = "groupid";
-
   private static final String E_ATTR = "attr";
   private static final String A_NAME = "name";
   private static final String A_IMMUTABLE = "immutable";
   private static final String A_TYPE = "type";
   private static final String A_ORDER = "order";
   private static final String A_VALUE = "value";
-  static final String A_MAX = "max";
-  static final String A_MIN = "min";
   private static final String A_CALLBACK = "callback";
   private static final String A_ID = "id";
   private static final String A_PARENT_OID = "parentOid";
@@ -75,14 +74,23 @@ public class AttributeManager {
   private static final String E_DEFAULT_COS_VALUE_UPGRADE = "defaultCOSValueUpgrade";
 
   private static final Set<AttributeFlag> allowedEphemeralFlags = new HashSet<AttributeFlag>();
+  private static AttributeManager mInstance;
+  private static Map<Integer, String> mGroupMap = new HashMap<Integer, String>();
+  private static Map<Integer, String> mOCGroupMap = new HashMap<Integer, String>();
+  // attrs declared as type="binary" in attrs.xml
+  private static Set<String> mBinaryAttrs = new HashSet<String>();
+  // attrs that require ";binary" appended explicitly when transferred.
+  // The only such syntax we support for now is:
+  // 1.3.6.1.4.1.1466.115.121.1.8 - Certificate syntax
+  private static Set<String> mBinaryTransferAttrs = new HashSet<String>();
+  // do not keep comments and descriptions when running in a server
+  private static boolean mMinimize = false;
 
   static {
     allowedEphemeralFlags.add(AttributeFlag.ephemeral);
     allowedEphemeralFlags.add(AttributeFlag.dynamic);
     allowedEphemeralFlags.add(AttributeFlag.expirable);
   }
-
-  private static AttributeManager mInstance;
 
   // contains attrs defined in one of the zimbra .xml files (currently zimbra attrs and some of the
   // amavis attrs)
@@ -95,35 +103,16 @@ public class AttributeManager {
   //     mClassToAttrsMap, mClassToLowerCaseAttrsMap, mClassToAllAttrsMap maps.
   //
   private final Map<String, AttributeInfo> mAttrs = new HashMap<String, AttributeInfo>();
-
   private final Map<String, ObjectClassInfo> mOCs = new HashMap<String, ObjectClassInfo>();
-
   // only direct attrs
   private final Map<AttributeClass, Set<String>> mClassToAttrsMap =
       new HashMap<AttributeClass, Set<String>>();
   private final Map<AttributeClass, Set<String>> mClassToLowerCaseAttrsMap =
       new HashMap<AttributeClass, Set<String>>();
-
   // direct attrs and attrs from included objectClass's
   private final Map<AttributeClass, Set<String>> mClassToAllAttrsMap =
       new HashMap<AttributeClass, Set<String>>();
-
-  private boolean mLdapSchemaExtensionInited = false;
-
   private final AttributeCallback mIDNCallback = new IDNCallback();
-
-  private static Map<Integer, String> mGroupMap = new HashMap<Integer, String>();
-
-  private static Map<Integer, String> mOCGroupMap = new HashMap<Integer, String>();
-
-  // attrs declared as type="binary" in attrs.xml
-  private static Set<String> mBinaryAttrs = new HashSet<String>();
-
-  // attrs that require ";binary" appended explicitly when transferred.
-  // The only such syntax we support for now is:
-  // 1.3.6.1.4.1.1466.115.121.1.8 - Certificate syntax
-  private static Set<String> mBinaryTransferAttrs = new HashSet<String>();
-
   private final Map<String, AttributeInfo> mEphemeralAttrs =
       new HashMap<String, AttributeInfo>(); // lowercased
   private final Set<String> mEphemeralAttrsSet = new HashSet<String>(); // not lowercased
@@ -159,9 +148,53 @@ public class AttributeManager {
   * zimbraPrefMailSMIMECertificate  Zimbra(deprecated)   multi         yes                     1.3.6.1.4.1.1466.115.121.1.40   no          yes
   *
   */
+  private final List<String> mErrors = new LinkedList<String>();
+  /*
+   * Support for lookup by flag
+   */
+  private final Map<AttributeFlag, Set<String>> mFlagToAttrsMap =
+      new HashMap<AttributeFlag, Set<String>>();
+  private boolean mLdapSchemaExtensionInited = false;
 
-  // do not keep comments and descriptions when running in a server
-  private static boolean mMinimize = false;
+  @VisibleForTesting
+  public AttributeManager() {}
+
+  public AttributeManager(String dir) throws ServiceException {
+    initFlagsToAttrsMap();
+    initClassToAttrsMap();
+    File fdir = new File(dir);
+    if (!fdir.exists()) {
+      throw ServiceException.FAILURE("attrs directory does not exists: " + dir, null);
+    }
+    if (!fdir.isDirectory()) {
+      throw ServiceException.FAILURE("attrs directory is not a directory: " + dir, null);
+    }
+
+    File[] files = fdir.listFiles();
+    for (File file : files) {
+      if (!file.getPath().endsWith(".xml")) {
+        ZimbraLog.misc.warn("while loading attrs, ignoring not .xml file: %s", file);
+        continue;
+      }
+      if (!file.isFile()) {
+        ZimbraLog.misc.warn("while loading attrs, ignored non-file: %s", file);
+      }
+      try (FileInputStream fis = new FileInputStream(file)) {
+        Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fis);
+        Element root = doc.getRootElement();
+        if (root.getName().equals(E_ATTRS)) {
+          loadAttrs(file, doc);
+        } else if (root.getName().equals(E_OBJECTCLASSES)) {
+          loadObjectClasses(file, doc);
+        } else {
+          ZimbraLog.misc.warn("while loading attrs, ignored unknown file: %s", file);
+        }
+
+      } catch (IOException | XmlParseException ex) {
+        throw ServiceException.FAILURE("error loading attrs file: " + file, ex);
+      }
+    }
+  }
 
   public static AttributeManager getInst() {
     try {
@@ -210,6 +243,51 @@ public class AttributeManager {
       mInstance.computeClassToAllAttrsMap();
 
       return mInstance;
+    }
+  }
+
+  public static IDNType idnType(AttributeManager am, String attr) {
+    if (am == null) return IDNType.none;
+    else return am.idnType(attr);
+  }
+
+  // types need to be set in JNDI "java.naming.ldap.attributes.binary" environment property
+  // when making a connection
+  public static boolean isBinaryType(AttributeType type) {
+    return type == AttributeType.TYPE_BINARY;
+  }
+
+  // types need the ";binary" treatment to/from the LDAP server
+  // for now the only supported binary transfer type is certificate
+  public static boolean isBinaryTransferType(AttributeType type) {
+    return type == AttributeType.TYPE_CERTIFICATE;
+  }
+
+  public static void setMinimize(boolean minimize) {
+    mMinimize = minimize;
+  }
+
+  private static AttributeCallback loadCallback(String clazz) {
+    AttributeCallback cb = null;
+    if (clazz == null) return null;
+    if (clazz.indexOf('.') == -1) clazz = "com.zimbra.cs.account.callback." + clazz;
+    try {
+      cb = (AttributeCallback) Class.forName(clazz).newInstance();
+    } catch (Exception e) {
+      ZimbraLog.misc.warn("loadCallback caught exception", e);
+    }
+    return cb;
+  }
+
+  public static void loadLdapSchemaExtensionAttrs(LdapProv prov) {
+    synchronized (AttributeManager.class) {
+      try {
+        AttributeManager theInstance = AttributeManager.getInstance();
+        theInstance.getLdapSchemaExtensionAttrs(prov);
+        theInstance.computeClassToAllAttrsMap(); // recompute the ClassToAllAttrsMap
+      } catch (ServiceException e) {
+        ZimbraLog.account.warn("unable to load LDAP schema extensions", e);
+      }
     }
   }
 
@@ -275,48 +353,6 @@ public class AttributeManager {
       }
     }
   }
-
-  @VisibleForTesting
-  public AttributeManager() {}
-
-  public AttributeManager(String dir) throws ServiceException {
-    initFlagsToAttrsMap();
-    initClassToAttrsMap();
-    File fdir = new File(dir);
-    if (!fdir.exists()) {
-      throw ServiceException.FAILURE("attrs directory does not exists: " + dir, null);
-    }
-    if (!fdir.isDirectory()) {
-      throw ServiceException.FAILURE("attrs directory is not a directory: " + dir, null);
-    }
-
-    File[] files = fdir.listFiles();
-    for (File file : files) {
-      if (!file.getPath().endsWith(".xml")) {
-        ZimbraLog.misc.warn("while loading attrs, ignoring not .xml file: %s", file);
-        continue;
-      }
-      if (!file.isFile()) {
-        ZimbraLog.misc.warn("while loading attrs, ignored non-file: %s", file);
-      }
-      try (FileInputStream fis = new FileInputStream(file)) {
-        Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fis);
-        Element root = doc.getRootElement();
-        if (root.getName().equals(E_ATTRS)) {
-          loadAttrs(file, doc);
-        } else if (root.getName().equals(E_OBJECTCLASSES)) {
-          loadObjectClasses(file, doc);
-        } else {
-          ZimbraLog.misc.warn("while loading attrs, ignored unknown file: %s", file);
-        }
-
-      } catch (IOException | XmlParseException ex) {
-        throw ServiceException.FAILURE("error loading attrs file: " + file, ex);
-      }
-    }
-  }
-
-  private final List<String> mErrors = new LinkedList<String>();
 
   boolean hasErrors() {
     return mErrors.size() > 0;
@@ -654,7 +690,7 @@ public class AttributeManager {
           flags,
           AttributeFlag.serverPreferAlwaysOn,
           AttributeClass.server,
-          AttributeClass.alwaysOnCluster,
+          null,
           null,
           requiredIn,
           optionalIn);
@@ -839,75 +875,9 @@ public class AttributeManager {
         deprecatedSinceVer);
   }
 
-  private enum ObjectClassType {
-    ABSTRACT,
-    AUXILIARY,
-    STRUCTURAL;
-  }
-
-  class ObjectClassInfo {
-    private final AttributeClass mAttributeClass;
-    private final String mName;
-    private final int mId;
-    private final int mGroupId;
-    private final ObjectClassType mType;
-    private final List<String> mSuperOCs;
-    private final String mDescription;
-    private final List<String> mComment;
-
-    // there must be a one-to-one mapping between enums in AttributeClass and ocs defined in the xml
-
-    ObjectClassInfo(
-        AttributeClass attrClass,
-        String ocName,
-        int id,
-        int groupId,
-        ObjectClassType type,
-        List<String> superOCs,
-        String description,
-        List<String> comment) {
-      mAttributeClass = attrClass;
-      mName = ocName;
-      mId = id;
-      mGroupId = groupId;
-      mType = type;
-      mSuperOCs = superOCs;
-      mDescription = description;
-      mComment = comment;
-    }
-
-    AttributeClass getAttributeClass() {
-      return mAttributeClass;
-    }
-
-    String getName() {
-      return mName;
-    }
-
-    int getId() {
-      return mId;
-    }
-
-    int getGroupId() {
-      return mGroupId;
-    }
-
-    ObjectClassType getType() {
-      return mType;
-    }
-
-    List<String> getSuperOCs() {
-      return mSuperOCs;
-    }
-
-    String getDescription() {
-      return mDescription;
-    }
-
-    List<String> getComment() {
-      return mComment;
-    }
-  }
+  /*
+   * Support for lookup by class
+   */
 
   private void loadObjectClasses(File file, Document doc) {
     Element root = doc.getRootElement();
@@ -925,7 +895,7 @@ public class AttributeManager {
     int groupId = -1;
     if (group != null) {
       try {
-        groupId = Integer.valueOf(groupIdStr);
+        groupId = Integer.parseInt(groupIdStr);
       } catch (NumberFormatException nfe) {
         error(null, file, A_GROUP_ID + " is not a number: " + groupIdStr);
       }
@@ -1129,10 +1099,6 @@ public class AttributeManager {
     return result;
   }
 
-  /*
-   * Support for lookup by class
-   */
-
   private void initClassToAttrsMap() {
     for (AttributeClass klass : AttributeClass.values()) {
       mClassToAttrsMap.put(klass, new HashSet<String>());
@@ -1234,12 +1200,6 @@ public class AttributeManager {
     }
   }
 
-  /*
-   * Support for lookup by flag
-   */
-  private final Map<AttributeFlag, Set<String>> mFlagToAttrsMap =
-      new HashMap<AttributeFlag, Set<String>>();
-
   private void initFlagsToAttrsMap() {
     for (AttributeFlag flag : AttributeFlag.values()) {
       mFlagToAttrsMap.put(flag, new HashSet<String>());
@@ -1274,23 +1234,6 @@ public class AttributeManager {
 
   public void makeDomainAdminModifiable(String attr) {
     mFlagToAttrsMap.get(AttributeFlag.domainAdminModifiable).add(attr);
-  }
-
-  public static enum IDNType {
-    email, // attr type is email
-    emailp, // attr type is emailp
-    cs_emailp, // attr type is cs_emailp
-    idn, // attr has idn flag
-    none; // attr is not of type smail, emailp, cs_emailp, nor does it have idn flag
-
-    public boolean isEmailOrIDN() {
-      return this != none;
-    }
-  }
-
-  public static IDNType idnType(AttributeManager am, String attr) {
-    if (am == null) return IDNType.none;
-    else return am.idnType(attr);
   }
 
   private IDNType idnType(String attr) {
@@ -1389,18 +1332,6 @@ public class AttributeManager {
     else throw AccountServiceException.INVALID_ATTR_NAME("unknown attribute: " + attr, null);
   }
 
-  // types need to be set in JNDI "java.naming.ldap.attributes.binary" environment property
-  // when making a connection
-  public static boolean isBinaryType(AttributeType type) {
-    return type == AttributeType.TYPE_BINARY;
-  }
-
-  // types need the ";binary" treatment to/from the LDAP server
-  // for now the only supported binary transfer type is certificate
-  public static boolean isBinaryTransferType(AttributeType type) {
-    return type == AttributeType.TYPE_CERTIFICATE;
-  }
-
   public boolean containsBinaryData(String attr) {
     return mBinaryAttrs.contains(attr.toLowerCase())
         || mBinaryTransferAttrs.contains(attr.toLowerCase());
@@ -1465,22 +1396,6 @@ public class AttributeManager {
       }
     }
     return immutable;
-  }
-
-  public static void setMinimize(boolean minimize) {
-    mMinimize = minimize;
-  }
-
-  private static AttributeCallback loadCallback(String clazz) {
-    AttributeCallback cb = null;
-    if (clazz == null) return null;
-    if (clazz.indexOf('.') == -1) clazz = "com.zimbra.cs.account.callback." + clazz;
-    try {
-      cb = (AttributeCallback) Class.forName(clazz).newInstance();
-    } catch (Exception e) {
-      ZimbraLog.misc.warn("loadCallback caught exception", e);
-    }
-    return cb;
   }
 
   public void preModify(
@@ -1563,18 +1478,6 @@ public class AttributeManager {
     else return mAttrs.get(name.toLowerCase());
   }
 
-  public static void loadLdapSchemaExtensionAttrs(LdapProv prov) {
-    synchronized (AttributeManager.class) {
-      try {
-        AttributeManager theInstance = AttributeManager.getInstance();
-        theInstance.getLdapSchemaExtensionAttrs(prov);
-        theInstance.computeClassToAllAttrsMap(); // recompute the ClassToAllAttrsMap
-      } catch (ServiceException e) {
-        ZimbraLog.account.warn("unable to load LDAP schema extensions", e);
-      }
-    }
-  }
-
   private void getLdapSchemaExtensionAttrs(LdapProv prov) throws ServiceException {
     if (mLdapSchemaExtensionInited) return;
 
@@ -1603,6 +1506,88 @@ public class AttributeManager {
     if (extraObjectClasses.length > 0) {
       Set<String> attrsInOCs = mClassToAttrsMap.get(AttributeClass.account);
       prov.getAttrsInOCs(extraObjectClasses, attrsInOCs);
+    }
+  }
+
+  private enum ObjectClassType {
+    ABSTRACT,
+    AUXILIARY,
+    STRUCTURAL;
+  }
+
+  public static enum IDNType {
+    email, // attr type is email
+    emailp, // attr type is emailp
+    cs_emailp, // attr type is cs_emailp
+    idn, // attr has idn flag
+    none; // attr is not of type smail, emailp, cs_emailp, nor does it have idn flag
+
+    public boolean isEmailOrIDN() {
+      return this != none;
+    }
+  }
+
+  class ObjectClassInfo {
+    private final AttributeClass mAttributeClass;
+    private final String mName;
+    private final int mId;
+    private final int mGroupId;
+    private final ObjectClassType mType;
+    private final List<String> mSuperOCs;
+    private final String mDescription;
+    private final List<String> mComment;
+
+    // there must be a one-to-one mapping between enums in AttributeClass and ocs defined in the xml
+
+    ObjectClassInfo(
+        AttributeClass attrClass,
+        String ocName,
+        int id,
+        int groupId,
+        ObjectClassType type,
+        List<String> superOCs,
+        String description,
+        List<String> comment) {
+      mAttributeClass = attrClass;
+      mName = ocName;
+      mId = id;
+      mGroupId = groupId;
+      mType = type;
+      mSuperOCs = superOCs;
+      mDescription = description;
+      mComment = comment;
+    }
+
+    AttributeClass getAttributeClass() {
+      return mAttributeClass;
+    }
+
+    String getName() {
+      return mName;
+    }
+
+    int getId() {
+      return mId;
+    }
+
+    int getGroupId() {
+      return mGroupId;
+    }
+
+    ObjectClassType getType() {
+      return mType;
+    }
+
+    List<String> getSuperOCs() {
+      return mSuperOCs;
+    }
+
+    String getDescription() {
+      return mDescription;
+    }
+
+    List<String> getComment() {
+      return mComment;
     }
   }
 }

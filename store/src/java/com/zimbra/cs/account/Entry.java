@@ -64,7 +64,6 @@ public abstract class Entry implements ToZJSONObject {
     IDENTITY,
     MIMETYPE,
     SERVER,
-    ALWAYSONCLUSTER,
     UCSERVICE,
     SIGNATURE,
     XMPPCOMPONENT,

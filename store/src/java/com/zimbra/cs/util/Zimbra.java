@@ -24,8 +24,6 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.db.DbPool;
-import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.db.DbSession;
 import com.zimbra.cs.db.Versions;
 import com.zimbra.cs.ephemeral.EphemeralStore;
 import com.zimbra.cs.ephemeral.LdapEphemeralStore;
@@ -59,7 +57,6 @@ import org.dom4j.DocumentException;
 public final class Zimbra {
   private static boolean sInited = false;
   private static boolean sIsMailboxd = false;
-  private static String alwaysOnClusterId = null;
   private static final String HEAP_DUMP_JAVA_OPTION = "-xx:heapdumppath=";
   public static final Timer sTimer = new Timer("Timer-Zimbra", true);
   private static final CallToHomeRunner c2hRunner = new CallToHomeRunner();
@@ -202,7 +199,6 @@ public final class Zimbra {
 
     Provisioning prov = Provisioning.getInstance();
     Server server = prov.getLocalServer();
-    alwaysOnClusterId = null;
 
     setSystemProperties();
     validateJavaOptions();
@@ -302,7 +298,6 @@ public final class Zimbra {
       AuthTokenRegistry.startup(
           prov.getConfig(Provisioning.A_zimbraAuthTokenNotificationInterval)
               .getIntAttr(Provisioning.A_zimbraAuthTokenNotificationInterval, 60000));
-      dbSessionCleanup();
 
       if (!redoLog.isSlave()) {
         boolean useDirectBuffers = server.isMailUseDirectBuffers();
@@ -375,17 +370,6 @@ public final class Zimbra {
     ExtensionUtil.postInitAll();
 
     // Register the service with ZooKeeper
-    if (sIsMailboxd && isAlwaysOn()) {
-      try {
-        CuratorManager curatorManager = CuratorManager.getInstance();
-        if (curatorManager == null) {
-          throw ServiceException.FAILURE("ZooKeeper addresses not configured.", null);
-        }
-        curatorManager.start();
-      } catch (Exception e) {
-        throw ServiceException.FAILURE("Unable to start Distributed Lock service.", e);
-      }
-    }
     sInited = true;
   }
 
@@ -418,8 +402,6 @@ public final class Zimbra {
       if (!redoLog.isSlave()) {
         ServerManager.getInstance().stopServers();
       }
-
-      dbSessionCleanup();
 
       SessionCache.shutdown();
 
@@ -492,24 +474,6 @@ public final class Zimbra {
       ZimbraLog.system.fatal(message, t);
     } finally {
       Runtime.getRuntime().halt(1);
-    }
-  }
-
-  public static boolean isAlwaysOn() {
-    return alwaysOnClusterId != null;
-  }
-
-  private static void dbSessionCleanup() throws ServiceException {
-    // DbSessions Cleanup
-    DbConnection conn = null;
-    try {
-      if (isAlwaysOn()) {
-        conn = DbPool.getConnection();
-        DbSession.deleteSessions(conn, Provisioning.getInstance().getLocalServer().getId());
-        conn.commit();
-      }
-    } finally {
-      if (conn != null) conn.closeQuietly();
     }
   }
 }
