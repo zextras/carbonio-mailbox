@@ -684,16 +684,7 @@ public class AttributeManager {
           optionalIn);
 
       // Check that if it is serverPreferAlwaysOn it is in server and alwaysOnCluster
-      checkFlag(
-          name,
-          file,
-          flags,
-          AttributeFlag.serverPreferAlwaysOn,
-          AttributeClass.server,
-          null,
-          null,
-          requiredIn,
-          optionalIn);
+      checkFlag(name, file, flags, null, AttributeClass.server, null, null, requiredIn, optionalIn);
 
       // Check that is cardinality is single, then not more than one
       // default value is specified
@@ -1068,10 +1059,9 @@ public class AttributeManager {
           (optional != null && optional.contains(c2))
               || (required != null && required.contains(c2));
       boolean inC3 =
-          (c3 == null)
-              ? true
-              : (optional != null && optional.contains(c3))
-                  || (required != null && required.contains(c3));
+          c3 == null
+              || (optional != null && optional.contains(c3))
+              || (required != null && required.contains(c3));
       if (!(inC1 && inC2 && inC3)) {
         String classes = c1 + " and " + c2 + (c3 == null ? "" : " and " + c3);
         error(

@@ -285,15 +285,6 @@
   </comment>
 </objectclass>
 
-<objectclass id="32" name="zimbraAlwaysOnCluster" type="STRUCTURAL">
-  <sup>top</sup>
-  <desc>AlwaysOn Cluster</desc>
-  <obsolete>true</obsolete>
-  <comment>
-    zimbraAlwaysOnCluster is used to represent a alwaysOn cluster.
-  </comment>
-</objectclass>
-
 <objectclass id="33" name="zimbraHabGroup" type="AUXILIARY">
   <sup>top</sup>
   <desc>hold attributes for the group in hierarchical address book</desc>
