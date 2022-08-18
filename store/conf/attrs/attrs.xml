@@ -121,7 +121,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
               mailRecipient, account, alias, distributionList, cos,
               globalConfig, domain, securityGroup, server, mimeEntry,
               objectEntry, zimletEntry, calendarResource;
-              attribute, alwaysOnCluster, dataSource, pop3DataSource,
+              attribute, dataSource, pop3DataSource,
               rssDataSource, imapDataSource, galDataSource, oauth2DataSource
 
   flags:
@@ -139,8 +139,6 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
                                - has idn flag
                            server will convert the values to unicode in utf8
                            encoding in SOAP responses.
-    serverPreferAlwaysOn...if zimbraAlwaysOnClusterId is configured override the server
-                           attributes from the alwaysOnCluster
     ephemeral..............this attribute will be stored in ephemeral storage,
                            as specified by zimbraEphemeralBackendURL
     expirable..............ephemeral values will expire after a specified amount of time;
@@ -200,11 +198,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
     <desc>From Microsoft Schema</desc>
 </attr>
 
-<attr name="cn" type="string" optionalIn="account,alias,distributionList" requiredIn="cos,server,alwaysOnCluster,ucService,mimeEntry,objectEntry,zimletEntry,xmppComponent,aclTarget,shareLocator,groupStaticUnit" flags="domainAdminModifiable,accountInfo">
+<attr name="cn" type="string" optionalIn="account,alias,distributionList" requiredIn="cos,server,ucService,mimeEntry,objectEntry,zimletEntry,xmppComponent,aclTarget,shareLocator,groupStaticUnit" flags="domainAdminModifiable,accountInfo">
     <desc>RFC2256: common name(s) for which the entity is known by</desc>
 </attr>
 
-<attr name="description" type="string" cardinality="multi" optionalIn="account,distributionList,group,groupDynamicUnit,groupStaticUnit,cos,domain,server,alwaysOnCluster,ucService,mimeEntry,objectEntry,aclTarget,globalConfig,xmppComponent,zimletEntry,addressList" flags="domainAdminModifiable">
+<attr name="description" type="string" cardinality="multi" optionalIn="account,distributionList,group,groupDynamicUnit,groupStaticUnit,cos,domain,server,ucService,mimeEntry,objectEntry,aclTarget,globalConfig,xmppComponent,zimletEntry,addressList" flags="domainAdminModifiable">
     <desc>RFC2256: descriptive information</desc>
 </attr>
 
@@ -349,7 +347,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 </attr>
 
 
-<attr id="1" name="zimbraId" type="id" immutable="1" cardinality="single" requiredIn="account,alias,distributionList,cos,domain,server,alwaysOnCluster,ucService,calendarResource,xmppComponent,group,groupDynamicUnit,groupStaticUnit,addressList" flags="accountInfo">
+<attr id="1" name="zimbraId" type="id" immutable="1" cardinality="single" requiredIn="account,alias,distributionList,cos,domain,server,ucService,calendarResource,xmppComponent,group,groupDynamicUnit,groupStaticUnit,addressList" flags="accountInfo">
   <desc>Zimbra Systems Unique ID</desc>
 </attr>
 
@@ -3521,7 +3519,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>Yahoo ID</desc>
 </attr>
 
-<attr id="659" name="zimbraACE" type="string" cardinality="multi" optionalIn="account,distributionList,cos,domain,globalConfig,server,alwaysOnCluster,ucService,zimletEntry,xmppComponent,aclTarget,group" since="5.0.7">
+<attr id="659" name="zimbraACE" type="string" cardinality="multi" optionalIn="account,distributionList,cos,domain,globalConfig,server,ucService,zimletEntry,xmppComponent,aclTarget,group" since="5.0.7">
   <desc>Zimbra access control list</desc>
 </attr>
 
@@ -4182,7 +4180,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   </desc>
 </attr>
 
-<attr id="790" name="zimbraCreateTimestamp" type="gentime" cardinality="single" immutable="1" optionalIn="account,alias,distributionList,cos,dataSource,domain,identity,globalConfig,server,alwaysOnCluster,ucService,signature,calendarResource,xmppComponent,zimletEntry,group,groupDynamicUnit,groupStaticUnit" since="6.0.0_BETA1">
+<attr id="790" name="zimbraCreateTimestamp" type="gentime" cardinality="single" immutable="1" optionalIn="account,alias,distributionList,cos,dataSource,domain,identity,globalConfig,server,ucService,signature,calendarResource,xmppComponent,zimletEntry,group,groupDynamicUnit,groupStaticUnit" since="6.0.0_BETA1">
   <desc>time object was created</desc>
 </attr>
 
@@ -4658,7 +4656,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   </desc>
 </attr>
 
-<attr id="1014" name="zimbraMemcachedClientServerList" type="string" cardinality="multi" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" since="5.0.17">
+<attr id="1014" name="zimbraMemcachedClientServerList" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" since="5.0.17">
   <desc>list of host:port for memcached servers; set to empty value to disable the use of memcached</desc>
 </attr>
 
@@ -7279,11 +7277,12 @@ TODO: delete them permanently from here
   <desc>weclient URL to directly connect when making service to JS calls from mail server in split mode</desc>
 </attr>
 
-<attr id="1446" name="zimbraAlwaysOnClusterId" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.5.0">
+<attr id="1446" name="zimbraAlwaysOnClusterId" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.5.0" deprecatedSince="22.9.0">
   <desc>AlwaysOn cluster-id to which this server belongs to. If empty, it's not part of AlwaysOn and is a stand-alone server.</desc>
+  <deprecateDesc>dropping always on cluster feature in whole</deprecateDesc>
 </attr>
 
-<attr id="1447" name="zimbraZookeeperClientServerList" type="string" cardinality="multi" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" since="8.5.0">
+<attr id="1447" name="zimbraZookeeperClientServerList" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
   <desc>list of host:port for zookeeper servers; set to empty value to disable the use of zookeeper</desc>
 </attr>
 
@@ -8493,7 +8492,7 @@ TODO: delete them permanently from here
   <desc>Show Chats folder even if zimbraFeatureIMEnabled is false</desc>
 </attr>
 
-<attr id="1818" name="zimbraReverseProxySNIEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" requiresRestart="nginxproxy" since="8.7.0,9.0.0">
+<attr id="1818" name="zimbraReverseProxySNIEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="8.7.0,9.0.0">
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>Enable the use of Server Name Indication (SNI) TLS extension in the proxy. When set to TRUE, and using SNI capable clients, there is no need for a separate IP address per domain (zimbraVirtualIPAddress)</desc>
 </attr>
@@ -8594,7 +8593,7 @@ TODO: delete them permanently from here
   <desc>length of app-specific passwords</desc>
 </attr>
 
-<attr id="1900" name="zimbraShortTermGranteeCacheSize" type="integer" min="0" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" since="8.7.0">
+<attr id="1900" name="zimbraShortTermGranteeCacheSize" type="integer" min="0" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0">
   <globalConfigValue>128</globalConfigValue>
   <desc>Maximum number of entries in the short term Grantee cache.
   This cache can improve performance by avoiding recomputing details frequently in a short period of time, for instance for each entry in search results.
@@ -8602,7 +8601,7 @@ TODO: delete them permanently from here
   </desc>
 </attr>
 
-<attr id="1901" name="zimbraShortTermGranteeCacheExpiration" type="duration" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" since="8.7.0">
+<attr id="1901" name="zimbraShortTermGranteeCacheExpiration" type="duration" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0">
   <globalConfigValue>50s</globalConfigValue>
   <desc>Maximum time an entry in the Grantee cache will be regarded as valid.
   If value is 0, the cache is disabled.
@@ -8614,7 +8613,7 @@ TODO: delete them permanently from here
   </desc>
 </attr>
 
-<attr id="1902" name="zimbraShortTermAllEffectiveRightsCacheSize" type="integer" min="0" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" since="8.7.0">
+<attr id="1902" name="zimbraShortTermAllEffectiveRightsCacheSize" type="integer" min="0" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0">
   <globalConfigValue>128</globalConfigValue>
   <desc>Maximum number of entries in the short term All Effective Rights cache.
   This cache can improve performance by avoiding recomputing All Effective Rights of named entries like accounts frequently in a short period of time.
@@ -8622,7 +8621,7 @@ TODO: delete them permanently from here
   </desc>
 </attr>
 
-<attr id="1903" name="zimbraShortTermAllEffectiveRightsCacheExpiration" type="duration" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" since="8.7.0">
+<attr id="1903" name="zimbraShortTermAllEffectiveRightsCacheExpiration" type="duration" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0">
   <globalConfigValue>50s</globalConfigValue>
   <desc>Maximum time an entry in the short term All Effective Rights cache will be regarded as valid.
   If value is 0, the cache is disabled.
@@ -8903,7 +8902,7 @@ TODO: delete them permanently from here
   <desc>Boolean to decide whether APNS is being used for production or development</desc>
 </attr>
 
-<attr id="1980" name="zimbraExtensionBindPort" type="port" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" callback="CheckPortConflict" requiresRestart="mailbox" since="8.7.0,9.0.0">
+<attr id="1980" name="zimbraExtensionBindPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" callback="CheckPortConflict" requiresRestart="mailbox" since="8.7.0,9.0.0">
   <globalConfigValue>7072</globalConfigValue>
   <desc>HTTPs port on which zimbra extension server should listen</desc>
 </attr>
@@ -8915,7 +8914,7 @@ TODO: delete them permanently from here
   <desc>Specify which help file's link should be displayed on the pull-down menu in the Ajax Web client.  The value is case-sensitive.  When "productHelp" is specified, "Product Help" menu item will available and link to the default help files stored in the same mail server (http://[service URL]/help/[locale]/advanced/zimbra_user_help.htm) or URL specified in skin or ZmMsg properties file ("helpURI").  When "onlineHelp" is specified, "Help Central Online" menu item will be available to link to http://help.zimbra.com/.  When "newFeatures" is specified, "New Features" menu item will be available to link to https://docs.zextras.com.</desc>
 </attr>
 
-<attr id="2013" name="zimbraImapInactiveSessionCacheMaxDiskSize" type="long" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" requiresRestart="mailbox" since="8.7.0,9.0.0">
+<attr id="2013" name="zimbraImapInactiveSessionCacheMaxDiskSize" type="long" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.0,9.0.0">
   <globalConfigValue>10737418240</globalConfigValue>
   <desc> Ehcache: the maximum disk size of inactive IMAP cache in Bytes before eviction.By default this value is 10GB.This is a rough limit,Due to internals of ehcache actual size on disk will often exceed this limit by a modest margin. </desc>
 </attr>
@@ -8940,7 +8939,7 @@ TODO: delete them permanently from here
   <desc>The total size (in bytes) of the in-memory queue of conversations to be purged for each data source</desc>
 </attr>
 
-<attr id="2018" name="zimbraLdapGentimeFractionalSecondsEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" requiresRestart="mailbox" since="8.7.0,9.0.0">
+<attr id="2018" name="zimbraLdapGentimeFractionalSecondsEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.0,9.0.0">
   <globalConfigValue>TRUE</globalConfigValue>
   <globalConfigValueUpgrade>FALSE</globalConfigValueUpgrade>
   <desc>Whether to include fractional seconds in LDAP gentime values (e.g. zimbraPasswordLockoutFailureTime or zimbraGalLastSuccessfulSyncTimestamp). Releases prior to 8.7 are unable to parse gentime values which include fractional seconds; therefore this value must remain set to FALSE in environments where any release 8.6 or lower is present. It should be changed to TRUE once all systems are upgraded to 8.7 or higher.</desc>
@@ -9052,7 +9051,7 @@ TODO: delete them permanently from here
   <defaultCOSValue>FALSE</defaultCOSValue>
 </attr>
 
-<attr id="2053" name="zimbraMailboxThrottleReapInterval" type="duration" min="1" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" since="8.7.0,9.0.0">
+<attr id="2053" name="zimbraMailboxThrottleReapInterval" type="duration" min="1" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">
     <globalConfigValue>60s</globalConfigValue>
     <desc>Time in milliseconds between IMAP/POP/LMTP rate limiter stale entry cleanup cycle.</desc>
 </attr>
@@ -9087,7 +9086,7 @@ TODO: delete them permanently from here
   <desc>Timestamp of the last time that two-factor authentication data was cleared on the COS. When this timestamp exceeds the timestamp of the shared secret, the server knows to disable two-factor authentication on the account and delete all associated data.</desc>
 </attr>
 
-<attr id="2059" name="zimbraConvertPoolTimeout" type="integer" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" requiresRestart="mailbox" since="8.7.0,9.0.0">
+<attr id="2059" name="zimbraConvertPoolTimeout" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.0,9.0.0">
   <globalConfigValue>60000</globalConfigValue>
   <desc>Timeout in milliseconds before retrying failed convert URLs.</desc>
 </attr>
@@ -9593,32 +9592,32 @@ TODO: delete them permanently from here
   <desc>Client IP/IPRange whitelist for exclusion from IP throttling. Value may be either an IP or an IPRange in CIDR notation e.g:192.168.1.0/24.  IPV6 is supported as well.</desc>
 </attr>
 
-<attr id="3001" name="zimbraActiveSyncEhcacheHeapSize" type="long" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" requiresRestart="mailbox" since="8.7.6">
+<attr id="3001" name="zimbraActiveSyncEhcacheHeapSize" type="long" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.6">
   <globalConfigValue>10485760</globalConfigValue>
   <desc> Ehcache: the maximum heap size of the ActiveSync cache in Bytes before eviction. By default this value is 10MB. This is a rough limit,Due to internals of ehcache actual size in memory will often exceed this limit by a modest margin. </desc>
 </attr>
 
-<attr id="3002" name="zimbraActiveSyncEhcacheMaxDiskSize" type="long" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" requiresRestart="mailbox" since="8.7.6">
+<attr id="3002" name="zimbraActiveSyncEhcacheMaxDiskSize" type="long" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.6">
   <globalConfigValue>10737418240</globalConfigValue>
   <desc> Ehcache: the maximum disk size of the ActiveSync cache in Bytes before eviction. By default this value is 10GB. This is a rough limit,Due to internals of ehcache actual size on disk will often exceed this limit by a modest margin. </desc>
 </attr>
 
-<attr id="3003" name="zimbraActiveSyncEhcacheExpiration" type="duration" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" requiresRestart="mailbox" since="8.7.6">
+<attr id="3003" name="zimbraActiveSyncEhcacheExpiration" type="duration" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.6">
   <globalConfigValue>5m</globalConfigValue>
   <desc>Ehcache: default expiration time for activesync cache values; default is 5 minutes</desc>
 </attr>
 
-<attr id="3004" name="zimbraImapInactiveSessionEhcacheSize" type="long" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" requiresRestart="mailbox" since="8.7.6">
+<attr id="3004" name="zimbraImapInactiveSessionEhcacheSize" type="long" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.6">
   <globalConfigValue>1048576</globalConfigValue>
   <desc> Ehcache: the maximum heap size of the inactive session cache in Bytes before eviction. By default this value is 1 megabyte. This is a rough limit,Due to internals of ehcache actual size in memory will often exceed this limit by a modest margin. </desc>
 </attr>
 
-<attr id="3005" name="zimbraImapActiveSessionEhcacheMaxDiskSize" type="long" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" requiresRestart="mailbox" since="8.7.6">
+<attr id="3005" name="zimbraImapActiveSessionEhcacheMaxDiskSize" type="long" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.6">
   <globalConfigValue>107374182400</globalConfigValue>
   <desc> Ehcache: the maximum amount of disk space the imap active session cache will consume in Bytes before eviction. By default this value is 100 gigabytes. This is a rough limit,Due to internals of ehcache actual size in memory will often exceed this limit by a modest margin. </desc>
 </attr>
 
-<attr id="3006" name="zimbraImapInactiveSessionEhcacheMaxDiskSize" type="long" cardinality="single" optionalIn="globalConfig,server,alwaysOnCluster" flags="serverInherited,serverPreferAlwaysOn" requiresRestart="mailbox" since="8.7.6">
+<attr id="3006" name="zimbraImapInactiveSessionEhcacheMaxDiskSize" type="long" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.6">
   <globalConfigValue>107374182400</globalConfigValue>
   <desc> Ehcache: the maximum amount of disk space the imap inactive session cache will consume in Bytes before eviction. By default this value is 100 gigabytes. This is a rough limit,Due to internals of ehcache actual size in memory will often exceed this limit by a modest margin. </desc>
 </attr>
