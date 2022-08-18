@@ -9,10 +9,10 @@
     zimbraAccount extends zimbraMailRecipient. It represents a real
     account in the system (either admin or end-user) that can be logged
     into, etc.
-    
+
     It is defined as AUXILIARY in case it needs to be mixed to an
     existing directory deployment.
-    
+
     cn            - full name, common name
     co            - country friendly name
     company       - company (company name)
@@ -76,7 +76,7 @@
     attrs.
   </comment>
 </objectclass>
-    
+
 <objectclass id="7" name="zimbraMailRecipient" type="AUXILIARY">
   <sup>top</sup>
   <desc>Mail recipient object</desc>
@@ -131,7 +131,7 @@
     zimbraObjectEntry is used to represent status about object types
   </comment>
 </objectclass>
-    
+
 <objectclass id="14" name="zimbraTimeZone" type="STRUCTURAL">
   <sup>top</sup>
   <desc>Time Zone info</desc>
@@ -140,7 +140,7 @@
     time rules.  Used in calendar.
   </comment>
 </objectclass>
-    
+
 <objectclass id="15" name="zimbraZimletEntry" type="STRUCTURAL">
   <sup>top</sup>
   <desc>Zimlet info</desc>
@@ -280,7 +280,7 @@
   <desc>Unified Communication service in the cluster</desc>
   <comment>
     zimbraUCService is used to represent a third party UC service.
-    This includes information like URLs to the UC providers service and 
+    This includes information like URLs to the UC providers service and
     Zimbra extensions to load for the service, etc.
   </comment>
 </objectclass>
@@ -288,6 +288,7 @@
 <objectclass id="32" name="zimbraAlwaysOnCluster" type="STRUCTURAL">
   <sup>top</sup>
   <desc>AlwaysOn Cluster</desc>
+  <obsolete>true</obsolete>
   <comment>
     zimbraAlwaysOnCluster is used to represent a alwaysOn cluster.
   </comment>
