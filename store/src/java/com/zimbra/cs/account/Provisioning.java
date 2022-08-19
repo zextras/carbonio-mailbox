@@ -1599,33 +1599,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return Lists.newArrayList(getInstance().getServerByServiceHostname(account.getMailHost()));
   }
 
-  public static List<Server> getIMAPDaemonServers(Account account) throws ServiceException {
-    Server homeServer = account.getServer();
-    if (homeServer == null) {
-      return Collections.emptyList();
-    }
-    return getIMAPDaemonServers(homeServer);
-  }
-
-  public static List<Server> getIMAPDaemonServers(Server server) throws ServiceException {
-    String[] upstreamIMAPServers = server.getReverseProxyUpstreamImapServers();
-    Provisioning prov = getInstance();
-    List<Server> imapServers = new ArrayList<>(upstreamIMAPServers.length);
-    for (String serverName : upstreamIMAPServers) {
-      Server svr = prov.getServerByServiceHostname(serverName);
-      if (svr == null) {
-        ZimbraLog.imap.warn("cannot find imap server by service hostname for '%s'", serverName);
-        continue;
-      }
-      imapServers.add(svr);
-    }
-    return imapServers;
-  }
-
-  public static List<Server> getIMAPDaemonServersForLocalServer() throws ServiceException {
-    return getIMAPDaemonServers(getInstance().getLocalServer());
-  }
-
   private static boolean isAlwaysOn(Account account) throws ServiceException {
     return isAlwaysOn(account, null);
   }
