@@ -9,6 +9,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
@@ -73,16 +74,16 @@ public class AttributeManager {
   private static final String E_DEFAULT_EXTERNAL_COS_VALUE = "defaultExternalCOSValue";
   private static final String E_DEFAULT_COS_VALUE_UPGRADE = "defaultCOSValueUpgrade";
 
-  private static final Set<AttributeFlag> allowedEphemeralFlags = new HashSet<AttributeFlag>();
-  private static AttributeManager mInstance;
-  private static Map<Integer, String> mGroupMap = new HashMap<Integer, String>();
-  private static Map<Integer, String> mOCGroupMap = new HashMap<Integer, String>();
+  private static final Set<AttributeFlag> allowedEphemeralFlags = new HashSet<>();
+  private static final Map<Integer, String> mGroupMap = new HashMap<>();
+  private static final Map<Integer, String> mOCGroupMap = new HashMap<>();
   // attrs declared as type="binary" in attrs.xml
-  private static Set<String> mBinaryAttrs = new HashSet<String>();
+  private static final Set<String> mBinaryAttrs = new HashSet<>();
   // attrs that require ";binary" appended explicitly when transferred.
   // The only such syntax we support for now is:
   // 1.3.6.1.4.1.1466.115.121.1.8 - Certificate syntax
-  private static Set<String> mBinaryTransferAttrs = new HashSet<String>();
+  private static final Set<String> mBinaryTransferAttrs = new HashSet<>();
+  private static AttributeManager mInstance;
   // do not keep comments and descriptions when running in a server
   private static boolean mMinimize = false;
 
@@ -102,24 +103,18 @@ public class AttributeManager {
   // Extension attr names are in the class -> attrs maps:
   //     mClassToAttrsMap, mClassToLowerCaseAttrsMap, mClassToAllAttrsMap maps.
   //
-  private final Map<String, AttributeInfo> mAttrs = new HashMap<String, AttributeInfo>();
-  private final Map<String, ObjectClassInfo> mOCs = new HashMap<String, ObjectClassInfo>();
+  private final Map<String, AttributeInfo> mAttrs = new HashMap<>();
+  private final Map<String, ObjectClassInfo> mOCs = new HashMap<>();
   // only direct attrs
-  private final Map<AttributeClass, Set<String>> mClassToAttrsMap =
-      new HashMap<AttributeClass, Set<String>>();
-  private final Map<AttributeClass, Set<String>> mClassToLowerCaseAttrsMap =
-      new HashMap<AttributeClass, Set<String>>();
+  private final Map<AttributeClass, Set<String>> mClassToAttrsMap = new HashMap<>();
+  private final Map<AttributeClass, Set<String>> mClassToLowerCaseAttrsMap = new HashMap<>();
   // direct attrs and attrs from included objectClass's
-  private final Map<AttributeClass, Set<String>> mClassToAllAttrsMap =
-      new HashMap<AttributeClass, Set<String>>();
+  private final Map<AttributeClass, Set<String>> mClassToAllAttrsMap = new HashMap<>();
   private final AttributeCallback mIDNCallback = new IDNCallback();
-  private final Map<String, AttributeInfo> mEphemeralAttrs =
-      new HashMap<String, AttributeInfo>(); // lowercased
-  private final Set<String> mEphemeralAttrsSet = new HashSet<String>(); // not lowercased
+  private final Map<String, AttributeInfo> mEphemeralAttrs = new HashMap<>(); // lowercased
+  private final Set<String> mEphemeralAttrsSet = new HashSet<>(); // not lowercased
   private final Map<EntryType, Map<String, AttributeInfo>> mNonDynamicEphemeralAttrs =
-      new HashMap<
-          EntryType,
-          Map<String, AttributeInfo>>(); // ephemeral attributes that can be retrieved as part of
+      new HashMap<>(); // ephemeral attributes that can be retrieved as part of
   // Entry.getAttrs()
 
   /*
@@ -148,12 +143,11 @@ public class AttributeManager {
   * zimbraPrefMailSMIMECertificate  Zimbra(deprecated)   multi         yes                     1.3.6.1.4.1.1466.115.121.1.40   no          yes
   *
   */
-  private final List<String> mErrors = new LinkedList<String>();
+  private final List<String> mErrors = new LinkedList<>();
   /*
    * Support for lookup by flag
    */
-  private final Map<AttributeFlag, Set<String>> mFlagToAttrsMap =
-      new HashMap<AttributeFlag, Set<String>>();
+  private final Map<AttributeFlag, Set<String>> mFlagToAttrsMap = new HashMap<>();
   private boolean mLdapSchemaExtensionInited = false;
 
   @VisibleForTesting
@@ -212,7 +206,7 @@ public class AttributeManager {
       }
       String dir = LC.zimbra_attrs_directory.value();
       String className = LC.zimbra_class_attrmanager.value();
-      if (className != null && !className.equals("")) {
+      if (!className.equals("")) {
         try {
           try {
             mInstance =
@@ -247,7 +241,7 @@ public class AttributeManager {
   }
 
   public static IDNType idnType(AttributeManager am, String attr) {
-    if (am == null) return IDNType.none;
+    if (am == null) return IDNType.NONE;
     else return am.idnType(attr);
   }
 
@@ -321,7 +315,7 @@ public class AttributeManager {
   }
 
   private void addNonDynamicEphemeralAttr(AttributeInfo info) {
-    Set<AttributeClass> attrClasses = new HashSet<AttributeClass>();
+    Set<AttributeClass> attrClasses = new HashSet<>();
     if (info.getOptionalIn() != null) {
       attrClasses.addAll(info.getOptionalIn());
     }
@@ -333,11 +327,8 @@ public class AttributeManager {
       if (entryType == null) {
         continue;
       }
-      Map<String, AttributeInfo> infoMap = mNonDynamicEphemeralAttrs.get(entryType);
-      if (infoMap == null) {
-        infoMap = new HashMap<String, AttributeInfo>();
-        mNonDynamicEphemeralAttrs.put(entryType, infoMap);
-      }
+      Map<String, AttributeInfo> infoMap =
+          mNonDynamicEphemeralAttrs.computeIfAbsent(entryType, k -> new HashMap<>());
       infoMap.put(info.getName(), info);
     }
   }
@@ -345,17 +336,17 @@ public class AttributeManager {
   @VisibleForTesting
   public void addAttribute(AttributeInfo info) {
     mAttrs.put(info.mName.toLowerCase(), info);
-    if (info.isEphemeral()) {
+    if (Boolean.TRUE.equals(info.isEphemeral())) {
       mEphemeralAttrs.put(info.mName.toLowerCase(), info);
       mEphemeralAttrsSet.add(info.mName);
-      if (!info.isDynamic()) {
+      if (Boolean.FALSE.equals(info.isDynamic())) {
         addNonDynamicEphemeralAttr(info);
       }
     }
   }
 
   boolean hasErrors() {
-    return mErrors.size() > 0;
+    return !mErrors.isEmpty();
   }
 
   String getErrors() {
@@ -402,7 +393,7 @@ public class AttributeManager {
       return;
     }
 
-    Map<Integer, String> idsSeen = new HashMap<Integer, String>();
+    Map<Integer, String> idsSeen = new HashMap<>();
 
     String group = root.attributeValue(A_GROUP);
     String groupIdStr = root.attributeValue(A_GROUP_ID);
@@ -413,7 +404,7 @@ public class AttributeManager {
     int groupId = -1;
     if (group != null) {
       try {
-        groupId = Integer.valueOf(groupIdStr);
+        groupId = Integer.parseInt(groupIdStr);
       } catch (NumberFormatException nfe) {
         error(null, file, A_GROUP_ID + " is not a number: " + groupIdStr);
       }
@@ -445,7 +436,6 @@ public class AttributeManager {
       String min = null;
       String max = null;
       boolean immutable = false;
-      //            boolean ignore = false;
       int id = -1;
       String parentOid = null;
       AttributeCardinality cardinality = null;
@@ -464,101 +454,119 @@ public class AttributeManager {
       List<AttributeServerType> requiresRestart = null;
       Version deprecatedSinceVer = null;
       List<Version> sinceVer = null;
-      Boolean ephemeral = false;
 
       for (Iterator attrIter = eattr.attributeIterator(); attrIter.hasNext(); ) {
         Attribute attr = (Attribute) attrIter.next();
         String aname = attr.getName();
-        if (aname.equals(A_NAME)) {
-          // nothing to do - already processed
-        } else if (aname.equals(A_CALLBACK)) {
-          callback = loadCallback(attr.getValue());
-        } else if (aname.equals(A_IMMUTABLE)) {
-          immutable = "1".equals(attr.getValue());
-        } else if (aname.equals(A_MAX)) {
-          max = attr.getValue();
-        } else if (aname.equals(A_MIN)) {
-          min = attr.getValue();
-        } else if (aname.equals(A_TYPE)) {
-          type = AttributeType.getType(attr.getValue());
-          if (type == null) {
-            error(name, file, "unknown <attr> type: " + attr.getValue());
-            continue NEXT_ATTR;
-          }
-        } else if (aname.equals(A_VALUE)) {
-          value = attr.getValue();
-        } else if (aname.equals(A_PARENT_OID)) {
-          parentOid = attr.getValue();
-          if (!parentOid.matches("^\\d+(\\.\\d+)+"))
-            error(name, file, "invalid parent OID " + parentOid + ": must be an OID");
-        } else if (aname.equals(A_ID)) {
-          try {
-            id = Integer.parseInt(attr.getValue());
-            if (id < 0) {
-              error(name, file, "invalid id " + id + ": must be positive");
+        switch (aname) {
+          case A_NAME:
+            // nothing to do - already processed
+            break;
+          case A_CALLBACK:
+            callback = loadCallback(attr.getValue());
+            break;
+          case A_IMMUTABLE:
+            immutable = "1".equals(attr.getValue());
+            break;
+          case A_MAX:
+            max = attr.getValue();
+            break;
+          case A_MIN:
+            min = attr.getValue();
+            break;
+          case A_TYPE:
+            type = AttributeType.getType(attr.getValue());
+            if (type == null) {
+              error(name, file, "unknown <attr> type: " + attr.getValue());
+              continue NEXT_ATTR;
             }
-          } catch (NumberFormatException nfe) {
-            error(name, file, aname + " is not a number: " + attr.getValue());
-          }
-        } else if (aname.equals(A_CARDINALITY)) {
-          try {
-            cardinality = AttributeCardinality.valueOf(attr.getValue());
-          } catch (IllegalArgumentException iae) {
-            error(name, file, aname + " is not valid: " + attr.getValue());
-          }
-        } else if (aname.equals(A_REQUIRED_IN)) {
-          requiredIn = parseClasses(name, file, attr.getValue());
-        } else if (aname.equals(A_OPTIONAL_IN)) {
-          optionalIn = parseClasses(name, file, attr.getValue());
-        } else if (aname.equals(A_FLAGS)) {
-          flags = parseFlags(name, file, attr.getValue());
-        } else if (aname.equals(A_ORDER)) {
-          try {
-            order = AttributeOrder.valueOf(attr.getValue());
-          } catch (IllegalArgumentException iae) {
-            error(name, file, aname + " is not valid: " + attr.getValue());
-          }
-        } else if (aname.equals(A_REQUIRES_RESTART)) {
-          requiresRestart = parseRequiresRestart(name, file, attr.getValue());
-
-        } else if (aname.equals(A_DEPRECATED_SINCE)) {
-          String depreSince = attr.getValue();
-          if (depreSince != null) {
+            break;
+          case A_VALUE:
+            value = attr.getValue();
+            break;
+          case A_PARENT_OID:
+            parentOid = attr.getValue();
+            if (!parentOid.matches("^\\d+(\\.\\d+)+"))
+              error(name, file, "invalid parent OID " + parentOid + ": must be an OID");
+            break;
+          case A_ID:
             try {
-              deprecatedSinceVer = new Version(depreSince);
-            } catch (ServiceException e) {
-              error(
-                  name,
-                  file,
-                  aname + " is not valid: " + attr.getValue() + " (" + e.getMessage() + ")");
-            }
-          }
-
-        } else if (aname.equals(A_SINCE)) {
-          String since = attr.getValue();
-          if (since != null) {
-            try {
-              String[] versions = since.split(",");
-              sinceVer = new ArrayList<Version>();
-              for (String verStr : versions) {
-                sinceVer.add(new Version(verStr.trim()));
+              id = Integer.parseInt(attr.getValue());
+              if (id < 0) {
+                error(name, file, "invalid id " + id + ": must be positive");
               }
-            } catch (ServiceException e) {
-              error(
-                  name,
-                  file,
-                  aname + " is not valid: " + attr.getValue() + " (" + e.getMessage() + ")");
+            } catch (NumberFormatException nfe) {
+              error(name, file, aname + " is not a number: " + attr.getValue());
             }
-          }
-        } else {
-          error(name, file, "unknown <attr> attr: " + aname);
+            break;
+          case A_CARDINALITY:
+            try {
+              cardinality = AttributeCardinality.valueOf(attr.getValue());
+            } catch (IllegalArgumentException iae) {
+              error(name, file, aname + " is not valid: " + attr.getValue());
+            }
+            break;
+          case A_REQUIRED_IN:
+            requiredIn = parseClasses(name, file, attr.getValue());
+            break;
+          case A_OPTIONAL_IN:
+            optionalIn = parseClasses(name, file, attr.getValue());
+            break;
+          case A_FLAGS:
+            flags = parseFlags(name, file, attr.getValue());
+            break;
+          case A_ORDER:
+            try {
+              order = AttributeOrder.valueOf(attr.getValue());
+            } catch (IllegalArgumentException iae) {
+              error(name, file, aname + " is not valid: " + attr.getValue());
+            }
+            break;
+          case A_REQUIRES_RESTART:
+            requiresRestart = parseRequiresRestart(name, file, attr.getValue());
+
+            break;
+          case A_DEPRECATED_SINCE:
+            String depreSince = attr.getValue();
+            if (depreSince != null) {
+              try {
+                deprecatedSinceVer = new Version(depreSince);
+              } catch (ServiceException e) {
+                error(
+                    name,
+                    file,
+                    aname + " is not valid: " + attr.getValue() + " (" + e.getMessage() + ")");
+              }
+            }
+
+            break;
+          case A_SINCE:
+            String since = attr.getValue();
+            if (since != null) {
+              try {
+                String[] versions = since.split(",");
+                sinceVer = new ArrayList<>();
+                for (String verStr : versions) {
+                  sinceVer.add(new Version(verStr.trim()));
+                }
+              } catch (ServiceException e) {
+                error(
+                    name,
+                    file,
+                    aname + " is not valid: " + attr.getValue() + " (" + e.getMessage() + ")");
+              }
+            }
+            break;
+          default:
+            error(name, file, "unknown <attr> attr: " + aname);
+            break;
         }
       }
 
-      List<String> globalConfigValues = new LinkedList<String>();
+      List<String> globalConfigValues = new LinkedList<>();
       List<String> globalConfigValuesUpgrade = null; // note: init to null instead of empty List
-      List<String> defaultCOSValues = new LinkedList<String>();
-      List<String> defaultExternalCOSValues = new LinkedList<String>();
+      List<String> defaultCOSValues = new LinkedList<>();
+      List<String> defaultExternalCOSValues = new LinkedList<>();
       List<String> defaultCOSValuesUpgrade = null; // note: init to null instead of empty List
       String description = null;
       String deprecateDesc = null;
@@ -568,15 +576,14 @@ public class AttributeManager {
         if (elem.getName().equals(E_GLOBAL_CONFIG_VALUE)) {
           globalConfigValues.add(elem.getText());
         } else if (elem.getName().equals(E_GLOBAL_CONFIG_VALUE_UPGRADE)) {
-          if (globalConfigValuesUpgrade == null)
-            globalConfigValuesUpgrade = new LinkedList<String>();
+          if (globalConfigValuesUpgrade == null) globalConfigValuesUpgrade = new LinkedList<>();
           globalConfigValuesUpgrade.add(elem.getText());
         } else if (elem.getName().equals(E_DEFAULT_COS_VALUE)) {
           defaultCOSValues.add(elem.getText());
         } else if (elem.getName().equals(E_DEFAULT_EXTERNAL_COS_VALUE)) {
           defaultExternalCOSValues.add(elem.getText());
         } else if (elem.getName().equals(E_DEFAULT_COS_VALUE_UPGRADE)) {
-          if (defaultCOSValuesUpgrade == null) defaultCOSValuesUpgrade = new LinkedList<String>();
+          if (defaultCOSValuesUpgrade == null) defaultCOSValuesUpgrade = new LinkedList<>();
           defaultCOSValuesUpgrade.add(elem.getText());
         } else if (elem.getName().equals(E_DESCRIPTION)) {
           if (description != null) {
@@ -599,8 +606,7 @@ public class AttributeManager {
         error(name, file, "missing attr " + A_DEPRECATED_SINCE);
 
       if (deprecatedSinceVer != null) {
-        String deprecateInfo =
-            "Deprecated since: " + deprecatedSinceVer.toString() + ".  " + deprecateDesc;
+        String deprecateInfo = "Deprecated since: " + deprecatedSinceVer + ".  " + deprecateDesc;
         if (description == null) description = deprecateInfo;
         else description = deprecateInfo + ".  Orig desc: " + description;
       }
@@ -627,11 +633,11 @@ public class AttributeManager {
 
       // Check that if id is specified, it must be unique
       if (id > 0) {
-        String idForAttr = idsSeen.get(Integer.valueOf(id));
+        String idForAttr = idsSeen.get(id);
         if (idForAttr != null) {
           error(name, file, "duplicate id: " + id + " is already used for " + idForAttr);
         } else {
-          idsSeen.put(Integer.valueOf(id), name);
+          idsSeen.put(id, name);
         }
       }
 
@@ -682,9 +688,6 @@ public class AttributeManager {
           null,
           requiredIn,
           optionalIn);
-
-      // Check that if it is serverPreferAlwaysOn it is in server and alwaysOnCluster
-      checkFlag(name, file, flags, null, AttributeClass.server, null, null, requiredIn, optionalIn);
 
       // Check that is cardinality is single, then not more than one
       // default value is specified
@@ -771,7 +774,7 @@ public class AttributeManager {
       if (flags != null && flags.contains(AttributeFlag.ephemeral)) {
         mEphemeralAttrs.put(canonicalName, info);
         mEphemeralAttrsSet.add(name);
-        if (!info.isDynamic()) {
+        if (Boolean.FALSE.equals(info.isDynamic())) {
           addNonDynamicEphemeralAttr(info);
         }
       }
@@ -923,25 +926,30 @@ public class AttributeManager {
       for (Iterator attrIter = eattr.attributeIterator(); attrIter.hasNext(); ) {
         Attribute attr = (Attribute) attrIter.next();
         String aname = attr.getName();
-        if (aname.equals(A_NAME)) {
-          // nothing to do - already processed
-        } else if (aname.equals(A_TYPE)) {
-          type = ObjectClassType.valueOf(attr.getValue());
-        } else if (aname.equals(A_ID)) {
-          try {
-            id = Integer.parseInt(attr.getValue());
-            if (id < 0) {
-              error(name, file, "invalid id " + id + ": must be positive");
+        switch (aname) {
+          case A_NAME:
+            // nothing to do - already processed
+            break;
+          case A_TYPE:
+            type = ObjectClassType.valueOf(attr.getValue());
+            break;
+          case A_ID:
+            try {
+              id = Integer.parseInt(attr.getValue());
+              if (id < 0) {
+                error(name, file, "invalid id " + id + ": must be positive");
+              }
+            } catch (NumberFormatException nfe) {
+              error(name, file, aname + " is not a number: " + attr.getValue());
             }
-          } catch (NumberFormatException nfe) {
-            error(name, file, aname + " is not a number: " + attr.getValue());
-          }
-        } else {
-          error(name, file, "unknown <attr> attr: " + aname);
+            break;
+          default:
+            error(name, file, "unknown <attr> attr: " + aname);
+            break;
         }
       }
 
-      List<String> superOCs = new LinkedList<String>();
+      List<String> superOCs = new LinkedList<>();
       String description = null;
       List<String> comment = null;
       for (Iterator elemIter = eattr.elementIterator(); elemIter.hasNext(); ) {
@@ -957,7 +965,7 @@ public class AttributeManager {
           if (comment != null) {
             error(name, file, "more than one " + E_COMMENT);
           }
-          comment = new ArrayList<String>();
+          comment = new ArrayList<>();
           String[] lines = elem.getText().trim().split("\\n");
           for (String line : lines) comment.add(line.trim());
         } else {
@@ -1007,7 +1015,7 @@ public class AttributeManager {
   }
 
   private Set<AttributeClass> parseClasses(String attrName, File file, String value) {
-    Set<AttributeClass> result = new HashSet<AttributeClass>();
+    Set<AttributeClass> result = new HashSet<>();
     String[] cnames = value.split(",");
     for (String cname : cnames) {
       try {
@@ -1024,7 +1032,7 @@ public class AttributeManager {
   }
 
   private Set<AttributeFlag> parseFlags(String attrName, File file, String value) {
-    Set<AttributeFlag> result = new HashSet<AttributeFlag>();
+    Set<AttributeFlag> result = new HashSet<>();
     String[] flags = value.split(",");
     for (String flag : flags) {
       try {
@@ -1073,7 +1081,7 @@ public class AttributeManager {
   }
 
   private List<AttributeServerType> parseRequiresRestart(String attrName, File file, String value) {
-    List<AttributeServerType> result = new ArrayList<AttributeServerType>();
+    List<AttributeServerType> result = new ArrayList<>();
     String[] serverTypes = value.split(",");
     for (String server : serverTypes) {
       try {
@@ -1091,8 +1099,8 @@ public class AttributeManager {
 
   private void initClassToAttrsMap() {
     for (AttributeClass klass : AttributeClass.values()) {
-      mClassToAttrsMap.put(klass, new HashSet<String>());
-      mClassToLowerCaseAttrsMap.put(klass, new HashSet<String>());
+      mClassToAttrsMap.put(klass, new HashSet<>());
+      mClassToLowerCaseAttrsMap.put(klass, new HashSet<>());
     }
   }
 
@@ -1106,7 +1114,7 @@ public class AttributeManager {
         case account:
           attrs =
               SetUtil.union(
-                  new HashSet<String>(),
+                  new HashSet<>(),
                   mClassToAttrsMap.get(AttributeClass.mailRecipient),
                   mClassToAttrsMap.get(AttributeClass.account));
           mClassToAllAttrsMap.put(klass, attrs);
@@ -1114,7 +1122,7 @@ public class AttributeManager {
         case calendarResource:
           attrs =
               SetUtil.union(
-                  new HashSet<String>(),
+                  new HashSet<>(),
                   mClassToAttrsMap.get(AttributeClass.mailRecipient),
                   mClassToAttrsMap.get(AttributeClass.account));
           attrs = SetUtil.union(attrs, mClassToAttrsMap.get(AttributeClass.calendarResource));
@@ -1123,7 +1131,7 @@ public class AttributeManager {
         case distributionList:
           attrs =
               SetUtil.union(
-                  new HashSet<String>(),
+                  new HashSet<>(),
                   mClassToAttrsMap.get(AttributeClass.mailRecipient),
                   mClassToAttrsMap.get(AttributeClass.distributionList));
           mClassToAllAttrsMap.put(klass, attrs);
@@ -1131,7 +1139,7 @@ public class AttributeManager {
         case imapDataSource:
           attrs =
               SetUtil.union(
-                  new HashSet<String>(),
+                  new HashSet<>(),
                   mClassToAttrsMap.get(AttributeClass.dataSource),
                   mClassToAttrsMap.get(AttributeClass.imapDataSource));
           mClassToAllAttrsMap.put(klass, attrs);
@@ -1139,7 +1147,7 @@ public class AttributeManager {
         case pop3DataSource:
           attrs =
               SetUtil.union(
-                  new HashSet<String>(),
+                  new HashSet<>(),
                   mClassToAttrsMap.get(AttributeClass.dataSource),
                   mClassToAttrsMap.get(AttributeClass.pop3DataSource));
           mClassToAllAttrsMap.put(klass, attrs);
@@ -1147,7 +1155,7 @@ public class AttributeManager {
         case rssDataSource:
           attrs =
               SetUtil.union(
-                  new HashSet<String>(),
+                  new HashSet<>(),
                   mClassToAttrsMap.get(AttributeClass.dataSource),
                   mClassToAttrsMap.get(AttributeClass.rssDataSource));
           mClassToAllAttrsMap.put(klass, attrs);
@@ -1155,7 +1163,7 @@ public class AttributeManager {
         case liveDataSource:
           attrs =
               SetUtil.union(
-                  new HashSet<String>(),
+                  new HashSet<>(),
                   mClassToAttrsMap.get(AttributeClass.dataSource),
                   mClassToAttrsMap.get(AttributeClass.liveDataSource));
           mClassToAllAttrsMap.put(klass, attrs);
@@ -1163,7 +1171,7 @@ public class AttributeManager {
         case galDataSource:
           attrs =
               SetUtil.union(
-                  new HashSet<String>(),
+                  new HashSet<>(),
                   mClassToAttrsMap.get(AttributeClass.dataSource),
                   mClassToAttrsMap.get(AttributeClass.galDataSource));
           mClassToAllAttrsMap.put(klass, attrs);
@@ -1171,7 +1179,7 @@ public class AttributeManager {
         case domain:
           attrs =
               SetUtil.union(
-                  new HashSet<String>(),
+                  new HashSet<>(),
                   mClassToAttrsMap.get(AttributeClass.mailRecipient),
                   mClassToAttrsMap.get(AttributeClass.domain));
           mClassToAllAttrsMap.put(klass, attrs);
@@ -1179,7 +1187,7 @@ public class AttributeManager {
         case oauth2DataSource:
           attrs =
               SetUtil.union(
-                  new HashSet<String>(),
+                  new HashSet<>(),
                   mClassToAttrsMap.get(AttributeClass.dataSource),
                   mClassToAttrsMap.get(AttributeClass.oauth2DataSource));
           mClassToAllAttrsMap.put(klass, attrs);
@@ -1192,7 +1200,7 @@ public class AttributeManager {
 
   private void initFlagsToAttrsMap() {
     for (AttributeFlag flag : AttributeFlag.values()) {
-      mFlagToAttrsMap.put(flag, new HashSet<String>());
+      mFlagToAttrsMap.put(flag, new HashSet<>());
     }
   }
 
@@ -1230,13 +1238,13 @@ public class AttributeManager {
     AttributeInfo ai = mAttrs.get(attr.toLowerCase());
     if (ai != null) {
       AttributeType at = ai.getType();
-      if (at == AttributeType.TYPE_EMAIL) return IDNType.email;
-      else if (at == AttributeType.TYPE_EMAILP) return IDNType.emailp;
-      else if (at == AttributeType.TYPE_CS_EMAILP) return IDNType.cs_emailp;
-      else if (mFlagToAttrsMap.get(AttributeFlag.idn).contains(attr)) return IDNType.idn;
+      if (at == AttributeType.TYPE_EMAIL) return IDNType.EMAIL;
+      else if (at == AttributeType.TYPE_EMAILP) return IDNType.EMAIL_P;
+      else if (at == AttributeType.TYPE_CS_EMAILP) return IDNType.CS_EMAIL_P;
+      else if (mFlagToAttrsMap.get(AttributeFlag.idn).contains(attr)) return IDNType.IDN;
     }
 
-    return IDNType.none;
+    return IDNType.NONE;
   }
 
   /**
@@ -1368,7 +1376,7 @@ public class AttributeManager {
   }
 
   public Set<String> getImmutableAttrs() {
-    Set<String> immutable = new HashSet<String>();
+    Set<String> immutable = new HashSet<>();
     for (AttributeInfo info : mAttrs.values()) {
       if (info != null && info.isImmutable()) immutable.add(info.getName());
     }
@@ -1376,7 +1384,7 @@ public class AttributeManager {
   }
 
   public Set<String> getImmutableAttrsInClass(AttributeClass klass) {
-    Set<String> immutable = new HashSet<String>();
+    Set<String> immutable = new HashSet<>();
     for (String attr : mClassToAttrsMap.get(klass)) {
       AttributeInfo info = mAttrs.get(attr.toLowerCase());
       if (info != null) {
@@ -1405,8 +1413,8 @@ public class AttributeManager {
       boolean allowCallback)
       throws ServiceException {
     String[] keys = attrs.keySet().toArray(new String[0]);
-    for (int i = 0; i < keys.length; i++) {
-      String name = keys[i];
+    for (String key : keys) {
+      String name = key;
       if (name.length() == 0) {
         throw AccountServiceException.INVALID_ATTR_NAME("empty attr name found", null);
       }
@@ -1445,19 +1453,17 @@ public class AttributeManager {
       CallbackContext context,
       boolean allowCallback) {
     String[] keys = attrs.keySet().toArray(new String[0]);
-    for (int i = 0; i < keys.length; i++) {
-      String name = keys[i];
-      //            Object value = attrs.get(name);
+    for (String key : keys) {
+      String name = key;
       if (name.charAt(0) == '-' || name.charAt(0) == '+') name = name.substring(1);
       AttributeInfo info = mAttrs.get(name.toLowerCase());
-      if (info != null) {
-        if (allowCallback && info.getCallback() != null) {
-          try {
-            info.getCallback().postModify(context, name, entry);
-          } catch (Exception e) {
-            // need to swallow all exceptions as postModify shouldn't throw any...
-            ZimbraLog.account.warn("postModify caught exception: " + e.getMessage(), e);
-          }
+
+      if (info != null && (allowCallback && info.getCallback() != null)) {
+        try {
+          info.getCallback().postModify(context, name, entry);
+        } catch (Exception e) {
+          // need to swallow all exceptions as postModify shouldn't throw any...
+          ZimbraLog.account.warn("postModify caught exception: " + e.getMessage(), e);
         }
       }
     }
@@ -1474,16 +1480,17 @@ public class AttributeManager {
     mLdapSchemaExtensionInited = true;
 
     getExtraObjectClassAttrs(
-        prov, AttributeClass.account, Provisioning.A_zimbraAccountExtraObjectClass);
+        prov, AttributeClass.account, ZAttrProvisioning.A_zimbraAccountExtraObjectClass);
     getExtraObjectClassAttrs(
         prov,
         AttributeClass.calendarResource,
-        Provisioning.A_zimbraCalendarResourceExtraObjectClass);
-    getExtraObjectClassAttrs(prov, AttributeClass.cos, Provisioning.A_zimbraCosExtraObjectClass);
+        ZAttrProvisioning.A_zimbraCalendarResourceExtraObjectClass);
     getExtraObjectClassAttrs(
-        prov, AttributeClass.domain, Provisioning.A_zimbraDomainExtraObjectClass);
+        prov, AttributeClass.cos, ZAttrProvisioning.A_zimbraCosExtraObjectClass);
     getExtraObjectClassAttrs(
-        prov, AttributeClass.server, Provisioning.A_zimbraServerExtraObjectClass);
+        prov, AttributeClass.domain, ZAttrProvisioning.A_zimbraDomainExtraObjectClass);
+    getExtraObjectClassAttrs(
+        prov, AttributeClass.server, ZAttrProvisioning.A_zimbraServerExtraObjectClass);
   }
 
   private void getExtraObjectClassAttrs(
@@ -1502,22 +1509,22 @@ public class AttributeManager {
   private enum ObjectClassType {
     ABSTRACT,
     AUXILIARY,
-    STRUCTURAL;
+    STRUCTURAL
   }
 
-  public static enum IDNType {
-    email, // attr type is email
-    emailp, // attr type is emailp
-    cs_emailp, // attr type is cs_emailp
-    idn, // attr has idn flag
-    none; // attr is not of type smail, emailp, cs_emailp, nor does it have idn flag
+  public enum IDNType {
+    EMAIL, // attr type is email
+    EMAIL_P, // attr type is emailp
+    CS_EMAIL_P, // attr type is cs_emailp
+    IDN, // attr has idn flag
+    NONE; // attr is not of type smail, emailp, cs_emailp, nor does it have idn flag
 
     public boolean isEmailOrIDN() {
-      return this != none;
+      return this != NONE;
     }
   }
 
-  class ObjectClassInfo {
+  static class ObjectClassInfo {
     private final AttributeClass mAttributeClass;
     private final String mName;
     private final int mId;
