@@ -10,7 +10,7 @@
             <exclude org="org.apache.httpcomponents" name="httpclient"/>
             <exclude org="io.vavr" name="vavr"/>
         </dependency>
-        <dependency org="com.zextras.carbonio.preview" name="carbonio-preview-sdk" rev="0.2.3">
+        <dependency org="com.zextras.carbonio.preview" name="carbonio-preview-sdk" rev="0.2.4">
             <exclude org="org.apache.httpcomponents" name="httpclient"/>
             <exclude org="io.vavr" name="vavr"/>
         </dependency>

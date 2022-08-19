@@ -4,11 +4,15 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.auth.AuthContext.Protocol;
+import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** Unit test for {@link LdapProvisioning}. */
@@ -88,7 +92,13 @@ public class LdapProvisioningTest {
 
     // fake passwords for test against created user account
     String[] testPasswords = {
-      "milano", "Lamborghini123", "Milano34", "lamborghini01", "Milano.Lamborghini", "lAmbOrgHini", "2022cars"
+      "milano",
+      "Lamborghini123",
+      "Milano34",
+      "lamborghini01",
+      "Milano.Lamborghini",
+      "lAmbOrgHini",
+      "2022cars"
     };
 
     for (String testPassword : testPasswords) {
@@ -105,18 +115,73 @@ public class LdapProvisioningTest {
    * @throws ServiceException
    */
   @Test(expected = AccountServiceException.class)
-  public void shouldFindPersonalDataInPasswordForDomainsContainingSpecialChars() throws ServiceException {
+  public void shouldFindPersonalDataInPasswordForDomainsContainingSpecialChars()
+      throws ServiceException {
 
     Account acct = Provisioning.getInstance().getAccount("milano@lamborghini-europe.com");
 
     // fake passwords for test against created user account
-    String[] testPasswords = {
-        "Adjbiuhkl2022europe", "Lamborghini123"
-    };
+    String[] testPasswords = {"Adjbiuhkl2022europe", "Lamborghini123"};
 
     for (String testPassword : testPasswords) {
       String passwordLower = testPassword.toLowerCase();
       LdapProvisioning.validatePasswordEntropyForPersonalData(passwordLower, acct);
     }
+  }
+
+  /**
+   * Tests CO-284 When zimbraAuthfallbackToLocal is FALSE, auth should not fallback to local even
+   * for admin Tested against external ldap authentication
+   */
+  @Test(expected = ServiceException.class)
+  @Ignore("Find a way to use a real Ldap and not the Mock, since auth is not implemented")
+  public void shouldNotFallbackAdminAuthWhenFallbackFalse() throws Exception {
+    Provisioning prov = Provisioning.getInstance();
+    // create domain
+    final String domain = "demo.com";
+    Map<String, Object> domainAttrs = new HashMap<>();
+    domainAttrs.put(Provisioning.A_zimbraAuthMech, AuthMech.ldap.toString());
+    prov.createDomain(domain, domainAttrs);
+    // create account
+    HashMap<String, Object> exampleAccountAttrs3;
+    exampleAccountAttrs3 = new HashMap<>();
+    exampleAccountAttrs3.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+    exampleAccountAttrs3.put(Provisioning.A_sn, "Demo");
+    exampleAccountAttrs3.put(Provisioning.A_cn, "Test");
+    exampleAccountAttrs3.put(Provisioning.A_initials, "Admin");
+    exampleAccountAttrs3.put(Provisioning.A_zimbraIsAdminAccount, "TRUE");
+    final String email = "testAdmin@" + domain;
+    final String password = "testPassword";
+    exampleAccountAttrs3.put(Provisioning.A_mail, email);
+    final Account testAdminAccount = prov.createAccount(email, password, exampleAccountAttrs3);
+    prov.authAccount(testAdminAccount, password, Protocol.soap);
+  }
+
+  /**
+   * Tests CO-284 When zimbraAuthfallbackToLocal is FALSE, auth should fallback to local even for
+   * admin
+   */
+  @Test
+  @Ignore("Find a way to use a real Ldap and not the Mock, since auth is not implemented")
+  public void shouldFallbackAdminAuthWhenFallbackTrue() throws Exception {
+    Provisioning prov = Provisioning.getInstance();
+    // create domain
+    final String domain = "demo.com";
+    Map<String, Object> domainAttrs = new HashMap<>();
+    domainAttrs.put(Provisioning.A_zimbraAuthMech, AuthMech.ldap.toString());
+    prov.createDomain(domain, domainAttrs);
+    // create account
+    HashMap<String, Object> exampleAccountAttrs3;
+    exampleAccountAttrs3 = new HashMap<>();
+    exampleAccountAttrs3.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+    exampleAccountAttrs3.put(Provisioning.A_sn, "Demo");
+    exampleAccountAttrs3.put(Provisioning.A_cn, "Test");
+    exampleAccountAttrs3.put(Provisioning.A_initials, "Admin");
+    exampleAccountAttrs3.put(Provisioning.A_zimbraIsAdminAccount, "TRUE");
+    final String email = "testAdmin@" + domain;
+    final String password = "testPassword";
+    exampleAccountAttrs3.put(Provisioning.A_mail, email);
+    final Account testAdminAccount = prov.createAccount(email, password, exampleAccountAttrs3);
+    prov.authAccount(testAdminAccount, password, Protocol.soap);
   }
 }
