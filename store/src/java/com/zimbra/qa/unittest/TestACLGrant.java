@@ -44,7 +44,6 @@ public class TestACLGrant extends TestACL {
   private static String DISTRIBUTION_LIST_NAME = getEmailAddr(TEST_CASE_NAME + "dl").toLowerCase();
   private static String SUBDOMAIN_NAME = getSubDomainName(TEST_CASE_NAME + "domain").toLowerCase();
   private static String SERVER_NAME = TEST_CASE_NAME + "server".toLowerCase();
-  private static String ALWAYSONCLUSTER_NAME = TEST_CASE_NAME + "alwaysOnCluster".toLowerCase();
   private static String UC_SERVICE_NAME = TEST_CASE_NAME + "ucservice".toLowerCase();
   private static String XMPP_COMPONENT_NAME = TEST_CASE_NAME + "xmppcomponent".toLowerCase();
   private static String ZIMLET_NAME = TEST_CASE_NAME + "zimlet".toLowerCase();
