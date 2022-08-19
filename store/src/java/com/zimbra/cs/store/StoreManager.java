@@ -23,7 +23,16 @@ public abstract class StoreManager {
   private static StoreManager sInstance;
   private static Integer diskStreamingThreshold;
 
+  /**
+   * IMPORTANT: Previously when ImapDaemon was a thing, this method would use
+   * ImapDaemon#isRunningImapInsideMailboxd to decide if use imapd class store or zimbra class
+   * store. When imap was managed by imapdaemon, the method would return false and use imapd class.
+   * Now imap is always managed by mailboxd
+   *
+   * @return an instance of store manager
+   */
   public static StoreManager getInstance() {
+
     return getInstance(LC.zimbra_class_store.value());
   }
 
