@@ -38,7 +38,6 @@ import com.zimbra.cs.account.AccountServiceException.AuthFailedServiceException;
 import com.zimbra.cs.account.AddressList;
 import com.zimbra.cs.account.Alias;
 import com.zimbra.cs.account.AliasedEntry;
-import com.zimbra.cs.account.AlwaysOnCluster;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeManager;
@@ -103,7 +102,6 @@ import com.zimbra.cs.account.gal.GalUtil;
 import com.zimbra.cs.account.krb5.Krb5Principal;
 import com.zimbra.cs.account.ldap.entry.LdapAccount;
 import com.zimbra.cs.account.ldap.entry.LdapAlias;
-import com.zimbra.cs.account.ldap.entry.LdapAlwaysOnCluster;
 import com.zimbra.cs.account.ldap.entry.LdapCalendarResource;
 import com.zimbra.cs.account.ldap.entry.LdapConfig;
 import com.zimbra.cs.account.ldap.entry.LdapCos;
@@ -243,7 +241,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private final INamedEntryCache<Group> groupCache;
   private final IMimeTypeCache mimeTypeCache;
   private final INamedEntryCache<Server> serverCache;
-  private final INamedEntryCache<AlwaysOnCluster> alwaysOnClusterCache;
   private final INamedEntryCache<UCService> ucServiceCache;
   private final INamedEntryCache<ShareLocator> shareLocatorCache;
   private final INamedEntryCache<XMPPComponent> xmppComponentCache;
@@ -280,11 +277,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   public LdapProvisioning(CacheMode cacheMode) {
     ensureSingleton(this);
-
-    useCache = true;
-    if (cacheMode == CacheMode.OFF) {
-      useCache = false;
-    }
+    useCache = cacheMode != CacheMode.OFF;
 
     if (this.useCache) {
       cache = new LdapCache.LRUMapCache();
@@ -302,7 +295,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     shareLocatorCache = cache.shareLocatorCache();
     xmppComponentCache = cache.xmppComponentCache();
     zimletCache = cache.zimletCache();
-    alwaysOnClusterCache = cache.alwaysOnClusterCache();
 
     commonPasswordFilter =
         UnmodifiableBloomFilter.createLazyFilterFromFile(LC.common_passwords_txt.value());
@@ -556,7 +548,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   /**
    * should only be called internally.
    *
-   * @param initCtxt
    * @param attrs
    * @throws ServiceException
    */
@@ -792,17 +783,17 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         // use the same cos of the temp Account object for our entry object.
         //
         // If we got here from reload, attrs are likely not changed, the callsites
-        // just want a refreshed object.  For this case it's best if we still
+        // just want a refreshed object.  For this case its best if we still
         // always resolve the COS correctly.  makeAccount is a cheap call and won't
         // add any overhead like loading cos/domain from LDAP: even if cos/domain
         // has to be loaded (because not in cache) in the getCOS(temp) call, it's
         // just the same as calling (buggy) getCOS(entry) before.
         //
-        // We only need the temp object for the getCOS call, don't need to setup
+        // We only need the temp object for the getCOS call, don't need to set up
         // primary/secondary defaults on the temp object because:
         //     zimbraCOSId is only on account(of course), and that's all needed
         //     for determining the COS for the account in the getCOS call: if
-        //     zimbraCOSId is not set on account, it will fallback to the domain
+        //     zimbraCOSId is not set on account, it will fall back to the domain
         //     default COS, then fallback to the system default COS.
         //
         Account temp = makeAccountNoDefaults(dn, attributes);
@@ -814,10 +805,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         defaults = getConfig().getDomainDefaults();
       } else if (entry instanceof Server) {
         defaults = getConfig().getServerDefaults();
-        AlwaysOnCluster aoc = getAlwaysOnCluster((Server) entry);
-        if (aoc != null) {
-          overrideDefaults = aoc.getServerOverrides();
-        }
       }
 
       if (defaults == null && secondaryDefaults == null) entry.setAttrs(attrs);
@@ -845,8 +832,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       xmppComponentCache.replace((XMPPComponent) entry);
     } else if (entry instanceof LdapZimlet) {
       zimletCache.replace((LdapZimlet) entry);
-    } else if (entry instanceof LdapAlwaysOnCluster) {
-      alwaysOnClusterCache.replace((AlwaysOnCluster) entry);
     } else if (entry instanceof Group) {
       /*
        * DLs returned by Provisioning.get(DistributionListBy) and
@@ -2263,7 +2248,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   /**
-   * @param base
    * @param filter
    * @param returnAttrs
    * @param opts
@@ -4317,39 +4301,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     return s;
   }
 
-  private AlwaysOnCluster getAlwaysOnClusterByQuery(ZLdapFilter filter, ZLdapContext initZlc)
-      throws ServiceException {
-    try {
-      ZSearchResultEntry sr =
-          helper.searchForEntry(mDIT.alwaysOnClusterBaseDN(), filter, initZlc, false);
-      if (sr != null) {
-        return new LdapAlwaysOnCluster(sr.getDN(), sr.getAttributes(), null, this);
-      }
-    } catch (LdapMultipleEntriesMatchedException e) {
-      throw AccountServiceException.MULTIPLE_ENTRIES_MATCHED("getAlwaysOnClusterByQuery", e);
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE(
-          "unable to lookup alwaysOnCluster via query: "
-              + filter.toFilterString()
-              + " message:"
-              + e.getMessage(),
-          e);
-    }
-    return null;
-  }
-
-  private AlwaysOnCluster getAlwaysOnClusterById(String zimbraId, ZLdapContext zlc, boolean nocache)
-      throws ServiceException {
-    if (zimbraId == null) return null;
-    AlwaysOnCluster c = null;
-    if (!nocache) c = alwaysOnClusterCache.getById(zimbraId);
-    if (c == null) {
-      c = getAlwaysOnClusterByQuery(filterFactory.alwaysOnClusterById(zimbraId), zlc);
-      alwaysOnClusterCache.put(c);
-    }
-    return c;
-  }
-
   private ShareLocator getShareLocatorByQuery(ZLdapFilter filter, ZLdapContext initZlc)
       throws ServiceException {
     try {
@@ -4432,31 +4383,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
-  private AlwaysOnCluster getAlwaysOnClusterByNameInternal(String name) throws ServiceException {
-    return getAlwaysOnClusterByName(name, false);
-  }
-
-  private AlwaysOnCluster getAlwaysOnClusterByName(String name, boolean nocache)
-      throws ServiceException {
-    if (!nocache) {
-      AlwaysOnCluster c = alwaysOnClusterCache.getByName(name);
-      if (c != null) return c;
-    }
-
-    try {
-      String dn = mDIT.alwaysOnClusterNameToDN(name);
-      ZAttributes attrs = helper.getAttributes(LdapUsage.GET_ALWAYSONCLUSTER, dn);
-      LdapAlwaysOnCluster c = new LdapAlwaysOnCluster(dn, attrs, null, this);
-      alwaysOnClusterCache.put(c);
-      return c;
-    } catch (LdapEntryNotFoundException e) {
-      return null;
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE(
-          "unable to lookup alwaysOnCluster by name: " + name + " message: " + e.getMessage(), e);
-    }
-  }
-
   @Override
   public List<Server> getAllServers() throws ServiceException {
     return getAllServers((String) null);
@@ -4488,123 +4414,13 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       throw ServiceException.FAILURE("unable to list all servers", e);
     }
 
-    if (result.size() > 0) serverCache.put(result, true);
+    if (!result.isEmpty()) serverCache.put(result, true);
     Collections.sort(result);
     return result;
-  }
-
-  @Override
-  public List<Server> getAllServers(String service, String clusterId) throws ServiceException {
-    List<Server> result = new ArrayList<Server>();
-
-    ZLdapFilter filter = filterFactory.serverByServiceAndAlwaysOnCluster(service, clusterId);
-
-    try {
-      Map<String, Object> serverDefaults = getConfig().getServerDefaults();
-
-      ZSearchResultEnumeration ne =
-          helper.searchDir(mDIT.serverBaseDN(), filter, ZSearchControls.SEARCH_CTLS_SUBTREE());
-      while (ne.hasMore()) {
-        ZSearchResultEntry sr = ne.next();
-        LdapServer s = new LdapServer(sr.getDN(), sr.getAttributes(), serverDefaults, this);
-        result.add(s);
-      }
-      ne.close();
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE("unable to list all servers by cluster id", e);
-    }
-
-    Collections.sort(result);
-    return result;
-  }
-
-  @Override
-  public AlwaysOnCluster createAlwaysOnCluster(String name, Map<String, Object> clusterAttrs)
-      throws ServiceException {
-    name = name.toLowerCase().trim();
-
-    CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
-    AttributeManager.getInstance().preModify(clusterAttrs, null, callbackContext, true);
-
-    ZLdapContext zlc = null;
-    try {
-      zlc = LdapClient.getContext(LdapServerType.MASTER, LdapUsage.CREATE_SERVER);
-
-      ZMutableEntry entry = LdapClient.createMutableEntry();
-      entry.mapToAttrs(clusterAttrs);
-
-      Set<String> ocs = LdapObjectClass.getAlwaysOnClusterObjectClasses(this);
-      entry.addAttr(A_objectClass, ocs);
-
-      String zimbraIdStr = LdapUtil.generateUUID();
-      entry.setAttr(A_zimbraId, zimbraIdStr);
-      entry.setAttr(A_zimbraCreateTimestamp, LdapDateUtil.toGeneralizedTime(new Date()));
-      entry.setAttr(A_cn, name);
-      String dn = mDIT.alwaysOnClusterNameToDN(name);
-      entry.setDN(dn);
-      zlc.createEntry(entry);
-
-      AlwaysOnCluster cluster = getAlwaysOnClusterById(zimbraIdStr, zlc, true);
-      AttributeManager.getInstance().postModify(clusterAttrs, cluster, callbackContext);
-      return cluster;
-
-    } catch (LdapEntryAlreadyExistException nabe) {
-      throw AccountServiceException.ALWAYSONCLUSTER_EXISTS(name);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
-      throw e;
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE("unable to create akwaysOnCluster: " + name, e);
-    } finally {
-      LdapClient.closeContext(zlc);
-    }
-  }
-
-  @Override
-  public List<AlwaysOnCluster> getAllAlwaysOnClusters() throws ServiceException {
-    List<AlwaysOnCluster> result = new ArrayList<AlwaysOnCluster>();
-
-    ZLdapFilter filter = filterFactory.allAlwaysOnClusters();
-
-    try {
-
-      ZSearchResultEnumeration ne =
-          helper.searchDir(
-              mDIT.alwaysOnClusterBaseDN(), filter, ZSearchControls.SEARCH_CTLS_SUBTREE());
-      while (ne.hasMore()) {
-        ZSearchResultEntry sr = ne.next();
-        LdapAlwaysOnCluster c = new LdapAlwaysOnCluster(sr.getDN(), sr.getAttributes(), null, this);
-        result.add(c);
-      }
-      ne.close();
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE("unable to list all alwaysOnClusters", e);
-    }
-
-    if (result.size() > 0) alwaysOnClusterCache.put(result, true);
-    Collections.sort(result);
-    return result;
-  }
-
-  private AlwaysOnCluster getAlwaysOnClusterByIdInternal(String zimbraId) throws ServiceException {
-    return getAlwaysOnClusterById(zimbraId, null, false);
-  }
-
-  @Override
-  public AlwaysOnCluster get(Key.AlwaysOnClusterBy keyType, String key) throws ServiceException {
-    switch (keyType) {
-      case id:
-        return getAlwaysOnClusterByIdInternal(key);
-      case name:
-        return getAlwaysOnClusterByNameInternal(key);
-      default:
-        return null;
-    }
   }
 
   private List<Cos> searchCOS(ZLdapFilter filter, ZLdapContext initZlc) throws ServiceException {
-    List<Cos> result = new ArrayList<Cos>();
+    List<Cos> result = new ArrayList<>();
     try {
       ZSearchResultEnumeration ne =
           helper.searchDir(
@@ -4634,7 +4450,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     try {
       coses = searchCOS(filterFactory.cosesByMailHostPool(serverId), initZlc);
       for (Cos cos : coses) {
-        Map<String, String> attrs = new HashMap<String, String>();
+        Map<String, String> attrs = new HashMap<>();
         attrs.put("-" + Provisioning.A_zimbraMailHostPool, serverId);
         ZimbraLog.account.info(
             "Removing "
@@ -4735,23 +4551,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       serverCache.remove(server);
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to purge server: " + zimbraId, e);
-    } finally {
-      LdapClient.closeContext(zlc);
-    }
-  }
-
-  @Override
-  public void deleteAlwaysOnCluster(String zimbraId) throws ServiceException {
-    LdapAlwaysOnCluster cluster = (LdapAlwaysOnCluster) getAlwaysOnClusterByIdInternal(zimbraId);
-    if (cluster == null) throw AccountServiceException.NO_SUCH_ALWAYSONCLUSTER(zimbraId);
-
-    ZLdapContext zlc = null;
-    try {
-      zlc = LdapClient.getContext(LdapServerType.MASTER, LdapUsage.DELETE_ALWAYSONCLUSTER);
-      zlc.deleteEntry(cluster.getDN());
-      alwaysOnClusterCache.remove(cluster);
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE("unable to purge alwaysOnCluster: " + zimbraId, e);
     } finally {
       LdapClient.closeContext(zlc);
     }
@@ -6561,7 +6360,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
    * @param password
    * @param acct
    * @param cos
-   * @param attrs
    * @throws ServiceException
    */
   private void checkPasswordStrength(String password, Account acct, Cos cos, ZMutableEntry entry)
@@ -9671,7 +9469,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         flushCache(CacheEntryType.domain, null);
         flushCache(CacheEntryType.mime, null);
         flushCache(CacheEntryType.server, null);
-        flushCache(CacheEntryType.alwaysOnCluster, null);
         flushCache(CacheEntryType.zimlet, null);
         break;
       case account:
@@ -9776,15 +9573,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             if (server != null) reload(server, false);
           }
         } else serverCache.clear();
-        return;
-      case alwaysOnCluster:
-        if (entries != null) {
-          for (CacheEntry entry : entries) {
-            Key.AlwaysOnClusterBy clusterBy = Key.AlwaysOnClusterBy.id;
-            AlwaysOnCluster cluster = get(clusterBy, entry.mEntryIdentity);
-            if (cluster != null) reload(cluster, false);
-          }
-        } else alwaysOnClusterCache.clear();
         return;
       case zimlet:
         if (entries != null) {
@@ -12255,7 +12043,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   /**
-   * @param id id of the address list
+   * @param zimbraId id of the address list
    * @return AddressList object
    * @throws ServiceException if an error occurs while querying LDAP.
    */

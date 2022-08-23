@@ -6,18 +6,16 @@
 package com.zimbra.cs.account;
 
 public enum AttributeFlag {
-    accountInfo,
-    accountInherited,
-    accountCosDomainInherited,
-    domainAdminModifiable,
-    domainInfo,
-    domainInherited,
-    serverInherited,
-    idn,
-    serverPreferAlwaysOn,
-    ephemeral,
-    dynamic,
-    expirable,
-    octopus  // for tracking octopus specific attributes
-
+  accountInfo,
+  accountInherited,
+  accountCosDomainInherited,
+  domainAdminModifiable,
+  domainInfo,
+  domainInherited,
+  serverInherited,
+  idn,
+  ephemeral,
+  dynamic,
+  expirable,
+  octopus // for tracking octopus specific attributes
 }

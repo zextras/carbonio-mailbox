@@ -5,46 +5,44 @@
 
 package com.zimbra.soap.admin.type;
 
-import javax.xml.bind.annotation.XmlEnum;
-
 import com.google.common.base.Joiner;
 import com.zimbra.common.service.ServiceException;
+import javax.xml.bind.annotation.XmlEnum;
 
 // TODO: Use this in ZimbraServer code instead of Provisioning.CacheEntryType
 @XmlEnum
 public enum CacheEntryType {
-    // non ldap entries
-    acl,
-    locale,
-    skin,
-    uistrings,
-    license,
+  // non ldap entries
+  acl,
+  locale,
+  skin,
+  uistrings,
+  license,
 
-    // ldap entries
-    all,  // all ldap entries
-    account,
-    config,
-    globalgrant,
-    cos,
-    domain,
-    galgroup,
-    group,
-    mime,
-    server,
-    alwaysOnCluster,
-    zimlet;
+  // ldap entries
+  all, // all ldap entries
+  account,
+  config,
+  globalgrant,
+  cos,
+  domain,
+  galgroup,
+  group,
+  mime,
+  server,
+  zimlet;
 
-    private static Joiner PIPE_JOINER = Joiner.on("|");
+  private static Joiner PIPE_JOINER = Joiner.on("|");
 
-    public static CacheEntryType fromString(String s) throws ServiceException {
-        try {
-            return CacheEntryType.valueOf(s);
-        } catch (IllegalArgumentException e) {
-            throw ServiceException.INVALID_REQUEST("unknown cache type: "+s, e);
-        }
+  public static CacheEntryType fromString(String s) throws ServiceException {
+    try {
+      return CacheEntryType.valueOf(s);
+    } catch (IllegalArgumentException e) {
+      throw ServiceException.INVALID_REQUEST("unknown cache type: " + s, e);
     }
+  }
 
-    public static String names() {
-        return PIPE_JOINER.join(CacheEntryType.values());
-    }
+  public static String names() {
+    return PIPE_JOINER.join(CacheEntryType.values());
+  }
 }

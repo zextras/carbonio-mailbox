@@ -2,13 +2,13 @@
 
 <rights>
 
-<!-- 
+<!--
 ********************
     admin rights
 ********************
 -->
 
-<!-- 
+<!--
 ========================================================
                       account rights
 ========================================================
@@ -58,7 +58,7 @@
 
 <right name="checkRightUsr" type="preset" targetType="account">
   <desc>check if the account has any effective rights</desc>
-</right> 
+</right>
 
 <right name="getMailboxInfo" type="preset" targetType="account">
   <desc>get mailbox id and size(quota) of an account</desc>
@@ -70,12 +70,12 @@
 
 <right name="reindexMailbox" type="preset" targetType="account">
   <desc>reindex mailbox</desc>
-</right> 
+</right>
 
 <right name="moveAccountMailbox" type="preset" targetType="account">
   <desc>move account mailbox</desc>
-</right>        
- 
+</right>
+
 <right name="setAccountPassword" type="preset" targetType="account">
   <desc>set account password, not restricted by password strength policies</desc>
 </right>
@@ -112,7 +112,7 @@
   <attrs>
       <a n="zimbraAdminSavedSearches"/>
   </attrs>
-</right>  
+</right>
 
 <right name="configureQuota" type="setAttrs" targetType="account,cos">
   <desc>configure quota</desc>
@@ -122,19 +122,19 @@
       <a n="zimbraQuotaWarnInterval"/>
       <a n="zimbraQuotaWarnMessage"/>
   </attrs>
-</right> 
+</right>
 
 <right name="viewAccountAdminUI" type="preset" targetType="account">
   <desc>
-    execute the GetAdminConsoleUIComp SOAP when an account 
-    other than the authenticated account is specified in the request.  
+    execute the GetAdminConsoleUIComp SOAP when an account
+    other than the authenticated account is specified in the request.
   </desc>
 </right>
 
 <right name="viewDistributionListAdminUI" type="preset" targetType="dl">
   <desc>
-    execute the GetAdminConsoleUIComp SOAP when a distribution list 
-    is specified in the request.  
+    execute the GetAdminConsoleUIComp SOAP when a distribution list
+    is specified in the request.
   </desc>
 </right>
 
@@ -145,7 +145,7 @@
   </attrs>
 </right>
 
-<!-- 
+<!--
 ========================================================
                  calendar resource rights
 ========================================================
@@ -182,32 +182,32 @@
 <right name="adminLoginCalendarResourceAs" type="preset" targetType="calresource">
   <desc>login to the calendar resource as an admin.</desc>
 </right>
-       
+
 <right name="getCalendarResourceInfo" type="preset" targetType="calresource">
   <desc>get account id, home server, cos id and name, and access URL</desc>
 </right>
-       
+
 <right name="setCalendarResourcePassword" type="preset" targetType="calresource">
   <desc>set calendar resource password, not restricted by password strength policies</desc>
 </right>
 
 <right name="changeCalendarResourcePassword" type="preset" targetType="calresource">
   <desc>set calendar resource password, restricted by password strength policies</desc>
-</right> 
+</right>
 
 <right name="checkCalendarResourcePasswordStrength" type="preset" targetType="calresource">
   <desc>check password strength</desc>
-</right>    
+</right>
 
 <right name="reindexCalendarResourceMailbox" type="preset" targetType="calresource">
   <desc>reindex mailbox</desc>
-</right> 
+</right>
 
 <right name="moveCalendarResourceMailbox" type="preset" targetType="calresource">
   <desc>move calendar resource mailbox</desc>
-</right>   
+</right>
 
-<!-- 
+<!--
 ========================================================
                       COS rights
 ========================================================
@@ -248,7 +248,7 @@
   </attrs>
 </right>
 
-<!-- 
+<!--
 ========================================================
                       config rights
 ========================================================
@@ -269,7 +269,7 @@
   </attrs>
 </right>
 
-<!-- 
+<!--
 ========================================================
                  distribution list rights
 ========================================================
@@ -277,7 +277,7 @@
 
 <right name="checkRightGrp" type="preset" targetType="dl">
   <desc>check if the group has any effective rights</desc>
-</right> 
+</right>
 
 <right name="getDistributionList" type="getAttrs" targetType="dl">
   <desc>get all distribution list attributes</desc>
@@ -320,7 +320,7 @@
 </right>
 
 
-<!-- 
+<!--
 ========================================================
                  dynamic group
 ========================================================
@@ -364,7 +364,7 @@
 
 
 
-<!-- 
+<!--
 ========================================================
                       domain rights
 ========================================================
@@ -449,7 +449,7 @@
 <right name="accessGAL" type="preset" targetType="domain">
   <desc>access GAL(global address list)</desc>
 </right>
-         
+
 <right name="checkExchangeAuthConfig" type="preset" targetType="domain">
   <desc>check exchange auth config</desc>
 </right>
@@ -457,8 +457,8 @@
 <right name="configureWikiAccount" type="setAttrs" targetType="domain,config">
   <desc>configure attributes for wiki account</desc>
    <attrs>
-    <a n="zimbraNotebookAccount"/>                                
-  </attrs> 
+    <a n="zimbraNotebookAccount"/>
+  </attrs>
 </right>
 
 
@@ -477,8 +477,8 @@
     <a n="zimbraGalSyncLdapFilter"/>
     <a n="zimbraGalSyncLdapAuthMech"/>
     <a n="zimbraGalSyncLdapBindDn"/>
-    <a n="zimbraGalSyncLdapBindPassword"/>                                   
-  </attrs> 
+    <a n="zimbraGalSyncLdapBindPassword"/>
+  </attrs>
 </right>
 
 <right name="configureExternalAuth" type="setAttrs" targetType="domain">
@@ -490,20 +490,20 @@
     <a n="zimbraAuthLdapSearchBase"/>
     <a n="zimbraAuthLdapSearchFilter"/>
     <a n="zimbraAuthLdapSearchBindDn"/>
-    <a n="zimbraAuthLdapSearchBindPassword"/>      
+    <a n="zimbraAuthLdapSearchBindPassword"/>
     <a n="zimbraAuthFallbackToLocal"/>
     <a n="zimbraAuthKerberos5Realm"/>
     <a n="zimbraAuthLdapStartTlsEnabled"/>
-  </attrs> 
-</right>         
+  </attrs>
+</right>
 
 
-   
-<!-- 
+
+<!--
 ========================================================
                     server rights
 ========================================================
--->   
+-->
 
 <right name="getServer" type="getAttrs" targetType="server">
   <desc>get all server attributes</desc>
@@ -532,7 +532,7 @@
 <right name="checkHealth" type="preset" targetType="server">
   <desc>check server health</desc>
 </right>
-       
+
 <right name="getSessions" type="preset" targetType="server">
   <desc>dump/get sessions</desc>
 </right>
@@ -543,7 +543,7 @@
 
 <right name="manageMailQueue" type="preset" targetType="server">
   <desc>view and take actions on mail queues</desc>
-</right>   
+</right>
 
 <right name="manageAccountLogger" type="preset" targetType="server">
   <desc>add/remove account loggers</desc>
@@ -551,7 +551,7 @@
 
 <right name="manageVolume" type="preset" targetType="server">
   <desc>create, volumes</desc>
-</right>  
+</right>
 
 <right name="applianceAll" type="preset" targetType="server">
   <desc>catchall, appliance</desc>
@@ -563,23 +563,23 @@
 
 <right name="backupAccount" type="preset" targetType="server">
   <desc>backup accounts on a server</desc>
-</right> 
+</right>
 
 <right name="restoreAccount" type="preset" targetType="server">
   <desc>restore accounts on a server</desc>
-</right> 
+</right>
 
 <right name="rolloverRedoLog" type="preset" targetType="server">
   <desc>rollover redo log on a server</desc>
-</right> 
+</right>
 
 <right name="moveMailboxToServer" type="preset" targetType="server">
   <desc>move mailboxes to a server</desc>
-</right> 
+</right>
 
 <right name="moveMailboxFromServer" type="preset" targetType="server">
   <desc>move mailboxes from a server and purge moved mailboxes</desc>
-</right> 
+</right>
 
 <right name="getServiceStatus" type="preset" targetType="server">
   <desc>get service status of server</desc>
@@ -615,39 +615,17 @@
 
 <right name="getCSR" type="preset" targetType="server">
     <desc>get CSR from the target server</desc>
-</right>  
-   
+</right>
+
 <right name="generateCSR" type="preset" targetType="server">
     <desc>generate CSR on the target server</desc>
 </right>
 
-<!-- 
-========================================================
-                    alwaysOnCluster rights
-========================================================
--->   
-
-<right name="getAlwaysOnCluster" type="getAttrs" targetType="alwaysoncluster">
-  <desc>get all alwaysOnCluster attributes</desc>
-</right>
-
-<right name="modifyAlwaysOnCluster" type="setAttrs" targetType="alwaysoncluster">
-  <desc>set all alwaysOnCluster attributes</desc>
-</right>
-
-<right name="listAlwaysOnCluster" type="preset" targetType="alwaysoncluster">
-  <desc>see alwaysOnCluster in GetAllAlwaysOnClusters</desc>
-</right>
-
-<right name="deleteAlwaysOnCluster" type="preset" targetType="alwaysoncluster">
-  <desc>delete alwaysOnCluster</desc>
-</right>
-    
-<!-- 
+<!--
 ========================================================
                     UC service rights
 ========================================================
--->   
+-->
 
 <right name="getUCService" type="getAttrs" targetType="ucservice">
   <desc>get all UC service attributes</desc>
@@ -669,11 +647,11 @@
   <desc>rename UC service</desc>
 </right>
 
-<!-- 
+<!--
 ========================================================
                     XMPP component rights
 ========================================================
---> 
+-->
 
 <right name="getXMPPComponent" type="getAttrs" targetType="xmppcomponent">
   <desc>get all XMPP component attributes</desc>
@@ -693,11 +671,11 @@
 
 
 
-<!-- 
+<!--
 ========================================================
                     zimlet rights
 ========================================================
---> 
+-->
 
 <right name="getZimlet" type="getAttrs" targetType="zimlet">
   <desc>get all zimlet attributes</desc>
@@ -716,7 +694,7 @@
 </right>
 
 
-<!-- 
+<!--
 ========================================================
                     global grant rights
 ========================================================
@@ -741,10 +719,6 @@
   <desc>create server</desc>
 </right>
 
-<right name="createAlwaysOnCluster" type="preset" targetType="global">
-  <desc>create alwaysOnCluster</desc>
-</right>
-
 <right name="createUCService" type="preset" targetType="global">
   <desc>create UC service</desc>
 </right>
@@ -764,7 +738,7 @@
 <right name="installZCSLicense" type="preset" targetType="global">
     <desc>install Zimbra License file on the target server</desc>
 </right>
-   
+
 <right name="getAllFreeBusyProviders" type="preset" targetType="global">
     <desc>Retrieve a list of Free/Busy providers via GetAllFreeBusyProvidersRequest SOAP request</desc>
 </right>
@@ -811,21 +785,21 @@
 
 <right name="viewGrants" type="getAttrs" targetType="account,calresource,cos,dl,domain,server,xmppcomponent,zimlet,config,global">
   <desc>view grants on all target types</desc>
-  <!-- 
+  <!--
       Use just the one same right on all target types for now.
-         
-      e.g. If this right is granted on a domain, the grantee 
-            can see zimbraACE on the domain, all DLs, and all 
+
+      e.g. If this right is granted on a domain, the grantee
+            can see zimbraACE on the domain, all DLs, and all
             accounts in the domain.
-            
+
             To do things like:
             "can see grants granted on all accounts in the domain
              but cannot see any grants on the domain entry itself"
-            
+
             grant an inline right on the domain entry, like:
                 get:account:zimbraACE
             and do not grant this right.
-            
+
             This right the equivalent of the sum of the following inline
             rights:
                 get.account.zimbraACE
