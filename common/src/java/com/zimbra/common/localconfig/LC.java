@@ -396,8 +396,6 @@ public final class LC {
   public static final KnownKey ldap_cache_server_maxage = KnownKey.newKey(15);
   public static final KnownKey ldap_cache_ucservice_maxsize = KnownKey.newKey(100);
   public static final KnownKey ldap_cache_ucservice_maxage = KnownKey.newKey(15);
-  public static final KnownKey ldap_cache_alwaysoncluster_maxsize = KnownKey.newKey(100);
-  public static final KnownKey ldap_cache_alwaysoncluster_maxage = KnownKey.newKey(15);
 
   @Supported public static final KnownKey ldap_cache_timezone_maxsize = KnownKey.newKey(100);
   public static final KnownKey ldap_cache_xmppcomponent_maxsize = KnownKey.newKey(100);
@@ -1139,9 +1137,7 @@ public final class LC {
   public static final KnownKey ldap_dit_base_dn_mime = KnownKey.newKey("");
   // LDAP Custom DIT base DN for server entries
   public static final KnownKey ldap_dit_base_dn_server = KnownKey.newKey("");
-  // LDAP Custom DIT base DN for alwaysOnCluster entries
-  public static final KnownKey ldap_dit_base_dn_alwaysoncluster = KnownKey.newKey("");
-  // LDAP Custom DIT base DN for uncservice entries
+  // LDAP Custom DIT base DN for ucservice entries
   public static final KnownKey ldap_dit_base_dn_ucservice = KnownKey.newKey("");
   // LDAP Custom DIT base DN for share locator entries
   public static final KnownKey ldap_dit_base_dn_share_locator = KnownKey.newKey("");

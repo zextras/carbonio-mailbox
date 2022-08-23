@@ -8,7 +8,6 @@ package com.zimbra.cs.account.soap;
 import com.google.common.collect.Lists;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.account.Key.AlwaysOnClusterBy;
 import com.zimbra.common.account.Key.CalendarResourceBy;
 import com.zimbra.common.account.Key.CosBy;
 import com.zimbra.common.account.Key.DataSourceBy;
@@ -41,7 +40,6 @@ import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
-import com.zimbra.cs.account.AlwaysOnCluster;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.Cos;
@@ -105,8 +103,6 @@ import com.zimbra.soap.admin.message.CountObjectsRequest;
 import com.zimbra.soap.admin.message.CountObjectsResponse;
 import com.zimbra.soap.admin.message.CreateAccountRequest;
 import com.zimbra.soap.admin.message.CreateAccountResponse;
-import com.zimbra.soap.admin.message.CreateAlwaysOnClusterRequest;
-import com.zimbra.soap.admin.message.CreateAlwaysOnClusterResponse;
 import com.zimbra.soap.admin.message.CreateCalendarResourceRequest;
 import com.zimbra.soap.admin.message.CreateCalendarResourceResponse;
 import com.zimbra.soap.admin.message.CreateCosRequest;
@@ -122,7 +118,6 @@ import com.zimbra.soap.admin.message.CreateServerResponse;
 import com.zimbra.soap.admin.message.CreateUCServiceRequest;
 import com.zimbra.soap.admin.message.CreateUCServiceResponse;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
-import com.zimbra.soap.admin.message.DeleteAlwaysOnClusterRequest;
 import com.zimbra.soap.admin.message.DeleteCalendarResourceRequest;
 import com.zimbra.soap.admin.message.DeleteCosRequest;
 import com.zimbra.soap.admin.message.DeleteDistributionListRequest;
@@ -147,8 +142,6 @@ import com.zimbra.soap.admin.message.GetAllActiveServersRequest;
 import com.zimbra.soap.admin.message.GetAllActiveServersResponse;
 import com.zimbra.soap.admin.message.GetAllAdminAccountsRequest;
 import com.zimbra.soap.admin.message.GetAllAdminAccountsResponse;
-import com.zimbra.soap.admin.message.GetAllAlwaysOnClustersRequest;
-import com.zimbra.soap.admin.message.GetAllAlwaysOnClustersResponse;
 import com.zimbra.soap.admin.message.GetAllCalendarResourcesRequest;
 import com.zimbra.soap.admin.message.GetAllCalendarResourcesResponse;
 import com.zimbra.soap.admin.message.GetAllConfigRequest;
@@ -167,8 +160,6 @@ import com.zimbra.soap.admin.message.GetAllServersRequest;
 import com.zimbra.soap.admin.message.GetAllServersResponse;
 import com.zimbra.soap.admin.message.GetAllUCServicesRequest;
 import com.zimbra.soap.admin.message.GetAllUCServicesResponse;
-import com.zimbra.soap.admin.message.GetAlwaysOnClusterRequest;
-import com.zimbra.soap.admin.message.GetAlwaysOnClusterResponse;
 import com.zimbra.soap.admin.message.GetCalendarResourceRequest;
 import com.zimbra.soap.admin.message.GetCalendarResourceResponse;
 import com.zimbra.soap.admin.message.GetConfigRequest;
@@ -237,8 +228,6 @@ import com.zimbra.soap.admin.type.AccountLoggerInfo;
 import com.zimbra.soap.admin.type.AccountQuotaInfo;
 import com.zimbra.soap.admin.type.AdminObjectInterface;
 import com.zimbra.soap.admin.type.AliasInfo;
-import com.zimbra.soap.admin.type.AlwaysOnClusterInfo;
-import com.zimbra.soap.admin.type.AlwaysOnClusterSelector;
 import com.zimbra.soap.admin.type.Attr;
 import com.zimbra.soap.admin.type.CacheEntrySelector;
 import com.zimbra.soap.admin.type.CacheEntryType;
@@ -451,15 +440,12 @@ public class SoapProvisioning extends Provisioning {
       // TODO: Can JAXB be used for AuthRequest?  Requires AuthToken to
       //       be properly supported and that might require 3rd party work?
       XMLElement req = new XMLElement(AdminConstants.AUTH_REQUEST);
-      switch (options.getAccountBy()) {
-        case name:
-          req.addElement(AdminConstants.E_NAME).setText(options.getAccount());
-          break;
-        default:
-          Element account = req.addElement(AccountConstants.E_ACCOUNT);
-          account.addAttribute(AccountConstants.A_BY, options.getAccountBy().name());
-          account.setText(options.getAccount());
-          break;
+      if (options.getAccountBy() == AccountBy.name) {
+        req.addElement(AdminConstants.E_NAME).setText(options.getAccount());
+      } else {
+        Element account = req.addElement(AccountConstants.E_ACCOUNT);
+        account.addAttribute(AccountConstants.A_BY, options.getAccountBy().name());
+        account.setText(options.getAccount());
       }
       req.addElement(AdminConstants.E_PASSWORD).setText(options.getPassword());
       Element response = invoke(req);
@@ -1013,13 +999,6 @@ public class SoapProvisioning extends Provisioning {
     return new SoapServer(resp.getServer(), this);
   }
 
-  @Override
-  public AlwaysOnCluster createAlwaysOnCluster(String name, Map<String, Object> attrs)
-      throws ServiceException {
-    CreateAlwaysOnClusterResponse resp = invokeJaxb(new CreateAlwaysOnClusterRequest(name, attrs));
-    return new SoapAlwaysOnCluster(resp.getAlwaysOnCluster(), this);
-  }
-
   /** Unsupported */
   @Override
   public Zimlet createZimlet(String name, Map<String, Object> attrs) throws ServiceException {
@@ -1069,11 +1048,6 @@ public class SoapProvisioning extends Provisioning {
   @Override
   public void deleteServer(String zimbraId) throws ServiceException {
     invokeJaxb(new DeleteServerRequest(zimbraId));
-  }
-
-  @Override
-  public void deleteAlwaysOnCluster(String zimbraId) throws ServiceException {
-    invokeJaxb(new DeleteAlwaysOnClusterRequest(zimbraId));
   }
 
   /** Unsupported */
@@ -1208,16 +1182,6 @@ public class SoapProvisioning extends Provisioning {
   @Override
   public List<Server> getAllServers() throws ServiceException {
     return getAllServers(null, true);
-  }
-
-  @Override
-  public List<AlwaysOnCluster> getAllAlwaysOnClusters() throws ServiceException {
-    ArrayList<AlwaysOnCluster> result = new ArrayList<AlwaysOnCluster>();
-    GetAllAlwaysOnClustersResponse resp = invokeJaxb(new GetAllAlwaysOnClustersRequest());
-    for (AlwaysOnClusterInfo clusterInfo : resp.getAlwaysOnClusterList()) {
-      result.add(new SoapAlwaysOnCluster(clusterInfo, this));
-    }
-    return result;
   }
 
   public List<Server> getAllActiveServers() throws ServiceException {
@@ -1706,19 +1670,6 @@ public class SoapProvisioning extends Provisioning {
       return new SoapServer(resp.getServer(), this);
     } catch (ServiceException e) {
       if (e.getCode().equals(AccountServiceException.NO_SUCH_SERVER)) return null;
-      else throw e;
-    }
-  }
-
-  @Override
-  public AlwaysOnCluster get(AlwaysOnClusterBy keyType, String key) throws ServiceException {
-    AlwaysOnClusterSelector sel =
-        new AlwaysOnClusterSelector(SoapProvisioning.toJaxb(keyType), key);
-    try {
-      GetAlwaysOnClusterResponse resp = invokeJaxb(new GetAlwaysOnClusterRequest(sel));
-      return new SoapAlwaysOnCluster(resp.getAlwaysOnCluster(), this);
-    } catch (ServiceException e) {
-      if (e.getCode().equals(AccountServiceException.NO_SUCH_ALWAYSONCLUSTER)) return null;
       else throw e;
     }
   }
@@ -3066,12 +3017,6 @@ public class SoapProvisioning extends Provisioning {
   }
 
   /* Convert to equivalent JAXB object */
-  private static AlwaysOnClusterSelector.AlwaysOnClusterBy toJaxb(
-      Key.AlwaysOnClusterBy provAlwaysOnClusterBy) throws ServiceException {
-    return AlwaysOnClusterSelector.AlwaysOnClusterBy.fromString(provAlwaysOnClusterBy.toString());
-  }
-
-  /* Convert to equivalent JAXB object */
   private static UCServiceSelector.UCServiceBy toJaxb(Key.UCServiceBy provUCServiceBy)
       throws ServiceException {
     return UCServiceSelector.UCServiceBy.fromString(provUCServiceBy.toString());
@@ -3092,16 +3037,6 @@ public class SoapProvisioning extends Provisioning {
   private static DistributionListSelector.DistributionListBy toJaxb(Key.DistributionListBy d)
       throws ServiceException {
     return DistributionListSelector.DistributionListBy.fromString(d.toString());
-  }
-
-  @Override
-  public List<Server> getAllServers(String service, String clusterId) throws ServiceException {
-    List<Server> result = new ArrayList<Server>();
-    GetAllServersResponse resp = invokeJaxb(new GetAllServersRequest(service, true, clusterId));
-    for (ServerInfo serverInfo : resp.getServerList()) {
-      result.add(new SoapServer(serverInfo, this));
-    }
-    return result;
   }
 
   @Override

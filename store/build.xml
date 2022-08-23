@@ -148,10 +148,6 @@
       <param name="getter.class" value="shareLocator" />
       <param name="getter.output" value="ZAttrShareLocator.java" />
     </antcall>
-    <antcall target="generate-getter">
-      <param name="getter.class" value="alwaysOnCluster" />
-      <param name="getter.output" value="ZAttrAlwaysOnCluster.java" />
-    </antcall>
     <antcall target="generate-provisioning" />
   </target>
   <target name="generate-getter">

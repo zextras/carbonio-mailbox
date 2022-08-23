@@ -9,10 +9,12 @@ import java.util.HashMap;
 
 public class MockServer extends Server {
 
-    public MockServer(String name, String id) {
-        super(name, id, new HashMap<String,Object>(), new HashMap<String,Object>(), new MockProvisioning());
-    }
-    public String getAlwaysOnClusterId() {
-        return null;
-    }
+  public MockServer(String name, String id) {
+    super(
+        name,
+        id,
+        new HashMap<String, Object>(),
+        new HashMap<String, Object>(),
+        new MockProvisioning());
+  }
 }
