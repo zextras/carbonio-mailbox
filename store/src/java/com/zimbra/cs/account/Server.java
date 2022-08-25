@@ -11,6 +11,8 @@
 package com.zimbra.cs.account;
 
 import com.zimbra.common.service.ServiceException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 /**
@@ -67,6 +69,25 @@ public class Server extends ZAttrServer {
   public boolean hasProxyService() {
     return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
         .contains(Provisioning.SERVICE_PROXY);
+  }
+
+  /**
+   * @return the server hostname
+   * @since 22.9.0
+   */
+  public String getHostname() {
+    return this.getAttr(Provisioning.A_zimbraServiceHostname);
+  }
+
+  /**
+   * This method will try to resolve server hostname and return its address each time it is called.
+   *
+   * @return IP address of the server after resolution
+   * @throws UnknownHostException exception if host cannot be resolved
+   * @since 22.9.0
+   */
+  public String getIPAddress() throws UnknownHostException {
+    return InetAddress.getByName(this.getHostname()).getHostAddress();
   }
 
   public boolean hasWebClientService() {
