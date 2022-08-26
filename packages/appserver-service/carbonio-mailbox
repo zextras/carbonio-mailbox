@@ -40,6 +40,9 @@ POLICY_RULES="$(cat <<EOF
   "carbonio-activesync/"= {
     "policy"= "read"
   }
+  "carbonio-auth/"= {
+    "policy"= "read"
+  }
 }
 "node_prefix" = {
   "" = {
