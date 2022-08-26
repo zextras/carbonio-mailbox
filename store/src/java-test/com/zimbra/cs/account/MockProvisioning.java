@@ -37,8 +37,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Mock implementation of {@link Provisioning} for testing.
@@ -556,7 +558,10 @@ public final class MockProvisioning extends Provisioning {
 
   @Override
   public List<Server> getAllServers(String service) {
-    throw new UnsupportedOperationException();
+    return servers.values().stream()
+        .filter(
+            server -> Objects.equals(service, server.getAttr(Provisioning.A_zimbraServiceEnabled)))
+        .collect(Collectors.toList());
   }
 
   @Override
