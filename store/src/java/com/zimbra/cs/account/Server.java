@@ -21,6 +21,8 @@ import java.util.Map;
  */
 public class Server extends ZAttrServer {
 
+  private String ipAddress;
+
   public Server(
       String name,
       String id,
@@ -80,14 +82,19 @@ public class Server extends ZAttrServer {
   }
 
   /**
-   * This method will try to resolve server hostname and return its address each time it is called.
+   * This method will lazy-load the server ip address from its hostname. The first time it is called
+   * it will try to resolve the server hostname. On subsequent calls it will return the resolved
+   * value.
    *
    * @return IP address of the server after resolution
    * @throws UnknownHostException exception if host cannot be resolved
    * @since 22.9.0
    */
   public String getIPAddress() throws UnknownHostException {
-    return InetAddress.getByName(this.getHostname()).getHostAddress();
+    if (ipAddress == null) {
+      ipAddress = InetAddress.getByName(this.getHostname()).getHostAddress();
+    }
+    return ipAddress;
   }
 
   public boolean hasWebClientService() {

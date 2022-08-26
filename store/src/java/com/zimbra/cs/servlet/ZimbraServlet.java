@@ -35,9 +35,9 @@ import com.zimbra.cs.service.util.JWTUtil;
 import com.zimbra.cs.servlet.util.AuthUtil;
 import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.SoapServlet;
+import io.vavr.control.Try;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -554,17 +554,16 @@ public class ZimbraServlet extends HttpServlet {
 
       prov.getAllServers(Provisioning.SERVICE_PROXY)
           .forEach(
-              proxyServer -> {
-                try {
-                  final String serverIp = proxyServer.getIPAddress();
-                  if (!Objects.equals(serverIp, "")) {
-                    trustedIps.add(serverIp);
-                  }
-                } catch (UnknownHostException ex) {
-                  ZimbraLog.misc.warn("failed to get proxy IPs, skipping.", ex);
-                  ex.printStackTrace();
-                }
-              });
+              proxyServer ->
+                  Try.of(proxyServer::getIPAddress)
+                      .andThen(
+                          serverIp -> {
+                            if (!Objects.equals(serverIp, "")) {
+                              trustedIps.add(serverIp);
+                            }
+                          })
+                      .onFailure(
+                          ex -> ZimbraLog.misc.warn("failed to get proxy IPs, skipping.", ex)));
       return new RemoteIP.TrustedIPs(trustedIps.toArray(new String[trustedIps.size()]));
     } catch (ServiceException e) {
       ZimbraLog.misc.warn("failed to get trusted IPs, only localhost will be trusted", e);
