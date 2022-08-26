@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class Server extends ZAttrServer {
 
-  private String ipAddress;
+  private volatile String ipAddress;
 
   public Server(
       String name,
