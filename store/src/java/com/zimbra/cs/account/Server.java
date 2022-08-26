@@ -82,9 +82,8 @@ public class Server extends ZAttrServer {
   }
 
   /**
-   * This method will lazy-load the server ip address from its hostname. The first time it is called
-   * it will try to resolve the server hostname. On subsequent calls it will return the resolved
-   * value.
+   * This method will lazy-load the server ip address from its hostname and return it. Subsequent
+   * calls will return the resolved ip address.
    *
    * @return IP address of the server after resolution
    * @throws UnknownHostException exception if host cannot be resolved
@@ -92,7 +91,11 @@ public class Server extends ZAttrServer {
    */
   public String getIPAddress() throws UnknownHostException {
     if (ipAddress == null) {
-      ipAddress = InetAddress.getByName(this.getHostname()).getHostAddress();
+      synchronized (this) {
+        if (ipAddress == null) {
+          ipAddress = InetAddress.getByName(this.getHostname()).getHostAddress();
+        }
+      }
     }
     return ipAddress;
   }
