@@ -558,7 +558,7 @@ public class ZimbraServlet extends HttpServlet {
                   Try.of(proxyServer::getIPAddress)
                       .andThen(
                           serverIp -> {
-                            if (!Objects.equals(serverIp, "")) {
+                            if (!Objects.isNull(serverIp) && !Objects.equals(serverIp, "")) {
                               trustedIps.add(serverIp);
                             }
                           })
