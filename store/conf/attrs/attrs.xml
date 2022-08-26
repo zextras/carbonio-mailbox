@@ -9672,6 +9672,7 @@ TODO: delete them permanently from here
 <attr id="3016" name="zimbraRemoteImapSSLBindPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" callback="CheckPortConflict" deprecatedSince="22.9.0">
   <globalConfigValue>8993</globalConfigValue>
   <desc>port number on which the remote IMAP SSL server should listen</desc>
+  <deprecateDesc>Deprecated because IMAPD has been removed</deprecateDesc>
 </attr>
 
 <attr id="3017" name="zimbraReverseProxyUpstreamFairShmSize" type="integer" min="32" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" requiresRestart="nginxproxy">
