@@ -11,7 +11,7 @@
     <default remote="gh-zx" sync-c="true" sync-j="4" />
 
     <!-- Carbonio base repos -->
-    <project name="carbonio-build" path="zm-build" revision="refs/tags/4.0.11" />
+    <project name="carbonio-build" path="zm-build" revision="refs/tags/4.0.12" />
 
     <!-- Carbonio packaging spec files -->
     <project remote="bb-zx" name="carbonio-core" revision="refs/tags/4.0.13" />
