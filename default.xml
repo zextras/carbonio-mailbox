@@ -14,7 +14,7 @@
     <project name="carbonio-build" path="zm-build" revision="refs/tags/4.0.12" />
 
     <!-- Carbonio packaging spec files -->
-    <project remote="bb-zx" name="carbonio-core" revision="refs/tags/4.0.13" />
+    <project remote="bb-zx" name="carbonio-core" revision="refs/tags/4.0.14" />
 
     <!-- 
         Carbonio modules repo 
