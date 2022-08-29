@@ -71,7 +71,7 @@ pipeline {
                 sh '''
                 ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant\
                 -propertyfile build.properties\
-                publish-maven - all
+                publish-maven-all
                 '''
             }
         }
