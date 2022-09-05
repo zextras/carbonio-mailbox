@@ -4273,6 +4273,70 @@ public abstract class ZAttrConfig extends Entry {
   }
 
   /**
+   * fallback to local auth if external mech fails
+   *
+   * @return zimbraAuthFallbackToLocal, or true if unset
+   */
+  @ZAttr(id = 257)
+  public boolean isAuthFallbackToLocal() {
+    return getBooleanAttr(Provisioning.A_zimbraAuthFallbackToLocal, true, true);
+  }
+
+  /**
+   * fallback to local auth if external mech fails
+   *
+   * @param zimbraAuthFallbackToLocal new value
+   * @throws com.zimbra.common.service.ServiceException if error during update
+   */
+  @ZAttr(id = 257)
+  public void setAuthFallbackToLocal(boolean zimbraAuthFallbackToLocal)
+      throws com.zimbra.common.service.ServiceException {
+    HashMap<String, Object> attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_zimbraAuthFallbackToLocal, zimbraAuthFallbackToLocal ? TRUE : FALSE);
+    getProvisioning().modifyAttrs(this, attrs);
+  }
+
+  /**
+   * fallback to local auth if external mech fails
+   *
+   * @param zimbraAuthFallbackToLocal new value
+   * @param attrs existing map to populate, or null to create a new map
+   * @return populated map to pass into Provisioning.modifyAttrs
+   */
+  @ZAttr(id = 257)
+  public Map<String, Object> setAuthFallbackToLocal(
+      boolean zimbraAuthFallbackToLocal, Map<String, Object> attrs) {
+    if (attrs == null) attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_zimbraAuthFallbackToLocal, zimbraAuthFallbackToLocal ? TRUE : FALSE);
+    return attrs;
+  }
+
+  /**
+   * fallback to local auth if external mech fails
+   *
+   * @throws com.zimbra.common.service.ServiceException if error during update
+   */
+  @ZAttr(id = 257)
+  public void unsetAuthFallbackToLocal() throws com.zimbra.common.service.ServiceException {
+    HashMap<String, Object> attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_zimbraAuthFallbackToLocal, "");
+    getProvisioning().modifyAttrs(this, attrs);
+  }
+
+  /**
+   * fallback to local auth if external mech fails
+   *
+   * @param attrs existing map to populate, or null to create a new map
+   * @return populated map to pass into Provisioning.modifyAttrs
+   */
+  @ZAttr(id = 257)
+  public Map<String, Object> unsetAuthFallbackToLocal(Map<String, Object> attrs) {
+    if (attrs == null) attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_zimbraAuthFallbackToLocal, "");
+    return attrs;
+  }
+
+  /**
    * auth token secret key
    *
    * @return zimbraAuthTokenKey, or empty array if unset

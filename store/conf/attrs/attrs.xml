@@ -1470,7 +1470,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>explicit mapping to an external LDAP dn for a given account</desc>
 </attr>
 
-<attr id="257" name="zimbraAuthFallbackToLocal" type="boolean" cardinality="single" optionalIn="globalConfig" flags="domainInherited">
+<attr id="257" name="zimbraAuthFallbackToLocal" type="boolean" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited">
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>fallback to local auth if external mech fails</desc>
 </attr>
