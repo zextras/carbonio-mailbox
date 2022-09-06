@@ -1,3 +1,0 @@
-<CreateDataSourceRequest xmlns="urn:zimbraMail">
-      <caldav name="caldavDS" l="3" isEnabled="0" host="some.cal.dav.host" pollingInterval="1h" />
-    </CreateDataSourceRequest>

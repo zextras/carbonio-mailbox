@@ -1,0 +1,17 @@
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
+package com.zimbra.soap.mail.message;
+
+import com.zimbra.common.soap.OctopusXmlConstants;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * @zm-api-command-auth-required true
+ * @zm-api-command-admin-auth-required false
+ * @zm-api-command-description Returns a list of items the user is currently watching.
+ */
+@XmlRootElement(name = OctopusXmlConstants.E_GET_WATCHING_ITEMS_REQUEST)
+public class GetWatchingItemsRequest {}

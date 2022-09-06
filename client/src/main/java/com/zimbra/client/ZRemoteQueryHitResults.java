@@ -1,0 +1,29 @@
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
+package com.zimbra.client;
+
+import com.zimbra.common.mailbox.ZimbraQueryHit;
+import com.zimbra.common.mailbox.ZimbraQueryHitResults;
+import com.zimbra.common.service.ServiceException;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+
+public class ZRemoteQueryHitResults implements ZimbraQueryHitResults {
+
+  private Iterator<ZImapSearchHit> hitsIter;
+
+  public ZRemoteQueryHitResults(List<ZImapSearchHit> hits) {
+    this.hitsIter = hits.iterator();
+  }
+
+  @Override
+  public ZimbraQueryHit getNext() throws ServiceException {
+    return hitsIter.hasNext() ? hitsIter.next() : null;
+  }
+
+  @Override
+  public void close() throws IOException {}
+}

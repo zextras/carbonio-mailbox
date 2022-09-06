@@ -1,0 +1,52 @@
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
+package com.zimbra.cs.mailclient.auth;
+
+import com.zimbra.cs.mailclient.MailConfig;
+import java.io.InputStream;
+import java.io.OutputStream;
+import javax.security.auth.login.LoginException;
+import javax.security.sasl.SaslException;
+
+/** Base class for authenticator implementations. */
+public abstract class Authenticator {
+  protected Authenticator() {}
+
+  public abstract void init(MailConfig config, String password)
+      throws LoginException, SaslException;
+
+  public abstract byte[] evaluateChallenge(byte[] challenge) throws SaslException;
+
+  public abstract String getMechanism();
+
+  public abstract boolean isComplete();
+
+  public boolean hasInitialResponse() {
+    return false;
+  }
+
+  public byte[] getInitialResponse() throws SaslException {
+    return null;
+  }
+
+  public boolean isEncryptionEnabled() {
+    return false;
+  }
+
+  public OutputStream wrap(OutputStream os) {
+    return null;
+  }
+
+  public InputStream unwrap(InputStream is) {
+    return null;
+  }
+
+  public String getNegotiatedProperty(String name) {
+    return null;
+  }
+
+  public void dispose() throws SaslException {}
+}

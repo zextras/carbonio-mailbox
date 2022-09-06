@@ -1,0 +1,11 @@
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
+package com.zimbra.cs.service.mail;
+
+/**
+ * @author jhahm
+ */
+public class GetTaskSummaries extends GetCalendarItemSummaries implements TaskRequest {}

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>zm-common</artifactId>
+  <dependencies>
+    <dependency>
+      <artifactId>mail</artifactId>
+      <groupId>javax.mail</groupId>
+      <version>1.4.5</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>activation</artifactId>
+      <groupId>javax.activation</groupId>
+      <version>1.1.1</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>guava</artifactId>
+      <groupId>com.google.guava</groupId>
+      <version>28.1-jre</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-codec</artifactId>
+      <groupId>commons-codec</groupId>
+      <version>1.7</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>javax.servlet-api</artifactId>
+      <groupId>javax.servlet</groupId>
+      <scope>provided</scope>
+      <version>3.1.0</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>log4j</artifactId>
+      <groupId>log4j</groupId>
+      <version>1.2.16</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <groupId>org.bouncycastle</groupId>
+      <version>1.60</version>
+    </dependency>
+
+    <!--    TODO: fix this, we will locally use the compiled jar to bypass this failure-->
+    <!--    <dependency>-->
+    <!--      &lt;!&ndash;TODO: we are using 0.9.16-patched in our production&ndash;&gt;-->
+    <!--      <artifactId>ical4j</artifactId>-->
+    <!--      <groupId>ical4j</groupId>-->
+    <!--      <version>0.9.16-patched</version>-->
+    <!--    </dependency>-->
+
+    <dependency>
+      <artifactId>ical4j</artifactId>
+      <groupId>ical4j</groupId>
+      <version>0.9.16-patched</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>icu4j</artifactId>
+      <groupId>com.ibm.icu</groupId>
+      <version>4.8.1.1</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>json</artifactId>
+      <groupId>org.json</groupId>
+      <version>20090211</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>dom4j</artifactId>
+      <groupId>org.dom4j</groupId>
+      <version>2.1.1</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>httpclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <version>4.5.13</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>jaxb-api</artifactId>
+      <groupId>javax.xml.bind</groupId>
+      <version>2.3.1</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>httpcore-nio</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <version>4.4.11</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>httpasyncclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <version>4.1.4</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-cli</artifactId>
+      <groupId>commons-cli</groupId>
+      <version>1.2</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>spymemcached</artifactId>
+      <groupId>net.spy</groupId>
+      <version>2.12.1</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>javax.annotation-api</artifactId>
+      <groupId>javax.annotation</groupId>
+      <version>1.3.2</version>
+    </dependency>
+
+    <dependency>
+      <!-- TODO: this is also defined in zm-zcs-lib -->
+      <artifactId>jline</artifactId>
+      <groupId>jline</groupId>
+      <version>0.9.93</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>jetty-rewrite</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <version>9.4.48.v20220622</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>jetty-util</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <version>9.4.48.v20220622</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-lang</artifactId>
+      <groupId>commons-lang</groupId>
+      <version>2.6</version>
+    </dependency>
+
+    <dependency>
+      <!-- TODO: this is also defined in zm-zcs-lib -->
+      <artifactId>nekohtml</artifactId>
+      <groupId>net.sourceforge.nekohtml</groupId>
+      <version>1.9.22</version>
+    </dependency>
+
+    <dependency>
+      <!-- TODO: this is also defined in zm-zcs-lib -->
+      <artifactId>jfreechart</artifactId>
+      <groupId>org.jfree</groupId>
+      <version>1.0.14</version>
+    </dependency>
+
+    <!--    <dependency>-->
+    <!--      &lt;!&ndash; TODO: this is also defined in zm-zcs-lib &ndash;&gt;-->
+    <!--      <artifactId>jcommon</artifactId>-->
+    <!--      <groupId>org.jfree</groupId>-->
+    <!--      <version>1.0.23</version>-->
+    <!--    </dependency>-->
+
+
+
+
+    <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <scope>test</scope>
+      <version>4.8.2</version>
+    </dependency>
+
+    <dependency>
+      <!-- TODO: this is also defined in zm-zcs-lib -->
+      <artifactId>jython-standalone</artifactId>
+      <groupId>org.python</groupId>
+      <version>2.5.2</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>easymock</artifactId>
+      <groupId>org.easymock</groupId>
+      <scope>test</scope>
+      <version>3.0</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>zm-native</artifactId>
+      <groupId>com.ktechpit</groupId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+  </dependencies>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>zm-mailbox</artifactId>
+    <groupId>com.ktechpit</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>zextras-java-sdk</id>
+      <name>public-maven-repo</name>
+      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+    </repository>
+  </repositories>
+
+</project>

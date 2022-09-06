@@ -1,0 +1,114 @@
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
+package qa.unittest;
+
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.mailbox.DeliveryOptions;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.Message;
+import com.zimbra.cs.mime.ParsedMessage;
+import com.zimbra.cs.store.StoreManager;
+import com.zimbra.cs.store.file.BlobDeduper;
+import com.zimbra.cs.store.file.FileBlobStore;
+import com.zimbra.cs.util.Zimbra;
+import com.zimbra.cs.volume.Volume;
+import com.zimbra.cs.volume.VolumeManager;
+import com.zimbra.znative.IO;
+import java.util.ArrayList;
+import java.util.List;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public final class TestBlobDeduper {
+
+  private static String TEST_NAME = "TestBlobDeduper";
+  private static String USER_NAME = TEST_NAME + "-user1";
+  private Mailbox mbox;
+  private Account account;
+
+  @Before
+  public void setUp() throws Exception {
+    if (!(StoreManager.getInstance() instanceof FileBlobStore)) {
+      ZimbraLog.test.info("Skipping deduper test for non-FileBlobStore");
+      return;
+    }
+    cleanUp();
+    account = TestUtil.createAccount(USER_NAME);
+    mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    try {
+      cleanUp();
+    } catch (Throwable t) {
+      // Catch exceptions during cleanup, so that the original test error
+      // isn't lost
+      if (t instanceof OutOfMemoryError) {
+        Zimbra.halt("TestBlobDeduper ran out of memory", t);
+      }
+      ZimbraLog.test.error("", t);
+    }
+  }
+
+  /**
+   * Moves all items back to the primary volume and deletes the temporary volume created for the
+   * test.
+   */
+  private void cleanUp() throws Exception {
+    if (TestUtil.accountExists(USER_NAME)) {
+      TestUtil.deleteAccount(USER_NAME);
+    }
+  }
+
+  @Test
+  public void testBlobDeduper() throws Exception {
+
+    StoreManager storeMgr = StoreManager.getInstance();
+    TestUtil.assumeTrue(
+        String.format("StoreManager class=%s is not FileBlobStore", storeMgr.getClass().getName()),
+        storeMgr instanceof FileBlobStore);
+    DeliveryOptions opt = new DeliveryOptions();
+    opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
+    String[] paths = new String[5];
+    Volume vol = VolumeManager.getInstance().getCurrentMessageVolume();
+    for (int i = 0; i < 5; i++) {
+      Message msg =
+          mbox.addMessage(
+              null,
+              new ParsedMessage(
+                  ("From: test@zimbra.com\r\nTo: to1@zimbra.com\r\nSubject: " + TEST_NAME)
+                      .getBytes(),
+                  false),
+              opt,
+              null);
+      paths[i] = msg.getBlob().getLocalBlob().getFile().getPath();
+    }
+    // Make sure inodes are different for paths
+    for (int i = 0; i < 4; i++) {
+      Assert.assertFalse(
+          IO.fileInfo(paths[i]).getInodeNum() == IO.fileInfo(paths[i + 1]).getInodeNum());
+    }
+    // wait for a seconds, so that timestamp gets changed.
+    Thread.sleep(1000);
+    BlobDeduper deduper = BlobDeduper.getInstance();
+    List<Short> volumeIds = new ArrayList<Short>();
+    volumeIds.add(vol.getId());
+    deduper.process(volumeIds);
+    while (deduper.isRunning()) { // wait until deduper finishes.
+      Thread.sleep(1000);
+    }
+    // Make sure inodes are same for paths
+    for (int i = 0; i < 4; i++) {
+      Assert.assertTrue(
+          IO.fileInfo(paths[i]).getInodeNum() == IO.fileInfo(paths[i + 1]).getInodeNum());
+    }
+  }
+}

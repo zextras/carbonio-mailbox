@@ -1,0 +1,109 @@
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
+package com.zimbra.soap.admin.message;
+
+import com.zimbra.common.soap.AdminConstants;
+import com.zimbra.soap.type.ZmBoolean;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement(name = AdminConstants.E_GET_MEMCACHED_CLIENT_CONFIG_RESPONSE)
+public class GetMemcachedClientConfigResponse {
+
+  /**
+   * @zm-api-field-tag comma-sep-server-list
+   * @zm-api-field-description Comma separated list of host:port for memcached servers
+   */
+  @XmlAttribute(
+      name = AdminConstants.A_MEMCACHED_CLIENT_CONFIG_SERVER_LIST /* serverList */,
+      required = false)
+  private String serverList;
+
+  /**
+   * @zm-api-field-tag hash-algorithm
+   * @zm-api-field-description KETAMA_HASH, etc.
+   */
+  @XmlAttribute(
+      name = AdminConstants.A_MEMCACHED_CLIENT_CONFIG_HASH_ALGORITHM /* hashAlgorithm */,
+      required = false)
+  private String hashAlgorithm;
+
+  /**
+   * @zm-api-field-tag binary-protocol-enabled
+   * @zm-api-field-description Flags whether memcached binary protocol is in use or not
+   */
+  @XmlAttribute(
+      name = AdminConstants.A_MEMCACHED_CLIENT_CONFIG_BINARY_PROTOCOL /* binaryProtocol */,
+      required = false)
+  private ZmBoolean binaryProtocolEnabled;
+
+  /**
+   * @zm-api-field-tag default-expiry-secs
+   * @zm-api-field-description Default entry expiry in seconds
+   */
+  @XmlAttribute(
+      name =
+          AdminConstants
+              .A_MEMCACHED_CLIENT_CONFIG_DEFAULT_EXPIRY_SECONDS /* defaultExpirySeconds */,
+      required = false)
+  private Integer defaultExpirySeconds;
+
+  /**
+   * @zm-api-field-tag default-timeout-millis
+   * @zm-api-field-description Default timeout in milliseconds
+   */
+  @XmlAttribute(
+      name =
+          AdminConstants
+              .A_MEMCACHED_CLIENT_CONFIG_DEFAULT_TIMEOUT_MILLIS /* defaultTimeoutMillis */,
+      required = false)
+  private Long defaultTimeoutMillis;
+
+  public GetMemcachedClientConfigResponse() {}
+
+  public void setServerList(String serverList) {
+    this.serverList = serverList;
+  }
+
+  public void setHashAlgorithm(String hashAlgorithm) {
+    this.hashAlgorithm = hashAlgorithm;
+  }
+
+  public void setBinaryProtocolEnabled(Boolean binaryProtocolEnabled) {
+    this.binaryProtocolEnabled = ZmBoolean.fromBool(binaryProtocolEnabled);
+  }
+
+  public void setDefaultExpirySeconds(Integer defaultExpirySeconds) {
+    this.defaultExpirySeconds = defaultExpirySeconds;
+  }
+
+  public void setDefaultTimeoutMillis(Long defaultTimeoutMillis) {
+    this.defaultTimeoutMillis = defaultTimeoutMillis;
+  }
+
+  public String getServerList() {
+    return serverList;
+  }
+
+  public String getHashAlgorithm() {
+    return hashAlgorithm;
+  }
+
+  public Boolean getBinaryProtocolEnabled() {
+    return ZmBoolean.toBool(binaryProtocolEnabled);
+  }
+
+  public Integer getDefaultExpirySeconds() {
+    return defaultExpirySeconds;
+  }
+
+  public Long getDefaultTimeoutMillis() {
+    return defaultTimeoutMillis;
+  }
+}

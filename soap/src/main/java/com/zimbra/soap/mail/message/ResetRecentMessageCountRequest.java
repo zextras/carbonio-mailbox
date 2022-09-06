@@ -1,0 +1,21 @@
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
+package com.zimbra.soap.mail.message;
+
+import com.zimbra.common.soap.MailConstants;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * @zm-api-command-auth-required true
+ * @zm-api-command-admin-auth-required false
+ * @zm-api-command-description Resets the mailbox's "recent message count" to 0. A message is
+ *     considered "recent" if: (a) it's not a draft or a sent message, and (b) it was added since
+ *     the last write operation associated with any SOAP session.
+ */
+@XmlRootElement(name = MailConstants.E_RESET_RECENT_MESSAGE_COUNT_REQUEST)
+public class ResetRecentMessageCountRequest {
+  public ResetRecentMessageCountRequest() {}
+  ;
+}
