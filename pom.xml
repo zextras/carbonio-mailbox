@@ -21,6 +21,14 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <repositories>
+    <repository>
+      <id>artifactory</id>
+      <name>Zextras Public Maven repository</name>
+      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+    </repository>
+  </repositories>
+
   <version>1.0-SNAPSHOT</version>
 
 </project>
