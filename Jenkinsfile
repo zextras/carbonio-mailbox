@@ -12,6 +12,8 @@ pipeline {
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
         jenkins_build='true'
+        BUILD_PROPERTIES_PARAMS='-DskipTests=true -Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208'
+        BUILD_PROPERTIES_PARAMS_WITH_CRED=''
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
@@ -33,17 +35,25 @@ pipeline {
                 carbonio.buildinfo.version=22.8.0_ZEXTRAS_202208
                 EOF
                 '''
+
                 withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
-                sh '''cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties'''
+                    sh '''
+                    cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties
+                    $BUILD_PROPERTIES_PARAMS_WITH_CRED=$(sed -e 's/^/-D/' build.properties | tr '\r\n' ' ')
+                    echo -e ${BUILD_PROPERTIES_PARAMS_WITH_CRED}
+                    '''
                 }
+
                 sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
+
                 sh '''
-                ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant\
-                -propertyfile build.properties\
-                dist
+                JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ mvn ${BUILD_PROPERTIES_PARAMS_WITH_CRED} package
                 '''
+
                 sh 'mkdir staging'
+
                 sh 'cp -r store* milter* native client common packages soap staging'
+
                 stash includes: 'staging/**', name: 'staging'
             }
         }
