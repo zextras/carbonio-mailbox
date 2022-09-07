@@ -28,22 +28,28 @@ pipeline {
             stage('Build') {
             steps {
                 sh '''
-                 cat <<EOF > build.properties
-                 debug=0
-                 is-production=1
-                 carbonio.buildinfo.version=22.8.0_ZEXTRAS_202208
-                 EOF
+                cat <<EOF > build.properties
+                debug=0
+                is-production=1
+                carbonio.buildinfo.version=22.8.0_ZEXTRAS_202208
+                EOF
                 '''
 
-                withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
-                    sh '''cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties'''
-                }
+                withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties',
+                    usernameVariable: 'artifactory_user',
+                    passwordVariable: 'artifactory_password')]) {
+                    echo "username is $artifactory_user"
+               }
 
                 sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
 
-                sh '''BUILD_PROPERTIES_PARAMS_WITH_CRED=$(sed -e 's/^[ \t]*/-D/;s/[ \t]*$//' build.properties | tr '\r\n' ' ')'''
-
-                sh '''JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ mvn ${BUILD_PROPERTIES_PARAMS_WITH_CRED} package'''
+                sh '''
+                BUILD_PROPERTIES_PARAMS_WITH_CRED=$(sed -e 's/^[ \t]*/-D/;s/[ \t]*$//' build.properties | tr '\r\n' ' ')
+                mvn -B\
+                -s .mvn/settings.xml\
+                ${BUILD_PROPERTIES_PARAMS_WITH_CRED}\
+                package
+                '''
 
                 sh 'mkdir staging'
 

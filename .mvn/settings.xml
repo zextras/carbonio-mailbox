@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <profiles>
+    <profile>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <id>dev</id>
+      <repositories>
+        <repository>
+          <id>artifactory</id>
+          <name>Zextras Public Maven repository</name>
+          <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <servers>
+    <server>
+      <id>artifactory</id>
+      <password>${artifactory_password}</password>
+      <username>${artifactory_user}</username>
+    </server>
+  </servers>
+</settings>
