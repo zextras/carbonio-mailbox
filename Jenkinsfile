@@ -1,3 +1,7 @@
+def mysh(cmd) {
+    sh('#!/bin/sh -e\n' + cmd)
+}
+
 pipeline {
     agent {
         node {
@@ -33,22 +37,27 @@ pipeline {
                 is-production=1
                 carbonio.buildinfo.version=22.8.0_ZEXTRAS_202208
                 EOF
-                '''
+                '''.stripIndent()
 
-                withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties',
-                    usernameVariable: 'artifactory_user',
-                    passwordVariable: 'artifactory_password')]) {
-                    echo "username is $artifactory_user"
-               }
+                withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
+                    sh '''cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties'''
+                }
+
+//                 withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+//                                                   usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PWD')]) {
+//                 sh 'echo "artifactory_user=${ARTIFACTORY_USER}" >> build.properties'
+//                 sh 'echo "artifactory_password=${ARTIFACTORY_PWD}" >> build.properties'
+//                 }
 
                 sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
 
                 sh '''
-                BUILD_PROPERTIES_PARAMS_WITH_CRED=$(sed -e 's/^[ \t]*/-D/;s/[ \t]*$//' build.properties | tr '\r\n' ' ')
-                mvn -B\
+                BUILD_PROPERTIES_PARAMS_WITH_CRED=$(sed -e 's/^[ \t]*/-D/;s/[ \t]*$//' build.properties | sed -E 's/(=)(.*)/\\1"\\2"/' | tr '\r\n' ' ')
+                mvn -e -X\
                 -s .mvn/settings.xml\
-                ${BUILD_PROPERTIES_PARAMS_WITH_CRED}\
-                package
+                ${BUILD_PROPERTIES_PARAMS_WITH_CRED} -DskipTests=\\"true\\"\
+                compile
+                set -x
                 '''
 
                 sh 'mkdir staging'
