@@ -12,7 +12,7 @@
       <id>dev</id>
       <repositories>
         <repository>
-          <id>central</id>
+          <id>artifactory</id>
           <name>Zextras Public Maven repository</name>
           <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
         </repository>
@@ -22,7 +22,7 @@
 
   <servers>
     <server>
-      <id>central</id>
+      <id>artifactory</id>
       <username>${artifactory_user}</username>
       <password>${artifactory_password}</password>
     </server>
