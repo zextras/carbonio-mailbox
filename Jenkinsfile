@@ -1,5 +1,5 @@
-def mysh(cmd) {
-    sh('#!/bin/sh -e\n' + cmd)
+def mvnCmd(String cmd) {
+  sh 'mvn -B -s .mvn/settings.xml ' + cmd
 }
 
 pipeline {
@@ -17,8 +17,7 @@ pipeline {
         LC_ALL='C.UTF-8'
         jenkins_build='true'
         ARTIFACTORY_ACCESS=credentials('artifactory-jenkins-gradle-properties-splitted')
-        BUILD_PROPERTIES_PARAMS="-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208 -Dartifactory_user= '$ARTIFACTORY_ACCESS_USR' -Dartifactory_password='$ARTIFACTORY_ACCESS_PSW'"
-
+        BUILD_PROPERTIES_PARAMS="-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208 -Dartifactory_user='$ARTIFACTORY_ACCESS_USR' -Dartifactory_password='$ARTIFACTORY_ACCESS_PSW'"
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
@@ -36,13 +35,7 @@ pipeline {
 
                 sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
 
-                sh '''
-                mvn -B\
-                -s .mvn/settings.xml\
-                "$BUILD_PROPERTIES_PARAMS"\
-                -DskipTests=true\
-                clean package
-                '''
+                mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean package")
 
                 sh 'mkdir staging'
 
