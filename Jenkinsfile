@@ -17,7 +17,7 @@ pipeline {
         LC_ALL='C.UTF-8'
         jenkins_build='true'
         ARTIFACTORY_ACCESS=credentials('artifactory-jenkins-gradle-properties-splitted')
-        BUILD_PROPERTIES_PARAMS="-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208 -Dartifactory_user= '$ARTIFACTORY_ACCESS_USR'  -Dartifactory_password='$ARTIFACTORY_ACCESS_PSW'"
+        BUILD_PROPERTIES_PARAMS="-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208 -Dartifactory_user= '$ARTIFACTORY_ACCESS_USR' -Dartifactory_password='$ARTIFACTORY_ACCESS_PSW'"
 
     }
     options {
@@ -34,15 +34,11 @@ pipeline {
             stage('Build') {
             steps {
                 sh '''
-                echo "$BUILD_PROPERTIES_PARAMS";
                 mvn -B\
                 -s .mvn/settings.xml\
-                "$BUILD_PROPERTIES_PARAMS"\
-                -Dartifactory_user="$ARTIFACTORY_ACCESS_USR"\
-                -Dartifactory_password="$ARTIFACTORY_ACCESS_PSW"\
+                $BUILD_PROPERTIES_PARAMS\
                 -DskipTests=true\
-                compile
-                set -x
+                clean package
                 '''
 
                 sh 'mkdir staging'
