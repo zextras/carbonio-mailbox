@@ -1,7 +1,6 @@
 def mvnCmd(String cmd) {
   sh 'mvn -B -s .mvn/settings.xml ' + cmd
 }
-
 pipeline {
     agent {
         node {
@@ -9,15 +8,19 @@ pipeline {
         }
     }
     parameters {
-        booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
-        booleanParam defaultValue: false, description: 'Whether to skip the test all with coverage stage', name: 'SKIP_TEST_WITH_COVERAGE'
+        booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name:
+        'PLAYGROUND'
+        booleanParam defaultValue: false, description: 'Whether to skip the test all with coverage stage', name:
+        'SKIP_TEST_WITH_COVERAGE'
     }
     environment {
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
         jenkins_build='true'
         ARTIFACTORY_ACCESS=credentials('artifactory-jenkins-gradle-properties-splitted')
-        BUILD_PROPERTIES_PARAMS="-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208 -Dartifactory_user='$ARTIFACTORY_ACCESS_USR' -Dartifactory_password='$ARTIFACTORY_ACCESS_PSW'"
+        CARBONIO_BUILDINFO_VERSION='22.8.0_ZEXTRAS_202208'
+        BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=$CARBONIO_BUILDINFO_VERSION'+
+        ' -Dartifactory_user=$ARTIFACTORY_ACCESS_USR -Dartifactory_password=$ARTIFACTORY_ACCESS_PSW'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
@@ -51,12 +54,9 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                mvn -B\
-                -s .mvn/settings.xml\
-                "$BUILD_PROPERTIES_PARAMS"\
-                test
-                '''
+
+                mvnCmd("$BUILD_PROPERTIES_PARAMS test")
+
                 publishCoverage adapters: [jacocoAdapter('build/coverage/merged.xml')], calculateDiffForChangeRequests: true, failNoReports: true
                 junit allowEmptyResults: true, testResults: '**/build/test/output/*.xml'
             }
