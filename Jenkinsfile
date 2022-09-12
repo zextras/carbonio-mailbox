@@ -17,9 +17,7 @@ pipeline {
         LC_ALL='C.UTF-8'
         jenkins_build='true'
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208'
-        //ARTIFACTORY_ACCESS= credentials('artifactory-jenkins-gradle-properties-splitted')
-        ARTIFACTORY_PASSWORD=''
-        ARTIFACTORY_USERNAME=''
+        ARTIFACTORY_ACCESS= credentials('artifactory-jenkins-gradle-properties-splitted')
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
@@ -35,23 +33,24 @@ pipeline {
             stage('Build') {
             steps {
 
-                withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-                                                  usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PWD')]) {
-                 sh '$ARTIFACTORY_USERNAME="${ARTIFACTORY_USER}"'
-                 sh '$ARTIFACTORY_PASSWORD="${ARTIFACTORY_PWD}"'
-                }
+//                 withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+//                                                   usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PWD')]) {
+//                  sh '$ARTIFACTORY_USERNAME="${ARTIFACTORY_USER}"'
+//                  sh '$ARTIFACTORY_PASSWORD="${ARTIFACTORY_PWD}"'
+//                 }
 
                 //sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
 
-                sh 'echo $ARTIFACTORY_USERNAME'
-                sh 'echo $ARTIFACTORY_PASSWORD'
+                sh 'echo $ARTIFACTORY_ACCESS'
+                sh 'echo $ARTIFACTORY_ACCESS_USR'
+                sh 'echo $ARTIFACTORY_ACCESS_PSW'
 
                 sh '''
                 mvn -B\
                 -s .mvn/settings.xml\
                 "$BUILD_PROPERTIES_PARAMS"\
-                -Dartifactory_user="$ARTIFACTORY_USERNAME"\
-                -Dartifactory_password="$ARTIFACTORY_PASSWORD"\
+                -Dartifactory_user="$ARTIFACTORY_ACCESS_USR"\
+                -Dartifactory_password="$ARTIFACTORY_ACCESS_PSW"\
                 -DskipTests=true\
                 compile
                 set -x
