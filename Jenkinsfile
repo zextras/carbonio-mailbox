@@ -33,10 +33,13 @@ pipeline {
             }
             stage('Build') {
             steps {
+
+                sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
+
                 sh '''
                 mvn -B\
                 -s .mvn/settings.xml\
-                $BUILD_PROPERTIES_PARAMS\
+                "$BUILD_PROPERTIES_PARAMS"\
                 -DskipTests=true\
                 clean package
                 '''
@@ -56,9 +59,10 @@ pipeline {
             }
             steps {
                 sh '''
-                ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant -d \
-                -propertyfile build.properties \
-                test-all-coverage-plough-through
+                mvn -B\
+                -s .mvn/settings.xml\
+                "$BUILD_PROPERTIES_PARAMS"\
+                test
                 '''
                 publishCoverage adapters: [jacocoAdapter('build/coverage/merged.xml')], calculateDiffForChangeRequests: true, failNoReports: true
                 junit allowEmptyResults: true, testResults: '**/build/test/output/*.xml'
