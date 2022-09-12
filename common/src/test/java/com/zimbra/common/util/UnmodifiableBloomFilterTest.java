@@ -19,7 +19,7 @@ public class UnmodifiableBloomFilterTest {
   @Rule public TestName testName = new TestName();
   @Rule public MethodRule watchman = new ZTestWatchman();
   protected static UnmodifiableBloomFilter<String> bloomFilter =
-      UnmodifiableBloomFilter.createFilterFromFile("common/src/java-test/common-passwords.txt");
+      UnmodifiableBloomFilter.createFilterFromFile("src/test/resources/common-passwords.txt");
 
   @Before
   public void setUp() {
@@ -43,7 +43,7 @@ public class UnmodifiableBloomFilterTest {
   @Test
   public void testCreateFilterFromMissingFile() {
     UnmodifiableBloomFilter<String> missingFileFilter =
-        UnmodifiableBloomFilter.createFilterFromFile("src/java-test/fake-file-not-found");
+        UnmodifiableBloomFilter.createFilterFromFile("src/test/resources/fake-file-not-found");
     // expect to immediately initialize
     assertTrue(missingFileFilter.isInitialized());
     assertTrue(missingFileFilter.isDisabled());
@@ -73,7 +73,7 @@ public class UnmodifiableBloomFilterTest {
   public void testMightContainLazyLoad() {
     UnmodifiableBloomFilter<String> lazyFilter =
         UnmodifiableBloomFilter.createLazyFilterFromFile(
-            "common/src/java-test/common-passwords.txt");
+            "src/test/resources/common-passwords.txt");
     // expect to initialize on demand
     assertFalse(lazyFilter.isInitialized());
     assertFalse(lazyFilter.isDisabled());
@@ -86,7 +86,7 @@ public class UnmodifiableBloomFilterTest {
   @Test
   public void testCreateLazyFilterFromMissingFile() {
     UnmodifiableBloomFilter<String> missingFileFilter =
-        UnmodifiableBloomFilter.createLazyFilterFromFile("src/java-test/fake-file-not-found");
+        UnmodifiableBloomFilter.createLazyFilterFromFile("src/test/resources/fake-file-not-found");
     // expect to initialize on demand
     assertFalse(missingFileFilter.isInitialized());
     assertFalse(missingFileFilter.mightContain("test123"));
