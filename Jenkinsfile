@@ -16,7 +16,10 @@ pipeline {
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
         jenkins_build='true'
-        BUILD_PROPERTIES_PARAMS_WITH_CRED=''
+        BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208'
+        //ARTIFACTORY_ACCESS= credentials('artifactory-jenkins-gradle-properties-splitted')
+        ARTIFACTORY_PASSWORD=''
+        ARTIFACTORY_USERNAME=''
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
@@ -31,31 +34,25 @@ pipeline {
             }
             stage('Build') {
             steps {
-                sh '''
-                cat <<EOF > build.properties
-                debug=0
-                is-production=1
-                carbonio.buildinfo.version=22.8.0_ZEXTRAS_202208
-                EOF
-                '''.stripIndent()
 
-                withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
-                    sh '''cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties'''
+                withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+                                                  usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PWD')]) {
+                 sh '$ARTIFACTORY_USERNAME="${ARTIFACTORY_USER}"'
+                 sh '$ARTIFACTORY_PASSWORD="${ARTIFACTORY_PWD}"'
                 }
 
-//                 withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-//                                                   usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PWD')]) {
-//                 sh 'echo "artifactory_user=${ARTIFACTORY_USER}" >> build.properties'
-//                 sh 'echo "artifactory_password=${ARTIFACTORY_PWD}" >> build.properties'
-//                 }
+                //sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
 
-                sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
+                sh 'echo $ARTIFACTORY_USERNAME'
+                sh 'echo $ARTIFACTORY_PASSWORD'
 
                 sh '''
-                BUILD_PROPERTIES_PARAMS_WITH_CRED=$(sed -e 's/^[ \t]*/-D/;s/[ \t]*$//' build.properties | sed -E 's/(=)(.*)/\\1"\\2"/' | tr '\r\n' ' ')
-                mvn -e -X\
+                mvn -B\
                 -s .mvn/settings.xml\
-                ${BUILD_PROPERTIES_PARAMS_WITH_CRED} -DskipTests=\\"true\\"\
+                "$BUILD_PROPERTIES_PARAMS"\
+                -Dartifactory_user="$ARTIFACTORY_USERNAME"\
+                -Dartifactory_password="$ARTIFACTORY_PASSWORD"\
+                -DskipTests=true\
                 compile
                 set -x
                 '''
