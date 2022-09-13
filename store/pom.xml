@@ -361,12 +361,17 @@
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
-          <!-- Exclude qa and Yahoo login -->
           <excludes>
+            <!-- Exclude qa -->
             <exclude>qa.**</exclude>
+            <!-- Exclude classes that starts with Test but were previously in src/main -->
             <exclude>com.zimbra.cs.util.yauth.*</exclude>
+            <exclude>**/TestTnefTimezone.java</exclude>
+            <!-- Exclude classes that were already excluded before maven migration -->
             <exclude>**/CalendarItemTest.java</exclude>
             <exclude>**/CalendarRequestTest.java</exclude>
+            <exclude>**/GetMsgTest.java</exclude>
+            <exclude>**/ModifyProfileImageTest.java</exclude>
           </excludes>
         </configuration>
 
