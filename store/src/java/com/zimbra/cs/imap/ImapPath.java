@@ -236,8 +236,7 @@ public class ImapPath implements Comparable<ImapPath> {
     }
 
     protected boolean onLocalServer() throws ServiceException {
-        if(LC.imap_always_use_remote_store.booleanValue() ||
-                !ImapDaemon.isRunningImapInsideMailboxd()) {
+        if(LC.imap_always_use_remote_store.booleanValue()) {
             return false;
         }
         Account acct = getOwnerAccount();

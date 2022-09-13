@@ -13,27 +13,27 @@ package com.zimbra.cs.account;
 import static com.zimbra.common.account.ProvisioningConstants.FALSE;
 import static com.zimbra.common.account.ProvisioningConstants.TRUE;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.zimbra.common.account.ZAttr;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.ldap.LdapDateUtil;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * AUTO-GENERATED. DO NOT EDIT.
- *
- */
+/** AUTO-GENERATED. DO NOT EDIT. */
 public abstract class ZAttrDomain extends NamedEntry {
 
-    public ZAttrDomain(String name, String id, Map<String, Object> attrs, Map<String, Object> defaults, Provisioning prov) {
-        super(name, id, attrs, defaults, prov);
+  public ZAttrDomain(
+      String name,
+      String id,
+      Map<String, Object> attrs,
+      Map<String, Object> defaults,
+      Provisioning prov) {
+    super(name, id, attrs, defaults, prov);
+  }
 
-    }
-
-    ///// BEGIN-AUTO-GEN-REPLACE
+  ///// BEGIN-AUTO-GEN-REPLACE
 
     /**
      * Enable video server recording for Carbonio
@@ -24689,6 +24689,6 @@ public abstract class ZAttrDomain extends NamedEntry {
         return attrs;
     }
 
-    ///// END-AUTO-GEN-REPLACE
+  ///// END-AUTO-GEN-REPLACE
 
 }
