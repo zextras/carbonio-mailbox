@@ -2,7 +2,22 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>zm-mailbox</artifactId>
+    <groupId>com.ktechpit</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>jar</packaging>
   <artifactId>zm-soap</artifactId>
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <jackson.core.module.version>2.10.1</jackson.core.module.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <artifactId>guava</artifactId>
@@ -26,6 +41,22 @@
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <groupId>com.fasterxml.jackson.module</groupId>
       <version>2.8.9</version>
+    </dependency>
+    <!-- We need also jackson-core, databind and annotations -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.core.module.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.core.module.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson.core.module.version}</version>
     </dependency>
 
     <dependency>
@@ -52,20 +83,20 @@
       <groupId>com.ktechpit</groupId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
+
+    <!-- Sun dependencies needed and removed from jdk 11, consider switching to Jakarta -->
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+      <version>2.3.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.3.1</version>
+    </dependency>
   </dependencies>
-  <modelVersion>4.0.0</modelVersion>
 
-  <packaging>jar</packaging>
 
-  <parent>
-    <artifactId>zm-mailbox</artifactId>
-    <groupId>com.ktechpit</groupId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-
-  <properties>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-  </properties>
 
 </project>
