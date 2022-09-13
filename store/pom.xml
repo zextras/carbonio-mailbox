@@ -361,9 +361,12 @@
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
-          <!-- Exclude qa -->
+          <!-- Exclude qa and Yahoo login -->
           <excludes>
             <exclude>qa.**</exclude>
+            <exclude>com.zimbra.cs.util.yauth.*</exclude>
+            <exclude>**/CalendarItemTest.java</exclude>
+            <exclude>**/CalendarRequestTest.java</exclude>
           </excludes>
         </configuration>
 
