@@ -7,7 +7,7 @@ Received: from localhost (localhost.localdomain [127.0.0.1])
 X-Virus-Scanned: amavisd-new at mta03.zimbra.com
 X-Spam-Flag: NO
 X-Spam-Score: -2.91
-X-Spam-Level:
+X-Spam-Level: 
 X-Spam-Status: No, score=-2.91 tagged_above=-10 required=3
 	tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, T_RP_MATCHES_RCVD=-0.01]
 	autolearn=ham
@@ -25,7 +25,7 @@ Message-ID: <825759456.11.1334809858826.JavaMail.jwagner@prome-2n-dhcp138.eng.vm
 In-Reply-To: <1333291928.20.1334350452532.JavaMail.jwagner@prome-2n-dhcp138.eng.vmware.com>
 Subject: Re: Sign Test
 MIME-Version: 1.0
-Content-Type: application/pkcs7-mime; name=smime.p7m;
+Content-Type: application/pkcs7-mime; name=smime.p7m; 
 	smime-type=enveloped-data
 Content-Transfer-Encoding: base64
 X-Mailer: Zimbra 7.2.0_GA_2670 (ZimbraWebClient - FF3.0 (Mac)/7.2.0_GA_2670)
