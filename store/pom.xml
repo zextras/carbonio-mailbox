@@ -358,7 +358,7 @@
         <configuration>
           <forkMode>always</forkMode>
           <excludes>
-            <exclude>qa</exclude>
+            <exclude>qa.**</exclude>
           </excludes>
         </configuration>
 
