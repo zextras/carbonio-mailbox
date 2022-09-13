@@ -43,7 +43,10 @@ pipeline {
 
                 sh 'cp -r store* milter* native client common packages soap staging'
 
+                sh 'ls -lha staging'
+
                 stash includes: 'staging/**', name: 'staging'
+
             }
         }
         stage('Test all with coverage (allow failure)') {
