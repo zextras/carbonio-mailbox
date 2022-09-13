@@ -357,6 +357,9 @@
         <version>2.22.2</version>
         <configuration>
           <forkMode>always</forkMode>
+          <excludes>
+            <exclude>qa</exclude>
+          </excludes>
         </configuration>
 
       </plugin>
