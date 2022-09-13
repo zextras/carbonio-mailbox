@@ -69,7 +69,8 @@ public class ZInternetHeaderTest {
    * decoded-subject-headers may contain new lines or tabs.
    */
   private static final InputStream HEADER_TEST_DATA =
-      ZInternetHeaderTest.class.getResourceAsStream("ZInternetHeaderTest.dat");
+      ZInternetHeaderTest.class.getResourceAsStream(
+          "ZInternetHeaderTest.dat");
 
   @Test
   public void testMultilineUtf8Subject() {
