@@ -366,12 +366,12 @@
             <exclude>qa.**</exclude>
             <!-- Exclude classes that starts with Test but were previously in src/main -->
             <exclude>com.zimbra.cs.util.yauth.*</exclude>
-            <exclude>**/TestTnefTimezone.java</exclude>
+            <exclude>com.zimbra.cs.util.tnef.TestTnefTimezone.java</exclude>
             <!-- Exclude classes that were already excluded before maven migration -->
-            <exclude>**/CalendarItemTest.java</exclude>
-            <exclude>**/CalendarRequestTest.java</exclude>
-            <exclude>**/GetMsgTest.java</exclude>
-            <exclude>**/ModifyProfileImageTest.java</exclude>
+            <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.ModifyProfileImageTest.java</exclude>
           </excludes>
         </configuration>
 
