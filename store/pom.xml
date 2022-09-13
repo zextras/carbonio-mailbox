@@ -357,6 +357,11 @@
         <version>2.22.2</version>
         <configuration>
           <forkMode>always</forkMode>
+          <argLine>-Dserver.dir=${project.basedir}
+            -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
+            -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+          </argLine>
+          <!-- Exclude qa -->
           <excludes>
             <exclude>qa.**</exclude>
           </excludes>
