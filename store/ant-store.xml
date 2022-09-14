@@ -65,4 +65,18 @@
 			<compilerarg value="-Xlint:unchecked" />
 		</javac>
 	</target>
+
+	<!-- Cleans up store directory after tests -->
+	<target name="clean">
+		<delete dir="${basedir}/build"/>
+		<delete dir="${basedir}/tmp"/>
+	</target>
+
+	<!-- Copies bundle msgs to directory base folder -->
+	<target name="copy-msgs-bundle">
+		<copy todir="${basedir}/build/zimbra/conf/msgs">
+			<fileset dir="${basedir}/../store-conf/conf/msgs"/>
+		</copy>
+	</target>
+
 </project>
