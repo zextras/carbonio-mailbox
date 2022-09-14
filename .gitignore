@@ -17,7 +17,7 @@ store/.pmd
 store/.ruleset
 eclipse-ivysettings.xml
 store/tmp/
-# common-passwords.txt -> add store-conf to gitignore if required
+common-passwords.txt
 build.properties
 *.deb
 
