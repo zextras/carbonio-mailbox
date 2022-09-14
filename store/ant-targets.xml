@@ -8,7 +8,8 @@
 
   <!-- Copies bundle msgs to directory base folder -->
   <target name="copy-msgs-bundle">
-    <copy todir="${basedir}/build/zimbra/conf/attrs/msgs">
+    <mkdir dir="${basedir}/build/zimbra/conf/attrs"/>
+    <copy todir="${basedir}/build/zimbra/conf/msgs">
       <fileset dir="${basedir}/../store-conf/conf/msgs"/>
     </copy>
   </target>
