@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>zm-store-conf</artifactId>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>conf-dist</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <target>
+                <ant antfile="${basedir}/ant-conf-dist.xml">
+                  <target name="conf-dist"/>
+                </ant>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.1.0</version>
+      </plugin>
+    </plugins>
+  </build>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>zm-mailbox</artifactId>
+    <groupId>com.ktechpit</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+
+</project>

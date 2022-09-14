@@ -16,7 +16,6 @@ pipeline {
     environment {
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
-        jenkins_build='true'
         ARTIFACTORY_ACCESS=credentials('artifactory-jenkins-gradle-properties-splitted')
         CARBONIO_BUILDINFO_VERSION='22.8.0_ZEXTRAS_202208'
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=$CARBONIO_BUILDINFO_VERSION'+
@@ -44,7 +43,10 @@ pipeline {
 
                 sh 'cp -r store* milter* native client common packages soap staging'
 
+                sh 'ls -lha staging'
+
                 stash includes: 'staging/**', name: 'staging'
+
             }
         }
         stage('Test all with coverage (allow failure)') {

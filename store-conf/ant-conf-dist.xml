@@ -1,5 +1,5 @@
 <project name="zm-store-conf" default="conf-dist">
-	<property name="dist.conf.dir" value="build/conf" />
+	<property name="dist.conf.dir" value="target/conf" />
 	<property name="conf.dir" value="conf" />
 	<property name="conf.cont.dir" value="${conf.dir}/contacts" />
 	<property name="conf.msgs.dir" value="${conf.dir}/msgs" />
@@ -24,7 +24,6 @@
 		<copy todir="${dist.conf.dir}/msgs" overwrite="true">
 			<fileset dir="${conf.msgs.dir}" includes="*.properties" />
 		</copy>
-		<zip destfile="build/zimbrastoreconf.zip" basedir="${dist.conf.dir}" />
+		<zip destfile="target/zimbrastoreconf.zip" basedir="${dist.conf.dir}" />
 	</target>
-
 </project>
