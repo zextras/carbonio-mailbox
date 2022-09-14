@@ -12,6 +12,7 @@
     <module>client</module>
     <module>common</module>
     <module>native</module>
+    <module>store-conf</module>
   </modules>
   <packaging>pom</packaging>
 
