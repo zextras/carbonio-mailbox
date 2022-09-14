@@ -4,79 +4,6 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>zm-store</artifactId>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>-Dserver.dir=${project.basedir}
-            -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
-            -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
-          </argLine>
-          <excludes>
-            <!-- Exclude qa -->
-            <exclude>qa.**</exclude>
-            <!-- Exclude classes that starts with Test but were previously in src/main -->
-            <exclude>com.zimbra.cs.util.yauth.**</exclude>
-            <exclude>com.zimbra.cs.util.tnef.mapi.TestTnefTimeZone.java</exclude>
-            <!-- Exclude classes that were already excluded before maven migration -->
-            <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.SendMsgTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.ModifyProfileImageTest.java</exclude>
-            <!-- Excluded temporarily because java.util.MissingResourceException: Can't find bundle for base name ZsMsg, locale en_US -->
-            <exclude>com.zimbra.cs.mime.ParsedMessageTest.java</exclude>
-          </excludes>
-          <forkMode>always</forkMode>
-        </configuration>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>2.22.2</version>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <artifactId>ant-contrib</artifactId>
-            <exclusions>
-              <exclusion>
-                <artifactId>ant</artifactId>
-                <groupId>ant</groupId>
-              </exclusion>
-            </exclusions>
-            <groupId>ant-contrib</groupId>
-            <version>1.0b3</version>
-          </dependency>
-          <dependency>
-            <artifactId>ant-nodeps</artifactId>
-            <groupId>org.apache.ant</groupId>
-            <version>1.8.1</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <configuration>
-              <target>
-                <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml"/>
-                <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-buildinfo"/>
-                </ant>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <id>generate-buildinfo</id>
-            <phase>generate-sources</phase>
-          </execution>
-        </executions>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.1.0</version>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
@@ -422,6 +349,115 @@
     <groupId>com.ktechpit</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+
+  <build>
+    <plugins>
+      <!-- Generate buildinfo -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <artifactId>ant-contrib</artifactId>
+            <exclusions>
+              <exclusion>
+                <artifactId>ant</artifactId>
+                <groupId>ant</groupId>
+              </exclusion>
+            </exclusions>
+            <groupId>ant-contrib</groupId>
+            <version>1.0b3</version>
+          </dependency>
+          <dependency>
+            <artifactId>ant-nodeps</artifactId>
+            <groupId>org.apache.ant</groupId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <configuration>
+              <target>
+                <taskdef classpathref="maven.plugin.classpath"
+                  resource="net/sf/antcontrib/antlib.xml"/>
+                <ant antfile="${basedir}/ant-store.xml">
+                  <target name="generate-buildinfo"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>generate-buildinfo</id>
+            <phase>generate-sources</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.1.0</version>
+      </plugin>
+      <!-- Prepare required files for testing -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>generate-test-sources</phase>
+            <configuration>
+              <target>
+                <ant antfile="${basedir}/ant-store.xml">
+                  <target name="copy-msgs-bundle"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <configuration>
+              <target>
+                <ant antfile="${basedir}/ant-store.xml">
+                  <target name="clean"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Test plugin execution -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.2</version>
+        <configuration>
+          <forkMode>always</forkMode>
+          <argLine>-Dserver.dir=${project.basedir}
+            -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
+            -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+          </argLine>
+          <excludes>
+            <!-- Exclude qa -->
+            <exclude>qa.**</exclude>
+            <!-- Exclude classes that starts with Test but were previously in src/main -->
+            <exclude>com.zimbra.cs.util.yauth.**</exclude>
+            <exclude>com.zimbra.cs.util.tnef.mapi.TestTnefTimeZone.java</exclude>
+            <!-- Exclude classes that were already excluded before maven migration -->
+            <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.SendMsgTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.ModifyProfileImageTest.java</exclude>
+          </excludes>
+        </configuration>
+
+      </plugin>
+    </plugins>
+  </build>
 
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
