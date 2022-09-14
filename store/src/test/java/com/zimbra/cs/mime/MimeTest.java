@@ -47,7 +47,7 @@ public class MimeTest {
     Assert.assertTrue(
         result.equals(
             "2010/4/2,\u2161\u53f7\u5e97 "
-                + " \u30ab\u30aa\u30b9\u9928,\u3054\u672c\u4eba,1\u56de\u6255\u3044,,'10/05,9960,9960,,,,,\r\n"));
+                + " \u30ab\u30aa\u30b9\u9928,\u3054\u672c\u4eba,1\u56de\u6255\u3044,,'10/05,9960,9960,,,,," + System.lineSeparator()));
   }
 
   @Test

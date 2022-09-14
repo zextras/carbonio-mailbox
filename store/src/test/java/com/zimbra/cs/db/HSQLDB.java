@@ -52,10 +52,10 @@ public final class HSQLDB extends Db {
         return; // already exists
       }
       zimbraServerDir = MailboxTestUtil.getZimbraServerDir(zimbraServerDir);
-      execute(conn, zimbraServerDir + "src/db/hsqldb/db.sql");
-      execute(conn, zimbraServerDir + "src/db/hsqldb/create_database.sql");
+      execute(conn, zimbraServerDir + "src/test/resources/db/hsqldb/db.sql");
+      execute(conn, zimbraServerDir + "src/test/resources/db/hsqldb/create_database.sql");
       if (isOctopus) {
-        execute(conn, zimbraServerDir + "src/db/hsqldb/create_octopus_tables.sql");
+        execute(conn, zimbraServerDir + "src/test/resources/db/hsqldb/create_octopus_tables.sql");
       }
     } finally {
       DbPool.closeResults(rs);
@@ -79,7 +79,7 @@ public final class HSQLDB extends Db {
     zimbraServerDir = MailboxTestUtil.getZimbraServerDir(zimbraServerDir);
     DbConnection conn = DbPool.getConnection();
     try {
-      execute(conn, zimbraServerDir + "src/db/hsqldb/clear.sql");
+      execute(conn, zimbraServerDir + "src/test/resources/db/hsqldb/clear.sql");
     } finally {
       DbPool.quietClose(conn);
     }

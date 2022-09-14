@@ -34,7 +34,7 @@ Content-Type: text/plain; charset="utf-8"
 This is an automated message from the Extensible Content Security
 at host example.com.
 
-The message returned below could not be delivered to its
+The message returned below could not be delivered to its 
 intended
 destinations.
 
@@ -86,15 +86,15 @@ X-Mailer: Zimbra 7.1.3_GA_3374 (ZimbraWebClient - IE7 (Win)/7.1.3_GA_3346)
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-test
+test 
 
 
 
-____________________________________
+____________________________________ 
 
 ExampleC2=A0=C2=A0 USer
 
-Systems Administrator
+Systems Administrator 
 
 Example Company
 
@@ -112,3 +112,4 @@ Content-Transfer-Encoding: 7bit
 --=_b64d626a-a218-43fd-a4f0-d522f0f84355--
 
 --53DA3F30735A29F0.1337183247/example.com--
+

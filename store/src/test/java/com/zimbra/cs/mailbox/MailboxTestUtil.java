@@ -71,10 +71,10 @@ public final class MailboxTestUtil {
   public static void initProvisioning(String zimbraServerDir) throws Exception {
     zimbraServerDir = getZimbraServerDir(zimbraServerDir);
     System.setProperty("log4j.configuration", "log4j-test.properties");
-    System.setProperty("zimbra.config", zimbraServerDir + "src/java-test/localconfig-test.xml");
+    System.setProperty("zimbra.config", zimbraServerDir + "src/test/resources/localconfig-test.xml");
     LC.reload();
     // substitute test TZ file
-    String timezonefilePath = zimbraServerDir + "src/java-test/timezones-test.ics";
+    String timezonefilePath = zimbraServerDir + "src/test/resources/timezones-test.ics";
     File d = new File(timezonefilePath);
     if (!d.exists()) {
       throw new FileNotFoundException("timezones-test.ics not found in " + timezonefilePath);
@@ -85,7 +85,7 @@ public final class MailboxTestUtil {
     LC.zimbra_attrs_directory.setDefault(zimbraServerDir + "conf/attrs");
     LC.zimbra_tmp_directory.setDefault(zimbraServerDir + "tmp");
     // substitute test DS config file
-    String dsfilePath = zimbraServerDir + "src/java-test/datasource-test.xml";
+    String dsfilePath = zimbraServerDir + "src/test/resources/datasource-test.xml";
     d = new File(dsfilePath);
     if (!d.exists()) {
       throw new FileNotFoundException("datasource-test.xml not found in " + dsfilePath);

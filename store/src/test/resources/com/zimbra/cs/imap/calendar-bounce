@@ -8,7 +8,7 @@ X-DSPAM-Signature: 45527b92190111346712775
 X-DSPAM-Factors: 27,
 X-Virus-Scanned: amavisd-new at dogfood.zimbra.com
 X-Spam-Score: -4.221
-X-Spam-Level:
+X-Spam-Level: 
 X-Spam-Status: No, score=-4.221 tagged_above=-10 required=3
 	tests=[ALL_TRUSTED=-1.8, AWL=-0.527, BAYES_00=-2.599, DSPAM_HAM=-0.5,
 	HTML_40_50=0.496, HTML_MESSAGE=0.001, MPART_ALT_DIFF_COUNT=0.708]
@@ -117,7 +117,7 @@ To: squigglehopting@yahoo.com, murdleymurdleywhoptee@gmail.com,
 	ptangptangwhoop@cs.stanford.edu
 Subject: testing appointment bounce
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
+Content-Type: multipart/alternative; 
 	boundary="----=_Part_235_901532167.1163033483782"
 
 ------=_Part_235_901532167.1163033483782
@@ -126,12 +126,12 @@ Content-Transfer-Encoding: 7bit
 
 The following is a new meeting request:
 
-Subject: testing appointment bounce
-Organizer: "Dan Karp" <dkarp@zimbra.com>
+Subject: testing appointment bounce 
+Organizer: "Dan Karp" <dkarp@zimbra.com> 
 
 Time: Wednesday, November 8, 2006, 5:00:00 PM - 6:00:00 PM
-
-Invitees: squigglehopting@yahoo.com; murdleymurdleywhoptee@gmail.com; ptangptangwhoop@cs.stanford.edu
+ 
+Invitees: squigglehopting@yahoo.com; murdleymurdleywhoptee@gmail.com; ptangptangwhoop@cs.stanford.edu 
 
 *~*~*~*~*~*~*~*~*~*
 
