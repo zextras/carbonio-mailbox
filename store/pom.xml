@@ -351,6 +351,42 @@
 
   <build>
     <plugins>
+      <!-- Prepare required files for testing -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>generate-test-sources</phase>
+            <configuration>
+              <target>
+                <ant antfile="ant-targets.xml">
+                  <target name="copy-msgs-bundle"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <configuration>
+              <target>
+                <ant antfile="ant-targets.xml">
+                  <target name="clean"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Test plugin execution -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -373,8 +409,6 @@
             <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
             <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
             <exclude>com.zimbra.cs.service.mail.ModifyProfileImageTest.java</exclude>
-            <!-- Excluded temporarily because java.util.MissingResourceException: Can't find bundle for base name ZsMsg, locale en_US -->
-            <exclude>com.zimbra.cs.mime.ParsedMessageTest.java</exclude>
           </excludes>
         </configuration>
 
