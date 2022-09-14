@@ -1,0 +1,68 @@
+<project name="zm-store" default="conf-dist">
+	<import file="../ant-build-common.xml" />
+
+	<property name="service.webapp.dir" location="${jetty.webapps.dir}/service" />
+	<property name="zimbra.webapp.dir" location="${jetty.webapps.dir}/zimbra" />
+	<property name="admin.webapp.dir" location="${jetty.webapps.dir}/zimbraAdmin" />
+	<property name="config.dir" location="conf" />
+	<property name="warfilename" value="service.war" />
+	<property name="warfile" location="${build.dir}/${warfilename}" />
+
+	<condition property="production.suffix" value=".production" else="">
+		<isset property="is-production" />
+	</condition>
+	<condition property="war.web.xml" value="${config.dir}/web.xml${production.suffix}">
+		<not>
+			<isset property="war.web.xml" />
+		</not>
+	</condition>
+
+	<target name="make-dirs">
+		<!-- take advantage of the fact that mkdir uses File.mkdirs() and creates inbetween dirs -->
+		<echo>Creating dirs under ${base.dir}</echo>
+		<mkdir dir="${base.dir}/${slapd.conf.dir}" />
+		<mkdir dir="${base.dir}/${slapd.etc.dir}/schema" />
+		<mkdir dir="${base.dir}/bin" />
+		<mkdir dir="${base.dir}/conf/attrs" />
+		<mkdir dir="${base.dir}/conf/msgs" />
+		<mkdir dir="${base.dir}/db" />
+		<mkdir dir="${base.dir}/lib/ext" />
+		<mkdir dir="${base.dir}/lib/jars" />
+		<mkdir dir="${base.dir}/lib/jars-ant" />
+		<mkdir dir="${base.dir}/libexec" />
+	</target>
+
+	<target name="build-init" description="Creates directories required for compiling">
+		<mkdir dir="${build.classes.dir}" />
+		<mkdir dir="${build.dir}/data" />
+		<mkdir dir="${build.dir}/zimbra" />
+		<mkdir dir="${build.dir}/zimbra/conf" />
+		<antcall target="make-dirs">
+			<param name="base.dir" value="${dist.dir}" />
+		</antcall>
+	</target>
+
+	<target name="generate-buildinfo" depends="build-init,set-dev-version">
+		<mkdir dir="${build.dir}/buildinfo/com/zimbra/cs/util" />
+		<echo file="${build.dir}/buildinfo/com/zimbra/cs/util/BuildInfoGenerated.java">
+		package com.zimbra.cs.util;
+
+		class BuildInfoGenerated {
+			public static final String MAJORVERSION = "${zimbra.buildinfo.majorversion}";
+			public static final String MINORVERSION = "${zimbra.buildinfo.minorversion}";
+			public static final String MICROVERSION = "${zimbra.buildinfo.microversion}";
+			public static final String RELCLASS = "${zimbra.buildinfo.relclass}";
+			public static final String RELNUM = "${zimbra.buildinfo.relnum}";
+			public static final String BUILDNUM = "${zimbra.buildinfo.buildnum}";
+			public static final String VERSION = "${zimbra.buildinfo.version}";
+			public static final String RELEASE = "${zimbra.buildinfo.release}";
+			public static final String DATE = "${DSTAMP}-${TSTAMP}";
+			public static final String HOST = "${zimbra.buildinfo.host}";
+		}
+    </echo>
+		<javac includeantruntime="false" destdir="${build.classes.dir}" debug="true" target="${javac.target}" srcdir="${build.dir}/buildinfo">
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
+		</javac>
+	</target>
+</project>
