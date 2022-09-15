@@ -1,4 +1,4 @@
-<project name="zm-store" default="conf-dist">
+<project name="zm-store">
 	<import file="../ant-build-common.xml" />
 
 	<property name="service.webapp.dir" location="${jetty.webapps.dir}/service" />
@@ -17,8 +17,21 @@
 		</not>
 	</condition>
 
+	<!-- classpath for running utilities -->
+	<path id="run.class.path">
+		<path refid="class.path" />
+		<pathelement location="${build.classes.dir}" />
+	</path>
+
+<!--	<path id="run.class.path">-->
+<!--		<pathelement location="${classpath}" />-->
+<!--		<fileset dir="${build.classes.dir}">-->
+<!--			<include name="/*.class" />-->
+<!--		</fileset>-->
+<!--	</path>-->
+
 	<target name="make-dirs">
-		<!-- take advantage of the fact that mkdir uses File.mkdirs() and creates inbetween dirs -->
+		<!-- take advantage of the fact that mkdir uses File.mkdirs() and creates in-between dirs -->
 		<echo>Creating dirs under ${base.dir}</echo>
 		<mkdir dir="${base.dir}/${slapd.conf.dir}" />
 		<mkdir dir="${base.dir}/${slapd.etc.dir}/schema" />
@@ -77,6 +90,63 @@
 		<copy todir="${basedir}/build/zimbra/conf/msgs">
 			<fileset dir="${basedir}/../store-conf/conf/msgs"/>
 		</copy>
+	</target>
+
+	<target name="generate-getters"  description="generate methods for attributes in attrs.xml">
+		<antcall target="generate-getter">
+			<param name="getter.class" value="account" />
+			<param name="getter.output" value="ZAttrAccount.java" />
+		</antcall>
+		<antcall target="generate-getter">
+			<param name="getter.class" value="calendarResource" />
+			<param name="getter.output" value="ZAttrCalendarResource.java" />
+		</antcall>
+		<antcall target="generate-getter">
+			<param name="getter.class" value="cos" />
+			<param name="getter.output" value="ZAttrCos.java" />
+		</antcall>
+		<antcall target="generate-getter">
+			<param name="getter.class" value="domain" />
+			<param name="getter.output" value="ZAttrDomain.java" />
+		</antcall>
+		<antcall target="generate-getter">
+			<param name="getter.class" value="server" />
+			<param name="getter.output" value="ZAttrServer.java" />
+		</antcall>
+		<antcall target="generate-getter">
+			<param name="getter.class" value="ucService" />
+			<param name="getter.output" value="ZAttrUCService.java" />
+		</antcall>
+		<antcall target="generate-getter">
+			<param name="getter.class" value="globalConfig" />
+			<param name="getter.output" value="ZAttrConfig.java" />
+		</antcall>
+		<antcall target="generate-getter">
+			<param name="getter.class" value="distributionList" />
+			<param name="getter.output" value="ZAttrDistributionList.java" />
+		</antcall>
+		<antcall target="generate-getter">
+			<param name="getter.class" value="group" />
+			<param name="getter.output" value="ZAttrDynamicGroup.java" />
+		</antcall>
+		<antcall target="generate-getter">
+			<param name="getter.class" value="shareLocator" />
+			<param name="getter.output" value="ZAttrShareLocator.java" />
+		</antcall>
+		<antcall target="generate-provisioning" />
+	</target>
+
+	<target name="generate-getter">
+		<java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="run.class.path" failonerror="true">
+			<sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}" />
+			<arg line="-a generateGetters -c ${getter.class} -i ${config.dir}/attrs -r ${src.java.dir}/com/zimbra/cs/account/${getter.output}" />
+		</java>
+	</target>
+	<target name="generate-provisioning">
+		<java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="run.class.path" failonerror="true">
+			<sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}" />
+			<arg line="-a generateProvisioning -i ${config.dir}/attrs -r ${common.src.java.dir}/com/zimbra/common/account/ZAttrProvisioning.java" />
+		</java>
 	</target>
 
 </project>
