@@ -393,7 +393,7 @@
             <phase>generate-sources</phase>
           </execution>
 
-          <!-- generate getter -->
+          <!-- package -->
           <execution>
             <id>generate-getter</id>
             <phase>package</phase>
@@ -401,7 +401,7 @@
               <target>
                 <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
                 <ant antfile="ant-store.xml">
-                  <target name="generate-getters"/>
+                  <target name="package"/>
                 </ant>
               </target>
             </configuration>

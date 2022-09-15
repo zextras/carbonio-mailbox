@@ -1,19 +1,21 @@
 <project name="zm-native" default="generate-native-headers">
 
-  <import file="../ant-build-common.xml" />
+  <import file="../ant-build-common.xml"/>
 
   <path id="build.class.path">
-    <pathelement location="${build.dir}/classes" />
+    <pathelement location="${maven.build.dir}/classes"/>
   </path>
 
   <target name="generate-native-headers" description="Java to Native">
-    <javac srcdir="src/main/java/com/zimbra/znative" nativeheaderdir="${build.dir}" classpathref="build.class.path" destdir="${build.dir}" includes="IO.java">
-      <compilerarg value="-Xlint:deprecation" />
-      <compilerarg value="-Xlint:unchecked" />
+    <javac srcdir="src/main/java/com/zimbra/znative" nativeheaderdir="${maven.build.dir}"
+      classpathref="build.class.path" destdir="${maven.build.dir}" includes="IO.java">
+      <compilerarg value="-Xlint:deprecation"/>
+      <compilerarg value="-Xlint:unchecked"/>
     </javac>
-    <javac srcdir="src/main/java/com/zimbra/znative" nativeheaderdir="${build.dir}" classpathref="build.class.path" destdir="${build.dir}" includes="Util.java">
-      <compilerarg value="-Xlint:deprecation" />
-      <compilerarg value="-Xlint:unchecked" />
+    <javac srcdir="src/main/java/com/zimbra/znative" nativeheaderdir="${maven.build.dir}"
+      classpathref="build.class.path" destdir="${maven.build.dir}" includes="Util.java">
+      <compilerarg value="-Xlint:deprecation"/>
+      <compilerarg value="-Xlint:unchecked"/>
     </javac>
     <exec dir="." executable="make" failonerror="true"/>
   </target>

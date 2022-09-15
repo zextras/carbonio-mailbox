@@ -1,151 +1,163 @@
 <project name="zm-store">
-	<import file="../ant-build-common.xml" />
+  <import file="../ant-build-common.xml"/>
 
-	<property name="service.webapp.dir" location="${jetty.webapps.dir}/service" />
-	<property name="zimbra.webapp.dir" location="${jetty.webapps.dir}/zimbra" />
-	<property name="admin.webapp.dir" location="${jetty.webapps.dir}/zimbraAdmin" />
-	<property name="config.dir" location="conf" />
-	<property name="warfilename" value="service.war" />
-	<property name="warfile" location="${build.dir}/${warfilename}" />
+  <property name="service.webapp.dir" location="${jetty.webapps.dir}/service"/>
+  <property name="zimbra.webapp.dir" location="${jetty.webapps.dir}/zimbra"/>
+  <property name="admin.webapp.dir" location="${jetty.webapps.dir}/zimbraAdmin"/>
+  <property name="config.dir" location="conf"/>
+  <property name="warfilename" value="service.war"/>
+  <property name="warfile" location="${maven.build.dir}/${warfilename}"/>
 
-	<condition property="production.suffix" value=".production" else="">
-		<isset property="is-production" />
-	</condition>
-	<condition property="war.web.xml" value="${config.dir}/web.xml${production.suffix}">
-		<not>
-			<isset property="war.web.xml" />
-		</not>
-	</condition>
+  <condition property="production.suffix" value=".production" else="">
+    <isset property="is-production"/>
+  </condition>
+  <condition property="war.web.xml" value="${config.dir}/web.xml${production.suffix}">
+    <not>
+      <isset property="war.web.xml"/>
+    </not>
+  </condition>
 
-	<!-- classpath for running utilities -->
-	<path id="run.class.path">
-		<pathelement location="${build.classes.dir}" />
-	</path>
+  <target name="package"
+    depends="generate-buildinfo, generate-getters,create-version-sql,create-version-ldap ">
+  </target>
 
-<!--	<path id="run.class.path">-->
-<!--		<pathelement location="${classpath}" />-->
-<!--		<fileset dir="${build.classes.dir}">-->
-<!--			<include name="/*.class" />-->
-<!--		</fileset>-->
-<!--	</path>-->
+  <!--  TODO: remove unnecessary folder-->
+  <target name="build-init" description="Creates directories required for compiling">
+    <mkdir dir="${build.classes.dir}"/>
+    <mkdir dir="${maven.build.dir}/data"/>
+    <mkdir dir="${maven.build.dir}/zimbra"/>
+    <mkdir dir="${maven.build.dir}/zimbra/conf"/>
+    <mkdir dir="${maven.build.dir}/${slapd.conf.dir}"/>
+    <mkdir dir="${maven.build.dir}/${slapd.etc.dir}/schema"/>
+    <mkdir dir="${maven.build.dir}/bin"/>
+    <mkdir dir="${maven.build.dir}/conf/attrs"/>
+    <mkdir dir="${maven.build.dir}/conf/msgs"/>
+    <mkdir dir="${maven.build.dir}/db"/>
+    <mkdir dir="${maven.build.dir}/lib/ext"/>
+    <mkdir dir="${maven.build.dir}/lib/jars"/>
+    <mkdir dir="${maven.build.dir}/lib/jars-ant"/>
+    <mkdir dir="${maven.build.dir}/libexec"/>
+  </target>
 
-	<target name="make-dirs">
-		<!-- take advantage of the fact that mkdir uses File.mkdirs() and creates in-between dirs -->
-		<echo>Creating dirs under ${base.dir}</echo>
-		<mkdir dir="${base.dir}/${slapd.conf.dir}" />
-		<mkdir dir="${base.dir}/${slapd.etc.dir}/schema" />
-		<mkdir dir="${base.dir}/bin" />
-		<mkdir dir="${base.dir}/conf/attrs" />
-		<mkdir dir="${base.dir}/conf/msgs" />
-		<mkdir dir="${base.dir}/db" />
-		<mkdir dir="${base.dir}/lib/ext" />
-		<mkdir dir="${base.dir}/lib/jars" />
-		<mkdir dir="${base.dir}/lib/jars-ant" />
-		<mkdir dir="${base.dir}/libexec" />
-	</target>
+  <target name="generate-buildinfo" depends="build-init, set-dev-version">
+    <mkdir dir="${maven.build.dir}/buildinfo/com/zimbra/cs/util"/>
+    <echo file="${maven.build.dir}/buildinfo/com/zimbra/cs/util/BuildInfoGenerated.java">
+      package com.zimbra.cs.util;
 
-	<target name="build-init" description="Creates directories required for compiling">
-		<mkdir dir="${build.classes.dir}" />
-		<mkdir dir="${build.dir}/data" />
-		<mkdir dir="${build.dir}/zimbra" />
-		<mkdir dir="${build.dir}/zimbra/conf" />
-		<antcall target="make-dirs">
-			<param name="base.dir" value="${dist.dir}" />
-		</antcall>
-	</target>
-
-	<target name="generate-buildinfo" depends="build-init,set-dev-version">
-		<mkdir dir="${build.dir}/buildinfo/com/zimbra/cs/util" />
-		<echo file="${build.dir}/buildinfo/com/zimbra/cs/util/BuildInfoGenerated.java">
-		package com.zimbra.cs.util;
-
-		class BuildInfoGenerated {
-			public static final String MAJORVERSION = "${zimbra.buildinfo.majorversion}";
-			public static final String MINORVERSION = "${zimbra.buildinfo.minorversion}";
-			public static final String MICROVERSION = "${zimbra.buildinfo.microversion}";
-			public static final String RELCLASS = "${zimbra.buildinfo.relclass}";
-			public static final String RELNUM = "${zimbra.buildinfo.relnum}";
-			public static final String BUILDNUM = "${zimbra.buildinfo.buildnum}";
-			public static final String VERSION = "${zimbra.buildinfo.version}";
-			public static final String RELEASE = "${zimbra.buildinfo.release}";
-			public static final String DATE = "${DSTAMP}-${TSTAMP}";
-			public static final String HOST = "${zimbra.buildinfo.host}";
-		}
+      class BuildInfoGenerated {
+      public static final String MAJORVERSION = "${zimbra.buildinfo.majorversion}";
+      public static final String MINORVERSION = "${zimbra.buildinfo.minorversion}";
+      public static final String MICROVERSION = "${zimbra.buildinfo.microversion}";
+      public static final String RELCLASS = "${zimbra.buildinfo.relclass}";
+      public static final String RELNUM = "${zimbra.buildinfo.relnum}";
+      public static final String BUILDNUM = "${zimbra.buildinfo.buildnum}";
+      public static final String VERSION = "${zimbra.buildinfo.version}";
+      public static final String RELEASE = "${zimbra.buildinfo.release}";
+      public static final String DATE = "${DSTAMP}-${TSTAMP}";
+      public static final String HOST = "${zimbra.buildinfo.host}";
+      }
     </echo>
-		<javac includeantruntime="false" destdir="${build.classes.dir}" debug="true" target="${javac.target}" srcdir="${build.dir}/buildinfo">
-			<compilerarg value="-Xlint:deprecation" />
-			<compilerarg value="-Xlint:unchecked" />
-		</javac>
-	</target>
+    <javac includeantruntime="false" destdir="${build.classes.dir}" debug="true"
+      target="${javac.target}" srcdir="${maven.build.dir}/buildinfo">
+      <compilerarg value="-Xlint:deprecation"/>
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
+  </target>
 
-	<!-- Cleans up store directory after tests -->
-	<target name="clean">
-		<delete dir="${basedir}/build"/>
-		<delete dir="${basedir}/tmp"/>
-	</target>
+  <!-- Cleans up store directory and maven build in maven clean phase -->
+  <target name="clean">
+    <delete dir="${basedir}/build"/>
+    <delete dir="${basedir}/tmp"/>
+    <delete dir="${maven.build.dir}"/>
+  </target>
 
-	<!-- Copies bundle msgs to directory base folder -->
-	<target name="copy-msgs-bundle">
-		<copy todir="${basedir}/build/zimbra/conf/msgs">
-			<fileset dir="${basedir}/../store-conf/conf/msgs"/>
-		</copy>
-	</target>
+  <!-- Copies bundle msgs required for test to directory base folder -->
+  <target name="copy-msgs-bundle">
+    <copy todir="${basedir}/build/zimbra/conf/msgs">
+      <fileset dir="${basedir}/../store-conf/conf/msgs"/>
+    </copy>
+  </target>
 
-	<target name="generate-getters"  description="generate methods for attributes in attrs.xml">
-		<antcall target="generate-getter">
-			<param name="getter.class" value="account" />
-			<param name="getter.output" value="ZAttrAccount.java" />
-		</antcall>
-		<antcall target="generate-getter">
-			<param name="getter.class" value="calendarResource" />
-			<param name="getter.output" value="ZAttrCalendarResource.java" />
-		</antcall>
-		<antcall target="generate-getter">
-			<param name="getter.class" value="cos" />
-			<param name="getter.output" value="ZAttrCos.java" />
-		</antcall>
-		<antcall target="generate-getter">
-			<param name="getter.class" value="domain" />
-			<param name="getter.output" value="ZAttrDomain.java" />
-		</antcall>
-		<antcall target="generate-getter">
-			<param name="getter.class" value="server" />
-			<param name="getter.output" value="ZAttrServer.java" />
-		</antcall>
-		<antcall target="generate-getter">
-			<param name="getter.class" value="ucService" />
-			<param name="getter.output" value="ZAttrUCService.java" />
-		</antcall>
-		<antcall target="generate-getter">
-			<param name="getter.class" value="globalConfig" />
-			<param name="getter.output" value="ZAttrConfig.java" />
-		</antcall>
-		<antcall target="generate-getter">
-			<param name="getter.class" value="distributionList" />
-			<param name="getter.output" value="ZAttrDistributionList.java" />
-		</antcall>
-		<antcall target="generate-getter">
-			<param name="getter.class" value="group" />
-			<param name="getter.output" value="ZAttrDynamicGroup.java" />
-		</antcall>
-		<antcall target="generate-getter">
-			<param name="getter.class" value="shareLocator" />
-			<param name="getter.output" value="ZAttrShareLocator.java" />
-		</antcall>
-		<antcall target="generate-provisioning" />
-	</target>
+  <target name="generate-getters" description="generate methods for attributes in attrs.xml">
+    <antcall target="generate-getter">
+      <param name="getter.class" value="account"/>
+      <param name="getter.output" value="ZAttrAccount.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="calendarResource"/>
+      <param name="getter.output" value="ZAttrCalendarResource.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="cos"/>
+      <param name="getter.output" value="ZAttrCos.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="domain"/>
+      <param name="getter.output" value="ZAttrDomain.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="server"/>
+      <param name="getter.output" value="ZAttrServer.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="ucService"/>
+      <param name="getter.output" value="ZAttrUCService.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="globalConfig"/>
+      <param name="getter.output" value="ZAttrConfig.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="distributionList"/>
+      <param name="getter.output" value="ZAttrDistributionList.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="group"/>
+      <param name="getter.output" value="ZAttrDynamicGroup.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="shareLocator"/>
+      <param name="getter.output" value="ZAttrShareLocator.java"/>
+    </antcall>
+    <antcall target="generate-provisioning"/>
+  </target>
 
-	<target name="generate-getter">
-		<java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpath="${maven_compile_classpath}" failonerror="true">
-			<sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}" />
-			<arg line="-a generateGetters -c ${getter.class} -i ${config.dir}/attrs -r ${src.java.dir}/com/zimbra/cs/account/${getter.output}" />
-		</java>
-	</target>
-	<target name="generate-provisioning">
-		<java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpath="${maven_compile_classpath}" failonerror="true">
-			<sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}" />
-			<arg line="-a generateProvisioning -i ${config.dir}/attrs -r ${common.src.java.dir}/com/zimbra/common/account/ZAttrProvisioning.java" />
-		</java>
-	</target>
+  <target name="generate-getter">
+    <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true"
+      classpath="${maven_compile_classpath}" failonerror="true">
+      <sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}"/>
+      <arg
+        line="-a generateGetters -c ${getter.class} -i ${config.dir}/attrs -r ${src.java.dir}/com/zimbra/cs/account/${getter.output}"/>
+    </java>
+  </target>
+  <target name="generate-provisioning">
+    <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true"
+      classpath="${maven_compile_classpath}" failonerror="true">
+      <sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}"/>
+      <arg
+        line="-a generateProvisioning -i ${config.dir}/attrs -r ${common.src.java.dir}/com/zimbra/common/account/ZAttrProvisioning.java"/>
+    </java>
+  </target>
+
+  <target name="create-version-sql" depends="build-init, set-dev-version"
+    description="Creates version-init.sql">
+    <java classname="com.zimbra.cs.db.MySQL" fork="true" classpath="${maven_compile_classpath}"
+      failonerror="true">
+      <classpath>
+        <pathelement location="${maven.build.dir}/classes"/>
+      </classpath>
+      <arg line="-o ${maven.build.dir}"/>
+    </java>
+  </target>
+
+  <target name="create-version-ldap" depends="build-init"
+    description="Creates ldap schema version: attrs-schema">
+    <exec executable="git" failonerror="false" output="${maven.build.dir}/conf/attrs/attrs-schema">
+      <arg value="log"/>
+      <arg value="-1"/>
+      <arg value="--pretty=format:%at"/>
+      <arg value="conf/attrs/attrs.xml"/>
+    </exec>
+  </target>
 
 </project>
