@@ -6,12 +6,11 @@
 package com.zimbra.soap.admin.message;
 
 import com.google.common.base.MoreObjects;
+import com.zimbra.common.soap.CertMgrConstants;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.zimbra.common.soap.CertMgrConstants;
 
 /**
  * @zm-api-command-auth-required true
@@ -19,48 +18,72 @@ import com.zimbra.common.soap.CertMgrConstants;
  * @zm-api-command-description Verify Certificate Key
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name=CertMgrConstants.E_VERIFY_CERTKEY_REQUEST)
+@XmlRootElement(name = CertMgrConstants.E_VERIFY_CERTKEY_REQUEST)
 public class VerifyCertKeyRequest {
 
-    /**
-     * @zm-api-field-description Certificate
-     */
-    @XmlAttribute(name=CertMgrConstants.E_cert /* cert */, required=false)
-    private String certificate;
+  /**
+   * @zm-api-field-description Certificate (can be with chain)
+   */
+  @XmlAttribute(name = CertMgrConstants.E_cert, required = true)
+  private String certificate;
 
-    /**
-     * @zm-api-field-description Private key
-     */
-    @XmlAttribute(name=CertMgrConstants.A_privkey /* privkey */, required=false)
-    private String privateKey;
+  /**
+   * @zm-api-field-description Private key
+   */
+  @XmlAttribute(name = CertMgrConstants.A_privkey, required = true)
+  private String privateKey;
 
-    public VerifyCertKeyRequest() {
-    }
+  /**
+   * @zm-api-field-description Certificate chain (optional if certificate is already chained)
+   */
+  @XmlAttribute(name = CertMgrConstants.A_certChain, required = false)
+  private String certificateChain;
 
-    private VerifyCertKeyRequest(String certificate, String privateKey) {
-        setCertificate(certificate);
-        setPrivateKey(privateKey);
-    }
+  public VerifyCertKeyRequest() {}
 
-    public static VerifyCertKeyRequest createForCertAndPrivateKey(String certificate, String privateKey) {
-        return new VerifyCertKeyRequest(certificate, privateKey);
-    }
+  private VerifyCertKeyRequest(String certificate, String privateKey) {
+    setCertificate(certificate);
+    setPrivateKey(privateKey);
+  }
 
-    public void setCertificate(String certificate) { this.certificate = certificate; }
-    public void setPrivateKey(String privateKey) { this.privateKey = privateKey; }
-    public String getCertificate() { return certificate; }
-    public String getPrivateKey() { return privateKey; }
+  public static VerifyCertKeyRequest createForCertAndPrivateKey(
+      String certificate, String privateKey) {
+    return new VerifyCertKeyRequest(certificate, privateKey);
+  }
 
-    public MoreObjects.ToStringHelper addToStringInfo(
-                MoreObjects.ToStringHelper helper) {
-        return helper
-            .add("certificate", certificate)
-            .add("privateKey", privateKey);
-    }
+  public void setCertificate(String certificate) {
+    this.certificate = certificate;
+  }
 
-    @Override
-    public String toString() {
-        return addToStringInfo(MoreObjects.toStringHelper(this))
-                .toString();
-    }
+  public void setPrivateKey(String privateKey) {
+    this.privateKey = privateKey;
+  }
+
+  public void setCertificateChain(String certificateChain) {
+    this.certificateChain = certificateChain;
+  }
+
+  public String getCertificate() {
+    return certificate;
+  }
+
+  public String getPrivateKey() {
+    return privateKey;
+  }
+
+  public String getCertificateChain() {
+    return certificateChain;
+  }
+
+  public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
+    return helper
+        .add("certificate", certificate)
+        .add("privateKey", privateKey)
+        .add("certificate chain", certificateChain);
+  }
+
+  @Override
+  public String toString() {
+    return addToStringInfo(MoreObjects.toStringHelper(this)).toString();
+  }
 }
