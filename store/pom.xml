@@ -396,10 +396,11 @@
           <!-- generate getter -->
           <execution>
             <id>generate-getter</id>
-            <phase>none</phase>
+            <phase>package</phase>
             <configuration>
               <target>
-                <ant antfile="${basedir}/ant-store.xml">
+                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <ant antfile="ant-store.xml">
                   <target name="generate-getters"/>
                 </ant>
               </target>
@@ -514,7 +515,7 @@
     <config.dir>${project.basedir}/conf</config.dir>
     <warfile.name>service</warfile.name>
     <war.web.xml>${config.dir}/web.xml.production</war.web.xml>
-    <!--    This file is not in present-->
+    <!--TODO: This file is not in present-->
     <!--    <war.classes.sieveConfig>${config.dir}/sieveConfig.xml</war.classes.sieveConfig>-->
     <war.classes.cxf>${config.dir}/cxf.xml</war.classes.cxf>
 

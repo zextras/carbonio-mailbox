@@ -19,7 +19,6 @@
 
 	<!-- classpath for running utilities -->
 	<path id="run.class.path">
-		<path refid="class.path" />
 		<pathelement location="${build.classes.dir}" />
 	</path>
 
@@ -137,13 +136,13 @@
 	</target>
 
 	<target name="generate-getter">
-		<java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="run.class.path" failonerror="true">
+		<java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpath="${maven_compile_classpath}" failonerror="true">
 			<sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}" />
 			<arg line="-a generateGetters -c ${getter.class} -i ${config.dir}/attrs -r ${src.java.dir}/com/zimbra/cs/account/${getter.output}" />
 		</java>
 	</target>
 	<target name="generate-provisioning">
-		<java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="run.class.path" failonerror="true">
+		<java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpath="${maven_compile_classpath}" failonerror="true">
 			<sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}" />
 			<arg line="-a generateProvisioning -i ${config.dir}/attrs -r ${common.src.java.dir}/com/zimbra/common/account/ZAttrProvisioning.java" />
 		</java>

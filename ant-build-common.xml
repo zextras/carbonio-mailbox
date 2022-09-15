@@ -8,7 +8,7 @@
   <property name="javac.target" value="11"/>
   <!-- Standard directory paths -->
   <property location="src" name="src.dir"/>
-  <property location="src/java" name="src.java.dir"/>
+  <property location="src/main/java" name="src.java.dir"/>
   <property location="src/bin" name="src.bin.dir"/>
   <property location="src/libexec" name="src.libexec.dir"/>
   <property location="src/zimlet" name="src.zimlet.dir"/>
@@ -32,7 +32,7 @@
   <property location="${zimbra.home.dir}/jars-src" name="common.sourcejars.dir"/>
   <!-- ZimbraCommon -->
   <property location="${zm-mailbox.basedir}/common" name="common.dir"/>
-  <property location="${common.dir}/src/java" name="common.src.java.dir"/>
+  <property location="${common.dir}/src/main/java" name="common.src.java.dir"/>
   <property location="${common.dir}/build/classes" name="common.classes.dir"/>
   <property location="${common.dir}/build/zimbracommon.jar" name="common.jarfile"/>
   <property location="../jars-internal/jars" name="common.internal.jars.dir"/>
