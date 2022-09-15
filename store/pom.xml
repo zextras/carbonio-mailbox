@@ -431,12 +431,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <!-- This option is here bc store tests takes a lot.
-          So if you need still do checks without waiting too much.
-          Intended to verify things -->
-          <skipTests>${skip.store.tests}</skipTests>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

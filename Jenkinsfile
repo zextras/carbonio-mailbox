@@ -57,7 +57,7 @@ pipeline {
             }
             steps {
 
-                mvnCmd("$BUILD_PROPERTIES_PARAMS -Dskip.store.tests=true test")
+                mvnCmd("$BUILD_PROPERTIES_PARAMS -pl '!store' test")
 
                 publishCoverage adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/jacoco.exec')], calculateDiffForChangeRequests: true, failNoReports: true
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
