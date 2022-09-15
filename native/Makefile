@@ -2,9 +2,9 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
-SRC     = src
+SRC     = src/main
 
-BUILD   = build
+BUILD   = target
 
 BUILD_ROOT := $(shell pwd)
 
