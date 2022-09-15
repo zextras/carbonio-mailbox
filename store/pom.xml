@@ -374,6 +374,8 @@
           </dependency>
         </dependencies>
         <executions>
+
+          <!-- generate build-info for jars -->
           <execution>
             <configuration>
               <target>
@@ -390,15 +392,8 @@
             <id>generate-buildinfo</id>
             <phase>generate-sources</phase>
           </execution>
-        </executions>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.1.0</version>
-      </plugin>
-      <!-- Prepare required files for testing -->
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
+
+          <!-- Prepare required files for testing -->
           <execution>
             <id>test</id>
             <phase>generate-test-sources</phase>
@@ -428,7 +423,10 @@
             </goals>
           </execution>
         </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.1.0</version>
       </plugin>
+
       <!-- Test plugin execution -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -454,7 +452,6 @@
             <exclude>com.zimbra.cs.service.mail.ModifyProfileImageTest.java</exclude>
           </excludes>
         </configuration>
-
       </plugin>
     </plugins>
   </build>
