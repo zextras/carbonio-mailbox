@@ -168,8 +168,6 @@
     <!--    </dependency>-->
 
 
-
-
     <dependency>
       <artifactId>junit</artifactId>
       <groupId>junit</groupId>
@@ -205,6 +203,7 @@
     <groupId>com.ktechpit</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+
   <build>
     <plugins>
       <plugin>
@@ -213,6 +212,10 @@
         <configuration>
           <forkMode>always</forkMode>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

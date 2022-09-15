@@ -431,31 +431,20 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.2</version>
         <configuration>
-          <forkMode>always</forkMode>
-          <argLine>-Dserver.dir=${project.basedir}
-            -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
-            -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
-          </argLine>
-          <excludes>
-            <!-- Exclude qa -->
-            <exclude>qa.**</exclude>
-            <!-- Exclude classes that starts with Test but were previously in src/main -->
-            <exclude>com.zimbra.cs.util.yauth.**</exclude>
-            <exclude>com.zimbra.cs.util.tnef.mapi.TestTnefTimeZone.java</exclude>
-            <!-- Exclude classes that were already excluded before maven migration -->
-            <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.SendMsgTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.ModifyProfileImageTest.java</exclude>
-          </excludes>
+          <!-- This option is here bc store tests takes a lot.
+          So if you need still do checks without waiting too much.
+          Intended to verify things -->
+          <skipTests>${skip.store.tests}</skipTests>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
     </plugins>
-  </build>
 
+  </build>
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
