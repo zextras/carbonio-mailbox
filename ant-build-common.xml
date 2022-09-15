@@ -13,14 +13,13 @@
   <property location="src/libexec" name="src.libexec.dir"/>
   <property location="src/zimlet" name="src.zimlet.dir"/>
   <property location="jars" name="jars.dir"/>
-  <property location="target" name="build.dir"/>
-  <property location="${build.dir}/tmp" name="build.tmp.dir"/>
-  <property location="${build.dir}/dist" name="dist.dir"/>
-  <property location="${dist.dir}/lib" name="dist.lib.dir"/>
-  <property location="${dist.lib.dir}/ext" name="dist.lib.ext.dir"/>
-  <property location="${build.dir}/classes" name="build.classes.dir"/>
-  <property location="${build.dir}/classes-inst" name="build.instrumented.dir"/>
-  <property location="${build.dir}/zimlet" name="build.zimlet.dir"/>
+  <property location="target" name="maven.build.dir"/>
+  <property location="${maven.build.dir}/tmp" name="build.tmp.dir"/>
+  <property location="${maven.build.dir}/lib" name="lib.dir"/>
+  <property location="${lib.dir}/ext" name="dist.lib.ext.dir"/>
+  <property location="${maven.build.dir}/classes" name="build.classes.dir"/>
+  <property location="${maven.build.dir}/classes-inst" name="build.instrumented.dir"/>
+  <property location="${maven.build.dir}/zimlet" name="build.zimlet.dir"/>
   <!-- Standard install paths -->
   <property location="/opt/zextras" name="zimbra.home.dir"/>
   <property location="${zimbra.home.dir}/jetty" name="jetty.home.dir"/>
