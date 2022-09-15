@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class VerifyCertKeyRequest {
 
   /**
-   * @zm-api-field-description Certificate (can be with chain)
+   * @zm-api-field-description Certificate (can be chained)
    */
   @XmlAttribute(name = CertMgrConstants.E_cert, required = true)
   private String certificate;
@@ -34,10 +34,10 @@ public class VerifyCertKeyRequest {
   private String privateKey;
 
   /**
-   * @zm-api-field-description Certificate chain (optional if certificate is already chained)
+   * @zm-api-field-description CA (optional if certificate is already chained)
    */
-  @XmlAttribute(name = CertMgrConstants.A_certChain, required = false)
-  private String certificateChain;
+  @XmlAttribute(name = CertMgrConstants.A_ca, required = false)
+  private String CA;
 
   public VerifyCertKeyRequest() {}
 
@@ -59,8 +59,8 @@ public class VerifyCertKeyRequest {
     this.privateKey = privateKey;
   }
 
-  public void setCertificateChain(String certificateChain) {
-    this.certificateChain = certificateChain;
+  public void setCA(String CA) {
+    this.CA = CA;
   }
 
   public String getCertificate() {
@@ -71,15 +71,15 @@ public class VerifyCertKeyRequest {
     return privateKey;
   }
 
-  public String getCertificateChain() {
-    return certificateChain;
+  public String getCA() {
+    return CA;
   }
 
   public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
     return helper
         .add("certificate", certificate)
         .add("privateKey", privateKey)
-        .add("certificate chain", certificateChain);
+        .add("certificate chain", CA);
   }
 
   @Override
