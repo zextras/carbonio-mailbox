@@ -20,6 +20,7 @@ store/tmp/
 common-passwords.txt
 build.properties
 *.deb
+target/
 
 # Ignore Gradle project-specific cache directory
 .gradle
