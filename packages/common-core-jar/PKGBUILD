@@ -18,18 +18,18 @@ priority="optional"
 package() {
   cd "${srcdir}"/../../staging
 
-  install -D native/build/dist/zm-native.jar \
+  install -D native/target/zm-native*.jar \
     "${pkgdir}/opt/zextras/lib/jars/native.jar"
 
-  install -D client/build/dist/zm-client.jar \
+  install -D client/target/zm-client*.jar \
     "${pkgdir}/opt/zextras/lib/jars/zimbraclient.jar"
 
-  install -D common/build/dist/zm-common.jar \
+  install -D common/target/zm-common*.jar \
     "${pkgdir}/opt/zextras/lib/jars/zimbracommon.jar"
 
-  install -D soap/build/dist/zm-soap.jar \
+  install -D soap/target/zm-soap*.jar \
     "${pkgdir}/opt/zextras/lib/jars/zimbrasoap.jar"
 
-  install -D store/build/dist/zm-store.jar \
+  install -D store/target/zm-store*.jar \
     "${pkgdir}/opt/zextras/lib/jars/zimbrastore.jar"
 }
