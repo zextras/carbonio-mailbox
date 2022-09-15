@@ -59,8 +59,8 @@ pipeline {
 
                 mvnCmd("$BUILD_PROPERTIES_PARAMS test")
 
-                publishCoverage adapters: [jacocoAdapter('build/coverage/merged.xml')], calculateDiffForChangeRequests: true, failNoReports: true
-                junit allowEmptyResults: true, testResults: '**/build/test/output/*.xml'
+                publishCoverage adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: true
+                junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
         stage('Publish to maven') {
