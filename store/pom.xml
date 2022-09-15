@@ -352,7 +352,7 @@
 
   <build>
     <plugins>
-      <!-- Generate buildinfo -->
+      <!-- Generate build-info -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <dependencies>
@@ -391,6 +391,22 @@
             </goals>
             <id>generate-buildinfo</id>
             <phase>generate-sources</phase>
+          </execution>
+
+          <!-- generate getter -->
+          <execution>
+            <id>generate-getter</id>
+            <phase>none</phase>
+            <configuration>
+              <target>
+                <ant antfile="${basedir}/ant-store.xml">
+                  <target name="generate-getters"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
           </execution>
 
           <!-- Prepare required files for testing -->
@@ -453,10 +469,63 @@
           </excludes>
         </configuration>
       </plugin>
+
+      <!-- Maven WAR plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>war</id>
+            <phase>package</phase>
+            <goals>
+              <goal>war</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <warName>${warfile.name}</warName>
+          <webXml>${war.web.xml}</webXml>
+          <attachClasses>false</attachClasses>
+          <failOnMissingWebXml>true</failOnMissingWebXml>
+
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+            </manifest>
+          </archive>
+
+          <webResources>
+            <resource>
+              <directory>${project.basedir}/WebRoot</directory>
+              <targetPath>/</targetPath>
+            </resource>
+
+            <resource>
+              <directory>${config.dir}</directory>
+              <targetPath>WEB-INF/classes</targetPath>
+              <filtering>false</filtering>
+              <excludes>
+                <include>${war.classes.cxf}</include>
+              </excludes>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
   <properties>
+    <!--war file properties-->
+    <build.dir>target</build.dir>
+    <config.dir>${project.basedir}/conf</config.dir>
+    <warfile.name>service</warfile.name>
+    <war.web.xml>${config.dir}/web.xml.production</war.web.xml>
+    <!--    This file is not in present-->
+    <!--    <war.classes.sieveConfig>${config.dir}/sieveConfig.xml</war.classes.sieveConfig>-->
+    <war.classes.cxf>${config.dir}/cxf.xml</war.classes.cxf>
+
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
