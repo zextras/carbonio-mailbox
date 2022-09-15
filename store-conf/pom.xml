@@ -39,6 +39,12 @@
   </parent>
 
   <properties>
+    <!-- prevent jar creation, deployment, and install for this module since
+      it is just to install some files to assist packaging of artifacts-->
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <jar.skipIfEmpty>true</jar.skipIfEmpty>
+    <maven.install.skip>true</maven.install.skip>
+
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
