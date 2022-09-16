@@ -35,8 +35,6 @@ pipeline {
             stage('Build') {
             steps {
 
-                sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
-
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean package")
 
                 sh 'mkdir staging'
