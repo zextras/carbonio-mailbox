@@ -32,27 +32,27 @@
   <!-- ZimbraCommon -->
   <property location="${zm-mailbox.basedir}/common" name="common.dir"/>
   <property location="${common.dir}/src/main/java" name="common.src.java.dir"/>
-  <property location="${common.dir}/build/classes" name="common.classes.dir"/>
-  <property location="${common.dir}/build/zimbracommon.jar" name="common.jarfile"/>
+  <property location="${common.dir}/target/classes" name="common.classes.dir"/>
+  <property location="${common.dir}/target/zimbracommon.jar" name="common.jarfile"/>
   <property location="../jars-internal/jars" name="common.internal.jars.dir"/>
   <!-- ZimbraNative -->
   <property location="${zm-mailbox.basedir}/native" name="native.dir"/>
-  <property location="${native.dir}/build/classes" name="native.classes.dir"/>
+  <property location="${native.dir}/target/classes" name="native.classes.dir"/>
   <!-- ZimbraServer -->
   <property location="${zm-mailbox.basedir}/store" name="server.dir"/>
-  <property location="${server.dir}/build/classes" name="server.classes.dir"/>
-  <property location="${server.dir}/build/test-classes" name="server.test.classes.dir"/>
-  <property location="${server.dir}/build/zimbrastore.jar" name="server.jarfile"/>
+  <property location="${server.dir}/target/classes" name="server.classes.dir"/>
+  <property location="${server.dir}/target/test-classes" name="server.test.classes.dir"/>
+  <property location="${server.dir}/target/zimbrastore.jar" name="server.jarfile"/>
   <property location="${zimbra.home.dir}/jars" name="server.jars.dir"/>
   <property location="${server.dir}/conf" name="server.conf.dir"/>
   <!-- ZimbraSoap -->
   <property location="${zm-mailbox.basedir}/soap" name="soap.dir"/>
-  <property location="${soap.dir}/build/classes" name="soap.classes.dir"/>
-  <property location="${soap.dir}/build/zimbrasoap.jar" name="soap.jarfile"/>
+  <property location="${soap.dir}/target/classes" name="soap.classes.dir"/>
+  <property location="${soap.dir}/target/zimbrasoap.jar" name="soap.jarfile"/>
   <!-- ZimbraClient -->
   <property location="${zm-mailbox.basedir}/client" name="client.dir"/>
-  <property location="${client.dir}/build/classes" name="client.classes.dir"/>
-  <property location="${client.dir}/build/zimbraclient.jar" name="client.jarfile"/>
+  <property location="${client.dir}/target/classes" name="client.classes.dir"/>
+  <property location="${client.dir}/target/zimbraclient.jar" name="client.jarfile"/>
   <property location="${zm-mailbox.basedir}/store-conf/conf/msgs" name="msgs.dir"/>
 
 
