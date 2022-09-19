@@ -7,7 +7,6 @@ pipeline {
     parameters {
         booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
         booleanParam defaultValue: false, description: 'Whether to skip the test all with coverage stage', name: 'SKIP_TEST_WITH_COVERAGE'
-        booleanParam defaultValue: false, description: 'Publish snapshot (just for testing)', name: 'PUBLISH_SNAPSHOT'
     }
     environment {
         JAVA_OPTS='-Dfile.encoding=UTF8'
@@ -66,14 +65,7 @@ pipeline {
         }
         stage('Publish snapshot to maven') {
           when () {
-            anyOf{
-              expression {
-                env.BRANCH_NAME == 'devel'
-              }
-              expression {
-                params.PUBLISH_SNAPSHOT == true
-              }
-            }
+            branch 'devel'
           }
           steps {
               sh '''
