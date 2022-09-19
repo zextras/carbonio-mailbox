@@ -7,6 +7,7 @@ pipeline {
     parameters {
         booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
         booleanParam defaultValue: false, description: 'Whether to skip the test all with coverage stage', name: 'SKIP_TEST_WITH_COVERAGE'
+        booleanParam defaultValue: false, description: 'Publish snapshot (just for testing)', name: 'PUBLISH_SNAPSHOT'
     }
     environment {
         JAVA_OPTS='-Dfile.encoding=UTF8'
@@ -62,6 +63,25 @@ pipeline {
                 publishCoverage adapters: [jacocoAdapter('build/coverage/merged.xml')], calculateDiffForChangeRequests: true, failNoReports: true
                 junit allowEmptyResults: true, testResults: '**/build/test/output/*.xml'
             }
+        }
+        stage('Publish snapshot to maven') {
+          when () {
+            anyOf{
+              expression {
+                env.BRANCH_NAME == 'devel'
+              }
+              expression {
+                params.PUBLISH_SNAPSHOT == true
+              }
+            }
+          }
+          steps {
+              sh '''
+              ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant -d \
+              -propertyfile build.properties \
+              publish-maven-snapshot
+              '''
+          }
         }
         stage('Publish to maven') {
             when {
