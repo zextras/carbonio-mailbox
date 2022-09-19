@@ -642,7 +642,7 @@
     </ivy:publish>
   </target>
 
-  <target name="publish-maven-snapshot" depends="publish-maven-local">
+  <target name="publish-maven-snapshot" depends="set-snapshot-version, publish-maven-local">
     <ivy:publish settingsRef="dev.settings" pubrevision="${dev.version}" resolver="zextras-maven-snapshot"
       overwrite="true">
       <artifact name="${ant.project.name}" type="pom" ext="pom"/>
