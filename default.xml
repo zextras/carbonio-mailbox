@@ -11,7 +11,7 @@
     <default remote="gh-zx" sync-c="true" sync-j="4" />
 
     <!-- Carbonio base repos -->
-    <project name="carbonio-build" path="zm-build" revision="refs/heads/main" />
+    <project name="carbonio-build" path="zm-build" revision="refs/heads/devel" />
 
     <!-- Carbonio packaging spec files -->
     <project remote="bb-zx" name="carbonio-core" revision="refs/heads/main" />
@@ -26,7 +26,7 @@
     <project name="carbonio-admin-ajax" path="zm-admin-ajax" revision="refs/heads/main" />
     <project name="carbonio-amavis" path="zm-amavis" revision="refs/heads/main" />
     <project name="carbonio-certificate-manager-admin-zimlet" path="zm-certificate-manager-admin-zimlet" revision="refs/heads/main" />
-    <project name="carbonio-certificate-manager-store" path="zm-certificate-manager-store" revision="refs/heads/main" />
+    <project name="carbonio-certificate-manager-store" path="zm-certificate-manager-store" revision="refs/heads/devel" />
     <project name="carbonio-charset" path="zm-charset" revision="refs/heads/main" />
     <project name="carbonio-clam-scanner-store" path="zm-clam-scanner-store" revision="refs/heads/main" />
     <project name="carbonio-core-utils" path="zm-core-utils" revision="refs/heads/main" />
