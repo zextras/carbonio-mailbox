@@ -9,7 +9,6 @@
 package com.zimbra.cs.service.admin;
 
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -21,8 +20,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.soap.ZimbraSoapContext;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -57,14 +54,15 @@ public class ModifyDomain extends AdminDocumentHandler {
     checkCos(zsc, attrs, Provisioning.A_zimbraDomainDefaultCOSId);
     checkCos(zsc, attrs, Provisioning.A_zimbraDomainDefaultExternalUserCOSId);
 
-    final String gotPubServiceHostname =
+    final String receivedPubServiceHostname =
         (String) attrs.get(Provisioning.A_zimbraPublicServiceHostname);
-    final String gotDomainName = (String) attrs.get(Provisioning.A_zimbraDomainName);
-    if (!Objects.isNull(gotPubServiceHostname)) {
-      checkPublicServiceHostname(domain, gotPubServiceHostname);
+    final String receivedDomainName = (String) attrs.get(Provisioning.A_zimbraDomainName);
+    if (!Objects.isNull(receivedDomainName)) {
+      throw ServiceException.INVALID_REQUEST(
+          Provisioning.A_zimbraDomainName + " cannot be changed.", null);
     }
-    if (!Objects.isNull(gotDomainName)) {
-      attrs.putAll(getAttributesToUpdateFromNewDomain(domain, gotDomainName));
+    if (!Objects.isNull(receivedPubServiceHostname)) {
+      checkPublicServiceHostname(domain, receivedPubServiceHostname);
     }
 
     // pass in true to checkImmutable
@@ -97,35 +95,6 @@ public class ModifyDomain extends AdminDocumentHandler {
               + domainName
               + ".");
     }
-  }
-
-  /**
-   * Returns a {@link Map} of attributes to be updated based on new given domain name. Returned
-   * attributes include only {@link ZAttrProvisioning#A_zimbraPublicServiceHostname} and {@link
-   * ZAttrProvisioning#A_zimbraVirtualHostname}.
-   *
-   * @param domain domain that is being updated
-   * @param newDomainName new domain name
-   * @return a map of attributes to update from new domain name
-   */
-  private Map<String, Object> getAttributesToUpdateFromNewDomain(
-      Domain domain, String newDomainName) {
-    final HashMap<String, Object> attrsToUpdate = new HashMap<>();
-    final String oldPubServiceHostname = domain.getPublicServiceHostname();
-    final String oldDomainName = domain.getDomainName();
-    final String newPubServiceHostname =
-        oldPubServiceHostname.substring(0, oldPubServiceHostname.lastIndexOf(oldDomainName))
-            + newDomainName;
-    attrsToUpdate.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, newPubServiceHostname);
-    final List<String> newVirtualHostnames = new ArrayList<>();
-    for (String virtualHostname : domain.getVirtualHostname()) {
-      newVirtualHostnames.add(
-          virtualHostname.substring(0, virtualHostname.lastIndexOf(oldDomainName)) + newDomainName);
-    }
-    if (!newVirtualHostnames.isEmpty()) {
-      attrsToUpdate.put(ZAttrProvisioning.A_zimbraVirtualHostname, newVirtualHostnames);
-    }
-    return attrsToUpdate;
   }
 
   private void checkCos(

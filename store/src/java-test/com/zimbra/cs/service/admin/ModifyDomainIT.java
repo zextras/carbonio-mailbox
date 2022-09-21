@@ -121,21 +121,17 @@ public class ModifyDomainIT {
   }
 
   @Test
-  public void shouldUpdateVirtualHostnamesAndPublicServiceHostnameIfDomainNameChanges()
-      throws ServiceException {
+  public void shouldThrowDomainNameImmutableWhenModifyingDomainName() throws ServiceException {
+    expectedEx.expect(ServiceException.class);
+    expectedEx.expectMessage(ZAttrProvisioning.A_zimbraDomainName + " cannot be changed.");
     final String domainName = "demo3.zextras.io";
     final String newDomainName = "newDemo3.zextras.io";
-    final String pubServiceHostname = "public." + domainName;
-    final String[] virtualHostnames =
-        new String[] {"virtual1." + domainName, "virtual2." + domainName};
     final Domain domain =
         provisioning.createDomain(
             domainName,
             new HashMap<>() {
               {
                 put(ZAttrProvisioning.A_zimbraDomainName, domainName);
-                put(ZAttrProvisioning.A_zimbraPublicServiceHostname, pubServiceHostname);
-                put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostnames);
               }
             });
     final Account adminAccount = createDelegatedAdminForDomain(domain);
@@ -149,12 +145,5 @@ public class ModifyDomainIT {
         };
     modifyDomainRequest.setAttrs(attrsToUpdate);
     new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
-    assertNull(provisioning.getDomainByName(domainName));
-    final Domain updatedDomain = provisioning.getDomainByName(newDomainName);
-    assertEquals("public." + newDomainName, updatedDomain.getPublicServiceHostname());
-    assertEquals(newDomainName, updatedDomain.getDomainName());
-    final String[] expectedVirtualHostnames =
-        new String[] {"virtual1." + newDomainName, "virtual2." + newDomainName};
-    assertEquals(expectedVirtualHostnames, updatedDomain.getVirtualHostname());
   }
 }
