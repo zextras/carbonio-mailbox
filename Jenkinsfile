@@ -1,5 +1,5 @@
 def mvnCmd(String cmd) {
-  sh 'mvn -B -s .mvn/settings.xml ' + cmd
+  sh 'mvn -B -s settings-jenkins.xml ' + cmd
 }
 pipeline {
     agent {
@@ -16,10 +16,8 @@ pipeline {
     environment {
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
-        ARTIFACTORY_ACCESS=credentials('artifactory-jenkins-gradle-properties-splitted')
         CARBONIO_BUILDINFO_VERSION='22.8.0_ZEXTRAS_202208'
-        BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=$CARBONIO_BUILDINFO_VERSION'+
-        ' -Dartifactory_user=$ARTIFACTORY_ACCESS_USR -Dartifactory_password=$ARTIFACTORY_ACCESS_PSW'
+        BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=$CARBONIO_BUILDINFO_VERSION'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
@@ -30,6 +28,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+                  sh "cp ${SETTINGS_PATH} settings-jenkins.xml"
+                }
             }
             }
             stage('Build') {
@@ -61,16 +62,20 @@ pipeline {
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
+        stage('Publish SNAPSHOT to maven') {
+              when {
+                  branch 'devel'
+              }
+              steps {
+                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -Pdev')
+              }
+        }
         stage('Publish to maven') {
             when {
                 buildingTag()
             }
             steps {
-                sh '''
-                ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant\
-                -propertyfile build.properties\
-                publish-maven-all
-                '''
+              mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -Pprod')
             }
         }
         stage('Build deb/rpm') {
