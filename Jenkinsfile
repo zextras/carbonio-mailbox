@@ -62,16 +62,20 @@ pipeline {
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
+        stage('Publish SNAPSHOT to maven') {
+              when {
+                  branch 'devel'
+              }
+              steps {
+                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -Pdev')
+              }
+        }
         stage('Publish to maven') {
             when {
                 buildingTag()
             }
             steps {
-                sh '''
-                ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant\
-                -propertyfile build.properties\
-                publish-maven-all
-                '''
+              mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -Pprod')
             }
         }
         stage('Build deb/rpm') {
