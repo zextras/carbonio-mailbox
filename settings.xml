@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <servers>
+    <!-- Required to build carbonio-certificate-manager-store -->
+    <server>
+      <id>zextras-java-sdk</id>
+      <username>${artifactory_user}</username>
+      <password>${artifactory_password}</password>
+    </server>
+  </servers>
+</settings>

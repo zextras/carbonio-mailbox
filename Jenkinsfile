@@ -16,6 +16,7 @@ pipeline {
     }
     environment {
         NETWORK_OPTS = '--network ci_agent'
+        ARTIFACTORY_ACCESS=credentials('artifactory-jenkins-gradle-properties-splitted')
     }
     stages {
         stage('Fetch git-repo and sources') {
@@ -69,13 +70,10 @@ pipeline {
                     env.CONTAINER_ID = sh(returnStdout: true,
                     script: "docker run -dt ${NETWORK_OPTS} carbonio-builder").trim()
                 }
-                withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-                                                  usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PWD')]) {
-                sh 'echo "artifactory_user=${ARTIFACTORY_USER}" >> build.properties'
-                sh 'echo "artifactory_password=${ARTIFACTORY_PWD}" >> build.properties'
-                }
+                sh 'echo artifactory_user=$ARTIFACTORY_ACCESS_USR >> build.properties'
+                sh 'echo artifactory_password=$ARTIFACTORY_ACCESS_PSW >> build.properties'
                 sh "docker cp ${WORKSPACE} ${env.CONTAINER_ID}:/src"
-                sh "docker exec -t ${env.CONTAINER_ID} bash -c \"build_all.sh ${BUILD_NUMBER}\""
+                sh 'docker exec -t $CONTAINER_ID bash -c "build_all.sh $BUILD_NUMBER $ARTIFACTORY_ACCESS_USR $ARTIFACTORY_ACCESS_PSW"'
                 sh "docker exec -t ${env.CONTAINER_ID} bash -c \"cp -r /src/carbonio-core /pkg\""
                 sh 'mkdir staging'
                 sh "docker cp ${env.CONTAINER_ID}:/pkg/. staging"
