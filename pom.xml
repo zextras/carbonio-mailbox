@@ -112,6 +112,7 @@
                   <goal>analyze-only</goal>
                 </goals>
                 <configuration>
+                  <!-- Fails if there are undeclared dependencies and prints them in xml -->
                   <failOnWarning>true</failOnWarning>
                   <outputXML>true</outputXML>
                 </configuration>

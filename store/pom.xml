@@ -434,6 +434,12 @@
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
 
+      <!-- Analyze dependencies -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+
       <!-- Maven WAR plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
