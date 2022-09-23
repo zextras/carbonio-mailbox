@@ -30,7 +30,8 @@ build() {
     --build-release-no="${_releaseno}" \
     --build-release-candidate="${_rc}" \
     --build-prod-flag \
-    --ant-options="-DskipTests=1 -propertyfile ${SRCDIR}/build.properties"
+    --ant-options="-DskipTests=1 -propertyfile ${SRCDIR}/build.properties" \
+    --mvn-options="-B -DskipTests=true -s ${SRCDIR}/settings.xml -Dartifactory_user=${ARTIFACTORY_USER} -Dartifactory_password=${ARTIFACTORY_PWD}"
 }
 
 package() {
@@ -54,6 +55,8 @@ package() {
 process_args() {
   # Process other arguments.
   BUILD_NUMBER=$1
+  ARTIFACTORY_USER=$2
+  ARTIFACTORY_PWD=$3
 
   case ${BUILD_NUMBER} in
     '' | *[!0-9]*)
