@@ -307,6 +307,12 @@
       <scope>test</scope>
       <version>2.2.9</version>
     </dependency>
+    <dependency>
+      <artifactId>hsqldb</artifactId>
+      <groupId>org.hsqldb</groupId>
+      <scope>test</scope>
+      <version>2.2.9</version>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.curator</groupId>
