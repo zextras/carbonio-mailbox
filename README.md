@@ -15,11 +15,11 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 - **store**: package with core implementations and integrations like SOAP APIs, LDAP, Krb5, IMAP, POP3 and CLI functions
 
 ## Building Carbonio Mailbox from source
-- Build Requirements:
-	 - JDK version 11, to confirm run `javac -version`
-	 - ant
-	 - apache-ant-contrib
 
+- Build Requirements:
+  - JDK version 11, to confirm run `javac -version`
+  - ant
+  - apache-ant-contrib
 
 - Clone the carbonio-mailbox repository:
 
@@ -31,14 +31,14 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
 - Build the code:
 
-	`ant all -Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208`
+ `ant all -Dcarbonio.buildinfo.version=22.10.0_ZEXTRAS_202210`
 
-	Tips:
-	- You can list all ant build targets present in build.xml file using `ant -p build.xml`
-	- You can avoid passing `carbonio.buildinfo.version` on every time you invoke ant build command by exporting it as ANT_OPTS environment varibale with `export ANT_OPTS="-Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208"`
-
+ Tips:
+  - You can list all ant build targets present in build.xml file using `ant -p build.xml`
+  - You can avoid passing `carbonio.buildinfo.version` on every time you invoke ant build command by exporting it as ANT_OPTS environment varibale with `export ANT_OPTS="-Dcarbonio.buildinfo.version=22.10.0_ZEXTRAS_202210"`
 
 ## Contribute to Carbonio Mailbox
+
 All contributions are accepted! Please refer to the CONTRIBUTING file (if present in this repository) for more details on how to contribute. If the repository has a Code of Conduct, we kindly ask to follow that as well.
 
 ## License
