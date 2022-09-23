@@ -101,6 +101,23 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.3.0</version>
+            <executions>
+              <execution>
+                <id>analyze</id>
+                <goals>
+                  <goal>analyze-only</goal>
+                </goals>
+                <configuration>
+                  <failOnWarning>true</failOnWarning>
+                  <outputXML>true</outputXML>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
     </pluginManagement>
   </build>

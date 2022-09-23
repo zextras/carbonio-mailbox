@@ -179,12 +179,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>batik-css</artifactId>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <version>1.7</version>
-    </dependency>
-
-    <dependency>
       <artifactId>owasp-java-html-sanitizer</artifactId>
       <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
       <version>20191001.1</version>
@@ -292,13 +286,6 @@
       <scope>test</scope>
       <version>4.4.0</version>
     </dependency>
-    <!-- Mockito inline required to mock static methods -->
-    <dependency>
-      <artifactId>mockito-inline</artifactId>
-      <groupId>org.mockito</groupId>
-      <scope>test</scope>
-      <version>4.4.0</version>
-    </dependency>
 
     <dependency>
       <artifactId>easymock</artifactId>
@@ -312,13 +299,6 @@
       <groupId>org.xmlunit</groupId>
       <scope>test</scope>
       <version>2.3.0</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>hsqldb</artifactId>
-      <groupId>org.hsqldb</groupId>
-      <scope>test</scope>
-      <version>2.2.9</version>
     </dependency>
 
     <dependency>
