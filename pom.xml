@@ -36,10 +36,10 @@
   </profiles>
 
   <repositories>
-      <repository>
-        <id>zextras-java-sdk</id>
-        <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
-      </repository>
+    <repository>
+      <id>zextras-java-sdk</id>
+      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+    </repository>
   </repositories>
 
   <distributionManagement>
@@ -53,80 +53,100 @@
   <!-- Define common plugins used by each project -->
   <build>
     <pluginManagement>
-        <plugins>
-          <!-- Testing -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>3.0.0-M7</version>
-            <configuration>
-              <forkMode>always</forkMode>
-              <!-- argline preserves other plugin args, like JaCoCo -->
-              <argLine>@{argLine} -Dserver.dir=${project.basedir}
-                -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
-                -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
-              </argLine>
-              <excludes>
-                <!-- Exclude qa -->
-                <exclude>qa.**</exclude>
-                <!-- Exclude classes that starts with Test but were previously in src/main -->
-                <exclude>com.zimbra.cs.util.yauth.**</exclude>
-                <exclude>com.zimbra.cs.util.tnef.mapi.TestTnefTimeZone.java</exclude>
-                <!-- Exclude classes that were already excluded before maven migration -->
-                <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
-                <exclude>com.zimbra.cs.service.mail.SendMsgTest.java</exclude>
-                <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
-                <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
-                <exclude>com.zimbra.cs.service.mail.ModifyProfileImageTest.java</exclude>
-                <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
-              </excludes>
-            </configuration>
-          </plugin>
-          <plugin>
+      <plugins>
+        <!-- Testing -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0-M7</version>
+          <configuration>
+            <forkMode>always</forkMode>
+            <!-- argline preserves other plugin args, like JaCoCo -->
+            <argLine>@{argLine} -Dserver.dir=${project.basedir}
+              -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
+              -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+            </argLine>
+            <excludes>
+              <!-- Exclude qa -->
+              <exclude>qa.**</exclude>
+              <!-- Exclude classes that starts with Test but were previously in src/main -->
+              <exclude>com.zimbra.cs.util.yauth.**</exclude>
+              <exclude>com.zimbra.cs.util.tnef.mapi.TestTnefTimeZone.java</exclude>
+              <!-- Exclude classes that were already excluded before maven migration -->
+              <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
+              <exclude>com.zimbra.cs.service.mail.SendMsgTest.java</exclude>
+              <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
+              <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
+              <exclude>com.zimbra.cs.service.mail.ModifyProfileImageTest.java</exclude>
+              <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-            <version>3.0.0-M7</version>
-          </plugin>
-          <!-- Code Coverage -->
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.8</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>prepare-agent</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>report</id>
-                <phase>test</phase>
-                <goals>
-                  <goal>report</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.3.0</version>
-            <executions>
-              <execution>
-                <id>analyze</id>
-                <goals>
-                  <goal>analyze-only</goal>
-                </goals>
-                <configuration>
-                  <!-- Fails if there are undeclared dependencies and prints them in xml -->
-                  <failOnWarning>true</failOnWarning>
-                  <outputXML>true</outputXML>
-                  <ignoreNonCompile>true</ignoreNonCompile>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
+          <version>3.0.0-M7</version>
+          <configuration>
+            <forkMode>always</forkMode>
+            <!-- argline preserves other plugin args, like JaCoCo -->
+            <argLine>@{argLine} -Dserver.dir=${project.basedir}
+              -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
+              -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+            </argLine>
+            <excludes>
+              <!-- Exclude qa -->
+              <exclude>qa.**</exclude>
+            </excludes>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- Code Coverage -->
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.8</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>report</id>
+              <phase>test</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.3.0</version>
+          <executions>
+            <execution>
+              <id>analyze</id>
+              <goals>
+                <goal>analyze-only</goal>
+              </goals>
+              <configuration>
+                <!-- Fails if there are undeclared dependencies and prints them in xml -->
+                <failOnWarning>true</failOnWarning>
+                <outputXML>true</outputXML>
+                <ignoreNonCompile>true</ignoreNonCompile>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
     </pluginManagement>
   </build>
 
