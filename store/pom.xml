@@ -179,12 +179,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>batik-css</artifactId>
-      <groupId>org.apache.xmlgraphics</groupId>
-      <version>1.7</version>
-    </dependency>
-
-    <dependency>
       <artifactId>owasp-java-html-sanitizer</artifactId>
       <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
       <version>20191001.1</version>
