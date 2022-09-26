@@ -10,4 +10,7 @@
   <key name="zimbra_home">
     <value>build/zimbra</value>
   </key>
+  <key name="debug_use_in_memory_ldap_server">
+    <value>true</value>
+  </key>
 </localconfig>
