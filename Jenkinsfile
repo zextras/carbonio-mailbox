@@ -111,7 +111,7 @@ pipeline {
                 stage('Rocky 8') {
                     agent {
                         node {
-                            label 'pacur-agent-centos-8-v1'
+                            label 'pacur-agent-rocky-8-v1'
                         }
                     }
                     steps {
