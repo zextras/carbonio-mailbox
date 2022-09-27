@@ -1,5 +1,6 @@
 package com.zimbra.cs.account.ldap;
 
+import static com.zimbra.common.localconfig.LocalConfig.LOCALCONFIG_KEY;
 import static org.mockito.Mockito.mock;
 
 import com.zimbra.cs.account.Domain;
@@ -7,6 +8,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.RenameDomain.RenameDomainLdapHelper;
 import com.zimbra.cs.ldap.ILdapContext;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
+import java.nio.file.Path;
 import java.util.HashMap;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -18,6 +20,10 @@ public class RenameDomainTest {
 
   @BeforeClass
   public static void init() throws Exception {
+    System.setProperty(
+        LOCALCONFIG_KEY,
+        Path.of(RenameDomainTest.class.getResource("localconfig-ldap-test.xml").toURI())
+            .toString());
     MailboxTestUtil.initServer();
     provisioning = Provisioning.getInstance();
   }

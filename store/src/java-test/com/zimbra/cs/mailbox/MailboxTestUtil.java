@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import static com.zimbra.common.localconfig.LocalConfig.LOCALCONFIG_KEY;
+
 import com.google.common.base.Strings;
 import com.zimbra.common.calendar.ZCalendar.ZVCalendar;
 import com.zimbra.common.localconfig.LC;
@@ -40,6 +42,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import javax.activation.DataHandler;
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -71,7 +74,10 @@ public final class MailboxTestUtil {
   public static void initProvisioning(String zimbraServerDir) throws Exception {
     zimbraServerDir = getZimbraServerDir(zimbraServerDir);
     System.setProperty("log4j.configuration", "log4j-test.properties");
-    System.setProperty("zimbra.config", zimbraServerDir + "src/java-test/localconfig-test.xml");
+    if (Objects.isNull(System.getProperty(LOCALCONFIG_KEY))) {
+      System.setProperty(LOCALCONFIG_KEY, zimbraServerDir + "src/java-test/localconfig-test.xml");
+    }
+
     LC.reload();
     // substitute test TZ file
     String timezonefilePath = zimbraServerDir + "src/java-test/timezones-test.ics";
@@ -118,6 +124,16 @@ public final class MailboxTestUtil {
 
   /** Initializes the provisioning, database, index and store manager. */
   public static void initServer() throws Exception {
+    initServer(MockStoreManager.class);
+  }
+
+  /**
+   * Initializes the server.
+   *
+   * @param localConfigFileName name of local config to use
+   * @throws Exception
+   */
+  public static void initServerWithLocalConfig(String localConfigFileName) throws Exception {
     initServer(MockStoreManager.class);
   }
 
