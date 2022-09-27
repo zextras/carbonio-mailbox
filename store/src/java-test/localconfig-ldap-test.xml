@@ -10,4 +10,10 @@
   <key name="zimbra_home">
     <value>build/zimbra</value>
   </key>
+  <key name="ldap_port">
+    <value>1389</value>
+  </key>
+  <key name="zimbra_ldap_password">
+    <value>password</value>
+  </key>
 </localconfig>

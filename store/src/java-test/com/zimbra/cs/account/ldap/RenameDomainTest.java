@@ -2,7 +2,6 @@ package com.zimbra.cs.account.ldap;
 
 import static org.mockito.Mockito.mock;
 
-import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.RenameDomain.RenameDomainLdapHelper;
@@ -35,15 +34,10 @@ public class RenameDomainTest {
     final String domainName = "demo.zextras.io";
     final String newDomainName = "new.demo.zextras.io";
     final String newPubServiceHostname = "this.domain.iz.fake";
-    final Domain domain =
-        ldapProv.createDomain(
-            domainName,
-            new HashMap<>() {
-              {
-                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
-              }
-            });
+    final Domain domain = ldapProv.createDomain(domainName, new HashMap<>());
     final RenameDomainLdapHelper ldapHelper = mock(RenameDomainLdapHelper.class);
     new RenameDomain(ldapProv, ldapHelper, domain, newDomainName).execute();
+    final Domain gotOldDomain = ldapProv.getDomainByName(domainName);
+    final Domain newOldDomain = ldapProv.getDomainByName(newDomainName);
   }
 }
