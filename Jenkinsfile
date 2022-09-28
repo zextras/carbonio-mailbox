@@ -63,6 +63,18 @@ pipeline {
                 junit allowEmptyResults: true, testResults: '**/build/test/output/*.xml'
             }
         }
+        stage('Publish snapshot to maven') {
+          when () {
+            branch 'devel'
+          }
+          steps {
+              sh '''
+              ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant -d \
+              -propertyfile build.properties \
+              publish-maven-snapshot
+              '''
+          }
+        }
         stage('Publish to maven') {
             when {
                 buildingTag()
