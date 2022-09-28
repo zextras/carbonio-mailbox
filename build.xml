@@ -34,6 +34,15 @@
     <echo>Publish artifacts locally with POM definition</echo>
   </target>
 
+  <target name="publish-maven-snapshot">
+    <ant dir="./native" target="publish-maven-snapshot" inheritAll="true"/>
+    <ant dir="./common" target="publish-maven-snapshot" inheritAll="true"/>
+    <ant dir="./soap" target="publish-maven-snapshot" inheritAll="true"/>
+    <ant dir="./client" target="publish-maven-snapshot" inheritAll="true"/>
+    <ant dir="./store" target="publish-maven-snapshot" inheritAll="true"/>
+    <echo>Publish snapshot artifacts on maven snpashot repo</echo>
+  </target>
+
   <target name="publish-maven-all" depends="publish-maven-local">
     <ant dir="./native" target="publish-maven" inheritAll="true"/>
     <ant dir="./common" target="publish-maven" inheritAll="true"/>
