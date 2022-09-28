@@ -526,7 +526,8 @@ public class RenameDomain {
   /**
    * Returns a {@link Map} of attributes to be updated based on new given domain name. Returned
    * attributes include only {@link ZAttrProvisioning#A_zimbraPublicServiceHostname} and {@link
-   * ZAttrProvisioning#A_zimbraVirtualHostname}.
+   * ZAttrProvisioning#A_zimbraVirtualHostname}. Substitution works by stripping out last match of
+   * old domain portion and replacing with new domain.
    *
    * @param domain domain that is being updated
    * @param newDomainName new domain name
