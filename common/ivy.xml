@@ -41,6 +41,6 @@
     <dependency org="javax.xml.bind" name="jaxb-api" rev="2.3.1" />
     <dependency org="com.sun.xml.security" name="xml-security-impl" rev="1.0" />
     <dependency org="org.bouncycastle" name="bcpkix-jdk15on" rev="1.60" />
-    <conflict manager="all" />
+
   </dependencies>
 </ivy-module>

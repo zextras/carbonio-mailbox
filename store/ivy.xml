@@ -143,6 +143,6 @@
         <dependency org="org.apache.xmlgraphics" name="batik-i18n" rev="1.9"/>
         <dependency org="org.apache.xmlgraphics" name="batik-util" rev="1.8"/>
         <!-- By default conflict manager is latest revision, this causes unwanted upgrades that break the build and testing (e.g.: junit 4.13 instead of 4.8) -->
-        <conflict manager="all"/>
+
     </dependencies>
 </ivy-module>
