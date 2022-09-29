@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class RenameDomain {
@@ -475,8 +476,7 @@ public class RenameDomain {
       domainAttrs.remove(Provisioning.A_zimbraNotebookAccount);
       domainAttrs.put(Provisioning.A_zimbraNotebookAccount, newNotebookAcctName);
     }
-    // rename virtualHostnames and publicServiceHostname
-    domainAttrs.putAll(this.getAttributesToUpdateFromNewDomain(mOldDomain, mNewDomainName));
+
     // the new domain is created shutdown and rejecting mails
     domainAttrs.put(Provisioning.A_zimbraDomainStatus, Provisioning.DOMAIN_STATUS_SHUTDOWN);
     domainAttrs.put(Provisioning.A_zimbraMailStatus, Provisioning.MAIL_STATUS_DISABLED);
@@ -538,10 +538,12 @@ public class RenameDomain {
     final HashMap<String, Object> attrsToUpdate = new HashMap<>();
     final String oldPubServiceHostname = domain.getPublicServiceHostname();
     final String oldDomainName = domain.getDomainName();
-    final String newPubServiceHostname =
-        oldPubServiceHostname.substring(0, oldPubServiceHostname.lastIndexOf(oldDomainName))
-            + newDomainName;
-    attrsToUpdate.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, newPubServiceHostname);
+    if (!Objects.isNull(oldPubServiceHostname)) {
+      final String newPubServiceHostname =
+          oldPubServiceHostname.substring(0, oldPubServiceHostname.lastIndexOf(oldDomainName))
+              + newDomainName;
+      attrsToUpdate.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, newPubServiceHostname);
+    }
     final List<String> newVirtualHostnames = new ArrayList<>();
     for (String virtualHostname : domain.getVirtualHostname()) {
       newVirtualHostnames.add(

@@ -19,6 +19,7 @@
         <dependency org="net.bytebuddy" name="byte-buddy" rev="1.12.8" conf="test->default"/>
         <dependency org="net.bytebuddy" name="byte-buddy-agent" rev="1.12.8" conf="test->default"/>
         <dependency org="org.mockito" name="mockito-inline" rev="4.4.0" conf="test->default"/>
+        <dependency name="testcontainers" rev="1.17.3" org="org.testcontainers" conf="test->default"/>
         <dependency org="org.javassist" name="javassist" rev="3.24.0-GA"/>
         <dependency org="org.slf4j" name="slf4j-api" rev="1.7.30"/>
         <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.30"/>
@@ -44,9 +45,9 @@
         <dependency org="zimbra" name="zm-ews-stub" rev="2.0"/>
         <dependency org="org.apache.lucene" name="lucene-core" rev="3.5.0"/>
         <dependency org="org.apache.lucene" name="lucene-analyzers" rev="3.5.0"/>
-        <dependency org="org.apache.zookeeper" name="zookeeper" rev="3.4.5"/>
+        <dependency org="org.apache.zookeeper" name="zookeeper" rev="3.4.14"/>
         <dependency org="ews_2010" name="ews_2010" rev="1.0"/>
-        <dependency org="com.101tec" name="zkclient" rev="0.1.0"/>
+        <dependency org="com.101tec" name="zkclient" rev="0.11"/>
         <dependency org="xerces" name="xercesImpl" rev="2.9.1-patch-01"/>
         <dependency org="net.sourceforge.nekohtml" name="nekohtml" rev="1.9.22"/>
         <!--Build uses the custom version 20190610.1z of owasp lib.
