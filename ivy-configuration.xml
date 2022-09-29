@@ -1,5 +1,8 @@
-<configurations>
-  <conf name="compile" description="Compile dependencies"/>
+<!-- By default dependencies will have compile scope, and only default dependencies will be retrieved from remotes
+For a maven repository this means retrieving "compile" dependencies -->
+
+<configurations defaultconf="compile" defaultconfmapping="*->default" >
+  <conf name="compile" description="Compile dependencies"/>rm -r
   <conf name="runtime" description="Runtime dependencies" extends="compile"/>
   <conf name="test" description="Test dependencies" extends="runtime"/>
 </configurations>
