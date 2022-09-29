@@ -5,7 +5,7 @@
         <include file="../ivy-configuration.xml"/>
     </configurations>
     <dependencies>
-        <dependency org="junit" name="junit" rev="${junit4.version}" conf="test->default"/>
+        <dependency org="junit" name="junit" rev="${junit4.version}" force="true" conf="test->default"/>
         <dependency org="javax.mail" name="mail" rev="1.4.5" />
         <dependency org="jaxen" name="jaxen" rev="1.1-beta-10" />
         <dependency org="org.dom4j" name="dom4j" rev="${dom4j.version}" />

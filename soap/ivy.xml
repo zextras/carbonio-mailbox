@@ -5,7 +5,7 @@
         <include file="../ivy-configuration.xml"/>
     </configurations>
     <dependencies>
-        <dependency org="junit" name="junit" rev="${junit4.version}" conf="test->default"/>
+        <dependency org="junit" name="junit" rev="${junit4.version}" force="true" conf="test->default"/>
         <dependency org="xmlunit" name="xmlunit" rev="1.6" />
         <dependency org="org.dom4j" name="dom4j" rev="${dom4j.version}" />
         <dependency org="com.google.guava" name="guava" rev="${com.google.guava.version}" />
