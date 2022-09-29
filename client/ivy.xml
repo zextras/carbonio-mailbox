@@ -22,5 +22,6 @@
         <dependency org="zimbra" name="zm-common" rev="latest.integration" />
         <dependency org="zimbra" name="zm-soap" rev="latest.integration" />
         <dependency org="ant-contrib" name="ant-contrib" rev="1.0b3" />
+        <conflict manager="all" />
     </dependencies>
 </ivy-module>
