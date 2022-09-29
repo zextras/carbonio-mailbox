@@ -89,7 +89,7 @@
         <dependency org="org.apache.curator" name="curator-framework" rev="2.0.1-incubating"/>
         <dependency org="org.apache.lucene" name="lucene-core" rev="3.5.0"/>
         <dependency org="org.apache.lucene" name="lucene-analyzers" rev="3.5.0"/>
-        <dependency org="org.apache.zookeeper" name="zookeeper" rev="3.4.5"/>
+        <dependency org="org.apache.zookeeper" name="zookeeper" rev="3.4.14"/>
         <dependency org="org.apache.james" name="apache-jsieve-core" rev="0.5"/>
         <dependency org="com.unboundid" name="unboundid-ldapsdk" rev="2.3.5"/>
         <dependency org="net.freeutils" name="jtnef" rev="1.9.0"/>
