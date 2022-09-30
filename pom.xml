@@ -33,6 +33,15 @@
         </snapshotRepository>
       </distributionManagement>
     </profile>
+    <profile>
+      <id>dev</id>
+      <distributionManagement>
+        <snapshotRepository>
+          <id>artifactory</id>
+          <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
+        </snapshotRepository>
+      </distributionManagement>
+    </profile>
   </profiles>
 
   <repositories>
@@ -41,14 +50,6 @@
       <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
     </repository>
   </repositories>
-
-  <distributionManagement>
-    <!-- Allows deploy of SNAPSHOT to Zextras maven snapshot repo -->
-    <snapshotRepository>
-      <id>artifactory</id>
-      <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <!-- Define common plugins used by each project -->
   <build>
