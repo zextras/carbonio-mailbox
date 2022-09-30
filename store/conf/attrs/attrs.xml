@@ -9652,24 +9652,28 @@ TODO: delete them permanently from here
   <desc>The max number of IMAP messages returned by OpenImapFolderRequest before pagination begins</desc>
 </attr>
 
-<attr id="3013" name="zimbraRemoteImapServerEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1">
+<attr id="3013" name="zimbraRemoteImapServerEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" deprecatedSince="22.9.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>Controls if the remote IMAP (non-SSL) service is enabled for a given server. See also zimbraRemoteImapSSLServerEnabled and zimbraReverseProxyUpstreamImapServers.</desc>
+  <deprecateDesc>Deprecated because IMAPD has been removed</deprecateDesc>
 </attr>
 
-<attr id="3014" name="zimbraRemoteImapSSLServerEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1">
+<attr id="3014" name="zimbraRemoteImapSSLServerEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" deprecatedSince="22.9.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>Controls if the remote IMAP SSL server is enabled for a given server. See also zimbraRemoteImapServerEnabled and zimbraReverseProxyUpstreamImapServers.</desc>
+  <deprecateDesc>Deprecated because IMAPD has been removed</deprecateDesc>
 </attr>
 
-<attr id="3015" name="zimbraRemoteImapBindPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" callback="CheckPortConflict">
+<attr id="3015" name="zimbraRemoteImapBindPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" callback="CheckPortConflict" deprecatedSince="22.9.0">
   <globalConfigValue>8143</globalConfigValue>
   <desc>port number on which the remote IMAP server should listen</desc>
+  <deprecateDesc>Deprecated because IMAPD has been removed</deprecateDesc>
 </attr>
 
-<attr id="3016" name="zimbraRemoteImapSSLBindPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" callback="CheckPortConflict">
+<attr id="3016" name="zimbraRemoteImapSSLBindPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" callback="CheckPortConflict" deprecatedSince="22.9.0">
   <globalConfigValue>8993</globalConfigValue>
   <desc>port number on which the remote IMAP SSL server should listen</desc>
+  <deprecateDesc>Deprecated because IMAPD has been removed</deprecateDesc>
 </attr>
 
 <attr id="3017" name="zimbraReverseProxyUpstreamFairShmSize" type="integer" min="32" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" requiresRestart="nginxproxy">

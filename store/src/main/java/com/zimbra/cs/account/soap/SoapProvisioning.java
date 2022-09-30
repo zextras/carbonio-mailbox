@@ -2745,11 +2745,6 @@ public class SoapProvisioning extends Provisioning {
    */
   public void flushCache(String type, CacheEntry[] entries, boolean allServers)
       throws ServiceException {
-    flushCache(type, entries, allServers, true);
-  }
-
-  public void flushCache(String type, CacheEntry[] entries, boolean allServers, boolean imapDaemons)
-      throws ServiceException {
     CacheSelector sel = new CacheSelector(allServers, type);
 
     if (entries != null) {
@@ -2758,7 +2753,6 @@ public class SoapProvisioning extends Provisioning {
             new CacheEntrySelector(SoapProvisioning.toJaxb(entry.mEntryBy), entry.mEntryIdentity));
       }
     }
-    sel.setIncludeImapServers(imapDaemons);
     invokeJaxb(new FlushCacheRequest(sel));
   }
 

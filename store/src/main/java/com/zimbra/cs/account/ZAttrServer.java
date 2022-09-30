@@ -38613,7 +38613,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP server should listen
    *
    * <p>Use getRemoteImapBindPortAsString to access value as a string.
    *
@@ -38627,7 +38628,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP server should listen
    *
    * @return zimbraRemoteImapBindPort, or "8143" if unset
    * @since ZCS 8.8.1
@@ -38638,7 +38640,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP server should listen
    *
    * @param zimbraRemoteImapBindPort new value
    * @throws com.zimbra.common.service.ServiceException if error during update
@@ -38653,7 +38656,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP server should listen
    *
    * @param zimbraRemoteImapBindPort new value
    * @param attrs existing map to populate, or null to create a new map
@@ -38669,7 +38673,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP server should listen
    *
    * @param zimbraRemoteImapBindPort new value
    * @throws com.zimbra.common.service.ServiceException if error during update
@@ -38684,7 +38689,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP server should listen
    *
    * @param zimbraRemoteImapBindPort new value
    * @param attrs existing map to populate, or null to create a new map
@@ -38700,7 +38706,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP server should listen
    *
    * @throws com.zimbra.common.service.ServiceException if error during update
    * @since ZCS 8.8.1
@@ -38713,7 +38720,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP server should listen
    *
    * @param attrs existing map to populate, or null to create a new map
    * @return populated map to pass into Provisioning.modifyAttrs
@@ -38727,7 +38735,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP SSL server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP SSL server should listen
    *
    * <p>Use getRemoteImapSSLBindPortAsString to access value as a string.
    *
@@ -38741,7 +38750,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP SSL server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP SSL server should listen
    *
    * @return zimbraRemoteImapSSLBindPort, or "8993" if unset
    * @since ZCS 8.8.1
@@ -38752,7 +38762,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP SSL server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP SSL server should listen
    *
    * @param zimbraRemoteImapSSLBindPort new value
    * @throws com.zimbra.common.service.ServiceException if error during update
@@ -38768,7 +38779,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP SSL server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP SSL server should listen
    *
    * @param zimbraRemoteImapSSLBindPort new value
    * @param attrs existing map to populate, or null to create a new map
@@ -38785,7 +38797,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP SSL server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP SSL server should listen
    *
    * @param zimbraRemoteImapSSLBindPort new value
    * @throws com.zimbra.common.service.ServiceException if error during update
@@ -38800,7 +38813,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP SSL server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP SSL server should listen
    *
    * @param zimbraRemoteImapSSLBindPort new value
    * @param attrs existing map to populate, or null to create a new map
@@ -38816,7 +38830,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP SSL server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP SSL server should listen
    *
    * @throws com.zimbra.common.service.ServiceException if error during update
    * @since ZCS 8.8.1
@@ -38829,7 +38844,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * port number on which the remote IMAP SSL server should listen
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: port number on
+   * which the remote IMAP SSL server should listen
    *
    * @param attrs existing map to populate, or null to create a new map
    * @return populated map to pass into Provisioning.modifyAttrs
@@ -38843,8 +38859,9 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * Controls if the remote IMAP SSL server is enabled for a given server. See also
-   * zimbraRemoteImapServerEnabled and zimbraReverseProxyUpstreamImapServers.
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: Controls if the
+   * remote IMAP SSL server is enabled for a given server. See also zimbraRemoteImapServerEnabled
+   * and zimbraReverseProxyUpstreamImapServers.
    *
    * @return zimbraRemoteImapSSLServerEnabled, or false if unset
    * @since ZCS 8.8.1
@@ -38855,8 +38872,9 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * Controls if the remote IMAP SSL server is enabled for a given server. See also
-   * zimbraRemoteImapServerEnabled and zimbraReverseProxyUpstreamImapServers.
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: Controls if the
+   * remote IMAP SSL server is enabled for a given server. See also zimbraRemoteImapServerEnabled
+   * and zimbraReverseProxyUpstreamImapServers.
    *
    * @param zimbraRemoteImapSSLServerEnabled new value
    * @throws com.zimbra.common.service.ServiceException if error during update
@@ -38873,8 +38891,9 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * Controls if the remote IMAP SSL server is enabled for a given server. See also
-   * zimbraRemoteImapServerEnabled and zimbraReverseProxyUpstreamImapServers.
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: Controls if the
+   * remote IMAP SSL server is enabled for a given server. See also zimbraRemoteImapServerEnabled
+   * and zimbraReverseProxyUpstreamImapServers.
    *
    * @param zimbraRemoteImapSSLServerEnabled new value
    * @param attrs existing map to populate, or null to create a new map
@@ -38892,8 +38911,9 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * Controls if the remote IMAP SSL server is enabled for a given server. See also
-   * zimbraRemoteImapServerEnabled and zimbraReverseProxyUpstreamImapServers.
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: Controls if the
+   * remote IMAP SSL server is enabled for a given server. See also zimbraRemoteImapServerEnabled
+   * and zimbraReverseProxyUpstreamImapServers.
    *
    * @throws com.zimbra.common.service.ServiceException if error during update
    * @since ZCS 8.8.1
@@ -38906,8 +38926,9 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * Controls if the remote IMAP SSL server is enabled for a given server. See also
-   * zimbraRemoteImapServerEnabled and zimbraReverseProxyUpstreamImapServers.
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: Controls if the
+   * remote IMAP SSL server is enabled for a given server. See also zimbraRemoteImapServerEnabled
+   * and zimbraReverseProxyUpstreamImapServers.
    *
    * @param attrs existing map to populate, or null to create a new map
    * @return populated map to pass into Provisioning.modifyAttrs
@@ -38921,7 +38942,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * Controls if the remote IMAP (non-SSL) service is enabled for a given server. See also
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: Controls if the
+   * remote IMAP (non-SSL) service is enabled for a given server. See also
    * zimbraRemoteImapSSLServerEnabled and zimbraReverseProxyUpstreamImapServers.
    *
    * @return zimbraRemoteImapServerEnabled, or false if unset
@@ -38933,7 +38955,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * Controls if the remote IMAP (non-SSL) service is enabled for a given server. See also
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: Controls if the
+   * remote IMAP (non-SSL) service is enabled for a given server. See also
    * zimbraRemoteImapSSLServerEnabled and zimbraReverseProxyUpstreamImapServers.
    *
    * @param zimbraRemoteImapServerEnabled new value
@@ -38950,7 +38973,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * Controls if the remote IMAP (non-SSL) service is enabled for a given server. See also
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: Controls if the
+   * remote IMAP (non-SSL) service is enabled for a given server. See also
    * zimbraRemoteImapSSLServerEnabled and zimbraReverseProxyUpstreamImapServers.
    *
    * @param zimbraRemoteImapServerEnabled new value
@@ -38968,7 +38992,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * Controls if the remote IMAP (non-SSL) service is enabled for a given server. See also
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: Controls if the
+   * remote IMAP (non-SSL) service is enabled for a given server. See also
    * zimbraRemoteImapSSLServerEnabled and zimbraReverseProxyUpstreamImapServers.
    *
    * @throws com.zimbra.common.service.ServiceException if error during update
@@ -38982,7 +39007,8 @@ public abstract class ZAttrServer extends NamedEntry {
   }
 
   /**
-   * Controls if the remote IMAP (non-SSL) service is enabled for a given server. See also
+   * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed. Orig desc: Controls if the
+   * remote IMAP (non-SSL) service is enabled for a given server. See also
    * zimbraRemoteImapSSLServerEnabled and zimbraReverseProxyUpstreamImapServers.
    *
    * @param attrs existing map to populate, or null to create a new map

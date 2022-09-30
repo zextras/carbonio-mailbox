@@ -78,6 +78,7 @@ public final class CertMgrConstants {
   // VerifyCertKey
   public static final String A_verifyResult = "verifyResult";
   public static final String A_privkey = "privkey";
+  public static final String A_ca = "ca";
 
   // UploadDomCert
   public static final String A_CERT_AID = "cert.aid";

@@ -135,9 +135,7 @@ public class ImapCredentials implements java.io.Serializable {
     if (mStore != null) {
       return mStore;
     }
-    if (mIsLocal
-        && !LC.imap_always_use_remote_store.booleanValue()
-        && ImapDaemon.isRunningImapInsideMailboxd()) {
+    if (mIsLocal && !LC.imap_always_use_remote_store.booleanValue()) {
       ZimbraLog.imap.debug("ImapCredentials returning local mailbox store for %s", mAccountId);
       return new LocalImapMailboxStore(
           MailboxManager.getInstance().getMailboxByAccountId(mAccountId));

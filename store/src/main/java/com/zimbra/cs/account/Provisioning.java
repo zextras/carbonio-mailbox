@@ -281,7 +281,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public static final String SERVICE_ADMINCLIENT = "zimbraAdmin";
   public static final String SERVICE_ZIMLET = "zimlet";
   public static final String SERVICE_MAILCLIENT = "service";
-  public static final String SERVICE_IMAP = "imapd";
 
   public static Provisioning getInstance() {
     return getInstance(CacheMode.DEFAULT);
@@ -1575,38 +1574,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     if (homeServer == null) {
       return Collections.emptyList();
     }
-    List<Server> imapDaemonServers = getIMAPDaemonServers(homeServer);
-    if (!imapDaemonServers.isEmpty()) {
-      return imapDaemonServers;
-    }
     return Lists.newArrayList(getInstance().getServerByServiceHostname(account.getMailHost()));
-  }
-
-  public static List<Server> getIMAPDaemonServers(Account account) throws ServiceException {
-    Server homeServer = account.getServer();
-    if (homeServer == null) {
-      return Collections.emptyList();
-    }
-    return getIMAPDaemonServers(homeServer);
-  }
-
-  public static List<Server> getIMAPDaemonServers(Server server) throws ServiceException {
-    String[] upstreamIMAPServers = server.getReverseProxyUpstreamImapServers();
-    Provisioning prov = getInstance();
-    List<Server> imapServers = new ArrayList<>(upstreamIMAPServers.length);
-    for (String serverName : upstreamIMAPServers) {
-      Server svr = prov.getServerByServiceHostname(serverName);
-      if (svr == null) {
-        ZimbraLog.imap.warn("cannot find imap server by service hostname for '%s'", serverName);
-        continue;
-      }
-      imapServers.add(svr);
-    }
-    return imapServers;
-  }
-
-  public static List<Server> getIMAPDaemonServersForLocalServer() throws ServiceException {
-    return getIMAPDaemonServers(getInstance().getLocalServer());
   }
 
   public static boolean onLocalServer(Group group) throws ServiceException {

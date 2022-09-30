@@ -110,7 +110,6 @@ import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteMailQueue;
 import com.zimbra.cs.rmgmt.RemoteMailQueue.QueueAttr;
 import com.zimbra.cs.rmgmt.RemoteManager;
-import com.zimbra.cs.service.admin.FlushCache;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.file.FileBlobStore;
 import com.zimbra.cs.util.BuildInfo;
@@ -992,8 +991,9 @@ public class TestUtil extends Assert {
   }
 
   /**
-   * Deletes the account for the given username. Consider using {@link deleteAccountIfExists} as
-   * alternative to reduce logging where the account may not exist.
+   * Deletes the account for the given username. Consider using {@link
+   * TestUtil#deleteAccountIfExists(String)} as alternative to reduce logging where the account may
+   * not exist.
    */
   public static void deleteAccount(String username) throws ServiceException {
     Provisioning prov = Provisioning.getInstance();
@@ -1730,9 +1730,5 @@ public class TestUtil extends Assert {
     } catch (AssumptionViolatedException ave) {
       throw new AssumptionViolatedException(missive, null);
     }
-  }
-
-  public static void flushImapDaemonCache(Server imapd) throws Exception {
-    FlushCache.flushCacheOnImapDaemon(imapd, "all", null);
   }
 }

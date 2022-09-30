@@ -114,14 +114,12 @@ public class RemoteIP {
     if (mOrigProto != null) {
       ZimbraLog.addOrigProtoToContext(mOrigProto);
     }
-
-    // don't log client's IP or client's port if original IP/port are present or if client's IP is
-    // localhost
+    // don't log client's IP or client's port if client's IP is localhost
     if (!TrustedIPs.isLocalhost(mClientIP)) {
-      if (mOrigIP == null) {
+      if (mClientIP != null) {
         ZimbraLog.addIpToContext(mClientIP);
       }
-      if (mOrigPort == null) {
+      if (mClientPort != 0) {
         ZimbraLog.addPortToContext(mClientPort);
       }
     }

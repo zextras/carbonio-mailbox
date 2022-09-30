@@ -11,7 +11,6 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.extension.ExtensionUtil;
-import com.zimbra.cs.imap.ImapDaemon;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.file.FileBlobStore;
@@ -24,12 +23,17 @@ public abstract class StoreManager {
   private static StoreManager sInstance;
   private static Integer diskStreamingThreshold;
 
+  /**
+   * IMPORTANT: Previously when ImapDaemon was a thing, this method would use
+   * ImapDaemon#isRunningImapInsideMailboxd to decide if use imapd class store or zimbra class
+   * store. When imap was managed by imapdaemon, the method would return false and use imapd class.
+   * Now imap is always managed by mailboxd
+   *
+   * @return an instance of store manager
+   */
   public static StoreManager getInstance() {
-    if (ImapDaemon.isRunningImapInsideMailboxd()) {
-      return getInstance(LC.zimbra_class_store.value());
-    } else {
-      return getInstance(LC.imapd_class_store.value());
-    }
+
+    return getInstance(LC.zimbra_class_store.value());
   }
 
   public static StoreManager getInstance(String className) {

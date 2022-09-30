@@ -6,7 +6,6 @@
 package com.zimbra.cs.service.admin;
 
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -21,13 +20,10 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
-import com.zimbra.cs.mailclient.imap.ImapConnection;
-import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.AddAccountLoggerResponse;
 import com.zimbra.soap.admin.type.LoggerInfo;
 import com.zimbra.soap.type.LoggingLevel;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -78,8 +74,6 @@ public class AddAccountLogger extends AdminDocumentHandler {
 
     Collection<Log> loggers = addAccountLogger(account, category, level);
 
-    addAccountLoggerOnImapServers(account, category, sLevel);
-
     // Build response.
     List<LoggerInfo> loggerInfos = new ArrayList<>(loggers.size());
     for (Log log : loggers) {
@@ -106,46 +100,6 @@ public class AddAccountLogger extends AdminDocumentHandler {
     }
 
     return loggers;
-  }
-
-  public static void addAccountLoggerOnImapServers(Account account, String category, String level) {
-    List<Server> imapServers;
-    try {
-      imapServers = Provisioning.getIMAPDaemonServers(account);
-    } catch (ServiceException e) {
-      ZimbraLog.imap.warn("unable to fetch list of imapd servers for account %s", account, e);
-      return;
-    }
-    for (Server server : imapServers) {
-      addAccountLoggerOnImapServer(server, account, category, level);
-    }
-  }
-
-  public static void addAccountLoggerOnImapServer(
-      Server server, Account account, String category, String level) {
-    ImapConnection connection = null;
-    try {
-      connection =
-          ImapConnection.getZimbraConnection(
-              server, LC.zimbra_ldap_user.value(), AuthProvider.getAdminAuthToken());
-    } catch (ServiceException e) {
-      ZimbraLog.imap.warn(
-          "unable to connect to imapd server '%s' to issue X-ZIMBRA-ADD-ACCOUNT-LOGGER request",
-          server.getServiceHostname(), e);
-      return;
-    }
-    try {
-      ZimbraLog.imap.debug(
-          "issuing X-ZIMBRA-ADD-ACCOUNT-LOGGER request to imapd server '%s' for account '%s'",
-          server.getServiceHostname(), account.getName());
-      connection.addAccountLogger(account, category, level);
-    } catch (IOException e) {
-      ZimbraLog.imap.warn(
-          "failed to enable account level logging for account '%s' on server '%s'",
-          account.getName(), server.getServiceHostname(), e);
-    } finally {
-      connection.close();
-    }
   }
 
   /**

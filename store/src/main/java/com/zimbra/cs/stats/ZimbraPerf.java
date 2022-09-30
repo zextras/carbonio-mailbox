@@ -48,8 +48,7 @@ import javax.management.ObjectName;
 public class ZimbraPerf {
 
   public enum ServerID {
-    ZIMBRA,
-    IMAP_DAEMON
+    ZIMBRA
   }
 
   @Target({ElementType.FIELD})
@@ -195,14 +194,12 @@ public class ZimbraPerf {
   public static final Counter COUNTER_BLOB_INPUT_STREAM_SEEK_RATE = new Counter();
   public static final ActivityTracker SOAP_TRACKER = new ActivityTracker("soap");
   public static final ActivityTracker IMAP_TRACKER = new ActivityTracker("imap");
-  public static final ActivityTracker IMAPD_TRACKER = new ActivityTracker("imapd");
   public static final ActivityTracker POP_TRACKER = new ActivityTracker("pop3");
   public static final ActivityTracker LDAP_TRACKER = new ActivityTracker("ldap");
   public static final ActivityTracker SQL_TRACKER = new ActivityTracker("sql");
 
   public static final ActivityTracker SOAP_TRACKER_PROMETHEUS = new ActivityTracker("soap");
   public static final ActivityTracker IMAP_TRACKER_PROMETHEUS = new ActivityTracker("imap");
-  public static final ActivityTracker IMAPD_TRACKER_PROMETHEUS = new ActivityTracker("imapd");
   public static final ActivityTracker POP_TRACKER_PROMETHEUS = new ActivityTracker("pop3");
   public static final ActivityTracker LDAP_TRACKER_PROMETHEUS = new ActivityTracker("ldap");
   public static final ActivityTracker SQL_TRACKER_PROMETHEUS = new ActivityTracker("sql");
@@ -247,8 +244,6 @@ public class ZimbraPerf {
         RTS_XMPP_CACHE_SIZE,
         RTS_XMPP_CACHE_HIT_RATE
       };
-  private static final String[] imapdRealtimeStatsNames =
-      new String[] {RTS_IMAP_CONN, RTS_IMAP_THREADS, RTS_IMAP_SSL_CONN, RTS_IMAP_SSL_THREADS};
 
   @Description("Number of messages received over LMTP")
   private static final String DC_LMTP_RCVD_MSGS = "lmtp_rcvd_msgs";
@@ -528,17 +523,6 @@ public class ZimbraPerf {
                     realtimeStats
                   });
           break;
-        case IMAP_DAEMON:
-          realtimeStats = new RealtimeStats(imapdRealtimeStatsNames);
-          sAccumulators =
-              new CopyOnWriteArrayList<>(
-                  new Accumulator[] {
-                    new DeltaCalculator(STOPWATCH_IMAP)
-                        .setCountName(DC_IMAP_COUNT)
-                        .setAverageName(DC_IMAP_MS_AVG),
-                    realtimeStats
-                  });
-          break;
         default:
       }
       isPrepared = true;
@@ -561,9 +545,6 @@ public class ZimbraPerf {
       switch (serverID) {
         case ZIMBRA:
           initializeForMainZimbraJVM();
-          break;
-        case IMAP_DAEMON:
-          initializeForImapDaemon();
           break;
         default:
       }
@@ -608,34 +589,6 @@ public class ZimbraPerf {
       statsScheduler.schedule(new PrometheusStatsDumper(LDAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
       statsScheduler.schedule(new PrometheusStatsDumper(SQL_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
       statsScheduler.schedule(new PrometheusStatsDumper(threadsTracker), DUMP_FREQUENCY);
-    } finally {
-      LOCK.unlock();
-    }
-  }
-
-  private static void initializeForImapDaemon() {
-    LOCK.lock();
-    try {
-      // Initialize JMX
-      final MBeanServer jmxServer = ManagementFactory.getPlatformMBeanServer();
-      final JmxImapDaemonStats jmxImapDaemonStats = new JmxImapDaemonStats();
-      try {
-        jmxServer.registerMBean(
-            jmxImapDaemonStats, new ObjectName("ZimbraImapDaemon:type=ServerStats"));
-      } catch (Exception e) {
-        ZimbraLog.perf.warn("Unable to register JMX interface.", e);
-      }
-
-      final Stats imapdServerStatsTracker =
-          new Stats("imapd_stats", sAccumulators, jmxImapDaemonStats);
-
-      // CSV
-      statsScheduler.schedule(new CsvStatsDumper(imapdServerStatsTracker), DUMP_FREQUENCY);
-      statsScheduler.schedule(new CsvStatsDumper(IMAPD_TRACKER), DUMP_FREQUENCY);
-
-      // PROM
-      statsScheduler.schedule(new PrometheusStatsDumper(imapdServerStatsTracker), DUMP_FREQUENCY);
-      statsScheduler.schedule(new PrometheusStatsDumper(IMAPD_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
     } finally {
       LOCK.unlock();
     }

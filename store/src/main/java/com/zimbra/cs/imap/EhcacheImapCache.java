@@ -35,10 +35,7 @@ final class EhcacheImapCache implements ImapSessionManager.Cache<String, ImapFol
     // If running inside mailboxd, share mailboxd cache, else use separate imap cache.  This avoids
     // issues when running
     // decoupled IMAP service on same host as mailbox.
-    EhcacheManager.Service service =
-        !ImapDaemon.isRunningImapInsideMailboxd()
-            ? EhcacheManager.Service.IMAP
-            : EhcacheManager.Service.MAILBOX;
+    EhcacheManager.Service service = EhcacheManager.Service.MAILBOX;
     ehcache = EhcacheManager.getInstance(service).getEhcache(name);
     this.active = active;
     if (active) {
