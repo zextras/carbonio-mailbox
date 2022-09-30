@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>zm-mailbox</artifactId>
 
-  <groupId>com.ktechpit</groupId>
+  <groupId>zextras</groupId>
   <modelVersion>4.0.0</modelVersion>
   <modules>
     <module>soap</module>
@@ -21,7 +21,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <version>1.0-SNAPSHOT</version>
+  <version>22.11.0-SNAPSHOT</version>
   <profiles>
     <!-- Allows deploy to Zextras public maven repo -->
     <profile>

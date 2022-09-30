@@ -4,8 +4,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>zm-mailbox</artifactId>
-    <groupId>com.ktechpit</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>zextras</groupId>
+    <version>22.11.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -80,8 +80,8 @@
 
     <dependency>
       <artifactId>zm-common</artifactId>
-      <groupId>com.ktechpit</groupId>
-      <version>1.0-SNAPSHOT</version>
+      <groupId>zextras</groupId>
+      <version>22.11.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Sun dependencies needed and removed from jdk 11, consider switching to Jakarta -->

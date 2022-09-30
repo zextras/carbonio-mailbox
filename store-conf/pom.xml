@@ -34,8 +34,8 @@
 
   <parent>
     <artifactId>zm-mailbox</artifactId>
-    <groupId>com.ktechpit</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>zextras</groupId>
+    <version>22.11.0-SNAPSHOT</version>
   </parent>
 
   <properties>

@@ -333,9 +333,9 @@
       <version>2.8.0</version>
     </dependency>
     <dependency>
-      <groupId>com.ktechpit</groupId>
+      <groupId>zextras</groupId>
       <artifactId>zm-soap</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>22.11.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -433,9 +433,9 @@
       <version>2.7.0</version>
     </dependency>
     <dependency>
-      <groupId>com.ktechpit</groupId>
+      <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>22.11.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -481,14 +481,14 @@
 
     <dependency>
       <artifactId>zm-common</artifactId>
-      <groupId>com.ktechpit</groupId>
-      <version>1.0-SNAPSHOT</version>
+      <groupId>zextras</groupId>
+      <version>22.11.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <artifactId>zm-client</artifactId>
-      <groupId>com.ktechpit</groupId>
-      <version>1.0-SNAPSHOT</version>
+      <groupId>zextras</groupId>
+      <version>22.11.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
@@ -497,8 +497,8 @@
 
   <parent>
     <artifactId>zm-mailbox</artifactId>
-    <groupId>com.ktechpit</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>zextras</groupId>
+    <version>22.11.0-SNAPSHOT</version>
   </parent>
 
   <build>
