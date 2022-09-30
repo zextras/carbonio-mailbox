@@ -64,7 +64,7 @@ pipeline {
         }
         stage('Publish SNAPSHOT to maven') {
               steps {
-                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -Pdev')
+                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pdev')
               }
         }
         stage('Publish to maven') {
@@ -72,7 +72,7 @@ pipeline {
                 buildingTag()
             }
             steps {
-              mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -Pprod')
+              mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pprod')
             }
         }
         stage('Build deb/rpm') {
