@@ -633,6 +633,7 @@
           <warName>${warfile.name}</warName>
           <webXml>${war.web.xml}</webXml>
           <failOnMissingWebXml>true</failOnMissingWebXml>
+          <attachClasses>true</attachClasses>
 
           <!--TODO: exclusion of META-INF/maven/** is not working for some reasons-->
           <packagingExcludes>
