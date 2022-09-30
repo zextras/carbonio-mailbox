@@ -16,7 +16,7 @@ pipeline {
     environment {
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
-        CARBONIO_BUILDINFO_VERSION='22.8.0_ZEXTRAS_202208'
+        CARBONIO_BUILDINFO_VERSION='22.11.0_ZEXTRAS_202211'
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=$CARBONIO_BUILDINFO_VERSION'
     }
     options {
@@ -63,12 +63,6 @@ pipeline {
             }
         }
         stage('Publish SNAPSHOT to maven') {
-              when {
-              anyOf {
-                  branch 'devel';
-                  branch 'feature/maven-build'
-                  }
-              }
               steps {
                 mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -Pdev')
               }
