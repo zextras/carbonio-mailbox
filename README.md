@@ -33,7 +33,7 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
 - Build the code:
 
- `ant all -Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208`
+ `mvn install -Dcarbonio.buildinfo.version=22.11.0_ZEXTRAS_202211`
 
  Tips:
 
