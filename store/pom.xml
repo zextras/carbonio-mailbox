@@ -633,6 +633,7 @@
       </plugin>
 
       <!-- Maven WAR plugin -->
+      <!-- https://maven.apache.org/plugins/maven-war-plugin/examples/including-excluding-files-from-war.html -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -654,6 +655,8 @@
 
           <!--TODO: exclusion of META-INF/maven/** is not working for some reasons-->
           <packagingExcludes>
+            WEB-INF/lib/commons-logging-*.jar,
+            %regex[WEB-INF/lib/log4j-(?!over-slf4j).*.jar],
             WEB-INF/classes/org/**,
             WEB-INF/classes/com/**,
             WEB-INF/classes/attrs/**,
