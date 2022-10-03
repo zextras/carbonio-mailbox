@@ -455,11 +455,24 @@
       <artifactId>json</artifactId>
       <version>20090211</version>
     </dependency>
+    <!-- Needed to bridge log4j -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.36</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-reload4j</artifactId>
+      <version>1.7.36</version>
+      <scope>runtime</scope>
+    </dependency>
     <!-- Provided by Jetty or installation -->
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
+      <groupId>ch.qos.reload4j</groupId>
+      <artifactId>reload4j</artifactId>
+      <version>1.2.19</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
