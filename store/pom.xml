@@ -65,24 +65,28 @@
       <artifactId>jetty-continuation</artifactId>
       <groupId>org.eclipse.jetty</groupId>
       <version>9.4.48.v20220622</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <artifactId>jetty-security</artifactId>
       <groupId>org.eclipse.jetty</groupId>
       <version>9.4.48.v20220622</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <artifactId>jetty-servlets</artifactId>
       <groupId>org.eclipse.jetty</groupId>
       <version>9.4.48.v20220622</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <artifactId>jetty-servlet</artifactId>
       <groupId>org.eclipse.jetty</groupId>
       <version>9.4.48.v20220622</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -389,6 +393,7 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
       <version>9.4.48.v20220622</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>
@@ -419,6 +424,7 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-io</artifactId>
       <version>9.4.48.v20220622</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -458,6 +464,13 @@
       <version>1.7.30</version>
       <scope>runtime</scope>
     </dependency>
+    <!-- Provided by carbonio-common-core-libs, see rolling.RollingFileAppender -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>apache-log4j-extras</artifactId>
+      <version>1.2.17</version>
+    </dependency>
+
     <!-- Provided by Jetty or installation -->
     <dependency>
       <groupId>log4j</groupId>
@@ -697,7 +710,7 @@
         <version>9.4.48.v20220622</version>
         <configuration>
           <scanIntervalSeconds>10</scanIntervalSeconds>
-          <classesDirectory>${project.build.directory}/classes</classesDirectory>
+          <useProvidedScope>true</useProvidedScope>
           <webApp>
             <contextPath>/</contextPath>
           </webApp>

@@ -76,6 +76,8 @@
     <copy todir="${basedir}/build/zimbra/conf/msgs">
       <fileset dir="${basedir}/../store-conf/conf/msgs"/>
     </copy>
+    <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/log4j.properties">
+    </copy>
   </target>
 
   <target name="generate-getters" description="generate methods for attributes in attrs.xml">
