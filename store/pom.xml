@@ -112,6 +112,7 @@
       <artifactId>jaxws-api</artifactId>
       <groupId>javax.xml.ws</groupId>
       <version>2.3.0</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -464,12 +465,6 @@
       <version>1.7.30</version>
       <scope>runtime</scope>
     </dependency>
-    <!-- Provided by carbonio-common-core-libs, see rolling.RollingFileAppender -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>apache-log4j-extras</artifactId>
-      <version>1.2.17</version>
-    </dependency>
 
     <!-- Provided by Jetty or installation -->
     <dependency>
@@ -722,10 +717,18 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>9.4.48.v20220622</version>
         <configuration>
-          <scanIntervalSeconds>10</scanIntervalSeconds>
+          <scanIntervalSeconds>30</scanIntervalSeconds>
+          <useProvidedScope>true</useProvidedScope>
+          <dumpOnStart>true</dumpOnStart>
           <webApp>
             <contextPath>/</contextPath>
           </webApp>
+          <systemProperties>
+            <systemProperty>
+              <name>webapp</name>
+              <value>service</value>
+            </systemProperty>
+          </systemProperties>
         </configuration>
       </plugin>
 
