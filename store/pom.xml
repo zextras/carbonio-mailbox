@@ -359,6 +359,7 @@
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
       <version>1.4.5</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -727,6 +728,10 @@
             <systemProperty>
               <name>webapp</name>
               <value>service</value>
+            </systemProperty>
+            <systemProperty>
+              <name>zimbra.config</name>
+              <value>${project.basedir}/conf/localconfig-jetty-test.xml</value>
             </systemProperty>
           </systemProperties>
         </configuration>
