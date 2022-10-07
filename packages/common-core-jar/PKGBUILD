@@ -30,6 +30,6 @@ package() {
   install -D soap/target/zm-soap*.jar \
     "${pkgdir}/opt/zextras/lib/jars/zimbrasoap.jar"
 
-  install -D store/target/zm-store*.jar \
+  install -D store/target/service-classes.jar \
     "${pkgdir}/opt/zextras/lib/jars/zimbrastore.jar"
 }
