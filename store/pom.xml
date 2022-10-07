@@ -422,7 +422,7 @@
       <groupId>zimbra</groupId>
       <artifactId>zm-jetty</artifactId>
       <type>pom</type>
-      <scope>runtime</scope>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>
