@@ -3,8 +3,7 @@
 <BODY>
 <%--
 	This page can be customized.
---%> 
+--%>
 <h3><%=L10nUtil.getMessage(MsgKey.errAttachmentDownloadDisabled, request)%></h3>
 </BODY>
 </HTML>
-
