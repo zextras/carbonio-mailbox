@@ -482,20 +482,6 @@
       <groupId>javax.servlet</groupId>
       <version>3.1.0</version>
     </dependency>
-    <!-- Dependency used at runtime (aka carbonio-zcs-libs) -->
-    <dependency>
-      <groupId>zimbra</groupId>
-      <artifactId>zm-jetty</artifactId>
-      <version>22.11.0-SNAPSHOT</version>
-      <type>pom</type>
-      <scope>runtime</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>maven-plugins</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <dependency>
       <artifactId>zm-common</artifactId>
       <groupId>zextras</groupId>
@@ -515,6 +501,20 @@
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
       <version>22.11.0-SNAPSHOT</version>
+    </dependency>
+    <!-- Dependency used at runtime (aka carbonio-zcs-libs) -->
+    <dependency>
+      <groupId>zimbra</groupId>
+      <artifactId>zm-jetty</artifactId>
+      <version>22.11.0-SNAPSHOT</version>
+      <type>pom</type>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>maven-plugins</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
   </dependencies>
