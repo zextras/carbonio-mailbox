@@ -13,6 +13,7 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
+    <module>store-war</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -62,6 +63,24 @@
       <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>maven-redhat</id>
+      <url>https://maven.repository.redhat.com/ga/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>nexus</id>
+      <url>https://repository.liferay.com/nexus/content/repositories/public/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>fuse</id>
+      <url>https://repo.fusesource.com/maven2/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>zextras-java-sdk</id>
+      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <!-- Define common plugins used by each project -->
   <build>

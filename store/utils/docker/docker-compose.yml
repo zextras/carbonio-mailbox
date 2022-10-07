@@ -10,3 +10,12 @@ services:
     image: carbonio/ce-ldap-u20:latest
     ports:
       - "389:389"
+  db:
+    image: carbonio-db
+    restart: always
+    environment:
+      MARIADB_USER: zextras
+      MARIADB_PASSWORD: zextras
+      MARIADB_ROOT_PASSWORD: password
+    ports:
+      - "7306:3306"

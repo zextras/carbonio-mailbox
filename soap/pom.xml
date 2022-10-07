@@ -20,6 +20,11 @@
 
   <dependencies>
     <dependency>
+      <artifactId>zm-common</artifactId>
+      <groupId>zextras</groupId>
+      <version>22.11.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
       <version>28.1-jre</version>
@@ -76,12 +81,6 @@
       <artifactId>xmlunit</artifactId>
       <groupId>xmlunit</groupId>
       <version>1.6</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>zm-common</artifactId>
-      <groupId>zextras</groupId>
-      <version>22.11.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Sun dependencies needed and removed from jdk 11, consider switching to Jakarta -->

@@ -16,4 +16,7 @@
   <key name="zimbra_ldap_password">
     <value>password</value>
   </key>
+  <key name="mysql_bind_address">
+    <value>localhost</value>
+  </key>
 </localconfig>

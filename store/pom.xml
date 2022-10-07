@@ -62,33 +62,7 @@
       <version>3.5.0</version>
     </dependency>
 
-    <dependency>
-      <artifactId>jetty-continuation</artifactId>
-      <groupId>org.eclipse.jetty</groupId>
-      <version>9.4.48.v20220622</version>
-      <scope>provided</scope>
-    </dependency>
 
-    <dependency>
-      <artifactId>jetty-security</artifactId>
-      <groupId>org.eclipse.jetty</groupId>
-      <version>9.4.48.v20220622</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <artifactId>jetty-servlets</artifactId>
-      <groupId>org.eclipse.jetty</groupId>
-      <version>9.4.48.v20220622</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <artifactId>jetty-servlet</artifactId>
-      <groupId>org.eclipse.jetty</groupId>
-      <version>9.4.48.v20220622</version>
-      <scope>provided</scope>
-    </dependency>
 
     <dependency>
       <artifactId>zm-ews-stub</artifactId>
@@ -113,7 +87,6 @@
       <artifactId>jaxws-api</artifactId>
       <groupId>javax.xml.ws</groupId>
       <version>2.3.0</version>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -360,7 +333,6 @@
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
       <version>1.4.5</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -393,12 +365,6 @@
       <version>0.9.16-patched</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-util</artifactId>
-      <version>9.4.48.v20220622</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>javax.activation</groupId>
       <artifactId>activation</artifactId>
       <version>1.1.1</version>
@@ -413,22 +379,54 @@
       <artifactId>jaxb-api</artifactId>
       <version>2.3.0</version>
     </dependency>
+    <!-- Jetty -->
+    <dependency>
+      <artifactId>jetty-continuation</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <version>9.4.48.v20220622</version>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-security</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <version>9.4.48.v20220622</version>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-servlets</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <version>9.4.48.v20220622</version>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-servlet</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <version>9.4.48.v20220622</version>
+    </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-http</artifactId>
       <version>9.4.48.v20220622</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-io</artifactId>
+      <version>9.4.48.v20220622</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>9.4.48.v20220622</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>9.4.48.v20220622</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.sshd</groupId>
       <artifactId>sshd-common</artifactId>
       <version>2.7.0</version>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-io</artifactId>
-      <version>9.4.48.v20220622</version>
-      <scope>provided</scope>
-    </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-rng-client-api</artifactId>
@@ -468,62 +466,29 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Provided by Jetty or installation -->
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.16</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>2.1.1</version>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <artifactId>javax.servlet-api</artifactId>
       <groupId>javax.servlet</groupId>
-      <scope>provided</scope>
       <version>3.1.0</version>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>9.4.48.v20220622</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <artifactId>zm-common</artifactId>
-      <groupId>zextras</groupId>
-      <version>22.11.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <artifactId>zm-client</artifactId>
-      <groupId>zextras</groupId>
-      <version>22.11.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>zextras</groupId>
-      <artifactId>zm-soap</artifactId>
-      <version>22.11.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>zextras</groupId>
-      <artifactId>zm-native</artifactId>
-      <version>22.11.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
+    <!-- Dependency used at runtime (aka carbonio-zcs-libs) -->
     <dependency>
       <groupId>zimbra</groupId>
       <artifactId>zm-jetty</artifactId>
-      <version>22.11.0</version>
+      <version>22.11.0-SNAPSHOT</version>
       <type>pom</type>
-      <scope>provided</scope>
+      <scope>runtime</scope>
       <exclusions>
         <exclusion>
           <groupId>maven-plugins</groupId>
@@ -531,11 +496,31 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <artifactId>zm-common</artifactId>
+      <groupId>zextras</groupId>
+      <version>22.11.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <artifactId>zm-client</artifactId>
+      <groupId>zextras</groupId>
+      <version>22.11.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>zm-soap</artifactId>
+      <version>22.11.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>zm-native</artifactId>
+      <version>22.11.0-SNAPSHOT</version>
+    </dependency>
 
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
 
   <parent>
     <artifactId>zm-mailbox</artifactId>
@@ -657,70 +642,15 @@
         <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
 
-      <!-- Maven WAR plugin -->
-      <!-- https://maven.apache.org/plugins/maven-war-plugin/examples/including-excluding-files-from-war.html -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.0</version>
-        <executions>
-          <execution>
-            <id>war</id>
-            <phase>package</phase>
-            <goals>
-              <goal>war</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <warName>${warfile.name}</warName>
-          <webXml>${war.web.xml}</webXml>
-          <failOnMissingWebXml>true</failOnMissingWebXml>
-          <attachClasses>true</attachClasses>
-
-          <!--TODO: exclusion of META-INF/maven/** is not working for some reasons-->
-          <packagingExcludes>
-            WEB-INF/lib/commons-logging-*.jar,
-            %regex[WEB-INF/lib/log4j-(?!over-slf4j).*.jar],
-            WEB-INF/classes/org/**,
-            WEB-INF/classes/com/**,
-            WEB-INF/classes/attrs/**,
-            META-INF/**
-          </packagingExcludes>
-
-          <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-            </manifest>
-          </archive>
-
-          <webResources>
-            <resource>
-              <directory>${project.basedir}/WebRoot</directory>
-              <targetPath>/</targetPath>
-            </resource>
-
-            <resource>
-              <directory>${config.dir}</directory>
-              <targetPath>WEB-INF/classes</targetPath>
-              <includes>
-                <include>**/*.xml</include>
-              </includes>
-              <excludes>
-                <exclude>**/web*</exclude>
-              </excludes>
-            </resource>
-          </webResources>
-        </configuration>
-      </plugin>
       <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
+      <!-- This is an attempt to run the mailbox for test purposes.
+           Work is incomplete because of dependencies error, but it will help in cleaning them. -->
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <version>9.4.48.v20220622</version>
         <configuration>
           <scanIntervalSeconds>30</scanIntervalSeconds>
-          <useProvidedScope>true</useProvidedScope>
           <dumpOnStart>true</dumpOnStart>
           <webApp>
             <contextPath>/</contextPath>
@@ -734,6 +664,10 @@
               <name>zimbra.config</name>
               <value>${project.basedir}/conf/localconfig-jetty-test.xml</value>
             </systemProperty>
+            <systemProperty>
+              <name>zimbra.native.required</name>
+              <value>false</value>
+            </systemProperty>
           </systemProperties>
         </configuration>
       </plugin>
@@ -744,15 +678,9 @@
   <properties>
     <!--war file properties-->
     <build.dir>target</build.dir>
-    <config.dir>${project.basedir}/conf</config.dir>
-    <warfile.name>service</warfile.name>
-    <war.web.xml>${config.dir}/web.xml.production</war.web.xml>
-    <!--TODO: This file is not in present-->
-    <!--    <war.classes.sieveConfig>${config.dir}/sieveConfig.xml</war.classes.sieveConfig>-->
-    <war.classes.cxf>${config.dir}/cxf.xml</war.classes.cxf>
-
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
+    <war.dir>${project.basedir}/../store-war</war.dir>
   </properties>
 
 </project>

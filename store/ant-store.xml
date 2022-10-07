@@ -5,8 +5,6 @@
   <property name="zimbra.webapp.dir" location="${jetty.webapps.dir}/zimbra"/>
   <property name="admin.webapp.dir" location="${jetty.webapps.dir}/zimbraAdmin"/>
   <property name="config.dir" location="conf"/>
-  <property name="warfilename" value="service.war"/>
-  <property name="warfile" location="${maven.build.dir}/${warfilename}"/>
 
   <condition property="production.suffix" value=".production" else="">
     <isset property="is-production"/>
