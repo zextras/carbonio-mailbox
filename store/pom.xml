@@ -579,23 +579,6 @@
           </systemProperties>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M3</version>
-        <executions>
-          <execution>
-            <configuration>
-              <rules>
-                <dependencyConvergence/>
-              </rules>
-            </configuration>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <!-- Maven WAR plugin -->
       <!-- https://maven.apache.org/plugins/maven-war-plugin/examples/including-excluding-files-from-war.html -->
       <plugin>
