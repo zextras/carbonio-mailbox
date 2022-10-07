@@ -69,6 +69,10 @@
   </repositories>
   <pluginRepositories>
     <pluginRepository>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
+    </pluginRepository>
+    <pluginRepository>
       <id>maven-redhat</id>
       <url>https://maven.repository.redhat.com/ga/</url>
     </pluginRepository>
