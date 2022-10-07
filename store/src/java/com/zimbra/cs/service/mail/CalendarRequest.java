@@ -847,7 +847,7 @@ public abstract class CalendarRequest extends MailDocumentHandler {
    * @throws ServiceException service exception
    */
   public static boolean isOnBehalfOfRequest(ZimbraSoapContext zsc) {
-    return !zsc.isDelegatedRequest();
+    return zsc.isDelegatedRequest();
   }
 
   protected MailItem.Type getItemType() {
