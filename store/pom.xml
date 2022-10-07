@@ -10,58 +10,48 @@
     <dependency>
       <artifactId>httpclient</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
-      <version>4.5.13</version>
     </dependency>
 
     <dependency>
       <artifactId>httpmime</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
-      <version>4.5.13</version>
     </dependency>
 
     <dependency>
       <artifactId>mina-core</artifactId>
       <groupId>org.apache.mina</groupId>
-      <version>2.1.6</version>
     </dependency>
 
     <dependency>
       <artifactId>concurrentlinkedhashmap-lru</artifactId>
       <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
-      <version>1.3.1</version>
     </dependency>
 
     <dependency>
       <artifactId>commons-dbcp</artifactId>
       <groupId>commons-dbcp</groupId>
-      <version>1.4</version>
     </dependency>
 
     <dependency>
       <artifactId>commons-io</artifactId>
       <groupId>commons-io</groupId>
-      <version>1.4</version>
     </dependency>
 
     <dependency>
       <artifactId>vavr</artifactId>
       <groupId>io.vavr</groupId>
-      <version>0.10.4</version>
     </dependency>
 
     <dependency>
       <artifactId>lucene-core</artifactId>
       <groupId>org.apache.lucene</groupId>
-      <version>3.5.0</version>
     </dependency>
 
     <dependency>
       <artifactId>lucene-analyzers</artifactId>
       <groupId>org.apache.lucene</groupId>
       <scope>test</scope>
-      <version>3.5.0</version>
     </dependency>
-
 
 
     <dependency>
@@ -80,441 +70,359 @@
     <dependency>
       <artifactId>jjwt</artifactId>
       <groupId>io.jsonwebtoken</groupId>
-      <version>0.7.0</version>
     </dependency>
 
     <dependency>
       <artifactId>jaxws-api</artifactId>
       <groupId>javax.xml.ws</groupId>
-      <version>2.3.0</version>
     </dependency>
 
     <dependency>
       <artifactId>commons-fileupload</artifactId>
       <groupId>commons-fileupload</groupId>
-      <version>1.4</version>
     </dependency>
 
     <dependency>
       <artifactId>curator-framework</artifactId>
       <groupId>org.apache.curator</groupId>
-      <version>2.0.1-incubating</version>
     </dependency>
 
     <dependency>
       <artifactId>curator-recipes</artifactId>
       <groupId>org.apache.curator</groupId>
-      <version>2.0.1-incubating</version>
     </dependency>
 
     <dependency>
       <artifactId>curator-x-discovery</artifactId>
       <groupId>org.apache.curator</groupId>
-      <version>2.0.1-incubating</version>
     </dependency>
 
     <dependency>
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
-      <version>28.1-jre</version>
     </dependency>
 
     <dependency>
       <artifactId>junit</artifactId>
       <groupId>junit</groupId>
       <scope>test</scope>
-      <version>4.8.2</version>
     </dependency>
 
     <dependency>
       <artifactId>jtnef</artifactId>
       <groupId>net.freeutils</groupId>
-      <version>1.9.0</version>
     </dependency>
 
     <dependency>
       <artifactId>unboundid-ldapsdk</artifactId>
       <groupId>com.unboundid</groupId>
-      <version>2.3.5</version>
     </dependency>
 
     <dependency>
       <artifactId>oauth</artifactId>
       <groupId>oauth</groupId>
-      <version>1.4</version>
     </dependency>
 
     <dependency>
       <artifactId>antisamy</artifactId>
       <groupId>org.owasp.antisamy</groupId>
-      <version>1.5.13</version>
     </dependency>
 
     <dependency>
       <artifactId>owasp-java-html-sanitizer</artifactId>
       <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
-      <version>20191001.1</version>
     </dependency>
 
     <dependency>
       <artifactId>carbonio-preview-sdk</artifactId>
       <groupId>com.zextras.carbonio.preview</groupId>
-      <version>0.2.4</version>
     </dependency>
 
     <dependency>
       <artifactId>carbonio-files-sdk</artifactId>
       <groupId>com.zextras.carbonio.files</groupId>
-      <version>0.0.3</version>
     </dependency>
 
     <dependency>
       <artifactId>commons-csv</artifactId>
       <groupId>org.apache.commons</groupId>
-      <version>1.2</version>
     </dependency>
 
     <dependency>
       <artifactId>commons-rng-simple</artifactId>
       <groupId>org.apache.commons</groupId>
-      <version>1.0</version>
     </dependency>
 
     <dependency>
       <artifactId>commons-text</artifactId>
       <groupId>org.apache.commons</groupId>
-      <version>1.1</version>
     </dependency>
 
     <dependency>
       <artifactId>closure-compiler</artifactId>
       <groupId>com.google.javascript</groupId>
-      <version>v20180204</version>
     </dependency>
 
     <dependency>
       <artifactId>yuicompressor</artifactId>
       <groupId>com.yahoo.platform.yui</groupId>
-      <version>2.4.8</version>
     </dependency>
 
     <dependency>
       <artifactId>junixsocket-common</artifactId>
       <groupId>com.kohlschutter.junixsocket</groupId>
-      <version>2.4.0</version>
     </dependency>
 
     <dependency>
       <artifactId>commons-compress</artifactId>
       <groupId>org.apache.commons</groupId>
-      <version>1.20</version>
     </dependency>
 
     <dependency>
       <artifactId>ant-1.7.0-ziputil-patched</artifactId>
       <groupId>ant-1.7.0-ziputil-patched</groupId>
-      <version>1.0</version>
     </dependency>
 
     <dependency>
       <artifactId>ant-tar-patched</artifactId>
       <groupId>ant-tar-patched</groupId>
-      <version>1.0</version>
     </dependency>
 
     <dependency>
       <artifactId>ehcache</artifactId>
       <groupId>org.ehcache</groupId>
-      <version>3.1.2</version>
     </dependency>
 
     <dependency>
       <artifactId>sshd-core</artifactId>
       <groupId>org.apache.sshd</groupId>
-      <version>2.7.0</version>
     </dependency>
 
     <dependency>
       <artifactId>commons-collections</artifactId>
       <groupId>commons-collections</groupId>
-      <version>3.2.2</version>
     </dependency>
 
     <dependency>
       <artifactId>libidn</artifactId>
       <groupId>org.gnu.inet</groupId>
-      <version>1.24</version>
     </dependency>
 
     <dependency>
       <artifactId>java-semver</artifactId>
       <groupId>com.github.zafarkhaja</groupId>
-      <version>0.9.0</version>
     </dependency>
 
     <dependency>
       <artifactId>mockito-core</artifactId>
       <groupId>org.mockito</groupId>
       <scope>test</scope>
-      <version>4.4.0</version>
     </dependency>
     <!-- Mockito inline required to mock static methods -->
     <dependency>
       <artifactId>mockito-inline</artifactId>
       <groupId>org.mockito</groupId>
       <scope>test</scope>
-      <version>4.4.0</version>
     </dependency>
 
     <dependency>
       <artifactId>easymock</artifactId>
       <groupId>org.easymock</groupId>
       <scope>test</scope>
-      <version>3.0</version>
     </dependency>
 
     <dependency>
       <artifactId>xmlunit-core</artifactId>
       <groupId>org.xmlunit</groupId>
       <scope>test</scope>
-      <version>2.3.0</version>
     </dependency>
 
     <dependency>
       <artifactId>hsqldb</artifactId>
       <groupId>org.hsqldb</groupId>
       <scope>test</scope>
-      <version>2.2.9</version>
     </dependency>
 
     <dependency>
       <artifactId>sqltool</artifactId>
       <groupId>org.hsqldb</groupId>
       <scope>test</scope>
-      <version>2.2.9</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.curator</groupId>
       <artifactId>curator-client</artifactId>
-      <version>2.0.1-incubating</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>2.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk15on</artifactId>
-      <version>1.60</version>
     </dependency>
     <dependency>
       <groupId>com.ibm.icu</groupId>
       <artifactId>icu4j</artifactId>
-      <version>4.8.1.1</version>
     </dependency>
     <dependency>
       <groupId>net.spy</groupId>
       <artifactId>spymemcached</artifactId>
-      <version>2.12.1</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk15on</artifactId>
-      <version>1.60</version>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.12.1</version>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
-      <version>1.4.5</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.8.2</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>2.6</version>
     </dependency>
     <dependency>
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
-      <version>1.5.4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.james</groupId>
       <artifactId>apache-jsieve-core</artifactId>
-      <version>0.5</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
-      <version>1.4.01</version>
     </dependency>
     <dependency>
       <groupId>ical4j</groupId>
       <artifactId>ical4j</artifactId>
-      <version>0.9.16-patched</version>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>
       <artifactId>activation</artifactId>
-      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
       <artifactId>commons-cli</artifactId>
-      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <version>2.3.0</version>
     </dependency>
     <!-- Jetty -->
     <dependency>
       <artifactId>jetty-continuation</artifactId>
       <groupId>org.eclipse.jetty</groupId>
-      <version>9.4.48.v20220622</version>
     </dependency>
     <dependency>
       <artifactId>jetty-security</artifactId>
       <groupId>org.eclipse.jetty</groupId>
-      <version>9.4.48.v20220622</version>
     </dependency>
     <dependency>
       <artifactId>jetty-servlets</artifactId>
       <groupId>org.eclipse.jetty</groupId>
-      <version>9.4.48.v20220622</version>
     </dependency>
     <dependency>
       <artifactId>jetty-servlet</artifactId>
       <groupId>org.eclipse.jetty</groupId>
-      <version>9.4.48.v20220622</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-http</artifactId>
-      <version>9.4.48.v20220622</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-io</artifactId>
-      <version>9.4.48.v20220622</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>9.4.48.v20220622</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>9.4.48.v20220622</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.sshd</groupId>
       <artifactId>sshd-common</artifactId>
-      <version>2.7.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-rng-client-api</artifactId>
-      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.11</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.nekohtml</groupId>
       <artifactId>nekohtml</artifactId>
-      <version>1.9.22</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
-      <version>4.4.13</version>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20090211</version>
     </dependency>
     <!-- Needed to bridge log4j -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.30</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.30</version>
       <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
     </dependency>
     <dependency>
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
-      <version>2.1.1</version>
     </dependency>
 
     <dependency>
       <artifactId>javax.servlet-api</artifactId>
       <groupId>javax.servlet</groupId>
-      <version>3.1.0</version>
     </dependency>
     <dependency>
       <artifactId>zm-common</artifactId>
       <groupId>zextras</groupId>
-      <version>22.11.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <artifactId>zm-client</artifactId>
       <groupId>zextras</groupId>
-      <version>22.11.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>zextras</groupId>
       <artifactId>zm-soap</artifactId>
-      <version>22.11.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
-      <version>22.11.0-SNAPSHOT</version>
     </dependency>
     <!-- Dependency used at runtime (aka carbonio-zcs-libs) -->
     <dependency>
       <groupId>zimbra</groupId>
       <artifactId>zm-jetty</artifactId>
-      <version>22.11.0-SNAPSHOT</version>
       <type>pom</type>
       <scope>runtime</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>maven-plugins</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
   </dependencies>

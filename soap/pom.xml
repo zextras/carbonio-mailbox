@@ -22,18 +22,15 @@
     <dependency>
       <artifactId>zm-common</artifactId>
       <groupId>zextras</groupId>
-      <version>22.11.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
-      <version>28.1-jre</version>
     </dependency>
 
     <dependency>
       <artifactId>jaxb-api</artifactId>
       <groupId>javax.xml.bind</groupId>
-      <version>2.3.1</version>
     </dependency>
 
     <dependency>
@@ -56,25 +53,21 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>${jackson.core.module.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>${jackson.core.module.version}</version>
     </dependency>
 
     <dependency>
       <artifactId>apache-jsieve-core</artifactId>
       <groupId>org.apache.james</groupId>
-      <version>0.5</version>
     </dependency>
 
     <dependency>
       <artifactId>junit</artifactId>
       <groupId>junit</groupId>
       <scope>test</scope>
-      <version>4.8.2</version>
     </dependency>
 
     <dependency>
