@@ -248,7 +248,7 @@
       <dependency>
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
-        <version>2.12.1</version>
+        <version>2.9.1-patch-01</version>
       </dependency>
       <dependency>
         <groupId>javax.mail</groupId>
@@ -344,6 +344,7 @@
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
         <version>3.1.0</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>

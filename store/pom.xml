@@ -424,7 +424,6 @@
       <type>pom</type>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
@@ -560,6 +559,7 @@
         <configuration>
           <scanIntervalSeconds>30</scanIntervalSeconds>
           <dumpOnStart>true</dumpOnStart>
+          <webAppSourceDirectory>${project.basedir}</webAppSourceDirectory>
           <webApp>
             <contextPath>/</contextPath>
           </webApp>
@@ -577,7 +577,36 @@
               <value>false</value>
             </systemProperty>
           </systemProperties>
+
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.9.1-patch-01</version>
+          </dependency>
+          <dependency>
+            <groupId>zimbra</groupId>
+            <artifactId>zm-jetty</artifactId>
+            <version>22.11.0-SNAPSHOT</version>
+            <type>pom</type>
+            <exclusions>
+              <exclusion>
+                <artifactId>*</artifactId>
+                <groupId>maven-plugins</groupId>
+              </exclusion>
+              <exclusion>
+                <artifactId>*</artifactId>
+                <groupId>org.eclipse.jetty</groupId>
+              </exclusion>
+              <exclusion>
+                <artifactId>*</artifactId>
+                <groupId>javax.servlet</groupId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+        </dependencies>
+
       </plugin>
       <!-- Maven WAR plugin -->
       <!-- https://maven.apache.org/plugins/maven-war-plugin/examples/including-excluding-files-from-war.html -->
