@@ -57,7 +57,6 @@
     <dependency>
       <artifactId>zm-ews-stub</artifactId>
       <groupId>zimbra</groupId>
-      <version>2.0</version>
     </dependency>
 
     <!--    TODO: figure out if we require this as well, since zimbra already have one-->
@@ -555,11 +554,10 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.48.v20220622</version>
+        <version>${jetty.version}</version>
         <configuration>
           <scanIntervalSeconds>30</scanIntervalSeconds>
           <dumpOnStart>true</dumpOnStart>
-          <webAppSourceDirectory>${project.basedir}</webAppSourceDirectory>
           <webApp>
             <contextPath>/</contextPath>
           </webApp>
@@ -607,6 +605,10 @@
           </dependency>
         </dependencies>
 
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
       </plugin>
       <!-- Maven WAR plugin -->
       <!-- https://maven.apache.org/plugins/maven-war-plugin/examples/including-excluding-files-from-war.html -->
