@@ -70,11 +70,8 @@ public class ModifyDomainIT {
     final String newPubServiceHostname = "this.domain.iz.fake";
     expectedEx.expect(ServiceException.class);
     expectedEx.expectMessage(
-        "Public service hostname "
-            + newPubServiceHostname
-            + " must be complaint with domain "
-            + domainName
-            + ".");
+        "Public service hostname must be a valid FQDN and compatible with current domain (or its"
+            + " aliases).");
     final Domain domain =
         provisioning.createDomain(
             domainName,
@@ -195,12 +192,14 @@ public class ModifyDomainIT {
   }
 
   @Test
-  public void shouldThrowExceptionIfVirtualHostnameNotCompliantWithDomain()
+  public void shouldThrowServiceExceptionIfVirtualHostnameNotCompliantWithDomain()
       throws ServiceException {
     final String domainName = UUID.randomUUID() + ".zextras.io";
     final String virtualHostname = "virtual.whatever.not.compliant";
     expectedEx.expect(ServiceException.class);
-    expectedEx.expectMessage("Virtual hostnames must be complaint with domain " + domainName + ".");
+    expectedEx.expectMessage(
+        "Virtual hostnames must be valid FQDNs and compatible with current domain (or its"
+            + " aliases).");
     final Domain domain =
         provisioning.createDomain(
             domainName,

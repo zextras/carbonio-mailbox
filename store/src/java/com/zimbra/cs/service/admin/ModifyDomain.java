@@ -69,18 +69,16 @@ public class ModifyDomain extends AdminDocumentHandler {
     if (!Objects.isNull(gotPublicServiceHostname)
         && !(isPublicServiceHostnameCompliant(domain, gotPublicServiceHostname))) {
       throw ServiceException.FAILURE(
-          "Public service hostname "
-              + gotPublicServiceHostname
-              + " must be complaint with domain "
-              + domain.getDomainName()
-              + ".");
+          "Public service hostname must be a valid FQDN and compatible with current domain (or its"
+              + " aliases).");
     }
     final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
     if (!(Objects.isNull(gotVirtualHostNames))
         && !(areVirtualHostnamesCompliant(
             domain, Arrays.stream(gotVirtualHostNames).collect(Collectors.toList())))) {
       throw ServiceException.FAILURE(
-          "Virtual hostnames must be complaint with domain " + domain.getDomainName() + ".");
+          "Virtual hostnames must be valid FQDNs and compatible with current domain (or its"
+              + " aliases).");
     }
 
     // pass in true to checkImmutable
