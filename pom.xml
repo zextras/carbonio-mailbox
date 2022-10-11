@@ -515,7 +515,7 @@
       <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreechart</artifactId>
-        <version>1.0.14</version>
+        <version>1.0.19</version>
       </dependency>
       <dependency>
         <groupId>org.python</groupId>
@@ -954,6 +954,14 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
           <version>3.1.0</version>
+          <dependencies>
+            <!-- https://github-wiki-see.page/m/GoogleCloudPlatform/cloud-opensource-java/wiki/Linkage-Checker-Enforcer-Rule -->
+            <dependency>
+              <groupId>com.google.cloud.tools</groupId>
+              <artifactId>linkage-checker-enforcer-rules</artifactId>
+              <version>1.5.7</version>
+            </dependency>
+          </dependencies>
           <executions>
             <execution>
               <id>list-conflicts</id>
@@ -975,6 +983,41 @@
                   <dependencyConvergence/>
                 </rules>
               </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- Analyze conflicts that can occur at runtime when forcing dependency -->
+        <plugin>
+          <groupId>com.spotify</groupId>
+          <artifactId>missinglink-maven-plugin</artifactId>
+          <version>0.2.5</version>
+          <configuration>
+            <failOnConflicts>true</failOnConflicts>
+            <excludeDependencies>
+              <excludeDependency>
+                <groupId>net.spy</groupId>
+                <artifactId>spymemcached</artifactId>
+              </excludeDependency>
+              <excludeDependency>
+                <groupId>org.dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+              </excludeDependency>
+              <excludeDependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+              </excludeDependency>
+              <excludeDependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+              </excludeDependency>
+            </excludeDependencies>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <phase>process-classes</phase>
             </execution>
           </executions>
         </plugin>
