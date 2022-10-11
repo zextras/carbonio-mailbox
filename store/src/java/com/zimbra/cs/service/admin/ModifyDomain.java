@@ -20,9 +20,11 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author schemers
@@ -42,11 +44,14 @@ public class ModifyDomain extends AdminDocumentHandler {
     Map<String, Object> attrs = AdminService.getAttrs(request);
 
     Domain domain = prov.get(Key.DomainBy.id, id);
-    if (domain == null) throw AccountServiceException.NO_SUCH_DOMAIN(id);
+    if (domain == null) {
+      throw AccountServiceException.NO_SUCH_DOMAIN(id);
+    }
 
-    if (domain.isShutdown())
+    if (domain.isShutdown()) {
       throw ServiceException.PERM_DENIED(
           "can not access domain, domain is in " + domain.getDomainStatusAsString() + " status");
+    }
 
     checkDomainRight(zsc, domain, attrs);
 
@@ -54,16 +59,30 @@ public class ModifyDomain extends AdminDocumentHandler {
     checkCos(zsc, attrs, Provisioning.A_zimbraDomainDefaultCOSId);
     checkCos(zsc, attrs, Provisioning.A_zimbraDomainDefaultExternalUserCOSId);
 
-    final String receivedPubServiceHostname =
+    final String gotPublicServiceHostname =
         (String) attrs.get(Provisioning.A_zimbraPublicServiceHostname);
     final String receivedDomainName = (String) attrs.get(Provisioning.A_zimbraDomainName);
     if (!Objects.isNull(receivedDomainName)) {
       throw ServiceException.INVALID_REQUEST(
           Provisioning.A_zimbraDomainName + " cannot be changed.", null);
     }
-    if (!Objects.isNull(receivedPubServiceHostname)) {
-      checkPublicServiceHostname(domain, receivedPubServiceHostname);
+    if (!Objects.isNull(gotPublicServiceHostname)
+        && !(isPublicServiceHostnameCompliant(domain, gotPublicServiceHostname))) {
+      throw ServiceException.FAILURE(
+          "Public service hostname "
+              + gotPublicServiceHostname
+              + " must be complaint with domain "
+              + domain.getDomainName()
+              + ".");
     }
+    final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
+    if (!(Objects.isNull(gotVirtualHostNames))
+        && !(areVirtualHostnamesCompliant(
+            domain, Arrays.stream(gotVirtualHostNames).collect(Collectors.toList())))) {
+      throw ServiceException.FAILURE(
+          "Virtual hostnames must be complaint with domain " + domain.getDomainName() + ".");
+    }
+    ;
 
     // pass in true to checkImmutable
     prov.modifyAttrs(domain, attrs, true);
@@ -84,24 +103,59 @@ public class ModifyDomain extends AdminDocumentHandler {
    * @param publicServiceHostname value to check against domain
    * @throws ServiceException exception if public service hostname not valid
    */
-  private void checkPublicServiceHostname(Domain domain, String publicServiceHostname)
-      throws ServiceException {
+  private boolean isPublicServiceHostnameCompliant(Domain domain, String publicServiceHostname) {
+    return isFQDNCompliant(domain.getDomainName(), publicServiceHostname);
+  }
+
+  /**
+   * Checks if a given FQDN is compliant for a domain.
+   *
+   * @param domainName name of the domain
+   * @param fqdn fqdn to test against domain
+   * @return id public service hostname compliant
+   */
+  private boolean isFQDNCompliant(String domainName, String fqdn) {
+    return fqdn.endsWith(domainName);
+  }
+
+  /**
+   * Checks if given virtual hostnames are compliant for domain.
+   *
+   * @param domain domain to check against
+   * @param virtualHostnames given virtualHostnames
+   * @return if compliant
+   */
+  private boolean areVirtualHostnamesCompliant(Domain domain, List<String> virtualHostnames) {
     final String domainName = domain.getDomainName();
-    if (!publicServiceHostname.endsWith(domainName)) {
-      throw ServiceException.FAILURE(
-          "Public service hostname "
-              + publicServiceHostname
-              + " must be subdomain of "
-              + domainName
-              + ".");
+    return virtualHostnames.stream()
+        .allMatch(virtualHostname -> isFQDNCompliant(domainName, virtualHostname));
+  }
+
+  /**
+   * Returns virtual hostnames from request attributes. Virtual hostnames can be one or many
+   * depending on received request.
+   *
+   * @param attrs attributes as from {@link com.zimbra.soap.admin.message.ModifyDomainRequest}
+   * @return array of virtualHostnames provided in attrs
+   */
+  private String[] getVirtualHostnamesFromAttributes(Map<String, Object> attrs) {
+    final Object vHostNames = attrs.get(Provisioning.A_zimbraVirtualHostname);
+    if (vHostNames instanceof String) {
+      return new String[] {(String) vHostNames};
     }
+    if (vHostNames instanceof String[]) {
+      return (String[]) vHostNames;
+    }
+    return null;
   }
 
   private void checkCos(
       ZimbraSoapContext zsc, Map<String, Object> attrs, String defaultCOSIdAttrName)
       throws ServiceException {
     String newDomainCosId = ModifyAccount.getStringAttrNewValue(defaultCOSIdAttrName, attrs);
-    if (newDomainCosId == null) return; // not changing it
+    if (newDomainCosId == null) {
+      return; // not changing it
+    }
 
     Provisioning prov = Provisioning.getInstance();
     if (newDomainCosId.equals("")) {
