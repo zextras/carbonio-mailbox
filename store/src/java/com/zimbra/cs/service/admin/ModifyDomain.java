@@ -82,7 +82,6 @@ public class ModifyDomain extends AdminDocumentHandler {
       throw ServiceException.FAILURE(
           "Virtual hostnames must be complaint with domain " + domain.getDomainName() + ".");
     }
-    ;
 
     // pass in true to checkImmutable
     prov.modifyAttrs(domain, attrs, true);
