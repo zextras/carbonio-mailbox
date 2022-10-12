@@ -416,13 +416,16 @@
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
     </dependency>
-    <!-- Dependency used at runtime (aka carbonio-zcs-libs) -->
-    <dependency>
-      <groupId>zimbra</groupId>
-      <artifactId>zm-jetty</artifactId>
-      <type>pom</type>
-      <scope>provided</scope>
-    </dependency>
+<!--TODO: zm-jetty describes dependencies provided on installation by packages common-core-libs and
+      appserver-store-libs. But declaring it in zm-store as provided breaks some tests.
+      Most probably we are testing with different dependencies from what we are using in installation.
+  &lt;!&ndash; Dependency used at runtime (aka carbonio-zcs-libs) &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>zimbra</groupId>-->
+<!--      <artifactId>zm-jetty</artifactId>-->
+<!--      <type>pom</type>-->
+<!--      <scope>provided</scope>-->
+<!--    </dependency>-->
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
