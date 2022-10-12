@@ -67,7 +67,7 @@ public class ModifyDomainIT {
   public void shouldThrowServiceExceptionIfPublicServiceHostnameNotComplaintWithDomain()
       throws ServiceException {
     final String domainName = "demo.zextras.io";
-    final String newPubServiceHostname = "this.domain.iz.fake";
+    final String newPubServiceHostname = "newdemo.zextras.io";
     expectedEx.expect(ServiceException.class);
     expectedEx.expectMessage(
         "Public service hostname must be a valid FQDN and compatible with current domain (or its"
@@ -128,7 +128,7 @@ public class ModifyDomainIT {
   @Test
   public void shouldAddVirtualHostnameIfCompliantWithDomain() throws ServiceException {
     final String domainName = UUID.randomUUID() + ".zextras.io";
-    final String virtualHostname = "virtual" + domainName;
+    final String virtualHostname = "virtual." + domainName;
     final Domain domain =
         provisioning.createDomain(
             domainName,
@@ -162,8 +162,8 @@ public class ModifyDomainIT {
   @Test
   public void shouldAddMultipleVirtualHostnamesIfCompliantWithDomain() throws ServiceException {
     final String domainName = UUID.randomUUID() + ".zextras.io";
-    final String virtualHostname = "virtual" + domainName;
-    final String virtualHostname2 = "virtual2" + domainName;
+    final String virtualHostname = "virtual." + domainName;
+    final String virtualHostname2 = "virtual2." + domainName;
     final Domain domain =
         provisioning.createDomain(
             domainName,
@@ -185,6 +185,39 @@ public class ModifyDomainIT {
     modifyDomainRequest.setAttrs(attrsToUpdate);
     new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
     assertEquals(2, provisioning.getDomainByName(domainName).getVirtualHostname().length);
+    assertTrue(
+        Arrays.stream(provisioning.getDomainByName(domainName).getVirtualHostname())
+            .collect(Collectors.toList())
+            .containsAll(Arrays.stream(vHostnames).collect(Collectors.toList())));
+  }
+
+  @Test
+  public void shouldAddMultipleVirtualHostnamesAndPublicServiceHostnameIfFQDNSEqualToDoamin()
+      throws ServiceException {
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createDelegatedAdminForDomain(domain);
+    final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
+    ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
+    final String[] vHostnames = {domainName};
+    final HashMap<String, Object> attrsToUpdate =
+        new HashMap<>() {
+          {
+            put(ZAttrProvisioning.A_zimbraPublicServiceHostname, domainName);
+            put(ZAttrProvisioning.A_zimbraVirtualHostname, vHostnames);
+          }
+        };
+    modifyDomainRequest.setAttrs(attrsToUpdate);
+    new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
+    assertEquals(1, provisioning.getDomainByName(domainName).getVirtualHostname().length);
+    assertEquals(domainName, provisioning.getDomainByName(domainName).getPublicServiceHostname());
     assertTrue(
         Arrays.stream(provisioning.getDomainByName(domainName).getVirtualHostname())
             .collect(Collectors.toList())

@@ -105,14 +105,15 @@ public class ModifyDomain extends AdminDocumentHandler {
   }
 
   /**
-   * Checks if a given FQDN is compliant for a domain.
+   * Checks if a given FQDN is compliant for a domain. FQDN can be equal to domain or must be in
+   * subdomain-fashion style (e.g.: domain test.com -> fqdn web.test.com)
    *
    * @param domainName name of the domain
    * @param fqdn fqdn to test against domain
    * @return id public service hostname compliant
    */
   private boolean isFQDNCompliant(String domainName, String fqdn) {
-    return fqdn.endsWith(domainName);
+    return Objects.equals(domainName, fqdn) || fqdn.endsWith("." + domainName);
   }
 
   /**
