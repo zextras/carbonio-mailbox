@@ -661,6 +661,10 @@
           <packagingExcludes>
             WEB-INF/lib/commons-logging-*.jar,
             %regex[WEB-INF/lib/log4j-(?!over-slf4j).*.jar],
+            %regex[WEB-INF/lib/zm-native*.jar],
+            %regex[WEB-INF/lib/zm-common*.jar],
+            %regex[WEB-INF/lib/zm-soap*.jar],
+            %regex[WEB-INF/lib/zm-client*.jar],
             WEB-INF/classes/org/**,
             WEB-INF/classes/com/**,
             WEB-INF/classes/attrs/**,
