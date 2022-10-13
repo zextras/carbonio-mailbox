@@ -422,13 +422,6 @@
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
     </dependency>
-    <dependency>
-      <groupId>zextras</groupId>
-      <artifactId>store-war</artifactId>
-      <version>22.11.0-SNAPSHOT</version>
-      <type>pom</type>
-      <scope>runtime</scope>
-    </dependency>
     <!--TODO: zm-jetty describes dependencies provided on installation by packages common-core-libs and
           appserver-store-libs. But declaring it in zm-store as provided breaks some tests.
           Most probably we are testing with different dependencies from what we are using in installation.
