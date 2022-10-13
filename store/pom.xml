@@ -428,6 +428,12 @@
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
     </dependency>
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>store-war</artifactId>
+      <type>pom</type>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
