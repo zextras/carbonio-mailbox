@@ -597,11 +597,23 @@
           </systemProperties>
         </configuration>
         <dependencies>
+          <!-- Libraires that must be on container classpath in order to work -->
           <dependency>
             <artifactId>xercesImpl</artifactId>
             <groupId>xerces</groupId>
             <version>2.9.1-patch-01</version>
           </dependency>
+          <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+          </dependency>
+
+          <!-- These dependencies come from zm-jetty in repo: https://github.com/Zextras/carbonio-zcs-lib
+          Also they are provided on installation by packages carbonio-common-core-libs and carbonio-appserver-store-libs.
+          zm-jetty is not used here because it brings dependencies that break the startup of the server due to conflicts,
+          so only strictly necessary dependencies have been selected from it.
+          -->
           <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
@@ -609,26 +621,9 @@
           </dependency>
           <dependency>
             <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
-          </dependency>
-          <dependency>
-            <groupId>log4j</groupId>
             <artifactId>apache-log4j-extras</artifactId>
             <version>1.0</version>
           </dependency>
-<!--          <dependency>-->
-<!--            <groupId>zimbra</groupId>-->
-<!--            <artifactId>zm-jetty</artifactId>-->
-<!--            <version>22.11.0-SNAPSHOT</version>-->
-<!--            <type>pom</type>-->
-<!--            <exclusions>-->
-<!--              <exclusion>-->
-<!--                <artifactId>*</artifactId>-->
-<!--                <groupId>maven-plugins</groupId>-->
-<!--              </exclusion>-->
-<!--            </exclusions>-->
-<!--          </dependency>-->
         </dependencies>
 
       </plugin>
