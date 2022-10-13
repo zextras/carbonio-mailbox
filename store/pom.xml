@@ -597,7 +597,7 @@
           </systemProperties>
         </configuration>
         <dependencies>
-          <!-- Libraires that must be on container classpath in order to work -->
+          <!-- Libraries that must be on container classpath in order to work -->
           <dependency>
             <artifactId>xercesImpl</artifactId>
             <groupId>xerces</groupId>
