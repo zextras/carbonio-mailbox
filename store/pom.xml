@@ -272,6 +272,7 @@
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk15on</artifactId>
     </dependency>
+    <!-- Note this should be provided in container classpath -->
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
@@ -297,6 +298,7 @@
       <groupId>org.apache.james</groupId>
       <artifactId>apache-jsieve-core</artifactId>
     </dependency>
+    <!-- Note this should be provided in container classpath -->
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
@@ -393,7 +395,7 @@
       <artifactId>slf4j-log4j12</artifactId>
       <scope>runtime</scope>
     </dependency>
-
+    <!-- Note this should be provided in container classpath -->
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -422,16 +424,6 @@
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
     </dependency>
-    <!--TODO: zm-jetty describes dependencies provided on installation by packages common-core-libs and
-          appserver-store-libs. But declaring it in zm-store as provided breaks some tests.
-          Most probably we are testing with different dependencies from what we are using in installation.
-      &lt;!&ndash; Dependency used at runtime (aka carbonio-zcs-libs) &ndash;&gt;-->
-    <!--    <dependency>-->
-    <!--      <groupId>zimbra</groupId>-->
-    <!--      <artifactId>zm-jetty</artifactId>-->
-    <!--      <type>pom</type>-->
-    <!--      <scope>provided</scope>-->
-    <!--    </dependency>-->
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
