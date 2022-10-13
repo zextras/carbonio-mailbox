@@ -7,9 +7,11 @@
 
   <!-- To sort out dependencies take a look at: https://wiki.eclipse.org/Jetty/Reference/Dependencies -->
   <dependencies>
+    <!-- Must be provided to avoid collision -->
     <dependency>
       <artifactId>httpclient</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -96,9 +98,11 @@
       <groupId>org.apache.curator</groupId>
     </dependency>
 
+    <!-- Must be provided by container -->
     <dependency>
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -550,6 +554,7 @@
       </plugin>
 
       <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
+      <!-- Doc: https://wiki.eclipse.org/Jetty/Feature/Jetty_Maven_Plugin -->
       <!-- Allows to run the mailbox for test purposes.
       In order to start it there are some requirements:
       - WebRoot content must be in src/main/webapp (TODO: change base dir of web.xml)
@@ -570,6 +575,7 @@
           <scanIntervalSeconds>30</scanIntervalSeconds>
           <dumpOnStart>true</dumpOnStart>
           <webApp>
+            <descriptor>${project.basedir}/conf/web.xml</descriptor>
             <contextPath>/</contextPath>
           </webApp>
           <systemProperties>
