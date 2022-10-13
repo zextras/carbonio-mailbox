@@ -136,6 +136,7 @@
       <!-- TODO: this is also defined in zm-zcs-lib -->
       <artifactId>nekohtml</artifactId>
       <groupId>net.sourceforge.nekohtml</groupId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

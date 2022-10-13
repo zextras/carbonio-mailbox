@@ -275,6 +275,7 @@
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
@@ -316,6 +317,12 @@
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>javax.xml.stream</groupId>
+      <artifactId>stax-api</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
     <!-- Jetty -->
     <dependency>
       <artifactId>jetty-continuation</artifactId>
@@ -395,7 +402,6 @@
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
     </dependency>
-
     <dependency>
       <artifactId>javax.servlet-api</artifactId>
       <groupId>javax.servlet</groupId>
@@ -416,16 +422,23 @@
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
     </dependency>
-<!--TODO: zm-jetty describes dependencies provided on installation by packages common-core-libs and
-      appserver-store-libs. But declaring it in zm-store as provided breaks some tests.
-      Most probably we are testing with different dependencies from what we are using in installation.
-  &lt;!&ndash; Dependency used at runtime (aka carbonio-zcs-libs) &ndash;&gt;-->
-<!--    <dependency>-->
-<!--      <groupId>zimbra</groupId>-->
-<!--      <artifactId>zm-jetty</artifactId>-->
-<!--      <type>pom</type>-->
-<!--      <scope>provided</scope>-->
-<!--    </dependency>-->
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>store-war</artifactId>
+      <version>22.11.0-SNAPSHOT</version>
+      <type>pom</type>
+      <scope>runtime</scope>
+    </dependency>
+    <!--TODO: zm-jetty describes dependencies provided on installation by packages common-core-libs and
+          appserver-store-libs. But declaring it in zm-store as provided breaks some tests.
+          Most probably we are testing with different dependencies from what we are using in installation.
+      &lt;!&ndash; Dependency used at runtime (aka carbonio-zcs-libs) &ndash;&gt;-->
+    <!--    <dependency>-->
+    <!--      <groupId>zimbra</groupId>-->
+    <!--      <artifactId>zm-jetty</artifactId>-->
+    <!--      <type>pom</type>-->
+    <!--      <scope>provided</scope>-->
+    <!--    </dependency>-->
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
@@ -559,6 +572,10 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
         <configuration>
+          <httpConnector>
+            <!--Carbonio allows port 7070, not the default jetty 8080 by default-->
+            <port>7070</port>
+          </httpConnector>
           <scanIntervalSeconds>30</scanIntervalSeconds>
           <dumpOnStart>true</dumpOnStart>
           <webApp>
@@ -578,34 +595,40 @@
               <value>false</value>
             </systemProperty>
           </systemProperties>
-
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
+            <groupId>xerces</groupId>
             <version>2.9.1-patch-01</version>
           </dependency>
           <dependency>
-            <groupId>zimbra</groupId>
-            <artifactId>zm-jetty</artifactId>
-            <version>22.11.0-SNAPSHOT</version>
-            <type>pom</type>
-            <exclusions>
-              <exclusion>
-                <artifactId>*</artifactId>
-                <groupId>maven-plugins</groupId>
-              </exclusion>
-              <exclusion>
-                <artifactId>*</artifactId>
-                <groupId>org.eclipse.jetty</groupId>
-              </exclusion>
-              <exclusion>
-                <artifactId>*</artifactId>
-                <groupId>javax.servlet</groupId>
-              </exclusion>
-            </exclusions>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>2.7.3</version>
           </dependency>
+          <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+          </dependency>
+          <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>apache-log4j-extras</artifactId>
+            <version>1.0</version>
+          </dependency>
+<!--          <dependency>-->
+<!--            <groupId>zimbra</groupId>-->
+<!--            <artifactId>zm-jetty</artifactId>-->
+<!--            <version>22.11.0-SNAPSHOT</version>-->
+<!--            <type>pom</type>-->
+<!--            <exclusions>-->
+<!--              <exclusion>-->
+<!--                <artifactId>*</artifactId>-->
+<!--                <groupId>maven-plugins</groupId>-->
+<!--              </exclusion>-->
+<!--            </exclusions>-->
+<!--          </dependency>-->
         </dependencies>
 
       </plugin>

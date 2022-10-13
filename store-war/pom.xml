@@ -8,8 +8,10 @@
     <version>22.11.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <description>This project includes dependencies under WEB-INF/lib according to old Ant + Ivy build.
-    It's here to overcome dependencies error at runtime with maven migration, but eventually it will be deprecated
+  <description>This project includes dependencies under WEB-INF/lib according to old Ant + Ivy
+    build.
+    It's here to overcome dependencies error at runtime with maven migration, but eventually it will
+    be deprecated
     (or the dependencies in it will be)
   </description>
   <artifactId>store-war</artifactId>
@@ -83,7 +85,7 @@
       <artifactId>curator-framework</artifactId>
     </dependency>
     <dependency>
-      <groupId>asm</groupId>
+      <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
     </dependency>
     <dependency>
