@@ -15,13 +15,19 @@
     (or the dependencies in it will be)
   </description>
   <artifactId>store-war</artifactId>
-  <packaging>war</packaging>
+  <packaging>pom</packaging>
 
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
+    <config.dir>${project.basedir}/conf</config.dir>
+    <war.web.xml>${config.dir}/web.xml.production</war.web.xml>
+    <!--TODO: This file is not in present-->
+    <!--    <war.classes.sieveConfig>${config.dir}/sieveConfig.xml</war.classes.sieveConfig>-->
+    <war.classes.cxf>${config.dir}/cxf.xml</war.classes.cxf>
+    <warfile.name>service</warfile.name>
   </properties>
-  <!-- Dependencies provided by no one (but who requires them?) -->
+  <!-- Dependencies provided by no one (but who requires them on installation?) -->
   <dependencies>
     <dependency>
       <groupId>org.apache.lucene</groupId>
@@ -330,77 +336,5 @@
     <!--      <groupId>com.zextras.carbonio.preview</groupId>-->
     <!--    </dependency>-->
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty.version}</version>
-        <configuration>
-            <scanTargets>
-              <scanTarget>${project.parent.basedir}/native/target/classes</scanTarget>
-              <scanTarget>${project.parent.basedir}/common/target/classes</scanTarget>
-              <scanTarget>${project.parent.basedir}/soap/target/classes</scanTarget>
-              <scanTarget>${project.parent.basedir}/client/target/classes</scanTarget>
-              <scanTarget>${project.parent.basedir}/store/target/classes</scanTarget>
-            </scanTargets>
-          <httpConnector>
-            <!--Carbonio default policy allows API calls to be received on port 7070 -->
-            <port>7070</port>
-          </httpConnector>
-          <scanIntervalSeconds>30</scanIntervalSeconds>
-          <dumpOnStart>true</dumpOnStart>
-          <webApp>
-            <contextPath>/</contextPath>
-          </webApp>
-          <systemProperties>
-            <systemProperty>
-              <name>webapp</name>
-              <value>service</value>
-            </systemProperty>
-            <systemProperty>
-              <name>zimbra.config</name>
-              <value>${project.basedir}/conf/localconfig-jetty-test.xml</value>
-            </systemProperty>
-            <systemProperty>
-              <name>zimbra.native.required</name>
-              <value>false</value>
-            </systemProperty>
-          </systemProperties>
-        </configuration>
-        <dependencies>
-          <!-- Libraries that must be on container classpath in order to work -->
-          <dependency>
-            <artifactId>xercesImpl</artifactId>
-            <groupId>xerces</groupId>
-            <version>2.9.1-patch-01</version>
-          </dependency>
-          <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
-          </dependency>
-
-          <!-- These dependencies come from zm-jetty in repo: https://github.com/Zextras/carbonio-zcs-lib
-          Also they are provided on installation by packages carbonio-common-core-libs and carbonio-appserver-store-libs.
-          zm-jetty is not used here because it brings dependencies that break the startup of the server due to conflicts,
-          so only strictly necessary dependencies have been selected from it.
-          -->
-          <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>2.7.3</version>
-          </dependency>
-          <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>apache-log4j-extras</artifactId>
-            <version>1.0</version>
-          </dependency>
-        </dependencies>
-
-      </plugin>
-    </plugins>
-
-  </build>
 
 </project>

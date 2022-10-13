@@ -552,7 +552,7 @@
       <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
       <!-- Allows to run the mailbox for test purposes.
       In order to start it there are some requirements:
-      - WebRoot content must be in src/main/webapp
+      - WebRoot content must be in src/main/webapp (TODO: change base dir of web.xml)
       - run local ldap + mysql (can use docker-compose with utils/docker/)
       - db version and index version must have same value as received from db
       - must have a keystore in etc/mailboxd/keystore
