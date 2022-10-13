@@ -565,15 +565,21 @@
       </plugin>
 
       <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
-      <!-- This is an attempt to run the mailbox for test purposes.
-           Work is incomplete because of dependencies error, but it will help in cleaning them. -->
+      <!-- Allows to run the mailbox for test purposes.
+      In order to start it there are some requirements:
+      - WebRoot content must be in src/main/webapp
+      - run local ldap + mysql (can use docker-compose with utils/docker/)
+      - db version and index version must have same value as received from db
+      - must have a keystore in etc/mailboxd/keystore
+      - must have conf files (log4j + timezone.ics) in conf directory
+      -->
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
         <configuration>
           <httpConnector>
-            <!--Carbonio allows port 7070, not the default jetty 8080 by default-->
+            <!--Carbonio default policy allows API calls to be received on port 7070 -->
             <port>7070</port>
           </httpConnector>
           <scanIntervalSeconds>30</scanIntervalSeconds>
