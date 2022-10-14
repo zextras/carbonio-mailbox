@@ -383,6 +383,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
@@ -601,8 +602,23 @@
             </systemProperty>
           </systemProperties>
         </configuration>
+        <!-- Put here libraries that are provided -->
         <dependencies>
-          <!-- Libraries that must be on container classpath in order to work -->
+          <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>2.1.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+          </dependency>
+          <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.1-jre</version>
+          </dependency>
           <dependency>
             <artifactId>xercesImpl</artifactId>
             <groupId>xerces</groupId>
@@ -664,10 +680,6 @@
             <!-- These should be marked as provided, but then some packages must bring in its dependencies -->
             <!-- Reason is zm-common is already placed under /opt/zextras/lib/jars and having it under
             WEB-INF/lib results in loading some things twice, like LmtpBackend, resulting in failure. -->
-            %regex[WEB-INF/lib/zm-native*.jar],
-            %regex[WEB-INF/lib/zm-common*.jar],
-            %regex[WEB-INF/lib/zm-soap*.jar],
-            %regex[WEB-INF/lib/zm-client*.jar],
             WEB-INF/classes/org/**,
             WEB-INF/classes/com/**,
             WEB-INF/classes/attrs/**,

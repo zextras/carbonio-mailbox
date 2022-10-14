@@ -5,6 +5,6 @@ ENV MYSQL_DATABASE=zextras \
     MYSQL_PASSWORD=zextras \
     MYSQL_ROOT_PASSWORD=password
 
-ADD db.sql /docker-entrypoint-initdb.d
+ADD scripts /docker-entrypoint-initdb.d
 
 EXPOSE 3306
