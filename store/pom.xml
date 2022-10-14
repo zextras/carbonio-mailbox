@@ -661,6 +661,9 @@
           <packagingExcludes>
             WEB-INF/lib/commons-logging-*.jar,
             %regex[WEB-INF/lib/log4j-(?!over-slf4j).*.jar],
+            <!-- These should be marked as provided, but then some packages must bring in its dependencies -->
+            <!-- Reason is zm-common is already placed under /opt/zextras/lib/jars and having it under
+            WEB-INF/lib results in loading some things twice, like LmtpBackend, resulting in failure. -->
             %regex[WEB-INF/lib/zm-native*.jar],
             %regex[WEB-INF/lib/zm-common*.jar],
             %regex[WEB-INF/lib/zm-soap*.jar],
@@ -673,7 +676,7 @@
 
           <archive>
             <manifest>
-              <addClasspath>true</addClasspath>
+              <addClasspath>false</addClasspath>
             </manifest>
           </archive>
 
