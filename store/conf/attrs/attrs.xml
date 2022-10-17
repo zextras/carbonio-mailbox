@@ -9821,8 +9821,8 @@ TODO: delete them permanently from here
   <desc>block common keywords in password string</desc>
 </attr>
 
-<attr id="3091" name="carbonioVideoServerRecordingEnabled" type="boolean" cardinality="single" optionalIn="account,cos,domain" flags="accountCosDomainInherited,accountInfo,domainInfo" since="9.0.0">
-  <defaultCOSValue>FALSE</defaultCOSValue>
+<attr id="3091" name="carbonioVideoServerRecordingEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,domain,cos,account" flags="domainInherited,accountCosDomainInherited,accountInfo,domainInfo" since="9.0.0">
+  <globalConfigValue>FALSE</globalConfigValue>
   <desc>Enable video server recording for Carbonio</desc>
 </attr>
 
