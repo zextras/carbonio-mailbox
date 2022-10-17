@@ -14,7 +14,7 @@ import com.zimbra.soap.admin.type.Attr;
 import com.zimbra.soap.admin.type.DomainInfo;
 
 public class ZDomain {
-     private Map<String,Object> attrs;
+     private final Map<String,Object> attrs;
 
      public ZDomain(DomainInfo domainInfo) throws ServiceException {
             attrs =  Attr.collectionToMap(domainInfo.getAttrList());
