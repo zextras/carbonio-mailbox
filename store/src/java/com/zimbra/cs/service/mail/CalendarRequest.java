@@ -840,14 +840,16 @@ public abstract class CalendarRequest extends MailDocumentHandler {
 
   /**
    * Is this an on-behalf-of request? It is if the requested and authenticated account are
-   * different.
+   * different. DelegatedRequests are considered on-behalf-of requests
    *
+   * @see
+   *     com.zimbra.cs.service.mail.CalendarRequest#isOnBehalfOfRequest(com.zimbra.soap.ZimbraSoapContext)
    * @param zsc ZimbraSoapContext
    * @return true/false
    * @throws ServiceException service exception
    */
   public static boolean isOnBehalfOfRequest(ZimbraSoapContext zsc) {
-    return !zsc.isDelegatedRequest();
+    return zsc.isDelegatedRequest();
   }
 
   protected MailItem.Type getItemType() {
