@@ -9840,8 +9840,4 @@ TODO: delete them permanently from here
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>Whether Carbonio can take interactive feedback from users</desc>
 </attr>
-
-<attr id="3095" name="carbonioMeshCredentials" type="string" cardinality="single" optionalIn="globalConfig" since="22.11.0">
-  <desc>Carbonio mesh service credentials as base64 string</desc>
-</attr>
 </attrs>
