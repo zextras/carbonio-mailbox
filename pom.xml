@@ -785,6 +785,7 @@
     <module>native</module>
     <module>store-conf</module>
     <module>store-war</module>
+    <module>soap-docs</module>
   </modules>
   <packaging>pom</packaging>
 

@@ -1,0 +1,40 @@
+<project name="soap-docs">
+  <target name="generate-soap-api-doc">
+    <property name="build.dir" location="target"/>
+    <property name="src.dir" location="src"/>
+    <property name="templates.dir" location="templates"/>
+    <property location="${build.dir}/classes" name="build.classes.dir"/>
+    <property name="zimbra.service.wsdl.file" location="${build.classes.dir}/com/zimbra/soap/ZimbraService.wsdl" />
+    <property name="soapdocs.output.dir" location="${build.classes.dir}/docs/soap" />
+    <property name="soapdocs.src.dir" location="soapdocs/src/java" />
+    <property name="soapdocs.apidesc.file" location="${build.classes.dir}/soapapi-desc.json" />
+    <property name="soapdocs.apidesc.baseline.file" location="soapdocs/baseline-soapapi-desc.json.gz" />
+    <property name="soapapi.changelog.output.dir" location="${soapdocs.output.dir}/api-changelog" />
+    <property name="soapapi.doc.file" location="${build.classes.dir}/docs/soapapi-doc.zip" />
+    <property name="soapapi.changelog.file" location="${build.classes.dir}/docs/soapapi-changelog.zip" />
+
+    <path id="soapdocs.doclet.class.path">
+      <pathelement location="${build.classes.dir}" />
+    </path>
+
+    <delete dir="${soapdocs.output.dir}" quiet="true" />
+    <mkdir dir="${soapdocs.output.dir}" />
+    <javadoc doclet="com.zimbra.doc.soap.doclet.ZmApiDoclet" access="private"
+      docletpathref="soapdocs.doclet.class.path" classpathref="soapdocs.doclet.class.path">
+      <doclet name="com.zimbra.doc.soap.doclet.ZmApiDoclet">
+        <param name="--templates-dir" value="${templates.dir}" />
+        <param name="--output-dir" value="${soapdocs.output.dir}" />
+        <param name="--apidesc-json" value="${soapdocs.apidesc.file}" />
+        <param name="--build-version" value="${carbonio.buildinfo.version}" />
+        <param name="--build-date" value="${zimbra.buildinfo.date}" />
+      </doclet>
+      <packageset dir="${build.classes.dir}" defaultexcludes="yes">
+        <include name="com/zimbra/soap/*/message/**" />
+        <include name="com/zimbra/soap/*/type/**" />
+        <include name="com/zimbra/soap/base/**" />
+        <include name="com/zimbra/soap/header/**" />
+        <include name="com/zimbra/soap/type/**" />
+      </packageset>
+    </javadoc>
+  </target>
+</project>

@@ -161,9 +161,11 @@
       <groupId>org.apache.commons</groupId>
     </dependency>
 
+    <!-- Brings in guava, so it is provided -->
     <dependency>
       <artifactId>closure-compiler</artifactId>
       <groupId>com.google.javascript</groupId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -470,7 +472,7 @@
             <groupId>org.apache.ant</groupId>
             <version>1.8.1</version>
           </dependency>
-        </dependencies>
+        </dependencies>maven.build.dir
         <executions>
 
           <!-- generate build-info for jars -->
