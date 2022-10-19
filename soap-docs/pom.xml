@@ -48,7 +48,6 @@
       <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
-      <version>2.3.19</version>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
     </dependency>
@@ -98,6 +97,9 @@
           <execution>
             <configuration>
               <target>
+                <property name="compile_classpath" refid="maven.compile.classpath"/>
+                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                <property name="test_classpath" refid="maven.test.classpath"/>
                 <taskdef classpathref="maven.plugin.classpath"
                   resource="net/sf/antcontrib/antlib.xml"/>
                 <ant antfile="${basedir}/ant-generate-soap-docs.xml">
@@ -109,7 +111,7 @@
               <goal>run</goal>
             </goals>
             <id>generate-soap-docs</id>
-            <phase>package</phase>
+            <phase>pre-integration-test</phase>
           </execution>
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
