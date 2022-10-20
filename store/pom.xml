@@ -541,7 +541,6 @@
           </execution>
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
-        <version>3.1.0</version>
       </plugin>
 
       <!-- Test plugin execution -->

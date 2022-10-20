@@ -70,7 +70,20 @@
   </dependencies>
   <build>
     <plugins>
-      <!-- Generate build-info -->
+      <!-- Test plugin execution -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      <!-- generate SOAP docs -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <dependencies>
@@ -92,8 +105,6 @@
           </dependency>
         </dependencies>
         <executions>
-
-          <!-- generate SOAP docs -->
           <execution>
             <configuration>
               <target>
@@ -115,7 +126,6 @@
           </execution>
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
-        <version>3.1.0</version>
       </plugin>
     </plugins>
   </build>
