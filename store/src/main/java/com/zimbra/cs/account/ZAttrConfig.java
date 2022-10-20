@@ -215,6 +215,75 @@ public abstract class ZAttrConfig extends Entry {
   }
 
   /**
+   * Carbonio mesh service credentials as base64 string
+   *
+   * @return carbonioMeshCredentials, or null if unset
+   * @since ZCS 22.11.0
+   */
+  @ZAttr(id = 3095)
+  public String getCarbonioMeshCredentials() {
+    return getAttr(Provisioning.A_carbonioMeshCredentials, null, true);
+  }
+
+  /**
+   * Carbonio mesh service credentials as base64 string
+   *
+   * @param carbonioMeshCredentials new value
+   * @throws com.zimbra.common.service.ServiceException if error during update
+   * @since ZCS 22.11.0
+   */
+  @ZAttr(id = 3095)
+  public void setCarbonioMeshCredentials(String carbonioMeshCredentials)
+      throws com.zimbra.common.service.ServiceException {
+    HashMap<String, Object> attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_carbonioMeshCredentials, carbonioMeshCredentials);
+    getProvisioning().modifyAttrs(this, attrs);
+  }
+
+  /**
+   * Carbonio mesh service credentials as base64 string
+   *
+   * @param carbonioMeshCredentials new value
+   * @param attrs existing map to populate, or null to create a new map
+   * @return populated map to pass into Provisioning.modifyAttrs
+   * @since ZCS 22.11.0
+   */
+  @ZAttr(id = 3095)
+  public Map<String, Object> setCarbonioMeshCredentials(
+      String carbonioMeshCredentials, Map<String, Object> attrs) {
+    if (attrs == null) attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_carbonioMeshCredentials, carbonioMeshCredentials);
+    return attrs;
+  }
+
+  /**
+   * Carbonio mesh service credentials as base64 string
+   *
+   * @throws com.zimbra.common.service.ServiceException if error during update
+   * @since ZCS 22.11.0
+   */
+  @ZAttr(id = 3095)
+  public void unsetCarbonioMeshCredentials() throws com.zimbra.common.service.ServiceException {
+    HashMap<String, Object> attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_carbonioMeshCredentials, "");
+    getProvisioning().modifyAttrs(this, attrs);
+  }
+
+  /**
+   * Carbonio mesh service credentials as base64 string
+   *
+   * @param attrs existing map to populate, or null to create a new map
+   * @return populated map to pass into Provisioning.modifyAttrs
+   * @since ZCS 22.11.0
+   */
+  @ZAttr(id = 3095)
+  public Map<String, Object> unsetCarbonioMeshCredentials(Map<String, Object> attrs) {
+    if (attrs == null) attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_carbonioMeshCredentials, "");
+    return attrs;
+  }
+
+  /**
    * Whether Carbonio can send analytics reports
    *
    * @return carbonioSendAnalytics, or true if unset

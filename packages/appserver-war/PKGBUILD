@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-appserver-war"
-pkgver="4.0.16"
+pkgver="4.0.17"
 pkgrel="1"
 arch="amd64"
 maintainer="Zextras <packages@zextras.com>"
@@ -23,7 +23,7 @@ package() {
   cd "${srcdir}"/../../staging
 
   install -Ddm755 "${pkgdir}/opt/zextras/jetty_base/webapps/service"
-  unzip "store-war/target/service.war" \
+  unzip "store/target/service.war" \
     -d "${pkgdir}/opt/zextras/jetty_base/webapps/service"
   install -D "store/conf/web.xml.production" \
     "${pkgdir}/opt/zextras/jetty_base/etc/service.web.xml.in"
