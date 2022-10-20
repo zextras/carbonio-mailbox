@@ -472,7 +472,7 @@
             <groupId>org.apache.ant</groupId>
             <version>1.8.1</version>
           </dependency>
-        </dependencies>maven.build.dir
+        </dependencies>
         <executions>
 
           <!-- generate build-info for jars -->
