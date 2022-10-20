@@ -304,7 +304,6 @@
       <groupId>org.apache.james</groupId>
       <artifactId>apache-jsieve-core</artifactId>
     </dependency>
-    <!-- Note this should be provided in container classpath -->
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
@@ -395,12 +394,12 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <scope>runtime</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <scope>runtime</scope>
+      <scope>provided</scope>
     </dependency>
     <!-- Note this should be provided in container classpath -->
     <dependency>
@@ -432,12 +431,6 @@
     <dependency>
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>zextras</groupId>
-      <artifactId>store-war</artifactId>
-      <type>pom</type>
-      <scope>runtime</scope>
     </dependency>
   </dependencies>
 
@@ -673,14 +666,15 @@
           <webXml>${war.web.xml}</webXml>
           <failOnMissingWebXml>true</failOnMissingWebXml>
           <attachClasses>true</attachClasses>
-
-          <!--TODO: exclusion of META-INF/maven/** is not working for some reasons-->
           <packagingExcludes>
             WEB-INF/lib/commons-logging-*.jar,
+            <!-- zm packages already provided by zcs-lib -->
+            WEB-INF/lib/zm-common*.jar,
+            WEB-INF/lib/zm-native*.jar,
+            WEB-INF/lib/zm-soap*.jar,
+            WEB-INF/lib/zm-client*.jar,
             %regex[WEB-INF/lib/log4j-(?!over-slf4j).*.jar],
             <!-- These should be marked as provided, but then some packages must bring in its dependencies -->
-            <!-- Reason is zm-common is already placed under /opt/zextras/lib/jars and having it under
-            WEB-INF/lib results in loading some things twice, like LmtpBackend, resulting in failure. -->
             WEB-INF/classes/org/**,
             WEB-INF/classes/com/**,
             WEB-INF/classes/attrs/**,
