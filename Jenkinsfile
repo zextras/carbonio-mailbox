@@ -63,6 +63,9 @@ pipeline {
             }
         }
         stage('Publish SNAPSHOT to maven') {
+              when {
+                branch 'devel'
+              }
               steps {
                 mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pdev')
               }

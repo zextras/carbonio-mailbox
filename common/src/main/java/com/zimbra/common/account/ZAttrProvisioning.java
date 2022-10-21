@@ -4835,6 +4835,14 @@ public class ZAttrProvisioning {
   public static final String A_carbonioAllowFeedback = "carbonioAllowFeedback";
 
   /**
+   * Carbonio mesh service credentials as base64 string
+   *
+   * @since ZCS 22.11.0
+   */
+  @ZAttr(id = 3095)
+  public static final String A_carbonioMeshCredentials = "carbonioMeshCredentials";
+
+  /**
    * Whether Carbonio can send analytics reports
    *
    * @since ZCS 9.0.0

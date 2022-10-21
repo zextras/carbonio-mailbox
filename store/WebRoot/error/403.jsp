@@ -12,7 +12,7 @@ SPDX-License-Identifier: GPL-2.0-only
 <BODY>
 <%--
     This page can be customized.
---%> 
+--%>
     <h2>HTTP ERROR: 403</h2>
     <pre>You are not allowed to access this page.</pre>
 </BODY>

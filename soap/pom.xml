@@ -15,85 +15,85 @@
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <jackson.core.module.version>2.10.1</jackson.core.module.version>
   </properties>
 
   <dependencies>
     <dependency>
+      <artifactId>zm-common</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
+    <dependency>
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
-      <version>28.1-jre</version>
     </dependency>
 
     <dependency>
       <artifactId>jaxb-api</artifactId>
       <groupId>javax.xml.bind</groupId>
-      <version>2.3.1</version>
     </dependency>
 
     <dependency>
       <artifactId>spqr</artifactId>
       <groupId>io.leangen.graphql</groupId>
-      <version>0.9.7</version>
     </dependency>
 
     <dependency>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <groupId>com.fasterxml.jackson.module</groupId>
-      <version>2.8.9</version>
     </dependency>
     <!-- We need also jackson-core, databind and annotations -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>${jackson.core.module.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>${jackson.core.module.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>${jackson.core.module.version}</version>
     </dependency>
-
     <dependency>
       <artifactId>apache-jsieve-core</artifactId>
       <groupId>org.apache.james</groupId>
-      <version>0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dom4j</groupId>
+      <artifactId>dom4j</artifactId>
     </dependency>
 
     <dependency>
       <artifactId>junit</artifactId>
       <groupId>junit</groupId>
       <scope>test</scope>
-      <version>4.8.2</version>
     </dependency>
 
     <dependency>
       <artifactId>xmlunit</artifactId>
       <groupId>xmlunit</groupId>
       <version>1.6</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>zm-common</artifactId>
-      <groupId>zextras</groupId>
-      <version>22.11.0-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- Sun dependencies needed and removed from jdk 11, consider switching to Jakarta -->
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-core</artifactId>
-      <version>2.3.0.1</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
-      <version>2.3.1</version>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 
@@ -109,6 +109,18 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>missinglink-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
