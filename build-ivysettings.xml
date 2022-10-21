@@ -50,6 +50,8 @@
     <filesystem name="build-dist">
       <artifact pattern="${dist.dir}/[module]-[revision].[ext]" />
     </filesystem>
+    <!-- Just defined to publish snapshots -->
+    <ibiblio name="zextras-maven-snapshot" m2compatible="true" root="https://zextras.jfrog.io/artifactory/maven-snapshot" />
   </resolvers>
   <modules>
     <module organisation="xerces" name="xercesImpl" revision="2.9.1-patch-01" resolver="maven-redhat" />

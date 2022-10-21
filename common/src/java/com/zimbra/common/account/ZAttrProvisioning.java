@@ -2621,12 +2621,100 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAdminProxyPort = "carbonioAdminProxyPort";
 
     /**
+     * Admin Web UI App Logo preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3108)
+    public static final String A_carbonioAdminUiAppLogo = "carbonioAdminUiAppLogo";
+
+    /**
+     * Admin Web UI Background preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3110)
+    public static final String A_carbonioAdminUiBackground = "carbonioAdminUiBackground";
+
+    /**
+     * Admin Web UI Dark App Logo preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3109)
+    public static final String A_carbonioAdminUiDarkAppLogo = "carbonioAdminUiDarkAppLogo";
+
+    /**
+     * Admin Web UI Dark Background preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3111)
+    public static final String A_carbonioAdminUiDarkBackground = "carbonioAdminUiDarkBackground";
+
+    /**
+     * Admin Web UI Login Screen Dark Logo preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3107)
+    public static final String A_carbonioAdminUiDarkLoginLogo = "carbonioAdminUiDarkLoginLogo";
+
+    /**
+     * Admin Web UI Description preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3114)
+    public static final String A_carbonioAdminUiDescription = "carbonioAdminUiDescription";
+
+    /**
+     * Admin Web UI Favicon preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3112)
+    public static final String A_carbonioAdminUiFavicon = "carbonioAdminUiFavicon";
+
+    /**
+     * Admin Web UI Login Screen Logo preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3106)
+    public static final String A_carbonioAdminUiLoginLogo = "carbonioAdminUiLoginLogo";
+
+    /**
+     * Admin Web UI Title preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3113)
+    public static final String A_carbonioAdminUiTitle = "carbonioAdminUiTitle";
+
+    /**
      * Whether Carbonio can take interactive feedback from users
      *
      * @since ZCS 9.0.0
      */
     @ZAttr(id=3094)
     public static final String A_carbonioAllowFeedback = "carbonioAllowFeedback";
+
+    /**
+     * Carbonio mesh service credentials as base64 string
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3095)
+    public static final String A_carbonioMeshCredentials = "carbonioMeshCredentials";
+
+    /**
+     * Web UI Dark Mode preference for account
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3115)
+    public static final String A_carbonioPrefWebUiDarkMode = "carbonioPrefWebUiDarkMode";
 
     /**
      * Whether Carbonio can send analytics reports
@@ -2651,6 +2739,86 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3091)
     public static final String A_carbonioVideoServerRecordingEnabled = "carbonioVideoServerRecordingEnabled";
+
+    /**
+     * Web UI App Logo preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3101)
+    public static final String A_carbonioWebUiAppLogo = "carbonioWebUiAppLogo";
+
+    /**
+     * Web UI Dark App Logo preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3102)
+    public static final String A_carbonioWebUiDarkAppLogo = "carbonioWebUiDarkAppLogo";
+
+    /**
+     * Web UI Login Screen Dark Background preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3100)
+    public static final String A_carbonioWebUiDarkLoginBackground = "carbonioWebUiDarkLoginBackground";
+
+    /**
+     * Web UI Login Screen Dark Logo preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3098)
+    public static final String A_carbonioWebUiDarkLoginLogo = "carbonioWebUiDarkLoginLogo";
+
+    /**
+     * Web UI Dark Mode preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3096)
+    public static final String A_carbonioWebUiDarkMode = "carbonioWebUiDarkMode";
+
+    /**
+     * Web UI Description preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3105)
+    public static final String A_carbonioWebUiDescription = "carbonioWebUiDescription";
+
+    /**
+     * Web UI Favicon preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3103)
+    public static final String A_carbonioWebUiFavicon = "carbonioWebUiFavicon";
+
+    /**
+     * Web UI Login Screen Background preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3099)
+    public static final String A_carbonioWebUiLoginBackground = "carbonioWebUiLoginBackground";
+
+    /**
+     * Web UI Login Screen Logo preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3097)
+    public static final String A_carbonioWebUiLoginLogo = "carbonioWebUiLoginLogo";
+
+    /**
+     * Web UI Title preference for domain
+     *
+     * @since ZCS 22.11.0
+     */
+    @ZAttr(id=3104)
+    public static final String A_carbonioWebUiTitle = "carbonioWebUiTitle";
 
     /**
      * RFC2256: common name(s) for which the entity is known by

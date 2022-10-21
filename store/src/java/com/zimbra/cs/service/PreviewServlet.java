@@ -105,19 +105,19 @@ public class PreviewServlet extends ZimbraServlet {
 
   public static final String SERVLET_PATH = "/preview";
   public static final String THUMBNAIL_REGEX =
-      "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)";
+      "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+(?:\\.[0-9]+)?)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)";
   public static final String PDF_PREVIEW_REGEX =
       SERVLET_PATH
           + "/pdf/"
-          + "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/?((?=(?!thumbnail))(?=([^/ ]*)))";
+          + "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+(?:\\.[0-9]+)?)/?((?=(?!thumbnail))(?=([^/ ]*)))";
   public static final String IMG_PREVIEW_REGEX =
       SERVLET_PATH
-          + "/image/"
-          + "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/ ]*)))";
+          + "/image/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+(?:\\.[0-9]+)?)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/"
+          + " ]*)))";
   public static final String DOC_PREVIEW_REGEX =
       SERVLET_PATH
           + "/document/"
-          + "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)/?((?=(?!thumbnail))(?=([^/ ]*)))";
+          + "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+(?:\\.[0-9]+)?)/?((?=(?!thumbnail))(?=([^/ ]*)))";
   public static final String PDF_THUMBNAIL_REGEX = SERVLET_PATH + "/pdf/" + THUMBNAIL_REGEX;
   public static final String IMG_THUMBNAIL_REGEX = SERVLET_PATH + "/image/" + THUMBNAIL_REGEX;
   public static final String DOC_THUMBNAIL_REGEX = SERVLET_PATH + "/document/" + THUMBNAIL_REGEX;
@@ -569,7 +569,8 @@ public class PreviewServlet extends ZimbraServlet {
     }
 
     final Pattern requiredQueryParametersPattern =
-        Pattern.compile(SERVLET_PATH + "/([a-zA-Z]+)/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+)");
+        Pattern.compile(
+            SERVLET_PATH + "/([a-zA-Z]+)/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+(?:\\.[0-9]+)?)");
 
     final Matcher requiredQueryParametersMatcher =
         requiredQueryParametersPattern.matcher(getUrlWithQueryParams(req));

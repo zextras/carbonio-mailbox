@@ -30,7 +30,7 @@ pipeline {
                 cat <<EOF > build.properties
                 debug=0
                 is-production=1
-                carbonio.buildinfo.version=22.10.0_ZEXTRAS_202210
+                carbonio.buildinfo.version=22.11.0_ZEXTRAS_202211
                 EOF
                 '''
                 withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
@@ -62,6 +62,18 @@ pipeline {
                 publishCoverage adapters: [jacocoAdapter('build/coverage/merged.xml')], calculateDiffForChangeRequests: true, failNoReports: true
                 junit allowEmptyResults: true, testResults: '**/build/test/output/*.xml'
             }
+        }
+        stage('Publish snapshot to maven') {
+          when () {
+            branch 'devel'
+          }
+          steps {
+              sh '''
+              ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant -d \
+              -propertyfile build.properties \
+              publish-maven-snapshot
+              '''
+          }
         }
         stage('Publish to maven') {
             when {
