@@ -14,7 +14,7 @@
     <project name="carbonio-build" path="zm-build" revision="refs/tags/4.0.13" />
 
     <!-- Carbonio packaging spec files -->
-    <project remote="bb-zx" name="carbonio-core" revision="refs/tags/4.0.15" />
+    <project remote="bb-zx" name="carbonio-core" revision="refs/tags/4.0.16" />
 
     <!-- 
         Carbonio modules repo 
@@ -26,19 +26,19 @@
     <project name="carbonio-admin-ajax" path="zm-admin-ajax" revision="refs/tags/4.0.4" />
     <project name="carbonio-amavis" path="zm-amavis" revision="refs/tags/4.0.2" />
     <project name="carbonio-certificate-manager-admin-zimlet" path="zm-certificate-manager-admin-zimlet" revision="refs/tags/4.0.3" />
-    <project name="carbonio-certificate-manager-store" path="zm-certificate-manager-store" revision="refs/tags/4.0.4" />
+    <project name="carbonio-certificate-manager-store" path="zm-certificate-manager-store" revision="refs/tags/4.0.5" />
     <project name="carbonio-charset" path="zm-charset" revision="refs/tags/4.0.3" />
     <project name="carbonio-clam-scanner-store" path="zm-clam-scanner-store" revision="refs/tags/4.0.2" />
-    <project name="carbonio-core-utils" path="zm-core-utils" revision="refs/tags/4.0.12" />
+    <project name="carbonio-core-utils" path="zm-core-utils" revision="refs/tags/4.0.13" />
     <project name="carbonio-db-conf" path="zm-db-conf" revision="refs/tags/4.0.1" />
     <project name="carbonio-freshclam" path="zm-freshclam" revision="refs/tags/4.0.1" />
     <project name="carbonio-helptooltip-zimlet" path="zm-helptooltip-zimlet" revision="refs/tags/4.0.3" />
-    <project name="carbonio-jetty-conf" path="zm-jetty-conf" revision="refs/tags/4.0.2" />
+    <project name="carbonio-jetty-conf" path="zm-jetty-conf" revision="refs/tags/4.0.3" />
     <project name="carbonio-jython" path="zm-jython" revision="refs/tags/4.0.2" />
     <project name="carbonio-launcher" path="zm-launcher" revision="refs/tags/4.0.1" />
-    <project name="carbonio-ldap-utilities" path="zm-ldap-utilities" revision="refs/tags/4.0.7" />
+    <project name="carbonio-ldap-utilities" path="zm-ldap-utilities" revision="refs/tags/4.0.8" />
     <project name="carbonio-ldap-utils-store" path="zm-ldap-utils-store" revision="refs/tags/4.0.3" />
-    <project name="carbonio-mailbox" path="zm-mailbox" revision="refs/tags/4.0.16" />
+    <project name="carbonio-mailbox" path="zm-mailbox" revision="refs/tags/4.0.17" />
     <project name="carbonio-mta" path="zm-mta" revision="refs/tags/4.0.2" />
     <project name="carbonio-nginx-lookup-store" path="zm-nginx-lookup-store" revision="refs/tags/4.0.4" />
     <project name="carbonio-openid-consumer-store" path="zm-openid-consumer-store" revision="refs/tags/4.0.3" />
