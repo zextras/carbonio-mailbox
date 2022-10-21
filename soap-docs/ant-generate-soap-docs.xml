@@ -19,8 +19,6 @@
     <pathelement path="${runtime_classpath}"/>
     <pathelement path="${test_classpath}"/>
   </path>
-  <pathconvert property="classpathProp" refid="class.path"/>
-  <echo message="MyFuckingClassPath: ${classpathProp}"/>
 
   <target name="check-schema-done">
     <uptodate property="schema.build.notrequired" targetFile="${xml.schema.dir}/zimbra.xsd">

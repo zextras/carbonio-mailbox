@@ -371,12 +371,6 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
-        <artifactId>store-war</artifactId>
-        <type>pom</type>
-        <version>22.11.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>zextras</groupId>
         <artifactId>zm-client</artifactId>
         <version>22.11.0-SNAPSHOT</version>
       </dependency>
@@ -789,7 +783,6 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
-    <module>store-war</module>
     <module>soap-docs</module>
   </modules>
   <packaging>pom</packaging>
