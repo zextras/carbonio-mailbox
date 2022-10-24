@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.service.admin;
 
-import com.google.common.collect.ImmutableSet;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
@@ -26,7 +25,7 @@ import java.util.Set;
 public class GetDomainInfo extends AdminDocumentHandler {
 
   private static final Set<String> bootstrapInfoAttrs =
-      ImmutableSet.of(
+      Set.of(
           ZAttrProvisioning.A_zimbraSkinLogoURL,
           ZAttrProvisioning.A_zimbraSkinLogoAppBanner,
           ZAttrProvisioning.A_zimbraSkinLogoLoginBanner,
@@ -44,7 +43,26 @@ public class GetDomainInfo extends AdminDocumentHandler {
           ZAttrProvisioning.A_zimbraSkinSecondaryColor,
           ZAttrProvisioning.A_zimbraSkinSelectionColor,
           ZAttrProvisioning.A_zimbraSkinFavicon,
-          ZAttrProvisioning.A_zimbraFeatureResetPasswordStatus);
+          ZAttrProvisioning.A_zimbraFeatureResetPasswordStatus,
+          ZAttrProvisioning.A_carbonioWebUiDarkMode,
+          ZAttrProvisioning.A_carbonioWebUiLoginLogo,
+          ZAttrProvisioning.A_carbonioWebUiDarkLoginLogo,
+          ZAttrProvisioning.A_carbonioWebUiLoginBackground,
+          ZAttrProvisioning.A_carbonioWebUiDarkLoginBackground,
+          ZAttrProvisioning.A_carbonioWebUiAppLogo,
+          ZAttrProvisioning.A_carbonioWebUiDarkAppLogo,
+          ZAttrProvisioning.A_carbonioWebUiFavicon,
+          ZAttrProvisioning.A_carbonioWebUiTitle,
+          ZAttrProvisioning.A_carbonioWebUiDescription,
+          ZAttrProvisioning.A_carbonioAdminUiLoginLogo,
+          ZAttrProvisioning.A_carbonioAdminUiDarkLoginLogo,
+          ZAttrProvisioning.A_carbonioAdminUiAppLogo,
+          ZAttrProvisioning.A_carbonioAdminUiDarkAppLogo,
+          ZAttrProvisioning.A_carbonioAdminUiBackground,
+          ZAttrProvisioning.A_carbonioAdminUiDarkBackground,
+          ZAttrProvisioning.A_carbonioAdminUiFavicon,
+          ZAttrProvisioning.A_carbonioAdminUiTitle,
+          ZAttrProvisioning.A_carbonioAdminUiDescription);
 
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
@@ -146,18 +164,15 @@ public class GetDomainInfo extends AdminDocumentHandler {
     }
     Set<String> attrList =
         AttributeManager.getInstance().getAttrsWithFlag(AttributeFlag.domainInfo);
-    Map attrsMap = entry.getUnicodeAttrs(applyConfig);
+    Map<String, Object> attrsMap = entry.getUnicodeAttrs(applyConfig);
 
     for (String name : attrList) {
       Object value = attrsMap.get(name);
 
       if (value instanceof String[]) {
-        String sv[] = (String[]) value;
-        for (int i = 0; i < sv.length; i++)
-          domain
-              .addElement(AdminConstants.E_A)
-              .addAttribute(AdminConstants.A_N, name)
-              .setText(sv[i]);
+        String[] sv = (String[]) value;
+        for (String s : sv)
+          domain.addElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, name).setText(s);
       } else if (value instanceof String)
         domain
             .addElement(AdminConstants.E_A)
@@ -176,7 +191,6 @@ public class GetDomainInfo extends AdminDocumentHandler {
     // e.g will do z.com
     //     will not do com
     while (secondDotAt != -1) {
-      // System.out.println(value.substring(firstDotAt+1));
       domain = prov.getDomain(Key.DomainBy.name, value.substring(firstDotAt + 1), true);
       if (domain != null) break;
       else {
@@ -205,10 +219,7 @@ public class GetDomainInfo extends AdminDocumentHandler {
     notes.add(AdminRightCheckPoint.Notes.ALLOW_ALL_ADMINS);
   }
 
-  public static void main(String args[]) throws ServiceException {
-    // findDomain(Provisioning.getInstance(), "x");  System.out.println();
-    // findDomain(Provisioning.getInstance(), "x.y");  System.out.println();
-    // findDomain(Provisioning.getInstance(), "x.y.z");  System.out.println();
+  public static void main(String[] args) throws ServiceException {
     findDomain(Provisioning.getInstance(), "x.y.z.a.b.c");
     System.out.println();
   }

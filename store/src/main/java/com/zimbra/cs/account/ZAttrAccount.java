@@ -94,6 +94,75 @@ public abstract class ZAttrAccount extends MailTarget {
   }
 
   /**
+   * Web UI Dark Mode preference for account
+   *
+   * @return carbonioPrefWebUiDarkMode, or false if unset
+   * @since ZCS 22.11.0
+   */
+  @ZAttr(id = 3115)
+  public boolean isCarbonioPrefWebUiDarkMode() {
+    return getBooleanAttr(Provisioning.A_carbonioPrefWebUiDarkMode, false, true);
+  }
+
+  /**
+   * Web UI Dark Mode preference for account
+   *
+   * @param carbonioPrefWebUiDarkMode new value
+   * @throws com.zimbra.common.service.ServiceException if error during update
+   * @since ZCS 22.11.0
+   */
+  @ZAttr(id = 3115)
+  public void setCarbonioPrefWebUiDarkMode(boolean carbonioPrefWebUiDarkMode)
+      throws com.zimbra.common.service.ServiceException {
+    HashMap<String, Object> attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_carbonioPrefWebUiDarkMode, carbonioPrefWebUiDarkMode ? TRUE : FALSE);
+    getProvisioning().modifyAttrs(this, attrs);
+  }
+
+  /**
+   * Web UI Dark Mode preference for account
+   *
+   * @param carbonioPrefWebUiDarkMode new value
+   * @param attrs existing map to populate, or null to create a new map
+   * @return populated map to pass into Provisioning.modifyAttrs
+   * @since ZCS 22.11.0
+   */
+  @ZAttr(id = 3115)
+  public Map<String, Object> setCarbonioPrefWebUiDarkMode(
+      boolean carbonioPrefWebUiDarkMode, Map<String, Object> attrs) {
+    if (attrs == null) attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_carbonioPrefWebUiDarkMode, carbonioPrefWebUiDarkMode ? TRUE : FALSE);
+    return attrs;
+  }
+
+  /**
+   * Web UI Dark Mode preference for account
+   *
+   * @throws com.zimbra.common.service.ServiceException if error during update
+   * @since ZCS 22.11.0
+   */
+  @ZAttr(id = 3115)
+  public void unsetCarbonioPrefWebUiDarkMode() throws com.zimbra.common.service.ServiceException {
+    HashMap<String, Object> attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_carbonioPrefWebUiDarkMode, "");
+    getProvisioning().modifyAttrs(this, attrs);
+  }
+
+  /**
+   * Web UI Dark Mode preference for account
+   *
+   * @param attrs existing map to populate, or null to create a new map
+   * @return populated map to pass into Provisioning.modifyAttrs
+   * @since ZCS 22.11.0
+   */
+  @ZAttr(id = 3115)
+  public Map<String, Object> unsetCarbonioPrefWebUiDarkMode(Map<String, Object> attrs) {
+    if (attrs == null) attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_carbonioPrefWebUiDarkMode, "");
+    return attrs;
+  }
+
+  /**
    * Enable video server recording for Carbonio
    *
    * @return carbonioVideoServerRecordingEnabled, or false if unset

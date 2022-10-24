@@ -9821,7 +9821,8 @@ TODO: delete them permanently from here
   <desc>block common keywords in password string</desc>
 </attr>
 
-<attr id="3091" name="carbonioVideoServerRecordingEnabled" type="boolean" cardinality="single" optionalIn="account,cos,domain" flags="accountCosDomainInherited,accountInfo,domainInfo" since="9.0.0">
+<attr id="3091" name="carbonioVideoServerRecordingEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,domain,cos,account" flags="domainInherited,accountCosDomainInherited,accountInfo,domainInfo" since="9.0.0">
+  <globalConfigValue>FALSE</globalConfigValue>
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>Enable video server recording for Carbonio</desc>
 </attr>
@@ -9843,5 +9844,91 @@ TODO: delete them permanently from here
 
 <attr id="3095" name="carbonioMeshCredentials" type="string" cardinality="single" optionalIn="globalConfig" since="22.11.0">
   <desc>Carbonio mesh service credentials as base64 string</desc>
+</attr>
+
+<attr id="3096" name="carbonioWebUiDarkMode" type="boolean" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Web UI Dark Mode preference for domain</desc>
+</attr>
+
+<attr id="3097" name="carbonioWebUiLoginLogo" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Web UI Login Screen Logo preference for domain</desc>
+</attr>
+
+<attr id="3098" name="carbonioWebUiDarkLoginLogo" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Web UI Login Screen Dark Logo preference for domain</desc>
+</attr>
+
+<attr id="3099" name="carbonioWebUiLoginBackground" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Web UI Login Screen Background preference for domain</desc>
+</attr>
+
+<attr id="3100" name="carbonioWebUiDarkLoginBackground" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Web UI Login Screen Dark Background preference for domain</desc>
+</attr>
+
+<attr id="3101" name="carbonioWebUiAppLogo" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Web UI App Logo preference for domain</desc>
+</attr>
+
+<attr id="3102" name="carbonioWebUiDarkAppLogo" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Web UI Dark App Logo preference for domain</desc>
+</attr>
+
+<attr id="3103" name="carbonioWebUiFavicon" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Web UI Favicon preference for domain</desc>
+</attr>
+
+<attr id="3104" name="carbonioWebUiTitle" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <globalConfigValue>Carbonio Client</globalConfigValue>
+  <desc>Web UI Title preference for domain</desc>
+</attr>
+
+<attr id="3105" name="carbonioWebUiDescription" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <globalConfigValue>Carbonio Client</globalConfigValue>
+  <desc>Web UI Description preference for domain</desc>
+</attr>
+
+<attr id="3106" name="carbonioAdminUiLoginLogo" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Admin Web UI Login Screen Logo preference for domain</desc>
+</attr>
+
+<attr id="3107" name="carbonioAdminUiDarkLoginLogo" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Admin Web UI Login Screen Dark Logo preference for domain</desc>
+</attr>
+
+<attr id="3108" name="carbonioAdminUiAppLogo" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Admin Web UI App Logo preference for domain</desc>
+</attr>
+
+<attr id="3109" name="carbonioAdminUiDarkAppLogo" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Admin Web UI Dark App Logo preference for domain</desc>
+</attr>
+
+<attr id="3110" name="carbonioAdminUiBackground" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Admin Web UI Background preference for domain</desc>
+</attr>
+
+<attr id="3111" name="carbonioAdminUiDarkBackground" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Admin Web UI Dark Background preference for domain</desc>
+</attr>
+
+<attr id="3112" name="carbonioAdminUiFavicon" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <desc>Admin Web UI Favicon preference for domain</desc>
+</attr>
+
+<attr id="3113" name="carbonioAdminUiTitle" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <globalConfigValue>Carbonio Admin UI</globalConfigValue>
+  <desc>Admin Web UI Title preference for domain</desc>
+</attr>
+
+<attr id="3114" name="carbonioAdminUiDescription" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="22.11.0">
+  <globalConfigValue>Carbonio Admin UI</globalConfigValue>
+  <desc>Admin Web UI Description preference for domain</desc>
+</attr>
+
+<attr id="3115" name="carbonioPrefWebUiDarkMode" type="boolean" cardinality="single" optionalIn="account,cos" flags="domainAdminModifiable,accountInherited,accountInfo" since="22.11.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>Web UI Dark Mode preference for account</desc>
 </attr>
 </attrs>
