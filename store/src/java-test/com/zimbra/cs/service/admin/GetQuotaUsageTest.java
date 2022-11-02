@@ -41,9 +41,12 @@ public class GetQuotaUsageTest {
     assertEquals(uniqueAccountQuotas, expectedAccountQuotas);
   }
 
-  /** Unit test for with SORT_TOTAL_USED and sortAscending parameters */
+  /**
+   * Unit test for {@link GetQuotaUsage#getSortedAccountsQuotaList(List, String, boolean)} with
+   * {@link GetQuotaUsage#SORT_TOTAL_USED} and sortAscending parameters
+   */
   @Test
-  public void shouldReturnSortedAccountQuotaUsagesWhenCalledGetUniqueAccountQuotaList() {
+  public void shouldReturnSortedAccountQuotaUsagesWhenCalledGetSortedAccountQuotaList() {
     AccountQuota a1 = new AccountQuota();
     a1.setId("sdfj-sdfhk-jdfk-sdf");
     a1.setName("a1");
