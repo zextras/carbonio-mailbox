@@ -1372,7 +1372,7 @@ public final class LC {
   public static final KnownKey zimbra_file_content_type_blacklist =
       KnownKey.newKey("application/x-ms*");
 
-  public static final KnownKey enable_delegated_admin_ldap_access = KnownKey.newKey(true);
+  public static final KnownKey enable_delegated_admin_ldap_access = KnownKey.newKey(false);
 
   // OAuth2 Social
   public static final KnownKey zm_oauth_classes_handlers_yahoo =
