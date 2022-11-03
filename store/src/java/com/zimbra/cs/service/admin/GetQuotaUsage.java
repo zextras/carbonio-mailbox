@@ -32,10 +32,11 @@ import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -64,12 +65,10 @@ public class GetQuotaUsage extends AdminDocumentHandler {
    * @since 22.12.0
    */
   public static List<AccountQuota> getUniqueAccountQuotaList(List<AccountQuota> accountQuotas) {
+    final Set<String> accountQuotaMap = new HashSet<>();
     return accountQuotas.stream()
-        .collect(
-            Collectors.collectingAndThen(
-                Collectors.toCollection(
-                    () -> new TreeSet<>(Comparator.comparing(AccountQuota::getId))),
-                ArrayList::new));
+        .filter(a -> accountQuotaMap.add(a.getId()))
+        .collect(Collectors.toList());
   }
 
   private static void shutdownAndAwaitTermination(ExecutorService executor)
