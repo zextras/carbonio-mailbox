@@ -192,13 +192,14 @@ public class ZimbraPerf {
   public static final Counter COUNTER_IDX_BYTES_READ = new Counter();
   public static final Counter COUNTER_BLOB_INPUT_STREAM_READ = new Counter();
   public static final Counter COUNTER_BLOB_INPUT_STREAM_SEEK_RATE = new Counter();
-  public static final ActivityTracker SOAP_TRACKER = new ActivityTracker("soap");
+  public static final ActivityTracker SOAP_TRACKER = new ActivityTracker("com/zimbra/doc/soap");
   public static final ActivityTracker IMAP_TRACKER = new ActivityTracker("imap");
   public static final ActivityTracker POP_TRACKER = new ActivityTracker("pop3");
   public static final ActivityTracker LDAP_TRACKER = new ActivityTracker("ldap");
   public static final ActivityTracker SQL_TRACKER = new ActivityTracker("sql");
 
-  public static final ActivityTracker SOAP_TRACKER_PROMETHEUS = new ActivityTracker("soap");
+  public static final ActivityTracker SOAP_TRACKER_PROMETHEUS =
+      new ActivityTracker("com/zimbra/doc/soap");
   public static final ActivityTracker IMAP_TRACKER_PROMETHEUS = new ActivityTracker("imap");
   public static final ActivityTracker POP_TRACKER_PROMETHEUS = new ActivityTracker("pop3");
   public static final ActivityTracker LDAP_TRACKER_PROMETHEUS = new ActivityTracker("ldap");

@@ -1,18 +1,18 @@
 <project name="soap-docs">
   <property name="build.dir" location="target"/>
-  <property name="xml.schema.dir" location="${build.dir}/wsdl"/>
+  <property name="xml.schema.dir" location="${build.dir}/classes/com/zimbra/soap/"/>
   <property name="src.dir" location="src"/>
   <property name="templates.dir" location="templates"/>
   <property name="build.classes.dir" location="${build.dir}/classes"/>
   <property name="test.classes.dir" location="${build.dir}/test-classes"/>
   <property name="zimbra.service.wsdl.file" location="${build.classes.dir}/com/zimbra/soap/ZimbraService.wsdl" />
-  <property name="soapdocs.output.dir" location="${build.classes.dir}/docs/soap" />
-  <property name="soapdocs.src.dir" location="soapdocs/src/java" />
-  <property name="soapdocs.apidesc.file" location="${build.classes.dir}/soapapi-desc.json" />
-  <property name="soapdocs.apidesc.baseline.file" location="soapdocs/baseline-soapapi-desc.json.gz" />
+  <property name="soapdocs.output.dir" location="${build.dir}/docs/soap" />
+  <property name="soapdocs.src.dir" location="soap/src/java" />
+  <property name="soapdocs.apidesc.file" location="${build.dir}/soapapi-desc.json" />
+  <property name="soapdocs.apidesc.baseline.file" location="soap/baseline-soapapi-desc.json.gz" />
   <property name="soapapi.changelog.output.dir" location="${soapdocs.output.dir}/api-changelog" />
-  <property name="soapapi.doc.file" location="${build.classes.dir}/docs/soapapi-doc.zip" />
-  <property name="soapapi.changelog.file" location="${build.classes.dir}/docs/soapapi-changelog.zip" />
+  <property name="soapapi.doc.file" location="${build.dir}/docs/soapapi-doc.zip" />
+  <property name="soapapi.changelog.file" location="${build.dir}/docs/soapapi-changelog.zip" />
 
   <path id="class.path">
     <pathelement path="${compile_classpath}"/>

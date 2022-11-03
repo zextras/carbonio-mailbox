@@ -783,7 +783,6 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
-    <module>soap-docs</module>
   </modules>
   <packaging>pom</packaging>
 

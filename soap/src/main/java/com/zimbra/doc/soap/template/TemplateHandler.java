@@ -6,7 +6,8 @@
 package com.zimbra.doc.soap.template;
 
 import com.google.common.collect.Maps;
-import com.zimbra.doc.soap.*;
+import com.zimbra.doc.soap.Root;
+import com.zimbra.doc.soap.SoapDocException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import java.io.File;

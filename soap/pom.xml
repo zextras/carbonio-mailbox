@@ -70,6 +70,11 @@
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
     </dependency>
+    <!-- Soap Docs -->
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+    </dependency>
 
     <dependency>
       <artifactId>junit</artifactId>
@@ -118,9 +123,49 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
       </plugin>
+      <!-- generate SOAP docs -->
       <plugin>
-        <groupId>com.spotify</groupId>
-        <artifactId>missinglink-maven-plugin</artifactId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <artifactId>ant-contrib</artifactId>
+            <exclusions>
+              <exclusion>
+                <artifactId>ant</artifactId>
+                <groupId>ant</groupId>
+              </exclusion>
+            </exclusions>
+            <groupId>ant-contrib</groupId>
+            <version>1.0b3</version>
+          </dependency>
+          <dependency>
+            <artifactId>ant-nodeps</artifactId>
+            <groupId>org.apache.ant</groupId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <configuration>
+              <target>
+                <property name="compile_classpath" refid="maven.compile.classpath"/>
+                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                <property name="test_classpath" refid="maven.test.classpath"/>
+                <taskdef classpathref="maven.plugin.classpath"
+                  resource="net/sf/antcontrib/antlib.xml"/>
+                <ant antfile="${basedir}/ant-generate-soap-docs.xml">
+                  <target name="generate-soap-api-doc"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>generate-soap-docs</id>
+            <phase>prepare-package</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
       </plugin>
     </plugins>
   </build>
