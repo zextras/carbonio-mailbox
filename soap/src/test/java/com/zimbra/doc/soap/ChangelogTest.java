@@ -3,13 +3,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
-package soap;
+package com.zimbra.doc.soap;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.zimbra.doc.soap.ApiClassDocumentation;
-import com.zimbra.doc.soap.Root;
-import com.zimbra.doc.soap.WsdlDocGenerator;
 import com.zimbra.doc.soap.apidesc.SoapApiCommand;
 import com.zimbra.doc.soap.apidesc.SoapApiDescription;
 import com.zimbra.doc.soap.changelog.AttributeChanges;

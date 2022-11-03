@@ -8,7 +8,7 @@
     namespace = "urn:zimbraAdmin",
     elementFormDefault = XmlNsForm.QUALIFIED)
 @XmlAccessorType(XmlAccessType.NONE)
-package soap;
+package com.zimbra.doc.soap;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
