@@ -26,6 +26,10 @@
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
     </dependency>
+    <dependency>
+      <artifactId>commons-cli</artifactId>
+      <groupId>commons-cli</groupId>
+    </dependency>
 
     <dependency>
       <artifactId>jaxb-api</artifactId>
