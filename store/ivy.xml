@@ -23,6 +23,12 @@
         <dependency org="org.slf4j" name="slf4j-api" rev="1.7.30"/>
         <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.30"/>
         <dependency org="junit" name="junit" rev="4.8.2" conf="test->default"/>
+        <dependency org="org.hamcrest" name="hamcrest-core" rev="2.2" conf="test->default"/>
+        <dependency org="org.hamcrest" name="hamcrest-library" rev="2.2" conf="test->default"/>
+        <dependency org="org.testcontainers" name="testcontainers" rev="1.17.5" conf="test->default"/>
+        <dependency org="org.rnorth.duct-tape" name="duct-tape" rev="1.0.8" conf="test->default"/>
+        <dependency org="com.github.docker-java" name="docker-java-api" rev="3.2.13" conf="test->default"/>
+        <dependency org="com.github.docker-java" name="docker-java-transport-zerodep" rev="3.2.13" conf="test->default"/>
         <dependency org="javax.mail" name="mail" rev="1.4.5"/>
         <dependency org="jaxen" name="jaxen" rev="1.1-beta-10"/>
         <dependency org="org.dom4j" name="dom4j" rev="${dom4j.version}"/>
