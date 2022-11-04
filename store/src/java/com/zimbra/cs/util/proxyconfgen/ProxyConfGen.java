@@ -17,17 +17,14 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.util.BuildInfo;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -281,8 +278,14 @@ public class ProxyConfGen {
               }
             }
 
-            if (!ProxyConfUtil.isEmptyString(clientCertCA)) {
-              createDomainSSLDirIfNotExists();
+            if (!ProxyConfUtil.isEmptyString(clientCertCA)
+                && !ProxyConfUtil.isEmptyString(certificate)
+                && !ProxyConfUtil.isEmptyString(privateKey)) { // FIXME
+              try {
+                downloadDomainCertificate(domainName, certificate, privateKey);
+              } catch (ProxyConfException e) {
+                throw new RuntimeException(e);
+              }
             }
             result.add(
                 new DomainAttrItem(
@@ -328,11 +331,30 @@ public class ProxyConfGen {
     return sb.toString();
   }
 
-  public static void createDomainSSLDirIfNotExists() {
+  public static void downloadDomainCertificate(
+      String domainName, String certificate, String privateKey) throws ProxyConfException {
     File domainSSLDir = new File(DOMAIN_SSL_DIR);
-    if (!domainSSLDir.exists()) {
-      //noinspection ResultOfMethodCallIgnored
-      domainSSLDir.mkdirs();
+    if (!domainSSLDir.exists() && !domainSSLDir.mkdirs()) {
+      throw new ProxyConfException("Unable to create base domain certificate folder");
+    }
+    final File certificateFile =
+        new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
+    final File privateKeyFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_KEY_EXT).toUri());
+    // FIXME
+    if ((!certificateFile.exists() && !certificateFile.exists())
+        || !certificateFile.exists()
+        || !privateKeyFile.exists()) {
+      if (!certificateFile.delete() || !privateKeyFile.delete()) {
+        throw new ProxyConfException(
+            "Unable to remove broken certificates before downloading new ones from LDAP");
+      }
+    }
+    try (FileOutputStream fsOutputCertificate = new FileOutputStream(certificateFile);
+        FileOutputStream fsOutputPrivateKey = new FileOutputStream(privateKeyFile); ) {
+      fsOutputCertificate.write(certificate.getBytes(StandardCharsets.UTF_8));
+      fsOutputPrivateKey.write(privateKey.getBytes(StandardCharsets.UTF_8));
+    } catch (IOException e) {
+      throw new ProxyConfException("Unable to write down certificates for domain " + domainName, e);
     }
   }
 
