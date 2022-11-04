@@ -340,14 +340,10 @@ public class ProxyConfGen {
     final File certificateFile =
         new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
     final File privateKeyFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_KEY_EXT).toUri());
-    // FIXME
-    if ((!certificateFile.exists() && !certificateFile.exists())
-        || !certificateFile.exists()
-        || !privateKeyFile.exists()) {
-      if (!certificateFile.delete() || !privateKeyFile.delete()) {
-        throw new ProxyConfException(
-            "Unable to remove broken certificates before downloading new ones from LDAP");
-      }
+    if ((certificateFile.exists() && !certificateFile.delete())
+        || (privateKeyFile.exists() && !privateKeyFile.delete())) {
+      throw new ProxyConfException(
+          "Unable to remove broken certificates before downloading new ones from LDAP");
     }
     try (FileOutputStream fsOutputCertificate = new FileOutputStream(certificateFile);
         FileOutputStream fsOutputPrivateKey = new FileOutputStream(privateKeyFile); ) {
