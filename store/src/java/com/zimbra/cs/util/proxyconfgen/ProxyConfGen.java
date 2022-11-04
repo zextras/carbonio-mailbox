@@ -334,28 +334,27 @@ public class ProxyConfGen {
   public static void downloadDomainCertificate(
       String domainName, String certificate, String privateKey) throws ProxyConfException {
     File domainSSLDir = new File(DOMAIN_SSL_DIR);
-    if (!domainSSLDir.exists()) {
-      if (domainSSLDir.mkdirs()) {
-        throw new ProxyConfException("Unable to create base domain certificate folder");
-      }
-      final File certificateFile =
-          new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
-      final File privateKeyFile =
-          new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_KEY_EXT).toUri());
-      if (!certificateFile.exists() || !privateKeyFile.exists()) {
-        if (!certificateFile.delete() || !privateKeyFile.delete()) {
-          throw new ProxyConfException(
-              "Unable to remove broken certificates before downloading new ones from LDAP");
-        }
-      }
-      try (FileOutputStream fsOutputCertificate = new FileOutputStream(certificateFile);
-          FileOutputStream fsOutputPrivateKey = new FileOutputStream(privateKeyFile); ) {
-        fsOutputCertificate.write(certificate.getBytes(StandardCharsets.UTF_8));
-        fsOutputPrivateKey.write(certificate.getBytes(StandardCharsets.UTF_8));
-      } catch (IOException e) {
+    if (!domainSSLDir.exists() && !domainSSLDir.mkdirs()) {
+      throw new ProxyConfException("Unable to create base domain certificate folder");
+    }
+    final File certificateFile =
+        new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
+    final File privateKeyFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_KEY_EXT).toUri());
+    // FIXME
+    if ((!certificateFile.exists() && !certificateFile.exists())
+        || !certificateFile.exists()
+        || !privateKeyFile.exists()) {
+      if (!certificateFile.delete() || !privateKeyFile.delete()) {
         throw new ProxyConfException(
-            "Unable to write down certificates for domain " + domainName, e);
+            "Unable to remove broken certificates before downloading new ones from LDAP");
       }
+    }
+    try (FileOutputStream fsOutputCertificate = new FileOutputStream(certificateFile);
+        FileOutputStream fsOutputPrivateKey = new FileOutputStream(privateKeyFile); ) {
+      fsOutputCertificate.write(certificate.getBytes(StandardCharsets.UTF_8));
+      fsOutputPrivateKey.write(privateKey.getBytes(StandardCharsets.UTF_8));
+    } catch (IOException e) {
+      throw new ProxyConfException("Unable to write down certificates for domain " + domainName, e);
     }
   }
 
