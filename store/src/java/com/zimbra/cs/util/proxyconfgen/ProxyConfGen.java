@@ -248,12 +248,19 @@ public class ProxyConfGen {
           String[] rspHeaders =
               entry.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
 
-          if (virtualHostnames.length == 0
-              || (certificate == null
-                  && privateKey == null
-                  && clientCertMode == null
-                  && clientCertCA == null)) {
+          if (virtualHostnames.length != 0
+              && !ProxyConfUtil.isEmptyString(certificate)
+              && !ProxyConfUtil.isEmptyString(privateKey)) {
+            // download the certificates from LDAP if there is at least a virtual host name for that
+            // domain
+            try {
+              downloadDomainCertificate(domainName, certificate, privateKey);
+            } catch (ProxyConfException e) {
+              throw ServiceException.FAILURE(e.getMessage(), e.getCause());
+            }
+          }
 
+          if (virtualHostnames.length == 0 || (clientCertMode == null && clientCertCA == null)) {
             return; // ignore the items that don't have virtual host
             // name, cert or key. Those domains will use the
             // config
@@ -278,15 +285,6 @@ public class ProxyConfGen {
               }
             }
 
-            if ((!ProxyConfUtil.isEmptyString(certificate)
-                    && !ProxyConfUtil.isEmptyString(privateKey))
-                || !ProxyConfUtil.isEmptyString(clientCertCA)) {
-              try {
-                downloadDomainCertificate(domainName, certificate, privateKey);
-              } catch (ProxyConfException e) {
-                throw ServiceException.FAILURE(e.getMessage(), e.getCause());
-              }
-            }
             result.add(
                 new DomainAttrItem(
                     domainName,
@@ -2464,7 +2462,8 @@ public class ProxyConfGen {
     return false;
   }
 
-  public static void main(String[] args) throws ServiceException, ProxyConfException {
+  public static void main(String[] args)
+      throws ServiceException, ProxyConfException, InterruptedException {
     int exitCode = createConf(args);
     System.exit(exitCode);
   }
