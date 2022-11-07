@@ -278,13 +278,13 @@ public class ProxyConfGen {
               }
             }
 
-            if (!ProxyConfUtil.isEmptyString(clientCertCA)
-                && !ProxyConfUtil.isEmptyString(certificate)
-                && !ProxyConfUtil.isEmptyString(privateKey)) { // FIXME
+            if ((!ProxyConfUtil.isEmptyString(certificate)
+                    && !ProxyConfUtil.isEmptyString(privateKey))
+                || !ProxyConfUtil.isEmptyString(clientCertCA)) {
               try {
                 downloadDomainCertificate(domainName, certificate, privateKey);
               } catch (ProxyConfException e) {
-                throw new RuntimeException(e);
+                throw ServiceException.FAILURE(e.getMessage(), e.getCause());
               }
             }
             result.add(
@@ -346,8 +346,10 @@ public class ProxyConfGen {
           "Unable to remove broken certificates before downloading new ones from LDAP");
     }
     try (FileOutputStream fsOutputCertificate = new FileOutputStream(certificateFile);
-        FileOutputStream fsOutputPrivateKey = new FileOutputStream(privateKeyFile); ) {
+        FileOutputStream fsOutputPrivateKey = new FileOutputStream(privateKeyFile)) {
+      LOG.debug("Deploying certificate for " + domainName);
       fsOutputCertificate.write(certificate.getBytes(StandardCharsets.UTF_8));
+      LOG.debug("Deploying private key for " + domainName);
       fsOutputPrivateKey.write(privateKey.getBytes(StandardCharsets.UTF_8));
     } catch (IOException e) {
       throw new ProxyConfException("Unable to write down certificates for domain " + domainName, e);
