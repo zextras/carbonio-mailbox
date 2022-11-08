@@ -31,6 +31,41 @@ public class GetQuotaUsageRequest {
   @XmlAttribute(name = AdminConstants.A_DOMAIN, required = false)
   private String domain;
 
+  public GetQuotaUsageRequest setDomain(String domain) {
+    this.domain = domain;
+    return this;
+  }
+
+  public GetQuotaUsageRequest setAllServers(ZmBoolean allServers) {
+    this.allServers = allServers;
+    return this;
+  }
+
+  public GetQuotaUsageRequest setLimit(Integer limit) {
+    this.limit = limit;
+    return this;
+  }
+
+  public GetQuotaUsageRequest setOffset(Integer offset) {
+    this.offset = offset;
+    return this;
+  }
+
+  public GetQuotaUsageRequest setSortBy(String sortBy) {
+    this.sortBy = sortBy;
+    return this;
+  }
+
+  public GetQuotaUsageRequest setSortAscending(ZmBoolean sortAscending) {
+    this.sortAscending = sortAscending;
+    return this;
+  }
+
+  public GetQuotaUsageRequest setRefresh(ZmBoolean refresh) {
+    this.refresh = refresh;
+    return this;
+  }
+
   /**
    * @zm-api-field-tag all-servers
    * @zm-api-field-description whether to fetch quota usage for all domain accounts from across all

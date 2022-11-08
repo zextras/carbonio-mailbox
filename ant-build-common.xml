@@ -109,7 +109,7 @@
             <isset property="${zimbra.buildinfo.type}"/>
           </not>
         </condition>
-        <condition property="zimbra.buildinfo.release" value="${user.name}">
+        <condition property="zimbra.buildinfo.release" value="carbonio">
           <not>
             <isset property="${zimbra.buildinfo.release}"/>
           </not>

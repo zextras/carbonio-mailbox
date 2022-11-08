@@ -160,4 +160,37 @@
     </exec>
   </target>
 
+  <!-- Rights generator -->
+
+  <target name="generate-rights-java" depends="compile">
+    <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="run.class.path" failonerror="true">
+      <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <arg line="-a genRightConsts -i ${conf.dir}/rights -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/RightConsts.java"/>
+    </java>
+    <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="run.class.path" failonerror="true">
+      <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <arg line="-a genAdminRights -i ${conf.dir}/rights -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/AdminRights.java"/>
+    </java>
+    <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="run.class.path" failonerror="true">
+      <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <arg line="-a genUserRights -i ${conf.dir}/rights -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/UserRights.java"/>
+    </java>
+  </target>
+
+  <target name="generate-rights-message-properties" depends="compile">
+    <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="run.class.path" failonerror="true">
+      <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <arg line="-a genMessageProperties -i ${conf.dir}/rights -r ${conf.dir}/msgs/ZsMsgRights.properties"/>
+    </java>
+  </target>
+
+  <target name="generate-rights">
+    <copy todir="${build.dir}/zimbra/conf">
+      <fileset dir="${basedir}/conf"/>
+    </copy>
+    <antcall target="generate-domainadmin-rights-xml"/>
+    <antcall target="generate-rights-java"/>
+    <antcall target="generate-rights-message-properties"/>
+  </target>
+
 </project>
