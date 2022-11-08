@@ -327,19 +327,18 @@ public class ProxyConfGen {
         new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
     final File privateKeyFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_KEY_EXT).toUri());
     // Backup the old files
-    final String certificateFileAbsolutePath = certificateFile.getAbsolutePath();
+    final Path caPathInstance = Path.of(certificateFile.getAbsolutePath());
+    final Path backUpCaPathInstance = Path.of(certificateFile.getAbsolutePath() + ".bak");
+    final Path privateKeyPathInstance = Path.of(privateKeyFile.getAbsolutePath());
+    final Path backUpPrivateKeyPathInstance = Path.of(privateKeyFile.getAbsolutePath() + ".bak");
     try {
       if (certificateFile.exists()) {
-        Files.move(
-            Path.of(certificateFileAbsolutePath),
-            Path.of(certificateFileAbsolutePath + ".bak"),
-            StandardCopyOption.REPLACE_EXISTING);
+        Files.move(caPathInstance, backUpCaPathInstance, StandardCopyOption.REPLACE_EXISTING);
       }
-      final String privateKeyFileAbsolutePath = privateKeyFile.getAbsolutePath();
       if (privateKeyFile.exists()) {
         Files.move(
-            Path.of(privateKeyFileAbsolutePath),
-            Path.of(privateKeyFileAbsolutePath + ".bak"),
+            privateKeyPathInstance,
+            backUpPrivateKeyPathInstance,
             StandardCopyOption.REPLACE_EXISTING);
       }
     } catch (IOException e) {
@@ -353,12 +352,22 @@ public class ProxyConfGen {
       LOG.debug("Deploying private key for " + domainName);
       fsOutputPrivateKey.write(privateKey.getBytes(StandardCharsets.UTF_8));
     } catch (IOException e) {
+      // Ah yes, clean and understandable Java code isn't it?
+      try {
+        Files.move(backUpCaPathInstance, caPathInstance, StandardCopyOption.REPLACE_EXISTING);
+        Files.move(
+            backUpPrivateKeyPathInstance,
+            privateKeyPathInstance,
+            StandardCopyOption.REPLACE_EXISTING);
+      } catch (IOException ignored) {
+        throw new ProxyConfException(
+            "Unable to write down and restore older backup certificate/private key for domain "
+                + domainName);
+      }
       throw new ProxyConfException(
-          "Unable to write down certificates for domain "
+          "Unable to write down certificate for domain "
               + domainName
-              + ". A copy of the previous domain certificates for + "
-              + domainName
-              + " can be found here: /opt/zextras/conf/domaincerts",
+              + ". A copy of the previous domain certificate and private key have been restored",
           e);
     }
   }
@@ -2195,7 +2204,11 @@ public class ProxyConfGen {
       /* upgrade the variable map from the config in force */
       LOG.debug("Loading Attrs in Domain Level");
       mDomainReverseProxyAttrs = loadDomainReverseProxyAttrs();
-      downloadCertificatesForDomains(mDomainReverseProxyAttrs);
+      if (mDryRun) {
+        LOG.info("Would download certificates from LDAP");
+      } else {
+        downloadCertificatesForDomains(mDomainReverseProxyAttrs);
+      }
       mServerAttrs = loadServerAttrs();
       updateListenAddresses();
 
