@@ -23,19 +23,8 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.nio.file.*;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.cli.CommandLine;
@@ -248,19 +237,11 @@ public class ProxyConfGen {
           String[] rspHeaders =
               entry.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
 
-          if (virtualHostnames.length != 0
-              && !ProxyConfUtil.isEmptyString(certificate)
-              && !ProxyConfUtil.isEmptyString(privateKey)) {
-            // download the certificates from LDAP if there is at least a virtual host name for that
-            // domain
-            try {
-              downloadDomainCertificate(domainName, certificate, privateKey);
-            } catch (ProxyConfException e) {
-              throw ServiceException.FAILURE(e.getMessage(), e.getCause());
-            }
-          }
-
-          if (virtualHostnames.length == 0 || (clientCertMode == null && clientCertCA == null)) {
+          if (virtualHostnames.length == 0
+              || (certificate == null
+                  && privateKey == null
+                  && clientCertMode == null
+                  && clientCertCA == null)) {
             return; // ignore the items that don't have virtual host
             // name, cert or key. Those domains will use the
             // config
@@ -329,19 +310,41 @@ public class ProxyConfGen {
     return sb.toString();
   }
 
-  public static void downloadDomainCertificate(
-      String domainName, String certificate, String privateKey) throws ProxyConfException {
-    File domainSSLDir = new File(DOMAIN_SSL_DIR);
-    if (!domainSSLDir.exists() && !domainSSLDir.mkdirs()) {
-      throw new ProxyConfException("Unable to create base domain certificate folder");
-    }
+  /**
+   * This method will write down the certificate and the private key for a provided domain. It
+   * creates a backup of the old one
+   *
+   * @param domainName the name of the domain which the certificate and the private key will have
+   *     the name
+   * @param certificate the certificate content
+   * @param privateKey the private key content
+   * @throws ProxyConfException if something goes wrong :)
+   * @author Davide Polonio and Yuliya Aheeva
+   */
+  public static void writeDownCertificate(String domainName, String certificate, String privateKey)
+      throws ProxyConfException {
     final File certificateFile =
         new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
     final File privateKeyFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_KEY_EXT).toUri());
-    if ((certificateFile.exists() && !certificateFile.delete())
-        || (privateKeyFile.exists() && !privateKeyFile.delete())) {
+    // Backup the old files
+    final String certificateFileAbsolutePath = certificateFile.getAbsolutePath();
+    try {
+      if (certificateFile.exists()) {
+        Files.move(
+            Path.of(certificateFileAbsolutePath),
+            Path.of(certificateFileAbsolutePath + ".bak"),
+            StandardCopyOption.REPLACE_EXISTING);
+      }
+      final String privateKeyFileAbsolutePath = privateKeyFile.getAbsolutePath();
+      if (privateKeyFile.exists()) {
+        Files.move(
+            Path.of(privateKeyFileAbsolutePath),
+            Path.of(privateKeyFileAbsolutePath + ".bak"),
+            StandardCopyOption.REPLACE_EXISTING);
+      }
+    } catch (IOException e) {
       throw new ProxyConfException(
-          "Unable to remove broken certificates before downloading new ones from LDAP");
+          "Unable to create backup copy for certificate and private key of domain " + domainName);
     }
     try (FileOutputStream fsOutputCertificate = new FileOutputStream(certificateFile);
         FileOutputStream fsOutputPrivateKey = new FileOutputStream(privateKeyFile)) {
@@ -350,7 +353,13 @@ public class ProxyConfGen {
       LOG.debug("Deploying private key for " + domainName);
       fsOutputPrivateKey.write(privateKey.getBytes(StandardCharsets.UTF_8));
     } catch (IOException e) {
-      throw new ProxyConfException("Unable to write down certificates for domain " + domainName, e);
+      throw new ProxyConfException(
+          "Unable to write down certificates for domain "
+              + domainName
+              + ". A copy of the previous domain certificates for + "
+              + domainName
+              + " can be found here: /opt/zextras/conf/domaincerts",
+          e);
     }
   }
 
@@ -2186,6 +2195,7 @@ public class ProxyConfGen {
       /* upgrade the variable map from the config in force */
       LOG.debug("Loading Attrs in Domain Level");
       mDomainReverseProxyAttrs = loadDomainReverseProxyAttrs();
+      downloadCertificatesForDomains(mDomainReverseProxyAttrs);
       mServerAttrs = loadServerAttrs();
       updateListenAddresses();
 
@@ -2375,6 +2385,35 @@ public class ProxyConfGen {
       }
     }
     return (exitCode);
+  }
+
+  /**
+   * Downloads all the certificates present in mDomainReverseProxyAttrs
+   *
+   * @param mDomainReverseProxyAttrs the list of certificates to retrieve from LDAP
+   * @throws ProxyConfException if something goes wrong :)
+   * @author Davide Polonio and Yuliya Aheeva
+   */
+  private static void downloadCertificatesForDomains(List<DomainAttrItem> mDomainReverseProxyAttrs)
+      throws ProxyConfException {
+    createFolder(DOMAIN_SSL_DIR);
+    for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
+      writeDownCertificate(entry.domainName, entry.sslCertificate, entry.sslPrivateKey);
+    }
+  }
+
+  /**
+   * Creates a folder
+   *
+   * @param folderPath the path to create
+   * @throws ProxyConfException if something goes wrong
+   * @author Davide Polonio and Yuliya Aheeva
+   */
+  private static void createFolder(String folderPath) throws ProxyConfException {
+    File domainSSLDir = new File(folderPath);
+    if (!domainSSLDir.exists() && !domainSSLDir.mkdirs()) {
+      throw new ProxyConfException("Unable to create folder in " + folderPath);
+    }
   }
 
   private static void handleException(Exception e) {
