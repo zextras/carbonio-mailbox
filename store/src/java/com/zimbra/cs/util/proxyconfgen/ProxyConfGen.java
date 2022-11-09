@@ -311,18 +311,19 @@ public class ProxyConfGen {
   }
 
   /**
-   * This method will write down the certificate and the private key for a provided domain. It
-   * creates a backup of the old one
+   * This method backs up existing certificate and private key files for the given domain before
+   * creating new ones and populating them with the new data. Backup files gets restored if the
+   * transaction fails.
    *
    * @param domainName the name of the domain which the certificate and the private key will have
    *     the name
    * @param certificate the certificate content
    * @param privateKey the private key content
-   * @throws ProxyConfException if something goes wrong :)
+   * @throws ProxyConfException if something goes wrong
    * @author Davide Polonio and Yuliya Aheeva
    */
-  public static void writeDownCertificate(String domainName, String certificate, String privateKey)
-      throws ProxyConfException {
+  public static void updateDomainCertificate(
+      String domainName, String certificate, String privateKey) throws ProxyConfException {
     final File certificateFile =
         new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
     final File privateKeyFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_KEY_EXT).toUri());
@@ -2411,7 +2412,7 @@ public class ProxyConfGen {
       throws ProxyConfException {
     createFolder(DOMAIN_SSL_DIR);
     for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
-      writeDownCertificate(entry.domainName, entry.sslCertificate, entry.sslPrivateKey);
+      updateDomainCertificate(entry.domainName, entry.sslCertificate, entry.sslPrivateKey);
     }
   }
 
