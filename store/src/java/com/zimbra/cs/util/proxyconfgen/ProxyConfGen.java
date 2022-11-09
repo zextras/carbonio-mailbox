@@ -353,7 +353,7 @@ public class ProxyConfGen {
       LOG.debug("Deploying private key for " + domainName);
       fsOutputPrivateKey.write(privateKey.getBytes(StandardCharsets.UTF_8));
     } catch (IOException e) {
-      // Ah yes, clean and understandable Java code isn't it?
+      // Restore backup files if something goes wrong
       try {
         Files.move(backUpCaPathInstance, caPathInstance, StandardCopyOption.REPLACE_EXISTING);
         Files.move(
