@@ -2501,8 +2501,7 @@ public class ProxyConfGen {
     return false;
   }
 
-  public static void main(String[] args)
-      throws ServiceException, ProxyConfException, InterruptedException {
+  public static void main(String[] args) throws ServiceException, ProxyConfException {
     int exitCode = createConf(args);
     System.exit(exitCode);
   }
