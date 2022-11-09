@@ -57,11 +57,13 @@
 
 
   <target depends="carbonio-version" name="require-version">
+    <!-- For retro-compatibility -->
     <property name="zimbra.buildinfo.version" value="${carbonio.buildinfo.version}"/>
     <echo message="Using version ${zimbra.buildinfo.version}"/>
   </target>
 
   <target name="carbonio-version">
+    <property name="carbonio.buildinfo.version" value="22.11.0"/>
     <fail
       message="Missing build version. use ant proper ZCS version like -Dcarbonio.buildinfo.version=22.00.0_ZEXTRAS_202211">
       <condition>

@@ -445,7 +445,21 @@
 
   <build>
     <plugins>
-      <!-- Generate build-info -->
+      <!-- This is a hack: some code is generated from same module, so we compile, generate code,
+        compile again, run tests, etc. TODO: find a way to move generator classes on another module -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>pre-compile</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Generate build-info, getters and rights -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <dependencies>
@@ -467,15 +481,15 @@
           </dependency>
         </dependencies>
         <executions>
-
-          <!-- generate build-info for jars -->
+          <!-- generate sources -->
           <execution>
             <configuration>
               <target>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
                 <taskdef classpathref="maven.plugin.classpath"
                   resource="net/sf/antcontrib/antlib.xml"/>
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-buildinfo"/>
+                  <target name="generate-sources"/>
                 </ant>
               </target>
             </configuration>
@@ -485,24 +499,6 @@
             <id>generate-buildinfo</id>
             <phase>generate-sources</phase>
           </execution>
-
-          <!-- package -->
-          <execution>
-            <id>generate-getter</id>
-            <phase>package</phase>
-            <configuration>
-              <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
-                <ant antfile="ant-store.xml">
-                  <target name="package"/>
-                </ant>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-
           <!-- Prepare required files for testing -->
           <execution>
             <id>test</id>
