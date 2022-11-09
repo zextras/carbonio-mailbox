@@ -1,7 +1,5 @@
 # Carbonio Mailbox
 
-> :warning: NOTE: This maven build branch is experimental; add resources only when necessary and refrain from doing so otherwise, we want to keep it clean :neckbeard:. Once the branch has reached maturity and is completely prepared to take the place of the current ant+ivy build system, this ReadMe must also be updated with new instructions.
-
 ![Contributors](https://img.shields.io/github/contributors/zextras/carbonio-mailbox "Contributors") ![Activity](https://img.shields.io/github/commit-activity/m/zextras/carbonio-mailbox "Activity") ![License](https://img.shields.io/badge/license-AGPL%203-green
 "License") ![Project](https://img.shields.io/badge/project-carbonio-informational
 "Project") [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/zextras.svg?style=social&label=Follow%20%40zextras)](https://twitter.com/zextras)
@@ -10,18 +8,16 @@ Mailbox is the core component of Carbonio.
 
 This repository contains the source code of Carbonio Mailbox which consists of several subcomponents and their roles are as follows
 
-- **client**: package to interact with the mailbox
+- **client**: client package to interact with the mailbox
 - **common**: package providing classes of common use, like utilities, clients and common parameters
 - **native**: package to load native libraries
-- **soap**: package describing SOAP APIs
-- **store**: package with core implementations and integrations like SOAP APIs, LDAP, Krb5, IMAP, POP3 and CLI functions
+- **soap**: package describing SOAP APIs and tools to generate wsdl documentation
+- **store**: WAR package that defines the service. It also includes core functionalities like SOAP APIs, LDAP, Krb5, IMAP, POP3 and CLI functions
 
 ## Building Carbonio Mailbox from source
 
 - Build Requirements:
   - JDK version 11, to confirm run `javac -version`
-  - ant
-  - apache-ant-contrib
 
 - Clone the carbonio-mailbox repository:
 
@@ -33,12 +29,12 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
 - Build the code:
 
- `mvn install -Dcarbonio.buildinfo.version=22.11.0_ZEXTRAS_202211`
+ `mvn install`
 
- Tips:
-
-- You can list all ant build targets present in build.xml file using `ant -p build.xml`
-- You can avoid passing `carbonio.buildinfo.version` on every time you invoke ant build command by exporting it as ANT_OPTS environment varibale with `export ANT_OPTS="-Dcarbonio.buildinfo.version=22.8.0_ZEXTRAS_202208"`
+- Run mailbox Jetty service locally (experimental):
+  - build carbonio-db Docker image locally [store/utils/docker/carbonio-db](store/utils/docker/carbonio-db)
+  - run docker-compose up in [store/utils/docker](store/utils/docker) (starts carbonio-db and carbonio LDAP)
+  - run mvn jetty:run from store module
 
 ## Contribute to Carbonio Mailbox
 
