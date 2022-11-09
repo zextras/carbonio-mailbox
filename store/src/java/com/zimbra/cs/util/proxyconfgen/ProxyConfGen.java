@@ -2410,23 +2410,9 @@ public class ProxyConfGen {
    */
   private static void downloadCertificatesForDomains(List<DomainAttrItem> mDomainReverseProxyAttrs)
       throws ProxyConfException {
-    createFolder(DOMAIN_SSL_DIR);
+    Utils.createFolder(DOMAIN_SSL_DIR);
     for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
       updateDomainCertificate(entry.domainName, entry.sslCertificate, entry.sslPrivateKey);
-    }
-  }
-
-  /**
-   * Creates a folder
-   *
-   * @param folderPath the path to create
-   * @throws ProxyConfException if something goes wrong
-   * @author Davide Polonio and Yuliya Aheeva
-   */
-  private static void createFolder(String folderPath) throws ProxyConfException {
-    File domainSSLDir = new File(folderPath);
-    if (!domainSSLDir.exists() && !domainSSLDir.mkdirs()) {
-      throw new ProxyConfException("Unable to create folder in " + folderPath);
     }
   }
 
