@@ -16,8 +16,7 @@ pipeline {
     environment {
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
-        CARBONIO_BUILDINFO_VERSION='22.11.0_ZEXTRAS_202211'
-        BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1 -Dcarbonio.buildinfo.version=$CARBONIO_BUILDINFO_VERSION'
+        BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
