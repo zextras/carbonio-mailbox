@@ -432,6 +432,12 @@
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
     </dependency>
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>store-extra-runtime-dependencies</artifactId>
+      <version>22.11.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
