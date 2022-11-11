@@ -35,7 +35,7 @@ pipeline {
             stage('Build') {
             steps {
 
-                mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean verify")
+                mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
 
                 sh 'mkdir staging'
 
