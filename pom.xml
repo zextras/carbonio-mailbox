@@ -783,6 +783,7 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
+    <module>store-extra-runtime-dependencies</module>
   </modules>
   <packaging>pom</packaging>
 
