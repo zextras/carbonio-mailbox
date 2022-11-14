@@ -40373,13 +40373,13 @@ public abstract class ZAttrServer extends NamedEntry {
      * result IP back to proxy. If set false, the raw address configured
      * (e.g. zimbraMailHost) is directly sent to proxy.
      *
-     * @return zimbraReverseProxyDnsLookupInServerEnabled, or true if unset
+     * @return zimbraReverseProxyDnsLookupInServerEnabled, or false if unset
      *
      * @since ZCS 8.0.0
      */
     @ZAttr(id=1384)
     public boolean isReverseProxyDnsLookupInServerEnabled() {
-        return getBooleanAttr(Provisioning.A_zimbraReverseProxyDnsLookupInServerEnabled, true, true);
+        return getBooleanAttr(Provisioning.A_zimbraReverseProxyDnsLookupInServerEnabled, false, true);
     }
 
     /**
