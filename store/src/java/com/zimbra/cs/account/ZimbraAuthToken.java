@@ -7,6 +7,7 @@ package com.zimbra.cs.account;
 
 import com.google.common.base.MoreObjects;
 import com.zimbra.common.account.Key.AccountBy;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -334,8 +335,8 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
       Account acct = Provisioning.getInstance().getAccountById(properties.getAccountId());
       if (acct != null) {
         acct.removeAuthTokens(
-            String.valueOf(properties.getTokenID()), properties.getServerVersion());
-        if (acct.getBooleanAttr(Provisioning.A_zimbraLogOutFromAllServers, false)) {
+            String.valueOf(properties.getTokenID()), String.valueOf(properties.getServerVersion()));
+        if (acct.getBooleanAttr(ZAttrProvisioning.A_zimbraLogOutFromAllServers, false)) {
           AuthTokenRegistry.addTokenToQueue(this);
         }
       }
