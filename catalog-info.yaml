@@ -5,6 +5,8 @@ metadata:
   name: carbonio-mailbox
   title: Carbonio Mailbox
   description: Carbonio Mailbox
+  annotations:
+    backstage.io/techdocs-ref: dir:.
   tags:
     - java
     - ant
