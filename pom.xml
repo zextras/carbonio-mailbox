@@ -367,27 +367,27 @@
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-common</artifactId>
-        <version>22.11.0-SNAPSHOT</version>
+        <version>22.12.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-client</artifactId>
-        <version>22.11.0-SNAPSHOT</version>
+        <version>22.12.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-soap</artifactId>
-        <version>22.11.0-SNAPSHOT</version>
+        <version>22.12.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-native</artifactId>
-        <version>22.11.0-SNAPSHOT</version>
+        <version>22.12.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>zimbra</groupId>
         <artifactId>zm-jetty</artifactId>
-        <version>22.11.0-SNAPSHOT</version>
+        <version>22.12.0-SNAPSHOT</version>
         <type>pom</type>
         <exclusions>
           <exclusion>
@@ -814,7 +814,7 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
   </properties>
-  <version>22.11.0-SNAPSHOT</version>
+  <version>22.12.0-SNAPSHOT</version>
   <profiles>
     <!-- Allows deploy to Zextras public maven repo -->
     <profile>

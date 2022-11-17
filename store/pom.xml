@@ -435,7 +435,7 @@
     <dependency>
       <groupId>zextras</groupId>
       <artifactId>store-extra-runtime-dependencies</artifactId>
-      <version>22.11.0-SNAPSHOT</version>
+      <version>22.12.0-SNAPSHOT</version>
       <type>pom</type>
       <scope>runtime</scope>
     </dependency>
@@ -447,7 +447,7 @@
   <parent>
     <artifactId>zm-mailbox</artifactId>
     <groupId>zextras</groupId>
-    <version>22.11.0-SNAPSHOT</version>
+    <version>22.12.0-SNAPSHOT</version>
   </parent>
 
   <build>
