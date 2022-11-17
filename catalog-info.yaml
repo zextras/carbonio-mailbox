@@ -1,0 +1,16 @@
+# see https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component for more component conf info
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: carbonio-mailbox
+  title: Carbonio Mailbox
+  description: Carbonio Mailbox
+  tags:
+    - java
+    - ant
+    - jetty
+    - github
+spec:
+  type: library
+  lifecycle: production
+  owner: new-bacon-monsters
