@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-appserver-service"
-pkgver="4.0.17"
+pkgver="4.0.18"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Service"
 pkgdesclong=(
@@ -14,6 +14,10 @@ maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 optdepends=(
   "carbonio-common-appserver-docs"
+)
+depends=(
+  "service-discover"
+  "pending-setups"
 )
 
 section="mail"
