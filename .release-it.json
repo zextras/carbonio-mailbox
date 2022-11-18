@@ -25,7 +25,7 @@
         }
       ]
     },
-    "@release-it/keep-a-changelog": {
+    "@release-it/conventional-changelog": {
       "strictSemver": true,
       "preset": "angular",
       "infile": "CHANGELOG.md"
