@@ -6,6 +6,7 @@ pipeline {
     }
     parameters {
         booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
+        booleanParam defaultValue: false, description: 'Bump version + CHANGELOG + commit + push + tag', name: 'TAG'
         booleanParam defaultValue: false, description: 'Whether to skip the test all with coverage stage', name: 'SKIP_TEST_WITH_COVERAGE'
     }
     environment {
@@ -128,6 +129,24 @@ pipeline {
                     }
                     }
                 }
+                }
+            }
+        }
+        stage("Tag") {
+            when {
+                allOf {
+                    expression { params.TAG == true }
+                    branch 'main'
+                }
+            }
+            steps {
+                withCredentials([gitUsernamePassword(credentialsId: 'jenkins-integration-with-github-account',
+                        gitToolName: 'git-tool')]) {
+                    sh 'git config user.name $GITHUB_BOT_PR_CREDS_USR'
+                    sh 'git config user.email bot@zextras.com'
+                    sh 'git config user.password $GITHUB_BOT_PR_CREDS_PSW'
+                    sh 'git checkout main' //avoid detached head
+                    sh 'release-it --ci'
                 }
             }
         }
