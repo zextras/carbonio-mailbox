@@ -4,7 +4,6 @@
     "commitMessage": "chore: release ${version}",
     "tagName": "${version}",
     "tag": true,
-    "requireCleanWorkingDir": false,
     "push": true
   },
   "plugins": {
