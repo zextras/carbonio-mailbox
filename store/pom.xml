@@ -537,6 +537,10 @@
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
 
       <!-- Test plugin execution -->
       <plugin>
