@@ -68,7 +68,7 @@
   <parent>
     <artifactId>zm-mailbox</artifactId>
     <groupId>zextras</groupId>
-    <version>22.12.0-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <properties>
