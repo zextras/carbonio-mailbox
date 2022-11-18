@@ -13,7 +13,7 @@ import com.zimbra.soap.admin.type.DomainInfo;
 import java.util.Map;
 
 public class ZDomain {
-  private Map<String, Object> attrs;
+  private final Map<String, Object> attrs;
 
   public ZDomain(DomainInfo domainInfo) throws ServiceException {
     attrs = Attr.collectionToMap(domainInfo.getAttrList());
