@@ -4,6 +4,7 @@
     "commitMessage": "chore: release ${version}",
     "tagName": "${version}",
     "tag": true,
+    "requireCleanWorkingDir": false,
     "push": true
   },
   "plugins": {
@@ -24,7 +25,7 @@
         }
       ]
     },
-    "@release-it/conventional-changelog": {
+    "@release-it/keep-a-changelog": {
       "strictSemver": true,
       "preset": "angular",
       "infile": "CHANGELOG.md"
