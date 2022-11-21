@@ -28,3 +28,4 @@ target/
 # Ignore Gradle build output directory
 build
 **/**/out/
+.flattened-pom.xml
