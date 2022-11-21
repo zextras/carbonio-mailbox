@@ -68,6 +68,7 @@ pipeline {
                   branch 'feature/maven-build';
                   branch 'chore/flatten-maven-plugin';
                   expression{env.CHANGE_BRANCH == 'feature/maven-build'}
+                  expression{env.CHANGE_BRANCH == 'chore/flatten-maven-plugin'}
                 }
               }
               steps {
