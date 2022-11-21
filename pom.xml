@@ -391,6 +391,12 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
+        <artifactId>zm-store</artifactId>
+        <version>${revision}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>zextras</groupId>
         <artifactId>store-extra-runtime-dependencies</artifactId>
         <type>pom</type>
         <version>${revision}</version>
