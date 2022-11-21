@@ -66,6 +66,7 @@ pipeline {
                 anyOf {
                   branch 'devel';
                   branch 'feature/maven-build';
+                  branch 'chore/flatten-maven-plugin';
                   expression{env.CHANGE_BRANCH == 'feature/maven-build'}
                 }
               }
