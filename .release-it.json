@@ -1,0 +1,36 @@
+{
+  "git": {
+    "requireUpstream": true,
+    "commitMessage": "chore: release ${version}",
+    "tagName": "${version}",
+    "tag": true,
+    "push": true
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "in": {
+        "file": "version.txt",
+        "type": "text/plain"
+      },
+      "out": [
+        {
+          "file": "packages/**/PKGBUILD",
+          "type": "text/plain",
+          "path": "pkgrel="
+        },
+        {
+          "file": "version.txt",
+          "type": "text/plain"
+        }
+      ]
+    },
+    "@release-it/conventional-changelog": {
+      "strictSemver": true,
+      "preset": "angular",
+      "infile": "CHANGELOG.md"
+    }
+  },
+  "github": {
+    "release": false
+  }
+}
