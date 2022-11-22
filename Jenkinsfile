@@ -150,10 +150,75 @@ pipeline {
                 }
             }
         }
+        stage('Upload To Devel') {
+            when {
+                anyOf {
+                    branch 'devel'
+                }
+            }
+            steps {
+                unstash 'artifacts-ubuntu-focal'
+                unstash 'artifacts-rocky-8'
+
+                    script {
+                    def server = Artifactory.server 'zextras-artifactory'
+                    def buildInfo
+                    def uploadSpec
+                    buildInfo = Artifactory.newBuildInfo()
+                    uploadSpec ='''{
+                        "files": [{
+                            "pattern": "artifacts/*focal*.deb",
+                            "target": "ubuntu-devel/pool/",
+                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-conf)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-service)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-war)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-conf)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-db)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-docs)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-native-lib)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-core-jar)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        }]
+                    }'''
+                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+                }
+            }
+        }
         stage('Upload To Playground') {
             when {
                 anyOf {
-                    branch 'playground/*'
                     expression {
                         params.PLAYGROUND == true
                     }
@@ -163,7 +228,7 @@ pipeline {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-rocky-8'
 
-                    script {
+                script {
                     def server = Artifactory.server 'zextras-artifactory'
                     def buildInfo
                     def uploadSpec
