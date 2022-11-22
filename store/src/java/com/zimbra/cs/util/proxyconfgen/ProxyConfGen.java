@@ -2413,7 +2413,7 @@ public class ProxyConfGen {
     Utils.createFolder(DOMAIN_SSL_DIR);
     for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
       if (!ProxyConfUtil.isEmptyString(entry.sslCertificate)
-          || !ProxyConfUtil.isEmptyString(entry.sslPrivateKey)) {
+          && !ProxyConfUtil.isEmptyString(entry.sslPrivateKey)) {
         updateDomainCertificate(entry.domainName, entry.sslCertificate, entry.sslPrivateKey);
       }
     }
