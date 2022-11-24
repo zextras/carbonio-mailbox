@@ -2412,7 +2412,10 @@ public class ProxyConfGen {
       throws ProxyConfException {
     Utils.createFolder(DOMAIN_SSL_DIR);
     for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
-      updateDomainCertificate(entry.domainName, entry.sslCertificate, entry.sslPrivateKey);
+      if (!ProxyConfUtil.isEmptyString(entry.sslCertificate)
+          && !ProxyConfUtil.isEmptyString(entry.sslPrivateKey)) {
+        updateDomainCertificate(entry.domainName, entry.sslCertificate, entry.sslPrivateKey);
+      }
     }
   }
 
