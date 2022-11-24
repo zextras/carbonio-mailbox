@@ -40370,22 +40370,24 @@ public abstract class ZAttrServer extends NamedEntry {
 
     /**
      * Control whether force the server side do the DNS lookup and send the
-     * result IP back to proxy. If set false, the raw address configured
-     * (e.g. zimbraMailHost) is directly sent to proxy.
+     * result IP back to proxy. If false, the raw address configured (e.g.
+     * zimbraMailHost) is directly sent to proxy, else the translated IP will
+     * be sent back to the client.
      *
-     * @return zimbraReverseProxyDnsLookupInServerEnabled, or true if unset
+     * @return zimbraReverseProxyDnsLookupInServerEnabled, or false if unset
      *
      * @since ZCS 8.0.0
      */
     @ZAttr(id=1384)
     public boolean isReverseProxyDnsLookupInServerEnabled() {
-        return getBooleanAttr(Provisioning.A_zimbraReverseProxyDnsLookupInServerEnabled, true, true);
+        return getBooleanAttr(Provisioning.A_zimbraReverseProxyDnsLookupInServerEnabled, false, true);
     }
 
     /**
      * Control whether force the server side do the DNS lookup and send the
-     * result IP back to proxy. If set false, the raw address configured
-     * (e.g. zimbraMailHost) is directly sent to proxy.
+     * result IP back to proxy. If false, the raw address configured (e.g.
+     * zimbraMailHost) is directly sent to proxy, else the translated IP will
+     * be sent back to the client.
      *
      * @param zimbraReverseProxyDnsLookupInServerEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -40401,8 +40403,9 @@ public abstract class ZAttrServer extends NamedEntry {
 
     /**
      * Control whether force the server side do the DNS lookup and send the
-     * result IP back to proxy. If set false, the raw address configured
-     * (e.g. zimbraMailHost) is directly sent to proxy.
+     * result IP back to proxy. If false, the raw address configured (e.g.
+     * zimbraMailHost) is directly sent to proxy, else the translated IP will
+     * be sent back to the client.
      *
      * @param zimbraReverseProxyDnsLookupInServerEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -40419,8 +40422,9 @@ public abstract class ZAttrServer extends NamedEntry {
 
     /**
      * Control whether force the server side do the DNS lookup and send the
-     * result IP back to proxy. If set false, the raw address configured
-     * (e.g. zimbraMailHost) is directly sent to proxy.
+     * result IP back to proxy. If false, the raw address configured (e.g.
+     * zimbraMailHost) is directly sent to proxy, else the translated IP will
+     * be sent back to the client.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -40435,8 +40439,9 @@ public abstract class ZAttrServer extends NamedEntry {
 
     /**
      * Control whether force the server side do the DNS lookup and send the
-     * result IP back to proxy. If set false, the raw address configured
-     * (e.g. zimbraMailHost) is directly sent to proxy.
+     * result IP back to proxy. If false, the raw address configured (e.g.
+     * zimbraMailHost) is directly sent to proxy, else the translated IP will
+     * be sent back to the client.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
