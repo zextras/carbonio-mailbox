@@ -327,11 +327,6 @@ public class ProxyConfGen {
    */
   public static void updateDomainCertificate(
       String domainName, String certificate, String privateKey) throws ProxyConfException {
-
-    if (certificate == null || privateKey == null) {
-      return;
-    }
-
     final File certificateFile =
         new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
     final File privateKeyFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_KEY_EXT).toUri());
