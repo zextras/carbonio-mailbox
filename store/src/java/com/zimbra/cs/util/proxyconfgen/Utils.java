@@ -2,6 +2,7 @@ package com.zimbra.cs.util.proxyconfgen;
 
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Server;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -33,5 +34,19 @@ public final class Utils {
                             Comparator.comparing(
                                 server -> server.getAttr(ZAttrProvisioning.A_zimbraId)))),
                 ArrayList::new));
+  }
+
+  /**
+   * Creates a folder
+   *
+   * @param folderPath the path to create
+   * @throws ProxyConfException if something goes wrong
+   * @author Davide Polonio and Yuliya Aheeva
+   */
+  public static void createFolder(String folderPath) throws ProxyConfException {
+    File directory = new File(folderPath);
+    if (!directory.exists() && !directory.mkdirs()) {
+      throw new ProxyConfException("Unable to create folder in " + folderPath);
+    }
   }
 }

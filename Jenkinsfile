@@ -6,6 +6,7 @@ pipeline {
     }
     parameters {
         booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
+        booleanParam defaultValue: false, description: 'Bump version + CHANGELOG + commit + push + tag', name: 'TAG'
         booleanParam defaultValue: false, description: 'Whether to skip the test all with coverage stage', name: 'SKIP_TEST_WITH_COVERAGE'
     }
     environment {
@@ -30,7 +31,7 @@ pipeline {
                 cat <<EOF > build.properties
                 debug=0
                 is-production=1
-                carbonio.buildinfo.version=22.11.0_ZEXTRAS_202211
+                carbonio.buildinfo.version=22.12.0_ZEXTRAS_202212
                 EOF
                 '''
                 withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
@@ -131,10 +132,93 @@ pipeline {
                 }
             }
         }
+        stage("Tag") {
+            when {
+                allOf {
+                    expression { params.TAG == true }
+                    branch 'main'
+                }
+            }
+            steps {
+                withCredentials([gitUsernamePassword(credentialsId: 'jenkins-integration-with-github-account',
+                        gitToolName: 'git-tool')]) {
+                    sh 'git config user.name $GITHUB_BOT_PR_CREDS_USR'
+                    sh 'git config user.email bot@zextras.com'
+                    sh 'git config user.password $GITHUB_BOT_PR_CREDS_PSW'
+                    sh 'git checkout main' //avoid detached head
+                    sh 'release-it --ci'
+                }
+            }
+        }
+        stage('Upload To Devel') {
+            when {
+                anyOf {
+                    branch 'devel'
+                }
+            }
+            steps {
+                unstash 'artifacts-ubuntu-focal'
+                unstash 'artifacts-rocky-8'
+
+                    script {
+                    def server = Artifactory.server 'zextras-artifactory'
+                    def buildInfo
+                    def uploadSpec
+                    buildInfo = Artifactory.newBuildInfo()
+                    uploadSpec ='''{
+                        "files": [{
+                            "pattern": "artifacts/*focal*.deb",
+                            "target": "ubuntu-devel/pool/",
+                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-conf)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-service)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-war)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-conf)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-db)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-docs)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-native-lib)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-core-jar)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        }]
+                    }'''
+                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+                }
+            }
+        }
         stage('Upload To Playground') {
             when {
                 anyOf {
-                    branch 'playground/*'
                     expression {
                         params.PLAYGROUND == true
                     }
@@ -144,7 +228,7 @@ pipeline {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-rocky-8'
 
-                    script {
+                script {
                     def server = Artifactory.server 'zextras-artifactory'
                     def buildInfo
                     def uploadSpec

@@ -6,41 +6,53 @@
 
 Mailbox is the core component of Carbonio.
 
-This repository contains the source code of Carbonio Mailbox which consists of several subcomponents and their roles are as follows
+This repository contains the source code of Carbonio Mailbox which consists of several subcomponents
+and their roles are as follows
 
 - **client**: package to interact with the mailbox
 - **common**: package providing classes of common use, like utilities, clients and common parameters
 - **native**: package to load native libraries
 - **soap**: package describing SOAP APIs
-- **store**: package with core implementations and integrations like SOAP APIs, LDAP, Krb5, IMAP, POP3 and CLI functions
+- **store**: package with core implementations and integrations like SOAP APIs, LDAP, Krb5, IMAP,
+  POP3 and CLI functions
 
 ## Building Carbonio Mailbox from source
 
 - Build Requirements:
-  - JDK version 11, to confirm run `javac -version`
-  - ant
-  - apache-ant-contrib
+    - JDK version 11, to confirm run `javac -version`
+    - ant
+    - apache-ant-contrib
 
 - Clone the carbonio-mailbox repository:
 
-    `git clone https://github.com/Zextras/carbonio-mailbox.git`
+  `git clone https://github.com/Zextras/carbonio-mailbox.git`
 
 - Enter into source directory:
 
-    `cd carbonio-mailbox/`
+  `cd carbonio-mailbox/`
 
 - Build the code:
 
- `ant all -Dcarbonio.buildinfo.version=22.11.0_ZEXTRAS_202211`
+`ant all -Dcarbonio.buildinfo.version=<YEAR.MONTH.REVISION_ZEXTRAS_YEARMONTH>`
 
- Tips:
+Tips:
 
 - You can list all ant build targets present in build.xml file using `ant -p build.xml`
-- You can avoid passing `carbonio.buildinfo.version` on every time you invoke ant build command by exporting it as ANT_OPTS environment varibale with `export ANT_OPTS="-Dcarbonio.buildinfo.version=22.11.0_ZEXTRAS_202211"`
+- You can avoid passing `carbonio.buildinfo.version` on every time you invoke ant build command by
+  exporting it as ANT_OPTS environment varibale
+  with `export ANT_OPTS="-Dcarbonio.buildinfo.version=<YEAR.MONTH.REVISION_ZEXTRAS_YEARMONTH>"`
+
+## Commit-style and version
+
+We follow (Conventional Commits) [https://www.conventionalcommits.org/en/v1.0.0/] and
+use [release-it](https://github.com/release-it/release-it) to manage deb and rpm packages version
+and manage the [CHANGELOG.md](CHANGELOG.md).
 
 ## Contribute to Carbonio Mailbox
 
-All contributions are accepted! Please refer to the CONTRIBUTING file (if present in this repository) for more details on how to contribute. If the repository has a Code of Conduct, we kindly ask to follow that as well.
+All contributions are accepted! Please refer to the CONTRIBUTING file (if present in this
+repository) for more details on how to contribute. If the repository has a Code of Conduct, we
+kindly ask to follow that as well.
 
 ## License
 
