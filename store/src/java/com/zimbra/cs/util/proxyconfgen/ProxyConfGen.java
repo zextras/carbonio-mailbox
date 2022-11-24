@@ -2436,7 +2436,14 @@ public class ProxyConfGen {
                   "Will delete obsoleted domain %s file %s",
                   (fileName.endsWith(SSL_KEY_EXT) ? "key" : "cert"), fileName));
     } else {
-      filesInDirectory.forEach(Utils::deleteFileIfExists);
+      filesInDirectory.forEach(
+          filePath -> {
+            try {
+              Utils.deleteFileIfExists(filePath);
+            } catch (ProxyConfException e) {
+              LOG.info(e.getMessage());
+            }
+          });
     }
   }
 

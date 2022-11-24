@@ -62,19 +62,20 @@ public final class Utils {
    * @author Keshav Bhatt
    * @since 22.12.0
    */
-  public static void deleteFileIfExists(final String filePath) {
+  public static void deleteFileIfExists(final String filePath) throws ProxyConfException {
     File file = new File(filePath);
     if (file.exists()) {
       try {
         Files.delete(file.toPath());
-      } catch (final IOException ignored) {
-        // ignore
+      } catch (final IOException ie) {
+        throw new ProxyConfException("Unable to delete file " + filePath);
       }
     }
   }
 
   /**
-   * get file paths from the given directory path
+   * Get file paths from the given directory path Note: This will only return path of regular
+   * 'files' in the given directory path limiting the scan to depth -> 1
    *
    * @param directoryPath path to get directory
    * @return String List of file paths
