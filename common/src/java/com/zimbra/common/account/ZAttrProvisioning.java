@@ -14872,8 +14872,9 @@ public class ZAttrProvisioning {
 
     /**
      * Control whether force the server side do the DNS lookup and send the
-     * result IP back to proxy. If set false, the raw address configured
-     * (e.g. zimbraMailHost) is directly sent to proxy.
+     * result IP back to proxy. If false, the raw address configured (e.g.
+     * zimbraMailHost) is directly sent to proxy, else the translated IP will
+     * be sent back to the client.
      *
      * @since ZCS 8.0.0
      */
