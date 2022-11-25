@@ -4834,8 +4834,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraClamAVBindAddress = "zimbraClamAVBindAddress";
 
     /**
-     * Default database mirror for freshclam to use for virus and other
-     * updates. Defaults to the United States mirror. See
+     * Database mirrors for freshclam to use for virus and other updates.
+     * Defaults to the United States mirror. See
      * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
      *
      * @since ZCS 8.7.0,9.0.0

@@ -11635,22 +11635,22 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Default database mirror for freshclam to use for virus and other
-     * updates. Defaults to the United States mirror. See
+     * Database mirrors for freshclam to use for virus and other updates.
+     * Defaults to the United States mirror. See
      * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
      *
-     * @return zimbraClamAVDatabaseMirror, or "db.us.clamav.net" if unset
+     * @return zimbraClamAVDatabaseMirror, or empty array if unset
      *
      * @since ZCS 8.7.0,9.0.0
      */
     @ZAttr(id=2073)
-    public String getClamAVDatabaseMirror() {
-        return getAttr(Provisioning.A_zimbraClamAVDatabaseMirror, "db.us.clamav.net", true);
+    public String[] getClamAVDatabaseMirror() {
+        String[] value = getMultiAttr(Provisioning.A_zimbraClamAVDatabaseMirror, true, true); return value.length > 0 ? value : new String[] {"db.us.clamav.net"};
     }
 
     /**
-     * Default database mirror for freshclam to use for virus and other
-     * updates. Defaults to the United States mirror. See
+     * Database mirrors for freshclam to use for virus and other updates.
+     * Defaults to the United States mirror. See
      * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
      *
      * @param zimbraClamAVDatabaseMirror new value
@@ -11659,15 +11659,15 @@ public abstract class ZAttrConfig extends Entry {
      * @since ZCS 8.7.0,9.0.0
      */
     @ZAttr(id=2073)
-    public void setClamAVDatabaseMirror(String zimbraClamAVDatabaseMirror) throws com.zimbra.common.service.ServiceException {
+    public void setClamAVDatabaseMirror(String[] zimbraClamAVDatabaseMirror) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_zimbraClamAVDatabaseMirror, zimbraClamAVDatabaseMirror);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
-     * Default database mirror for freshclam to use for virus and other
-     * updates. Defaults to the United States mirror. See
+     * Database mirrors for freshclam to use for virus and other updates.
+     * Defaults to the United States mirror. See
      * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
      *
      * @param zimbraClamAVDatabaseMirror new value
@@ -11677,15 +11677,85 @@ public abstract class ZAttrConfig extends Entry {
      * @since ZCS 8.7.0,9.0.0
      */
     @ZAttr(id=2073)
-    public Map<String,Object> setClamAVDatabaseMirror(String zimbraClamAVDatabaseMirror, Map<String,Object> attrs) {
+    public Map<String,Object> setClamAVDatabaseMirror(String[] zimbraClamAVDatabaseMirror, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_zimbraClamAVDatabaseMirror, zimbraClamAVDatabaseMirror);
         return attrs;
     }
 
     /**
-     * Default database mirror for freshclam to use for virus and other
-     * updates. Defaults to the United States mirror. See
+     * Database mirrors for freshclam to use for virus and other updates.
+     * Defaults to the United States mirror. See
+     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     *
+     * @param zimbraClamAVDatabaseMirror new to add to existing values
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2073)
+    public void addClamAVDatabaseMirror(String zimbraClamAVDatabaseMirror) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraClamAVDatabaseMirror, zimbraClamAVDatabaseMirror);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Database mirrors for freshclam to use for virus and other updates.
+     * Defaults to the United States mirror. See
+     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     *
+     * @param zimbraClamAVDatabaseMirror new to add to existing values
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2073)
+    public Map<String,Object> addClamAVDatabaseMirror(String zimbraClamAVDatabaseMirror, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraClamAVDatabaseMirror, zimbraClamAVDatabaseMirror);
+        return attrs;
+    }
+
+    /**
+     * Database mirrors for freshclam to use for virus and other updates.
+     * Defaults to the United States mirror. See
+     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     *
+     * @param zimbraClamAVDatabaseMirror existing value to remove
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2073)
+    public void removeClamAVDatabaseMirror(String zimbraClamAVDatabaseMirror) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraClamAVDatabaseMirror, zimbraClamAVDatabaseMirror);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Database mirrors for freshclam to use for virus and other updates.
+     * Defaults to the United States mirror. See
+     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     *
+     * @param zimbraClamAVDatabaseMirror existing value to remove
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2073)
+    public Map<String,Object> removeClamAVDatabaseMirror(String zimbraClamAVDatabaseMirror, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraClamAVDatabaseMirror, zimbraClamAVDatabaseMirror);
+        return attrs;
+    }
+
+    /**
+     * Database mirrors for freshclam to use for virus and other updates.
+     * Defaults to the United States mirror. See
      * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -11700,8 +11770,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Default database mirror for freshclam to use for virus and other
-     * updates. Defaults to the United States mirror. See
+     * Database mirrors for freshclam to use for virus and other updates.
+     * Defaults to the United States mirror. See
      * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
      *
      * @param attrs existing map to populate, or null to create a new map
