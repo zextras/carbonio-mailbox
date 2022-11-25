@@ -9932,4 +9932,12 @@ TODO: delete them permanently from here
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>Web UI Dark Mode preference for account</desc>
 </attr>
+
+<attr id="3116" name="carbonioWebUiPrimaryColor" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.1.0">
+  <desc>Web UI Primary Color preference for domain</desc>
+</attr>
+
+<attr id="3117" name="carbonioWebUiDarkPrimaryColor" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.1.0">
+  <desc>Web UI Dark Mode Primary Color preference for domain</desc>
+</attr>
 </attrs>
