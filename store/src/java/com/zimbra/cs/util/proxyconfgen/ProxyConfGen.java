@@ -36,6 +36,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class ProxyConfGen {
+
   static final String ZIMBRA_USER = "zextras";
   static final String ZIMBRA_UPSTREAM_NAME = "zimbra";
   static final String ZIMBRA_UPSTREAM_WEBCLIENT_NAME = "zimbra_webclient";
@@ -177,9 +178,10 @@ public class ProxyConfGen {
    * @author Davide Baldo
    */
   private static List<ServerAttrItem> loadServerAttrs() throws ServiceException {
-    if (!(mProv instanceof LdapProv))
+    if (!(mProv instanceof LdapProv)) {
       throw ServiceException.INVALID_REQUEST(
           "The method can work only when LDAP is available", null);
+    }
 
     final List<ServerAttrItem> serverAttrItems = new ArrayList<>();
     for (Server server : mProv.getAllServers()) {
@@ -206,9 +208,10 @@ public class ProxyConfGen {
     if (!mGenConfPerVhn) {
       return Collections.emptyList();
     }
-    if (!(mProv instanceof LdapProv))
+    if (!(mProv instanceof LdapProv)) {
       throw ServiceException.INVALID_REQUEST(
           "The method can work only when LDAP is available", null);
+    }
 
     final Set<String> attrsNeeded = new HashSet<>();
     attrsNeeded.add(ZAttrProvisioning.A_zimbraVirtualHostname);
@@ -375,7 +378,9 @@ public class ProxyConfGen {
 
   /* Guess how to find a server object -- taken from ProvUtil::guessServerBy */
   public static Key.ServerBy guessServerBy(String value) {
-    if (Provisioning.isUUID(value)) return Key.ServerBy.id;
+    if (Provisioning.isUUID(value)) {
+      return Key.ServerBy.id;
+    }
     return Key.ServerBy.name;
   }
 
@@ -657,7 +662,9 @@ public class ProxyConfGen {
       ArrayList<String> cache = new ArrayList<>(50);
       String line;
       while ((line = temp.readLine()) != null) {
-        if (!line.startsWith("#")) cache.add(line); // cache only non-comment lines
+        if (!line.startsWith("#")) {
+          cache.add(line); // cache only non-comment lines
+        }
       }
 
       for (ServerAttrItem server : filteredServers) {
@@ -810,7 +817,9 @@ public class ProxyConfGen {
     String line;
     ArrayList<String> cache = new ArrayList<>(50);
     while ((line = temp.readLine()) != null) {
-      if (!line.startsWith("#")) cache.add(line); // cache only non-comment lines
+      if (!line.startsWith("#")) {
+        cache.add(line); // cache only non-comment lines
+      }
       line = StringUtil.fillTemplate(line, mVars);
       conf.write(line);
       conf.newLine();
@@ -854,8 +863,9 @@ public class ProxyConfGen {
     SortedSet<String> sk = new TreeSet<>(mVars.keySet());
     for (String k : sk) {
       ProxyConfVar proxyConfVar = mConfVars.get(k);
-      if (proxyConfVar instanceof TimeInSecVarWrapper)
+      if (proxyConfVar instanceof TimeInSecVarWrapper) {
         proxyConfVar = ((TimeInSecVarWrapper) proxyConfVar).mVar;
+      }
       proxyConfVar.write(System.out);
     }
   }
@@ -2221,6 +2231,9 @@ public class ProxyConfGen {
 
       String clientCA = loadAllClientCertCA();
       writeClientCAtoFile(clientCA);
+
+      // cleanup DOMAIN_SSL_DIR
+      deleteObsoleteCertificateKeyPair(mDomainReverseProxyAttrs, mDryRun);
     } catch (ProxyConfException | ServiceException pe) {
       handleException(pe);
       exitCode = 1;
@@ -2399,6 +2412,39 @@ public class ProxyConfGen {
       }
     }
     return (exitCode);
+  }
+
+  /**
+   * Cleanup of Obsolete certificate-key file pair from {@link ProxyConfGen#DOMAIN_SSL_DIR}
+   *
+   * @param mDomainReverseProxyAttrs List<{@link DomainAttrItem}> domain attribute items collected
+   *     from domains
+   * @param dryRun if it's a dry run
+   * @author Keshav Bhatt
+   * @since 22.12.0
+   */
+  private static void deleteObsoleteCertificateKeyPair(
+      final List<DomainAttrItem> mDomainReverseProxyAttrs, final boolean dryRun) {
+    List<String> filesInDirectory = Utils.getFilesPathInDirectory(DOMAIN_SSL_DIR);
+    for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
+      filesInDirectory.removeIf(filePath -> (filePath.contains(entry.domainName)));
+    }
+    if (dryRun) {
+      filesInDirectory.forEach(
+          fileName ->
+              LOG.info(
+                  "Will delete obsoleted domain %s file %s",
+                  (fileName.endsWith(SSL_KEY_EXT) ? "key" : "cert"), fileName));
+    } else {
+      filesInDirectory.forEach(
+          filePath -> {
+            try {
+              Utils.deleteFileIfExists(filePath);
+            } catch (ProxyConfException e) {
+              LOG.info(e.getMessage());
+            }
+          });
+    }
   }
 
   /**
