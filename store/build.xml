@@ -435,6 +435,7 @@
   <target name="generate-domainadmin-rights-xml" depends="compile">
     <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="run.class.path" failonerror="true">
       <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
       <arg line="-a genDomainAdminSetAttrsRights -r ${conf.dir}/rights/rights-domainadmin.xml -t ${conf.dir}/rights/rights-domainadmin.xml-template"/>
     </java>
   </target>
@@ -442,14 +443,17 @@
   <target name="generate-rights-java" depends="compile">
     <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="run.class.path" failonerror="true">
       <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
       <arg line="-a genRightConsts -i ${conf.dir}/rights -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/RightConsts.java"/>
     </java>
     <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="run.class.path" failonerror="true">
       <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
       <arg line="-a genAdminRights -i ${conf.dir}/rights -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/AdminRights.java"/>
     </java>
     <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="run.class.path" failonerror="true">
       <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
       <arg line="-a genUserRights -i ${conf.dir}/rights -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/UserRights.java"/>
     </java>
   </target>
@@ -457,6 +461,7 @@
   <target name="generate-rights-message-properties" depends="compile">
     <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="run.class.path" failonerror="true">
       <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
       <arg line="-a genMessageProperties -i ${conf.dir}/rights -r ${conf.dir}/msgs/ZsMsgRights.properties"/>
     </java>
   </target>

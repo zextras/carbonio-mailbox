@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- Used only for code autogen -->
+<localconfig>
+  <key name="zimbra_home">
+    <value>.</value>
+  </key>
+</localconfig>
