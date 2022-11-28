@@ -9940,4 +9940,12 @@ TODO: delete them permanently from here
 <attr id="3117" name="carbonioWebUiDarkPrimaryColor" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.1.0">
   <desc>Web UI Dark Mode Primary Color preference for domain</desc>
 </attr>
+
+<attr id="3118" name="carbonioWebUiBannerText" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.1.0">
+  <desc>Web UI Banner Text preference for domain</desc>
+</attr>
+
+<attr id="3119" name="carbonioAdminWebUiBannerText" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.1.0">
+  <desc>Admin Web UI Banner Text preference for domain</desc>
+</attr>
 </attrs>
