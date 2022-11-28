@@ -2693,6 +2693,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAdminUiTitle = "carbonioAdminUiTitle";
 
     /**
+     * Admin Web UI Banner Text preference for domain
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3119)
+    public static final String A_carbonioAdminWebUiBannerText = "carbonioAdminWebUiBannerText";
+
+    /**
      * Whether Carbonio can take interactive feedback from users
      *
      * @since ZCS 9.0.0
@@ -2749,6 +2757,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioWebUiAppLogo = "carbonioWebUiAppLogo";
 
     /**
+     * Web UI Banner Text preference for domain
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3118)
+    public static final String A_carbonioWebUiBannerText = "carbonioWebUiBannerText";
+
+    /**
      * Web UI Dark App Logo preference for domain
      *
      * @since ZCS 22.11.0
@@ -2781,6 +2797,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioWebUiDarkMode = "carbonioWebUiDarkMode";
 
     /**
+     * Web UI Dark Mode Primary Color preference for domain
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3117)
+    public static final String A_carbonioWebUiDarkPrimaryColor = "carbonioWebUiDarkPrimaryColor";
+
+    /**
      * Web UI Description preference for domain
      *
      * @since ZCS 22.11.0
@@ -2811,6 +2835,14 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3097)
     public static final String A_carbonioWebUiLoginLogo = "carbonioWebUiLoginLogo";
+
+    /**
+     * Web UI Primary Color preference for domain
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3116)
+    public static final String A_carbonioWebUiPrimaryColor = "carbonioWebUiPrimaryColor";
 
     /**
      * Web UI Title preference for domain
