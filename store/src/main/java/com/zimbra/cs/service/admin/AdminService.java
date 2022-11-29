@@ -99,7 +99,9 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.DELETE_MAILBOX_REQUEST, new DeleteMailbox());
     dispatcher.registerHandler(AdminConstants.GET_MAILBOX_REQUEST, new GetMailbox());
 
-    dispatcher.registerHandler(AdminConstants.RUN_UNIT_TESTS_REQUEST, new RunUnitTests());
+    // TODO: check if this is required here, we have moved it to package com.zimbra.qa.service.admin
+    // for now to remove dependency of qa package from store module
+    // dispatcher.registerHandler(AdminConstants.RUN_UNIT_TESTS_REQUEST, new RunUnitTests());
 
     dispatcher.registerHandler(AdminConstants.CHECK_AUTH_CONFIG_REQUEST, new CheckAuthConfig());
     dispatcher.registerHandler(AdminConstants.CHECK_GAL_CONFIG_REQUEST, new CheckGalConfig());

@@ -10,19 +10,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.mailbox.Color;
 import com.zimbra.common.service.ServiceException;
@@ -41,16 +36,16 @@ import com.zimbra.cs.mailbox.RetentionPolicyManager;
 import com.zimbra.cs.mailbox.Tag;
 import com.zimbra.soap.mail.type.RetentionPolicy;
 
-public final class DbTag {
+public class DbTag {
     public static final String TABLE_TAG = "tag";
     public static final String TABLE_TAGGED_ITEM = "tagged_item";
 
-    private static final String TAG_FIELDS = "id, name, color, item_count, unread, listed, sequence, policy";
+    protected static final String TAG_FIELDS = "id, name, color, item_count, unread, listed, sequence, policy";
 
-    private DbTag() {
+    protected DbTag() {
     }
 
-    private static UnderlyingData asUnderlyingData(ResultSet rs) throws SQLException, ServiceException {
+    static UnderlyingData asUnderlyingData(ResultSet rs) throws SQLException, ServiceException {
         UnderlyingData data = new UnderlyingData();
         data.id = rs.getInt(1);
         data.type = MailItem.Type.TAG.toByte();
@@ -807,12 +802,31 @@ public final class DbTag {
         return getTaggedItemTableName(mbox) + " AS " + alias;
     }
 
-  // TODO remove JUnit dependency from non test class
-
-  // TODO remove JUnit dependency from non test class
-
-  // TODO remove JUnit dependency from non test class
-
-  // TODO remove JUnit dependency from non test class
+    //    private static void verifyTagCounts(DbConnection conn, Mailbox mbox, Map<Integer, UnderlyingData> tdata) throws ServiceException {
+//        PreparedStatement stmt = null;
+//        ResultSet rs = null;
+//        try {
+//            String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "ti.mailbox_id = mi.mailbox_id AND ";
+//            stmt = conn.prepareStatement("SELECT ti.tag_id, mi.id, mi.unread, mi.flags, mi.type" +
+//                    " FROM " + getTaggedItemTableName(mbox, "ti") +
+//                    " INNER JOIN " + DbMailItem.getMailItemTableName(mbox, "mi") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
+//                    " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id > 0 AND " + Db.getInstance().bitAND("mi.flags", String.valueOf(Flag.BITMASK_DELETED)) + " = 0");
+////                    " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id > 0");
+//            DbMailItem.setMailboxId(stmt, mbox, 1);
+//            rs = stmt.executeQuery();
+//
+//            while (rs.next()) {
+//                int tagId = rs.getInt(1), itemId = rs.getInt(2), unread = rs.getInt(3), flags = rs.getInt(4), type = rs.getInt(5);
+//                System.out.println(MailItem.Type.of((byte) type) + " " + itemId + ": tag " + tdata.get(tagId).name + ": unread " + (unread > 0) +
+//                        ", deleted " + ((flags & Flag.BITMASK_DELETED) != 0) + " (flags " + flags + ")");
+//            }
+//            System.out.println("-----------------------");
+//        } catch (SQLException e) {
+//            throw ServiceException.FAILURE("consistency checking TAGGED_ITEM vs. TAG", e);
+//        } finally {
+//            DbPool.closeResults(rs);
+//            DbPool.closeStatement(stmt);
+//        }
+//    }
 
 }

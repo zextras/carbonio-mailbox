@@ -14,11 +14,11 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
-import com.zimbra.qa.unittest.TestResults;
-import com.zimbra.qa.unittest.TestUtil;
-import com.zimbra.qa.unittest.ZimbraSuite;
+import qa.unittest.TestResults;
+import qa.unittest.TestUtil;
+import qa.unittest.ZimbraSuite;
 import com.zimbra.soap.ZimbraSoapContext;
-import com.zimbra.qa.unittest.TestResults.TestStatus;
+import qa.unittest.TestResults.TestStatus;
 /**
  * @author bburtin
  */
