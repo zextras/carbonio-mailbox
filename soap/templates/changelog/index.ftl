@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-<link href="./images/favicon.ico" rel="shortcut icon">
+<link href="images/favicon.ico" rel="shortcut icon">
 <title>Zimbra SOAP API : Change Log</title>
 </head>
 
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="wrap">
 
     <div class="container header">
-        <img src="./images/logo.png" width="168" height="40" border="0" alt="Zimbra" title="Zimbra">
+        <img src="images/logo.png" width="168" height="40" border="0" alt="Zimbra" title="Zimbra">
         <h2>ZCS ${comparison.buildVersion} : Zimbra SOAP API : Change Log</h2>
     </div>
 
