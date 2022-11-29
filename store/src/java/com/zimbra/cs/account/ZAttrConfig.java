@@ -799,6 +799,78 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Admin Web UI Banner Text preference for domain
+     *
+     * @return carbonioAdminWebUiBannerText, or null if unset
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3119)
+    public String getCarbonioAdminWebUiBannerText() {
+        return getAttr(Provisioning.A_carbonioAdminWebUiBannerText, null, true);
+    }
+
+    /**
+     * Admin Web UI Banner Text preference for domain
+     *
+     * @param carbonioAdminWebUiBannerText new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3119)
+    public void setCarbonioAdminWebUiBannerText(String carbonioAdminWebUiBannerText) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminWebUiBannerText, carbonioAdminWebUiBannerText);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Admin Web UI Banner Text preference for domain
+     *
+     * @param carbonioAdminWebUiBannerText new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3119)
+    public Map<String,Object> setCarbonioAdminWebUiBannerText(String carbonioAdminWebUiBannerText, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminWebUiBannerText, carbonioAdminWebUiBannerText);
+        return attrs;
+    }
+
+    /**
+     * Admin Web UI Banner Text preference for domain
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3119)
+    public void unsetCarbonioAdminWebUiBannerText() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminWebUiBannerText, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Admin Web UI Banner Text preference for domain
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3119)
+    public Map<String,Object> unsetCarbonioAdminWebUiBannerText(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAdminWebUiBannerText, "");
+        return attrs;
+    }
+
+    /**
      * Whether Carbonio can take interactive feedback from users
      *
      * @return carbonioAllowFeedback, or true if unset
@@ -1231,6 +1303,78 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Web UI Banner Text preference for domain
+     *
+     * @return carbonioWebUiBannerText, or null if unset
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3118)
+    public String getCarbonioWebUiBannerText() {
+        return getAttr(Provisioning.A_carbonioWebUiBannerText, null, true);
+    }
+
+    /**
+     * Web UI Banner Text preference for domain
+     *
+     * @param carbonioWebUiBannerText new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3118)
+    public void setCarbonioWebUiBannerText(String carbonioWebUiBannerText) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiBannerText, carbonioWebUiBannerText);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Web UI Banner Text preference for domain
+     *
+     * @param carbonioWebUiBannerText new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3118)
+    public Map<String,Object> setCarbonioWebUiBannerText(String carbonioWebUiBannerText, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiBannerText, carbonioWebUiBannerText);
+        return attrs;
+    }
+
+    /**
+     * Web UI Banner Text preference for domain
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3118)
+    public void unsetCarbonioWebUiBannerText() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiBannerText, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Web UI Banner Text preference for domain
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3118)
+    public Map<String,Object> unsetCarbonioWebUiBannerText(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiBannerText, "");
+        return attrs;
+    }
+
+    /**
      * Web UI Dark App Logo preference for domain
      *
      * @return carbonioWebUiDarkAppLogo, or null if unset
@@ -1519,6 +1663,78 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Web UI Dark Mode Primary Color preference for domain
+     *
+     * @return carbonioWebUiDarkPrimaryColor, or null if unset
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3117)
+    public String getCarbonioWebUiDarkPrimaryColor() {
+        return getAttr(Provisioning.A_carbonioWebUiDarkPrimaryColor, null, true);
+    }
+
+    /**
+     * Web UI Dark Mode Primary Color preference for domain
+     *
+     * @param carbonioWebUiDarkPrimaryColor new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3117)
+    public void setCarbonioWebUiDarkPrimaryColor(String carbonioWebUiDarkPrimaryColor) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiDarkPrimaryColor, carbonioWebUiDarkPrimaryColor);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Web UI Dark Mode Primary Color preference for domain
+     *
+     * @param carbonioWebUiDarkPrimaryColor new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3117)
+    public Map<String,Object> setCarbonioWebUiDarkPrimaryColor(String carbonioWebUiDarkPrimaryColor, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiDarkPrimaryColor, carbonioWebUiDarkPrimaryColor);
+        return attrs;
+    }
+
+    /**
+     * Web UI Dark Mode Primary Color preference for domain
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3117)
+    public void unsetCarbonioWebUiDarkPrimaryColor() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiDarkPrimaryColor, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Web UI Dark Mode Primary Color preference for domain
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3117)
+    public Map<String,Object> unsetCarbonioWebUiDarkPrimaryColor(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiDarkPrimaryColor, "");
+        return attrs;
+    }
+
+    /**
      * Web UI Description preference for domain
      *
      * @return carbonioWebUiDescription, or "Carbonio Client" if unset
@@ -1803,6 +2019,78 @@ public abstract class ZAttrConfig extends Entry {
     public Map<String,Object> unsetCarbonioWebUiLoginLogo(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioWebUiLoginLogo, "");
+        return attrs;
+    }
+
+    /**
+     * Web UI Primary Color preference for domain
+     *
+     * @return carbonioWebUiPrimaryColor, or null if unset
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3116)
+    public String getCarbonioWebUiPrimaryColor() {
+        return getAttr(Provisioning.A_carbonioWebUiPrimaryColor, null, true);
+    }
+
+    /**
+     * Web UI Primary Color preference for domain
+     *
+     * @param carbonioWebUiPrimaryColor new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3116)
+    public void setCarbonioWebUiPrimaryColor(String carbonioWebUiPrimaryColor) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiPrimaryColor, carbonioWebUiPrimaryColor);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Web UI Primary Color preference for domain
+     *
+     * @param carbonioWebUiPrimaryColor new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3116)
+    public Map<String,Object> setCarbonioWebUiPrimaryColor(String carbonioWebUiPrimaryColor, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiPrimaryColor, carbonioWebUiPrimaryColor);
+        return attrs;
+    }
+
+    /**
+     * Web UI Primary Color preference for domain
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3116)
+    public void unsetCarbonioWebUiPrimaryColor() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiPrimaryColor, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Web UI Primary Color preference for domain
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3116)
+    public Map<String,Object> unsetCarbonioWebUiPrimaryColor(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioWebUiPrimaryColor, "");
         return attrs;
     }
 
