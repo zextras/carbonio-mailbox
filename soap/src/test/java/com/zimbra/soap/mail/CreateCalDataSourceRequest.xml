@@ -1,3 +1,0 @@
-<CreateDataSourceRequest xmlns="urn:zimbraMail">
-      <cal name="someCalDS" l="5" isEnabled="1" host="calendar.google.com" />
-    </CreateDataSourceRequest>
