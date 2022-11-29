@@ -38,27 +38,13 @@ public class EndSession extends AccountDocumentHandler {
     ZimbraSoapContext zsc = getZimbraSoapContext(context);
     EndSessionRequest req = JaxbUtil.elementToJaxb(request);
     String sessionId = req.getSessionId();
-    boolean clearCookies = req.isLogOff();
-    boolean clearAllSessions = req.isClearAllSoapSessions();
-    boolean excludeCurrrentSession = req.isExcludeCurrentSession();
+    final boolean clearCookies = req.isLogOff();
+    final boolean clearAllSessions = req.isClearAllSoapSessions();
+    final boolean excludeCurrentSession = req.isExcludeCurrentSession();
     Account account = getAuthenticatedAccount(zsc);
 
     if (clearAllSessions) {
-      String currentSessionId = null;
-      if (excludeCurrrentSession && zsc.hasSession()) {
-        Session currentSession = getSession(zsc);
-        currentSessionId = currentSession.getSessionId();
-      }
-      Collection<Session> sessionCollection = SessionCache.getSoapSessions(account.getId());
-      if (sessionCollection != null) {
-        List<Session> sessions = new ArrayList<Session>(sessionCollection);
-        Iterator<Session> itr = sessions.iterator();
-        while (itr.hasNext()) {
-          Session session = itr.next();
-          itr.remove();
-          clearSession(session, currentSessionId);
-        }
-      }
+      clearAllSessions(zsc, excludeCurrentSession, account);
     } else if (!StringUtil.isNullOrEmpty(sessionId)) {
       Session s = SessionCache.lookup(sessionId, account.getId());
       if (s == null) {
@@ -87,10 +73,40 @@ public class EndSession extends AccountDocumentHandler {
       }
     }
 
-    Element response = zsc.createElement(AccountConstants.END_SESSION_RESPONSE);
-    return response;
+    return zsc.createElement(AccountConstants.END_SESSION_RESPONSE);
   }
 
+  /**
+   * @param zsc SoapContext of the request
+   * @param excludeCurrentSession exclude current session
+   * @param account Account whose session will be cleared
+   * @throws ServiceException
+   */
+  private void clearAllSessions(
+      final ZimbraSoapContext zsc, boolean excludeCurrentSession, Account account)
+      throws ServiceException {
+    String currentSessionId = null;
+    if (excludeCurrentSession && zsc.hasSession()) {
+      Session currentSession = getSession(zsc);
+      currentSessionId = currentSession.getSessionId();
+    }
+    Collection<Session> sessionCollection = SessionCache.getSoapSessions(account.getId());
+    if (sessionCollection != null) {
+      List<Session> sessions = new ArrayList<>(sessionCollection);
+      Iterator<Session> itr = sessions.iterator();
+      while (itr.hasNext()) {
+        Session session = itr.next();
+        itr.remove();
+        clearSession(session, currentSessionId);
+      }
+    }
+  }
+
+  /**
+   * @param session Session to clear
+   * @param currentSessionId current session ID
+   * @throws ServiceException exception if an error occurs during session cleanup
+   */
   private void clearSession(Session session, String currentSessionId) throws ServiceException {
     if (session instanceof SoapSession
         && !session.getSessionId().equalsIgnoreCase(currentSessionId)) {
