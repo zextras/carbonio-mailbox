@@ -11924,8 +11924,7 @@ public abstract class ZAttrConfig extends Entry {
 
     /**
      * Database mirrors for freshclam to use for virus and other updates.
-     * Defaults to the United States mirror. See
-     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     * Defaults to ClamAV CDN.
      *
      * @return zimbraClamAVDatabaseMirror, or empty array if unset
      *
@@ -11933,13 +11932,12 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=2073)
     public String[] getClamAVDatabaseMirror() {
-        String[] value = getMultiAttr(Provisioning.A_zimbraClamAVDatabaseMirror, true, true); return value.length > 0 ? value : new String[] {"db.us.clamav.net"};
+        String[] value = getMultiAttr(Provisioning.A_zimbraClamAVDatabaseMirror, true, true); return value.length > 0 ? value : new String[] {"database.clamav.net"};
     }
 
     /**
      * Database mirrors for freshclam to use for virus and other updates.
-     * Defaults to the United States mirror. See
-     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     * Defaults to ClamAV CDN.
      *
      * @param zimbraClamAVDatabaseMirror new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -11955,8 +11953,7 @@ public abstract class ZAttrConfig extends Entry {
 
     /**
      * Database mirrors for freshclam to use for virus and other updates.
-     * Defaults to the United States mirror. See
-     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     * Defaults to ClamAV CDN.
      *
      * @param zimbraClamAVDatabaseMirror new value
      * @param attrs existing map to populate, or null to create a new map
@@ -11973,8 +11970,7 @@ public abstract class ZAttrConfig extends Entry {
 
     /**
      * Database mirrors for freshclam to use for virus and other updates.
-     * Defaults to the United States mirror. See
-     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     * Defaults to ClamAV CDN.
      *
      * @param zimbraClamAVDatabaseMirror new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -11990,8 +11986,7 @@ public abstract class ZAttrConfig extends Entry {
 
     /**
      * Database mirrors for freshclam to use for virus and other updates.
-     * Defaults to the United States mirror. See
-     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     * Defaults to ClamAV CDN.
      *
      * @param zimbraClamAVDatabaseMirror new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -12008,8 +12003,7 @@ public abstract class ZAttrConfig extends Entry {
 
     /**
      * Database mirrors for freshclam to use for virus and other updates.
-     * Defaults to the United States mirror. See
-     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     * Defaults to ClamAV CDN.
      *
      * @param zimbraClamAVDatabaseMirror existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12025,8 +12019,7 @@ public abstract class ZAttrConfig extends Entry {
 
     /**
      * Database mirrors for freshclam to use for virus and other updates.
-     * Defaults to the United States mirror. See
-     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     * Defaults to ClamAV CDN.
      *
      * @param zimbraClamAVDatabaseMirror existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -12043,8 +12036,7 @@ public abstract class ZAttrConfig extends Entry {
 
     /**
      * Database mirrors for freshclam to use for virus and other updates.
-     * Defaults to the United States mirror. See
-     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     * Defaults to ClamAV CDN.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -12059,8 +12051,7 @@ public abstract class ZAttrConfig extends Entry {
 
     /**
      * Database mirrors for freshclam to use for virus and other updates.
-     * Defaults to the United States mirror. See
-     * http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.
+     * Defaults to ClamAV CDN.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
