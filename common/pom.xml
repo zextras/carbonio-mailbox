@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>zm-common</artifactId>
+  <dependencies>
+    <dependency>
+      <artifactId>mockito-core</artifactId>
+      <groupId>org.mockito</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+    </dependency>
+    <dependency>
+      <artifactId>mail</artifactId>
+      <groupId>javax.mail</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>activation</artifactId>
+      <groupId>javax.activation</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>guava</artifactId>
+      <groupId>com.google.guava</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-codec</artifactId>
+      <groupId>commons-codec</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>javax.servlet-api</artifactId>
+      <groupId>javax.servlet</groupId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>log4j</artifactId>
+      <groupId>log4j</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <groupId>org.bouncycastle</groupId>
+    </dependency>
+
+    <!--    TODO: fix this, we will locally use the compiled jar to bypass this failure-->
+    <!--    <dependency>-->
+    <!--      &lt;!&ndash;TODO: we are using 0.9.16-patched in our production&ndash;&gt;-->
+    <!--      <artifactId>ical4j</artifactId>-->
+    <!--      <groupId>ical4j</groupId>-->
+    <!--      <version>0.9.16-patched</version>-->
+    <!--    </dependency>-->
+
+    <dependency>
+      <artifactId>ical4j</artifactId>
+      <groupId>ical4j</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>icu4j</artifactId>
+      <groupId>com.ibm.icu</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>json</artifactId>
+      <groupId>org.json</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>dom4j</artifactId>
+      <groupId>org.dom4j</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>httpclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>jaxb-api</artifactId>
+      <groupId>javax.xml.bind</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>httpasyncclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-cli</artifactId>
+      <groupId>commons-cli</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>spymemcached</artifactId>
+      <groupId>net.spy</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>javax.annotation-api</artifactId>
+      <groupId>javax.annotation</groupId>
+    </dependency>
+
+    <dependency>
+      <!-- TODO: this is also defined in zm-zcs-lib -->
+      <artifactId>jline</artifactId>
+      <groupId>jline</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>jetty-rewrite</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>jetty-util</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-lang</artifactId>
+      <groupId>commons-lang</groupId>
+    </dependency>
+
+    <dependency>
+      <!-- TODO: this is also defined in zm-zcs-lib -->
+      <artifactId>nekohtml</artifactId>
+      <groupId>net.sourceforge.nekohtml</groupId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <!-- TODO: this is also defined in zm-zcs-lib -->
+      <artifactId>jfreechart</artifactId>
+      <groupId>org.jfree</groupId>
+    </dependency>
+
+    <!--    <dependency>-->
+    <!--      &lt;!&ndash; TODO: this is also defined in zm-zcs-lib &ndash;&gt;-->
+    <!--      <artifactId>jcommon</artifactId>-->
+    <!--      <groupId>org.jfree</groupId>-->
+    <!--      <version>1.0.23</version>-->
+    <!--    </dependency>-->
+
+
+    <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <!-- TODO: this is also defined in zm-zcs-lib -->
+      <artifactId>jython-standalone</artifactId>
+      <groupId>org.python</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>easymock</artifactId>
+      <groupId>org.easymock</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>zm-native</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
+
+  </dependencies>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>zm-mailbox</artifactId>
+    <groupId>zextras</groupId>
+    <version>${revision}</version>
+  </parent>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
+      <!-- Analyze dependencies -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>always</forkMode>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+
+</project>

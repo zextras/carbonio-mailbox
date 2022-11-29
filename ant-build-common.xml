@@ -1,0 +1,145 @@
+<!--TODO: This file need further cleanup-->
+<project xmlns:antcontrib="antlib:net.sf.antcontrib" name="build-common">
+  <!-- Ignore the classpath from the shell running ant.  This avoids dependency
+      on the user's environment and suppresses the warning about includeAntRuntime. -->
+  <dirname file="${ant.file.build-common}" property="zm-mailbox.basedir"/>
+  <property name="build.sysclasspath" value="ignore"/>
+  <!-- Java -->
+  <property name="javac.target" value="11"/>
+  <!-- Standard directory paths -->
+  <property location="src" name="src.dir"/>
+  <property location="src/main/java" name="src.java.dir"/>
+  <property location="src/bin" name="src.bin.dir"/>
+  <property location="src/libexec" name="src.libexec.dir"/>
+  <property location="src/zimlet" name="src.zimlet.dir"/>
+  <property location="jars" name="jars.dir"/>
+  <property location="target" name="maven.build.dir"/>
+  <property location="${maven.build.dir}/tmp" name="build.tmp.dir"/>
+  <property location="${maven.build.dir}/lib" name="lib.dir"/>
+  <property location="${lib.dir}/ext" name="dist.lib.ext.dir"/>
+  <property location="${maven.build.dir}/classes" name="build.classes.dir"/>
+  <property location="${maven.build.dir}/classes-inst" name="build.instrumented.dir"/>
+  <property location="${maven.build.dir}/zimlet" name="build.zimlet.dir"/>
+  <!-- Standard install paths -->
+  <property location="/opt/zextras" name="zimbra.home.dir"/>
+  <property location="${zimbra.home.dir}/jetty" name="jetty.home.dir"/>
+  <property location="${jetty.home.dir}/webapps" name="jetty.webapps.dir"/>
+  <property location="${zimbra.home.dir}/lib/jars" name="common.jars.dir"/>
+  <property location="${jetty.home.dir}/common/endorsed" name="jetty.endorsed.jars.dir"/>
+  <property location="${jetty.home.dir}/common/lib" name="jetty.common.jars.dir"/>
+  <property location="${zimbra.home.dir}/lib/ext-common" name="ext-common.jars.dir"/>
+  <property location="${zimbra.home.dir}/jars-src" name="common.sourcejars.dir"/>
+  <!-- ZimbraCommon -->
+  <property location="${zm-mailbox.basedir}/common" name="common.dir"/>
+  <property location="${common.dir}/src/main/java" name="common.src.java.dir"/>
+  <property location="${common.dir}/target/classes" name="common.classes.dir"/>
+  <property location="${common.dir}/target/zimbracommon.jar" name="common.jarfile"/>
+  <property location="../jars-internal/jars" name="common.internal.jars.dir"/>
+  <!-- ZimbraNative -->
+  <property location="${zm-mailbox.basedir}/native" name="native.dir"/>
+  <property location="${native.dir}/target/classes" name="native.classes.dir"/>
+  <!-- ZimbraServer -->
+  <property location="${zm-mailbox.basedir}/store" name="server.dir"/>
+  <property location="${server.dir}/target/classes" name="server.classes.dir"/>
+  <property location="${server.dir}/target/test-classes" name="server.test.classes.dir"/>
+  <property location="${server.dir}/target/zimbrastore.jar" name="server.jarfile"/>
+  <property location="${zimbra.home.dir}/jars" name="server.jars.dir"/>
+  <property location="${server.dir}/conf" name="server.conf.dir"/>
+  <!-- ZimbraSoap -->
+  <property location="${zm-mailbox.basedir}/soap" name="soap.dir"/>
+  <property location="${soap.dir}/target/classes" name="soap.classes.dir"/>
+  <property location="${soap.dir}/target/zimbrasoap.jar" name="soap.jarfile"/>
+  <!-- ZimbraClient -->
+  <property location="${zm-mailbox.basedir}/client" name="client.dir"/>
+  <property location="${client.dir}/target/classes" name="client.classes.dir"/>
+  <property location="${client.dir}/target/zimbraclient.jar" name="client.jarfile"/>
+  <property location="${zm-mailbox.basedir}/store-conf/conf/msgs" name="msgs.dir"/>
+
+
+  <target depends="carbonio-version" name="require-version">
+    <!-- For retro-compatibility -->
+    <property name="zimbra.buildinfo.version" value="${carbonio.buildinfo.version}"/>
+    <echo message="Using version ${zimbra.buildinfo.version}"/>
+  </target>
+
+  <target name="carbonio-version">
+    <property name="carbonio.buildinfo.version" value="22.12.0_ZEXTRAS_202212"/>
+    <fail
+      message="Missing build version. Define proper ZCS version like -Dcarbonio.buildinfo.version">
+      <condition>
+        <not>
+          <isset property="carbonio.buildinfo.version"/>
+        </not>
+      </condition>
+    </fail>
+  </target>
+
+  <target depends="require-version" name="set-dev-version">
+    <antcontrib:if>
+      <not>
+        <isset property="jar.file"/>
+      </not>
+      <then>
+        <antcontrib:propertyregex casesensitive="false"
+          input="${zimbra.buildinfo.version}" property="zimbra.buildinfo.majorversion"
+          regexp="([0-9]+)\.([0-9]+)\.([0-9]+)"
+          select="\1"/>
+        <!-- Build version -->
+        <antcontrib:propertyregex casesensitive="false"
+          input="${zimbra.buildinfo.version}" property="zimbra.buildinfo.minorversion"
+          regexp="([0-9]+)\.([0-9]+)\.([0-9]+)"
+          select="\2"/>
+        <antcontrib:propertyregex casesensitive="false"
+          input="${zimbra.buildinfo.version}" property="zimbra.buildinfo.microversion"
+          regexp="([0-9]+)\.([0-9]+)\.([0-9]+)"
+          select="\3"/>
+        <antcontrib:propertyregex casesensitive="false" defaultValue="GA"
+          input="${zimbra.buildinfo.version}" property="zimbra.buildinfo.relclass"
+          regexp="([0-9]+)\.([0-9]+)\.([0-9]+)_([A-Z]+)" select="\4"/>
+        <antcontrib:propertyregex casesensitive="false"
+          input="${zimbra.buildinfo.version}"
+          property="zimbra.buildinfo.buildnum"
+          regexp="([0-9]+)\.([0-9]+)\.([0-9]+)_([A-Z]+)_([0-9]+)"
+          select="\5"/>
+        <condition property="zimbra.buildinfo.relnum" value="0">
+          <not>
+            <isset property="${zimbra.buildinfo.relnum}"/>
+          </not>
+        </condition>
+        <condition property="zimbra.buildinfo.type" value="">
+          <not>
+            <isset property="${zimbra.buildinfo.type}"/>
+          </not>
+        </condition>
+        <condition property="zimbra.buildinfo.release" value="carbonio">
+          <not>
+            <isset property="${zimbra.buildinfo.release}"/>
+          </not>
+        </condition>
+        <condition property="zimbra.buildinfo.date" value="${DSTAMP}-${TSTAMP}">
+          <not>
+            <isset property="${zimbra.buildinfo.date}"/>
+          </not>
+        </condition>
+        <condition property="zimbra.buildinfo.host" value="${zimbra.server.hostname}">
+          <not>
+            <isset property="${zimbra.buildinfo.host}"/>
+          </not>
+        </condition>
+        <exec executable="git" outputproperty="git.timestamp">
+          <arg value="log"/>
+          <arg value="-1"/>
+          <arg value="--pretty=format:%at"/>
+        </exec>
+        <property name="zimbra.buildinfo.microtag"
+          value="${zimbra.buildinfo.microversion}_${zimbra.buildinfo.relclass}"/>
+        <property name="zimbra.buildinfo.all"
+          value="Version: ${zimbra.buildinfo.version}; Type: ${zimbra.buildinfo.type}; Release: ${zimbra.buildinfo.release}; Built: ${zimbra.buildinfo.date}; Host: ${zimbra.buildinfo.host}"/>
+        <property name="dev.version"
+          value="${zimbra.buildinfo.majorversion}.${zimbra.buildinfo.minorversion}.${zimbra.buildinfo.microversion}"/>
+        <property name="jar.file" value="${ant.project.name}-${dev.version}.jar"/>
+        <tstamp/>
+      </then>
+    </antcontrib:if>
+  </target>
+</project>

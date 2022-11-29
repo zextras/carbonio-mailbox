@@ -1,0 +1,78 @@
+<project name="soap-docs">
+  <property name="build.dir" location="target"/>
+  <property name="xml.schema.dir" location="${build.dir}/classes/com/zimbra/soap/"/>
+  <property name="src.dir" location="src"/>
+  <property name="templates.dir" location="templates"/>
+  <property name="build.classes.dir" location="${build.dir}/classes"/>
+  <property name="test.classes.dir" location="${build.dir}/test-classes"/>
+  <property name="zimbra.service.wsdl.file" location="${build.classes.dir}/com/zimbra/soap/ZimbraService.wsdl" />
+  <property name="soapdocs.output.dir" location="${build.dir}/docs/soap" />
+  <property name="soapdocs.src.dir" location="soap/src/java" />
+  <property name="soapdocs.apidesc.file" location="${build.dir}/soapapi-desc.json" />
+  <property name="soapdocs.apidesc.baseline.file" location="soap/baseline-soapapi-desc.json.gz" />
+  <property name="soapapi.changelog.output.dir" location="${soapdocs.output.dir}/api-changelog" />
+  <property name="soapapi.doc.file" location="${build.dir}/docs/soapapi-doc.zip" />
+  <property name="soapapi.changelog.file" location="${build.dir}/docs/soapapi-changelog.zip" />
+
+  <path id="class.path">
+    <pathelement path="${compile_classpath}"/>
+    <pathelement path="${runtime_classpath}"/>
+    <pathelement path="${test_classpath}"/>
+  </path>
+
+  <target name="check-schema-done">
+    <uptodate property="schema.build.notrequired" targetFile="${xml.schema.dir}/zimbra.xsd">
+      <srcfiles dir="${src.dir}" includes="**/*.java" />
+    </uptodate>
+  </target>
+
+  <target name="generate-schema" depends="check-schema-done"  description="Generates .xsd files referenced from WSDL">
+    <mkdir dir="${xml.schema.dir}" />
+    <java classname="com.zimbra.soap.util.Jaxb2Xsds" classpathref="class.path" fork="true" failonerror="true">
+      <arg line="--dir ${xml.schema.dir}" />
+    </java>
+    <!-- fixup usage of zmBoolean - the valid values for zmBoolean and xs:boolean are the same,
+         zmBoolean is only used to force the use of "1" and "0" instead of true and false -->
+    <replaceregexp match="(tns|zimbra*|ns[0-9]):zmBoolean" replace="xs:boolean" flags="g" byline="true">
+      <fileset dir="${xml.schema.dir}" includes="*.xsd" />
+    </replaceregexp>
+    <java classname="com.zimbra.soap.util.XsdCleaner" classpathref="class.path" fork="true" failonerror="true">
+      <arg line="--dir ${xml.schema.dir}" />
+    </java>
+  </target>
+
+  <target name="wsdl-file" depends="generate-schema" description="Generates WSDL file">
+    <mkdir dir="${xml.schema.dir}" />
+    <java classname="com.zimbra.soap.util.WsdlGenerator" classpathref="class.path" fork="true" failonerror="true">
+      <arg line="-output.dir ${xml.schema.dir}" />
+    </java>
+  </target>
+
+  <target name="generate-soap-api-doc" depends="wsdl-file">
+
+    <path id="soapdocs.doclet.class.path">
+      <pathelement location="${build.classes.dir}"/>
+      <pathelement location="${test.classes.dir}"/>
+    </path>
+
+    <delete dir="${soapdocs.output.dir}" quiet="true" />
+    <mkdir dir="${soapdocs.output.dir}" />
+
+    <javadoc sourcepath="${src.dir}/main/java" docletpathref="class.path" classpathref="class.path">
+      <doclet name="com.zimbra.doc.soap.doclet.ZmApiDoclet">
+        <param name="--templates-dir" value="${templates.dir}" />
+        <param name="--output-dir" value="${soapdocs.output.dir}" />
+        <param name="--apidesc-json" value="${soapdocs.apidesc.file}" />
+        <param name="--build-version" value="${carbonio.buildinfo.version}" />
+        <param name="--build-date" value="${zimbra.buildinfo.date}" />
+      </doclet>
+      <packageset dir="${build.classes.dir}" defaultexcludes="yes">
+        <include name="com/zimbra/soap/*/message/**" />
+        <include name="com/zimbra/soap/*/type/**" />
+        <include name="com/zimbra/soap/base/**" />
+        <include name="com/zimbra/soap/header/**" />
+        <include name="com/zimbra/soap/type/**" />
+      </packageset>
+    </javadoc>
+  </target>
+</project>
