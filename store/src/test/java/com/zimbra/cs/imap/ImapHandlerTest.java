@@ -33,7 +33,7 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.SearchFolder;
 import com.zimbra.cs.server.ServerThrottle;
 import com.zimbra.cs.util.ZTestWatchman;
-import com.zimbra.qa.unittest.TestUtil;
+import qa.unittest.TestUtil;
 
 import junit.framework.Assert;
 

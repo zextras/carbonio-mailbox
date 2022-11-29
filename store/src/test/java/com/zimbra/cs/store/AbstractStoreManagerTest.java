@@ -26,7 +26,7 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.ThreaderTest;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.store.external.ExternalStoreManager;
-import com.zimbra.qa.unittest.TestUtil;
+import qa.unittest.TestUtil;
 
 public abstract class AbstractStoreManagerTest {
 

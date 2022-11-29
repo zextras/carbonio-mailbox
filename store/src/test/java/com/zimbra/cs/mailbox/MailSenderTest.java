@@ -37,7 +37,7 @@ import com.zimbra.cs.mime.Mime.FixedMimeMessage;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.JMSession;
-import com.zimbra.qa.unittest.MessageBuilder;
+import qa.unittest.MessageBuilder;
 
 /**
  * Unit test for {@link MailSender}.

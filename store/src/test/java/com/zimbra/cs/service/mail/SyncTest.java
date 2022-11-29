@@ -19,7 +19,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning.MailThreadingAlgorithm;
@@ -45,7 +44,7 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mime.ParsedContact;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.util.SyncToken;
-import com.zimbra.qa.unittest.TestUtil;
+import qa.unittest.TestUtil;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;

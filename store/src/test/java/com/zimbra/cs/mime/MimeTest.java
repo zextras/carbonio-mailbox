@@ -29,7 +29,7 @@ import com.google.common.collect.Sets;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.util.JMSession;
-import com.zimbra.qa.unittest.TestUtil;
+import qa.unittest.TestUtil;
 
 /**
  * Unit test for {@link Mime}.

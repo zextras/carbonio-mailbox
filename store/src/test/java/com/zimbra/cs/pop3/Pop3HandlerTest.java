@@ -10,7 +10,6 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -24,7 +23,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.server.ServerThrottle;
 import com.zimbra.cs.util.ZTestWatchman;
-import com.zimbra.qa.unittest.TestUtil;
 
 import junit.framework.Assert;
 

@@ -35,7 +35,7 @@ import com.zimbra.cs.mailbox.Flag.FlagInfo;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.ToXML;
 import com.zimbra.cs.service.util.ItemIdFormatter;
-import com.zimbra.qa.unittest.TestUtil;
+import qa.unittest.TestUtil;
 
 /**
  * Unit test for {@link Message}.

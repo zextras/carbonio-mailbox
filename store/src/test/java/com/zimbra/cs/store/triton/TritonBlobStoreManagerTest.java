@@ -23,7 +23,7 @@ import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.StoreManager.StoreFeature;
 import com.zimbra.cs.store.external.ContentAddressableStoreManager;
 import com.zimbra.cs.store.triton.TritonBlobStoreManager.HashType;
-import com.zimbra.qa.unittest.TestUtil;
+import qa.unittest.TestUtil;
 
 @Ignore("requires Triton server")
 public class TritonBlobStoreManagerTest extends AbstractStoreManagerTest {

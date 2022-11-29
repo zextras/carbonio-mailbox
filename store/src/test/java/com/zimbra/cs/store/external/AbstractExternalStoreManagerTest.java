@@ -22,7 +22,7 @@ import com.zimbra.cs.store.BlobInputStream;
 import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.cs.store.StoreManager;
-import com.zimbra.qa.unittest.TestUtil;
+import qa.unittest.TestUtil;
 
 public abstract class AbstractExternalStoreManagerTest extends AbstractStoreManagerTest {
 

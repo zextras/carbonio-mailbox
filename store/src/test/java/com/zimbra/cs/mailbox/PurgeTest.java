@@ -29,7 +29,7 @@ import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
-import com.zimbra.qa.unittest.TestUtil;
+import qa.unittest.TestUtil;
 import com.zimbra.soap.mail.type.Policy;
 import com.zimbra.soap.mail.type.RetentionPolicy;
 

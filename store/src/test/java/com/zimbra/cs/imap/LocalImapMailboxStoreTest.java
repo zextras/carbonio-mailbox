@@ -28,7 +28,7 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.cs.mailbox.MetadataList;
-import com.zimbra.qa.unittest.TestUtil;
+import qa.unittest.TestUtil;
 
 public class LocalImapMailboxStoreTest {
     private static final String LOCAL_USER = "localimaptest@zimbra.com";

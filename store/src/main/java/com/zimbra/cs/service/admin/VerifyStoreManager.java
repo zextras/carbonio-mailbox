@@ -32,7 +32,6 @@ import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.util.JMSession;
-import com.zimbra.qa.unittest.AccountTestUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 
 /**

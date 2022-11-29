@@ -27,7 +27,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mime.ParsedDocument;
 import com.zimbra.cs.service.mail.ToXML;
 import com.zimbra.cs.service.util.ItemIdFormatter;
-import com.zimbra.qa.unittest.TestUtil;
+import qa.unittest.TestUtil;
 
 /**
  * Unit test for {@link Document}.

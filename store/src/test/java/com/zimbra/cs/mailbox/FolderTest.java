@@ -26,7 +26,7 @@ import com.zimbra.cs.db.DbUtil;
 import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mime.ParsedMessage;
-import com.zimbra.qa.unittest.TestUtil;
+import qa.unittest.TestUtil;
 
 /**
  * Unit test for {@link Folder}.
