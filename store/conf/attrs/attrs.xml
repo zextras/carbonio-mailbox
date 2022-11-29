@@ -9155,9 +9155,9 @@ TODO: delete them permanently from here
   <desc>Whether account should act as a service account to provide free busy information to exchange servers for users in the domain.</desc>
 </attr>
 
-<attr id="2073" name="zimbraClamAVDatabaseMirror" type="string" cardinality="single" optionalIn="server,globalConfig" flags="serverInherited" since="8.7.0,9.0.0">
-  <globalConfigValue>db.us.clamav.net</globalConfigValue>
-  <desc>Default database mirror for freshclam to use for virus and other updates.  Defaults to the United States mirror.  See http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.</desc>
+<attr id="2073" name="zimbraClamAVDatabaseMirror" type="string" cardinality="multi" optionalIn="server,globalConfig" flags="serverInherited" since="8.7.0,9.0.0">
+  <globalConfigValue>database.clamav.net</globalConfigValue>
+  <desc>Database mirrors for freshclam to use for virus and other updates. Defaults to ClamAV CDN.</desc>
 </attr>
 
 <attr id="2075" name="zimbraMtaSmtpDnsSupportLevel" type="enum" value="disabled,enabled,dnssec" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">
