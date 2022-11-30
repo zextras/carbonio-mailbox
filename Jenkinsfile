@@ -61,8 +61,8 @@ pipeline {
               when {
                 anyOf {
                   branch 'devel';
-                  branch 'feature/maven-build';
-                  expression{env.CHANGE_BRANCH == 'feature/maven-build'}
+                  branch 'chore/maven-build';
+                  expression{env.CHANGE_BRANCH == 'chore/maven-build'}
                 }
               }
               steps {
