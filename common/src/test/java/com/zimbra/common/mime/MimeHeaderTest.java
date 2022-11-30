@@ -24,9 +24,9 @@ public class MimeHeaderTest {
     @BeforeClass
     public static void init() throws Exception {
         if (Strings.isNullOrEmpty(System.getProperty("zimbra.config"))) {
-            System.setProperty("zimbra.config", "../store/src/java-test/localconfig-test.xml");
-        }
+      System.setProperty("zimbra.config", "../store/src/test/resources/localconfig-test.xml");
     }
+  }
 
     @After
     public void reset() {

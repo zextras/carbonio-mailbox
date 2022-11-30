@@ -34,7 +34,7 @@ public abstract class AbstractStoreManagerTest {
 
     @BeforeClass
     public static void init() throws Exception {
-        System.setProperty("zimbra.config", "../store/src/java-test/localconfig-test.xml");
+    System.setProperty("zimbra.config", "../store/src/test/resources/localconfig-test.xml");
         MailboxTestUtil.initServer();
         MailboxTestUtil.initProvisioning();
         Provisioning.getInstance().createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());

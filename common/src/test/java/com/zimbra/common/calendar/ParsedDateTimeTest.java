@@ -19,9 +19,9 @@ public class ParsedDateTimeTest {
     
     @BeforeClass
     public static void init() throws Exception {
-        System.setProperty("zimbra.config", "../store/src/java-test/localconfig-test.xml");
-    }
-    /*
+    System.setProperty("zimbra.config", "../store/src/test/resources/localconfig-test.xml");
+  }
+  /*
      * Tests the date conversion during the day light cross over dates for allday events.
      */
     
