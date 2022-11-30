@@ -6,12 +6,12 @@ From: Demo User One <user?1@cosmonaut.zimbra.com>
 To: user1 <"user,1"@cosmonaut.zimbra.com>
 Subject: TestFilter testBodyContains
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
+Content-Type: multipart/mixed;
 	boundary="----=_Part_5_31675071.1224114735321"
 X-Mailer: Zimbra 5.0 (ZimbraWebClient - FF3.0 (Linux)/0.0)
 
 ------=_Part_5_31675071.1224114735321
-Content-Type: multipart/alternative; 
+Content-Type: multipart/alternative;
 	boundary="----=_Part_6_21859329.1224114735321"
 
 ------=_Part_6_21859329.1224114735321
@@ -67,7 +67,7 @@ To: user1 <user1@cosmonaut.zimbra.com>
 Message-ID: <964414.01224114336185.JavaMail.boris@cosmonaut>
 Subject: Attached HTML message
 MIME-Version: 1.0
-Content-Type: multipart/alternative; 
+Content-Type: multipart/alternative;
 	boundary="----=_Part_0_13178409.1224114336169"
 X-Mailer: Zimbra 5.0 (ZimbraWebClient - FF3.0 (Linux)/0.0)
 
@@ -75,7 +75,7 @@ X-Mailer: Zimbra 5.0 (ZimbraWebClient - FF3.0 (Linux)/0.0)
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-This is the text version of the attached message body. 
+This is the text version of the attached message body.
 
 
 ------=_Part_0_13178409.1224114336169
