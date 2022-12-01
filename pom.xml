@@ -839,10 +839,10 @@
     <profile>
       <id>prod</id>
       <distributionManagement>
-        <snapshotRepository>
+        <repository>
           <id>artifactory</id>
           <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
-        </snapshotRepository>
+        </repository>
       </distributionManagement>
     </profile>
     <profile>
