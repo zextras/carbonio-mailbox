@@ -1,3 +1,6 @@
+def mvnCmd(String cmd) {
+  sh 'mvn -B -s settings-jenkins.xml ' + cmd
+}
 pipeline {
     agent {
         node {
@@ -12,7 +15,7 @@ pipeline {
     environment {
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
-        jenkins_build='true'
+        BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
@@ -23,29 +26,21 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+                  sh "cp ${SETTINGS_PATH} settings-jenkins.xml"
+                }
             }
             }
             stage('Build') {
             steps {
-                sh '''
-                cat <<EOF > build.properties
-                debug=0
-                is-production=1
-                carbonio.buildinfo.version=22.12.0_ZEXTRAS_202212
-                EOF
-                '''
-                withCredentials([file(credentialsId: 'artifactory-jenkins-gradle-properties', variable: 'CREDENTIALS')]) {
-                sh '''cat ${CREDENTIALS} | sed -E 's#\\\\#\\\\\\\\#g' >> build.properties'''
-                }
-                sh 'sudo apt-get update && sudo apt-get install -yqq openjdk-11-jdk-headless'
-                sh '''
-                ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant\
-                -propertyfile build.properties\
-                dist
-                '''
+
+                mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
+
                 sh 'mkdir staging'
+
                 sh 'cp -r store* milter* native client common packages soap staging'
                 stash includes: 'staging/**', name: 'staging'
+
             }
         }
         stage('Test all with coverage (allow failure)') {
@@ -55,37 +50,31 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant -d \
-                -propertyfile build.properties \
-                test-all-coverage-plough-through
-                '''
-                publishCoverage adapters: [jacocoAdapter('build/coverage/merged.xml')], calculateDiffForChangeRequests: true, failNoReports: true
-                junit allowEmptyResults: true, testResults: '**/build/test/output/*.xml'
+
+                mvnCmd("$BUILD_PROPERTIES_PARAMS test")
+
+                publishCoverage adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: true
+                junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
-        stage('Publish snapshot to maven') {
-          when () {
-            branch 'devel'
-          }
-          steps {
-              sh '''
-              ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant -d \
-              -propertyfile build.properties \
-              publish-maven-snapshot
-              '''
-          }
+        stage('Publish SNAPSHOT to maven') {
+              when {
+                anyOf {
+                  branch 'devel';
+                  branch 'chore/maven-build';
+                  expression{env.CHANGE_BRANCH == 'chore/maven-build'}
+                }
+              }
+              steps {
+                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pdev')
+              }
         }
         stage('Publish to maven') {
             when {
                 buildingTag()
             }
             steps {
-                sh '''
-                ANT_RESPECT_JAVA_HOME=true JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/ ant\
-                -propertyfile build.properties\
-                publish-maven-all
-                '''
+              mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pprod')
             }
         }
         stage('Build deb/rpm') {

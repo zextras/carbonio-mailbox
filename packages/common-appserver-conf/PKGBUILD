@@ -25,7 +25,7 @@ hashsums=(
 package() {
   cd "${srcdir}"/../../staging
 
-  install -D "store/build/dist/conf/attrs/attrs-schema" \
+  install -D "store/target/conf/attrs/attrs-schema" \
     "${pkgdir}/opt/zextras/conf/attrs-schema"
 
   install -D "milter-conf/conf/milter.log4j.properties" \
