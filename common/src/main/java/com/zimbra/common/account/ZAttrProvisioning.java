@@ -2709,6 +2709,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAllowFeedback = "carbonioAllowFeedback";
 
     /**
+     * Database Custom Urls for freshclam configuration file.
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3120)
+    public static final String A_carbonioClamAVDatabaseCustomURL = "carbonioClamAVDatabaseCustomURL";
+
+    /**
      * Carbonio mesh service credentials as base64 string
      *
      * @since ZCS 22.11.0

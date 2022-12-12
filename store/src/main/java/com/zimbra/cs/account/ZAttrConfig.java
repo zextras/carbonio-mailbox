@@ -943,6 +943,140 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Database Custom Urls for freshclam configuration file.
+     *
+     * @return carbonioClamAVDatabaseCustomURL, or empty array if unset
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3120)
+    public String[] getCarbonioClamAVDatabaseCustomURL() {
+        return getMultiAttr(Provisioning.A_carbonioClamAVDatabaseCustomURL, true, true);
+    }
+
+    /**
+     * Database Custom Urls for freshclam configuration file.
+     *
+     * @param carbonioClamAVDatabaseCustomURL new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3120)
+    public void setCarbonioClamAVDatabaseCustomURL(String[] carbonioClamAVDatabaseCustomURL) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioClamAVDatabaseCustomURL, carbonioClamAVDatabaseCustomURL);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Database Custom Urls for freshclam configuration file.
+     *
+     * @param carbonioClamAVDatabaseCustomURL new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3120)
+    public Map<String,Object> setCarbonioClamAVDatabaseCustomURL(String[] carbonioClamAVDatabaseCustomURL, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioClamAVDatabaseCustomURL, carbonioClamAVDatabaseCustomURL);
+        return attrs;
+    }
+
+    /**
+     * Database Custom Urls for freshclam configuration file.
+     *
+     * @param carbonioClamAVDatabaseCustomURL new to add to existing values
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3120)
+    public void addCarbonioClamAVDatabaseCustomURL(String carbonioClamAVDatabaseCustomURL) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_carbonioClamAVDatabaseCustomURL, carbonioClamAVDatabaseCustomURL);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Database Custom Urls for freshclam configuration file.
+     *
+     * @param carbonioClamAVDatabaseCustomURL new to add to existing values
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3120)
+    public Map<String,Object> addCarbonioClamAVDatabaseCustomURL(String carbonioClamAVDatabaseCustomURL, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_carbonioClamAVDatabaseCustomURL, carbonioClamAVDatabaseCustomURL);
+        return attrs;
+    }
+
+    /**
+     * Database Custom Urls for freshclam configuration file.
+     *
+     * @param carbonioClamAVDatabaseCustomURL existing value to remove
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3120)
+    public void removeCarbonioClamAVDatabaseCustomURL(String carbonioClamAVDatabaseCustomURL) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_carbonioClamAVDatabaseCustomURL, carbonioClamAVDatabaseCustomURL);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Database Custom Urls for freshclam configuration file.
+     *
+     * @param carbonioClamAVDatabaseCustomURL existing value to remove
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3120)
+    public Map<String,Object> removeCarbonioClamAVDatabaseCustomURL(String carbonioClamAVDatabaseCustomURL, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_carbonioClamAVDatabaseCustomURL, carbonioClamAVDatabaseCustomURL);
+        return attrs;
+    }
+
+    /**
+     * Database Custom Urls for freshclam configuration file.
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3120)
+    public void unsetCarbonioClamAVDatabaseCustomURL() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioClamAVDatabaseCustomURL, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Database Custom Urls for freshclam configuration file.
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3120)
+    public Map<String,Object> unsetCarbonioClamAVDatabaseCustomURL(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioClamAVDatabaseCustomURL, "");
+        return attrs;
+    }
+
+    /**
      * Carbonio mesh service credentials as base64 string
      *
      * @return carbonioMeshCredentials, or null if unset
