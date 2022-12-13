@@ -2717,6 +2717,46 @@ public class ZAttrProvisioning {
     public static final String A_carbonioClamAVDatabaseCustomURL = "carbonioClamAVDatabaseCustomURL";
 
     /**
+     * Whether the Chat App usages enabled for account or COS
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3122)
+    public static final String A_carbonioFeatureChatsAppEnabled = "carbonioFeatureChatsAppEnabled";
+
+    /**
+     * Whether the Chats feature enabled for account or COS
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3125)
+    public static final String A_carbonioFeatureChatsEnabled = "carbonioFeatureChatsEnabled";
+
+    /**
+     * Whether the Files App usages enabled for account or COS
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3121)
+    public static final String A_carbonioFeatureFilesAppEnabled = "carbonioFeatureFilesAppEnabled";
+
+    /**
+     * Whether the Files feature enabled for account or COS
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3124)
+    public static final String A_carbonioFeatureFilesEnabled = "carbonioFeatureFilesEnabled";
+
+    /**
+     * Whether the Mail App usages enabled for account or COS
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3123)
+    public static final String A_carbonioFeatureMailsAppEnabled = "carbonioFeatureMailsAppEnabled";
+
+    /**
      * Carbonio mesh service credentials as base64 string
      *
      * @since ZCS 22.11.0
