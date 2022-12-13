@@ -9948,4 +9948,8 @@ TODO: delete them permanently from here
 <attr id="3119" name="carbonioAdminWebUiBannerText" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.1.0">
   <desc>Admin Web UI Banner Text preference for domain</desc>
 </attr>
+
+<attr id="3120" name="carbonioClamAVDatabaseCustomURL" type="string" cardinality="multi" optionalIn="globalConfig" since="23.1.0">
+  <desc>Database Custom Urls for freshclam configuration file.</desc>
+</attr>
 </attrs>
