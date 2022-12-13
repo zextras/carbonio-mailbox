@@ -26,6 +26,11 @@
     <a n="zimbraCOSId"/>
     <a n="zimbraIsDelegatedAdminAccount"/>
     <a n="c"/>
+    <a n="carbonioFeatureChatsAppEnabled"/>
+    <a n="carbonioFeatureChatsEnabled"/>
+    <a n="carbonioFeatureFilesAppEnabled"/>
+    <a n="carbonioFeatureFilesEnabled"/>
+    <a n="carbonioFeatureMailsAppEnabled"/>
     <a n="carbonioPrefWebUiDarkMode"/>
     <a n="cn"/>
     <a n="co"/>

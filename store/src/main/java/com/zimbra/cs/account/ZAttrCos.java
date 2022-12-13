@@ -35,6 +35,366 @@ public abstract class ZAttrCos extends NamedEntry {
     ///// BEGIN-AUTO-GEN-REPLACE
 
     /**
+     * Whether the Chat App usages enabled for account or COS
+     *
+     * @return carbonioFeatureChatsAppEnabled, or true if unset
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3122)
+    public boolean isCarbonioFeatureChatsAppEnabled() {
+        return getBooleanAttr(Provisioning.A_carbonioFeatureChatsAppEnabled, true, true);
+    }
+
+    /**
+     * Whether the Chat App usages enabled for account or COS
+     *
+     * @param carbonioFeatureChatsAppEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3122)
+    public void setCarbonioFeatureChatsAppEnabled(boolean carbonioFeatureChatsAppEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureChatsAppEnabled, carbonioFeatureChatsAppEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Chat App usages enabled for account or COS
+     *
+     * @param carbonioFeatureChatsAppEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3122)
+    public Map<String,Object> setCarbonioFeatureChatsAppEnabled(boolean carbonioFeatureChatsAppEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureChatsAppEnabled, carbonioFeatureChatsAppEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether the Chat App usages enabled for account or COS
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3122)
+    public void unsetCarbonioFeatureChatsAppEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureChatsAppEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Chat App usages enabled for account or COS
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3122)
+    public Map<String,Object> unsetCarbonioFeatureChatsAppEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureChatsAppEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Whether the Chats feature enabled for account or COS
+     *
+     * @return carbonioFeatureChatsEnabled, or true if unset
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3125)
+    public boolean isCarbonioFeatureChatsEnabled() {
+        return getBooleanAttr(Provisioning.A_carbonioFeatureChatsEnabled, true, true);
+    }
+
+    /**
+     * Whether the Chats feature enabled for account or COS
+     *
+     * @param carbonioFeatureChatsEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3125)
+    public void setCarbonioFeatureChatsEnabled(boolean carbonioFeatureChatsEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, carbonioFeatureChatsEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Chats feature enabled for account or COS
+     *
+     * @param carbonioFeatureChatsEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3125)
+    public Map<String,Object> setCarbonioFeatureChatsEnabled(boolean carbonioFeatureChatsEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, carbonioFeatureChatsEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether the Chats feature enabled for account or COS
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3125)
+    public void unsetCarbonioFeatureChatsEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Chats feature enabled for account or COS
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3125)
+    public Map<String,Object> unsetCarbonioFeatureChatsEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Whether the Files App usages enabled for account or COS
+     *
+     * @return carbonioFeatureFilesAppEnabled, or true if unset
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3121)
+    public boolean isCarbonioFeatureFilesAppEnabled() {
+        return getBooleanAttr(Provisioning.A_carbonioFeatureFilesAppEnabled, true, true);
+    }
+
+    /**
+     * Whether the Files App usages enabled for account or COS
+     *
+     * @param carbonioFeatureFilesAppEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3121)
+    public void setCarbonioFeatureFilesAppEnabled(boolean carbonioFeatureFilesAppEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureFilesAppEnabled, carbonioFeatureFilesAppEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Files App usages enabled for account or COS
+     *
+     * @param carbonioFeatureFilesAppEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3121)
+    public Map<String,Object> setCarbonioFeatureFilesAppEnabled(boolean carbonioFeatureFilesAppEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureFilesAppEnabled, carbonioFeatureFilesAppEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether the Files App usages enabled for account or COS
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3121)
+    public void unsetCarbonioFeatureFilesAppEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureFilesAppEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Files App usages enabled for account or COS
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3121)
+    public Map<String,Object> unsetCarbonioFeatureFilesAppEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureFilesAppEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Whether the Files feature enabled for account or COS
+     *
+     * @return carbonioFeatureFilesEnabled, or true if unset
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3124)
+    public boolean isCarbonioFeatureFilesEnabled() {
+        return getBooleanAttr(Provisioning.A_carbonioFeatureFilesEnabled, true, true);
+    }
+
+    /**
+     * Whether the Files feature enabled for account or COS
+     *
+     * @param carbonioFeatureFilesEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3124)
+    public void setCarbonioFeatureFilesEnabled(boolean carbonioFeatureFilesEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureFilesEnabled, carbonioFeatureFilesEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Files feature enabled for account or COS
+     *
+     * @param carbonioFeatureFilesEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3124)
+    public Map<String,Object> setCarbonioFeatureFilesEnabled(boolean carbonioFeatureFilesEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureFilesEnabled, carbonioFeatureFilesEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether the Files feature enabled for account or COS
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3124)
+    public void unsetCarbonioFeatureFilesEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureFilesEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Files feature enabled for account or COS
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3124)
+    public Map<String,Object> unsetCarbonioFeatureFilesEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureFilesEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Whether the Mail App usages enabled for account or COS
+     *
+     * @return carbonioFeatureMailsAppEnabled, or true if unset
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3123)
+    public boolean isCarbonioFeatureMailsAppEnabled() {
+        return getBooleanAttr(Provisioning.A_carbonioFeatureMailsAppEnabled, true, true);
+    }
+
+    /**
+     * Whether the Mail App usages enabled for account or COS
+     *
+     * @param carbonioFeatureMailsAppEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3123)
+    public void setCarbonioFeatureMailsAppEnabled(boolean carbonioFeatureMailsAppEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureMailsAppEnabled, carbonioFeatureMailsAppEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Mail App usages enabled for account or COS
+     *
+     * @param carbonioFeatureMailsAppEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3123)
+    public Map<String,Object> setCarbonioFeatureMailsAppEnabled(boolean carbonioFeatureMailsAppEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureMailsAppEnabled, carbonioFeatureMailsAppEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether the Mail App usages enabled for account or COS
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3123)
+    public void unsetCarbonioFeatureMailsAppEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureMailsAppEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Mail App usages enabled for account or COS
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.1.0
+     */
+    @ZAttr(id=3123)
+    public Map<String,Object> unsetCarbonioFeatureMailsAppEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioFeatureMailsAppEnabled, "");
+        return attrs;
+    }
+
+    /**
      * Web UI Dark Mode preference for account
      *
      * @return carbonioPrefWebUiDarkMode, or false if unset
