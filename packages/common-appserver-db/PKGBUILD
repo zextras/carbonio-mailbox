@@ -18,6 +18,6 @@ priority="optional"
 package() {
   cd "${srcdir}"/../../staging
 
-  install -D "store/build/dist/versions-init.sql" \
+  install -D "store/target/versions-init.sql" \
     "${pkgdir}/opt/zextras/db/versions-init.sql"
 }

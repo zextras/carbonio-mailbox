@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>zm-store</artifactId>
+
+  <!-- To sort out dependencies take a look at: https://wiki.eclipse.org/Jetty/Reference/Dependencies -->
+  <dependencies>
+    <!-- Must be provided to avoid collision -->
+    <dependency>
+      <artifactId>httpclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>httpmime</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>mina-core</artifactId>
+      <groupId>org.apache.mina</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>concurrentlinkedhashmap-lru</artifactId>
+      <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-dbcp</artifactId>
+      <groupId>commons-dbcp</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-io</artifactId>
+      <groupId>commons-io</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>vavr</artifactId>
+      <groupId>io.vavr</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>lucene-core</artifactId>
+      <groupId>org.apache.lucene</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>lucene-analyzers</artifactId>
+      <groupId>org.apache.lucene</groupId>
+      <scope>test</scope>
+    </dependency>
+
+
+    <dependency>
+      <artifactId>zm-ews-stub</artifactId>
+      <groupId>zimbra</groupId>
+    </dependency>
+
+    <!--    TODO: figure out if we require this as well, since zimbra already have one-->
+    <!--    <dependency>-->
+    <!--      <artifactId>ews_2010</artifactId>-->
+    <!--      <groupId>ews_2010</groupId>-->
+    <!--      <version>1.0</version>-->
+    <!--    </dependency>
+-->
+    <dependency>
+      <artifactId>jjwt</artifactId>
+      <groupId>io.jsonwebtoken</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>jaxws-api</artifactId>
+      <groupId>javax.xml.ws</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-fileupload</artifactId>
+      <groupId>commons-fileupload</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>curator-framework</artifactId>
+      <groupId>org.apache.curator</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>curator-recipes</artifactId>
+      <groupId>org.apache.curator</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>curator-x-discovery</artifactId>
+      <groupId>org.apache.curator</groupId>
+    </dependency>
+
+    <!-- Must be provided by container -->
+    <dependency>
+      <artifactId>guava</artifactId>
+      <groupId>com.google.guava</groupId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>jtnef</artifactId>
+      <groupId>net.freeutils</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>unboundid-ldapsdk</artifactId>
+      <groupId>com.unboundid</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>oauth</artifactId>
+      <groupId>oauth</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>antisamy</artifactId>
+      <groupId>org.owasp.antisamy</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>owasp-java-html-sanitizer</artifactId>
+      <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>carbonio-preview-sdk</artifactId>
+      <groupId>com.zextras.carbonio.preview</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>carbonio-files-sdk</artifactId>
+      <groupId>com.zextras.carbonio.files</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-csv</artifactId>
+      <groupId>org.apache.commons</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-rng-simple</artifactId>
+      <groupId>org.apache.commons</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-text</artifactId>
+      <groupId>org.apache.commons</groupId>
+    </dependency>
+
+    <!-- Brings in guava, so it is provided -->
+    <dependency>
+      <artifactId>closure-compiler</artifactId>
+      <groupId>com.google.javascript</groupId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>yuicompressor</artifactId>
+      <groupId>com.yahoo.platform.yui</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>junixsocket-common</artifactId>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-compress</artifactId>
+      <groupId>org.apache.commons</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>ant-1.7.0-ziputil-patched</artifactId>
+      <groupId>ant-1.7.0-ziputil-patched</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>ant-tar-patched</artifactId>
+      <groupId>ant-tar-patched</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>ehcache</artifactId>
+      <groupId>org.ehcache</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>sshd-core</artifactId>
+      <groupId>org.apache.sshd</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-collections</artifactId>
+      <groupId>commons-collections</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>libidn</artifactId>
+      <groupId>org.gnu.inet</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>java-semver</artifactId>
+      <groupId>com.github.zafarkhaja</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>mockito-core</artifactId>
+      <groupId>org.mockito</groupId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Mockito inline required to mock static methods -->
+    <dependency>
+      <artifactId>mockito-inline</artifactId>
+      <groupId>org.mockito</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>easymock</artifactId>
+      <groupId>org.easymock</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>xmlunit-core</artifactId>
+      <groupId>org.xmlunit</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>hsqldb</artifactId>
+      <groupId>org.hsqldb</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>sqltool</artifactId>
+      <groupId>org.hsqldb</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15on</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.spy</groupId>
+      <artifactId>spymemcached</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+    </dependency>
+    <!-- Note this should be provided in container classpath -->
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.james</groupId>
+      <artifactId>apache-jsieve-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ical4j</groupId>
+      <artifactId>ical4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.stream</groupId>
+      <artifactId>stax-api</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- Jetty -->
+    <dependency>
+      <artifactId>jetty-continuation</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-security</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-servlets</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-servlet</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-http</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.sshd</groupId>
+      <artifactId>sshd-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-rng-client-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.nekohtml</groupId>
+      <artifactId>nekohtml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+    </dependency>
+    <!-- Needed to bridge log4j -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Note this should be provided in container classpath -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <artifactId>javax.servlet-api</artifactId>
+      <groupId>javax.servlet</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>zm-common</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>zm-client</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>zm-soap</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>zm-native</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>store-extra-runtime-dependencies</artifactId>
+      <type>pom</type>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>war</packaging>
+
+  <parent>
+    <artifactId>zm-mailbox</artifactId>
+    <groupId>zextras</groupId>
+    <version>${revision}</version>
+  </parent>
+
+  <build>
+    <plugins>
+      <!-- This is a hack: some code is generated from same module, so we compile, generate code,
+        compile again, run tests, etc. TODO: find a way to move generator classes on another module -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>pre-compile</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Generate build-info, getters and rights -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <artifactId>ant-contrib</artifactId>
+            <exclusions>
+              <exclusion>
+                <artifactId>ant</artifactId>
+                <groupId>ant</groupId>
+              </exclusion>
+            </exclusions>
+            <groupId>ant-contrib</groupId>
+            <version>1.0b3</version>
+          </dependency>
+          <dependency>
+            <artifactId>ant-nodeps</artifactId>
+            <groupId>org.apache.ant</groupId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <!-- generate sources -->
+          <execution>
+            <configuration>
+              <target>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <taskdef classpathref="maven.plugin.classpath"
+                  resource="net/sf/antcontrib/antlib.xml"/>
+                <ant antfile="${basedir}/ant-store.xml">
+                  <target name="generate-sources"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>generate-buildinfo</id>
+            <phase>generate-sources</phase>
+          </execution>
+          <!-- Prepare required files for testing -->
+          <execution>
+            <id>test</id>
+            <phase>generate-test-sources</phase>
+            <configuration>
+              <target>
+                <ant antfile="${basedir}/ant-store.xml">
+                  <target name="copy-msgs-bundle"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <configuration>
+              <target>
+                <ant antfile="${basedir}/ant-store.xml">
+                  <target name="clean"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
+
+      <!-- Test plugin execution -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+
+      <!-- Analyze dependencies -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+
+      <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
+      <!-- Doc: https://wiki.eclipse.org/Jetty/Feature/Jetty_Maven_Plugin -->
+      <!-- Allows to run the mailbox for test purposes.
+      In order to start it there are some requirements:
+      - WebRoot content must be in src/main/webapp (TODO: change base dir of web.xml)
+      - run local ldap + mysql (can use docker-compose with utils/docker/)
+      - db version and index version must have same value as received from db
+      - must have a keystore in etc/mailboxd/keystore
+      - must have conf files (log4j + timezone.ics) in conf directory
+      -->
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>${jetty.version}</version>
+        <configuration>
+          <httpConnector>
+            <!--Carbonio default policy allows API calls to be received on port 7070 -->
+            <port>7070</port>
+          </httpConnector>
+          <scanIntervalSeconds>30</scanIntervalSeconds>
+          <dumpOnStart>true</dumpOnStart>
+          <webApp>
+            <descriptor>${project.basedir}/conf/web.xml</descriptor>
+            <contextPath>/</contextPath>
+          </webApp>
+          <systemProperties>
+            <systemProperty>
+              <name>webapp</name>
+              <value>service</value>
+            </systemProperty>
+            <systemProperty>
+              <name>zimbra.config</name>
+              <value>${project.basedir}/conf/localconfig-jetty-test.xml</value>
+            </systemProperty>
+            <systemProperty>
+              <name>zimbra.native.required</name>
+              <value>false</value>
+            </systemProperty>
+          </systemProperties>
+        </configuration>
+        <!-- Put here libraries that are provided -->
+        <dependencies>
+          <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>2.1.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+          </dependency>
+          <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.1-jre</version>
+          </dependency>
+          <dependency>
+            <artifactId>xercesImpl</artifactId>
+            <groupId>xerces</groupId>
+            <version>2.9.1-patch-01</version>
+          </dependency>
+          <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+          </dependency>
+
+          <!-- These dependencies come from zm-jetty in repo: https://github.com/Zextras/carbonio-zcs-lib
+          Also they are provided on installation by packages carbonio-common-core-libs and carbonio-appserver-store-libs.
+          zm-jetty is not used here because it brings dependencies that break the startup of the server due to conflicts,
+          so only strictly necessary dependencies have been selected from it.
+          -->
+          <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>2.7.3</version>
+          </dependency>
+          <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>apache-log4j-extras</artifactId>
+            <version>1.0</version>
+          </dependency>
+        </dependencies>
+
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <!-- Maven WAR plugin -->
+      <!-- https://maven.apache.org/plugins/maven-war-plugin/examples/including-excluding-files-from-war.html -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>war</id>
+            <phase>package</phase>
+            <goals>
+              <goal>war</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <warName>${warfile.name}</warName>
+          <webXml>${war.web.xml}</webXml>
+          <failOnMissingWebXml>true</failOnMissingWebXml>
+          <attachClasses>true</attachClasses>
+          <packagingExcludes>
+            WEB-INF/lib/commons-logging-*.jar,
+            <!-- zm packages already provided by zcs-lib -->
+            WEB-INF/lib/zm-common*.jar,
+            WEB-INF/lib/zm-native*.jar,
+            WEB-INF/lib/zm-soap*.jar,
+            WEB-INF/lib/zm-client*.jar,
+            %regex[WEB-INF/lib/log4j-(?!over-slf4j).*.jar],
+            <!-- These should be marked as provided, but then some packages must bring in its dependencies -->
+            WEB-INF/classes/org/**,
+            WEB-INF/classes/com/**,
+            WEB-INF/classes/attrs/**,
+            META-INF/**
+          </packagingExcludes>
+
+          <archive>
+            <manifest>
+              <addClasspath>false</addClasspath>
+            </manifest>
+          </archive>
+
+          <webResources>
+            <resource>
+              <directory>${project.basedir}/WebRoot</directory>
+              <targetPath>/</targetPath>
+            </resource>
+
+            <resource>
+              <directory>${config.dir}</directory>
+              <targetPath>WEB-INF/classes</targetPath>
+              <includes>
+                <include>**/cxf.xml</include>
+              </includes>
+              <excludes>
+                <exclude>**/web*</exclude>
+              </excludes>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+  <properties>
+    <!--war file properties-->
+    <build.dir>target</build.dir>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <!-- TODO config dir is used to locate WAR resources. They should be moved in this project -->
+    <config.dir>${project.basedir}/conf</config.dir>
+    <war.web.xml>${config.dir}/web.xml.production</war.web.xml>
+    <!--TODO: This file is not in present-->
+    <!--    <war.classes.sieveConfig>${config.dir}/sieveConfig.xml</war.classes.sieveConfig>-->
+    <war.classes.cxf>${config.dir}/cxf.xml</war.classes.cxf>
+    <warfile.name>service</warfile.name>
+  </properties>
+
+</project>

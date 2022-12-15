@@ -8,18 +8,16 @@ Mailbox is the core component of Carbonio.
 
 This repository contains the source code of Carbonio Mailbox which consists of several subcomponents and their roles are as follows
 
-- **client**: package to interact with the mailbox
+- **client**: client package to interact with the mailbox
 - **common**: package providing classes of common use, like utilities, clients and common parameters
 - **native**: package to load native libraries
-- **soap**: package describing SOAP APIs
-- **store**: package with core implementations and integrations like SOAP APIs, LDAP, Krb5, IMAP, POP3 and CLI functions
+- **soap**: package describing SOAP APIs and tools to generate wsdl documentation
+- **store**: WAR package that defines the service. It also includes core functionalities like SOAP APIs, LDAP, Krb5, IMAP, POP3 and CLI functions
 
 ## Building Carbonio Mailbox from source
 
 - Build Requirements:
   - JDK version 11, to confirm run `javac -version`
-  - ant
-  - apache-ant-contrib
 
 - Clone the carbonio-mailbox repository:
 
@@ -31,12 +29,12 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
 - Build the code:
 
- `ant all -Dcarbonio.buildinfo.version=<YEAR.MONTH.REVISION_ZEXTRAS_YEARMONTH>`
+ `mvn install`
 
- Tips:
-
-- You can list all ant build targets present in build.xml file using `ant -p build.xml`
-- You can avoid passing `carbonio.buildinfo.version` on every time you invoke ant build command by exporting it as ANT_OPTS environment varibale with `export ANT_OPTS="-Dcarbonio.buildinfo.version=<YEAR.MONTH.REVISION_ZEXTRAS_YEARMONTH>"`
+- Run mailbox Jetty service locally (experimental):
+  - build carbonio-db Docker image locally [store/utils/docker/carbonio-db](store/utils/docker/carbonio-db)
+  - run docker-compose up in [store/utils/docker](store/utils/docker) (starts carbonio-db and carbonio LDAP)
+  - run mvn jetty:run from store module
 
 ## Contribute to Carbonio Mailbox
 

@@ -23,7 +23,7 @@ package() {
   cd "${srcdir}"/../../staging
 
   install -Ddm755 "${pkgdir}/opt/zextras/jetty_base/webapps/service"
-  unzip "store/build/service.war" \
+  unzip "store/target/service.war" \
     -d "${pkgdir}/opt/zextras/jetty_base/webapps/service"
   install -D "store/conf/web.xml.production" \
     "${pkgdir}/opt/zextras/jetty_base/etc/service.web.xml.in"

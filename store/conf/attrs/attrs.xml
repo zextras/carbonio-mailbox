@@ -6983,8 +6983,9 @@ TODO: delete them permanently from here
 </attr>
 
 <attr id="1384" name="zimbraReverseProxyDnsLookupInServerEnabled" type="boolean" cardinality="single" optionalIn="server,globalConfig" flags="serverInherited" since="8.0.0">
-  <desc>Control whether force the server side do the DNS lookup and send the result IP back to proxy. If set false, the raw address configured (e.g. zimbraMailHost) is directly sent to proxy.</desc>
-  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Control whether force the server side do the DNS lookup and send the result IP back to proxy. If false, the raw address configured (e.g. zimbraMailHost) is directly sent to proxy,
+    else the translated IP will be sent back to the client.</desc>
+  <globalConfigValue>FALSE</globalConfigValue>
 </attr>
 
 <attr id="1385" name="zimbraFileAndroidCrashReportingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited"  since="8.0.0">
@@ -9154,9 +9155,9 @@ TODO: delete them permanently from here
   <desc>Whether account should act as a service account to provide free busy information to exchange servers for users in the domain.</desc>
 </attr>
 
-<attr id="2073" name="zimbraClamAVDatabaseMirror" type="string" cardinality="single" optionalIn="server,globalConfig" flags="serverInherited" since="8.7.0,9.0.0">
-  <globalConfigValue>db.us.clamav.net</globalConfigValue>
-  <desc>Default database mirror for freshclam to use for virus and other updates.  Defaults to the United States mirror.  See http://www.iana.org/cctld/cctld-whois.htm for a list of mirrors.</desc>
+<attr id="2073" name="zimbraClamAVDatabaseMirror" type="string" cardinality="multi" optionalIn="server,globalConfig" flags="serverInherited" since="8.7.0,9.0.0">
+  <globalConfigValue>database.clamav.net</globalConfigValue>
+  <desc>Database mirrors for freshclam to use for virus and other updates. Defaults to ClamAV CDN.</desc>
 </attr>
 
 <attr id="2075" name="zimbraMtaSmtpDnsSupportLevel" type="enum" value="disabled,enabled,dnssec" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">
@@ -9930,5 +9931,55 @@ TODO: delete them permanently from here
 <attr id="3115" name="carbonioPrefWebUiDarkMode" type="boolean" cardinality="single" optionalIn="account,cos" flags="domainAdminModifiable,accountInherited,accountInfo" since="22.11.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>Web UI Dark Mode preference for account</desc>
+</attr>
+
+<attr id="3116" name="carbonioWebUiPrimaryColor" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.1.0">
+  <desc>Web UI Primary Color preference for domain</desc>
+</attr>
+
+<attr id="3117" name="carbonioWebUiDarkPrimaryColor" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.1.0">
+  <desc>Web UI Dark Mode Primary Color preference for domain</desc>
+</attr>
+
+<attr id="3118" name="carbonioWebUiBannerText" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.1.0">
+  <desc>Web UI Banner Text preference for domain</desc>
+</attr>
+
+<attr id="3119" name="carbonioAdminWebUiBannerText" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.1.0">
+  <desc>Admin Web UI Banner Text preference for domain</desc>
+</attr>
+
+<attr id="3120" name="carbonioClamAVDatabaseCustomURL" type="string" cardinality="multi" optionalIn="globalConfig" since="23.1.0">
+  <desc>Database Custom Urls for freshclam configuration file.</desc>
+</attr>
+
+<attr id="3121" name="carbonioFeatureFilesAppEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.1.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether the Files App usages enabled for account or COS</desc>
+</attr>
+
+<attr id="3122" name="carbonioFeatureChatsAppEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.1.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether the Chat App usages enabled for account or COS</desc>
+</attr>
+
+<attr id="3123" name="carbonioFeatureMailsAppEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.1.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether the Mail App usages enabled for account or COS</desc>
+</attr>
+
+<attr id="3124" name="carbonioFeatureFilesEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.1.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether the Files feature enabled for account or COS</desc>
+</attr>
+
+<attr id="3125" name="carbonioFeatureChatsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.1.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether the Chats feature enabled for account or COS</desc>
 </attr>
 </attrs>

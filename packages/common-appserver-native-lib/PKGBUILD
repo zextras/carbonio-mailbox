@@ -23,6 +23,6 @@ priority="optional"
 
 package() {
   cd "${srcdir}"/../../staging
-  install -D "native/build/libnative.so" \
+  install -D "native/target/libnative.so" \
     "${pkgdir}/opt/zextras/lib/libnative.so"
 }

@@ -17,7 +17,6 @@ store/.pmd
 store/.ruleset
 eclipse-ivysettings.xml
 store/tmp/
-common-passwords.txt
 build.properties
 *.deb
 
@@ -27,3 +26,4 @@ build.properties
 # Ignore Gradle build output directory
 build
 **/**/out/
+.flattened-pom.xml

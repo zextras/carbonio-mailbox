@@ -1,0 +1,211 @@
+<project name="zm-store">
+  <import file="../ant-build-common.xml"/>
+
+  <property name="service.webapp.dir" location="${jetty.webapps.dir}/service"/>
+  <property name="zimbra.webapp.dir" location="${jetty.webapps.dir}/zimbra"/>
+  <property name="admin.webapp.dir" location="${jetty.webapps.dir}/zimbraAdmin"/>
+  <property name="config.dir" location="conf"/>
+  <property name="store-conf.config.dir" location="${basedir}/../store-conf/conf"/>
+
+  <condition property="production.suffix" value=".production" else="">
+    <isset property="is-production"/>
+  </condition>
+  <condition property="war.web.xml" value="${config.dir}/web.xml${production.suffix}">
+    <not>
+      <isset property="war.web.xml"/>
+    </not>
+  </condition>
+
+  <target name="generate-sources"
+    depends="generate-buildinfo, generate-getters,generate-rights, create-version-sql,create-version-ldap ">
+  </target>
+
+  <!--  TODO: remove unnecessary folder-->
+  <target name="build-init" description="Creates directories required for compiling">
+    <mkdir dir="${build.classes.dir}"/>
+    <mkdir dir="${maven.build.dir}/data"/>
+    <mkdir dir="${maven.build.dir}/zimbra"/>
+    <mkdir dir="${maven.build.dir}/zimbra/conf"/>
+    <mkdir dir="${maven.build.dir}/${slapd.conf.dir}"/>
+    <mkdir dir="${maven.build.dir}/${slapd.etc.dir}/schema"/>
+    <mkdir dir="${maven.build.dir}/bin"/>
+    <mkdir dir="${maven.build.dir}/conf/attrs"/>
+    <mkdir dir="${maven.build.dir}/conf/msgs"/>
+    <mkdir dir="${maven.build.dir}/db"/>
+    <mkdir dir="${maven.build.dir}/lib/ext"/>
+    <mkdir dir="${maven.build.dir}/lib/jars"/>
+    <mkdir dir="${maven.build.dir}/lib/jars-ant"/>
+    <mkdir dir="${maven.build.dir}/libexec"/>
+  </target>
+
+  <target name="generate-buildinfo" depends="build-init, set-dev-version">
+    <mkdir dir="${maven.build.dir}/buildinfo/com/zimbra/cs/util"/>
+    <echo file="${maven.build.dir}/buildinfo/com/zimbra/cs/util/BuildInfoGenerated.java">
+      package com.zimbra.cs.util;
+
+      class BuildInfoGenerated {
+      public static final String MAJORVERSION = "${zimbra.buildinfo.majorversion}";
+      public static final String MINORVERSION = "${zimbra.buildinfo.minorversion}";
+      public static final String MICROVERSION = "${zimbra.buildinfo.microversion}";
+      public static final String RELCLASS = "${zimbra.buildinfo.relclass}";
+      public static final String RELNUM = "${zimbra.buildinfo.relnum}";
+      public static final String BUILDNUM = "${zimbra.buildinfo.buildnum}";
+      public static final String VERSION = "${zimbra.buildinfo.version}";
+      public static final String RELEASE = "${zimbra.buildinfo.release}";
+      public static final String DATE = "${DSTAMP}-${TSTAMP}";
+      public static final String HOST = "${zimbra.buildinfo.host}";
+      }
+    </echo>
+    <javac includeantruntime="false" destdir="${build.classes.dir}" debug="true"
+      target="${javac.target}" srcdir="${maven.build.dir}/buildinfo">
+      <compilerarg value="-Xlint:deprecation"/>
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
+  </target>
+
+  <!-- Cleans up store directory and maven build in maven clean phase -->
+  <target name="clean">
+    <delete dir="${basedir}/build"/>
+    <delete dir="${basedir}/tmp"/>
+    <delete dir="${maven.build.dir}"/>
+  </target>
+
+  <!-- Copies bundle msgs required for test to directory base folder -->
+  <target name="copy-msgs-bundle">
+    <copy todir="${basedir}/build/zimbra/conf/msgs">
+      <fileset dir="${basedir}/../store-conf/conf/msgs"/>
+    </copy>
+    <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/log4j.properties">
+    </copy>
+  </target>
+
+  <target name="generate-getters" description="generate methods for attributes in attrs.xml">
+    <antcall target="generate-getter">
+      <param name="getter.class" value="account"/>
+      <param name="getter.output" value="ZAttrAccount.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="calendarResource"/>
+      <param name="getter.output" value="ZAttrCalendarResource.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="cos"/>
+      <param name="getter.output" value="ZAttrCos.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="domain"/>
+      <param name="getter.output" value="ZAttrDomain.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="server"/>
+      <param name="getter.output" value="ZAttrServer.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="ucService"/>
+      <param name="getter.output" value="ZAttrUCService.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="globalConfig"/>
+      <param name="getter.output" value="ZAttrConfig.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="distributionList"/>
+      <param name="getter.output" value="ZAttrDistributionList.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="group"/>
+      <param name="getter.output" value="ZAttrDynamicGroup.java"/>
+    </antcall>
+    <antcall target="generate-getter">
+      <param name="getter.class" value="shareLocator"/>
+      <param name="getter.output" value="ZAttrShareLocator.java"/>
+    </antcall>
+    <antcall target="generate-provisioning"/>
+  </target>
+
+  <target name="generate-getter">
+    <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true"
+      classpath="${maven_compile_classpath}" failonerror="true">
+      <sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}"/>
+      <arg
+        line="-a generateGetters -c ${getter.class} -i ${config.dir}/attrs -r ${src.java.dir}/com/zimbra/cs/account/${getter.output}"/>
+    </java>
+  </target>
+  <target name="generate-provisioning">
+    <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true"
+      classpath="${maven_compile_classpath}" failonerror="true">
+      <sysproperty key="zimbra.version" value="${zimbra.buildinfo.all}"/>
+      <arg
+        line="-a generateProvisioning -i ${config.dir}/attrs -r ${common.src.java.dir}/com/zimbra/common/account/ZAttrProvisioning.java"/>
+    </java>
+  </target>
+
+  <target name="create-version-sql" depends="build-init, set-dev-version"
+    description="Creates version-init.sql">
+    <java classname="com.zimbra.cs.db.MySQL" fork="true" classpath="${maven_compile_classpath}"
+      failonerror="true">
+      <classpath>
+        <pathelement location="${maven.build.dir}/classes"/>
+      </classpath>
+      <arg line="-o ${maven.build.dir}"/>
+    </java>
+  </target>
+
+  <target name="create-version-ldap" depends="build-init"
+    description="Creates ldap schema version: attrs-schema">
+    <exec executable="git" failonerror="false" output="${maven.build.dir}/conf/attrs/attrs-schema">
+      <arg value="log"/>
+      <arg value="-1"/>
+      <arg value="--pretty=format:%at"/>
+      <arg value="conf/attrs/attrs.xml"/>
+    </exec>
+  </target>
+
+  <!-- Rights generator -->
+  <path id="class.path">
+    <pathelement path="${maven_compile_classpath}"/>
+    <pathelement path="src/main/java"/>
+  </path>
+
+  <target name="generate-domainadmin-rights-xml">
+    <java classname="com.zimbra.cs.account.accesscontrol.RightManager" classpathref="class.path"  fork="true" failonerror="true">
+      <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
+      <arg line="-a genDomainAdminSetAttrsRights -r ${store-conf.config.dir}/rights/rights-domainadmin.xml -t ${store-conf.config.dir}/rights/rights-domainadmin.xml-template"/>
+    </java>
+  </target>
+
+  <target name="generate-rights-java">
+    <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="class.path" failonerror="true">
+      <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
+      <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <arg line="-a genRightConsts -i ${store-conf.config.dir}/rights -r
+      ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/RightConsts.java"/>
+    </java>
+    <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="class.path" failonerror="true">
+      <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
+      <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <arg line="-a genAdminRights -i ${store-conf.config.dir}/rights -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/AdminRights.java"/>
+    </java>
+    <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="class.path" failonerror="true">
+      <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
+      <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <arg line="-a genUserRights -i ${store-conf.config.dir}/rights -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/UserRights.java"/>
+    </java>
+  </target>
+
+  <target name="generate-rights-message-properties">
+    <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="class.path" failonerror="true">
+      <sysproperty key="zimbra.version" value="${carbonio.buildinfo.all}"/>
+      <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
+      <arg line="-a genMessageProperties -i ${store-conf.config.dir}/rights -r ${store-conf.config.dir}/msgs/ZsMsgRights.properties"/>
+    </java>
+  </target>
+
+  <target name="generate-rights">
+    <antcall target="generate-domainadmin-rights-xml"/>
+    <antcall target="generate-rights-java"/>
+    <antcall target="generate-rights-message-properties"/>
+  </target>
+
+</project>
