@@ -27,3 +27,6 @@ build.properties
 build
 **/**/out/
 .flattened-pom.xml
+
+target/
+**/common-passwords.txt
