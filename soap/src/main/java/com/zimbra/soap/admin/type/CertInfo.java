@@ -27,15 +27,22 @@ public class CertInfo {
      * @zm-api-field-tag server-name
      * @zm-api-field-description Server name
      */
-    @XmlAttribute(name=AdminConstants.A_SERVER /* server */, required=true)
-    private final String server;
+    @XmlAttribute(name=AdminConstants.A_SERVER /* server */, required=false)
+    private String server;
 
     /**
      * @zm-api-field-tag type
      * @zm-api-field-description type - 1 of <b>mta|ldap|mailboxd|proxy|staged</b>
      */
-    @XmlAttribute(name=AdminConstants.A_TYPE /* type */, required=true)
-    private final String type;
+    @XmlAttribute(name=AdminConstants.A_TYPE /* type */, required=false)
+    private String type;
+
+    /**
+     * @zm-api-field-tag domain-name
+     * @zm-api-field-description Domain name
+     */
+    @XmlAttribute(name=AdminConstants.A_DOMAIN /* domain */, required=false)
+    private String domain;
 
     /**
      * @zm-api-field-tag subject
@@ -84,12 +91,16 @@ public class CertInfo {
      */
     @SuppressWarnings("unused")
     private CertInfo() {
-        this((String) null, (String) null);
+
     }
 
     public CertInfo(String server, String type) {
         this.server = server;
         this.type = type;
+    }
+
+    public CertInfo(String domainName) {
+        this.domain = domainName;
     }
 
     public void setSubject(String subject) { this.subject = subject; }
@@ -121,9 +132,14 @@ public class CertInfo {
 
     public MoreObjects.ToStringHelper addToStringInfo(
                 MoreObjects.ToStringHelper helper) {
+        if (this.server != null && this.type != null) {
+            helper
+                .add("server", server)
+                .add("type", type);
+        } else {
+            helper.add("domain", domain);
+        }
         return helper
-            .add("server", server)
-            .add("type", type)
             .add("subject", subject)
             .add("issuer", issuer)
             .add("notBefore", notBefore)
