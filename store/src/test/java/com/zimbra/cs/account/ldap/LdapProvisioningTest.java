@@ -1,8 +1,11 @@
 package com.zimbra.cs.account.ldap;
 
+import static org.junit.Assert.assertEquals;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
+import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.auth.AuthContext.Protocol;
 import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
@@ -15,7 +18,9 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/** Unit test for {@link LdapProvisioning}. */
+/**
+ * Unit test for {@link LdapProvisioning}.
+ */
 public class LdapProvisioningTest {
 
   @BeforeClass
@@ -57,8 +62,7 @@ public class LdapProvisioningTest {
   }
 
   /**
-   * This test is to validate functionality of ({@link
-   * com.zimbra.cs.account.ldap.LdapProvisioning#validatePasswordEntropyForPersonalData(String,
+   * This test is to validate functionality of ({@link com.zimbra.cs.account.ldap.LdapProvisioning#validatePasswordEntropyForPersonalData(String,
    * Account)}) for personal data
    *
    * @throws ServiceException
@@ -70,7 +74,7 @@ public class LdapProvisioningTest {
 
     // fake passwords for test against created user account
     String[] testPasswords = {
-      "natalie", "Natalie123", "Leesa34", "example01", "Leesa.Example", "eXamPle", "2022james"
+        "natalie", "Natalie123", "Leesa34", "example01", "Leesa.Example", "eXamPle", "2022james"
     };
     for (String testPassword : testPasswords) {
       String passwordLower = testPassword.toLowerCase();
@@ -79,8 +83,7 @@ public class LdapProvisioningTest {
   }
 
   /**
-   * This test is to validate functionality of ({@link
-   * com.zimbra.cs.account.ldap.LdapProvisioning#validatePasswordEntropyForPersonalData(String,
+   * This test is to validate functionality of ({@link com.zimbra.cs.account.ldap.LdapProvisioning#validatePasswordEntropyForPersonalData(String,
    * Account)}) for specific case in which user might be <b>using a dotless domain</b>
    *
    * @throws ServiceException
@@ -92,13 +95,13 @@ public class LdapProvisioningTest {
 
     // fake passwords for test against created user account
     String[] testPasswords = {
-      "milano",
-      "Lamborghini123",
-      "Milano34",
-      "lamborghini01",
-      "Milano.Lamborghini",
-      "lAmbOrgHini",
-      "2022cars"
+        "milano",
+        "Lamborghini123",
+        "Milano34",
+        "lamborghini01",
+        "Milano.Lamborghini",
+        "lAmbOrgHini",
+        "2022cars"
     };
 
     for (String testPassword : testPasswords) {
@@ -108,8 +111,7 @@ public class LdapProvisioningTest {
   }
 
   /**
-   * This test is to validate functionality of ({@link
-   * com.zimbra.cs.account.ldap.LdapProvisioning#validatePasswordEntropyForPersonalData(String,
+   * This test is to validate functionality of ({@link com.zimbra.cs.account.ldap.LdapProvisioning#validatePasswordEntropyForPersonalData(String,
    * Account)}) for specific case in which user's <b>domain name contains special chars</b>
    *
    * @throws ServiceException
@@ -183,5 +185,24 @@ public class LdapProvisioningTest {
     exampleAccountAttrs3.put(Provisioning.A_mail, email);
     final Account testAdminAccount = prov.createAccount(email, password, exampleAccountAttrs3);
     prov.authAccount(testAdminAccount, password, Protocol.soap);
+  }
+
+  @Test
+  public void aliasDomainShouldHaveZimbraMailCatchAllForwardingAddressSetByDefault() throws ServiceException {
+    Provisioning prov = Provisioning.getInstance();
+
+    // create target domain
+    final String domainName = "co477.com";
+    final String aliasDomainName = "aka.co477.com";
+    final Domain targetDomain = prov.createDomain(domainName, new HashMap<String, Object>());
+
+    // create alias domain
+    final HashMap<String, Object> attrs = new HashMap<>();
+    attrs.put(Provisioning.A_zimbraDomainType, Provisioning.DomainType.alias.name());
+    attrs.put(Provisioning.A_zimbraDomainAliasTargetId, targetDomain.getId());
+    final Domain aliasDomain = prov.createDomain(aliasDomainName, attrs);
+
+    assertEquals(aliasDomain.getAttr(Provisioning.A_zimbraMailCatchAllForwardingAddress),
+        "@" + domainName);
   }
 }
