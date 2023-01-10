@@ -31,8 +31,8 @@ pipeline {
                   sh "cp ${SETTINGS_PATH} settings-jenkins.xml"
                 }
             }
-            }
-            stage('Build') {
+        }
+        stage('Build') {
             steps {
 
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
