@@ -32,8 +32,10 @@ public final class CertMgrConstants {
 
   public static final QName INSTALL_CERT_REQUEST = QName.get(E_INSTALL_CERT_REQUEST, NAMESPACE);
   public static final QName INSTALL_CERT_RESPONSE = QName.get(E_INSTALL_CERT_RESPONSE, NAMESPACE);
-  public static final QName GET_DOMAIN_CERT_REQUEST = QName.get(E_GET_DOMAIN_CERT_REQUEST, NAMESPACE);
-  public static final QName GET_DOMAIN_CERT_RESPONSE = QName.get(E_GET_DOMAIN_CERT_RESPONSE, NAMESPACE);
+  public static final QName GET_DOMAIN_CERT_REQUEST =
+      QName.get(E_GET_DOMAIN_CERT_REQUEST, NAMESPACE);
+  public static final QName GET_DOMAIN_CERT_RESPONSE =
+      QName.get(E_GET_DOMAIN_CERT_RESPONSE, NAMESPACE);
   public static final QName GET_CERT_REQUEST = QName.get(E_GET_CERT_REQUEST, NAMESPACE);
   public static final QName GET_CERT_RESPONSE = QName.get(E_GET_CERT_RESPONSE, NAMESPACE);
   public static final QName GEN_CSR_REQUEST = QName.get(E_GEN_CSR_REQUEST, NAMESPACE);
@@ -79,7 +81,6 @@ public final class CertMgrConstants {
   public static final String E_ISSUER = "issuer";
   public static final String E_NOT_BEFORE = "notBefore";
   public static final String E_NOT_AFTER = "notAfter";
-
 
   // GetCSR
   public static final String A_csr_exists = "csr_exists";
