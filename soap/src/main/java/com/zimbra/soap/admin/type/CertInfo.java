@@ -85,7 +85,7 @@ public class CertInfo {
      */
     @SuppressWarnings("unused")
     private CertInfo() {
-
+        this((String) null, (String) null);
     }
 
     public CertInfo(String server, String type) {
@@ -93,6 +93,8 @@ public class CertInfo {
         this.type = type;
     }
 
+    public void setServer(String server) { this.server = server; }
+    public void setType(String type) { this.type = type; }
     public void setSubject(String subject) { this.subject = subject; }
     public void setIssuer(String issuer) { this.issuer = issuer; }
     public void setNotBefore(String notBefore) { this.notBefore = notBefore; }
