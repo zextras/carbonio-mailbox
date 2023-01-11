@@ -75,6 +75,12 @@ public final class CertMgrConstants {
   // GetCert
   public static final String A_OPTION = "option";
 
+  //GetDomainCert
+  public static final String E_ISSUER = "issuer";
+  public static final String E_NOT_BEFORE = "notBefore";
+  public static final String E_NOT_AFTER = "notAfter";
+
+
   // GetCSR
   public static final String A_csr_exists = "csr_exists";
   public static final String A_isComm = "isComm";

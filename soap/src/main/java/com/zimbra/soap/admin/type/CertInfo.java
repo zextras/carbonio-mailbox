@@ -9,6 +9,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
+import com.zimbra.common.soap.CertMgrConstants;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,45 +39,38 @@ public class CertInfo {
     private String type;
 
     /**
-     * @zm-api-field-tag domain-name
-     * @zm-api-field-description Domain name
-     */
-    @XmlAttribute(name=AdminConstants.A_DOMAIN /* domain */, required=false)
-    private String domain;
-
-    /**
      * @zm-api-field-tag subject
      * @zm-api-field-description C, ST, L, O, OU, CN of current cert
      */
-    @XmlElement(name="subject", required=false)
+    @XmlElement(name= CertMgrConstants.E_SUBJECT, required=false)
     private String subject;
 
     /**
      * @zm-api-field-tag issuer
      * @zm-api-field-description C, ST, L, O, OU, CN of issuer cert
      */
-    @XmlElement(name="issuer", required=false)
+    @XmlElement(name=CertMgrConstants.E_ISSUER, required=false)
     private String issuer;
 
     /**
      * @zm-api-field-tag notBefore
      * @zm-api-field-description Certificate validation start time
      */
-    @XmlElement(name="notBefore", required=false)
+    @XmlElement(name=CertMgrConstants.E_NOT_BEFORE, required=false)
     private String notBefore;
 
     /**
      * @zm-api-field-tag notAfter
      * @zm-api-field-description Certificate validation end time
      */
-    @XmlElement(name="notAfter", required=false)
+    @XmlElement(name=CertMgrConstants.E_NOT_AFTER, required=false)
     private String notAfter;
 
     /**
      * @zm-api-field-tag SubjectAltName
      * @zm-api-field-description Current cert's subject alternative name (as x509v3 Extension)
      */
-    @XmlElement(name="SubjectAltName", required=false)
+    @XmlElement(name=CertMgrConstants.E_SUBJECT_ALT_NAME, required=false)
     private String SubjectAltName;
 
     // Expect elements with text content only
@@ -97,10 +91,6 @@ public class CertInfo {
     public CertInfo(String server, String type) {
         this.server = server;
         this.type = type;
-    }
-
-    public CertInfo(String domainName) {
-        this.domain = domainName;
     }
 
     public void setSubject(String subject) { this.subject = subject; }
@@ -132,19 +122,14 @@ public class CertInfo {
 
     public MoreObjects.ToStringHelper addToStringInfo(
                 MoreObjects.ToStringHelper helper) {
-        if (this.server != null && this.type != null) {
-            helper
-                .add("server", server)
-                .add("type", type);
-        } else {
-            helper.add("domain", domain);
-        }
         return helper
-            .add("subject", subject)
-            .add("issuer", issuer)
-            .add("notBefore", notBefore)
-            .add("notAfter", notAfter)
-            .add("SubjectAltName", SubjectAltName)
+            .add(AdminConstants.A_SERVER, server)
+            .add(AdminConstants.A_TYPE, type)
+            .add(CertMgrConstants.E_SUBJECT, subject)
+            .add(CertMgrConstants.E_ISSUER, issuer)
+            .add(CertMgrConstants.E_NOT_BEFORE, notBefore)
+            .add(CertMgrConstants.E_NOT_AFTER, notAfter)
+            .add(CertMgrConstants.E_SUBJECT_ALT_NAME, SubjectAltName)
             .add("certInfos", certInfos);
     }
 
