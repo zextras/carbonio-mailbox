@@ -436,6 +436,18 @@ public final class MockProvisioning extends Provisioning {
       attrs.put(A_zimbraSmtpHostname, "localhost");
     }
 
+    String domainType = (String) attrs.get(A_zimbraDomainType);
+    if (domainType == null) {
+      domainType = DomainType.local.name();
+    }
+
+    if (domainType.equalsIgnoreCase(DomainType.alias.name())) {
+      attrs.put(A_zimbraMailCatchAllAddress,  "@" + name);
+      final Domain targetDomain = getDomainById(
+          (String) attrs.getOrDefault(A_zimbraDomainAliasTargetId, name));
+      attrs.put(A_zimbraMailCatchAllForwardingAddress, "@" + targetDomain.getName());
+    }
+
     Domain domain = new Domain(name, id, attrs, null, this);
     id2domain.put(id, domain);
     return domain;
