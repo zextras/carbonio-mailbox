@@ -19,8 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class GetDomainCertRequest {
 
   /**
-   * @zm-api-field-tag domain-name
-   * @zm-api-field-description a domain name whose cert is to be got
+   * @zm-api-field-tag domain id
+   * @zm-api-field-description a domain id whose cert is to be got
    */
   @XmlAttribute(name = AdminConstants.A_DOMAIN /* domain */, required = true)
   private String domain;
