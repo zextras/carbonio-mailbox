@@ -460,6 +460,8 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.GetDistributionListMembershipResponse.class,
           com.zimbra.soap.admin.message.GetDistributionListRequest.class,
           com.zimbra.soap.admin.message.GetDistributionListResponse.class,
+          com.zimbra.soap.admin.message.GetDomainCertRequest.class,
+          com.zimbra.soap.admin.message.GetDomainCertResponse.class,
           com.zimbra.soap.admin.message.GetDomainInfoRequest.class,
           com.zimbra.soap.admin.message.GetDomainInfoResponse.class,
           com.zimbra.soap.admin.message.GetDomainRequest.class,
