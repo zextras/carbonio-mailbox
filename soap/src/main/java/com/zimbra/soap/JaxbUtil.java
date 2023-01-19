@@ -544,6 +544,8 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.HsmResponse.class,
           com.zimbra.soap.admin.message.InstallCertRequest.class,
           com.zimbra.soap.admin.message.InstallCertResponse.class,
+          com.zimbra.soap.admin.message.IssueLetsEncryptCertRequest.class,
+          com.zimbra.soap.admin.message.IssueLetsEncryptCertResponse.class,
           com.zimbra.soap.admin.message.LockoutMailboxRequest.class,
           com.zimbra.soap.admin.message.LockoutMailboxResponse.class,
           com.zimbra.soap.admin.message.MailQueueActionRequest.class,
