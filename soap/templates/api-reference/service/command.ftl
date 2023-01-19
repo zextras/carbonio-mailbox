@@ -14,7 +14,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 Zimbra SOAP API Reference ${build.version}
 </title>
 
+<link rel="stylesheet" href="../pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+
 <LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script type="text/javascript">
 function windowTitle()
@@ -25,55 +29,64 @@ function windowTitle()
 
 </head>
 
-<body BGCOLOR="white" onload="windowTitle();">
+<body onload="windowTitle();">
 
-<table cellspacing="3" cellpadding="0" border="0" summary="" bgcolor="#eeeeff">
+<table class="pure-table no-border-table overview-nav-top" cellspacing="3" cellpadding="0" border="0" summary=""  >
   <tbody>
   <tr valign="top" align="center">
-  <td bgcolor="#ffffff" class="NavBarCell1"> <a href="../overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
-  <td bgcolor="#eeeeff" class="NavBarCell1">    <a href="./service-summary.html"><font class="NavBarFont1"><b>Service</b></font></a>&nbsp;</td>
-  <td bgcolor="#eeeeff" class="NavBarCell1Rev">    &nbsp;<font class="NavBarFont1Rev"><b>Command</b></font>&nbsp;</td>
+  <td   class="NavBarCell1"><a href="../overview-summary.html"><b>Overview</b></a></td>
+  <td   class="NavBarCell1"><a href="./service-summary.html"><b>Service</b></a></td>
+  <td   class="NavBarCell1Rev"><b>Command</b></td>
   </tr>
   </tbody>
 </table>
 
-<hr>
-<h2>
-<font SIZE="-1"><a href="./service-summary.html">Service: ${service.name}</a></font>
-<br>
-<font SIZE="-1">Namespace: "${command.namespace}"</font>
-<br>
-${command.name} SOAP Command</h2>
-<p>
-${command.description}
-</p>
-<table cellspacing="0" cellpadding="5" border="1">
-<#if command.isNetworkEdition()>
-    <tr> <td> Network edition only API </td> <td> <b>TRUE</b> </td> </tr>
-</#if>
-    <tr> <td> Authorization token required </td> <td> <b>${command.authRequiredDescription}</b> </td> </tr>
-    <tr> <td> Admin Authorization token required </td> <td> <b>${command.adminAuthRequiredDescription}</b> </td> </tr>
-<#if command.hasDeprecationDescription()>
-    <tr> <td> Deprecation information </td> <td> <b>${command.deprecation}</b> </td> </tr>
-</#if>
-</table>
+<div style="margin-top: 62px;">
+    <h2>
+        <a href="./service-summary.html">Service: ${service.name}</a>
+    </h2>
+</div>
+
+<div class="command-intro">
+    <div class="namespace">
+    <b>Command:</b> ${command.name}
+    <br>
+    <b>Namespace:</b> ${command.namespace}
+    <br>
+    <b>Description:</b> ${command.description}
+    </div>
+
+    <div style="padding: 10px 0px 8px 0px; font-weight: bold;">Properties:</div>
+
+    <table class="pure-table pure-table-bordered" cellspacing="0" cellpadding="5" border="1">
+    <#if command.isNetworkEdition()>
+        <tr> <td> Network edition only API </td> <td> <b>true</b> </td> </tr>
+    </#if>
+        <tr> <td> Authorization token required </td> <td> <b>${command.authRequiredDescription}</b> </td> </tr>
+        <tr> <td> Admin Authorization token required </td> <td> <b>${command.adminAuthRequiredDescription}</b> </td> </tr>
+    <#if command.hasDeprecationDescription()>
+        <tr> <td> Deprecation information </td> <td> <b>${command.deprecation}</b> </td> </tr>
+    </#if>
+    </table>
+</div>
+
 <h2><a name="request">${command.requestName}</a></h2>
 <#if command.request.description != "">
 <p>
 ${command.request.description}
 </p>
 </#if>
-<p>
+<p class="code">
 ${command.request.htmlDescription}
 </p>
 <#if command.request.childDocumentableXmlUnits?size != 0>
 <p>
-The following table describes elements and attributes you can define within a
+elements and attributes you can define within a
 <code>&lt;${command.requestName}&gt;</code> element:
 </p>
-<table cellspacing="0" cellpadding="5" border="1" width="100%">
+<table class="pure-table pure-table-bordered pure-table-striped" cellspacing="0" cellpadding="5" border="1" width="100%">
 <tbody>
-    <tr BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+    <tr   CLASS="TableHeadingColor">
         <td width="1%" nowrap><b>XPath</b></td>
         <td width="1%" nowrap><b>Required / Optional</b></td>
         <td><b>Description</b></td>
@@ -110,17 +123,17 @@ The following table describes elements and attributes you can define within a
 ${command.response.description}
 </p>
 </#if>
-<p>
+<p class="code">
 ${command.response.htmlDescription}
 </p>
 <#if command.response.childDocumentableXmlUnits?size != 0>
 <p>
-The following table describes elements and attributes you can define within a
+elements and attributes you can define within a
 <code>&lt;${command.responseName}&gt;</code> element:
 </p>
-<table cellspacing="0" cellpadding="5" border="1" width="100%">
+<table class="pure-table pure-table-bordered pure-table-striped" cellspacing="0" cellpadding="5" border="1" width="100%">
 <tbody>
-    <tr BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+    <tr   CLASS="TableHeadingColor">
         <td width="1%" nowrap><b>XPath</b></td>
         <td width="1%" nowrap><b>Required / Optional</b></td>
         <td><b>Description</b></td>
@@ -150,5 +163,16 @@ The following table describes elements and attributes you can define within a
 </tbody>
 </table>
 </#if>
+
+<#-- start footer-->
+<div class="last-element">&nbsp</div>
+<div class="footer">
+&copy Copyright <span id="year"></span>, The Zextras Team. All rights reserved.
+</div>
+<script>
+  document.getElementById("year").innerHTML = new Date().getFullYear();
+</script>
+<#-- end footer-->
+
 </body>
 </html>

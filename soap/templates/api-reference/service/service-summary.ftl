@@ -14,6 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 Zimbra SOAP API Reference ${build.version}
 </title>
 
+<link rel="stylesheet" href="../pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
 
 <script type="text/javascript">
@@ -25,41 +29,47 @@ function windowTitle()
 
 </head>
 
-<BODY BGCOLOR="white" onload="windowTitle();">
+<BODY onload="windowTitle();">
 
-<table cellspacing="3" cellpadding="0" border="0" summary="" bgcolor="#eeeeff">
+<table class="pure-table no-border-table overview-nav-top" cellspacing="3" cellpadding="0" border="0" summary=""  >
   <tbody>
-  <tr valign="top" align="center">
-  <td bgcolor="#ffffff" class="NavBarCell1"> <a href="../overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
-  <td bgcolor="#eeeeff" class="NavBarCell1Rev">    &nbsp;<font class="NavBarFont1Rev"><b>Service</b></font>&nbsp;</td>
-  <td bgcolor="#eeeeff" class="NavBarCell1">    <font class="NavBarFont1">Command</font>&nbsp;</td>
-  </tr>
+    <tr valign="top" align="center">
+    <td   class="NavBarCell1"> <a href="../overview-summary.html"><b>Overview</b></a></td>
+    <td   class="NavBarCell1Rev"><b>Service</b></td>
+    <td   class="NavBarCell1">Command</td>
+    </tr>
   </tbody>
 </table>
 
-<HR>
-<H2>
-Service ${service.name}
-</H2>
+<div style="margin-top: 62px;">
+  <H2>Service ${service.name}</H2>
+</div>
 
-<p>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Command Summary</B></FONT></TH>
+
+<TABLE class="pure-table pure-table-bordered pure-table-striped" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR CLASS="TableHeadingColor" >
+  <td nowrap><b>Commands</b></td>
+  <td nowrap><b>Description</b></td>
 </TR>
+
 <#list service.commands as command>
-<TR BGCOLOR="white" CLASS="TableRowColor">
+<TR   CLASS="TableRowColor">
 <TD WIDTH="20%"><B><A HREF="./${command.name}.html">${command.name}</A></B></TD>
 <TD>${command.shortDescription}</TD>
 </TR>
 </#list>
 </TABLE>
-</p>
 
-<p>
-Copyright 2012 Zimbra, Inc. All rights reserved.
-</p>
+
+<#-- start footer-->
+<div class="last-element">&nbsp</div>
+<div class="footer">
+&copy Copyright <span id="year"></span>, The Zextras Team. All rights reserved.
+</div>
+<script>
+  document.getElementById("year").innerHTML = new Date().getFullYear();
+</script>
+<#-- end footer-->
 
 </body>
 </html>
