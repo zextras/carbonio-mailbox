@@ -15,7 +15,7 @@ Carbonio SOAP API Reference ${build.version}
  
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../api-referen../api-reference/stylesheet.css" TITLE="Style">
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../api-reference/stylesheet.css" TITLE="Style">
 <SCRIPT type="text/javascript">
    targetPage = "" + window.location.search;
    if (targetPage != "" && targetPage != "undefined")
