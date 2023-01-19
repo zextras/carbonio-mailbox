@@ -21,47 +21,56 @@ function windowTitle()
 }
 </script>
 
+ 
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../api-reference/stylesheet.css" TITLE="Style">
+
 </head>
 
-<body bgcolor="white" onload="windowTitle();">
+<body  onload="windowTitle();">
 
-<table cellspacing="3" cellpadding="0" border="0" summary="" bgcolor="#eeeeff">
+<table class="pure-table no-border-table overview-nav-top" cellspacing="3" cellpadding="0" border="0" summary="">
   <tbody>
   <tr valign="top" align="center">
-  <td bgcolor="#eeeeff" class="NavBarCell1Rev">    &nbsp;<font class="NavBarFont1Rev"><b>Overview</b></font>&nbsp;</td>
-  <td bgcolor="#ffffff" class="NavBarCell1"> <font class="NavBarFont1">Service</font>&nbsp;</td>
-  <td bgcolor="#eeeeff" class="NavBarCell1">    <font class="NavBarFont1">Command</font>&nbsp;</td>
+  <td><b>Overview</b></td>
+  <td>Service</td>
+  <td>Command</td>
   </tr>
   </tbody>
 </table>
 
-<hr>
-<center>
-<h1>
-Zimbra<sup><font size=-2>TM</font></sup> SOAP API Reference ${build.version}
-</h1>
-</center>
-This document is the reference specification for the Zimbra SOAP API.
+<div style="margin-top: 62px;">
+  <h2>
+    Carbonio SOAP API Reference ${build.version}
+  </h2>
+</div>
+This document is the reference specification for the Carbonio SOAP API.
 
 <p>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>SOAP API Services</B></FONT></TH>
+<TABLE class="pure-table pure-table-bordered pure-table-striped WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR CLASS="TableHeadingColor" >
+  <td nowrap><b>SOAP API Services</b></td>
+  <td nowrap><b>Services description</b></td>
 </TR>
 <#list root.services as service>
-<TR BGCOLOR="white" CLASS="TableRowColor">
+<TR >
 <TD WIDTH="20%"><B><A HREF="./${service.name}/service-summary.html">${service.name}</A></B></TD>
 <TD>${service.description}</TD>
 </TR>
 </#list>
 </TABLE>
 
-<HR>
-<p>
-Copyright 2012 Zimbra, Inc. All rights reserved.
-</p>
+<#-- start footer-->
+<div class="last-element">&nbsp</div>
+<div class="footer">
+&copy Copyright <span id="year"></span>, The Zextras Team. All rights reserved.
+</div>
+<script>
+  document.getElementById("year").innerHTML = new Date().getFullYear();
+</script>
+<#-- end footer-->
 
 </body>
 </html>
