@@ -59,7 +59,7 @@ implements XmlUnit {
         StringBuilder desc = new StringBuilder();
         String valueRepresentation = getValueRepresentation();
         if (!Strings.isNullOrEmpty(valueRepresentation)) {
-            desc.append("<b>Type:").append(valueRepresentation).append("</b>");
+            desc.append("<b>Type: ").append(valueRepresentation).append("</b>");
             if (!Strings.isNullOrEmpty(description)) {
                 desc.append("<br />\n").append(description);
             }

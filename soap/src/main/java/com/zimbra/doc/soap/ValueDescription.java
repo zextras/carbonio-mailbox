@@ -19,7 +19,7 @@ import com.zimbra.soap.type.ZmBoolean;
 
 public class ValueDescription {
     @JsonIgnore
-    private final static Joiner PIPE_JOINER = Joiner.on("|");
+    private final static Joiner PIPE_JOINER = Joiner.on(" | ");
     private final String valueName;
     private final String representation;
     private final String className;

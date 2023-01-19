@@ -543,7 +543,7 @@ implements DescriptionNode, XmlUnit {
     public String getDescription() {
         StringBuilder desc = new StringBuilder();
         if (!Strings.isNullOrEmpty(elementText)) {
-            desc.append("<b>Type:").append(elementText).append("</b>");
+            desc.append("<b>Type: ").append(elementText).append("</b>");
             if (!Strings.isNullOrEmpty(description)) {
                 desc.append("<br />\n").append(description);
             }
