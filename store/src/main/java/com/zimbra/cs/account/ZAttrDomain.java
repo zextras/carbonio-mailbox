@@ -756,6 +756,78 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
+     * Logo URL for domain
+     *
+     * @return carbonioLogoUrl, or "https://www.zextras.com" if unset
+     *
+     * @since ZCS 23.2.0
+     */
+    @ZAttr(id=3126)
+    public String getCarbonioLogoUrl() {
+        return getAttr(Provisioning.A_carbonioLogoUrl, "https://www.zextras.com", true);
+    }
+
+    /**
+     * Logo URL for domain
+     *
+     * @param carbonioLogoUrl new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.2.0
+     */
+    @ZAttr(id=3126)
+    public void setCarbonioLogoUrl(String carbonioLogoUrl) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioLogoUrl, carbonioLogoUrl);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Logo URL for domain
+     *
+     * @param carbonioLogoUrl new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.2.0
+     */
+    @ZAttr(id=3126)
+    public Map<String,Object> setCarbonioLogoUrl(String carbonioLogoUrl, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioLogoUrl, carbonioLogoUrl);
+        return attrs;
+    }
+
+    /**
+     * Logo URL for domain
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.2.0
+     */
+    @ZAttr(id=3126)
+    public void unsetCarbonioLogoUrl() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioLogoUrl, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Logo URL for domain
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.2.0
+     */
+    @ZAttr(id=3126)
+    public Map<String,Object> unsetCarbonioLogoUrl(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioLogoUrl, "");
+        return attrs;
+    }
+
+    /**
      * Enable video server recording for Carbonio
      *
      * @return carbonioVideoServerRecordingEnabled, or false if unset

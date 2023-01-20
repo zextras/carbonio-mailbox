@@ -9982,4 +9982,9 @@ TODO: delete them permanently from here
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>Whether the Chats feature enabled for account or COS</desc>
 </attr>
+
+<attr id="3126" name="carbonioLogoUrl" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.2.0">
+  <desc>Logo URL for domain</desc>
+  <globalConfigValue>https://www.zextras.com</globalConfigValue>
+</attr>
 </attrs>
