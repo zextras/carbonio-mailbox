@@ -2399,6 +2399,9 @@ public class ProxyConfGen {
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("messaging.xmpps")),
           new File(mConfIncludesDir, getConfFileName("messaging.xmpps")));
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("addressBook")),
+          new File(mConfIncludesDir, getConfFileName("addressBook")));
     } catch (ProxyConfException | SecurityException pe) {
       handleException(pe);
       exitCode = 1;
