@@ -56,7 +56,7 @@
       public static final String HOST = "${zimbra.buildinfo.host}";
       }
     </echo>
-    <javac includeantruntime="false" destdir="${build.classes.dir}" debug="true"
+    <javac includeantruntime="false" destdir="${build.classes.dir}"
       target="${javac.target}" srcdir="${maven.build.dir}/buildinfo">
       <compilerarg value="-Xlint:deprecation"/>
       <compilerarg value="-Xlint:unchecked"/>
