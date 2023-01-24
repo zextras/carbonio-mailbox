@@ -172,8 +172,38 @@
             <id>generate-soap-docs</id>
             <phase>prepare-package</phase>
           </execution>
+          <!-- generate sources -->
+          <execution>
+            <configuration>
+              <target>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <taskdef classpathref="maven.plugin.classpath"
+                  resource="net/sf/antcontrib/antlib.xml"/>
+                <ant antfile="${basedir}/ant-generate-soap-docs.xml">
+                  <target name="generate-sources"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>generate-buildinfo</id>
+            <phase>generate-sources</phase>
+          </execution>
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>pre-compile</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
