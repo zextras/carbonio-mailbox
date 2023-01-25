@@ -60,6 +60,11 @@ public class CreateDistributionList extends AdminDocumentHandler {
         boolean dynamic = Boolean.TRUE.equals(req.getDynamic());
 
         if (dynamic) {
+            // see issue CO-526
+            if (zsc.getAuthToken().isDelegatedAdmin()) {
+                throw ServiceException.INVALID_REQUEST(
+                    "Delegated Admins are not allowed to create Dynamic Distribution Lists", null);
+            }
             checkDomainRightByEmail(zsc, name, Admin.R_createGroup);
             checkSetAttrsOnCreate(zsc, TargetType.group, name, attrs);
         } else {
