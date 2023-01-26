@@ -2402,9 +2402,21 @@ public class ProxyConfGen {
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("stream")),
           new File(mConfIncludesDir, getConfFileName("stream")));
+      // map of vhn crt, key
       expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("addressBook.default")),
-          new File(mConfIncludesDir, getConfFileName("addressBook.default")));
+          new File(mTemplateDir, getConfTemplateFileName("stream.map.crt")),
+          new File(mConfIncludesDir, getConfFileName("stream.map.crt")));
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("stream.map.key")),
+          new File(mConfIncludesDir, getConfFileName("stream.map.key")));
+      // put crt, key in maps
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("stream.ssl")),
+          new File(mConfIncludesDir, getConfFileName("stream.ssl")));
+      // map vhn to address book upstream
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("stream.map.addressBook")),
+          new File(mConfIncludesDir, getConfFileName("stream.map.addressBook")));
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("addressBook")),
           new File(mConfIncludesDir, getConfFileName("addressBook")));
