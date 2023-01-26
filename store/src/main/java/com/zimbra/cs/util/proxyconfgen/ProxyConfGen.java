@@ -2400,6 +2400,9 @@ public class ProxyConfGen {
           new File(mTemplateDir, getConfTemplateFileName("messaging.xmpps")),
           new File(mConfIncludesDir, getConfFileName("messaging.xmpps")));
       expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("stream")),
+          new File(mConfIncludesDir, getConfFileName("stream")));
+      expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("addressBook.default")),
           new File(mConfIncludesDir, getConfFileName("addressBook.default")));
       expandTemplate(
