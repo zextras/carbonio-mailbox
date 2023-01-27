@@ -94,8 +94,8 @@ public class CreateDistributionListTest {
     final CreateDistributionListRequest createDistributionListRequest = new CreateDistributionListRequest(
         DISTRIBUTION_LIST_NAME, attributes, true);
 
-    //create CreateDistributionList spy
-    final CreateDistributionList createDistributions = spy(CreateDistributionList.class);
+    //create CreateDistributionList
+    final CreateDistributionList createDistributions = new CreateDistributionList();
 
     //stub createGroup method of provisioning since it is not supported without real provisioning backend
     final DynamicGroup mockDGroup = mock(DynamicGroup.class);
