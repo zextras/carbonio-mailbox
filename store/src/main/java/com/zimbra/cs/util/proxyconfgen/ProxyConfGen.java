@@ -2399,27 +2399,23 @@ public class ProxyConfGen {
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("messaging.xmpps")),
           new File(mConfIncludesDir, getConfFileName("messaging.xmpps")));
+      // Stream templates
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("stream")),
           new File(mConfIncludesDir, getConfFileName("stream")));
-      // map of vhn crt, key
       expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("stream.map.crt")),
-          new File(mConfIncludesDir, getConfFileName("stream.map.crt")));
+          new File(mTemplateDir, getConfTemplateFileName("stream.addressBook")),
+          new File(mConfIncludesDir, getConfFileName("stream.addressBook")));
+      // Templates for ssl mapping
       expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("stream.map.key")),
-          new File(mConfIncludesDir, getConfFileName("stream.map.key")));
-      // put crt, key in maps
+          new File(mTemplateDir, getConfTemplateFileName("map.crt")),
+          new File(mConfIncludesDir, getConfFileName("map.crt")));
       expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("stream.ssl")),
-          new File(mConfIncludesDir, getConfFileName("stream.ssl")));
-      // map vhn to address book upstream
+          new File(mTemplateDir, getConfTemplateFileName("map.key")),
+          new File(mConfIncludesDir, getConfFileName("map.key")));
       expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("stream.map.addressBook")),
-          new File(mConfIncludesDir, getConfFileName("stream.map.addressBook")));
-      expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("addressBook")),
-          new File(mConfIncludesDir, getConfFileName("addressBook")));
+          new File(mTemplateDir, getConfTemplateFileName("map.ssl")),
+          new File(mConfIncludesDir, getConfFileName("map.ssl")));
     } catch (ProxyConfException | SecurityException pe) {
       handleException(pe);
       exitCode = 1;
