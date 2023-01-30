@@ -24,7 +24,7 @@ import com.zimbra.soap.type.ZmBoolean;
  * <br />
  * Notes:
  * <ul>
- * <li> dynamic - create a dynamic distribution list
+ * <li> dynamic - create a dynamic distribution list (global admins only)
  * <li> Extra attrs: <b>description</b>, <b>zimbraNotes</b>
  * </ul>
  * <b>Access</b>: domain admin sufficient
