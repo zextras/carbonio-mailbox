@@ -2,7 +2,6 @@ package com.zimbra.soap.admin.message;
 
 import com.google.common.base.MoreObjects;
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.soap.CertMgrConstants;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -10,8 +9,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name= CertMgrConstants.E_ISSUE_LETSENCRYPT_CERT_RESPONSE)
-public class IssueLetsEncryptCertResponse {
+@XmlRootElement(name= AdminConstants.E_ISSUE_CERT_RESPONSE)
+public class IssueCertResponse {
   /**
    * @zm-api-field-tag domain-name
    * @zm-api-field-description Domain name
@@ -29,7 +28,7 @@ public class IssueLetsEncryptCertResponse {
   /**
    * no-argument constructor wanted by JAXB
    */
-  public IssueLetsEncryptCertResponse() {
+  public IssueCertResponse() {
 
   }
 

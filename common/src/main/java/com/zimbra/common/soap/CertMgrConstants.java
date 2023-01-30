@@ -15,8 +15,6 @@ public final class CertMgrConstants {
   // ZimbraCertMgrService
   public static final String E_INSTALL_CERT_REQUEST = "InstallCertRequest";
   public static final String E_INSTALL_CERT_RESPONSE = "InstallCertResponse";
-  public static final String E_ISSUE_LETSENCRYPT_CERT_REQUEST = "IssueLetsEncryptCertRequest";
-  public static final String E_ISSUE_LETSENCRYPT_CERT_RESPONSE = "IssueLetsEncryptCertResponse";
   public static final String E_GET_DOMAIN_CERT_REQUEST = "GetDomainCertRequest";
   public static final String E_GET_DOMAIN_CERT_RESPONSE = "GetDomainCertResponse";
   public static final String E_GET_CERT_REQUEST = "GetCertRequest";
@@ -34,8 +32,6 @@ public final class CertMgrConstants {
 
   public static final QName INSTALL_CERT_REQUEST = QName.get(E_INSTALL_CERT_REQUEST, NAMESPACE);
   public static final QName INSTALL_CERT_RESPONSE = QName.get(E_INSTALL_CERT_RESPONSE, NAMESPACE);
-  public static final QName ISSUE_LETSENCRYPT_CERT_REQUEST = QName.get(E_ISSUE_LETSENCRYPT_CERT_REQUEST, NAMESPACE);
-  public static final QName ISSUE_LETSENCRYPT_CERT_RESPONSE = QName.get(E_ISSUE_LETSENCRYPT_CERT_RESPONSE, NAMESPACE);
   public static final QName GET_DOMAIN_CERT_REQUEST =
       QName.get(E_GET_DOMAIN_CERT_REQUEST, NAMESPACE);
   public static final QName GET_DOMAIN_CERT_RESPONSE =

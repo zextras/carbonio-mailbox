@@ -332,6 +332,10 @@ public final class AdminConstants {
   public static final String E_GET_DISTRIBUTION_LIST_MEMBERSHIP_RESPONSE =
       "GetDistributionListMembershipResponse";
 
+  //certbot
+  public static final String E_ISSUE_CERT_REQUEST = "IssueCertRequest";
+  public static final String E_ISSUE_CERT_RESPONSE = "IssueCertResponse";
+
   // data sources
   public static final String E_CREATE_DATA_SOURCE_REQUEST = "CreateDataSourceRequest";
   public static final String E_CREATE_DATA_SOURCE_RESPONSE = "CreateDataSourceResponse";
@@ -637,6 +641,9 @@ public final class AdminConstants {
       QName.get(E_CHANGE_PRIMARY_EMAIL_REQUEST, NAMESPACE);
   public static final QName CHANGE_PRIMARY_EMAIL_RESPONSE =
       QName.get(E_CHANGE_PRIMARY_EMAIL_RESPONSE, NAMESPACE);
+
+  public static final QName ISSUE_CERT_REQUEST = QName.get(E_ISSUE_CERT_REQUEST, NAMESPACE);
+  public static final QName ISSUE_CERT_RESPONSE = QName.get(E_ISSUE_CERT_RESPONSE, NAMESPACE);
 
   public static final QName CREATE_DOMAIN_REQUEST = QName.get(E_CREATE_DOMAIN_REQUEST, NAMESPACE);
   public static final QName CREATE_DOMAIN_RESPONSE = QName.get(E_CREATE_DOMAIN_RESPONSE, NAMESPACE);

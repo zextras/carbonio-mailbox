@@ -22,6 +22,8 @@ import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.soap.admin.message.IssueCertRequest;
+import com.zimbra.soap.admin.message.IssueCertResponse;
 import com.zimbra.soap.json.JacksonUtil;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
@@ -544,8 +546,8 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.HsmResponse.class,
           com.zimbra.soap.admin.message.InstallCertRequest.class,
           com.zimbra.soap.admin.message.InstallCertResponse.class,
-          com.zimbra.soap.admin.message.IssueLetsEncryptCertRequest.class,
-          com.zimbra.soap.admin.message.IssueLetsEncryptCertResponse.class,
+          com.zimbra.soap.admin.message.IssueCertRequest.class,
+          com.zimbra.soap.admin.message.IssueCertResponse.class,
           com.zimbra.soap.admin.message.LockoutMailboxRequest.class,
           com.zimbra.soap.admin.message.LockoutMailboxResponse.class,
           com.zimbra.soap.admin.message.MailQueueActionRequest.class,

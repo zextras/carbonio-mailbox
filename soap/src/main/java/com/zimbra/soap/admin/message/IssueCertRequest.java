@@ -1,12 +1,12 @@
 package com.zimbra.soap.admin.message;
 
-import com.google.common.base.MoreObjects;
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.soap.CertMgrConstants;
+import com.zimbra.soap.admin.type.AdminAttrsImpl;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @zm-api-command-auth-required true
@@ -15,23 +15,24 @@ import javax.xml.bind.annotation.XmlRootElement;
  *     Issues a LetsEncrypt certificate for a requested domain.
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = CertMgrConstants.E_ISSUE_LETSENCRYPT_CERT_REQUEST)
-public class IssueLetsEncryptCertRequest {
+@XmlRootElement(name = AdminConstants.E_ISSUE_CERT_REQUEST)
+@XmlType(propOrder = {})
+public class IssueCertRequest extends AdminAttrsImpl {
 
   /**
-   * @zm-api-field-tag domain name
-   * @zm-api-field-description a domain name to issue a LetsEncrypt cert for
+   * @zm-api-field-tag domain id
+   * @zm-api-field-description a domain id to issue a LetsEncrypt certs for
    */
   @XmlAttribute(name = AdminConstants.A_DOMAIN /* domain */, required = true)
   private String domain;
 
   /** no-argument constructor wanted by JAXB */
   @SuppressWarnings("unused")
-  private IssueLetsEncryptCertRequest() {
+  public IssueCertRequest() {
     this(null);
   }
 
-  public IssueLetsEncryptCertRequest(String domain) {
+  public IssueCertRequest(String domain) {
     this.domain = domain;
   }
 
@@ -41,15 +42,6 @@ public class IssueLetsEncryptCertRequest {
 
   public String getDomain() {
     return domain;
-  }
-
-  public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
-    return helper.add("domain", domain);
-  }
-
-  @Override
-  public String toString() {
-    return addToStringInfo(MoreObjects.toStringHelper(this)).toString();
   }
 }
 
