@@ -1,5 +1,7 @@
 
 
+## 4.1.1 (2023-01-31)
+
 # [4.1.0](https://github.com/Zextras/carbonio-mailbox/compare/4.0.18...4.1.0) (2022-12-15)
 
 

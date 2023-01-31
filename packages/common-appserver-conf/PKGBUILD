@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-common-appserver-conf"
-pkgver="4.1.0"
+pkgver="4.1.1"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox Configuration"
 pkgdesclong=(
