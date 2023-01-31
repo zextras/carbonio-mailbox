@@ -56,14 +56,14 @@
   <property location="${zm-mailbox.basedir}/store-conf/conf/msgs" name="msgs.dir"/>
 
 
-  <target depends="carbonio-version" name="require-version">
+  <target name="require-version" depends="carbonio-version" >
     <!-- For retro-compatibility -->
     <property name="zimbra.buildinfo.version" value="${carbonio.buildinfo.version}"/>
     <echo message="Using version ${zimbra.buildinfo.version}"/>
   </target>
 
   <target name="carbonio-version">
-    <property name="carbonio.buildinfo.version" value="23.1.0_ZEXTRAS_202301"/>
+    <property name="carbonio.buildinfo.version" value="23.2.0_ZEXTRAS_202302"/>
     <fail
       message="Missing build version. Define proper ZCS version like -Dcarbonio.buildinfo.version">
       <condition>
@@ -74,7 +74,7 @@
     </fail>
   </target>
 
-  <target depends="require-version" name="set-dev-version">
+  <target name="set-dev-version" depends="require-version" >
     <antcontrib:if>
       <not>
         <isset property="jar.file"/>

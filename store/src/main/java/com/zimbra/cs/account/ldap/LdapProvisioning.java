@@ -2843,6 +2843,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       if (domainType.equalsIgnoreCase(DomainType.alias.name())) {
         entry.setAttr(A_zimbraMailCatchAllAddress, "@" + name);
+        final Domain targetDomain = getDomainById(
+            (String) domainAttrs.getOrDefault(A_zimbraDomainAliasTargetId, name));
+        entry.setAttr(A_zimbraMailCatchAllForwardingAddress, "@" + targetDomain.getDomainName());
       }
 
       entry.setAttr(A_o, name + " domain");
@@ -2886,9 +2889,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.DOMAIN_EXISTS(name);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create domain: " + name, e);

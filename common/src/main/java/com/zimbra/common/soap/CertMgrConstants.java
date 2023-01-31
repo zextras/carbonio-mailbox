@@ -15,6 +15,8 @@ public final class CertMgrConstants {
   // ZimbraCertMgrService
   public static final String E_INSTALL_CERT_REQUEST = "InstallCertRequest";
   public static final String E_INSTALL_CERT_RESPONSE = "InstallCertResponse";
+  public static final String E_GET_DOMAIN_CERT_REQUEST = "GetDomainCertRequest";
+  public static final String E_GET_DOMAIN_CERT_RESPONSE = "GetDomainCertResponse";
   public static final String E_GET_CERT_REQUEST = "GetCertRequest";
   public static final String E_GET_CERT_RESPONSE = "GetCertResponse";
   public static final String E_GEN_CSR_REQUEST = "GenCSRRequest";
@@ -30,6 +32,10 @@ public final class CertMgrConstants {
 
   public static final QName INSTALL_CERT_REQUEST = QName.get(E_INSTALL_CERT_REQUEST, NAMESPACE);
   public static final QName INSTALL_CERT_RESPONSE = QName.get(E_INSTALL_CERT_RESPONSE, NAMESPACE);
+  public static final QName GET_DOMAIN_CERT_REQUEST =
+      QName.get(E_GET_DOMAIN_CERT_REQUEST, NAMESPACE);
+  public static final QName GET_DOMAIN_CERT_RESPONSE =
+      QName.get(E_GET_DOMAIN_CERT_RESPONSE, NAMESPACE);
   public static final QName GET_CERT_REQUEST = QName.get(E_GET_CERT_REQUEST, NAMESPACE);
   public static final QName GET_CERT_RESPONSE = QName.get(E_GET_CERT_RESPONSE, NAMESPACE);
   public static final QName GEN_CSR_REQUEST = QName.get(E_GEN_CSR_REQUEST, NAMESPACE);
@@ -70,6 +76,11 @@ public final class CertMgrConstants {
 
   // GetCert
   public static final String A_OPTION = "option";
+
+  //GetDomainCert
+  public static final String E_ISSUER = "issuer";
+  public static final String E_NOT_BEFORE = "notBefore";
+  public static final String E_NOT_AFTER = "notAfter";
 
   // GetCSR
   public static final String A_csr_exists = "csr_exists";

@@ -10,17 +10,13 @@
  */
 package com.zimbra.cs.account;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.zimbra.common.account.ZAttrProvisioning.DomainStatus;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Provisioning.GalMode;
-import com.zimbra.cs.account.Provisioning.SearchGalResult;
-import com.zimbra.soap.type.GalSearchType;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author schemers
@@ -28,8 +24,8 @@ import com.zimbra.soap.type.GalSearchType;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class Domain extends ZAttrDomain {
-    private String mUnicodeName;
-    private Map<String, Object> mAccountDefaults = new HashMap<String, Object>();
+    private final String mUnicodeName;
+    private final Map<String, Object> mAccountDefaults = new HashMap<>();
     
     public Domain(String name, String id, Map<String, Object> attrs, Map<String, Object> defaults, Provisioning prov) {
         super(name, id, attrs, defaults, prov);

@@ -2757,6 +2757,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioFeatureMailsAppEnabled = "carbonioFeatureMailsAppEnabled";
 
     /**
+     * Logo URL for domain
+     *
+     * @since ZCS 23.2.0
+     */
+    @ZAttr(id=3126)
+    public static final String A_carbonioLogoUrl = "carbonioLogoUrl";
+
+    /**
      * Carbonio mesh service credentials as base64 string
      *
      * @since ZCS 22.11.0

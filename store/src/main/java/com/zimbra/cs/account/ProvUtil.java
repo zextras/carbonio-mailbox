@@ -2566,8 +2566,8 @@ public class ProvUtil implements HttpDebugListener {
   }
 
   private Domain doCreateAliasDomain(
-      String aliasDomain, String localDoamin, Map<String, Object> attrs) throws ServiceException {
-    Domain local = lookupDomain(localDoamin);
+      String aliasDomain, String localDomain, Map<String, Object> attrs) throws ServiceException {
+    Domain local = lookupDomain(localDomain);
     if (!local.isLocal()) {
       throw ServiceException.INVALID_REQUEST("target domain must be a local domain", null);
     }
@@ -2582,8 +2582,8 @@ public class ProvUtil implements HttpDebugListener {
 
     if (args[1].equals("-e")) {
       if (args.length > 1) {
-        applyDefault = false;
-        acctPos = 2;
+      applyDefault = false;
+      acctPos = 2;
       } else {
         usage();
         return;
