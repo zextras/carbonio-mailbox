@@ -831,7 +831,7 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <revision>23.2.0</revision>
+    <revision>23.3.0-SNAPSHOT</revision>
   </properties>
   <version>${revision}</version>
   <profiles>
