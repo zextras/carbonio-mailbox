@@ -2373,9 +2373,6 @@ public class ProxyConfGen {
           new File(mTemplateDir, getWebHttpSModeConfTemplate("mixed")),
           new File(mConfIncludesDir, getWebHttpSModeConf("mixed")));
       expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("docs.upstream")),
-          new File(mConfIncludesDir, getConfFileName("docs.upstream")));
-      expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("web.carbonio.admin.default")),
           new File(mConfIncludesDir, getConfFileName("web.carbonio.admin.default")));
       expandTemplate(
