@@ -8034,6 +8034,7 @@ TODO: delete them permanently from here
 
 <attr id="1591" name="zimbraMtaSmtpdSenderLoginMaps" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
   <desc>Value for postconf smtpd_sender_login_maps</desc>
+  <globalConfigValue>proxy:ldap:/opt/zextras/conf/ldap-slm.cf</globalConfigValue>
 </attr>
 
 <attr id="1592" name="zimbraPrevFoldersToTrackMax" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
@@ -8078,7 +8079,7 @@ TODO: delete them permanently from here
 </attr>
 
 <attr id="1600" name="zimbraServerVersionMinor" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
-  <desc>Current minor version of ZCS installed on this server</desc>zimbraMtaSmtpdRejectUnlistedRecipient
+  <desc>Current minor version of ZCS installed on this server</desc>
 </attr>
 
 <attr id="1601" name="zimbraServerVersionMicro" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
