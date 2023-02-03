@@ -8029,6 +8029,7 @@ TODO: delete them permanently from here
 
 <attr id="1590" name="zimbraMtaSmtpdSenderRestrictions" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
   <desc>Value for postconf smtpd_sender_restrictions</desc>
+  <globalConfigValue>reject_sender_login_mismatch</globalConfigValue>
 </attr>
 
 <attr id="1591" name="zimbraMtaSmtpdSenderLoginMaps" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
