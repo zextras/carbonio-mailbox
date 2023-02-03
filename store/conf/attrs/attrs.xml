@@ -7726,7 +7726,7 @@ TODO: delete them permanently from here
 </attr>
 
 <attr id="1535" name="zimbraMtaSmtpdRejectUnlistedSender" type="enum" value="yes,no" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
-  <globalConfigValue>no</globalConfigValue>
+  <globalConfigValue>yes</globalConfigValue>
   <desc>Value for postconf smtpd_reject_unlisted_sender</desc>
 </attr>
 
