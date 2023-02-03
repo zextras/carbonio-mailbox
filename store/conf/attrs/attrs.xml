@@ -7721,7 +7721,7 @@ TODO: delete them permanently from here
 </attr>
 
 <attr id="1534" name="zimbraMtaSmtpdRejectUnlistedRecipient" type="enum" value="yes,no" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
-  <globalConfigValue>no</globalConfigValue>
+  <globalConfigValue>yes</globalConfigValue>
   <desc>Value for postconf smtpd_reject_unlisted_recipient</desc>
 </attr>
 
@@ -8077,7 +8077,7 @@ TODO: delete them permanently from here
 </attr>
 
 <attr id="1600" name="zimbraServerVersionMinor" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
-  <desc>Current minor version of ZCS installed on this server</desc>
+  <desc>Current minor version of ZCS installed on this server</desc>zimbraMtaSmtpdRejectUnlistedRecipient
 </attr>
 
 <attr id="1601" name="zimbraServerVersionMicro" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
