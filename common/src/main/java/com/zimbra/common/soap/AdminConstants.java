@@ -1826,6 +1826,9 @@ public final class AdminConstants {
   // contact backup feature
   public static final String E_SERVERS = "servers";
 
+  // cert
+  public static final String A_CHAIN = "chain";
+
   // HAB
   public static final String A_NEW_NAME = "newName";
   public static final String A_FORCE_DELETE = "forceDelete";

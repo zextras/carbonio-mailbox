@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.util.EnumSet;
@@ -19,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ChannelExec;
-import org.apache.sshd.client.channel.ClientChannel;
 import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.future.ConnectFuture;
 import org.apache.sshd.client.session.ClientSession;
@@ -132,17 +132,23 @@ public class RemoteManager {
     }
 
     public synchronized RemoteResult execute(String command) throws ServiceException{
-        RemoteResult result = new RemoteResult();
+        RemoteResult result;
         try {
-            result = executeRemoteCommand(mUser,mHost,mPort,mPrivateKey,mShimCommand,command);
-                try {
-                    ZimbraLog.rmgmt.trace("stdout content for cmd:\n%s", new String(result.mStdout, "UTF-8"));
-                    ZimbraLog.rmgmt.trace("stderr content for cmd:\n%s", new String(result.mStderr, "UTF-8"));
-                } catch (Exception ex) {
-                    ZimbraLog.rmgmt.trace("Problem logging stdout or stderr for cmd - probably not UTF-8");
-                }
-        } catch (Exception ioe) {
-             throw ServiceException.FAILURE("exception executing command: " + command + " with " + this, ioe);
+            result = executeRemoteCommand(mUser, mHost, mPort, mPrivateKey, mShimCommand, command);
+            try {
+                ZimbraLog.rmgmt
+                    .trace("stdout content for cmd:\n%s", new String(result.mStdout,
+                        StandardCharsets.UTF_8));
+                ZimbraLog.rmgmt
+                    .trace("stderr content for cmd:\n%s", new String(result.mStderr,
+                        StandardCharsets.UTF_8));
+            } catch (Exception ex) {
+                ZimbraLog.rmgmt
+                    .trace("Problem logging stdout or stderr for cmd - probably not UTF-8");
+            }
+        } catch (Exception e) {
+             throw ServiceException.FAILURE(
+                 "exception executing command: " + command + " with " + this + " " + e);
         }
         return result;
     }
@@ -155,13 +161,13 @@ public class RemoteManager {
         SshClient client = SshClient.setUpDefaultClient();
         client.start();
         ConnectFuture cf = client.connect(username, host, port);
-        try (ClientSession session = cf.verify().getSession();) {
+        try (ClientSession session = cf.verify().getSession()) {
             session.addPublicKeyIdentity(loadKeypair(privateKey.getAbsolutePath()));
             session.auth().verify(defaultTimeoutSeconds, TimeUnit.SECONDS);
             ZimbraLog.rmgmt.debug("executing shim command '%s'", mShimCommand);
             try (ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
                     ByteArrayOutputStream errorResponseStream = new ByteArrayOutputStream();
-                    ChannelExec channel = session.createExecChannel(mShimCommand);) {
+                    ChannelExec channel = session.createExecChannel(mShimCommand)) {
                 ZimbraLog.rmgmt.debug("sending mgmt command '%s'", send);
                 channel.setIn(inputStream);
                 channel.setOut(responseStream);
@@ -172,15 +178,15 @@ public class RemoteManager {
                             TimeUnit.MINUTES.toMillis(LC.zimbra_remote_cmd_channel_timeout_min.intValue()));
                     session.close(false);
                     RemoteResult result = new RemoteResult();
-                    ClientChannel.validateCommandExitStatusCode(mShimCommand, channel.getExitStatus());
                     InputStream stdout = new ByteArrayInputStream(responseStream.toByteArray());
                     InputStream stderr = new ByteArrayInputStream(errorResponseStream.toByteArray());
                     result.mStdout = ByteUtil.getContent(stdout, -1);
                     result.mStderr = ByteUtil.getContent(stderr, -1);
                     result.mExitStatus = channel.getExitStatus();
                     if (result.mExitStatus != 0) {
-                        throw new IOException("command failed: exit status=" + result.mExitStatus + ", stdout="
-                                + new String(result.mStdout) + ", stderr=" + new String(result.mStderr));
+                        throw new IOException("FAILURE: exit status=" + result.mExitStatus + "\n"
+                            + "STDOUT=" + new String(result.mStdout) + "\n"
+                            + "STDERR=" + new String(result.mStderr));
                     }
                     result.mExitSignal = channel.getExitSignal();
                     return result;

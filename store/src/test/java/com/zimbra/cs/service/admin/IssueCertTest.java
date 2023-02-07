@@ -1,5 +1,6 @@
 package com.zimbra.cs.service.admin;
 
+import static com.zimbra.common.soap.AdminConstants.A_CHAIN;
 import static com.zimbra.common.soap.AdminConstants.A_DOMAIN;
 import static com.zimbra.common.soap.AdminConstants.E_MESSAGE;
 import static com.zimbra.common.soap.AdminConstants.ISSUE_CERT_REQUEST;
@@ -38,7 +39,6 @@ public class IssueCertTest {
   private final Map<String, Object> context = new HashMap<>();
   private final Map<String, Object> domainAttributes = new HashMap<>();
 
-  private final String domainId = "domainId";
   private final String domainName = "test.demo.zextras.io";
   private final String publicServiceHostName = "public.test.demo.zextras.io";
   private final String virtualHostName = "virtual.test.demo.zextras.io";
@@ -46,6 +46,9 @@ public class IssueCertTest {
   private final String mail = "admin@test.demo.zextras.io";
 
   private final RemoteResult remoteResult = mock(RemoteResult.class);
+
+  private final IssueCert handler = new IssueCert();
+  private final XMLElement request = new XMLElement(ISSUE_CERT_REQUEST);
 
   @Rule public ExpectedException expectedEx = ExpectedException.none();
 
@@ -57,7 +60,9 @@ public class IssueCertTest {
 
     RightManager.getInstance();
 
+    String domainId = "domainId";
     String password = "testPwd";
+
     Account account =
         provisioning.createAccount(
             mail,
@@ -80,6 +85,9 @@ public class IssueCertTest {
             account.getId(),
             SoapProtocol.Soap12,
             SoapProtocol.Soap12));
+
+    this.request.addNonUniqueElement(A_DOMAIN).addText(domainId);
+    this.request.addNonUniqueElement(A_CHAIN).addText(null);
   }
 
   @Test
@@ -105,18 +113,14 @@ public class IssueCertTest {
     mockedStatic.when(() -> RemoteManager.getRemoteManager(server)).thenReturn(remoteManager);
 
     final String command =
-        "certbot dryrun --agree-tos --email admin@test.demo.zextras.io --preferred-chain \"ISRG"
-            + " Root X1\" --webroot -w /opt/zextras -d public.test.demo.zextras.io -d"
-            + " virtual.test.demo.zextras.io";
+        "certbot dryrun --preferred-chain \"ISRG Root X1\" --agree-tos --email"
+            + " admin@test.demo.zextras.io --webroot -w /opt/zextras -d public.test.demo.zextras.io"
+            + " -d virtual.test.demo.zextras.io";
 
     final String result = "OK";
 
     when(remoteManager.execute(command)).thenReturn(remoteResult);
     when(remoteResult.getMStdout()).thenReturn(result.getBytes());
-
-    final IssueCert handler = new IssueCert();
-    final XMLElement request = new XMLElement(ISSUE_CERT_REQUEST);
-    request.addNonUniqueElement(A_DOMAIN).addText(domainId);
 
     final Element response = handler.handle(request, context);
     final Element message = response.getElement(E_MESSAGE);
@@ -126,10 +130,6 @@ public class IssueCertTest {
 
   @Test
   public void shouldReturnInvalidIfNoSuchDomain() throws Exception {
-    final IssueCert handler = new IssueCert();
-    final XMLElement request = new XMLElement(ISSUE_CERT_REQUEST);
-    request.addNonUniqueElement(A_DOMAIN).addText(domainId);
-
     expectedEx.expect(ServiceException.class);
     expectedEx.expectMessage("Domain with id domainId could not be found.");
 
@@ -140,10 +140,6 @@ public class IssueCertTest {
   public void shouldReturnInvalidIfNoPublicServiceHostName() throws Exception {
     domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
     provisioning.createDomain(domainName, domainAttributes);
-
-    final IssueCert handler = new IssueCert();
-    final XMLElement request = new XMLElement(ISSUE_CERT_REQUEST);
-    request.addNonUniqueElement(A_DOMAIN).addText(domainId);
 
     expectedEx.expect(ServiceException.class);
     expectedEx.expectMessage("must have PublicServiceHostname and VirtualHostName.");
@@ -157,10 +153,6 @@ public class IssueCertTest {
 
     provisioning.createDomain(domainName, domainAttributes);
 
-    final IssueCert handler = new IssueCert();
-    final XMLElement request = new XMLElement(ISSUE_CERT_REQUEST);
-    request.addNonUniqueElement(A_DOMAIN).addText(domainId);
-
     expectedEx.expect(ServiceException.class);
     expectedEx.expectMessage("must have PublicServiceHostname and VirtualHostName.");
 
@@ -173,10 +165,6 @@ public class IssueCertTest {
     domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
 
     provisioning.createDomain(domainName, domainAttributes);
-
-    final IssueCert handler = new IssueCert();
-    final XMLElement request = new XMLElement(ISSUE_CERT_REQUEST);
-    request.addNonUniqueElement(A_DOMAIN).addText(domainId);
 
     expectedEx.expect(ServiceException.class);
     expectedEx.expectMessage("Server with carbonio-proxy node could not be found.");

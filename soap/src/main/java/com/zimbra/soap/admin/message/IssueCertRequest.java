@@ -26,14 +26,31 @@ public class IssueCertRequest extends AdminAttrsImpl {
   @XmlAttribute(name = AdminConstants.A_DOMAIN /* domain */, required = true)
   private String domain;
 
+  /**
+   * @zm-api-field-tag preferred certificate chain
+   * @zm-api-field-description could be passed zero or one argument either "long" or "short".
+   *
+   * Long Chain contains:
+   * your leaf certificate
+   * R3 signed by ISRG Root X1 122
+   * ISRG Root X1 signed by DST Root CA X3 93
+   *
+   * Short/Default chains contains:
+   * your leaf certificate
+   * R3 signed by ISRG Root X1 122
+   */
+  @XmlAttribute(name = AdminConstants.A_CHAIN /* chain */, required = false)
+  private String chain;
+
   /** no-argument constructor wanted by JAXB */
   @SuppressWarnings("unused")
   public IssueCertRequest() {
-    this(null);
+    this(null, null);
   }
 
-  public IssueCertRequest(String domain) {
+  public IssueCertRequest(String domain, String chain) {
     this.domain = domain;
+    this.chain = chain;
   }
 
   public void setDomain(String domain) {
@@ -42,6 +59,14 @@ public class IssueCertRequest extends AdminAttrsImpl {
 
   public String getDomain() {
     return domain;
+  }
+
+  public void setChain(String chain) {
+    this.domain = chain;
+  }
+
+  public String getChain() {
+    return chain;
   }
 }
 
