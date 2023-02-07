@@ -606,7 +606,13 @@ public abstract class AutoScheduler {
       }
     }
 
-    /** Will always return a list */
+    /**
+     * Returns a list of {@link javax.mail.Address} from a list of attendees by filtering them based
+     * on SCHEDULE-AGENT and if organizer conditions.
+     *
+     * @param attendees meeting attendees
+     * @return list of email addresses
+     */
     public List<Address> getRecipientsForAttendees(List<ZAttendee> attendees) {
       if (attendees == null || attendees.isEmpty()) {
         return Lists.newArrayListWithCapacity(0);
@@ -633,12 +639,10 @@ public abstract class AutoScheduler {
     }
 
     /**
-     * Returns a list of recipients from an invite for which to autoschedule messages. Example:
-     * attendees that have SCHEDULE-AGENT=CLIENT will not return as the client will be responsible
-     * of message scheduling.
+     * Returns a list of recipients from an invite.
      *
      * @param inv meeting invite
-     * @return list of recipient addresses to do autoschedule for
+     * @return list of recipient addresses from invite
      */
     public List<Address> getRecipientsForAttendees(Invite inv) {
       if (inv == null) {
