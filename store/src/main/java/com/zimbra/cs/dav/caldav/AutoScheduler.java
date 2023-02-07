@@ -38,7 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
@@ -614,6 +613,9 @@ public abstract class AutoScheduler {
       }
       List<Address> recipients = Lists.newArrayListWithCapacity(attendees.size());
       for (ZAttendee attendee : attendees) {
+        if (Objects.equals(attendee.getScheduleAgent(), "CLIENT")) {
+          continue;
+        }
         try {
           if (AccountUtil.addressMatchesAccount(calendarAccount, attendee.getAddress())) {
             continue; // Don't send to the organizer
@@ -642,10 +644,7 @@ public abstract class AutoScheduler {
       if (inv == null) {
         return Lists.newArrayListWithCapacity(0);
       }
-      return getRecipientsForAttendees(
-          inv.getAttendees().stream()
-              .filter(attendee -> !(Objects.equals("CLIENT", attendee.getScheduleAgent())))
-              .collect(Collectors.toList()));
+      return getRecipientsForAttendees(inv.getAttendees());
     }
   }
 
