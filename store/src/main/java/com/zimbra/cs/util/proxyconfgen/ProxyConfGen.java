@@ -2373,12 +2373,6 @@ public class ProxyConfGen {
           new File(mTemplateDir, getWebHttpSModeConfTemplate("mixed")),
           new File(mConfIncludesDir, getWebHttpSModeConf("mixed")));
       expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("docs.common")),
-          new File(mConfIncludesDir, getConfFileName("docs.common")));
-      expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("docs.upstream")),
-          new File(mConfIncludesDir, getConfFileName("docs.upstream")));
-      expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("web.carbonio.admin.default")),
           new File(mConfIncludesDir, getConfFileName("web.carbonio.admin.default")));
       expandTemplate(
@@ -2399,6 +2393,23 @@ public class ProxyConfGen {
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("messaging.xmpps")),
           new File(mConfIncludesDir, getConfFileName("messaging.xmpps")));
+      // Stream templates
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("stream")),
+          new File(mConfIncludesDir, getConfFileName("stream")));
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("stream.addressBook")),
+          new File(mConfIncludesDir, getConfFileName("stream.addressBook")));
+      // Templates for ssl mapping
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("map.crt")),
+          new File(mConfIncludesDir, getConfFileName("map.crt")));
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("map.key")),
+          new File(mConfIncludesDir, getConfFileName("map.key")));
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("map.ssl")),
+          new File(mConfIncludesDir, getConfFileName("map.ssl")));
     } catch (ProxyConfException | SecurityException pe) {
       handleException(pe);
       exitCode = 1;
