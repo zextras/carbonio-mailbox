@@ -50,7 +50,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import javax.mail.Address;
 import javax.mail.internet.AddressException;
@@ -68,10 +67,6 @@ public class ScheduleOutbox extends CalendarCollection {
 
   @Override
   public void handlePost(DavContext ctxt) throws DavException, IOException, ServiceException {
-    final String scheduleAgent = ctxt.getRequest().getHeader(DavProtocol.HEADER_SCHEDULE_AGENT);
-    if (!Objects.isNull(scheduleAgent) && scheduleAgent.equalsIgnoreCase("client")) {
-      return;
-    }
     DelegationInfo delegationInfo =
         new DelegationInfo(ctxt.getRequest().getHeader(DavProtocol.HEADER_ORIGINATOR));
     Enumeration<String> recipients = ctxt.getRequest().getHeaders(DavProtocol.HEADER_RECIPIENT);
