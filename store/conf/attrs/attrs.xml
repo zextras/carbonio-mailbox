@@ -3638,8 +3638,8 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>logout URL for admin console to send the user to upon explicit logging out</desc>
 </attr>
 
-<attr id="685" name="zimbraReverseProxyMailMode" type="enum" value="http,https,both,mixed,redirect" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="5.0.7">
-  <desc>whether to run proxy in HTTP, HTTPS, both, mixed, or redirect mode.  See also related attributes zimbraMailProxyPort and zimbraMailSSLProxyPort</desc>
+<attr id="685" name="zimbraReverseProxyMailMode" type="enum" value="https,redirect" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="5.0.7">
+  <desc>whether to run proxy in HTTPS or redirect mode. See also related attributes zimbraMailProxyPort and zimbraMailSSLProxyPort</desc>
 </attr>
 
 <attr id="686" name="zimbraPrefCalendarAllowForwardedInvite" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="6.0.0_BETA1">
