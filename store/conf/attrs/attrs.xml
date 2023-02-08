@@ -7721,12 +7721,12 @@ TODO: delete them permanently from here
 </attr>
 
 <attr id="1534" name="zimbraMtaSmtpdRejectUnlistedRecipient" type="enum" value="yes,no" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
-  <globalConfigValue>no</globalConfigValue>
+  <globalConfigValue>yes</globalConfigValue>
   <desc>Value for postconf smtpd_reject_unlisted_recipient</desc>
 </attr>
 
 <attr id="1535" name="zimbraMtaSmtpdRejectUnlistedSender" type="enum" value="yes,no" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
-  <globalConfigValue>no</globalConfigValue>
+  <globalConfigValue>yes</globalConfigValue>
   <desc>Value for postconf smtpd_reject_unlisted_sender</desc>
 </attr>
 
@@ -8029,10 +8029,12 @@ TODO: delete them permanently from here
 
 <attr id="1590" name="zimbraMtaSmtpdSenderRestrictions" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
   <desc>Value for postconf smtpd_sender_restrictions</desc>
+  <globalConfigValue>reject_sender_login_mismatch</globalConfigValue>
 </attr>
 
 <attr id="1591" name="zimbraMtaSmtpdSenderLoginMaps" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
   <desc>Value for postconf smtpd_sender_login_maps</desc>
+  <globalConfigValue>proxy:ldap:/opt/zextras/conf/ldap-slm.cf</globalConfigValue>
 </attr>
 
 <attr id="1592" name="zimbraPrevFoldersToTrackMax" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
