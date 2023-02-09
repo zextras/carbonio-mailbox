@@ -11,8 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * @zm-api-command-auth-required true
  * @zm-api-command-admin-auth-required true
- * @zm-api-command-description Issue a LetsEncrypt Certificate <br>
- *     Issues a LetsEncrypt certificate for a requested domain.
+ * @zm-api-command-description Issues a LetsEncrypt certificate for a requested domain.
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = AdminConstants.E_ISSUE_CERT_REQUEST)
