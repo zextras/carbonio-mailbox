@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * @author ysasaki
  */
 public final class MockProvisioning extends Provisioning {
-  public static final String DEFAULT_ACCOUNT_ID = new UUID(0L, 0L).toString();
+  public static final String DEFAULT_ACCOUNT_ID = UUID.randomUUID().toString();
 
   private final Map<String, Account> id2account = Maps.newHashMap();
   private final Map<String, Account> name2account = Maps.newHashMap();
@@ -100,7 +100,7 @@ public final class MockProvisioning extends Provisioning {
       throws ServiceException {
     validate(ProvisioningValidator.CREATE_ACCOUNT, email, null, attrs);
     if (!attrs.containsKey(A_zimbraId)) {
-      attrs.put(A_zimbraId, UUID.randomUUID().toString());
+      attrs.put(A_zimbraId, DEFAULT_ACCOUNT_ID);
     }
     if (!attrs.containsKey(A_zimbraMailHost)) {
       attrs.put(A_zimbraMailHost, "localhost");
