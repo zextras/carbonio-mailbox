@@ -21,23 +21,25 @@ public class IssueCertRequest extends AdminAttrsImpl {
 
   /**
    * @zm-api-field-tag domain id
-   * @zm-api-field-description a domain id to issue a LetsEncrypt certs for
+   * @zm-api-field-description a domain id to issue a LetsEncrypt cert for
    */
   @XmlAttribute(name = AdminConstants.A_DOMAIN /* domain */, required = true)
   private String domain;
 
   /**
    * @zm-api-field-tag preferred certificate chain
-   * @zm-api-field-description could be passed zero or one argument either "long" or "short".
+   * @zm-api-field-description could be passed zero or one argument - "short". If an argument is
+   *     "short" - it will try to issue a short chain cert, in any other cases it will try to issue
+   *     a long chain cert.
    *
-   * Long Chain contains:
-   * your leaf certificate
-   * R3 signed by ISRG Root X1 122
-   * ISRG Root X1 signed by DST Root CA X3 93
+   *     Long (Default) chain contains:
+   *     your leaf certificate
+   *     R3 signed by ISRG Root X1 122
+   *     ISRG Root X1 signed by DST Root CA X3 93
    *
-   * Short/Default chains contains:
-   * your leaf certificate
-   * R3 signed by ISRG Root X1 122
+   *     Short chains contains:
+   *     your leaf certificate
+   *     R3 signed by ISRG Root X1 122
    */
   @XmlAttribute(name = AdminConstants.A_CHAIN /* chain */, required = false)
   private String chain;
@@ -69,10 +71,3 @@ public class IssueCertRequest extends AdminAttrsImpl {
     return chain;
   }
 }
-
-
-
-
-
-
-

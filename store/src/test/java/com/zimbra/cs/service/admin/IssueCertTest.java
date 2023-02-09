@@ -45,6 +45,12 @@ public class IssueCertTest {
 
   private final String mail = "admin@test.demo.zextras.io";
 
+  private final String command = "certbot dryrun --agree-tos --email admin@test.demo.zextras.io -n "
+      + "--webroot -w /opt/zextras "
+      + "-d public.test.demo.zextras.io -d virtual.test.demo.zextras.io";
+
+  private final static MockedStatic<RemoteManager> mockedStatic = mockStatic(RemoteManager.class);
+  private final RemoteManager remoteManager = mock(RemoteManager.class);
   private final RemoteResult remoteResult = mock(RemoteResult.class);
 
   private final IssueCert handler = new IssueCert();
@@ -92,32 +98,9 @@ public class IssueCertTest {
 
   @Test
   public void shouldReturnSuccessMessageIfAllChecksPassed() throws Exception {
-    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
-    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
+    createInfrastructure();
 
-    provisioning.createDomain(domainName, domainAttributes);
-
-    final String serverName = "serverName";
-    final Server server =
-        provisioning.createServer(
-            serverName,
-            new HashMap<>() {
-              {
-                put(ZAttrProvisioning.A_cn, serverName);
-                put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
-              }
-            });
-
-    MockedStatic<RemoteManager> mockedStatic = mockStatic(RemoteManager.class);
-    final RemoteManager remoteManager = mock(RemoteManager.class);
-    mockedStatic.when(() -> RemoteManager.getRemoteManager(server)).thenReturn(remoteManager);
-
-    final String command =
-        "certbot dryrun --preferred-chain \"ISRG Root X1\" --agree-tos --email"
-            + " admin@test.demo.zextras.io --webroot -w /opt/zextras -d public.test.demo.zextras.io"
-            + " -d virtual.test.demo.zextras.io";
-
-    final String result = "OK";
+    final String result = "SUCCESS";
 
     when(remoteManager.execute(command)).thenReturn(remoteResult);
     when(remoteResult.getMStdout()).thenReturn(result.getBytes());
@@ -126,6 +109,21 @@ public class IssueCertTest {
     final Element message = response.getElement(E_MESSAGE);
     assertEquals(message.getAttribute(A_DOMAIN), domainName);
     assertEquals(message.getText(), result);
+  }
+
+  @Test
+  public void shouldReturnFailureMessageIfRemoteExecutionFailed() throws Exception {
+    createInfrastructure();
+
+    final String result = "FAILURE";
+    final String expectedMessage = "system failure: FAILURE";
+
+    when(remoteManager.execute(command)).thenThrow(ServiceException.FAILURE(result));
+
+    final Element response = handler.handle(request, context);
+    final Element message = response.getElement(E_MESSAGE);
+    assertEquals(message.getAttribute(A_DOMAIN), domainName);
+    assertEquals(message.getText(), expectedMessage);
   }
 
   @Test
@@ -170,5 +168,25 @@ public class IssueCertTest {
     expectedEx.expectMessage("Server with carbonio-proxy node could not be found.");
 
     handler.handle(request, context);
+  }
+
+  private void createInfrastructure() throws ServiceException {
+    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
+    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
+
+    provisioning.createDomain(domainName, domainAttributes);
+
+    final String serverName = "serverName";
+    final Server server =
+        provisioning.createServer(
+            serverName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_cn, serverName);
+                put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
+              }
+            });
+
+    mockedStatic.when(() -> RemoteManager.getRemoteManager(server)).thenReturn(remoteManager);
   }
 }

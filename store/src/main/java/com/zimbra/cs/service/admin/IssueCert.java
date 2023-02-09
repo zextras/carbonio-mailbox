@@ -16,8 +16,33 @@ import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Admin Handler class to issue a LetsEncrypt certificate for a domain using
+ * {@link com.zimbra.cs.rmgmt.RemoteManager}, {@link com.zimbra.cs.rmgmt.RemoteCertbot}.
+ *
+ * @author Yuliya Aheeva
+ * @since 23.3.0
+ */
 public class IssueCert extends AdminDocumentHandler {
 
+  /**
+   * Handles the request. Searches a domain by id, checks admin rights (accessible to global and
+   * delegated admin of requested domain), searches a server with proxy node, executes remote
+   * certbot command on it, creates response element.
+   *
+   * @param request {@link Element} representation of {@link
+   *     com.zimbra.soap.admin.message.IssueCertRequest}
+   * @param context request context
+   * @return {@link Element} representation of {@link
+   *     com.zimbra.soap.admin.message.IssueCertResponse}
+   * @throws ServiceException in case if domain could not be found, domain doesn't have
+   * PublicServiceHostname and at least one VirtualHostName,
+   * server with proxy node could not be found or domain admin dosn't have rights to deal with
+   * this domain.
+   *
+   * It won't throw an exception in case if remote execution command fails, instead will create
+   * a response and add a failure message to it.
+   */
   @Override
   public Element handle(final Element request, final Map<String, Object> context)
       throws ServiceException {
@@ -46,8 +71,12 @@ public class IssueCert extends AdminDocumentHandler {
           null);
     }
 
+    // First release will work only on ONE proxy even if there are multiple proxy in the infrastructure.
     Optional<Server> optionalServer =
-        prov.getAllServers().stream().filter(Server::hasProxyService).findFirst();
+        prov.getAllServers()
+            .stream()
+            .filter(Server::hasProxyService)
+            .findFirst();
 
     if (optionalServer.isEmpty()) {
       throw ServiceException.NOT_FOUND("Server with carbonio-proxy node could not be found.");
@@ -57,11 +86,17 @@ public class IssueCert extends AdminDocumentHandler {
 
     RemoteManager remoteManager = RemoteManager.getRemoteManager(optionalServer.get());
     RemoteCertbot certbot = new RemoteCertbot(remoteManager);
-    String command = certbot.createCommand(
-        RemoteCommands.CERTBOT_DRY_RUN, adminMail, chain, publicServiceHostname, virtualHostNames);
+    String command =
+        certbot.createCommand(
+            RemoteCommands.CERTBOT_DRY_RUN,
+            adminMail,
+            chain,
+            publicServiceHostname,
+            virtualHostNames);
     String result = certbot.execute(command);
 
-    ZimbraLog.rmgmt.info("Issuing a LetsEncrypt cert for domain " + domainId + " result: " + result);
+    ZimbraLog.rmgmt.info(
+        "Issuing a LetsEncrypt cert for domain " + domainId + " result: " + result);
 
     Element response = zsc.createElement(AdminConstants.ISSUE_CERT_RESPONSE);
 
