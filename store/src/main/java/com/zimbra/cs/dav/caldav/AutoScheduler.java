@@ -619,7 +619,8 @@ public abstract class AutoScheduler {
       }
       List<Address> recipients = Lists.newArrayListWithCapacity(attendees.size());
       for (ZAttendee attendee : attendees) {
-        if (Objects.equals(attendee.getScheduleAgent(), "CLIENT")) {
+        if (Objects.equals(attendee.getScheduleAgent(), "CLIENT")
+            || Objects.equals(attendee.getScheduleAgent(), "NONE")) {
           continue;
         }
         try {

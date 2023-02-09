@@ -100,7 +100,7 @@ public final class MockProvisioning extends Provisioning {
       throws ServiceException {
     validate(ProvisioningValidator.CREATE_ACCOUNT, email, null, attrs);
     if (!attrs.containsKey(A_zimbraId)) {
-      attrs.put(A_zimbraId, DEFAULT_ACCOUNT_ID);
+      attrs.put(A_zimbraId, UUID.randomUUID().toString());
     }
     if (!attrs.containsKey(A_zimbraMailHost)) {
       attrs.put(A_zimbraMailHost, "localhost");
@@ -442,9 +442,9 @@ public final class MockProvisioning extends Provisioning {
     }
 
     if (domainType.equalsIgnoreCase(DomainType.alias.name())) {
-      attrs.put(A_zimbraMailCatchAllAddress,  "@" + name);
-      final Domain targetDomain = getDomainById(
-          (String) attrs.getOrDefault(A_zimbraDomainAliasTargetId, name));
+      attrs.put(A_zimbraMailCatchAllAddress, "@" + name);
+      final Domain targetDomain =
+          getDomainById((String) attrs.getOrDefault(A_zimbraDomainAliasTargetId, name));
       attrs.put(A_zimbraMailCatchAllForwardingAddress, "@" + targetDomain.getName());
     }
 

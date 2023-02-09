@@ -32,6 +32,18 @@ public class ZCalendar {
   public static final String sIcalVersion = "2.0";
   public static final String sObsoleteVcalVersion = "1.0";
 
+  /**
+   * Values for SCHEDULE-AGENT param (https://www.rfc-editor.org/rfc/rfc6638.html#section-7.1)
+   *
+   * @author davidefrison
+   * @since 23.3.0
+   */
+  public static enum ScheduleAgent {
+    SERVER,
+    CLIENT,
+    NONE
+  }
+
   public static enum ICalTok {
     ACTION,
     ALTREP,

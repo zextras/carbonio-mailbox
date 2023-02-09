@@ -117,7 +117,6 @@ public class DavProtocol {
   public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
   public static final String HEADER_RANGE = "RANGE";
   public static final String HEADER_SCHEDULE_REPLY = "Schedule-Reply"; /* RFC 6638 section 8.1 */
-  public static final String HEADER_SCHEDULE_AGENT = "Schedule-Agent"; /* RFC 6638 section 7.1 */
 
   public static final String NO_CACHE = "no-cache";
   public static final String HEADER_AUTHORIZATION = "Authorization";

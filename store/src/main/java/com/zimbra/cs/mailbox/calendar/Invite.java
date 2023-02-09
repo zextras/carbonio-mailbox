@@ -17,6 +17,7 @@ import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.calendar.ParsedDuration;
 import com.zimbra.common.calendar.TimeZoneMap;
 import com.zimbra.common.calendar.ZCalendar.ICalTok;
+import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.calendar.ZCalendar.ZCalendarBuilder;
 import com.zimbra.common.calendar.ZCalendar.ZComponent;
 import com.zimbra.common.calendar.ZCalendar.ZParameter;
@@ -2239,14 +2240,16 @@ public class Invite {
                       ZProperty organizer = comp.getProperty(ICalTok.ORGANIZER);
                       ZOrganizer zOrganizer = new ZOrganizer(prop);
                       zOrganizer.setScheduleAgent(
-                          organizer.getParameterVal(ICalTok.SCHEDULE_AGENT, "SERVER"));
+                          organizer.getParameterVal(
+                              ICalTok.SCHEDULE_AGENT, ScheduleAgent.SERVER.toString()));
                       newInv.setOrganizer(zOrganizer);
                       break;
                     case ATTENDEE:
                       ZProperty attendee = comp.getProperty(ICalTok.ATTENDEE);
                       ZAttendee zAttendee = new ZAttendee(prop);
                       zAttendee.setScheduleAgent(
-                          attendee.getParameterVal(ICalTok.SCHEDULE_AGENT, "SERVER"));
+                          attendee.getParameterVal(
+                              ICalTok.SCHEDULE_AGENT, ScheduleAgent.SERVER.toString()));
                       newInv.addAttendee(zAttendee);
                       break;
                     case DTSTAMP:
