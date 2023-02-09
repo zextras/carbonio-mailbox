@@ -21,6 +21,7 @@ import com.zimbra.cs.mailbox.calendar.ZAttendee;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import javax.mail.Address;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,10 +38,42 @@ public class OrganizerAutoSchedulerTest {
   public void setUp() throws Exception {
     MailboxTestUtil.initServer();
     prov = Provisioning.getInstance();
-    organizer = prov.createAccount("organizer@test.io", "secret", new HashMap<String, Object>());
-    attendee1 = prov.createAccount("attendee1@test.io", "secret", new HashMap<String, Object>());
-    attendee2 = prov.createAccount("attendee2@test.io", "secret", new HashMap<String, Object>());
-    attendee3 = prov.createAccount("attendee3@test.io", "secret", new HashMap<String, Object>());
+    organizer =
+        prov.createAccount(
+            "organizer@test.io",
+            "secret",
+            new HashMap<>() {
+              {
+                put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+              }
+            });
+    attendee1 =
+        prov.createAccount(
+            "attendee1@test.io",
+            "secret",
+            new HashMap<>() {
+              {
+                put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+              }
+            });
+    attendee2 =
+        prov.createAccount(
+            "attendee2@test.io",
+            "secret",
+            new HashMap<>() {
+              {
+                put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+              }
+            });
+    attendee3 =
+        prov.createAccount(
+            "attendee3@test.io",
+            "secret",
+            new HashMap<>() {
+              {
+                put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+              }
+            });
   }
 
   /**
