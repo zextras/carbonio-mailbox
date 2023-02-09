@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * @author ysasaki
  */
 public final class MockProvisioning extends Provisioning {
-  public static final String DEFAULT_ACCOUNT_ID = UUID.randomUUID().toString();
+  public static final String DEFAULT_ACCOUNT_ID = new UUID(0L, 0L).toString();
 
   private final Map<String, Account> id2account = Maps.newHashMap();
   private final Map<String, Account> name2account = Maps.newHashMap();
