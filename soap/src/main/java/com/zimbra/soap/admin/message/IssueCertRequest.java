@@ -37,7 +37,7 @@ public class IssueCertRequest extends AdminAttrsImpl {
    *     R3 signed by ISRG Root X1 122
    *     ISRG Root X1 signed by DST Root CA X3 93
    *
-   *     Short chains contains:
+   *     Short chain contains:
    *     your leaf certificate
    *     R3 signed by ISRG Root X1 122
    */
