@@ -25,6 +25,7 @@ import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
@@ -95,14 +96,18 @@ public class IssueCertTest {
     this.request.addNonUniqueElement(A_DOMAIN).addText(domainId);
   }
 
-  @AfterClass
-  public static void tearDown() {
+  @After
+  public void clearData() {
     try {
       MailboxTestUtil.clearData();
-      mockedStatic.close();
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  @AfterClass
+  public static void tearDown() {
+      mockedStatic.close();
   }
 
   @Test
