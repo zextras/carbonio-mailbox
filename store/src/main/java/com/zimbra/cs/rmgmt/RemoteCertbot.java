@@ -19,6 +19,8 @@ public class RemoteCertbot {
   private static final String WEBROOT_PATH = "/opt/zextras";
   private static final String AGREEMENT = "--agree-tos --email";
   private static final String NON_INTERACTIVELY = "-n";
+  private static final String EXPAND = "--cert-name";
+  private static final String KEEP = "--keep";
 
   private final RemoteManager remoteManager;
   private StringBuilder stringBuilder;
@@ -37,12 +39,13 @@ public class RemoteCertbot {
    *  ACME server's Subscriber Agreement)
    * @param chain long (default) or short (should be specified by domain admin in {@link
    *  com.zimbra.soap.admin.message.IssueCertRequest} request with the key word "short")
+   * @param expand boolean value if domain virtual hostname was added or deleted
    * @param publicServiceHostName a value of domain attribute zimbraPublicServiceHostname
-   * @param virtualHosts a value/ values of domain attribute zimbraPublicServiceHostname
+   * @param virtualHosts a value/ values of domain attribute zimbraVirtualHostname
    * @return created command
    */
-  public String createCommand(String remoteCommand,
-      String email, String chain, String publicServiceHostName, String[] virtualHosts) {
+  public String createCommand(String remoteCommand, String email, String chain,
+      boolean expand, String publicServiceHostName, String[] virtualHosts) {
 
     this.stringBuilder = new StringBuilder();
 
@@ -52,7 +55,12 @@ public class RemoteCertbot {
       addSubCommand(" ", CHAIN, SHORT_CHAIN);
     }
 
-    addSubCommand(" ", AGREEMENT, email, NON_INTERACTIVELY, WEBROOT, WEBROOT_PATH);
+    addSubCommand(" ", AGREEMENT, email, NON_INTERACTIVELY, KEEP, WEBROOT, WEBROOT_PATH);
+
+    if (expand) {
+      addSubCommand(" ", EXPAND, publicServiceHostName);
+    }
+
     addSubCommand(" -d ", publicServiceHostName);
     addSubCommand(" -d ", virtualHosts);
 

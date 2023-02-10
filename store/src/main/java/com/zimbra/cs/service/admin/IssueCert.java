@@ -4,6 +4,7 @@ import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
@@ -62,6 +63,7 @@ public class IssueCert extends AdminDocumentHandler {
     String adminMail = admin.mAuthedAcct.getMail();
 
     String chain = request.getAttribute(AdminConstants.A_CHAIN);
+    boolean expand = request.getAttributeBool(MailConstants.A_EXPAND);
 
     String publicServiceHostname = domain.getPublicServiceHostname();
     String[] virtualHostNames = domain.getVirtualHostname();
@@ -91,6 +93,7 @@ public class IssueCert extends AdminDocumentHandler {
             RemoteCommands.CERTBOT_CERTONLY,
             adminMail,
             chain,
+            expand,
             publicServiceHostname,
             virtualHostNames);
     String result = certbot.execute(command);
