@@ -10,7 +10,7 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.generated.AdminRights;
-import com.zimbra.cs.rmgmt.RemoteCertbotCmd;
+import com.zimbra.cs.rmgmt.RemoteCertbot;
 import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -19,7 +19,7 @@ import java.util.Optional;
 
 /**
  * Admin Handler class to issue a LetsEncrypt certificate for a domain using
- * {@link com.zimbra.cs.rmgmt.RemoteManager}, {@link RemoteCertbotCmd}.
+ * {@link com.zimbra.cs.rmgmt.RemoteManager}, {@link RemoteCertbot}.
  *
  * @author Yuliya Aheeva
  * @since 23.3.0
@@ -87,7 +87,7 @@ public class IssueCert extends AdminDocumentHandler {
     ZimbraLog.rmgmt.info("Issuing a LetsEncrypt cert for domain " + domainId);
 
     RemoteManager remoteManager = RemoteManager.getRemoteManager(optionalServer.get());
-    RemoteCertbotCmd certbot = new RemoteCertbotCmd(remoteManager);
+    RemoteCertbot certbot = new RemoteCertbot(remoteManager);
     String command =
         certbot.createCommand(
             RemoteCommands.CERTBOT_CERTONLY,

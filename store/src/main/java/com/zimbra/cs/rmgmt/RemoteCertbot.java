@@ -5,13 +5,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
- * RemoteCertbotCmd class interacts with "Certbot" - an acme client for managing Let’sEncrypt
+ * RemoteCertbot class interacts with "Certbot" - an acme client for managing Let’sEncrypt
  * certificates, using {@link com.zimbra.cs.rmgmt.RemoteManager}.
  *
  * @author Yuliya Aheeva
  * @since 23.3.0
  */
-public class RemoteCertbotCmd {
+public class RemoteCertbot {
   private static final String CHAIN = "--preferred-chain";
   private static final String SHORT_CHAIN = "\"ISRG Root X1\"";
   private static final String CHAIN_TYPE = "short";
@@ -25,7 +25,7 @@ public class RemoteCertbotCmd {
   private final RemoteManager remoteManager;
   private StringBuilder stringBuilder;
 
-  public RemoteCertbotCmd(RemoteManager remoteManager) {
+  public RemoteCertbot(RemoteManager remoteManager) {
     this.remoteManager = remoteManager;
   }
 
