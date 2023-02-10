@@ -1485,10 +1485,10 @@ public class ProxyConfGen {
         new ProxyConfVar(
             "web.mailmode",
             ZAttrProvisioning.A_zimbraReverseProxyMailMode,
-            "both",
+            "https",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
-            "Reverse Proxy Mail Mode - can be http|https|both|redirect|mixed"));
+            "Reverse Proxy Mail Mode - can be https|redirect"));
     mConfVars.put(
         "web.server_name.default",
         new ProxyConfVar(
