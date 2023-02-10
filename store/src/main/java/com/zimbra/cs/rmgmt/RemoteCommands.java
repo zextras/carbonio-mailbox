@@ -47,5 +47,5 @@ public class RemoteCommands {
     public static final String STOP_SPELL = "stop spell";
 
     //certbot
-    public static final String CERTBOT_DRY_RUN = "certbot dryrun";
+    public static final String CERTBOT_CERTONLY = "certbot certonly";
 }

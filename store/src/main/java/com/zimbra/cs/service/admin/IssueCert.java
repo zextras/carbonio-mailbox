@@ -88,7 +88,7 @@ public class IssueCert extends AdminDocumentHandler {
     RemoteCertbot certbot = new RemoteCertbot(remoteManager);
     String command =
         certbot.createCommand(
-            RemoteCommands.CERTBOT_DRY_RUN,
+            RemoteCommands.CERTBOT_CERTONLY,
             adminMail,
             chain,
             publicServiceHostname,

@@ -46,7 +46,8 @@ public class IssueCertTest {
 
   private final String mail = "admin@test.demo.zextras.io";
 
-  private final String command = "certbot dryrun --agree-tos --email admin@test.demo.zextras.io -n "
+  private final String command = "certbot certonly --agree-tos --email admin@test.demo.zextras.io"
+      + " -n "
       + "--webroot -w /opt/zextras "
       + "-d public.test.demo.zextras.io -d virtual.test.demo.zextras.io";
 
@@ -104,6 +105,7 @@ public class IssueCertTest {
     } catch (Exception e) {
       e.printStackTrace();
     }
+
   }
 
   @Test
