@@ -1828,6 +1828,7 @@ public final class AdminConstants {
 
   // cert
   public static final String A_CHAIN = "chain";
+  public static final String DEFAULT_CHAIN = "long";
 
   // HAB
   public static final String A_NEW_NAME = "newName";

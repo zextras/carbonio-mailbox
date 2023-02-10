@@ -62,8 +62,8 @@ public class IssueCert extends AdminDocumentHandler {
     AdminAccessControl admin = checkDomainRight(zsc, domain, AdminRights.R_getDomain);
     String adminMail = admin.mAuthedAcct.getMail();
 
-    String chain = request.getAttribute(AdminConstants.A_CHAIN);
-    boolean expand = request.getAttributeBool(MailConstants.A_EXPAND);
+    String chain = request.getAttribute(AdminConstants.A_CHAIN, AdminConstants.DEFAULT_CHAIN);
+    boolean expand = request.getAttributeBool(MailConstants.A_EXPAND, false);
 
     String publicServiceHostname = domain.getPublicServiceHostname();
     String[] virtualHostNames = domain.getVirtualHostname();

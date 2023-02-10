@@ -74,7 +74,7 @@ public class IssueCertRequest extends AdminAttrsImpl {
   }
 
   public void setChain(String chain) {
-    this.domain = chain;
+    this.chain = chain;
   }
 
   public String getChain() {
@@ -82,7 +82,7 @@ public class IssueCertRequest extends AdminAttrsImpl {
   }
 
   public void setExpand(Boolean expand) {
-    this.expand = ZmBoolean.fromBool(expand);
+    this.expand = ZmBoolean.fromBool(expand, false);
   }
 
   public boolean getExpand() {

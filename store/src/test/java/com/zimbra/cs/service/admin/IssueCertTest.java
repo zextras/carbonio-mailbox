@@ -1,6 +1,5 @@
 package com.zimbra.cs.service.admin;
 
-import static com.zimbra.common.soap.AdminConstants.A_CHAIN;
 import static com.zimbra.common.soap.AdminConstants.A_DOMAIN;
 import static com.zimbra.common.soap.AdminConstants.E_MESSAGE;
 import static com.zimbra.common.soap.AdminConstants.ISSUE_CERT_REQUEST;
@@ -47,8 +46,7 @@ public class IssueCertTest {
   private final String mail = "admin@test.demo.zextras.io";
 
   private final String command = "certbot certonly --agree-tos --email admin@test.demo.zextras.io"
-      + " -n "
-      + "--webroot -w /opt/zextras "
+      + " -n --keep --webroot -w /opt/zextras "
       + "-d public.test.demo.zextras.io -d virtual.test.demo.zextras.io";
 
   private final static MockedStatic<RemoteManager> mockedStatic = mockStatic(RemoteManager.class);
@@ -95,7 +93,6 @@ public class IssueCertTest {
             SoapProtocol.Soap12));
 
     this.request.addNonUniqueElement(A_DOMAIN).addText(domainId);
-    this.request.addNonUniqueElement(A_CHAIN).addText(null);
   }
 
   @After
