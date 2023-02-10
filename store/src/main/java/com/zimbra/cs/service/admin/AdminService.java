@@ -64,7 +64,7 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.GET_ACCOUNT_MEMBERSHIP_REQUEST, new GetAccountMembership());
 
-    //certbot LE
+    //certbot
     dispatcher.registerHandler(AdminConstants.ISSUE_CERT_REQUEST, new IssueCert());
 
     //domain
