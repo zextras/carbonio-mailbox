@@ -2349,14 +2349,8 @@ public class ProxyConfGen {
           new File(mTemplateDir, getWebHttpModeConfTemplate("https")),
           new File(mConfIncludesDir, getWebHttpModeConf("https")));
       expandTemplate(
-          new File(mTemplateDir, getWebHttpModeConfTemplate("both")),
-          new File(mConfIncludesDir, getWebHttpModeConf("both")));
-      expandTemplate(
           new File(mTemplateDir, getWebHttpModeConfTemplate("redirect")),
           new File(mConfIncludesDir, getWebHttpModeConf("redirect")));
-      expandTemplate(
-          new File(mTemplateDir, getWebHttpModeConfTemplate("mixed")),
-          new File(mConfIncludesDir, getWebHttpModeConf("mixed")));
       expandTemplate(
           new File(mTemplateDir, getWebHttpSModeConfTemplate("http")),
           new File(mConfIncludesDir, getWebHttpSModeConf("http")));
@@ -2364,14 +2358,8 @@ public class ProxyConfGen {
           new File(mTemplateDir, getWebHttpSModeConfTemplate("https")),
           new File(mConfIncludesDir, getWebHttpSModeConf("https")));
       expandTemplate(
-          new File(mTemplateDir, getWebHttpSModeConfTemplate("both")),
-          new File(mConfIncludesDir, getWebHttpSModeConf("both")));
-      expandTemplate(
           new File(mTemplateDir, getWebHttpSModeConfTemplate("redirect")),
           new File(mConfIncludesDir, getWebHttpSModeConf("redirect")));
-      expandTemplate(
-          new File(mTemplateDir, getWebHttpSModeConfTemplate("mixed")),
-          new File(mConfIncludesDir, getWebHttpSModeConf("mixed")));
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("web.carbonio.admin.default")),
           new File(mConfIncludesDir, getConfFileName("web.carbonio.admin.default")));
