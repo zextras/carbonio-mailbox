@@ -57,12 +57,11 @@ public class IssueCertRequest extends AdminAttrsImpl {
   /** no-argument constructor wanted by JAXB */
   @SuppressWarnings("unused")
   public IssueCertRequest() {
-    this(null, null);
+    this(null);
   }
 
-  public IssueCertRequest(String domain, String chain) {
+  public IssueCertRequest(String domain) {
     this.domain = domain;
-    this.chain = chain;
   }
 
   public void setDomain(String domain) {
