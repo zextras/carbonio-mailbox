@@ -2230,10 +2230,7 @@ public class ZAttrProvisioning {
     }
 
     public static enum ReverseProxyMailMode {
-        http("http"),
         https("https"),
-        both("both"),
-        mixed("mixed"),
         redirect("redirect");
         private String mValue;
         private ReverseProxyMailMode(String value) { mValue = value; }
@@ -2244,10 +2241,7 @@ public class ZAttrProvisioning {
              }
              throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
         }
-        public boolean isHttp() { return this == http;}
         public boolean isHttps() { return this == https;}
-        public boolean isBoth() { return this == both;}
-        public boolean isMixed() { return this == mixed;}
         public boolean isRedirect() { return this == redirect;}
     }
 
@@ -15327,9 +15321,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyMailImapsEnabled = "zimbraReverseProxyMailImapsEnabled";
 
     /**
-     * whether to run proxy in HTTP, HTTPS, both, mixed, or redirect mode.
-     * See also related attributes zimbraMailProxyPort and
-     * zimbraMailSSLProxyPort
+     * whether to run proxy in HTTPS or redirect mode. See also related
+     * attributes zimbraMailProxyPort and zimbraMailSSLProxyPort
      *
      * @since ZCS 5.0.7
      */
