@@ -81,10 +81,10 @@ public class IssueCert extends AdminDocumentHandler {
             .filter(Server::hasProxyService)
             .findFirst()
             .orElseThrow(() -> ServiceException.FAILURE(
-                "Issuing a LetsEncrypt certificate command requires carbonio-proxy node. "
+                "Issuing LetsEncrypt certificate command requires carbonio-proxy node. "
                 + "Be sure carbonio-proxy is installed, up and running."));
 
-    ZimbraLog.rmgmt.info("Issuing a LetsEncrypt cert for domain " + domainId);
+    ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert for domain " + domainId);
 
     RemoteManager remoteManager = RemoteManager.getRemoteManager(proxyServer);
     RemoteCertbot certbot = new RemoteCertbot(remoteManager);
@@ -99,7 +99,7 @@ public class IssueCert extends AdminDocumentHandler {
     String result = certbot.execute(command);
 
     ZimbraLog.rmgmt.info(
-        "Issuing a LetsEncrypt cert command for domain " + domainId
+        "Issuing LetsEncrypt cert command for domain " + domainId
             + " was finished with the following result: " + result);
 
     Element response = zsc.createElement(AdminConstants.ISSUE_CERT_RESPONSE);
