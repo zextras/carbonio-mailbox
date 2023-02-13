@@ -65,11 +65,11 @@ public class IssueCert extends AdminDocumentHandler {
     String publicServiceHostname = domain.getPublicServiceHostname();
     String[] virtualHostNames = domain.getVirtualHostname();
     if (publicServiceHostname == null) {
-      throw ServiceException.INVALID_REQUEST(
+      throw ServiceException.FAILURE(
           "Domain with id " + domainId + " must have PublicServiceHostname.",
           null);
     } else if (virtualHostNames.length == 0) {
-      throw ServiceException.INVALID_REQUEST(
+      throw ServiceException.FAILURE(
           "Domain with id " + domainId + " must have at least one VirtualHostName.",
           null);
     }
