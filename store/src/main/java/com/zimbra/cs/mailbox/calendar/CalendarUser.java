@@ -21,7 +21,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
@@ -45,28 +44,6 @@ public abstract class CalendarUser {
 
   public void setScheduleAgent(ScheduleAgent scheduleAgent) {
     this.scheduleAgent = scheduleAgent;
-  }
-
-  /**
-   * Converts a schedule agent value from string
-   *
-   * @param scheduleAgent
-   */
-  public void setScheduleAgentFromString(String scheduleAgent) {
-    ScheduleAgent.valueOf(scheduleAgent);
-    if (!(Objects.isNull(scheduleAgent))) {
-      final String scheduleAgentLower = scheduleAgent.toLowerCase();
-      switch (scheduleAgentLower) {
-        case "server":
-          this.scheduleAgent = ScheduleAgent.SERVER;
-          break;
-        case "client":
-          this.scheduleAgent = ScheduleAgent.CLIENT;
-          break;
-        case "none":
-          this.scheduleAgent = ScheduleAgent.NONE;
-      }
-    }
   }
 
   private ScheduleAgent scheduleAgent;
