@@ -80,7 +80,7 @@ public class IssueCert extends AdminDocumentHandler {
             .stream()
             .filter(Server::hasProxyService)
             .findFirst()
-            .orElseThrow(() -> ServiceException.NOT_FOUND(
+            .orElseThrow(() -> ServiceException.FAILURE(
                 "Issuing a LetsEncrypt certificate command requires carbonio-proxy node. "
                 + "Be sure carbonio-proxy is installed, up and running."));
 
