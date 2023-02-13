@@ -2,7 +2,6 @@ package com.zimbra.soap.admin.message;
 
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.soap.admin.type.AdminAttrsImpl;
 import com.zimbra.soap.type.ZmBoolean;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,7 +17,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = AdminConstants.E_ISSUE_CERT_REQUEST)
 @XmlType(propOrder = {})
-public class IssueCertRequest extends AdminAttrsImpl {
+public class IssueCertRequest {
 
   /**
    * @zm-api-field-tag domain id
@@ -29,9 +28,12 @@ public class IssueCertRequest extends AdminAttrsImpl {
 
   /**
    * @zm-api-field-tag preferred certificate chain
-   * @zm-api-field-description could be passed zero or one argument - "short". If an argument is
-   *     "short" - it will try to issue a short chain cert, in any other cases it will try to issue
-   *     a long chain cert.
+   * @zm-api-field-description could be passed zero or one argument - "short".
+   *     By default the chin type is "long". If an admin user pass zero, "long" or random text with
+   *     this parameter {@link com.zimbra.cs.service.admin.IssueCert} will handle the request with the
+   *     default chain type.
+   *     If a user pass "short" with this parameter {@link com.zimbra.cs.service.admin.IssueCert}
+   *     will handle the request with the sort chain type.
    *
    *     Long (Default) chain contains:
    *     your leaf certificate
@@ -42,14 +44,17 @@ public class IssueCertRequest extends AdminAttrsImpl {
    *     your leaf certificate
    *     R3 signed by ISRG Root X1 122
    */
-  @XmlAttribute(name = AdminConstants.A_CHAIN /* chain */, required = false)
-  private String chain;
+  @XmlAttribute(name = AdminConstants.A_CHAIN_TYPE /* chainType */, required = false)
+  private String chainType;
 
   /**
    * @zm-api-field-tag expand field requires in order to modify existing domain cert in case if a
    *     virtualHostname was added or deleted for a requested domain.
-   * @zm-api-field-description boolean flag. If true, virtualHostname will be added or deleted for a
-   *     new cert.
+   * @zm-api-field-description boolean flag.
+   * An admin user could pass zero or one argument with this parameter either "true"/"false"
+   * or "1"/"0". The default value is false.
+   * An admin user should pass "true"/"1" in case if he wants to renew existing certificate
+   * the reason is a virtual hostname was added or deleted for a requested domain.
    */
   @XmlAttribute(name = MailConstants.A_EXPAND /* expand */, required = false)
   private ZmBoolean expand;
@@ -73,11 +78,11 @@ public class IssueCertRequest extends AdminAttrsImpl {
   }
 
   public void setChain(String chain) {
-    this.chain = chain;
+    this.chainType = chain;
   }
 
   public String getChain() {
-    return chain;
+    return chainType;
   }
 
   public void setExpand(Boolean expand) {

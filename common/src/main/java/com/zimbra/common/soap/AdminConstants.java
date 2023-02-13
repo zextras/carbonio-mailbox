@@ -1827,7 +1827,7 @@ public final class AdminConstants {
   public static final String E_SERVERS = "servers";
 
   // cert
-  public static final String A_CHAIN = "chain";
+  public static final String A_CHAIN_TYPE = "chainType";
   public static final String DEFAULT_CHAIN = "long";
 
   // HAB

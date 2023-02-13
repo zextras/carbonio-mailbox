@@ -154,7 +154,7 @@ public class IssueCertTest {
     provisioning.createDomain(domainName, domainAttributes);
 
     expectedEx.expect(ServiceException.class);
-    expectedEx.expectMessage("must have PublicServiceHostname and VirtualHostName.");
+    expectedEx.expectMessage("must have PublicServiceHostname");
 
     handler.handle(request, context);
   }
@@ -166,7 +166,7 @@ public class IssueCertTest {
     provisioning.createDomain(domainName, domainAttributes);
 
     expectedEx.expect(ServiceException.class);
-    expectedEx.expectMessage("must have PublicServiceHostname and VirtualHostName.");
+    expectedEx.expectMessage("must have at least one VirtualHostName.");
 
     handler.handle(request, context);
   }
@@ -179,7 +179,7 @@ public class IssueCertTest {
     provisioning.createDomain(domainName, domainAttributes);
 
     expectedEx.expect(ServiceException.class);
-    expectedEx.expectMessage("Server with carbonio-proxy node could not be found.");
+    expectedEx.expectMessage("Issuing a LetsEncrypt certificate command requires carbonio-proxy node.");
 
     handler.handle(request, context);
   }

@@ -17,7 +17,8 @@ public class RemoteCertbot {
   private static final String CHAIN_TYPE = "short";
   private static final String WEBROOT = "--webroot -w";
   private static final String WEBROOT_PATH = "/opt/zextras";
-  private static final String AGREEMENT = "--agree-tos --email";
+  private static final String AGREEMENT = "--agree-tos";
+  private static final String EMAIL = "--email";
   private static final String NON_INTERACTIVELY = "-n";
   private static final String EXPAND = "--cert-name";
   private static final String KEEP = "--keep";
@@ -55,7 +56,8 @@ public class RemoteCertbot {
       addSubCommand(" ", CHAIN, SHORT_CHAIN);
     }
 
-    addSubCommand(" ", AGREEMENT, email, NON_INTERACTIVELY, KEEP, WEBROOT, WEBROOT_PATH);
+    addSubCommand(" ", AGREEMENT, EMAIL, email, NON_INTERACTIVELY, KEEP,
+        WEBROOT, WEBROOT_PATH);
 
     if (expand) {
       addSubCommand(" ", EXPAND, publicServiceHostName);

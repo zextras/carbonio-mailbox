@@ -15,7 +15,6 @@ import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Admin Handler class to issue a LetsEncrypt certificate for a domain using
@@ -62,31 +61,34 @@ public class IssueCert extends AdminDocumentHandler {
     AdminAccessControl admin = checkDomainRight(zsc, domain, AdminRights.R_getDomain);
     String adminMail = admin.mAuthedAcct.getMail();
 
-    String chain = request.getAttribute(AdminConstants.A_CHAIN, AdminConstants.DEFAULT_CHAIN);
+    String chain = request.getAttribute(AdminConstants.A_CHAIN_TYPE, AdminConstants.DEFAULT_CHAIN);
     boolean expand = request.getAttributeBool(MailConstants.A_EXPAND, false);
 
     String publicServiceHostname = domain.getPublicServiceHostname();
     String[] virtualHostNames = domain.getVirtualHostname();
-    if (publicServiceHostname == null || virtualHostNames.length == 0) {
+    if (publicServiceHostname == null) {
       throw ServiceException.INVALID_REQUEST(
-          "Domain with id " + domainId + " must have PublicServiceHostname and VirtualHostName.",
+          "Domain with id " + domainId + " must have PublicServiceHostname.",
+          null);
+    } else if (virtualHostNames.length == 0) {
+      throw ServiceException.INVALID_REQUEST(
+          "Domain with id " + domainId + " must have at least one VirtualHostName.",
           null);
     }
 
     // First release will work only on ONE proxy even if there are multiple proxy in the infrastructure.
-    Optional<Server> optionalServer =
+    Server proxyServer =
         prov.getAllServers()
             .stream()
             .filter(Server::hasProxyService)
-            .findFirst();
-
-    if (optionalServer.isEmpty()) {
-      throw ServiceException.NOT_FOUND("Server with carbonio-proxy node could not be found.");
-    }
+            .findFirst()
+            .orElseThrow(() -> ServiceException.NOT_FOUND(
+                "Issuing a LetsEncrypt certificate command requires carbonio-proxy node. "
+                + "Be sure carbonio-proxy is installed, up and running."));
 
     ZimbraLog.rmgmt.info("Issuing a LetsEncrypt cert for domain " + domainId);
 
-    RemoteManager remoteManager = RemoteManager.getRemoteManager(optionalServer.get());
+    RemoteManager remoteManager = RemoteManager.getRemoteManager(proxyServer);
     RemoteCertbot certbot = new RemoteCertbot(remoteManager);
     String command =
         certbot.createCommand(
@@ -99,7 +101,8 @@ public class IssueCert extends AdminDocumentHandler {
     String result = certbot.execute(command);
 
     ZimbraLog.rmgmt.info(
-        "Issuing a LetsEncrypt cert for domain " + domainId + " result: " + result);
+        "Issuing a LetsEncrypt cert command for domain " + domainId
+            + " was finished with the following result: " + result);
 
     Element response = zsc.createElement(AdminConstants.ISSUE_CERT_RESPONSE);
 
