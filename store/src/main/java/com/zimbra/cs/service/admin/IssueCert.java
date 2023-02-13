@@ -15,6 +15,7 @@ import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Admin Handler class to issue a LetsEncrypt certificate for a domain using
@@ -51,12 +52,9 @@ public class IssueCert extends AdminDocumentHandler {
 
     Provisioning prov = Provisioning.getInstance();
     String domainId = request.getAttribute(AdminConstants.A_DOMAIN);
-    Domain domain = prov.get(DomainBy.id, domainId);
-
-    if (domain == null) {
-      throw ServiceException.INVALID_REQUEST(
-          "Domain with id " + domainId + " could not be found.", null);
-    }
+    Domain domain = Optional.ofNullable(prov.get(DomainBy.id, domainId))
+        .orElseThrow(() -> ServiceException.INVALID_REQUEST(
+        "Domain with id " + domainId + " could not be found.", null));
 
     AdminAccessControl admin = checkDomainRight(zsc, domain, AdminRights.R_getDomain);
     String adminMail = admin.mAuthedAcct.getMail();

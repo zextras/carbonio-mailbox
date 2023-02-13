@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
- * RemoteCertbot class interacts with "Certbot" - an acme client for managing Let’sEncrypt
+ * RemoteCertbot class interacts with "Certbot" - an acme client for managing Let’s Encrypt
  * certificates, using {@link com.zimbra.cs.rmgmt.RemoteManager}.
  *
  * @author Yuliya Aheeva

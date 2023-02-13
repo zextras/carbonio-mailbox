@@ -8,6 +8,13 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Response class represents response to {@link com.zimbra.soap.admin.message.IssueCertRequest}
+ * request.
+ *
+ * @author Yuliya Aheeva
+ * @since 23.3.0
+ */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name= AdminConstants.E_ISSUE_CERT_RESPONSE)
 public class IssueCertResponse {
