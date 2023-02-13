@@ -172,14 +172,14 @@ public class IssueCertTest {
   }
 
   @Test
-  public void shouldReturnNotFoundIfNoServerWithProxy() throws Exception {
+  public void shouldReturnFailureIfNoServerWithProxy() throws Exception {
     domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
     domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
 
     provisioning.createDomain(domainName, domainAttributes);
 
     expectedEx.expect(ServiceException.class);
-    expectedEx.expectMessage("Issuing a LetsEncrypt certificate command requires carbonio-proxy node.");
+    expectedEx.expectMessage("Issuing LetsEncrypt certificate command requires carbonio-proxy node.");
 
     handler.handle(request, context);
   }
