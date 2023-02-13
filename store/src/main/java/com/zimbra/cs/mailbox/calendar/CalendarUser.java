@@ -6,6 +6,7 @@
 package com.zimbra.cs.mailbox.calendar;
 
 import com.zimbra.common.calendar.ZCalendar.ICalTok;
+import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.calendar.ZCalendar.ZParameter;
 import com.zimbra.common.calendar.ZCalendar.ZProperty;
 import com.zimbra.common.mime.MimeConstants;
@@ -20,6 +21,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
@@ -37,16 +39,37 @@ public abstract class CalendarUser {
   private String mDir;
   private String mLanguage;
 
-  public String getScheduleAgent() {
+  public ScheduleAgent getScheduleAgent() {
     return scheduleAgent;
   }
 
-  public CalendarUser setScheduleAgent(String scheduleAgent) {
+  public void setScheduleAgent(ScheduleAgent scheduleAgent) {
     this.scheduleAgent = scheduleAgent;
-    return this;
   }
 
-  private String scheduleAgent;
+  /**
+   * Converts a schedule agent value from string
+   *
+   * @param scheduleAgent
+   */
+  public void setScheduleAgentFromString(String scheduleAgent) {
+    ScheduleAgent.valueOf(scheduleAgent);
+    if (!(Objects.isNull(scheduleAgent))) {
+      final String scheduleAgentLower = scheduleAgent.toLowerCase();
+      switch (scheduleAgentLower) {
+        case "server":
+          this.scheduleAgent = ScheduleAgent.SERVER;
+          break;
+        case "client":
+          this.scheduleAgent = ScheduleAgent.CLIENT;
+          break;
+        case "none":
+          this.scheduleAgent = ScheduleAgent.NONE;
+      }
+    }
+  }
+
+  private ScheduleAgent scheduleAgent;
   private List<ZParameter> mXParams = new ArrayList<ZParameter>();
 
   public String getAddress() {

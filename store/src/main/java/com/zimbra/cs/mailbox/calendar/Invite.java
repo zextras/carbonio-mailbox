@@ -2240,16 +2240,18 @@ public class Invite {
                       ZProperty organizer = comp.getProperty(ICalTok.ORGANIZER);
                       ZOrganizer zOrganizer = new ZOrganizer(prop);
                       zOrganizer.setScheduleAgent(
-                          organizer.getParameterVal(
-                              ICalTok.SCHEDULE_AGENT, ScheduleAgent.SERVER.toString()));
+                          ScheduleAgent.getScheduleAgent(
+                              organizer.getParameterVal(
+                                  ICalTok.SCHEDULE_AGENT, ScheduleAgent.SERVER.toString())));
                       newInv.setOrganizer(zOrganizer);
                       break;
                     case ATTENDEE:
                       ZProperty attendee = comp.getProperty(ICalTok.ATTENDEE);
                       ZAttendee zAttendee = new ZAttendee(prop);
                       zAttendee.setScheduleAgent(
-                          attendee.getParameterVal(
-                              ICalTok.SCHEDULE_AGENT, ScheduleAgent.SERVER.toString()));
+                          ScheduleAgent.getScheduleAgent(
+                              attendee.getParameterVal(
+                                  ICalTok.SCHEDULE_AGENT, ScheduleAgent.SERVER.toString())));
                       newInv.addAttendee(zAttendee);
                       break;
                     case DTSTAMP:

@@ -91,7 +91,7 @@ public class OrganizerAutoSchedulerTest {
     final ZAttendee zAttendee3 = mock(ZAttendee.class);
     when(zAttendee3.getAddress()).thenReturn(attendee3.getName());
     // Attendee3 has SCHEDULE-AGENT=CLIENT
-    when(zAttendee3.getScheduleAgent()).thenReturn("CLIENT");
+    when(zAttendee3.getScheduleAgent()).thenReturn(ScheduleAgent.CLIENT);
     invite.addAttendee(zAttendee1);
     invite.addAttendee(zAttendee2);
     invite.addAttendee(zAttendee3);
@@ -188,13 +188,13 @@ public class OrganizerAutoSchedulerTest {
     final Invite invite = new Invite(ICalTok.REQUEST.toString(), mock(TimeZoneMap.class), true);
     final ZAttendee zAttendee1 = mock(ZAttendee.class);
     when(zAttendee1.getAddress()).thenReturn(attendee1.getName());
-    when(zAttendee1.getScheduleAgent()).thenReturn(ScheduleAgent.NONE.toString());
+    when(zAttendee1.getScheduleAgent()).thenReturn(ScheduleAgent.NONE);
     final ZAttendee zAttendee2 = mock(ZAttendee.class);
     when(zAttendee2.getAddress()).thenReturn(attendee2.getName());
-    when(zAttendee2.getScheduleAgent()).thenReturn(ScheduleAgent.NONE.toString());
+    when(zAttendee2.getScheduleAgent()).thenReturn(ScheduleAgent.NONE);
     final ZAttendee zAttendee3 = mock(ZAttendee.class);
     when(zAttendee3.getAddress()).thenReturn(attendee3.getName());
-    when(zAttendee3.getScheduleAgent()).thenReturn(ScheduleAgent.NONE.toString());
+    when(zAttendee3.getScheduleAgent()).thenReturn(ScheduleAgent.NONE);
     invite.addAttendee(zAttendee1);
     invite.addAttendee(zAttendee2);
     invite.addAttendee(zAttendee3);

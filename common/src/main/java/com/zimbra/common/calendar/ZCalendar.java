@@ -20,6 +20,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import net.fortuna.ical4j.data.CalendarParser;
 import net.fortuna.ical4j.data.CalendarParserImpl;
@@ -38,10 +39,32 @@ public class ZCalendar {
    * @author davidefrison
    * @since 23.3.0
    */
-  public static enum ScheduleAgent {
+  public enum ScheduleAgent {
     SERVER,
     CLIENT,
-    NONE
+    NONE;
+
+    /**
+     * Returns a {@link ScheduleAgent} from a string value by doing a case-insensitive match. It
+     * returns null in case of no matches.
+     *
+     * @param scheduleAgentString input string value of schedule agent
+     * @return a schedule agent
+     */
+    public static ScheduleAgent getScheduleAgent(String scheduleAgentString) {
+      if (!(Objects.isNull(scheduleAgentString))) {
+        final String scheduleAgentLower = scheduleAgentString.toLowerCase();
+        switch (scheduleAgentLower) {
+          case "server":
+            return ScheduleAgent.SERVER;
+          case "client":
+            return ScheduleAgent.CLIENT;
+          case "none":
+            return ScheduleAgent.NONE;
+        }
+      }
+      return null;
+    }
   }
 
   public static enum ICalTok {

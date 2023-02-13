@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.calendar.ZCalendar.ICalTok;
+import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.calendar.ZCalendar.ZVCalendar;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -619,8 +620,8 @@ public abstract class AutoScheduler {
       }
       List<Address> recipients = Lists.newArrayListWithCapacity(attendees.size());
       for (ZAttendee attendee : attendees) {
-        if (Objects.equals(attendee.getScheduleAgent(), "CLIENT")
-            || Objects.equals(attendee.getScheduleAgent(), "NONE")) {
+        if (Objects.equals(attendee.getScheduleAgent(), ScheduleAgent.CLIENT.toString())
+            || Objects.equals(attendee.getScheduleAgent(), ScheduleAgent.NONE.toString())) {
           continue;
         }
         try {
