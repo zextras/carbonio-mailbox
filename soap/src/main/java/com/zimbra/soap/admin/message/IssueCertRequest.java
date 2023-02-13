@@ -34,9 +34,7 @@ public class IssueCertRequest {
   /**
    * @zm-api-field-tag preferred certificate chain
    * @zm-api-field-description could be passed zero or one argument - "short".
-   *     By default the chain type is "long". If an admin user pass zero, "long" or random text with
-   *     this parameter {@link com.zimbra.cs.service.admin.IssueCert} will handle the request with the
-   *     default chain type.
+   *     By default the chain type is "long".
    *     If a user pass "short" with this parameter {@link com.zimbra.cs.service.admin.IssueCert}
    *     will handle the request with the sort chain type.
    *
