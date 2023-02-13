@@ -40,15 +40,15 @@ public class IssueCertTest {
   private final Map<String, Object> context = new HashMap<>();
   private final Map<String, Object> domainAttributes = new HashMap<>();
 
-  private final String domainName = "test.demo.zextras.io";
-  private final String publicServiceHostName = "public.test.demo.zextras.io";
-  private final String virtualHostName = "virtual.test.demo.zextras.io";
+  private final String domainName = "example.com";
+  private final String publicServiceHostName = "public.example.com";
+  private final String virtualHostName = "virtual.example.com";
 
-  private final String mail = "admin@test.demo.zextras.io";
+  private final String mail = "admin@example.com";
 
-  private final String command = "certbot certonly --agree-tos --email admin@test.demo.zextras.io"
+  private final String command = "certbot certonly --agree-tos --email admin@example.com"
       + " -n --keep --webroot -w /opt/zextras "
-      + "-d public.test.demo.zextras.io -d virtual.test.demo.zextras.io";
+      + "-d public.example.com -d virtual.example.com";
 
   private final static MockedStatic<RemoteManager> mockedStatic = mockStatic(RemoteManager.class);
   private final RemoteManager remoteManager = mock(RemoteManager.class);
