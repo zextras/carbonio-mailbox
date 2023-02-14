@@ -81,8 +81,8 @@ public class IssueCert extends AdminDocumentHandler {
             .filter(Server::hasProxyService)
             .findFirst()
             .orElseThrow(() -> ServiceException.FAILURE(
-                "Issuing LetsEncrypt certificate command requires carbonio-proxy node. "
-                + "Be sure carbonio-proxy is installed, up and running."));
+                "Issuing LetsEncrypt certificate command requires carbonio-proxy. "
+                + "Make sure carbonio-proxy is installed, up and running."));
 
     ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert for domain " + domainId);
 
