@@ -179,7 +179,7 @@ public class IssueCertTest {
     provisioning.createDomain(domainName, domainAttributes);
 
     expectedEx.expect(ServiceException.class);
-    expectedEx.expectMessage("Issuing LetsEncrypt certificate command requires carbonio-proxy node.");
+    expectedEx.expectMessage("Issuing LetsEncrypt certificate command requires carbonio-proxy.");
 
     handler.handle(request, context);
   }
