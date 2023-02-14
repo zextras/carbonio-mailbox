@@ -281,4 +281,72 @@ public class ModifyDomainIT {
     modifyDomainRequest.setAttrs(attrsToUpdate);
     new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
   }
+
+  /**
+   * [CO-544] empty virtual hostnames should remove all virtual hostnames
+   *
+   * @throws ServiceException
+   */
+  @Test
+  public void shouldRemoveVirtualHostnamesWhenVirtualHostnamesEmptyArray() throws ServiceException {
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final String virtual1 = "virtual1" + domainName;
+    final String virtual2 = "virtual2" + domainName;
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+                put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {virtual1, virtual2});
+              }
+            });
+    final Account adminAccount = createDelegatedAdminForDomain(domain);
+    final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
+    ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
+    final HashMap<String, Object> attrsToUpdate =
+        new HashMap<>() {
+          {
+            put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {""});
+          }
+        };
+    modifyDomainRequest.setAttrs(attrsToUpdate);
+    new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
+    assertEquals(
+        0, Arrays.stream(provisioning.getDomainByName(domainName).getVirtualHostname()).count());
+  }
+
+  /**
+   * [CO-544] when zimbraVirtualHostname not passed it should not remove existing hostnames
+   *
+   * @throws ServiceException
+   */
+  @Test
+  public void shouldNotRemoveVirtualHostnamesWhenVirtualHostnamesNotPassed()
+      throws ServiceException {
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final String virtual1 = "virtual1" + domainName;
+    final String virtual2 = "virtual2" + domainName;
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+                put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {virtual1, virtual2});
+              }
+            });
+    final Account adminAccount = createDelegatedAdminForDomain(domain);
+    final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
+    ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
+    final HashMap<String, Object> attrsToUpdate =
+        new HashMap<>() {
+          {
+          }
+        };
+    modifyDomainRequest.setAttrs(attrsToUpdate);
+    new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
+    assertEquals(
+        2, Arrays.stream(provisioning.getDomainByName(domainName).getVirtualHostname()).count());
+  }
 }

@@ -74,6 +74,7 @@ public class ModifyDomain extends AdminDocumentHandler {
     }
     final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
     if (!(Objects.isNull(gotVirtualHostNames))
+        && !(Arrays.equals(gotVirtualHostNames, new String[] {""}))
         && !(areVirtualHostnamesCompliant(
             domain, Arrays.stream(gotVirtualHostNames).collect(Collectors.toList())))) {
       throw ServiceException.FAILURE(
