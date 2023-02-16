@@ -1221,6 +1221,226 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * email address of sender used to send emails about important
+     * infrastructure notifications
+     *
+     * @return carbonioNotificationFrom, or null if unset
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3127)
+    public String getCarbonioNotificationFrom() {
+        return getAttr(Provisioning.A_carbonioNotificationFrom, null, true);
+    }
+
+    /**
+     * email address of sender used to send emails about important
+     * infrastructure notifications
+     *
+     * @param carbonioNotificationFrom new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3127)
+    public void setCarbonioNotificationFrom(String carbonioNotificationFrom) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioNotificationFrom, carbonioNotificationFrom);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * email address of sender used to send emails about important
+     * infrastructure notifications
+     *
+     * @param carbonioNotificationFrom new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3127)
+    public Map<String,Object> setCarbonioNotificationFrom(String carbonioNotificationFrom, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioNotificationFrom, carbonioNotificationFrom);
+        return attrs;
+    }
+
+    /**
+     * email address of sender used to send emails about important
+     * infrastructure notifications
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3127)
+    public void unsetCarbonioNotificationFrom() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioNotificationFrom, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * email address of sender used to send emails about important
+     * infrastructure notifications
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3127)
+    public Map<String,Object> unsetCarbonioNotificationFrom(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioNotificationFrom, "");
+        return attrs;
+    }
+
+    /**
+     * email address of recipients who will receive emails about important
+     * infrastructure notifications
+     *
+     * @return carbonioNotificationRecipients, or empty array if unset
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3128)
+    public String[] getCarbonioNotificationRecipients() {
+        return getMultiAttr(Provisioning.A_carbonioNotificationRecipients, true, true);
+    }
+
+    /**
+     * email address of recipients who will receive emails about important
+     * infrastructure notifications
+     *
+     * @param carbonioNotificationRecipients new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3128)
+    public void setCarbonioNotificationRecipients(String[] carbonioNotificationRecipients) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * email address of recipients who will receive emails about important
+     * infrastructure notifications
+     *
+     * @param carbonioNotificationRecipients new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3128)
+    public Map<String,Object> setCarbonioNotificationRecipients(String[] carbonioNotificationRecipients, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
+        return attrs;
+    }
+
+    /**
+     * email address of recipients who will receive emails about important
+     * infrastructure notifications
+     *
+     * @param carbonioNotificationRecipients new to add to existing values
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3128)
+    public void addCarbonioNotificationRecipients(String carbonioNotificationRecipients) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * email address of recipients who will receive emails about important
+     * infrastructure notifications
+     *
+     * @param carbonioNotificationRecipients new to add to existing values
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3128)
+    public Map<String,Object> addCarbonioNotificationRecipients(String carbonioNotificationRecipients, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
+        return attrs;
+    }
+
+    /**
+     * email address of recipients who will receive emails about important
+     * infrastructure notifications
+     *
+     * @param carbonioNotificationRecipients existing value to remove
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3128)
+    public void removeCarbonioNotificationRecipients(String carbonioNotificationRecipients) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * email address of recipients who will receive emails about important
+     * infrastructure notifications
+     *
+     * @param carbonioNotificationRecipients existing value to remove
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3128)
+    public Map<String,Object> removeCarbonioNotificationRecipients(String carbonioNotificationRecipients, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
+        return attrs;
+    }
+
+    /**
+     * email address of recipients who will receive emails about important
+     * infrastructure notifications
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3128)
+    public void unsetCarbonioNotificationRecipients() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioNotificationRecipients, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * email address of recipients who will receive emails about important
+     * infrastructure notifications
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3128)
+    public Map<String,Object> unsetCarbonioNotificationRecipients(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioNotificationRecipients, "");
+        return attrs;
+    }
+
+    /**
      * Whether Carbonio can send analytics reports
      *
      * @return carbonioSendAnalytics, or true if unset
