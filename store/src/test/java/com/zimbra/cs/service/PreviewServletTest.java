@@ -1,5 +1,6 @@
 package com.zimbra.cs.service;
 
+import static com.zimbra.cs.service.PreviewServlet.DOC_THUMBNAIL_REGEX;
 import static com.zimbra.cs.service.PreviewServlet.IMG_THUMBNAIL_REGEX;
 import static com.zimbra.cs.service.PreviewServlet.PDF_PREVIEW_REGEX;
 import static org.junit.Assert.assertEquals;
@@ -337,12 +338,32 @@ public class PreviewServletTest {
     assertEquals("png", query.getOutputFormat().get());
   }
 
+  /**
+   * CO-594
+   */
   @Test
   public void shouldMatchNestedPartNumberFromRequestQuery() {
-    final String requestUrlForPdfPreview = "https://nbm-s01.demo.zextras.io/service/preview/pdf/14473/1.3.2.1.2.3";
+    final String requestUrlForPdfPreview = "https://example.com/service/preview/pdf/14473/1.3.2.1.2.3";
 
     final Matcher matcher =
         Pattern.compile(PDF_PREVIEW_REGEX)
+            .matcher(PreviewServlet.getRequestUrlForPreview(requestUrlForPdfPreview, "inline"));
+
+    final String EXPECTED_PART_NUMBER = "1.3.2.1.2.3";
+
+    assertTrue(matcher.find());
+    assertEquals(EXPECTED_PART_NUMBER, matcher.group(2));
+  }
+
+  /**
+   * CO-594
+   */
+  @Test
+  public void shouldMatchNestedPartNumberFromThumbnailRequestQuery() {
+    final String requestUrlForPdfPreview = "https://example.com/service/preview/document/14473/1.3.2.1.2.3/20x20/thumbnail/";
+
+    final Matcher matcher =
+        Pattern.compile(DOC_THUMBNAIL_REGEX)
             .matcher(PreviewServlet.getRequestUrlForPreview(requestUrlForPdfPreview, "inline"));
 
     final String EXPECTED_PART_NUMBER = "1.3.2.1.2.3";
