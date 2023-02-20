@@ -104,24 +104,26 @@ import org.eclipse.jetty.http.HttpStatus;
 public class PreviewServlet extends ZimbraServlet {
 
   public static final String SERVLET_PATH = "/preview";
-  public static final String THUMBNAIL_REGEX =
-      "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+(?:\\.[0-9]+)?)/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)";
+  public static final String PART_NUMBER_REGEXP = "([0-9.]+(?:\\.[0-9.]+)?)";
+  public static final String MESSAGE_ID_REGEXP = "([a-zA-Z\\-:0-9]+|[0-9]+)/";
+  public static final String THUMBNAIL_REGEXP =
+      MESSAGE_ID_REGEXP + PART_NUMBER_REGEXP + "/([0-9]*x[0-9]*)/thumbnail/?\\??(.*)";
+  public static final String PDF_THUMBNAIL_REGEX = SERVLET_PATH + "/pdf/" + THUMBNAIL_REGEXP;
+  public static final String IMG_THUMBNAIL_REGEX = SERVLET_PATH + "/image/" + THUMBNAIL_REGEXP;
+  public static final String DOC_THUMBNAIL_REGEX = SERVLET_PATH + "/document/" + THUMBNAIL_REGEXP;
   public static final String PDF_PREVIEW_REGEX =
       SERVLET_PATH
           + "/pdf/"
-          + "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+(?:\\.[0-9]+)?)/?((?=(?!thumbnail))(?=([^/ ]*)))";
+          + MESSAGE_ID_REGEXP + PART_NUMBER_REGEXP + "/?((?=(?!thumbnail))(?=([^/ ]*)))";
   public static final String IMG_PREVIEW_REGEX =
       SERVLET_PATH
-          + "/image/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+(?:\\.[0-9]+)?)/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/"
+          + "/image/" + MESSAGE_ID_REGEXP + PART_NUMBER_REGEXP
+          + "/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/"
           + " ]*)))";
   public static final String DOC_PREVIEW_REGEX =
       SERVLET_PATH
           + "/document/"
-          + "([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+(?:\\.[0-9]+)?)/?((?=(?!thumbnail))(?=([^/ ]*)))";
-  public static final String PDF_THUMBNAIL_REGEX = SERVLET_PATH + "/pdf/" + THUMBNAIL_REGEX;
-  public static final String IMG_THUMBNAIL_REGEX = SERVLET_PATH + "/image/" + THUMBNAIL_REGEX;
-  public static final String DOC_THUMBNAIL_REGEX = SERVLET_PATH + "/document/" + THUMBNAIL_REGEX;
-
+          + MESSAGE_ID_REGEXP + PART_NUMBER_REGEXP + "/?((?=(?!thumbnail))(?=([^/ ]*)))";
   private static final long serialVersionUID = -4834966842520538743L;
   private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
   private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.7:20001/";
@@ -130,7 +132,7 @@ public class PreviewServlet extends ZimbraServlet {
   /**
    * removes the disposition query parameter from the url
    *
-   * @param requestUrl the requestUrl ({@link String})
+   * @param requestUrl      the requestUrl ({@link String})
    * @param dispositionType disposition type ({@link String})
    * @return Request Url for Preview ({@link String})
    */
@@ -173,7 +175,7 @@ public class PreviewServlet extends ZimbraServlet {
    *
    * @param authToken the {@link AuthToken} passed in request
    * @param messageId {@link String} the messageId that we want to get attachment from
-   * @param part {@link String} the part number of the attachment in email
+   * @param part      {@link String} the part number of the attachment in email
    * @return Try of attachment's URL {@link String} for content servlet
    */
   static String getContentServletResourceUrl(AuthToken authToken, String messageId, String part) {
@@ -195,7 +197,7 @@ public class PreviewServlet extends ZimbraServlet {
    * This method generates the final query {@link Query} from passed Optional area string and {@link
    * PreviewQueryParameters}
    *
-   * @param optArea the optional area {@link String} parameter
+   * @param optArea         the optional area {@link String} parameter
    * @param queryParameters the {@link PreviewQueryParameters} object
    * @return {@link Query}
    */
@@ -243,7 +245,7 @@ public class PreviewServlet extends ZimbraServlet {
    *
    * @param authToken the {@link AuthToken} passed in request
    * @param messageId {@link String} the messageId that we want to get attachment from
-   * @param part {@link String} the part number of the attachment in email
+   * @param part      {@link String} the part number of the attachment in email
    * @return the {@link MimePart} object
    */
   private Try<BlobResponseStore> getAttachment(AuthToken authToken, String messageId, String part) {
@@ -282,9 +284,9 @@ public class PreviewServlet extends ZimbraServlet {
   /**
    * Adds request configuration to client builder
    *
-   * @param authToken the {@link AuthToken} passed in request
+   * @param authToken     the {@link AuthToken} passed in request
    * @param clientBuilder the {@link HttpClientBuilder} object
-   * @param getRequest the {@link HttpServletRequest} that has to be encoded
+   * @param getRequest    the {@link HttpServletRequest} that has to be encoded
    * @return Try of encoded {@link CloseableHttpClient} object
    */
   private Try<CloseableHttpClient> encodeClientBuilderRequest(
@@ -456,8 +458,8 @@ public class PreviewServlet extends ZimbraServlet {
    * This method is used to map the preview service's {@link BlobResponse} to our {@link
    * BlobResponseStore} object
    *
-   * @param response preview service's {@link BlobResponse}
-   * @param fileName filename that we want to assign to our {@link BlobResponseStore} object
+   * @param response        preview service's {@link BlobResponse}
+   * @param fileName        filename that we want to assign to our {@link BlobResponseStore} object
    * @param dispositionType disposition will be: attachment or inline(default)
    * @return mapped {@link BlobResponseStore} object
    */
@@ -478,8 +480,8 @@ public class PreviewServlet extends ZimbraServlet {
    *
    * @param request the {@link HttpServletRequest} object
    * @return {@link String} complete URL (
-   *     <pre> protocol + servername + port + path + query </pre>
-   *     )
+   * <pre> protocol + servername + port + path + query </pre>
+   * )
    */
   String getUrlWithQueryParams(final HttpServletRequest request) {
     StringBuffer url = request.getRequestURL();
@@ -494,7 +496,7 @@ public class PreviewServlet extends ZimbraServlet {
    * This method is used to send success response for {@link HttpServletRequest} with the blob we
    * got from preview service
    *
-   * @param resp the {@link HttpServletResponse} object
+   * @param resp              the {@link HttpServletResponse} object
    * @param blobResponseStore the {@link BlobResponseStore} object
    */
   void respondWithSuccess(HttpServletResponse resp, BlobResponseStore blobResponseStore) {
@@ -518,9 +520,9 @@ public class PreviewServlet extends ZimbraServlet {
   /**
    * This method is used to send error response for {@link HttpServletRequest}
    *
-   * @param resp the {@link HttpServletResponse} object
+   * @param resp    the {@link HttpServletResponse} object
    * @param errCode error code for {@link HttpServletResponse}
-   * @param reason message string for {@link HttpServletResponse}
+   * @param reason  message string for {@link HttpServletResponse}
    */
   void respondWithError(HttpServletResponse resp, int errCode, String reason) {
     resp.setContentType("text/html; charset=UTF-8");
@@ -534,9 +536,9 @@ public class PreviewServlet extends ZimbraServlet {
   /**
    * This override method is to proxy 5xx error with 404
    *
-   * @param resp the {@link HttpServletResponse} object
+   * @param resp    the {@link HttpServletResponse} object
    * @param errCode error code for {@link HttpServletResponse}
-   * @param reason message string for {@link HttpServletResponse}
+   * @param reason  message string for {@link HttpServletResponse}
    * @throws IOException while sendError
    */
   void sendError(HttpServletResponse resp, int errCode, String reason) throws IOException {
@@ -570,7 +572,7 @@ public class PreviewServlet extends ZimbraServlet {
 
     final Pattern requiredQueryParametersPattern =
         Pattern.compile(
-            SERVLET_PATH + "/([a-zA-Z]+)/([a-zA-Z\\-:0-9]+|[0-9]+)/([0-9]+(?:\\.[0-9]+)?)");
+            SERVLET_PATH + "/([a-zA-Z]+)/" + MESSAGE_ID_REGEXP + PART_NUMBER_REGEXP);
 
     final Matcher requiredQueryParametersMatcher =
         requiredQueryParametersPattern.matcher(getUrlWithQueryParams(req));
@@ -613,8 +615,8 @@ public class PreviewServlet extends ZimbraServlet {
   }
 
   /**
-   * @param req the {@link HttpServletRequest} object that will be used to provide req metadata in
-   *     error message
+   * @param req  the {@link HttpServletRequest} object that will be used to provide req metadata in
+   *             error message
    * @param resp the {@link HttpServletResponse} to send the error response
    * @return the {@link AuthToken} AuthToken object extracted from req metadata
    */
@@ -648,6 +650,7 @@ public class PreviewServlet extends ZimbraServlet {
  * final {@link Query} object for preview service
  */
 class PreviewQueryParameters {
+
   @JsonProperty("quality")
   private Quality quality;
 
@@ -676,7 +679,8 @@ class PreviewQueryParameters {
   }
 
   @SuppressWarnings("unused") // unused but required for testing
-  public PreviewQueryParameters() {}
+  public PreviewQueryParameters() {
+  }
 
   public Optional<String> getQuality() {
     return Optional.ofNullable(quality == null ? null : quality.name());
@@ -742,6 +746,7 @@ class PreviewQueryParameters {
  * service.
  */
 class BlobResponseStore {
+
   private final String filename;
   private final Long size;
   private final String mimeType;
