@@ -32615,13 +32615,13 @@ public abstract class ZAttrServer extends NamedEntry {
      *
      * <p>Valid values: [yes, no]
      *
-     * @return zimbraMtaSmtpdRejectUnlistedRecipient, or ZAttrProvisioning.MtaSmtpdRejectUnlistedRecipient.no if unset and/or has invalid value
+     * @return zimbraMtaSmtpdRejectUnlistedRecipient, or ZAttrProvisioning.MtaSmtpdRejectUnlistedRecipient.yes if unset and/or has invalid value
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1534)
     public ZAttrProvisioning.MtaSmtpdRejectUnlistedRecipient getMtaSmtpdRejectUnlistedRecipient() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdRejectUnlistedRecipient, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdRejectUnlistedRecipient.no : ZAttrProvisioning.MtaSmtpdRejectUnlistedRecipient.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdRejectUnlistedRecipient.no; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdRejectUnlistedRecipient, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdRejectUnlistedRecipient.yes : ZAttrProvisioning.MtaSmtpdRejectUnlistedRecipient.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdRejectUnlistedRecipient.yes; }
     }
 
     /**
@@ -32629,13 +32629,13 @@ public abstract class ZAttrServer extends NamedEntry {
      *
      * <p>Valid values: [yes, no]
      *
-     * @return zimbraMtaSmtpdRejectUnlistedRecipient, or "no" if unset
+     * @return zimbraMtaSmtpdRejectUnlistedRecipient, or "yes" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1534)
     public String getMtaSmtpdRejectUnlistedRecipientAsString() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpdRejectUnlistedRecipient, "no", true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpdRejectUnlistedRecipient, "yes", true);
     }
 
     /**
@@ -32746,13 +32746,13 @@ public abstract class ZAttrServer extends NamedEntry {
      *
      * <p>Valid values: [yes, no]
      *
-     * @return zimbraMtaSmtpdRejectUnlistedSender, or ZAttrProvisioning.MtaSmtpdRejectUnlistedSender.no if unset and/or has invalid value
+     * @return zimbraMtaSmtpdRejectUnlistedSender, or ZAttrProvisioning.MtaSmtpdRejectUnlistedSender.yes if unset and/or has invalid value
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1535)
     public ZAttrProvisioning.MtaSmtpdRejectUnlistedSender getMtaSmtpdRejectUnlistedSender() {
-        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdRejectUnlistedSender, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdRejectUnlistedSender.no : ZAttrProvisioning.MtaSmtpdRejectUnlistedSender.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdRejectUnlistedSender.no; }
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpdRejectUnlistedSender, true, true); return v == null ? ZAttrProvisioning.MtaSmtpdRejectUnlistedSender.yes : ZAttrProvisioning.MtaSmtpdRejectUnlistedSender.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpdRejectUnlistedSender.yes; }
     }
 
     /**
@@ -32760,13 +32760,13 @@ public abstract class ZAttrServer extends NamedEntry {
      *
      * <p>Valid values: [yes, no]
      *
-     * @return zimbraMtaSmtpdRejectUnlistedSender, or "no" if unset
+     * @return zimbraMtaSmtpdRejectUnlistedSender, or "yes" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1535)
     public String getMtaSmtpdRejectUnlistedSenderAsString() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpdRejectUnlistedSender, "no", true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpdRejectUnlistedSender, "yes", true);
     }
 
     /**
@@ -33257,13 +33257,13 @@ public abstract class ZAttrServer extends NamedEntry {
     /**
      * Value for postconf smtpd_sender_login_maps
      *
-     * @return zimbraMtaSmtpdSenderLoginMaps, or null if unset
+     * @return zimbraMtaSmtpdSenderLoginMaps, or "proxy:ldap:/opt/zextras/conf/ldap-slm.cf" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1591)
     public String getMtaSmtpdSenderLoginMaps() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpdSenderLoginMaps, null, true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpdSenderLoginMaps, "proxy:ldap:/opt/zextras/conf/ldap-slm.cf", true);
     }
 
     /**
@@ -33329,13 +33329,13 @@ public abstract class ZAttrServer extends NamedEntry {
     /**
      * Value for postconf smtpd_sender_restrictions
      *
-     * @return zimbraMtaSmtpdSenderRestrictions, or null if unset
+     * @return zimbraMtaSmtpdSenderRestrictions, or "reject_sender_login_mismatch" if unset
      *
      * @since ZCS 8.5.0
      */
     @ZAttr(id=1590)
     public String getMtaSmtpdSenderRestrictions() {
-        return getAttr(Provisioning.A_zimbraMtaSmtpdSenderRestrictions, null, true);
+        return getAttr(Provisioning.A_zimbraMtaSmtpdSenderRestrictions, "reject_sender_login_mismatch", true);
     }
 
     /**
@@ -42228,11 +42228,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * whether to run proxy in HTTP, HTTPS, both, mixed, or redirect mode.
-     * See also related attributes zimbraMailProxyPort and
-     * zimbraMailSSLProxyPort
+     * whether to run proxy in HTTPS or redirect mode. See also related
+     * attributes zimbraMailProxyPort and zimbraMailSSLProxyPort
      *
-     * <p>Valid values: [http, https, both, mixed, redirect]
+     * <p>Valid values: [https, redirect]
      *
      * @return zimbraReverseProxyMailMode, or null if unset and/or has invalid value
      *
@@ -42244,11 +42243,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * whether to run proxy in HTTP, HTTPS, both, mixed, or redirect mode.
-     * See also related attributes zimbraMailProxyPort and
-     * zimbraMailSSLProxyPort
+     * whether to run proxy in HTTPS or redirect mode. See also related
+     * attributes zimbraMailProxyPort and zimbraMailSSLProxyPort
      *
-     * <p>Valid values: [http, https, both, mixed, redirect]
+     * <p>Valid values: [https, redirect]
      *
      * @return zimbraReverseProxyMailMode, or null if unset
      *
@@ -42260,11 +42258,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * whether to run proxy in HTTP, HTTPS, both, mixed, or redirect mode.
-     * See also related attributes zimbraMailProxyPort and
-     * zimbraMailSSLProxyPort
+     * whether to run proxy in HTTPS or redirect mode. See also related
+     * attributes zimbraMailProxyPort and zimbraMailSSLProxyPort
      *
-     * <p>Valid values: [http, https, both, mixed, redirect]
+     * <p>Valid values: [https, redirect]
      *
      * @param zimbraReverseProxyMailMode new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -42279,11 +42276,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * whether to run proxy in HTTP, HTTPS, both, mixed, or redirect mode.
-     * See also related attributes zimbraMailProxyPort and
-     * zimbraMailSSLProxyPort
+     * whether to run proxy in HTTPS or redirect mode. See also related
+     * attributes zimbraMailProxyPort and zimbraMailSSLProxyPort
      *
-     * <p>Valid values: [http, https, both, mixed, redirect]
+     * <p>Valid values: [https, redirect]
      *
      * @param zimbraReverseProxyMailMode new value
      * @param attrs existing map to populate, or null to create a new map
@@ -42299,11 +42295,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * whether to run proxy in HTTP, HTTPS, both, mixed, or redirect mode.
-     * See also related attributes zimbraMailProxyPort and
-     * zimbraMailSSLProxyPort
+     * whether to run proxy in HTTPS or redirect mode. See also related
+     * attributes zimbraMailProxyPort and zimbraMailSSLProxyPort
      *
-     * <p>Valid values: [http, https, both, mixed, redirect]
+     * <p>Valid values: [https, redirect]
      *
      * @param zimbraReverseProxyMailMode new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -42318,11 +42313,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * whether to run proxy in HTTP, HTTPS, both, mixed, or redirect mode.
-     * See also related attributes zimbraMailProxyPort and
-     * zimbraMailSSLProxyPort
+     * whether to run proxy in HTTPS or redirect mode. See also related
+     * attributes zimbraMailProxyPort and zimbraMailSSLProxyPort
      *
-     * <p>Valid values: [http, https, both, mixed, redirect]
+     * <p>Valid values: [https, redirect]
      *
      * @param zimbraReverseProxyMailMode new value
      * @param attrs existing map to populate, or null to create a new map
@@ -42338,11 +42332,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * whether to run proxy in HTTP, HTTPS, both, mixed, or redirect mode.
-     * See also related attributes zimbraMailProxyPort and
-     * zimbraMailSSLProxyPort
+     * whether to run proxy in HTTPS or redirect mode. See also related
+     * attributes zimbraMailProxyPort and zimbraMailSSLProxyPort
      *
-     * <p>Valid values: [http, https, both, mixed, redirect]
+     * <p>Valid values: [https, redirect]
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -42356,11 +42349,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * whether to run proxy in HTTP, HTTPS, both, mixed, or redirect mode.
-     * See also related attributes zimbraMailProxyPort and
-     * zimbraMailSSLProxyPort
+     * whether to run proxy in HTTPS or redirect mode. See also related
+     * attributes zimbraMailProxyPort and zimbraMailSSLProxyPort
      *
-     * <p>Valid values: [http, https, both, mixed, redirect]
+     * <p>Valid values: [https, redirect]
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

@@ -3638,8 +3638,8 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>logout URL for admin console to send the user to upon explicit logging out</desc>
 </attr>
 
-<attr id="685" name="zimbraReverseProxyMailMode" type="enum" value="http,https,both,mixed,redirect" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="5.0.7">
-  <desc>whether to run proxy in HTTP, HTTPS, both, mixed, or redirect mode.  See also related attributes zimbraMailProxyPort and zimbraMailSSLProxyPort</desc>
+<attr id="685" name="zimbraReverseProxyMailMode" type="enum" value="https,redirect" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="5.0.7">
+  <desc>whether to run proxy in HTTPS or redirect mode. See also related attributes zimbraMailProxyPort and zimbraMailSSLProxyPort</desc>
 </attr>
 
 <attr id="686" name="zimbraPrefCalendarAllowForwardedInvite" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="6.0.0_BETA1">
@@ -7721,12 +7721,12 @@ TODO: delete them permanently from here
 </attr>
 
 <attr id="1534" name="zimbraMtaSmtpdRejectUnlistedRecipient" type="enum" value="yes,no" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
-  <globalConfigValue>no</globalConfigValue>
+  <globalConfigValue>yes</globalConfigValue>
   <desc>Value for postconf smtpd_reject_unlisted_recipient</desc>
 </attr>
 
 <attr id="1535" name="zimbraMtaSmtpdRejectUnlistedSender" type="enum" value="yes,no" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
-  <globalConfigValue>no</globalConfigValue>
+  <globalConfigValue>yes</globalConfigValue>
   <desc>Value for postconf smtpd_reject_unlisted_sender</desc>
 </attr>
 
@@ -8029,10 +8029,12 @@ TODO: delete them permanently from here
 
 <attr id="1590" name="zimbraMtaSmtpdSenderRestrictions" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
   <desc>Value for postconf smtpd_sender_restrictions</desc>
+  <globalConfigValue>reject_sender_login_mismatch</globalConfigValue>
 </attr>
 
 <attr id="1591" name="zimbraMtaSmtpdSenderLoginMaps" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
   <desc>Value for postconf smtpd_sender_login_maps</desc>
+  <globalConfigValue>proxy:ldap:/opt/zextras/conf/ldap-slm.cf</globalConfigValue>
 </attr>
 
 <attr id="1592" name="zimbraPrevFoldersToTrackMax" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">

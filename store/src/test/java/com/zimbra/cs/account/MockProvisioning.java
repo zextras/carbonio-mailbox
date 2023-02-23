@@ -256,6 +256,8 @@ public final class MockProvisioning extends Provisioning {
               map.remove(realKey);
             }
           }
+        } else if (Objects.equals("", value)) {
+          map.remove(attr.getKey());
         } else {
           map.put(attr.getKey(), value);
         }
@@ -442,9 +444,9 @@ public final class MockProvisioning extends Provisioning {
     }
 
     if (domainType.equalsIgnoreCase(DomainType.alias.name())) {
-      attrs.put(A_zimbraMailCatchAllAddress,  "@" + name);
-      final Domain targetDomain = getDomainById(
-          (String) attrs.getOrDefault(A_zimbraDomainAliasTargetId, name));
+      attrs.put(A_zimbraMailCatchAllAddress, "@" + name);
+      final Domain targetDomain =
+          getDomainById((String) attrs.getOrDefault(A_zimbraDomainAliasTargetId, name));
       attrs.put(A_zimbraMailCatchAllForwardingAddress, "@" + targetDomain.getName());
     }
 

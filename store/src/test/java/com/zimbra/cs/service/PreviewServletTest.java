@@ -1,6 +1,8 @@
 package com.zimbra.cs.service;
 
+import static com.zimbra.cs.service.PreviewServlet.DOC_THUMBNAIL_REGEX;
 import static com.zimbra.cs.service.PreviewServlet.IMG_THUMBNAIL_REGEX;
+import static com.zimbra.cs.service.PreviewServlet.PDF_PREVIEW_REGEX;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.atLeastOnce;
@@ -150,7 +152,7 @@ public class PreviewServletTest {
     PreviewServlet servlet = new PreviewServlet();
     Cookie cookie = new Cookie("ZM_AUTH_TOKEN", getAuthTokenString());
     when(request.getRequestURL()).thenReturn(urlBuffer);
-    when(request.getCookies()).thenReturn(new Cookie[] {cookie});
+    when(request.getCookies()).thenReturn(new Cookie[]{cookie});
     servlet.doGet(request, response);
     // should actually throw 5xx since there is no preview client, but our proxy will handle the
     // conversion
@@ -245,7 +247,7 @@ public class PreviewServletTest {
 
   @Test
   public void
-      shouldReturnCorrectUrlForPreviewWhenDispQueryParameterIsAtFirstPosAndIsOnlyQueryParam() {
+  shouldReturnCorrectUrlForPreviewWhenDispQueryParameterIsAtFirstPosAndIsOnlyQueryParam() {
     String requestUrl =
         "https://nbm-s01.demo.zextras.io/service/preview/document/562/3/800x800/thumbnail/?disp=i";
     final String dispositionType = PreviewServlet.getDispositionType(requestUrl);
@@ -337,6 +339,40 @@ public class PreviewServletTest {
   }
 
   /**
+   * CO-594
+   */
+  @Test
+  public void shouldMatchNestedPartNumberFromRequestQuery() {
+    final String requestUrlForPdfPreview = "https://example.com/service/preview/pdf/14473/1.3.2.1.2.3";
+
+    final Matcher matcher =
+        Pattern.compile(PDF_PREVIEW_REGEX)
+            .matcher(PreviewServlet.getRequestUrlForPreview(requestUrlForPdfPreview, "inline"));
+
+    final String EXPECTED_PART_NUMBER = "1.3.2.1.2.3";
+
+    assertTrue(matcher.find());
+    assertEquals(EXPECTED_PART_NUMBER, matcher.group(2));
+  }
+
+  /**
+   * CO-594
+   */
+  @Test
+  public void shouldMatchNestedPartNumberFromThumbnailRequestQuery() {
+    final String requestUrlForPdfPreview = "https://example.com/service/preview/document/14473/1.3.2.1.2.3/20x20/thumbnail/";
+
+    final Matcher matcher =
+        Pattern.compile(DOC_THUMBNAIL_REGEX)
+            .matcher(PreviewServlet.getRequestUrlForPreview(requestUrlForPdfPreview, "inline"));
+
+    final String EXPECTED_PART_NUMBER = "1.3.2.1.2.3";
+
+    assertTrue(matcher.find());
+    assertEquals(EXPECTED_PART_NUMBER, matcher.group(2));
+  }
+
+  /**
    * Wrapper around {@link HttpServletResponse} class to enable mocking with desired customizations
    */
   private static class MockHttpServletResponse implements HttpServletResponse {
@@ -346,7 +382,8 @@ public class PreviewServletTest {
     private String msg = null;
 
     @Override
-    public void flushBuffer() {}
+    public void flushBuffer() {
+    }
 
     @Override
     public int getBufferSize() {
@@ -354,7 +391,8 @@ public class PreviewServletTest {
     }
 
     @Override
-    public void setBufferSize(int arg0) {}
+    public void setBufferSize(int arg0) {
+    }
 
     @Override
     public String getCharacterEncoding() {
@@ -362,7 +400,8 @@ public class PreviewServletTest {
     }
 
     @Override
-    public void setCharacterEncoding(String arg0) {}
+    public void setCharacterEncoding(String arg0) {
+    }
 
     @Override
     public String getContentType() {
@@ -370,7 +409,8 @@ public class PreviewServletTest {
     }
 
     @Override
-    public void setContentType(String arg0) {}
+    public void setContentType(String arg0) {
+    }
 
     @Override
     public Locale getLocale() {
@@ -378,7 +418,8 @@ public class PreviewServletTest {
     }
 
     @Override
-    public void setLocale(Locale arg0) {}
+    public void setLocale(Locale arg0) {
+    }
 
     @Override
     public ServletOutputStream getOutputStream() {
@@ -396,28 +437,36 @@ public class PreviewServletTest {
     }
 
     @Override
-    public void reset() {}
+    public void reset() {
+    }
 
     @Override
-    public void resetBuffer() {}
+    public void resetBuffer() {
+    }
 
     @Override
-    public void setContentLength(int arg0) {}
+    public void setContentLength(int arg0) {
+    }
 
     @Override
-    public void setContentLengthLong(long arg0) {}
+    public void setContentLengthLong(long arg0) {
+    }
 
     @Override
-    public void addCookie(Cookie arg0) {}
+    public void addCookie(Cookie arg0) {
+    }
 
     @Override
-    public void addDateHeader(String arg0, long arg1) {}
+    public void addDateHeader(String arg0, long arg1) {
+    }
 
     @Override
-    public void addHeader(String arg0, String arg1) {}
+    public void addHeader(String arg0, String arg1) {
+    }
 
     @Override
-    public void addIntHeader(String arg0, int arg1) {}
+    public void addIntHeader(String arg0, int arg1) {
+    }
 
     @Override
     public boolean containsHeader(String arg0) {
@@ -465,10 +514,12 @@ public class PreviewServletTest {
     }
 
     @Override
-    public void setStatus(int arg0) {}
+    public void setStatus(int arg0) {
+    }
 
     @Override
-    public void sendError(int arg0) {}
+    public void sendError(int arg0) {
+    }
 
     @Override
     public void sendError(int status, String msg) {
@@ -477,25 +528,31 @@ public class PreviewServletTest {
     }
 
     @Override
-    public void sendRedirect(String arg0) {}
+    public void sendRedirect(String arg0) {
+    }
 
     @Override
-    public void setDateHeader(String arg0, long arg1) {}
+    public void setDateHeader(String arg0, long arg1) {
+    }
 
     @Override
-    public void setHeader(String arg0, String arg1) {}
+    public void setHeader(String arg0, String arg1) {
+    }
 
     @Override
-    public void setIntHeader(String arg0, int arg1) {}
+    public void setIntHeader(String arg0, int arg1) {
+    }
 
     @Override
-    public void setStatus(int arg0, String arg1) {}
+    public void setStatus(int arg0, String arg1) {
+    }
 
     public String getMsg() {
       return msg;
     }
 
     class MockServletOutputStream extends ServletOutputStream {
+
       @Override
       public void write(int b) throws IOException {
         output.write(b);
@@ -507,7 +564,8 @@ public class PreviewServletTest {
       }
 
       @Override
-      public void setWriteListener(WriteListener listener) {}
+      public void setWriteListener(WriteListener listener) {
+      }
     }
   }
 }
