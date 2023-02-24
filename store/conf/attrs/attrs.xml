@@ -9989,4 +9989,12 @@ TODO: delete them permanently from here
   <desc>Logo URL for domain</desc>
   <globalConfigValue>https://www.zextras.com</globalConfigValue>
 </attr>
+
+<attr id="3127" name="carbonioNotificationFrom" type="email" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainAdminModifiable" since="23.4.0">
+  <desc>email address of sender used to send emails about important infrastructure notifications</desc>
+</attr>
+
+<attr id="3128" name="carbonioNotificationRecipients" type="email" max="256" cardinality="multi" optionalIn="globalConfig,domain" flags="domainAdminModifiable" since="23.4.0">
+  <desc>email address of recipients who will receive emails about important infrastructure notifications</desc>
+</attr>
 </attrs>

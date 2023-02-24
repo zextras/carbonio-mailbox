@@ -2767,6 +2767,24 @@ public class ZAttrProvisioning {
     public static final String A_carbonioMeshCredentials = "carbonioMeshCredentials";
 
     /**
+     * email address of sender used to send emails about important
+     * infrastructure notifications
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3127)
+    public static final String A_carbonioNotificationFrom = "carbonioNotificationFrom";
+
+    /**
+     * email address of recipients who will receive emails about important
+     * infrastructure notifications
+     *
+     * @since ZCS 23.4.0
+     */
+    @ZAttr(id=3128)
+    public static final String A_carbonioNotificationRecipients = "carbonioNotificationRecipients";
+
+    /**
      * Web UI Dark Mode preference for account
      *
      * @since ZCS 22.11.0
