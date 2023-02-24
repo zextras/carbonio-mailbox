@@ -438,6 +438,20 @@
       <type>pom</type>
       <scope>runtime</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.inject/guice -->
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.inject.extensions/guice-servlet -->
+    <dependency>
+      <groupId>com.google.inject.extensions</groupId>
+      <artifactId>guice-servlet</artifactId>
+    </dependency>
+
+
+
+
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
