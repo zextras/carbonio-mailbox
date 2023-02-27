@@ -43,6 +43,9 @@ POLICY_RULES="$(cat <<EOF
   "carbonio-auth/"= {
     "policy"= "read"
   }
+  "carbonio-core/"= {
+    "policy"= "read"
+  }
 }
 "node_prefix" = {
   "" = {
