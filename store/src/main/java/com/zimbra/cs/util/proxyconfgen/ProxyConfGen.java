@@ -2366,21 +2366,6 @@ public class ProxyConfGen {
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("web.carbonio.admin")),
           new File(mConfIncludesDir, getConfFileName("web.carbonio.admin")));
-      expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("messaging")),
-          new File(mConfIncludesDir, getConfFileName("messaging")));
-      expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("messaging.xmpp.default")),
-          new File(mConfIncludesDir, getConfFileName("messaging.xmpp.default")));
-      expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("messaging.xmpps.default")),
-          new File(mConfIncludesDir, getConfFileName("messaging.xmpps.default")));
-      expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("messaging.xmpp")),
-          new File(mConfIncludesDir, getConfFileName("messaging.xmpp")));
-      expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("messaging.xmpps")),
-          new File(mConfIncludesDir, getConfFileName("messaging.xmpps")));
       // Stream templates
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("stream")),
@@ -2388,6 +2373,9 @@ public class ProxyConfGen {
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("stream.addressBook")),
           new File(mConfIncludesDir, getConfFileName("stream.addressBook")));
+      expandTemplate(
+        new File(mTemplateDir, getConfTemplateFileName("stream.chats.messaging.xmpp")),
+        new File(mConfIncludesDir, getConfFileName("stream.chats.messaging.xmpp")));
       // Templates for ssl mapping
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("map.crt")),
