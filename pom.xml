@@ -337,7 +337,7 @@
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>${jersey.version}</version>
+        <version>1.15</version>
       </dependency>
       <dependency>
         <groupId>net.sourceforge.nekohtml</groupId>
@@ -363,6 +363,11 @@
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
         <version>3.1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
@@ -626,7 +631,7 @@
       <dependency>
         <groupId>javax.ws.rs</groupId>
         <artifactId>javax.ws.rs-api</artifactId>
-        <version>2.0-m10</version>
+        <version>2.1.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.neethi</groupId>
@@ -649,34 +654,14 @@
         <version>2.1</version>
       </dependency>
       <dependency>
-        <groupId>com.sun.jersey</groupId>
+        <groupId>org.glassfish.jersey.core</groupId>
         <artifactId>jersey-client</artifactId>
         <version>${jersey.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-core</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-json</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-servlet</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
+        <groupId>org.glassfish.jersey.core</groupId>
         <artifactId>jersey-server</artifactId>
         <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey.contribs</groupId>
-        <artifactId>jersey-multipart</artifactId>
-        <version>1.12</version>
       </dependency>
       <dependency>
         <groupId>javax.jws</groupId>
@@ -789,14 +774,135 @@
         <version>2.3.19</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject</groupId>
-        <artifactId>guice</artifactId>
-        <version>5.1.0</version>
-      </dependency>
-      <dependency>
         <groupId>com.google.inject.extensions</groupId>
         <artifactId>guice-servlet</artifactId>
-        <version>5.1.0</version>
+        <version>5.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>1.33</version>
+      </dependency>
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.21.0-GA</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>5.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>io.prometheus</groupId>
+        <artifactId>simpleclient_jetty</artifactId>
+        <version>0.16.0</version>
+      </dependency>
+      <dependency>
+        <groupId>io.prometheus</groupId>
+        <artifactId>simpleclient_servlet</artifactId>
+        <version>0.16.0</version>
+      </dependency>
+      <dependency>
+        <groupId>io.prometheus</groupId>
+        <artifactId>simpleclient</artifactId>
+        <version>0.16.0</version>
+      </dependency>
+      <dependency>
+        <groupId>io.prometheus</groupId>
+        <artifactId>simpleclient_hotspot</artifactId>
+        <version>0.16.0</version>
+      </dependency>
+      <dependency>
+        <groupId>io.prometheus</groupId>
+        <artifactId>simpleclient_dropwizard</artifactId>
+        <version>0.16.0</version>
+      </dependency>
+      <dependency>
+        <groupId>io.dropwizard.metrics</groupId>
+        <artifactId>metrics-core</artifactId>
+        <version>4.2.15</version>
+      </dependency>
+      <dependency>
+        <groupId>io.dropwizard.metrics</groupId>
+        <artifactId>metrics-servlets</artifactId>
+        <version>4.2.15</version>
+      </dependency>
+      <dependency>
+        <groupId>io.dropwizard.metrics</groupId>
+        <artifactId>metrics-healthchecks</artifactId>
+        <version>4.2.15</version>
+      </dependency>
+      <dependency>
+        <groupId>io.dropwizard.metrics</groupId>
+        <artifactId>metrics-jvm</artifactId>
+        <version>4.2.15</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>1.1.0.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-jaxrs</artifactId>
+        <version>1.6.8</version>
+      </dependency>
+      <!-- Jersey v2.28 onward moves to k=jakarta artifacts, this is why we use 2.27 -->
+      <dependency>
+        <groupId>org.glassfish.jersey.containers</groupId>
+        <artifactId>jersey-container-servlet-core</artifactId>
+        <version>2.27</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.core</groupId>
+        <artifactId>jersey-server</artifactId>
+        <version>2.27</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.inject</groupId>
+        <artifactId>jersey-hk2</artifactId>
+        <version>2.27</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>1.6.8</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.containers</groupId>
+        <artifactId>jersey-container-servlet</artifactId>
+        <version>2.27</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.media</groupId>
+        <artifactId>jersey-media-jaxb</artifactId>
+        <version>2.27</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.media</groupId>
+        <artifactId>jersey-media-json-jackson</artifactId>
+        <version>2.27</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.hk2</groupId>
+        <artifactId>guice-bridge</artifactId>
+        <version>2.5.0-b42</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.hk2.external</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>2.5.0-b42</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.hk2</groupId>
+        <artifactId>hk2-api</artifactId>
+        <version>2.5.0-b42</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -839,7 +945,7 @@
     <unboundid-ldapsdk.version>2.3.5</unboundid-ldapsdk.version>
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
-    <jersey.version>1.11</jersey.version>
+    <jersey.version>2.27</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <revision>23.4.0-SNAPSHOT</revision>
   </properties>
