@@ -8882,10 +8882,12 @@ TODO: delete them permanently from here
   <globalConfigValue>Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"</globalConfigValue>
   <globalConfigValue>Permissions-Policy: "geolocation=(self), microphone=(self)"</globalConfigValue>
   <globalConfigValue>Referrer-Policy: "same-origin"</globalConfigValue>
-  <globalConfigValue>X-Content-Type-Options: nosniff"</globalConfigValue>
-  <globalConfigValue>X-Robots-Tag: noindex"</globalConfigValue>
+  <globalConfigValue>X-Content-Type-Options: "nosniff"</globalConfigValue>
+  <globalConfigValue>X-Robots-Tag: "noindex, nofollow"</globalConfigValue>
   <globalConfigValue>X-XSS-Protection: "1; mode=block"</globalConfigValue>
+  <globalConfigValue>X-Frame-Options: "sameorigin"</globalConfigValue>
   <globalConfigValue>Expect-CT: max-age=86400</globalConfigValue>
+  <globalConfigValue>Content-Security-Policy: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' *.zextras.tools; connect-src 'self' *.zextras.tools; img-src 'self' data:; font-src 'self' fonts.gstatic.com; object-src 'self'; media-src 'self'; child-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; form-action 'self'; frame-ancestors 'self'"</globalConfigValue>
   <desc>
      Custom response headers to be added by the proxy. For example, can be used to add a HSTS header
      that will enforce SSL usage on the client side. Note: the value
