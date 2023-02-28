@@ -20510,7 +20510,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      */
     @ZAttr(id=1973)
     public String[] getReverseProxyResponseHeaders() {
-        String[] value = getMultiAttr(Provisioning.A_zimbraReverseProxyResponseHeaders, true, true); return value.length > 0 ? value : new String[] {"Strict-Transport-Security: \"max-age=31536000; includeSubDomains; preload\"","Permissions-Policy: \"geolocation=(self), microphone=(self)\"","Referrer-Policy: \"same-origin\"","X-Content-Type-Options: nosniff\"","X-Robots-Tag: noindex\"","X-XSS-Protection: \"1; mode=block\"","Expect-CT: max-age=86400"};
+        String[] value = getMultiAttr(Provisioning.A_zimbraReverseProxyResponseHeaders, true, true); return value.length > 0 ? value : new String[] {"Strict-Transport-Security: \"max-age=31536000; includeSubDomains; preload\"","Permissions-Policy: \"geolocation=(self), microphone=(self)\"","Referrer-Policy: \"same-origin\"","X-Content-Type-Options: \"nosniff\"","X-Robots-Tag: \"noindex, nofollow\"","X-XSS-Protection: \"1; mode=block\"","X-Frame-Options: \"sameorigin\"","Expect-CT: max-age=86400","Content-Security-Policy: \"default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' *.zextras.tools; connect-src 'self' *.zextras.tools; img-src 'self' data:; font-src 'self' fonts.gstatic.com; object-src 'self'; media-src 'self'; child-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; form-action 'self'; frame-ancestors 'self'\""};
     }
 
     /**
