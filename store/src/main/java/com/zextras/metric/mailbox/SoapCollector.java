@@ -17,12 +17,10 @@ public class SoapCollector extends Collector {
   public List<MetricFamilySamples> collect() {
     final CounterMetricFamily soapHitMetricFamily =
         new CounterMetricFamily(
-            "soap_api_count", "Number of SOAP APIs request", List.of("requestName"));
+            "soap_exec_count", "Number of SOAP APIs request", List.of("command"));
     final CounterMetricFamily soapDurationMetricFamily =
         new CounterMetricFamily(
-            "soap_api_duration_avg",
-            "Average duration of SOAP APIs request",
-            List.of("requestName"));
+            "soap_exec_ms_avg", "Average duration of SOAP APIs request in ms", List.of("command"));
     ZimbraPerf.SOAP_TRACKER_PROMETHEUS
         .getCounters()
         .forEach(
