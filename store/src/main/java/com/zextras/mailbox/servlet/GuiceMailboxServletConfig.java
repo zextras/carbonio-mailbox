@@ -1,4 +1,4 @@
-package com.zextras.jetty.mailbox;
+package com.zextras.mailbox.servlet;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

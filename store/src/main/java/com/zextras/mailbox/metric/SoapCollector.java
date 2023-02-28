@@ -1,4 +1,4 @@
-package com.zextras.metric.mailbox;
+package com.zextras.mailbox.metric;
 
 import com.zimbra.cs.stats.ZimbraPerf;
 import io.prometheus.client.Collector;

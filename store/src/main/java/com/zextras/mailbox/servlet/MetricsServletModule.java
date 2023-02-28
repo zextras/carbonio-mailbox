@@ -1,7 +1,7 @@
-package com.zextras.jetty.mailbox;
+package com.zextras.mailbox.servlet;
 
 import com.google.inject.servlet.ServletModule;
-import com.zextras.metric.mailbox.SoapCollector;
+import com.zextras.mailbox.metric.SoapCollector;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.exporter.MetricsServlet;
 
