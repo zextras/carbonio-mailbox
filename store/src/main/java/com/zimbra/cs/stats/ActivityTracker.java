@@ -10,7 +10,10 @@ import com.zimbra.common.stats.StatsDumperDataSource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * ActivityTrackers get their own output file (e.g. soap.csv) and track a set of "commands" and
@@ -45,25 +48,31 @@ public class ActivityTracker implements StatsDumperDataSource {
     return counter;
   }
 
-  ////////////// StatsDumperDataSource implementation //////////////
+  /**
+   * Returns a map of all counter names and values for counter values greater than zero.
+   *
+   * @return all registered counters
+   */
+  public Map<String, Counter> getCounters() {
+    return mCounterMap.entrySet().stream()
+        .filter(entry -> entry.getValue().getCount() > 0)
+        .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+  }
 
+  ////////////// StatsDumperDataSource implementation //////////////
   public Collection<String> getDataLines() {
-    if (mCounterMap.size() == 0) {
-      return null;
-    }
-    List<String> dataLines = new ArrayList<>(mCounterMap.size());
-    for (String command : mCounterMap.keySet()) {
-      Counter counter = mCounterMap.get(command);
-      if (counter.getCount() > 0) {
-        // This code is not thread-safe, but should be good enough 99.9% of the time.
-        // We avoid synchronization at the risk of the numbers being slightly off
-        // during a race condition.
-        long count = counter.getCount();
-        long avg = (long) counter.getAverage();
-        counter.reset();
-        dataLines.add(String.format("%s,%d,%d", command, count, avg));
-      }
-    }
+    List<String> dataLines = new ArrayList<>(getCounters().size());
+    getCounters()
+        .forEach(
+            (command, counter) -> {
+              // This code is not thread-safe, but should be good enough 99.9% of the time.
+              // We avoid synchronization at the risk of the numbers being slightly off
+              // during a race condition.
+              long count = counter.getCount();
+              long avg = (long) counter.getAverage();
+              counter.reset();
+              dataLines.add(String.format("%s,%d,%d", command, count, avg));
+            });
     return dataLines;
   }
 
