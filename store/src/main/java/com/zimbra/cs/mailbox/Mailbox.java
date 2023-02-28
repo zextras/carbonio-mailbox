@@ -5417,7 +5417,7 @@ public class Mailbox implements MailboxStore {
       }
 
       ZProperty prop;
-      prop = new ZProperty(ICalTok.PRODID, ZCalendar.sZimbraProdID);
+      prop = new ZProperty(ICalTok.PRODID, ZCalendar.sCarbonioProdID);
       prop.toICalendar(writer, needAppleICalHacks);
       prop = new ZProperty(ICalTok.VERSION, ZCalendar.sIcalVersion);
       prop.toICalendar(writer, needAppleICalHacks);

@@ -1,5 +1,5 @@
 BEGIN:VCALENDAR
-PRODID:Zimbra-Calendar-Provider
+PRODID:Carbonio-Calendar-Provider
 VERSION:2.0
 METHOD:PUBLISH
 BEGIN:VTIMEZONE
