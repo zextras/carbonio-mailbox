@@ -2,7 +2,7 @@ package com.zextras.mailbox.metric;
 
 import com.zimbra.cs.stats.ZimbraPerf;
 import io.prometheus.client.Collector;
-import io.prometheus.client.CounterMetricFamily;
+import io.prometheus.client.SummaryMetricFamily;
 import java.util.List;
 
 public class SoapCollector extends Collector {
@@ -15,20 +15,18 @@ public class SoapCollector extends Collector {
    */
   @Override
   public List<MetricFamilySamples> collect() {
-    final CounterMetricFamily soapHitMetricFamily =
-        new CounterMetricFamily(
-            "soap_exec_count", "Number of SOAP APIs request", List.of("command"));
-    final CounterMetricFamily soapDurationMetricFamily =
-        new CounterMetricFamily(
-            "soap_exec_ms_avg", "Average duration of SOAP APIs request in ms", List.of("command"));
+    final SummaryMetricFamily soapHitMetricFamily =
+        new SummaryMetricFamily(
+            "soap_exec_ms",
+            "Summary of SOAP APIs request duration in millisecond",
+            List.of("command"));
     ZimbraPerf.SOAP_TRACKER_PROMETHEUS
         .getCounters()
         .forEach(
             (trackerName, counter) -> {
-              soapHitMetricFamily.addMetric(List.of(trackerName), counter.getCount());
-              soapDurationMetricFamily.addMetric(List.of(trackerName), counter.getAverage());
-              counter.reset();
+              soapHitMetricFamily.addMetric(
+                  List.of(trackerName), counter.getCount(), counter.getTotal());
             });
-    return List.of(soapHitMetricFamily, soapDurationMetricFamily);
+    return List.of(soapHitMetricFamily);
   }
 }
