@@ -12,16 +12,15 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import javax.inject.Singleton;
 
 /**
  * @zm-service-description The Admin Service includes commands for server, account and mailbox
  *     administration.
  * @since May 26, 2004
  */
+@Singleton
 public class AdminService implements DocumentService {
 
   @Override
@@ -64,10 +63,10 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.GET_ACCOUNT_MEMBERSHIP_REQUEST, new GetAccountMembership());
 
-    //certbot
+    // certbot
     dispatcher.registerHandler(AdminConstants.ISSUE_CERT_REQUEST, new IssueCert());
 
-    //domain
+    // domain
     dispatcher.registerHandler(AdminConstants.CREATE_DOMAIN_REQUEST, new CreateDomain());
     dispatcher.registerHandler(AdminConstants.GET_DOMAIN_REQUEST, new GetDomain());
     dispatcher.registerHandler(AdminConstants.GET_DOMAIN_INFO_REQUEST, new GetDomainInfo());

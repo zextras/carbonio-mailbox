@@ -26,9 +26,8 @@ SPDX-License-Identifier: AGPL-3.0-only
   </filter-mapping>
 
   <listener>
-    <listener-class>com.zextras.guice.GuiceMailboxServletConfig</listener-class>
+    <listener-class>com.zextras.mailbox.servlet.GuiceMailboxServletConfig</listener-class>
   </listener>
-
   <filter>
     <filter-name>DoSFilter</filter-name>
     <filter-class>com.zimbra.cs.servlet.DoSFilter</filter-class>

@@ -438,10 +438,10 @@
       <type>pom</type>
       <scope>runtime</scope>
     </dependency>
-    <!-- Dependency Injection -->
+    <!-- DI -->
     <dependency>
-      <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
+      <groupId>javax.inject</groupId>
     </dependency>
     <dependency>
       <artifactId>guice</artifactId>
@@ -451,59 +451,25 @@
       <groupId>com.google.inject.extensions</groupId>
       <artifactId>guice-servlet</artifactId>
     </dependency>
-    <!-- Thanks for using https://jar-download.com -->
-
-
-    <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-server -->
+    <!-- Prometheus -->
 <!--    <dependency>-->
-<!--      <groupId>org.glassfish.jersey.core</groupId>-->
-<!--      <artifactId>jersey-server</artifactId>-->
-<!--    </dependency>-->
-    <dependency>
-      <groupId>org.glassfish.jersey.containers</groupId>
-      <artifactId>jersey-container-servlet</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jersey.inject</groupId>
-      <artifactId>jersey-hk2</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.glassfish.hk2</groupId>-->
-<!--      <artifactId>hk2-api</artifactId>-->
-<!--    </dependency>-->
-    <!-- Adds JSON serialization -->
-    <dependency>
-      <groupId>org.glassfish.jersey.media</groupId>
-      <artifactId>jersey-media-json-jackson</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-<!--    <dependency>-->
-<!--      <groupId>javax.ws.rs</groupId>-->
-<!--      <artifactId>javax.ws.rs-api</artifactId>-->
-<!--      <version>2.1.1</version>-->
+<!--      <groupId>io.prometheus</groupId>-->
+<!--      <artifactId>simpleclient</artifactId>-->
 <!--    </dependency>-->
 <!--    <dependency>-->
-<!--      <groupId>javax.validation</groupId>-->
-<!--      <artifactId>validation-api</artifactId>-->
+<!--      <groupId>io.prometheus</groupId>-->
+<!--      <artifactId>simpleclient_servlet</artifactId>-->
 <!--    </dependency>-->
-    <dependency>
-      <groupId>org.glassfish.hk2.external</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>runtime</scope>
-    </dependency>
+<!--    &lt;!&ndash; Prometheus Jetty process stats collector &ndash;&gt;-->
 <!--    <dependency>-->
-<!--      <groupId>io.swagger</groupId>-->
-<!--      <artifactId>swagger-annotations</artifactId>-->
+<!--      <groupId>io.prometheus</groupId>-->
+<!--      <artifactId>simpleclient_jetty</artifactId>-->
 <!--    </dependency>-->
-    <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>jsr311-api</artifactId>
-      <version>1.1.1</version>
-      <scope>runtime</scope>
-    </dependency>
-
+<!--    &lt;!&ndash; Prometheus JMX stats collector &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>io.prometheus</groupId>-->
+<!--      <artifactId>simpleclient_hotspot</artifactId>-->
+<!--    </dependency>-->
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>

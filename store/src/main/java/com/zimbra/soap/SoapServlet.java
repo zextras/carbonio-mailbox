@@ -18,22 +18,22 @@ import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.BufferStream;
 import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.LoadingCacheUtil;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.RemoteIP;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.util.ZimbraServletOutputStream;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.util.Zimbra;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -45,7 +45,7 @@ import org.apache.http.ProtocolVersion;
 import org.apache.http.message.BasicLineParser;
 
 /** The soap service servlet */
-public class SoapServlet extends ZimbraServlet {
+public abstract class SoapServlet extends ZimbraServlet {
   private static final long serialVersionUID = 38710345271877593L;
 
   protected static final String PARAM_ENGINE_HANDLER = "engine.handler.";
@@ -69,11 +69,11 @@ public class SoapServlet extends ZimbraServlet {
 
   private static Log sLog = LogFactory.getLog(SoapServlet.class);
   private SoapEngine mEngine;
-  private final AttachmentService attachmentService;
+  private final DocumentService[] documentServices;
 
   @Inject
-  public SoapServlet(AttachmentService attachmentService) {
-    this.attachmentService = attachmentService;
+  public SoapServlet(DocumentService... documentServices) {
+    this.documentServices = documentServices;
   }
 
   // Used by sExtraServices
@@ -93,27 +93,10 @@ public class SoapServlet extends ZimbraServlet {
     super.init();
 
     mEngine = new SoapEngine();
-
-    int i = 0;
-    String cname;
-    while ((cname = getInitParameter(PARAM_ENGINE_HANDLER + i)) != null) {
-      loadHandler(cname);
-      i++;
+    if (Objects.equals(0, this.documentServices.length)) {
+      throw new ServletException("Must provide at least one DocumentDispatcher.");
     }
-
-    // See if any extra services were previously added by extensions
-    synchronized (sExtraServices) {
-      List<DocumentService> services = LoadingCacheUtil.get(sExtraServices, getServletName());
-      for (DocumentService service : services) {
-        addService(service);
-        i++;
-      }
-    }
-
-    mEngine.getDocumentDispatcher().clearSoapWhiteList();
-
-    if (i == 0)
-      throw new ServletException("Must specify at least one handler " + PARAM_ENGINE_HANDLER + i);
+    Arrays.stream(this.documentServices).forEach(this::addService);
 
     try {
       Zimbra.startup();
@@ -143,55 +126,6 @@ public class SoapServlet extends ZimbraServlet {
     mEngine = null;
 
     super.destroy();
-  }
-
-  private void loadHandler(String cname) throws ServletException {
-    Class<?> dispatcherClass = null;
-    try {
-      dispatcherClass = Class.forName(cname);
-    } catch (ClassNotFoundException cnfe) {
-      throw new ServletException("can't find handler initializer class " + cname, cnfe);
-    } catch (OutOfMemoryError e) {
-      Zimbra.halt("out of memory", e);
-    } catch (Throwable t) {
-      throw new ServletException("can't find handler initializer class " + cname, t);
-    }
-
-    Object dispatcher;
-
-    try {
-      dispatcher = dispatcherClass.newInstance();
-    } catch (InstantiationException ie) {
-      throw new ServletException("can't instantiate class " + cname, ie);
-    } catch (IllegalAccessException iae) {
-      throw new ServletException("can't instantiate class " + cname, iae);
-    }
-
-    if (!(dispatcher instanceof DocumentService)) {
-      throw new ServletException("class not an instanceof HandlerInitializer: " + cname);
-    }
-
-    DocumentService hi = (DocumentService) dispatcher;
-    addService(hi);
-  }
-
-  /**
-   * Adds a service to the instance of <code>SoapServlet</code> with the given name. If the servlet
-   * has not been loaded, stores the service for later initialization.
-   */
-  public static void addService(String servletName, DocumentService service) {
-    synchronized (sExtraServices) {
-      ZimbraServlet servlet = ZimbraServlet.getServlet(servletName);
-      if (servlet != null) {
-        ((SoapServlet) servlet).addService(service);
-      } else {
-        sLog.debug(
-            "addService(%s, %s): servlet has not been initialized",
-            servletName, service.getClass().getSimpleName());
-        List<DocumentService> services = LoadingCacheUtil.get(sExtraServices, servletName);
-        services.add(service);
-      }
-    }
   }
 
   private void addService(DocumentService service) {
