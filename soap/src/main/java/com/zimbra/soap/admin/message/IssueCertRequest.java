@@ -1,8 +1,6 @@
 package com.zimbra.soap.admin.message;
 
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.soap.MailConstants;
-import com.zimbra.soap.type.ZmBoolean;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -50,18 +48,6 @@ public class IssueCertRequest {
   @XmlAttribute(name = AdminConstants.A_CHAIN_TYPE /* chainType */, required = false)
   private String chainType;
 
-  /**
-   * @zm-api-field-tag expand field requires in order to modify existing domain cert in case if a
-   *     virtualHostname was added or deleted for a requested domain.
-   * @zm-api-field-description boolean flag.
-   * An admin user could pass zero or one argument with this parameter either "true"/"false"
-   * or "1"/"0". The default value is false.
-   * An admin user should pass "true"/"1" in case if he wants to renew existing certificate
-   * the reason is a virtual hostname was added or deleted for a requested domain.
-   */
-  @XmlAttribute(name = MailConstants.A_EXPAND /* expand */, required = false)
-  private ZmBoolean expand;
-
   /** no-argument constructor wanted by JAXB */
   @SuppressWarnings("unused")
   public IssueCertRequest() {
@@ -86,13 +72,5 @@ public class IssueCertRequest {
 
   public String getChain() {
     return chainType;
-  }
-
-  public void setExpand(Boolean expand) {
-    this.expand = ZmBoolean.fromBool(expand, false);
-  }
-
-  public boolean getExpand() {
-    return ZmBoolean.toBool(expand, false);
   }
 }

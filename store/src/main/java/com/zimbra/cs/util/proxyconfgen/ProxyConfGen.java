@@ -6,12 +6,15 @@
 package com.zimbra.cs.util.proxyconfgen;
 
 import com.zimbra.common.account.Key;
+import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.StringUtil;
+import com.zimbra.cs.account.AccountServiceException;
+import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
@@ -34,6 +37,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.IOUtils;
 
 public class ProxyConfGen {
 
@@ -89,6 +93,9 @@ public class ProxyConfGen {
   private static Provisioning mProv = null;
   private static boolean mGenConfPerVhn = false;
   private static boolean hasCustomTemplateLocationArg = false;
+  private static final String CERTBOT_WORKING_DIR = "/common/etc/letsencrypt/live/";
+  private static final String CERT = "/fullchain.pem";
+  private static final String KEY = "/privkey.pem";
 
   static {
     mOptions.addOption("h", "help", false, "show this usage text");
@@ -242,9 +249,9 @@ public class ProxyConfGen {
 
           if (virtualHostnames.length == 0
               || (certificate == null
-                  && privateKey == null
-                  && clientCertMode == null
-                  && clientCertCA == null)) {
+              && privateKey == null
+              && clientCertMode == null
+              && clientCertCA == null)) {
             return; // ignore the items that don't have virtual host
             // name, cert or key. Those domains will use the
             // config
@@ -313,68 +320,7 @@ public class ProxyConfGen {
     return sb.toString();
   }
 
-  /**
-   * This method backs up existing certificate and private key files for the given domain before
-   * creating new ones and populating them with the new data. Backup files gets restored if the
-   * transaction fails.
-   *
-   * @param domainName the name of the domain which the certificate and the private key will have
-   *     the name
-   * @param certificate the certificate content
-   * @param privateKey the private key content
-   * @throws ProxyConfException if something goes wrong
-   * @author Davide Polonio and Yuliya Aheeva
-   */
-  public static void updateDomainCertificate(
-      String domainName, String certificate, String privateKey) throws ProxyConfException {
-    final File certificateFile =
-        new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
-    final File privateKeyFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_KEY_EXT).toUri());
-    // Backup the old files
-    final Path caPathInstance = Path.of(certificateFile.getAbsolutePath());
-    final Path backUpCaPathInstance = Path.of(certificateFile.getAbsolutePath() + ".bak");
-    final Path privateKeyPathInstance = Path.of(privateKeyFile.getAbsolutePath());
-    final Path backUpPrivateKeyPathInstance = Path.of(privateKeyFile.getAbsolutePath() + ".bak");
-    try {
-      if (certificateFile.exists()) {
-        Files.move(caPathInstance, backUpCaPathInstance, StandardCopyOption.REPLACE_EXISTING);
-      }
-      if (privateKeyFile.exists()) {
-        Files.move(
-            privateKeyPathInstance,
-            backUpPrivateKeyPathInstance,
-            StandardCopyOption.REPLACE_EXISTING);
-      }
-    } catch (IOException e) {
-      throw new ProxyConfException(
-          "Unable to create backup copy for certificate and private key of domain " + domainName);
-    }
-    try (FileOutputStream fsOutputCertificate = new FileOutputStream(certificateFile);
-        FileOutputStream fsOutputPrivateKey = new FileOutputStream(privateKeyFile)) {
-      LOG.debug("Deploying certificate for " + domainName);
-      fsOutputCertificate.write(certificate.getBytes(StandardCharsets.UTF_8));
-      LOG.debug("Deploying private key for " + domainName);
-      fsOutputPrivateKey.write(privateKey.getBytes(StandardCharsets.UTF_8));
-    } catch (IOException e) {
-      // Restore backup files if something goes wrong
-      try {
-        Files.move(backUpCaPathInstance, caPathInstance, StandardCopyOption.REPLACE_EXISTING);
-        Files.move(
-            backUpPrivateKeyPathInstance,
-            privateKeyPathInstance,
-            StandardCopyOption.REPLACE_EXISTING);
-      } catch (IOException ignored) {
-        throw new ProxyConfException(
-            "Unable to write down and restore older backup certificate/private key for domain "
-                + domainName);
-      }
-      throw new ProxyConfException(
-          "Unable to write down certificate for domain "
-              + domainName
-              + ". A copy of the previous domain certificate and private key have been restored",
-          e);
-    }
-  }
+
 
   /* Guess how to find a server object -- taken from ProvUtil::guessServerBy */
   public static Key.ServerBy guessServerBy(String value) {
@@ -564,7 +510,7 @@ public class ProxyConfGen {
    * @author Jiankuan
    * @deprecated use expandTemplateByExplodeDomain instead
    */
-  @SuppressWarnings("DeprecatedIsStillUsed")
+  //DeprecatedIsStillUsed
   @Deprecated
   private static void expandTemplateExplodeSSLConfigsForAllVhnsAndVIPs(
       BufferedReader temp, BufferedWriter conf) throws IOException, ProxyConfException {
@@ -686,8 +632,8 @@ public class ProxyConfGen {
         }
       } else if (attr.equals("sso")
           && (item.clientCertMode == null
-              || item.clientCertMode.equals("")
-              || item.clientCertMode.equals("off"))) {
+          || item.clientCertMode.equals("")
+          || item.clientCertMode.equals("off"))) {
         return true;
       }
     }
@@ -2215,11 +2161,13 @@ public class ProxyConfGen {
       /* upgrade the variable map from the config in force */
       LOG.debug("Loading Attrs in Domain Level");
       mDomainReverseProxyAttrs = loadDomainReverseProxyAttrs();
-      if (mDryRun) {
-        LOG.info("Would download certificates from LDAP");
-      } else {
-        downloadCertificatesForDomains(mDomainReverseProxyAttrs);
-      }
+
+      //save Let's Encrypt certificate key pairs from CERTBOT_SSL_DIR to LDAP
+      saveCertificateKeyPairFromCertbotWorkingDirToLdap(mDomainReverseProxyAttrs, mDryRun);
+
+      //download domain cert key pairs from LDAP to DOMAIN_SSL_DIR
+      downloadCertificateKeyPairToDomainCertDir(mDomainReverseProxyAttrs, mDryRun);
+
       mServerAttrs = loadServerAttrs();
       updateListenAddresses();
 
@@ -2233,7 +2181,8 @@ public class ProxyConfGen {
       writeClientCAtoFile(clientCA);
 
       // cleanup DOMAIN_SSL_DIR
-      deleteObsoleteCertificateKeyPair(mDomainReverseProxyAttrs, mDryRun);
+      deleteObsoleteCertificateKeyPairFromDomainCertDir(mDomainReverseProxyAttrs, mDryRun);
+
     } catch (ProxyConfException | ServiceException pe) {
       handleException(pe);
       exitCode = 1;
@@ -2374,8 +2323,8 @@ public class ProxyConfGen {
           new File(mTemplateDir, getConfTemplateFileName("stream.addressBook")),
           new File(mConfIncludesDir, getConfFileName("stream.addressBook")));
       expandTemplate(
-        new File(mTemplateDir, getConfTemplateFileName("stream.chats.messaging.xmpp")),
-        new File(mConfIncludesDir, getConfFileName("stream.chats.messaging.xmpp")));
+          new File(mTemplateDir, getConfTemplateFileName("stream.chats.messaging.xmpp")),
+          new File(mConfIncludesDir, getConfFileName("stream.chats.messaging.xmpp")));
       // Templates for ssl mapping
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("map.crt")),
@@ -2402,7 +2351,34 @@ public class ProxyConfGen {
   }
 
   /**
-   * Cleanup of Obsolete certificate-key file pair from {@link ProxyConfGen#DOMAIN_SSL_DIR}
+   * Downloads all the certificates/keys present in mDomainReverseProxyAttrs
+   * List<{@link DomainAttrItem}> to {@link ProxyConfGen#DOMAIN_SSL_DIR}.
+   *
+   * @param mDomainReverseProxyAttrs List<{@link DomainAttrItem}> domain attribute items collected
+   *     from domains
+   * @throws ProxyConfException if something goes wrong :)
+   * @author Davide Polonio and Yuliya Aheeva
+   * @since 22.12.0
+   */
+  private static void downloadCertificateKeyPairToDomainCertDir(
+      final List<DomainAttrItem> mDomainReverseProxyAttrs, final boolean dryRun)
+      throws ProxyConfException {
+
+    if (dryRun) {
+      LOG.info("Will download certificate/key pairs to domain certificate directory.");
+    } else {
+      Utils.createFolder(DOMAIN_SSL_DIR);
+      for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
+        if (!ProxyConfUtil.isEmptyString(entry.sslCertificate)
+            && !ProxyConfUtil.isEmptyString(entry.sslPrivateKey)) {
+          updateCertificateKeyPair(entry.domainName, entry.sslCertificate, entry.sslPrivateKey);
+        }
+      }
+    }
+  }
+
+  /**
+   * Cleanup of Obsolete certificate/key file pair from {@link ProxyConfGen#DOMAIN_SSL_DIR}.
    *
    * @param mDomainReverseProxyAttrs List<{@link DomainAttrItem}> domain attribute items collected
    *     from domains
@@ -2410,8 +2386,9 @@ public class ProxyConfGen {
    * @author Keshav Bhatt
    * @since 22.12.0
    */
-  private static void deleteObsoleteCertificateKeyPair(
+  private static void deleteObsoleteCertificateKeyPairFromDomainCertDir(
       final List<DomainAttrItem> mDomainReverseProxyAttrs, final boolean dryRun) {
+
     List<String> filesInDirectory = Utils.getFilesPathInDirectory(DOMAIN_SSL_DIR);
     for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
       filesInDirectory.removeIf(filePath -> (filePath.contains(entry.domainName)));
@@ -2435,20 +2412,156 @@ public class ProxyConfGen {
   }
 
   /**
-   * Downloads all the certificates present in mDomainReverseProxyAttrs
+   * Saves existing Let's Encrypt fullchain certificate private key pairs from Certbot working
+   * directory {@link DomainCertManager#CERTBOT_WORKING_DIR} to LDAP.
    *
-   * @param mDomainReverseProxyAttrs the list of certificates to retrieve from LDAP
-   * @throws ProxyConfException if something goes wrong :)
-   * @author Davide Polonio and Yuliya Aheeva
+   * @param mDomainReverseProxyAttrs List<{@link DomainAttrItem}> domain attribute items collected
+   *     from domains
+   * @param dryRun if it's a dry run
+   * @author Yuliya Aheeva
+   * @since 23.4.0
    */
-  private static void downloadCertificatesForDomains(List<DomainAttrItem> mDomainReverseProxyAttrs)
+  private static void saveCertificateKeyPairFromCertbotWorkingDirToLdap(
+      final List<DomainAttrItem> mDomainReverseProxyAttrs, final boolean dryRun)
       throws ProxyConfException {
-    Utils.createFolder(DOMAIN_SSL_DIR);
-    for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
-      if (!ProxyConfUtil.isEmptyString(entry.sslCertificate)
-          && !ProxyConfUtil.isEmptyString(entry.sslPrivateKey)) {
-        updateDomainCertificate(entry.domainName, entry.sslCertificate, entry.sslPrivateKey);
+
+    if (dryRun) {
+      LOG.info("Will save Let's Encrypt certificate/key pairs to LDAP.");
+    } else {
+      for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
+        if (isDomainManagedByCertbot(entry.domainName)) {
+          updateCertificateKeyPair(entry);
+        }
       }
+    }
+  }
+
+  /**
+   * Checks if domain is managed by Certbot.
+   *
+   * @param domainName a value of domain attribute zimbraDomainName
+   * @return true in case the domain is managed by Certbot.
+   * @author Yuliya Aheeva
+   * @since 23.4.0
+   */
+  private static boolean isDomainManagedByCertbot(final String domainName) {
+    final File directory = new File(Path.of(mWorkingDir, CERTBOT_WORKING_DIR, domainName).toUri());
+    return directory.exists();
+  }
+
+  /**
+   * Updates certificate/key pair values from {@link DomainCertManager#CERTBOT_WORKING_DIR}.
+   *
+   * @param entry {@link DomainAttrItem} representation of domain you want to update cert/key pair
+   *     in LDAP
+   * @throws ProxyConfException in case of failure during the update
+   * @author Yuliya Aheeva
+   * @since 23.4.0
+   */
+  private static void updateCertificateKeyPair(final DomainAttrItem entry)
+      throws ProxyConfException {
+
+    final String domainName = entry.domainName;
+
+    try {
+      final Domain domain = Optional.ofNullable(mProv.get(DomainBy.name, domainName))
+          .orElseThrow(() -> AccountServiceException.NO_SUCH_DOMAIN(domainName));
+
+      final File certificateFile =
+          new File(Path.of(mWorkingDir, CERTBOT_WORKING_DIR, domainName + CERT).toUri());
+      final File privateKeyFile =
+          new File(Path.of(mWorkingDir, CERTBOT_WORKING_DIR, domainName + KEY).toUri());
+
+      if (certificateFile.exists() && privateKeyFile.exists()) {
+        final Map<String, Object> attrs = new HashMap<>();
+
+        final FileInputStream certInputStream = new FileInputStream(certificateFile);
+        final String certificate = IOUtils.toString(certInputStream, StandardCharsets.UTF_8.name());
+        final FileInputStream keyInputStream = new FileInputStream(privateKeyFile);
+        final String privateKey = IOUtils.toString(keyInputStream, StandardCharsets.UTF_8.name());
+
+        attrs.put(Provisioning.A_zimbraSSLCertificate, certificate);
+        attrs.put(Provisioning.A_zimbraSSLPrivateKey, privateKey);
+
+        mProv.modifyAttrs(domain, attrs, true);
+
+        entry.sslCertificate = certificate;
+        entry.sslPrivateKey = privateKey;
+      }
+
+    } catch (Exception e) {
+      throw new ProxyConfException(
+          "Unable to update certificate and private key for domain " + domainName, e);
+    }
+  }
+
+  /**
+   * Updates certificate key pair values in DOMAIN_SSL_DIR.
+   *
+   * This method backs up existing certificate and private key files for the given domain before
+   * creating new ones and populating them with the new data. Backup files gets restored if the
+   * transaction fails.
+   *
+   * @param domainName the name of the domain which the certificate and the private key will have
+   *     the name
+   * @param certificate the certificate content
+   * @param privateKey the private key content
+   * @throws ProxyConfException if something goes wrong
+   * @author Davide Polonio and Yuliya Aheeva
+   * @since 22.12.0
+   */
+  private static void updateCertificateKeyPair(
+      final String domainName, final String certificate, final String privateKey)
+      throws ProxyConfException {
+
+    final File certificateFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
+    final File privateKeyFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_KEY_EXT).toUri());
+
+    // Backup the old files
+    final Path caPathInstance = Path.of(certificateFile.getAbsolutePath());
+    final Path backUpCaPathInstance = Path.of(certificateFile.getAbsolutePath() + ".bak");
+    final Path privateKeyPathInstance = Path.of(privateKeyFile.getAbsolutePath());
+    final Path backUpPrivateKeyPathInstance = Path.of(privateKeyFile.getAbsolutePath() + ".bak");
+
+    try {
+      if (certificateFile.exists()) {
+        Files.move(caPathInstance, backUpCaPathInstance, StandardCopyOption.REPLACE_EXISTING);
+      }
+      if (privateKeyFile.exists()) {
+        Files.move(
+            privateKeyPathInstance,
+            backUpPrivateKeyPathInstance,
+            StandardCopyOption.REPLACE_EXISTING);
+      }
+    } catch (IOException e) {
+      throw new ProxyConfException(
+          "Unable to create backup copy for certificate and private key of domain " + domainName);
+    }
+
+    try (FileOutputStream fsOutputCertificate = new FileOutputStream(certificateFile);
+        FileOutputStream fsOutputPrivateKey = new FileOutputStream(privateKeyFile)) {
+      LOG.debug("Deploying certificate for " + domainName);
+      fsOutputCertificate.write(certificate.getBytes(StandardCharsets.UTF_8));
+      LOG.debug("Deploying private key for " + domainName);
+      fsOutputPrivateKey.write(privateKey.getBytes(StandardCharsets.UTF_8));
+    } catch (IOException e) {
+      // Restore backup files if something goes wrong
+      try {
+        Files.move(backUpCaPathInstance, caPathInstance, StandardCopyOption.REPLACE_EXISTING);
+        Files.move(
+            backUpPrivateKeyPathInstance,
+            privateKeyPathInstance,
+            StandardCopyOption.REPLACE_EXISTING);
+      } catch (IOException ignored) {
+        throw new ProxyConfException(
+            "Unable to write down and restore older backup certificate/private key for domain "
+                + domainName);
+      }
+      throw new ProxyConfException(
+          "Unable to write down certificate for domain "
+              + domainName
+              + ". A copy of the previous domain certificate and private key have been restored",
+          e);
     }
   }
 

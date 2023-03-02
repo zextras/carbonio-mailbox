@@ -4,7 +4,6 @@ import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
@@ -38,7 +37,7 @@ public class IssueCert extends AdminDocumentHandler {
    *     com.zimbra.soap.admin.message.IssueCertResponse}
    * @throws ServiceException in case if domain could not be found, domain doesn't have
    * PublicServiceHostname and at least one VirtualHostName,
-   * server with proxy node could not be found or domain admin dosn't have rights to deal with
+   * server with proxy node could not be found or domain admin doesn't have rights to deal with
    * this domain.
    *
    * It won't throw an exception in case if remote execution command fails, instead will create
@@ -54,23 +53,23 @@ public class IssueCert extends AdminDocumentHandler {
     String domainId = request.getAttribute(AdminConstants.A_DOMAIN);
     Domain domain = Optional.ofNullable(prov.get(DomainBy.id, domainId))
         .orElseThrow(() -> ServiceException.INVALID_REQUEST(
-        "Domain with id " + domainId + " could not be found.", null));
+            "Domain with id " + domainId + " could not be found.", null));
 
     AdminAccessControl admin = checkDomainRight(zsc, domain, AdminRights.R_getDomain);
     String adminMail = admin.mAuthedAcct.getMail();
 
     String chain = request.getAttribute(AdminConstants.A_CHAIN_TYPE, AdminConstants.DEFAULT_CHAIN);
-    boolean expand = request.getAttributeBool(MailConstants.A_EXPAND, false);
 
+    String domainName = domain.getDomainName();
     String publicServiceHostname = domain.getPublicServiceHostname();
     String[] virtualHostNames = domain.getVirtualHostname();
     if (publicServiceHostname == null) {
       throw ServiceException.FAILURE(
-          "Domain with id " + domainId + " must have PublicServiceHostname.",
+          "Domain " + domainName + " must have PublicServiceHostname.",
           null);
     } else if (virtualHostNames.length == 0) {
       throw ServiceException.FAILURE(
-          "Domain with id " + domainId + " must have at least one VirtualHostName.",
+          "Domain " + domainName + " must have at least one VirtualHostName.",
           null);
     }
 
@@ -82,7 +81,7 @@ public class IssueCert extends AdminDocumentHandler {
             .findFirst()
             .orElseThrow(() -> ServiceException.FAILURE(
                 "Issuing LetsEncrypt certificate command requires carbonio-proxy. "
-                + "Make sure carbonio-proxy is installed, up and running."));
+                    + "Make sure carbonio-proxy is installed, up and running."));
 
     ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert for domain " + domainId);
 
@@ -93,13 +92,13 @@ public class IssueCert extends AdminDocumentHandler {
             RemoteCommands.CERTBOT_CERTONLY,
             adminMail,
             chain,
-            expand,
+            domainName,
             publicServiceHostname,
             virtualHostNames);
     String result = certbot.execute(command);
 
     ZimbraLog.rmgmt.info(
-        "Issuing LetsEncrypt cert command for domain " + domainId
+        "Issuing LetsEncrypt cert command for domain " + domainName
             + " was finished with the following result: " + result);
 
     Element response = zsc.createElement(AdminConstants.ISSUE_CERT_RESPONSE);
@@ -107,7 +106,7 @@ public class IssueCert extends AdminDocumentHandler {
     Element responseMessageElement =
         response
             .addNonUniqueElement(AdminConstants.E_MESSAGE)
-            .addAttribute(AdminConstants.A_DOMAIN, domain.getName());
+            .addAttribute(AdminConstants.A_DOMAIN, domainName);
     responseMessageElement.setText(result);
 
     return response;
