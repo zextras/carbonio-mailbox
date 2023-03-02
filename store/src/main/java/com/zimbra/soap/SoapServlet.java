@@ -18,6 +18,7 @@ import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.BufferStream;
 import com.zimbra.common.util.ByteUtil;
+import com.zimbra.common.util.LoadingCacheUtil;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.RemoteIP;
@@ -105,6 +106,25 @@ public abstract class SoapServlet extends ZimbraServlet {
     } catch (Throwable t) {
       ZimbraLog.soap.fatal("Unable to start servlet", t);
       throw new UnavailableException(t.getMessage());
+    }
+  }
+
+  /**
+   * Adds a service to the instance of <code>SoapServlet</code> with the given name. If the servlet
+   * has not been loaded, stores the service for later initialization.
+   */
+  public static void addService(String servletName, DocumentService service) {
+    synchronized (sExtraServices) {
+      ZimbraServlet servlet = ZimbraServlet.getServlet(servletName);
+      if (servlet != null) {
+        ((SoapServlet) servlet).addService(service);
+      } else {
+        sLog.debug(
+            "addService(%s, %s): servlet has not been initialized",
+            servletName, service.getClass().getSimpleName());
+        List<DocumentService> services = LoadingCacheUtil.get(sExtraServices, servletName);
+        services.add(service);
+      }
     }
   }
 
