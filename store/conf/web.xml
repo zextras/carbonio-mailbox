@@ -268,50 +268,6 @@ SPDX-License-Identifier: AGPL-3.0-only
   </servlet>
 
   <servlet>
-    <servlet-name>SoapServlet</servlet-name>
-    <servlet-class>com.zimbra.soap.SoapServlet</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443</param-value>
-    </init-param>
-    <!-- User command handlers only -->
-    <init-param>
-      <param-name>engine.handler.0</param-name>
-      <param-value>com.zimbra.cs.service.account.AccountService</param-value>
-    </init-param>
-    <init-param>
-      <param-name>engine.handler.1</param-name>
-      <param-value>com.zimbra.cs.service.mail.MailService</param-value>
-    </init-param>
-    <load-on-startup>2</load-on-startup>
-  </servlet>
-
-  <servlet>
-    <servlet-name>AdminServlet</servlet-name>
-    <servlet-class>com.zimbra.soap.SoapServlet</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>7071, 7073</param-value>
-    </init-param>
-    <!-- Admin servlet allows both admin and user commands -->
-    <init-param>
-      <param-name>engine.handler.0</param-name>
-      <param-value>com.zimbra.cs.service.admin.AdminService</param-value>
-    </init-param>
-    <init-param>
-      <param-name>engine.handler.1</param-name>
-      <param-value>com.zimbra.cs.service.account.AccountService</param-value>
-    </init-param>
-    <init-param>
-      <param-name>engine.handler.2</param-name>
-      <param-value>com.zimbra.cs.service.mail.MailService</param-value>
-    </init-param>
-    <load-on-startup>3</load-on-startup>
-  </servlet>
-
-  <servlet>
     <servlet-name>WsdlServlet</servlet-name>
     <servlet-class>com.zimbra.soap.WsdlServlet</servlet-class>
     <async-supported>true</async-supported>
@@ -564,16 +520,6 @@ SPDX-License-Identifier: AGPL-3.0-only
   <servlet-mapping>
     <servlet-name>OAuthAccessToken</servlet-name>
     <url-pattern>/oauth/access_token</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>SoapServlet</servlet-name>
-    <url-pattern>/soap/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>AdminServlet</servlet-name>
-    <url-pattern>/admin/soap/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

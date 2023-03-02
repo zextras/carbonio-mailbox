@@ -193,9 +193,6 @@ public final class Zimbra {
     if (sInited) return;
 
     sIsMailboxd = forMailboxd;
-    if (sIsMailboxd) {
-      FirstServlet.waitForInitialization();
-    }
 
     Provisioning prov = Provisioning.getInstance();
     Server server = prov.getLocalServer();

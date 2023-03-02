@@ -18,8 +18,8 @@ public class MailboxModule extends ServletModule {
 
   @Override
   protected void configureServlets() {
-    serve("/soap").with(UserSoapServlet.class);
-    serve("/admin/soap").with(AdminSoapServlet.class);
+    serve("/soap/*").with(UserSoapServlet.class);
+    serve("/admin/soap/*").with(AdminSoapServlet.class);
   }
 
   @Provides
