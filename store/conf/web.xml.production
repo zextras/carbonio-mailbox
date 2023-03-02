@@ -12,8 +12,8 @@
   <description>SOAP Service</description>
 
   <filter>
-      <filter-name>guiceFilter</filter-name>
-      <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+    <filter-name>guiceFilter</filter-name>
+    <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
   </filter>
 
   <filter-mapping>
@@ -22,7 +22,7 @@
   </filter-mapping>
 
   <listener>
-    <listener-class>GuiceMailboxServletConfig</listener-class>
+    <listener-class>com.zextras.mailbox.servlet.GuiceMailboxServletConfig</listener-class>
   </listener>
 
   <filter>
