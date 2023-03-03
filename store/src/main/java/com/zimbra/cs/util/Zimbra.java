@@ -14,6 +14,7 @@ import com.zimbra.common.localconfig.LocalConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.SoapTransport;
 import com.zimbra.common.util.FileUtil;
+import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AttributeManager;
@@ -188,6 +189,7 @@ public final class Zimbra extends AbstractModule {
    * @throws ServiceException service exception
    */
   private static synchronized void startup(boolean forMailboxd) throws ServiceException {
+    LogFactory.init();
     ZimbraLog.misc.info("Loading Mailbox settings for startup.");
     if (sInited) return;
 
