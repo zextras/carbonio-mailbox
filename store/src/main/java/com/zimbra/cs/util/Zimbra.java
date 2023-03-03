@@ -172,7 +172,8 @@ public final class Zimbra extends AbstractModule {
     try {
       startup(true);
     } catch (ServiceException se) {
-      Zimbra.halt("Exception during startup, aborting server, please check your config", se);
+      Zimbra.halt(
+          "Exception during startup, aborting Mailbox server, please check your config", se);
     }
   }
 
@@ -187,6 +188,7 @@ public final class Zimbra extends AbstractModule {
    * @throws ServiceException service exception
    */
   private static synchronized void startup(boolean forMailboxd) throws ServiceException {
+    ZimbraLog.misc.info("Loading Mailbox settings for startup.");
     if (sInited) return;
 
     sIsMailboxd = forMailboxd;
@@ -365,6 +367,7 @@ public final class Zimbra extends AbstractModule {
 
     // Register the service with ZooKeeper
     sInited = true;
+    ZimbraLog.misc.info("Mailbox setup completed.");
   }
 
   public static synchronized void shutdown() throws ServiceException {
