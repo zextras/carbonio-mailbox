@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.util;
 
+import com.google.inject.AbstractModule;
 import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.lmtp.SmtpToLmtp;
 import com.zimbra.common.localconfig.ConfigException;
@@ -54,16 +55,12 @@ import org.dom4j.DocumentException;
  * Class that encapsulates the initialization and shutdown of services needed by any process that
  * adds mail items. Services under control include redo logging and indexing.
  */
-public final class Zimbra {
+public final class Zimbra extends AbstractModule {
   private static boolean sInited = false;
   private static boolean sIsMailboxd = false;
   private static final String HEAP_DUMP_JAVA_OPTION = "-xx:heapdumppath=";
   public static final Timer sTimer = new Timer("Timer-Zimbra", true);
   private static final CallToHomeRunner c2hRunner = new CallToHomeRunner();
-
-  private Zimbra() {
-    throw new IllegalStateException("Utility class");
-  }
 
   /**
    * Sets system properties before the server fully starts up. Note that there's a potential race
@@ -472,5 +469,12 @@ public final class Zimbra {
     } finally {
       Runtime.getRuntime().halt(1);
     }
+  }
+
+  @Override
+  protected void configure() {
+    bind(Provisioning.class).toInstance(Provisioning.getInstance());
+    startup();
+    super.configure();
   }
 }

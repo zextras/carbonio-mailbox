@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Objects;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpVersion;
@@ -98,15 +97,6 @@ public abstract class SoapServlet extends ZimbraServlet {
       throw new ServletException("Must provide at least one DocumentDispatcher.");
     }
     Arrays.stream(this.documentServices).forEach(this::addService);
-
-    try {
-      Zimbra.startup();
-    } catch (OutOfMemoryError e) {
-      Zimbra.halt("out of memory", e);
-    } catch (Throwable t) {
-      ZimbraLog.soap.fatal("Unable to start servlet", t);
-      throw new UnavailableException(t.getMessage());
-    }
   }
 
   /**
