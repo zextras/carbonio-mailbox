@@ -63,7 +63,7 @@ import javax.mail.internet.InternetAddress;
  * @since Sep 23, 2004
  * @author schemers
  */
-public abstract class Provisioning extends ZAttrProvisioning implements IProvisioning {
+public abstract class Provisioning extends ZAttrProvisioning {
 
   public static final String DEFAULT_COS_NAME = "default";
   public static final String DEFAULT_EXTERNAL_COS_NAME = "defaultExternal";
