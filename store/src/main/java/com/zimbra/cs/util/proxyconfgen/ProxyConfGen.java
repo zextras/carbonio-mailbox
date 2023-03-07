@@ -510,7 +510,6 @@ public class ProxyConfGen {
    * @author Jiankuan
    * @deprecated use expandTemplateByExplodeDomain instead
    */
-  //DeprecatedIsStillUsed
   @Deprecated
   private static void expandTemplateExplodeSSLConfigsForAllVhnsAndVIPs(
       BufferedReader temp, BufferedWriter conf) throws IOException, ProxyConfException {
