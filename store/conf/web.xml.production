@@ -22,7 +22,7 @@
   </filter-mapping>
 
   <listener>
-    <listener-class>GuiceMailboxServletConfig</listener-class>
+    <listener-class>com.zextras.mailbox.servlet.GuiceMailboxServletConfig</listener-class>
   </listener>
 
   <filter>
