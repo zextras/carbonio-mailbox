@@ -20,8 +20,12 @@ public class RemoteCertbot {
   private static final String AGREEMENT = "--agree-tos";
   private static final String EMAIL = "--email";
   private static final String NON_INTERACTIVELY = "-n";
-  private static final String EXPAND = "--cert-name";
+  private static final String CERT_NAME = "--cert-name";
   private static final String KEEP = "--keep";
+  // Domain names to include. You can use multiple values with -d flags.
+  // The first value will be used as Subject Name on the certificate and all the values will be
+  // included as Subject Alternative Names.
+  private static final String D = " -d ";
 
   private final RemoteManager remoteManager;
   private StringBuilder stringBuilder;
@@ -32,21 +36,21 @@ public class RemoteCertbot {
 
   /**
    * Creates a command to be executed by the Certbot acme client.
-   * E.g. certbot certonly --agree-tos --email admin@test.com -n --preferred-chain \"ISRG Root X1\"
-   * --webroot -w /opt/zextras -d acme.demo.zextras.io -d webmail-acme.demo.zextras.io --dry-run
+   * E.g. certbot certonly --agree-tos --email admin@test.com -n --webroot -w /opt/zextras
+   * --cert-name demo.zextras.io -d acme.demo.zextras.io -d webmail-acme.demo.zextras.io
    *
    * @param remoteCommand {@link com.zimbra.cs.rmgmt.RemoteCommands}
    * @param email domain admin email who tries to execute a command (should be agreed to the
    *  ACME server's Subscriber Agreement)
    * @param chain long (default) or short (should be specified by domain admin in {@link
    *  com.zimbra.soap.admin.message.IssueCertRequest} request with the key word "short")
-   * @param expand boolean value if domain virtual hostname was added or deleted
+   * @param domainName a value of domain attribute zimbraDomainName
    * @param publicServiceHostName a value of domain attribute zimbraPublicServiceHostname
    * @param virtualHosts a value/ values of domain attribute zimbraVirtualHostname
    * @return created command
    */
   public String createCommand(String remoteCommand, String email, String chain,
-      boolean expand, String publicServiceHostName, String[] virtualHosts) {
+      String domainName, String publicServiceHostName, String[] virtualHosts) {
 
     this.stringBuilder = new StringBuilder();
 
@@ -57,14 +61,10 @@ public class RemoteCertbot {
     }
 
     addSubCommand(" ", AGREEMENT, EMAIL, email, NON_INTERACTIVELY, KEEP,
-        WEBROOT, WEBROOT_PATH);
+        WEBROOT, WEBROOT_PATH, CERT_NAME, domainName);
 
-    if (expand) {
-      addSubCommand(" ", EXPAND, publicServiceHostName);
-    }
-
-    addSubCommand(" -d ", publicServiceHostName);
-    addSubCommand(" -d ", virtualHosts);
+    addSubCommand(D, publicServiceHostName);
+    addSubCommand(D, virtualHosts);
 
     return stringBuilder.toString();
   }
