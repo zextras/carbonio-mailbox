@@ -583,7 +583,6 @@ public class ZimbraPerf {
 
       // PROM
       statsScheduler.schedule(new PrometheusStatsDumper(mailboxdTracker), DUMP_FREQUENCY);
-      statsScheduler.schedule(new PrometheusStatsDumper(SOAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
       statsScheduler.schedule(new PrometheusStatsDumper(IMAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
       statsScheduler.schedule(new PrometheusStatsDumper(POP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
       statsScheduler.schedule(new PrometheusStatsDumper(LDAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
