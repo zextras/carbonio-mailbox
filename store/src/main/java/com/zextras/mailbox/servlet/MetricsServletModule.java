@@ -17,7 +17,6 @@ public class MetricsServletModule extends ServletModule {
   @Override
   protected void configureServlets() {
     serve("/metrics").with(MetricsServlet.class);
-    this.getServletContext().getServerInfo();
   }
 
   /**
