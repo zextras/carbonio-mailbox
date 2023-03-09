@@ -574,6 +574,7 @@ public class ZimbraPerf {
 
       // CSV
       statsScheduler.schedule(new CsvStatsDumper(mailboxdTracker), DUMP_FREQUENCY);
+      statsScheduler.schedule(new CsvStatsDumper(SOAP_TRACKER), DUMP_FREQUENCY);
       statsScheduler.schedule(new CsvStatsDumper(IMAP_TRACKER), DUMP_FREQUENCY);
       statsScheduler.schedule(new CsvStatsDumper(POP_TRACKER), DUMP_FREQUENCY);
       statsScheduler.schedule(new CsvStatsDumper(LDAP_TRACKER), DUMP_FREQUENCY);
