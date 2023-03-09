@@ -20,12 +20,23 @@ public class MetricsServletModule extends ServletModule {
     this.getServletContext().getServerInfo();
   }
 
+  /**
+   * Provides prometheus {@link MetricsServlet} with the defined collector registry.
+   *
+   * @param collectorRegistry thge registry holding collectors
+   * @return
+   */
   @Provides
   @Singleton
   public MetricsServlet provideMetricsServlet(CollectorRegistry collectorRegistry) {
     return new MetricsServlet(collectorRegistry);
   }
 
+  /**
+   * Provides the {@link SoapCollector} for soap metrics.
+   *
+   * @return
+   */
   @Provides
   @Singleton
   @Named("SoapCollector")
@@ -41,12 +52,12 @@ public class MetricsServletModule extends ServletModule {
   }
 
   /**
-   * Provides the registry for collection of stats. It also binds collectors to it. NOTE: This
-   * registers jmx metrics to the default exports Technically it would be better to register all
-   * hotspot Collectors to our registry but here we are using the default registry, so we are good.
+   * Provides the {@link CollectorRegistry#defaultRegistry} for collection of stats and registers
+   * provided collectors to it. It also registers standard collectors using {@link
+   * DefaultExports#initialize()}.
    *
-   * @param processCollector
-   * @param soapCollector
+   * @param processCollector collector for jetty process metrics
+   * @param soapCollector collector for soap api metrics
    * @return registry for prometheus
    */
   @Provides
