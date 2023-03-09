@@ -2482,6 +2482,7 @@ public class ProxyConfGen {
         attrs.put(Provisioning.A_zimbraSSLCertificate, certificate);
         attrs.put(Provisioning.A_zimbraSSLPrivateKey, privateKey);
 
+        LOG.info("Saving " + domainName + " Let's Encrypt certificate/key pair to LDAP.");
         mProv.modifyAttrs(domain, attrs, true);
 
         entry.sslCertificate = certificate;

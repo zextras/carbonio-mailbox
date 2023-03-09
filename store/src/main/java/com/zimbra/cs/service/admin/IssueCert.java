@@ -15,7 +15,6 @@ import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Admin Handler class to issue a LetsEncrypt certificate for a domain using
