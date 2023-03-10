@@ -26,7 +26,7 @@ public class MetricsServletModule extends ServletModule {
   /**
    * Provides prometheus {@link MetricsServlet} with the defined collector registry.
    *
-   * @param collectorRegistry thge registry holding collectors
+   * @param collectorRegistry the registry holding collectors
    * @return metrics servlet for the mailbox application
    */
   @Provides
