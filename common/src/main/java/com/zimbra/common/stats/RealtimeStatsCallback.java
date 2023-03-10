@@ -8,5 +8,5 @@ package com.zimbra.common.stats;
 import java.util.Map;
 
 public interface RealtimeStatsCallback {
-  Map<String, Object> getStatData();
+  Map<String, Integer> getStatData();
 }
