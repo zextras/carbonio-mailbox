@@ -460,11 +460,6 @@
       <groupId>io.prometheus</groupId>
       <artifactId>simpleclient_servlet</artifactId>
     </dependency>
-    <!-- Jetty process stats collector -->
-    <dependency>
-      <groupId>io.prometheus</groupId>
-      <artifactId>simpleclient_jetty</artifactId>
-    </dependency>
     <!-- JMX stats collector -->
     <dependency>
       <groupId>io.prometheus</groupId>

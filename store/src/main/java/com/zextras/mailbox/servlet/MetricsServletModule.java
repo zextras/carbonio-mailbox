@@ -13,10 +13,8 @@ import io.prometheus.client.Collector;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.exporter.MetricsServlet;
 import io.prometheus.client.hotspot.DefaultExports;
-import io.prometheus.client.jetty.JettyStatisticsCollector;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import org.eclipse.jetty.server.handler.StatisticsHandler;
 
 public class MetricsServletModule extends ServletModule {
 
@@ -29,7 +27,7 @@ public class MetricsServletModule extends ServletModule {
    * Provides prometheus {@link MetricsServlet} with the defined collector registry.
    *
    * @param collectorRegistry thge registry holding collectors
-   * @return
+   * @return metrics servlet for the mailbox application
    */
   @Provides
   @Singleton
@@ -40,7 +38,7 @@ public class MetricsServletModule extends ServletModule {
   /**
    * Provides the {@link SoapCollector} for soap metrics.
    *
-   * @return
+   * @return soap api collector
    */
   @Provides
   @Singleton
@@ -49,30 +47,19 @@ public class MetricsServletModule extends ServletModule {
     return new SoapCollector();
   }
 
-  @Provides
-  @Singleton
-  @Named("ProcessCollector")
-  public Collector provideProcessCollector(StatisticsHandler statisticsHandler) {
-    return new JettyStatisticsCollector(statisticsHandler);
-  }
-
   /**
    * Provides the {@link CollectorRegistry#defaultRegistry} for collection of stats and registers
-   * provided collectors to it. It also registers standard collectors using {@link
-   * DefaultExports#initialize()}.
+   * collectors in it. It also registers standard collectors using {@link DefaultExports#register}.
    *
-   * @param processCollector collector for jetty process metrics
    * @param soapCollector collector for soap api metrics
    * @return registry for prometheus
    */
   @Provides
   @Singleton
-  public CollectorRegistry provideCollector(
-      @Named("ProcessCollector") Collector processCollector,
-      @Named("SoapCollector") Collector soapCollector) {
-    final CollectorRegistry metricRegistry = CollectorRegistry.defaultRegistry;
-    DefaultExports.initialize();
-    metricRegistry.register(processCollector);
+  public CollectorRegistry provideCollector(@Named("SoapCollector") Collector soapCollector) {
+    // TODO: it would be nice to get all collectors and register them programmatically
+    final CollectorRegistry metricRegistry = new CollectorRegistry();
+    DefaultExports.register(metricRegistry);
     metricRegistry.register(soapCollector);
     return metricRegistry;
   }
