@@ -95,11 +95,8 @@ public class IssueCert extends AdminDocumentHandler {
             domainName,
             publicServiceHostname,
             virtualHostNames);
-    String result = certbot.execute(command);
 
-    ZimbraLog.rmgmt.info(
-        "Issuing LetsEncrypt cert command for domain " + domainName
-            + " was finished with the following result: " + result);
+    certbot.supplyAsync(domain, command);
 
     Element response = zsc.createElement(AdminConstants.ISSUE_CERT_RESPONSE);
 
@@ -107,7 +104,11 @@ public class IssueCert extends AdminDocumentHandler {
         response
             .addNonUniqueElement(AdminConstants.E_MESSAGE)
             .addAttribute(AdminConstants.A_DOMAIN, domainName);
-    responseMessageElement.setText(result);
+
+    responseMessageElement.setText(
+        "Your request for the certificate generation has been "
+            + "taken and will be processed. Notification recipients would be notified."
+    );
 
     return response;
   }

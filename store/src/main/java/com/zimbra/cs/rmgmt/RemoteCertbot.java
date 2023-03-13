@@ -1,8 +1,12 @@
 package com.zimbra.cs.rmgmt;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Domain;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * RemoteCertbot class interacts with "Certbot" - an acme client for managing Let’s Encrypt
@@ -70,17 +74,48 @@ public class RemoteCertbot {
   }
 
   /**
+   * Executes a command asynchronously and notifies about the command execution.
+   *
+   * @param domain domain
+   * @param command a command to be executed
+   */
+  public void supplyAsync(Domain domain, String command) {
+    CompletableFuture.supplyAsync(() -> execute(command))
+        .thenAccept(message -> notify(domain, message));
+  }
+
+  /**
    * Executes a command using {@link com.zimbra.cs.rmgmt.RemoteManager}.
    * @param command a command to be executed
    * @return a sting message of successful remote execution or detailed exception message
    * in case of failure.
    */
-  public String execute(String command) {
+  private String execute(String command) {
     try {
       RemoteResult remoteResult = remoteManager.execute(command);
       return new String(remoteResult.getMStdout(), StandardCharsets.UTF_8);
     } catch (ServiceException e) {
       return e.getMessage();
+    }
+  }
+
+  private void notify(Domain domain, String message) {
+    ZimbraLog.rmgmt.info(
+        "Issuing LetsEncrypt cert command for domain " + domain.getName()
+            + " was finished with the following result: " + message);
+    try {
+      String from = Optional.ofNullable(domain.getCarbonioNotificationFrom())
+          .orElseThrow(() -> ServiceException.FAILURE("no from", null));
+      String[] to = Optional.ofNullable(domain.getCarbonioNotificationRecipients())
+          .orElseThrow(() -> ServiceException.FAILURE(
+              "no to", null));
+      System.out.println(from + " " + to);
+
+      //notify admins
+
+    } catch (Exception e) {
+      ZimbraLog.rmgmt.info("Notification about LetsEncrypt certificate generation wasn't sent "
+          + "for the domain " + domain.getName() + ". Sending failure: " + e.getMessage());
     }
   }
 
