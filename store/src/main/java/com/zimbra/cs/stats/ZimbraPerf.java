@@ -190,7 +190,6 @@ public class ZimbraPerf {
   public static final Counter COUNTER_MBOX_ITEM_CACHE = new Counter(DC_MBOX_ITEM_CACHE);
 
   // Stop watch
-
   @Description("Number of SOAP requests received")
   public static final String DC_SOAP_COUNT = "soap_count";
 
@@ -207,7 +206,6 @@ public class ZimbraPerf {
   public static final StopWatch STOPWATCH_POP = new StopWatch(DC_POP_COUNT);
 
   // Calendar
-
   @Description("Hit rate of calendar summary cache, counting cache hit from both memory and file")
   public static final String DC_CALCACHE_HIT = "calcache_hit";
 

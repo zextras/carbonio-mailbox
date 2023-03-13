@@ -39,6 +39,7 @@ public class MailboxCollector extends Collector {
         addAll(getImapMetrics());
         addAll(getPopMetrics());
         addAll(getMailboxCacheStats());
+        addAll(getCalendarStats());
       }
     };
   }
@@ -155,6 +156,33 @@ public class MailboxCollector extends Collector {
         add(counterMboxCacheSummary);
         add(counterMboxItemCacheSummary);
         add(counterMboxMsgCacheSummary);
+      }
+    };
+  }
+
+  /**
+   * Calendar stats
+   *
+   * @return calendar stats
+   */
+  private Collection<MetricFamilySamples> getCalendarStats() {
+    return new ArrayList<>() {
+      {
+        add(
+            new CounterMetricFamily(
+                ZimbraPerf.COUNTER_CALENDAR_CACHE_HIT.getName(),
+                "",
+                ZimbraPerf.COUNTER_CALENDAR_CACHE_HIT.getTotal()));
+        add(
+            new CounterMetricFamily(
+                ZimbraPerf.COUNTER_CALENDAR_CACHE_MEM_HIT.getName(),
+                "",
+                ZimbraPerf.COUNTER_CALENDAR_CACHE_MEM_HIT.getTotal()));
+        add(
+            new GaugeMetricFamily(
+                ZimbraPerf.COUNTER_CALENDAR_CACHE_LRU_SIZE.getName(),
+                "",
+                ZimbraPerf.COUNTER_CALENDAR_CACHE_LRU_SIZE.getTotal()));
       }
     };
   }
