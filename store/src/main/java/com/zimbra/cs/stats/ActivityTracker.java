@@ -36,7 +36,7 @@ public class ActivityTracker implements StatsDumperDataSource {
   public Counter getCounter(String commandName) {
     Counter counter = mCounterMap.get(commandName);
     if (counter == null) {
-      counter = new Counter();
+      counter = new Counter(commandName);
 
       Counter previousCounter = mCounterMap.putIfAbsent(commandName, counter);
       if (previousCounter != null) {

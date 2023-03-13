@@ -12,6 +12,16 @@ public class Counter {
 
   private final AtomicLong mCount = new AtomicLong();
   private final AtomicLong mTotal = new AtomicLong();
+  /** Counter name */
+  protected final String name;
+
+  public String getName() {
+    return name;
+  }
+
+  public Counter(String name) {
+    this.name = name;
+  }
 
   public long getCount() {
     return mCount.longValue();

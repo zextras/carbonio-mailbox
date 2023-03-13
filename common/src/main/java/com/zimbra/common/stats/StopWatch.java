@@ -6,19 +6,22 @@
 package com.zimbra.common.stats;
 
 /**
- * A <code>Counter</code> that supports <code>start()</code>
- * and <code>stop()</code> methods for conveniently timing events.
+ * A <code>Counter</code> that supports <code>start()</code> and <code>stop()</code> methods for
+ * conveniently timing events.
  */
-public class StopWatch
-extends Counter {
+public class StopWatch extends Counter {
 
-    public long start() {
-        return System.currentTimeMillis();
-    }
+  public StopWatch(String name) {
+    super(name);
+  }
 
-    public long stop(long startTime) {
-        long elapsed = System.currentTimeMillis() - startTime;
-        increment(elapsed);
-        return elapsed;
-    }
+  public long start() {
+    return System.currentTimeMillis();
+  }
+
+  public long stop(long startTime) {
+    long elapsed = System.currentTimeMillis() - startTime;
+    increment(elapsed);
+    return elapsed;
+  }
 }

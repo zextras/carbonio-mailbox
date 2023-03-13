@@ -98,88 +98,162 @@ public class ZimbraPerf {
   @Description("Number of open file descriptors that reference message content")
   public static final String RTS_FD_CACHE_SIZE = "fd_cache_size";
 
-  @Description("File descriptor cache hit rate")
-  public static final String RTS_FD_CACHE_HIT_RATE = "fd_cache_hit_rate";
-  // LDAP provisioning caches.
-  @Description("LDAP ACL cache hit rate")
-  public static final String RTS_ACL_CACHE_HIT_RATE = "acl_cache_hit_rate";
-
   @Description("LDAP account cache size")
   public static final String RTS_ACCOUNT_CACHE_SIZE = "account_cache_size";
-
-  @Description("LDAP account cache hit rate")
-  public static final String RTS_ACCOUNT_CACHE_HIT_RATE = "account_cache_hit_rate";
 
   @Description("LDAP COS cache size")
   public static final String RTS_COS_CACHE_SIZE = "cos_cache_size";
 
-  @Description("LDAP COS cache hit rate")
-  public static final String RTS_COS_CACHE_HIT_RATE = "cos_cache_hit_rate";
-
   @Description("LDAP domain cache size")
   public static final String RTS_DOMAIN_CACHE_SIZE = "domain_cache_size";
-
-  @Description("LDAP domain cache hit rate")
-  public static final String RTS_DOMAIN_CACHE_HIT_RATE = "domain_cache_hit_rate";
 
   @Description("LDAP server cache size")
   public static final String RTS_SERVER_CACHE_SIZE = "server_cache_size";
 
-  @Description("LDAP server cache hit rate")
-  public static final String RTS_SERVER_CACHE_HIT_RATE = "server_cache_hit_rate";
-
   @Description("LDAP UC service cache size")
   public static final String RTS_UCSERVICE_CACHE_SIZE = "ucservice_cache_size";
-
-  @Description("LDAP UC service cache hit rate")
-  public static final String RTS_UCSERVICE_CACHE_HIT_RATE = "ucservice_cache_hit_rate";
 
   @Description("LDAP zimlet cache size")
   public static final String RTS_ZIMLET_CACHE_SIZE = "zimlet_cache_size";
 
-  @Description("LDAP zimlet cache hit rate")
-  public static final String RTS_ZIMLET_CACHE_HIT_RATE = "zimlet_cache_hit_rate";
-
   @Description("LDAP group cache size")
   public static final String RTS_GROUP_CACHE_SIZE = "group_cache_size";
-
-  @Description("LDAP group cache hit rate")
-  public static final String RTS_GROUP_CACHE_HIT_RATE = "group_cache_hit_rate";
 
   @Description("LDAP XMPP cache size")
   public static final String RTS_XMPP_CACHE_SIZE = "xmpp_cache_size";
 
-  @Description("LDAP XMPP cache hit rate")
-  public static final String RTS_XMPP_CACHE_HIT_RATE = "xmpp_cache_hit_rate";
   // Accumulators.  To add a new accumulator, create a static instance here and
   // add it to sAccumulators.
-  public static final Counter COUNTER_LMTP_RCVD_MSGS = new Counter();
-  public static final Counter COUNTER_LMTP_RCVD_BYTES = new Counter();
-  public static final Counter COUNTER_LMTP_RCVD_RCPT = new Counter();
-  public static final Counter COUNTER_LMTP_DLVD_MSGS = new Counter();
-  public static final Counter COUNTER_LMTP_DLVD_BYTES = new Counter();
-  //
-  public static final StopWatch STOPWATCH_DB_CONN = new StopWatch();
-  public static final StopWatch STOPWATCH_LDAP_DC = new StopWatch();
-  public static final StopWatch STOPWATCH_MBOX_ADD_MSG = new StopWatch();
+  @Description("Number of messages received over LMTP")
+  public static final String DC_LMTP_RCVD_MSGS = "lmtp_rcvd_msgs";
+
+  public static final Counter COUNTER_LMTP_RCVD_MSGS = new Counter(DC_LMTP_RCVD_MSGS);
+
+  @Description("Number of bytes received over LMTP")
+  public static final String DC_LMTP_RCVD_BYTES = "lmtp_rcvd_bytes";
+
+  public static final Counter COUNTER_LMTP_RCVD_BYTES = new Counter(DC_LMTP_RCVD_BYTES);
+
+  @Description("Number of LMTP recipients")
+  public static final String DC_LMTP_RCVD_RCPT = "lmtp_rcvd_rcpt";
+
+  public static final Counter COUNTER_LMTP_RCVD_RCPT = new Counter(DC_LMTP_RCVD_RCPT);
+
+  @Description("Number of messages delivered to mailboxes as a result of LMTP delivery")
+  public static final String DC_LMTP_DLVD_MSGS = "lmtp_dlvd_msgs";
+
+  public static final Counter COUNTER_LMTP_DLVD_MSGS = new Counter(DC_LMTP_DLVD_MSGS);
+
+  @Description("Number of bytes of data delivered to mailboxes as a result of LMTP delivery")
+  public static final String DC_LMTP_DLVD_BYTES = "lmtp_dlvd_bytes";
+
+  public static final Counter COUNTER_LMTP_DLVD_BYTES = new Counter(DC_LMTP_DLVD_BYTES);
+
+  // Stop watch
+
+  @Description("Number of times that the server got a database connection from the pool")
+  public static final String DC_DB_CONN_COUNT = "db_conn_count";
+
+  public static final StopWatch STOPWATCH_DB_CONN = new StopWatch(DC_DB_CONN_COUNT);
+
+  @Description("Number of times that the server got an LDAP directory context")
+  public static final String DC_LDAP_DC_COUNT = "ldap_dc_count";
+
+  public static final StopWatch STOPWATCH_LDAP_DC = new StopWatch(DC_LDAP_DC_COUNT);
+
+  @Description("Number of messages that were added to a mailbox")
+  public static final String DC_MBOX_ADD_MSG_COUNT = "mbox_add_msg_count";
+
+  public static final StopWatch STOPWATCH_MBOX_ADD_MSG = new StopWatch(DC_MBOX_ADD_MSG_COUNT);
+
+  @Description("Number of times that the server got a mailbox from the cache")
+  public static final String DC_MBOX_GET_COUNT = "mbox_get_count";
+
   public static final StopWatch STOPWATCH_MBOX_GET =
-      new StopWatch(); // Mailbox accessor response time
-  public static final Counter COUNTER_MBOX_CACHE = new Counter(); // Mailbox cache hit rate
-  public static final Counter COUNTER_MBOX_MSG_CACHE = new Counter();
-  public static final Counter COUNTER_MBOX_ITEM_CACHE = new Counter();
-  public static final StopWatch STOPWATCH_SOAP = new StopWatch();
-  public static final StopWatch STOPWATCH_IMAP = new StopWatch();
-  public static final StopWatch STOPWATCH_POP = new StopWatch();
-  public static final Counter COUNTER_IDX_WRT = new Counter();
-  public static final Counter COUNTER_IDX_WRT_OPENED = new Counter();
-  public static final Counter COUNTER_IDX_WRT_OPENED_CACHE_HIT = new Counter();
-  public static final Counter COUNTER_CALENDAR_CACHE_HIT = new Counter();
-  public static final Counter COUNTER_CALENDAR_CACHE_MEM_HIT = new Counter();
-  public static final Counter COUNTER_CALENDAR_CACHE_LRU_SIZE = new Counter();
-  public static final Counter COUNTER_IDX_BYTES_WRITTEN = new Counter();
-  public static final Counter COUNTER_IDX_BYTES_READ = new Counter();
-  public static final Counter COUNTER_BLOB_INPUT_STREAM_READ = new Counter();
-  public static final Counter COUNTER_BLOB_INPUT_STREAM_SEEK_RATE = new Counter();
+      new StopWatch(DC_MBOX_GET_COUNT); // Mailbox accessor response time
+
+  // Mailbox cache
+  @Description("Mailbox cache hit rate")
+  public static final String DC_MBOX_CACHE = "mbox_cache";
+
+  public static final Counter COUNTER_MBOX_CACHE =
+      new Counter(DC_MBOX_CACHE); // Mailbox cache hit rate
+
+  @Description("Message cache hit rate")
+  public static final String DC_MBOX_MSG_CACHE = "mbox_msg_cache";
+
+  public static final Counter COUNTER_MBOX_MSG_CACHE = new Counter(DC_MBOX_MSG_CACHE);
+
+  @Description("Item cache hit rate")
+  public static final String DC_MBOX_ITEM_CACHE = "mbox_item_cache";
+
+  public static final Counter COUNTER_MBOX_ITEM_CACHE = new Counter(DC_MBOX_ITEM_CACHE);
+
+  // Stop watch
+
+  @Description("Number of SOAP requests received")
+  public static final String DC_SOAP_COUNT = "soap_count";
+
+  public static final StopWatch STOPWATCH_SOAP = new StopWatch(DC_SOAP_COUNT);
+
+  @Description("Number of IMAP requests received")
+  public static final String DC_IMAP_COUNT = "imap_count";
+
+  public static final StopWatch STOPWATCH_IMAP = new StopWatch(DC_IMAP_COUNT);
+
+  @Description("Number of POP3 requests received")
+  public static final String DC_POP_COUNT = "pop_count";
+
+  public static final StopWatch STOPWATCH_POP = new StopWatch(DC_POP_COUNT);
+
+  // Calendar
+
+  @Description("Hit rate of calendar summary cache, counting cache hit from both memory and file")
+  public static final String DC_CALCACHE_HIT = "calcache_hit";
+
+  public static final Counter COUNTER_CALENDAR_CACHE_HIT = new Counter(DC_CALCACHE_HIT);
+
+  @Description("Hit rate of calendar summary cache, counting cache hit from memory only")
+  public static final String DC_CALCACHE_MEM_HIT = "calcache_mem_hit";
+
+  public static final Counter COUNTER_CALENDAR_CACHE_MEM_HIT = new Counter(DC_CALCACHE_MEM_HIT);
+
+  @Description("Number of calendars (folders) in the calendar summary cache LRU in Java heap")
+  public static final String DC_CALCACHE_LRU_SIZE = "calcache_lru_size";
+
+  public static final Counter COUNTER_CALENDAR_CACHE_LRU_SIZE = new Counter(DC_CALCACHE_LRU_SIZE);
+
+  // Lucene
+  // TODO: this is unused, check it:
+  // public static final Counter COUNTER_IDX_WRT = new Counter(name);
+
+  @Description("Accumulated number of index writers opened")
+  public static final String DC_IDX_WRT_OPENED = "idx_wrt_opened";
+
+  public static final Counter COUNTER_IDX_WRT_OPENED = new Counter(DC_IDX_WRT_OPENED);
+
+  @Description("Accumulated bytes written by Lucene")
+  public static final String DC_IDX_BYTES_WRITTEN = "idx_bytes_written";
+
+  public static final Counter COUNTER_IDX_BYTES_WRITTEN = new Counter(DC_IDX_BYTES_WRITTEN);
+
+  @Description("Accumulated bytes read by Lucene")
+  public static final String DC_IDX_BYTES_READ = "idx_bytes_read";
+
+  public static final Counter COUNTER_IDX_BYTES_READ = new Counter(DC_IDX_BYTES_READ);
+
+  // File operations
+  @Description("Number of times that the file descriptor cache read message data from disk")
+  public static final String DC_BIS_READ = "bis_read";
+
+  public static final Counter COUNTER_BLOB_INPUT_STREAM_READ = new Counter(DC_BIS_READ);
+
+  @Description("Percentage of file descriptor cache disk reads that required a seek")
+  public static final String DC_BIS_SEEK_RATE = "bis_seek_rate";
+
+  public static final Counter COUNTER_BLOB_INPUT_STREAM_SEEK_RATE = new Counter(DC_BIS_SEEK_RATE);
+
+  // Trackers for duration
   public static final ActivityTracker SOAP_TRACKER = new ActivityTracker("soap");
   public static final ActivityTracker IMAP_TRACKER = new ActivityTracker("imap");
   public static final ActivityTracker POP_TRACKER = new ActivityTracker("pop3");
@@ -213,127 +287,15 @@ public class ZimbraPerf {
         RTS_MBOX_CACHE_SIZE,
         RTS_MSG_CACHE_SIZE,
         RTS_FD_CACHE_SIZE,
-        RTS_FD_CACHE_HIT_RATE,
-        RTS_ACL_CACHE_HIT_RATE,
         RTS_ACCOUNT_CACHE_SIZE,
-        RTS_ACCOUNT_CACHE_HIT_RATE,
         RTS_COS_CACHE_SIZE,
-        RTS_COS_CACHE_HIT_RATE,
         RTS_DOMAIN_CACHE_SIZE,
-        RTS_DOMAIN_CACHE_HIT_RATE,
         RTS_SERVER_CACHE_SIZE,
-        RTS_SERVER_CACHE_HIT_RATE,
         RTS_UCSERVICE_CACHE_SIZE,
-        RTS_UCSERVICE_CACHE_HIT_RATE,
         RTS_ZIMLET_CACHE_SIZE,
-        RTS_ZIMLET_CACHE_HIT_RATE,
         RTS_GROUP_CACHE_SIZE,
-        RTS_GROUP_CACHE_HIT_RATE,
         RTS_XMPP_CACHE_SIZE,
-        RTS_XMPP_CACHE_HIT_RATE
       };
-
-  @Description("Number of messages received over LMTP")
-  public static final String DC_LMTP_RCVD_MSGS = "lmtp_rcvd_msgs";
-
-  @Description("Number of bytes received over LMTP")
-  public static final String DC_LMTP_RCVD_BYTES = "lmtp_rcvd_bytes";
-
-  @Description("Number of LMTP recipients")
-  public static final String DC_LMTP_RCVD_RCPT = "lmtp_rcvd_rcpt";
-
-  @Description("Number of messages delivered to mailboxes as a result of LMTP delivery")
-  public static final String DC_LMTP_DLVD_MSGS = "lmtp_dlvd_msgs";
-
-  @Description("Number of bytes of data delivered to mailboxes as a result of LMTP delivery")
-  public static final String DC_LMTP_DLVD_BYTES = "lmtp_dlvd_bytes";
-
-  @Description("Number of times that the server got a database connection from the pool")
-  public static final String DC_DB_CONN_COUNT = "db_conn_count";
-
-  @Description("Average latency (ms) of getting a database connection from the pool")
-  public static final String DC_DB_CONN_MS_AVG = "db_conn_ms_avg";
-
-  @Description("Number of times that the server got an LDAP directory context")
-  public static final String DC_LDAP_DC_COUNT = "ldap_dc_count";
-
-  @Description("Average latency (ms) of getting an LDAP directory context")
-  public static final String DC_LDAP_DC_MS_AVG = "ldap_dc_ms_avg";
-
-  @Description("Number of messages that were added to a mailbox")
-  public static final String DC_MBOX_ADD_MSG_COUNT = "mbox_add_msg_count";
-
-  @Description("Average latency (ms) of adding a message to a mailbox")
-  public static final String DC_MBOX_ADD_MSG_MS_AVG = "mbox_add_msg_ms_avg";
-
-  @Description("Number of times that the server got a mailbox from the cache")
-  public static final String DC_MBOX_GET_COUNT = "mbox_get_count";
-
-  @Description("Average latency (ms) of getting a mailbox from the cache")
-  public static final String DC_MBOX_GET_MS_AVG = "mbox_get_ms_avg";
-
-  @Description("Mailbox cache hit rate")
-  public static final String DC_MBOX_CACHE = "mbox_cache";
-
-  @Description("Message cache hit rate")
-  public static final String DC_MBOX_MSG_CACHE = "mbox_msg_cache";
-
-  @Description("Item cache hit rate")
-  public static final String DC_MBOX_ITEM_CACHE = "mbox_item_cache";
-
-  @Description("Number of SOAP requests received")
-  public static final String DC_SOAP_COUNT = "soap_count";
-
-  @Description("Average processing time (ms) of SOAP requests")
-  public static final String DC_SOAP_MS_AVG = "soap_ms_avg";
-
-  @Description("Number of IMAP requests received")
-  public static final String DC_IMAP_COUNT = "imap_count";
-
-  @Description("Average processing time (ms) of IMAP requests")
-  public static final String DC_IMAP_MS_AVG = "imap_ms_avg";
-
-  @Description("Number of POP3 requests received")
-  public static final String DC_POP_COUNT = "pop_count";
-
-  @Description("Average processing time (ms) of POP3 requests")
-  public static final String DC_POP_MS_AVG = "pop_ms_avg";
-
-  @Description("Number of times that the file descriptor cache read message data from disk")
-  public static final String DC_BIS_READ = "bis_read";
-
-  @Description("Percentage of file descriptor cache disk reads that required a seek")
-  public static final String DC_BIS_SEEK_RATE = "bis_seek_rate";
-
-  @Description("Average number of concurrent index writers")
-  public static final String DC_IDX_WRT_AVG = "idx_wrt_avg";
-
-  @Description("Accumulated number of index writers opened")
-  public static final String DC_IDX_WRT_OPENED = "idx_wrt_opened";
-
-  @Description("Accumulated number of cache hits when opening an index writer")
-  public static final String DC_IDX_WRT_OPENED_CACHE_HIT = "idx_wrt_opened_cache_hit";
-
-  @Description("Accumulated bytes written by Lucene")
-  public static final String DC_IDX_BYTES_WRITTEN = "idx_bytes_written";
-
-  @Description("Average of idx_bytes_written")
-  public static final String DC_IDX_BYTES_WRITTTEN_AVG = "idx_bytes_written_avg";
-
-  @Description("Accumulated bytes read by Lucene")
-  public static final String DC_IDX_BYTES_READ = "idx_bytes_read";
-
-  @Description("Average of idx_bytes_read")
-  public static final String DC_IDX_BYTES_READ_AVG = "idx_bytes_read_avg";
-
-  @Description("Hit rate of calendar summary cache, counting cache hit from both memory and file")
-  public static final String DC_CALCACHE_HIT = "calcache_hit";
-
-  @Description("Hit rate of calendar summary cache, counting cache hit from memory only")
-  public static final String DC_CALCACHE_MEM_HIT = "calcache_mem_hit";
-
-  @Description("Number of calendars (folders) in the calendar summary cache LRU in Java heap")
-  public static final String DC_CALCACHE_LRU_SIZE = "calcache_lru_size";
 
   private static final Lock LOCK = new ReentrantLock();
 

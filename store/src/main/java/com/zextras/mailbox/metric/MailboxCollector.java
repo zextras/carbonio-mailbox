@@ -28,16 +28,6 @@ public class MailboxCollector extends Collector {
   private final SummaryMetricFamily popSummary =
       new SummaryMetricFamily(
           "pop_exec_ms", "Summary of IMAP request duration in millisecond", List.of("command"));
-  private final CounterMetricFamily lmtpRcvdMsgs =
-      new CounterMetricFamily("lmtp_rcvd_msgs", "LMTP received messages", List.of());
-  private final CounterMetricFamily lmtpRcvdBytes =
-      new CounterMetricFamily("lmtp_rcvd_bytes", "LMTP received bytes", List.of());
-  private final CounterMetricFamily lmtpRcvdRcpt =
-      new CounterMetricFamily("lmtp_rcvd_rcpt", "LMTP received receipt", List.of());
-  private final CounterMetricFamily lmtpDlvdMsgs =
-      new CounterMetricFamily("lmtp_dlvd_msgs", "LMTP delivered msgs", List.of());
-  private final CounterMetricFamily lmtpDlvdBytes =
-      new CounterMetricFamily("lmtp_dlvd_bytes", "LMTP delivered bytes", List.of("command"));
 
   @Override
   public List<MetricFamilySamples> collect() {
@@ -48,6 +38,7 @@ public class MailboxCollector extends Collector {
         addAll(getLmtpMetrics());
         addAll(getImapMetrics());
         addAll(getPopMetrics());
+        addAll(getMailboxCacheStats());
       }
     };
   }
@@ -131,5 +122,40 @@ public class MailboxCollector extends Collector {
             (metricName, value) ->
                 metricFamilySamples.add(new GaugeMetricFamily(metricName, "", value)));
     return metricFamilySamples;
+  }
+
+  /**
+   * Returns metrics about mailbox cache hits
+   *
+   * @return mailbox cache stats
+   */
+  private Collection<MetricFamilySamples> getMailboxCacheStats() {
+    final SummaryMetricFamily counterMboxCacheSummary =
+        new SummaryMetricFamily(ZimbraPerf.COUNTER_MBOX_CACHE.getName(), "", List.of());
+    counterMboxCacheSummary.addMetric(
+        List.of(),
+        ZimbraPerf.COUNTER_MBOX_CACHE.getCount(),
+        ZimbraPerf.COUNTER_MBOX_CACHE.getTotal());
+
+    final SummaryMetricFamily counterMboxItemCacheSummary =
+        new SummaryMetricFamily(ZimbraPerf.COUNTER_MBOX_ITEM_CACHE.getName(), "", List.of());
+    counterMboxItemCacheSummary.addMetric(
+        List.of(),
+        ZimbraPerf.COUNTER_MBOX_ITEM_CACHE.getCount(),
+        ZimbraPerf.COUNTER_MBOX_ITEM_CACHE.getTotal());
+
+    final SummaryMetricFamily counterMboxMsgCacheSummary =
+        new SummaryMetricFamily(ZimbraPerf.COUNTER_MBOX_MSG_CACHE.getName(), "", List.of());
+    counterMboxMsgCacheSummary.addMetric(
+        List.of(),
+        ZimbraPerf.COUNTER_MBOX_MSG_CACHE.getCount(),
+        ZimbraPerf.COUNTER_MBOX_MSG_CACHE.getTotal());
+    return new ArrayList<>() {
+      {
+        add(counterMboxCacheSummary);
+        add(counterMboxItemCacheSummary);
+        add(counterMboxMsgCacheSummary);
+      }
+    };
   }
 }
