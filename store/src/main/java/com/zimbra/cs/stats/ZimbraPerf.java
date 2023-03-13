@@ -7,19 +7,16 @@ package com.zimbra.cs.stats;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.stats.Accumulator;
 import com.zimbra.common.stats.Counter;
 import com.zimbra.common.stats.CsvStatsDumper;
 import com.zimbra.common.stats.PrometheusStatsDumper;
 import com.zimbra.common.stats.RealtimeStats;
 import com.zimbra.common.stats.RealtimeStatsCallback;
-import com.zimbra.common.stats.StatsDumperDataSource;
 import com.zimbra.common.stats.StatsScheduler;
 import com.zimbra.common.stats.StopWatch;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -28,13 +25,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -356,10 +348,8 @@ public class ZimbraPerf {
   private static int mailboxCacheSize;
   private static long mailboxCacheSizeTimestamp = 0;
   private static Map<String, String> descriptions = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
-  private static RealtimeStats realtimeStats = null;
-  private static CopyOnWriteArrayList<Accumulator<Integer>> sAccumulators = null;
+  private static final RealtimeStats realtimeStats = new RealtimeStats(mboxRealtimeStatsNames);
   private static boolean sIsInitialized = false;
-  private static boolean isPrepared = false;
 
   public static String getDescription(String statName) {
     return descriptions.get(statName);
@@ -385,13 +375,7 @@ public class ZimbraPerf {
 
   /** Returns all the latest stats as a key-value <tt>Map</tt>. */
   public static Map<String, Integer> getRealTimeStats() {
-    final Map<String, Integer> stats = new LinkedHashMap<>();
-    List<String> names = realtimeStats.getNames();
-    List<Integer> data = realtimeStats.getData();
-    for (int i = 0; i < names.size(); i++) {
-      stats.put(names.get(i), data.get(i));
-    }
-    return stats;
+    return realtimeStats.getData();
   }
 
   /**
@@ -432,37 +416,9 @@ public class ZimbraPerf {
     realtimeStats.addCallback(callback);
   }
 
-  /**
-   * MUST be called before anything else
-   *
-   * <p>Some things need to be done before initialize is called but require some static variables to
-   * have already been setup.
-   *
-   * @param serverID serverId
-   */
-  public static void prepare(ServerID serverID) {
-    LOCK.lock();
-    try {
-      if (isPrepared) {
-        log.warn("Detected call to ZimbraPerf.prepare() after already prepared", new Exception());
-        return;
-      }
-      if (sIsInitialized) {
-        throw new IllegalStateException(
-            "Must not call ZimbraPerf.prepare() after ZimbraPerf.initialize()");
-      }
-      isPrepared = true;
-    } finally {
-      LOCK.unlock();
-    }
-  }
-
   public static void initialize(ServerID serverID) {
     LOCK.lock();
     try {
-      if (!isPrepared) {
-        throw new IllegalStateException("Must call prepare() before ZimbraPerf.initialize()");
-      }
       if (sIsInitialized) {
         log.warn("Detected a second call to ZimbraPerf.initialize()", new Exception());
         return;
@@ -528,67 +484,6 @@ public class ZimbraPerf {
     initDescriptions();
     for (String field : descriptions.keySet()) {
       System.out.println(field + ": " + descriptions.get(field));
-    }
-  }
-
-  /** Scheduled task that writes a row to a CSV file with the latest <tt>Accumulator</tt> data. */
-  private static final class Stats implements StatsDumperDataSource {
-    private final String filename;
-    private final List<Accumulator> accumulators;
-    private final JmxStatsMBeanBase statsBean;
-
-    public Stats(String filename, List<Accumulator> accumulators, JmxStatsMBeanBase statsBean) {
-      this.filename = filename;
-      this.accumulators = accumulators;
-      this.statsBean = statsBean;
-    }
-
-    @Override
-    public String getFilename() {
-      return filename;
-    }
-
-    @Override
-    public String getHeader() {
-      final List<String> columns = new ArrayList<>();
-      for (Accumulator a : accumulators) {
-        columns.addAll(a.getNames());
-      }
-      return StringUtil.join(",", columns);
-    }
-
-    @Override
-    public Collection<String> getDataLines() {
-      final List<Object> data = new ArrayList<>();
-      for (Accumulator a : accumulators) {
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
-        synchronized (a) {
-          data.addAll(a.getData());
-          a.reset();
-        }
-      }
-
-      // Clean up nulls
-      for (int i = 0; i < data.size(); i++) {
-        if (data.get(i) == null) {
-          data.set(i, "");
-        }
-      }
-
-      // Return data
-      final String line = StringUtil.join(",", data);
-      final List<String> retVal = new ArrayList<>(1);
-      retVal.add(line);
-
-      // Piggyback off timer to reset realtime stats.
-      statsBean.reset();
-
-      return retVal;
-    }
-
-    @Override
-    public boolean hasTimestampColumn() {
-      return true;
     }
   }
 }

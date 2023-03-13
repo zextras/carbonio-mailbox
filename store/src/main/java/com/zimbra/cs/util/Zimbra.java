@@ -211,8 +211,6 @@ public final class Zimbra {
 
     ZimbraApplication app = ZimbraApplication.getInstance();
 
-    ZimbraPerf.prepare(ZimbraPerf.ServerID.ZIMBRA);
-
     DbPool.startup();
 
     app.initializeZimbraDb(forMailboxd);

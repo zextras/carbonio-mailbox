@@ -6,12 +6,12 @@
 package com.zimbra.common.stats;
 
 import com.zimbra.common.util.ArrayUtil;
-import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.ZimbraLog;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This implementation of <code>Accumulator</code> is used to retrieve the current value of a
@@ -29,10 +29,8 @@ public class RealtimeStats implements Accumulator<Integer> {
     if (ArrayUtil.isEmpty(names)) {
       throw new IllegalArgumentException("names cannot be null or empty");
     }
-    mNames = new ArrayList<String>();
-    for (String name : names) {
-      mNames.add(name);
-    }
+    mNames = new ArrayList<>();
+    mNames.addAll(Arrays.asList(names));
   }
 
   public void addName(String name) {
@@ -47,27 +45,15 @@ public class RealtimeStats implements Accumulator<Integer> {
     return mNames;
   }
 
-  public List<Integer> getData() {
-    List<Integer> data = new ArrayList<>();
-
-    // Collect stats from all callbacks
-    Map<String, Integer> callbackResults = new HashMap<>();
+  public Map<String, Integer> getData() {
+    final Map<String, Integer> result = new HashMap<>();
     for (RealtimeStatsCallback callback : mCallbacks) {
-      Map<String, Integer> callbackData = callback.getStatData();
-      if (callbackData != null) {
-        callbackResults.putAll(callbackData);
+      final Map<String, Integer> statData = callback.getStatData();
+      if (!(Objects.isNull(statData))) {
+        result.putAll(statData);
       }
     }
-
-    // Populate data based on callback results
-    for (String name : mNames) {
-      data.add(callbackResults.remove(name));
-    }
-    if (callbackResults.size() > 0) {
-      ZimbraLog.perf.warn(
-          "Detected unexpected realtime stats: " + StringUtil.join(", ", callbackResults.keySet()));
-    }
-    return data;
+    return result;
   }
 
   public void reset() {}
