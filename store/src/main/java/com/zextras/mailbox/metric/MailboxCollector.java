@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Collects statistics about core Mailbox functionalities: IMAP, POP, LMTP and SMTP
+ * Collects statistics about core Mailbox functionalities: IMAP, POP, LMTP
  *
  * @since 23.4.0
  * @author davidefrison
@@ -44,14 +44,16 @@ public class MailboxCollector extends Collector {
     // TODO: add metrics on threads + latency on POP, IMAP, LMTP calls
     return new ArrayList<>() {
       {
-        addAll(getLmtpMetrics());
         addAll(getRealTimeStats());
+        addAll(getLmtpMetrics());
+        addAll(getImapMetrics());
+        addAll(getPopMetrics());
       }
     };
   }
 
   /**
-   * Returns all collected LMTP metrics about threads, rcvd, dlvd
+   * Returns collected LMTP metrics on rcvd, dlvd messages, bytes and rcpt.
    *
    * @return collection of LMTP metrics
    */
@@ -87,6 +89,11 @@ public class MailboxCollector extends Collector {
     };
   }
 
+  /**
+   * Adds IMAP metrics about IMAP calls response time.
+   *
+   * @return imap metrics
+   */
   private Collection<MetricFamilySamples> getImapMetrics() {
     ZimbraPerf.IMAP_TRACKER_PROMETHEUS
         .getCounters()
@@ -97,11 +104,25 @@ public class MailboxCollector extends Collector {
   }
 
   /**
+   * Adds IMAP metrics about IMAP calls response time.
+   *
+   * @return pop metrics
+   */
+  private Collection<MetricFamilySamples> getPopMetrics() {
+    ZimbraPerf.POP_TRACKER_PROMETHEUS
+        .getCounters()
+        .forEach(
+            (label, counter) ->
+                popSummary.addMetric(List.of(label), counter.getCount(), counter.getTotal()));
+    return List.of(popSummary);
+  }
+
+  /**
    * Returns statistics about "real time data". See al classes that implement {@link
    * com.zimbra.common.stats.RealtimeStatsCallback} to get an overview of the data that can be
-   * returned.
+   * returned. These stats are mostly about LMTP, IMAP and POP threads
    *
-   * @return
+   * @return metrics about real time data
    */
   private Collection<MetricFamilySamples> getRealTimeStats() {
     Collection<MetricFamilySamples> metricFamilySamples = new ArrayList<>();

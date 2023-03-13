@@ -75,7 +75,6 @@ public final class NioPop3Server extends NioServer implements Pop3Server, Realti
         getConfig().isSslEnabled() ? ZimbraPerf.RTS_POP_SSL_CONN : ZimbraPerf.RTS_POP_CONN;
     String threadStatName =
         getConfig().isSslEnabled() ? ZimbraPerf.RTS_POP_SSL_THREADS : ZimbraPerf.RTS_POP_THREADS;
-    return ImmutableMap.of(
-        connStatName, (Object) getNumConnections(), threadStatName, getNumThreads());
+    return ImmutableMap.of(connStatName, getNumConnections(), threadStatName, getNumThreads());
   }
 }

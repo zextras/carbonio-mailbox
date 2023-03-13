@@ -48,7 +48,7 @@ public final class TcpImapServer extends TcpServer implements ImapServer, Realti
    */
   @Override
   public Map<String, Integer> getStatData() {
-    Map<String, Object> data = new HashMap<String, Object>();
+    Map<String, Integer> data = new HashMap<>();
     if (getConfig().isSslEnabled()) {
       data.put(ZimbraPerf.RTS_IMAP_SSL_CONN, numActiveHandlers());
       data.put(ZimbraPerf.RTS_IMAP_SSL_THREADS, numThreads());

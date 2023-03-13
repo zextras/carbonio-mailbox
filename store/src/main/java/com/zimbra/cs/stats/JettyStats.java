@@ -25,7 +25,7 @@ public class JettyStats implements RealtimeStatsCallback {
       log.debug("Thread pool has not been initialized.  Not returning stat data.");
       return null;
     }
-    Map<String, Object> data = Maps.newHashMap();
+    Map<String, Integer> data = Maps.newHashMap();
     data.put(ZimbraPerf.RTS_HTTP_THREADS, pool.getThreads());
     data.put(ZimbraPerf.RTS_HTTP_IDLE_THREADS, pool.getIdleThreads());
     return data;

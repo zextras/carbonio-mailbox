@@ -296,7 +296,7 @@ public final class SessionCache {
     /* @see com.zimbra.common.stats.RealtimeStatsCallback#getStatData() */
     @Override
     public Map<String, Integer> getStatData() {
-      Map<String, Object> data = new HashMap<String, Object>();
+      Map<String, Integer> data = new HashMap<>();
       SessionMap soapMap = getSessionMap(Session.Type.SOAP);
       data.put(ZimbraPerf.RTS_SOAP_SESSIONS, soapMap.totalActiveSessions());
       return data;
