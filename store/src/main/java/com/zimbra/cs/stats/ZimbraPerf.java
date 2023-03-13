@@ -404,15 +404,6 @@ public class ZimbraPerf {
    * collection.
    */
   public static void addStatsCallback(RealtimeStatsCallback callback) {
-    if (realtimeStats == null) {
-      ZimbraLog.perf.debug(
-          "Call to addStatsCallback when realtimeStats has not been initialized\n%s",
-          ZimbraLog.getStackTrace(15));
-      /* This probably happens inside a commandline tool like zmmetadump where it doesn't
-       * make sense to mix in stats with those of the main Zimbra process.
-       */
-      return;
-    }
     realtimeStats.addCallback(callback);
   }
 
