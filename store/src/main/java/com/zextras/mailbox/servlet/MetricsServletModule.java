@@ -44,26 +44,38 @@ public class MetricsServletModule extends ServletModule {
   @Provides
   @Singleton
   @Named("SoapCollector")
-  public Collector provideSoapCollector() {
-    return new SoapCollector();
+  public Collector provideSoapCollector(CollectorRegistry collectorRegistry) {
+    final Collector soapCollector = new SoapCollector();
+    collectorRegistry.register(soapCollector);
+    return soapCollector;
+  }
+
+  /**
+   * Provides the {@link MailboxCollector} for core mail operations and threads metrics.
+   *
+   * @return mailbox collector
+   */
+  @Provides
+  @Singleton
+  @Named("MailboxCollector")
+  public Collector provideMailboxCollector(CollectorRegistry collectorRegistry) {
+    final Collector mailboxCollector = new MailboxCollector();
+    collectorRegistry.register(mailboxCollector);
+    return mailboxCollector;
   }
 
   /**
    * Provides the {@link CollectorRegistry#defaultRegistry} for collection of stats and registers
-   * collectors in it. It also registers standard collectors using {@link DefaultExports#register}.
+   * JVM collector in it.
    *
-   * @param soapCollector collector for soap api metrics
    * @return registry for prometheus
    */
   @Provides
   @Singleton
-  public CollectorRegistry provideCollector(@Named("SoapCollector") Collector soapCollector) {
+  public CollectorRegistry provideCollectorRegistry() {
     // TODO: it would be nice to get all collectors and register them programmatically
     final CollectorRegistry metricRegistry = new CollectorRegistry();
     DefaultExports.register(metricRegistry);
-    metricRegistry.register(soapCollector);
-    CollectorRegistry.defaultRegistry.register(new SoapCollector());
-    CollectorRegistry.defaultRegistry.register(new MailboxCollector());
     return metricRegistry;
   }
 }
