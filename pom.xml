@@ -808,6 +808,21 @@
         <artifactId>simpleclient</artifactId>
         <version>0.16.0</version>
       </dependency>
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+      </dependency>
+      <dependency>
+        <groupId>io.prometheus</groupId>
+        <artifactId>simpleclient_jetty</artifactId>
+        <version>0.16.0</version>
+      </dependency>
+      <dependency>
+        <groupId>io.prometheus</groupId>
+        <artifactId>simpleclient_hotspot</artifactId>
+        <version>0.16.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

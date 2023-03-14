@@ -24,7 +24,6 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.util.MemoryStats;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -612,7 +611,6 @@ public class ZimbraPerf {
 
   public static void main(String[] args) {
     initDescriptions();
-    MemoryStats.startup();
     for (String field : descriptions.keySet()) {
       System.out.println(field + ": " + descriptions.get(field));
     }

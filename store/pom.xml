@@ -440,6 +440,10 @@
     </dependency>
     <!-- DI -->
     <dependency>
+      <artifactId>javax.inject</artifactId>
+      <groupId>javax.inject</groupId>
+    </dependency>
+    <dependency>
       <artifactId>guice</artifactId>
       <groupId>com.google.inject</groupId>
     </dependency>
@@ -455,6 +459,11 @@
     <dependency>
       <groupId>io.prometheus</groupId>
       <artifactId>simpleclient_servlet</artifactId>
+    </dependency>
+    <!-- JMX stats collector -->
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_hotspot</artifactId>
     </dependency>
   </dependencies>
 
