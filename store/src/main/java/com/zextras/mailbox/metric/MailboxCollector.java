@@ -40,6 +40,8 @@ public class MailboxCollector extends Collector {
         addAll(getPopMetrics());
         addAll(getMailboxCacheStats());
         addAll(getCalendarStats());
+        addAll(getLuceneStats());
+        addAll(getFileOperationStats());
       }
     };
   }
@@ -183,6 +185,56 @@ public class MailboxCollector extends Collector {
                 ZimbraPerf.COUNTER_CALENDAR_CACHE_LRU_SIZE.getName(),
                 "",
                 ZimbraPerf.COUNTER_CALENDAR_CACHE_LRU_SIZE.getTotal()));
+      }
+    };
+  }
+
+  /**
+   * Lucene stats about bytes written, opened files in write
+   *
+   * @return
+   */
+  private Collection<MetricFamilySamples> getLuceneStats() {
+    // TODO: Lucene read stats ZimbraPerf.COUNTER_IDX_BYTES_READ are neveer increased in the code
+    return new ArrayList<>() {
+      {
+        add(
+            new CounterMetricFamily(
+                ZimbraPerf.COUNTER_IDX_BYTES_READ.getName(),
+                "",
+                ZimbraPerf.COUNTER_IDX_BYTES_READ.getTotal()));
+        add(
+            new CounterMetricFamily(
+                ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getName(),
+                "",
+                ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getTotal()));
+        add(
+            new CounterMetricFamily(
+                ZimbraPerf.COUNTER_IDX_WRT_OPENED.getName(),
+                "",
+                ZimbraPerf.COUNTER_IDX_WRT_OPENED.getTotal()));
+      }
+    };
+  }
+
+  /**
+   * Files operations stats about read bytes, opened files in write
+   *
+   * @return files stats
+   */
+  private Collection<MetricFamilySamples> getFileOperationStats() {
+    return new ArrayList<>() {
+      {
+        add(
+            new CounterMetricFamily(
+                ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_READ.getName(),
+                "",
+                ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_READ.getTotal()));
+        add(
+            new CounterMetricFamily(
+                ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_SEEK_RATE.getName(),
+                "",
+                ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_SEEK_RATE.getTotal()));
       }
     };
   }
