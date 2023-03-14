@@ -7,15 +7,11 @@ import static org.mockito.Mockito.when;
 
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Entry;
-import com.zimbra.cs.account.MockServer;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mock;
 
 public class ProxyCompressionServerVarTest {
 
@@ -34,19 +30,22 @@ public class ProxyCompressionServerVarTest {
   }
 
   /**
-   * test default behavior when {@code ZAttrProvisioning.A_zimbraHttpCompressionEnabled} is set to true (default)
-   * returned value must contain defined directive definition
+   * test default behavior when {@code ZAttrProvisioning.A_zimbraHttpCompressionEnabled} is set to
+   * true (default) returned value must contain defined directive definition
+   *
    * @throws Exception if any
    */
   @Test
   public void shouldUpdateProxyConfGenVarValueWhenCalledUpdate() throws Exception {
 
     // setup
-    Entry mockServerSource = new MockServer("server", "0");
+    Entry mockServerSource = mock(Server.class);
 
-    Map<String, Object> attrs = new HashMap<>();
-    attrs.put(ZAttrProvisioning.A_zimbraHttpCompressionEnabled, true);
-    mockServerSource.setAttrs(attrs);
+    // set up mock behavior to make A_zimbraHttpCompressionEnabled return true
+    // we won't use mockito ArgumentMatcher.any* and use concrete possible values
+    // to ensure method contract
+    when(mockServerSource.getBooleanAttr(ZAttrProvisioning.A_zimbraHttpCompressionEnabled,
+        true)).thenReturn(true);
 
     ProxyCompressionServerVar proxyCompressionServerVar = new ProxyCompressionServerVar();
 
@@ -124,6 +123,7 @@ public class ProxyCompressionServerVarTest {
   /**
    * test behavior when {@code ZAttrProvisioning.A_zimbraHttpCompressionEnabled} is set to false,
    * returned value must be empty
+   *
    * @throws Exception if any
    */
   @Test
@@ -131,9 +131,11 @@ public class ProxyCompressionServerVarTest {
       throws Exception {
 
     // setup
-    Entry mockServerSource = mock(Server.class); // create a mock object using Mockito
+    Entry mockServerSource = mock(Server.class);
 
     // set up mock behavior to make A_zimbraHttpCompressionEnabled return false
+    // we won't use mockito ArgumentMatcher.any* and use concrete possible values
+    // to ensure method contract
     when(mockServerSource.getBooleanAttr(ZAttrProvisioning.A_zimbraHttpCompressionEnabled,
         true)).thenReturn(false);
 
@@ -147,8 +149,6 @@ public class ProxyCompressionServerVarTest {
 
     // verify: that the value is not null or empty
     assertNotNull(proxyCompressionServerVar.mValue);
-
-    System.out.println(proxyCompressionServerVar.mValue);
 
     // verify: if the value is as expected
     assertEquals("", proxyCompressionServerVar.mValue);
