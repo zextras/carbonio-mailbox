@@ -2,16 +2,20 @@ package com.zimbra.cs.util.proxyconfgen;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.MockServer;
+import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
 
 public class ProxyCompressionServerVarTest {
 
@@ -29,6 +33,11 @@ public class ProxyCompressionServerVarTest {
     }
   }
 
+  /**
+   * test default behavior when {@code ZAttrProvisioning.A_zimbraHttpCompressionEnabled} is set to true (default)
+   * returned value must contain defined directive definition
+   * @throws Exception if any
+   */
   @Test
   public void shouldUpdateProxyConfGenVarValueWhenCalledUpdate() throws Exception {
 
@@ -110,5 +119,38 @@ public class ProxyCompressionServerVarTest {
 
     // verify: if the value is as expected
     assertEquals(expectedVal, proxyCompressionServerVar.mValue);
+  }
+
+  /**
+   * test behavior when {@code ZAttrProvisioning.A_zimbraHttpCompressionEnabled} is set to false,
+   * returned value must be empty
+   * @throws Exception if any
+   */
+  @Test
+  public void shouldReturnEmptyProxyConfGenVarValueWhenCompressionDisabledAndCalledUpdate()
+      throws Exception {
+
+    // setup
+    Entry mockServerSource = mock(Server.class); // create a mock object using Mockito
+
+    // set up mock behavior to make A_zimbraHttpCompressionEnabled return false
+    when(mockServerSource.getBooleanAttr(ZAttrProvisioning.A_zimbraHttpCompressionEnabled,
+        true)).thenReturn(false);
+
+    ProxyCompressionServerVar proxyCompressionServerVar = new ProxyCompressionServerVar();
+
+    // set the mockServerSource on the ProxyCompressionServerVar instance
+    ProxyConfVar.serverSource = mockServerSource;
+
+    // execute: call the update method
+    proxyCompressionServerVar.update();
+
+    // verify: that the value is not null or empty
+    assertNotNull(proxyCompressionServerVar.mValue);
+
+    System.out.println(proxyCompressionServerVar.mValue);
+
+    // verify: if the value is as expected
+    assertEquals("", proxyCompressionServerVar.mValue);
   }
 }
