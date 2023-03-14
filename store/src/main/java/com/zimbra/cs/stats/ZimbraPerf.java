@@ -9,7 +9,6 @@ import com.google.common.collect.Maps;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.stats.Counter;
 import com.zimbra.common.stats.CsvStatsDumper;
-import com.zimbra.common.stats.PrometheusStatsDumper;
 import com.zimbra.common.stats.RealtimeStats;
 import com.zimbra.common.stats.RealtimeStatsCallback;
 import com.zimbra.common.stats.StatsScheduler;
@@ -402,13 +401,6 @@ public class ZimbraPerf {
       statsScheduler.schedule(new CsvStatsDumper(LDAP_TRACKER), DUMP_FREQUENCY);
       statsScheduler.schedule(new CsvStatsDumper(SQL_TRACKER), DUMP_FREQUENCY);
       statsScheduler.schedule(new CsvStatsDumper(threadsTracker), DUMP_FREQUENCY);
-
-      // PROM
-      statsScheduler.schedule(new PrometheusStatsDumper(IMAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
-      statsScheduler.schedule(new PrometheusStatsDumper(POP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
-      statsScheduler.schedule(new PrometheusStatsDumper(LDAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
-      statsScheduler.schedule(new PrometheusStatsDumper(SQL_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
-      statsScheduler.schedule(new PrometheusStatsDumper(threadsTracker), DUMP_FREQUENCY);
     } finally {
       LOCK.unlock();
     }
