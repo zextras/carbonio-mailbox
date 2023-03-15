@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.imap;
 
+import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
+
 import com.zimbra.common.io.TcpServerInputStream;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.Constants;
@@ -13,12 +15,14 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.server.ProtocolHandler;
 import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.util.IOUtil;
+import io.micrometer.core.instrument.Timer;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -29,6 +33,7 @@ final class TcpImapHandler extends ProtocolHandler {
   private final ImapConfig config;
   private Socket socket;
   private final HandlerDelegate delegate;
+  private final Timer imapRequestTimer = METER_REGISTRY.timer("imap_exec_ms");
 
   TcpImapHandler(TcpImapServer server) {
     super(server);
@@ -104,6 +109,7 @@ final class TcpImapHandler extends ProtocolHandler {
       // FIXME Shouldn't we do these before executing the request??
       setIdle(false);
       long elapsed = ZimbraPerf.STOPWATCH_IMAP.stop(start);
+      imapRequestTimer.record(elapsed, TimeUnit.MILLISECONDS);
       if (delegate.lastCommand != null) {
         ZimbraLog.imap.info("%s elapsed=%d (TCP)", delegate.lastCommand.toUpperCase(), elapsed);
         ZimbraPerf.IMAP_TRACKER.addStat(delegate.lastCommand.toUpperCase(), start);
