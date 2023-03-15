@@ -5,7 +5,15 @@
 
 package com.zimbra.cs.mailbox;
 
-import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
@@ -22,21 +30,10 @@ import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.util.JMSession;
-import io.micrometer.core.instrument.DistributionSummary;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 public class MessageCache {
 
     private static final Log sLog = LogFactory.getLog(MessageCache.class);
-
-    private static final DistributionSummary MBOX_MSG_CACHE_COUNTER = METER_REGISTRY.summary(ZimbraPerf.DC_MBOX_MSG_CACHE);
 
     private static final class CacheNode {
         CacheNode()  { }
@@ -224,11 +221,9 @@ public class MessageCache {
         if (cacheHit) {
             sLog.debug("Cache hit for item %d: digest=%s, expand=%b.", item.getId(), item.getDigest(), expand);
             ZimbraPerf.COUNTER_MBOX_MSG_CACHE.increment(100);
-            MBOX_MSG_CACHE_COUNTER.record(100);
         } else {
             sLog.debug("Cache miss for item %d: digest=%s, expand=%b.", item.getId(), item.getDigest(), expand);
             ZimbraPerf.COUNTER_MBOX_MSG_CACHE.increment(0);
-            MBOX_MSG_CACHE_COUNTER.record(0);
         }
 
         if (expand) {
