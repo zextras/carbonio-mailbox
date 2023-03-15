@@ -25,12 +25,20 @@ priority="optional"
 
 package() {
   cd "${srcdir}"/../../staging
-  install -D packages/appserver-service/carbonio-mailbox-sidecar.service \
-    "${pkgdir}/lib/systemd/system/carbonio-mailbox-sidecar.service"
-  install -D packages/appserver-service/carbonio-mailbox.hcl \
-    "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox.hcl"
-  install -D packages/appserver-service/carbonio-mailbox \
+  install -Dm 755 packages/appserver-service/carbonio-mailbox \
     "${pkgdir}/usr/bin/carbonio-mailbox"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-setup.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-mailbox.sh"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox.hcl"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-mailbox-sidecar.service"
+  install -Dm 644 packages/appserver-service/intentions.json \
+    "${pkgdir}/etc/carbonio/mailbox/service-discover/intentions.json"
+  install -Dm 644 packages/appserver-service/policies.json \
+    "${pkgdir}/etc/carbonio/mailbox/service-discover/policies.json"
+  install -Dm 644 packages/appserver-service/service-protocol.json \
+    "${pkgdir}/etc/carbonio/mailbox/service-discover/service-protocol.json"
 }
 
 postinst() {
@@ -46,8 +54,11 @@ postinst() {
 
   usermod -a -G 'carbonio-mailbox' 'zextras'
 
-  mkdir -p '/etc/zextras/carbonio-mailbox/'
-  chown 'carbonio-mailbox:carbonio-mailbox' '/etc/zextras/carbonio-mailbox/'
+  # Copy old token. This way services using new token can be restarted and use the new one
+  # without the need of running pending-setups before
+  if [ -f /etc/zextras/carbonio-mailbox/token ]; then
+    cp /etc/zextras/carbonio-mailbox/token /etc/carbonio/mailbox/service-discover/token
+  fi
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
@@ -58,9 +69,18 @@ postinst() {
   echo "Carbonio Mailbox Service installed successfully!"
   echo "You must run pending-setups to configure it correctly."
   echo "======================================================"
+}
 
-  cat > /etc/zextras/pending-setups.d/carbonio-mailbox-setup.sh <<EOF
-#!/usr/bin/env bash
-carbonio-mailbox setup
-EOF
+prerm() {
+  if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
+  fi
+}
+
+postrm() {
+  rm -f /etc/carbonio/mailbox/service-discover/token
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+  fi
 }

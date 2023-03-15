@@ -1,0 +1,44 @@
+{
+  "key_prefix": [
+    {
+      "carbonio-mailbox/": {
+        "policy": "read"
+      },
+      "carbonio-powerstore/": {
+        "policy": "read"
+      },
+      "carbonio-abq/": {
+        "policy": "read"
+      },
+      "carbonio-activesync/": {
+        "policy": "read"
+      },
+      "carbonio-auth/": {
+        "policy": "read"
+      },
+      "carbonio-core/": {
+        "policy": "read"
+      },
+      "carbonio-ha/": {
+        "policy": "read"
+      }
+    }
+  ],
+  "node_prefix": [
+    {
+      "": {
+        "policy": "read"
+      }
+    }
+  ],
+  "service": [
+    {
+      "carbonio-mailbox": {
+        "policy": "write"
+      },
+      "carbonio-mailbox-sidecar-proxy": {
+        "policy": "write"
+      }
+    }
+  ]
+}

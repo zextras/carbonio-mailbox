@@ -6,107 +6,48 @@ if [[ $(id -u) -ne 0 ]]; then
 fi
 
 if [[ "$1" != "setup" ]]; then
-  echo "Syntax: carbonio-mailbox <setup> to automatically setup the service"
+  echo "Syntax: carbonio-mailbox setup to automatically setup the service"
   exit 1;
 fi
 
-# decrypt the bootstrap token, asking the password to the sys admin
+# Decrypt the bootstrap token, asking the password to the sys admin
 # --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
-# to avoid re-asking for the password multiple times
-echo -n "insert the cluster credential password: "
+# to avoid re-asking for the password
+echo -n "Insert the cluster credential password: "
 export CONSUL_HTTP_TOKEN=$(service-discover bootstrap-token --setup)
 EXIT_CODE="$?"
 echo ""
 if [[ "${EXIT_CODE}" != "0" ]]; then
-  echo "cannot access to bootstrap token"
+  echo "Cannot access to bootstrap token"
   exit 1;
 fi
-# limit secret visibility as much as possible
+# Limit secret visibility as much as possible
 export -n SETUP_CONSUL_TOKEN
 
 POLICY_NAME='carbonio-mailbox-policy'
-POLICY_DESCRIPTION='Carbonio Mailbox service policy for config generation and for mailbox sidecar proxy'
-POLICY_RULES="$(cat <<EOF
-"key_prefix" = {
-  "carbonio-mailbox/" = {
-    "policy" = "read"
-  }
-  "carbonio-powerstore/"= {
-    "policy"= "read"
-  }
-  "carbonio-abq/"= {
-    "policy"= "read"
-  }
-  "carbonio-activesync/"= {
-    "policy"= "read"
-  }
-  "carbonio-auth/"= {
-    "policy"= "read"
-  }
-  "carbonio-core/"= {
-    "policy"= "read"
-  }
-  "carbonio-ha/"= {
-    "policy"= "read"
-  }
-}
-"node_prefix" = {
-  "" = {
-    "policy" = "read"
-  }
-}
-"service" = {
-  "carbonio-mailbox" = {
-    "policy" = "write"
-  }
-  "carbonio-mailbox-sidecar-proxy" = {
-    "policy" = "write"
-  }
-}
-EOF
-)"
+POLICY_DESCRIPTION='Carbonio Mailbox service policy for service and sidecar proxy'
 
 # create or update policy for the specific service (this will be shared across cluster)
-consul acl policy create -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules "${POLICY_RULES}" >/dev/null 2>&1
+consul acl policy create -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules  @/etc/carbonio/mailbox/service-discover/policies.json >/dev/null 2>&1
 if [[ "$?" != "0" ]]; then
-    consul acl policy update -no-merge -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules "${POLICY_RULES}"
+    consul acl policy update -no-merge -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules @/etc/carbonio/mailbox/service-discover/policies.json
     if [[ "$?" != "0" ]]; then
       echo "Setup failed: Cannot update policy for ${POLICY_NAME}"
       exit 1
     fi
 fi
 
-# allow user-management service to access mailbox
-cat <<EOF | consul config write -
-{
-  "kind": "service-intentions",
-  "name": "carbonio-mailbox",
-  "sources": [
-    {
-      "name": "carbonio-user-management",
-      "action": "allow"
-    },
-    {
-      "name": "carbonio-files",
-      "action": "allow"
-    }
-  ]
-}
-EOF
+trap 'echo Script for mailbox terminated with error' EXIT
+set -e
 
-# declare the service as http
-cat <<EOF | consul config write -
-{
-  "kind": "service-defaults",
-  "name": "carbonio-mailbox",
-  "protocol": "http"
-}
-EOF
+consul config write /etc/carbonio/mailbox/service-discover/service-protocol.json
+# Allow other services to contact this service
+consul config write /etc/carbonio/mailbox/service-discover/intentions.json
 
-if [[ ! -f "/etc/zextras/carbonio-mailbox/token" ]]; then
+if [[ ! -f "/etc/carbonio/mailbox/service-discover/token" ]]; then
     # create the token
     consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for carbonio-mailbox/$(hostname -A)" |
-      jq -r '.SecretID' > /etc/zextras/carbonio-mailbox/token;
+      jq -r '.SecretID' > /etc/carbonio/mailbox/service-discover/token;
 fi
 
 chown carbonio-mailbox:carbonio-mailbox /etc/zextras/carbonio-mailbox/token
@@ -117,4 +58,7 @@ consul reload
 # limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
 
+# carbonio-mailbox is not managed by systemd
+
 systemctl restart carbonio-mailbox-sidecar.service
+trap - EXIT
