@@ -7,7 +7,7 @@ After=network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/consul connect envoy \
-    -token-file /etc/zextras/carbonio-mailbox/token \
+    -token-file /etc/carbonio/mailbox/service-discover/token \
     -admin-bind localhost:0 \
     -sidecar-for carbonio-mailbox
 Restart=on-failure
