@@ -25,19 +25,19 @@ priority="optional"
 
 package() {
   cd "${srcdir}"/../../staging
-  install -Dm 755 carbonio-mailbox packages/appserver-service/carbonio-mailbox \
+  install -Dm 755 packages/appserver-service/carbonio-mailbox \
     "${pkgdir}/usr/bin/carbonio-mailbox"
-    install -Dm 644 packages/appserver-service/carbonio-mailbox-setup.sh \
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-setup.sh \
     "${pkgdir}/etc/zextras/pending-setups.d/carbonio-mailbox.sh"
-  install -Dm 644 carbonio-mailbox packages/appserver-service/carbonio-mailbox.hcl \
+  install -Dm 644 packages/appserver-service/carbonio-mailbox.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox.hcl"
-  install -Dm 644 carbonio-mailbox packages/appserver-service/carbonio-mailbox-sidecar.service \
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-sidecar.service \
     "${pkgdir}/lib/systemd/system/carbonio-mailbox-sidecar.service"
-  install -Dm 644 carbonio-mailbox packages/appserver-service/intentions.json \
+  install -Dm 644 packages/appserver-service/intentions.json \
     "${pkgdir}/etc/carbonio/mailbox/service-discover/intentions.json"
-  install -Dm 644 carbonio-mailbox packages/appserver-service/policies.json \
+  install -Dm 644 packages/appserver-service/policies.json \
     "${pkgdir}/etc/carbonio/mailbox/service-discover/policies.json"
-  install -Dm 644 carbonio-mailbox packages/appserver-service/service-protocol.json \
+  install -Dm 644 packages/appserver-service/service-protocol.json \
     "${pkgdir}/etc/carbonio/mailbox/service-discover/service-protocol.json"
 }
 
