@@ -39,12 +39,6 @@ public class Metrics {
   public static final Counter IDX_WRT_OPENED_CACHE_COUNTER =
       METER_REGISTRY.counter(ZimbraPerf.DC_IDX_WRT_OPENED_CACHE_HIT);
 
-  // Files
-  public static final Counter BLOB_INPUT_STREAM_READ_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_BIS_READ);
-  public static final Counter BLOB_INPUT_STREAM_SEEK_RATE_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_BIS_SEEK_RATE);
-
   // Timers aka STOPWATCH
   // DB connections
   public static final Timer DB_CONN_TIMER = METER_REGISTRY.timer("db_conn_exec_ms");

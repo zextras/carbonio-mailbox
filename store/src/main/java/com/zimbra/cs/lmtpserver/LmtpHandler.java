@@ -30,7 +30,7 @@ public abstract class LmtpHandler extends ProtocolHandler {
     protected String mRemoteHostname;
     private String mLhloArg;
 
-    // LMTP
+    // Metrics
     private static final Counter LMTP_DLVD_BYTES_COUNTER =
         METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_DLVD_BYTES);
     private static final Counter LMTP_DLVD_MSGS_COUNTER =
