@@ -5,6 +5,9 @@
 
 package com.zimbra.cs.imap;
 
+import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
+
+import io.micrometer.core.instrument.Gauge;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +22,13 @@ import com.zimbra.cs.stats.ZimbraPerf;
 public final class TcpImapServer extends TcpServer implements ImapServer, RealtimeStatsCallback {
     public TcpImapServer(ImapConfig config) throws ServiceException {
         super(config);
+        if (config.isSslEnabled()) {
+            Gauge.builder(ZimbraPerf.RTS_IMAP_THREADS, this::numThreads).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_IMAP_SSL_CONN, this::numActiveHandlers).register(METER_REGISTRY);
+        } else  {
+            Gauge.builder(ZimbraPerf.RTS_IMAP_THREADS, this::numThreads).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_IMAP_CONN, this::numThreads).register(METER_REGISTRY);
+        }
         ZimbraPerf.addStatsCallback(this);
         ServerThrottle.configureThrottle(config.getProtocol(), LC.imap_throttle_ip_limit.intValue(), LC.imap_throttle_acct_limit.intValue(), getThrottleSafeHosts(), getThrottleWhitelist());
     }
