@@ -5,9 +5,6 @@
 
 package com.zimbra.cs.mailbox;
 
-import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
-
-import com.zimbra.common.stats.Counter;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,8 +40,6 @@ import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.Zimbra;
 
 public class MailboxManager {
-
-    private static final io.micrometer.core.instrument.Counter MBOX_CACHE_COUNTER = METER_REGISTRY.counter(ZimbraPerf.DC_MBOX_CACHE);
 
     public static enum FetchMode {
         AUTOCREATE,         // create the mailbox if it doesn't exist
@@ -450,7 +445,6 @@ public class MailboxManager {
             Object cached = retrieveFromCache(mailboxId, true);
             if (cached instanceof Mailbox) {
                 ZimbraPerf.COUNTER_MBOX_CACHE.increment(100);
-                MBOX_CACHE_COUNTER.increment(100);
                 mbox = (Mailbox) cached;
             }
         }
@@ -462,7 +456,6 @@ public class MailboxManager {
 
         if (mbox == null) { // not found in cache
             ZimbraPerf.COUNTER_MBOX_CACHE.increment(0);
-            MBOX_CACHE_COUNTER.increment(0);
             MailboxData data;
             DbConnection conn = DbPool.getConnection();
             try {
