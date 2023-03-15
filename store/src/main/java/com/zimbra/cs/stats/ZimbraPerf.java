@@ -245,106 +245,106 @@ public class ZimbraPerf {
       };
 
   @Description("Number of messages received over LMTP")
-  private static final String DC_LMTP_RCVD_MSGS = "lmtp_rcvd_msgs";
+  public static final String DC_LMTP_RCVD_MSGS = "lmtp_rcvd_msgs";
 
   @Description("Number of bytes received over LMTP")
-  private static final String DC_LMTP_RCVD_BYTES = "lmtp_rcvd_bytes";
+  public static final String DC_LMTP_RCVD_BYTES = "lmtp_rcvd_bytes";
 
   @Description("Number of LMTP recipients")
-  private static final String DC_LMTP_RCVD_RCPT = "lmtp_rcvd_rcpt";
+  public static final String DC_LMTP_RCVD_RCPT = "lmtp_rcvd_rcpt";
 
   @Description("Number of messages delivered to mailboxes as a result of LMTP delivery")
-  private static final String DC_LMTP_DLVD_MSGS = "lmtp_dlvd_msgs";
+  public static final String DC_LMTP_DLVD_MSGS = "lmtp_dlvd_msgs";
 
   @Description("Number of bytes of data delivered to mailboxes as a result of LMTP delivery")
-  private static final String DC_LMTP_DLVD_BYTES = "lmtp_dlvd_bytes";
+  public static final String DC_LMTP_DLVD_BYTES = "lmtp_dlvd_bytes";
 
   @Description("Number of times that the server got a database connection from the pool")
-  private static final String DC_DB_CONN_COUNT = "db_conn_count";
+  public static final String DC_DB_CONN_COUNT = "db_conn_count";
 
   @Description("Average latency (ms) of getting a database connection from the pool")
-  private static final String DC_DB_CONN_MS_AVG = "db_conn_ms_avg";
+  public static final String DC_DB_CONN_MS_AVG = "db_conn_ms_avg";
 
   @Description("Number of times that the server got an LDAP directory context")
-  private static final String DC_LDAP_DC_COUNT = "ldap_dc_count";
+  public static final String DC_LDAP_DC_COUNT = "ldap_dc_count";
 
   @Description("Average latency (ms) of getting an LDAP directory context")
-  private static final String DC_LDAP_DC_MS_AVG = "ldap_dc_ms_avg";
+  public static final String DC_LDAP_DC_MS_AVG = "ldap_dc_ms_avg";
 
   @Description("Number of messages that were added to a mailbox")
-  private static final String DC_MBOX_ADD_MSG_COUNT = "mbox_add_msg_count";
+  public static final String DC_MBOX_ADD_MSG_COUNT = "mbox_add_msg_count";
 
   @Description("Average latency (ms) of adding a message to a mailbox")
-  private static final String DC_MBOX_ADD_MSG_MS_AVG = "mbox_add_msg_ms_avg";
+  public static final String DC_MBOX_ADD_MSG_MS_AVG = "mbox_add_msg_ms_avg";
 
   @Description("Number of times that the server got a mailbox from the cache")
-  private static final String DC_MBOX_GET_COUNT = "mbox_get_count";
+  public static final String DC_MBOX_GET_COUNT = "mbox_get_count";
 
   @Description("Average latency (ms) of getting a mailbox from the cache")
-  private static final String DC_MBOX_GET_MS_AVG = "mbox_get_ms_avg";
+  public static final String DC_MBOX_GET_MS_AVG = "mbox_get_ms_avg";
 
   @Description("Mailbox cache hit rate")
-  private static final String DC_MBOX_CACHE = "mbox_cache";
+  public static final String DC_MBOX_CACHE = "mbox_cache";
 
   @Description("Message cache hit rate")
-  private static final String DC_MBOX_MSG_CACHE = "mbox_msg_cache";
+  public static final String DC_MBOX_MSG_CACHE = "mbox_msg_cache";
 
   @Description("Item cache hit rate")
-  private static final String DC_MBOX_ITEM_CACHE = "mbox_item_cache";
+  public static final String DC_MBOX_ITEM_CACHE = "mbox_item_cache";
 
   @Description("Number of SOAP requests received")
-  private static final String DC_SOAP_COUNT = "soap_count";
+  public static final String DC_SOAP_COUNT = "soap_count";
 
   @Description("Average processing time (ms) of SOAP requests")
-  private static final String DC_SOAP_MS_AVG = "soap_ms_avg";
+  public static final String DC_SOAP_MS_AVG = "soap_ms_avg";
 
   @Description("Number of IMAP requests received")
-  private static final String DC_IMAP_COUNT = "imap_count";
+  public static final String DC_IMAP_COUNT = "imap_count";
 
   @Description("Average processing time (ms) of IMAP requests")
-  private static final String DC_IMAP_MS_AVG = "imap_ms_avg";
+  public static final String DC_IMAP_MS_AVG = "imap_ms_avg";
 
   @Description("Number of POP3 requests received")
-  private static final String DC_POP_COUNT = "pop_count";
+  public static final String DC_POP_COUNT = "pop_count";
 
   @Description("Average processing time (ms) of POP3 requests")
-  private static final String DC_POP_MS_AVG = "pop_ms_avg";
+  public static final String DC_POP_MS_AVG = "pop_ms_avg";
 
   @Description("Number of times that the file descriptor cache read message data from disk")
-  private static final String DC_BIS_READ = "bis_read";
+  public static final String DC_BIS_READ = "bis_read";
 
   @Description("Percentage of file descriptor cache disk reads that required a seek")
-  private static final String DC_BIS_SEEK_RATE = "bis_seek_rate";
+  public static final String DC_BIS_SEEK_RATE = "bis_seek_rate";
 
   @Description("Average number of concurrent index writers")
-  private static final String DC_IDX_WRT_AVG = "idx_wrt_avg";
+  public static final String DC_IDX_WRT_AVG = "idx_wrt_avg";
 
   @Description("Accumulated number of index writers opened")
-  private static final String DC_IDX_WRT_OPENED = "idx_wrt_opened";
+  public static final String DC_IDX_WRT_OPENED = "idx_wrt_opened";
 
   @Description("Accumulated number of cache hits when opening an index writer")
-  private static final String DC_IDX_WRT_OPENED_CACHE_HIT = "idx_wrt_opened_cache_hit";
+  public static final String DC_IDX_WRT_OPENED_CACHE_HIT = "idx_wrt_opened_cache_hit";
 
   @Description("Accumulated bytes written by Lucene")
-  private static final String DC_IDX_BYTES_WRITTEN = "idx_bytes_written";
+  public static final String DC_IDX_BYTES_WRITTEN = "idx_bytes_written";
 
   @Description("Average of idx_bytes_written")
-  private static final String DC_IDX_BYTES_WRITTTEN_AVG = "idx_bytes_written_avg";
+  public static final String DC_IDX_BYTES_WRITTTEN_AVG = "idx_bytes_written_avg";
 
   @Description("Accumulated bytes read by Lucene")
-  private static final String DC_IDX_BYTES_READ = "idx_bytes_read";
+  public static final String DC_IDX_BYTES_READ = "idx_bytes_read";
 
   @Description("Average of idx_bytes_read")
-  private static final String DC_IDX_BYTES_READ_AVG = "idx_bytes_read_avg";
+  public static final String DC_IDX_BYTES_READ_AVG = "idx_bytes_read_avg";
 
   @Description("Hit rate of calendar summary cache, counting cache hit from both memory and file")
-  private static final String DC_CALCACHE_HIT = "calcache_hit";
+  public static final String DC_CALCACHE_HIT = "calcache_hit";
 
   @Description("Hit rate of calendar summary cache, counting cache hit from memory only")
-  private static final String DC_CALCACHE_MEM_HIT = "calcache_mem_hit";
+  public static final String DC_CALCACHE_MEM_HIT = "calcache_mem_hit";
 
   @Description("Number of calendars (folders) in the calendar summary cache LRU in Java heap")
-  private static final String DC_CALCACHE_LRU_SIZE = "calcache_lru_size";
+  public static final String DC_CALCACHE_LRU_SIZE = "calcache_lru_size";
 
   private static final Lock LOCK = new ReentrantLock();
 

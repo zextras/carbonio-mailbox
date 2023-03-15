@@ -823,6 +823,11 @@
         <artifactId>simpleclient_hotspot</artifactId>
         <version>0.16.0</version>
       </dependency>
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-prometheus</artifactId>
+        <version>1.10.2</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
