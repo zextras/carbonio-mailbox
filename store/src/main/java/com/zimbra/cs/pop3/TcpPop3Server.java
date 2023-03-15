@@ -20,11 +20,6 @@ import java.util.Map;
 
 public final class TcpPop3Server extends TcpServer implements Pop3Server, RealtimeStatsCallback {
 
-    private final Gauge POP_SSL_CONN = Gauge.builder(ZimbraPerf.RTS_POP_SSL_THREADS, this::numThreads).register(METER_REGISTRY);
-    private final Gauge POP_CONN = Gauge.builder(ZimbraPerf.RTS_POP_THREADS, this::numThreads).register(METER_REGISTRY);
-    private final Gauge POP_THREADS = Gauge.builder(ZimbraPerf.RTS_POP_CONN, this::numThreads).register(METER_REGISTRY);
-    private final Gauge POP_SSL_THREADS = Gauge.builder(ZimbraPerf.RTS_POP_SSL_CONN, this::numActiveHandlers).register(METER_REGISTRY);
-
     public TcpPop3Server(Pop3Config config) throws ServiceException {
         super(config);
         if (config.isSslEnabled()) {
