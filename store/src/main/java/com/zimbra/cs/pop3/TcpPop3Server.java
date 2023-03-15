@@ -5,8 +5,7 @@
 
 package com.zimbra.cs.pop3;
 
-import java.util.HashMap;
-import java.util.Map;
+import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -15,11 +14,26 @@ import com.zimbra.cs.server.ProtocolHandler;
 import com.zimbra.cs.server.ServerThrottle;
 import com.zimbra.cs.server.TcpServer;
 import com.zimbra.cs.stats.ZimbraPerf;
+import io.micrometer.core.instrument.Gauge;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class TcpPop3Server extends TcpServer implements Pop3Server, RealtimeStatsCallback {
 
+    private final Gauge POP_SSL_CONN = Gauge.builder(ZimbraPerf.RTS_POP_SSL_THREADS, this::numThreads).register(METER_REGISTRY);
+    private final Gauge POP_CONN = Gauge.builder(ZimbraPerf.RTS_POP_THREADS, this::numThreads).register(METER_REGISTRY);
+    private final Gauge POP_THREADS = Gauge.builder(ZimbraPerf.RTS_POP_CONN, this::numThreads).register(METER_REGISTRY);
+    private final Gauge POP_SSL_THREADS = Gauge.builder(ZimbraPerf.RTS_POP_SSL_CONN, this::numActiveHandlers).register(METER_REGISTRY);
+
     public TcpPop3Server(Pop3Config config) throws ServiceException {
         super(config);
+        if (config.isSslEnabled()) {
+            Gauge.builder(ZimbraPerf.RTS_POP_SSL_THREADS, this::numThreads).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_POP_SSL_CONN, this::numActiveHandlers).register(METER_REGISTRY);
+        } else  {
+            Gauge.builder(ZimbraPerf.RTS_POP_THREADS, this::numThreads).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_POP_CONN, this::numThreads).register(METER_REGISTRY);
+        }
         ZimbraPerf.addStatsCallback(this);
         ServerThrottle.configureThrottle(config.getProtocol(), LC.pop3_throttle_ip_limit.intValue(), LC.pop3_throttle_acct_limit.intValue(), getThrottleSafeHosts(), getThrottleWhitelist());
     }

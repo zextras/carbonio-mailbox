@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
+
 import com.google.common.base.CharMatcher;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -279,6 +281,8 @@ public class Mailbox implements MailboxStore {
   public static final int ID_FOLDER_CONVERSATIONS = FolderConstants.ID_FOLDER_CONVERSATIONS; // 9;
   public static final int ID_FOLDER_CALENDAR = FolderConstants.ID_FOLDER_CALENDAR; // 10;
   public static final int ID_FOLDER_ROOT = FolderConstants.ID_FOLDER_ROOT; // 11;
+  // Metrics
+  private static final io.micrometer.core.instrument.Counter MBOX_ITEM_CACHE_COUNTER = METER_REGISTRY.counter(ZimbraPerf.DC_MBOX_ITEM_CACHE);
 
   @Deprecated
   // no longer created in mailboxes since Helix (bug 39647).  old mboxes may still contain a system
@@ -11591,6 +11595,7 @@ public class Mailbox implements MailboxStore {
     // The global item cache counter always gets updated
     if (!isCachedType(type)) {
       ZimbraPerf.COUNTER_MBOX_ITEM_CACHE.increment(item == null ? 0 : 100);
+      MBOX_ITEM_CACHE_COUNTER.increment(item == null ? 0 : 100);
     }
 
     // the per-access log only gets updated when cache or perf debug logging is on

@@ -5,6 +5,9 @@
 
 package com.zimbra.cs.pop3;
 
+import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
+
+import io.micrometer.core.instrument.Gauge;
 import java.util.Map;
 
 import org.apache.mina.core.session.IoSession;
@@ -30,6 +33,13 @@ public final class NioPop3Server extends NioServer implements Pop3Server, Realti
 
     public NioPop3Server(Pop3Config config) throws ServiceException {
         super(config);
+        if (config.isSslEnabled()) {
+            Gauge.builder(ZimbraPerf.RTS_POP_SSL_THREADS, this::getNumConnections).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_POP_SSL_CONN, this::getNumThreads).register(METER_REGISTRY);
+        } else {
+            Gauge.builder(ZimbraPerf.RTS_POP_THREADS, this::getNumThreads).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_POP_CONN, this::getNumConnections).register(METER_REGISTRY);
+        }
         registerMBean(getName());
         ZimbraPerf.addStatsCallback(this);
         ServerThrottle.configureThrottle(config.getProtocol(), LC.pop3_throttle_ip_limit.intValue(), LC.pop3_throttle_acct_limit.intValue(), getThrottleSafeHosts(), getThrottleWhitelist());
