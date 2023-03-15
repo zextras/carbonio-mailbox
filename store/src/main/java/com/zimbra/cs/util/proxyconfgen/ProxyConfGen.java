@@ -93,7 +93,7 @@ public class ProxyConfGen {
   private static Provisioning mProv = null;
   private static boolean mGenConfPerVhn = false;
   private static boolean hasCustomTemplateLocationArg = false;
-  private static final String CERTBOT_WORKING_DIR = "/common/etc/letsencrypt/live/";
+  private static final String CERTBOT_WORKING_DIR = "/common/certbot/etc/letsencrypt/live";
   private static final String CERT = "/fullchain.pem";
   private static final String KEY = "/privkey.pem";
 
