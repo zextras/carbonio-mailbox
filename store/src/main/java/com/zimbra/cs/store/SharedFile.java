@@ -8,13 +8,11 @@
  */
 package com.zimbra.cs.store;
 
-import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
-
-import com.zimbra.cs.stats.ZimbraPerf;
-import io.micrometer.core.instrument.Counter;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
+import com.zimbra.cs.stats.ZimbraPerf;
 
 /**
  * Synchronized container for a <tt>RandomAccessFile</tt> object.  Used by multiple
@@ -25,12 +23,6 @@ public class SharedFile {
     private File mFile;
     private RandomAccessFile mRAF;
     private long mPos = 0;
-
-    // Metrics
-    private static final Counter BLOB_INPUT_STREAM_READ_COUNTER =
-        METER_REGISTRY.counter(ZimbraPerf.DC_BIS_READ);
-    private static final Counter BLOB_INPUT_STREAM_SEEK_RATE_COUNTER =
-        METER_REGISTRY.counter(ZimbraPerf.DC_BIS_SEEK_RATE);
     
     /**
      * Keep track of the number of threads that are reading from this file.
@@ -82,13 +74,10 @@ public class SharedFile {
         
         if (seeked) {
             ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_SEEK_RATE.increment(100);
-            BLOB_INPUT_STREAM_SEEK_RATE_COUNTER.increment(100);
         } else {
             ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_SEEK_RATE.increment(0);
-            BLOB_INPUT_STREAM_SEEK_RATE_COUNTER.increment(0);
         }
         ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_READ.increment();
-        BLOB_INPUT_STREAM_READ_COUNTER.increment(0);
         return numRead;
     }
     
