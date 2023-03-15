@@ -23,6 +23,9 @@ import io.prometheus.client.CollectorRegistry;
 public class Metrics {
   public static final CollectorRegistry COLLECTOR_REGISTRY = new CollectorRegistry();
 
+  /**
+   * Binds a Prometheus-compatible registry to the registry
+   */
   public static final MeterRegistry METER_REGISTRY =
       new PrometheusMeterRegistry(PrometheusConfig.DEFAULT, COLLECTOR_REGISTRY, Clock.SYSTEM);
 }
