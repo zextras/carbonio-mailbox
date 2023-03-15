@@ -54,7 +54,7 @@ postinst() {
 
   usermod -a -G 'carbonio-mailbox' 'zextras'
 
-  # Copy token old token. This way services using new token can be restarted and use the new one
+  # Copy old token. This way services using new token can be restarted and use the new one
   # without the need of running pending-setups before
   if [ -f /etc/zextras/carbonio-mailbox/token ]; then
     cp /etc/zextras/carbonio-mailbox/token /etc/carbonio/mailbox/service-discover/token
