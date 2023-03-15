@@ -5,8 +5,6 @@
 
 package com.zimbra.cs.mailbox.calendar.cache;
 
-import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
-
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.localconfig.LC;
@@ -36,7 +34,6 @@ import com.zimbra.cs.session.PendingLocalModifications;
 import com.zimbra.cs.session.PendingModifications.Change;
 import com.zimbra.cs.session.PendingModifications.ModificationKey;
 import com.zimbra.cs.stats.ZimbraPerf;
-import io.micrometer.core.instrument.Counter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -91,15 +88,6 @@ public class CalSummaryCache {
   private static final int S_MAX_STALE_ITEMS_BEFORE_INVALIDATING_CALENDAR;
   private static final int S_MAX_SEARCH_DAYS;
   private static final long MSEC_PER_DAY = 1000 * 60 * 60 * 24;
-
-  // Metrics
-  // TODO: METER_REGISTRY should be an injected instance
-  private static final Counter CALENDAR_CACHE_HIT_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_CALCACHE_HIT);
-  private static final Counter CALENDAR_CACHE_MEM_HIT_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_CALCACHE_MEM_HIT);
-  private static final Counter CALENDAR_LRU_SIZE_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_CALCACHE_LRU_SIZE);
 
   static {
     S_RANGE_MONTH_FROM = LC.calendar_cache_range_month_from.intValue();
@@ -462,8 +450,6 @@ public class CalSummaryCache {
     if (!LC.calendar_cache_enabled.booleanValue()) {
       ZimbraPerf.COUNTER_CALENDAR_CACHE_HIT.increment(0);
       ZimbraPerf.COUNTER_CALENDAR_CACHE_MEM_HIT.increment(0);
-      CALENDAR_CACHE_HIT_COUNTER.increment(0);
-      CALENDAR_CACHE_MEM_HIT_COUNTER.increment(0);
       if (!targetAcctOnLocalServer) return null;
       Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(targetAcct);
       Folder folder = mbox.getFolderById(octxt, folderId);
@@ -509,8 +495,6 @@ public class CalSummaryCache {
     if (calData != null) {
       ZimbraPerf.COUNTER_CALENDAR_CACHE_HIT.increment(1);
       ZimbraPerf.COUNTER_CALENDAR_CACHE_MEM_HIT.increment(1);
-      CALENDAR_CACHE_HIT_COUNTER.increment(1);
-      CALENDAR_CACHE_MEM_HIT_COUNTER.increment(1);
       result.data = calData;
       if (ZimbraLog.calendar.isDebugEnabled()) {
         ZimbraLog.calendar.debug(
@@ -663,25 +647,18 @@ public class CalSummaryCache {
       case MEMCACHED:
         ZimbraPerf.COUNTER_CALENDAR_CACHE_HIT.increment(1);
         ZimbraPerf.COUNTER_CALENDAR_CACHE_MEM_HIT.increment(1);
-        CALENDAR_CACHE_HIT_COUNTER.increment(1);
-        CALENDAR_CACHE_MEM_HIT_COUNTER.increment(1);
         break;
       case FILE:
         ZimbraPerf.COUNTER_CALENDAR_CACHE_HIT.increment(1);
         ZimbraPerf.COUNTER_CALENDAR_CACHE_MEM_HIT.increment(0);
-        CALENDAR_CACHE_HIT_COUNTER.increment(1);
-        CALENDAR_CACHE_MEM_HIT_COUNTER.increment(0);
         break;
       case MISS:
       default:
         ZimbraPerf.COUNTER_CALENDAR_CACHE_HIT.increment(0);
         ZimbraPerf.COUNTER_CALENDAR_CACHE_MEM_HIT.increment(0);
-        CALENDAR_CACHE_HIT_COUNTER.increment(0);
-        CALENDAR_CACHE_MEM_HIT_COUNTER.increment(0);
         break;
     }
     ZimbraPerf.COUNTER_CALENDAR_CACHE_LRU_SIZE.increment(lruSize);
-    CALENDAR_LRU_SIZE_COUNTER.increment(lruSize);
 
     if (ZimbraLog.calendar.isDebugEnabled()) {
       ZimbraLog.calendar.debug(
