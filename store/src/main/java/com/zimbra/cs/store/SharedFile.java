@@ -8,6 +8,7 @@
  */
 package com.zimbra.cs.store;
 
+import com.zextras.mailbox.metric.Metrics;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -74,10 +75,13 @@ public class SharedFile {
         
         if (seeked) {
             ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_SEEK_RATE.increment(100);
+            Metrics.BLOB_INPUT_STREAM_SEEK_RATE_COUNTER.increment(100);
         } else {
             ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_SEEK_RATE.increment(0);
+            Metrics.BLOB_INPUT_STREAM_SEEK_RATE_COUNTER.increment(0);
         }
         ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_READ.increment();
+        Metrics.BLOB_INPUT_STREAM_READ_COUNTER.increment(0);
         return numRead;
     }
     

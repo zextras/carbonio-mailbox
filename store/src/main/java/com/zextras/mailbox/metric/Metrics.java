@@ -41,7 +41,7 @@ public class Metrics {
   public static final Counter CALENDAR_LRU_SIZE_COUNTER =
       METER_REGISTRY.counter(ZimbraPerf.DC_CALCACHE_LRU_SIZE);
 
-  // Lucene
+  // Lucene (not used for some reason)
   public static final Counter IDX_WRT_OPENED_COUNTER =
       METER_REGISTRY.counter(ZimbraPerf.DC_IDX_WRT_OPENED);
   public static final Counter IDX_BYTES_READ_COUNTER =
@@ -52,9 +52,9 @@ public class Metrics {
       METER_REGISTRY.counter(ZimbraPerf.DC_IDX_WRT_OPENED_CACHE_HIT);
 
   // Files
-  public static final Counter BLOB_INPUT_STREAM_COUNTER =
+  public static final Counter BLOB_INPUT_STREAM_READ_COUNTER =
       METER_REGISTRY.counter(ZimbraPerf.DC_BIS_READ);
-  public static final Counter BLOB_SEEK_RATE_COUNTER =
+  public static final Counter BLOB_INPUT_STREAM_SEEK_RATE_COUNTER =
       METER_REGISTRY.counter(ZimbraPerf.DC_BIS_SEEK_RATE);
 
   // Timers aka STOPWATCH
@@ -69,4 +69,10 @@ public class Metrics {
 
   // LDAP
   public static final Timer LDAP_REQUEST_TIMER = METER_REGISTRY.timer("ldap_exec_ms");
+
+  // Threads and connections
+  public static final Integer POP_CONN = METER_REGISTRY.gauge(ZimbraPerf.RTS_POP_CONN, 0);
+  public static final Integer POP_THREADS = METER_REGISTRY.gauge(ZimbraPerf.RTS_POP_THREADS, 0);
+  public static final Integer POP_SSL_CONN = METER_REGISTRY.gauge(ZimbraPerf.RTS_POP_SSL_CONN, 0);
+  public static final Integer POP_SSL_THREADS = METER_REGISTRY.gauge(ZimbraPerf.RTS_POP_SSL_THREADS, 0);
 }
