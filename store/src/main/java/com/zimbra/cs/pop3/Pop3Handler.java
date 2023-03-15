@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.pop3;
 
+import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
+
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -24,12 +26,14 @@ import com.zimbra.cs.security.sasl.AuthenticatorUser;
 import com.zimbra.cs.security.sasl.PlainAuthenticator;
 import com.zimbra.cs.server.ServerThrottle;
 import com.zimbra.cs.stats.ZimbraPerf;
+import io.micrometer.core.instrument.Timer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -44,6 +48,8 @@ abstract class Pop3Handler {
   private static final String TERMINATOR = ".";
   private static final int TERMINATOR_C = '.';
   private static final byte[] TERMINATOR_BYTE = {'.'};
+
+  private static final Timer POP_REQUEST_TIMER = METER_REGISTRY.timer("pop_exec_ms");
 
   // Connection specific data
   final Pop3Config config;
@@ -134,6 +140,7 @@ abstract class Pop3Handler {
       // Track stats if the command completed successfully
       if (startTime > 0) {
         long elapsed = ZimbraPerf.STOPWATCH_POP.stop(startTime);
+        POP_REQUEST_TIMER.record(elapsed, TimeUnit.MILLISECONDS);
         if (command != null) {
           ZimbraPerf.POP_TRACKER.addStat(command.toUpperCase(), startTime);
           ZimbraPerf.POP_TRACKER_PROMETHEUS.addStat(command.toUpperCase(), startTime);
