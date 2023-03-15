@@ -15,23 +15,19 @@ import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.prometheus.client.CollectorRegistry;
 
+/**
+ * Defines registry for metrics.
+ * It is used mainly because other Servlets and classes do not have injection, otherwise
+ * {@link this#COLLECTOR_REGISTRY} would have been an injected instance.
+ *
+ * @since 23.4.0
+ * @author davidefrison
+ */
 public class Metrics {
   public static final CollectorRegistry COLLECTOR_REGISTRY = new CollectorRegistry();
 
   public static final MeterRegistry METER_REGISTRY =
       new PrometheusMeterRegistry(PrometheusConfig.DEFAULT, COLLECTOR_REGISTRY, Clock.SYSTEM);
-
-  // LMTP
-  public static final Counter LMTP_DLVD_BYTES_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_DLVD_BYTES);
-  public static final Counter LMTP_DLVD_MSGS_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_DLVD_MSGS);
-  public static final Counter LMTP_RCVD_BYTES_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_RCVD_BYTES);
-  public static final Counter LMTP_RCVD_MSGS_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_RCVD_MSGS);
-  public static final Counter LMTP_RCVD_RCPT_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_RCVD_RCPT);
 
   // Lucene (not used for some reason)
   public static final Counter IDX_WRT_OPENED_COUNTER =
