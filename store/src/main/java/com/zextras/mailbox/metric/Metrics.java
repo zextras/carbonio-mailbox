@@ -33,14 +33,6 @@ public class Metrics {
   public static final Counter LMTP_RCVD_RCPT_COUNTER =
       METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_RCVD_RCPT);
 
-  // Calendar
-  public static final Counter CALENDAR_CACHE_HIT_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_CALCACHE_HIT);
-  public static final Counter CALENDAR_CACHE_MEM_HIT_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_CALCACHE_MEM_HIT);
-  public static final Counter CALENDAR_LRU_SIZE_COUNTER =
-      METER_REGISTRY.counter(ZimbraPerf.DC_CALCACHE_LRU_SIZE);
-
   // Lucene (not used for some reason)
   public static final Counter IDX_WRT_OPENED_COUNTER =
       METER_REGISTRY.counter(ZimbraPerf.DC_IDX_WRT_OPENED);
@@ -71,8 +63,4 @@ public class Metrics {
   public static final Timer LDAP_REQUEST_TIMER = METER_REGISTRY.timer("ldap_exec_ms");
 
   // Threads and connections
-  public static final Integer POP_CONN = METER_REGISTRY.gauge(ZimbraPerf.RTS_POP_CONN, 0);
-  public static final Integer POP_THREADS = METER_REGISTRY.gauge(ZimbraPerf.RTS_POP_THREADS, 0);
-  public static final Integer POP_SSL_CONN = METER_REGISTRY.gauge(ZimbraPerf.RTS_POP_SSL_CONN, 0);
-  public static final Integer POP_SSL_THREADS = METER_REGISTRY.gauge(ZimbraPerf.RTS_POP_SSL_THREADS, 0);
 }
