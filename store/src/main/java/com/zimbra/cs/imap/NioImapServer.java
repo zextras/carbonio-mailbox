@@ -5,6 +5,9 @@
 
 package com.zimbra.cs.imap;
 
+import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
+
+import io.micrometer.core.instrument.Gauge;
 import java.util.Map;
 
 import org.apache.mina.core.session.IoSession;
@@ -29,6 +32,13 @@ public final class NioImapServer extends NioServer implements ImapServer, Realti
 
     public NioImapServer(ImapConfig config) throws ServiceException {
         super(config);
+        if (config.isSslEnabled()) {
+            Gauge.builder(ZimbraPerf.RTS_IMAP_SSL_THREADS, this::getNumConnections).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_IMAP_SSL_CONN, this::getNumThreads).register(METER_REGISTRY);
+        } else {
+            Gauge.builder(ZimbraPerf.RTS_IMAP_THREADS, this::getNumThreads).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_IMAP_CONN, this::getNumConnections).register(METER_REGISTRY);
+        }
         decoder = new NioImapDecoder(config);
         registerMBean(getName());
         ZimbraPerf.addStatsCallback(this);
