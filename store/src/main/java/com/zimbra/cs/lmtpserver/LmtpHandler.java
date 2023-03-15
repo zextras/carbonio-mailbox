@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.lmtpserver;
 
+import com.zextras.mailbox.metric.Metrics;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Date;
@@ -449,6 +450,9 @@ public abstract class LmtpHandler extends ProtocolHandler {
         ZimbraPerf.COUNTER_LMTP_RCVD_MSGS.increment();
         ZimbraPerf.COUNTER_LMTP_RCVD_BYTES.increment(size);
         ZimbraPerf.COUNTER_LMTP_RCVD_RCPT.increment(numRecipients);
+        Metrics.LMTP_RCVD_BYTES_COUNTER.increment();
+        Metrics.LMTP_DLVD_MSGS_COUNTER.increment();
+        Metrics.LMTP_RCVD_RCPT_COUNTER.increment(numRecipients);
 
         int numDelivered = 0;
         for (LmtpAddress recipient : mEnvelope.getRecipients()) {
@@ -461,6 +465,8 @@ public abstract class LmtpHandler extends ProtocolHandler {
 
         ZimbraPerf.COUNTER_LMTP_DLVD_MSGS.increment(numDelivered);
         ZimbraPerf.COUNTER_LMTP_DLVD_BYTES.increment(numDelivered * size);
+        Metrics.LMTP_DLVD_MSGS_COUNTER.increment(numDelivered);
+        Metrics.LMTP_DLVD_BYTES_COUNTER.increment(numDelivered*size);
 
         reset();
     }

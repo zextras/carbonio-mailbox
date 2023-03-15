@@ -8,6 +8,7 @@ package com.zextras.mailbox.servlet;
 
 import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
+import com.zextras.mailbox.metric.Metrics;
 import com.zextras.mailbox.metric.SoapCollector;
 import io.prometheus.client.Collector;
 import io.prometheus.client.CollectorRegistry;
@@ -58,7 +59,7 @@ public class MetricsServletModule extends ServletModule {
   @Singleton
   public CollectorRegistry provideCollector(@Named("SoapCollector") Collector soapCollector) {
     // TODO: it would be nice to get all collectors and register them programmatically
-    final CollectorRegistry metricRegistry = new CollectorRegistry();
+    final CollectorRegistry metricRegistry = Metrics.COLLECTOR_REGISTRY;
     DefaultExports.register(metricRegistry);
     metricRegistry.register(soapCollector);
     return metricRegistry;
