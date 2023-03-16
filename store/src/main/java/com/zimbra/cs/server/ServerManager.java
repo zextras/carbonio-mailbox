@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.server;
 
+import com.zextras.mailbox.metric.Metrics;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
@@ -92,7 +93,7 @@ public final class ServerManager {
     private ImapServer startImapServer(boolean ssl) throws ServiceException {
         ImapConfig config = new ImapConfig(ssl);
         ImapServer server = NIO_ENABLED || LC.nio_imap_enabled.booleanValue() ?
-            new NioImapServer(config) : new TcpImapServer(config);
+            new NioImapServer(config, Metrics.METER_REGISTRY) : new TcpImapServer(config, Metrics.METER_REGISTRY);
         server.start();
         return server;
     }

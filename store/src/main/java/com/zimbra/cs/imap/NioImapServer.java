@@ -8,6 +8,7 @@ package com.zimbra.cs.imap;
 import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
 
 import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.util.Map;
 
 import org.apache.mina.core.session.IoSession;
@@ -30,14 +31,14 @@ import com.zimbra.cs.stats.ZimbraPerf;
 public final class NioImapServer extends NioServer implements ImapServer, RealtimeStatsCallback {
     private final NioImapDecoder decoder;
 
-    public NioImapServer(ImapConfig config) throws ServiceException {
+    public NioImapServer(ImapConfig config, MeterRegistry meterRegistry) throws ServiceException {
         super(config);
         if (config.isSslEnabled()) {
-            Gauge.builder(ZimbraPerf.RTS_IMAP_SSL_THREADS, this::getNumConnections).register(METER_REGISTRY);
-            Gauge.builder(ZimbraPerf.RTS_IMAP_SSL_CONN, this::getNumThreads).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_IMAP_SSL_THREADS, this::getNumConnections).register(meterRegistry);
+            Gauge.builder(ZimbraPerf.RTS_IMAP_SSL_CONN, this::getNumThreads).register(meterRegistry);
         } else {
-            Gauge.builder(ZimbraPerf.RTS_IMAP_THREADS, this::getNumThreads).register(METER_REGISTRY);
-            Gauge.builder(ZimbraPerf.RTS_IMAP_CONN, this::getNumConnections).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_IMAP_THREADS, this::getNumThreads).register(meterRegistry);
+            Gauge.builder(ZimbraPerf.RTS_IMAP_CONN, this::getNumConnections).register(meterRegistry);
         }
         decoder = new NioImapDecoder(config);
         registerMBean(getName());
