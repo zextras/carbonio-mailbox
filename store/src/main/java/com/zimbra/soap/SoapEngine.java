@@ -5,6 +5,8 @@
 
 package com.zimbra.soap;
 
+import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
+
 import com.google.common.base.Strings;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -51,6 +53,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLInputFactory;
@@ -677,8 +680,12 @@ public class SoapEngine {
           handler.logAuditAccess(at.getAdminAccountId(), acctId, acctId);
         }
         response = handler.handle(soapReqElem, context);
-        ZimbraPerf.SOAP_TRACKER.addStat(getStatName(soapReqElem), startTime);
-        ZimbraPerf.SOAP_TRACKER_PROMETHEUS.addStat(getStatName(soapReqElem), startTime);
+        final String statName = getStatName(soapReqElem);
+        long elapsed = System.currentTimeMillis() - startTime;
+        ZimbraPerf.SOAP_TRACKER.addStat(statName, startTime);
+        ZimbraPerf.SOAP_TRACKER_PROMETHEUS.addStat(statName, startTime);
+        METER_REGISTRY.timer("soap_exec", "command", statName)
+            .record(elapsed, TimeUnit.MILLISECONDS);
         long duration = System.currentTimeMillis() - startTime;
         if (LC.zimbra_slow_logging_enabled.booleanValue()
             && duration > LC.zimbra_slow_logging_threshold.longValue()

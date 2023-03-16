@@ -13,7 +13,6 @@ import com.zimbra.cs.server.NioConnection;
 import com.zimbra.cs.server.NioHandler;
 import com.zimbra.cs.server.NioOutputStream;
 import com.zimbra.cs.stats.ZimbraPerf;
-import io.micrometer.core.instrument.Timer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +23,6 @@ final class NioImapHandler extends ImapHandler implements NioHandler {
   private final ImapConfig config;
   private final NioConnection connection;
   private NioImapRequest request;
-  private final Timer imapRequestTimer = METER_REGISTRY.timer("imap_exec_ms");
 
   NioImapHandler(NioImapServer server, NioConnection conn) {
     super(server.getConfig());
@@ -133,8 +131,9 @@ final class NioImapHandler extends ImapHandler implements NioHandler {
       }
     } finally {
       long elapsed = ZimbraPerf.STOPWATCH_IMAP.stop(start);
-      imapRequestTimer.record(elapsed, TimeUnit.MILLISECONDS);
       if (lastCommand != null) {
+        METER_REGISTRY.timer("imap_exec_ms", "command", lastCommand.toUpperCase())
+            .record(elapsed, TimeUnit.MILLISECONDS);
         ZimbraPerf.IMAP_TRACKER.addStat(lastCommand.toUpperCase(), start);
         ZimbraPerf.IMAP_TRACKER_PROMETHEUS.addStat(lastCommand.toUpperCase(), start);
 
