@@ -5,8 +5,6 @@
 
 package com.zimbra.soap;
 
-import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
-
 import com.google.common.base.Strings;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -49,6 +47,8 @@ import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.BuildInfo;
 import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.ZimbraSoapContext.SessionInfo;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,8 +98,10 @@ public class SoapEngine {
   public static final String ORIG_REQUEST_USER_AGENT = "orig.request.user.agent";
 
   private final DocumentDispatcher dispatcher = new DocumentDispatcher();
+  private final MeterRegistry meterRegistry;
 
-  SoapEngine() {
+  SoapEngine(MeterRegistry meterRegistry) {
+    this.meterRegistry = meterRegistry;
     SoapTransport.setDefaultUserAgent(SoapTransport.DEFAULT_USER_AGENT_NAME, BuildInfo.VERSION);
   }
 
@@ -684,8 +686,9 @@ public class SoapEngine {
         long elapsed = System.currentTimeMillis() - startTime;
         ZimbraPerf.SOAP_TRACKER.addStat(statName, startTime);
         ZimbraPerf.SOAP_TRACKER_PROMETHEUS.addStat(statName, startTime);
-        METER_REGISTRY.timer("soap_exec", "command", statName)
-            .record(elapsed, TimeUnit.MILLISECONDS);
+        Timer.builder("soap_exec")
+            .description("Soap API execution time")
+            .tags("command", statName).register(meterRegistry).record(elapsed, TimeUnit.MILLISECONDS);
         long duration = System.currentTimeMillis() - startTime;
         if (LC.zimbra_slow_logging_enabled.booleanValue()
             && duration > LC.zimbra_slow_logging_threshold.longValue()

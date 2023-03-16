@@ -52,7 +52,7 @@ public final class NioImapServer extends NioServer implements ImapServer, Realti
 
     @Override
     public NioHandler createHandler(NioConnection conn) {
-        return new NioImapHandler(this, conn);
+        return new NioImapHandler(this, conn, METER_REGISTRY);
     }
 
     @Override

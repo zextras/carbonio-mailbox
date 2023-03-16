@@ -5,8 +5,11 @@
 
 package com.zimbra.soap;
 
+import com.zextras.mailbox.metric.Metrics;
+
 public class MockSoapEngine extends SoapEngine {
     public MockSoapEngine(DocumentService service) {
+        super(Metrics.METER_REGISTRY);
         service.registerHandlers(getDocumentDispatcher());
     }
 }

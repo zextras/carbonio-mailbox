@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.imap;
 
+import com.zextras.mailbox.metric.Metrics;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -349,7 +350,7 @@ final class ImapURL {
     public static void main(String[] args) throws ImapParseException, ServiceException, IOException {
         Account acct = Provisioning.getInstance().get(AccountBy.name, "user1@macbeth.liquidsys.com");
         ImapCredentials creds = new ImapCredentials(acct, ImapCredentials.EnabledHack.NONE);
-        ImapHandler handler = new TcpImapHandler(null).setCredentials(creds);
+        ImapHandler handler = new TcpImapHandler(null, Metrics.METER_REGISTRY).setCredentials(creds);
         handler.setSelectedFolder(new ImapPath("trash", creds), (byte) 0);
 
         System.out.println(new ImapURL("tag", handler, "/Drafts;UIDVALIDITY=385759045/;UID=20/;section=HEADER"));

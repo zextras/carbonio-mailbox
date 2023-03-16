@@ -40,7 +40,7 @@ public final class TcpImapServer extends TcpServer implements ImapServer, Realti
 
     @Override
     protected ProtocolHandler newProtocolHandler() {
-        return new TcpImapHandler(this);
+        return new TcpImapHandler(this, METER_REGISTRY);
     }
 
     @Override
