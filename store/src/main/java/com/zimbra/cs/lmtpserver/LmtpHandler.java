@@ -462,8 +462,8 @@ public abstract class LmtpHandler extends ProtocolHandler {
         ZimbraPerf.COUNTER_LMTP_RCVD_MSGS.increment();
         ZimbraPerf.COUNTER_LMTP_RCVD_BYTES.increment(size);
         ZimbraPerf.COUNTER_LMTP_RCVD_RCPT.increment(numRecipients);
-        LMTP_RCVD_BYTES_COUNTER.increment();
         LMTP_DLVD_MSGS_COUNTER.increment();
+        LMTP_RCVD_BYTES_COUNTER.increment(size);
         LMTP_RCVD_RCPT_COUNTER.increment(numRecipients);
 
         int numDelivered = 0;
@@ -478,7 +478,7 @@ public abstract class LmtpHandler extends ProtocolHandler {
         ZimbraPerf.COUNTER_LMTP_DLVD_MSGS.increment(numDelivered);
         ZimbraPerf.COUNTER_LMTP_DLVD_BYTES.increment(numDelivered * size);
         LMTP_DLVD_MSGS_COUNTER.increment(numDelivered);
-        LMTP_DLVD_BYTES_COUNTER.increment(numDelivered*size);
+        LMTP_DLVD_BYTES_COUNTER.increment(numDelivered * size);
 
         reset();
     }
