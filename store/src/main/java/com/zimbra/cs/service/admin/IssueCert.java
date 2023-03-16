@@ -96,7 +96,7 @@ public class IssueCert extends AdminDocumentHandler {
             publicServiceHostname,
             virtualHostNames);
 
-    certbot.supplyAsync(zsc, context, domain, command);
+    certbot.supplyAsync(domain, command);
 
     Element response = zsc.createElement(AdminConstants.ISSUE_CERT_RESPONSE);
 
