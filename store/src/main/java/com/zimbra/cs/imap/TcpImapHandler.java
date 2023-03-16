@@ -15,7 +15,6 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.server.ProtocolHandler;
 import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.util.IOUtil;
-import io.micrometer.core.instrument.Timer;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,7 +32,6 @@ final class TcpImapHandler extends ProtocolHandler {
   private final ImapConfig config;
   private Socket socket;
   private final HandlerDelegate delegate;
-  private final Timer imapRequestTimer = METER_REGISTRY.timer("imap_exec_ms");
 
   TcpImapHandler(TcpImapServer server) {
     super(server);
@@ -109,11 +107,12 @@ final class TcpImapHandler extends ProtocolHandler {
       // FIXME Shouldn't we do these before executing the request??
       setIdle(false);
       long elapsed = ZimbraPerf.STOPWATCH_IMAP.stop(start);
-      imapRequestTimer.record(elapsed, TimeUnit.MILLISECONDS);
       if (delegate.lastCommand != null) {
         ZimbraLog.imap.info("%s elapsed=%d (TCP)", delegate.lastCommand.toUpperCase(), elapsed);
         ZimbraPerf.IMAP_TRACKER.addStat(delegate.lastCommand.toUpperCase(), start);
         ZimbraPerf.IMAP_TRACKER_PROMETHEUS.addStat(delegate.lastCommand.toUpperCase(), start);
+        METER_REGISTRY.timer("imap_exec", "command", delegate.lastCommand.toUpperCase())
+            .record(elapsed, TimeUnit.MILLISECONDS);
       } else {
         ZimbraLog.imap.info("(unknown) elapsed=%d (TCP)", elapsed);
       }
