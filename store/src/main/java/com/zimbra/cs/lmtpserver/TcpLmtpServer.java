@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.lmtpserver;
 
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,9 +19,11 @@ import com.zimbra.cs.server.TcpServer;
 import com.zimbra.cs.stats.ZimbraPerf;
 
 public final class TcpLmtpServer extends TcpServer implements LmtpServer, RealtimeStatsCallback {
-    public TcpLmtpServer(LmtpConfig config) throws ServiceException {
+    public TcpLmtpServer(LmtpConfig config, MeterRegistry meterRegistry) throws ServiceException {
         super(config);
         ZimbraPerf.addStatsCallback(this);
+        Gauge.builder(ZimbraPerf.RTS_LMTP_THREADS, this::numThreads).register(meterRegistry);
+        Gauge.builder(ZimbraPerf.RTS_LMTP_CONN, this::numActiveHandlers).register(meterRegistry);
         ServerThrottle.configureThrottle(config.getProtocol(), LC.lmtp_throttle_ip_limit.intValue(), 0, getThrottleSafeHosts(), getThrottleWhitelist());
     }
 

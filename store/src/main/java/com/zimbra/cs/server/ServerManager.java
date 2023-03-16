@@ -77,7 +77,7 @@ public final class ServerManager {
 
     private LmtpServer startLmtpServer() throws ServiceException {
         LmtpConfig config = LmtpConfig.getInstance();
-        LmtpServer server = new TcpLmtpServer(config);
+        LmtpServer server = new TcpLmtpServer(config, Metrics.METER_REGISTRY);
         server.start();
         return server;
     }
