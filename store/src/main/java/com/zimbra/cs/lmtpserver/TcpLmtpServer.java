@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.lmtpserver;
 
+import com.zextras.mailbox.metric.Metrics;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public final class TcpLmtpServer extends TcpServer implements LmtpServer, Realti
 
     @Override
     protected ProtocolHandler newProtocolHandler() {
-        return new TcpLmtpHandler(this);
+        return new TcpLmtpHandler(this, Metrics.METER_REGISTRY);
     }
 
     @Override

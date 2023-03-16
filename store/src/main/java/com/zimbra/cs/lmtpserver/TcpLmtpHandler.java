@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.lmtpserver;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -18,8 +19,8 @@ import com.zimbra.common.util.ZimbraLog;
 public class TcpLmtpHandler extends LmtpHandler {
     private TcpServerInputStream inputStream;
 
-    TcpLmtpHandler(LmtpServer server) {
-        super(server);
+    TcpLmtpHandler(LmtpServer server, MeterRegistry meterRegistry) {
+        super(server, meterRegistry);
     }
 
     @Override

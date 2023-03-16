@@ -5,8 +5,6 @@
 
 package com.zimbra.cs.lmtpserver;
 
-import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.StringUtil;
@@ -16,6 +14,7 @@ import com.zimbra.cs.server.ProtocolHandler;
 import com.zimbra.cs.server.ServerThrottle;
 import com.zimbra.cs.stats.ZimbraPerf;
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Date;
@@ -30,17 +29,11 @@ public abstract class LmtpHandler extends ProtocolHandler {
     protected String mRemoteHostname;
     private String mLhloArg;
 
-    // Metrics
-    private static final Counter LMTP_DLVD_BYTES_COUNTER =
-        METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_DLVD_BYTES);
-    private static final Counter LMTP_DLVD_MSGS_COUNTER =
-        METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_DLVD_MSGS);
-    private static final Counter LMTP_RCVD_BYTES_COUNTER =
-        METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_RCVD_BYTES);
-    private static final Counter LMTP_RCVD_MSGS_COUNTER =
-        METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_RCVD_MSGS);
-    private static final Counter LMTP_RCVD_RCPT_COUNTER =
-        METER_REGISTRY.counter(ZimbraPerf.DC_LMTP_RCVD_RCPT);
+    protected final String LMTP_RCVD_MSGS = "lmtp_rcvd_msgs";
+    protected final String LMTP_RCVD_BYTES = "lmtp_rcvd_bytes";
+    protected final String LMTP_RCVD_RCPT = "lmtp_rcvd_rcpt";
+    protected final String LMTP_DLVD_BYTES = "lmtp_dlvd_bytes";
+    protected final String LMTP_DLVD_MSGS = "lmtp_dlvd_msgs";
 
     // Message specific data
     protected LmtpEnvelope mEnvelope;
@@ -50,9 +43,11 @@ public abstract class LmtpHandler extends ProtocolHandler {
     protected boolean lhloIssued;
     protected boolean startedTLS;
     protected boolean lhloIssuedAfterStartTLS;
+    protected final MeterRegistry meterRegistry;
 
-    LmtpHandler(LmtpServer server) {
+    LmtpHandler(LmtpServer server, MeterRegistry meterRegistry) {
         super(server instanceof TcpLmtpServer ? (TcpLmtpServer) server : null);
+        this.meterRegistry = meterRegistry;
         config = server.getConfig();
         throttle = ServerThrottle.getThrottle(config.getProtocol());
     }
@@ -462,9 +457,9 @@ public abstract class LmtpHandler extends ProtocolHandler {
         ZimbraPerf.COUNTER_LMTP_RCVD_MSGS.increment();
         ZimbraPerf.COUNTER_LMTP_RCVD_BYTES.increment(size);
         ZimbraPerf.COUNTER_LMTP_RCVD_RCPT.increment(numRecipients);
-        LMTP_DLVD_MSGS_COUNTER.increment();
-        LMTP_RCVD_BYTES_COUNTER.increment(size);
-        LMTP_RCVD_RCPT_COUNTER.increment(numRecipients);
+        Counter.builder(LMTP_RCVD_MSGS).register(meterRegistry).increment();
+        Counter.builder(LMTP_RCVD_BYTES).register(meterRegistry).increment(size);
+        Counter.builder(LMTP_RCVD_RCPT).register(meterRegistry).increment(numRecipients);
 
         int numDelivered = 0;
         for (LmtpAddress recipient : mEnvelope.getRecipients()) {
@@ -477,8 +472,8 @@ public abstract class LmtpHandler extends ProtocolHandler {
 
         ZimbraPerf.COUNTER_LMTP_DLVD_MSGS.increment(numDelivered);
         ZimbraPerf.COUNTER_LMTP_DLVD_BYTES.increment(numDelivered * size);
-        LMTP_DLVD_MSGS_COUNTER.increment(numDelivered);
-        LMTP_DLVD_BYTES_COUNTER.increment(numDelivered * size);
+        Counter.builder(LMTP_DLVD_MSGS).register(meterRegistry).increment(numDelivered);
+        Counter.builder(LMTP_DLVD_BYTES).register(meterRegistry).increment(numDelivered * size);
 
         reset();
     }
