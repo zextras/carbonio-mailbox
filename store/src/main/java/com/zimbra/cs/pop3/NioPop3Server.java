@@ -5,18 +5,6 @@
 
 package com.zimbra.cs.pop3;
 
-import static com.zextras.mailbox.metric.Metrics.METER_REGISTRY;
-
-import io.micrometer.core.instrument.Gauge;
-import java.util.Map;
-
-import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.ProtocolCodecFactory;
-import org.apache.mina.filter.codec.ProtocolDecoder;
-import org.apache.mina.filter.codec.ProtocolEncoder;
-import org.apache.mina.filter.codec.textline.LineDelimiter;
-import org.apache.mina.filter.codec.textline.TextLineDecoder;
-
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.zimbra.common.localconfig.LC;
@@ -27,18 +15,27 @@ import com.zimbra.cs.server.NioHandler;
 import com.zimbra.cs.server.NioServer;
 import com.zimbra.cs.server.ServerThrottle;
 import com.zimbra.cs.stats.ZimbraPerf;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
+import java.util.Map;
+import org.apache.mina.core.session.IoSession;
+import org.apache.mina.filter.codec.ProtocolCodecFactory;
+import org.apache.mina.filter.codec.ProtocolDecoder;
+import org.apache.mina.filter.codec.ProtocolEncoder;
+import org.apache.mina.filter.codec.textline.LineDelimiter;
+import org.apache.mina.filter.codec.textline.TextLineDecoder;
 
 public final class NioPop3Server extends NioServer implements Pop3Server, RealtimeStatsCallback {
     private static final ProtocolDecoder DECODER = new TextLineDecoder(Charsets.ISO_8859_1, LineDelimiter.AUTO);
 
-    public NioPop3Server(Pop3Config config) throws ServiceException {
+    public NioPop3Server(Pop3Config config, MeterRegistry meterRegistry) throws ServiceException {
         super(config);
         if (config.isSslEnabled()) {
-            Gauge.builder(ZimbraPerf.RTS_POP_SSL_THREADS, this::getNumConnections).register(METER_REGISTRY);
-            Gauge.builder(ZimbraPerf.RTS_POP_SSL_CONN, this::getNumThreads).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_POP_SSL_THREADS, this::getNumConnections).register(meterRegistry);
+            Gauge.builder(ZimbraPerf.RTS_POP_SSL_CONN, this::getNumThreads).register(meterRegistry);
         } else {
-            Gauge.builder(ZimbraPerf.RTS_POP_THREADS, this::getNumThreads).register(METER_REGISTRY);
-            Gauge.builder(ZimbraPerf.RTS_POP_CONN, this::getNumConnections).register(METER_REGISTRY);
+            Gauge.builder(ZimbraPerf.RTS_POP_THREADS, this::getNumThreads).register(meterRegistry);
+            Gauge.builder(ZimbraPerf.RTS_POP_CONN, this::getNumConnections).register(meterRegistry);
         }
         registerMBean(getName());
         ZimbraPerf.addStatsCallback(this);
