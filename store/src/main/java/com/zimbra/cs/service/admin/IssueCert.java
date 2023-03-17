@@ -9,6 +9,7 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.generated.AdminRights;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.rmgmt.RemoteCertbot;
 import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteManager;
@@ -96,7 +97,8 @@ public class IssueCert extends AdminDocumentHandler {
             publicServiceHostname,
             virtualHostNames);
 
-    certbot.supplyAsync(domain, command);
+    Mailbox mbox = getRequestedMailbox(zsc);
+    certbot.supplyAsync(mbox, domain, command);
 
     Element response = zsc.createElement(AdminConstants.ISSUE_CERT_RESPONSE);
 

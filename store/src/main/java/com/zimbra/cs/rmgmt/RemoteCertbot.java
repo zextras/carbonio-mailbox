@@ -3,17 +3,13 @@ package com.zimbra.cs.rmgmt;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Domain;
-import com.zimbra.cs.mailclient.smtp.SmtpTransport;
-import com.zimbra.cs.util.JMSession;
+import com.zimbra.cs.mailbox.MailSender;
+import com.zimbra.cs.mailbox.Mailbox;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import javax.mail.Address;
 import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.URLName;
 import javax.mail.internet.MimeMessage;
 
 /**
@@ -86,10 +82,12 @@ public class RemoteCertbot {
    *
    * @param domain domain
    * @param command a command to be executed
+   * @author Yuliya Aheeva
+   * @since 23.4.0
    */
-  public void supplyAsync(Domain domain, String command) {
+  public void supplyAsync(Mailbox mbox, Domain domain, String command) {
     CompletableFuture.supplyAsync(() -> execute(command))
-        .thenAccept(message -> notify(domain, message));
+        .thenAccept(message -> notify(mbox, domain, message));
   }
 
   /**
@@ -113,7 +111,15 @@ public class RemoteCertbot {
     }
   }
 
-  private void notify(Domain domain, String message) {
+  /**
+   * Notifies domain recipients about certificate generation request
+   * @param mbox
+   * @param domain
+   * @param message
+   * @author Yuliya Aheeva
+   * @since 23.4.0
+   */
+  private void notify(Mailbox mbox, Domain domain, String message) {
     ZimbraLog.rmgmt.info(
         "Issuing LetsEncrypt cert command for domain " + domain.getName()
             + " was finished with the following result: " + message);
@@ -123,37 +129,21 @@ public class RemoteCertbot {
       String[] to = Optional.ofNullable(domain.getCarbonioNotificationRecipients())
           .orElseThrow(() -> ServiceException.FAILURE("no to", null));
       String subject = "Let's Encrypt Certificate generation request";
-      String hostname = "127.78.0.7";
 
-      Session session = JMSession.getSmtpSession(domain);
-      session.getProperties().setProperty("mail.smtp.host", hostname);
-      session.getProperties().setProperty("mail.smtp.from", "zextras@demo.zextras.io");
+      MailSender sender = mbox.getMailSender(domain);
 
-      MimeMessage mm = new MimeMessage(session);
+      MimeMessage mm = new MimeMessage(sender.getCurrentSession());
       mm.setText(message);
       mm.setRecipients(RecipientType.TO, "zextras@demo.zextras.io");
       mm.setSubject(subject);
       mm.setFrom();
       mm.saveChanges();
 
-      sendMessage(session, mm);
+      sender.sendMimeMessage(mbox, mm);
 
     } catch (Exception e) {
       ZimbraLog.rmgmt.info("Notification about LetsEncrypt certificate generation wasn't sent "
           + "for the domain " + domain.getName() + ". Sending failure: " + e.getMessage());
-    }
-  }
-
-  private void sendMessage(Session mSession, MimeMessage mm) throws MessagingException {
-    URLName urlName = new URLName("smtp", null, -1, null, null, null);
-    SmtpTransport transport = new SmtpTransport(mSession, urlName);
-    Address[] rcptAddresses = mm.getAllRecipients();
-
-    try {
-      transport.connect();
-      transport.sendMessage(mm, rcptAddresses);
-    } finally {
-      transport.close();
     }
   }
 }

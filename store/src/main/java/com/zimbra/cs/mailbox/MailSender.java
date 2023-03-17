@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zimbra.cs.mailclient.smtp.SmtpTransport;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +26,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.mail.Address;
 import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
 import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.URLName;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -247,6 +250,27 @@ public class MailSender {
     }
 
     /**
+     * Sets an alternate JavaMail <tt>Session</tt> and SMTP hosts
+     * that will be used to send the message based on the domain.
+     * The default behavior is to use SMTP settings from
+     * the <tt>Session<tt> on the {@link MimeMessage}.
+     * @throws ServiceException if not able to get SMTP session for the domain
+     *
+     * @author Yuliya Aheeva
+     * @since 23.4.0
+     */
+    public MailSender setSession(Domain domain) throws ServiceException {
+        try {
+            mSession = JMSession.getSmtpSession(domain);
+        } catch (MessagingException e) {
+            throw ServiceException.FAILURE("Unable to get SMTP session for " + domain, e);
+        }
+        mSmtpHosts.clear();
+        mSmtpHosts.addAll(JMSession.getSmtpHosts(domain));
+        return this;
+    }
+
+    /**
      * Sets JavaMail <tt>Session</tt> using the SMTP settings associated with the data source.
      * @throws ServiceException
      */
@@ -280,6 +304,16 @@ public class MailSender {
     public MailSender setEnvelopeFrom(String address) {
         mEnvelopeFrom = address;
         return this;
+    }
+
+    /**
+     * Returns the current session.
+     * @return mSession
+     * @author Yuliya Aheeva
+     * @since 23.4.0
+     */
+    public Session getCurrentSession() {
+        return this.mSession;
     }
 
     public static int getSentFolderId(Mailbox mbox, Identity identity) throws ServiceException {
@@ -392,6 +426,16 @@ public class MailSender {
         ORIGINAL,  // This is an original message; not a reply or forward.
         REPLY,     // Reply to another message
         FORWARD    // Forwarding another message
+    }
+
+    /**
+     * Sets default member variables and sends the message based on provided mailbox settings.
+     * @author Yuliya Aheeva
+     * @since 23.4.0
+     */
+    public ItemId sendMimeMessage(Mailbox mbox, MimeMessage mm) throws ServiceException {
+        OperationContext octxt = mbox.getOperationContext();
+        return sendMimeMessage(octxt, mbox, mm, null, null, null, null, false, null);
     }
 
     /**
@@ -1231,12 +1275,29 @@ public class MailSender {
         }
         ZimbraLog.smtp.debug("Sending message %s to SMTP host %s with properties: %s",
                              mm.getMessageID(), hostname, mSession.getProperties());
-        Transport transport = mSession.getTransport("smtp");
+
+        Transport transport = getTransport();
+
         try {
             transport.connect();
             transport.sendMessage(mm, rcptAddresses);
         } finally {
             transport.close();
+        }
+    }
+
+    /**
+     * Initialize a new SMTP transport if not able to get one from the mSession.
+     * @return SMTP transport
+     * @author Yuliya Aheeva
+     * @since 23.4.0
+     */
+    private Transport getTransport() {
+        try {
+            return mSession.getTransport("smtp");
+        } catch (NoSuchProviderException e) {
+            URLName urlName = new URLName("smtp", null, -1, null, null, null);
+            return new SmtpTransport(mSession, urlName);
         }
     }
 
