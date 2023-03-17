@@ -26,56 +26,68 @@ import org.apache.mina.filter.codec.textline.LineDelimiter;
 import org.apache.mina.filter.codec.textline.TextLineDecoder;
 
 public final class NioPop3Server extends NioServer implements Pop3Server, RealtimeStatsCallback {
-    private static final ProtocolDecoder DECODER = new TextLineDecoder(Charsets.ISO_8859_1, LineDelimiter.AUTO);
+  private static final ProtocolDecoder DECODER =
+      new TextLineDecoder(Charsets.ISO_8859_1, LineDelimiter.AUTO);
+  private final MeterRegistry meterRegistry;
 
-    public NioPop3Server(Pop3Config config, MeterRegistry meterRegistry) throws ServiceException {
-        super(config);
-        if (config.isSslEnabled()) {
-            Gauge.builder(ZimbraPerf.RTS_POP_SSL_THREADS, this::getNumConnections).register(meterRegistry);
-            Gauge.builder(ZimbraPerf.RTS_POP_SSL_CONN, this::getNumThreads).register(meterRegistry);
-        } else {
-            Gauge.builder(ZimbraPerf.RTS_POP_THREADS, this::getNumThreads).register(meterRegistry);
-            Gauge.builder(ZimbraPerf.RTS_POP_CONN, this::getNumConnections).register(meterRegistry);
-        }
-        registerMBean(getName());
-        ZimbraPerf.addStatsCallback(this);
-        ServerThrottle.configureThrottle(config.getProtocol(), LC.pop3_throttle_ip_limit.intValue(), LC.pop3_throttle_acct_limit.intValue(), getThrottleSafeHosts(), getThrottleWhitelist());
+  public NioPop3Server(Pop3Config config, MeterRegistry meterRegistry) throws ServiceException {
+    super(config);
+    this.meterRegistry = meterRegistry;
+    if (config.isSslEnabled()) {
+      Gauge.builder(ZimbraPerf.RTS_POP_SSL_THREADS, this::getNumConnections)
+          .register(this.meterRegistry);
+      Gauge.builder(ZimbraPerf.RTS_POP_SSL_CONN, this::getNumThreads).register(this.meterRegistry);
+    } else {
+      Gauge.builder(ZimbraPerf.RTS_POP_THREADS, this::getNumThreads).register(this.meterRegistry);
+      Gauge.builder(ZimbraPerf.RTS_POP_CONN, this::getNumConnections).register(this.meterRegistry);
     }
+    registerMBean(getName());
+    ZimbraPerf.addStatsCallback(this);
+    ServerThrottle.configureThrottle(
+        config.getProtocol(),
+        LC.pop3_throttle_ip_limit.intValue(),
+        LC.pop3_throttle_acct_limit.intValue(),
+        getThrottleSafeHosts(),
+        getThrottleWhitelist());
+  }
 
-    @Override
-    public String getName() {
-        return config.isSslEnabled() ? "Pop3SSLServer" : "Pop3Server";
-    }
+  @Override
+  public String getName() {
+    return config.isSslEnabled() ? "Pop3SSLServer" : "Pop3Server";
+  }
 
-    @Override
-    public NioHandler createHandler(NioConnection conn) {
-        return new NioPop3Handler(this, conn);
-    }
+  @Override
+  public NioHandler createHandler(NioConnection conn) {
+    return new NioPop3Handler(this, conn, meterRegistry);
+  }
 
-    @Override
-    protected ProtocolCodecFactory getProtocolCodecFactory() {
-        return new ProtocolCodecFactory() {
-            @Override
-            public ProtocolEncoder getEncoder(IoSession session) throws Exception {
-                return DEFAULT_ENCODER;
-            }
+  @Override
+  protected ProtocolCodecFactory getProtocolCodecFactory() {
+    return new ProtocolCodecFactory() {
+      @Override
+      public ProtocolEncoder getEncoder(IoSession session) throws Exception {
+        return DEFAULT_ENCODER;
+      }
 
-            @Override
-            public ProtocolDecoder getDecoder(IoSession session) {
-                return DECODER;
-            }
-        };
-    }
+      @Override
+      public ProtocolDecoder getDecoder(IoSession session) {
+        return DECODER;
+      }
+    };
+  }
 
-    @Override
-    public Pop3Config getConfig() {
-        return (Pop3Config) super.getConfig();
-    }
+  @Override
+  public Pop3Config getConfig() {
+    return (Pop3Config) super.getConfig();
+  }
 
-    @Override
-    public Map<String, Object> getStatData() {
-        String connStatName = getConfig().isSslEnabled() ? ZimbraPerf.RTS_POP_SSL_CONN : ZimbraPerf.RTS_POP_CONN;
-        String threadStatName = getConfig().isSslEnabled() ? ZimbraPerf.RTS_POP_SSL_THREADS : ZimbraPerf.RTS_POP_THREADS;
-        return ImmutableMap.of(connStatName, (Object) getNumConnections(), threadStatName, getNumThreads());
-    }
+  @Override
+  public Map<String, Object> getStatData() {
+    String connStatName =
+        getConfig().isSslEnabled() ? ZimbraPerf.RTS_POP_SSL_CONN : ZimbraPerf.RTS_POP_CONN;
+    String threadStatName =
+        getConfig().isSslEnabled() ? ZimbraPerf.RTS_POP_SSL_THREADS : ZimbraPerf.RTS_POP_THREADS;
+    return ImmutableMap.of(
+        connStatName, (Object) getNumConnections(), threadStatName, getNumThreads());
+  }
 }
