@@ -54,12 +54,6 @@ postinst() {
 
   usermod -a -G 'carbonio-mailbox' 'zextras'
 
-  # Copy old token. This way services using new token can be restarted and use the new one
-  # without the need of running pending-setups before
-  if [ -f /etc/zextras/carbonio-mailbox/token ]; then
-    cp /etc/zextras/carbonio-mailbox/token /etc/carbonio/mailbox/service-discover/token
-  fi
-
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
     systemctl enable carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
