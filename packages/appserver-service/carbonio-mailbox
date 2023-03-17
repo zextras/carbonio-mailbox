@@ -50,8 +50,8 @@ if [[ ! -f "/etc/carbonio/mailbox/service-discover/token" ]]; then
       jq -r '.SecretID' > /etc/carbonio/mailbox/service-discover/token;
 fi
 
-chown carbonio-mailbox:carbonio-mailbox /etc/zextras/carbonio-mailbox/token
-chmod 0640 /etc/zextras/carbonio-mailbox/token
+chown carbonio-mailbox:carbonio-mailbox /etc/carbonio/mailbox/service-discover/token
+chmod 0640 /etc/carbonio/mailbox/service-discover/token
 
 consul reload
 
