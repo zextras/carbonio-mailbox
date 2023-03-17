@@ -855,6 +855,7 @@ public class ProxyConfGen {
     mConfVars.put("core.ipv4only.enabled", new IPv4OnlyEnablerVar());
     mConfVars.put("core.ipv6only.enabled", new IPv6OnlyEnablerVar());
     mConfVars.put("core.ipboth.enabled", new IPBothEnablerVar());
+    mConfVars.put("proxy.http.compression", new ProxyCompressionServerVar());
     mConfVars.put(
         "ssl.crt.default",
         new ProxyConfVar(
