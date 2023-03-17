@@ -5,6 +5,12 @@
 
 package com.zimbra.cs.lmtpserver;
 
+import static com.zimbra.cs.lmtpserver.Metrics.LMTP_DLVD_BYTES;
+import static com.zimbra.cs.lmtpserver.Metrics.LMTP_DLVD_MSGS;
+import static com.zimbra.cs.lmtpserver.Metrics.LMTP_RCVD_BYTES;
+import static com.zimbra.cs.lmtpserver.Metrics.LMTP_RCVD_MSGS;
+import static com.zimbra.cs.lmtpserver.Metrics.LMTP_RCVD_RCPT;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.StringUtil;
@@ -28,12 +34,6 @@ public abstract class LmtpHandler extends ProtocolHandler {
   protected String mRemoteAddress;
   protected String mRemoteHostname;
   private String mLhloArg;
-
-  private static final String LMTP_RCVD_MSGS = "lmtp_rcvd_msgs";
-  private static final String LMTP_RCVD_BYTES = "lmtp_rcvd_bytes";
-  private static final String LMTP_RCVD_RCPT = "lmtp_rcvd_rcpt";
-  private static final String LMTP_DLVD_BYTES = "lmtp_dlvd_bytes";
-  private static final String LMTP_DLVD_MSGS = "lmtp_dlvd_msgs";
 
   // Message specific data
   protected LmtpEnvelope mEnvelope;
