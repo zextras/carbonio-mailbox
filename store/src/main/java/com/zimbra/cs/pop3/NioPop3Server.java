@@ -5,6 +5,11 @@
 
 package com.zimbra.cs.pop3;
 
+import static com.zimbra.cs.pop3.Metrics.POP_CONN;
+import static com.zimbra.cs.pop3.Metrics.POP_SSL_CONN;
+import static com.zimbra.cs.pop3.Metrics.POP_SSL_THREADS;
+import static com.zimbra.cs.pop3.Metrics.POP_THREADS;
+
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.zimbra.common.localconfig.LC;
@@ -34,12 +39,11 @@ public final class NioPop3Server extends NioServer implements Pop3Server, Realti
     super(config);
     this.meterRegistry = meterRegistry;
     if (config.isSslEnabled()) {
-      Gauge.builder(ZimbraPerf.RTS_POP_SSL_THREADS, this::getNumConnections)
-          .register(this.meterRegistry);
-      Gauge.builder(ZimbraPerf.RTS_POP_SSL_CONN, this::getNumThreads).register(this.meterRegistry);
+      Gauge.builder(POP_SSL_THREADS, this::getNumThreads).register(this.meterRegistry);
+      Gauge.builder(POP_SSL_CONN, this::getNumConnections).register(this.meterRegistry);
     } else {
-      Gauge.builder(ZimbraPerf.RTS_POP_THREADS, this::getNumThreads).register(this.meterRegistry);
-      Gauge.builder(ZimbraPerf.RTS_POP_CONN, this::getNumConnections).register(this.meterRegistry);
+      Gauge.builder(POP_THREADS, this::getNumThreads).register(this.meterRegistry);
+      Gauge.builder(POP_CONN, this::getNumConnections).register(this.meterRegistry);
     }
     registerMBean(getName());
     ZimbraPerf.addStatsCallback(this);

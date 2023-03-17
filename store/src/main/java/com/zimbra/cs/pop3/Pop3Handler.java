@@ -5,6 +5,9 @@
 
 package com.zimbra.cs.pop3;
 
+import static com.zimbra.cs.pop3.Metrics.POP_COMMAND_TAG;
+import static com.zimbra.cs.pop3.Metrics.POP_EXEC;
+
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -47,10 +50,6 @@ abstract class Pop3Handler {
   private static final String TERMINATOR = ".";
   private static final int TERMINATOR_C = '.';
   private static final byte[] TERMINATOR_BYTE = {'.'};
-
-  // Metrics
-  private static final String POP_EXEC = "pop_exec";
-  private static final String POP_COMMAND_TAG = "command";
 
   // Connection specific data
   final Pop3Config config;
