@@ -52,9 +52,8 @@ public class RemoteCertbot {
   /**
    * Creates a command to be executed by the Certbot acme client.
    *
-   * E.g. certbot certonly --agree-tos --email admin@test.com -n
-   * --webroot -w /opt/zextras --cert-name demo.zextras.io
-   * -d acme.demo.zextras.io -d webmail-acme.demo.zextras.io
+   * <p>E.g. certbot certonly --agree-tos --email admin@test.com -n --webroot -w /opt/zextras
+   * --cert-name demo.zextras.io -d acme.demo.zextras.io -d webmail-acme.demo.zextras.io
    *
    * @param remoteCommand {@link com.zimbra.cs.rmgmt.RemoteCommands}
    * @param email domain admin email who tries to execute a command (should be agreed to the ACME
@@ -133,20 +132,20 @@ public class RemoteCertbot {
    * @since 23.4.0
    */
   private void notify(Mailbox mbox, Domain domain, String message) {
-    ZimbraLog.rmgmt.info(
-        "Issuing LetsEncrypt cert command for domain "
-            + domain.getName()
-            + " was finished with the following result: "
-            + message);
+    String domainName = domain.getName();
+
+    ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert command for domain " + domainName
+        + " was finished with the following result: " + message);
 
     try {
-      String from =
-          Optional.ofNullable(domain.getCarbonioNotificationFrom())
-              .orElseThrow(() -> ServiceException.FAILURE("no from", null));
-      String[] to =
-          Optional.ofNullable(domain.getCarbonioNotificationRecipients())
-              .orElseThrow(() -> ServiceException.FAILURE("no to", null));
-      String subject = "Let's Encrypt Certificate generation result for " + domain.getName();
+      String from = Optional.ofNullable(domain.getCarbonioNotificationFrom()).orElseThrow(
+          () -> ServiceException.FAILURE("CarbonioNotificationFrom attribute for the domain "
+              + domainName + " is not present.", null));
+      String[] to = Optional.ofNullable(domain.getCarbonioNotificationRecipients()).orElseThrow(
+          () -> ServiceException.FAILURE("CarbonioNotificationRecipients attribute for the domain "
+              + domainName + " is not present.", null));
+
+      String subject = "Let's Encrypt Certificate generation result for " + domainName;
 
       Provisioning prov = Provisioning.getInstance();
       Account account = prov.get(AccountBy.name, from);
@@ -164,19 +163,12 @@ public class RemoteCertbot {
 
       sender.sendMimeMessage(operationContext, mbox, mm);
 
-      ZimbraLog.rmgmt.info(
-          "Notifications about LetsEncrypt certificate generation were sent "
-              + "for the "
-              + domain.getName()
-              + " recipients.");
+      ZimbraLog.rmgmt.info("Notifications about LetsEncrypt certificate generation were sent "
+          + "for the " + domainName + " recipients.");
 
     } catch (Exception e) {
-      ZimbraLog.rmgmt.info(
-          "Notifications about LetsEncrypt certificate generation weren't sent "
-              + "for the "
-              + domain.getName()
-              + " recipients. Sending failure: "
-              + e.getMessage());
+      ZimbraLog.rmgmt.info("Notifications about LetsEncrypt certificate generation weren't sent "
+          + "for the " + domainName + " recipients. Sending failure: " + e.getMessage());
     }
   }
 
