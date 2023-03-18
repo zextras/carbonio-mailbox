@@ -110,7 +110,7 @@ public class IssueCert extends AdminDocumentHandler {
 
     responseMessageElement.setText(
         "Your request for the certificate generation has been "
-            + "taken and will be processed. Notification recipients would be notified."
+            + "taken and will be processed. Domain notification recipients would be notified."
     );
 
     return response;

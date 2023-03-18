@@ -65,13 +65,8 @@ public class RemoteCertbot {
    * @param virtualHosts a value/ values of domain attribute zimbraVirtualHostname
    * @return created command
    */
-  public String createCommand(
-      String remoteCommand,
-      String email,
-      String chain,
-      String domainName,
-      String publicServiceHostName,
-      String[] virtualHosts) {
+  public String createCommand(String remoteCommand, String email, String chain, String domainName,
+      String publicServiceHostName, String[] virtualHosts) {
 
     this.stringBuilder = new StringBuilder();
 
@@ -93,8 +88,8 @@ public class RemoteCertbot {
   /**
    * Executes a command asynchronously and notifies domain recipients about the command execution.
    *
-   * @param domain domain
-   * @param command a command to be executed
+   * @param domain {@link com.zimbra.cs.account.Domain}
+   * @param command a Certbot command to be executed remotely
    * @author Yuliya Aheeva
    * @since 23.4.0
    */
