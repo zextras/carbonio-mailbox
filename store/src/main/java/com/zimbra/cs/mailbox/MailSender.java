@@ -429,16 +429,6 @@ public class MailSender {
     }
 
     /**
-     * Sets default member variables and sends the message based on provided mailbox settings.
-     * @author Yuliya Aheeva
-     * @since 23.4.0
-     */
-    public ItemId sendMimeMessage(Mailbox mbox, MimeMessage mm) throws ServiceException {
-        OperationContext octxt = mbox.getOperationContext();
-        return sendMimeMessage(octxt, mbox, mm, null, null, null, null, false, null);
-    }
-
-    /**
      * Sets member variables and sends the message.
      */
     public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, List<Upload> uploads,

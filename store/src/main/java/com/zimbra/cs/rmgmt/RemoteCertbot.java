@@ -1,10 +1,14 @@
 package com.zimbra.cs.rmgmt;
 
+import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailSender;
 import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.OperationContext;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,23 +50,29 @@ public class RemoteCertbot {
   }
 
   /**
-   * Creates a command to be executed by the Certbot acme client. E.g. certbot certonly --agree-tos
-   * --email admin@test.com -n --webroot -w /opt/zextras --cert-name demo.zextras.io -d
-   * acme.demo.zextras.io -d webmail-acme.demo.zextras.io
+   * Creates a command to be executed by the Certbot acme client.
    *
-   * @param remoteCommand         {@link com.zimbra.cs.rmgmt.RemoteCommands}
-   * @param email                 domain admin email who tries to execute a command (should be
-   *                              agreed to the ACME server's Subscriber Agreement)
-   * @param chain                 long (default) or short (should be specified by domain admin in
-   *                              {@link com.zimbra.soap.admin.message.IssueCertRequest} request
-   *                              with the key word "short")
-   * @param domainName            a value of domain attribute zimbraDomainName
+   * E.g. certbot certonly --agree-tos --email admin@test.com -n
+   * --webroot -w /opt/zextras --cert-name demo.zextras.io
+   * -d acme.demo.zextras.io -d webmail-acme.demo.zextras.io
+   *
+   * @param remoteCommand {@link com.zimbra.cs.rmgmt.RemoteCommands}
+   * @param email domain admin email who tries to execute a command (should be agreed to the ACME
+   *     server's Subscriber Agreement)
+   * @param chain long (default) or short (should be specified by domain admin in {@link
+   *     com.zimbra.soap.admin.message.IssueCertRequest} request with the key word "short")
+   * @param domainName a value of domain attribute zimbraDomainName
    * @param publicServiceHostName a value of domain attribute zimbraPublicServiceHostname
-   * @param virtualHosts          a value/ values of domain attribute zimbraVirtualHostname
+   * @param virtualHosts a value/ values of domain attribute zimbraVirtualHostname
    * @return created command
    */
-  public String createCommand(String remoteCommand, String email, String chain,
-      String domainName, String publicServiceHostName, String[] virtualHosts) {
+  public String createCommand(
+      String remoteCommand,
+      String email,
+      String chain,
+      String domainName,
+      String publicServiceHostName,
+      String[] virtualHosts) {
 
     this.stringBuilder = new StringBuilder();
 
@@ -84,7 +94,7 @@ public class RemoteCertbot {
   /**
    * Executes a command asynchronously and notifies domain recipients about the command execution.
    *
-   * @param domain  domain
+   * @param domain domain
    * @param command a command to be executed
    * @author Yuliya Aheeva
    * @since 23.4.0
@@ -99,7 +109,7 @@ public class RemoteCertbot {
    *
    * @param command a command to be executed
    * @return a sting message of successful remote execution or detailed exception message in case of
-   * failure.
+   *     failure.
    */
   private String execute(String command) {
     try {
@@ -111,27 +121,39 @@ public class RemoteCertbot {
   }
 
   /**
-   * Notifies domain recipients about certificate generation request
+   * Notifies domain recipients about certificate generation result.
    *
-   * @param mbox
-   * @param domain
-   * @param message
+   * @param mbox object of {@link com.zimbra.cs.mailbox.Mailbox} needed for {@link
+   *     com.zimbra.cs.mailbox.MailSender} in order to send message
+   * @param domain object of {@link com.zimbra.cs.account.Domain} needed to get {@link
+   *     com.zimbra.common.account.ZAttrProvisioning} attributes A_carbonioNotificationRecipients
+   *     and A_carbonioNotificationFrom
+   * @param message a message returned by Certbot acme client
    * @author Yuliya Aheeva
    * @since 23.4.0
    */
   private void notify(Mailbox mbox, Domain domain, String message) {
     ZimbraLog.rmgmt.info(
-        "Issuing LetsEncrypt cert command for domain " + domain.getName()
-            + " was finished with the following result: " + message);
+        "Issuing LetsEncrypt cert command for domain "
+            + domain.getName()
+            + " was finished with the following result: "
+            + message);
 
     try {
-      String from = Optional.ofNullable(domain.getCarbonioNotificationFrom())
-          .orElseThrow(() -> ServiceException.FAILURE("no from", null));
-      String[] to = Optional.ofNullable(domain.getCarbonioNotificationRecipients())
-          .orElseThrow(() -> ServiceException.FAILURE("no to", null));
-      String subject = "Let's Encrypt Certificate generation result";
+      String from =
+          Optional.ofNullable(domain.getCarbonioNotificationFrom())
+              .orElseThrow(() -> ServiceException.FAILURE("no from", null));
+      String[] to =
+          Optional.ofNullable(domain.getCarbonioNotificationRecipients())
+              .orElseThrow(() -> ServiceException.FAILURE("no to", null));
+      String subject = "Let's Encrypt Certificate generation result for " + domain.getName();
+
+      Provisioning prov = Provisioning.getInstance();
+      Account account = prov.get(AccountBy.name, from);
+      OperationContext operationContext = new OperationContext(account);
 
       MailSender sender = mbox.getMailSender(domain);
+      sender.setEnvelopeFrom(from);
 
       MimeMessage mm = new MimeMessage(sender.getCurrentSession());
       mm.addFrom(convert(from));
@@ -140,11 +162,21 @@ public class RemoteCertbot {
       mm.setText(message);
       mm.saveChanges();
 
-      sender.sendMimeMessage(mbox, mm);
+      sender.sendMimeMessage(operationContext, mbox, mm);
+
+      ZimbraLog.rmgmt.info(
+          "Notifications about LetsEncrypt certificate generation were sent "
+              + "for the "
+              + domain.getName()
+              + " recipients.");
 
     } catch (Exception e) {
-      ZimbraLog.rmgmt.info("Notification about LetsEncrypt certificate generation wasn't sent "
-          + "for the domain " + domain.getName() + ". Sending failure: " + e.getMessage());
+      ZimbraLog.rmgmt.info(
+          "Notifications about LetsEncrypt certificate generation weren't sent "
+              + "for the "
+              + domain.getName()
+              + " recipients. Sending failure: "
+              + e.getMessage());
     }
   }
 
@@ -154,7 +186,7 @@ public class RemoteCertbot {
     }
   }
 
-  private Address[] convert(String ... addresses) throws AddressException {
+  private Address[] convert(String... addresses) throws AddressException {
     String addressList = String.join(", ", addresses);
     return InternetAddress.parse(addressList);
   }

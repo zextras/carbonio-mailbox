@@ -98,6 +98,7 @@ public class IssueCert extends AdminDocumentHandler {
             virtualHostNames);
 
     Mailbox mbox = getRequestedMailbox(zsc);
+
     certbot.supplyAsync(mbox, domain, command);
 
     Element response = zsc.createElement(AdminConstants.ISSUE_CERT_RESPONSE);
