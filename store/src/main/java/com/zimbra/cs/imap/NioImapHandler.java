@@ -5,14 +5,20 @@
 
 package com.zimbra.cs.imap;
 
+import static com.zimbra.cs.imap.Metrics.IMAP_COMMAND_TAG;
+import static com.zimbra.cs.imap.Metrics.IMAP_EXEC;
+
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.server.NioConnection;
 import com.zimbra.cs.server.NioHandler;
 import com.zimbra.cs.server.NioOutputStream;
 import com.zimbra.cs.stats.ZimbraPerf;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 import org.apache.mina.filter.codec.ProtocolDecoderException;
 import org.apache.mina.filter.codec.RecoverableProtocolDecoderException;
 
@@ -20,9 +26,11 @@ final class NioImapHandler extends ImapHandler implements NioHandler {
   private final ImapConfig config;
   private final NioConnection connection;
   private NioImapRequest request;
+  private final MeterRegistry meterRegistry;
 
-  NioImapHandler(NioImapServer server, NioConnection conn) {
+  NioImapHandler(NioImapServer server, NioConnection conn, MeterRegistry meterRegistry) {
     super(server.getConfig());
+    this.meterRegistry = meterRegistry;
     connection = conn;
     config = server.getConfig();
     output = conn.getOutputStream();
@@ -129,6 +137,10 @@ final class NioImapHandler extends ImapHandler implements NioHandler {
     } finally {
       long elapsed = ZimbraPerf.STOPWATCH_IMAP.stop(start);
       if (lastCommand != null) {
+        Timer.builder(IMAP_EXEC)
+            .tag(IMAP_COMMAND_TAG, lastCommand.toUpperCase())
+            .register(meterRegistry)
+            .record(elapsed, TimeUnit.MILLISECONDS);
         ZimbraPerf.IMAP_TRACKER.addStat(lastCommand.toUpperCase(), start);
         ZimbraPerf.IMAP_TRACKER_PROMETHEUS.addStat(lastCommand.toUpperCase(), start);
 

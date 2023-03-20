@@ -45,6 +45,16 @@
     </dependency>
 
     <dependency>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+      <groupId>io.micrometer</groupId>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+    </dependency>
+
+
+    <dependency>
       <artifactId>lucene-core</artifactId>
       <groupId>org.apache.lucene</groupId>
     </dependency>

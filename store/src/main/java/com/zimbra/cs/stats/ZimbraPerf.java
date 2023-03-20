@@ -24,6 +24,7 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.util.MemoryStats;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -582,6 +583,7 @@ public class ZimbraPerf {
 
       // PROM
       statsScheduler.schedule(new PrometheusStatsDumper(mailboxdTracker), DUMP_FREQUENCY);
+      statsScheduler.schedule(new PrometheusStatsDumper(SOAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
       statsScheduler.schedule(new PrometheusStatsDumper(IMAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
       statsScheduler.schedule(new PrometheusStatsDumper(POP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
       statsScheduler.schedule(new PrometheusStatsDumper(LDAP_TRACKER_PROMETHEUS), DUMP_FREQUENCY);
@@ -611,6 +613,7 @@ public class ZimbraPerf {
 
   public static void main(String[] args) {
     initDescriptions();
+    MemoryStats.startup();
     for (String field : descriptions.keySet()) {
       System.out.println(field + ": " + descriptions.get(field));
     }
