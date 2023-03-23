@@ -311,10 +311,6 @@ public final class Zimbra {
         WaitSetMgr.startup();
       }
 
-      if (app.supports(MemoryStats.class.getName())) {
-        MemoryStats.startup();
-      }
-
       if (app.supports(ScheduledTaskManager.class.getName())) {
         ScheduledTaskManager.startup();
       }
@@ -388,9 +384,6 @@ public final class Zimbra {
     app.shutdown();
 
     if (sIsMailboxd) {
-      if (app.supports(MemoryStats.class.getName())) {
-        MemoryStats.shutdown();
-      }
 
       if (app.supports(WaitSetMgr.class.getName())) {
         WaitSetMgr.shutdown();

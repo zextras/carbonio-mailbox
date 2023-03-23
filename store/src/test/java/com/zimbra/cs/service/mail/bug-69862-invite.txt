@@ -4,7 +4,7 @@ To: rcpt <rcpt@zimbra.com>
 Message-ID: <377944271.1517.1335307060250.JavaMail.root@zqa-062.eng.vmware.com>
 Subject: from ajax 1
 MIME-Version: 1.0
-Content-Type: multipart/alternative; 
+Content-Type: multipart/alternative;
 	boundary="----=_Part_1516_525297984.1335307060249"
 X-Originating-IP: [10.16.67.144]
 X-Mailer: Zimbra 8.0.0_BETA4_5065 (ZimbraWebClient - FF12 (Win)/8.0.0_BETA4_5065)
@@ -17,19 +17,19 @@ Content-Transfer-Encoding: 7bit
 
 The following is a new meeting request:
 
-Subject: from ajax 1 
-Organizer: test@zimbra.com 
+Subject: from ajax 1
+Organizer: test@zimbra.com
 
-Location: location 
+Location: location
 Time: Tuesday, April 24, 2012, 4:00:00 PM - 5:00:00 PM GMT -08:00 US/Canada Pacific
- 
-Invitees: rcpt@zimbra.com 
+
+Invitees: rcpt@zimbra.com
 
 
 *~*~*~*~*~*~*~*~*~*
 
-Bold 
-Italics 
+Bold
+Italics
 ------=_Part_1516_525297984.1335307060249
 Content-Type: text/html; charset=utf-8
 Content-Transfer-Encoding: 7bit
@@ -56,7 +56,7 @@ Content-Type: text/calendar; charset=utf-8; method=REQUEST; name=meeting.ics
 Content-Transfer-Encoding: 7bit
 
 BEGIN:VCALENDAR
-PRODID:Zimbra-Calendar-Provider
+PRODID:Carbonio-Calendar-Provider
 VERSION:2.0
 METHOD:REQUEST
 BEGIN:VTIMEZONE
@@ -92,12 +92,12 @@ TRANSP:OPAQUE
 LAST-MODIFIED:20120424T223740Z
 DTSTAMP:20120424T223740Z
 SEQUENCE:0
-DESCRIPTION:The following is a new meeting request:\n\nSubject: from ajax 1 
+DESCRIPTION:The following is a new meeting request:\n\nSubject: from ajax 1
  \nOrganizer: test@zimbra.com \n\nLocation: location \nTime: Tu
  esday\, April 24\, 2012\, 4:00:00 PM - 5:00:00 PM GMT -08:00 US/Canada Pacif
  ic\n \nInvitees: rcpt@zimbra.com \n\n\n*~*~*~*~*~*~*~*~*~*\n\n
- Bold \nItalics 
-X-ALT-DESC;FMTTYPE=text/html:<html><body id='htmlmode'><h3>The following is 
+ Bold \nItalics
+X-ALT-DESC;FMTTYPE=text/html:<html><body id='htmlmode'><h3>The following is
  a new meeting request:</h3>\n\n<p>\n<table border='0'>\n<tr><th align=left>S
  ubject:</th><td>from ajax 1 </td></tr>\n<tr><th align=left>Organizer:</th><t
  d>test@zimbra.com </td></tr>\n</table>\n<p>\n<table border='0'

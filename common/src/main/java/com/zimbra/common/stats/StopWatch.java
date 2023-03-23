@@ -12,10 +12,20 @@ package com.zimbra.common.stats;
 public class StopWatch
 extends Counter {
 
+    /**
+     * @return current time in millis
+     */
     public long start() {
         return System.currentTimeMillis();
     }
 
+    /**
+     * Computes elapsed time in millis between start time and now
+     *
+     * @param startTime start time
+     *
+     * @return elapsed time in in millis
+     */
     public long stop(long startTime) {
         long elapsed = System.currentTimeMillis() - startTime;
         increment(elapsed);

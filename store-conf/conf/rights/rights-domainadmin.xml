@@ -497,6 +497,8 @@
     <a n="carbonioAdminUiTitle"/>
     <a n="carbonioAdminWebUiBannerText"/>
     <a n="carbonioLogoUrl"/>
+    <a n="carbonioNotificationFrom"/>
+    <a n="carbonioNotificationRecipients"/>
     <a n="carbonioWebUiAppLogo"/>
     <a n="carbonioWebUiBannerText"/>
     <a n="carbonioWebUiDarkAppLogo"/>

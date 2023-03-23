@@ -5,6 +5,7 @@
 
 package com.zimbra.soap;
 
+import com.zextras.mailbox.metric.Metrics;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class SoapServlet extends ZimbraServlet {
         ZimbraLog.soap.info("Servlet " + name + " starting up");
         super.init();
 
-        mEngine = new SoapEngine();
+        mEngine = new SoapEngine(Metrics.METER_REGISTRY);
 
         int i = 0;
         String cname;

@@ -47,10 +47,13 @@ import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.BuildInfo;
 import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.ZimbraSoapContext.SessionInfo;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLInputFactory;
@@ -95,8 +98,10 @@ public class SoapEngine {
   public static final String ORIG_REQUEST_USER_AGENT = "orig.request.user.agent";
 
   private final DocumentDispatcher dispatcher = new DocumentDispatcher();
+  private final MeterRegistry meterRegistry;
 
-  SoapEngine() {
+  SoapEngine(MeterRegistry meterRegistry) {
+    this.meterRegistry = meterRegistry;
     SoapTransport.setDefaultUserAgent(SoapTransport.DEFAULT_USER_AGENT_NAME, BuildInfo.VERSION);
   }
 
@@ -677,8 +682,13 @@ public class SoapEngine {
           handler.logAuditAccess(at.getAdminAccountId(), acctId, acctId);
         }
         response = handler.handle(soapReqElem, context);
-        ZimbraPerf.SOAP_TRACKER.addStat(getStatName(soapReqElem), startTime);
-        ZimbraPerf.SOAP_TRACKER_PROMETHEUS.addStat(getStatName(soapReqElem), startTime);
+        final String statName = getStatName(soapReqElem);
+        long elapsed = System.currentTimeMillis() - startTime;
+        ZimbraPerf.SOAP_TRACKER.addStat(statName, startTime);
+        ZimbraPerf.SOAP_TRACKER_PROMETHEUS.addStat(statName, startTime);
+        Timer.builder("soap_exec")
+            .description("Soap API execution time")
+            .tags("command", statName).register(meterRegistry).record(elapsed, TimeUnit.MILLISECONDS);
         long duration = System.currentTimeMillis() - startTime;
         if (LC.zimbra_slow_logging_enabled.booleanValue()
             && duration > LC.zimbra_slow_logging_threshold.longValue()

@@ -25,4 +25,7 @@
   <key name="zimbra_rights_directory">
     <value>../store-conf/conf/rights</value>
   </key>
+  <key name="mailboxd_keystore_password">
+    <value>zextras</value>
+  </key>
 </localconfig>

@@ -13,12 +13,15 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.server.ProtocolHandler;
 import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.util.IOUtil;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -29,9 +32,11 @@ final class TcpImapHandler extends ProtocolHandler {
   private final ImapConfig config;
   private Socket socket;
   private final HandlerDelegate delegate;
+  private final MeterRegistry meterRegistry;
 
-  TcpImapHandler(TcpImapServer server) {
+  TcpImapHandler(TcpImapServer server, MeterRegistry meterRegistry) {
     super(server);
+    this.meterRegistry = meterRegistry;
     config = server.getConfig();
     delegate = new HandlerDelegate(config);
   }
@@ -108,6 +113,9 @@ final class TcpImapHandler extends ProtocolHandler {
         ZimbraLog.imap.info("%s elapsed=%d (TCP)", delegate.lastCommand.toUpperCase(), elapsed);
         ZimbraPerf.IMAP_TRACKER.addStat(delegate.lastCommand.toUpperCase(), start);
         ZimbraPerf.IMAP_TRACKER_PROMETHEUS.addStat(delegate.lastCommand.toUpperCase(), start);
+        Timer.builder("imap_exec")
+            .tag("command", delegate.lastCommand.toUpperCase()).register(meterRegistry)
+            .record(elapsed, TimeUnit.MILLISECONDS);
       } else {
         ZimbraLog.imap.info("(unknown) elapsed=%d (TCP)", elapsed);
       }

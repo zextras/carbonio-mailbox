@@ -48,7 +48,7 @@ Content-Type: text/calendar; charset=utf-8; method=REQUEST; name=meeting.ics
 Content-Transfer-Encoding: 7bit
 
 BEGIN:VCALENDAR
-PRODID:Zimbra-Calendar-Provider
+PRODID:Carbonio-Calendar-Provider
 VERSION:2.0
 METHOD:REQUEST
 BEGIN:VTIMEZONE
