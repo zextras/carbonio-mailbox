@@ -5,6 +5,9 @@
 
 package com.zimbra.cs.pop3;
 
+import static com.zimbra.cs.pop3.Metrics.POP_COMMAND_TAG;
+import static com.zimbra.cs.pop3.Metrics.POP_EXEC;
+
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -24,12 +27,15 @@ import com.zimbra.cs.security.sasl.AuthenticatorUser;
 import com.zimbra.cs.security.sasl.PlainAuthenticator;
 import com.zimbra.cs.server.ServerThrottle;
 import com.zimbra.cs.stats.ZimbraPerf;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -74,9 +80,11 @@ abstract class Pop3Handler {
   private int expire;
 
   private final ServerThrottle throttle;
+  protected final MeterRegistry meterRegistry;
 
-  Pop3Handler(Pop3Config config) {
+  Pop3Handler(Pop3Config config, MeterRegistry meterRegistry) {
     this.config = config;
+    this.meterRegistry = meterRegistry;
     startedTLS = config.isSslEnabled();
     throttle = ServerThrottle.getThrottle(config.getProtocol());
   }
@@ -137,6 +145,10 @@ abstract class Pop3Handler {
         if (command != null) {
           ZimbraPerf.POP_TRACKER.addStat(command.toUpperCase(), startTime);
           ZimbraPerf.POP_TRACKER_PROMETHEUS.addStat(command.toUpperCase(), startTime);
+          Timer.builder(POP_EXEC)
+              .tag(POP_COMMAND_TAG, command.toUpperCase())
+              .register(meterRegistry)
+              .record(elapsed, TimeUnit.MILLISECONDS);
 
           ZimbraLog.pop.info("%s elapsed=%d", command.toUpperCase(), elapsed);
         } else {

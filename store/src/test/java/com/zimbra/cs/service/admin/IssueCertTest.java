@@ -48,6 +48,7 @@ public class IssueCertTest {
 
   private final String command = "certbot certonly --agree-tos --email admin@example.com"
       + " -n --keep --webroot -w /opt/zextras "
+      + "--cert-name example.com "
       + "-d public.example.com -d virtual.example.com";
 
   private final static MockedStatic<RemoteManager> mockedStatic = mockStatic(RemoteManager.class);
@@ -107,7 +108,7 @@ public class IssueCertTest {
 
   @AfterClass
   public static void tearDown() {
-      mockedStatic.close();
+    mockedStatic.close();
   }
 
   @Test

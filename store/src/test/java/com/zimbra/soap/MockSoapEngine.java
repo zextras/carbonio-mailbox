@@ -5,8 +5,11 @@
 
 package com.zimbra.soap;
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+
 public class MockSoapEngine extends SoapEngine {
-    public MockSoapEngine(DocumentService service) {
-        service.registerHandlers(getDocumentDispatcher());
-    }
+  public MockSoapEngine(DocumentService service) {
+    super(new SimpleMeterRegistry());
+    service.registerHandlers(getDocumentDispatcher());
+  }
 }

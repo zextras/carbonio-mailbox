@@ -29,7 +29,7 @@ import net.fortuna.ical4j.data.ParserException;
 
 public class ZCalendar {
 
-  public static final String sZimbraProdID = "Zimbra-Calendar-Provider";
+  public static final String sCarbonioProdID = "Carbonio-Calendar-Provider";
   public static final String sIcalVersion = "2.0";
   public static final String sObsoleteVcalVersion = "1.0";
 
@@ -270,7 +270,7 @@ public class ZCalendar {
     public ZVCalendar() {}
 
     public void addVersionAndProdId() {
-      addProperty(new ZProperty(ICalTok.PRODID, sZimbraProdID));
+      addProperty(new ZProperty(ICalTok.PRODID, sCarbonioProdID));
       addProperty(new ZProperty(ICalTok.VERSION, sIcalVersion));
     }
 

@@ -45,6 +45,16 @@
     </dependency>
 
     <dependency>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+      <groupId>io.micrometer</groupId>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+    </dependency>
+
+
+    <dependency>
       <artifactId>lucene-core</artifactId>
       <groupId>org.apache.lucene</groupId>
     </dependency>
@@ -437,6 +447,33 @@
       <artifactId>store-extra-runtime-dependencies</artifactId>
       <type>pom</type>
       <scope>runtime</scope>
+    </dependency>
+    <!-- DI -->
+    <dependency>
+      <artifactId>javax.inject</artifactId>
+      <groupId>javax.inject</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>guice</artifactId>
+      <groupId>com.google.inject</groupId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject.extensions</groupId>
+      <artifactId>guice-servlet</artifactId>
+    </dependency>
+    <!-- Metrics collector -->
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_servlet</artifactId>
+    </dependency>
+    <!-- JMX stats collector -->
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_hotspot</artifactId>
     </dependency>
   </dependencies>
 

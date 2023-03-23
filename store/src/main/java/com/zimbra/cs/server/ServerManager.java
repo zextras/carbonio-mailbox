@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.server;
 
+import com.zextras.mailbox.metric.Metrics;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
@@ -76,7 +77,7 @@ public final class ServerManager {
 
     private LmtpServer startLmtpServer() throws ServiceException {
         LmtpConfig config = LmtpConfig.getInstance();
-        LmtpServer server = new TcpLmtpServer(config);
+        LmtpServer server = new TcpLmtpServer(config, Metrics.METER_REGISTRY);
         server.start();
         return server;
     }
@@ -84,7 +85,7 @@ public final class ServerManager {
     private Pop3Server startPop3Server(boolean ssl) throws ServiceException {
         Pop3Config config = new Pop3Config(ssl);
         Pop3Server server = NIO_ENABLED || LC.nio_pop3_enabled.booleanValue() ?
-            new NioPop3Server(config) : new TcpPop3Server(config);
+            new NioPop3Server(config, Metrics.METER_REGISTRY) : new TcpPop3Server(config, Metrics.METER_REGISTRY);
         server.start();
         return server;
     }
@@ -92,7 +93,7 @@ public final class ServerManager {
     private ImapServer startImapServer(boolean ssl) throws ServiceException {
         ImapConfig config = new ImapConfig(ssl);
         ImapServer server = NIO_ENABLED || LC.nio_imap_enabled.booleanValue() ?
-            new NioImapServer(config) : new TcpImapServer(config);
+            new NioImapServer(config, Metrics.METER_REGISTRY) : new TcpImapServer(config, Metrics.METER_REGISTRY);
         server.start();
         return server;
     }
