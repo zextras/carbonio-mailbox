@@ -1,23 +1,12 @@
 package com.zimbra.cs.rmgmt;
 
-import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.MailSender;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.service.admin.CertificateNotificationManager;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import javax.mail.Address;
-import javax.mail.Message.RecipientType;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 /**
  * RemoteCertbot class interacts with "Certbot" - an acme client for managing Let’s Encrypt
@@ -86,16 +75,18 @@ public class RemoteCertbot {
   }
 
   /**
-   * Executes a command asynchronously and notifies domain recipients about the command execution.
+   * Executes a command asynchronously and notifies global and domain recipients about
+   * the command execution using {@link com.zimbra.cs.service.admin.CertificateNotificationManager}.
    *
    * @param domain {@link com.zimbra.cs.account.Domain}
    * @param command a Certbot command to be executed remotely
    * @author Yuliya Aheeva
-   * @since 23.4.0
+   * @since 23.5.0
    */
   public void supplyAsync(Mailbox mbox, Domain domain, String command) {
     CompletableFuture.supplyAsync(() -> execute(command))
-        .thenAccept(message -> notify(mbox, domain, message));
+        .thenAccept(certbotMessage -> CertificateNotificationManager
+            .notify(mbox, domain, certbotMessage));
   }
 
   /**
@@ -105,7 +96,7 @@ public class RemoteCertbot {
    * @return a sting message of successful remote execution or detailed exception message in case of
    *     failure.
    */
-  private String execute(String command) {
+  public String execute(String command) {
     try {
       RemoteResult remoteResult = remoteManager.execute(command);
       return new String(remoteResult.getMStdout(), StandardCharsets.UTF_8);
@@ -114,67 +105,9 @@ public class RemoteCertbot {
     }
   }
 
-  /**
-   * Notifies domain recipients about certificate generation result.
-   *
-   * @param mbox object of {@link com.zimbra.cs.mailbox.Mailbox} needed for {@link
-   *     com.zimbra.cs.mailbox.MailSender} in order to send message
-   * @param domain object of {@link com.zimbra.cs.account.Domain} needed to get {@link
-   *     com.zimbra.common.account.ZAttrProvisioning} attributes A_carbonioNotificationRecipients
-   *     and A_carbonioNotificationFrom
-   * @param message a message returned by Certbot acme client
-   * @author Yuliya Aheeva
-   * @since 23.4.0
-   */
-  private void notify(Mailbox mbox, Domain domain, String message) {
-    String domainName = domain.getName();
-
-    ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert command for domain " + domainName
-        + " was finished with the following result: " + message);
-
-    try {
-      String from = Optional.ofNullable(domain.getCarbonioNotificationFrom()).orElseThrow(
-          () -> ServiceException.FAILURE("CarbonioNotificationFrom attribute for the domain "
-              + domainName + " is not present.", null));
-      String[] to = Optional.ofNullable(domain.getCarbonioNotificationRecipients()).orElseThrow(
-          () -> ServiceException.FAILURE("CarbonioNotificationRecipients attribute for the domain "
-              + domainName + " is not present.", null));
-
-      String subject = "Let's Encrypt Certificate generation result for " + domainName;
-
-      Provisioning prov = Provisioning.getInstance();
-      Account account = prov.get(AccountBy.name, from);
-      OperationContext operationContext = new OperationContext(account);
-
-      MailSender sender = mbox.getMailSender(domain);
-      sender.setEnvelopeFrom(from);
-
-      MimeMessage mm = new MimeMessage(sender.getCurrentSession());
-      mm.addFrom(convert(from));
-      mm.addRecipients(RecipientType.TO, convert(to));
-      mm.setSubject(subject);
-      mm.setText(message);
-      mm.saveChanges();
-
-      sender.sendMimeMessage(operationContext, mbox, mm);
-
-      ZimbraLog.rmgmt.info("Notifications about LetsEncrypt certificate generation were sent "
-          + "for the " + domainName + " recipients.");
-
-    } catch (Exception e) {
-      ZimbraLog.rmgmt.info("Notifications about LetsEncrypt certificate generation weren't sent "
-          + "for the " + domainName + " recipients. Sending failure: " + e.getMessage());
-    }
-  }
-
   private void addSubCommand(String delimiter, String... params) {
     for (String param : params) {
       this.stringBuilder.append(delimiter).append(param);
     }
-  }
-
-  private Address[] convert(String... addresses) throws AddressException {
-    String addressList = String.join(", ", addresses);
-    return InternetAddress.parse(addressList);
   }
 }

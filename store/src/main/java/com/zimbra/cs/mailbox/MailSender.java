@@ -510,11 +510,15 @@ public class MailSender {
         return sendMimeMessage(octxt, mbox, mm);
     }
 
+    /**
+     * Sets member variables and sends the message.
+     */
     public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, Boolean saveToSent, MimeMessage mm,
             Collection<Upload> uploads, ItemId origMsgId, String replyType, Identity identity, boolean replyToSender)
             throws ServiceException {
            return sendMimeMessage(octxt, mbox, saveToSent, mm, uploads, origMsgId, replyType, identity, replyToSender, null);
     }
+
 
     /**
      * Sends a message.
@@ -802,6 +806,16 @@ public class MailSender {
             } else {
                 throw ServiceException.FAILURE("Unable to send message", me);
             }
+        }
+    }
+
+    /**
+     * Sends a list of messages.
+     */
+    public void sendMimeMessageList(Mailbox mbox, List<MimeMessage> mimeMessageList)
+        throws ServiceException {
+        for (MimeMessage mm: mimeMessageList) {
+            sendMimeMessage(null, mbox, mm);
         }
     }
 

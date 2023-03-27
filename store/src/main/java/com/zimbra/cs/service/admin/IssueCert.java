@@ -109,9 +109,8 @@ public class IssueCert extends AdminDocumentHandler {
             .addAttribute(AdminConstants.A_DOMAIN, domainName);
 
     responseMessageElement.setText(
-        "Your request for the certificate generation has been "
-            + "taken and will be processed. Domain notification recipients would be notified."
-    );
+        "Your request for the certificate generation has been taken and will be processed. "
+            + "Global and Domain notification recipients would be notified.");
 
     return response;
   }

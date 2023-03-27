@@ -148,7 +148,7 @@ public class RemoteManager {
             }
         } catch (Exception e) {
              throw ServiceException.FAILURE(
-                 "exception executing command: " + command + " with " + this + " " + e);
+                 "exception executing command " + command + " with " + this + " " + e);
         }
         return result;
     }
