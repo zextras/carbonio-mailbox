@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<!-- 
+<!--
 ========================================================
                 current domain admin rights
 ========================================================
@@ -11,11 +11,11 @@
 
 <include file="rights.xml"/>
 
-<!-- 
+<!--
 ========================================================
-      domain admin modifiable attrs, the template 
+      domain admin modifiable attrs, the template
       if filled by:
-      
+
       ZimbraServer> ant generate-domainadmin-rights-xml
 ========================================================
 -->
@@ -227,7 +227,6 @@
     <a n="zimbraPrefAutoSaveDraftInterval"/>
     <a n="zimbraPrefAutocompleteAddressBubblesEnabled"/>
     <a n="zimbraPrefBccAddress"/>
-    <a n="zimbraPrefBriefcaseReadingPaneLocation"/>
     <a n="zimbraPrefCalendarAcceptSignatureId"/>
     <a n="zimbraPrefCalendarAllowCancelEmailToSelf"/>
     <a n="zimbraPrefCalendarAllowForwardedInvite"/>
@@ -442,7 +441,7 @@
 
 <right name="setDomainAdminCalendarResourceAttrs" type="setAttrs" targetType="calresource">
   <desc>calendar resource attrs modifiable by domain admins for domain based access manager</desc>
-  <attrs>    
+  <attrs>
     <a n="zimbraCalResAutoAcceptDecline"/>
     <a n="zimbraCalResAutoDeclineIfBusy"/>
     <a n="zimbraCalResAutoDeclineRecurring"/>
@@ -464,7 +463,7 @@
 
 <right name="setDomainAdminDistributionListAttrs" type="setAttrs" targetType="dl">
   <desc>distribution list attrs modifiable by domain admins for domain based access manager</desc>
-  <attrs>    
+  <attrs>
     <a n="cn"/>
     <a n="description"/>
     <a n="displayName"/>
@@ -485,7 +484,7 @@
 <right name="setDomainAdminDomainAttrs" type="setAttrs" targetType="domain">
   <desc>domain attrs modifiable by domain admins for domain based access manager</desc>
   <attrs>
-    <a n="zimbraDomainDefaultCOSId"/> 
+    <a n="zimbraDomainDefaultCOSId"/>
     <a n="carbonioAdminUiAppLogo"/>
     <a n="carbonioAdminUiBackground"/>
     <a n="carbonioAdminUiDarkAppLogo"/>
@@ -667,7 +666,7 @@
         <r n="listAccount"/>
         <r n="listAlias"/>
         <r n="listCalendarResource"/>
-        <r n="listDistributionList"/>        
+        <r n="listDistributionList"/>
         <r n="setDomainAdminDomainAttrs"/>
       </rights>
     </right>
@@ -684,7 +683,7 @@
         <r n="listZimlet"/>
       </rights>
     </right>
-    
+
 <!--
   =========================================================
                          end generated
@@ -704,11 +703,11 @@
     <r n="domainAdminCalendarResourceRights"/>
     <r n="domainAdminDistributionListRights"/>
     <r n="domainAdminDomainRights"/>
-    
+
     <!-- not generated, put here manually -->
     <r n="listAlias"/>
   </rights>
 </right>
-      
+
 
 </rights>
