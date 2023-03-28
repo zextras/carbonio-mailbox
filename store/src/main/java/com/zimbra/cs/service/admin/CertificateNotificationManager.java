@@ -23,6 +23,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
+ * CertificateNotificationManager is intermediate between remote execution and mailSender.
+ * Helps to create mimeMessages based on domain and remote execution result in order to notify
+ * domain and global recipients about issue certificate request.
+ *
  * @author Yuliya Aheeva
  * @since 23.5.0
  */
@@ -51,16 +55,18 @@ public class CertificateNotificationManager {
 
   public static final String FAIL = "fail";
   public static final String FAILURE_DOMAIN_NOTIFICATION_TEMPLATE =
-      "Hint: Common use cases that cause this behavior are:\n"
-          + "Your domain public service hostname or virtual hostnames are wrong. Make sure that "
-          + "your domain public service hostname and virtual hostnames are entered and saved "
-          + "correctly.\n"
-          + "Your DNS A/AAAA record is wrong. Make sure the DNS A/AAAA record(s) for the "
-          + "domain is(are) entered and saved correctly.\n"
-          + "Your IP address is wrong or private. Make sure the DNS A/AAAA record(s) contain(s) "
-          + "the right public IP address(es).\n"
-          + "Your DNS record isn’t propagated yet. Go to https://dnsmap.io to check if it’s "
-          + "propagated.\n";
+      "Hint: Common use cases that cause this behavior are:"
+          + "<ul>"
+          + "<li>Your domain public service hostname or virtual hostname is wrong. Make sure that "
+          + "your domain public service hostname and virtual hostname is entered and saved "
+          + "correctly.\n</li>"
+          + "<li>Your DNS A/AAAA record is wrong. Make sure the DNS A/AAAA record for the "
+          + "domain is entered and saved correctly.\n</li>"
+          + "<li>Your IP address is wrong or private. Make sure the DNS A/AAAA record contains "
+          + "the right public IP address.\n</li>"
+          + "<li>Your DNS record isn’t propagated yet. Go to https://dnsmap.io to check if it’s "
+          + "propagated.\n</li>"
+          + "</ul>";
 
   public static final String RECEIVED = "received certificate";
   public static final String SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE =
@@ -90,30 +96,10 @@ public class CertificateNotificationManager {
             + outputMessage);
 
     try {
-      Provisioning provisioning = Provisioning.getInstance();
-      Config config = provisioning.getConfig();
-
-      String globalFrom = Optional.ofNullable(config.getCarbonioNotificationFrom())
-          .orElseThrow(() -> ServiceException.FAILURE(
-              "Global CarbonioNotificationFrom attribute is not present.", null));
-      String[] globalTo = Optional.ofNullable(config.getCarbonioNotificationRecipients())
-          .orElseThrow(() -> ServiceException.FAILURE(
-              "Global CarbonioNotificationRecipients attribute is not present.", null));
-
-      String domainFrom = Optional.of(domain.getCarbonioNotificationFrom()).orElse(globalFrom);
-      String[] domainTo = Optional.of(domain.getCarbonioNotificationRecipients()).orElse(globalTo);
-
-      Map<String, Object> notificationMap = createIssueCertNotificationMap(outputMessage);
-      notificationMap.put(DOMAIN_NAME, domainName);
-
-      notificationMap.put(GLOBAL_FROM, globalFrom);
-      notificationMap.put(GLOBAL_TO, globalTo);
-      notificationMap.put(DOMAIN_FROM, domainFrom);
-      notificationMap.put(DOMAIN_TO, domainTo);
+      Map<String, Object> notificationMap = createIssueCertNotificationMap(domain, outputMessage);
 
       MailSender sender = mbox.getMailSender(domain);
-      List<MimeMessage> mimeMessageList =
-          createMimeMessageList(sender.getCurrentSession(), notificationMap);
+      List<MimeMessage> mimeMessageList = createMimeMessageList(sender.getCurrentSession(), notificationMap);
 
       sender.sendMimeMessageList(mbox, mimeMessageList);
 
@@ -135,14 +121,36 @@ public class CertificateNotificationManager {
   }
 
   /**
-   * Creates a map based on Remote Manager and Certbot output which would be used to create a
-   * MimeMessage.
+   * Creates a map based on domain values and Remote Manager/Certbot output which would be used to
+   * create a MimeMessage.
    *
    * @param outputMessage output from RemoteManager/Certbot
    * @return map
    */
-  public static Map<String, Object> createIssueCertNotificationMap(String outputMessage) {
+  protected static Map<String, Object> createIssueCertNotificationMap(Domain domain, String outputMessage)
+      throws ServiceException {
+
+    Provisioning provisioning = Provisioning.getInstance();
+    Config config = provisioning.getConfig();
+
+    String globalFrom = Optional.ofNullable(config.getCarbonioNotificationFrom())
+        .orElseThrow(() -> ServiceException.FAILURE(
+            "Global CarbonioNotificationFrom attribute is not present.", null));
+    String[] globalTo = Optional.ofNullable(config.getCarbonioNotificationRecipients())
+        .orElseThrow(() -> ServiceException.FAILURE(
+            "Global CarbonioNotificationRecipients attribute is not present.", null));
+
+    String domainFrom = Optional.ofNullable(domain.getCarbonioNotificationFrom())
+        .orElse(globalFrom);
+    String[] domainTo = Optional.ofNullable(domain.getCarbonioNotificationRecipients())
+        .orElse(globalTo);
+
     Map<String, Object> notificationMap = new HashMap<>();
+
+    notificationMap.put(DOMAIN_NAME, domain.getName());
+
+    notificationMap.put(GLOBAL_FROM, globalFrom);
+    notificationMap.put(GLOBAL_TO, globalTo);
 
     // message for global admin contains all output
     notificationMap.put(GLOBAL_MESSAGE, outputMessage);
@@ -169,6 +177,8 @@ public class CertificateNotificationManager {
       String domainMessage =
           String.join("", HEADER, FAILURE_RESULT, FAILURE_DOMAIN_NOTIFICATION_TEMPLATE);
       notificationMap.put(DOMAIN_MESSAGE, domainMessage);
+      notificationMap.put(DOMAIN_FROM, domainFrom);
+      notificationMap.put(DOMAIN_TO, domainTo);
       return notificationMap;
     }
 
@@ -187,16 +197,18 @@ public class CertificateNotificationManager {
       String domainMessage =
           String.join("", HEADER, SUCCESS_RESULT, SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE, expire);
 
-      notificationMap.put(SUBJECT_RESULT, CERTBOT_SUCCESS);
       notificationMap.put(DOMAIN_MESSAGE, domainMessage);
+      notificationMap.put(DOMAIN_FROM, domainFrom);
+      notificationMap.put(DOMAIN_TO, domainTo);
     }
 
     // in any other cases (like certificate is not yet due for renewal ... etc)
     // only global admin would be notified
+    notificationMap.put(SUBJECT_RESULT, CERTBOT_SUCCESS);
     return notificationMap;
   }
 
-  private static List<MimeMessage> createMimeMessageList(
+  protected static List<MimeMessage> createMimeMessageList(
       Session session, Map<String, Object> notificationMap) throws ServiceException {
 
     List<MimeMessage> list = new ArrayList<>();
@@ -204,14 +216,14 @@ public class CertificateNotificationManager {
     String subject =
         notificationMap.get(DOMAIN_NAME) + SUBJECT_TEMPLATE + notificationMap.get(SUBJECT_RESULT);
 
-    Address[] globalFrom = convert((String) notificationMap.get(GLOBAL_FROM));
+    Address globalFrom = convert((String) notificationMap.get(GLOBAL_FROM));
     Address[] globalTo = convert((String[]) notificationMap.get(GLOBAL_TO));
     String globalMessage = (String) notificationMap.get(GLOBAL_MESSAGE);
 
     list.add(createMimeMessage(session, subject, globalFrom, globalTo, globalMessage));
 
     if (notificationMap.containsKey(DOMAIN_MESSAGE)) {
-      Address[] domainFrom = convert((String) notificationMap.get(DOMAIN_FROM));
+      Address domainFrom = convert((String) notificationMap.get(DOMAIN_FROM));
       Address[] domainTo = convert((String[]) notificationMap.get(DOMAIN_TO));
       String domainMessage = (String) notificationMap.get(DOMAIN_MESSAGE);
 
@@ -222,13 +234,14 @@ public class CertificateNotificationManager {
   }
 
   private static MimeMessage createMimeMessage(
-      Session session, String subject, Address[] from, Address[] to, String message)
+      Session session, String subject, Address from, Address[] to, String message)
       throws ServiceException {
 
     try {
       MimeMessage mm = new MimeMessage(session);
-      mm.addFrom(from);
-      mm.addRecipients(RecipientType.TO, to);
+      mm.setFrom(from);
+      mm.setSender(from);
+      mm.setRecipients(RecipientType.TO, to);
       mm.setSubject(subject);
       mm.setText(message);
       mm.saveChanges();
@@ -240,12 +253,20 @@ public class CertificateNotificationManager {
     }
   }
 
-  private static Address[] convert(String... addresses) throws ServiceException {
+  private static Address[] convert(String[] addresses) throws ServiceException {
     try {
       String addressList = String.join(", ", addresses);
       return InternetAddress.parse(addressList);
     } catch (AddressException e) {
       throw ServiceException.FAILURE("Unable to parse address list", e);
+    }
+  }
+
+  private static Address convert(String address) throws ServiceException {
+    try {
+      return new InternetAddress(address);
+    } catch (AddressException e) {
+      throw ServiceException.FAILURE("Unable to parse address", e);
     }
   }
 }

@@ -85,8 +85,8 @@ public class RemoteCertbot {
    */
   public void supplyAsync(Mailbox mbox, Domain domain, String command) {
     CompletableFuture.supplyAsync(() -> execute(command))
-        .thenAccept(certbotMessage -> CertificateNotificationManager
-            .notify(mbox, domain, certbotMessage));
+        .thenAccept(
+            certbotMessage -> CertificateNotificationManager.notify(mbox, domain, certbotMessage));
   }
 
   /**

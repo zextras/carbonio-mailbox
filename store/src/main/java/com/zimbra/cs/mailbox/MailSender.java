@@ -257,7 +257,7 @@ public class MailSender {
      * @throws ServiceException if not able to get SMTP session for the domain
      *
      * @author Yuliya Aheeva
-     * @since 23.4.0
+     * @since 23.5.0
      */
     public MailSender setSession(Domain domain) throws ServiceException {
         try {
@@ -310,7 +310,7 @@ public class MailSender {
      * Returns the current session.
      * @return mSession
      * @author Yuliya Aheeva
-     * @since 23.4.0
+     * @since 23.5.0
      */
     public Session getCurrentSession() {
         return this.mSession;
@@ -428,30 +428,6 @@ public class MailSender {
         FORWARD    // Forwarding another message
     }
 
-    /**
-     * Sets member variables and sends the message.
-     */
-    public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, List<Upload> uploads,
-            ItemId origMsgId, String replyType, String identityId, boolean replyToSender) throws ServiceException {
-        return sendMimeMessage(octxt, mbox, mm, uploads, origMsgId, replyType, identityId, replyToSender, null);
-    }
-
-    /**
-     * Sets member variables and sends the message.
-     */
-    public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, List<Upload> uploads,
-            ItemId origMsgId, String replyType, String identityId, boolean replyToSender, MimeProcessor mimeProc) throws ServiceException {
-        Account authuser = octxt == null ? null : octxt.getAuthenticatedUser();
-        if (authuser == null) {
-            authuser = mbox.getAccount();
-        }
-        Identity identity = null;
-        if (identityId != null) {
-            identity = Provisioning.getInstance().get(authuser, Key.IdentityBy.id, identityId);
-        }
-        return sendMimeMessage(octxt, mbox, null, mm, uploads, origMsgId, replyType, identity, replyToSender, mimeProc);
-    }
-
     public ItemId sendDataSourceMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, List<Upload> uploads,
             ItemId origMsgId, String replyType) throws ServiceException {
         return sendDataSourceMimeMessage(octxt, mbox, mm, uploads, origMsgId, replyType, null);
@@ -495,6 +471,58 @@ public class MailSender {
     }
 
     /**
+     * Sends a list of messages.
+     * Tries to find the account by name (if unable to find will get account from the mailbox later
+     * with the sendMimeMessage method) and provide the proper operational context.
+     *
+     * @param mbox object of {@link com.zimbra.cs.mailbox.Mailbox}
+     * @param mimeMessageList a list of {@link javax.mail.internet.MimeMessage} to be sent
+     * @throws ServiceException if sender is not set for the specific {@link javax.mail.internet.MimeMessage}
+     * @author Yuliya Aheeva
+     * @since 23.5.0
+     */
+    public void sendMimeMessageList(Mailbox mbox, List<MimeMessage> mimeMessageList)
+        throws ServiceException {
+
+        Provisioning prov = Provisioning.getInstance();
+
+        try {
+            for (MimeMessage mm: mimeMessageList) {
+                Account account = prov.get(AccountBy.name, mm.getSender().toString());
+                OperationContext operationContext = new OperationContext(account);
+
+                sendMimeMessage(operationContext, mbox, mm);
+            }
+        } catch (MessagingException e) {
+            throw ServiceException.FAILURE("Unable to get sender account: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Sets member variables and sends the message.
+     */
+    public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, List<Upload> uploads,
+        ItemId origMsgId, String replyType, String identityId, boolean replyToSender) throws ServiceException {
+        return sendMimeMessage(octxt, mbox, mm, uploads, origMsgId, replyType, identityId, replyToSender, null);
+    }
+
+    /**
+     * Sets member variables and sends the message.
+     */
+    public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, List<Upload> uploads,
+        ItemId origMsgId, String replyType, String identityId, boolean replyToSender, MimeProcessor mimeProc) throws ServiceException {
+        Account authuser = octxt == null ? null : octxt.getAuthenticatedUser();
+        if (authuser == null) {
+            authuser = mbox.getAccount();
+        }
+        Identity identity = null;
+        if (identityId != null) {
+            identity = Provisioning.getInstance().get(authuser, Key.IdentityBy.id, identityId);
+        }
+        return sendMimeMessage(octxt, mbox, null, mm, uploads, origMsgId, replyType, identity, replyToSender, mimeProc);
+    }
+
+    /**
      * Sets member variables and sends the message.
      */
     public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, Boolean saveToSent, MimeMessage mm,
@@ -518,7 +546,6 @@ public class MailSender {
             throws ServiceException {
            return sendMimeMessage(octxt, mbox, saveToSent, mm, uploads, origMsgId, replyType, identity, replyToSender, null);
     }
-
 
     /**
      * Sends a message.
@@ -806,16 +833,6 @@ public class MailSender {
             } else {
                 throw ServiceException.FAILURE("Unable to send message", me);
             }
-        }
-    }
-
-    /**
-     * Sends a list of messages.
-     */
-    public void sendMimeMessageList(Mailbox mbox, List<MimeMessage> mimeMessageList)
-        throws ServiceException {
-        for (MimeMessage mm: mimeMessageList) {
-            sendMimeMessage(null, mbox, mm);
         }
     }
 
