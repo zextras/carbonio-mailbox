@@ -943,6 +943,78 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Whether or not Amavis should skip virus-checking
+     *
+     * @return carbonioAmavisDisableVirusCheck, or false if unset
+     *
+     * @since ZCS 23.5.0
+     */
+    @ZAttr(id=3129)
+    public boolean isCarbonioAmavisDisableVirusCheck() {
+        return getBooleanAttr(Provisioning.A_carbonioAmavisDisableVirusCheck, false, true);
+    }
+
+    /**
+     * Whether or not Amavis should skip virus-checking
+     *
+     * @param carbonioAmavisDisableVirusCheck new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.5.0
+     */
+    @ZAttr(id=3129)
+    public void setCarbonioAmavisDisableVirusCheck(boolean carbonioAmavisDisableVirusCheck) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAmavisDisableVirusCheck, carbonioAmavisDisableVirusCheck ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether or not Amavis should skip virus-checking
+     *
+     * @param carbonioAmavisDisableVirusCheck new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.5.0
+     */
+    @ZAttr(id=3129)
+    public Map<String,Object> setCarbonioAmavisDisableVirusCheck(boolean carbonioAmavisDisableVirusCheck, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAmavisDisableVirusCheck, carbonioAmavisDisableVirusCheck ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether or not Amavis should skip virus-checking
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.5.0
+     */
+    @ZAttr(id=3129)
+    public void unsetCarbonioAmavisDisableVirusCheck() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAmavisDisableVirusCheck, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether or not Amavis should skip virus-checking
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.5.0
+     */
+    @ZAttr(id=3129)
+    public Map<String,Object> unsetCarbonioAmavisDisableVirusCheck(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_carbonioAmavisDisableVirusCheck, "");
+        return attrs;
+    }
+
+    /**
      * Database Custom Urls for freshclam configuration file.
      *
      * @return carbonioClamAVDatabaseCustomURL, or empty array if unset

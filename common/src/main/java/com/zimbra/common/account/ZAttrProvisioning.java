@@ -2703,6 +2703,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAllowFeedback = "carbonioAllowFeedback";
 
     /**
+     * Whether or not Amavis should skip virus-checking
+     *
+     * @since ZCS 23.5.0
+     */
+    @ZAttr(id=3129)
+    public static final String A_carbonioAmavisDisableVirusCheck = "carbonioAmavisDisableVirusCheck";
+
+    /**
      * Database Custom Urls for freshclam configuration file.
      *
      * @since ZCS 23.1.0
