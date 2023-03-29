@@ -154,7 +154,8 @@ public class CertificateNotificationManagerTest {
   @Test
   public void shouldCreateMapFromCertbotFailureMessage() throws ServiceException {
     final String expectedDomainMessage =
-        HEADER + FAILURE_RESULT + FAILURE_DOMAIN_NOTIFICATION_TEMPLATE;
+        HEADER + FAILURE_RESULT + FAILURE_DOMAIN_NOTIFICATION_TEMPLATE
+            .replace("<DOMAIN_NAME>", domainName);
     final Map<String, Object> notificationMap =
         CertificateNotificationManager.createIssueCertNotificationMap(domain, certbotFailureMessage);
 

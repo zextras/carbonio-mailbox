@@ -23,9 +23,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
- * CertificateNotificationManager is intermediate between remote execution and mailSender.
- * Helps to create mimeMessages based on domain and remote execution result in order to notify
- * domain and global recipients about issue certificate request.
+ * CertificateNotificationManager is intermediate between remote execution of {@link
+ * com.zimbra.cs.rmgmt.RemoteCertbot} and {@link com.zimbra.cs.mailbox.MailSender}. Helps to create
+ * mimeMessages based on domain and remote execution result in order to notify domain and global
+ * recipients about {@link com.zimbra.soap.admin.message.IssueCertRequest}.
  *
  * @author Yuliya Aheeva
  * @since 23.5.0
@@ -41,7 +42,7 @@ public class CertificateNotificationManager {
 
   public static final String DOMAIN_NAME = "domainName";
   public static final String SUBJECT_RESULT = "subjectResult";
-  public static final String SUBJECT_TEMPLATE = " certification request - ";
+  public static final String SUBJECT_TEMPLATE = " SSL certification request - ";
 
   public static final String SYSTEM_FAILURE = "system failure";
 
@@ -55,20 +56,23 @@ public class CertificateNotificationManager {
 
   public static final String FAIL = "fail";
   public static final String FAILURE_DOMAIN_NOTIFICATION_TEMPLATE =
-      "Hint: Common use cases that cause this behavior are:"
-          + "<ul>"
-          + "<li>Your domain public service hostname or virtual hostname is wrong. Make sure that "
-          + "your domain public service hostname and virtual hostname is entered and saved "
-          + "correctly.\n</li>"
-          + "<li>Your DNS A/AAAA record is wrong. Make sure the DNS A/AAAA record for the "
-          + "domain is entered and saved correctly.\n</li>"
-          + "<li>Your IP address is wrong or private. Make sure the DNS A/AAAA record contains "
-          + "the right public IP address.\n</li>"
-          + "<li>Your DNS record isn’t propagated yet. Go to https://dnsmap.io to check if it’s "
-          + "propagated.\n</li>"
-          + "</ul>";
+      "The SSL certificate request for <DOMAIN_NAME> was unsuccessful and the system wasn't able to"
+          + " verify the validity of the domain.\n"
+          + "\n"
+          + "Most common reasons that could cause this kind of failure are:\n"
+          + "- Misspelled or missing public service hostname and/or virtual hostname."
+          + " Make sure both are filled in with a valid Fully Qualified Domain Name.\n"
+          + "- Wrong or missing A/AAAA entry for Public Service Hostname and/or Virtual Hostname."
+          + " Make sure there is a valid, public resolution for the Fully Qualified Domain Name"
+          + " used for any of the Public Service Hostname or Virtual Hostname.\n"
+          + "- Private or unreachable IP address. In order to validate the domain name,"
+          + " the certificator must be able to resolve and browse the FQDN provided.\n"
+          + "\n"
+          + "Check your environment for these common issues and try submitting the request again.\n"
+          + "\n"
+          + "If the error persists, notify the sysadmin.";
 
-  public static final String RECEIVED = "received certificate";
+  public static final String RECEIVED = "received";
   public static final String SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE =
       "The certificate was successfully received.\n"
           + "Please NOTE  that the Certificate and Key will be available after the proxy reload.\n"
@@ -76,10 +80,14 @@ public class CertificateNotificationManager {
           + "\n"
           + "The files will be automatically updated when the certificate renews.\n";
 
+  private CertificateNotificationManager() {
+    throw new RuntimeException("CertificateNotificationManager class cannot be instantiated.");
+  }
+
   /**
-   * Notifies domain recipients about certificate generation result.
+   * Notifies global and domain recipients about certificate generation result.
    *
-   * @param mbox object of {@link com.zimbra.cs.mailbox.Mailbox} needed for {@link
+   * @param mbox object of {@link com.zimbra.cs.mailbox.Mailbox} needed to get the proper {@link
    *     com.zimbra.cs.mailbox.MailSender} in order to send message
    * @param domain object of {@link com.zimbra.cs.account.Domain} needed to get {@link
    *     com.zimbra.common.account.ZAttrProvisioning} attributes A_carbonioNotificationRecipients
@@ -99,7 +107,8 @@ public class CertificateNotificationManager {
       Map<String, Object> notificationMap = createIssueCertNotificationMap(domain, outputMessage);
 
       MailSender sender = mbox.getMailSender(domain);
-      List<MimeMessage> mimeMessageList = createMimeMessageList(sender.getCurrentSession(), notificationMap);
+      List<MimeMessage> mimeMessageList =
+          createMimeMessageList(sender.getCurrentSession(), notificationMap);
 
       sender.sendMimeMessageList(mbox, mimeMessageList);
 
@@ -122,28 +131,34 @@ public class CertificateNotificationManager {
 
   /**
    * Creates a map based on domain values and Remote Manager/Certbot output which would be used to
-   * create a MimeMessage.
+   * create {@link javax.mail.internet.MimeMessage}.
    *
    * @param outputMessage output from RemoteManager/Certbot
-   * @return map
+   * @return  map with needed values of FROM, TO, SUBJECT and MESSAGE TEXT
    */
-  protected static Map<String, Object> createIssueCertNotificationMap(Domain domain, String outputMessage)
-      throws ServiceException {
+  protected static Map<String, Object> createIssueCertNotificationMap(
+      Domain domain, String outputMessage) throws ServiceException {
 
     Provisioning provisioning = Provisioning.getInstance();
     Config config = provisioning.getConfig();
 
-    String globalFrom = Optional.ofNullable(config.getCarbonioNotificationFrom())
-        .orElseThrow(() -> ServiceException.FAILURE(
-            "Global CarbonioNotificationFrom attribute is not present.", null));
-    String[] globalTo = Optional.ofNullable(config.getCarbonioNotificationRecipients())
-        .orElseThrow(() -> ServiceException.FAILURE(
-            "Global CarbonioNotificationRecipients attribute is not present.", null));
+    String globalFrom =
+        Optional.ofNullable(config.getCarbonioNotificationFrom())
+            .orElseThrow(
+                () ->
+                    ServiceException.FAILURE(
+                        "Global CarbonioNotificationFrom attribute is not present.", null));
+    String[] globalTo =
+        Optional.ofNullable(config.getCarbonioNotificationRecipients())
+            .orElseThrow(
+                () ->
+                    ServiceException.FAILURE(
+                        "Global CarbonioNotificationRecipients attribute is not present.", null));
 
-    String domainFrom = Optional.ofNullable(domain.getCarbonioNotificationFrom())
-        .orElse(globalFrom);
-    String[] domainTo = Optional.ofNullable(domain.getCarbonioNotificationRecipients())
-        .orElse(globalTo);
+    String domainFrom =
+        Optional.ofNullable(domain.getCarbonioNotificationFrom()).orElse(globalFrom);
+    String[] domainTo =
+        Optional.ofNullable(domain.getCarbonioNotificationRecipients()).orElse(globalTo);
 
     Map<String, Object> notificationMap = new HashMap<>();
 
@@ -175,7 +190,12 @@ public class CertificateNotificationManager {
       notificationMap.put(SUBJECT_RESULT, CERTBOT_FAILURE);
 
       String domainMessage =
-          String.join("", HEADER, FAILURE_RESULT, FAILURE_DOMAIN_NOTIFICATION_TEMPLATE);
+          String.join(
+              "",
+              HEADER,
+              FAILURE_RESULT,
+              FAILURE_DOMAIN_NOTIFICATION_TEMPLATE.replace("<DOMAIN_NAME>", domain.getName()));
+
       notificationMap.put(DOMAIN_MESSAGE, domainMessage);
       notificationMap.put(DOMAIN_FROM, domainFrom);
       notificationMap.put(DOMAIN_TO, domainTo);
@@ -208,6 +228,14 @@ public class CertificateNotificationManager {
     return notificationMap;
   }
 
+  /**
+   * Creates {@link javax.mail.internet.MimeMessage} list what would be sent to recipients.
+   *
+   * @param session {@link javax.mail.Session}
+   * @param notificationMap map with needed values of FROM, TO, SUBJECT and MESSAGE TEXT
+   * @return a list of {@link javax.mail.internet.MimeMessage}
+   * @throws ServiceException if unable to parse addresses or create a MimeMessage
+   */
   protected static List<MimeMessage> createMimeMessageList(
       Session session, Map<String, Object> notificationMap) throws ServiceException {
 

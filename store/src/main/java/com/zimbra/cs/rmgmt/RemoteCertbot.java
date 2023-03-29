@@ -34,8 +34,19 @@ public class RemoteCertbot {
   private final RemoteManager remoteManager;
   private StringBuilder stringBuilder;
 
-  public RemoteCertbot(RemoteManager remoteManager) {
+  private RemoteCertbot(RemoteManager remoteManager) {
     this.remoteManager = remoteManager;
+  }
+
+  /**
+   * Instantiate RemoteCertbot object.
+   *
+   * @param remoteManager {@link com.zimbra.cs.rmgmt.RemoteManager} which will be used to execute
+   *  remote commands.
+   * @return an instantiated object
+   */
+  public static RemoteCertbot getRemoteCertbot(RemoteManager remoteManager) {
+    return new RemoteCertbot(remoteManager);
   }
 
   /**
@@ -75,18 +86,23 @@ public class RemoteCertbot {
   }
 
   /**
-   * Executes a command asynchronously and notifies global and domain recipients about
-   * the command execution using {@link com.zimbra.cs.service.admin.CertificateNotificationManager}.
+   * Executes a command asynchronously and notifies global and domain recipients about the command
+   * execution using {@link com.zimbra.cs.service.admin.CertificateNotificationManager}.
    *
-   * @param domain {@link com.zimbra.cs.account.Domain}
+   * @param mbox an object of {@link com.zimbra.cs.mailbox.Mailbox} needed by {@link
+   *     com.zimbra.cs.service.admin.CertificateNotificationManager} to get the proper {@link
+   *     com.zimbra.cs.mailbox.MailSender}
+   * @param domain {@link com.zimbra.cs.account.Domain} needed by {@link
+   *     com.zimbra.cs.service.admin.CertificateNotificationManager} to get
+   *     {@link com.zimbra.common.account.ZAttrProvisioning} A_carbonioNotificationRecipients
+   *     and A_carbonioNotificationFrom attributes as well as other values
    * @param command a Certbot command to be executed remotely
    * @author Yuliya Aheeva
    * @since 23.5.0
    */
   public void supplyAsync(Mailbox mbox, Domain domain, String command) {
     CompletableFuture.supplyAsync(() -> execute(command))
-        .thenAccept(
-            certbotMessage -> CertificateNotificationManager.notify(mbox, domain, certbotMessage));
+        .thenAccept(message -> CertificateNotificationManager.notify(mbox, domain, message));
   }
 
   /**

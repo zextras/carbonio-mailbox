@@ -3,14 +3,13 @@ package com.zimbra.cs.rmgmt;
 import static org.mockito.Mockito.mock;
 
 import com.zimbra.common.soap.AdminConstants;
-import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 
 public class RemoteCertbotTest {
-  RemoteManager remoteManager = mock(RemoteManager.class);
-  RemoteCertbot remoteCertbot = new RemoteCertbot(remoteManager);
+  private final RemoteManager remoteManager = mock(RemoteManager.class);
+  private final RemoteCertbot remoteCertbot = RemoteCertbot.getRemoteCertbot(remoteManager);
 
   private final String domainName = "example.com";
   private final String publicServiceHostName = "public.example.com";

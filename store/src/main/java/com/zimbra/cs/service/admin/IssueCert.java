@@ -25,11 +25,14 @@ import java.util.Optional;
  * @since 23.3.0
  */
 public class IssueCert extends AdminDocumentHandler {
+  public static final String RESPONSE = "The System is processing your certificate generation "
+      + "request. It will send the result to the Domain notification recipients.";
 
   /**
    * Handles the request. Searches a domain by id, checks admin rights (accessible to global and
-   * delegated admin of requested domain), searches a server with proxy node, executes remote
-   * certbot command on it, creates response element.
+   * delegated admin of requested domain), searches a server with proxy node, creates certbot
+   * command, asynchronously executes it, creates response element, notifies global and domain
+   * recipients about the result of remote execution.
    *
    * @param request {@link Element} representation of {@link
    *     com.zimbra.soap.admin.message.IssueCertRequest}
@@ -40,9 +43,6 @@ public class IssueCert extends AdminDocumentHandler {
    * PublicServiceHostname and at least one VirtualHostName,
    * server with proxy node could not be found or domain admin doesn't have rights to deal with
    * this domain.
-   *
-   * It won't throw an exception in case if remote execution command fails, instead will create
-   * a response and add a failure message to it.
    */
   @Override
   public Element handle(final Element request, final Map<String, Object> context)
@@ -87,7 +87,7 @@ public class IssueCert extends AdminDocumentHandler {
     ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert for domain " + domainName);
 
     RemoteManager remoteManager = RemoteManager.getRemoteManager(proxyServer);
-    RemoteCertbot certbot = new RemoteCertbot(remoteManager);
+    RemoteCertbot certbot = RemoteCertbot.getRemoteCertbot(remoteManager);
     String command =
         certbot.createCommand(
             RemoteCommands.CERTBOT_CERTONLY,
@@ -108,9 +108,7 @@ public class IssueCert extends AdminDocumentHandler {
             .addNonUniqueElement(AdminConstants.E_MESSAGE)
             .addAttribute(AdminConstants.A_DOMAIN, domainName);
 
-    responseMessageElement.setText(
-        "Your request for the certificate generation has been taken and will be processed. "
-            + "Domain notification recipients would be notified about the certification result.");
+    responseMessageElement.setText(RESPONSE);
 
     return response;
   }
