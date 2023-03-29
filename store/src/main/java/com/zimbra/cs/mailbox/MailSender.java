@@ -250,10 +250,12 @@ public class MailSender {
     }
 
     /**
-     * Sets an alternate JavaMail <tt>Session</tt> and SMTP hosts
-     * that will be used to send the message based on the domain.
+     * Sets an alternate JavaMail {@link javax.mail.Session} and SMTP hosts
+     * that will be used to send the message based on the domain values.
      * The default behavior is to use SMTP settings from
-     * the <tt>Session<tt> on the {@link MimeMessage}.
+     * the {@link javax.mail.Session} on the {@link MimeMessage}.
+     *
+     * @param domain {@link com.zimbra.cs.account.Domain}
      * @throws ServiceException if not able to get SMTP session for the domain
      *
      * @author Yuliya Aheeva
@@ -307,8 +309,9 @@ public class MailSender {
     }
 
     /**
-     * Returns the current session.
-     * @return mSession
+     * Returns the current session {@link javax.mail.Session}.
+     *
+     * @return {@link #mSession} value
      * @author Yuliya Aheeva
      * @since 23.5.0
      */
@@ -471,13 +474,17 @@ public class MailSender {
     }
 
     /**
-     * Sends a list of messages.
-     * Tries to find the account by name (if unable to find will get account from the mailbox later
-     * with the sendMimeMessage method) and provide the proper operational context.
+     * Sends a list of messages {@link javax.mail.internet.MimeMessage}.
+     *
+     * Tries to find the account by name (if unable to find will set account from the mailbox later
+     * with the {@link #sendMimeMessage(OperationContext, Mailbox, MimeMessage)} method)
+     * and provide the proper operational context.
      *
      * @param mbox object of {@link com.zimbra.cs.mailbox.Mailbox}
      * @param mimeMessageList a list of {@link javax.mail.internet.MimeMessage} to be sent
-     * @throws ServiceException if sender is not set for the specific {@link javax.mail.internet.MimeMessage}
+     * @throws ServiceException if sender is not set for the specific
+     *  {@link javax.mail.internet.MimeMessage}
+     *
      * @author Yuliya Aheeva
      * @since 23.5.0
      */
@@ -1308,10 +1315,12 @@ public class MailSender {
     }
 
     /**
-     * Initialize a new SMTP transport if not able to get one from the mSession.
+     * Initializes a new SMTP transport if not able to get one from the {@link #mSession}.
+     *
      * @return SMTP transport
+     *
      * @author Yuliya Aheeva
-     * @since 23.4.0
+     * @since 23.5.0
      */
     private Transport getTransport() {
         try {

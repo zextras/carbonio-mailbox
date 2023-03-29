@@ -977,11 +977,12 @@ public class Mailbox implements MailboxStore {
    * Returns a {@link MailSender} object based on specific domain properties
    * that can be used to send mails.
    *
-   * @param domain a domain to get needed properties
+   * @param domain {@link com.zimbra.cs.account.Domain} to get needed properties
    * @return {@link MailSender} object
    * @throws ServiceException if unable to get SMTP session for the current domain
+   *
    * @author Yuliya Aheeva
-   * @since 23.4.0
+   * @since 23.5.0
    */
   public MailSender getMailSender(Domain domain) throws ServiceException {
     MailSender sender = new MailSender();

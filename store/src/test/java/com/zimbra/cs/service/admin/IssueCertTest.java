@@ -138,7 +138,7 @@ public class IssueCertTest {
 
     Mailbox expectMailbox = getRequestedMailbox(zsc);
 
-    String command = "certbot certonly --agree-tos --email admin@example.com"
+    String expectedCommand = "certbot certonly --agree-tos --email admin@example.com"
         + " -n --keep --webroot -w /opt/zextras "
         + "--cert-name example.com "
         + "-d public.example.com -d virtual.example.com";
@@ -149,7 +149,7 @@ public class IssueCertTest {
         AdminConstants.DEFAULT_CHAIN,
         domainName,
         publicServiceHostName,
-        expectedDomain.getVirtualHostname())).thenReturn(command);
+        expectedDomain.getVirtualHostname())).thenReturn(expectedCommand);
 
     final Element response = handler.handle(request, context);
     final Element message = response.getElement(E_MESSAGE);
@@ -157,7 +157,7 @@ public class IssueCertTest {
     assertEquals(message.getAttribute(A_DOMAIN), domainName);
     assertEquals(message.getText(), IssueCert.RESPONSE);
 
-    verify(remoteCertbot).supplyAsync(expectMailbox, expectedDomain, command);
+    verify(remoteCertbot).supplyAsync(expectMailbox, expectedDomain, expectedCommand);
   }
 
   @Test

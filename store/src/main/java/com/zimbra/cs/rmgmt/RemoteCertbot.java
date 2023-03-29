@@ -39,11 +39,14 @@ public class RemoteCertbot {
   }
 
   /**
-   * Instantiate RemoteCertbot object.
+   * Instantiates a RemoteCertbot object.
    *
    * @param remoteManager {@link com.zimbra.cs.rmgmt.RemoteManager} which will be used to execute
-   *  remote commands.
+   *  remote commands with.
    * @return an instantiated object
+   *
+   * @author Yuliya Aheeva
+   * @since 23.5.0
    */
   public static RemoteCertbot getRemoteCertbot(RemoteManager remoteManager) {
     return new RemoteCertbot(remoteManager);
@@ -97,6 +100,7 @@ public class RemoteCertbot {
    *     {@link com.zimbra.common.account.ZAttrProvisioning} A_carbonioNotificationRecipients
    *     and A_carbonioNotificationFrom attributes as well as other values
    * @param command a Certbot command to be executed remotely
+   *
    * @author Yuliya Aheeva
    * @since 23.5.0
    */
