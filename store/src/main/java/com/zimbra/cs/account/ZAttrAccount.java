@@ -168,13 +168,13 @@ public abstract class ZAttrAccount  extends MailTarget {
     /**
      * Whether the Chats feature enabled for account or COS
      *
-     * @return carbonioFeatureChatsEnabled, or true if unset
+     * @return carbonioFeatureChatsEnabled, or false if unset
      *
      * @since ZCS 23.1.0
      */
-    @ZAttr(id=3125)
+    @ZAttr(id=3129)
     public boolean isCarbonioFeatureChatsEnabled() {
-        return getBooleanAttr(Provisioning.A_carbonioFeatureChatsEnabled, true, true);
+        return getBooleanAttr(Provisioning.A_carbonioFeatureChatsEnabled, false, true);
     }
 
     /**
@@ -185,7 +185,7 @@ public abstract class ZAttrAccount  extends MailTarget {
      *
      * @since ZCS 23.1.0
      */
-    @ZAttr(id=3125)
+    @ZAttr(id=3129)
     public void setCarbonioFeatureChatsEnabled(boolean carbonioFeatureChatsEnabled) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, carbonioFeatureChatsEnabled ? TRUE : FALSE);
@@ -201,7 +201,7 @@ public abstract class ZAttrAccount  extends MailTarget {
      *
      * @since ZCS 23.1.0
      */
-    @ZAttr(id=3125)
+    @ZAttr(id=3129)
     public Map<String,Object> setCarbonioFeatureChatsEnabled(boolean carbonioFeatureChatsEnabled, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, carbonioFeatureChatsEnabled ? TRUE : FALSE);
@@ -215,7 +215,7 @@ public abstract class ZAttrAccount  extends MailTarget {
      *
      * @since ZCS 23.1.0
      */
-    @ZAttr(id=3125)
+    @ZAttr(id=3129)
     public void unsetCarbonioFeatureChatsEnabled() throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, "");
@@ -230,7 +230,7 @@ public abstract class ZAttrAccount  extends MailTarget {
      *
      * @since ZCS 23.1.0
      */
-    @ZAttr(id=3125)
+    @ZAttr(id=3129)
     public Map<String,Object> unsetCarbonioFeatureChatsEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, "");

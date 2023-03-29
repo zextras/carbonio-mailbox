@@ -9981,12 +9981,6 @@ TODO: delete them permanently from here
   <desc>Whether the Files feature enabled for account or COS</desc>
 </attr>
 
-<attr id="3125" name="carbonioFeatureChatsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.1.0">
-  <defaultCOSValue>TRUE</defaultCOSValue>
-  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
-  <desc>Whether the Chats feature enabled for account or COS</desc>
-</attr>
-
 <attr id="3126" name="carbonioLogoUrl" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="23.2.0">
   <desc>Logo URL for domain</desc>
   <globalConfigValue>https://www.zextras.com</globalConfigValue>
@@ -9998,5 +9992,11 @@ TODO: delete them permanently from here
 
 <attr id="3128" name="carbonioNotificationRecipients" type="email" max="256" cardinality="multi" optionalIn="globalConfig,domain" flags="domainInherited,domainAdminModifiable" since="23.4.0">
   <desc>email address of recipients who will receive emails about important infrastructure notifications</desc>
+</attr>
+
+<attr id="3129" name="carbonioFeatureChatsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.1.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether the Chats feature enabled for account or COS</desc>
 </attr>
 </attrs>

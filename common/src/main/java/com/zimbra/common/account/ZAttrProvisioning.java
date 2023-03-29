@@ -2723,7 +2723,7 @@ public class ZAttrProvisioning {
      *
      * @since ZCS 23.1.0
      */
-    @ZAttr(id=3125)
+    @ZAttr(id=3129)
     public static final String A_carbonioFeatureChatsEnabled = "carbonioFeatureChatsEnabled";
 
     /**
