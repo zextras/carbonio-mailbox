@@ -9999,4 +9999,9 @@ TODO: delete them permanently from here
 <attr id="3128" name="carbonioNotificationRecipients" type="email" max="256" cardinality="multi" optionalIn="globalConfig,domain" flags="domainInherited,domainAdminModifiable" since="23.4.0">
   <desc>email address of recipients who will receive emails about important infrastructure notifications</desc>
 </attr>
+
+<attr id="3129" name="carbonioAmavisDisableVirusCheck" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mta" since="23.5.0">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Whether or not Amavis should skip virus-checking</desc>
+</attr>
 </attrs>
