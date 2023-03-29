@@ -9994,9 +9994,21 @@ TODO: delete them permanently from here
   <desc>email address of recipients who will receive emails about important infrastructure notifications</desc>
 </attr>
 
-<attr id="3129" name="carbonioFeatureChatsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.1.0">
+<attr id="3129" name="carbonioFeatureChatsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.5.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>Whether the Chats feature enabled for account or COS</desc>
+</attr>
+
+<attr id="3130" name="carbonioFeatureMeetingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.5.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether the Meeting feature enabled for account or COS</desc>
+</attr>
+
+<attr id="3131" name="carbonioFeatureTeamEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.5.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether the Team feature enabled for account or COS</desc>
 </attr>
 </attrs>
