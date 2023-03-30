@@ -81,6 +81,8 @@ public class CertificateNotificationManager {
           + "\n"
           + "The files will be automatically updated when the certificate renews.\n";
 
+  private static final Provisioning provisioning = Provisioning.getInstance();
+
   private CertificateNotificationManager() {
     throw new RuntimeException("CertificateNotificationManager class cannot be instantiated.");
   }
@@ -140,7 +142,6 @@ public class CertificateNotificationManager {
   protected static Map<String, Object> createIssueCertNotificationMap(
       Domain domain, String outputMessage) throws ServiceException {
 
-    Provisioning provisioning = Provisioning.getInstance();
     Config config = provisioning.getConfig();
 
     String globalFrom =
@@ -320,7 +321,6 @@ public class CertificateNotificationManager {
   }
 
   private static void checkAddressValidity(String... addresses) throws ServiceException {
-    Provisioning provisioning = Provisioning.getInstance();
     for (String address: addresses) {
       Optional.ofNullable(provisioning.get(AccountBy.name, address)).orElseThrow(
           () -> ServiceException.FAILURE("Unable to find account with address " + address));
