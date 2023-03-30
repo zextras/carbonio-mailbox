@@ -20,9 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
@@ -52,7 +50,6 @@ public class CertificateNotificationManagerTest {
   private final Domain domain = mock(Domain.class);
   private final Provisioning provisioning = mock(Provisioning.class);
   private final Config config = mock(Config.class);
-  private final Account account = mock(Account.class);
   private final MailSender mailSender = mock(MailSender.class);
   private final String from = "admin@test.com";
   private final String[] recipients = new String[] {from, "admin2@test.com"};
@@ -67,8 +64,6 @@ public class CertificateNotificationManagerTest {
     when(config.getCarbonioNotificationRecipients()).thenReturn(recipients);
     when(mailbox.getMailSender(domain)).thenReturn(mailSender);
     when(mailSender.getCurrentSession()).thenReturn(null);
-    when(provisioning.get(AccountBy.name, from)).thenReturn(account);
-    when(provisioning.get(AccountBy.name, recipients[1])).thenReturn(account);
   }
 
   @Test

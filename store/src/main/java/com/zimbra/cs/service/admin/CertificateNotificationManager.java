@@ -1,6 +1,5 @@
 package com.zimbra.cs.service.admin;
 
-import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Config;
@@ -302,7 +301,6 @@ public class CertificateNotificationManager {
   }
 
   private static Address[] convert(String[] addresses) throws ServiceException {
-    checkAddressValidity(addresses);
     try {
       String addressList = String.join(", ", addresses);
       return InternetAddress.parse(addressList);
@@ -312,18 +310,10 @@ public class CertificateNotificationManager {
   }
 
   private static Address convert(String address) throws ServiceException {
-    checkAddressValidity(address);
     try {
       return new InternetAddress(address);
     } catch (AddressException e) {
       throw ServiceException.FAILURE("Unable to parse address", e);
-    }
-  }
-
-  private static void checkAddressValidity(String... addresses) throws ServiceException {
-    for (String address: addresses) {
-      Optional.ofNullable(provisioning.get(AccountBy.name, address)).orElseThrow(
-          () -> ServiceException.FAILURE("Unable to find account with address " + address));
     }
   }
 }
