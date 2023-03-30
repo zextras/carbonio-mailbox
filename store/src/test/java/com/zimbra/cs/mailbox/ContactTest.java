@@ -5,7 +5,10 @@
 
 package com.zimbra.cs.mailbox;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -59,7 +62,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimePart;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
@@ -76,24 +78,29 @@ public final class ContactTest {
   @Rule public TestName testName = new TestName();
   @Rule public MethodRule watchman = new ZTestWatchman();
 
-  @BeforeClass
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
-
   @Before
   public void setUp() throws Exception {
+    MailboxTestUtil.initServer();
     System.out.println(testName.getMethodName());
     Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("testCont@zimbra.com", "secret", new HashMap<String, Object>());
-    prov.createAccount("test6232@zimbra.com", "secret", new HashMap<String, Object>());
+    prov.createAccount("testCont@zimbra.com", "secret", new HashMap<>());
+    prov.createAccount("test6232@zimbra.com", "secret", new HashMap<>());
+  }
+
+  @After
+  public void tearDown() {
+    try {
+      MailboxTestUtil.clearData();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Test
   public void reanalyze() throws Exception {
     Account account = Provisioning.getInstance().getAccountByName("testCont@zimbra.com");
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-    Map<String, Object> fields = new HashMap<String, Object>();
+    Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "First1");
     fields.put(ContactConstants.A_lastName, "Last1");
     Contact contact =
@@ -130,7 +137,7 @@ public final class ContactTest {
   public void tooLongSender() throws Exception {
     Account account = Provisioning.getInstance().getAccountByName("testCont@zimbra.com");
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-    Map<String, Object> fields = new HashMap<String, Object>();
+    Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, Strings.repeat("F", 129));
     Contact contact =
         mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
@@ -170,7 +177,7 @@ public final class ContactTest {
   public void semiColonAndCommaInName() throws Exception {
     Account account = Provisioning.getInstance().getAccountByName("testCont@zimbra.com");
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-    Map<String, Object> fields = new HashMap<String, Object>();
+    Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_lastName, "Last");
     fields.put(ContactConstants.A_firstName, "First ; SemiColon");
     fields.put(ContactConstants.A_middleName, "Middle , Comma");
@@ -229,10 +236,8 @@ public final class ContactTest {
     Collection<javax.mail.Address> newAddrs =
         mbox.newContactAddrs(
             ImmutableList.of(
-                (javax.mail.Address)
-                    new javax.mail.internet.InternetAddress("test1@zimbra.com", "Test 1"),
-                (javax.mail.Address)
-                    new javax.mail.internet.InternetAddress("test2@zimbra.com", "Test 2")),
+                new javax.mail.internet.InternetAddress("test1@zimbra.com", "Test 1"),
+                new javax.mail.internet.InternetAddress("test2@zimbra.com", "Test 2")),
             "aaa");
 
     assertEquals(0, newAddrs.size());
@@ -262,7 +267,7 @@ public final class ContactTest {
   @Test
   public void getAttachmentContent() throws Exception {
     // Create a contact with an attachment.
-    Map<String, String> attrs = new HashMap<String, String>();
+    Map<String, String> attrs = new HashMap<>();
     attrs.put("fullName", "Get Attachment Content");
     byte[] attachData = "attachment 1".getBytes();
     Attachment textAttachment = new Attachment(attachData, "text/plain", "customField", "text.txt");
@@ -288,7 +293,7 @@ public final class ContactTest {
   @Test
   public void modifyContactHavingAttachment() throws Exception {
     // Create a contact with an attachment.
-    Map<String, String> attrs = new HashMap<String, String>();
+    Map<String, String> attrs = new HashMap<>();
     attrs.put("fullName", "Contact Initial Content");
     byte[] attachData = "attachment 1".getBytes();
     Attachment textAttachment = new Attachment(attachData, "text/plain", "customField", "file.txt");
@@ -303,7 +308,7 @@ public final class ContactTest {
 
     ParsedContact pc =
         new ParsedContact(contact)
-            .modify(new ParsedContact.FieldDeltaList(), new ArrayList<Attachment>(), "ownerId");
+            .modify(new ParsedContact.FieldDeltaList(), new ArrayList<>(), "ownerId");
     MimeMessage mm = new Mime.FixedMimeMessage(JMSession.getSession(), pc.getContentStream());
     MimePart mp = Mime.getMimePart(mm, "1");
     assertEquals("text/plain", mp.getContentType());
@@ -312,14 +317,14 @@ public final class ContactTest {
 
   /** Tests Invalid image attachment (bug 71868). */
   @Test
-  public void createInvalidImageAttachment() throws Exception {
+  public void createInvalidImageAttachment() {
     // Create a contact with an attachment.
-    Map<String, String> attrs = new HashMap<String, String>();
+    Map<String, String> attrs = new HashMap<>();
     attrs.put("fullName", "Get Attachment Content");
     byte[] attachData = "attachment 1".getBytes();
     Attachment attachment = new Attachment(attachData, "image/png", "image", "file1.png");
     try {
-      ParsedContact pc = new ParsedContact(attrs, Lists.newArrayList(attachment));
+      new ParsedContact(attrs, Lists.newArrayList(attachment));
       fail("Expected INVALID_IMAGE exception");
     } catch (ServiceException se) {
       assertEquals("check the INVALID_IMAGE exception", "mail.INVALID_IMAGE", se.getCode());
@@ -330,7 +335,7 @@ public final class ContactTest {
   @Test
   public void modifyInvalidImageAttachment() throws Exception {
     // Create a contact with an attachment.
-    Map<String, String> attrs = new HashMap<String, String>();
+    Map<String, String> attrs = new HashMap<>();
     attrs.put("fullName", "Contact Initial Content");
     byte[] attachData = "attachment 1".getBytes();
     Attachment attachment1 = new Attachment(attachData, "image/png", "customField", "image.png");
@@ -344,10 +349,8 @@ public final class ContactTest {
             null);
     Attachment attachment2 = new Attachment(attachData, "image/png", "image", "image2.png");
     try {
-      ParsedContact pc =
-          new ParsedContact(contact)
-              .modify(
-                  new ParsedContact.FieldDeltaList(), Lists.newArrayList(attachment2), "ownerId");
+      new ParsedContact(contact)
+          .modify(new ParsedContact.FieldDeltaList(), Lists.newArrayList(attachment2), "ownerId");
     } catch (ServiceException se) {
       assertEquals("check the INVALID_IMAGE exception", "mail.INVALID_IMAGE", se.getCode());
     }
@@ -357,7 +360,7 @@ public final class ContactTest {
   public void testEncodeContact() throws Exception {
     Account account = Provisioning.getInstance().getAccountByName("testCont@zimbra.com");
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-    Map<String, Object> fields = new HashMap<String, Object>();
+    Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_userCertificate, "{\"ZMVAL\":[\"Cert1149638887753217\"]}");
     Contact contact =
         mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
@@ -405,8 +408,10 @@ public final class ContactTest {
 
   @Test
   public void testTruncatedContactsTgzImport() throws IOException {
-    File file = new File(MailboxTestUtil.getZimbraServerDir("") + "src/test/resources/Truncated.tgz");
+    File file = new File(
+        MailboxTestUtil.getZimbraServerDir("") + "src/test/resources/Truncated.tgz");
     System.out.println(file.getAbsolutePath());
+
     InputStream is = new FileInputStream(file);
     ArchiveInputStream ais = new TarArchiveInputStream(new GZIPInputStream(is), "UTF-8");
     ArchiveInputEntry aie;
@@ -415,20 +420,15 @@ public final class ContactTest {
       try {
         ArchiveFormatter.readArchiveEntry(ais, aie);
       } catch (IOException e) {
-        e.printStackTrace();
+        System.out.println("Expected exception was caught: " + e);
         errorCaught = true;
         break;
       }
     }
-    assertTrue(errorCaught);
-  }
 
-  @After
-  public void tearDown() {
-    try {
-      MailboxTestUtil.clearData();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    is.close();
+    ais.close();
+
+    assertTrue(errorCaught);
   }
 }
