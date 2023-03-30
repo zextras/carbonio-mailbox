@@ -56,8 +56,9 @@ public class CertificateNotificationManager {
 
   public static final String FAIL = "fail";
   public static final String FAILURE_DOMAIN_NOTIFICATION_TEMPLATE =
-      "The SSL certificate request for <DOMAIN_NAME> was unsuccessful and the system wasn't able to"
-          + " verify the validity of the domain.\n"
+      "\n"
+          + "The SSL certificate request for <DOMAIN_NAME> was unsuccessful and the system "
+          + "wasn't able to verify the validity of the domain.\n"
           + "\n"
           + "Most common reasons that could cause this kind of failure are:\n"
           + "- Misspelled or missing public service hostname and/or virtual hostname."
@@ -74,7 +75,8 @@ public class CertificateNotificationManager {
 
   public static final String RECEIVED = "received";
   public static final String SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE =
-      "The certificate was successfully received.\n"
+      "\n"
+          + "The certificate was successfully received.\n"
           + "Please NOTE  that the Certificate and Key will be available after the proxy reload.\n"
           + "You’ll be able to download them from the Certificate section in the admin interface.\n"
           + "\n"
@@ -136,7 +138,7 @@ public class CertificateNotificationManager {
    * create {@link javax.mail.internet.MimeMessage}.
    *
    * @param outputMessage output from RemoteManager/Certbot
-   * @return  map with needed values of FROM, TO, SUBJECT and MESSAGE TEXT
+   * @return map with needed values of FROM, TO, SUBJECT and MESSAGE TEXT
    */
   protected static Map<String, Object> createIssueCertNotificationMap(
       Domain domain, String outputMessage) throws ServiceException {
@@ -252,7 +254,7 @@ public class CertificateNotificationManager {
 
       list.add(createMimeMessage(session, subject, globalFrom, globalTo, globalMessage));
 
-    } catch(ServiceException e) {
+    } catch (ServiceException e) {
       ZimbraLog.rmgmt.info(
           "Notifications about LetsEncrypt certificate generation for "
               + notificationMap.get(DOMAIN_NAME)
