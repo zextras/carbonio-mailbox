@@ -45820,13 +45820,13 @@ public abstract class ZAttrCos extends NamedEntry {
      * the value of the Sender or From header in the outgoing message, in
      * that order.
      *
-     * @return zimbraSmtpRestrictEnvelopeFrom, or true if unset
+     * @return zimbraSmtpRestrictEnvelopeFrom, or false if unset
      *
      * @since ZCS 6.0.5
      */
     @ZAttr(id=1077)
     public boolean isSmtpRestrictEnvelopeFrom() {
-        return getBooleanAttr(Provisioning.A_zimbraSmtpRestrictEnvelopeFrom, true, true);
+        return getBooleanAttr(Provisioning.A_zimbraSmtpRestrictEnvelopeFrom, false, true);
     }
 
     /**
