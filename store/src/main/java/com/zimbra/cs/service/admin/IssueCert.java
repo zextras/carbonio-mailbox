@@ -61,18 +61,16 @@ public class IssueCert extends AdminDocumentHandler {
 
     String chain = request.getAttribute(AdminConstants.A_CHAIN_TYPE, AdminConstants.DEFAULT_CHAIN);
 
-    String domainName = domain.getDomainName();
-    String publicServiceHostname = domain.getPublicServiceHostname();
-    String[] virtualHostNames = domain.getVirtualHostname();
-    if (publicServiceHostname == null) {
-      throw ServiceException.FAILURE(
-          "Domain " + domainName + " must have PublicServiceHostname.",
-          null);
-    } else if (virtualHostNames.length == 0) {
-      throw ServiceException.FAILURE(
-          "Domain " + domainName + " must have at least one VirtualHostName.",
-          null);
-    }
+    String domainName = Optional.ofNullable(domain.getDomainName())
+        .orElseThrow(() -> ServiceException.FAILURE(
+            "Domain with id " + domainId + " must have domain name", null));
+    String publicServiceHostname = Optional.ofNullable(domain.getPublicServiceHostname())
+        .orElseThrow(() -> ServiceException.FAILURE(
+            "Domain " + domainName + " must have PublicServiceHostname.", null));
+    String[] virtualHostNames = Optional.ofNullable(domain.getVirtualHostname())
+        .filter(hosts -> hosts.length > 0)
+        .orElseThrow(() -> ServiceException.FAILURE(
+            "Domain " + domainName + " must have at least one VirtualHostName."));
 
     // First release will work only on ONE proxy even if there are multiple proxy in the infrastructure.
     Server proxyServer =

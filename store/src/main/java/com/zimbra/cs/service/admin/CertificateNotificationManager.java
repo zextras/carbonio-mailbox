@@ -1,5 +1,6 @@
 package com.zimbra.cs.service.admin;
 
+import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Config;
@@ -244,18 +245,36 @@ public class CertificateNotificationManager {
     String subject =
         notificationMap.get(DOMAIN_NAME) + SUBJECT_TEMPLATE + notificationMap.get(SUBJECT_RESULT);
 
-    Address globalFrom = convert((String) notificationMap.get(GLOBAL_FROM));
-    Address[] globalTo = convert((String[]) notificationMap.get(GLOBAL_TO));
-    String globalMessage = (String) notificationMap.get(GLOBAL_MESSAGE);
+    try {
+      Address globalFrom = convert((String) notificationMap.get(GLOBAL_FROM));
+      Address[] globalTo = convert((String[]) notificationMap.get(GLOBAL_TO));
+      String globalMessage = (String) notificationMap.get(GLOBAL_MESSAGE);
 
-    list.add(createMimeMessage(session, subject, globalFrom, globalTo, globalMessage));
+      list.add(createMimeMessage(session, subject, globalFrom, globalTo, globalMessage));
+
+    } catch(ServiceException e) {
+      ZimbraLog.rmgmt.info(
+          "Notifications about LetsEncrypt certificate generation for "
+              + notificationMap.get(DOMAIN_NAME)
+              + " won't be sent for the global recipients.\n"
+              + e.getMessage());
+    }
 
     if (notificationMap.containsKey(DOMAIN_MESSAGE)) {
-      Address domainFrom = convert((String) notificationMap.get(DOMAIN_FROM));
-      Address[] domainTo = convert((String[]) notificationMap.get(DOMAIN_TO));
-      String domainMessage = (String) notificationMap.get(DOMAIN_MESSAGE);
+      try {
+        Address domainFrom = convert((String) notificationMap.get(DOMAIN_FROM));
+        Address[] domainTo = convert((String[]) notificationMap.get(DOMAIN_TO));
+        String domainMessage = (String) notificationMap.get(DOMAIN_MESSAGE);
 
-      list.add(createMimeMessage(session, subject, domainFrom, domainTo, domainMessage));
+        list.add(createMimeMessage(session, subject, domainFrom, domainTo, domainMessage));
+
+      } catch (ServiceException e) {
+        ZimbraLog.rmgmt.info(
+            "Notifications about LetsEncrypt certificate generation for "
+                + notificationMap.get(DOMAIN_NAME)
+                + " won't be sent for the domain recipients.\n"
+                + e.getMessage());
+      }
     }
 
     return list;
@@ -282,6 +301,7 @@ public class CertificateNotificationManager {
   }
 
   private static Address[] convert(String[] addresses) throws ServiceException {
+    checkAddressValidity(addresses);
     try {
       String addressList = String.join(", ", addresses);
       return InternetAddress.parse(addressList);
@@ -291,10 +311,19 @@ public class CertificateNotificationManager {
   }
 
   private static Address convert(String address) throws ServiceException {
+    checkAddressValidity(address);
     try {
       return new InternetAddress(address);
     } catch (AddressException e) {
       throw ServiceException.FAILURE("Unable to parse address", e);
+    }
+  }
+
+  private static void checkAddressValidity(String... addresses) throws ServiceException {
+    Provisioning provisioning = Provisioning.getInstance();
+    for (String address: addresses) {
+      Optional.ofNullable(provisioning.get(AccountBy.name, address)).orElseThrow(
+          () -> ServiceException.FAILURE("Unable to find account with address " + address));
     }
   }
 }
