@@ -61,7 +61,7 @@ public class CertificateNotificationManager {
           + "wasn't able to verify the validity of the domain.\n"
           + "\n"
           + "Most common reasons that could cause this kind of failure are:\n"
-          + "- Misspelled or missing public service hostname and/or virtual hostname."
+          + "- Misspelled or missing Public Service Hostname and/or Virtual Hostname."
           + " Make sure both are filled in with a valid Fully Qualified Domain Name.\n"
           + "- Wrong or missing A/AAAA entry for Public Service Hostname and/or Virtual Hostname."
           + " Make sure there is a valid, public resolution for the Fully Qualified Domain Name"
@@ -76,7 +76,7 @@ public class CertificateNotificationManager {
   public static final String RECEIVED = "received";
   public static final String SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE =
       "\n"
-          + "The certificate was successfully received.\n"
+          + "The certificate for <DOMAIN_NAME> was successfully received.\n"
           + "Please NOTE  that the Certificate and Key will be available after the proxy reload.\n"
           + "You’ll be able to download them from the Certificate section in the admin interface.\n"
           + "\n"
@@ -214,11 +214,16 @@ public class CertificateNotificationManager {
       Matcher matcher = Pattern.compile(regex).matcher(substringResult);
       if (matcher.find()) {
         String expiresTemplate = "This certificate expires on ";
-        expire = expire + expiresTemplate + matcher.group() + ".";
+        expire = String.join("",expire, expiresTemplate, matcher.group(), ".");
       }
 
       String domainMessage =
-          String.join("", HEADER, SUCCESS_RESULT, SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE, expire);
+          String.join(
+              "",
+              HEADER,
+              SUCCESS_RESULT,
+              SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE.replace("<DOMAIN_NAME>", domain.getName()),
+              expire);
 
       notificationMap.put(DOMAIN_MESSAGE, domainMessage);
       notificationMap.put(DOMAIN_FROM, domainFrom);

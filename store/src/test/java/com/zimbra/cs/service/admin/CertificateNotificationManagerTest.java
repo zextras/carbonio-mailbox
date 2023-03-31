@@ -120,8 +120,10 @@ public class CertificateNotificationManagerTest {
   @Test
   public void shouldCreateMapFromCertbotSuccessfullyReceivedMessage() throws ServiceException {
     final String expiration = "\n" + "This certificate expires on 2023-06-15.";
-    final String expectedDomainMessage =
-        HEADER + SUCCESS_RESULT + SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE + expiration;
+    final String expectedDomainMessage = HEADER + SUCCESS_RESULT
+            + SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE.replace("<DOMAIN_NAME>", domainName)
+            + expiration;
+
     String certbotSuccessMessage =
         "STARTCMD: nbm-m01.demo.zextras.io /opt/zextras/libexec/certbot certonly --agree-tos"
             + " --email zextras@demo.zextras.io -n --keep --webroot -w /opt/zextras --cert-name"
