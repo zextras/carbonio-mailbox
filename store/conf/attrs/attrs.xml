@@ -9999,19 +9999,19 @@ TODO: delete them permanently from here
   <desc>Whether or not Amavis should skip virus-checking</desc>
 </attr>
 
-<attr id="3130" name="carbonioFeatureChatsEnabled" type="boolean" cardinality="single" requiredIn="cos" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.5.0">
+<attr id="3130" name="carbonioFeatureChatsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.5.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>Whether the Chats feature enabled for account or COS</desc>
 </attr>
 
-<attr id="3131" name="carbonioFeatureMeetingEnabled" type="boolean" cardinality="single" requiredIn="cos" optionalIn="account" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.5.0">
+<attr id="3131" name="carbonioFeatureMeetingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.5.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>Whether the Meeting feature enabled for account or COS</desc>
 </attr>
 
-<attr id="3132" name="carbonioFeatureTeamEnabled" type="boolean" cardinality="single" requiredIn="cos" optionalIn="account" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.5.0">
+<attr id="3132" name="carbonioFeatureTeamEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="23.5.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>Whether the Team feature enabled for account or COS</desc>
