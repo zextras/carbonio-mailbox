@@ -13,26 +13,22 @@ package com.zimbra.cs.account;
 import static com.zimbra.common.account.ProvisioningConstants.FALSE;
 import static com.zimbra.common.account.ProvisioningConstants.TRUE;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.zimbra.common.account.ZAttr;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.ldap.LdapDateUtil;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * AUTO-GENERATED. DO NOT EDIT.
- *
- */
+/** AUTO-GENERATED. DO NOT EDIT. */
 public abstract class ZAttrCos extends NamedEntry {
 
-    public ZAttrCos(String name, String id, Map<String,Object> attrs, Provisioning prov) {
-        super(name, id, attrs, null, prov);
-    }
+  public ZAttrCos(String name, String id, Map<String, Object> attrs, Provisioning prov) {
+    super(name, id, attrs, null, prov);
+  }
 
-    ///// BEGIN-AUTO-GEN-REPLACE
+  ///// BEGIN-AUTO-GEN-REPLACE
 
     /**
      * Whether the Chat App usages enabled for account or COS
@@ -113,7 +109,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3129)
+    @ZAttr(id=3130)
     public boolean isCarbonioFeatureChatsEnabled() {
         return getBooleanAttr(Provisioning.A_carbonioFeatureChatsEnabled, false, true);
     }
@@ -126,7 +122,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3129)
+    @ZAttr(id=3130)
     public void setCarbonioFeatureChatsEnabled(boolean carbonioFeatureChatsEnabled) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, carbonioFeatureChatsEnabled ? TRUE : FALSE);
@@ -142,7 +138,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3129)
+    @ZAttr(id=3130)
     public Map<String,Object> setCarbonioFeatureChatsEnabled(boolean carbonioFeatureChatsEnabled, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, carbonioFeatureChatsEnabled ? TRUE : FALSE);
@@ -156,7 +152,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3129)
+    @ZAttr(id=3130)
     public void unsetCarbonioFeatureChatsEnabled() throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, "");
@@ -171,7 +167,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3129)
+    @ZAttr(id=3130)
     public Map<String,Object> unsetCarbonioFeatureChatsEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureChatsEnabled, "");
@@ -401,7 +397,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3130)
+    @ZAttr(id=3131)
     public boolean isCarbonioFeatureMeetingEnabled() {
         return getBooleanAttr(Provisioning.A_carbonioFeatureMeetingEnabled, false, true);
     }
@@ -414,7 +410,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3130)
+    @ZAttr(id=3131)
     public void setCarbonioFeatureMeetingEnabled(boolean carbonioFeatureMeetingEnabled) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureMeetingEnabled, carbonioFeatureMeetingEnabled ? TRUE : FALSE);
@@ -430,7 +426,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3130)
+    @ZAttr(id=3131)
     public Map<String,Object> setCarbonioFeatureMeetingEnabled(boolean carbonioFeatureMeetingEnabled, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureMeetingEnabled, carbonioFeatureMeetingEnabled ? TRUE : FALSE);
@@ -444,7 +440,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3130)
+    @ZAttr(id=3131)
     public void unsetCarbonioFeatureMeetingEnabled() throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureMeetingEnabled, "");
@@ -459,7 +455,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3130)
+    @ZAttr(id=3131)
     public Map<String,Object> unsetCarbonioFeatureMeetingEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureMeetingEnabled, "");
@@ -473,7 +469,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3131)
+    @ZAttr(id=3132)
     public boolean isCarbonioFeatureTeamEnabled() {
         return getBooleanAttr(Provisioning.A_carbonioFeatureTeamEnabled, false, true);
     }
@@ -486,7 +482,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3131)
+    @ZAttr(id=3132)
     public void setCarbonioFeatureTeamEnabled(boolean carbonioFeatureTeamEnabled) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureTeamEnabled, carbonioFeatureTeamEnabled ? TRUE : FALSE);
@@ -502,7 +498,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3131)
+    @ZAttr(id=3132)
     public Map<String,Object> setCarbonioFeatureTeamEnabled(boolean carbonioFeatureTeamEnabled, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureTeamEnabled, carbonioFeatureTeamEnabled ? TRUE : FALSE);
@@ -516,7 +512,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3131)
+    @ZAttr(id=3132)
     public void unsetCarbonioFeatureTeamEnabled() throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureTeamEnabled, "");
@@ -531,7 +527,7 @@ public abstract class ZAttrCos extends NamedEntry {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3131)
+    @ZAttr(id=3132)
     public Map<String,Object> unsetCarbonioFeatureTeamEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_carbonioFeatureTeamEnabled, "");
@@ -45964,13 +45960,13 @@ public abstract class ZAttrCos extends NamedEntry {
      * the value of the Sender or From header in the outgoing message, in
      * that order.
      *
-     * @return zimbraSmtpRestrictEnvelopeFrom, or true if unset
+     * @return zimbraSmtpRestrictEnvelopeFrom, or false if unset
      *
      * @since ZCS 6.0.5
      */
     @ZAttr(id=1077)
     public boolean isSmtpRestrictEnvelopeFrom() {
-        return getBooleanAttr(Provisioning.A_zimbraSmtpRestrictEnvelopeFrom, true, true);
+        return getBooleanAttr(Provisioning.A_zimbraSmtpRestrictEnvelopeFrom, false, true);
     }
 
     /**
@@ -47848,6 +47844,6 @@ public abstract class ZAttrCos extends NamedEntry {
         return attrs;
     }
 
-    ///// END-AUTO-GEN-REPLACE
+  ///// END-AUTO-GEN-REPLACE
 
 }

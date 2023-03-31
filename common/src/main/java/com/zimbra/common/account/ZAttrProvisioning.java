@@ -2703,6 +2703,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAllowFeedback = "carbonioAllowFeedback";
 
     /**
+     * Whether or not Amavis should skip virus-checking
+     *
+     * @since ZCS 23.5.0
+     */
+    @ZAttr(id=3129)
+    public static final String A_carbonioAmavisDisableVirusCheck = "carbonioAmavisDisableVirusCheck";
+
+    /**
      * Database Custom Urls for freshclam configuration file.
      *
      * @since ZCS 23.1.0
@@ -2723,7 +2731,7 @@ public class ZAttrProvisioning {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3129)
+    @ZAttr(id=3130)
     public static final String A_carbonioFeatureChatsEnabled = "carbonioFeatureChatsEnabled";
 
     /**
@@ -2755,7 +2763,7 @@ public class ZAttrProvisioning {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3130)
+    @ZAttr(id=3131)
     public static final String A_carbonioFeatureMeetingEnabled = "carbonioFeatureMeetingEnabled";
 
     /**
@@ -2763,7 +2771,7 @@ public class ZAttrProvisioning {
      *
      * @since ZCS 23.5.0
      */
-    @ZAttr(id=3131)
+    @ZAttr(id=3132)
     public static final String A_carbonioFeatureTeamEnabled = "carbonioFeatureTeamEnabled";
 
     /**
