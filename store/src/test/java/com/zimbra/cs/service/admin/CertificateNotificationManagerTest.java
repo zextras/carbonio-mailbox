@@ -82,7 +82,7 @@ public class CertificateNotificationManagerTest {
   }
 
   @Test
-  public void shouldCreateMapFromCertbotFailureMessage() throws ServiceException {
+  public void shouldCreateMapFromCertbotFailureMessage() {
     final String expectedDomainMessage =
         HEADER + FAILURE_RESULT + FAILURE_DOMAIN_NOTIFICATION_TEMPLATE
             .replace("<DOMAIN_NAME>", domainName);
