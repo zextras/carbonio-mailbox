@@ -52,7 +52,8 @@ public class CertificateNotificationManagerTest {
   private final String from = "admin@test.com";
   private final String[] recipients = new String[] {from, "admin2@test.com"};
   private final String domainName = "test.com";
-  private final CertificateNotificationManager notificationManager = getCertificateNotificationManager(mailbox, domain);
+  private final CertificateNotificationManager notificationManager
+      = getCertificateNotificationManager(mailbox, domain);
 
 
   @Before
@@ -74,7 +75,8 @@ public class CertificateNotificationManagerTest {
 
   @Test
   public void shouldCreateMapFromSystemFailureMessage() {
-    final Map<String, String> notificationMap = notificationManager.parseOutput(systemFailureMessage);
+    final Map<String, String> notificationMap =
+        notificationManager.parseOutput(systemFailureMessage);
 
     assertEquals(SYSTEM_FAILURE, notificationMap.get(SUBJECT_RESULT));
     assertEquals(systemFailureMessage, notificationMap.get(GLOBAL_MESSAGE));
@@ -108,7 +110,8 @@ public class CertificateNotificationManagerTest {
             + "ENDCMD: nbm-m01.demo.zextras.io /opt/zextras/libexec/certbot certonly --agree-tos"
             + " --email zextras@demo.zextras.io -n --keep --webroot -w /opt/zextras --cert-name"
             + " test.zextras.io -d test.zextras.io -d test.zextras.io";
-    final Map<String, String> notificationMap = notificationManager.parseOutput(certbotFailureMessage);
+    final Map<String, String> notificationMap =
+        notificationManager.parseOutput(certbotFailureMessage);
 
     assertEquals(CERTBOT_FAILURE, notificationMap.get(SUBJECT_RESULT));
     assertEquals(certbotFailureMessage, notificationMap.get(GLOBAL_MESSAGE));
@@ -152,8 +155,6 @@ public class CertificateNotificationManagerTest {
             + " --email zextras@demo.zextras.io -n --keep --webroot -w /opt/zextras --cert-name"
             + " le.zextras.io -d le1.zextras.io -d le2.zextras.io";
 
-    CertificateNotificationManager notificationManager = getCertificateNotificationManager(mailbox, domain);
-
     final Map<String, String> notificationMap =
         notificationManager.parseOutput(certbotSuccessMessage);
 
@@ -178,7 +179,8 @@ public class CertificateNotificationManagerTest {
             + "ENDCMD: nbm-m01.demo.zextras.io /opt/zextras/libexec/certbot certonly --agree-tos"
             + " --email zextras@demo.zextras.io -n --keep --webroot -w /opt/zextras --cert-name"
             + " test.zextras.io -d test.zextras.io -d test.zextras.io";
-    final Map<String, String> notificationMap = notificationManager.parseOutput(otherCertbotMessage);
+    final Map<String, String> notificationMap =
+        notificationManager.parseOutput(otherCertbotMessage);
 
     assertEquals(CERTBOT_SUCCESS, notificationMap.get(SUBJECT_RESULT));
     assertEquals(otherCertbotMessage, notificationMap.get(GLOBAL_MESSAGE));
