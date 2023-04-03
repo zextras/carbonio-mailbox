@@ -32,9 +32,6 @@ import javax.mail.internet.MimeMessage;
  * @since 23.5.0
  */
 public class CertificateNotificationManager {
-  public static final String GLOBAL_MESSAGE = "globalMessage";
-  public static final String DOMAIN_MESSAGE = "domainMessage";
-
   public static final String SUBJECT_RESULT = "subjectResult";
   public static final String SUBJECT_TEMPLATE = " SSL certification request - ";
 
@@ -43,6 +40,7 @@ public class CertificateNotificationManager {
   public static final String CERTBOT_SUCCESS = "Certificate Authority success";
   public static final String CERTBOT_FAILURE = "Certificate Authority failure";
 
+  public static final String DOMAIN_MESSAGE = "domainMessage";
   public static final String RESULT = "result";
   public static final String HEADER = "The certification result is: ";
   public static final String SUCCESS_RESULT = "SUCCESS\n";
@@ -116,16 +114,47 @@ public class CertificateNotificationManager {
             + domainName
             + " was finished with the following result: "
             + outputMessage);
-
     try {
-      Map<String, String> notificationMap = parseOutput(
-          outputMessage);
+      Provisioning provisioning = Provisioning.getInstance();
+      Config config = provisioning.getConfig();
 
+      String globalFrom =
+          Optional.ofNullable(config.getCarbonioNotificationFrom())
+              .orElseThrow(
+                  () ->
+                      ServiceException.FAILURE(
+                          "Global CarbonioNotificationFrom attribute is not present.", null));
+      String[] globalTo =
+          Optional.ofNullable(config.getCarbonioNotificationRecipients())
+              .orElseThrow(
+                  () ->
+                      ServiceException.FAILURE(
+                          "Global CarbonioNotificationRecipients attribute is not present.", null));
+
+      String domainFrom =
+          Optional.ofNullable(domain.getCarbonioNotificationFrom()).orElse(globalFrom);
+      String[] domainTo =
+          Optional.ofNullable(domain.getCarbonioNotificationRecipients()).orElse(globalTo);
+
+      Map<String, String> notificationMap = parseOutput(outputMessage);
       MailSender sender = mbox.getMailSender(domain);
       Session session = sender.getCurrentSession();
 
-      List<MimeMessage> mimeMessageList =
-          createMimeMessageList(session, notificationMap);
+      String subject = domainName + SUBJECT_TEMPLATE + notificationMap.get(SUBJECT_RESULT);
+
+
+      List<MimeMessage> mimeMessageList = new ArrayList<>();
+
+      MimeMessage globalNotification =
+          createMimeMessage(session, subject, globalFrom, globalTo, outputMessage);
+      mimeMessageList.add(globalNotification);
+
+      if (notificationMap.get(SUBJECT_RESULT).equals(CERTBOT_FAILURE)
+          || notificationMap.get(SUBJECT_RESULT).equals(CERTBOT_SUCCESS)) {
+        MimeMessage domainNotification = createMimeMessage(
+            session, subject, domainFrom, domainTo, notificationMap.get(DOMAIN_MESSAGE));
+        mimeMessageList.add(domainNotification);
+      }
 
       sender.sendMimeMessageList(mbox, mimeMessageList);
 
@@ -156,9 +185,6 @@ public class CertificateNotificationManager {
   public Map<String, String> parseOutput(String outputMessage) {
 
     Map<String, String> notificationMap = new HashMap<>();
-
-    // message for global admin contains all output
-    notificationMap.put(GLOBAL_MESSAGE, outputMessage);
 
     // check if a system failure
     boolean isSystemFailure = outputMessage.contains(SYSTEM_FAILURE);
@@ -210,91 +236,18 @@ public class CertificateNotificationManager {
     return notificationMap;
   }
 
-  /**
-   * Creates a {@link javax.mail.internet.MimeMessage} list representing the emails for global
-   * and domain recipients.
-   * If unable to create an email for global recipients then would proceed for only for domain ones
-   * or vice versa.
-   *
-   * @param session {@link javax.mail.Session}
-   * @param notificationMap map with needed values of MESSAGE TEXT
-   * @return a list of {@link javax.mail.internet.MimeMessage}
-   * @throws ServiceException if unable to parse addresses or create a MimeMessage
-   */
-  private List<MimeMessage> createMimeMessageList(
-      Session session, Map<String, String> notificationMap) throws ServiceException {
-
-    Provisioning provisioning = Provisioning.getInstance();
-    Config config = provisioning.getConfig();
-
-    String globalFrom =
-        Optional.ofNullable(config.getCarbonioNotificationFrom())
-            .orElseThrow(
-                () ->
-                    ServiceException.FAILURE(
-                        "Global CarbonioNotificationFrom attribute is not present.", null));
-    String[] globalTo =
-        Optional.ofNullable(config.getCarbonioNotificationRecipients())
-            .orElseThrow(
-                () ->
-                    ServiceException.FAILURE(
-                        "Global CarbonioNotificationRecipients attribute is not present.", null));
-
-    String domainFrom =
-        Optional.ofNullable(domain.getCarbonioNotificationFrom()).orElse(globalFrom);
-    String[] domainTo =
-        Optional.ofNullable(domain.getCarbonioNotificationRecipients()).orElse(globalTo);
-
-    List<MimeMessage> list = new ArrayList<>();
-
-    String subject = domain.getName() + SUBJECT_TEMPLATE + notificationMap.get(SUBJECT_RESULT);
-
-    try {
-      Address globalAddressFrom = convert(globalFrom);
-      Address[] globalAddressTo = convert(globalTo);
-      String globalMessage = notificationMap.get(GLOBAL_MESSAGE);
-
-      list.add(
-          createMimeMessage(session, subject, globalAddressFrom, globalAddressTo, globalMessage));
-
-    } catch (ServiceException e) {
-      ZimbraLog.rmgmt.info(
-          "Notifications about LetsEncrypt certificate generation for "
-              + domain.getName()
-              + " won't be sent for the global recipients.\n"
-              + e.getMessage());
-    }
-
-    if (notificationMap.containsKey(DOMAIN_MESSAGE)) {
-      try {
-        Address domainAddressFrom = convert(domainFrom);
-        Address[] domainAddressTo = convert(domainTo);
-        String domainMessage = notificationMap.get(DOMAIN_MESSAGE);
-
-        list.add(
-            createMimeMessage(session, subject, domainAddressFrom, domainAddressTo, domainMessage));
-
-      } catch (ServiceException e) {
-        ZimbraLog.rmgmt.info(
-            "Notifications about LetsEncrypt certificate generation for "
-                + domain.getName()
-                + " won't be sent for the domain recipients.\n"
-                + e.getMessage());
-      }
-    }
-
-    return list;
-  }
-
   private MimeMessage createMimeMessage(
-      Session session, String subject, Address from, Address[] to, String message)
+      Session session, String subject, String from, String[] to, String message)
       throws ServiceException {
 
     try {
+      Address addressFrom = convert(from);
+      Address[] addressTo = convert(to);
+
       MimeMessage mm = new MimeMessage(session);
-      mm.setFrom(from);
-      mm.setSender(from);
-      mm.setRecipients(RecipientType.TO, to);
+      mm.setFrom(addressFrom);
+      mm.setSender(addressFrom);
+      mm.setRecipients(RecipientType.TO, addressTo);
       mm.setSubject(subject);
       mm.setText(message);
       mm.saveChanges();

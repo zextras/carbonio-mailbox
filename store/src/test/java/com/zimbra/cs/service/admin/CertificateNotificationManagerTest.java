@@ -5,7 +5,6 @@ import static com.zimbra.cs.service.admin.CertificateNotificationManager.CERTBOT
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.DOMAIN_MESSAGE;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.FAILURE_DOMAIN_NOTIFICATION_TEMPLATE;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.FAILURE_RESULT;
-import static com.zimbra.cs.service.admin.CertificateNotificationManager.GLOBAL_MESSAGE;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.HEADER;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.SUBJECT_RESULT;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE;
@@ -79,7 +78,6 @@ public class CertificateNotificationManagerTest {
         notificationManager.parseOutput(systemFailureMessage);
 
     assertEquals(SYSTEM_FAILURE, notificationMap.get(SUBJECT_RESULT));
-    assertEquals(systemFailureMessage, notificationMap.get(GLOBAL_MESSAGE));
     assertFalse(notificationMap.containsKey(DOMAIN_MESSAGE));
   }
 
@@ -114,7 +112,6 @@ public class CertificateNotificationManagerTest {
         notificationManager.parseOutput(certbotFailureMessage);
 
     assertEquals(CERTBOT_FAILURE, notificationMap.get(SUBJECT_RESULT));
-    assertEquals(certbotFailureMessage, notificationMap.get(GLOBAL_MESSAGE));
     assertEquals(expectedDomainMessage, notificationMap.get(DOMAIN_MESSAGE));
   }
 
@@ -159,7 +156,6 @@ public class CertificateNotificationManagerTest {
         notificationManager.parseOutput(certbotSuccessMessage);
 
     assertEquals(CERTBOT_SUCCESS, notificationMap.get(SUBJECT_RESULT));
-    assertEquals(certbotSuccessMessage, notificationMap.get(GLOBAL_MESSAGE));
     assertEquals(expectedDomainMessage, notificationMap.get(DOMAIN_MESSAGE));
   }
 
@@ -183,7 +179,6 @@ public class CertificateNotificationManagerTest {
         notificationManager.parseOutput(otherCertbotMessage);
 
     assertEquals(CERTBOT_SUCCESS, notificationMap.get(SUBJECT_RESULT));
-    assertEquals(otherCertbotMessage, notificationMap.get(GLOBAL_MESSAGE));
     assertFalse(notificationMap.containsKey(DOMAIN_MESSAGE));
   }
 }
