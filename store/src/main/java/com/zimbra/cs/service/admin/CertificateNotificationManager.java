@@ -35,7 +35,6 @@ public class CertificateNotificationManager {
   public static final String GLOBAL_MESSAGE = "globalMessage";
   public static final String DOMAIN_MESSAGE = "domainMessage";
 
-  public static final String DOMAIN_NAME = "domainName";
   public static final String SUBJECT_RESULT = "subjectResult";
   public static final String SUBJECT_TEMPLATE = " SSL certification request - ";
 
@@ -248,7 +247,7 @@ public class CertificateNotificationManager {
     } catch (ServiceException e) {
       ZimbraLog.rmgmt.info(
           "Notifications about LetsEncrypt certificate generation for "
-              + notificationMap.get(DOMAIN_NAME)
+              + domain.getName()
               + " won't be sent for the global recipients.\n"
               + e.getMessage());
     }
@@ -264,7 +263,7 @@ public class CertificateNotificationManager {
       } catch (ServiceException e) {
         ZimbraLog.rmgmt.info(
             "Notifications about LetsEncrypt certificate generation for "
-                + notificationMap.get(DOMAIN_NAME)
+                + domain.getName()
                 + " won't be sent for the domain recipients.\n"
                 + e.getMessage());
       }
