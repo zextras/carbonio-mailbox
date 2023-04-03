@@ -2618,12 +2618,6 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>URL prefix for where the zimbraAdmin app resides on this server</desc>
 </attr>
 
-<attr id="498" name="zimbraFeatureBriefcasesEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited">
-  <defaultCOSValue>FALSE</defaultCOSValue>
-  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
-  <desc>whether to allow use of briefcase feature</desc>
-</attr>
-
 <attr id="499" name="zimbraFeatureFlaggingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited">
   <defaultCOSValue>TRUE</defaultCOSValue>
   <desc>whether to allow use of flagging feature</desc>
@@ -4872,21 +4866,6 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether creating domains, and renaming domains to a name, containing non-LDH (letter, digit, hyphen) characters is allowed</desc>
 </attr>
 
-<attr id="1053" name="zimbraFeatureBriefcaseSpreadsheetEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="6.0.2">
-  <defaultCOSValue>FALSE</defaultCOSValue>
-  <desc>Spreadsheet features enabled in briefcase</desc>
-</attr>
-
-<attr id="1054" name="zimbraFeatureBriefcaseSlidesEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="6.0.2">
-  <defaultCOSValue>FALSE</defaultCOSValue>
-  <desc>Slides features enabled in briefcase</desc>
-</attr>
-
-<attr id="1055" name="zimbraFeatureBriefcaseDocsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="6.0.2">
-  <defaultCOSValue>FALSE</defaultCOSValue>
-  <desc>Docs features enabled in briefcase</desc>
-</attr>
-
 <attr id="1056" name="zimbraVersionCheckLastAttempt" type="gentime" cardinality="single" optionalIn="globalConfig" since="6.0.2">
   <desc>time Zimbra version was last checked</desc>
 </attr>
@@ -5393,11 +5372,6 @@ TODO: delete them permanently from here
 <attr id="1151" name="zimbraPrefTasksReadingPaneLocation" type="enum" value="bottom,right,off" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="7.0.0">
   <defaultCOSValue>right</defaultCOSValue>
   <desc>where the reading pane is displayed for tasks</desc>
-</attr>
-
-<attr id="1152" name="zimbraPrefBriefcaseReadingPaneLocation" type="enum" value="bottom,right,off" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="7.0.0">
-  <defaultCOSValue>right</defaultCOSValue>
-  <desc>where the reading pane is displayed for briefcase</desc>
 </attr>
 
 <attr id="1153" name="zimbraGalGroupIndicatorEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" since="7.0.0">
