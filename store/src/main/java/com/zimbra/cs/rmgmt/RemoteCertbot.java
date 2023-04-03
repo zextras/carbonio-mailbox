@@ -92,21 +92,15 @@ public class RemoteCertbot {
    * Executes a command asynchronously and notifies global and domain recipients about the command
    * execution using {@link com.zimbra.cs.service.admin.CertificateNotificationManager}.
    *
-   * @param mbox an object of {@link com.zimbra.cs.mailbox.Mailbox} needed by {@link
-   *     com.zimbra.cs.service.admin.CertificateNotificationManager} to get the proper {@link
-   *     com.zimbra.cs.mailbox.MailSender}
-   * @param domain {@link com.zimbra.cs.account.Domain} needed by {@link
-   *     com.zimbra.cs.service.admin.CertificateNotificationManager} to get
-   *     {@link com.zimbra.common.account.ZAttrProvisioning} A_carbonioNotificationRecipients
-   *     and A_carbonioNotificationFrom attributes as well as other values
+   * @param notificationManager an object of {@link com.zimbra.cs.service.admin.CertificateNotificationManager}
    * @param command a Certbot command to be executed remotely
    *
    * @author Yuliya Aheeva
    * @since 23.5.0
    */
-  public void supplyAsync(Mailbox mbox, Domain domain, String command) {
+  public void supplyAsync(CertificateNotificationManager notificationManager, String command) {
     CompletableFuture.supplyAsync(() -> execute(command))
-        .thenAccept(message -> CertificateNotificationManager.notify(mbox, domain, message));
+        .thenAccept(message -> notificationManager.notify(message));
   }
 
   /**

@@ -61,11 +61,12 @@ public class CertificateNotificationManager {
           + " Make sure there is a valid, public resolution for the Fully Qualified Domain Name"
           + " used for any of the Public Service Hostname or Virtual Hostname.\n"
           + "- Private or unreachable IP address. In order to validate the domain name,"
-          + " the certificator must be able to resolve and browse the FQDN provided.\n"
+          + "the Certificate Authority (CA) must be able to resolve and browse the provided Fully "
+          + "Qualified Domain Name (FQDN).\n"
           + "\n"
           + "Check your environment for these common issues and try submitting the request again.\n"
           + "\n"
-          + "If the error persists, notify the sysadmin.";
+          + "If the error persists, please contact your system administrator(s) for assistance.";
 
   public static final String RECEIVED = "received";
   public static final String SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE =
@@ -76,21 +77,38 @@ public class CertificateNotificationManager {
           + "\n"
           + "The files will be automatically updated when the certificate renews.\n";
 
-  private CertificateNotificationManager() {
-    throw new RuntimeException("CertificateNotificationManager class cannot be instantiated.");
+  private final Mailbox mbox;
+  private final Domain domain;
+
+  private CertificateNotificationManager(Mailbox mbox, Domain domain) {
+    this.mbox = mbox;
+    this.domain = domain;
   }
 
   /**
-   * Notifies global and domain recipients about certificate generation result.
+   * Instantiates a CertificateNotificationManager object.
    *
    * @param mbox object of {@link com.zimbra.cs.mailbox.Mailbox} needed to get the proper {@link
    *     com.zimbra.cs.mailbox.MailSender} in order to send message
    * @param domain object of {@link com.zimbra.cs.account.Domain} needed to get {@link
    *     com.zimbra.common.account.ZAttrProvisioning} attributes A_carbonioNotificationRecipients
    *     and A_carbonioNotificationFrom
-   * @param message a message returned by Certbot acme client
+   * @return an instantiated object
+   *
+   * @author Yuliya Aheeva
+   * @since 23.5.0
    */
-  public static void notify(Mailbox mbox, Domain domain, String outputMessage) {
+  public static CertificateNotificationManager getCertificateNotificationManager(
+      Mailbox mbox, Domain domain) {
+    return new CertificateNotificationManager(mbox, domain);
+  }
+
+  /**
+   * Notifies global and domain recipients about certificate generation result.
+   *
+   * @param outputMessage a message returned by RemoteManager/Certbot acme client
+   */
+  public void notify(String outputMessage) {
     String domainName = domain.getName();
 
     ZimbraLog.rmgmt.info(
@@ -100,12 +118,14 @@ public class CertificateNotificationManager {
             + outputMessage);
 
     try {
-      Map<String, String> notificationMap =
-          createIssueCertNotificationMap(domainName, outputMessage);
+      Map<String, String> notificationMap = parseOutput(
+          outputMessage);
 
       MailSender sender = mbox.getMailSender(domain);
+      Session session = sender.getCurrentSession();
+
       List<MimeMessage> mimeMessageList =
-          createMimeMessageList(sender, domain, notificationMap);
+          createMimeMessageList(session, notificationMap);
 
       sender.sendMimeMessageList(mbox, mimeMessageList);
 
@@ -127,14 +147,14 @@ public class CertificateNotificationManager {
   }
 
   /**
-   * Creates a map based on Remote Manager/Certbot output which would be used to
+   * Parses and creates a map based on Remote Manager/Certbot output which would be used to
    * create {@link javax.mail.internet.MimeMessage}.
    *
    * @param outputMessage output from RemoteManager/Certbot
    * @return map with needed values of notification SUBJECT and MESSAGE TEXT
    */
-  protected static Map<String, String> createIssueCertNotificationMap(
-      String domainName, String outputMessage) throws ServiceException {
+  protected Map<String, String> parseOutput(
+      String outputMessage) throws ServiceException {
 
     Map<String, String> notificationMap = new HashMap<>();
 
@@ -149,14 +169,7 @@ public class CertificateNotificationManager {
     }
 
     // check if a certbot failure
-    String startParsing = "Simulating";
-    String endParsing = "ENDCMD";
-    int startIndex = outputMessage.indexOf(startParsing);
-    int endIndex = outputMessage.lastIndexOf(endParsing);
-    String substringResult = outputMessage.substring(startIndex, endIndex);
-
-    boolean isFailure = substringResult.contains(FAIL);
-
+    boolean isFailure = outputMessage.contains(FAIL);
     if (isFailure) {
       notificationMap.put(SUBJECT_RESULT, CERTBOT_FAILURE);
 
@@ -165,19 +178,19 @@ public class CertificateNotificationManager {
               "",
               HEADER,
               FAILURE_RESULT,
-              FAILURE_DOMAIN_NOTIFICATION_TEMPLATE.replace("<DOMAIN_NAME>", domainName));
+              FAILURE_DOMAIN_NOTIFICATION_TEMPLATE.replace("<DOMAIN_NAME>", domain.getName()));
 
       notificationMap.put(DOMAIN_MESSAGE, domainMessage);
       return notificationMap;
     }
 
     // check if a certificate received
-    boolean isReceived = substringResult.contains(RECEIVED);
+    boolean isReceived = outputMessage.contains(RECEIVED);
     if (isReceived) {
       String expire = "\n";
 
       String regex = "\\d{4}-\\d{2}-\\d{2}";
-      Matcher matcher = Pattern.compile(regex).matcher(substringResult);
+      Matcher matcher = Pattern.compile(regex).matcher(outputMessage);
       if (matcher.find()) {
         String expiresTemplate = "This certificate expires on ";
         expire = String.join("",expire, expiresTemplate, matcher.group(), ".");
@@ -188,30 +201,30 @@ public class CertificateNotificationManager {
               "",
               HEADER,
               SUCCESS_RESULT,
-              SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE.replace("<DOMAIN_NAME>", domainName),
+              SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE.replace("<DOMAIN_NAME>", domain.getName()),
               expire);
 
       notificationMap.put(DOMAIN_MESSAGE, domainMessage);
     }
 
-    // in any other cases (like certificate is not yet due for renewal ... etc)
-    // only global admin would be notified
     notificationMap.put(SUBJECT_RESULT, CERTBOT_SUCCESS);
     return notificationMap;
   }
 
   /**
-   * Creates {@link javax.mail.internet.MimeMessage} list what would be sent to recipients.
+   * Creates a {@link javax.mail.internet.MimeMessage} list representing the emails for global
+   * and domain recipients.
+   * If unable to create an email for global recipients then would proceed for only for domain ones
+   * or vice versa.
    *
    * @param session {@link javax.mail.Session}
-   * @param notificationMap map with needed values MESSAGE TEXT
+   * @param notificationMap map with needed values of MESSAGE TEXT
    * @return a list of {@link javax.mail.internet.MimeMessage}
    * @throws ServiceException if unable to parse addresses or create a MimeMessage
    */
-  protected static List<MimeMessage> createMimeMessageList(
-      MailSender sender, Domain domain, Map<String, String> notificationMap) throws ServiceException {
+  protected List<MimeMessage> createMimeMessageList(
+      Session session, Map<String, String> notificationMap) throws ServiceException {
 
-    Session session = sender.getCurrentSession();
     Provisioning provisioning = Provisioning.getInstance();
     Config config = provisioning.getConfig();
 
@@ -242,7 +255,8 @@ public class CertificateNotificationManager {
       Address[] globalAddressTo = convert(globalTo);
       String globalMessage = notificationMap.get(GLOBAL_MESSAGE);
 
-      list.add(createMimeMessage(session, subject, globalAddressFrom, globalAddressTo, globalMessage));
+      list.add(
+          createMimeMessage(session, subject, globalAddressFrom, globalAddressTo, globalMessage));
 
     } catch (ServiceException e) {
       ZimbraLog.rmgmt.info(
@@ -258,7 +272,8 @@ public class CertificateNotificationManager {
         Address[] domainAddressTo = convert(domainTo);
         String domainMessage = notificationMap.get(DOMAIN_MESSAGE);
 
-        list.add(createMimeMessage(session, subject, domainAddressFrom, domainAddressTo, domainMessage));
+        list.add(
+            createMimeMessage(session, subject, domainAddressFrom, domainAddressTo, domainMessage));
 
       } catch (ServiceException e) {
         ZimbraLog.rmgmt.info(
@@ -272,7 +287,7 @@ public class CertificateNotificationManager {
     return list;
   }
 
-  private static MimeMessage createMimeMessage(
+  private MimeMessage createMimeMessage(
       Session session, String subject, Address from, Address[] to, String message)
       throws ServiceException {
 
@@ -292,7 +307,7 @@ public class CertificateNotificationManager {
     }
   }
 
-  private static Address[] convert(String[] addresses) throws ServiceException {
+  private Address[] convert(String[] addresses) throws ServiceException {
     try {
       String addressList = String.join(", ", addresses);
       return InternetAddress.parse(addressList);
@@ -301,7 +316,7 @@ public class CertificateNotificationManager {
     }
   }
 
-  private static Address convert(String address) throws ServiceException {
+  private Address convert(String address) throws ServiceException {
     try {
       return new InternetAddress(address);
     } catch (AddressException e) {

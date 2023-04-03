@@ -56,6 +56,10 @@ public class IssueCertTest {
   private final RemoteManager remoteManager = mock(RemoteManager.class);
   private final static MockedStatic<RemoteCertbot> staticRemoteCertbot = mockStatic(RemoteCertbot.class);
   private final RemoteCertbot remoteCertbot = mock(RemoteCertbot.class);
+  private final static MockedStatic<CertificateNotificationManager> staticNotificationManager
+      = mockStatic(CertificateNotificationManager.class);
+  private final CertificateNotificationManager notificationManager
+      = mock(CertificateNotificationManager.class);
 
   private final IssueCert handler = new IssueCert();
   private final XMLElement request = new XMLElement(ISSUE_CERT_REQUEST);
@@ -111,6 +115,7 @@ public class IssueCertTest {
   public static void tearDown() {
     staticRemoteManager.close();
     staticRemoteCertbot.close();
+    staticNotificationManager.close();
   }
 
   @Test
@@ -137,6 +142,9 @@ public class IssueCertTest {
         .thenReturn(remoteCertbot);
 
     Mailbox expectMailbox = getRequestedMailbox(zsc);
+    staticNotificationManager.when(() -> CertificateNotificationManager
+        .getCertificateNotificationManager(expectMailbox, expectedDomain))
+          .thenReturn(notificationManager);
 
     String expectedCommand = "certbot certonly --agree-tos --email admin@example.com"
         + " -n --keep --webroot -w /opt/zextras "
@@ -154,10 +162,10 @@ public class IssueCertTest {
     final Element response = handler.handle(request, context);
     final Element message = response.getElement(E_MESSAGE);
 
-    assertEquals(message.getAttribute(A_DOMAIN), domainName);
-    assertEquals(message.getText(), IssueCert.RESPONSE);
+    assertEquals(domainName, message.getAttribute(A_DOMAIN));
+    assertEquals(IssueCert.RESPONSE, message.getText());
 
-    verify(remoteCertbot).supplyAsync(expectMailbox, expectedDomain, expectedCommand);
+    verify(remoteCertbot).supplyAsync(notificationManager, expectedCommand);
   }
 
   @Test
