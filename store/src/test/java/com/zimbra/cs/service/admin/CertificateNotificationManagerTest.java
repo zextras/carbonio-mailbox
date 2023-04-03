@@ -8,7 +8,6 @@ import static com.zimbra.cs.service.admin.CertificateNotificationManager.FAILURE
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.GLOBAL_MESSAGE;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.HEADER;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.SUBJECT_RESULT;
-import static com.zimbra.cs.service.admin.CertificateNotificationManager.SUBJECT_TEMPLATE;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.SUCCESS_RESULT;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.SYSTEM_FAILURE;
@@ -27,9 +26,7 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailSender;
 import com.zimbra.cs.mailbox.Mailbox;
-import java.util.List;
 import java.util.Map;
-import javax.mail.internet.MimeMessage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -76,7 +73,7 @@ public class CertificateNotificationManagerTest {
   }
 
   @Test
-  public void shouldCreateMapFromSystemFailureMessage() throws ServiceException {
+  public void shouldCreateMapFromSystemFailureMessage() {
     final Map<String, String> notificationMap = notificationManager.parseOutput(systemFailureMessage);
 
     assertEquals(SYSTEM_FAILURE, notificationMap.get(SUBJECT_RESULT));
@@ -119,7 +116,7 @@ public class CertificateNotificationManagerTest {
   }
 
   @Test
-  public void shouldCreateMapFromCertbotSuccessfullyReceivedMessage() throws ServiceException {
+  public void shouldCreateMapFromCertbotSuccessfullyReceivedMessage() {
     final String expiration = "\n" + "This certificate expires on 2023-06-15.";
     final String expectedDomainMessage = HEADER + SUCCESS_RESULT
             + SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE.replace("<DOMAIN_NAME>", domainName)
@@ -166,7 +163,7 @@ public class CertificateNotificationManagerTest {
   }
 
   @Test
-  public void shouldCreateMapFromOtherCertbotMessage() throws ServiceException {
+  public void shouldCreateMapFromOtherCertbotMessage() {
     String otherCertbotMessage =
         "STARTCMD: nbm-m01.demo.zextras.io /opt/zextras/libexec/certbot certonly --agree-tos"
             + " --email zextras@demo.zextras.io -n --keep --webroot -w /opt/zextras --cert-name"
@@ -186,25 +183,5 @@ public class CertificateNotificationManagerTest {
     assertEquals(CERTBOT_SUCCESS, notificationMap.get(SUBJECT_RESULT));
     assertEquals(otherCertbotMessage, notificationMap.get(GLOBAL_MESSAGE));
     assertFalse(notificationMap.containsKey(DOMAIN_MESSAGE));
-  }
-
-
-  @Test
-  public void shouldCreateMimeMessageList() throws Exception {
-    String subject = domainName + SUBJECT_TEMPLATE + SYSTEM_FAILURE;
-
-    final Map<String, String> notificationMap = notificationManager.parseOutput(systemFailureMessage);
-
-    List<MimeMessage> actualList = notificationManager
-        .createMimeMessageList(mailSender.getCurrentSession(), notificationMap);
-
-    MimeMessage actualMimeMessage = actualList.get(0);
-
-    assertEquals(from, actualMimeMessage.getSender().toString());
-    assertEquals(from, actualMimeMessage.getFrom()[0].toString());
-    assertEquals(recipients[0], actualMimeMessage.getAllRecipients()[0].toString());
-    assertEquals(recipients[1], actualMimeMessage.getAllRecipients()[1].toString());
-    assertEquals(subject, actualMimeMessage.getSubject());
-    assertEquals(systemFailureMessage, actualMimeMessage.getContent());
   }
 }

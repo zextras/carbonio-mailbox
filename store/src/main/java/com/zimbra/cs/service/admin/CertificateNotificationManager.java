@@ -153,8 +153,7 @@ public class CertificateNotificationManager {
    * @param outputMessage output from RemoteManager/Certbot
    * @return map with needed values of notification SUBJECT and MESSAGE TEXT
    */
-  protected Map<String, String> parseOutput(
-      String outputMessage) throws ServiceException {
+  public Map<String, String> parseOutput(String outputMessage) {
 
     Map<String, String> notificationMap = new HashMap<>();
 
@@ -222,7 +221,7 @@ public class CertificateNotificationManager {
    * @return a list of {@link javax.mail.internet.MimeMessage}
    * @throws ServiceException if unable to parse addresses or create a MimeMessage
    */
-  protected List<MimeMessage> createMimeMessageList(
+  private List<MimeMessage> createMimeMessageList(
       Session session, Map<String, String> notificationMap) throws ServiceException {
 
     Provisioning provisioning = Provisioning.getInstance();
