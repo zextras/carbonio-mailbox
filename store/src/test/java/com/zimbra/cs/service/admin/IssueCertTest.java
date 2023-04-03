@@ -40,9 +40,13 @@ import org.junit.rules.ExpectedException;
 import org.mockito.MockedStatic;
 
 public class IssueCertTest {
+  private static final MockedStatic<RemoteManager> staticRemoteManager
+      = mockStatic(RemoteManager.class);
+  private static final MockedStatic<RemoteCertbot> staticRemoteCertbot
+      = mockStatic(RemoteCertbot.class);
+  private static final MockedStatic<CertificateNotificationManager> staticNotificationManager
+      = mockStatic(CertificateNotificationManager.class);
 
-  private Provisioning provisioning;
-  private ZimbraSoapContext zsc;
   private final Map<String, Object> context = new HashMap<>();
   private final Map<String, Object> domainAttributes = new HashMap<>();
 
@@ -52,17 +56,16 @@ public class IssueCertTest {
 
   private final String mail = "admin@example.com";
 
-  private final static MockedStatic<RemoteManager> staticRemoteManager = mockStatic(RemoteManager.class);
   private final RemoteManager remoteManager = mock(RemoteManager.class);
-  private final static MockedStatic<RemoteCertbot> staticRemoteCertbot = mockStatic(RemoteCertbot.class);
   private final RemoteCertbot remoteCertbot = mock(RemoteCertbot.class);
-  private final static MockedStatic<CertificateNotificationManager> staticNotificationManager
-      = mockStatic(CertificateNotificationManager.class);
   private final CertificateNotificationManager notificationManager
       = mock(CertificateNotificationManager.class);
 
   private final IssueCert handler = new IssueCert();
   private final XMLElement request = new XMLElement(ISSUE_CERT_REQUEST);
+
+  private Provisioning provisioning;
+  private ZimbraSoapContext zsc;
 
   @Rule public ExpectedException expectedEx = ExpectedException.none();
 
