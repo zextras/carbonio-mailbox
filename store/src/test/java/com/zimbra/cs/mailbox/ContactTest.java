@@ -67,6 +67,8 @@ import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestName;
 import org.mockito.MockedStatic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Unit test for {@link Contact}.
@@ -74,6 +76,7 @@ import org.mockito.MockedStatic;
  * @author ysasaki
  */
 public final class ContactTest {
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   @Rule public TestName testName = new TestName();
   @Rule public MethodRule watchman = new ZTestWatchman();
@@ -81,7 +84,7 @@ public final class ContactTest {
   @Before
   public void setUp() throws Exception {
     MailboxTestUtil.initServer();
-    System.out.println(testName.getMethodName());
+    log.info(testName.getMethodName());
     Provisioning prov = Provisioning.getInstance();
     prov.createAccount("testCont@zimbra.com", "secret", new HashMap<>());
     prov.createAccount("test6232@zimbra.com", "secret", new HashMap<>());
@@ -420,7 +423,7 @@ public final class ContactTest {
       try {
         ArchiveFormatter.readArchiveEntry(ais, aie);
       } catch (IOException e) {
-        System.out.println("Expected exception was caught: " + e);
+        log.info("Expected exception was caught: " + e);
         errorCaught = true;
         break;
       }

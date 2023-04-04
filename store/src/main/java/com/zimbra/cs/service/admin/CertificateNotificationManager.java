@@ -171,7 +171,7 @@ public class CertificateNotificationManager {
               + " recipients.");
 
     } catch (Exception e) {
-      ZimbraLog.rmgmt.info(
+      ZimbraLog.rmgmt.warn(
           "Notifications about LetsEncrypt certificate generation weren't sent "
               + "for the global and domain "
               + domainName

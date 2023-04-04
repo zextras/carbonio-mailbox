@@ -31,11 +31,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import qa.unittest.TestUtil;
 
 
 public class ImapHandlerTest {
     private static final String LOCAL_USER = "localimaptest@zimbra.com";
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Rule public TestName testName = new TestName();
     @Rule public MethodRule watchman = new ZTestWatchman();
@@ -46,7 +49,7 @@ public class ImapHandlerTest {
       MailboxTestUtil.initServer();
       String[] hosts = {"localhost", "127.0.0.1"};
       ServerThrottle.configureThrottle(new ImapConfig(false).getProtocol(), 100, 100, Arrays.asList(hosts), Arrays.asList(hosts));
-      System.out.println(testName.getMethodName());
+      log.info(testName.getMethodName());
       Provisioning prov = Provisioning.getInstance();
       HashMap<String,Object> attrs = new HashMap<>();
       attrs.put(Provisioning.A_zimbraId, "12aa345b-2b47-44e6-8cb8-7fdfa18c1a9f");
