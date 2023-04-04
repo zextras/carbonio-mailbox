@@ -104,9 +104,12 @@ public class CertificateNotificationManager {
   }
 
   /**
-   * Notifies global and domain recipients about certificate generation result.
+   * Notifies global and domain recipients with provided notifications from notificationMap.
    *
-   * @param outputMessage a message returned by RemoteManager/Certbot acme client
+   * Gets global and domain values for sender and recipients, creates emails, send emails with
+   * {@link com.zimbra.cs.mailbox.MailSender}.
+   *
+   * @param notificationMap a map with needed values of notification SUBJECT and MESSAGE TEXT
    */
   public void notify(Map<String, String> notificationMap) {
     String domainName = domain.getName();
