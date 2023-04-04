@@ -1,8 +1,6 @@
 package com.zimbra.cs.rmgmt;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Domain;
-import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.service.admin.CertificateNotificationManager;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -100,7 +98,8 @@ public class RemoteCertbot {
    */
   public void supplyAsync(CertificateNotificationManager notificationManager, String command) {
     CompletableFuture.supplyAsync(() -> execute(command))
-        .thenAccept(message -> notificationManager.notify(message));
+        .thenApply(notificationManager::createIssueCertNotificationMap)
+        .thenAccept(notificationManager::notify);
   }
 
   /**

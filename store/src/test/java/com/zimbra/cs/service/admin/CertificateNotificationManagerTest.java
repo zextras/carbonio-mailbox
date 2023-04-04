@@ -5,8 +5,10 @@ import static com.zimbra.cs.service.admin.CertificateNotificationManager.CERTBOT
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.DOMAIN_MESSAGE;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.FAILURE_DOMAIN_NOTIFICATION_TEMPLATE;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.FAILURE_RESULT;
+import static com.zimbra.cs.service.admin.CertificateNotificationManager.GLOBAL_MESSAGE;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.HEADER;
-import static com.zimbra.cs.service.admin.CertificateNotificationManager.SUBJECT_RESULT;
+import static com.zimbra.cs.service.admin.CertificateNotificationManager.SUBJECT;
+import static com.zimbra.cs.service.admin.CertificateNotificationManager.SUBJECT_TEMPLATE;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.SUCCESS_DOMAIN_NOTIFICATION_TEMPLATE;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.SUCCESS_RESULT;
 import static com.zimbra.cs.service.admin.CertificateNotificationManager.SYSTEM_FAILURE;
@@ -68,16 +70,21 @@ public class CertificateNotificationManagerTest {
 
   @Test
   public void shouldNotify() throws ServiceException {
-    notificationManager.notify(systemFailureMessage);
+    final Map<String, String> notificationMap =
+        notificationManager.createIssueCertNotificationMap(systemFailureMessage);
+    notificationManager.notify(notificationMap);
     verify(mailSender).sendMimeMessageList(eq(mailbox), any());
   }
 
   @Test
   public void shouldCreateMapFromSystemFailureMessage() {
     final Map<String, String> notificationMap =
-        notificationManager.parseOutput(systemFailureMessage);
+        notificationManager.createIssueCertNotificationMap(systemFailureMessage);
 
-    assertEquals(SYSTEM_FAILURE, notificationMap.get(SUBJECT_RESULT));
+    String expectedSubject = domain.getName() + SUBJECT_TEMPLATE + SYSTEM_FAILURE;
+
+    assertEquals(expectedSubject, notificationMap.get(SUBJECT));
+    assertEquals(systemFailureMessage, notificationMap.get(GLOBAL_MESSAGE));
     assertFalse(notificationMap.containsKey(DOMAIN_MESSAGE));
   }
 
@@ -109,9 +116,12 @@ public class CertificateNotificationManagerTest {
             + " --email zextras@demo.zextras.io -n --keep --webroot -w /opt/zextras --cert-name"
             + " test.zextras.io -d test.zextras.io -d test.zextras.io";
     final Map<String, String> notificationMap =
-        notificationManager.parseOutput(certbotFailureMessage);
+        notificationManager.createIssueCertNotificationMap(certbotFailureMessage);
 
-    assertEquals(CERTBOT_FAILURE, notificationMap.get(SUBJECT_RESULT));
+    String expectedSubject = domain.getName() + SUBJECT_TEMPLATE + CERTBOT_FAILURE;
+
+    assertEquals(expectedSubject, notificationMap.get(SUBJECT));
+    assertEquals(certbotFailureMessage, notificationMap.get(GLOBAL_MESSAGE));
     assertEquals(expectedDomainMessage, notificationMap.get(DOMAIN_MESSAGE));
   }
 
@@ -153,9 +163,12 @@ public class CertificateNotificationManagerTest {
             + " le.zextras.io -d le1.zextras.io -d le2.zextras.io";
 
     final Map<String, String> notificationMap =
-        notificationManager.parseOutput(certbotSuccessMessage);
+        notificationManager.createIssueCertNotificationMap(certbotSuccessMessage);
 
-    assertEquals(CERTBOT_SUCCESS, notificationMap.get(SUBJECT_RESULT));
+    String expectedSubject = domain.getName() + SUBJECT_TEMPLATE + CERTBOT_SUCCESS;
+
+    assertEquals(expectedSubject, notificationMap.get(SUBJECT));
+    assertEquals(certbotSuccessMessage, notificationMap.get(GLOBAL_MESSAGE));
     assertEquals(expectedDomainMessage, notificationMap.get(DOMAIN_MESSAGE));
   }
 
@@ -176,9 +189,12 @@ public class CertificateNotificationManagerTest {
             + " --email zextras@demo.zextras.io -n --keep --webroot -w /opt/zextras --cert-name"
             + " test.zextras.io -d test.zextras.io -d test.zextras.io";
     final Map<String, String> notificationMap =
-        notificationManager.parseOutput(otherCertbotMessage);
+        notificationManager.createIssueCertNotificationMap(otherCertbotMessage);
 
-    assertEquals(CERTBOT_SUCCESS, notificationMap.get(SUBJECT_RESULT));
+    String expectedSubject = domain.getName() + SUBJECT_TEMPLATE + CERTBOT_SUCCESS;
+
+    assertEquals(expectedSubject, notificationMap.get(SUBJECT));
+    assertEquals(otherCertbotMessage, notificationMap.get(GLOBAL_MESSAGE));
     assertFalse(notificationMap.containsKey(DOMAIN_MESSAGE));
   }
 }

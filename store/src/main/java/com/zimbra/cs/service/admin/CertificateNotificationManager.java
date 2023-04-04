@@ -32,7 +32,10 @@ import javax.mail.internet.MimeMessage;
  * @since 23.5.0
  */
 public class CertificateNotificationManager {
-  public static final String SUBJECT_RESULT = "subjectResult";
+  public static final String GLOBAL_MESSAGE = "globalMessage";
+  public static final String DOMAIN_MESSAGE = "domainMessage";
+
+  public static final String SUBJECT = "subject";
   public static final String SUBJECT_TEMPLATE = " SSL certification request - ";
 
   public static final String SYSTEM_FAILURE = "system failure";
@@ -40,7 +43,6 @@ public class CertificateNotificationManager {
   public static final String CERTBOT_SUCCESS = "Certificate Authority success";
   public static final String CERTBOT_FAILURE = "Certificate Authority failure";
 
-  public static final String DOMAIN_MESSAGE = "domainMessage";
   public static final String RESULT = "result";
   public static final String HEADER = "The certification result is: ";
   public static final String SUCCESS_RESULT = "SUCCESS\n";
@@ -106,14 +108,9 @@ public class CertificateNotificationManager {
    *
    * @param outputMessage a message returned by RemoteManager/Certbot acme client
    */
-  public void notify(String outputMessage) {
+  public void notify(Map<String, String> notificationMap) {
     String domainName = domain.getName();
-
-    ZimbraLog.rmgmt.info(
-        "Issuing LetsEncrypt cert command for domain "
-            + domainName
-            + " was finished with the following result: "
-            + outputMessage);
+    
     try {
       Provisioning provisioning = Provisioning.getInstance();
       Config config = provisioning.getConfig();
@@ -136,23 +133,29 @@ public class CertificateNotificationManager {
       String[] domainTo =
           Optional.ofNullable(domain.getCarbonioNotificationRecipients()).orElse(globalTo);
 
-      Map<String, String> notificationMap = parseOutput(outputMessage);
       MailSender sender = mbox.getMailSender(domain);
       Session session = sender.getCurrentSession();
 
-      String subject = domainName + SUBJECT_TEMPLATE + notificationMap.get(SUBJECT_RESULT);
-
+      String subject = notificationMap.get(SUBJECT);
 
       List<MimeMessage> mimeMessageList = new ArrayList<>();
 
       MimeMessage globalNotification =
-          createMimeMessage(session, subject, globalFrom, globalTo, outputMessage);
+          createMimeMessage(
+              session,
+              subject,
+              convert(globalFrom),
+              convert(globalTo),
+              notificationMap.get(GLOBAL_MESSAGE));
       mimeMessageList.add(globalNotification);
 
-      if (notificationMap.get(SUBJECT_RESULT).equals(CERTBOT_FAILURE)
-          || notificationMap.get(SUBJECT_RESULT).equals(CERTBOT_SUCCESS)) {
+      if (notificationMap.containsKey(DOMAIN_MESSAGE)) {
         MimeMessage domainNotification = createMimeMessage(
-            session, subject, domainFrom, domainTo, notificationMap.get(DOMAIN_MESSAGE));
+            session,
+            subject,
+            convert(domainFrom),
+            convert(domainTo),
+            notificationMap.get(DOMAIN_MESSAGE));
         mimeMessageList.add(domainNotification);
       }
 
@@ -182,21 +185,29 @@ public class CertificateNotificationManager {
    * @param outputMessage output from RemoteManager/Certbot
    * @return map with needed values of notification SUBJECT and MESSAGE TEXT
    */
-  public Map<String, String> parseOutput(String outputMessage) {
+  public Map<String, String> createIssueCertNotificationMap(String outputMessage) {
+    ZimbraLog.rmgmt.info(
+        "Issuing LetsEncrypt cert command for domain "
+            + domain.getName()
+            + " was finished with the following result: "
+            + outputMessage);
 
     Map<String, String> notificationMap = new HashMap<>();
+    notificationMap.put(GLOBAL_MESSAGE, outputMessage);
 
     // check if a system failure
     boolean isSystemFailure = outputMessage.contains(SYSTEM_FAILURE);
     if (isSystemFailure) {
-      notificationMap.put(SUBJECT_RESULT, SYSTEM_FAILURE);
+      String subject = domain.getName() + SUBJECT_TEMPLATE + SYSTEM_FAILURE;
+      notificationMap.put(SUBJECT, subject);
       return notificationMap;
     }
 
     // check if a certbot failure
     boolean isFailure = outputMessage.contains(FAIL);
     if (isFailure) {
-      notificationMap.put(SUBJECT_RESULT, CERTBOT_FAILURE);
+      String subject = domain.getName() + SUBJECT_TEMPLATE + CERTBOT_FAILURE;
+      notificationMap.put(SUBJECT, subject);
 
       String domainMessage =
           String.join(
@@ -232,22 +243,20 @@ public class CertificateNotificationManager {
       notificationMap.put(DOMAIN_MESSAGE, domainMessage);
     }
 
-    notificationMap.put(SUBJECT_RESULT, CERTBOT_SUCCESS);
+    String subject = domain.getName() + SUBJECT_TEMPLATE + CERTBOT_SUCCESS;
+    notificationMap.put(SUBJECT, subject);
     return notificationMap;
   }
 
   private MimeMessage createMimeMessage(
-      Session session, String subject, String from, String[] to, String message)
+      Session session, String subject, Address from, Address[] to, String message)
       throws ServiceException {
 
     try {
-      Address addressFrom = convert(from);
-      Address[] addressTo = convert(to);
-
       MimeMessage mm = new MimeMessage(session);
-      mm.setFrom(addressFrom);
-      mm.setSender(addressFrom);
-      mm.setRecipients(RecipientType.TO, addressTo);
+      mm.setFrom(from);
+      mm.setSender(from);
+      mm.setRecipients(RecipientType.TO, to);
       mm.setSubject(subject);
       mm.setText(message);
       mm.saveChanges();
