@@ -3,23 +3,29 @@ package com.zimbra.cs.service.admin;
 import static com.zimbra.common.soap.AdminConstants.A_DOMAIN;
 import static com.zimbra.common.soap.AdminConstants.E_MESSAGE;
 import static com.zimbra.common.soap.AdminConstants.ISSUE_CERT_REQUEST;
+import static com.zimbra.soap.DocumentHandler.getRequestedMailbox;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.rmgmt.RemoteCertbot;
+import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteManager;
-import com.zimbra.cs.rmgmt.RemoteResult;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -34,8 +40,12 @@ import org.junit.rules.ExpectedException;
 import org.mockito.MockedStatic;
 
 public class IssueCertTest {
-
-  private Provisioning provisioning;
+  private static final MockedStatic<RemoteManager> staticRemoteManager
+      = mockStatic(RemoteManager.class);
+  private static final MockedStatic<RemoteCertbot> staticRemoteCertbot
+      = mockStatic(RemoteCertbot.class);
+  private static final MockedStatic<CertificateNotificationManager> staticNotificationManager
+      = mockStatic(CertificateNotificationManager.class);
 
   private final Map<String, Object> context = new HashMap<>();
   private final Map<String, Object> domainAttributes = new HashMap<>();
@@ -46,17 +56,16 @@ public class IssueCertTest {
 
   private final String mail = "admin@example.com";
 
-  private final String command = "certbot certonly --agree-tos --email admin@example.com"
-      + " -n --keep --webroot -w /opt/zextras "
-      + "--cert-name example.com "
-      + "-d public.example.com -d virtual.example.com";
-
-  private final static MockedStatic<RemoteManager> mockedStatic = mockStatic(RemoteManager.class);
   private final RemoteManager remoteManager = mock(RemoteManager.class);
-  private final RemoteResult remoteResult = mock(RemoteResult.class);
+  private final RemoteCertbot remoteCertbot = mock(RemoteCertbot.class);
+  private final CertificateNotificationManager notificationManager
+      = mock(CertificateNotificationManager.class);
 
   private final IssueCert handler = new IssueCert();
   private final XMLElement request = new XMLElement(ISSUE_CERT_REQUEST);
+
+  private Provisioning provisioning;
+  private ZimbraSoapContext zsc;
 
   @Rule public ExpectedException expectedEx = ExpectedException.none();
 
@@ -86,13 +95,12 @@ public class IssueCertTest {
     domainAttributes.put(ZAttrProvisioning.A_zimbraDomainName, domainName);
     domainAttributes.put(ZAttrProvisioning.A_zimbraId, domainId);
 
-    this.context.put(
-        SoapEngine.ZIMBRA_CONTEXT,
-        new ZimbraSoapContext(
-            AuthProvider.getAuthToken(account, true),
-            account.getId(),
-            SoapProtocol.Soap12,
-            SoapProtocol.Soap12));
+    this.zsc =  new ZimbraSoapContext(
+        AuthProvider.getAuthToken(account, true),
+        account.getId(),
+        SoapProtocol.Soap12,
+        SoapProtocol.Soap12);
+    this.context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
 
     this.request.addNonUniqueElement(A_DOMAIN).addText(domainId);
   }
@@ -108,37 +116,59 @@ public class IssueCertTest {
 
   @AfterClass
   public static void tearDown() {
-    mockedStatic.close();
+    staticRemoteManager.close();
+    staticRemoteCertbot.close();
+    staticNotificationManager.close();
   }
 
   @Test
-  public void shouldReturnSuccessMessageIfAllChecksPassed() throws Exception {
-    createInfrastructure();
+  public void shouldSupplyAsyncAndReturnResponse() throws Exception {
+    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
+    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
 
-    final String result = "SUCCESS";
+    Domain expectedDomain = provisioning.createDomain(domainName, domainAttributes);
 
-    when(remoteManager.execute(command)).thenReturn(remoteResult);
-    when(remoteResult.getMStdout()).thenReturn(result.getBytes());
+    final String serverName = "serverName";
+    final Server server =
+        provisioning.createServer(
+            serverName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_cn, serverName);
+                put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
+              }
+            });
+
+    staticRemoteManager.when(() -> RemoteManager.getRemoteManager(server))
+        .thenReturn(remoteManager);
+    staticRemoteCertbot.when(() -> RemoteCertbot.getRemoteCertbot(remoteManager))
+        .thenReturn(remoteCertbot);
+
+    Mailbox expectMailbox = getRequestedMailbox(zsc);
+    staticNotificationManager.when(() -> CertificateNotificationManager
+        .getCertificateNotificationManager(expectMailbox, expectedDomain))
+          .thenReturn(notificationManager);
+
+    String expectedCommand = "certbot certonly --agree-tos --email admin@example.com"
+        + " -n --keep --webroot -w /opt/zextras "
+        + "--cert-name example.com "
+        + "-d public.example.com -d virtual.example.com";
+
+    when(remoteCertbot.createCommand(
+        RemoteCommands.CERTBOT_CERTONLY,
+        mail,
+        AdminConstants.DEFAULT_CHAIN,
+        domainName,
+        publicServiceHostName,
+        expectedDomain.getVirtualHostname())).thenReturn(expectedCommand);
 
     final Element response = handler.handle(request, context);
     final Element message = response.getElement(E_MESSAGE);
-    assertEquals(message.getAttribute(A_DOMAIN), domainName);
-    assertEquals(message.getText(), result);
-  }
 
-  @Test
-  public void shouldReturnFailureMessageIfRemoteExecutionFailed() throws Exception {
-    createInfrastructure();
+    assertEquals(domainName, message.getAttribute(A_DOMAIN));
+    assertEquals(IssueCert.RESPONSE, message.getText());
 
-    final String result = "FAILURE";
-    final String expectedMessage = "system failure: FAILURE";
-
-    when(remoteManager.execute(command)).thenThrow(ServiceException.FAILURE(result));
-
-    final Element response = handler.handle(request, context);
-    final Element message = response.getElement(E_MESSAGE);
-    assertEquals(message.getAttribute(A_DOMAIN), domainName);
-    assertEquals(message.getText(), expectedMessage);
+    verify(remoteCertbot).supplyAsync(notificationManager, expectedCommand);
   }
 
   @Test
@@ -183,25 +213,5 @@ public class IssueCertTest {
     expectedEx.expectMessage("Issuing LetsEncrypt certificate command requires carbonio-proxy.");
 
     handler.handle(request, context);
-  }
-
-  private void createInfrastructure() throws ServiceException {
-    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
-    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
-
-    provisioning.createDomain(domainName, domainAttributes);
-
-    final String serverName = "serverName";
-    final Server server =
-        provisioning.createServer(
-            serverName,
-            new HashMap<>() {
-              {
-                put(ZAttrProvisioning.A_cn, serverName);
-                put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
-              }
-            });
-
-    mockedStatic.when(() -> RemoteManager.getRemoteManager(server)).thenReturn(remoteManager);
   }
 }

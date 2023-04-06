@@ -7,19 +7,6 @@ package com.zimbra.cs.imap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.MethodRule;
-import org.junit.rules.TestName;
-
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.FolderStore;
 import com.zimbra.common.service.ServiceException;
@@ -33,38 +20,50 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.SearchFolder;
 import com.zimbra.cs.server.ServerThrottle;
 import com.zimbra.cs.util.ZTestWatchman;
-import qa.unittest.TestUtil;
-
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import junit.framework.Assert;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.MethodRule;
+import org.junit.rules.TestName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import qa.unittest.TestUtil;
 
 
 public class ImapHandlerTest {
     private static final String LOCAL_USER = "localimaptest@zimbra.com";
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Rule public TestName testName = new TestName();
     @Rule public MethodRule watchman = new ZTestWatchman();
-    
-    @BeforeClass
-    public static void init() throws Exception {
-        LC.imap_use_ehcache.setDefault(false);
-        MailboxTestUtil.initServer();
-        String[] hosts = {"localhost", "127.0.0.1"};
-        ServerThrottle.configureThrottle(new ImapConfig(false).getProtocol(), 100, 100, Arrays.asList(hosts), Arrays.asList(hosts));
-    }
 
     @Before
     public void setUp() throws Exception {
-        System.out.println(testName.getMethodName());
-        Provisioning prov = Provisioning.getInstance();
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, "12aa345b-2b47-44e6-8cb8-7fdfa18c1a9f");
-        attrs.put(Provisioning.A_zimbraFeatureAntispamEnabled , "true");
-        prov.createAccount(LOCAL_USER, "secret", attrs);
+      LC.imap_use_ehcache.setDefault(false);
+      MailboxTestUtil.initServer();
+      String[] hosts = {"localhost", "127.0.0.1"};
+      ServerThrottle.configureThrottle(new ImapConfig(false).getProtocol(), 100, 100, Arrays.asList(hosts), Arrays.asList(hosts));
+      log.info(testName.getMethodName());
+      Provisioning prov = Provisioning.getInstance();
+      HashMap<String,Object> attrs = new HashMap<>();
+      attrs.put(Provisioning.A_zimbraId, "12aa345b-2b47-44e6-8cb8-7fdfa18c1a9f");
+      attrs.put(Provisioning.A_zimbraFeatureAntispamEnabled , "true");
+      prov.createAccount(LOCAL_USER, "secret", attrs);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
+      try {
         MailboxTestUtil.clearData();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
 
     @Test
@@ -82,8 +81,10 @@ public class ImapHandlerTest {
        Assert.assertEquals(Mailbox.ID_FOLDER_INBOX, mbox.getMessageById(null, m3.getId()).getFolderId());
        ImapHandler handler = new MockImapHandler();
        ImapCredentials creds = new ImapCredentials(acct, ImapCredentials.EnabledHack.NONE);
-       ImapPath pathSpam = new MockImapPath(null,mbox.getFolderById(null, Mailbox.ID_FOLDER_SPAM), creds);
-       ImapPath pathInbox = new MockImapPath(null,mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX), creds);
+       ImapPath pathSpam = new MockImapPath(null, mbox.getFolderById(null, Mailbox.ID_FOLDER_SPAM),
+           creds);
+       ImapPath pathInbox = new MockImapPath(null,
+           mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX), creds);
        handler.setCredentials(creds);
        byte params = 0;
        handler.setSelectedFolder(pathSpam, params);
@@ -139,8 +140,10 @@ public class ImapHandlerTest {
        Assert.assertEquals(Mailbox.ID_FOLDER_INBOX, mbox.getMessageById(null, m3.getId()).getFolderId());
        ImapHandler handler = new MockImapHandler();
        ImapCredentials creds = new ImapCredentials(acct, ImapCredentials.EnabledHack.NONE);
-       ImapPath pathSpam = new MockImapPath(null,mbox.getFolderById(null, Mailbox.ID_FOLDER_SPAM), creds);
-       ImapPath pathInbox = new MockImapPath(null,mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX), creds);
+       ImapPath pathSpam = new MockImapPath(null, mbox.getFolderById(null, Mailbox.ID_FOLDER_SPAM),
+           creds);
+       ImapPath pathInbox = new MockImapPath(null,
+           mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX), creds);
        handler.setCredentials(creds);
        byte params = 0;
        handler.setSelectedFolder(pathSpam, params);
@@ -198,7 +201,8 @@ public class ImapHandlerTest {
         Thread.sleep(500);
         ImapHandler handler = new MockImapHandler();
         ImapCredentials creds = new ImapCredentials(acct, ImapCredentials.EnabledHack.NONE);
-        ImapPath pathInbox = new MockImapPath(null,mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX), creds);
+        ImapPath pathInbox = new MockImapPath(null,
+            mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX), creds);
         handler.setCredentials(creds);
         byte params = 0;
         handler.setSelectedFolder(pathInbox, params);
@@ -278,7 +282,7 @@ public class ImapHandlerTest {
         Assert.assertFalse(handler.isAuthenticated());
     }
 
-    class MockImapPath extends ImapPath {
+    static class MockImapPath extends ImapPath {
 
         MockImapPath(ImapPath other) {
             super(other);
@@ -300,7 +304,7 @@ public class ImapHandlerTest {
         }
 
         @Override
-        protected boolean isWritable(short rights) throws ServiceException {
+        protected boolean isWritable(short rights) {
             return true;
         }
     }

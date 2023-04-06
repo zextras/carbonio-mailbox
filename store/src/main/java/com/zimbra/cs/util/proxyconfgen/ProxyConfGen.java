@@ -93,7 +93,7 @@ public class ProxyConfGen {
   private static Provisioning mProv = null;
   private static boolean mGenConfPerVhn = false;
   private static boolean hasCustomTemplateLocationArg = false;
-  private static final String CERTBOT_WORKING_DIR = "/common/etc/letsencrypt/live/";
+  private static final String CERTBOT_WORKING_DIR = "/common/certbot/etc/letsencrypt/live/";
   private static final String CERT = "/fullchain.pem";
   private static final String KEY = "/privkey.pem";
 
@@ -2483,7 +2483,7 @@ public class ProxyConfGen {
         attrs.put(Provisioning.A_zimbraSSLCertificate, certificate);
         attrs.put(Provisioning.A_zimbraSSLPrivateKey, privateKey);
 
-        LOG.info("Saving " + domainName + " Let's Encrypt certificate/key pair to LDAP.");
+        LOG.info("Saving " + domainName + " Let's Encrypt certificate/key pair to LDAP");
         mProv.modifyAttrs(domain, attrs, true);
 
         entry.sslCertificate = certificate;
