@@ -110,10 +110,6 @@ implements RecurRuleBase, RecurrenceInfoInterface {
         return addToStringInfo(MoreObjects.toStringHelper(this)).toString();
     }
     
-    // methods below are added for zm-gql to bypass interface issues
-    // remove these and properly annotate the rules classes
-    // once some graphql dependencies have been updated
-    
     public void setRulesAdd(List<AddRecurrenceInfo> addRecurrenceInfos) {
         addRules(addRecurrenceInfos);
     }
