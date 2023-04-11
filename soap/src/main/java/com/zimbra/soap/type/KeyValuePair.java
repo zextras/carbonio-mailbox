@@ -30,7 +30,6 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  *         <a n="{key}">{value}</a>
  * Note:  where the attribute name is "name" rather than "n" use "Attr"
  */
-@GraphQLType(name="KeyValuePair")
 public class KeyValuePair implements KeyAndValue {
 
     /**
@@ -38,7 +37,6 @@ public class KeyValuePair implements KeyAndValue {
      * @zm-api-field-description Key
      */
     @XmlAttribute(name=AdminConstants.A_N, required=true)
-    @GraphQLQuery(name="key", description="Key")
     private String key;
 
     /**
@@ -46,7 +44,6 @@ public class KeyValuePair implements KeyAndValue {
      * @zm-api-field-description Value
      */
     @XmlValue
-    @GraphQLQuery(name="value", description="Value")
     private String value;
 
     /**

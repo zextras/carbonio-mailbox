@@ -10,14 +10,11 @@ import java.util.Arrays;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 
 import io.leangen.graphql.annotations.GraphQLEnumValue;
-import io.leangen.graphql.annotations.types.GraphQLType;
 
 @XmlEnum
-@GraphQLType(name=GqlConstants.ENUM_INFO_SECTION)
 public enum InfoSection {
     // mbox,prefs,attrs,zimlets,props,idents,sigs,dsrcs,children
     @GraphQLEnumValue @XmlEnumValue("mbox") mbox,

@@ -11,16 +11,13 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import com.google.common.base.Function;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.soap.type.DataSource.ConnectionType;
 
 import io.leangen.graphql.annotations.GraphQLEnumValue;
-import io.leangen.graphql.annotations.types.GraphQLType;
 
 @XmlEnum
-@GraphQLType(name=GqlConstants.ENUM_ADS_CONNECTION_TYPE_ENUM, description="Account data source connection type")
 public enum AdsConnectionType {
     @GraphQLEnumValue @XmlEnumValue("cleartext") cleartext,
     @GraphQLEnumValue @XmlEnumValue("ssl") ssl,

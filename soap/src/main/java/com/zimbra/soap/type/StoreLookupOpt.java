@@ -9,14 +9,11 @@ import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlEnum;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 
 import io.leangen.graphql.annotations.GraphQLEnumValue;
-import io.leangen.graphql.annotations.types.GraphQLType;
 
 @XmlEnum
-@GraphQLType(name=GqlConstants.CLASS_STORE_LOOKUP_OPT_TYPE, description="Store Lookup option type")
 public enum StoreLookupOpt {
     // case must match protocol
     @GraphQLEnumValue(description = "While iterating through stores, stop if any certs are found in a store and"

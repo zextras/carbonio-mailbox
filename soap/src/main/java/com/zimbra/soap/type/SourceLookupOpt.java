@@ -8,14 +8,11 @@ package com.zimbra.soap.type;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlEnum;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 
 import io.leangen.graphql.annotations.GraphQLEnumValue;
-import io.leangen.graphql.annotations.types.GraphQLType;
 
 @XmlEnum
-@GraphQLType(name=GqlConstants.CLASS_SOURCE_LOOKUP_OPT_TYPE, description="Source Lookup option type")
 public enum SourceLookupOpt {
     // case must match protocol
     @GraphQLEnumValue(description = "While iterating through multiple sources configured for a store, stop if any "

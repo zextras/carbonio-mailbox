@@ -25,7 +25,6 @@ import io.leangen.graphql.annotations.types.GraphQLType;
     ContactActionSelector.class,
     FolderActionSelector.class
 })
-@GraphQLType(name="ActionSelector")
 public class ActionSelector {
 
     /**
@@ -34,7 +33,6 @@ public class ActionSelector {
      * where the tags items can be specified using their tag names as an alternative.
      */
     @XmlAttribute(name=MailConstants.A_ID /* id */, required=false)
-    @GraphQLQuery(name="ids", description="Comma separated list of item IDs to act on.  Required except for op=tag, where the tags items can be specified using their tag names as an alternative.")
     protected final String ids;
 
     /**
@@ -72,7 +70,6 @@ public class ActionSelector {
      * </pre>
      */
     @XmlAttribute(name=MailConstants.A_OPERATION /* op */, required=true)
-    @GraphQLNonNull @GraphQLQuery(name="operation", description="The operation to perform")
     protected final String operation;
 
     /**
@@ -88,7 +85,6 @@ public class ActionSelector {
      * A leading '-' means to negate the constraint (e.g. "-t" means all messages not in Trash)
      */
     @XmlAttribute(name=MailConstants.A_TARGET_CONSTRAINT /* tcon */, required=false)
-    @GraphQLQuery(name="constraint", description="List of characters; constrains the set of affected items in a conversation. t|j|s|d|o")
     protected String constraint;
 
     // Deprecated, use tagNames instead
@@ -98,7 +94,6 @@ public class ActionSelector {
      */
     @Deprecated
     @XmlAttribute(name=MailConstants.A_TAG /* tag */, required=false)
-    @GraphQLIgnore
     protected Integer tag;
 
     /**
@@ -106,7 +101,6 @@ public class ActionSelector {
      * @zm-api-field-description Folder ID
      */
     @XmlAttribute(name=MailConstants.A_FOLDER /* l */, required=false)
-    @GraphQLQuery(name="folderId", description="Folder id")
     protected String folder;
 
     /**
@@ -114,7 +108,6 @@ public class ActionSelector {
      * @zm-api-field-description RGB color in format #rrggbb where r,g and b are hex digits
      */
     @XmlAttribute(name=MailConstants.A_RGB /* rgb */, required=false)
-    @GraphQLQuery(name="rgb", description="RGB color in format #rrggbb where r,g and b are hex digits")
     protected String rgb;
 
     /**
@@ -122,7 +115,6 @@ public class ActionSelector {
      * @zm-api-field-description color numeric; range 0-127; defaults to 0 if not present; client can display only 0-7
      */
     @XmlAttribute(name=MailConstants.A_COLOR /* color */, required=false)
-    @GraphQLQuery(name="color", description="color numeric; range 0-127; defaults to 0 if not present; client can display only 0-7")
     protected Byte color;
 
     /**
@@ -130,7 +122,6 @@ public class ActionSelector {
      * @zm-api-field-description Name
      */
     @XmlAttribute(name=MailConstants.A_NAME /* name */, required=false)
-    @GraphQLQuery(name="name", description="Name")
     protected String name;
 
     /**
@@ -138,7 +129,6 @@ public class ActionSelector {
      * @zm-api-field-description Flags
      */
     @XmlAttribute(name=MailConstants.A_FLAGS /* f */, required=false)
-    @GraphQLQuery(name="flags", description="Flags")
     protected String flags;
 
     /**
@@ -147,7 +137,6 @@ public class ActionSelector {
      */
     @Deprecated
     @XmlAttribute(name=MailConstants.A_TAGS /* t */, required=false)
-    @GraphQLIgnore
     protected String tags;
 
     /**
@@ -155,7 +144,6 @@ public class ActionSelector {
      * @zm-api-field-description Comma-separated list of tag names
      */
     @XmlAttribute(name=MailConstants.A_TAG_NAMES /* tn */, required=false)
-    @GraphQLQuery(name="tagNames", description="Comma-separated list of tag names")
     protected String tagNames;
 
     /**
@@ -163,7 +151,6 @@ public class ActionSelector {
      * @zm-api-field-description Flag to signify that any non-existent ids should be returned
      */
     @XmlAttribute(name=MailConstants.A_NON_EXISTENT_IDS /* nei */, required=false)
-    @GraphQLQuery(name="nonExistentIds", description="Flag to signify that any non-existent ids should be returned")
     protected ZmBoolean nonExistentIds;
 
     /**
@@ -172,7 +159,6 @@ public class ActionSelector {
      * <br /> applies to COPY action
      */
     @XmlAttribute(name=MailConstants.A_NEWLY_CREATED_IDS /* nci */, required=false)
-    @GraphQLQuery(name="newlyCreatedIds", description="Flag to signify that ids of new items should be returned applies to COPY action")
     protected ZmBoolean newlyCreatedIds;
 
     /**

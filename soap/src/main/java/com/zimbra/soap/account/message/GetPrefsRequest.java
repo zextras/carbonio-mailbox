@@ -5,20 +5,14 @@
 
 package com.zimbra.soap.account.message;
 
+import com.zimbra.common.soap.AccountConstants;
+import com.zimbra.soap.account.type.Pref;
 import java.util.Collections;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.zimbra.common.gql.GqlConstants;
-import com.zimbra.common.soap.AccountConstants;
-import com.zimbra.soap.account.type.Pref;
-
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @zm-api-command-auth-required true
@@ -31,13 +25,11 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name=AccountConstants.E_GET_PREFS_REQUEST)
-@GraphQLType(name=GqlConstants.CLASS_GET_PREFS_REQUEST, description="Get preferences for the authenticated account")
 public class GetPrefsRequest {
     /**
      * @zm-api-field-description If any of these are specified then only get these preferences
      */
     @XmlElement(name=AccountConstants.E_PREF)
-    @GraphQLQuery(name=GqlConstants.PREFERENCES, description="List of prefs that is wanted in the response")
     private List<Pref> pref;
 
     public void setPref(List<Pref> pref) {

@@ -10,14 +10,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.google.common.base.MoreObjects;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_MODIFY_CONTACT_ATTRIBUTE, description="Contact attributes to modify")
 public class ModifyContactAttr extends NewContactAttr {
 
     // See ParsedContact.FieldDelta.Op - values "+" or "-"
@@ -42,7 +37,6 @@ public class ModifyContactAttr extends NewContactAttr {
         return mcs;
     }
 
-    @GraphQLInputField(name=GqlConstants.OPERATION, description="Specify + or - to add or remove")
     public void setOperation(String operation) { this.operation = operation; }
     public String getOperation() { return operation; }
 

@@ -15,7 +15,6 @@ import io.leangen.graphql.annotations.GraphQLEnumValue;
 import io.leangen.graphql.annotations.types.GraphQLType;
 
 @XmlEnum
-@GraphQLType(name="GranteeType")
 public enum GrantGranteeType {
     // case must match protocol - keep in sync with com.zimbra.client.ZGrant.GranteeType
     //     (which differs slightly from com.zimbra.cs.account.accesscontrol.GranteeType)

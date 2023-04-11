@@ -25,7 +25,6 @@ import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.annotations.types.GraphQLType;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name="FolderActionSelector", description="Input for folder actions")
 public class FolderActionSelector extends ActionSelector {
 
     /**
@@ -34,7 +33,6 @@ public class FolderActionSelector extends ActionSelector {
      * subfolders if "recursive" is set)
      */
     @XmlAttribute(name=MailConstants.A_RECURSIVE /* recursive */, required=false)
-    @GraphQLQuery(name="recursive", description="For op=empty - hard-delete all items in the folder (and all the folder's")
     private ZmBoolean recursive;
 
     /**
@@ -42,7 +40,6 @@ public class FolderActionSelector extends ActionSelector {
      * @zm-api-field-description Target URL
      */
     @XmlAttribute(name=MailConstants.A_URL /* url */, required=false)
-    @GraphQLQuery(name="url", description="Target URL")
     private String url;
 
     /**
@@ -51,7 +48,6 @@ public class FolderActionSelector extends ActionSelector {
      * <b>{exclude-free-busy-boolean}</b> for op="fb")
      */
     @XmlAttribute(name=MailConstants.A_EXCLUDE_FREEBUSY /* excludeFreeBusy */, required=false)
-    @GraphQLQuery(name="excludeFreeBusy", description="For fb operation - set the excludeFreeBusy boolean for this folder (must specify for fb operation)")
     private ZmBoolean excludeFreebusy;
 
     /**
@@ -59,7 +55,6 @@ public class FolderActionSelector extends ActionSelector {
      * @zm-api-field-description Grantee Zimbra ID
      */
     @XmlAttribute(name=MailConstants.A_ZIMBRA_ID /* zid */, required=false)
-    @GraphQLQuery(name="zimbraId", description="Grantee Zimbra ID")
     private String zimbraId;
 
     /**
@@ -67,7 +62,6 @@ public class FolderActionSelector extends ActionSelector {
      * @zm-api-field-description Grantee Type
      */
     @XmlAttribute(name=MailConstants.A_GRANT_TYPE /* gt */, required=false)
-    @GraphQLQuery(name="granteeType", description="Grantee type")
     private String grantType;
 
     /**
@@ -75,7 +69,6 @@ public class FolderActionSelector extends ActionSelector {
      * @zm-api-field-description Use with <b>op="update"</b> to change folder's default view (useful for migration)
      */
     @XmlAttribute(name=MailConstants.A_DEFAULT_VIEW /* view */, required=false)
-    @GraphQLQuery(name="view", description="User with op=update to change folder's default view (usefor for migration)")
     private String view;
 
     /**
@@ -84,7 +77,6 @@ public class FolderActionSelector extends ActionSelector {
      */
     @ZimbraUniqueElement
     @XmlElement(name=MailConstants.E_GRANT /* grant */, required=false)
-    @GraphQLQuery(name="grant", description="Grant")
     private ActionGrantSelector grant;
 
     /**
@@ -92,14 +84,12 @@ public class FolderActionSelector extends ActionSelector {
      */
     @XmlElementWrapper(name=MailConstants.E_ACL /* acl */, required=false)
     @XmlElement(name=MailConstants.E_GRANT /* grant */, required=false)
-    @GraphQLQuery(name="grants", description="List of grants used with grant and !grant operations")
     private List<ActionGrantSelector> grants = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Retention policy
      */
     @XmlElement(name=MailConstants.E_RETENTION_POLICY /* retentionPolicy */, required=false)
-    @GraphQLQuery(name="retentionPolicy", description="Retention policy")
     private RetentionPolicy retentionPolicy;
 
     /**
@@ -107,7 +97,6 @@ public class FolderActionSelector extends ActionSelector {
      * @zm-api-field-description Number of days for which web client would sync folder data for offline use
      */
     @XmlAttribute(name=MailConstants.A_NUM_DAYS /* numDays */, required=false)
-    @GraphQLQuery(name="numDays", description="Number of days for which web client would sync folder data for offline use")
     private Integer numDays;
 
     public FolderActionSelector() {
@@ -142,27 +131,17 @@ public class FolderActionSelector extends ActionSelector {
 
     public void setRetentionPolicy(RetentionPolicy retentionPolicy) { this.retentionPolicy = retentionPolicy; }
     public void setNumDays(Integer numDays) { this.numDays = numDays; }
-    @GraphQLQuery(name = "recursive", description = "For op=empty - hard-delete all items in the folder (and all the folder's")
     public Boolean getRecursive() { return ZmBoolean.toBool(recursive); }
-    @GraphQLQuery(name = "url", description = "Target URL")
     public String getUrl() { return url; }
-    @GraphQLQuery(name = "excludeFreeBusy", description = "For op=fb - set the excludeFreeBusy boolean for this folder (must specify for op=fb)")
     public Boolean getExcludeFreebusy() { return ZmBoolean.toBool(excludeFreebusy); }
-    @GraphQLQuery(name = "zimbraId", description = "Grantee Zimbra ID")
     public String getZimbraId() { return zimbraId; }
-    @GraphQLQuery(name = "granteeType", description = "Grantee type")
     public String getGrantType() { return grantType; }
-    @GraphQLQuery(name = "view", description = "User with op=update to change folder's default view (usefor for migration)")
     public String getView() { return view; }
-    @GraphQLQuery(name = "grant", description = "Grant")
     public ActionGrantSelector getGrant() { return grant; }
-    @GraphQLQuery(name = "grants", description = "List of grants used with op=grant and op=!grant")
     public List<ActionGrantSelector> getGrants() {
         return Collections.unmodifiableList(grants);
     }
-    @GraphQLQuery(name = "retentionPolicy", description = "Retention policy")
     public RetentionPolicy getRetentionPolicy() { return retentionPolicy; }
-    @GraphQLQuery(name = "numDays", description = "Number of days for which web client would sync folder data for offline use")
     public Integer getNumDays() { return numDays; }
 
     @Override

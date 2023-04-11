@@ -7,10 +7,7 @@ package com.zimbra.soap.type;
 
 import javax.xml.bind.annotation.XmlEnum;
 
-import com.zimbra.common.gql.GqlConstants;
-
 import io.leangen.graphql.annotations.GraphQLEnumValue;
-import io.leangen.graphql.annotations.types.GraphQLType;
 
 
 /**
@@ -18,7 +15,6 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  *
  */
 @XmlEnum
-@GraphQLType(name=GqlConstants.CLASS_MESSAGE_CONTENT, description="Message content the cient expects in response")
 public enum MsgContent {
 
     @GraphQLEnumValue(description="The complete message")

@@ -19,7 +19,6 @@ import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.annotations.types.GraphQLType;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name="AuthToken", description="Auth token")
 public class AuthToken {
 
     /**
@@ -54,22 +53,16 @@ public class AuthToken {
         this.verifyAccount = ZmBoolean.fromBool(verifyAccount);
     }
 
-    @GraphQLQuery(name="value", description="Value for authorization token")
     public String getValue() { return value; }
-    @GraphQLInputField(name="value", description="Value for authorization token")
     public void setValue(String value) { this.value = value; }
 
-    @GraphQLQuery(name="verifyAccount", description="Denotes whether to verify account data in the request")
     public Boolean getVerifyAccount() { return ZmBoolean.toBool(verifyAccount); }
-    @GraphQLInputField(name="verifyAccount", description="Denotes whether to verify account data in the request")
     public void setVerifyAccount(Boolean verifyAccount) { this.verifyAccount = ZmBoolean.fromBool(verifyAccount); }
 
-    @GraphQLQuery(name="lifetime", description="Life time of the auth token")
     public Long getLifetime() {
         return lifetime;
     }
 
-    @GraphQLInputField(name="lifetime", description="Life time of the auth token")
     public void setLifetime(Long lifetime) {
         this.lifetime = lifetime;
     }

@@ -19,18 +19,12 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.soap.json.jackson.annotate.ZimbraKeyValuePairs;
 
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_ATTRS_IMPL, description="Attributes implementation")
 abstract public class AttrsImpl implements Attrs {
 
     /**
@@ -76,13 +70,11 @@ abstract public class AttrsImpl implements Attrs {
     }
 
     @Override
-    @GraphQLQuery(name=GqlConstants.ATTRS, description="Attributes")
     public List<Attr> getAttrs() {
         return Collections.unmodifiableList(attrs);
     }
 
     @Override
-    @GraphQLIgnore
     public Multimap<String, String> getAttrsMultimap() {
         return Attr.toMultimap(attrs);
     }
@@ -102,7 +94,6 @@ abstract public class AttrsImpl implements Attrs {
     }
 
     @Override
-    @GraphQLIgnore
     public Map<String, Object> getAttrsAsOldMultimap() {
         return StringUtil.toOldMultimap(getAttrsMultimap());
     }

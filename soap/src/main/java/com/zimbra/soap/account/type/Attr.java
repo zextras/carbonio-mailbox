@@ -5,31 +5,23 @@
 
 package com.zimbra.soap.account.type;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlValue;
-
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.soap.base.KeyAndValue;
 import com.zimbra.soap.type.ZmBoolean;
-
-import io.leangen.graphql.annotations.GraphQLIgnore;
 import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlValue;
 
 /**
  * e.g. For element named "attr":
@@ -37,7 +29,6 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  *
  * Note:  where the attribute name is "n" rather than "name" use {@link KeyValuePair}
  */
-@GraphQLType(name=GqlConstants.CLASS_ATTR, description="Attributes")
 public class Attr implements KeyAndValue {
 
     public static Function<Attr, Attr> COPY = new Function<Attr, Attr>() {
@@ -105,23 +96,16 @@ public class Attr implements KeyAndValue {
         return attr;
     }
 
-    @GraphQLNonNull
-    @GraphQLQuery(name="name", description="Attribute name")
     public String getName() { return name; }
 
-    @GraphQLInputField(name="name", description="Attribute name")
-    public void setName(@GraphQLNonNull String name) { this.name = name; }
+    public void setName( String name) { this.name = name; }
 
-    @GraphQLQuery(name="permDenied", description="Denotes whether permission has been denied")
     public Boolean getPermDenied() { return ZmBoolean.toBool(permDenied); }
-    @GraphQLInputField(name="permDenied", description="Flags whether permission has been denied")
     public void setPermDenied(Boolean permDenied) { this.permDenied = ZmBoolean.fromBool(permDenied); }
 
     @Override
-    @GraphQLQuery(name="value", description="Attribute value")
     public String getValue() { return value; }
     @Override
-    @GraphQLIgnore
     public void setValue(String value) { this.value = value; }
 
     @Override
@@ -184,11 +168,9 @@ public class Attr implements KeyAndValue {
     }
 
     @Override
-    @GraphQLIgnore
     public void setKey(String key) { setName(key); }
 
     @Override
-    @GraphQLIgnore
     public String getKey() { return getName(); }
 
 }

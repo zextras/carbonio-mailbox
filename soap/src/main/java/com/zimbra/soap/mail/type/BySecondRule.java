@@ -10,17 +10,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.base.BySecondRuleInterface;
 
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_BY_SECOND_RULE, description="By-second rule")
 public class BySecondRule implements BySecondRuleInterface {
 
     /**
@@ -28,8 +21,6 @@ public class BySecondRule implements BySecondRuleInterface {
      * @zm-api-field-description Comma separated list of seconds where second is a number between 0 and 59
      */
     @XmlAttribute(name=MailConstants.A_CAL_RULE_BYSECOND_SECLIST /* seclist */, required=true)
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.LIST, description="Comma separated list of seconds where second is a number between 0 and 59")
     private final String list;
 
     /**
@@ -40,7 +31,7 @@ public class BySecondRule implements BySecondRuleInterface {
         this((String) null);
     }
 
-    public BySecondRule(@GraphQLNonNull @GraphQLInputField String list) {
+    public BySecondRule(String list) {
         this.list = list;
     }
 

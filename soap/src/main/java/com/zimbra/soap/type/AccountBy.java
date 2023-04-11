@@ -15,7 +15,6 @@ import io.leangen.graphql.annotations.GraphQLEnumValue;
 import io.leangen.graphql.annotations.types.GraphQLType;
 
 @XmlEnum
-@GraphQLType(name="AccountBy")
 public enum AccountBy {
     // case must match protocol
     @GraphQLEnumValue adminName,

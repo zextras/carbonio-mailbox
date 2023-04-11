@@ -10,17 +10,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.base.BySetPosRuleInterface;
 
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_BY_SET_POS_RULE, description="By-set-pos rule")
 public class BySetPosRule implements BySetPosRuleInterface {
 
     /**
@@ -30,8 +23,6 @@ public class BySetPosRule implements BySetPosRuleInterface {
      * <b>&lt;bysetpos></b> MUST only be used in conjunction with another <b>&lt;byXXX></b> element.
      */
     @XmlAttribute(name=MailConstants.A_CAL_RULE_BYSETPOS_POSLIST /* poslist */, required=true)
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.LIST, description="Format [[+]|-]num[,...] where num is from 1 to 366")
     private final String list;
 
     /**
@@ -42,7 +33,7 @@ public class BySetPosRule implements BySetPosRuleInterface {
         this((String) null);
     }
 
-    public BySetPosRule(@GraphQLNonNull @GraphQLInputField String list) {
+    public BySetPosRule(String list) {
         this.list = list;
     }
 
