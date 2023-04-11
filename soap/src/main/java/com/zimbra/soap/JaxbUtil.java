@@ -240,8 +240,6 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.CheckBlobConsistencyResponse.class,
           com.zimbra.soap.admin.message.CheckDirectoryRequest.class,
           com.zimbra.soap.admin.message.CheckDirectoryResponse.class,
-          com.zimbra.soap.admin.message.CheckDomainMXRecordRequest.class,
-          com.zimbra.soap.admin.message.CheckDomainMXRecordResponse.class,
           com.zimbra.soap.admin.message.CheckExchangeAuthRequest.class,
           com.zimbra.soap.admin.message.CheckExchangeAuthResponse.class,
           com.zimbra.soap.admin.message.CheckGalConfigRequest.class,
