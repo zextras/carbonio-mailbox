@@ -21,8 +21,8 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.json.jackson.annotate.ZimbraUniqueElement;
 import com.zimbra.soap.type.ZmBoolean;
 
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
+
+
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class FolderActionSelector extends ActionSelector {

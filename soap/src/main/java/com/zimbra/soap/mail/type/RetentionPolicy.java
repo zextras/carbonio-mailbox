@@ -23,9 +23,9 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.json.jackson.annotate.ZimbraJsonArrayForWrapper;
 
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
+
+
+
 
 @XmlRootElement(name=MailConstants.E_RETENTION_POLICY, namespace=MailConstants.NAMESPACE_STR)
 @XmlAccessorType(XmlAccessType.NONE)

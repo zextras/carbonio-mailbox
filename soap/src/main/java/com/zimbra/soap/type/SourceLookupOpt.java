@@ -10,14 +10,13 @@ import javax.xml.bind.annotation.XmlEnum;
 
 import com.zimbra.common.service.ServiceException;
 
-import io.leangen.graphql.annotations.GraphQLEnumValue;
+
 
 @XmlEnum
 public enum SourceLookupOpt {
     // case must match protocol
-    @GraphQLEnumValue(description = "While iterating through multiple sources configured for a store, stop if any "
-            + "certificates are found in one source - remaining configured sources will not be attempted.") ANY,
-    @GraphQLEnumValue(description = "Always iterate through all configured sources") ALL;
+    ANY,
+    ALL;
 
     public static SourceLookupOpt fromString(String s)
     throws ServiceException {

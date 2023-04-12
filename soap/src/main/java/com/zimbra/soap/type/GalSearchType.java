@@ -11,15 +11,15 @@ import javax.xml.bind.annotation.XmlEnum;
 
 import com.zimbra.common.service.ServiceException;
 
-import io.leangen.graphql.annotations.GraphQLEnumValue;
+
 
 @XmlEnum
 public enum GalSearchType {
     // case must match protocol
-    @GraphQLEnumValue(description="for combination of all types") all,
-    @GraphQLEnumValue(description="for regular user accounts, aliases and distribution lists") account,
-    @GraphQLEnumValue(description="for calendar resources") resource,
-    @GraphQLEnumValue(description="for groups") group;
+    all,
+    account,
+    resource,
+    group;
 
     public static GalSearchType fromString(String s) throws ServiceException {
         try {

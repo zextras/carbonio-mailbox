@@ -7,12 +7,12 @@ package com.zimbra.soap.account.type;
 
 import com.zimbra.common.service.ServiceException;
 
-import io.leangen.graphql.annotations.GraphQLEnumValue;
+
 
 public enum MemberOfSelector {
-    @GraphQLEnumValue(description = "the isMember flag returned is set if the user is a direct or indirect member of the group, otherwise it is unset") all, 
-    @GraphQLEnumValue(description = "the isMember flag returned is set if the user is a direct member of the group, otherwise it is unset") directOnly,
-    @GraphQLEnumValue(description = "the isMember flag is not returned") none;
+    all,
+    directOnly,
+    none;
 
     public static MemberOfSelector fromString(String s) throws ServiceException {
         try {

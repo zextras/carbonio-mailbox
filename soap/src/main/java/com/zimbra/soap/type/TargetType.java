@@ -6,7 +6,7 @@
 package com.zimbra.soap.type;
 
 import com.zimbra.common.service.ServiceException;
-import io.leangen.graphql.annotations.GraphQLEnumValue;
+
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlEnum;
 
@@ -14,29 +14,17 @@ import javax.xml.bind.annotation.XmlEnum;
 @XmlEnum
 public enum TargetType {
   // case must match protocol
-  @GraphQLEnumValue
   account,
-  @GraphQLEnumValue
   calresource,
-  @GraphQLEnumValue
   cos,
-  @GraphQLEnumValue
   dl,
-  @GraphQLEnumValue
   group,
-  @GraphQLEnumValue
   domain,
-  @GraphQLEnumValue
   server,
-  @GraphQLEnumValue
   ucservice,
-  @GraphQLEnumValue
   xmppcomponent,
-  @GraphQLEnumValue
   zimlet,
-  @GraphQLEnumValue
   config,
-  @GraphQLEnumValue
   global;
 
   public static TargetType fromString(String s) throws ServiceException {

@@ -18,8 +18,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.zimbra.common.soap.MailConstants;
 
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
+
+
 
 /*
 <acl [internalGrantExpiry="{millis-since-epoch}"] [guestGrantExpiry="{millis-since-epoch}"]>

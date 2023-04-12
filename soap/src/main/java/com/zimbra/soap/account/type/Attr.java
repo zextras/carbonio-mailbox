@@ -15,7 +15,7 @@ import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.soap.base.KeyAndValue;
 import com.zimbra.soap.type.ZmBoolean;
-import io.leangen.graphql.annotations.GraphQLInputField;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

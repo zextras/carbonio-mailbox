@@ -13,10 +13,10 @@ import javax.xml.bind.annotation.XmlValue;
 import com.google.common.base.MoreObjects;
 import com.zimbra.common.soap.HeaderConstants;
 
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
+
+
+
+
 
  // See ZimbraSoapContext.encodeSession:
  // eSession.addAttribute(HeaderConstants.A_TYPE, typeStr).addAttribute(HeaderConstants.A_ID, sessionId).setText(sessionId);

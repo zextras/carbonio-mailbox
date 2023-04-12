@@ -14,9 +14,9 @@ import com.google.common.base.MoreObjects;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.soap.type.ZmBoolean;
 
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
+
+
+
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class AuthToken {

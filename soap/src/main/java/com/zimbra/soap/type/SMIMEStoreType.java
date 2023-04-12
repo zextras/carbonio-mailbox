@@ -11,14 +11,14 @@ import javax.xml.bind.annotation.XmlEnum;
 
 import com.zimbra.common.service.ServiceException;
 
-import io.leangen.graphql.annotations.GraphQLEnumValue;
+
 
 @XmlEnum
 public enum SMIMEStoreType {
     // case must match protocol
-    @GraphQLEnumValue(description = "contacts") CONTACT,
-    @GraphQLEnumValue(description = "Global Address List (internal and external)") GAL,
-    @GraphQLEnumValue(description = " external LDAP") LDAP;
+    CONTACT,
+    GAL,
+    LDAP;
 
     public static SMIMEStoreType fromString(String s)
     throws ServiceException {

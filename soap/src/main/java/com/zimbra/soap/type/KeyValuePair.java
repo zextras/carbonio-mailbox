@@ -22,8 +22,8 @@ import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.soap.base.KeyAndValue;
 
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
+
+
 
 /**
  *  e.g. For element name "a":

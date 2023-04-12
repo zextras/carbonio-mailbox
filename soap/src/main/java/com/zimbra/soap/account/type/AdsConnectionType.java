@@ -15,14 +15,14 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.soap.type.DataSource.ConnectionType;
 
-import io.leangen.graphql.annotations.GraphQLEnumValue;
+
 
 @XmlEnum
 public enum AdsConnectionType {
-    @GraphQLEnumValue @XmlEnumValue("cleartext") cleartext,
-    @GraphQLEnumValue @XmlEnumValue("ssl") ssl,
-    @GraphQLEnumValue @XmlEnumValue("tls") tls,
-    @GraphQLEnumValue @XmlEnumValue("tls_is_available") tls_if_available;
+    @XmlEnumValue("cleartext") cleartext,
+    @XmlEnumValue("ssl") ssl,
+    @XmlEnumValue("tls") tls,
+    @XmlEnumValue("tls_is_available") tls_if_available;
 
     public static AdsConnectionType fromString(String s) throws ServiceException {
         try {

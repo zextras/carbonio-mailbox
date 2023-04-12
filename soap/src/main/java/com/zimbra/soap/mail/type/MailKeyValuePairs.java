@@ -24,9 +24,9 @@ import com.zimbra.soap.json.jackson.annotate.ZimbraKeyValuePairs;
 import com.zimbra.soap.type.KeyValuePair;
 import com.zimbra.soap.type.KeyValuePairs;
 
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
+
+
+
 
 /*
  * Used for JAXB objects representing elements which have child node(s) of form:

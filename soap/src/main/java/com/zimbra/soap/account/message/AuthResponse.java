@@ -14,7 +14,7 @@ import com.zimbra.soap.account.type.Session;
 import com.zimbra.soap.json.jackson.annotate.ZimbraJsonAttribute;
 import com.zimbra.soap.json.jackson.annotate.ZimbraKeyValuePairs;
 import com.zimbra.soap.type.ZmBoolean;
-import io.leangen.graphql.annotations.GraphQLIgnore;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
