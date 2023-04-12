@@ -1211,12 +1211,6 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>Commonly blocked attachment file extensions</desc>
 </attr>
 
-<attr id="197" name="zimbraMtaDnsLookupsEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mta" deprecatedSince="8.7.0_BETA2">
-  <globalConfigValue>TRUE</globalConfigValue>
-  <desc>Value for postconf disable_dns_lookups (note enable v. disable)</desc>
-  <deprecateDesc>deprecated in favor zimbraMtaSmtpDnsSupportLevel</deprecateDesc>
-</attr>
-
 <attr id="198" name="zimbraMtaMaxMessageSize" type="long" min="0" cardinality="single" optionalIn="globalConfig" flags="accountInfo" requiresRestart="mta">
   <globalConfigValue>10240000</globalConfigValue>
   <desc>Maximum total size of a mail message. Enforced in mailbox server and also used as value for postconf message_size_limit.  0 means "no limit"</desc>
@@ -3919,15 +3913,6 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 
 <attr id="742" name="zimbraServerId" type="id" cardinality="single" requiredIn="xmppComponent" since="6.0.0_BETA1">
   <desc>ZimbraID of the server that this component is running on</desc>
-</attr>  
-
-<attr id="743" name="zimbraAdminConsoleDNSCheckEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" since="5.0.10">
-  <globalConfigValue>FALSE</globalConfigValue>
-  <desc>enable MX check feature for domain</desc>
-</attr>
-
-<attr id="744" name="zimbraDNSCheckHostname"  type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainAdminModifiable" since="5.0.10">
-   <desc>This attribute is used for DNS check by customers that configure their MX to point at spam relays or other non-zimbra inbox smtp servers</desc>
 </attr>
 
 <attr id="745" name="zimbraReverseProxyRouteLookupTimeout" type="duration" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="5.0.10">
@@ -6982,12 +6967,6 @@ TODO: delete them permanently from here
   <desc>Hosts to ignore during IP based throttling. Account and command rate limits will still be applied. Typically should list nginx hostname and any other mailbox servers which can proxy to this server</desc>
 </attr>
 
-<attr id="1384" name="zimbraReverseProxyDnsLookupInServerEnabled" type="boolean" cardinality="single" optionalIn="server,globalConfig" flags="serverInherited" since="8.0.0">
-  <desc>Control whether force the server side do the DNS lookup and send the result IP back to proxy. If false, the raw address configured (e.g. zimbraMailHost) is directly sent to proxy,
-    else the translated IP will be sent back to the client.</desc>
-  <globalConfigValue>FALSE</globalConfigValue>
-</attr>
-
 <attr id="1385" name="zimbraFileAndroidCrashReportingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited"  since="8.0.0">
   <defaultCOSValue>TRUE</defaultCOSValue>
   <desc>whether crash reporting is enabled in the Android client</desc>
@@ -7893,10 +7872,6 @@ TODO: delete them permanently from here
   <desc>Value for postconf smtp_tls_loglevel. Defaults to 0. Valid range is 0-4</desc>
 </attr>
 
-<attr id="1569" name="zimbraDNSMasterIP" type="string" max="256" cardinality="multi" optionalIn="globalConfig,server" since="8.5.0">
-  <desc>IP Address(es) of the root DNS servers to be used by the DNS cache service</desc>
-</attr>
-
 <attr id="1570" name="zimbraMobileShareContactEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="8.5.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>Whether to permit syncing shared contact folders</desc>
@@ -7965,18 +7940,8 @@ TODO: delete them permanently from here
   <desc>Whether or not Jetty thread monitor is enabled. Used for debugging Jetty, not recommended for extended use in production environment. Defaults to FALSE</desc>
 </attr>
 
-<attr id="1584" name="zimbraDNSUseTCP" type="enum" value="yes,no" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
-  <globalConfigValue>yes</globalConfigValue>
-  <desc>For zimbra dnscache, whether or not to use TCP. Defaults to yes</desc>
-</attr>
-
 <attr id="1585" name="zimbraAuthTokens" type="string" cardinality="multi" optionalIn="account" since="8.5.0" flags="ephemeral,dynamic,expirable">
   <desc>list of currently active auth tokens</desc>
-</attr>
-
-<attr id="1586" name="zimbraDNSUseUDP" type="enum" value="yes,no" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
-  <globalConfigValue>yes</globalConfigValue>
-  <desc>For zimbra dnscache, whether or not to use UDP. Defaults to yes</desc>
 </attr>
 
 <attr id="1587" name="zimbraDefaultAnalyzerStopWords" type="string" cardinality="multi" optionalIn="globalConfig" since="8.5.0">
@@ -8063,11 +8028,6 @@ TODO: delete them permanently from here
 <attr id="1596" name="zimbraMobileMaxMessageSize" type="integer" min="0" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.0.8, 8.5.0" requiresRestart="mailbox">
   <globalConfigValue>10240000</globalConfigValue>
   <desc>Maximum total size of a mail message that can be synced to device without truncation. 0 means no limit</desc>
-</attr>
-
-<attr id="1597" name="zimbraDNSTCPUpstream" type="enum" value="yes,no" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
-  <globalConfigValue>no</globalConfigValue>
-  <desc>For zimbra dnscache, whether or not to only use TCP when talking to the upstream Master DNS servers. Defaults to no</desc>
 </attr>
 
 <attr id="1598" name="zimbraServerVersion" type="string" cardinality="single" optionalIn="server" since="8.5.0">
@@ -9164,11 +9124,6 @@ TODO: delete them permanently from here
   <desc>Database mirrors for freshclam to use for virus and other updates. Defaults to ClamAV CDN.</desc>
 </attr>
 
-<attr id="2075" name="zimbraMtaSmtpDnsSupportLevel" type="enum" value="disabled,enabled,dnssec" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">
-  <globalConfigValue>enabled</globalConfigValue>
-  <desc>Value for postconf smtp_dns_support_level</desc>
-</attr>
-
 <attr id="2076" name="zimbraMtaSmtpdTlsReceivedHeader" type="enum" value="yes,no" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">
   <globalConfigValue>yes</globalConfigValue>
   <desc>Value for postconf smtpd_tls_received_header</desc>
@@ -9213,11 +9168,6 @@ TODO: delete them permanently from here
 <attr id="2084" name="zimbraMtaSmtpdClientAuthRateLimit" type="integer" min="0" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">
   <globalConfigValue>0</globalConfigValue>
   <desc>Value for postconf smtpd_client_auth_rate_limit.</desc>
-</attr>
-
-<attr id="2085" name="zimbraMtaSmtpTlsDaneInsecureMXPolicy" type="enum" value="may,encrypt,dane" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">
-  <globalConfigValue>dane</globalConfigValue>
-  <desc>Value for postconf smtp_tls_dane_insecure_mx_policy.</desc>
 </attr>
 
 <attr id="2086" name="zimbraPasswordLockoutSuppressionCacheSize" type="integer" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="8.7.0,9.0.0">

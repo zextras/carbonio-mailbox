@@ -518,7 +518,6 @@
     <a n="zimbraAdminConsoleLoginURL"/>
     <a n="zimbraAdminConsoleLogoutURL"/>
     <a n="zimbraAvailableSkin"/>
-    <a n="zimbraDNSCheckHostname"/>
     <a n="zimbraExternalImapHostname"/>
     <a n="zimbraExternalImapPort"/>
     <a n="zimbraExternalImapSSLHostname"/>
