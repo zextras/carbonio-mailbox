@@ -10,15 +10,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.google.common.base.MoreObjects;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.type.ZmBoolean;
 
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_MESSAGE_TO_SEND, description="Message to send input.")
 public class MsgToSend
 extends Msg {
 
@@ -47,17 +42,14 @@ extends Msg {
     public MsgToSend() {
     }
 
-    @GraphQLInputField(name=GqlConstants.DRAFT_ID, description="Saved draft ID")
     public void setDraftId(String draftId) { this.draftId = draftId; }
     public String getDraftId() { return draftId; }
 
-    @GraphQLInputField(name=GqlConstants.DO_SEND_DRAFT, description="Denotes whether to message based on the specified draftId")
     public void setSendFromDraft(Boolean sendFromDraft) {
         this.sendFromDraft = ZmBoolean.fromBool(sendFromDraft);
     }
     public Boolean getSendFromDraft() { return ZmBoolean.toBool(sendFromDraft); }
 
-    @GraphQLInputField(name=GqlConstants.DATA_SOURCE_ID, description="Id of the data source in case its SMTP settings must be used for sending")
     public void setDataSourceId(String dsId) { this.dataSourceId = dsId; }
     public String getDataSourceId() { return dataSourceId; }
 

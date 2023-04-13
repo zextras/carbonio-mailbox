@@ -9,19 +9,16 @@ import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlEnum;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 
-import io.leangen.graphql.annotations.GraphQLEnumValue;
-import io.leangen.graphql.annotations.types.GraphQLType;
+
 
 @XmlEnum
-@GraphQLType(name=GqlConstants.CLASS_SMIME_STORE_TYPE, description="Smime certificate stores")
 public enum SMIMEStoreType {
     // case must match protocol
-    @GraphQLEnumValue(description = "contacts") CONTACT,
-    @GraphQLEnumValue(description = "Global Address List (internal and external)") GAL,
-    @GraphQLEnumValue(description = " external LDAP") LDAP;
+    CONTACT,
+    GAL,
+    LDAP;
 
     public static SMIMEStoreType fromString(String s)
     throws ServiceException {

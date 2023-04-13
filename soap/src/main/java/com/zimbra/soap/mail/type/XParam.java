@@ -15,17 +15,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.base.XParamInterface;
 
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_XPARAM, description="Non-standard parameter")
 public class XParam implements XParamInterface {
 
     /**
@@ -33,8 +26,6 @@ public class XParam implements XParamInterface {
      * @zm-api-field-description XPARAM Name
      */
     @XmlAttribute(name=MailConstants.A_NAME, required=true)
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.NAME, description="XPARAM Name")
     private final String name;
 
     /**
@@ -42,8 +33,6 @@ public class XParam implements XParamInterface {
      * @zm-api-field-description XPARAM value
      */
     @XmlAttribute(name=MailConstants.A_VALUE, required=true)
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.VALUE, description="XPARAM Value")
     private final String value;
 
     /**
@@ -55,8 +44,8 @@ public class XParam implements XParamInterface {
     }
 
     public XParam(
-        @GraphQLNonNull @GraphQLInputField(name=GqlConstants.NAME) String name,
-        @GraphQLNonNull @GraphQLInputField(name=GqlConstants.VALUE) String value) {
+        String name,
+        String value) {
         this.name = name;
         this.value = value;
     }

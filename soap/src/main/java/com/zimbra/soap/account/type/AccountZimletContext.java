@@ -10,16 +10,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.google.common.base.MoreObjects;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.soap.base.ZimletContextInterface;
 
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_ACCOUNT_ZIMLET_CONTEXT, description="Zimlet context")
 public class AccountZimletContext
 implements ZimletContextInterface {
 
@@ -73,15 +67,10 @@ implements ZimletContextInterface {
     @Override
     public void setZimletPresence(String zimletPresence) { this.zimletPresence = zimletPresence; }
 
-    @GraphQLQuery(name=GqlConstants.ZIMLET_BASE_URL, description="Zimlet Base URL")
-    @GraphQLNonNull
     @Override
     public String getZimletBaseUrl() { return zimletBaseUrl; }
-    @GraphQLQuery(name=GqlConstants.ZIMLET_PRIORITY, description="Zimlet Priority")
     @Override
     public Integer getZimletPriority() { return zimletPriority; }
-    @GraphQLQuery(name=GqlConstants.ZIMLET_PRESENCE, description="Zimlet presence")
-    @GraphQLNonNull
     @Override
     public String getZimletPresence() { return zimletPresence; }
 
