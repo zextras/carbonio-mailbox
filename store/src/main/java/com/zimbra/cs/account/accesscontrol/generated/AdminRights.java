@@ -129,7 +129,6 @@ public class AdminRights {
     public static AdminRight R_changeCalendarResourcePassword;
     public static AdminRight R_checkCalendarResourcePasswordStrength;
     public static AdminRight R_checkDirectoryOnFileSystem;
-    public static AdminRight R_checkDomainMXRecord;
     public static AdminRight R_checkExchangeAuthConfig;
     public static AdminRight R_checkHealth;
     public static AdminRight R_checkPasswordStrength;
@@ -564,7 +563,6 @@ public class AdminRights {
         R_changeCalendarResourcePassword       = rm.getAdminRight(Right.RT_changeCalendarResourcePassword);
         R_checkCalendarResourcePasswordStrength = rm.getAdminRight(Right.RT_checkCalendarResourcePasswordStrength);
         R_checkDirectoryOnFileSystem           = rm.getAdminRight(Right.RT_checkDirectoryOnFileSystem);
-        R_checkDomainMXRecord                  = rm.getAdminRight(Right.RT_checkDomainMXRecord);
         R_checkExchangeAuthConfig              = rm.getAdminRight(Right.RT_checkExchangeAuthConfig);
         R_checkHealth                          = rm.getAdminRight(Right.RT_checkHealth);
         R_checkPasswordStrength                = rm.getAdminRight(Right.RT_checkPasswordStrength);

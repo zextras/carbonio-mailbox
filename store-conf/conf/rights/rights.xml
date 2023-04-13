@@ -390,10 +390,6 @@
   <desc>create sub domain</desc>
 </right>
 
-<right name="checkDomainMXRecord" type="preset" targetType="domain">
-  <desc>check domain MX record</desc>
-</right>
-
 <right name="countAccount" type="preset" targetType="domain">
   <desc>count accounts in a domain</desc>
 </right>

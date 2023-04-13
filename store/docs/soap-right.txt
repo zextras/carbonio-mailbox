@@ -545,7 +545,6 @@ e.g.
           <entry name="domain2.com"/>
           <rights>
             <right n="accessGAL"/>
-            <right n="checkDomainMXRecord"/>
             <right n="countAccount"/>
             <right n="createAccount"/>
             <right n="createAlias"/>
