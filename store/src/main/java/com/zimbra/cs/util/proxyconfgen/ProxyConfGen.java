@@ -2323,8 +2323,8 @@ public class ProxyConfGen {
           new File(mTemplateDir, getConfTemplateFileName("stream.addressBook")),
           new File(mConfIncludesDir, getConfFileName("stream.addressBook")));
       expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("stream.chats.messaging.xmpp")),
-          new File(mConfIncludesDir, getConfFileName("stream.chats.messaging.xmpp")));
+          new File(mTemplateDir, getConfTemplateFileName("stream.message.dispatcher.xmpp")),
+          new File(mConfIncludesDir, getConfFileName("stream.message.dispatcher.xmpp")));
       // Templates for ssl mapping
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("map.crt")),
