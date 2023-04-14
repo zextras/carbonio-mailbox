@@ -1525,7 +1525,7 @@
       <a n="zimbraMobilePolicyMaxInactivityTimeDeviceLock"/>
       <a n="zimbraMobilePolicyMaxDevicePasswordFailedAttempts"/>
       <a n="zimbraMobilePolicyPasswordRecoveryEnabled"/>
-      <a n="zimbraMobilePolicyDeviceEncryptionEnabled"/>
+
     </attrs>
   </right>
   <right name="viewAdminConsoleCOSMobileTab" type="getAttrs" targetType="cos">
@@ -1547,7 +1547,7 @@
       <a n="zimbraMobilePolicyMaxInactivityTimeDeviceLock"/>
       <a n="zimbraMobilePolicyMaxDevicePasswordFailedAttempts"/>
       <a n="zimbraMobilePolicyPasswordRecoveryEnabled"/>
-      <a n="zimbraMobilePolicyDeviceEncryptionEnabled"/>
+
     </attrs>
   </right>
   <right name="adminConsoleCOSMobileTabRights" type="combo">
@@ -1724,7 +1724,6 @@
     <rights>
       <r n="setAdminConsoleDomainDocumentsTab"/>
       <r n="viewAdminConsoleDomainDocumentsTab"/>
-      <r n="configureWikiAccount"/>
     </rights>
   </right>
 
