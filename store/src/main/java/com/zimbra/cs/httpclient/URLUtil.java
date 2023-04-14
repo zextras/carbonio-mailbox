@@ -136,22 +136,6 @@ public class URLUtil {
     }
 
     /**
-     * Utility method to translate zimbraMtaAuthHost -> zimbraMtaAuthURL.
-     *
-     * Not the best place for this method, but do not want to pollute
-     * Provisioning with utility methods either.
-     */
-    public static String getMtaAuthURL(String authHost) throws ServiceException {
-        for (Server server : Provisioning.getInstance().getAllServers()) {
-            String serviceName = server.getAttr(Provisioning.A_zimbraServiceHostname, null);
-            if (authHost.equalsIgnoreCase(serviceName)) {
-                return URLUtil.getSoapURL(server, true);
-            }
-        }
-        throw ServiceException.INVALID_REQUEST("specified " + Provisioning.A_zimbraMtaAuthHost + " does not correspond to a valid service hostname: " + authHost, null);
-    }
-
-    /**
      * Returns absolute public URL with scheme, host, and port for mail app on server.
      *
      * @param server

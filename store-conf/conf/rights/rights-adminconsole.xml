@@ -182,7 +182,7 @@
     <a n="zimbraFeatureContactsEnabled"/>
     <a n="zimbraFeatureCalendarEnabled"/>
     <a n="zimbraFeatureTasksEnabled"/>
-    <a n="zimbraFeatureNotebookEnabled"/>
+
     <a n="zimbraFeatureBriefcasesEnabled"/>
     <a n="zimbraFeatureIMEnabled"/>
     <a n="zimbraFeatureOptionsEnabled"/>
@@ -225,7 +225,7 @@
     <a n="zimbraFeatureContactsEnabled"/>
     <a n="zimbraFeatureCalendarEnabled"/>
     <a n="zimbraFeatureTasksEnabled"/>
-    <a n="zimbraFeatureNotebookEnabled"/>
+
     <a n="zimbraFeatureBriefcasesEnabled"/>
     <a n="zimbraFeatureIMEnabled"/>
     <a n="zimbraFeatureOptionsEnabled"/>
@@ -996,7 +996,7 @@
       <a n="zimbraFeatureContactsEnabled"/>
       <a n="zimbraFeatureCalendarEnabled"/>
       <a n="zimbraFeatureTasksEnabled"/>
-      <a n="zimbraFeatureNotebookEnabled"/>
+
       <a n="zimbraFeatureBriefcasesEnabled"/>
       <a n="zimbraFeatureIMEnabled"/>
       <a n="zimbraFeatureOptionsEnabled"/>
@@ -1070,7 +1070,7 @@
       <a n="zimbraFeatureContactsEnabled"/>
       <a n="zimbraFeatureCalendarEnabled"/>
       <a n="zimbraFeatureTasksEnabled"/>
-      <a n="zimbraFeatureNotebookEnabled"/>
+
       <a n="zimbraFeatureBriefcasesEnabled"/>
       <a n="zimbraFeatureIMEnabled"/>
       <a n="zimbraFeatureOptionsEnabled"/>
