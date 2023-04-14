@@ -5,12 +5,6 @@
 
 package qa.unittest.prov.ldap;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.*;
-
 import static org.junit.Assert.*;
 
 import com.google.common.collect.Maps;
@@ -24,9 +18,15 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.CacheEntry;
+import com.zimbra.soap.admin.type.CacheEntryType;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import qa.QA.Bug;
 import qa.unittest.prov.Names;
-import com.zimbra.soap.admin.type.CacheEntryType;
 
 public class TestLdapProvCos extends LdapTest {
 
@@ -170,8 +170,7 @@ public class TestLdapProvCos extends LdapTest {
          * Attr in defaultCosAttrs but not in copiedCosAttrs: description
          * 
          * zimbraCreateTimestamp will be in the default cos only if upgrade 22033 
-         * has been run after reset-the-world - i.r. whether TestLdapUpgrade has been
-         * run.
+         * has been run after reset-the-world - i.r.
          */
         for (String attr : defaultCosAttrs.keySet()) {
             if (!copiedCosAttrs.containsKey(attr)) {

@@ -5,21 +5,7 @@
 
 package qa.unittest;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import java.io.IOException;
-
 import static org.junit.Assert.*;
-
-import org.junit.BeforeClass;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
-import org.junit.runner.notification.Failure;
 
 import com.google.common.collect.Lists;
 import com.zimbra.common.localconfig.DebugConfig;
@@ -27,8 +13,8 @@ import com.zimbra.common.localconfig.KnownKey;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.Constants;
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.util.Log;
+import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.ldap.LdapDIT;
@@ -44,6 +30,17 @@ import com.zimbra.cs.ldap.ZSearchResultEntry;
 import com.zimbra.cs.ldap.ZSearchResultEnumeration;
 import com.zimbra.cs.ldap.ZSearchScope;
 import com.zimbra.cs.ldap.unboundid.InMemoryLdapServer;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.junit.BeforeClass;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 import qa.unittest.prov.ldap.TestAccountLockout;
 import qa.unittest.prov.ldap.TestAutoProvision;
 import qa.unittest.prov.ldap.TestLdapBinary;
@@ -73,7 +70,6 @@ import qa.unittest.prov.ldap.TestLdapProvServer;
 import qa.unittest.prov.ldap.TestLdapProvSignature;
 import qa.unittest.prov.ldap.TestLdapProvXMPPComponent;
 import qa.unittest.prov.ldap.TestLdapProvZimlet;
-import qa.unittest.prov.ldap.TestLdapUpgrade;
 import qa.unittest.prov.ldap.TestLdapUtil;
 import qa.unittest.prov.ldap.TestLdapZLdapContext;
 import qa.unittest.prov.ldap.TestLdapZLdapFilter;
@@ -456,7 +452,6 @@ public class TestLdap {
         classes.add(TestLdapProvXMPPComponent.class);
         classes.add(TestLdapProvZimlet.class);
         classes.add(TestLdapUtil.class);
-        classes.add(TestLdapUpgrade.class);
         classes.add(TestLdapZLdapContext.class);
         classes.add(TestLdapZLdapFilter.class);
         classes.add(TestLdapZMutableEntry.class);

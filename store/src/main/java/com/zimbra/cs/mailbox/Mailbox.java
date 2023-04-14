@@ -785,6 +785,7 @@ public class Mailbox implements MailboxStore {
             "invalid mailbox version: " + mData.version + " (too high)", null);
       }
 
+      //TODO: check if upgrade is still supported. Wiki already removed
       if (!mData.version.atLeast(MailboxVersion.CURRENT)) { // check for mailbox upgrade
         if (!mData.version.atLeast(1, 2)) {
           ZimbraLog.mailbox.info("Upgrade mailbox from %s to 1.2", getVersion());
@@ -824,15 +825,6 @@ public class Mailbox implements MailboxStore {
           updateVersion(new MailboxVersion((short) 1, (short) 9));
         }
 
-        // bug 39647: wiki to document migration
-        if (!mData.version.atLeast(1, 10)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 1.10", getVersion());
-          // update the version first so that the same mailbox
-          // don't have to go through the migration again
-          // if it was called to open() during the migration.
-          updateVersion(new MailboxVersion((short) 1, (short) 10));
-          migrateWikiFolders();
-        }
 
         if (!mData.version.atLeast(2, 0)) {
           ZimbraLog.mailbox.info("Upgrade mailbox from %s to 2.0", getVersion());
@@ -11769,16 +11761,6 @@ public class Mailbox implements MailboxStore {
       return item;
     } finally {
       endTransaction(success);
-    }
-  }
-
-  protected void migrateWikiFolders() throws ServiceException {
-    MigrateToDocuments migrate = new MigrateToDocuments();
-    try {
-      migrate.handleMailbox(this);
-      ZimbraLog.mailbox.info("wiki folder migration finished");
-    } catch (Exception e) {
-      ZimbraLog.mailbox.warn("wiki folder migration failed for " + getAccount().getName(), e);
     }
   }
 
