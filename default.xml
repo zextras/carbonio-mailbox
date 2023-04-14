@@ -11,10 +11,10 @@
     <default remote="gh-zx" sync-c="true" sync-j="4" />
 
     <!-- Carbonio base repos -->
-    <project name="carbonio-build" path="zm-build" revision="refs/tags/4.0.17" />
+    <project name="carbonio-build" path="zm-build" revision="refs/heads/devel" />
 
     <!-- Carbonio packaging spec files -->
-    <project remote="bb-zx" name="carbonio-core" revision="refs/tags/4.0.21" />
+    <project remote="bb-zx" name="carbonio-core" revision="refs/heads/devel" />
 
     <!-- 
         Carbonio modules repo 
@@ -36,7 +36,7 @@
     <project name="carbonio-jetty-conf" path="zm-jetty-conf" revision="refs/tags/4.0.4" />
     <project name="carbonio-jython" path="zm-jython" revision="refs/tags/4.0.2" />
     <project name="carbonio-launcher" path="zm-launcher" revision="refs/tags/4.0.1" />
-    <project name="carbonio-ldap-utilities" path="zm-ldap-utilities" revision="refs/tags/4.0.12" />
+    <project name="carbonio-ldap-utilities" path="zm-ldap-utilities" revision="refs/heads/devel" />
     <project name="carbonio-mailbox" path="zm-mailbox" revision="refs/heads/chore/remove-mailbox-auto-update-logic" />
     <project name="carbonio-mta" path="zm-mta" revision="refs/tags/4.0.3" />
     <project name="carbonio-nginx-lookup-store" path="zm-nginx-lookup-store" revision="refs/tags/4.0.5" />
