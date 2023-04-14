@@ -36,7 +36,7 @@
     <project name="carbonio-jetty-conf" path="zm-jetty-conf" revision="refs/tags/4.0.4" />
     <project name="carbonio-jython" path="zm-jython" revision="refs/tags/4.0.2" />
     <project name="carbonio-launcher" path="zm-launcher" revision="refs/tags/4.0.1" />
-    <project name="carbonio-ldap-utilities" path="zm-ldap-utilities" revision="refs/heads/devel" />
+    <project name="carbonio-ldap-utilities" path="zm-ldap-utilities" revision="refs/heads/chore/CO-603" />
     <project name="carbonio-mailbox" path="zm-mailbox" revision="refs/heads/chore/remove-mailbox-auto-update-logic" />
     <project name="carbonio-mta" path="zm-mta" revision="refs/tags/4.0.3" />
     <project name="carbonio-nginx-lookup-store" path="zm-nginx-lookup-store" revision="refs/tags/4.0.5" />
