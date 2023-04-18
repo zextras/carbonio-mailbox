@@ -17,13 +17,9 @@ import javax.xml.bind.annotation.XmlType;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.base.CustomMetadataInterface;
 import com.zimbra.soap.base.MessageCommonInterface;
-
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLQuery;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(propOrder = {"metadatas"})
@@ -74,7 +70,6 @@ implements MessageCommonInterface {
      */
     @Deprecated
     @XmlAttribute(name=MailConstants.A_TAGS /* t */, required=false)
-    @GraphQLIgnore
     private String tags;
 
     /**
@@ -127,7 +122,6 @@ implements MessageCommonInterface {
     @Override
     public void setFlags(String flags) { this.flags = flags; }
     @Override
-    @GraphQLIgnore
     public void setTags(String tags) { this.tags = tags; }
     @Override
     public void setTagNames(String tagNames) { this.tagNames = tagNames; }
@@ -151,37 +145,26 @@ implements MessageCommonInterface {
     }
 
     @Override
-    @GraphQLQuery(name=GqlConstants.SIZE, description="Size in bytes")
     public Long getSize() { return size; }
     @Override
-    @GraphQLQuery(name=GqlConstants.DATE, description="Date Seconds since the epoch, from the date header in the message")
     public Long getDate() { return date; }
     @Override
-    @GraphQLQuery(name=GqlConstants.FOLDER, description="Folder ID")
     public String getFolder() { return folder; }
     @Override
-    @GraphQLQuery(name=GqlConstants.CONVERSATION_ID, description="Converstation ID")
     public String getConversationId() { return conversationId; }
     @Override
-    @GraphQLQuery(name=GqlConstants.FLAGS, description="Flags set on the conversation. (u)nread, (f)lagged, has (a)ttachment, (r)eplied, (s)ent by me, for(w)arded, calendar in(v)ite, (d)raft, IMAP-Deleted (x), (n)otification sent, urgent (!), low-priority (?), priority (+)")
     public String getFlags() { return flags; }
     @Override
-    @GraphQLIgnore
     public String getTags() { return tags; }
     @Override
-    @GraphQLQuery(name=GqlConstants.TAG_NAMES, description="Comma-separated list of tag names")
     public String getTagNames() { return tagNames; }
     @Override
-    @GraphQLQuery(name=GqlConstants.REVISION, description="Revision increment")
     public Integer getRevision() { return revision; }
     @Override
-    @GraphQLQuery(name=GqlConstants.CHANGE_DATE, description="Date metadata changed")
     public Long getChangeDate() { return changeDate; }
     @Override
-    @GraphQLQuery(name=GqlConstants.MODIFIED_SEQUENCE, description="Change sequence")
     public Integer getModifiedSequence() { return modifiedSequence; }
 
-    @GraphQLQuery(name=GqlConstants.METADATAS, description="Custom metadata information")
     public List<MailCustomMetadata> getMetadatas() {
         return Collections.unmodifiableList(metadatas);
     }
@@ -220,7 +203,6 @@ implements MessageCommonInterface {
     }
 
     @Override
-    @GraphQLIgnore
     public List<CustomMetadataInterface> getMetadataInterfaces() {
         final List<CustomMetadataInterface> metas = Lists.newArrayList();
         metas.addAll(metadatas);

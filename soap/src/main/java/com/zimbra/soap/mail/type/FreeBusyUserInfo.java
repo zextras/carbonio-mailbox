@@ -18,16 +18,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_FREE_BUSY_USER_INFORMATION, description="Free busy user information")
 public class FreeBusyUserInfo {
 
     /**
@@ -35,8 +28,6 @@ public class FreeBusyUserInfo {
      * @zm-api-field-description "id" is always account email; it is not zimbraId as the attribute name may suggest
      */
     @XmlAttribute(name=MailConstants.A_ID /* id */, required=true)
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.IDENTIFIER, description="Account identifier (email or id)")
     private final String id;
 
     /**
@@ -63,7 +54,6 @@ public class FreeBusyUserInfo {
         this.id = id;
     }
 
-    @GraphQLIgnore
     public void setElements(Iterable <FreeBusySlot> elements) {
         this.elements.clear();
         if (elements != null) {
@@ -71,16 +61,12 @@ public class FreeBusyUserInfo {
         }
     }
 
-    @GraphQLIgnore
     public FreeBusyUserInfo addElement(FreeBusySlot element) {
         this.elements.add(element);
         return this;
     }
 
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.IDENTIFIER, description="Account identifier (email or id)")
     public String getId() { return id; }
-    @GraphQLQuery(name=GqlConstants.ELEMENTS, description="Free/Busy slots")
     public List<FreeBusySlot> getElements() {
         return Collections.unmodifiableList(elements);
     }

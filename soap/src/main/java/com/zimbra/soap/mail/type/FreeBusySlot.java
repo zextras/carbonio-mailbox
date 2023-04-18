@@ -10,16 +10,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_FREE_BUSY_SLOT, description="Free busy slot information")
 public class FreeBusySlot {
 
     /**
@@ -110,15 +103,10 @@ public class FreeBusySlot {
         this.startTime = startTime;
         this.endTime = endTime;
     }
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.START_TIME, description="GMT Start time for slot in milliseconds")
     public long getStartTime() { return startTime; }
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.END_TIME, description="GMT End time for slot in milliseconds")
     public long getEndTime() { return endTime; }
 
-    @GraphQLIgnore
-	public String getId() {
+    public String getId() {
 		return id;
 	}
 
@@ -126,7 +114,6 @@ public class FreeBusySlot {
 		this.id = id;
 	}
 
-	@GraphQLIgnore
 	public String getSubject() {
 		return subject;
 	}
@@ -135,7 +122,6 @@ public class FreeBusySlot {
 		this.subject = subject;
 	}
 
-	@GraphQLIgnore
 	public String getLocation() {
 		return location;
 	}
@@ -144,7 +130,6 @@ public class FreeBusySlot {
 		this.location = location;
 	}
 
-	@GraphQLIgnore
 	public boolean isMeeting() {
 		return isMeeting;
 	}
@@ -153,7 +138,6 @@ public class FreeBusySlot {
 		this.isMeeting = isMeeting;
 	}
 
-	@GraphQLIgnore
 	public boolean isRecurring() {
 		return isRecurring;
 	}
@@ -162,7 +146,6 @@ public class FreeBusySlot {
 		this.isRecurring = isRecurring;
 	}
 
-	@GraphQLIgnore
 	public boolean isException() {
 		return isException;
 	}
@@ -171,7 +154,6 @@ public class FreeBusySlot {
 		this.isException = isException;
 	}
 
-	@GraphQLIgnore
 	public boolean isReminderSet() {
 		return isReminderSet;
 	}
@@ -180,7 +162,6 @@ public class FreeBusySlot {
 		this.isReminderSet = isReminderSet;
 	}
 
-	@GraphQLIgnore
 	public boolean isPrivate() {
 		return isPrivate;
 	}
@@ -189,7 +170,6 @@ public class FreeBusySlot {
 		this.isPrivate = isPrivate;
 	}
 
-	@GraphQLIgnore
 	public boolean isHasPermission() {
 		return hasPermission;
 	}
@@ -198,13 +178,6 @@ public class FreeBusySlot {
 		this.hasPermission = hasPermission;
 	}
 
-	@GraphQLQuery(name=GqlConstants.STATUS, description="Free/busy slot status\n "
-	    + "> Valid values:\n "
-	    + "* f: free\n "
-	    + "* b: busy\n "
-	    + "* t: tentative\n "
-	    + "* u: unavailable\n "
-	    + "* n: no data")
 	public String getStatus() {
 	    switch (this.getClass().getSimpleName()) {
 	    case "FreeBusyFREEslot":

@@ -37,11 +37,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>spqr</artifactId>
-      <groupId>io.leangen.graphql</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <groupId>com.fasterxml.jackson.module</groupId>
     </dependency>

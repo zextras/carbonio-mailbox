@@ -11,15 +11,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
 import com.google.common.base.MoreObjects;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.AdminConstants;
 
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_NAMED_VALUE, description="attribute names and values")
 public class NamedValue {
 
     /**
@@ -27,8 +21,6 @@ public class NamedValue {
      * @zm-api-field-description Name
      */
     @XmlAttribute(name=AdminConstants.A_NAME, required=true)
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.NAME, description="name of the attribute")
     private final String name;
 
     /**
@@ -36,7 +28,6 @@ public class NamedValue {
      * @zm-api-field-description Value
      */
     @XmlValue
-    @GraphQLQuery(name=GqlConstants.VALUE, description="value of the attribute")
     private final String value;
 
     /**

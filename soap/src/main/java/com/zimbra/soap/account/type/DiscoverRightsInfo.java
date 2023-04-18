@@ -13,15 +13,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.google.common.collect.Lists;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.AccountConstants;
 
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_DISCOVER_RIGHTS_INFO, description="")
 public class DiscoverRightsInfo {
 
     /**
@@ -64,14 +58,10 @@ public class DiscoverRightsInfo {
         targets.add(target);
     }
 
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.RIGHT, description="Right the targets relate to")
     public String getRight() {
         return right;
     }
 
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.TARGETS, description="Targets")
     public List<DiscoverRightsTarget> getTargets() {
         return targets;
     }
