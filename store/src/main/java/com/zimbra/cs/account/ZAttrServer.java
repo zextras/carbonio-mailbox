@@ -29539,6 +29539,137 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Value for postconf smtp_dns_support_level
+     *
+     * <p>Valid values: [disabled, enabled, dnssec]
+     *
+     * @return zimbraMtaSmtpDnsSupportLevel, or ZAttrProvisioning.MtaSmtpDnsSupportLevel.enabled if unset and/or has invalid value
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2075)
+    public ZAttrProvisioning.MtaSmtpDnsSupportLevel getMtaSmtpDnsSupportLevel() {
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpDnsSupportLevel, true, true); return v == null ? ZAttrProvisioning.MtaSmtpDnsSupportLevel.enabled : ZAttrProvisioning.MtaSmtpDnsSupportLevel.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpDnsSupportLevel.enabled; }
+    }
+
+    /**
+     * Value for postconf smtp_dns_support_level
+     *
+     * <p>Valid values: [disabled, enabled, dnssec]
+     *
+     * @return zimbraMtaSmtpDnsSupportLevel, or "enabled" if unset
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2075)
+    public String getMtaSmtpDnsSupportLevelAsString() {
+        return getAttr(Provisioning.A_zimbraMtaSmtpDnsSupportLevel, "enabled", true);
+    }
+
+    /**
+     * Value for postconf smtp_dns_support_level
+     *
+     * <p>Valid values: [disabled, enabled, dnssec]
+     *
+     * @param zimbraMtaSmtpDnsSupportLevel new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2075)
+    public void setMtaSmtpDnsSupportLevel(ZAttrProvisioning.MtaSmtpDnsSupportLevel zimbraMtaSmtpDnsSupportLevel) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpDnsSupportLevel, zimbraMtaSmtpDnsSupportLevel.toString());
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Value for postconf smtp_dns_support_level
+     *
+     * <p>Valid values: [disabled, enabled, dnssec]
+     *
+     * @param zimbraMtaSmtpDnsSupportLevel new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2075)
+    public Map<String,Object> setMtaSmtpDnsSupportLevel(ZAttrProvisioning.MtaSmtpDnsSupportLevel zimbraMtaSmtpDnsSupportLevel, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpDnsSupportLevel, zimbraMtaSmtpDnsSupportLevel.toString());
+        return attrs;
+    }
+
+    /**
+     * Value for postconf smtp_dns_support_level
+     *
+     * <p>Valid values: [disabled, enabled, dnssec]
+     *
+     * @param zimbraMtaSmtpDnsSupportLevel new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2075)
+    public void setMtaSmtpDnsSupportLevelAsString(String zimbraMtaSmtpDnsSupportLevel) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpDnsSupportLevel, zimbraMtaSmtpDnsSupportLevel);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Value for postconf smtp_dns_support_level
+     *
+     * <p>Valid values: [disabled, enabled, dnssec]
+     *
+     * @param zimbraMtaSmtpDnsSupportLevel new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2075)
+    public Map<String,Object> setMtaSmtpDnsSupportLevelAsString(String zimbraMtaSmtpDnsSupportLevel, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpDnsSupportLevel, zimbraMtaSmtpDnsSupportLevel);
+        return attrs;
+    }
+
+    /**
+     * Value for postconf smtp_dns_support_level
+     *
+     * <p>Valid values: [disabled, enabled, dnssec]
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2075)
+    public void unsetMtaSmtpDnsSupportLevel() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpDnsSupportLevel, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Value for postconf smtp_dns_support_level
+     *
+     * <p>Valid values: [disabled, enabled, dnssec]
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2075)
+    public Map<String,Object> unsetMtaSmtpDnsSupportLevel(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpDnsSupportLevel, "");
+        return attrs;
+    }
+
+    /**
      * Value for postconf smtp_generic_maps
      *
      * @return zimbraMtaSmtpGenericMaps, or null if unset
@@ -30408,6 +30539,137 @@ public abstract class ZAttrServer extends NamedEntry {
     public Map<String,Object> unsetMtaSmtpTlsCiphers(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<String,Object>();
         attrs.put(Provisioning.A_zimbraMtaSmtpTlsCiphers, "");
+        return attrs;
+    }
+
+    /**
+     * Value for postconf smtp_tls_dane_insecure_mx_policy.
+     *
+     * <p>Valid values: [may, encrypt, dane]
+     *
+     * @return zimbraMtaSmtpTlsDaneInsecureMXPolicy, or ZAttrProvisioning.MtaSmtpTlsDaneInsecureMXPolicy.dane if unset and/or has invalid value
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2085)
+    public ZAttrProvisioning.MtaSmtpTlsDaneInsecureMXPolicy getMtaSmtpTlsDaneInsecureMXPolicy() {
+        try { String v = getAttr(Provisioning.A_zimbraMtaSmtpTlsDaneInsecureMXPolicy, true, true); return v == null ? ZAttrProvisioning.MtaSmtpTlsDaneInsecureMXPolicy.dane : ZAttrProvisioning.MtaSmtpTlsDaneInsecureMXPolicy.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.MtaSmtpTlsDaneInsecureMXPolicy.dane; }
+    }
+
+    /**
+     * Value for postconf smtp_tls_dane_insecure_mx_policy.
+     *
+     * <p>Valid values: [may, encrypt, dane]
+     *
+     * @return zimbraMtaSmtpTlsDaneInsecureMXPolicy, or "dane" if unset
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2085)
+    public String getMtaSmtpTlsDaneInsecureMXPolicyAsString() {
+        return getAttr(Provisioning.A_zimbraMtaSmtpTlsDaneInsecureMXPolicy, "dane", true);
+    }
+
+    /**
+     * Value for postconf smtp_tls_dane_insecure_mx_policy.
+     *
+     * <p>Valid values: [may, encrypt, dane]
+     *
+     * @param zimbraMtaSmtpTlsDaneInsecureMXPolicy new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2085)
+    public void setMtaSmtpTlsDaneInsecureMXPolicy(ZAttrProvisioning.MtaSmtpTlsDaneInsecureMXPolicy zimbraMtaSmtpTlsDaneInsecureMXPolicy) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpTlsDaneInsecureMXPolicy, zimbraMtaSmtpTlsDaneInsecureMXPolicy.toString());
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Value for postconf smtp_tls_dane_insecure_mx_policy.
+     *
+     * <p>Valid values: [may, encrypt, dane]
+     *
+     * @param zimbraMtaSmtpTlsDaneInsecureMXPolicy new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2085)
+    public Map<String,Object> setMtaSmtpTlsDaneInsecureMXPolicy(ZAttrProvisioning.MtaSmtpTlsDaneInsecureMXPolicy zimbraMtaSmtpTlsDaneInsecureMXPolicy, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpTlsDaneInsecureMXPolicy, zimbraMtaSmtpTlsDaneInsecureMXPolicy.toString());
+        return attrs;
+    }
+
+    /**
+     * Value for postconf smtp_tls_dane_insecure_mx_policy.
+     *
+     * <p>Valid values: [may, encrypt, dane]
+     *
+     * @param zimbraMtaSmtpTlsDaneInsecureMXPolicy new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2085)
+    public void setMtaSmtpTlsDaneInsecureMXPolicyAsString(String zimbraMtaSmtpTlsDaneInsecureMXPolicy) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpTlsDaneInsecureMXPolicy, zimbraMtaSmtpTlsDaneInsecureMXPolicy);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Value for postconf smtp_tls_dane_insecure_mx_policy.
+     *
+     * <p>Valid values: [may, encrypt, dane]
+     *
+     * @param zimbraMtaSmtpTlsDaneInsecureMXPolicy new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2085)
+    public Map<String,Object> setMtaSmtpTlsDaneInsecureMXPolicyAsString(String zimbraMtaSmtpTlsDaneInsecureMXPolicy, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpTlsDaneInsecureMXPolicy, zimbraMtaSmtpTlsDaneInsecureMXPolicy);
+        return attrs;
+    }
+
+    /**
+     * Value for postconf smtp_tls_dane_insecure_mx_policy.
+     *
+     * <p>Valid values: [may, encrypt, dane]
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2085)
+    public void unsetMtaSmtpTlsDaneInsecureMXPolicy() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpTlsDaneInsecureMXPolicy, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Value for postconf smtp_tls_dane_insecure_mx_policy.
+     *
+     * <p>Valid values: [may, encrypt, dane]
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.0,9.0.0
+     */
+    @ZAttr(id=2085)
+    public Map<String,Object> unsetMtaSmtpTlsDaneInsecureMXPolicy(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraMtaSmtpTlsDaneInsecureMXPolicy, "");
         return attrs;
     }
 
