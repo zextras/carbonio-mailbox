@@ -9,6 +9,7 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.generated.AdminRights;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.rmgmt.RemoteCertbot;
 import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteManager;
@@ -24,11 +25,14 @@ import java.util.Optional;
  * @since 23.3.0
  */
 public class IssueCert extends AdminDocumentHandler {
+  public static final String RESPONSE = "The System is processing your certificate generation "
+      + "request. It will send the result to the Domain notification recipients.";
 
   /**
    * Handles the request. Searches a domain by id, checks admin rights (accessible to global and
-   * delegated admin of requested domain), searches a server with proxy node, executes remote
-   * certbot command on it, creates response element.
+   * delegated admin of requested domain), searches a server with proxy node, creates certbot
+   * command, asynchronously executes it, creates response element, notifies global and domain
+   * recipients about the result of remote execution.
    *
    * @param request {@link Element} representation of {@link
    *     com.zimbra.soap.admin.message.IssueCertRequest}
@@ -39,9 +43,6 @@ public class IssueCert extends AdminDocumentHandler {
    * PublicServiceHostname and at least one VirtualHostName,
    * server with proxy node could not be found or domain admin doesn't have rights to deal with
    * this domain.
-   *
-   * It won't throw an exception in case if remote execution command fails, instead will create
-   * a response and add a failure message to it.
    */
   @Override
   public Element handle(final Element request, final Map<String, Object> context)
@@ -60,18 +61,16 @@ public class IssueCert extends AdminDocumentHandler {
 
     String chain = request.getAttribute(AdminConstants.A_CHAIN_TYPE, AdminConstants.DEFAULT_CHAIN);
 
-    String domainName = domain.getDomainName();
-    String publicServiceHostname = domain.getPublicServiceHostname();
-    String[] virtualHostNames = domain.getVirtualHostname();
-    if (publicServiceHostname == null) {
-      throw ServiceException.FAILURE(
-          "Domain " + domainName + " must have PublicServiceHostname.",
-          null);
-    } else if (virtualHostNames.length == 0) {
-      throw ServiceException.FAILURE(
-          "Domain " + domainName + " must have at least one VirtualHostName.",
-          null);
-    }
+    String domainName = Optional.ofNullable(domain.getDomainName())
+        .orElseThrow(() -> ServiceException.FAILURE(
+            "Domain with id " + domainId + " must have domain name", null));
+    String publicServiceHostname = Optional.ofNullable(domain.getPublicServiceHostname())
+        .orElseThrow(() -> ServiceException.FAILURE(
+            "Domain " + domainName + " must have PublicServiceHostname.", null));
+    String[] virtualHostNames = Optional.ofNullable(domain.getVirtualHostname())
+        .filter(hosts -> hosts.length > 0)
+        .orElseThrow(() -> ServiceException.FAILURE(
+            "Domain " + domainName + " must have at least one VirtualHostName."));
 
     // First release will work only on ONE proxy even if there are multiple proxy in the infrastructure.
     Server proxyServer =
@@ -86,7 +85,7 @@ public class IssueCert extends AdminDocumentHandler {
     ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert for domain " + domainName);
 
     RemoteManager remoteManager = RemoteManager.getRemoteManager(proxyServer);
-    RemoteCertbot certbot = new RemoteCertbot(remoteManager);
+    RemoteCertbot certbot = RemoteCertbot.getRemoteCertbot(remoteManager);
     String command =
         certbot.createCommand(
             RemoteCommands.CERTBOT_CERTONLY,
@@ -95,11 +94,12 @@ public class IssueCert extends AdminDocumentHandler {
             domainName,
             publicServiceHostname,
             virtualHostNames);
-    String result = certbot.execute(command);
 
-    ZimbraLog.rmgmt.info(
-        "Issuing LetsEncrypt cert command for domain " + domainName
-            + " was finished with the following result: " + result);
+    Mailbox mbox = getRequestedMailbox(zsc);
+    CertificateNotificationManager certificateNotificationManager =
+        CertificateNotificationManager.getCertificateNotificationManager(mbox, domain);
+
+    certbot.supplyAsync(certificateNotificationManager, command);
 
     Element response = zsc.createElement(AdminConstants.ISSUE_CERT_RESPONSE);
 
@@ -107,7 +107,8 @@ public class IssueCert extends AdminDocumentHandler {
         response
             .addNonUniqueElement(AdminConstants.E_MESSAGE)
             .addAttribute(AdminConstants.A_DOMAIN, domainName);
-    responseMessageElement.setText(result);
+
+    responseMessageElement.setText(RESPONSE);
 
     return response;
   }

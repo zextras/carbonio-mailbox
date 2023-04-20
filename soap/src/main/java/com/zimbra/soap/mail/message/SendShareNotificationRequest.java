@@ -5,28 +5,22 @@
 
 package com.zimbra.soap.mail.message;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.MailConstants;
+import com.zimbra.soap.mail.type.EmailAddrInfo;
+import com.zimbra.soap.type.Id;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.zimbra.common.gql.GqlConstants;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.MailConstants;
-import com.zimbra.soap.mail.type.EmailAddrInfo;
-import com.zimbra.soap.type.Id;
-
-import io.leangen.graphql.annotations.GraphQLEnumValue;
-import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
  * @zm-api-command-auth-required true
@@ -131,11 +125,10 @@ public class SendShareNotificationRequest {
     }
 
     @XmlEnum
-    @GraphQLType(name = GqlConstants.CLASS_ACTION, description = "sharing action")
     public static enum Action {
-        @GraphQLEnumValue(description = "edit share") edit,
-        @GraphQLEnumValue(description = "revoke share") revoke,
-        @GraphQLEnumValue(description = "share expired") expire;
+        edit,
+        revoke,
+        expire;
 
         public static Action fromString(String value) throws ServiceException {
             if (value == null) {

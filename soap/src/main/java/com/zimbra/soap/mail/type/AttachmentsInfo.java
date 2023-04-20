@@ -19,17 +19,10 @@ import javax.xml.bind.annotation.XmlType;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
-
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(propOrder = {"attachments", "extraElements"})
-@GraphQLType(name=GqlConstants.CLASS_ATTACHMENTS_INFO, description="Attachments Information")
 public class AttachmentsInfo {
 
     /**
@@ -59,11 +52,9 @@ public class AttachmentsInfo {
     public AttachmentsInfo() {
     }
 
-    @GraphQLInputField(name=GqlConstants.ATTACHMENT_ID, description="Attachment upload ID")
     public void setAttachmentId(String attachmentId) {
         this.attachmentId = attachmentId;
     }
-    @GraphQLInputField(name=GqlConstants.ATTACHMENTS, description="Attachment details")
     public void setAttachments(Iterable <AttachSpec> attachments) {
         this.attachments.clear();
         if (attachments != null) {
@@ -71,13 +62,11 @@ public class AttachmentsInfo {
         }
     }
 
-    @GraphQLIgnore
     public AttachmentsInfo addAttachment(AttachSpec attachment) {
         this.attachments.add(attachment);
         return this;
     }
 
-    @GraphQLIgnore
     public void setExtraElements(Iterable <org.w3c.dom.Element> extraElements) {
         this.extraElements.clear();
         if (extraElements != null) {
@@ -85,19 +74,15 @@ public class AttachmentsInfo {
         }
     }
 
-    @GraphQLIgnore
     public AttachmentsInfo addExtraElement(org.w3c.dom.Element extraElement) {
         this.extraElements.add(extraElement);
         return this;
     }
 
-    @GraphQLQuery(name=GqlConstants.ATTACHMENT_ID, description="Attachment upload ID")
     public String getAttachmentId() { return attachmentId; }
-    @GraphQLQuery(name=GqlConstants.ATTACHMENTS, description="Attachment details")
     public List<AttachSpec> getAttachments() {
         return Collections.unmodifiableList(attachments);
     }
-    @GraphQLIgnore
     public List<org.w3c.dom.Element> getExtraElements() {
         return Collections.unmodifiableList(extraElements);
     }

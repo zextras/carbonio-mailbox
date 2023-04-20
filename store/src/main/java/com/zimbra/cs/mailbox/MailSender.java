@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zimbra.cs.mailclient.smtp.SmtpTransport;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +26,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.mail.Address;
 import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
 import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.URLName;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -247,6 +250,29 @@ public class MailSender {
     }
 
     /**
+     * Sets an alternate JavaMail {@link javax.mail.Session} and SMTP hosts
+     * that will be used to send the message based on the domain values.
+     * The default behavior is to use SMTP settings from
+     * the {@link javax.mail.Session} on the {@link MimeMessage}.
+     *
+     * @param domain {@link com.zimbra.cs.account.Domain}
+     * @throws ServiceException if not able to get SMTP session for the domain
+     *
+     * @author Yuliya Aheeva
+     * @since 23.5.0
+     */
+    public MailSender setSession(Domain domain) throws ServiceException {
+        try {
+            mSession = JMSession.getSmtpSession(domain);
+        } catch (MessagingException e) {
+            throw ServiceException.FAILURE("Unable to get SMTP session for " + domain, e);
+        }
+        mSmtpHosts.clear();
+        mSmtpHosts.addAll(JMSession.getSmtpHosts(domain));
+        return this;
+    }
+
+    /**
      * Sets JavaMail <tt>Session</tt> using the SMTP settings associated with the data source.
      * @throws ServiceException
      */
@@ -280,6 +306,17 @@ public class MailSender {
     public MailSender setEnvelopeFrom(String address) {
         mEnvelopeFrom = address;
         return this;
+    }
+
+    /**
+     * Returns the current session {@link javax.mail.Session}.
+     *
+     * @return {@link #mSession} value
+     * @author Yuliya Aheeva
+     * @since 23.5.0
+     */
+    public Session getCurrentSession() {
+        return this.mSession;
     }
 
     public static int getSentFolderId(Mailbox mbox, Identity identity) throws ServiceException {
@@ -394,30 +431,6 @@ public class MailSender {
         FORWARD    // Forwarding another message
     }
 
-    /**
-     * Sets member variables and sends the message.
-     */
-    public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, List<Upload> uploads,
-            ItemId origMsgId, String replyType, String identityId, boolean replyToSender) throws ServiceException {
-        return sendMimeMessage(octxt, mbox, mm, uploads, origMsgId, replyType, identityId, replyToSender, null);
-    }
-
-    /**
-     * Sets member variables and sends the message.
-     */
-    public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, List<Upload> uploads,
-            ItemId origMsgId, String replyType, String identityId, boolean replyToSender, MimeProcessor mimeProc) throws ServiceException {
-        Account authuser = octxt == null ? null : octxt.getAuthenticatedUser();
-        if (authuser == null) {
-            authuser = mbox.getAccount();
-        }
-        Identity identity = null;
-        if (identityId != null) {
-            identity = Provisioning.getInstance().get(authuser, Key.IdentityBy.id, identityId);
-        }
-        return sendMimeMessage(octxt, mbox, null, mm, uploads, origMsgId, replyType, identity, replyToSender, mimeProc);
-    }
-
     public ItemId sendDataSourceMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, List<Upload> uploads,
             ItemId origMsgId, String replyType) throws ServiceException {
         return sendDataSourceMimeMessage(octxt, mbox, mm, uploads, origMsgId, replyType, null);
@@ -461,6 +474,62 @@ public class MailSender {
     }
 
     /**
+     * Sends a list of messages {@link javax.mail.internet.MimeMessage}.
+     *
+     * Tries to find the account by name (if unable to find will set account from the mailbox later
+     * with the {@link #sendMimeMessage(OperationContext, Mailbox, MimeMessage)} method)
+     * and provide the proper operational context.
+     *
+     * @param mbox object of {@link com.zimbra.cs.mailbox.Mailbox}
+     * @param mimeMessageList a list of {@link javax.mail.internet.MimeMessage} to be sent
+     * @throws ServiceException if sender is not set for the specific
+     *  {@link javax.mail.internet.MimeMessage}
+     *
+     * @author Yuliya Aheeva
+     * @since 23.5.0
+     */
+    public void sendMimeMessageList(Mailbox mbox, List<MimeMessage> mimeMessageList)
+        throws ServiceException {
+
+        Provisioning prov = Provisioning.getInstance();
+
+        try {
+            for (MimeMessage mm: mimeMessageList) {
+                Account account = prov.get(AccountBy.name, mm.getSender().toString());
+                OperationContext operationContext = new OperationContext(account);
+
+                sendMimeMessage(operationContext, mbox, mm);
+            }
+        } catch (MessagingException e) {
+            throw ServiceException.FAILURE("Unable to get sender account: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Sets member variables and sends the message.
+     */
+    public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, List<Upload> uploads,
+        ItemId origMsgId, String replyType, String identityId, boolean replyToSender) throws ServiceException {
+        return sendMimeMessage(octxt, mbox, mm, uploads, origMsgId, replyType, identityId, replyToSender, null);
+    }
+
+    /**
+     * Sets member variables and sends the message.
+     */
+    public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, List<Upload> uploads,
+        ItemId origMsgId, String replyType, String identityId, boolean replyToSender, MimeProcessor mimeProc) throws ServiceException {
+        Account authuser = octxt == null ? null : octxt.getAuthenticatedUser();
+        if (authuser == null) {
+            authuser = mbox.getAccount();
+        }
+        Identity identity = null;
+        if (identityId != null) {
+            identity = Provisioning.getInstance().get(authuser, Key.IdentityBy.id, identityId);
+        }
+        return sendMimeMessage(octxt, mbox, null, mm, uploads, origMsgId, replyType, identity, replyToSender, mimeProc);
+    }
+
+    /**
      * Sets member variables and sends the message.
      */
     public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, Boolean saveToSent, MimeMessage mm,
@@ -476,6 +545,9 @@ public class MailSender {
         return sendMimeMessage(octxt, mbox, mm);
     }
 
+    /**
+     * Sets member variables and sends the message.
+     */
     public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, Boolean saveToSent, MimeMessage mm,
             Collection<Upload> uploads, ItemId origMsgId, String replyType, Identity identity, boolean replyToSender)
             throws ServiceException {
@@ -1231,12 +1303,31 @@ public class MailSender {
         }
         ZimbraLog.smtp.debug("Sending message %s to SMTP host %s with properties: %s",
                              mm.getMessageID(), hostname, mSession.getProperties());
-        Transport transport = mSession.getTransport("smtp");
+
+        Transport transport = getTransport();
+
         try {
             transport.connect();
             transport.sendMessage(mm, rcptAddresses);
         } finally {
             transport.close();
+        }
+    }
+
+    /**
+     * Initializes a new SMTP transport if not able to get one from the {@link #mSession}.
+     *
+     * @return SMTP transport
+     *
+     * @author Yuliya Aheeva
+     * @since 23.5.0
+     */
+    private Transport getTransport() {
+        try {
+            return mSession.getTransport("smtp");
+        } catch (NoSuchProviderException e) {
+            URLName urlName = new URLName("smtp", null, -1, null, null, null);
+            return new SmtpTransport(mSession, urlName);
         }
     }
 

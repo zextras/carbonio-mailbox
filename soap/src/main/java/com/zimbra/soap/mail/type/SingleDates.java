@@ -16,18 +16,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.base.DtValInterface;
 import com.zimbra.soap.base.SingleDatesInterface;
 
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_SINGLE_DATES, description="Single dates information")
 public class SingleDates
 implements RecurRuleBase, SingleDatesInterface {
 
@@ -42,15 +35,12 @@ implements RecurRuleBase, SingleDatesInterface {
      * @zm-api-field-description Information on start date/time and end date/time or duration
      */
     @XmlElement(name=MailConstants.E_CAL_DATE_VAL /* dtval */, required=false)
-    @GraphQLIgnore
     private List<DtVal> dtVals = Lists.newArrayList();
 
     public SingleDates() {
     }
 
-    @GraphQLInputField(name=GqlConstants.TIMEZONE, description="TZID")
     public void setTimezone(String timezone) { this.timezone = timezone; }
-    @GraphQLInputField(name=GqlConstants.DATE_TIME_VALUES, description="Information on start date/time and end date/time or duration")
     public void setDtvals(Iterable <DtVal> dtVals) {
         this.dtVals.clear();
         if (dtVals != null) {
@@ -58,32 +48,26 @@ implements RecurRuleBase, SingleDatesInterface {
         }
     }
 
-    @GraphQLIgnore
     public void addDtval(DtVal dtVal) {
         this.dtVals.add(dtVal);
     }
 
-    @GraphQLQuery(name=GqlConstants.TIMEZONE, description="TZID")
     public String getTimezone() { return timezone; }
-    @GraphQLQuery(name=GqlConstants.DATE_TIME_VALUES, description="Information on start date/time and end date/time or duration")
     public List<DtVal> getDtvals() {
         return dtVals;
     }
 
     @Override
-    @GraphQLIgnore
     public void setDtValInterfaces(Iterable<DtValInterface> dtVals) {
         setDtvals(DtVal.fromInterfaces(dtVals));
     }
 
     @Override
-    @GraphQLIgnore
     public void addDtValInterface(DtValInterface dtVal) {
         addDtval((DtVal) dtVal);
     }
 
     @Override
-    @GraphQLIgnore
     public List<DtValInterface> getDtValInterfaces() {
         return DtVal.toInterfaces(dtVals);
     }
