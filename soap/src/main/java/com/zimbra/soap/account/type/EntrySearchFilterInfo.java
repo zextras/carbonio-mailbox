@@ -11,17 +11,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 
 import com.google.common.base.MoreObjects;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.soap.base.EntrySearchFilterInterface;
 import com.zimbra.soap.type.SearchFilterCondition;
 
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_SEARCH_FILTER, description="Search Filter specification, only one of the single or multiple condition can be specified at a time")
 public class EntrySearchFilterInfo
 implements EntrySearchFilterInterface {
 
@@ -35,7 +29,6 @@ implements EntrySearchFilterInterface {
             type=EntrySearchFilterSingleCond.class)
     })
 
-    @GraphQLIgnore
     private SearchFilterCondition condition;
 
     public EntrySearchFilterInfo() {
@@ -46,12 +39,9 @@ implements EntrySearchFilterInterface {
     }
 
     @Override
-    @GraphQLIgnore
     public void setCondition(SearchFilterCondition condition) { this.condition = condition; }
 
-    @GraphQLInputField(name = GqlConstants.SINGLE_CONDITION, description="search filter single condition")
     public void setSingleCondition(EntrySearchFilterSingleCond condition) { this.condition = condition; }
-    @GraphQLInputField(name = GqlConstants.MULTIPLE_CONDITION, description="search filter multiple condition")
     public void setMultipleCondition(EntrySearchFilterMultiCond condition) { this.condition = condition; }
     @Override
     public SearchFilterCondition getCondition() { return condition; }

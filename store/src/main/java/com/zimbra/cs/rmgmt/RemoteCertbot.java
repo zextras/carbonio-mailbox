@@ -1,8 +1,10 @@
 package com.zimbra.cs.rmgmt;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.service.admin.CertificateNotificationManager;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * RemoteCertbot class interacts with "Certbot" - an acme client for managing Let’s Encrypt
@@ -30,27 +32,42 @@ public class RemoteCertbot {
   private final RemoteManager remoteManager;
   private StringBuilder stringBuilder;
 
-  public RemoteCertbot(RemoteManager remoteManager) {
+  private RemoteCertbot(RemoteManager remoteManager) {
     this.remoteManager = remoteManager;
   }
 
   /**
+   * Instantiates a RemoteCertbot object.
+   *
+   * @param remoteManager {@link com.zimbra.cs.rmgmt.RemoteManager} which will be used to execute
+   *  remote commands with.
+   * @return an instantiated object
+   *
+   * @author Yuliya Aheeva
+   * @since 23.5.0
+   */
+  public static RemoteCertbot getRemoteCertbot(RemoteManager remoteManager) {
+    return new RemoteCertbot(remoteManager);
+  }
+
+  /**
    * Creates a command to be executed by the Certbot acme client.
-   * E.g. certbot certonly --agree-tos --email admin@test.com -n --webroot -w /opt/zextras
+   *
+   * <p>E.g. certbot certonly --agree-tos --email admin@test.com -n --webroot -w /opt/zextras
    * --cert-name demo.zextras.io -d acme.demo.zextras.io -d webmail-acme.demo.zextras.io
    *
    * @param remoteCommand {@link com.zimbra.cs.rmgmt.RemoteCommands}
-   * @param email domain admin email who tries to execute a command (should be agreed to the
-   *  ACME server's Subscriber Agreement)
+   * @param email domain admin email who tries to execute a command (should be agreed to the ACME
+   *     server's Subscriber Agreement)
    * @param chain long (default) or short (should be specified by domain admin in {@link
-   *  com.zimbra.soap.admin.message.IssueCertRequest} request with the key word "short")
+   *     com.zimbra.soap.admin.message.IssueCertRequest} request with the key word "short")
    * @param domainName a value of domain attribute zimbraDomainName
    * @param publicServiceHostName a value of domain attribute zimbraPublicServiceHostname
    * @param virtualHosts a value/ values of domain attribute zimbraVirtualHostname
    * @return created command
    */
-  public String createCommand(String remoteCommand, String email, String chain,
-      String domainName, String publicServiceHostName, String[] virtualHosts) {
+  public String createCommand(String remoteCommand, String email, String chain, String domainName,
+      String publicServiceHostName, String[] virtualHosts) {
 
     this.stringBuilder = new StringBuilder();
 
@@ -70,10 +87,27 @@ public class RemoteCertbot {
   }
 
   /**
+   * Executes a command asynchronously and notifies global and domain recipients about the command
+   * execution using {@link com.zimbra.cs.service.admin.CertificateNotificationManager}.
+   *
+   * @param notificationManager an object of {@link com.zimbra.cs.service.admin.CertificateNotificationManager}
+   * @param command a Certbot command to be executed remotely
+   *
+   * @author Yuliya Aheeva
+   * @since 23.5.0
+   */
+  public void supplyAsync(CertificateNotificationManager notificationManager, String command) {
+    CompletableFuture.supplyAsync(() -> execute(command))
+        .thenApply(notificationManager::createIssueCertNotificationMap)
+        .thenAccept(notificationManager::notify);
+  }
+
+  /**
    * Executes a command using {@link com.zimbra.cs.rmgmt.RemoteManager}.
+   *
    * @param command a command to be executed
-   * @return a sting message of successful remote execution or detailed exception message
-   * in case of failure.
+   * @return a sting message of successful remote execution or detailed exception message in case of
+   *     failure.
    */
   public String execute(String command) {
     try {

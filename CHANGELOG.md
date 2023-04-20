@@ -1,4 +1,17 @@
 
+
+# [4.4.0](https://github.com/Zextras/carbonio-mailbox/compare/4.3.0...4.4.0) (2023-04-20)
+
+
+### Features
+
+* [CO 621] Allow LE certificates to be generated from Mailbox endpoint ([#175](https://github.com/Zextras/carbonio-mailbox/issues/175)) ([6f797aa](https://github.com/Zextras/carbonio-mailbox/commit/6f797aa4a852a4187b56c944800744c9bf3258c3))
+* [CO-584] remove graphql ([#197](https://github.com/Zextras/carbonio-mailbox/issues/197)) ([4810aee](https://github.com/Zextras/carbonio-mailbox/commit/4810aee1aa8a3caf26ab828e35f12964b3171f17))
+* [CO-592] set smtpRestrictEnvelopeFrom default to FALSE ([#190](https://github.com/Zextras/carbonio-mailbox/issues/190)) ([e777dcd](https://github.com/Zextras/carbonio-mailbox/commit/e777dcd374a77dac9d6174f065d0d3b9b011c171))
+* [CO-640] chats, meeting, team feature enabled attributes ([#191](https://github.com/Zextras/carbonio-mailbox/issues/191)) ([e9843b1](https://github.com/Zextras/carbonio-mailbox/commit/e9843b18f4fcb268b271f817349759eebdf4d791))
+* [CO-659] add attribute to disable the amavis antivirus scan ([#189](https://github.com/Zextras/carbonio-mailbox/issues/189)) ([9fdacae](https://github.com/Zextras/carbonio-mailbox/commit/9fdacae88077bb903d8dcd966c4758bebdd10a19))
+* [CO-665] add web.clamav.signature.provider template ([#201](https://github.com/Zextras/carbonio-mailbox/issues/201)) ([c28bb11](https://github.com/Zextras/carbonio-mailbox/commit/c28bb11666d58a5ef2880f5b97e64461071b2531))
+
 # [4.3.0](https://github.com/Zextras/carbonio-mailbox/compare/4.2.0...4.3.0) (2023-03-23)
 
 ### Bug Fixes

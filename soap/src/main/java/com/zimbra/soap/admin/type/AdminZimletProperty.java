@@ -16,15 +16,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.ZimletConstants;
 import com.zimbra.soap.base.ZimletProperty;
 
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_ADMIN_ZIMLET_PROPERTY, description="Admin zimlet properties")
 public class AdminZimletProperty
 implements ZimletProperty {
 
@@ -59,10 +54,8 @@ implements ZimletProperty {
     @Override
     public void setValue(String value) { this.value = value; }
     @Override
-    @GraphQLQuery(name=GqlConstants.NAME, description="Name")
     public String getName() { return name; }
     @Override
-    @GraphQLQuery(name=GqlConstants.VALUE, description="Value")
     public String getValue() { return value; }
 
     public MoreObjects.ToStringHelper addToStringInfo(

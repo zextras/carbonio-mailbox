@@ -31,6 +31,8 @@
     <a n="carbonioFeatureFilesAppEnabled"/>
     <a n="carbonioFeatureFilesEnabled"/>
     <a n="carbonioFeatureMailsAppEnabled"/>
+    <a n="carbonioFeatureMeetingEnabled"/>
+    <a n="carbonioFeatureTeamEnabled"/>
     <a n="carbonioPrefWebUiDarkMode"/>
     <a n="cn"/>
     <a n="co"/>
