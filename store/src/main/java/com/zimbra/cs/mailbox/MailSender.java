@@ -739,6 +739,9 @@ public class MailSender {
                             RuleManager.applyRulesToOutgoingMessage(octxtTarget, mbox, pm, sentFolderId, true, flags, null, convId);
                     for (ItemId itemId : addedItemIds) {
                         rollbacks.add(new RollbackData(mbox, itemId.getId()));
+                        if (returnItemId == null) {
+                            returnItemId = itemId;
+                        }
                     }
                 }
             }
