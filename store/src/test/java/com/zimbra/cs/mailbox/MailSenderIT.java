@@ -25,6 +25,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+/**
+ * Bug: CO-690
+ */
 public class MailSenderIT {
 
   private static Provisioning prov;
