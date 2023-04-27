@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service;
 
+import com.zimbra.cs.mailbox.MailItem.Type;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -131,7 +132,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
                 grantee = prov.getAccountByName(mapExtEmailToAcctName(extUserEmail, domain));
                 if (grantee == null) {
                     // external virtual account not created yet
-                    if (prov.isOctopus() && DebugConfig.skipVirtualAccountRegistrationPage) {
+                    if (DebugConfig.skipVirtualAccountRegistrationPage) {
                         // provision using 'null' password and display name
                         // UI will ask the user to set these post provisioning
                         provisionVirtualAccountAndRedirect(req, resp, null, null, ownerId, extUserEmail);
@@ -214,7 +215,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
                     if (zAuthToken != null && !zAuthToken.isExpired() && zAuthToken.isRegistered() && grantee.getId().equals(zAuthToken.getAccountId())) {
                         // external virtual account already logged-in
                         resp.sendRedirect("/");
-                    } else if (prov.isOctopus() && !grantee.isVirtualAccountInitialPasswordSet() &&
+                    } else if (!grantee.isVirtualAccountInitialPasswordSet() &&
                             DebugConfig.skipVirtualAccountRegistrationPage) {
                         // seems like the virtual user did not set his password during his last visit, after an account was
                         // provisioned for him
@@ -521,14 +522,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
     }
 
     private static int getMptParentFolderId(MailItem.Type viewType, Provisioning prov) throws ServiceException {
-        switch (viewType) {
-            case DOCUMENT:
-                if (prov.isOctopus()) {
-                    return Mailbox.ID_FOLDER_BRIEFCASE;
-                }
-            default:
-                return Mailbox.ID_FOLDER_USER_ROOT;
-        }
+        return Mailbox.ID_FOLDER_USER_ROOT;
     }
 
     private static void enableAppFeatures(Account grantee, Set<MailItem.Type> viewTypes) throws ServiceException {

@@ -1571,15 +1571,11 @@ public class SoapSession extends Session {
         }
     }
 
-    /*
-     * Octopus should be eventually merged to ZCS so we don't have to use
-     * callbacks as much
-     */
     private void putExtraNotifications(QueuedNotifications ntfn, Element eNotify, ItemIdFormatter ifmt) {
 
         // watch notifications are stored on the side as they are not
         // MailItem based notification
-        if (ntfn.mExternalNotifications != null && ntfn.mExternalNotifications.size() > 0) {
+        if (ntfn.mExternalNotifications != null && !ntfn.mExternalNotifications.isEmpty()) {
             for (ExternalEventNotification extra : ntfn.mExternalNotifications) {
                 extra.addElement(eNotify);
             }
