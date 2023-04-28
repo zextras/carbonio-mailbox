@@ -18,6 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
   <filter>
     <filter-name>guiceFilter</filter-name>
     <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+    <async-supported>true</async-supported>
   </filter>
 
   <filter-mapping>
