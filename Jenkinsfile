@@ -10,7 +10,6 @@ pipeline {
     parameters {
         booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
         booleanParam defaultValue: false, description: 'Whether to skip the test all with coverage stage', name: 'SKIP_TEST_WITH_COVERAGE'
-        booleanParam defaultValue: false, description: 'Whether to skip sonarqube analysis', name: 'SKIP_SONARQUBE'
     }
     environment {
         JAVA_OPTS='-Dfile.encoding=UTF8'
@@ -51,28 +50,14 @@ pipeline {
                 }
             }
             steps {
-
-                mvnCmd("$BUILD_PROPERTIES_PARAMS test")
-
+                withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS test sonar:sonar")
+                }
                 publishCoverage adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: true
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
-        stage('Sonarqube Analysis') {
-            when {
-                expression {
-                    allOf {
-                        params.SKIP_SONARQUBE == false
-                        params.SKIP_TEST_WITH_COVERAGE == false
-                    }
-                }
-            }
-            steps {
-                withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar")
-                }
-            }
-        }
+
         stage('Publish SNAPSHOT to maven') {
               when {
                 anyOf {
