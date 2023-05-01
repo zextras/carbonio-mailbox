@@ -51,7 +51,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS -Dsonar.sources=src/main/java test sonar:sonar")
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS test sonar:sonar")
                 }
                 publishCoverage adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: true
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
