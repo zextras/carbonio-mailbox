@@ -5,28 +5,14 @@
 
 package com.zimbra.soap;
 
-import com.zextras.mailbox.metric.Metrics;
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.http.HttpVersion;
-import org.apache.http.ParseException;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.message.BasicLineParser;
+import static com.zextras.mailbox.tracing.MailboxTracingModule.SERVICE_NAME;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.zextras.mailbox.metric.Metrics;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -45,6 +31,22 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.util.Zimbra;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.context.Scope;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import javax.servlet.ServletException;
+import javax.servlet.UnavailableException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.ParseException;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.message.BasicLineParser;
 
 /**
  * The soap service servlet
@@ -201,11 +203,14 @@ public class SoapServlet extends ZimbraServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         ZimbraLog.clearContext();
+        final Span parentSpan = GlobalOpenTelemetry.getTracer(SERVICE_NAME).spanBuilder("soap")
+            .startSpan();
         long startTime = ZimbraPerf.STOPWATCH_SOAP.start();
 
-        try {
+        try (Scope scope = parentSpan.makeCurrent()){
             doWork(req, resp);
         } finally {
+            parentSpan.end();
             ZimbraLog.clearContext();
             ZimbraPerf.STOPWATCH_SOAP.stop(startTime);
         }
@@ -214,10 +219,12 @@ public class SoapServlet extends ZimbraServlet {
     @Override public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ZimbraLog.clearContext();
         long startTime = ZimbraPerf.STOPWATCH_SOAP.start();
-
-        try {
+        final Span parentSpan = GlobalOpenTelemetry.getTracer(SERVICE_NAME).spanBuilder("soap")
+            .startSpan();
+        try (Scope scope = parentSpan.makeCurrent()) {
             doWork(req, resp);
         } finally {
+            parentSpan.end();
             ZimbraLog.clearContext();
             ZimbraPerf.STOPWATCH_SOAP.stop(startTime);
         }
@@ -306,12 +313,16 @@ public class SoapServlet extends ZimbraServlet {
         context.put(SoapEngine.REQUEST_PORT, req.getServerPort());
         context.put(SoapEngine.ORIG_REQUEST_USER_AGENT, req.getHeader(HeaderConstants.HTTP_HEADER_ORIG_USER_AGENT));
         Element envelope = null;
+        final Span dispatcherSpan = GlobalOpenTelemetry.getTracer(SERVICE_NAME)
+            .spanBuilder(req.getRequestURI())
+            .startSpan();
         try {
             envelope = mEngine.dispatch(req.getRequestURI(), buffer, context);
             if (context.containsKey(INVALIDATE_COOKIES)) {
                 ZAuthToken.clearCookies(resp);
             }
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             if (e instanceof OutOfMemoryError) {
                 Zimbra.halt("handler exception", e);
             }
@@ -327,6 +338,9 @@ public class SoapServlet extends ZimbraServlet {
             ZimbraLog.soap.warn("handler exception", e);
             Element fault = SoapProtocol.Soap12.soapFault(ServiceException.FAILURE(e.toString(), e));
             envelope = SoapProtocol.Soap12.soapEnvelope(fault);
+        }
+        finally {
+            dispatcherSpan.end();
         }
 
         if (ZimbraLog.soap.isTraceEnabled()) {
