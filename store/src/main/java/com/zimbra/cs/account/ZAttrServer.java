@@ -20442,11 +20442,11 @@ public abstract class ZAttrServer extends NamedEntry {
     /**
      * Maximum number of JavaMail MimeMessage objects in the message cache.
      *
-     * @return zimbraMessageCacheSize, or 2000 if unset
+     * @return zimbraMessageCacheSize, or 200 if unset
      */
     @ZAttr(id=297)
     public int getMessageCacheSize() {
-        return getIntAttr(Provisioning.A_zimbraMessageCacheSize, 2000, true);
+        return getIntAttr(Provisioning.A_zimbraMessageCacheSize, 200, true);
     }
 
     /**
