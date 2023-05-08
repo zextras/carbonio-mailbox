@@ -46632,7 +46632,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current version of ZCS installed on this server
      *
      * @return zimbraServerVersion, or null if unset
      *
@@ -46644,7 +46645,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current version of ZCS installed on this server
      *
      * @param zimbraServerVersion new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -46659,7 +46661,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current version of ZCS installed on this server
      *
      * @param zimbraServerVersion new value
      * @param attrs existing map to populate, or null to create a new map
@@ -46675,7 +46678,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current version of ZCS installed on this server
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -46689,7 +46693,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current version of ZCS installed on this server
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -46704,7 +46709,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current build number of ZCS installed on this server for this version
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current build number of ZCS installed on this server for
+     * this version
      *
      * @return zimbraServerVersionBuild, or -1 if unset
      *
@@ -46716,7 +46723,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current build number of ZCS installed on this server for this version
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current build number of ZCS installed on this server for
+     * this version
      *
      * @param zimbraServerVersionBuild new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -46731,7 +46740,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current build number of ZCS installed on this server for this version
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current build number of ZCS installed on this server for
+     * this version
      *
      * @param zimbraServerVersionBuild new value
      * @param attrs existing map to populate, or null to create a new map
@@ -46747,7 +46758,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current build number of ZCS installed on this server for this version
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current build number of ZCS installed on this server for
+     * this version
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -46761,7 +46774,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current build number of ZCS installed on this server for this version
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current build number of ZCS installed on this server for
+     * this version
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -46776,7 +46791,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current major version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current major version of ZCS installed on this server
      *
      * @return zimbraServerVersionMajor, or -1 if unset
      *
@@ -46788,7 +46804,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current major version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current major version of ZCS installed on this server
      *
      * @param zimbraServerVersionMajor new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -46803,7 +46820,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current major version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current major version of ZCS installed on this server
      *
      * @param zimbraServerVersionMajor new value
      * @param attrs existing map to populate, or null to create a new map
@@ -46819,7 +46837,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current major version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current major version of ZCS installed on this server
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -46833,7 +46852,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current major version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current major version of ZCS installed on this server
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -46848,7 +46868,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current micro level version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current micro level version of ZCS installed on this server
      *
      * @return zimbraServerVersionMicro, or -1 if unset
      *
@@ -46860,7 +46881,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current micro level version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current micro level version of ZCS installed on this server
      *
      * @param zimbraServerVersionMicro new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -46875,7 +46897,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current micro level version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current micro level version of ZCS installed on this server
      *
      * @param zimbraServerVersionMicro new value
      * @param attrs existing map to populate, or null to create a new map
@@ -46891,7 +46914,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current micro level version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current micro level version of ZCS installed on this server
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -46905,7 +46929,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current micro level version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current micro level version of ZCS installed on this server
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -46920,7 +46945,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current minor version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current minor version of ZCS installed on this server
      *
      * @return zimbraServerVersionMinor, or -1 if unset
      *
@@ -46932,7 +46958,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current minor version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current minor version of ZCS installed on this server
      *
      * @param zimbraServerVersionMinor new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -46947,7 +46974,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current minor version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current minor version of ZCS installed on this server
      *
      * @param zimbraServerVersionMinor new value
      * @param attrs existing map to populate, or null to create a new map
@@ -46963,7 +46991,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current minor version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current minor version of ZCS installed on this server
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -46977,7 +47006,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Current minor version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current minor version of ZCS installed on this server
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

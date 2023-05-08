@@ -15947,7 +15947,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraServerInheritedAttr = "zimbraServerInheritedAttr";
 
     /**
-     * Current version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current version of ZCS installed on this server
      *
      * @since ZCS 8.5.0
      */
@@ -15955,7 +15956,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraServerVersion = "zimbraServerVersion";
 
     /**
-     * Current build number of ZCS installed on this server for this version
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current build number of ZCS installed on this server for
+     * this version
      *
      * @since ZCS 8.5.0
      */
@@ -15963,7 +15966,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraServerVersionBuild = "zimbraServerVersionBuild";
 
     /**
-     * Current major version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current major version of ZCS installed on this server
      *
      * @since ZCS 8.5.0
      */
@@ -15971,7 +15975,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraServerVersionMajor = "zimbraServerVersionMajor";
 
     /**
-     * Current micro level version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current micro level version of ZCS installed on this server
      *
      * @since ZCS 8.5.0
      */
@@ -15979,7 +15984,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraServerVersionMicro = "zimbraServerVersionMicro";
 
     /**
-     * Current minor version of ZCS installed on this server
+     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
+     * Orig desc: Current minor version of ZCS installed on this server
      *
      * @since ZCS 8.5.0
      */
