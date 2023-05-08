@@ -248,10 +248,6 @@ public class WebClientServiceUtil {
     }
 
     private static boolean isServerAtLeast8dot5(Server server) {
-        if (server.getServerVersion() == null) {
-            ZimbraLog.misc.info("ui node %s is on version pre 8.5, aborting", server.getName());
-            return false;
-        }
         return true;
     }
 
