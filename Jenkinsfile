@@ -61,13 +61,11 @@ pipeline {
         }
         stage('Sonarqube Analysis') {
             when {
-                expression {
-                    allOf {
-                        params.SKIP_SONARQUBE == false
-                        params.SKIP_TEST_WITH_COVERAGE == false
+                allOf {
+                    expression { params.SKIP_SONARQUBE == false }
+                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
                     }
                 }
-            }
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                     mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar")
