@@ -11,17 +11,16 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import java.io.PrintStream;
 import java.util.Formatter;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 class ProxyConfVar {
 
   public static final String UNKNOWN_HEADER_NAME = "X-Zimbra-Unknown-Header";
   public static final Pattern RE_HEADER = Pattern.compile("^([^:]+):\\s+(.*)$");
-  static Entry configSource = null;
-  static Entry serverSource = null;
   protected static Log mLog = LogFactory.getLog(ProxyConfGen.class);
   protected static Provisioning mProv = Provisioning.getInstance();
+  static Entry configSource = null;
+  static Entry serverSource = null;
   String mKeyword;
   String mAttribute;
   ProxyConfValueType mValueType;
@@ -260,18 +259,10 @@ class ProxyConfVar {
 
   String generateServerDirective(Server server, String serverName, int serverPort) {
     int timeout = server.getIntAttr(ZAttrProvisioning.A_zimbraMailProxyReconnectTimeout, 60);
-    String version = server.getAttr(ZAttrProvisioning.A_zimbraServerVersion, "");
     int maxFails = server.getIntAttr(ZAttrProvisioning.A_zimbraMailProxyMaxFails, 1);
-    if (maxFails != 1 && !Objects.equals(version, "")) {
-      return String.format(
-          "%s:%d fail_timeout=%ds max_fails=%d version=%s",
-          serverName, serverPort, timeout, maxFails, version);
-    } else if (maxFails != 1) {
+    if (maxFails != 1) {
       return String.format(
           "%s:%d fail_timeout=%ds max_fails=%d", serverName, serverPort, timeout, maxFails);
-    } else if (!Objects.equals(version, "")) {
-      return String.format(
-          "%s:%d fail_timeout=%ds version=%s", serverName, serverPort, timeout, version);
     } else {
       return String.format("%s:%d fail_timeout=%ds", serverName, serverPort, timeout);
     }
