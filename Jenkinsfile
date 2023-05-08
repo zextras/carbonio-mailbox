@@ -8,9 +8,9 @@ pipeline {
         }
     }
     parameters {
-        booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
-        booleanParam defaultValue: false, description: 'Whether to skip the test all with coverage stage', name: 'SKIP_TEST_WITH_COVERAGE'
-        booleanParam defaultValue: false, description: 'Whether to skip sonarqube analysis', name: 'SKIP_SONARQUBE'
+        booleanParam defaultValue: false, description: 'Upload packages in playground repositories.', name: 'PLAYGROUND'
+        booleanParam defaultValue: false, description: 'Skip test and sonar analysis.', name: 'SKIP_TEST_WITH_COVERAGE'
+        booleanParam defaultValue: false, description: 'Skip sonar analysis.', name: 'SKIP_SONARQUBE'
     }
     environment {
         JAVA_OPTS='-Dfile.encoding=UTF8'
@@ -61,13 +61,11 @@ pipeline {
         }
         stage('Sonarqube Analysis') {
             when {
-                expression {
-                    allOf {
-                        params.SKIP_SONARQUBE == false
-                        params.SKIP_TEST_WITH_COVERAGE == false
+                allOf {
+                    expression { params.SKIP_SONARQUBE == false }
+                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
                     }
                 }
-            }
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                     mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar")
