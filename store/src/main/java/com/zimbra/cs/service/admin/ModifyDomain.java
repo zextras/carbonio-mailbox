@@ -53,7 +53,7 @@ public class ModifyDomain extends AdminDocumentHandler {
           "can not access domain, domain is in " + domain.getDomainStatusAsString() + " status");
     }
 
-    checkDomainRight(zsc, domain, attrs);
+    AdminAccessControl adminAccessControl = checkDomainRight(zsc, domain, attrs);
 
     // check to see if domain default cos is being changed, need right on new cos
     checkCos(zsc, attrs, Provisioning.A_zimbraDomainDefaultCOSId);
@@ -66,20 +66,23 @@ public class ModifyDomain extends AdminDocumentHandler {
       throw ServiceException.INVALID_REQUEST(
           Provisioning.A_zimbraDomainName + " cannot be changed.", null);
     }
-    if (!Objects.isNull(gotPublicServiceHostname)
-        && !(isPublicServiceHostnameCompliant(domain, gotPublicServiceHostname))) {
-      throw ServiceException.FAILURE(
-          "Public service hostname must be a valid FQDN and compatible with current domain (or its"
-              + " aliases).");
-    }
-    final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
-    if (!(Objects.isNull(gotVirtualHostNames))
-        && !(Arrays.equals(gotVirtualHostNames, new String[] {""}))
-        && !(areVirtualHostnamesCompliant(
-            domain, Arrays.stream(gotVirtualHostNames).collect(Collectors.toList())))) {
-      throw ServiceException.FAILURE(
-          "Virtual hostnames must be valid FQDNs and compatible with current domain (or its"
-              + " aliases).");
+
+    if (!adminAccessControl.isGlobalAdmin()) {
+      if (!Objects.isNull(gotPublicServiceHostname)
+          && !(isPublicServiceHostnameCompliant(domain, gotPublicServiceHostname))) {
+        throw ServiceException.FAILURE(
+            "Public service hostname must be a valid FQDN and compatible with current domain "
+                + "(or its aliases).");
+      }
+      final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
+      if (!(Objects.isNull(gotVirtualHostNames))
+          && !(Arrays.equals(gotVirtualHostNames, new String[]{""}))
+          && !(areVirtualHostnamesCompliant(
+          domain, Arrays.stream(gotVirtualHostNames).collect(Collectors.toList())))) {
+        throw ServiceException.FAILURE(
+            "Virtual hostnames must be valid FQDNs and compatible with current domain (or its"
+                + " aliases).");
+      }
     }
 
     // pass in true to checkImmutable

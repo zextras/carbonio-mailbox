@@ -289,6 +289,10 @@ public abstract class AdminAccessControl {
         }
     }
 
+    public boolean isGlobalAdmin() {
+        return AccessControlUtil.isGlobalAdmin(mAuthedAcct);
+    }
+
     public boolean isDomainAdminOnly() {
         return mAccessMgr.isDomainAdminOnly(mAuthToken);
     }
