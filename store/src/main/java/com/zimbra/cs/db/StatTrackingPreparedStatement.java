@@ -5,8 +5,12 @@
 
 package com.zimbra.cs.db;
 
+import static com.zextras.mailbox.tracing.MailboxTracingModule.SERVICE_NAME;
+
 import com.zimbra.cs.stats.ActivityTracker;
 import com.zimbra.cs.stats.ZimbraPerf;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.Span;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -62,6 +66,7 @@ public class StatTrackingPreparedStatement implements PreparedStatement {
    */
   public void setTracker(ActivityTracker tracker, ActivityTracker trackerPrometheus) {
     this.tracker = tracker;
+    this.tracker = tracker;
     this.trackerPrometheus = trackerPrometheus;
   }
 
@@ -70,7 +75,11 @@ public class StatTrackingPreparedStatement implements PreparedStatement {
    * or using this method. If the sql string is not available, nothing will be tracked.
    */
   public void setQueryString(String sql) {
+    final Span span = GlobalOpenTelemetry.getTracer(SERVICE_NAME).spanBuilder("sql")
+        .startSpan();
+    span.setAttribute("sql.statement", sql);
     this.queryString = sql;
+    span.end();
   }
 
   /* Not sure if the query types should be mutually exclusive like this.

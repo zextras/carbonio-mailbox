@@ -842,6 +842,11 @@
         <version>1.6.20</version>
         <scope>runtime</scope>
       </dependency>
+      <dependency>
+        <groupId>io.opentelemetry</groupId>
+        <artifactId>opentelemetry-exporter-jaeger</artifactId>
+        <version>1.25.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
