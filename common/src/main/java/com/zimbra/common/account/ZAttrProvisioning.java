@@ -15947,60 +15947,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraServerInheritedAttr = "zimbraServerInheritedAttr";
 
     /**
-     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
-     * Orig desc: Current version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1598)
-    public static final String A_zimbraServerVersion = "zimbraServerVersion";
-
-    /**
-     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
-     * Orig desc: Current build number of ZCS installed on this server for
-     * this version
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1602)
-    public static final String A_zimbraServerVersionBuild = "zimbraServerVersionBuild";
-
-    /**
-     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
-     * Orig desc: Current major version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1599)
-    public static final String A_zimbraServerVersionMajor = "zimbraServerVersionMajor";
-
-    /**
-     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
-     * Orig desc: Current micro level version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1601)
-    public static final String A_zimbraServerVersionMicro = "zimbraServerVersionMicro";
-
-    /**
-     * Deprecated since: 23.6.0. deprecated as not being used in Carbonio.
-     * Orig desc: Current minor version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1600)
-    public static final String A_zimbraServerVersionMinor = "zimbraServerVersionMinor";
-
-    /**
-     * Current version type of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1605)
-    public static final String A_zimbraServerVersionType = "zimbraServerVersionType";
-
-    /**
      * services that are enabled on this server
      */
     @ZAttr(id=220)
