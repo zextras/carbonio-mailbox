@@ -10,17 +10,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.base.WkstRuleInterface;
 
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_WEEK_START_RULE, description="Week-start rule")
 public class WkstRule
 implements WkstRuleInterface {
 
@@ -29,8 +22,6 @@ implements WkstRuleInterface {
      * @zm-api-field-description Weekday -  <b>SU|MO|TU|WE|TH|FR|SA</b>
      */
     @XmlAttribute(name=MailConstants.A_CAL_RULE_DAY, required=true)
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.DAY, description="Weekday - SU|MO|TU|WE|TH|FR|SA")
     private final String day;
 
     /**
@@ -41,7 +32,7 @@ implements WkstRuleInterface {
         this((String) null);
     }
 
-    public WkstRule(@GraphQLNonNull @GraphQLInputField String day) {
+    public WkstRule(String day) {
         this.day = day;
     }
 

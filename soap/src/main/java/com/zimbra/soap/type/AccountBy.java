@@ -11,19 +11,18 @@ import javax.xml.bind.annotation.XmlEnum;
 
 import com.zimbra.common.service.ServiceException;
 
-import io.leangen.graphql.annotations.GraphQLEnumValue;
-import io.leangen.graphql.annotations.types.GraphQLType;
+
+
 
 @XmlEnum
-@GraphQLType(name="AccountBy")
 public enum AccountBy {
     // case must match protocol
-    @GraphQLEnumValue adminName,
-    @GraphQLEnumValue appAdminName,
-    @GraphQLEnumValue id,
-    @GraphQLEnumValue foreignPrincipal,
-    @GraphQLEnumValue name,
-    @GraphQLEnumValue krb5Principal;
+    adminName,
+    appAdminName,
+    id,
+    foreignPrincipal,
+    name,
+    krb5Principal;
 
     public static AccountBy fromString(String s)
     throws ServiceException {

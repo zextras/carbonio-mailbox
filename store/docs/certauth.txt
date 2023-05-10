@@ -697,9 +697,9 @@ of what is going on during OCSP validation
 
 - restart server for above changes to take effect
 
-- in ZCS (or Octopus) admin console provision new account with email address which was supplied 
+- in ZCS admin console provision new account with email address which was supplied
 to create account on CACert. In my case it is 'eugene@zimbra.com'. This account is necessary for two 
-way authentication mechanism to be able to map certificate to ZCS (or Octopus) account.
+way authentication mechanism to be able to map certificate to ZCS account.
 
 ============
 Running test
@@ -741,7 +741,7 @@ should be redirected to username/password login page
 Notes
 ============
 
-The feature is expected to work on both products ZCS and Octopus. Also you will not see any effects of OCSP 
+The feature is expected to work on both products ZCS. Also you will not see any effects of OCSP
 validation with self signed certificates created to test two way authentication using steps described at the
 beginning of this document. These certificates do not contain OCSP url extension and therefore server will
 not perform OCSP validation on these certificates.

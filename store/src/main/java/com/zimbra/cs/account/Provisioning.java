@@ -368,10 +368,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return true;
   }
 
-  public boolean isOctopus() throws ServiceException {
-    return getConfig().getProduct() != Product.ZCS;
-  }
-
   /**
    * Modifies this entry. <code>attrs</code> is a <code>Map</code> consisting of keys that are
    * <code>String</code>s, and values that are either

@@ -11,16 +11,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.zimbra.common.calendar.Geo;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.base.GeoInfoInterface;
 
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_GEO_INFORMATION, description="Geo information")
 public class GeoInfo implements GeoInfoInterface {
 
     /**
@@ -28,7 +22,6 @@ public class GeoInfo implements GeoInfoInterface {
      * @zm-api-field-description Longitude (float value)
      */
     @XmlAttribute(name=MailConstants.A_CAL_GEO_LATITUDE /* lat */, required=false)
-    @GraphQLQuery(name=GqlConstants.LATITUDE, description="Latitude (float value)")
     private final String latitude;
 
     /**
@@ -36,7 +29,6 @@ public class GeoInfo implements GeoInfoInterface {
      * @zm-api-field-description Longitude (float value)
      */
     @XmlAttribute(name=MailConstants.A_CAL_GEO_LONGITUDE /* lon */, required=false)
-    @GraphQLQuery(name=GqlConstants.LONGITUDE, description="Longitude (float value)")
     private final String longitude;
 
     /**
@@ -47,8 +39,8 @@ public class GeoInfo implements GeoInfoInterface {
         this((String) null, (String) null);
     }
 
-    public GeoInfo(@GraphQLInputField(name=GqlConstants.LATITUDE) String latitude,
-        @GraphQLInputField(name=GqlConstants.LONGITUDE) String longitude) {
+    public GeoInfo( String latitude,
+        String longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
