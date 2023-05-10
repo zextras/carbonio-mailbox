@@ -73,7 +73,7 @@ public class ModifyDomainIT {
   }
 
   @Test
-  public void shouldThrowExceptionForDelegatedAdminIfPublicServiceHostnameNotComplaintWithDomain()
+  public void shouldThrowExceptionForDelegatedAdminIfPublicServiceHostnameNotCompliantWithDomain()
       throws ServiceException {
     final String domainName = "demo.zextras.io";
     final Domain domain = provisioning.createDomain(
@@ -103,7 +103,7 @@ public class ModifyDomainIT {
   }
 
   @Test
-  public void shouldAllowGlobalAdminChangePublicServiceHostnameIfNotComplaintWithDomain()
+  public void shouldAllowGlobalAdminChangePublicServiceHostnameIfNotCompliantWithDomain()
       throws ServiceException {
     final String domainName = "demo.zextras.io";
     final Domain domain = provisioning.createDomain(

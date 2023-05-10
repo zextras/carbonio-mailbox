@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 public class ModifyDomain extends AdminDocumentHandler {
 
-  public boolean domainAuthSufficient(Map context) {
+  public boolean domainAuthSufficient(Map<String, Object>context) {
     return true;
   }
 
@@ -102,7 +102,6 @@ public class ModifyDomain extends AdminDocumentHandler {
    *
    * @param domain domain being updated
    * @param publicServiceHostname value to check against domain
-   * @throws ServiceException exception if public service hostname not valid
    */
   private boolean isPublicServiceHostnameCompliant(Domain domain, String publicServiceHostname) {
     return isFQDNCompliant(domain.getDomainName(), publicServiceHostname);
