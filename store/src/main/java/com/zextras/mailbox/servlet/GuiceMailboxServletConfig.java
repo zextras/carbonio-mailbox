@@ -15,6 +15,6 @@ public class GuiceMailboxServletConfig extends GuiceServletContextListener {
 
   @Override
   protected Injector getInjector() {
-    return Guice.createInjector(new MetricsServletModule(), new MailboxTracingModule());
+    return Guice.createInjector(new MailboxTracingModule(), new MetricsServletModule());
   }
 }
