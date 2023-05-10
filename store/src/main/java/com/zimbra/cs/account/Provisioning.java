@@ -249,12 +249,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   /** return coses from searchDirectory */
   public static final int SD_DYNAMIC_GROUP_FLAG = 0x100;
 
-  /** do not fixup objectclass in query for searchObject, only used from LdapUpgrade */
-  public static final int SO_NO_FIXUP_OBJECTCLASS = 0x200;
-
-  /** do not fixup return attrs for searchObject, onlt used from LdapUpgrade */
-  public static final int SO_NO_FIXUP_RETURNATTRS = 0x400;
-
   /** return distribution lists from searchAccounts/searchDirectory */
   public static final int SD_HAB_FLAG = 0x12;
 

@@ -38,8 +38,6 @@ public class ZFeatures {
     }
 
     public Map<String, Collection<String>> getAttrs() { return mAttrs; }
-    
-    public boolean getTouchClient() { return getBool(ZAttrProvisioning.A_zimbraFeatureTouchClientEnabled); }
 
     public boolean getContacts() { return getBool(ZAttrProvisioning.A_zimbraFeatureContactsEnabled); }
 
@@ -60,8 +58,6 @@ public class ZFeatures {
     public boolean getTagging() { return getBool(ZAttrProvisioning.A_zimbraFeatureTaggingEnabled); }
 
     public boolean getOptions() { return getBool(ZAttrProvisioning.A_zimbraFeatureOptionsEnabled); }
-    
-    public boolean getAdvancedSearch() { return getBool(ZAttrProvisioning.A_zimbraFeatureAdvancedSearchEnabled); }
 
     public boolean getSavedSearches() { return getBool(ZAttrProvisioning.A_zimbraFeatureSavedSearchesEnabled); }
 
@@ -76,8 +72,6 @@ public class ZFeatures {
     public boolean getGal() { return getBool(ZAttrProvisioning.A_zimbraFeatureGalEnabled); }
 
     public boolean getHtmlCompose() { return getBool(ZAttrProvisioning.A_zimbraFeatureHtmlComposeEnabled); }
-
-    public boolean getIM() { return getBool(ZAttrProvisioning.A_zimbraFeatureIMEnabled); }
 
     public boolean getViewInHtml() { return getBool(ZAttrProvisioning.A_zimbraFeatureViewInHtmlEnabled); }
 
@@ -118,10 +112,6 @@ public class ZFeatures {
     public boolean getContactsDetailedSearch() { return getBool(ZAttrProvisioning.A_zimbraFeatureContactsDetailedSearchEnabled); }
 
     public boolean getDiscardFilterEnabled() { return getBool(ZAttrProvisioning.A_zimbraFeatureDiscardInFiltersEnabled); }
-    
-    // defaults to TRUE
-    public boolean getWebSearchEnabled() { return get(ZAttrProvisioning.A_zimbraFeatureWebSearchEnabled) == null ||
-    											  getBool(ZAttrProvisioning.A_zimbraFeatureWebSearchEnabled); }
 
     // defaults to TRUE
     public boolean getWebClientShowOfflineLink() { return get(ZAttrProvisioning.A_zimbraWebClientShowOfflineLink) == null ||

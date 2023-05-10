@@ -22,7 +22,7 @@ import com.zimbra.cs.account.Server;
 
 /**
  * @author jhahm
- * <p>
+ *
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
@@ -128,23 +128,6 @@ public class URLUtil {
    */
   public static String getAdminURL(Server server) {
     return getAdminURL(server, AdminConstants.ADMIN_SERVICE_URI);
-  }
-
-  /**
-   * Utility method to translate zimbraMtaAuthHost -> zimbraMtaAuthURL.
-   * <p>
-   * Not the best place for this method, but do not want to pollute Provisioning with utility
-   * methods either.
-   */
-  public static String getMtaAuthURL(String authHost) throws ServiceException {
-    for (Server server : Provisioning.getInstance().getAllServers()) {
-      String serviceName = server.getAttr(Provisioning.A_zimbraServiceHostname, null);
-      if (authHost.equalsIgnoreCase(serviceName)) {
-        return URLUtil.getSoapURL(server, true);
-      }
-    }
-    throw ServiceException.INVALID_REQUEST("specified " + Provisioning.A_zimbraMtaAuthHost
-        + " does not correspond to a valid service hostname: " + authHost, null);
   }
 
   /**
