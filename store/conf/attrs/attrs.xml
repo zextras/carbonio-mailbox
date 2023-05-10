@@ -7710,26 +7710,6 @@ TODO: delete them permanently from here
   <desc>For zimbra dnscache, whether or not to only use TCP when talking to the upstream Master DNS servers. Defaults to no</desc>
 </attr>
 
-<attr id="1598" name="zimbraServerVersion" type="string" cardinality="single" optionalIn="server" since="8.5.0">
-  <desc>Current version of ZCS installed on this server</desc>
-</attr>
-
-<attr id="1599" name="zimbraServerVersionMajor" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
-  <desc>Current major version of ZCS installed on this server</desc>
-</attr>
-
-<attr id="1600" name="zimbraServerVersionMinor" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
-  <desc>Current minor version of ZCS installed on this server</desc>
-</attr>
-
-<attr id="1601" name="zimbraServerVersionMicro" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
-  <desc>Current micro level version of ZCS installed on this server</desc>
-</attr>
-
-<attr id="1602" name="zimbraServerVersionBuild" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
-  <desc>Current build number of ZCS installed on this server for this version</desc>
-</attr>
-
 <attr id="1603" name="zimbraReverseProxyUpstreamLoginServers" type="string" cardinality="multi" optionalIn="server,globalConfig" flags="serverInherited" since="8.5.0">
   <desc>The servers to be included in the login block in the nginx web proxy config file.
   The servers configured here will only affect the proxy of login URL requests.</desc>
@@ -7737,10 +7717,6 @@ TODO: delete them permanently from here
 
 <attr id="1604" name="zimbraSSLIncludeCipherSuites" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.5.0">
   <desc>List of included cipher suites for Jetty. If any value is set only these ciphers will be used, in effect superseding zimbraSSLExcludeCipherSuites. Order of selection is based on client preference and default Java order since Java SSLEngine does not allow changing the preference order.</desc>
-</attr>
-
-<attr id="1605" name="zimbraServerVersionType" type="string" cardinality="single" optionalIn="server" since="8.5.0">
-  <desc>Current version type of ZCS installed on this server</desc>
 </attr>
 
 <attr id="1606" name="zimbraMtaUnverifiedRecipientDeferCode" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
