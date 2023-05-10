@@ -446,7 +446,7 @@
       <dependency>
         <groupId>com.zextras.carbonio.preview</groupId>
         <artifactId>carbonio-preview-sdk</artifactId>
-        <version>0.2.4</version>
+        <version>1.0.1</version>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
@@ -861,7 +861,7 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <revision>23.5.0-SNAPSHOT</revision>
+    <revision>23.6.0-SNAPSHOT</revision>
   </properties>
   <version>${revision}</version>
   <profiles>

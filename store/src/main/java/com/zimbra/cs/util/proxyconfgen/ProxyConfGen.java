@@ -369,10 +369,6 @@ public class ProxyConfGen {
     return mTemplatePrefix + ".web.http.mode-" + mode + TEMPLATE_SUFFIX;
   }
 
-  private static String getWebHttpSModeConf(String mode) {
-    return mConfPrefix + ".web.https.mode-" + mode;
-  }
-
   public static String getWebHttpSModeConfTemplate(String mode) {
     return mTemplatePrefix + ".web.https.mode-" + mode + TEMPLATE_SUFFIX;
   }
@@ -417,12 +413,6 @@ public class ProxyConfGen {
       // for the first line of template, check the custom header command
       bufferedReader.mark(100); // assume the first line won't beyond 100
       String line = bufferedReader.readLine();
-
-      // only for backward compatibility
-      if (line.equalsIgnoreCase("!{explode vhn_vip_ssl}")) {
-        expandTemplateExplodeSSLConfigsForAllVhnsAndVIPs(bufferedReader, bufferedWriter);
-        return;
-      }
 
       addCustomTemplateWarningHeader(usingCustomTemplateOverride, templateFilePath, bufferedWriter);
 
@@ -501,35 +491,6 @@ public class ProxyConfGen {
             + OVERRIDE_TEMPLATE_DIR
             + "\n#\n";
     bufferedWriter.write(sb);
-  }
-
-  /**
-   * Enumerate all domains, if the required attrs are valid, generate the "server" block according
-   * to the template.
-   *
-   * @author Jiankuan
-   * @deprecated use expandTemplateByExplodeDomain instead
-   */
-  @Deprecated
-  private static void expandTemplateExplodeSSLConfigsForAllVhnsAndVIPs(
-      BufferedReader temp, BufferedWriter conf) throws IOException, ProxyConfException {
-    int size = mDomainReverseProxyAttrs.size();
-    List<String> cache;
-
-    if (size > 0) {
-      Iterator<DomainAttrItem> it = mDomainReverseProxyAttrs.iterator();
-      DomainAttrItem item = it.next();
-      fillVarsWithDomainAttrs(item);
-      cache = expandTemplateAndCache(temp, conf);
-      conf.newLine();
-
-      while (it.hasNext()) {
-        item = it.next();
-        fillVarsWithDomainAttrs(item);
-        expandTemplateFromCache(cache, conf);
-        conf.newLine();
-      }
-    }
   }
 
   /**
@@ -2292,23 +2253,8 @@ public class ProxyConfGen {
           new File(mTemplateDir, getConfTemplateFileName("web.admin.default")),
           new File(mConfIncludesDir, getConfFileName("web.admin.default")));
       expandTemplate(
-          new File(mTemplateDir, getWebHttpModeConfTemplate("http")),
-          new File(mConfIncludesDir, getWebHttpModeConf("http")));
-      expandTemplate(
-          new File(mTemplateDir, getWebHttpModeConfTemplate("https")),
-          new File(mConfIncludesDir, getWebHttpModeConf("https")));
-      expandTemplate(
           new File(mTemplateDir, getWebHttpModeConfTemplate("redirect")),
           new File(mConfIncludesDir, getWebHttpModeConf("redirect")));
-      expandTemplate(
-          new File(mTemplateDir, getWebHttpSModeConfTemplate("http")),
-          new File(mConfIncludesDir, getWebHttpSModeConf("http")));
-      expandTemplate(
-          new File(mTemplateDir, getWebHttpSModeConfTemplate("https")),
-          new File(mConfIncludesDir, getWebHttpSModeConf("https")));
-      expandTemplate(
-          new File(mTemplateDir, getWebHttpSModeConfTemplate("redirect")),
-          new File(mConfIncludesDir, getWebHttpSModeConf("redirect")));
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("web.carbonio.admin.default")),
           new File(mConfIncludesDir, getConfFileName("web.carbonio.admin.default")));
@@ -2323,8 +2269,11 @@ public class ProxyConfGen {
           new File(mTemplateDir, getConfTemplateFileName("stream.addressBook")),
           new File(mConfIncludesDir, getConfFileName("stream.addressBook")));
       expandTemplate(
-          new File(mTemplateDir, getConfTemplateFileName("stream.chats.messaging.xmpp")),
-          new File(mConfIncludesDir, getConfFileName("stream.chats.messaging.xmpp")));
+          new File(mTemplateDir, getConfTemplateFileName("stream.message.dispatcher.xmpp")),
+          new File(mConfIncludesDir, getConfFileName("stream.message.dispatcher.xmpp")));
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("web.clamav.signature.provider")),
+          new File(mConfIncludesDir, getConfFileName("web.clamav.signature.provider")));
       // Templates for ssl mapping
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("map.crt")),
