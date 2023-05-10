@@ -15947,54 +15947,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraServerInheritedAttr = "zimbraServerInheritedAttr";
 
     /**
-     * Current version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1598)
-    public static final String A_zimbraServerVersion = "zimbraServerVersion";
-
-    /**
-     * Current build number of ZCS installed on this server for this version
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1602)
-    public static final String A_zimbraServerVersionBuild = "zimbraServerVersionBuild";
-
-    /**
-     * Current major version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1599)
-    public static final String A_zimbraServerVersionMajor = "zimbraServerVersionMajor";
-
-    /**
-     * Current micro level version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1601)
-    public static final String A_zimbraServerVersionMicro = "zimbraServerVersionMicro";
-
-    /**
-     * Current minor version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1600)
-    public static final String A_zimbraServerVersionMinor = "zimbraServerVersionMinor";
-
-    /**
-     * Current version type of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1605)
-    public static final String A_zimbraServerVersionType = "zimbraServerVersionType";
-
-    /**
      * services that are enabled on this server
      */
     @ZAttr(id=220)
