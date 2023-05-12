@@ -135,10 +135,6 @@ public class ZFeatures {
     return false;
   } // bug:56196 getBool(ZAttrProvisioning.A_zimbraFeatureNotebookEnabled);
 
-  public boolean getBriefcases() {
-    return getBool(ZAttrProvisioning.A_zimbraFeatureBriefcasesEnabled);
-  }
-
   public boolean getGalAutoComplete() {
     return getBool(ZAttrProvisioning.A_zimbraFeatureGalAutoCompleteEnabled);
   }
