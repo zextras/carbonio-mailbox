@@ -14,6 +14,7 @@ import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccountServiceException;
+import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
  */
 public class ModifyDomain extends AdminDocumentHandler {
 
-  public boolean domainAuthSufficient(Map<String, Object>context) {
+  public boolean domainAuthSufficient(Map<String, Object> context) {
     return true;
   }
 
@@ -67,7 +68,7 @@ public class ModifyDomain extends AdminDocumentHandler {
           Provisioning.A_zimbraDomainName + " cannot be changed.", null);
     }
 
-    if (!adminAccessControl.isGlobalAdmin()) {
+    if (!hasRight(adminAccessControl, prov.getConfig())) {
       if (!Objects.isNull(gotPublicServiceHostname)
           && !(isPublicServiceHostnameCompliant(domain, gotPublicServiceHostname))) {
         throw ServiceException.FAILURE(
@@ -76,12 +77,12 @@ public class ModifyDomain extends AdminDocumentHandler {
       }
       final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
       if (!(Objects.isNull(gotVirtualHostNames))
-          && !(Arrays.equals(gotVirtualHostNames, new String[]{""}))
+          && !(Arrays.equals(gotVirtualHostNames, new String[] {""}))
           && !(areVirtualHostnamesCompliant(
-          domain, Arrays.stream(gotVirtualHostNames).collect(Collectors.toList())))) {
+              domain, Arrays.stream(gotVirtualHostNames).collect(Collectors.toList())))) {
         throw ServiceException.FAILURE(
-            "Virtual hostnames must be valid FQDNs and compatible with current domain (or its"
-                + " aliases).");
+            "Virtual hostnames must be valid FQDNs and compatible with current domain "
+                + "(or its aliases).");
       }
     }
 
@@ -95,6 +96,26 @@ public class ModifyDomain extends AdminDocumentHandler {
     Element response = zsc.createElement(AdminConstants.MODIFY_DOMAIN_RESPONSE);
     GetDomain.encodeDomain(response, domain);
     return response;
+  }
+
+  /**
+   * Checks if an authenticated user has right to modify global config.
+   *
+   * <p><Note> Global admin and delegated admin with the granted right Admin.R_modifyGlobalConfig
+   * should be able to set an arbitrary value on zimbraPublicServiceHostname and(or)
+   * zimbraVirtualHostname. </Note>
+   *
+   * @param adminAccessControl {@link com.zimbra.cs.service.admin.AdminAccessControl}
+   * @param config the global config {@link com.zimbra.cs.account.Config}
+   * @return true if an authenticated user has right to modify global config, false otherwise.
+   * @throws ServiceException if something goes wrong during the checks.
+   * @author Yuliya Aheeva
+   * @since 23.6.0
+   */
+  protected boolean hasRight(AdminAccessControl adminAccessControl, Config config)
+      throws ServiceException {
+    return adminAccessControl.isGlobalAdmin()
+        || adminAccessControl.hasRight(config, Admin.R_modifyGlobalConfig);
   }
 
   /**
