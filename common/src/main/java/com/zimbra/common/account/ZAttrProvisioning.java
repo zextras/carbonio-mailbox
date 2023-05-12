@@ -3456,31 +3456,6 @@ public class ZAttrProvisioning {
     }
   }
 
-  public static enum PrefFileSharingApplication {
-    briefcase("briefcase");
-    private String mValue;
-
-    private PrefFileSharingApplication(String value) {
-      mValue = value;
-    }
-
-    public String toString() {
-      return mValue;
-    }
-
-    public static PrefFileSharingApplication fromString(String s) throws ServiceException {
-      for (PrefFileSharingApplication value : values()) {
-        if (value.mValue.equals(s)) return value;
-      }
-      throw ServiceException.INVALID_REQUEST(
-          "invalid value: " + s + ", valid values: " + Arrays.asList(values()), null);
-    }
-
-    public boolean isBriefcase() {
-      return this == briefcase;
-    }
-  }
-
   public static enum PrefForwardIncludeOriginalText {
     includeAsAttachment("includeAsAttachment"),
     includeBody("includeBody"),
@@ -14864,15 +14839,6 @@ public class ZAttrProvisioning {
    */
   @ZAttr(id = 1320)
   public static final String A_zimbraPrefExternalSendersType = "zimbraPrefExternalSendersType";
-
-  /**
-   * indicates which application to use for file sharing
-   *
-   * @since ZCS 8.0.0
-   */
-  @ZAttr(id = 1197)
-  public static final String A_zimbraPrefFileSharingApplication =
-      "zimbraPrefFileSharingApplication";
 
   /**
    * whether folder color is enabled

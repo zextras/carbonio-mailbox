@@ -5682,11 +5682,6 @@ TODO: delete them permanently from here
   <desc>whether to show declined meetings in calendar</desc>
 </attr>
 
-<attr id="1197" name="zimbraPrefFileSharingApplication" type="enum" value="briefcase" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="8.0.0">
-  <defaultCOSValue>briefcase</defaultCOSValue>
-  <desc>indicates which application to use for file sharing</desc>
-</attr>
-
 <attr id="1198" name="zimbraPrefMessageIdDedupingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0">
   <defaultCOSValue>TRUE</defaultCOSValue>
   <desc>

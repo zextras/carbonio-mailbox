@@ -288,7 +288,6 @@ public class Mailbox implements MailboxStore {
   public static final int ID_FOLDER_AUTO_CONTACTS = FolderConstants.ID_FOLDER_AUTO_CONTACTS; // 13;
   public static final int ID_FOLDER_IM_LOGS = FolderConstants.ID_FOLDER_IM_LOGS; // 14;
   public static final int ID_FOLDER_TASKS = FolderConstants.ID_FOLDER_TASKS; // 15;
-  public static final int ID_FOLDER_BRIEFCASE = FolderConstants.ID_FOLDER_BRIEFCASE; // 16;
   public static final int ID_FOLDER_COMMENTS = FolderConstants.ID_FOLDER_COMMENTS; // 17;
   // ID_FOLDER_PROFILE Was used for folder related to ProfileServlet which was used in pre-release
   // Iron Maiden only.
@@ -2446,19 +2445,6 @@ public class Mailbox implements MailboxStore {
           "Chats",
           system,
           MailItem.Type.MESSAGE,
-          0,
-          MailItem.DEFAULT_COLOR_RGB,
-          null,
-          null,
-          null);
-      Folder.create(
-          ID_FOLDER_BRIEFCASE,
-          UUIDUtil.generateUUID(),
-          this,
-          userRoot,
-          "Briefcase",
-          system,
-          MailItem.Type.DOCUMENT,
           0,
           MailItem.DEFAULT_COLOR_RGB,
           null,

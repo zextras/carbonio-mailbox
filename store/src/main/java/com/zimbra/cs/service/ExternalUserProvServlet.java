@@ -598,14 +598,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
 
   private static int getMptParentFolderId(MailItem.Type viewType, Provisioning prov)
       throws ServiceException {
-    switch (viewType) {
-      case DOCUMENT:
-        if (prov.isOctopus()) {
-          return Mailbox.ID_FOLDER_BRIEFCASE;
-        }
-      default:
-        return Mailbox.ID_FOLDER_USER_ROOT;
-    }
+    return Mailbox.ID_FOLDER_USER_ROOT;
   }
 
   private static void enableAppFeatures(Account grantee, Set<MailItem.Type> viewTypes)
