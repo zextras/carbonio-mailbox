@@ -20,41 +20,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
 
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 public class ModifyDomainIT {
-  public static final String DELEGATED = "delegated";
-  public static final String WITH_RIGHT = "_with_right";
-  public static final String GLOBAL = "global";
-  public static final String DOMAIN_NAME = "demo.zextras.io";
-  private final String virtual1 = "virtual1" + DOMAIN_NAME;
-  private final String virtual2 = "virtual2" + DOMAIN_NAME;
 
-  private Provisioning provisioning;
-  private Domain domain;
+  private static Provisioning provisioning;
 
-
-  @Before
-  public void setUp() throws Exception {
+  @BeforeClass
+  public static void setUp() throws Exception {
     MailboxTestUtil.initServer();
     provisioning = Provisioning.getInstance();
-    domain = provisioning.createDomain(
-        DOMAIN_NAME,
-            new HashMap<>() {
-              {
-                put(ZAttrProvisioning.A_zimbraDomainName, DOMAIN_NAME);
-                put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {virtual1, virtual2});
-              }
-            });
   }
 
-  @After
-  public void clearData() {
+  @AfterClass
+  public static void clearData() {
     try {
       MailboxTestUtil.clearData();
     } catch (Exception e) {
@@ -64,14 +48,24 @@ public class ModifyDomainIT {
 
   @Rule public ExpectedException expectedEx = ExpectedException.none();
 
-
-  private Account createAdminAccount(String attribute, String name) throws ServiceException {
+  private Account createDelegatedAdminAccount(Domain domain, Boolean hasRight) throws ServiceException {
     return provisioning.createAccount(
-        name + "@" + DOMAIN_NAME,
+        "delegated.admin." + hasRight + "@"+ domain.getDomainName(),
         "testPwd",
         new HashMap<>() {
           {
-            put(attribute, "TRUE");
+            put(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE");
+          }
+        });
+  }
+
+  private Account createGlobalAdminAccount(Domain domain) throws ServiceException {
+    return provisioning.createAccount(
+        "global.admin@" + domain.getDomainName(),
+        "testPwd",
+        new HashMap<>() {
+          {
+            put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
           }
         });
   }
@@ -94,13 +88,21 @@ public class ModifyDomainIT {
   @Test
   public void shouldThrowExceptionForDelegatedAdminIfPublicServiceHostnameNotCompliantWithDomain()
       throws ServiceException {
+    final String domainName = "demo.zextras.io";
     final String newPubServiceHostname = "newdemo.zextras.io";
     expectedEx.expect(ServiceException.class);
     expectedEx.expectMessage(
         "Public service hostname must be a valid FQDN and compatible with current domain (or its"
             + " aliases).");
-    final Account adminAccount = createAdminAccount(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
-        DELEGATED);
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createDelegatedAdminAccount(domain, false);
     final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
     ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
     final HashMap<String, Object> attrsToUpdate =
@@ -116,9 +118,17 @@ public class ModifyDomainIT {
   @Test
   public void shouldAllowDelegatedAdminWithRightChangePublicServiceHostnameNotCompliantWithDomain()
       throws ServiceException {
-    final String newPubServiceHostname = "newdemo.zextras.io";
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, DELEGATED + WITH_RIGHT);
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final String newPubServiceHostname = "virtual." + UUID.randomUUID();
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createDelegatedAdminAccount(domain, true);
     final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
     ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
     final HashMap<String, Object> attrsToUpdate =
@@ -130,15 +140,23 @@ public class ModifyDomainIT {
     modifyDomainRequest.setAttrs(attrsToUpdate);
     new MockedModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
     assertEquals(
-        newPubServiceHostname, provisioning.getDomainByName(DOMAIN_NAME).getPublicServiceHostname());
+        newPubServiceHostname, provisioning.getDomainByName(domainName).getPublicServiceHostname());
   }
 
   @Test
   public void shouldAllowGlobalAdminChangePublicServiceHostnameIfNotCompliantWithDomain()
       throws ServiceException {
-    final String newPubServiceHostname = "newdemo.zextras.io";
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsAdminAccount, GLOBAL);
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final String newPubServiceHostname = "virtual." + UUID.randomUUID();
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createGlobalAdminAccount(domain);
     final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
     ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
     final HashMap<String, Object> attrsToUpdate =
@@ -150,14 +168,22 @@ public class ModifyDomainIT {
     modifyDomainRequest.setAttrs(attrsToUpdate);
     new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
     assertEquals(
-        newPubServiceHostname, provisioning.getDomainByName(DOMAIN_NAME).getPublicServiceHostname());
+        newPubServiceHostname, provisioning.getDomainByName(domainName).getPublicServiceHostname());
   }
 
   @Test
   public void shouldUpdatePublicServiceHostnameIfCompliantWithDomain() throws ServiceException {
-    final String newPubServiceHostname = "this.domain.is.legit.demo.zextras.io";
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, DELEGATED);
+    final String domainName = "demo2.zextras.io";
+    final String newPubServiceHostname = "this.domain.is.legit.demo2.zextras.io";
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createDelegatedAdminAccount(domain, false);
     final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
     ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
     final HashMap<String, Object> attrsToUpdate =
@@ -169,68 +195,7 @@ public class ModifyDomainIT {
     modifyDomainRequest.setAttrs(attrsToUpdate);
     new MockedModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
     assertEquals(
-        newPubServiceHostname, provisioning.getDomainByName(DOMAIN_NAME).getPublicServiceHostname());
-  }
-
-  @Test
-  public void shouldThrowExceptionForDelegatedAdminIfVirtualHostnameNotCompliantWithDomain()
-      throws ServiceException {
-    final String virtualHostname = "virtual.whatever.not.compliant";
-    expectedEx.expect(ServiceException.class);
-    expectedEx.expectMessage(
-        "Virtual hostnames must be valid FQDNs and compatible with current domain (or its"
-            + " aliases).");
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, DELEGATED);
-    final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
-    ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
-    final HashMap<String, Object> attrsToUpdate =
-        new HashMap<>() {
-          {
-            put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {virtualHostname});
-          }
-        };
-    modifyDomainRequest.setAttrs(attrsToUpdate);
-    new MockedModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
-    assertEquals(0, provisioning.getDomainByName(DOMAIN_NAME).getVirtualHostname().length);
-  }
-
-  @Test
-  public void shouldAllowDelegatedAdminWithRightChangeVirtualHostnameIfNotCompliantWithDomain()
-      throws ServiceException {
-    final String virtualHostname = "virtual.whatever.not.compliant";
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, DELEGATED + WITH_RIGHT);
-    final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
-    ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
-    final HashMap<String, Object> attrsToUpdate =
-        new HashMap<>() {
-          {
-            put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {virtualHostname});
-          }
-        };
-    modifyDomainRequest.setAttrs(attrsToUpdate);
-    new MockedModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
-    assertEquals(virtualHostname, provisioning.getDomainByName(DOMAIN_NAME).getVirtualHostname()[0]);
-  }
-
-  @Test
-  public void shouldAllowGlobalAdminChangeVirtualHostnameIfNotCompliantWithDomain()
-      throws ServiceException {
-    final String virtualHostname = "virtual.whatever.not.compliant";
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsAdminAccount, GLOBAL);
-    final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
-    ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
-    final HashMap<String, Object> attrsToUpdate =
-        new HashMap<>() {
-          {
-            put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {virtualHostname});
-          }
-        };
-    modifyDomainRequest.setAttrs(attrsToUpdate);
-    new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
-    assertEquals(virtualHostname, provisioning.getDomainByName(DOMAIN_NAME).getVirtualHostname()[0]);
+        newPubServiceHostname, provisioning.getDomainByName(domainName).getPublicServiceHostname());
   }
 
   /**
@@ -238,9 +203,17 @@ public class ModifyDomainIT {
    */
   @Test
   public void shouldAddVirtualHostnameIfCompliantWithDomain() throws ServiceException {
-    final String virtualHostname = "new.virtual." + DOMAIN_NAME;
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsAdminAccount, GLOBAL);
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final String virtualHostname = "virtual." + domainName;
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createGlobalAdminAccount(domain);
     final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
     ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
     final HashMap<String, Object> attrsToUpdate =
@@ -252,7 +225,7 @@ public class ModifyDomainIT {
     modifyDomainRequest.setAttrs(attrsToUpdate);
     new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
     assertTrue(
-        Arrays.stream(provisioning.getDomainByName(DOMAIN_NAME).getVirtualHostname())
+        Arrays.stream(provisioning.getDomainByName(domainName).getVirtualHostname())
             .collect(Collectors.toList())
             .contains(virtualHostname));
   }
@@ -262,10 +235,18 @@ public class ModifyDomainIT {
    */
   @Test
   public void shouldAddMultipleVirtualHostnamesIfCompliantWithDomain() throws ServiceException {
-    final String virtualHostname = "virtual." + UUID.randomUUID() + DOMAIN_NAME;
-    final String virtualHostname2 = "virtual2." + UUID.randomUUID() + DOMAIN_NAME;
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsAdminAccount, GLOBAL);
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final String virtualHostname = "virtual." + domainName;
+    final String virtualHostname2 = "virtual2." + domainName;
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createGlobalAdminAccount(domain);
     final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
     ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
     final String[] vHostnames = {virtualHostname, virtualHostname2};
@@ -277,47 +258,152 @@ public class ModifyDomainIT {
         };
     modifyDomainRequest.setAttrs(attrsToUpdate);
     new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
-    assertEquals(2, provisioning.getDomainByName(DOMAIN_NAME).getVirtualHostname().length);
+    assertEquals(2, provisioning.getDomainByName(domainName).getVirtualHostname().length);
     assertTrue(
-        Arrays.stream(provisioning.getDomainByName(DOMAIN_NAME).getVirtualHostname())
+        Arrays.stream(provisioning.getDomainByName(domainName).getVirtualHostname())
             .collect(Collectors.toList())
             .containsAll(Arrays.stream(vHostnames).collect(Collectors.toList())));
   }
 
   @Test
-  public void shouldAddMultipleVirtualHostnamesAndPublicServiceHostnameIfFQDNSEqualToDomain()
+  public void shouldAddMultipleVirtualHostnamesAndPublicServiceHostnameIfFQDNSEqualToDoamin()
       throws ServiceException {
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsAdminAccount, GLOBAL);
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createGlobalAdminAccount(domain);
     final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
     ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
-    final String[] vHostnames = {DOMAIN_NAME};
+    final String[] vHostnames = {domainName};
     final HashMap<String, Object> attrsToUpdate =
         new HashMap<>() {
           {
-            put(ZAttrProvisioning.A_zimbraPublicServiceHostname, DOMAIN_NAME);
+            put(ZAttrProvisioning.A_zimbraPublicServiceHostname, domainName);
             put(ZAttrProvisioning.A_zimbraVirtualHostname, vHostnames);
           }
         };
     modifyDomainRequest.setAttrs(attrsToUpdate);
     new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
-    assertEquals(1, provisioning.getDomainByName(DOMAIN_NAME).getVirtualHostname().length);
-    assertEquals(DOMAIN_NAME, provisioning.getDomainByName(DOMAIN_NAME).getPublicServiceHostname());
+    assertEquals(1, provisioning.getDomainByName(domainName).getVirtualHostname().length);
+    assertEquals(domainName, provisioning.getDomainByName(domainName).getPublicServiceHostname());
     assertTrue(
-        Arrays.stream(provisioning.getDomainByName(DOMAIN_NAME).getVirtualHostname())
+        Arrays.stream(provisioning.getDomainByName(domainName).getVirtualHostname())
             .collect(Collectors.toList())
             .containsAll(Arrays.stream(vHostnames).collect(Collectors.toList())));
   }
 
+  @Test
+  public void shouldThrowExceptionForDelegatedAdminIfVirtualHostnameNotCompliantWithDomain()
+      throws ServiceException {
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final String virtualHostname = "virtual.whatever.not.compliant";
+    expectedEx.expect(ServiceException.class);
+    expectedEx.expectMessage(
+        "Virtual hostnames must be valid FQDNs and compatible with current domain (or its"
+            + " aliases).");
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createDelegatedAdminAccount(domain, false);
+    final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
+    ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
+    final HashMap<String, Object> attrsToUpdate =
+        new HashMap<>() {
+          {
+            put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {virtualHostname});
+          }
+        };
+    modifyDomainRequest.setAttrs(attrsToUpdate);
+    new MockedModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
+    assertEquals(0, provisioning.getDomainByName(domainName).getVirtualHostname().length);
+  }
 
+  @Test
+  public void shouldAllowDelegatedAdminWithRightChangeVirtualHostnameNotCompliantWithDomain()
+      throws ServiceException {
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final String virtualHostname = "virtual.whatever.not.compliant";
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createDelegatedAdminAccount(domain, true);
+    final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
+    ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
+    final HashMap<String, Object> attrsToUpdate =
+        new HashMap<>() {
+          {
+            put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {virtualHostname});
+          }
+        };
+    modifyDomainRequest.setAttrs(attrsToUpdate);
+    new MockedModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
+    assertTrue(
+        Arrays.stream(provisioning.getDomainByName(domainName).getVirtualHostname())
+            .collect(Collectors.toList())
+            .contains(virtualHostname));
+  }
+
+  @Test
+  public void shouldAllowGlobalAdminChangeVirtualHostnameNotCompliantWithDomain()
+      throws ServiceException {
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final String virtualHostname = "virtual.whatever.not.compliant";
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createGlobalAdminAccount(domain);
+    final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
+    ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
+    final HashMap<String, Object> attrsToUpdate =
+        new HashMap<>() {
+          {
+            put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {virtualHostname});
+          }
+        };
+    modifyDomainRequest.setAttrs(attrsToUpdate);
+    new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
+    assertTrue(
+        Arrays.stream(provisioning.getDomainByName(domainName).getVirtualHostname())
+            .collect(Collectors.toList())
+            .contains(virtualHostname));
+  }
 
   @Test
   public void shouldThrowDomainNameImmutableWhenModifyingDomainName() throws ServiceException {
     expectedEx.expect(ServiceException.class);
     expectedEx.expectMessage(ZAttrProvisioning.A_zimbraDomainName + " cannot be changed.");
+    final String domainName = "demo4.zextras.io";
     final String newDomainName = "newDemo4.zextras.io";
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsAdminAccount, GLOBAL);
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+              }
+            });
+    final Account adminAccount = createGlobalAdminAccount(domain);
     final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
     ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
     final HashMap<String, Object> attrsToUpdate =
@@ -335,8 +421,19 @@ public class ModifyDomainIT {
    */
   @Test
   public void shouldRemoveVirtualHostnamesWhenVirtualHostnamesEmptyArray() throws ServiceException {
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsAdminAccount, GLOBAL);
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final String virtual1 = "virtual1" + domainName;
+    final String virtual2 = "virtual2" + domainName;
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+                put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {virtual1, virtual2});
+              }
+            });
+    final Account adminAccount = createGlobalAdminAccount(domain);
     final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
     ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
     final HashMap<String, Object> attrsToUpdate =
@@ -348,7 +445,7 @@ public class ModifyDomainIT {
     modifyDomainRequest.setAttrs(attrsToUpdate);
     new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
     assertEquals(
-        0, Arrays.stream(provisioning.getDomainByName(DOMAIN_NAME).getVirtualHostname()).count());
+        0, Arrays.stream(provisioning.getDomainByName(domainName).getVirtualHostname()).count());
   }
 
   /**
@@ -357,8 +454,19 @@ public class ModifyDomainIT {
   @Test
   public void shouldNotRemoveVirtualHostnamesWhenVirtualHostnamesNotPassed()
       throws ServiceException {
-    final Account adminAccount = createAdminAccount(
-        ZAttrProvisioning.A_zimbraIsAdminAccount, GLOBAL);
+    final String domainName = UUID.randomUUID() + ".zextras.io";
+    final String virtual1 = "virtual1" + domainName;
+    final String virtual2 = "virtual2" + domainName;
+    final Domain domain =
+        provisioning.createDomain(
+            domainName,
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraDomainName, domainName);
+                put(ZAttrProvisioning.A_zimbraVirtualHostname, new String[] {virtual1, virtual2});
+              }
+            });
+    final Account adminAccount = createGlobalAdminAccount(domain);
     final Map<String, Object> ctx = getSoapContextFromAccount(adminAccount);
     ModifyDomainRequest modifyDomainRequest = new ModifyDomainRequest(domain.getId());
     final HashMap<String, Object> attrsToUpdate =
@@ -366,7 +474,7 @@ public class ModifyDomainIT {
     modifyDomainRequest.setAttrs(attrsToUpdate);
     new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
     assertEquals(
-        2, Arrays.stream(provisioning.getDomainByName(DOMAIN_NAME).getVirtualHostname()).count());
+        2, Arrays.stream(provisioning.getDomainByName(domainName).getVirtualHostname()).count());
   }
 
   //skip checking delegated admin rights
@@ -379,8 +487,8 @@ public class ModifyDomainIT {
 
     @Override
     protected boolean hasRight(AdminAccessControl adminAccessControl, Config config) {
-      return adminAccessControl.mAuthedAcct.getName()
-          .equals(DELEGATED + WITH_RIGHT + "@" + DOMAIN_NAME);
+      return adminAccessControl.mAuthedAcct.getName().contains("delegated.admin.true");
     }
   }
 }
+
