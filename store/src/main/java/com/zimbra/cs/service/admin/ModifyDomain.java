@@ -68,7 +68,7 @@ public class ModifyDomain extends AdminDocumentHandler {
           Provisioning.A_zimbraDomainName + " cannot be changed.", null);
     }
 
-    if (!hasRight(adminAccessControl, prov.getConfig())) {
+    if (!hasAdminRightAndCanModifyConfig(adminAccessControl, prov.getConfig())) {
       if (!Objects.isNull(gotPublicServiceHostname)
           && !(isPublicServiceHostnameCompliant(domain, gotPublicServiceHostname))) {
         throw ServiceException.FAILURE(
@@ -112,7 +112,7 @@ public class ModifyDomain extends AdminDocumentHandler {
    * @author Yuliya Aheeva
    * @since 23.6.0
    */
-  protected boolean hasRight(AdminAccessControl adminAccessControl, Config config)
+  protected boolean hasAdminRightAndCanModifyConfig(AdminAccessControl adminAccessControl, Config config)
       throws ServiceException {
     return adminAccessControl.isGlobalAdmin()
         || adminAccessControl.hasRight(config, Admin.R_modifyGlobalConfig);

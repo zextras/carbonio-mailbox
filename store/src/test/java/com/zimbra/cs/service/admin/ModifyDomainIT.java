@@ -486,7 +486,7 @@ public class ModifyDomainIT {
     }
 
     @Override
-    protected boolean hasRight(AdminAccessControl adminAccessControl, Config config) {
+    protected boolean hasAdminRightAndCanModifyConfig(AdminAccessControl adminAccessControl, Config config) {
       return adminAccessControl.mAuthedAcct.getName().contains("delegated.admin.true");
     }
   }
