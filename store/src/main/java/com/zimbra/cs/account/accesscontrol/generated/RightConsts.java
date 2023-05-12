@@ -692,11 +692,6 @@ public class RightConsts {
     public static final String RT_configureQuota = "configureQuota";
 
     /**
-     * configure attributes for wiki account
-     */
-    public static final String RT_configureWikiAccount = "configureWikiAccount";
-
-    /**
      * count accounts in a domain
      */
     public static final String RT_countAccount = "countAccount";

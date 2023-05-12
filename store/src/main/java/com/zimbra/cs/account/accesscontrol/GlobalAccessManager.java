@@ -54,9 +54,6 @@ public class GlobalAccessManager extends AccessManager implements AdminConsoleCa
         if (isGlobalAdmin(at, asAdmin))
             return true;
 
-        if (isParentOf(at, target))
-            return true;
-
         return canDo(at, target, User.R_loginAs, asAdmin);
     }
 
@@ -76,10 +73,6 @@ public class GlobalAccessManager extends AccessManager implements AdminConsoleCa
 
         // admin auth account will always succeed
         if (AccessControlUtil.isGlobalAdmin(credentials, asAdmin))
-            return true;
-
-        // parent auth account will always succeed
-        if (isParentOf(credentials, target))
             return true;
 
         return canDo(credentials, target, User.R_loginAs, asAdmin);
@@ -192,10 +185,6 @@ public class GlobalAccessManager extends AccessManager implements AdminConsoleCa
 
         // check for family mailbox
         Account targetAcct = Provisioning.getInstance().get(Key.AccountBy.name, email, at);
-        if (targetAcct != null) {
-            if (isParentOf(at, targetAcct))
-                return true;
-        }
         return canAccessDomain(at, parts[1]);
     }
 

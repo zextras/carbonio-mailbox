@@ -450,13 +450,6 @@
   <desc>check exchange auth config</desc>
 </right>
 
-<right name="configureWikiAccount" type="setAttrs" targetType="domain,config">
-  <desc>configure attributes for wiki account</desc>
-   <attrs>
-    <a n="zimbraNotebookAccount"/>
-  </attrs>
-</right>
-
 
 <right name="configureExternalGAL" type="setAttrs" targetType="domain">
   <desc>configure attributes for external GAL</desc>

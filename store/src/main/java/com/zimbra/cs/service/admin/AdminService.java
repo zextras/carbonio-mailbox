@@ -12,10 +12,7 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @zm-service-description The Admin Service includes commands for server, account and mailbox
@@ -322,9 +319,6 @@ public class AdminService implements DocumentService {
 
     // local config
     dispatcher.registerHandler(AdminConstants.RELOAD_LOCAL_CONFIG_REQUEST, new ReloadLocalConfig());
-
-    // wiki migration
-    dispatcher.registerHandler(AdminConstants.MIGRATE_ACCOUNT_REQUEST, new MigrateAccount());
 
     // noop
     dispatcher.registerHandler(AdminConstants.NO_OP_REQUEST, new NoOp());

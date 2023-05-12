@@ -571,22 +571,6 @@ public class ZAttrProvisioning {
         public boolean isLdap() { return this == ldap;}
     }
 
-    public static enum IMService {
-        zimbra("zimbra"),
-        yahoo("yahoo");
-        private String mValue;
-        private IMService(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static IMService fromString(String s) throws ServiceException {
-            for (IMService value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isZimbra() { return this == zimbra;}
-        public boolean isYahoo() { return this == yahoo;}
-    }
-
     public static enum IPMode {
         ipv4("ipv4"),
         ipv6("ipv6"),
@@ -1637,22 +1621,6 @@ public class ZAttrProvisioning {
         public boolean isHtml() { return this == html;}
     }
 
-    public static enum PrefContactsInitialView {
-        cards("cards"),
-        list("list");
-        private String mValue;
-        private PrefContactsInitialView(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static PrefContactsInitialView fromString(String s) throws ServiceException {
-            for (PrefContactsInitialView value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isCards() { return this == cards;}
-        public boolean isList() { return this == list;}
-    }
-
     public static enum PrefConversationOrder {
         dateDesc("dateDesc"),
         dateAsc("dateAsc");
@@ -1847,26 +1815,6 @@ public class ZAttrProvisioning {
         }
         public boolean isConversation() { return this == conversation;}
         public boolean isMessage() { return this == message;}
-    }
-
-    public static enum PrefIMIdleStatus {
-        away("away"),
-        xa("xa"),
-        invisible("invisible"),
-        offline("offline");
-        private String mValue;
-        private PrefIMIdleStatus(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static PrefIMIdleStatus fromString(String s) throws ServiceException {
-            for (PrefIMIdleStatus value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isAway() { return this == away;}
-        public boolean isXa() { return this == xa;}
-        public boolean isInvisible() { return this == invisible;}
-        public boolean isOffline() { return this == offline;}
     }
 
     public static enum PrefMailSelectAfterDelete {
@@ -2249,22 +2197,6 @@ public class ZAttrProvisioning {
         public boolean isCLEARTEXT() { return this == CLEARTEXT;}
         public boolean isSSL() { return this == SSL;}
         public boolean isSTARTTLS() { return this == STARTTLS;}
-    }
-
-    public static enum TableMaintenanceOperation {
-        ANALYZE("ANALYZE"),
-        OPTIMIZE("OPTIMIZE");
-        private String mValue;
-        private TableMaintenanceOperation(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static TableMaintenanceOperation fromString(String s) throws ServiceException {
-            for (TableMaintenanceOperation value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isANALYZE() { return this == ANALYZE;}
-        public boolean isOPTIMIZE() { return this == OPTIMIZE;}
     }
 
     public static enum TwoFactorAuthHashAlgorithm {
@@ -3145,13 +3077,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraAccountCalendarUserType = "zimbraAccountCalendarUserType";
 
     /**
-     * Deprecated since: 5.0. deprecated in favor of the accountInfo flag.
-     * Orig desc: additional account attrs that get returned to a client
-     */
-    @ZAttr(id=112)
-    public static final String A_zimbraAccountClientAttr = "zimbraAccountClientAttr";
-
-    /**
      * Object classes to add when creating a zimbra account object. Useful if
      * you want to add sambaSamAccount etc to zimbra accounts.
      */
@@ -3384,17 +3309,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraAdminSavedSearches = "zimbraAdminSavedSearches";
 
     /**
-     * Deprecated since: 8.7.8. Variable feature is always enabled, hence
-     * this attribute has been deprecated. Orig desc: Whether to enable the
-     * Sieve &quot;Variables&quot; extension defined in RFC 5229 in the
-     * admin-defined sieve rules.
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2098)
-    public static final String A_zimbraAdminSieveFeatureVariablesEnabled = "zimbraAdminSieveFeatureVariablesEnabled";
-
-    /**
      * sieve script defined by admin (not able to edit and view from the end
      * user) applied after the end user filter rule
      *
@@ -3455,16 +3369,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1052)
     public static final String A_zimbraAllowNonLDHCharsInDomain = "zimbraAllowNonLDHCharsInDomain";
-
-    /**
-     * Deprecated since: 22.9.0. dropping always on cluster feature in whole.
-     * Orig desc: AlwaysOn cluster-id to which this server belongs to. If
-     * empty, it&#039;s not part of AlwaysOn and is a stand-alone server.
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1446)
-    public static final String A_zimbraAlwaysOnClusterId = "zimbraAlwaysOnClusterId";
 
     /**
      * domain mandatory mail html signature
@@ -4372,18 +4276,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraCalendarCalDavSyncStart = "zimbraCalendarCalDavSyncStart";
 
     /**
-     * Deprecated since: 8.0.0. Deprecated per bug 69886.. Orig desc: When
-     * set to TRUE, Calendar folders and Todo folders in Zimbra will be
-     * advertised as Calendar only and Todo only via CalDAV. When set to
-     * FALSE, Calendar folders will be able to store both appointments and
-     * tasks, and Todo folders will not be advertised as CalDAV enabled.
-     *
-     * @since ZCS 5.0.12
-     */
-    @ZAttr(id=794)
-    public static final String A_zimbraCalendarCalDavUseDistinctAppointmentAndToDoCollection = "zimbraCalendarCalDavUseDistinctAppointmentAndToDoCollection";
-
-    /**
      * compatibility mode for calendar server
      */
     @ZAttr(id=243)
@@ -4878,21 +4770,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraChatXmppSslPortEnabled = "zimbraChatXmppSslPortEnabled";
 
     /**
-     * Deprecated since: 8.5.0. family mailbox feature is deprecated. Orig
-     * desc: zimbraId of child accounts
-     */
-    @ZAttr(id=449)
-    public static final String A_zimbraChildAccount = "zimbraChildAccount";
-
-    /**
-     * Deprecated since: 5.0.0. deprecated in favor of user-settable
-     * attribute zimbraPrefChildVisibleAccount . Orig desc: zimbraId of
-     * visible child accounts
-     */
-    @ZAttr(id=450)
-    public static final String A_zimbraChildVisibleAccount = "zimbraChildVisibleAccount";
-
-    /**
      * IP Address/hostname for ClamAV to bind to for attachment scanning.
      * Default is localhost
      *
@@ -5019,19 +4896,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraConstraint = "zimbraConstraint";
 
     /**
-     * Deprecated since: 6.0.7. deprecated in favor of
-     * zimbraContactEmailFields, for bug 45475. Orig desc: Comma separates
-     * list of attributes in contact object to search for email addresses
-     * when generating auto-complete contact list. The same set of fields are
-     * used for GAL contacts as well because LDAP attributes for GAL objects
-     * are mapped to Contact compatible attributes via zimbraGalLdapAttrMap.
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=760)
-    public static final String A_zimbraContactAutoCompleteEmailFields = "zimbraContactAutoCompleteEmailFields";
-
-    /**
      * maximum number of contact entries to return from an auto complete
      *
      * @since ZCS 6.0.0_BETA1
@@ -5065,20 +4929,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=107)
     public static final String A_zimbraContactMaxNumEntries = "zimbraContactMaxNumEntries";
-
-    /**
-     * Deprecated since: 6.0.6. Deprecated per bug 40081. Orig desc: How
-     * often do we refresh contact ranking table from address book and GAL to
-     * get friendly name for the email address. Use 0 to disable the
-     * refresh.. Must be in valid duration format: {digits}{time-unit}.
-     * digits: 0-9, time-unit: [hmsd]|ms. h - hours, m - minutes, s -
-     * seconds, d - days, ms - milliseconds. If time unit is not specified,
-     * the default is s(seconds).
-     *
-     * @since ZCS 6.0.0_BETA2
-     */
-    @ZAttr(id=1023)
-    public static final String A_zimbraContactRankingTableRefreshInterval = "zimbraContactRankingTableRefreshInterval";
 
     /**
      * Size of the contact ranking table. Ranking table is used to keep track
@@ -5147,13 +4997,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=14)
     public static final String A_zimbraCOSId = "zimbraCOSId";
-
-    /**
-     * Deprecated since: 5.0. deprecated in favor of the accountInherited
-     * flag. Orig desc: zimbraCOS attrs that get inherited in a zimbraAccount
-     */
-    @ZAttr(id=21)
-    public static final String A_zimbraCOSInheritedAttr = "zimbraCOSInheritedAttr";
 
     /**
      * time object was created
@@ -5878,14 +5721,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDomainAdminMaxMailQuota = "zimbraDomainAdminMaxMailQuota";
 
     /**
-     * Deprecated since: 5.0. deprecated in favor of the
-     * domainAdminAdminModifiable flag. Orig desc: account attributes that a
-     * domain administrator is allowed to modify
-     */
-    @ZAttr(id=300)
-    public static final String A_zimbraDomainAdminModifiableAttr = "zimbraDomainAdminModifiableAttr";
-
-    /**
      * maximum aggregate quota for the domain in bytes
      *
      * @since ZCS 8.0.0
@@ -5988,40 +5823,12 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDomainId = "zimbraDomainId";
 
     /**
-     * Deprecated since: 5.0. deprecated in favor of the domainInherited
-     * flag. Orig desc: zimbraDomain attrs that get inherited from global
-     * config
-     */
-    @ZAttr(id=63)
-    public static final String A_zimbraDomainInheritedAttr = "zimbraDomainInheritedAttr";
-
-    /**
      * enable domain mandatory mail signature
      *
      * @since ZCS 6.0.4
      */
     @ZAttr(id=1069)
     public static final String A_zimbraDomainMandatoryMailSignatureEnabled = "zimbraDomainMandatoryMailSignatureEnabled";
-
-    /**
-     * Deprecated since: 8.5.0. deprecated in favor of
-     * zimbraAmavisDomainDisclaimerHTML. Orig desc: domain mandatory mail
-     * html signature
-     *
-     * @since ZCS 6.0.4
-     */
-    @ZAttr(id=1071)
-    public static final String A_zimbraDomainMandatoryMailSignatureHTML = "zimbraDomainMandatoryMailSignatureHTML";
-
-    /**
-     * Deprecated since: 8.5.0. deprecated in favor of
-     * zimbraAmavisDomainDisclaimerText. Orig desc: domain mandatory mail
-     * plain text signature
-     *
-     * @since ZCS 6.0.4
-     */
-    @ZAttr(id=1070)
-    public static final String A_zimbraDomainMandatoryMailSignatureText = "zimbraDomainMandatoryMailSignatureText";
 
     /**
      * maximum number of accounts allowed in a domain
@@ -6426,13 +6233,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureAdminPreferencesEnabled = "zimbraFeatureAdminPreferencesEnabled";
 
     /**
-     * Deprecated since: 8.0.0. Deprecated as of bug 56924. Orig desc:
-     * advanced search button enabled
-     */
-    @ZAttr(id=138)
-    public static final String A_zimbraFeatureAdvancedSearchEnabled = "zimbraFeatureAdvancedSearchEnabled";
-
-    /**
      * whether or not to enable rerouting spam messages to Junk folder in
      * ZCS, exposing Junk folder and actions in the web UI, and exposing Junk
      * folder to IMAP clients.
@@ -6551,19 +6351,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=2131)
     public static final String A_zimbraFeatureContactBackupEnabled = "zimbraFeatureContactBackupEnabled";
-
-    /**
-     * Deprecated since: 8.8.6. No longer used by ContactBackupRequest SOAP
-     * handler. Orig desc: Sleep time between subsequent contact backups. 0
-     * means that contact backup is disabled. . Must be in valid duration
-     * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
-     * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
-     * unit is not specified, the default is s(seconds).
-     *
-     * @since ZCS 8.8.5
-     */
-    @ZAttr(id=2124)
-    public static final String A_zimbraFeatureContactBackupFrequency = "zimbraFeatureContactBackupFrequency";
 
     /**
      * Duration for which the backups should be preserved. . Must be in valid
@@ -6755,24 +6542,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureImapDataSourceEnabled = "zimbraFeatureImapDataSourceEnabled";
 
     /**
-     * Deprecated since: 8.7.0. deprecated in favor of
-     * zimbraFeatureChatEnabled. Orig desc: IM features
-     */
-    @ZAttr(id=305)
-    public static final String A_zimbraFeatureIMEnabled = "zimbraFeatureIMEnabled";
-
-    /**
-     * Deprecated since: 7.1.0. deprecated in favor of
-     * zimbraFeatureImportFolderEnabled and zimbraFeatureExportFolderEnabled
-     * for bug 53745. Orig desc: whether import export folder feature is
-     * enabled
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=750)
-    public static final String A_zimbraFeatureImportExportFolderEnabled = "zimbraFeatureImportExportFolderEnabled";
-
-    /**
      * whether import folder feature is enabled
      *
      * @since ZCS 7.1.0
@@ -6811,13 +6580,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=704)
     public static final String A_zimbraFeatureMailForwardingInFiltersEnabled = "zimbraFeatureMailForwardingInFiltersEnabled";
-
-    /**
-     * Deprecated since: 5.0. done via skin template overrides. Orig desc:
-     * whether user is allowed to set mail polling interval
-     */
-    @ZAttr(id=441)
-    public static final String A_zimbraFeatureMailPollingIntervalPreferenceEnabled = "zimbraFeatureMailPollingIntervalPreferenceEnabled";
 
     /**
      * mail priority feature
@@ -6938,14 +6700,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureNewMailNotificationEnabled = "zimbraFeatureNewMailNotificationEnabled";
 
     /**
-     * Deprecated since: 7.0.0. Deprecated per bugs 50465, 56201. Orig desc:
-     * Whether notebook feature should be allowed for this account or in this
-     * cos
-     */
-    @ZAttr(id=356)
-    public static final String A_zimbraFeatureNotebookEnabled = "zimbraFeatureNotebookEnabled";
-
-    /**
      * whether or not open a new msg/conv in a new windows is allowed
      *
      * @since ZCS 5.0.1
@@ -6965,15 +6719,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=366)
     public static final String A_zimbraFeatureOutOfOfficeReplyEnabled = "zimbraFeatureOutOfOfficeReplyEnabled";
-
-    /**
-     * Deprecated since: 8.0.0. Deprecated per bug 56924. Orig desc: whether
-     * people search feature is enabled
-     *
-     * @since ZCS 7.0.0
-     */
-    @ZAttr(id=1109)
-    public static final String A_zimbraFeaturePeopleSearchEnabled = "zimbraFeaturePeopleSearchEnabled";
 
     /**
      * whether user is allowed to retrieve mail from an external POP3 data
@@ -7035,13 +6780,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=335)
     public static final String A_zimbraFeatureSharingEnabled = "zimbraFeatureSharingEnabled";
-
-    /**
-     * Deprecated since: 6.0.0_GA. deprecated. Orig desc: keyboard shortcuts
-     * aliases features
-     */
-    @ZAttr(id=452)
-    public static final String A_zimbraFeatureShortcutAliasesEnabled = "zimbraFeatureShortcutAliasesEnabled";
 
     /**
      * whether to allow use of signature feature
@@ -7125,17 +6863,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureTasksEnabled = "zimbraFeatureTasksEnabled";
 
     /**
-     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
-     * Orig desc: Whether to allow a user to access touch client. Note: touch
-     * client is a Network feature, this attribute is effective only if touch
-     * client is permitted by license.
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1636)
-    public static final String A_zimbraFeatureTouchClientEnabled = "zimbraFeatureTouchClientEnabled";
-
-    /**
      * Whether the option of specifying trusted devices when using two-factor
      * authentication is available on the account
      *
@@ -7214,31 +6941,12 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureWebClientOfflineAccessEnabled = "zimbraFeatureWebClientOfflineAccessEnabled";
 
     /**
-     * Deprecated since: 6.0.0_GA. deprecated per bug 40170. Orig desc:
-     * whether web search feature is enabled
-     *
-     * @since ZCS 5.0.2
-     */
-    @ZAttr(id=602)
-    public static final String A_zimbraFeatureWebSearchEnabled = "zimbraFeatureWebSearchEnabled";
-
-    /**
      * Zimbra Assistant enabled
      *
      * @since ZCS 5.0.0
      */
     @ZAttr(id=544)
     public static final String A_zimbraFeatureZimbraAssistantEnabled = "zimbraFeatureZimbraAssistantEnabled";
-
-    /**
-     * Deprecated since: 8.9.0. deprecated with attribute
-     * zimbraFeatureModernDesktopEnabled. Orig desc: Whether to allow a user
-     * to access Zimbra X desktop
-     *
-     * @since ZCS 8.9.0
-     */
-    @ZAttr(id=3080)
-    public static final String A_zimbraFeatureZXDesktopEnabled = "zimbraFeatureZXDesktopEnabled";
 
     /**
      * Whether to allow a user to access Zimbra X web client
@@ -8046,17 +7754,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraHierarchicalAddressBookRoot = "zimbraHierarchicalAddressBookRoot";
 
     /**
-     * Deprecated since: 6.0.0_BETA2. deprecated in favor for
-     * zimbraHsmPolicy. Orig desc: Minimum age of mail items whose filesystem
-     * data will be moved to secondary storage.. Must be in valid duration
-     * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
-     * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
-     * unit is not specified, the default is s(seconds).
-     */
-    @ZAttr(id=8)
-    public static final String A_zimbraHsmAge = "zimbraHsmAge";
-
-    /**
      * Maximum number of items to move during a single HSM operation. If the
      * limit is exceeded, the HSM operation is repeated until all qualifying
      * items are moved.
@@ -8199,13 +7896,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1581)
     public static final String A_zimbraHttpResponseHeaderSize = "zimbraHttpResponseHeaderSize";
-
-    /**
-     * Deprecated since: 5.0. not applicable for jetty. Orig desc: number of
-     * https handler threads
-     */
-    @ZAttr(id=519)
-    public static final String A_zimbraHttpSSLNumThreads = "zimbraHttpSSLNumThreads";
 
     /**
      * The maximum thread idle time in milli seconds. Threads that are idle
@@ -8443,45 +8133,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=184)
     public static final String A_zimbraImapSSLServerEnabled = "zimbraImapSSLServerEnabled";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * available IM interop gateways
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=571)
-    public static final String A_zimbraIMAvailableInteropGateways = "zimbraIMAvailableInteropGateways";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * interface address on which IM server should listen; if empty, binds to
-     * all interfaces
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=567)
-    public static final String A_zimbraIMBindAddress = "zimbraIMBindAddress";
-
-    /**
-     * Deprecated since: 6.0.0_GA. deprecated per bug 40069. Orig desc: IM
-     * service
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=762)
-    public static final String A_zimbraIMService = "zimbraIMService";
-
-    /**
-     * Deprecated since: 5.0. Installed skin list is a per server property,
-     * the list is now generated by directory scan of skin files. Orig desc:
-     * Skins installed and available on all servers (this is global config
-     * only)
-     */
-    @ZAttr(id=368)
-    public static final String A_zimbraInstalledSkin = "zimbraInstalledSkin";
 
     /**
      * The address to which legal intercept messages will be sent.
@@ -8935,50 +8586,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMailAddressValidationRegex = "zimbraMailAddressValidationRegex";
 
     /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraAdminOutgoingSieveScriptAfter. Orig desc: outgoing sieve script
-     * defined by admin (not able to edit and view from the end user) applied
-     * after the end user filter rule
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2093)
-    public static final String A_zimbraMailAdminOutgoingSieveScriptAfter = "zimbraMailAdminOutgoingSieveScriptAfter";
-
-    /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraAdminOutgoingSieveScriptBefore. Orig desc: outgoing sieve script
-     * defined by admin (not able to edit and view from the end user) applied
-     * before the end user filter rule
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2092)
-    public static final String A_zimbraMailAdminOutgoingSieveScriptBefore = "zimbraMailAdminOutgoingSieveScriptBefore";
-
-    /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraAdminSieveScriptAfter. Orig desc: sieve script defined by admin
-     * (not able to edit and view from the end user) applied after the end
-     * user filter rule
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2091)
-    public static final String A_zimbraMailAdminSieveScriptAfter = "zimbraMailAdminSieveScriptAfter";
-
-    /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraAdminSieveScriptBefore. Orig desc: sieve script defined by admin
-     * (not able to edit and view from the end user) applied before the end
-     * user filter rule
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2090)
-    public static final String A_zimbraMailAdminSieveScriptBefore = "zimbraMailAdminSieveScriptBefore";
-
-    /**
      * RFC822 email address of this recipient for accepting mail
      */
     @ZAttr(id=20)
@@ -9189,17 +8796,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMailEmptyFolderBatchSize = "zimbraMailEmptyFolderBatchSize";
 
     /**
-     * Deprecated since: 8.0.0. Empty folder operation now always deletes
-     * items in batches, hence a threshold is no longer applicable.. Orig
-     * desc: Folders that contain more than this many messages will be
-     * emptied in batches of size zimbraMailEmptyFolderBatchSize.
-     *
-     * @since ZCS 6.0.13
-     */
-    @ZAttr(id=1208)
-    public static final String A_zimbraMailEmptyFolderBatchThreshold = "zimbraMailEmptyFolderBatchThreshold";
-
-    /**
      * Number of bytes to buffer in memory per file descriptor in the cache.
      * Larger values result in fewer disk reads, but increase memory
      * consumption.
@@ -9278,15 +8874,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1161)
     public static final String A_zimbraMailKeepOutWebCrawlers = "zimbraMailKeepOutWebCrawlers";
-
-    /**
-     * Deprecated since: 5.0.7. deprecated per bug 28842. Orig desc: The id
-     * of the last purged mailbox.
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=543)
-    public static final String A_zimbraMailLastPurgedMailboxId = "zimbraMailLastPurgedMailboxId";
 
     /**
      * Specifies whether the http server should bound to localhost or not.
@@ -9448,20 +9035,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=613)
     public static final String A_zimbraMailReferMode = "zimbraMailReferMode";
-
-    /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraSieveNotifyActionRFCCompliant, which can be used at account
-     * level. Orig desc: Whether the RFC compliant &#039;notify&#039; is
-     * used. If TRUE, ZCS parses the &#039;notify&#039; action parameters
-     * based on the syntax defined by the RFC 5435 and 5436. If FALSE, ZCS
-     * treats the &#039;notify&#039; action parameters with Zimbra specific
-     * format
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2095)
-    public static final String A_zimbraMailSieveNotifyActionRFCCompliant = "zimbraMailSieveNotifyActionRFCCompliant";
 
     /**
      * sieve script generated from user filter rules
@@ -9675,28 +9248,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1139)
     public static final String A_zimbraMailTrustedSenderListMaxNumEntries = "zimbraMailTrustedSenderListMaxNumEntries";
-
-    /**
-     * Deprecated since: 6.0.7. Deprecated per bug 43497. The number of
-     * uncompressed files on disk will never exceed
-     * zimbraMailFileDescriptorCacheSize.. Orig desc: max number of bytes
-     * stored in the uncompressed blob cache on disk
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=825)
-    public static final String A_zimbraMailUncompressedCacheMaxBytes = "zimbraMailUncompressedCacheMaxBytes";
-
-    /**
-     * Deprecated since: 6.0.7. Deprecated per bug 43497. The number of
-     * uncompressed files on disk will never exceed
-     * zimbraMailFileDescriptorCacheSize.. Orig desc: max number of files in
-     * the uncompressed blob cache on disk
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=824)
-    public static final String A_zimbraMailUncompressedCacheMaxFiles = "zimbraMailUncompressedCacheMaxFiles";
 
     /**
      * URL prefix for where the zimbra app resides on this server
@@ -10354,17 +9905,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMobilePolicyApprovedApplicationList = "zimbraMobilePolicyApprovedApplicationList";
 
     /**
-     * Deprecated since: 8.5.0. Use
-     * zimbraMobilePolicyRequireStorageCardEncryption. Orig desc: require
-     * data encryption on device; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=847)
-    public static final String A_zimbraMobilePolicyDeviceEncryptionEnabled = "zimbraMobilePolicyDeviceEncryptionEnabled";
-
-    /**
      * whether to force pin on device; ignored if
      * zimbraFeatureMobilePolicyEnabled=FALSE
      *
@@ -10715,24 +10255,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMtaAuthBindAddress = "zimbraMtaAuthBindAddress";
 
     /**
-     * Deprecated since: 6.0.0_BETA1. deprecated in favor of
-     * zimbraMtaTlsSecurityLevel and zimbraMtaSaslAuthEnable. Orig desc:
-     * Value for postconf smtpd_tls_security_level
-     */
-    @ZAttr(id=194)
-    public static final String A_zimbraMtaAuthEnabled = "zimbraMtaAuthEnabled";
-
-    /**
-     * Deprecated since: 8.6. Formally deprecated in 8.6 but has been unused
-     * since at least 7.0. MTA now uses all servers which have
-     * zimbraMtaAuthTarget set to TRUE. Orig desc: Host running SOAP service
-     * for use by MTA auth. Setting this sets zimbraMtaAuthURL via attr
-     * callback mechanism.
-     */
-    @ZAttr(id=309)
-    public static final String A_zimbraMtaAuthHost = "zimbraMtaAuthHost";
-
-    /**
      * Internal port used by saslauthd to authenticate over SOAP
      *
      * @since ZCS 8.7,9.0.0
@@ -10745,16 +10267,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=505)
     public static final String A_zimbraMtaAuthTarget = "zimbraMtaAuthTarget";
-
-    /**
-     * Deprecated since: 8.6. Formally deprecated in 8.6 but has been unused
-     * since at least 7.0. MTA now uses all servers which have
-     * zimbraMtaAuthTarget set to TRUE. Orig desc: URL at which this MTA (via
-     * zimbra saslauthd) should authenticate. Set by setting
-     * zimbraMtaAuthHost.
-     */
-    @ZAttr(id=310)
-    public static final String A_zimbraMtaAuthURL = "zimbraMtaAuthURL";
 
     /**
      * Attachment file extensions that are blocked
@@ -11840,15 +11352,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMtaSmtpTransportRateDelay = "zimbraMtaSmtpTransportRateDelay";
 
     /**
-     * Deprecated since: 8.7.0_BETA2. use zimbraMtaSmtpdSoftErrorLimit
-     * instead. Orig desc: Value for postconf smtpd_soft_error_limit
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1538)
-    public static final String A_zimbraMtaStpdSoftErrorLimit = "zimbraMtaStpdSoftErrorLimit";
-
-    /**
      * Value for postconf tls_append_default_CA
      *
      * @since ZCS 8.5.0
@@ -11942,16 +11445,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraNetworkActivation = "zimbraNetworkActivation";
 
     /**
-     * Deprecated since: 8.8.5. This attribute has been renamed to
-     * zimbraNetworkAdminNGEnabled. Orig desc: Whether to enable old zimbra
-     * network admin module.
-     *
-     * @since ZCS 8.8.2
-     */
-    @ZAttr(id=2119)
-    public static final String A_zimbraNetworkAdminEnabled = "zimbraNetworkAdminEnabled";
-
-    /**
      * Whether to enable zimbra network new generation admin module.
      *
      * @since ZCS 8.8.5
@@ -12025,27 +11518,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraNewMailNotificationSubject = "zimbraNewMailNotificationSubject";
 
     /**
-     * Deprecated since: 7.0.0. See bug 39647. Orig desc: Account for storing
-     * templates and providing space for public wiki
-     */
-    @ZAttr(id=363)
-    public static final String A_zimbraNotebookAccount = "zimbraNotebookAccount";
-
-    /**
-     * Deprecated since: 6.0.0_BETA1. deprecated. Orig desc: The size of Wiki
-     * / Notebook folder cache on the server.
-     */
-    @ZAttr(id=370)
-    public static final String A_zimbraNotebookFolderCacheSize = "zimbraNotebookFolderCacheSize";
-
-    /**
-     * Deprecated since: 6.0.0_BETA1. deprecated. Orig desc: The maximum
-     * number of cached templates in each Wiki / Notebook folder cache.
-     */
-    @ZAttr(id=371)
-    public static final String A_zimbraNotebookMaxCachedTemplatesPerFolder = "zimbraNotebookMaxCachedTemplatesPerFolder";
-
-    /**
      * maximum number of revisions to keep for wiki pages and documents. 0
      * means unlimited.
      */
@@ -12072,52 +11544,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=9)
     public static final String A_zimbraNotes = "zimbraNotes";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Network interface on which notification server
-     * should listen; if empty, binds to all interfaces.
-     */
-    @ZAttr(id=317)
-    public static final String A_zimbraNotifyBindAddress = "zimbraNotifyBindAddress";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Port number on which notification server should
-     * listen.
-     */
-    @ZAttr(id=318)
-    public static final String A_zimbraNotifyBindPort = "zimbraNotifyBindPort";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Whether notification server should be enabled.
-     */
-    @ZAttr(id=316)
-    public static final String A_zimbraNotifyServerEnabled = "zimbraNotifyServerEnabled";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Network interface on which SSL notification server
-     * should listen; if empty, binds to all interfaces
-     */
-    @ZAttr(id=320)
-    public static final String A_zimbraNotifySSLBindAddress = "zimbraNotifySSLBindAddress";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Port number on which notification server should
-     * listen.
-     */
-    @ZAttr(id=321)
-    public static final String A_zimbraNotifySSLBindPort = "zimbraNotifySSLBindPort";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Whether SSL notification server should be enabled.
-     */
-    @ZAttr(id=319)
-    public static final String A_zimbraNotifySSLServerEnabled = "zimbraNotifySSLServerEnabled";
 
     /**
      * Credentials associated with a successfully authorized OAuth Consumer
@@ -12656,16 +12082,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefAutoAddAddressEnabled = "zimbraPrefAutoAddAddressEnabled";
 
     /**
-     * Deprecated since: 8.5.0. address bubbles always enabled since 8.5.0.
-     * Orig desc: whether actionable address objects result from autocomplete
-     * is enabled
-     *
-     * @since ZCS 7.0.0
-     */
-    @ZAttr(id=1146)
-    public static final String A_zimbraPrefAutocompleteAddressBubblesEnabled = "zimbraPrefAutocompleteAddressBubblesEnabled";
-
-    /**
      * whether to end auto-complete on comma
      *
      * @since ZCS 6.0.7
@@ -12893,24 +12309,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefCalendarReminderDeviceInfo = "zimbraPrefCalendarReminderDeviceInfo";
 
     /**
-     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
-     * used. Orig desc: When to send the first reminder for an event.
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=573)
-    public static final String A_zimbraPrefCalendarReminderDuration1 = "zimbraPrefCalendarReminderDuration1";
-
-    /**
-     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
-     * used. Orig desc: When to send the second reminder for an event.
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=574)
-    public static final String A_zimbraPrefCalendarReminderDuration2 = "zimbraPrefCalendarReminderDuration2";
-
-    /**
      * RFC822 email address for receiving reminders for appointments and
      * tasks
      *
@@ -12928,25 +12326,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefCalendarReminderFlashTitle = "zimbraPrefCalendarReminderFlashTitle";
 
     /**
-     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
-     * used. Orig desc: The mobile device (phone) the reminder goes to.
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=577)
-    public static final String A_zimbraPrefCalendarReminderMobile = "zimbraPrefCalendarReminderMobile";
-
-    /**
-     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
-     * used. Orig desc: whether or not email reminders for appointments and
-     * tasks are enabled
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=576)
-    public static final String A_zimbraPrefCalendarReminderSendEmail = "zimbraPrefCalendarReminderSendEmail";
-
-    /**
      * whether audible alert is enabled when appointment notification is
      * played
      *
@@ -12954,15 +12333,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=667)
     public static final String A_zimbraPrefCalendarReminderSoundsEnabled = "zimbraPrefCalendarReminderSoundsEnabled";
-
-    /**
-     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
-     * used. Orig desc: Send a reminder via YIM
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=578)
-    public static final String A_zimbraPrefCalendarReminderYMessenger = "zimbraPrefCalendarReminderYMessenger";
 
     /**
      * If an invite is received from an organizer who does not have
@@ -13052,15 +12422,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefChatPlaySound = "zimbraPrefChatPlaySound";
 
     /**
-     * Deprecated since: 8.5.0. family mailbox feature is deprecated. Orig
-     * desc: zimbraId of visible child accounts
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=553)
-    public static final String A_zimbraPrefChildVisibleAccount = "zimbraPrefChildVisibleAccount";
-
-    /**
      * user preference of client type
      */
     @ZAttr(id=453)
@@ -13093,34 +12454,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=209)
     public static final String A_zimbraPrefComposeInNewWindow = "zimbraPrefComposeInNewWindow";
-
-    /**
-     * Deprecated since: 8.0.0. Since 8.0.0, the contact group can contain
-     * member references, but member references are not searchable.. Orig
-     * desc: Disables autocomplete matching against the members email
-     * address.
-     *
-     * @since ZCS 6.0.7
-     */
-    @ZAttr(id=1090)
-    public static final String A_zimbraPrefContactsDisableAutocompleteOnContactGroupMembers = "zimbraPrefContactsDisableAutocompleteOnContactGroupMembers";
-
-    /**
-     * Deprecated since: 8.0.0. deprecated now that Zimbra supports keeping
-     * member references in a contact group. Orig desc: Expand the contact
-     * groups in Apple Address Book format to Zimbra format over CardDAV.
-     *
-     * @since ZCS 7.0.0
-     */
-    @ZAttr(id=1102)
-    public static final String A_zimbraPrefContactsExpandAppleContactGroups = "zimbraPrefContactsExpandAppleContactGroups";
-
-    /**
-     * Deprecated since: 6.0.5. We do not support cards view any more. See
-     * bug 47439. Orig desc: initial contact view to use
-     */
-    @ZAttr(id=167)
-    public static final String A_zimbraPrefContactsInitialView = "zimbraPrefContactsInitialView";
 
     /**
      * number of contacts per page
@@ -13410,172 +12743,12 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefImapSearchFoldersEnabled = "zimbraPrefImapSearchFoldersEnabled";
 
     /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether to login to the IM client automatically
-     */
-    @ZAttr(id=488)
-    public static final String A_zimbraPrefIMAutoLogin = "zimbraPrefIMAutoLogin";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: IM
-     * buddy list sort order
-     *
-     * @since ZCS 5.0.10
-     */
-    @ZAttr(id=705)
-    public static final String A_zimbraPrefIMBuddyListSort = "zimbraPrefIMBuddyListSort";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Custom
-     * IM status messages
-     *
-     * @since ZCS 5.0.6
-     */
-    @ZAttr(id=645)
-    public static final String A_zimbraPrefIMCustomStatusMessage = "zimbraPrefIMCustomStatusMessage";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Flash
-     * IM icon on new messages
-     */
-    @ZAttr(id=462)
-    public static final String A_zimbraPrefIMFlashIcon = "zimbraPrefIMFlashIcon";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Flash
-     * title bar when a new IM arrives
-     *
-     * @since ZCS 5.0.7
-     */
-    @ZAttr(id=679)
-    public static final String A_zimbraPrefIMFlashTitle = "zimbraPrefIMFlashTitle";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether to hide IM blocked buddies
-     *
-     * @since ZCS 5.0.10
-     */
-    @ZAttr(id=707)
-    public static final String A_zimbraPrefIMHideBlockedBuddies = "zimbraPrefIMHideBlockedBuddies";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether to hide IM offline buddies
-     *
-     * @since ZCS 5.0.10
-     */
-    @ZAttr(id=706)
-    public static final String A_zimbraPrefIMHideOfflineBuddies = "zimbraPrefIMHideOfflineBuddies";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: IM
-     * idle status
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=560)
-    public static final String A_zimbraPrefIMIdleStatus = "zimbraPrefIMIdleStatus";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: IM
-     * session idle timeout in minutes
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=559)
-    public static final String A_zimbraPrefIMIdleTimeout = "zimbraPrefIMIdleTimeout";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Enable
-     * instant notifications
-     */
-    @ZAttr(id=517)
-    public static final String A_zimbraPrefIMInstantNotify = "zimbraPrefIMInstantNotify";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether to log IM chats to the Chats folder
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=556)
-    public static final String A_zimbraPrefIMLogChats = "zimbraPrefIMLogChats";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether IM log chats is enabled
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=552)
-    public static final String A_zimbraPrefIMLogChatsEnabled = "zimbraPrefIMLogChatsEnabled";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Notify
-     * for presence modifications
-     */
-    @ZAttr(id=463)
-    public static final String A_zimbraPrefIMNotifyPresence = "zimbraPrefIMNotifyPresence";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Notify
-     * for status change
-     */
-    @ZAttr(id=464)
-    public static final String A_zimbraPrefIMNotifyStatus = "zimbraPrefIMNotifyStatus";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether to report IM idle status
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=558)
-    public static final String A_zimbraPrefIMReportIdle = "zimbraPrefIMReportIdle";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether sounds is enabled in IM
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=570)
-    public static final String A_zimbraPrefIMSoundsEnabled = "zimbraPrefIMSoundsEnabled";
-
-    /**
      * whether to enable toaster notification for IM
      *
      * @since ZCS 6.0.0_BETA1
      */
     @ZAttr(id=814)
     public static final String A_zimbraPrefIMToasterEnabled = "zimbraPrefIMToasterEnabled";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: last
-     * used yahoo id
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=757)
-    public static final String A_zimbraPrefIMYahooId = "zimbraPrefIMYahooId";
 
     /**
      * Retention period of read messages in the Inbox folder. 0 means that
@@ -13793,16 +12966,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=156)
     public static final String A_zimbraPrefMailSignatureStyle = "zimbraPrefMailSignatureStyle";
-
-    /**
-     * Deprecated since: 7.1.1. deprecated in favor of userCertificate and
-     * userSMIMECertificate. Orig desc: user&#039;s S/MIME public keys
-     * (certificates)
-     *
-     * @since ZCS 7.1.0
-     */
-    @ZAttr(id=1172)
-    public static final String A_zimbraPrefMailSMIMECertificate = "zimbraPrefMailSMIMECertificate";
 
     /**
      * whether audible alert is enabled when a new email arrives
@@ -14045,31 +13208,12 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefQuickCommand = "zimbraPrefQuickCommand";
 
     /**
-     * Deprecated since: 6.0.0_BETA2. deprecated in favor of
-     * zimbraPrefReadingPaneLocation and zimbraPrefConvReadingPaneLocation.
-     * Orig desc: whether reading pane is shown by default
-     */
-    @ZAttr(id=394)
-    public static final String A_zimbraPrefReadingPaneEnabled = "zimbraPrefReadingPaneEnabled";
-
-    /**
      * where the message reading pane is displayed in list views
      *
      * @since ZCS 6.0.0_BETA1
      */
     @ZAttr(id=804)
     public static final String A_zimbraPrefReadingPaneLocation = "zimbraPrefReadingPaneLocation";
-
-    /**
-     * Deprecated since: 6.0.8. Deprecated per bug 46988. This feature was
-     * never fully implemented.. Orig desc: address to put in reply-to header
-     * of read receipt messages, if it is not set, then the compose
-     * identities primary email address is used.
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=823)
-    public static final String A_zimbraPrefReadReceiptsToAddress = "zimbraPrefReadReceiptsToAddress";
 
     /**
      * what part of the original message to include during replies
@@ -14316,14 +13460,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefTrashLifetime = "zimbraPrefTrashLifetime";
 
     /**
-     * Deprecated since: 5.0. no longer used in account or identity. Orig
-     * desc: TRUE if we this identity should get settings from the default
-     * identity
-     */
-    @ZAttr(id=410)
-    public static final String A_zimbraPrefUseDefaultIdentitySettings = "zimbraPrefUseDefaultIdentitySettings";
-
-    /**
      * whether or not keyboard shortcuts are enabled
      */
     @ZAttr(id=61)
@@ -14465,13 +13601,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=294)
     public static final String A_zimbraProxyAllowedDomains = "zimbraProxyAllowedDomains";
-
-    /**
-     * Deprecated since: 7.2.1. Deprecated per bug 74769. Orig desc: Content
-     * types that can be cached by proxy servlet
-     */
-    @ZAttr(id=303)
-    public static final String A_zimbraProxyCacheableContentTypes = "zimbraProxyCacheableContentTypes";
 
     /**
      * Name to be used in public API such as REST or SOAP proxy.
@@ -14654,47 +13783,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1643)
     public static final String A_zimbraRegexMaxAccessesWhenMatching = "zimbraRegexMaxAccessesWhenMatching";
-
-    /**
-     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
-     * Orig desc: port number on which the remote IMAP server should listen
-     *
-     * @since ZCS 8.8.1
-     */
-    @ZAttr(id=3015)
-    public static final String A_zimbraRemoteImapBindPort = "zimbraRemoteImapBindPort";
-
-    /**
-     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
-     * Orig desc: Controls if the remote IMAP (non-SSL) service is enabled
-     * for a given server. See also zimbraRemoteImapSSLServerEnabled and
-     * zimbraReverseProxyUpstreamImapServers.
-     *
-     * @since ZCS 8.8.1
-     */
-    @ZAttr(id=3013)
-    public static final String A_zimbraRemoteImapServerEnabled = "zimbraRemoteImapServerEnabled";
-
-    /**
-     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
-     * Orig desc: port number on which the remote IMAP SSL server should
-     * listen
-     *
-     * @since ZCS 8.8.1
-     */
-    @ZAttr(id=3016)
-    public static final String A_zimbraRemoteImapSSLBindPort = "zimbraRemoteImapSSLBindPort";
-
-    /**
-     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
-     * Orig desc: Controls if the remote IMAP SSL server is enabled for a
-     * given server. See also zimbraRemoteImapServerEnabled and
-     * zimbraReverseProxyUpstreamImapServers.
-     *
-     * @since ZCS 8.8.1
-     */
-    @ZAttr(id=3014)
-    public static final String A_zimbraRemoteImapSSLServerEnabled = "zimbraRemoteImapSSLServerEnabled";
 
     /**
      * Path to remote management command to execute on this server
@@ -15034,21 +14122,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=641)
     public static final String A_zimbraReverseProxyImapStartTlsMode = "zimbraReverseProxyImapStartTlsMode";
-
-    /**
-     * Deprecated since: 8.0.0. deprecated in favor of local config
-     * &quot;imap_max_idle_time&quot;, &quot;pop3_max_idle_time&quot;,
-     * &quot;imap_authenticated_max_idle_time&quot; in bug 59685. Orig desc:
-     * Time interval after which NGINX mail proxy will disconnect an inactive
-     * IMAP/POP connection. Must be in valid duration format:
-     * {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h - hours, m -
-     * minutes, s - seconds, d - days, ms - milliseconds. If time unit is not
-     * specified, the default is s(seconds).
-     *
-     * @since ZCS 5.0.10
-     */
-    @ZAttr(id=735)
-    public static final String A_zimbraReverseProxyInactivityTimeout = "zimbraReverseProxyInactivityTimeout";
 
     /**
      * Sets the upper limit on logins from a remote IP via IMAP to this proxy
@@ -15565,21 +14638,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyUpstreamSendTimeout = "zimbraReverseProxyUpstreamSendTimeout";
 
     /**
-     * Deprecated since: 8.5.0. Configuration for pre-login upstream is now
-     * handled via zimbraReverseProxyUpstreamLoginServers. Post-login
-     * upstreams are now automatically configured per-webapp based on what is
-     * present in zimbraServiceEnabled.. Orig desc: The servers to be
-     * included in the &quot;upstream&quot; block in the nginx web proxy
-     * config file. The servers configured here will only affect the proxy of
-     * pre-login requests. Leaving empty means using all the servers whose
-     * zimbraReverseProxyLookupTarget is TRUE.
-     *
-     * @since ZCS 8.0.0
-     */
-    @ZAttr(id=1378)
-    public static final String A_zimbraReverseProxyUpstreamServers = "zimbraReverseProxyUpstreamServers";
-
-    /**
      * There is a deployment scenario for migrations where all of the
      * customers users are pointed at the zimbra POP IMAP reverse proxy. We
      * then want their connections proxied back to the legacy system for
@@ -15821,62 +14879,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraServerId = "zimbraServerId";
 
     /**
-     * Deprecated since: 5.0. deprecated in favor of the serverInherited
-     * flag. Orig desc: zimbraServer attrs that get inherited from global
-     * config
-     */
-    @ZAttr(id=62)
-    public static final String A_zimbraServerInheritedAttr = "zimbraServerInheritedAttr";
-
-    /**
-     * Current version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1598)
-    public static final String A_zimbraServerVersion = "zimbraServerVersion";
-
-    /**
-     * Current build number of ZCS installed on this server for this version
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1602)
-    public static final String A_zimbraServerVersionBuild = "zimbraServerVersionBuild";
-
-    /**
-     * Current major version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1599)
-    public static final String A_zimbraServerVersionMajor = "zimbraServerVersionMajor";
-
-    /**
-     * Current micro level version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1601)
-    public static final String A_zimbraServerVersionMicro = "zimbraServerVersionMicro";
-
-    /**
-     * Current minor version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1600)
-    public static final String A_zimbraServerVersionMinor = "zimbraServerVersionMinor";
-
-    /**
-     * Current version type of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1605)
-    public static final String A_zimbraServerVersionType = "zimbraServerVersionType";
-
-    /**
      * services that are enabled on this server
      */
     @ZAttr(id=220)
@@ -15901,14 +14903,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1219)
     public static final String A_zimbraSharedItem = "zimbraSharedItem";
-
-    /**
-     * Deprecated since: 8.0.0. Manual publishing of shares by admin is no
-     * longer required since now automated publishing of sharing info updates
-     * to LDAP is supported. Orig desc: items an account or group has shared
-     */
-    @ZAttr(id=357)
-    public static final String A_zimbraShareInfo = "zimbraShareInfo";
 
     /**
      * Maximum allowed lifetime of shares to internal users or groups. A
@@ -16083,17 +15077,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSieveEditHeaderEnabled = "zimbraSieveEditHeaderEnabled";
 
     /**
-     * Deprecated since: 8.7.8. Variable feature is always enabled, hence
-     * this attribute has been deprecated. Orig desc: Whether to enable the
-     * Sieve &quot;Variables&quot; extension defined in RFC 5229 in the
-     * user-defined sieve rule.
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2096)
-    public static final String A_zimbraSieveFeatureVariablesEnabled = "zimbraSieveFeatureVariablesEnabled";
-
-    /**
      * Comma separated list of sieve immutable headers
      *
      * @since ZCS 8.8.4
@@ -16111,17 +15094,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=2112)
     public static final String A_zimbraSieveNotifyActionRFCCompliant = "zimbraSieveNotifyActionRFCCompliant";
-
-    /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraSieveRejectMailEnabled, which can be used at account level. Orig
-     * desc: Whether to enable the Sieve &quot;reject&quot; action defined in
-     * RFC 5429.
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2094)
-    public static final String A_zimbraSieveRejectEnabled = "zimbraSieveRejectEnabled";
 
     /**
      * Whether to enable the Sieve &quot;reject&quot; action defined in RFC
@@ -16523,13 +15495,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpamApplyUserFilters = "zimbraSpamApplyUserFilters";
 
     /**
-     * Deprecated since: 4.5. Deprecated in favor of zimbraServiceEnabled.
-     * Orig desc: Whether to enable spam checking
-     */
-    @ZAttr(id=201)
-    public static final String A_zimbraSpamCheckEnabled = "zimbraSpamCheckEnabled";
-
-    /**
      * mail header name for flagging spam
      */
     @ZAttr(id=210)
@@ -16824,38 +15789,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSyncWindowSize = "zimbraSyncWindowSize";
 
     /**
-     * Deprecated since: 4.5.7. We now maintain all tables unconditionally.
-     * See bug 19145. Orig desc: table maintenance will be performed if the
-     * number of rows grows by this factor
-     */
-    @ZAttr(id=171)
-    public static final String A_zimbraTableMaintenanceGrowthFactor = "zimbraTableMaintenanceGrowthFactor";
-
-    /**
-     * Deprecated since: 4.5.7. We now maintain all tables unconditionally.
-     * See bug 19145. Orig desc: maximum number of rows required for database
-     * table maintenance
-     */
-    @ZAttr(id=169)
-    public static final String A_zimbraTableMaintenanceMaxRows = "zimbraTableMaintenanceMaxRows";
-
-    /**
-     * Deprecated since: 4.5.7. We now maintain all tables unconditionally.
-     * See bug 19145. Orig desc: minimum number of rows required for database
-     * table maintenance
-     */
-    @ZAttr(id=168)
-    public static final String A_zimbraTableMaintenanceMinRows = "zimbraTableMaintenanceMinRows";
-
-    /**
-     * Deprecated since: 4.5.7. We now maintain all tables unconditionally.
-     * See bug 19145. Orig desc: table maintenance operation that will be
-     * performed. Valid options: &quot;ANALYZE&quot;, &quot;OPTIMIZE&quot;
-     */
-    @ZAttr(id=170)
-    public static final String A_zimbraTableMaintenanceOperation = "zimbraTableMaintenanceOperation";
-
-    /**
      * The registered name of the Zimbra Analyzer Extension for this account
      * to use
      */
@@ -16892,48 +15825,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1449)
     public static final String A_zimbraThrottleWhitelist = "zimbraThrottleWhitelist";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc: Start
-     * date for daylight time
-     */
-    @ZAttr(id=232)
-    public static final String A_zimbraTimeZoneDaylightDtStart = "zimbraTimeZoneDaylightDtStart";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc: Offset
-     * in daylight time
-     */
-    @ZAttr(id=233)
-    public static final String A_zimbraTimeZoneDaylightOffset = "zimbraTimeZoneDaylightOffset";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc:
-     * iCalendar recurrence rule for onset of daylight time
-     */
-    @ZAttr(id=234)
-    public static final String A_zimbraTimeZoneDaylightRRule = "zimbraTimeZoneDaylightRRule";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc: Start
-     * date for standard time
-     */
-    @ZAttr(id=229)
-    public static final String A_zimbraTimeZoneStandardDtStart = "zimbraTimeZoneStandardDtStart";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc: Offset
-     * in standard time
-     */
-    @ZAttr(id=230)
-    public static final String A_zimbraTimeZoneStandardOffset = "zimbraTimeZoneStandardOffset";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc:
-     * iCalendar recurrence rule for onset of standard time
-     */
-    @ZAttr(id=231)
-    public static final String A_zimbraTimeZoneStandardRRule = "zimbraTimeZoneStandardRRule";
 
     /**
      * whether JavaScript error tracking via third party service is enabled
@@ -17365,13 +16256,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVirusBlockEncryptedArchive = "zimbraVirusBlockEncryptedArchive";
 
     /**
-     * Deprecated since: 4.5. Deprecated in favor of zimbraServiceEnabled.
-     * Orig desc: Whether to enable virus checking
-     */
-    @ZAttr(id=206)
-    public static final String A_zimbraVirusCheckEnabled = "zimbraVirusCheckEnabled";
-
-    /**
      * how often the virus definitions are updated. Must be in valid duration
      * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
      * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
@@ -17570,13 +16454,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=738)
     public static final String A_zimbraXMPPComponentType = "zimbraXMPPComponentType";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra no longer includes an XMPP server.
-     * Orig desc: Enable XMPP support for IM
-     */
-    @ZAttr(id=397)
-    public static final String A_zimbraXMPPEnabled = "zimbraXMPPEnabled";
 
     /**
      * Shared Secret for XMPP Server Dialback Protocol

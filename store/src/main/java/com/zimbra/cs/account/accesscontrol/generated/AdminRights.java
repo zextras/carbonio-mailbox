@@ -142,7 +142,6 @@ public class AdminRights {
     public static AdminRight R_configureGlobalConfigConstraint;
     public static AdminRight R_configurePasswordStrength;
     public static AdminRight R_configureQuota;
-    public static AdminRight R_configureWikiAccount;
     public static AdminRight R_countAccount;
     public static AdminRight R_countAlias;
     public static AdminRight R_countCalendarResource;
@@ -576,7 +575,6 @@ public class AdminRights {
         R_configureGlobalConfigConstraint      = rm.getAdminRight(Right.RT_configureGlobalConfigConstraint);
         R_configurePasswordStrength            = rm.getAdminRight(Right.RT_configurePasswordStrength);
         R_configureQuota                       = rm.getAdminRight(Right.RT_configureQuota);
-        R_configureWikiAccount                 = rm.getAdminRight(Right.RT_configureWikiAccount);
         R_countAccount                         = rm.getAdminRight(Right.RT_countAccount);
         R_countAlias                           = rm.getAdminRight(Right.RT_countAlias);
         R_countCalendarResource                = rm.getAdminRight(Right.RT_countCalendarResource);
