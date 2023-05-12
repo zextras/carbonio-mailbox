@@ -22,8 +22,6 @@ import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.soap.admin.message.IssueCertRequest;
-import com.zimbra.soap.admin.message.IssueCertResponse;
 import com.zimbra.soap.json.JacksonUtil;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
@@ -818,8 +816,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.GetCalendarItemSummariesResponse.class,
           com.zimbra.soap.mail.message.GetCommentsRequest.class,
           com.zimbra.soap.mail.message.GetCommentsResponse.class,
-          com.zimbra.soap.mail.message.GetContactBackupListRequest.class,
-          com.zimbra.soap.mail.message.GetContactBackupListResponse.class,
           com.zimbra.soap.mail.message.GetContactsRequest.class,
           com.zimbra.soap.mail.message.GetContactsResponse.class,
           com.zimbra.soap.mail.message.GetConvRequest.class,
@@ -946,8 +942,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.RemoveAttachmentsResponse.class,
           com.zimbra.soap.mail.message.ResetRecentMessageCountRequest.class,
           com.zimbra.soap.mail.message.ResetRecentMessageCountResponse.class,
-          com.zimbra.soap.mail.message.RestoreContactsRequest.class,
-          com.zimbra.soap.mail.message.RestoreContactsResponse.class,
           com.zimbra.soap.mail.message.RevokePermissionRequest.class,
           com.zimbra.soap.mail.message.RevokePermissionResponse.class,
           com.zimbra.soap.mail.message.SaveDocumentRequest.class,

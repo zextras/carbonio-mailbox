@@ -182,9 +182,6 @@
     <a n="zimbraFeatureContactsEnabled"/>
     <a n="zimbraFeatureCalendarEnabled"/>
     <a n="zimbraFeatureTasksEnabled"/>
-
-    <a n="zimbraFeatureBriefcasesEnabled"/>
-
     <a n="zimbraFeatureOptionsEnabled"/>
     <a n="zimbraFeatureTaggingEnabled"/>
     <a n="zimbraFeatureSharingEnabled"/>
@@ -225,9 +222,6 @@
     <a n="zimbraFeatureContactsEnabled"/>
     <a n="zimbraFeatureCalendarEnabled"/>
     <a n="zimbraFeatureTasksEnabled"/>
-
-    <a n="zimbraFeatureBriefcasesEnabled"/>
-
     <a n="zimbraFeatureOptionsEnabled"/>
     <a n="zimbraFeatureTaggingEnabled"/>
     <a n="zimbraFeatureSharingEnabled"/>
@@ -542,7 +536,7 @@
 </right>
 
 <!-- Admin Console Accounts Advanced Tab -->
-<!-- syntax or bad attr somewhere in the advanced tab config --> 
+<!-- syntax or bad attr somewhere in the advanced tab config -->
 <!-- <right name="setAdminConsoleAccountsAdvancedTab" type="setAttrs" targetType="account">
   <desc> Admin Console set attr rights for Accounts Advanced Tab </desc>
   <attrs>
@@ -996,9 +990,6 @@
       <a n="zimbraFeatureContactsEnabled"/>
       <a n="zimbraFeatureCalendarEnabled"/>
       <a n="zimbraFeatureTasksEnabled"/>
-
-      <a n="zimbraFeatureBriefcasesEnabled"/>
-
       <a n="zimbraFeatureOptionsEnabled"/>
       <!-- General Features -->
       <a n="zimbraFeatureTaggingEnabled"/>
@@ -1070,9 +1061,6 @@
       <a n="zimbraFeatureContactsEnabled"/>
       <a n="zimbraFeatureCalendarEnabled"/>
       <a n="zimbraFeatureTasksEnabled"/>
-
-      <a n="zimbraFeatureBriefcasesEnabled"/>
-
       <a n="zimbraFeatureOptionsEnabled"/>
       <!-- General Features -->
       <a n="zimbraFeatureTaggingEnabled"/>
@@ -1623,7 +1611,7 @@
       <r n="configureExternalGAL"/>
     </rights>
   </right>
-  
+
   <right name="adminConsoleCreateGALRights" type="setAttrs" targetType="account">
     <desc> Admin Console set attr rights for create GAL sync account </desc>
     <ui name="Configure-Domains-Domain-GAL"/>
@@ -2570,7 +2558,7 @@
   <ui name="Manage-Aliases"/>
   <rights>
     <r n="viewAccountAdminUI"/>
-    <r n="listAlias"/>  
+    <r n="listAlias"/>
   </rights>
 </right>
 
@@ -2788,7 +2776,7 @@
   <rights>
     <r n="getServiceStatus"/>
     <r n="listServer"/>
-    <r n="viewAdminConsoleServerStatus" />  
+    <r n="viewAdminConsoleServerStatus" />
   </rights>
 </right>
 
@@ -2844,8 +2832,8 @@
    <r n="listServer" />
    <r n="getCertificateInfo"/>
    <r n="installCertificate"/>
-   <r n="getCSR"/>   
-   <r n="generateCSR"/> 
+   <r n="getCSR"/>
+   <r n="generateCSR"/>
   </rights>
 </right>
 
@@ -2878,20 +2866,20 @@
   <rights>
    <r n="listServer" />
    <r n="getServer" />
-   <r n="createMigrationTask"/>   
+   <r n="createMigrationTask"/>
   </rights>
 </right>
 
 <right type="combo" name="adminConsoleSoftwareUpdatesRights">
   <desc>Rights for configuring software updates component a server through Admin Console</desc>
-  <ui name="ToolsAndMigration-SoftwareUpdates"/>  
+  <ui name="ToolsAndMigration-SoftwareUpdates"/>
   <rights>
    <r n="listServer" />
    <r n="listAccount" />
    <r n="checkSoftwareUpdates"/>
    <r n="viewAdminConsoleSoftwareUpdatesConfigAttrs"/>
    <r n="setAdminConsoleSoftwareUpdatesConfigAttrs"/>
-   <r n="viewAdminConsoleSoftwareUpdatesServerAttrs"/>   
+   <r n="viewAdminConsoleSoftwareUpdatesServerAttrs"/>
   </rights>
 </right>
 

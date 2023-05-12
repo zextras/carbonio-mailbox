@@ -517,7 +517,6 @@ public class ProvUtil implements HttpDebugListener {
       console.println();
       console.println("Valid types:");
       console.println("    appointment");
-      // console.println("    briefcase");
       // console.println("    chat");
       console.println("    contact");
       console.println("    conversation");
@@ -2582,8 +2581,8 @@ public class ProvUtil implements HttpDebugListener {
 
     if (args[1].equals("-e")) {
       if (args.length > 1) {
-      applyDefault = false;
-      acctPos = 2;
+        applyDefault = false;
+        acctPos = 2;
       } else {
         usage();
         return;
