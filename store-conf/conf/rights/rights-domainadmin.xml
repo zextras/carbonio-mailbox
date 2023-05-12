@@ -483,7 +483,6 @@
     <a n="zimbraAdminConsoleLoginURL"/>
     <a n="zimbraAdminConsoleLogoutURL"/>
     <a n="zimbraAvailableSkin"/>
-    <a n="zimbraDNSCheckHostname"/>
     <a n="zimbraExternalImapHostname"/>
     <a n="zimbraExternalImapPort"/>
     <a n="zimbraExternalImapSSLHostname"/>
@@ -622,7 +621,6 @@
       <desc>domain admin domain right</desc>
       <rights>
         <r n="accessGAL"/>
-        <r n="checkDomainMXRecord"/>
         <r n="countAccount"/>
         <r n="createAccount"/>
         <r n="createAlias"/>

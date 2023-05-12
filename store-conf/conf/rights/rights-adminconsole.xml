@@ -1570,8 +1570,6 @@
       <a n="zimbraDomainStatus"/>
       <a n="zimbraPrefTimeZoneId"/>
       <a n="zimbraPublicServiceHostname"/>
-      <a n="zimbraDNSCheckHostname"/>
-      <a n="zimbraAdminConsoleDNSCheckEnabled"/>
       <a n="zimbraDomainDefaultCOSId"/>
       <a n="zimbraNotes"/>
     </attrs>
@@ -1586,8 +1584,6 @@
       <a n="zimbraDomainStatus"/>
       <a n="zimbraPrefTimeZoneId"/>
       <a n="zimbraPublicServiceHostname"/>
-      <a n="zimbraDNSCheckHostname"/>
-      <a n="zimbraAdminConsoleDNSCheckEnabled"/>
       <a n="zimbraDomainDefaultCOSId"/>
       <a n="zimbraNotes"/>
     </attrs>
@@ -1950,7 +1946,6 @@
       <a n="zimbraMtaRelayHost"/>
       <a n="zimbraSmtpTimeout"/>
       <a n="zimbraMtaMyNetworks"/>
-
     </attrs>
   </right>
   <right name="viewAdminConsoleServerMTATab" type="getAttrs" targetType="server">
@@ -1964,7 +1959,6 @@
       <a n="zimbraMtaRelayHost"/>
       <a n="zimbraSmtpTimeout"/>
       <a n="zimbraMtaMyNetworks"/>
-
     </attrs>
   </right>
   <right name="adminConsoleServerMTATabRights" type="combo">
@@ -2261,12 +2255,9 @@
       <a n="zimbraSmtpHostname"/>
       <a n="zimbraSmtpPort"/>
       <a n="zimbraMtaRelayHost"/>
-      <a n="zimbraDNSCheckHostname"/>
-      <a n="zimbraAdminConsoleDNSCheckEnabled"/>
       <a n="zimbraMtaMaxMessageSize"/>
       <a n="zimbraSmtpSendAddOriginatingIP"/>
       <a n="zimbraMtaRestriction"/>
-
     </attrs>
   </right>
   <right name="viewAdminConsoleGlobalMTATab" type="getAttrs" targetType="config">
@@ -2278,12 +2269,9 @@
       <a n="zimbraSmtpHostname"/>
       <a n="zimbraSmtpPort"/>
       <a n="zimbraMtaRelayHost"/>
-      <a n="zimbraDNSCheckHostname"/>
-      <a n="zimbraAdminConsoleDNSCheckEnabled"/>
       <a n="zimbraMtaMaxMessageSize"/>
       <a n="zimbraSmtpSendAddOriginatingIP"/>
       <a n="zimbraMtaRestriction"/>
-
     </attrs>
   </right>
   <right name="adminConsoleGlobalMTATabRights" type="combo">
@@ -2651,7 +2639,6 @@
     <r n="listDomain"/>
     <r n="deleteDomain"/>
     <r n="countAccount"/>
-    <r n="checkDomainMXRecord"/>
   </rights>
 </right>
 
@@ -2674,7 +2661,6 @@
     <r n="listDomain"/>
     <r n="deleteDomain"/>
     <r n="countAccount"/>
-    <r n="checkDomainMXRecord"/>
   </rights>
 </right>
 

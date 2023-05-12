@@ -627,11 +627,6 @@ public class RightConsts {
     public static final String RT_checkDirectoryOnFileSystem = "checkDirectoryOnFileSystem";
 
     /**
-     * check domain MX record
-     */
-    public static final String RT_checkDomainMXRecord = "checkDomainMXRecord";
-
-    /**
      * check exchange auth config
      */
     public static final String RT_checkExchangeAuthConfig = "checkExchangeAuthConfig";
