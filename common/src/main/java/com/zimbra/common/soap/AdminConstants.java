@@ -158,8 +158,6 @@ public final class AdminConstants {
   public static final String E_CHECK_GAL_CONFIG_RESPONSE = "CheckGalConfigResponse";
   public static final String E_CHECK_EXCHANGE_AUTH_REQUEST = "CheckExchangeAuthRequest";
   public static final String E_CHECK_EXCHANGE_AUTH_RESPONSE = "CheckExchangeAuthResponse";
-  public static final String E_CHECK_DOMAIN_MX_RECORD_REQUEST = "CheckDomainMXRecordRequest";
-  public static final String E_CHECK_DOMAIN_MX_RECORD_RESPONSE = "CheckDomainMXRecordResponse";
 
   public static final String E_AUTO_COMPLETE_GAL_REQUEST = "AutoCompleteGalRequest";
   public static final String E_AUTO_COMPLETE_GAL_RESPONSE = "AutoCompleteGalResponse";
@@ -766,10 +764,6 @@ public final class AdminConstants {
       QName.get(E_CHECK_EXCHANGE_AUTH_REQUEST, NAMESPACE);
   public static final QName CHECK_EXCHANGE_AUTH_RESPONSE =
       QName.get(E_CHECK_EXCHANGE_AUTH_RESPONSE, NAMESPACE);
-  public static final QName CHECK_DOMAIN_MX_RECORD_REQUEST =
-      QName.get(E_CHECK_DOMAIN_MX_RECORD_REQUEST, NAMESPACE);
-  public static final QName CHECK_DOMAIN_MX_RECORD_RESPONSE =
-      QName.get(E_CHECK_DOMAIN_MX_RECORD_RESPONSE, NAMESPACE);
 
   public static final QName AUTO_COMPLETE_GAL_REQUEST =
       QName.get(E_AUTO_COMPLETE_GAL_REQUEST, NAMESPACE);

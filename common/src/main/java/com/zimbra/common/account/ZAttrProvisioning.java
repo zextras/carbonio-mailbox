@@ -578,96 +578,6 @@ public class ZAttrProvisioning {
     }
   }
 
-  public static enum DNSTCPUpstream {
-    yes("yes"),
-    no("no");
-    private String mValue;
-
-    private DNSTCPUpstream(String value) {
-      mValue = value;
-    }
-
-    public String toString() {
-      return mValue;
-    }
-
-    public static DNSTCPUpstream fromString(String s) throws ServiceException {
-      for (DNSTCPUpstream value : values()) {
-        if (value.mValue.equals(s)) return value;
-      }
-      throw ServiceException.INVALID_REQUEST(
-          "invalid value: " + s + ", valid values: " + Arrays.asList(values()), null);
-    }
-
-    public boolean isYes() {
-      return this == yes;
-    }
-
-    public boolean isNo() {
-      return this == no;
-    }
-  }
-
-  public static enum DNSUseTCP {
-    yes("yes"),
-    no("no");
-    private String mValue;
-
-    private DNSUseTCP(String value) {
-      mValue = value;
-    }
-
-    public String toString() {
-      return mValue;
-    }
-
-    public static DNSUseTCP fromString(String s) throws ServiceException {
-      for (DNSUseTCP value : values()) {
-        if (value.mValue.equals(s)) return value;
-      }
-      throw ServiceException.INVALID_REQUEST(
-          "invalid value: " + s + ", valid values: " + Arrays.asList(values()), null);
-    }
-
-    public boolean isYes() {
-      return this == yes;
-    }
-
-    public boolean isNo() {
-      return this == no;
-    }
-  }
-
-  public static enum DNSUseUDP {
-    yes("yes"),
-    no("no");
-    private String mValue;
-
-    private DNSUseUDP(String value) {
-      mValue = value;
-    }
-
-    public String toString() {
-      return mValue;
-    }
-
-    public static DNSUseUDP fromString(String s) throws ServiceException {
-      for (DNSUseUDP value : values()) {
-        if (value.mValue.equals(s)) return value;
-      }
-      throw ServiceException.INVALID_REQUEST(
-          "invalid value: " + s + ", valid values: " + Arrays.asList(values()), null);
-    }
-
-    public boolean isYes() {
-      return this == yes;
-    }
-
-    public boolean isNo() {
-      return this == no;
-    }
-  }
-
   public static enum DomainAggregateQuotaPolicy {
     ALLOWSENDRECEIVE("ALLOWSENDRECEIVE"),
     BLOCKSEND("BLOCKSEND"),
@@ -5233,15 +5143,6 @@ public class ZAttrProvisioning {
       "zimbraAdminConsoleCatchAllAddressEnabled";
 
   /**
-   * enable MX check feature for domain
-   *
-   * @since ZCS 5.0.10
-   */
-  @ZAttr(id = 743)
-  public static final String A_zimbraAdminConsoleDNSCheckEnabled =
-      "zimbraAdminConsoleDNSCheckEnabled";
-
-  /**
    * whether configuring external LDAP auth is enabled in admin console
    *
    * @since ZCS 5.0.12
@@ -7586,48 +7487,6 @@ public class ZAttrProvisioning {
   @ZAttr(id = 1276)
   public static final String A_zimbraDistributionListUnsubscriptionPolicy =
       "zimbraDistributionListUnsubscriptionPolicy";
-
-  /**
-   * This attribute is used for DNS check by customers that configure their MX to point at spam
-   * relays or other non-zimbra inbox smtp servers
-   *
-   * @since ZCS 5.0.10
-   */
-  @ZAttr(id = 744)
-  public static final String A_zimbraDNSCheckHostname = "zimbraDNSCheckHostname";
-
-  /**
-   * IP Address(es) of the root DNS servers to be used by the DNS cache service
-   *
-   * @since ZCS 8.5.0
-   */
-  @ZAttr(id = 1569)
-  public static final String A_zimbraDNSMasterIP = "zimbraDNSMasterIP";
-
-  /**
-   * For zimbra dnscache, whether or not to only use TCP when talking to the upstream Master DNS
-   * servers. Defaults to no
-   *
-   * @since ZCS 8.5.0
-   */
-  @ZAttr(id = 1597)
-  public static final String A_zimbraDNSTCPUpstream = "zimbraDNSTCPUpstream";
-
-  /**
-   * For zimbra dnscache, whether or not to use TCP. Defaults to yes
-   *
-   * @since ZCS 8.5.0
-   */
-  @ZAttr(id = 1584)
-  public static final String A_zimbraDNSUseTCP = "zimbraDNSUseTCP";
-
-  /**
-   * For zimbra dnscache, whether or not to use UDP. Defaults to yes
-   *
-   * @since ZCS 8.5.0
-   */
-  @ZAttr(id = 1586)
-  public static final String A_zimbraDNSUseUDP = "zimbraDNSUseUDP";
 
   /** maximum amount of mail quota a domain admin can set on a user */
   @ZAttr(id = 398)
@@ -15404,17 +15263,6 @@ public class ZAttrProvisioning {
    */
   @ZAttr(id = 703)
   public static final String A_zimbraReverseProxyDefaultRealm = "zimbraReverseProxyDefaultRealm";
-
-  /**
-   * Control whether force the server side do the DNS lookup and send the result IP back to proxy.
-   * If false, the raw address configured (e.g. zimbraMailHost) is directly sent to proxy, else the
-   * translated IP will be sent back to the client.
-   *
-   * @since ZCS 8.0.0
-   */
-  @ZAttr(id = 1384)
-  public static final String A_zimbraReverseProxyDnsLookupInServerEnabled =
-      "zimbraReverseProxyDnsLookupInServerEnabled";
 
   /**
    * LDAP attribute that contains domain name for the domain
