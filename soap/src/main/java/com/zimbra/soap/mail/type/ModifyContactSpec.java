@@ -15,17 +15,10 @@ import javax.xml.bind.annotation.XmlElement;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.base.SpecifyContact;
 
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_MODIFY_CONTACT_SPEC)
 public class ModifyContactSpec implements SpecifyContact<ModifyContactAttr, ModifyContactGroupMember> {
 
     // Used when modifying a contact
@@ -48,7 +41,6 @@ public class ModifyContactSpec implements SpecifyContact<ModifyContactAttr, Modi
      * @zm-api-field-description Contact attributes.  Cannot specify <b>&lt;vcard></b> as well as these
      */
     @XmlElement(name=MailConstants.E_ATTRIBUTE /* a */, required=false)
-    @GraphQLInputField(name=GqlConstants.ATTRIBUTES, description="Cannot specify vcard as well as these")
     private final List<ModifyContactAttr> attrs = Lists.newArrayList();
 
     /**
@@ -56,7 +48,6 @@ public class ModifyContactSpec implements SpecifyContact<ModifyContactAttr, Modi
      * (has attribute type="group")
      */
     @XmlElement(name=MailConstants.E_CONTACT_GROUP_MEMBER /* m */, required=false)
-    @GraphQLInputField(name=GqlConstants.CONTACT_GROUP_MEMBERS, description="Contact group members.")
     private final List<ModifyContactGroupMember> contactGroupMembers = Lists.newArrayList();
 
     public ModifyContactSpec() {
@@ -69,13 +60,10 @@ public class ModifyContactSpec implements SpecifyContact<ModifyContactAttr, Modi
     }
 
     @Override
-    @GraphQLInputField(name=GqlConstants.ID, description="Id of the contact to modify")
-    public void setId(@GraphQLNonNull Integer id) { this.id = id; }
+    public void setId( Integer id) { this.id = id; }
     @Override
-    @GraphQLInputField(name=GqlConstants.TAG_NAMES, description="Comma-separated list of tag names")
     public void setTagNames(String tagNames) { this.tagNames = tagNames; }
     @Override
-    @GraphQLInputField(name=GqlConstants.ATTRIBUTES, description="Cannot specify vcard as well as these")
     public void setAttrs(Iterable <ModifyContactAttr> attrs) {
         this.attrs.clear();
         if (attrs != null) {
@@ -84,13 +72,11 @@ public class ModifyContactSpec implements SpecifyContact<ModifyContactAttr, Modi
     }
 
     @Override
-    @GraphQLIgnore
     public void addAttr(ModifyContactAttr attr) {
         this.attrs.add(attr);
     }
 
     @Override
-    @GraphQLInputField(name=GqlConstants.CONTACT_GROUP_MEMBERS, description="Contact group members.")
     public void setContactGroupMembers(Iterable <ModifyContactGroupMember> contactGroupMembers) {
         this.contactGroupMembers.clear();
         if (contactGroupMembers != null) {
@@ -99,7 +85,6 @@ public class ModifyContactSpec implements SpecifyContact<ModifyContactAttr, Modi
     }
 
     @Override
-    @GraphQLIgnore
     public void addContactGroupMember(ModifyContactGroupMember contactGroupMember) {
         this.contactGroupMembers.add(contactGroupMember);
     }

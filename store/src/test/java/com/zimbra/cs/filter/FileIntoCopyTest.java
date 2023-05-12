@@ -6,17 +6,19 @@
 package com.zimbra.cs.filter;
 
 import static org.junit.Assert.*;
+
+import com.zimbra.cs.mailbox.MailItem.Type;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import com.zimbra.common.account.Key;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Flag;
@@ -33,18 +35,20 @@ import qa.unittest.TestUtil;
 
 public class FileIntoCopyTest {
 
-    @BeforeClass
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        Account acct = prov.createAccount("test@zimbra.com", "secret",
-            new HashMap<String, Object>());
-        Server server = Provisioning.getInstance().getServer(acct);
-    }
-
     @Before
     public void setUp() throws Exception {
+        MailboxTestUtil.initServer();
+        Provisioning prov = Provisioning.getInstance();
+        prov.createAccount("test@zimbra.com", "secret", new HashMap<>());
+    }
+
+    @After
+    public void tearDown() {
+      try {
         MailboxTestUtil.clearData();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
 
     @Test
@@ -121,7 +125,7 @@ public class FileIntoCopyTest {
     /*
      * fileinto :copy foo; if header :contains "Subject" "test" { fileinto bar;
      * }
-     * 
+     *
      * if message has "Subject: Test" ==> it should be stored in "foo" and "bar"
      */
     @Test
@@ -143,17 +147,17 @@ public class FileIntoCopyTest {
             Assert.assertNull(
                 mbox.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE));
             // message should be stored in foo
-            Integer item = mbox
+            Integer item = Objects.requireNonNull(mbox
                 .getItemIds(null,
                     mbox.getFolderByName(null, Mailbox.ID_FOLDER_USER_ROOT, "foo").getId())
-                .getIds(MailItem.Type.MESSAGE).get(0);
+                .getIds(Type.MESSAGE)).get(0);
             Message msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
             // message should be stored in bar
-            item = mbox
+            item = Objects.requireNonNull(mbox
                 .getItemIds(null,
                     mbox.getFolderByName(null, Mailbox.ID_FOLDER_USER_ROOT, "bar").getId())
-                .getIds(MailItem.Type.MESSAGE).get(0);
+                .getIds(Type.MESSAGE)).get(0);
             msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
         } catch (Exception e) {
@@ -165,7 +169,7 @@ public class FileIntoCopyTest {
     /*
      * fileinto :copy foo; if header :contains "Subject" "test" { fileinto bar;
      * }
-     * 
+     *
      * if message has "Subject: real" ==> it should be stored in "foo" and INBOX
      */
 
@@ -185,14 +189,15 @@ public class FileIntoCopyTest {
                 new ParsedMessage(rawReal.getBytes(), false), 0, account.getName(),
                 new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
             // message should be stored in foo
-            Integer item = mbox
+            Integer item = Objects.requireNonNull(mbox
                 .getItemIds(null,
                     mbox.getFolderByName(null, Mailbox.ID_FOLDER_USER_ROOT, "foo").getId())
-                .getIds(MailItem.Type.MESSAGE).get(0);
+                .getIds(Type.MESSAGE)).get(0);
             Message msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
             // message should be stored in inbox
-            item = mbox.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE)
+            item = Objects
+                .requireNonNull(mbox.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(Type.MESSAGE))
                 .get(0);
             msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
@@ -205,7 +210,7 @@ public class FileIntoCopyTest {
     /*
      * fileinto :copy foo; if header :contains "Subject" "Test" { fileinto :copy
      * bar; }
-     * 
+     *
      * if message has "Subject: test" ==> it should be stored in "foo", "bar"
      * and INBOX
      */
@@ -226,21 +231,22 @@ public class FileIntoCopyTest {
                 new ParsedMessage(rawReal.getBytes(), false), 0, account.getName(),
                 new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
             // message should be stored in bar
-            Integer item = mbox
+            Integer item = Objects.requireNonNull(mbox
                 .getItemIds(null,
                     mbox.getFolderByName(null, Mailbox.ID_FOLDER_USER_ROOT, "bar").getId())
-                .getIds(MailItem.Type.MESSAGE).get(0);
+                .getIds(Type.MESSAGE)).get(0);
             Message msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
             // message should be stored in foo
-            item = mbox
+            item = Objects.requireNonNull(mbox
                 .getItemIds(null,
                     mbox.getFolderByName(null, Mailbox.ID_FOLDER_USER_ROOT, "foo").getId())
-                .getIds(MailItem.Type.MESSAGE).get(0);
+                .getIds(Type.MESSAGE)).get(0);
             msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
             // message should be stored in inbox
-            item = mbox.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE)
+            item = Objects
+                .requireNonNull(mbox.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(Type.MESSAGE))
                 .get(0);
             msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
@@ -253,7 +259,7 @@ public class FileIntoCopyTest {
     /*
      * fileinto :copy foo; if header :contains "Subject" "Test" { fileinto :copy
      * bar; }
-     * 
+     *
      * if message has "Subject: Real" ==> it should be stored in "foo" and INBOX
      */
 
@@ -273,14 +279,15 @@ public class FileIntoCopyTest {
                 new ParsedMessage(rawReal.getBytes(), false), 0, account.getName(),
                 new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
             // message should be stored in foo
-            Integer item = mbox
+            Integer item = Objects.requireNonNull(mbox
                 .getItemIds(null,
                     mbox.getFolderByName(null, Mailbox.ID_FOLDER_USER_ROOT, "foo").getId())
-                .getIds(MailItem.Type.MESSAGE).get(0);
+                .getIds(Type.MESSAGE)).get(0);
             Message msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
             // message should be stored in inbox
-            item = mbox.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE)
+            item = Objects
+                .requireNonNull(mbox.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(Type.MESSAGE))
                 .get(0);
             msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
@@ -292,7 +299,7 @@ public class FileIntoCopyTest {
 
     /*
      * fileinto :copy foo; if header :contains "Subject" "Test" { discard; }
-     * 
+     *
      * if message has "Subject: Test" ==> it should be stored in "foo"
      */
 
@@ -312,10 +319,10 @@ public class FileIntoCopyTest {
                 new ParsedMessage(rawReal.getBytes(), false), 0, account.getName(),
                 new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
             // message should be stored in foo
-            Integer item = mbox
+            Integer item = Objects.requireNonNull(mbox
                 .getItemIds(null,
                     mbox.getFolderByName(null, Mailbox.ID_FOLDER_USER_ROOT, "foo").getId())
-                .getIds(MailItem.Type.MESSAGE).get(0);
+                .getIds(Type.MESSAGE)).get(0);
             Message msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
             // message should not be stored in inbox
@@ -329,7 +336,7 @@ public class FileIntoCopyTest {
 
     /*
      * fileinto :copy foo; if header :contains "Subject" "Test" { discard; }
-     * 
+     *
      * if message has "Subject: real" ==> it should be stored in "foo" and INBOX
      */
 
@@ -349,14 +356,15 @@ public class FileIntoCopyTest {
                 new ParsedMessage(rawReal.getBytes(), false), 0, account.getName(),
                 new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
             // message should be stored in foo
-            Integer item = mbox
+            Integer item = Objects.requireNonNull(mbox
                 .getItemIds(null,
                     mbox.getFolderByName(null, Mailbox.ID_FOLDER_USER_ROOT, "foo").getId())
-                .getIds(MailItem.Type.MESSAGE).get(0);
+                .getIds(Type.MESSAGE)).get(0);
             Message msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
             // message should be stored in inbox
-            item = mbox.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE)
+            item = Objects
+                .requireNonNull(mbox.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(Type.MESSAGE))
                 .get(0);
             msg = mbox.getMessageById(null, item);
             Assert.assertEquals("Hello World", msg.getFragment());
@@ -434,7 +442,7 @@ public class FileIntoCopyTest {
                     new DeliveryContext());
             boolean filtered = RuleManager.applyRulesToExistingMessage(new OperationContext(mbox), mbox, msg.getId(),
                     RuleManager.parse(filterScript));
-            Assert.assertEquals(false, filtered);
+          assertFalse(filtered);
             List<Integer> searchedIds = TestUtil.search(mbox, "in:inbox " + body, MailItem.Type.MESSAGE);
             Assert.assertEquals(1, searchedIds.size());
         } catch (Exception e) {

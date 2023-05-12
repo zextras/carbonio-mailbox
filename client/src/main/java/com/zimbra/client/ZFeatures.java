@@ -39,10 +39,6 @@ public class ZFeatures {
     return mAttrs;
   }
 
-  public boolean getTouchClient() {
-    return getBool(ZAttrProvisioning.A_zimbraFeatureTouchClientEnabled);
-  }
-
   public boolean getContacts() {
     return getBool(ZAttrProvisioning.A_zimbraFeatureContactsEnabled);
   }
@@ -83,10 +79,6 @@ public class ZFeatures {
     return getBool(ZAttrProvisioning.A_zimbraFeatureOptionsEnabled);
   }
 
-  public boolean getAdvancedSearch() {
-    return getBool(ZAttrProvisioning.A_zimbraFeatureAdvancedSearchEnabled);
-  }
-
   public boolean getSavedSearches() {
     return getBool(ZAttrProvisioning.A_zimbraFeatureSavedSearchesEnabled);
   }
@@ -113,10 +105,6 @@ public class ZFeatures {
 
   public boolean getHtmlCompose() {
     return getBool(ZAttrProvisioning.A_zimbraFeatureHtmlComposeEnabled);
-  }
-
-  public boolean getIM() {
-    return getBool(ZAttrProvisioning.A_zimbraFeatureIMEnabled);
   }
 
   public boolean getViewInHtml() {
@@ -146,6 +134,10 @@ public class ZFeatures {
   public boolean getNotebook() {
     return false;
   } // bug:56196 getBool(ZAttrProvisioning.A_zimbraFeatureNotebookEnabled);
+
+  public boolean getBriefcases() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureBriefcasesEnabled);
+  }
 
   public boolean getGalAutoComplete() {
     return getBool(ZAttrProvisioning.A_zimbraFeatureGalAutoCompleteEnabled);
@@ -193,12 +185,6 @@ public class ZFeatures {
 
   public boolean getDiscardFilterEnabled() {
     return getBool(ZAttrProvisioning.A_zimbraFeatureDiscardInFiltersEnabled);
-  }
-
-  // defaults to TRUE
-  public boolean getWebSearchEnabled() {
-    return get(ZAttrProvisioning.A_zimbraFeatureWebSearchEnabled) == null
-        || getBool(ZAttrProvisioning.A_zimbraFeatureWebSearchEnabled);
   }
 
   // defaults to TRUE

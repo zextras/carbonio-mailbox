@@ -784,106 +784,6 @@ public class Mailbox implements MailboxStore {
             "invalid mailbox version: " + mData.version + " (too high)", null);
       }
 
-      if (!mData.version.atLeast(MailboxVersion.CURRENT)) { // check for mailbox upgrade
-        if (!mData.version.atLeast(1, 2)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 1.2", getVersion());
-          index.upgradeMailboxTo1_2();
-        }
-
-        // same prescription for both the 1.2 -> 1.3 and 1.3 -> 1.4 migrations
-        if (!mData.version.atLeast(1, 4)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 1.4", getVersion());
-          recalculateFolderAndTagCounts();
-          updateVersion(new MailboxVersion((short) 1, (short) 4));
-        }
-
-        if (!mData.version.atLeast(1, 5)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 1.5", getVersion());
-          index.indexAllDeferredFlagItems();
-        }
-
-        // bug 41893: revert folder colors back to mapped value
-        if (!mData.version.atLeast(1, 7)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 1.7", getVersion());
-          MailboxUpgrade.upgradeTo1_7(this);
-          updateVersion(new MailboxVersion((short) 1, (short) 7));
-        }
-
-        // bug 41850: revert tag colors back to mapped value
-        if (!mData.version.atLeast(1, 8)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 1.8", getVersion());
-          MailboxUpgrade.upgradeTo1_8(this);
-          updateVersion(new MailboxVersion((short) 1, (short) 8));
-        }
-
-        // bug 20620: track \Deleted counts separately
-        if (!mData.version.atLeast(1, 9)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 1.9", getVersion());
-          purgeImapDeleted(null);
-          updateVersion(new MailboxVersion((short) 1, (short) 9));
-        }
-
-        // bug 39647: wiki to document migration
-        if (!mData.version.atLeast(1, 10)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 1.10", getVersion());
-          // update the version first so that the same mailbox
-          // don't have to go through the migration again
-          // if it was called to open() during the migration.
-          updateVersion(new MailboxVersion((short) 1, (short) 10));
-          migrateWikiFolders();
-        }
-
-        if (!mData.version.atLeast(2, 0)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 2.0", getVersion());
-          MailboxUpgrade.upgradeTo2_0(this);
-          updateVersion(new MailboxVersion((short) 2, (short) 0));
-        }
-
-        // TAG and TAGGED_ITEM migration
-        if (!mData.version.atLeast(2, 1)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 2.1", getVersion());
-          MailboxUpgrade.upgradeTo2_1(this);
-          updateVersion(new MailboxVersion((short) 2, (short) 1));
-        }
-
-        // mailbox version in ZIMBRA.MAILBOX table
-        if (!mData.version.atLeast(2, 2)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 2.2", getVersion());
-          // writing the new version itself performs the upgrade!
-          updateVersion(new MailboxVersion((short) 2, (short) 2));
-        }
-
-        // PRIORITY flag
-        if (!mData.version.atLeast(2, 3)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 2.3", getVersion());
-          MailboxUpgrade.upgradeTo2_3(this);
-          updateVersion(new MailboxVersion((short) 2, (short) 3));
-        }
-
-        // POST flag
-        if (!mData.version.atLeast(2, 4)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 2.4", getVersion());
-          MailboxUpgrade.upgradeTo2_4(this);
-          updateVersion(new MailboxVersion((short) 2, (short) 4));
-        }
-
-        // UUID column
-        if (!mData.version.atLeast(2, 5)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 2.5", getVersion());
-          MailboxUpgrade.upgradeTo2_5(this);
-          updateVersion(new MailboxVersion((short) 2, (short) 5));
-        }
-
-        // Upgrade step for 2.6 is backed out due to bug 72131
-
-        // MUTED flag
-        if (!mData.version.atLeast(2, 7)) {
-          ZimbraLog.mailbox.info("Upgrade mailbox from %s to 2.7", getVersion());
-          MailboxUpgrade.upgradeTo2_7(this);
-          updateVersion(new MailboxVersion((short) 2, (short) 7));
-        }
-      }
-
       // done!
       return open = true;
     } finally {
@@ -968,6 +868,24 @@ public class Mailbox implements MailboxStore {
     // that we don't require the caller to set them on
     // the message.
     sender.setSession(getAccount());
+
+    return sender;
+  }
+
+  /**
+   * Returns a {@link MailSender} object based on specific domain properties that can be used to
+   * send mails.
+   *
+   * @param domain {@link com.zimbra.cs.account.Domain} to get needed properties
+   * @return {@link MailSender} object
+   * @throws ServiceException if unable to get SMTP session for the current domain
+   * @author Yuliya Aheeva
+   * @since 23.5.0
+   */
+  public MailSender getMailSender(Domain domain) throws ServiceException {
+    MailSender sender = new MailSender();
+    sender.setTrackBadHosts(true);
+    sender.setSession(domain);
 
     return sender;
   }
@@ -11736,16 +11654,6 @@ public class Mailbox implements MailboxStore {
       return item;
     } finally {
       endTransaction(success);
-    }
-  }
-
-  protected void migrateWikiFolders() throws ServiceException {
-    MigrateToDocuments migrate = new MigrateToDocuments();
-    try {
-      migrate.handleMailbox(this);
-      ZimbraLog.mailbox.info("wiki folder migration finished");
-    } catch (Exception e) {
-      ZimbraLog.mailbox.warn("wiki folder migration failed for " + getAccount().getName(), e);
     }
   }
 

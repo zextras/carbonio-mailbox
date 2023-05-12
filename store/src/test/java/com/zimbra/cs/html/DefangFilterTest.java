@@ -368,21 +368,6 @@ public class DefangFilterTest {
         Assert.assertTrue(result.contains("https://secure.sslpost.com/static/images/open_document.png"));
     }
     /**
-     * Test to make sure there aren't NPE's when there isn't an src in an img tag
-     * @throws Exception
-     */
-    @Test
-    public void testBug64188() throws Exception {
-        String fileName = "bug_64188.txt";
-        InputStream htmlStream = getHtmlBody(fileName);
-        Assert.assertNotNull(htmlStream);
-
-        String result = DefangFactory.getDefanger(MimeConstants.CT_TEXT_HTML).defang(htmlStream, true);
-         // just make sure we made it here, as this was NPEing out..
-        Assert.assertNotNull(result);
-
-    }
-    /**
      * Checks to make sure we actually defang external content
      * @throws Exception
      */

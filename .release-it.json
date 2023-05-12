@@ -1,9 +1,9 @@
 {
   "git": {
-    "requireUpstream": true,
+    "requireUpstream": false,
     "commitMessage": "chore: release ${version}",
     "tagName": "${version}",
-    "tag": true,
+    "tag": false,
     "push": true
   },
   "plugins": {

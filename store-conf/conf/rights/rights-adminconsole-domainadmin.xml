@@ -182,15 +182,13 @@
     <a n="zimbraFeatureContactsEnabled"/>
     <a n="zimbraFeatureCalendarEnabled"/>
     <a n="zimbraFeatureTasksEnabled"/>
-    <a n="zimbraFeatureNotebookEnabled"/>
-    <a n="zimbraFeatureIMEnabled"/>
     <a n="zimbraFeatureOptionsEnabled"/>
     <a n="zimbraFeatureTaggingEnabled"/>
     <a n="zimbraFeatureSharingEnabled"/>
     <a n="zimbraFeatureChangePasswordEnabled"/>
     <a n="zimbraFeatureSkinChangeEnabled"/>
     <a n="zimbraFeatureHtmlComposeEnabled"/>
-    <a n="zimbraFeatureShortcutAliasesEnabled"/>
+
     <a n="zimbraFeatureGalEnabled"/>
     <a n="zimbraFeatureGalAutoCompleteEnabled"/>
     <a n="zimbraFeatureMailPriorityEnabled"/>
@@ -201,11 +199,11 @@
     <a n="zimbraFeatureFiltersEnabled"/>
     <a n="zimbraFeatureOutOfOfficeReplyEnabled"/>
     <a n="zimbraFeatureNewMailNotificationEnabled"/>
-    <a n="zimbraFeatureMailPollingIntervalPreferenceEnabled"/>
+
     <a n="zimbraFeatureIdentitiesEnabled"/>
     <a n="zimbraFeatureGroupCalendarEnabled"/>
     <a n="zimbraFeatureInstantNotify"/>
-    <a n="zimbraFeatureAdvancedSearchEnabled"/>
+
     <a n="zimbraFeatureSavedSearchesEnabled"/>
     <a n="zimbraFeatureInitialSearchPreferenceEnabled"/>
   </attrs>
@@ -222,15 +220,13 @@
     <a n="zimbraFeatureContactsEnabled"/>
     <a n="zimbraFeatureCalendarEnabled"/>
     <a n="zimbraFeatureTasksEnabled"/>
-    <a n="zimbraFeatureNotebookEnabled"/>
-    <a n="zimbraFeatureIMEnabled"/>
     <a n="zimbraFeatureOptionsEnabled"/>
     <a n="zimbraFeatureTaggingEnabled"/>
     <a n="zimbraFeatureSharingEnabled"/>
     <a n="zimbraFeatureChangePasswordEnabled"/>
     <a n="zimbraFeatureSkinChangeEnabled"/>
     <a n="zimbraFeatureHtmlComposeEnabled"/>
-    <a n="zimbraFeatureShortcutAliasesEnabled"/>
+
     <a n="zimbraFeatureGalEnabled"/>
     <a n="zimbraFeatureGalAutoCompleteEnabled"/>
     <a n="zimbraFeatureMailPriorityEnabled"/>
@@ -241,11 +237,11 @@
     <a n="zimbraFeatureFiltersEnabled"/>
     <a n="zimbraFeatureOutOfOfficeReplyEnabled"/>
     <a n="zimbraFeatureNewMailNotificationEnabled"/>
-    <a n="zimbraFeatureMailPollingIntervalPreferenceEnabled"/>
+
     <a n="zimbraFeatureIdentitiesEnabled"/>
     <a n="zimbraFeatureGroupCalendarEnabled"/>
     <a n="zimbraFeatureInstantNotify"/>
-    <a n="zimbraFeatureAdvancedSearchEnabled"/>
+
     <a n="zimbraFeatureSavedSearchesEnabled"/>
     <a n="zimbraFeatureInitialSearchPreferenceEnabled"/>
   </attrs>

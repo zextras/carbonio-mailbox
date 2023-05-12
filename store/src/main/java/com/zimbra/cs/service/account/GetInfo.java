@@ -5,22 +5,8 @@
 
 package com.zimbra.cs.service.account;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.file.InvalidPathException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
-import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.service.ServiceException;
@@ -64,6 +50,17 @@ import com.zimbra.cs.zimlet.ZimletUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.type.Prop;
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @since May 26, 2004
@@ -232,10 +229,6 @@ public class GetInfo extends AccountDocumentHandler  {
         if (sections.contains(Section.DSRCS)) {
             Element ds = response.addUniqueElement(AccountConstants.E_DATA_SOURCES);
             doDataSources(ds, account);
-        }
-        if (sections.contains(Section.CHILDREN)) {
-            Element ca = response.addUniqueElement(AccountConstants.E_CHILD_ACCOUNTS);
-            doChildAccounts(ca, account, zsc.getAuthToken());
         }
 
         if (rights != null && !rights.isEmpty()) {
@@ -406,39 +399,6 @@ public class GetInfo extends AccountDocumentHandler  {
             }
         } catch (ServiceException e) {
             ZimbraLog.mailbox.error("Unable to get data sources", e);
-        }
-    }
-
-    protected void doChildAccounts(Element response, Account acct, AuthToken authToken) throws ServiceException {
-        String[] childAccounts = acct.getMultiAttr(Provisioning.A_zimbraChildAccount);
-        String[] visibleChildAccounts = acct.getMultiAttr(Provisioning.A_zimbraPrefChildVisibleAccount);
-
-        if (childAccounts.length == 0 && visibleChildAccounts.length == 0) {
-            return;
-        }
-        Provisioning prov = Provisioning.getInstance();
-        Set<String> children = new HashSet<String>(childAccounts.length);
-
-        for (String childId : visibleChildAccounts) {
-            if (children.contains(childId)) {
-                continue;
-            }
-            Account child = prov.get(Key.AccountBy.id, childId, authToken);
-            if (child != null) {
-                encodeChildAccount(response, child, true);
-            }
-            children.add(childId);
-        }
-
-        for (String childId : childAccounts) {
-            if (children.contains(childId)) {
-                continue;
-            }
-            Account child = prov.get(Key.AccountBy.id, childId, authToken);
-            if (child != null) {
-                encodeChildAccount(response, child, false);
-            }
-            children.add(childId);
         }
     }
 

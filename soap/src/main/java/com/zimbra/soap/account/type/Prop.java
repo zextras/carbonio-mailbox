@@ -14,16 +14,9 @@ import javax.xml.bind.annotation.XmlValue;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.AccountConstants;
 
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_PROP, description="Proerty")
 public class Prop {
 
     /**
@@ -46,23 +39,18 @@ public class Prop {
      */
     @XmlValue
     private String value;
-    @GraphQLQuery(name=GqlConstants.ZIMLET, description="Zimlet name")
-    @GraphQLNonNull
     public String getZimlet() {
         return zimlet;
     }
     public void setZimlet(String zimlet) {
         this.zimlet = zimlet;
     }
-    @GraphQLQuery(name=GqlConstants.NAME, description="Property name")
-    @GraphQLNonNull
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
     }
-    @GraphQLQuery(name=GqlConstants.VALUE, description="Property value")
     public String getValue() {
         return value;
     }
@@ -100,7 +88,6 @@ public class Prop {
         return zimlet + SEPARATOR + name + SEPARATOR + value;
     }
 
-    @GraphQLIgnore
     public String getSerialization() {
         if (serialization == null) {
             serialization = makeSerialization();

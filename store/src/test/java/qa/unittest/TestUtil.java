@@ -116,29 +116,18 @@ import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.file.FileBlobStore;
 import com.zimbra.cs.util.BuildInfo;
 import com.zimbra.cs.util.JMSession;
-import qa.unittest.prov.soap.SoapTest;
 import com.zimbra.soap.JaxbUtil;
-import com.zimbra.soap.account.message.AuthRequest;
-import com.zimbra.soap.account.message.AuthResponse;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.admin.message.GetAccountResponse;
-import com.zimbra.soap.admin.message.GrantRightRequest;
-import com.zimbra.soap.admin.message.GrantRightResponse;
 import com.zimbra.soap.admin.message.QueryWaitSetRequest;
 import com.zimbra.soap.admin.message.QueryWaitSetResponse;
 import com.zimbra.soap.admin.message.ReloadLocalConfigRequest;
 import com.zimbra.soap.admin.message.ReloadLocalConfigResponse;
 import com.zimbra.soap.admin.type.Attr;
-import com.zimbra.soap.admin.type.EffectiveRightsTargetSelector;
-import com.zimbra.soap.admin.type.GranteeSelector;
-import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
-import com.zimbra.soap.admin.type.RightModifierInfo;
 import com.zimbra.soap.admin.type.SessionForWaitSet;
 import com.zimbra.soap.admin.type.WaitSetInfo;
 import com.zimbra.soap.admin.type.WaitSetSessionInfo;
 import com.zimbra.soap.type.AccountSelector;
-import com.zimbra.soap.type.TargetBy;
-import com.zimbra.soap.type.TargetType;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -161,7 +150,6 @@ import junit.framework.Assert;
 import org.apache.http.HttpException;
 import org.dom4j.DocumentException;
 import org.junit.internal.AssumptionViolatedException;
-import org.junit.runner.JUnitCore;
 
 
 /**
@@ -841,13 +829,6 @@ public class TestUtil extends Assert {
         return sp;
     }
 
-    public static void runTest(Class<?> testClass) {
-        JUnitCore junit = new JUnitCore();
-        junit.addListener(new TestLogger());
-        ZimbraLog.test.info("Starting unit test %s.", testClass.getName());
-        junit.run(testClass);
-    }
-
     public static ZMailbox getZMailbox(String username) throws ServiceException {
         return getZMailbox(username, null);
     }
@@ -1523,30 +1504,6 @@ public class TestUtil extends Assert {
         ReloadLocalConfigRequest req = new ReloadLocalConfigRequest();
         ReloadLocalConfigResponse resp = prov.invokeJaxb(req);
         assertNotNull("ReloadLocalConfigResponse", resp);
-    }
-
-    public static SoapTransport authUser(String acctName, String password) throws Exception {
-        AccountSelector acct = new AccountSelector(com.zimbra.soap.type.AccountBy.name, acctName);
-        SoapHttpTransport transport = new SoapHttpTransport(TestUtil.getSoapUrl());
-        AuthRequest req = new AuthRequest(acct, password);
-        AuthResponse resp = SoapTest.invokeJaxb(transport, req);
-        transport.setAuthToken(resp.getAuthToken());
-        return transport;
-    }
-
-    public static void grantRightToAdmin(SoapProvisioning adminSoapProv, TargetType targetType, String targetName,
-            String granteeName, String rightName) throws ServiceException {
-        GranteeSelector grantee = new GranteeSelector(com.zimbra.soap.type.GranteeType.usr, GranteeBy.name, granteeName);
-        EffectiveRightsTargetSelector target = null;
-        if (targetName == null) {
-            target = new EffectiveRightsTargetSelector(targetType, null, null);
-        } else {
-            target = new EffectiveRightsTargetSelector(targetType, TargetBy.name, targetName);
-        }
-
-        RightModifierInfo right = new RightModifierInfo(rightName);
-        GrantRightResponse grResp = adminSoapProv.invokeJaxb(new GrantRightRequest(target, grantee, right));
-        assertNotNull("GrantRightResponse for " + right.getValue(), grResp);
     }
 
     public static class UserInfo {

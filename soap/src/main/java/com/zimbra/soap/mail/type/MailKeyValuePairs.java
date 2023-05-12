@@ -24,16 +24,15 @@ import com.zimbra.soap.json.jackson.annotate.ZimbraKeyValuePairs;
 import com.zimbra.soap.type.KeyValuePair;
 import com.zimbra.soap.type.KeyValuePairs;
 
-import io.leangen.graphql.annotations.GraphQLIgnore;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
+
+
+
 
 /*
  * Used for JAXB objects representing elements which have child node(s) of form:
  *     <a n="{key}">{value}</a>
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name="MailKeyValuePairs")
 public class MailKeyValuePairs implements KeyValuePairs {
 
     /**
@@ -41,7 +40,6 @@ public class MailKeyValuePairs implements KeyValuePairs {
      */
     @ZimbraKeyValuePairs
     @XmlElement(name=MailConstants.E_A)
-    @GraphQLQuery(name="keyValuePairs", description="Key value pairs")
     private List<KeyValuePair> keyValuePairs;
 
     public MailKeyValuePairs() {
@@ -103,13 +101,11 @@ public class MailKeyValuePairs implements KeyValuePairs {
         keyValuePairs.add(keyValue);
     }
 
-    @GraphQLIgnore
     @Override
     public Multimap<String, String> getKeyValuePairsMultimap() {
         return KeyValuePair.toMultimap(keyValuePairs);
     }
 
-    @GraphQLIgnore
     @Override
     public Map<String, Object> getKeyValuePairsAsOldMultimap() {
         return StringUtil.toOldMultimap(getKeyValuePairsMultimap());

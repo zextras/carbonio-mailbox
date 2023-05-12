@@ -15,16 +15,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.base.XNameRuleInterface;
 
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
-
 @XmlAccessorType(XmlAccessType.NONE)
-@GraphQLType(name=GqlConstants.CLASS_XNAME_RULE, description="XName Rule")
 public class XNameRule
 implements XNameRuleInterface {
 
@@ -33,7 +27,6 @@ implements XNameRuleInterface {
      * @zm-api-field-description XNAME Name
      */
     @XmlAttribute(name=MailConstants.A_CAL_RULE_XNAME_NAME /* name */, required=false)
-    @GraphQLQuery(name=GqlConstants.NAME, description="XNAME Name")
     private final String name;
 
     /**
@@ -41,7 +34,6 @@ implements XNameRuleInterface {
      * @zm-api-field-description XNAME Value
      */
     @XmlAttribute(name=MailConstants.A_CAL_RULE_XNAME_VALUE /* value */, required=false)
-    @GraphQLQuery(name=GqlConstants.VALUE, description="XNAME value")
     private final String value;
 
     /**
@@ -52,7 +44,7 @@ implements XNameRuleInterface {
         this((String) null, (String) null);
     }
 
-    public XNameRule(@GraphQLInputField String name, @GraphQLInputField String value) {
+    public XNameRule( String name, String value) {
         this.name = name;
         this.value = value;
     }

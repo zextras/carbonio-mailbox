@@ -18,15 +18,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.AccountConstants;
-
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(propOrder = {})
-@GraphQLType(name=GqlConstants.CLASS_SMIME_PUBLIC_CERTS_INFO, description="SMIMEPublicCertsInfo")
 public class SMIMEPublicCertsInfo {
 
     /**
@@ -57,9 +52,7 @@ public class SMIMEPublicCertsInfo {
         this.certs.add(cert);
     }
 
-    @GraphQLQuery(name=GqlConstants.EMAIL, description="email")
     public String getEmail() { return email; }
-    @GraphQLQuery(name=GqlConstants.CERTIFICATES, description="SMIME certificates")
     public List<SMIMEPublicCertInfo> getCerts() {
         return Collections.unmodifiableList(certs);
     }

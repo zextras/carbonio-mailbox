@@ -131,7 +131,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
         grantee = prov.getAccountByName(mapExtEmailToAcctName(extUserEmail, domain));
         if (grantee == null) {
           // external virtual account not created yet
-          if (prov.isOctopus() && DebugConfig.skipVirtualAccountRegistrationPage) {
+          if (DebugConfig.skipVirtualAccountRegistrationPage) {
             // provision using 'null' password and display name
             // UI will ask the user to set these post provisioning
             provisionVirtualAccountAndRedirect(req, resp, null, null, ownerId, extUserEmail);
@@ -229,8 +229,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
               && grantee.getId().equals(zAuthToken.getAccountId())) {
             // external virtual account already logged-in
             resp.sendRedirect("/");
-          } else if (prov.isOctopus()
-              && !grantee.isVirtualAccountInitialPasswordSet()
+          } else if (!grantee.isVirtualAccountInitialPasswordSet()
               && DebugConfig.skipVirtualAccountRegistrationPage) {
             // seems like the virtual user did not set his password during his last visit, after an
             // account was

@@ -14,14 +14,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.type.SearchSortBy;
-
-import io.leangen.graphql.annotations.GraphQLInputField;
-import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
-import io.leangen.graphql.annotations.types.GraphQLType;
 
 /*
   <search id="..." name="..." query="..." [types="..."] [sortBy="..."] l="{folder}"/>+
@@ -31,7 +25,6 @@ import io.leangen.graphql.annotations.types.GraphQLType;
 // MailConstants.E_SEARCH == "search"
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name=MailConstants.E_SEARCH)
-@GraphQLType(name=GqlConstants.CLASS_SEARCH_FOLDER, description="Search folder details")
 public final class SearchFolder extends Folder {
 
     /**
@@ -59,33 +52,26 @@ public final class SearchFolder extends Folder {
     @XmlJavaTypeAdapter(ItemType.CSVAdapter.class)
     private final Set<ItemType> types = EnumSet.noneOf(ItemType.class);
 
-    @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.QUERY, description="query to search")
     public String getQuery() {
         return query;
     }
 
-    @GraphQLInputField(name=GqlConstants.QUERY, description="query to search")
     public void setQuery(String query) {
         this.query = query;
     }
 
-    @GraphQLQuery(name=GqlConstants.SORT_BY, description="sort order for the search results")
     public SearchSortBy getSortBy() {
         return sortBy;
     }
 
-    @GraphQLInputField(name=GqlConstants.SORT_BY, description="sort order for the search results")
     public void setSortBy(SearchSortBy sortBy) {
         this.sortBy = sortBy;
     }
 
-    @GraphQLQuery(name=GqlConstants.SEARCH_TYPES, description="type of the new folder created")
     public Set<ItemType> getTypes() {
         return types;
     }
 
-    @GraphQLInputField(name=GqlConstants.SEARCH_TYPES, description="type of the new folder created")
     public void setTypes(Set<ItemType> set) {
         types.clear();
         types.addAll(set);
