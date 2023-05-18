@@ -1189,17 +1189,6 @@ public final class LC {
 
   public static final KnownKey max_image_size_to_resize = KnownKey.newKey(10 * 1024 * 1024);
 
-  // octopus
-  public static final KnownKey documents_disable_instant_parsing = KnownKey.newKey(false);
-  public static final KnownKey rest_pdf_converter_url =
-      KnownKey.newKey("http://localhost:7070/zoo/convertpdf");
-  public static final KnownKey pdf2swf_path = KnownKey.newKey("/sw/bin/pdf2swf");
-
-  public static final KnownKey octopus_incoming_patch_max_age =
-      KnownKey.newKey(120); // 120 mins = 2 hours
-  public static final KnownKey octopus_stored_patch_max_age =
-      KnownKey.newKey(360); // 360 mins = 6 hours
-
   // used for resumable document uploads (full files)
   public static final KnownKey document_incoming_max_age =
       KnownKey.newKey(360); // 120 mins = 2 hours
@@ -1340,9 +1329,6 @@ public final class LC {
       KnownKey.newKey(Constants.MILLIS_PER_MINUTE);
 
   public static final KnownKey check_dl_membership_enabled = KnownKey.newKey(true);
-
-  public static final KnownKey octopus_public_static_folder =
-      KnownKey.newKey("${zimbra_home}/jetty/static");
 
   public static final KnownKey conversation_ignore_maillist_prefix = KnownKey.newKey(true);
 

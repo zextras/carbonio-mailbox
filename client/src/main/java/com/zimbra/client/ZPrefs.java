@@ -65,8 +65,6 @@ public class ZPrefs {
 
     public boolean getUseTimeZoneListInCalendar() { return getBool(ZAttrProvisioning.A_zimbraPrefUseTimeZoneListInCalendar); }
 
-    public boolean getReadingPaneEnabled() { return getBool(ZAttrProvisioning.A_zimbraPrefReadingPaneEnabled); }
-
     public String getReadingPaneLocation() { return get(ZAttrProvisioning.A_zimbraPrefReadingPaneLocation); }
 
     public boolean getMailSignatureEnabled() { return getBool(ZAttrProvisioning.A_zimbraPrefMailSignatureEnabled); }
@@ -218,12 +216,7 @@ public class ZPrefs {
 
     public String getForwardReplyPrefixChar() { return get(ZAttrProvisioning.A_zimbraPrefForwardReplyPrefixChar); }
 
-    public String getCalendarReminderDuration1() { return get(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration1); }
-    public String getCalendarReminderDuration2() { return get(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration2); }
     public String getCalendarReminderEmail() { return get(ZAttrProvisioning.A_zimbraPrefCalendarReminderEmail); }
-    public boolean getCalendarReminderSendEmail() { return getBool(ZAttrProvisioning.A_zimbraPrefCalendarReminderSendEmail); }
-    public boolean getCalendarReminderMobile() { return getBool(ZAttrProvisioning.A_zimbraPrefCalendarReminderMobile); }
-    public boolean getCalendarReminderYMessenger() { return getBool(ZAttrProvisioning.A_zimbraPrefCalendarReminderYMessenger); }
     public boolean getCalendarShowDeclinedMeetings() { return getBool(ZAttrProvisioning.A_zimbraPrefCalendarShowDeclinedMeetings); }
 
 

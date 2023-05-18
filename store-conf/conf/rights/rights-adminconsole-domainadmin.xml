@@ -4,7 +4,7 @@
 <rights>
 
 <include file="rights.xml"/>
-<!-- 
+<!--
 ========================================================
       domain admin read-only attrs
 ========================================================
@@ -182,16 +182,13 @@
     <a n="zimbraFeatureContactsEnabled"/>
     <a n="zimbraFeatureCalendarEnabled"/>
     <a n="zimbraFeatureTasksEnabled"/>
-    <a n="zimbraFeatureNotebookEnabled"/>
-    <a n="zimbraFeatureBriefcasesEnabled"/>
-    <a n="zimbraFeatureIMEnabled"/>
     <a n="zimbraFeatureOptionsEnabled"/>
     <a n="zimbraFeatureTaggingEnabled"/>
     <a n="zimbraFeatureSharingEnabled"/>
     <a n="zimbraFeatureChangePasswordEnabled"/>
     <a n="zimbraFeatureSkinChangeEnabled"/>
     <a n="zimbraFeatureHtmlComposeEnabled"/>
-    <a n="zimbraFeatureShortcutAliasesEnabled"/>
+
     <a n="zimbraFeatureGalEnabled"/>
     <a n="zimbraFeatureGalAutoCompleteEnabled"/>
     <a n="zimbraFeatureMailPriorityEnabled"/>
@@ -202,11 +199,11 @@
     <a n="zimbraFeatureFiltersEnabled"/>
     <a n="zimbraFeatureOutOfOfficeReplyEnabled"/>
     <a n="zimbraFeatureNewMailNotificationEnabled"/>
-    <a n="zimbraFeatureMailPollingIntervalPreferenceEnabled"/>
+
     <a n="zimbraFeatureIdentitiesEnabled"/>
     <a n="zimbraFeatureGroupCalendarEnabled"/>
     <a n="zimbraFeatureInstantNotify"/>
-    <a n="zimbraFeatureAdvancedSearchEnabled"/>
+
     <a n="zimbraFeatureSavedSearchesEnabled"/>
     <a n="zimbraFeatureInitialSearchPreferenceEnabled"/>
   </attrs>
@@ -223,16 +220,13 @@
     <a n="zimbraFeatureContactsEnabled"/>
     <a n="zimbraFeatureCalendarEnabled"/>
     <a n="zimbraFeatureTasksEnabled"/>
-    <a n="zimbraFeatureNotebookEnabled"/>
-    <a n="zimbraFeatureBriefcasesEnabled"/>
-    <a n="zimbraFeatureIMEnabled"/>
     <a n="zimbraFeatureOptionsEnabled"/>
     <a n="zimbraFeatureTaggingEnabled"/>
     <a n="zimbraFeatureSharingEnabled"/>
     <a n="zimbraFeatureChangePasswordEnabled"/>
     <a n="zimbraFeatureSkinChangeEnabled"/>
     <a n="zimbraFeatureHtmlComposeEnabled"/>
-    <a n="zimbraFeatureShortcutAliasesEnabled"/>
+
     <a n="zimbraFeatureGalEnabled"/>
     <a n="zimbraFeatureGalAutoCompleteEnabled"/>
     <a n="zimbraFeatureMailPriorityEnabled"/>
@@ -243,11 +237,11 @@
     <a n="zimbraFeatureFiltersEnabled"/>
     <a n="zimbraFeatureOutOfOfficeReplyEnabled"/>
     <a n="zimbraFeatureNewMailNotificationEnabled"/>
-    <a n="zimbraFeatureMailPollingIntervalPreferenceEnabled"/>
+
     <a n="zimbraFeatureIdentitiesEnabled"/>
     <a n="zimbraFeatureGroupCalendarEnabled"/>
     <a n="zimbraFeatureInstantNotify"/>
-    <a n="zimbraFeatureAdvancedSearchEnabled"/>
+
     <a n="zimbraFeatureSavedSearchesEnabled"/>
     <a n="zimbraFeatureInitialSearchPreferenceEnabled"/>
   </attrs>
@@ -358,7 +352,7 @@
 </right>
 
 <!-- Admin Console Accounts Advanced Tab -->
-<!-- syntax or bad attr somewhere in the advanced tab config --> 
+<!-- syntax or bad attr somewhere in the advanced tab config -->
 <!-- <right name="setDomainAdminConsoleAccountsAdvancedTab" type="setAttrs" targetType="account">
   <desc> Admin Console set attr rights for Accounts Advanced Tab </desc>
   <attrs>
@@ -743,7 +737,7 @@
   <desc>Admin Console Domain Admin Alias Rights</desc>
   <rights>
     <r n="viewAccountAdminUI"/>
-    <r n="listAlias"/>  
+    <r n="listAlias"/>
   </rights>
 </right>
 

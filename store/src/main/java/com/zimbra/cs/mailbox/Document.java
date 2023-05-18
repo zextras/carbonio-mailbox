@@ -127,18 +127,15 @@ public class Document extends MailItem {
 
             IndexDocument doc = pd.getDocument();
             if (doc != null) {
-                List<IndexDocument> toRet = new ArrayList<IndexDocument>(1);
+                List<IndexDocument> toRet = new ArrayList<>(1);
                 toRet.add(doc);
                 return toRet;
             } else {
-                return new ArrayList<IndexDocument>(0);
+                return new ArrayList<>(0);
             }
-        } catch (IOException e) {
+        } catch (IOException | ServiceException e) {
             ZimbraLog.index.warn("Error generating index data for Wiki Document "+getId()+". Item will not be indexed", e);
-            return new ArrayList<IndexDocument>(0);
-        } catch (ServiceException e) {
-            ZimbraLog.index.warn("Error generating index data for Wiki Document "+getId()+". Item will not be indexed", e);
-            return new ArrayList<IndexDocument>(0);
+            return new ArrayList<>(0);
         }
     }
 
@@ -163,8 +160,7 @@ public class Document extends MailItem {
         contentType = pd.getContentType();
         creator = pd.getCreator();
 
-        if(!LC.documents_disable_instant_parsing.booleanValue())
-            fragment = pd.getFragment();
+        fragment = pd.getFragment();
 
         mData.date = (int) (pd.getCreatedDate() / 1000L);
         mData.name = pd.getFilename();
@@ -186,7 +182,7 @@ public class Document extends MailItem {
     protected static UnderlyingData prepareCreate(MailItem.Type type, int id, String uuid, Folder folder, String name,
             String mimeType, ParsedDocument pd, Metadata meta, CustomMetadata custom, int flags) throws ServiceException {
 
-        return prepareCreate(type, id, uuid, folder, name, mimeType, pd, meta, custom, flags, LC.documents_disable_instant_parsing.booleanValue());
+        return prepareCreate(type, id, uuid, folder, name, mimeType, pd, meta, custom, flags, false);
     }
 
     protected static UnderlyingData prepareCreate(MailItem.Type type, int id, String uuid, Folder folder, String name,

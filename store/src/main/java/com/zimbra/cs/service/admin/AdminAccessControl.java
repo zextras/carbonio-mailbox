@@ -289,6 +289,17 @@ public abstract class AdminAccessControl {
         }
     }
 
+    /**
+     * Checks if an authenticated user is a global admin.
+     * @return true if an authenticated user is a global admin, otherwise false.
+     *
+     * @author Yuliya Aheeva
+     * @since 23.6.0
+     */
+    public boolean isGlobalAdmin() {
+        return AccessControlUtil.isGlobalAdmin(mAuthedAcct);
+    }
+
     public boolean isDomainAdminOnly() {
         return mAccessMgr.isDomainAdminOnly(mAuthToken);
     }

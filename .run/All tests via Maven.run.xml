@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="All tests via Maven" type="CompoundRunConfigurationType">
+    <toRun name="IT" type="MavenRunConfiguration" />
+    <toRun name="UT" type="MavenRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>

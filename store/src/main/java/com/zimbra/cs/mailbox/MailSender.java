@@ -556,6 +556,14 @@ public class MailSender {
 
     /**
      * Sends a message.
+     * If request is delegated, save to sent behavior follows
+     * {@link Provisioning#A_zimbraPrefDelegatedSendSaveTarget}:
+     * - owner: saves the email only to delegated account, status read
+     * - sender: saves the email to original user account, status read
+     * - both: performs both above
+     * - none: does not save sent email
+     * Note: the email is sent in any case.
+     *
      */
     public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm)
     throws ServiceException {
@@ -712,13 +720,10 @@ public class MailSender {
                 }
             }
 
-            // for delegated sends automatically save a copy to the "From" user's mailbox, unless we've been
-            // specifically requested not to do the save (for instance BES does its own save to Sent, so does'nt
-            // want it done here).
             if (allowSaveToSent && hasRecipients && !isDataSourceSender() && isDelegatedRequest &&
                     (PrefDelegatedSendSaveTarget.owner == acct.getPrefDelegatedSendSaveTarget() ||
                     PrefDelegatedSendSaveTarget.both == acct.getPrefDelegatedSendSaveTarget())) {
-                int flags = Flag.BITMASK_UNREAD | Flag.BITMASK_FROM_ME;
+                int flags = Flag.BITMASK_FROM_ME;
                 // save the sent copy using the target's credentials, as the sender doesn't necessarily have write access
                 OperationContext octxtTarget = new OperationContext(acct);
                 if (pm == null || pm.isAttachmentIndexingEnabled() != mbox.attachmentsIndexingEnabled()) {
@@ -734,6 +739,9 @@ public class MailSender {
                             RuleManager.applyRulesToOutgoingMessage(octxtTarget, mbox, pm, sentFolderId, true, flags, null, convId);
                     for (ItemId itemId : addedItemIds) {
                         rollbacks.add(new RollbackData(mbox, itemId.getId()));
+                        if (returnItemId == null) {
+                            returnItemId = itemId;
+                        }
                     }
                 }
             }

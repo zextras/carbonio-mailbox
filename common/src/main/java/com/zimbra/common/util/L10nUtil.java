@@ -244,13 +244,6 @@ public class L10nUtil {
         mobile_send_failure_report_subject,
         mobile_send_failure_report_message,
 
-        //TODO remove octopus
-        octopus_share_notification_email_subject,
-        octopus_share_notification_email_message,
-        octopus_share_notification_email_accept,
-        octopus_share_notification_email_ignore,
-        octopus_share_notification_email_bodyFolderDesc,
-
         //Spnego 401 error page
         spnego_401_error_message,
         spnego_redirect_message,

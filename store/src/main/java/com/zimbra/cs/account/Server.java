@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * @author schemers
- *     <p>Window - Preferences - Java - Code Style - Code Templates
+ * <p>Window - Preferences - Java - Code Style - Code Templates
  */
 public class Server extends ZAttrServer {
 
@@ -51,7 +51,9 @@ public class Server extends ZAttrServer {
    */
   public boolean mailTransportMatches(String mailTransport) {
     // if there is no mailTransport, it sure "matches"
-    if (mailTransport == null) return true;
+    if (mailTransport == null) {
+      return true;
+    }
 
     String serviceName = getAttr(Provisioning.A_zimbraServiceHostname, null);
 
@@ -101,51 +103,23 @@ public class Server extends ZAttrServer {
   }
 
   public boolean hasWebClientService() {
-    // Figure out if this a pre 8.5 server (i.e if zimbraServerVersion is not set)
-    String version = this.getAttr(Provisioning.A_zimbraServerVersion, null);
-    if (version != null) {
-      return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
-          .contains(Provisioning.SERVICE_WEBCLIENT);
-    } else {
-      return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
-          .contains(Provisioning.SERVICE_MAILBOX);
-    }
+    return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
+        .contains(Provisioning.SERVICE_WEBCLIENT);
   }
 
   public boolean hasAdminClientService() {
-    // Figure out if this a pre 8.5 server (i.e if zimbraServerVersion is not set)
-    String version = this.getAttr(Provisioning.A_zimbraServerVersion, null);
-    if (version != null) {
-      return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
-          .contains(Provisioning.SERVICE_ADMINCLIENT);
-    } else {
-      return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
-          .contains(Provisioning.SERVICE_MAILBOX);
-    }
+    return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
+        .contains(Provisioning.SERVICE_ADMINCLIENT);
   }
 
   public boolean hasMailClientService() {
-    // Figure out if this a pre 8.5 server (i.e if zimbraServerVersion is not set)
-    String version = this.getAttr(Provisioning.A_zimbraServerVersion, null);
-    if (version != null) {
-      return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
-          .contains(Provisioning.SERVICE_MAILCLIENT);
-    } else {
-      return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
-          .contains(Provisioning.SERVICE_MAILBOX);
-    }
+    return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
+        .contains(Provisioning.SERVICE_MAILCLIENT);
   }
 
   public boolean hasZimletService() {
-    // Figure out if this a pre 8.5 server (i.e if zimbraServerVersion is not set)
-    String version = this.getAttr(Provisioning.A_zimbraServerVersion, null);
-    if (version != null) {
-      return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
-          .contains(Provisioning.SERVICE_ZIMLET);
-    } else {
-      return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
-          .contains(Provisioning.SERVICE_MAILBOX);
-    }
+    return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
+        .contains(Provisioning.SERVICE_ZIMLET);
   }
 
   public boolean isLocalServer() throws ServiceException {
