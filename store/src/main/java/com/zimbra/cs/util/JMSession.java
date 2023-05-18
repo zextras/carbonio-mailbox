@@ -53,15 +53,7 @@ public final class JMSession {
         // Assume that most malformed base64 errors occur due to incorrect delimiters,
         // as opposed to errors in the data itself.  See bug 11213 for more details.
         System.setProperty("mail.mime.base64.ignoreerrors", "true");
-
-        try {
-            Security.addProvider(new OAuth2Provider(Provisioning.getInstance().getLocalServer()
-                .getServerVersionMajor()));
-        } catch (ServiceException e) {
-            ZimbraLog.smtp.warn("Exception in getting zimbra server version", e);
-            Security.addProvider(new OAuth2Provider(1));
-        }
-
+        Security.addProvider(new OAuth2Provider(1));
         Properties props = new Properties();
         props.setProperty("mail.mime.address.strict", "false");
         sSession = Session.getInstance(props);

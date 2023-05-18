@@ -129,7 +129,6 @@ public class AdminRights {
     public static AdminRight R_changeCalendarResourcePassword;
     public static AdminRight R_checkCalendarResourcePasswordStrength;
     public static AdminRight R_checkDirectoryOnFileSystem;
-    public static AdminRight R_checkDomainMXRecord;
     public static AdminRight R_checkExchangeAuthConfig;
     public static AdminRight R_checkHealth;
     public static AdminRight R_checkPasswordStrength;
@@ -143,7 +142,6 @@ public class AdminRights {
     public static AdminRight R_configureGlobalConfigConstraint;
     public static AdminRight R_configurePasswordStrength;
     public static AdminRight R_configureQuota;
-    public static AdminRight R_configureWikiAccount;
     public static AdminRight R_countAccount;
     public static AdminRight R_countAlias;
     public static AdminRight R_countCalendarResource;
@@ -564,7 +562,6 @@ public class AdminRights {
         R_changeCalendarResourcePassword       = rm.getAdminRight(Right.RT_changeCalendarResourcePassword);
         R_checkCalendarResourcePasswordStrength = rm.getAdminRight(Right.RT_checkCalendarResourcePasswordStrength);
         R_checkDirectoryOnFileSystem           = rm.getAdminRight(Right.RT_checkDirectoryOnFileSystem);
-        R_checkDomainMXRecord                  = rm.getAdminRight(Right.RT_checkDomainMXRecord);
         R_checkExchangeAuthConfig              = rm.getAdminRight(Right.RT_checkExchangeAuthConfig);
         R_checkHealth                          = rm.getAdminRight(Right.RT_checkHealth);
         R_checkPasswordStrength                = rm.getAdminRight(Right.RT_checkPasswordStrength);
@@ -578,7 +575,6 @@ public class AdminRights {
         R_configureGlobalConfigConstraint      = rm.getAdminRight(Right.RT_configureGlobalConfigConstraint);
         R_configurePasswordStrength            = rm.getAdminRight(Right.RT_configurePasswordStrength);
         R_configureQuota                       = rm.getAdminRight(Right.RT_configureQuota);
-        R_configureWikiAccount                 = rm.getAdminRight(Right.RT_configureWikiAccount);
         R_countAccount                         = rm.getAdminRight(Right.RT_countAccount);
         R_countAlias                           = rm.getAdminRight(Right.RT_countAlias);
         R_countCalendarResource                = rm.getAdminRight(Right.RT_countCalendarResource);

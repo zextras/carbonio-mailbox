@@ -39,7 +39,6 @@ public class DomainAccessManager extends AccessManager {
         }
 
         if (asAdmin && at.isAdmin()) return true;
-        if (isParentOf(at, target)) return true;
         if (!(asAdmin && at.isDomainAdmin())) return false;
         // don't allow a domain-only admin to access a global admin's account
         if (target.getBooleanAttr(Provisioning.A_zimbraIsAdminAccount, false)) return false;
@@ -72,9 +71,6 @@ public class DomainAccessManager extends AccessManager {
 
         // admin auth account will always succeed
         if (asAdmin && credentials.getBooleanAttr(Provisioning.A_zimbraIsAdminAccount, false))
-            return true;
-        // parent auth account will always succeed
-        if (isParentOf(credentials, target))
             return true;
         // don't allow access if the authenticated account is not acting as an admin
         if (!asAdmin)
@@ -176,10 +172,6 @@ public class DomainAccessManager extends AccessManager {
 
         // check for family mailbox
         Account targetAcct = Provisioning.getInstance().get(Key.AccountBy.name, email, at);
-        if (targetAcct != null) {
-            if (isParentOf(at, targetAcct))
-                return true;
-        }
         return canAccessDomain(at, parts[1]);
     }
 

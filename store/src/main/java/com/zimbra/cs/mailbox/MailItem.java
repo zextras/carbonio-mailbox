@@ -193,11 +193,7 @@ public abstract class MailItem
       try {
         return Type.valueOf(name.toUpperCase());
       } catch (IllegalArgumentException e) {
-        if ("briefcase".equalsIgnoreCase(name)) { // synonym of document
-          return DOCUMENT;
-        } else {
-          return UNKNOWN;
-        }
+        return UNKNOWN;
       }
     }
 

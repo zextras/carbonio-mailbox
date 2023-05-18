@@ -82,10 +82,6 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
             checkDomainStatus(target);
         }
 
-        if (isParentOf(at, target)) {
-            return true;
-        }
-
         if (asAdmin) {
             return canDo(at, actualTargetForAdminLoginAs(target),
                     actualRightForAdminLoginAs(target), asAdmin);
@@ -104,10 +100,6 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     throws ServiceException {
 
         checkDomainStatus(target);
-
-        if (isParentOf(credentials, target)) {
-            return true;
-        }
 
         if (asAdmin) {
             return canDo(credentials, actualTargetForAdminLoginAs(target),

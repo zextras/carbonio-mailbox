@@ -102,7 +102,7 @@
     <a n="telephoneNumber"/>
     <a n="homePhone"/>
     <a n="mobile"/>
-    <a n="pager"/>    
+    <a n="pager"/>
     <a n="company"/>
     <a n="street"/>
     <a n="l"/>
@@ -182,16 +182,13 @@
     <a n="zimbraFeatureContactsEnabled"/>
     <a n="zimbraFeatureCalendarEnabled"/>
     <a n="zimbraFeatureTasksEnabled"/>
-    <a n="zimbraFeatureNotebookEnabled"/>
-    <a n="zimbraFeatureBriefcasesEnabled"/>
-    <a n="zimbraFeatureIMEnabled"/>
     <a n="zimbraFeatureOptionsEnabled"/>
     <a n="zimbraFeatureTaggingEnabled"/>
     <a n="zimbraFeatureSharingEnabled"/>
     <a n="zimbraFeatureChangePasswordEnabled"/>
     <a n="zimbraFeatureSkinChangeEnabled"/>
     <a n="zimbraFeatureHtmlComposeEnabled"/>
-    <a n="zimbraFeatureShortcutAliasesEnabled"/>
+
     <a n="zimbraFeatureGalEnabled"/>
     <a n="zimbraFeatureGalAutoCompleteEnabled"/>
     <a n="zimbraFeatureMailPriorityEnabled"/>
@@ -203,11 +200,11 @@
     <a n="zimbraFeatureOutOfOfficeReplyEnabled"/>
     <a n="zimbraFeatureNewMailNotificationEnabled"/>
       <!-- deprecated PollingInterval -->
-    <a n="zimbraFeatureMailPollingIntervalPreferenceEnabled"/>
+
     <a n="zimbraFeatureIdentitiesEnabled"/>
     <a n="zimbraFeatureGroupCalendarEnabled"/>
     <a n="zimbraFeatureInstantNotify"/>
-    <a n="zimbraFeatureAdvancedSearchEnabled"/>
+
     <a n="zimbraFeatureSavedSearchesEnabled"/>
     <a n="zimbraFeatureInitialSearchPreferenceEnabled"/>
   </attrs>
@@ -225,16 +222,13 @@
     <a n="zimbraFeatureContactsEnabled"/>
     <a n="zimbraFeatureCalendarEnabled"/>
     <a n="zimbraFeatureTasksEnabled"/>
-    <a n="zimbraFeatureNotebookEnabled"/>
-    <a n="zimbraFeatureBriefcasesEnabled"/>
-    <a n="zimbraFeatureIMEnabled"/>
     <a n="zimbraFeatureOptionsEnabled"/>
     <a n="zimbraFeatureTaggingEnabled"/>
     <a n="zimbraFeatureSharingEnabled"/>
     <a n="zimbraFeatureChangePasswordEnabled"/>
     <a n="zimbraFeatureSkinChangeEnabled"/>
     <a n="zimbraFeatureHtmlComposeEnabled"/>
-    <a n="zimbraFeatureShortcutAliasesEnabled"/>
+
     <a n="zimbraFeatureGalEnabled"/>
     <a n="zimbraFeatureGalAutoCompleteEnabled"/>
     <a n="zimbraFeatureMailPriorityEnabled"/>
@@ -246,11 +240,11 @@
     <a n="zimbraFeatureOutOfOfficeReplyEnabled"/>
     <a n="zimbraFeatureNewMailNotificationEnabled"/>
       <!-- deprecated PollingInterval -->
-    <a n="zimbraFeatureMailPollingIntervalPreferenceEnabled"/>
+
     <a n="zimbraFeatureIdentitiesEnabled"/>
     <a n="zimbraFeatureGroupCalendarEnabled"/>
     <a n="zimbraFeatureInstantNotify"/>
-    <a n="zimbraFeatureAdvancedSearchEnabled"/>
+
     <a n="zimbraFeatureSavedSearchesEnabled"/>
     <a n="zimbraFeatureInitialSearchPreferenceEnabled"/>
   </attrs>
@@ -371,7 +365,7 @@
     <a n="zimbraPrefLocale"/>
     <a n="zimbraJunkMessagesIndexingEnabled"/>
     <a n="zimbraPrefMailSendReadReceipts"/>
-    <a n="zimbraPrefReadReceiptsToAddress"/>
+
     <a n="zimbraPrefAdminConsoleWarnOnExit" />
     <a n="zimbraPrefMandatorySpellCheckEnabled"/>
     <a n="zimbraPrefImapEnabled"/>
@@ -451,7 +445,7 @@
     <a n="zimbraPrefLocale"/>
     <a n="zimbraJunkMessagesIndexingEnabled"/>
     <a n="zimbraPrefMailSendReadReceipts"/>
-    <a n="zimbraPrefReadReceiptsToAddress"/>
+
     <a n="zimbraPrefAdminConsoleWarnOnExit" />
     <a n="zimbraPrefMandatorySpellCheckEnabled"/>
     <a n="zimbraPrefImapEnabled"/>
@@ -542,7 +536,7 @@
 </right>
 
 <!-- Admin Console Accounts Advanced Tab -->
-<!-- syntax or bad attr somewhere in the advanced tab config --> 
+<!-- syntax or bad attr somewhere in the advanced tab config -->
 <!-- <right name="setAdminConsoleAccountsAdvancedTab" type="setAttrs" targetType="account">
   <desc> Admin Console set attr rights for Accounts Advanced Tab </desc>
   <attrs>
@@ -996,9 +990,6 @@
       <a n="zimbraFeatureContactsEnabled"/>
       <a n="zimbraFeatureCalendarEnabled"/>
       <a n="zimbraFeatureTasksEnabled"/>
-      <a n="zimbraFeatureNotebookEnabled"/>
-      <a n="zimbraFeatureBriefcasesEnabled"/>
-      <a n="zimbraFeatureIMEnabled"/>
       <a n="zimbraFeatureOptionsEnabled"/>
       <!-- General Features -->
       <a n="zimbraFeatureTaggingEnabled"/>
@@ -1006,7 +997,7 @@
       <a n="zimbraFeatureChangePasswordEnabled"/>
       <a n="zimbraFeatureSkinChangeEnabled"/>
       <a n="zimbraFeatureHtmlComposeEnabled"/>
-      <a n="zimbraFeatureShortcutAliasesEnabled"/>
+
       <a n="zimbraFeatureGalEnabled"/>
       <a n="zimbraFeatureGalAutoCompleteEnabled"/>
       <!-- Mail Features -->
@@ -1023,7 +1014,7 @@
       <a n="zimbraFeatureOutOfOfficeReplyEnabled"/>
       <a n="zimbraFeatureNewMailNotificationEnabled"/>
       <!-- deprecated PollingInterval -->
-      <a n="zimbraFeatureMailPollingIntervalPreferenceEnabled"/>
+
       <a n="zimbraFeatureIdentitiesEnabled"/>
       <a n="zimbraFeatureReadReceiptsEnabled"/>
       <!-- Calendar Features -->
@@ -1031,7 +1022,7 @@
       <!-- IM Features -->
       <a n="zimbraFeatureInstantNotify"/>
       <!-- Search Features -->
-      <a n="zimbraFeatureAdvancedSearchEnabled"/>
+
       <a n="zimbraFeatureSavedSearchesEnabled"/>
       <a n="zimbraFeatureInitialSearchPreferenceEnabled"/>
       <!-- Unexposed features -->
@@ -1051,11 +1042,11 @@
       <a n="zimbraFeatureZimbraAssistantEnabled"/>
       <a n="zimbraFeatureComposeInNewWindowEnabled"/>
       <a n="zimbraFeatureOpenMailInNewWindowEnabled"/>
-      <a n="zimbraFeatureWebSearchEnabled"/>
+
       <a n="zimbraFeatureNewAddrBookEnabled"/>
       <a n="zimbraFeatureMailForwardingInFiltersEnabled"/>
       <a n="zimbraFeatureGalSyncEnabled"/>
-      <a n="zimbraFeatureImportExportFolderEnabled"/>
+
       <a n="zimbraFeatureDiscardInFiltersEnabled"/>
       <a n="zimbraFeatureConfirmationPageEnabled"/>
       <a n="zimbraFeatureMobilePolicyEnabled"/> -->
@@ -1070,9 +1061,6 @@
       <a n="zimbraFeatureContactsEnabled"/>
       <a n="zimbraFeatureCalendarEnabled"/>
       <a n="zimbraFeatureTasksEnabled"/>
-      <a n="zimbraFeatureNotebookEnabled"/>
-      <a n="zimbraFeatureBriefcasesEnabled"/>
-      <a n="zimbraFeatureIMEnabled"/>
       <a n="zimbraFeatureOptionsEnabled"/>
       <!-- General Features -->
       <a n="zimbraFeatureTaggingEnabled"/>
@@ -1080,7 +1068,7 @@
       <a n="zimbraFeatureChangePasswordEnabled"/>
       <a n="zimbraFeatureSkinChangeEnabled"/>
       <a n="zimbraFeatureHtmlComposeEnabled"/>
-      <a n="zimbraFeatureShortcutAliasesEnabled"/>
+
       <a n="zimbraFeatureGalEnabled"/>
       <a n="zimbraFeatureGalAutoCompleteEnabled"/>
       <!-- Mail Features -->
@@ -1097,7 +1085,7 @@
       <a n="zimbraFeatureOutOfOfficeReplyEnabled"/>
       <a n="zimbraFeatureNewMailNotificationEnabled"/>
       <!-- deprecated PollingInterval -->
-      <a n="zimbraFeatureMailPollingIntervalPreferenceEnabled"/> 
+
       <a n="zimbraFeatureIdentitiesEnabled"/>
       <a n="zimbraFeatureReadReceiptsEnabled"/>
       <!-- Calendar Features -->
@@ -1105,7 +1093,7 @@
       <!-- IM Features -->
       <a n="zimbraFeatureInstantNotify"/>
       <!-- Search Features -->
-      <a n="zimbraFeatureAdvancedSearchEnabled"/>
+
       <a n="zimbraFeatureSavedSearchesEnabled"/>
       <a n="zimbraFeatureInitialSearchPreferenceEnabled"/>
       <!-- Unexposed features -->
@@ -1125,11 +1113,11 @@
       <a n="zimbraFeatureZimbraAssistantEnabled"/>
       <a n="zimbraFeatureComposeInNewWindowEnabled"/>
       <a n="zimbraFeatureOpenMailInNewWindowEnabled"/>
-      <a n="zimbraFeatureWebSearchEnabled"/>
+
       <a n="zimbraFeatureNewAddrBookEnabled"/>
       <a n="zimbraFeatureMailForwardingInFiltersEnabled"/>
       <a n="zimbraFeatureGalSyncEnabled"/>
-      <a n="zimbraFeatureImportExportFolderEnabled"/>
+
       <a n="zimbraFeatureDiscardInFiltersEnabled"/>
       <a n="zimbraFeatureConfirmationPageEnabled"/>
       <a n="zimbraFeatureMobilePolicyEnabled"/> -->
@@ -1158,7 +1146,7 @@
       <a n="zimbraPrefUseKeyboardShortcuts"/>
       <a n="zimbraPrefWarnOnExit"/>
       <a n="zimbraPrefShowSelectionCheckbox"/>
-      <a n="zimbraPrefIMAutoLogin"/>
+
       <a n="zimbraJunkMessagesIndexingEnabled"/>
       <a n="zimbraPrefLocale"/>
       <!-- Mail Options -->
@@ -1190,7 +1178,7 @@
       <a n="zimbraPrefAutoAddAddressEnabled"/>
       <a n="zimbraPrefGalAutoCompleteEnabled"/>
       <a n="zimbraPrefContactsPerPage"/>
-      <!-- <a n="zimbraPrefContactsInitialView"/> -->
+      <!--  -->
       <!-- Calendar Options -->
       <a n="zimbraPrefTimeZoneId"/>
       <a n="zimbraPrefCalendarApptReminderWarningTime"/>
@@ -1201,12 +1189,12 @@
       <!-- <a n="zimbraPrefCalendarFirstDayOfWeek"/> -->
       <!-- <a n="zimbraPrefCalendarNotifyDelegatedChanges"/> -->
       <!-- <a n="zimbraPrefCalendarInitialCheckedCalendars"/> -->
-      <!-- <a n="zimbraPrefCalendarReminderDuration1"/> -->
-      <!-- <a n="zimbraPrefCalendarReminderDuration2"/> -->
+      <!--  -->
+      <!--  -->
       <!-- <a n="zimbraPrefCalendarReminderEmail"/> -->
-      <!-- <a n="zimbraPrefCalendarReminderSendEmail"/> -->
-      <!-- <a n="zimbraPrefCalendarReminderMobile"/> -->
-      <!-- <a n="zimbraPrefCalendarReminderYMessenger"/> -->
+      <!--  -->
+      <!--  -->
+      <!--  -->
       <!-- <a n="zimbraPrefCalendarApptVisibility"/> -->
       <!-- <a n="zimbraPrefCalendarAutoAddInvites"/> -->
       <!-- <a n="zimbraPrefCalendarSendInviteDeniedAutoReply"/> -->
@@ -1238,7 +1226,7 @@
       <a n="zimbraPrefUseKeyboardShortcuts"/>
       <a n="zimbraPrefWarnOnExit"/>
       <a n="zimbraPrefShowSelectionCheckbox"/>
-      <a n="zimbraPrefIMAutoLogin"/>
+
       <a n="zimbraJunkMessagesIndexingEnabled"/>
       <a n="zimbraPrefLocale"/>
       <!-- Mail Options -->
@@ -1268,7 +1256,7 @@
       <a n="zimbraPrefAutoAddAddressEnabled"/>
       <a n="zimbraPrefGalAutoCompleteEnabled"/>
       <a n="zimbraPrefContactsPerPage"/>
-      <!-- <a n="zimbraPrefContactsInitialView"/> -->
+      <!--  -->
       <!-- Calendar Options -->
       <a n="zimbraPrefTimeZoneId"/>
       <a n="zimbraPrefCalendarApptReminderWarningTime"/>
@@ -1279,12 +1267,12 @@
       <!-- <a n="zimbraPrefCalendarFirstDayOfWeek"/> -->
       <!-- <a n="zimbraPrefCalendarNotifyDelegatedChanges"/> -->
       <!-- <a n="zimbraPrefCalendarInitialCheckedCalendars"/> -->
-      <!-- <a n="zimbraPrefCalendarReminderDuration1"/> -->
-      <!-- <a n="zimbraPrefCalendarReminderDuration2"/> -->
+      <!--  -->
+      <!--  -->
       <!-- <a n="zimbraPrefCalendarReminderEmail"/> -->
-      <!-- <a n="zimbraPrefCalendarReminderSendEmail"/> -->
-      <!-- <a n="zimbraPrefCalendarReminderMobile"/> -->
-      <!-- <a n="zimbraPrefCalendarReminderYMessenger"/> -->
+      <!--  -->
+      <!--  -->
+      <!--  -->
       <!-- <a n="zimbraPrefCalendarApptVisibility"/> -->
       <!-- <a n="zimbraPrefCalendarAutoAddInvites"/> -->
       <!-- <a n="zimbraPrefCalendarSendInviteDeniedAutoReply"/> -->
@@ -1525,7 +1513,7 @@
       <a n="zimbraMobilePolicyMaxInactivityTimeDeviceLock"/>
       <a n="zimbraMobilePolicyMaxDevicePasswordFailedAttempts"/>
       <a n="zimbraMobilePolicyPasswordRecoveryEnabled"/>
-      <a n="zimbraMobilePolicyDeviceEncryptionEnabled"/>
+
     </attrs>
   </right>
   <right name="viewAdminConsoleCOSMobileTab" type="getAttrs" targetType="cos">
@@ -1547,7 +1535,7 @@
       <a n="zimbraMobilePolicyMaxInactivityTimeDeviceLock"/>
       <a n="zimbraMobilePolicyMaxDevicePasswordFailedAttempts"/>
       <a n="zimbraMobilePolicyPasswordRecoveryEnabled"/>
-      <a n="zimbraMobilePolicyDeviceEncryptionEnabled"/>
+
     </attrs>
   </right>
   <right name="adminConsoleCOSMobileTabRights" type="combo">
@@ -1570,8 +1558,6 @@
       <a n="zimbraDomainStatus"/>
       <a n="zimbraPrefTimeZoneId"/>
       <a n="zimbraPublicServiceHostname"/>
-      <a n="zimbraDNSCheckHostname"/>
-      <a n="zimbraAdminConsoleDNSCheckEnabled"/>
       <a n="zimbraDomainDefaultCOSId"/>
       <a n="zimbraNotes"/>
     </attrs>
@@ -1581,13 +1567,11 @@
     <ui name="Configure-Domains-Domain-GeneralInfo(view)"/>
     <attrs>
       <a n="zimbraDomainName"/>
-      <a n="zimbraDomainType"/>  
+      <a n="zimbraDomainType"/>
       <a n="description"/>
       <a n="zimbraDomainStatus"/>
       <a n="zimbraPrefTimeZoneId"/>
       <a n="zimbraPublicServiceHostname"/>
-      <a n="zimbraDNSCheckHostname"/>
-      <a n="zimbraAdminConsoleDNSCheckEnabled"/>
       <a n="zimbraDomainDefaultCOSId"/>
       <a n="zimbraNotes"/>
     </attrs>
@@ -1607,7 +1591,7 @@
     <ui name="Configure-Domains-Domain-GAL-configure(modify)"/>
     <attrs>
       <a n="zimbraGalMode"/>
-      <a n="zimbraGalMaxResults"/>    
+      <a n="zimbraGalMaxResults"/>
     </attrs>
   </right>
   <right name="viewAdminConsoleDomainGALTab" type="getAttrs" targetType="domain">
@@ -1627,7 +1611,7 @@
       <r n="configureExternalGAL"/>
     </rights>
   </right>
-  
+
   <right name="adminConsoleCreateGALRights" type="setAttrs" targetType="account">
     <desc> Admin Console set attr rights for create GAL sync account </desc>
     <ui name="Configure-Domains-Domain-GAL"/>
@@ -1710,13 +1694,13 @@
   <right name="setAdminConsoleDomainDocumentsTab" type="setAttrs" targetType="domain">
     <desc> Admin Console set attr rights for Domain Documents Tab </desc>
     <attrs>
-      <a n="zimbraNotebookAccount"/>
+
     </attrs>
   </right>
   <right name="viewAdminConsoleDomainDocumentsTab" type="getAttrs" targetType="domain">
     <desc> Admin Console view attr rights for Domain Documents Tab </desc>
     <attrs>
-      <a n="zimbraNotebookAccount"/>
+
     </attrs>
   </right>
   <right name="adminConsoleDomainDocumentsTabRights" type="combo">
@@ -1724,7 +1708,6 @@
     <rights>
       <r n="setAdminConsoleDomainDocumentsTab"/>
       <r n="viewAdminConsoleDomainDocumentsTab"/>
-      <r n="configureWikiAccount"/>
     </rights>
   </right>
 
@@ -1944,28 +1927,26 @@
     <desc> Admin Console set attr rights for Server ACL Tab </desc>
     <ui name="Configure-Servers-Server-MTA(modify)"/>
     <attrs>
-      <a n="zimbraMtaAuthEnabled"/>
+
       <a n="zimbraMtaTlsAuthOnly"/>
       <a n="zimbraSmtpHostname"/>
       <!-- <a n="zimbraSmtpPort"/> -->
       <a n="zimbraMtaRelayHost"/>
       <a n="zimbraSmtpTimeout"/>
       <a n="zimbraMtaMyNetworks"/>
-      <a n="zimbraMtaDnsLookupsEnabled"/>
     </attrs>
   </right>
   <right name="viewAdminConsoleServerMTATab" type="getAttrs" targetType="server">
     <desc> Admin Console view attr rights for Server ACL Tab </desc>
     <ui name="Configure-Servers-Server-MTA(view)"/>
     <attrs>
-      <a n="zimbraMtaAuthEnabled"/>
+
       <a n="zimbraMtaTlsAuthOnly"/>
       <a n="zimbraSmtpHostname"/>
       <a n="zimbraSmtpPort"/>
       <a n="zimbraMtaRelayHost"/>
       <a n="zimbraSmtpTimeout"/>
       <a n="zimbraMtaMyNetworks"/>
-      <a n="zimbraMtaDnsLookupsEnabled"/>
     </attrs>
   </right>
   <right name="adminConsoleServerMTATabRights" type="combo">
@@ -2063,7 +2044,7 @@
     <ui name="Configure-Servers-Server-Volumes(modify)"/>
     <attrs>
       <a n="zimbraHsmPolicy"/>
-      <a n="zimbraHsmAge"/> <!-- deprecated -->
+       <!-- deprecated -->
     </attrs>
   </right>
   <right name="viewAdminConsoleServerVolumesTab" type="getAttrs" targetType="server">
@@ -2071,7 +2052,7 @@
     <ui name="Configure-Servers-Server-Volumes(view)"/>
     <attrs>
       <a n="zimbraHsmPolicy"/>
-      <a n="zimbraHsmAge"/>
+
     </attrs>
   </right>
   <right name="adminConsoleServerVolumesTabRights" type="combo">
@@ -2257,34 +2238,28 @@
     <desc> Admin Console set attr rights for Global MTA Tab </desc>
     <ui name="Configure-GlobalSettings-MTA(modify)"/>
     <attrs>
-      <a n="zimbraMtaAuthEnabled"/>
+
       <a n="zimbraMtaTlsAuthOnly"/>
       <a n="zimbraSmtpHostname"/>
       <a n="zimbraSmtpPort"/>
       <a n="zimbraMtaRelayHost"/>
-      <a n="zimbraDNSCheckHostname"/>
-      <a n="zimbraAdminConsoleDNSCheckEnabled"/>
       <a n="zimbraMtaMaxMessageSize"/>
       <a n="zimbraSmtpSendAddOriginatingIP"/>
       <a n="zimbraMtaRestriction"/>
-      <a n="zimbraMtaDnsLookupsEnabled"/>
     </attrs>
   </right>
   <right name="viewAdminConsoleGlobalMTATab" type="getAttrs" targetType="config">
     <desc> Admin Console view attr rights for Global MTA Tab </desc>
     <ui name="Configure-GlobalSettings-MTA(view)"/>
     <attrs>
-      <a n="zimbraMtaAuthEnabled"/>
+
       <a n="zimbraMtaTlsAuthOnly"/>
       <a n="zimbraSmtpHostname"/>
       <a n="zimbraSmtpPort"/>
       <a n="zimbraMtaRelayHost"/>
-      <a n="zimbraDNSCheckHostname"/>
-      <a n="zimbraAdminConsoleDNSCheckEnabled"/>
       <a n="zimbraMtaMaxMessageSize"/>
       <a n="zimbraSmtpSendAddOriginatingIP"/>
       <a n="zimbraMtaRestriction"/>
-      <a n="zimbraMtaDnsLookupsEnabled"/>
     </attrs>
   </right>
   <right name="adminConsoleGlobalMTATabRights" type="combo">
@@ -2583,7 +2558,7 @@
   <ui name="Manage-Aliases"/>
   <rights>
     <r n="viewAccountAdminUI"/>
-    <r n="listAlias"/>  
+    <r n="listAlias"/>
   </rights>
 </right>
 
@@ -2652,7 +2627,6 @@
     <r n="listDomain"/>
     <r n="deleteDomain"/>
     <r n="countAccount"/>
-    <r n="checkDomainMXRecord"/>
   </rights>
 </right>
 
@@ -2675,7 +2649,6 @@
     <r n="listDomain"/>
     <r n="deleteDomain"/>
     <r n="countAccount"/>
-    <r n="checkDomainMXRecord"/>
   </rights>
 </right>
 
@@ -2803,7 +2776,7 @@
   <rights>
     <r n="getServiceStatus"/>
     <r n="listServer"/>
-    <r n="viewAdminConsoleServerStatus" />  
+    <r n="viewAdminConsoleServerStatus" />
   </rights>
 </right>
 
@@ -2859,8 +2832,8 @@
    <r n="listServer" />
    <r n="getCertificateInfo"/>
    <r n="installCertificate"/>
-   <r n="getCSR"/>   
-   <r n="generateCSR"/> 
+   <r n="getCSR"/>
+   <r n="generateCSR"/>
   </rights>
 </right>
 
@@ -2893,20 +2866,20 @@
   <rights>
    <r n="listServer" />
    <r n="getServer" />
-   <r n="createMigrationTask"/>   
+   <r n="createMigrationTask"/>
   </rights>
 </right>
 
 <right type="combo" name="adminConsoleSoftwareUpdatesRights">
   <desc>Rights for configuring software updates component a server through Admin Console</desc>
-  <ui name="ToolsAndMigration-SoftwareUpdates"/>  
+  <ui name="ToolsAndMigration-SoftwareUpdates"/>
   <rights>
    <r n="listServer" />
    <r n="listAccount" />
    <r n="checkSoftwareUpdates"/>
    <r n="viewAdminConsoleSoftwareUpdatesConfigAttrs"/>
    <r n="setAdminConsoleSoftwareUpdatesConfigAttrs"/>
-   <r n="viewAdminConsoleSoftwareUpdatesServerAttrs"/>   
+   <r n="viewAdminConsoleSoftwareUpdatesServerAttrs"/>
   </rights>
 </right>
 
