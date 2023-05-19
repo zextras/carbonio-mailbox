@@ -945,10 +945,14 @@
           <groupId>org.owasp</groupId>
           <artifactId>dependency-check-maven</artifactId>
           <version>8.2.1</version>
+          <configuration>
+            <format>XML</format>
+            <outputDirectory>${dependency.check.report.dir}</outputDirectory>
+          </configuration>
           <executions>
             <execution>
               <goals>
-                <goal>check</goal>
+                <goal>aggregate</goal>
               </goals>
             </execution>
           </executions>
@@ -1159,6 +1163,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
       </plugin>
     </plugins>
   </build>
