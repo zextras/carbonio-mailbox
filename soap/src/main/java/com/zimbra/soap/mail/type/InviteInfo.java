@@ -41,7 +41,7 @@ implements InviteInfoInterface {
      * @zm-api-field-description Timezones
      */
     @XmlElement(name=MailConstants.E_CAL_TZ /* tz */, required=false)
-    private List<CalTZInfo> timezones = Lists.newArrayList();
+    private final List<CalTZInfo> timezones = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Invite components
@@ -54,14 +54,14 @@ implements InviteInfoInterface {
      */
     @XmlElementWrapper(name=MailConstants.E_CAL_REPLIES /* replies */, required=false)
     @XmlElement(name=MailConstants.E_CAL_REPLY /* reply */, required=false)
-    private List<CalendarReply> calendarReplies = Lists.newArrayList();
+    private final List<CalendarReply> calendarReplies = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private InviteInfo() {
-        this((String) null);
+        this(null);
     }
 
     public InviteInfo(String calItemType) {

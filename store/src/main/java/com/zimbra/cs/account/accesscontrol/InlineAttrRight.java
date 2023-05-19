@@ -57,10 +57,7 @@ public class InlineAttrRight extends AttrRight {
     }
 
     static boolean looksLikeOne(String right) {
-        if (right.contains("."))
-            return true;
-        else 
-            return false;
+      return right.contains(".");
     }
     
     private InlineAttrRight(String name, RightType rightType) throws ServiceException {

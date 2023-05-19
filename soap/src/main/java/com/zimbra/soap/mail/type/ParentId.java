@@ -27,7 +27,7 @@ public class ParentId {
      */
     @SuppressWarnings("unused")
     private ParentId() {
-        this((String) null);
+        this(null);
     }
 
     public ParentId(String parentId) {

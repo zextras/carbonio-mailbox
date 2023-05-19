@@ -29,15 +29,15 @@ public class AccountInfo extends AdminObjectInfo {
      */
     @SuppressWarnings("unused")
     private AccountInfo() {
-        this((String)null, (String)null, (Boolean)null, (Collection <Attr>)null);
+        this(null, null, null, null);
     }
 
     public AccountInfo(String id, String name) {
-        this(id, name, (Boolean)null, (Collection <Attr>)null);
+        this(id, name, null, null);
     }
 
     public AccountInfo(String id, String name, Boolean isExternal) {
-        this(id, name, isExternal, (Collection <Attr>)null);
+        this(id, name, isExternal, null);
     }
 
     public AccountInfo(String id, String name, Boolean isExternal, Collection <Attr> attrs) {

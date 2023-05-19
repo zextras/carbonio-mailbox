@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -63,14 +64,14 @@ public class DavContext {
 
     // extension that gets called at the end of every requests.
     public interface Extension {
-        public void callback(DavContext ctxt);
+        void callback(DavContext ctxt);
     }
 
     private static HashSet<Extension> sExtensions;
     static {
         synchronized (DavContext.class) {
             if (sExtensions == null)
-                sExtensions = new HashSet<Extension>();
+                sExtensions = new HashSet<>();
         }
     }
     public static void addExtension(Extension ex) {
@@ -112,9 +113,9 @@ public class DavContext {
     private boolean mOverwrite;
     private boolean mBrief;
 
-    private enum RequestType { PRINCIPAL, RESOURCE };
+    private enum RequestType { PRINCIPAL, RESOURCE }
 
-    /* List of properties in the PROPFIND or PROPPATCH request. */
+  /* List of properties in the PROPFIND or PROPPATCH request. */
     public static class RequestProp {
         boolean nameOnly;
         boolean allProp;
@@ -122,8 +123,8 @@ public class DavContext {
         HashMap<QName, DavException> errProps;
 
         public RequestProp(boolean no) {
-            props = new HashMap<QName, Element>();
-            errProps = new HashMap<QName, DavException>();
+            props = new HashMap<>();
+            errProps = new HashMap<>();
             nameOnly = no;
             allProp = true;
         }
@@ -273,9 +274,9 @@ public class DavContext {
         mOpCtxt.setUserAgent(req.getHeader("User-Agent"));
         mDavCompliance = DavProtocol.getDefaultComplianceString();
         String overwrite = mReq.getHeader(DavProtocol.HEADER_OVERWRITE);
-        mOverwrite = (overwrite != null && overwrite.equals("F")) ? false : true;
+        mOverwrite = overwrite == null || !overwrite.equals("F");
         String brief = mReq.getHeader(DavProtocol.HEADER_BRIEF);
-        mBrief = (brief != null && brief.equals("t")) ? true : false;
+        mBrief = brief != null && brief.equals("t");
     }
 
     /* Returns HttpServletRequest object containing the current DAV request. */
@@ -495,7 +496,7 @@ public class DavContext {
     }
 
     public java.util.Collection<DavResource> getAllRequestedResources() throws DavException, ServiceException {
-        ArrayList<DavResource> rss = new ArrayList<DavResource>();
+        ArrayList<DavResource> rss = new ArrayList<>();
         if (mRequestType == RequestType.RESOURCE)
             rss = (ArrayList<DavResource>) UrlNamespace.getResources(this, mUser, mPath, getDepth() == Depth.one);
         else {
@@ -550,7 +551,7 @@ public class DavContext {
         return userAgentHeaderContains(MSIE) || userAgentHeaderContains(MOZILLA);
     }
 
-    public static enum KnownUserAgent {
+    public enum KnownUserAgent {
         iCal, iPhone, Evolution;
 
         static KnownUserAgent lookup(String userAgent) {
@@ -682,12 +683,8 @@ public class DavContext {
             end--;
         begin = dest.lastIndexOf("/", end-1);
         String newName = dest.substring(begin+1, end);
-        try {
-            newName = URLDecoder.decode(newName, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            ZimbraLog.dav.warn("can't decode URL ", dest, e);
-        }
-        if (oldName.equals(newName) == false)
+      newName = URLDecoder.decode(newName, StandardCharsets.UTF_8);
+      if (oldName.equals(newName) == false)
             return newName;
         else
             return null;

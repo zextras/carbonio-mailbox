@@ -29,7 +29,7 @@ public class GetConvResponse {
      */
     @SuppressWarnings("unused")
     private GetConvResponse() {
-        this((ConversationInfo) null);
+        this(null);
     }
 
     public GetConvResponse(ConversationInfo conversation) {

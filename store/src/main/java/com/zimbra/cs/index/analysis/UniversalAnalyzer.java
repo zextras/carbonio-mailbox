@@ -77,8 +77,8 @@ public final class UniversalAnalyzer extends Analyzer {
     }
 
     private static class UniversalTokenFilter extends TokenFilter {
-        private CharTermAttribute termAttr = addAttribute(CharTermAttribute.class);
-        private TypeAttribute typeAttr = addAttribute(TypeAttribute.class);
+        private final CharTermAttribute termAttr = addAttribute(CharTermAttribute.class);
+        private final TypeAttribute typeAttr = addAttribute(TypeAttribute.class);
 
         UniversalTokenFilter(TokenStream in) {
             super(in);

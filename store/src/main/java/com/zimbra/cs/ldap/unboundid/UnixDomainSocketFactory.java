@@ -29,8 +29,7 @@ public class UnixDomainSocketFactory extends SocketFactory {
      * address and port are not used.
      */
     @Override
-    public Socket createSocket(String address, int port) throws IOException,
-            UnknownHostException {
+    public Socket createSocket(String address, int port) throws IOException {
         return new UnixDomainSocket();
     }
 
@@ -41,7 +40,7 @@ public class UnixDomainSocketFactory extends SocketFactory {
 
     @Override
     public Socket createSocket(String address, int port, InetAddress localAddress, int localPort)
-            throws IOException, UnknownHostException {
+            throws IOException {
         throw new UnsupportedOperationException();
     }
 
@@ -58,7 +57,7 @@ public class UnixDomainSocketFactory extends SocketFactory {
         
         // wrap, instead of extends AFUNIXSocket because AFUNIXSocket does not have
         // an accessible constructor
-        private AFUNIXSocket socket;
+        private final AFUNIXSocket socket;
         
         private UnixDomainSocket() throws IOException {
             socket = AFUNIXSocket.newInstance();

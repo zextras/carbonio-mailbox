@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class ZFeatures {
 
-  private Map<String, Collection<String>> mAttrs;
+  private final Map<String, Collection<String>> mAttrs;
 
   public ZFeatures(Map<String, Collection<String>> attrs) {
     mAttrs = attrs;

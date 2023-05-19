@@ -9,7 +9,7 @@ package com.zimbra.cs.session;
  * Simple struct used to communicate error codes for individual accounts during a wait 
  */
 public class WaitSetError {
-    public static enum Type {
+    public enum Type {
         ALREADY_IN_SET_DURING_ADD,
         ERROR_LOADING_MAILBOX,
         MAINTENANCE_MODE,
@@ -18,7 +18,6 @@ public class WaitSetError {
         NOT_IN_SET_DURING_REMOVE,
         NOT_IN_SET_DURING_UPDATE,
         MAILBOX_DELETED,
-        ;
     }
 
     public WaitSetError(String accountId, WaitSetError.Type error) {

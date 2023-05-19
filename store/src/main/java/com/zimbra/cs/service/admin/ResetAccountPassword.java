@@ -67,7 +67,7 @@ public class ResetAccountPassword extends AdminDocumentHandler {
             throw ServiceException.FAILURE("Error while fetching Password Recovery Code.", e);
         }
         if(Objects.isNull(recoveryCodeMap)) {
-            recoveryCodeMap = new HashMap<String, String>();
+            recoveryCodeMap = new HashMap<>();
         }
         RecoverAccount.fetchAndFormRecoveryCodeParams(account, recoveryCodeMap, recoveryAccount, zsc);
         if (recoveryCodeMap != null && StringUtil.isNullOrEmpty(recoveryCodeMap.get(CodeConstants.RESEND_COUNT.toString()))) {

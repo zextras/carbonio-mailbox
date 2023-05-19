@@ -37,13 +37,13 @@ public class InviteWithGroupInfo {
      * @zm-api-field-description Timezones
      */
     @XmlElement(name=MailConstants.E_CAL_TZ /* tz */, required=false)
-    private List<CalTZInfo> timezones = Lists.newArrayList();
+    private final List<CalTZInfo> timezones = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Invite components
      */
     @XmlElement(name=MailConstants.E_INVITE_COMPONENT /* comp */, required=false)
-    private List<InviteComponentWithGroupInfo> inviteComponents = Lists.newArrayList();
+    private final List<InviteComponentWithGroupInfo> inviteComponents = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Replies
@@ -51,14 +51,14 @@ public class InviteWithGroupInfo {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=MailConstants.E_CAL_REPLIES /* replies */, required=false)
     @XmlElement(name=MailConstants.E_CAL_REPLY /* reply */, required=false)
-    private List<CalendarReply> calendarReplies = Lists.newArrayList();
+    private final List<CalendarReply> calendarReplies = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private InviteWithGroupInfo() {
-        this((String) null);
+        this(null);
     }
 
     public InviteWithGroupInfo(String calItemType) {

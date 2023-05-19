@@ -181,9 +181,9 @@ public class LdapException extends ServiceException {
     }
     
     public static class LdapMultipleEntriesMatchedException extends LdapException {
-        private String base;
-        private String query;
-        private String dups;
+        private final String base;
+        private final String query;
+        private final String dups;
         private LdapMultipleEntriesMatchedException(String base, String query, String dups) {
             super(String.format("multiple entries matched: base=%s, query=%s, entries=%s",
                     base, query, dups), MULTIPLE_ENTRIES_MATCHED, null);

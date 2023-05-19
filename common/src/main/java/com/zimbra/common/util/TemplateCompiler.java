@@ -46,9 +46,9 @@ public class TemplateCompiler {
 	// Data
 	//
 
-	private static Options _mOptions = new Options();
+	private static final Options _mOptions = new Options();
 	private String _prefix = "";
-	private String _idir = ".";
+	private final String _idir = ".";
 	private String _odir = ".";
 	private boolean _authoritative = false;
 	private boolean _define = false;
@@ -373,7 +373,7 @@ public class TemplateCompiler {
 	//
 
 	private static Map<String,String> parseAttrs(String s) {
-	    Map<String,String> attrs = new HashMap<String,String>();
+	    Map<String,String> attrs = new HashMap<>();
 	    Matcher matcher = RE_ATTR.matcher(s);
 	    while (matcher.find()) {
 	        String aname = matcher.group(1);

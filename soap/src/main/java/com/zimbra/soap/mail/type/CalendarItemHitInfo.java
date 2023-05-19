@@ -71,7 +71,7 @@ public abstract class CalendarItemHitInfo
      * @zm-api-field-description Categories
      */
     @XmlElement(name=MailConstants.E_CAL_CATEGORY /* category */, required=false)
-    private List<String> categories = Lists.newArrayList();
+    private final List<String> categories = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Information for iCalendar GEO property
@@ -91,7 +91,7 @@ public abstract class CalendarItemHitInfo
      * @zm-api-field-description Data for instances
      */
     @XmlElement(name=MailConstants.E_INSTANCE /* inst */, required=false)
-    private List<InstanceDataInfo> instances = Lists.newArrayList();
+    private final List<InstanceDataInfo> instances = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Alarm information
@@ -103,7 +103,7 @@ public abstract class CalendarItemHitInfo
      * @zm-api-field-description Invites
      */
     @XmlElement(name=MailConstants.E_INVITE /* inv */, required=false)
-    private List<Invitation> invites = Lists.newArrayList();
+    private final List<Invitation> invites = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Replies
@@ -111,7 +111,7 @@ public abstract class CalendarItemHitInfo
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=MailConstants.E_CAL_REPLIES /* replies */, required=false)
     @XmlElement(name=MailConstants.E_CAL_REPLY /* reply */, required=false)
-    private List<CalReply> replies = Lists.newArrayList();
+    private final List<CalReply> replies = Lists.newArrayList();
 
     public CalendarItemHitInfo() {
     }

@@ -82,7 +82,7 @@ public class GetFreeBusyRequest {
      * @zm-api-field-description To view free/busy for a single folders in particular accounts, use these.
      */
     @XmlElement(name=MailConstants.E_FREEBUSY_USER /* usr */, required=false)
-    private List<FreeBusyUserSpec> freebusyUsers = Lists.newArrayList();
+    private final List<FreeBusyUserSpec> freebusyUsers = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

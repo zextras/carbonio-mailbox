@@ -24,7 +24,7 @@ import com.zimbra.cs.store.StoreManager;
 // Not doing it now to minimize impact on 6.0.x. 
 public class MailboxBlobDataSource implements DataSource {
 
-    private MailboxBlob mBlob;
+    private final MailboxBlob mBlob;
     private String mContentType;
 
     public MailboxBlobDataSource(MailboxBlob blob) {

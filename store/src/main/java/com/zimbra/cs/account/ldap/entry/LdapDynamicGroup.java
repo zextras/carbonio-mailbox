@@ -185,7 +185,7 @@ public class LdapDynamicGroup extends DynamicGroup implements LdapEntry {
         try {
             zlcCompare = LdapClient.getContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
             BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(
-                    prov, (ZLdapContext) null, domain, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
+                    prov, null, domain, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
                             acctDN, membership, adminGroupsOnly, true, false));
             searcher.doSearch(filter, DYNAMIC_GROUPS_TYPE);
         } finally {
@@ -210,7 +210,8 @@ public class LdapDynamicGroup extends DynamicGroup implements LdapEntry {
         try {
             zlcCompare = LdapClient.getContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
             BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(
-                    prov, (ZLdapContext) null, (Domain) null, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
+                    prov, null,
+                null, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
                             acctDN, membership, adminGroupsOnly, customGroupsOnly, nonCustomGroupsOnly));
             searcher.doSearch(filter, DYNAMIC_GROUPS_TYPE);
         } finally {
@@ -251,7 +252,7 @@ public class LdapDynamicGroup extends DynamicGroup implements LdapEntry {
                 id = attrs.getAttrString(Provisioning.A_zimbraId);
                 isAdminStr = attrs.getAttrString(Provisioning.A_zimbraIsAdminGroup);
                 memberURL = attrs.getAttrString(Provisioning.A_memberURL);
-                isAdmin = (isAdminStr == null ? false : ProvisioningConstants.TRUE.equals(isAdminStr));
+                isAdmin = (isAdminStr != null && ProvisioningConstants.TRUE.equals(isAdminStr));
             } catch (LdapException e) {
                 ZimbraLog.search.debug("Problem processing search result entry - ignoring", e);
                 return;

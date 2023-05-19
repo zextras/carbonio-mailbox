@@ -9,13 +9,13 @@ import java.io.IOException;
 
 public interface FileCopier {
 
-    public boolean isAsync();
+    boolean isAsync();
 
-    public void start() throws IOException;
+    void start() throws IOException;
 
-    public void shutdown() throws IOException;
+    void shutdown() throws IOException;
 
-    public void setIgnoreMissingSource(boolean ignore);
+    void setIgnoreMissingSource(boolean ignore);
 
     /**
      * Copy src to dest.
@@ -25,8 +25,8 @@ public interface FileCopier {
      * @param cbarg
      * @throws IOException
      */
-    public void copy(File src, File dest,
-                     FileCopierCallback cb, Object cbarg)
+    void copy(File src, File dest,
+        FileCopierCallback cb, Object cbarg)
     throws IOException;
 
     /**
@@ -37,8 +37,8 @@ public interface FileCopier {
      * @param cbarg
      * @throws IOException
      */
-    public void copyReadOnly(File src, File dest,
-                             FileCopierCallback cb, Object cbarg)
+    void copyReadOnly(File src, File dest,
+        FileCopierCallback cb, Object cbarg)
     throws IOException;
 
     /**
@@ -49,8 +49,8 @@ public interface FileCopier {
      * @param cbarg
      * @throws IOException
      */
-    public void link(File file, File link,
-                     FileCopierCallback cb, Object cbarg)
+    void link(File file, File link,
+        FileCopierCallback cb, Object cbarg)
     throws IOException;
 
     /**
@@ -61,8 +61,8 @@ public interface FileCopier {
      * @param cbarg
      * @throws IOException
      */
-    public void move(File oldPath, File newPath,
-                     FileCopierCallback cb, Object cbarg)
+    void move(File oldPath, File newPath,
+        FileCopierCallback cb, Object cbarg)
     throws IOException;
 
     /**
@@ -72,7 +72,7 @@ public interface FileCopier {
      * @param cbarg
      * @throws IOException
      */
-    public void delete(File file,
-                       FileCopierCallback cb, Object cbarg)
+    void delete(File file,
+        FileCopierCallback cb, Object cbarg)
     throws IOException;
 }

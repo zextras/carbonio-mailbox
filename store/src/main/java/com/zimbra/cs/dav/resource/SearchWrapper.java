@@ -43,7 +43,7 @@ public class SearchWrapper extends PhantomResource {
     protected static final int SEARCH_LIMIT = 100;
 
     private String mContentType;
-    private StringBuilder mQuery;
+    private final StringBuilder mQuery;
 
     public SearchWrapper(String uri, String owner) {
         this(uri, owner, parseUri(uri));
@@ -79,10 +79,10 @@ public class SearchWrapper extends PhantomResource {
         }
     }
 
-    private static HashMap<String,String> sCTMap;
+    private static final HashMap<String,String> sCTMap;
 
     static {
-        sCTMap = new HashMap<String,String>();
+        sCTMap = new HashMap<>();
         sCTMap.put("ppt",   "application/vnd.ms-powerpoint");
         sCTMap.put("excel", "application/vnd.ms-excel");
         sCTMap.put("word",  "application/msword");
@@ -104,7 +104,7 @@ public class SearchWrapper extends PhantomResource {
 
     @Override
     public Collection<DavResource> getChildren(DavContext ctxt) {
-        ArrayList<DavResource> children = new ArrayList<DavResource>();
+        ArrayList<DavResource> children = new ArrayList<>();
         String user = ctxt.getUser();
         Provisioning prov = Provisioning.getInstance();
         try {

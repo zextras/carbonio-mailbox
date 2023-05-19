@@ -16,7 +16,7 @@ class SerialFileCopier implements FileCopier {
 
     private static final int MAX_COPY_BUFSIZE = 1024 * 1024;  // 1MB
 
-    private boolean mUseNIO;
+    private final boolean mUseNIO;
     private int mCopyBufSizeOIO;
     private boolean mIgnoreMissingSource;
 

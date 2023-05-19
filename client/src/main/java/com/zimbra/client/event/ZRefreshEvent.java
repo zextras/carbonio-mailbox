@@ -15,9 +15,9 @@ import java.util.List;
 
 public class ZRefreshEvent implements ToZJSONObject {
 
-    private long mSize;
-    private ZFolder mUserRoot;
-    private List<ZTag> mTags;
+    private final long mSize;
+    private final ZFolder mUserRoot;
+    private final List<ZTag> mTags;
 
     public ZRefreshEvent(long size, ZFolder userRoot, List<ZTag> tags) {
     	mSize = size;

@@ -28,7 +28,7 @@ import com.zimbra.cs.mailbox.Mailbox;
  */
 public class RssImport implements DataImport {
 
-    private DataSource mDataSource;
+    private final DataSource mDataSource;
     
     public RssImport(DataSource ds) {
         mDataSource = ds;

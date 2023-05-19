@@ -39,13 +39,13 @@ public class ClientCertPrincipalMap {
     
     // a fixed, known certificate field 
     static class KnownCertField extends CertField {
-        static enum Field {
+        enum Field {
             SUBJECT_DN,
             SUBJECTALTNAME_OTHERNAME_UPN,
             SUBJECTALTNAME_RFC822NAME;
             
-            private KnownCertField knownCertField;
-            private Field() {
+            private final KnownCertField knownCertField;
+            Field() {
                 knownCertField = new KnownCertField(this);
             }
             
@@ -62,9 +62,9 @@ public class ClientCertPrincipalMap {
                 }
                 return str.toString();
             }
-        };
-        
-        private Field field;
+        }
+
+        private final Field field;
                 
         private KnownCertField(Field field) {
             this.field = field;
@@ -131,7 +131,7 @@ public class ClientCertPrincipalMap {
         
     }
     
-    static enum ZimbraKey {
+    enum ZimbraKey {
         // Note: do NOT support search Zimbra account by DN because:
         // (1) DOS attack (non-existing DN will cause repeated LDAP search)
         // and
@@ -140,7 +140,7 @@ public class ClientCertPrincipalMap {
         // dn, 
         name,
         zimbraId,
-        zimbraForeignPrincipal;
+        zimbraForeignPrincipal
     }
     
     static abstract class Rule {
@@ -149,9 +149,9 @@ public class ClientCertPrincipalMap {
     }
     
     static class LdapFilterRule extends Rule {
-        private static Pattern pattern = Pattern.compile("\\%\\{([^\\}]*)\\}");
+        private static final Pattern pattern = Pattern.compile("\\%\\{([^\\}]*)\\}");
         
-        private String filter;
+        private final String filter;
         
         private LdapFilterRule(String filter) {
             this.filter = filter;
@@ -206,8 +206,8 @@ public class ClientCertPrincipalMap {
     }
     
     static class FieldMapRule extends Rule {
-        private CertField certField;
-        private ZimbraKey zimbraKey;
+        private final CertField certField;
+        private final ZimbraKey zimbraKey;
         
         private FieldMapRule(CertField certField, ZimbraKey zimbraKey) {
             this.certField = certField;
@@ -272,7 +272,7 @@ public class ClientCertPrincipalMap {
     }
 
     
-    private List<Rule> rules;
+    private final List<Rule> rules;
     
     ClientCertPrincipalMap(HttpServletRequest req) throws ServiceException {
         String rawRules = getMappingConfig(req);
@@ -296,7 +296,7 @@ public class ClientCertPrincipalMap {
     }
     
     private List<Rule> parse(String rawRules) throws ServiceException {
-        List<Rule> parsedRules = new ArrayList<Rule>();
+        List<Rule> parsedRules = new ArrayList<>();
         
         if (rawRules == null) {
             // default to SUBJECT_EMAILADDRESS=name

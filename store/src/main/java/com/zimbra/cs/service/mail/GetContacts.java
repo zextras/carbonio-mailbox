@@ -57,7 +57,7 @@ public final class GetContacts extends MailDocumentHandler  {
         Account mRequestedAcct = getRequestedAccount(zsc);
         Account mAuthedAcct = getAuthenticatedAccount(zsc);
         GetContactsRequest req = zsc.elementToJaxb(request);
-        boolean sync = req.getSync() == null ? false : req.getSync();
+        boolean sync = req.getSync() != null && req.getSync();
         boolean derefContactGroupMember = req.getDerefGroupMember();
 
         String folderIdStr = req.getFolderId();
@@ -81,7 +81,7 @@ public final class GetContacts extends MailDocumentHandler  {
         //MailConstants.A_ATTRIBUTE_NAME
         List<AttributeName> reqAttrs = req.getAttributes();
         if(reqAttrs != null && reqAttrs.size() > 0) {
-            attrs = new ArrayList<String>();
+            attrs = new ArrayList<>();
             for(AttributeName attrName : reqAttrs) {
                 attrs.add(attrName.getName());
             }
@@ -90,7 +90,7 @@ public final class GetContacts extends MailDocumentHandler  {
         //MailConstants.E_CONTACT_GROUP_MEMBER_ATTRIBUTE
         reqAttrs = req.getMemberAttributes();
         if(reqAttrs != null && reqAttrs.size() > 0) {
-            memberAttrs = new ArrayList<String>();
+            memberAttrs = new ArrayList<>();
             for(AttributeName attrName : reqAttrs) {
                 memberAttrs.add(attrName.getName());
             }
@@ -99,7 +99,7 @@ public final class GetContacts extends MailDocumentHandler  {
         //MailConstants.E_CONTACT
         List<Id> contactIds = req.getContacts();
         if(contactIds != null && contactIds.size() > 0) {
-            ids = new ArrayList<ItemId>();
+            ids = new ArrayList<>();
             for(Id target : contactIds) {
                 String idStr = target.getId();
                 if(idStr.indexOf(",") > 0) {
@@ -146,8 +146,8 @@ public final class GetContacts extends MailDocumentHandler  {
         }
 
         if (ids != null) {
-            ArrayList<Integer> local = new ArrayList<Integer>();
-            HashMap<String, StringBuffer> remote = new HashMap<String, StringBuffer>();
+            ArrayList<Integer> local = new ArrayList<>();
+            HashMap<String, StringBuffer> remote = new HashMap<>();
             partitionItems(zsc, ids, local, remote);
 
             if (remote.size() > 0) {
@@ -209,14 +209,14 @@ public final class GetContacts extends MailDocumentHandler  {
                 if (sb == null)
                     remote.put(iid.getAccountId(), new StringBuffer(iid.toString()));
                 else
-                    sb.append(',').append(iid.toString());
+                    sb.append(',').append(iid);
             }
         }
     }
 
     List<Element> proxyRemote(Element request, Map<String, StringBuffer> remote, Map<String,Object> context)
     throws ServiceException {
-        List<Element> responses = new ArrayList<Element>();
+        List<Element> responses = new ArrayList<>();
 
         //remove all 'contact' elements from original request
         for (Element e : request.listElements(MailConstants.E_CONTACT)) {

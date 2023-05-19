@@ -34,7 +34,7 @@ public class GetCommentsRequest {
      */
     @SuppressWarnings("unused")
     private GetCommentsRequest() {
-        this((ParentId) null);
+        this(null);
     }
 
     public GetCommentsRequest(ParentId comment) {

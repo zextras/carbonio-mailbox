@@ -87,21 +87,21 @@ public class ExchangeEWSMessage extends ExchangeMessage {
     Map<PathToExtendedFieldType, NonEmptyArrayOfPropertyValuesType>
         GetFreeBusyProperties(FreeBusy fb) {
         Map<PathToExtendedFieldType, NonEmptyArrayOfPropertyValuesType> ret =
-            new HashMap<PathToExtendedFieldType, NonEmptyArrayOfPropertyValuesType>();
+            new HashMap<>();
         long startMonth, endMonth;
         startMonth = millisToMonths(fb.getStartTime());
         endMonth = millisToMonths(fb.getEndTime());
         IntervalList consolidated =
             new IntervalList(fb.getStartTime(), fb.getEndTime());// TEMP
 
-        ArrayList<String> busyMonths = new ArrayList<String>();
-        ArrayList<byte[]> busyEvents = new ArrayList<byte[]>();
-        ArrayList<String> tentativeMonths = new ArrayList<String>();
-        ArrayList<byte[]> tentativeEvents = new ArrayList<byte[]>();
-        ArrayList<String> oofMonths = new ArrayList<String>();
-        ArrayList<byte[]> oofEvents = new ArrayList<byte[]>();
-        ArrayList<String> allMonths = new ArrayList<String>();
-        ArrayList<byte[]> allEvents = new ArrayList<byte[]>();
+        ArrayList<String> busyMonths = new ArrayList<>();
+        ArrayList<byte[]> busyEvents = new ArrayList<>();
+        ArrayList<String> tentativeMonths = new ArrayList<>();
+        ArrayList<byte[]> tentativeEvents = new ArrayList<>();
+        ArrayList<String> oofMonths = new ArrayList<>();
+        ArrayList<byte[]> oofEvents = new ArrayList<>();
+        ArrayList<String> allMonths = new ArrayList<>();
+        ArrayList<byte[]> allEvents = new ArrayList<>();
 
         encodeIntervals(fb, startMonth, endMonth, IcalXmlStrMap.FBTYPE_BUSY, busyMonths, busyEvents, consolidated);
         encodeIntervals(fb, startMonth, endMonth, IcalXmlStrMap.FBTYPE_BUSY_TENTATIVE, tentativeMonths, tentativeEvents, consolidated);
@@ -183,9 +183,9 @@ public class ExchangeEWSMessage extends ExchangeMessage {
         long endMonth, String type, ArrayList<String> months,
         ArrayList<byte[]> events, IntervalList consolidated) {
         HashMap<Long, LinkedList<Byte>> fbMap =
-            new HashMap<Long, LinkedList<Byte>>();
+            new HashMap<>();
         for (long i = startMonth; i <= endMonth; i++)
-            fbMap.put(i, new LinkedList<Byte>());
+            fbMap.put(i, new LinkedList<>());
         for (FreeBusy.Interval interval : fb) {
             String status = interval.getStatus();
             if (status.equals(type)) {

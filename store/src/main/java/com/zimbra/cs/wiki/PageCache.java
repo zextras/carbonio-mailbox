@@ -35,7 +35,7 @@ import com.zimbra.common.util.Pair;
 public class PageCache {
 	private static final int DEFAULT_CACHE_SIZE = 10240;
 	private static final int TTL = 10 * 60 * 1000;  // 10 min
-	private Map mCache;
+	private final Map mCache;
 	private static final String SEP = ":";
 	
 	public PageCache() {
@@ -54,7 +54,7 @@ public class PageCache {
 	}
 	
 	public synchronized void addPage(String key, String page) {
-		Pair<Long,String> v = new Pair<Long,String>(getExpirationTime(), page);
+		Pair<Long,String> v = new Pair<>(getExpirationTime(), page);
 		mCache.put(key, v);
 	}
 	

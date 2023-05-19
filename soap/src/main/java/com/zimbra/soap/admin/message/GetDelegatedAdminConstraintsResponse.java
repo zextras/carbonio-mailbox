@@ -27,7 +27,7 @@ public class GetDelegatedAdminConstraintsResponse {
      * @zm-api-field-description Constraint attributes
      */
     @XmlElement(name=AdminConstants.E_A, required=false)
-    private List<ConstraintAttr> attrs = Lists.newArrayList();
+    private final List<ConstraintAttr> attrs = Lists.newArrayList();
 
     public GetDelegatedAdminConstraintsResponse() {
     }

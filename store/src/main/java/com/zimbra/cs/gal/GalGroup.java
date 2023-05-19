@@ -45,11 +45,11 @@ public abstract class GalGroup {
     public enum GroupInfo {
         IS_GROUP,   // address is a group
         CAN_EXPAND  // address is a group and the authed account has right to expand it
-    };
+    }
 
-    private static final Provisioning prov = Provisioning.getInstance();
-    private static Map<String, DomainGalGroupCache> groups = new HashMap<String, DomainGalGroupCache>();
-    private static ThreadPool syncGalGroupThreadPool = new ThreadPool("SyncGalGroup", 10);
+  private static final Provisioning prov = Provisioning.getInstance();
+    private static final Map<String, DomainGalGroupCache> groups = new HashMap<>();
+    private static final ThreadPool syncGalGroupThreadPool = new ThreadPool("SyncGalGroup", 10);
 
     private interface GalGroupCache {
         boolean isInternalGroup(String addr);
@@ -207,10 +207,7 @@ public abstract class GalGroup {
 
     private static boolean hadWarnedDomainForCacheFull(Domain domain) {
         Boolean domainHadBeenWarned = (Boolean)domain.getCachedData(EntryCacheDataKey.DOMAIN_GROUP_CACHE_FULL_HAD_BEEN_WARNED.getKeyName());
-        if (domainHadBeenWarned == null)
-            return false;
-        else
-            return true;
+      return domainHadBeenWarned != null;
     }
 
     private static void setHadWarnedDomainForCacheFull(Domain domain) {
@@ -291,12 +288,12 @@ public abstract class GalGroup {
      * GAL group search result for a domain (all GAL groups in the domain's GAL)
      */
     private static class DomainGalGroupCache implements GalGroupCache {
-        private String domainName; // for debugging purpose only
+        private final String domainName; // for debugging purpose only
         private long lifeTime;
-        private int max;
+        private final int max;
         private boolean isSyncing;
-        private Set<String> internalGroups;
-        private Set<String> externalGroups;
+        private final Set<String> internalGroups;
+        private final Set<String> externalGroups;
 
 
         private DomainGalGroupCache(String domainName) {
@@ -305,8 +302,8 @@ public abstract class GalGroup {
 
             this.domainName = domainName;
             isSyncing = true;
-            internalGroups = new HashSet<String>();
-            externalGroups = new HashSet<String>();
+            internalGroups = new HashSet<>();
+            externalGroups = new HashSet<>();
         }
 
         private synchronized boolean isSyncing() {
@@ -449,12 +446,12 @@ public abstract class GalGroup {
             }
 
             private static class SyncGalGroupCallback extends GalGroupCallback {
-                private DomainGalGroupCache galGroup;
+                private final DomainGalGroupCache galGroup;
                 private boolean hasMore;
                 private boolean pagingSupported; // default to false
 
                 // extra email fields on gal entries, e.g. aliases
-                private String[] EXTRA_EMAIL_FIELDS = new String[] {
+                private final String[] EXTRA_EMAIL_FIELDS = new String[] {
                         "email2", "email3", "email4", "email5", "email6", "email7", "email8", "email9",
                         "email10", "email11", "email12", "email13", "email14", "email15", "email16"
                 };
@@ -510,7 +507,7 @@ public abstract class GalGroup {
 
                     if (email == null) {
                         ZimbraLog.gal.info("GalGroup - handle Element: contact " +
-                                e.toString() + " does not have an email address." +
+                            e + " does not have an email address." +
                                 " Not adding to gal group cache.");
                     } else {
                         addResult(email, zimbraId, contact);

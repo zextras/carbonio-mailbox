@@ -57,7 +57,7 @@ public class BackupQueryAccounts {
      * @zm-api-field-description Account list returned if request specified accountListStatus
      */
     @XmlElement(name=BackupConstants.E_ACCOUNT /* account */, required=false)
-    private List<BackupQueryAccountStatus> accounts = Lists.newArrayList();
+    private final List<BackupQueryAccountStatus> accounts = Lists.newArrayList();
 
     public BackupQueryAccounts() {
     }

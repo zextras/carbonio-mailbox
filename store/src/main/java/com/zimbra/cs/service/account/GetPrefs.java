@@ -50,7 +50,7 @@ public class GetPrefs extends AccountDocumentHandler  {
         HashSet<String> specificPrefs = null;
         for (Element epref : request.listElements(AccountConstants.E_PREF)) {
             if (specificPrefs == null)
-                specificPrefs = new HashSet<String>();
+                specificPrefs = new HashSet<>();
             specificPrefs.add(epref.getAttribute(AccountConstants.A_NAME));
         }
 
@@ -71,7 +71,7 @@ public class GetPrefs extends AccountDocumentHandler  {
 
             Object value = entry.getValue();
             if (value instanceof String[]) {
-                String sa[] = (String[]) value;
+                String[] sa = (String[]) value;
                 for (int i = 0; i < sa.length; i++)
                     prefs.addKeyValuePair(key, sa[i], AccountConstants.E_PREF, AccountConstants.A_NAME);
             } else {

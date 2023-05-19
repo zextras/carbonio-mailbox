@@ -76,14 +76,14 @@ public class GetDelegatedAdminConstraintsRequest {
      * @zm-api-field-description Attrs
      */
     @XmlElement(name=AdminConstants.E_A, required=false)
-    private List<NamedElement> attrs = Lists.newArrayList();
+    private final List<NamedElement> attrs = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private GetDelegatedAdminConstraintsRequest() {
-        this((TargetType) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public GetDelegatedAdminConstraintsRequest(

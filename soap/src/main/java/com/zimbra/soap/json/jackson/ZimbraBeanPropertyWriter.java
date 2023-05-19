@@ -164,7 +164,7 @@ public class ZimbraBeanPropertyWriter
     }
 
     private void startWrapping(JsonGenerator jgen)
-    throws JsonGenerationException, IOException {
+    throws IOException {
         if (wrapperName != null) {
             jgen.writeFieldName(wrapperName.getLocalPart());
             if (nameInfo.isWrapperIsArray()) {
@@ -175,7 +175,7 @@ public class ZimbraBeanPropertyWriter
     }
 
     private void finishWrapping(JsonGenerator jgen)
-    throws JsonGenerationException, IOException {
+    throws IOException {
         if (wrapperName != null) {
             jgen.writeEndObject();
             addZimbraJsonNamespaceField(jgen, wrapperName);
@@ -192,7 +192,7 @@ public class ZimbraBeanPropertyWriter
      * Assumes that any wrapping info has already been handled.
      */
     public void serializeInnerField(Object value, JsonGenerator jgen, SerializerProvider prov,
-        JsonSerializer<Object> ser) throws JsonGenerationException, IOException {
+        JsonSerializer<Object> ser) throws IOException {
         jgen.writeFieldName(wrappedName.getLocalPart());
         if (nameInfo.isTreatAsAttribute()) {
             ser.serialize(value, jgen, prov);
@@ -256,7 +256,7 @@ public class ZimbraBeanPropertyWriter
      * {@code XmlElements} or {@code XmlElementRefs
      */
     private void serializeXmlElementArray(List<?> values, JsonGenerator jgen, SerializerProvider prov,
-            JsonSerializer<Object> ser) throws JsonGenerationException, IOException {
+            JsonSerializer<Object> ser) throws IOException {
         if (values.isEmpty()) {
             ser.serialize(values, jgen, prov);
             return;
@@ -286,7 +286,7 @@ public class ZimbraBeanPropertyWriter
      */
     private void serializeXmlElementsArray(ArrayList<?> al, JsonGenerator jgen, SerializerProvider prov,
                 Map<Class<?>, QName> nameMap)
-    throws JsonGenerationException, IOException {
+    throws IOException {
         for (Object obj : al) {
             Class<?> objClass = obj.getClass();
             QName qn = nameMap.get(objClass);
@@ -315,7 +315,7 @@ public class ZimbraBeanPropertyWriter
     }
 
     private void serializeZimbraKeyValuePairs(List<?> pairs, JsonGenerator jgen, SerializerProvider prov)
-    throws JsonGenerationException, IOException {
+    throws IOException {
         if (pairs == null) {
             return;
         }
@@ -333,14 +333,14 @@ public class ZimbraBeanPropertyWriter
     }
 
     private void serializeXmlAnyAttributes(Map<?,?> extraAttribs, JsonGenerator jgen, SerializerProvider prov)
-    throws JsonGenerationException, IOException {
+    throws IOException {
         for (Entry<?,?> attrib : extraAttribs.entrySet()) {
             jgen.writeStringField(attrib.getKey().toString(), attrib.getValue().toString());
         }
     }
 
     private void serializeXmlAnyElementsArray(ArrayList<?> al, JsonGenerator jgen, SerializerProvider prov)
-    throws JsonGenerationException, IOException {
+    throws IOException {
         for (Object obj : al) {
             Class<?> objClass = obj.getClass();
             if (org.w3c.dom.Element.class.isAssignableFrom(objClass)) {
@@ -359,7 +359,7 @@ public class ZimbraBeanPropertyWriter
      * Add e.g. :  "_jsns": "urn:zimbraAdmin"
      */
     private void addZimbraJsonNamespaceField(JsonGenerator jgen, QName qn)
-    throws JsonGenerationException, IOException {
+    throws IOException {
         String ns = namespace(qn);
         if (ns != null) {
             jgen.writeStringField(Element.JSONElement.A_NAMESPACE /* _jsns */, ns);

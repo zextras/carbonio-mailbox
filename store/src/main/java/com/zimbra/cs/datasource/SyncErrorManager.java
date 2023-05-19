@@ -23,10 +23,10 @@ public final class SyncErrorManager {
     }
 
     private static final Map<String, AtomicInteger> ERRORS =
-        new LinkedHashMap<String, AtomicInteger>() {
-            protected boolean removeEldestEntry(Map.Entry e) {
-                return size() > MAX_ENTRIES;
-            }
+        new LinkedHashMap<>() {
+          protected boolean removeEldestEntry(Map.Entry e) {
+            return size() > MAX_ENTRIES;
+          }
         };
 
     private static String key(DataSource ds, ItemType type, Object id) {

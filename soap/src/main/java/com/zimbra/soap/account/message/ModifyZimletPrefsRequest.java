@@ -33,7 +33,7 @@ public class ModifyZimletPrefsRequest {
      * @zm-api-field-description Zimlet Preference Specifications
      */
     @XmlElement(name=AccountConstants.E_ZIMLET /* zimlet */, required=false)
-    private List<ModifyZimletPrefsSpec> zimlets = Lists.newArrayList();
+    private final List<ModifyZimletPrefsSpec> zimlets = Lists.newArrayList();
 
     public ModifyZimletPrefsRequest() {
     }

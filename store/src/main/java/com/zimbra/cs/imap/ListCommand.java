@@ -9,9 +9,9 @@ import java.util.Set;
 
 public class ListCommand extends AbstractListCommand {
 
-    private byte selectOptions;
-    private byte returnOptions;
-    private byte status;
+    private final byte selectOptions;
+    private final byte returnOptions;
+    private final byte status;
 
     public ListCommand(String referenceName, Set<String> mailboxNames, byte selectOptions, byte returnOptions,
             byte status) {
@@ -61,9 +61,6 @@ public class ListCommand extends AbstractListCommand {
         if (selectOptions != other.selectOptions) {
             return false;
         }
-        if (status != other.status) {
-            return false;
-        }
-        return true;
+      return status == other.status;
     }
 }

@@ -31,7 +31,7 @@ public class ZMimeMessageTest {
         }
     }
 
-    private static String[] HEADERS = {
+    private static final String[] HEADERS = {
         "Date: Mon, 18 Jul 2011 11:30:12 -0700",
         "MIME-Version: 1.0",
         "Subject: re: Your Brains",

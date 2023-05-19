@@ -20,7 +20,7 @@ import com.zimbra.cs.db.DbPool.DbConnection;
  */
 public class DbStatus {
 
-    private static Log mLog = LogFactory.getLog(DbStatus.class);
+    private static final Log mLog = LogFactory.getLog(DbStatus.class);
 
     public static boolean healthCheck() {
         boolean result = false;

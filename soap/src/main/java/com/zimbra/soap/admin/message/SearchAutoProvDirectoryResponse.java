@@ -44,7 +44,7 @@ public class SearchAutoProvDirectoryResponse {
      * @zm-api-field-description Entries
      */
     @XmlElement(name=AdminConstants.E_ENTRY /* entry */, required=false)
-    private List<AutoProvDirectoryEntry> entries = Lists.newArrayList();
+    private final List<AutoProvDirectoryEntry> entries = Lists.newArrayList();
 
     public SearchAutoProvDirectoryResponse() {
     }

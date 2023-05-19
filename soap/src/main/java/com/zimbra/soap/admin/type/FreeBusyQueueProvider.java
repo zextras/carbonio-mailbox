@@ -33,14 +33,14 @@ public class FreeBusyQueueProvider {
      * @zm-api-field-description Information on accounts
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT, required=false)
-    private List<Id> accounts = Lists.newArrayList();
+    private final List<Id> accounts = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private FreeBusyQueueProvider() {
-        this((String) null);
+        this(null);
     }
 
     public FreeBusyQueueProvider(String name) {

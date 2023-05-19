@@ -28,7 +28,7 @@ public class GetSearchFolderResponse {
      * @zm-api-field-description Search folder information
      */
     @XmlElement(name=MailConstants.E_SEARCH, required=false)
-    private List<SearchFolder> searchFolders = Lists.newArrayList();
+    private final List<SearchFolder> searchFolders = Lists.newArrayList();
 
     public GetSearchFolderResponse() {
     }

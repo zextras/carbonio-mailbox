@@ -78,14 +78,14 @@ public class CertInfo {
      * @zm-api-field-description Any other information found in the certificate
      */
     @XmlAnyElement
-    private List<org.w3c.dom.Element> certInfos = Lists.newArrayList();
+    private final List<org.w3c.dom.Element> certInfos = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private CertInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public CertInfo(String server, String type) {

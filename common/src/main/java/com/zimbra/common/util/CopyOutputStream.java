@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class CopyOutputStream extends OutputStream {
-    private BufferStream bs;
-    private OutputStream os;
+    private final BufferStream bs;
+    private final OutputStream os;
 
     public CopyOutputStream(OutputStream os) { this(os, 0); }
 
@@ -51,7 +51,7 @@ public class CopyOutputStream extends OutputStream {
     }
     
     public long readFrom(InputStream is, long len) throws IOException {
-        byte tmp[] = new byte[(int)Math.min(len, 32 * 1024)];
+        byte[] tmp = new byte[(int)Math.min(len, 32 * 1024)];
         int in;
         long out = 0;
         
@@ -73,7 +73,7 @@ public class CopyOutputStream extends OutputStream {
         bs.write(data);
     }
     
-    public void write(byte data[], int off, int len) throws IOException {
+    public void write(byte[] data, int off, int len) throws IOException {
         os.write(data, off, len);
         bs.write(data, off, len);
     }

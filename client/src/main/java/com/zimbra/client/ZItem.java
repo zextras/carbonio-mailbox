@@ -10,8 +10,8 @@ import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.common.service.ServiceException;
 
 public interface ZItem {
-    public static final Flag[] CHAR2FLAG = new Flag[127];
-    public enum Flag {
+    Flag[] CHAR2FLAG = new Flag[127];
+    enum Flag {
         UNREAD(-10, 'u'),
         FLAGGED(-6, 'f'),
         HIGH_PRIORITY(-11, '!'),
@@ -31,7 +31,7 @@ public interface ZItem {
 
         public char getFlagChar() { return ch; }
 
-        private Flag(int id, char ch) {
+        Flag(int id, char ch) {
             this.id = id;
             this.ch = ch;
             this.bitmask = 1 << (-id - 1);
@@ -80,7 +80,7 @@ public interface ZItem {
         }
     }
 
-    public String getId();
-    public String getUuid();
+    String getId();
+    String getUuid();
 }
 

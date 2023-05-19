@@ -30,13 +30,13 @@ public class GetRightsDocResponse {
      * @zm-api-field-description Information for packages
      */
     @XmlElement(name=AdminConstants.E_PACKAGE /* package */, required=false)
-    private List <PackageRightsInfo> pkgs = Lists.newArrayList();
+    private final List <PackageRightsInfo> pkgs = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Unused Admin rights
      */
     @XmlElement(name="notUsed", required=false)
-    private List <String> notUsed = Lists.newArrayList();
+    private final List <String> notUsed = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Domain admin rights
@@ -44,7 +44,7 @@ public class GetRightsDocResponse {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name="domainAdmin-copypaste-to-rights-domainadmin-xml-template", required=true)
     @XmlElement(name=AdminConstants.E_RIGHT /* right */, required=false)
-    private List <DomainAdminRight> rights = Lists.newArrayList();
+    private final List <DomainAdminRight> rights = Lists.newArrayList();
 
     public GetRightsDocResponse() {
     }

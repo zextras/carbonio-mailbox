@@ -56,7 +56,7 @@ public class CreateArchiveRequest {
      */
     @SuppressWarnings("unused")
     private CreateArchiveRequest() {
-        this((AccountSelector) null);
+        this(null);
     }
 
     public CreateArchiveRequest(AccountSelector account) {

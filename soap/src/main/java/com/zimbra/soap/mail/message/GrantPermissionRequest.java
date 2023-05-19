@@ -40,7 +40,7 @@ public class GrantPermissionRequest {
      * @zm-api-field-description Specify Access Control Entries (ACEs)
      */
     @XmlElement(name=MailConstants.E_ACE /* ace */, required=false)
-    private List<AccountACEinfo> aces = Lists.newArrayList();
+    private final List<AccountACEinfo> aces = Lists.newArrayList();
 
     public GrantPermissionRequest() {
     }

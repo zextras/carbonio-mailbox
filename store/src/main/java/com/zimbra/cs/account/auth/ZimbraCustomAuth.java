@@ -32,7 +32,7 @@ public abstract class ZimbraCustomAuth {
     public synchronized static void register(String handlerName, ZimbraCustomAuth handler) {
         
         if (mHandlers == null)
-            mHandlers = new HashMap<String, ZimbraCustomAuth>();
+            mHandlers = new HashMap<>();
         else {
             //  sanity check
             ZimbraCustomAuth obj = mHandlers.get(handlerName);

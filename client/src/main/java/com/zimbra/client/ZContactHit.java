@@ -25,41 +25,46 @@ import com.zimbra.common.zclient.ZClientException;
 
 public class ZContactHit implements ZImapSearchHit {
 
-    private String mId;
+    private final String mId;
     private String mFlags;
     private String mTagIds;
-    private String mSortField;
+    private final String mSortField;
     private String mFileAsStr;
-    private String mEmail, mEmail2, mEmail3, mWorkEmail1, mWorkEmail2, mWorkEmail3;
+    private String mEmail;
+    private String mEmail2;
+    private String mEmail3;
+    private final String mWorkEmail1;
+    private final String mWorkEmail2;
+    private final String mWorkEmail3;
     private String mRevision;
     private String mFolderId;
-    private String mType;
+    private final String mType;
     private String mDlist;
-    private long mMetaDataDate;
-    private long mDate;
+    private final long mMetaDataDate;
+    private final long mDate;
     private String mFullName;
     private String mFileAs;
     private String mNickname;
-    private String mNamePrefix;
+    private final String mNamePrefix;
     private String mFirstName;
     private String mPhoneticFirstName;
-    private String mMiddleName;
-    private String mMaidenName;
+    private final String mMiddleName;
+    private final String mMaidenName;
     private String mLastName;
     private String mPhoneticLastName;
-    private String mNameSuffix;
+    private final String mNameSuffix;
     private String mCompany;
     private String mPhoneticCompany;
     private Map<String, String> mAttrs;
-    private Map<String, ZContactAttachmentInfo> mAttachments;
-    private int imapUid;
-    private int modSeq;
+    private final Map<String, ZContactAttachmentInfo> mAttachments;
+    private final int imapUid;
+    private final int modSeq;
 
     public static class ZContactAttachmentInfo {
-        private String mContentType;
-        private String mFileName;
-        private String mPart;
-        private long mLength;
+        private final String mContentType;
+        private final String mFileName;
+        private final String mPart;
+        private final long mLength;
 
         public ZContactAttachmentInfo(String part, String fileName, String contentType, long length) {
             mPart = part;
@@ -95,8 +100,8 @@ public class ZContactHit implements ZImapSearchHit {
         imapUid = e.getAttributeInt(MailConstants.A_IMAP_UID, -1);
         modSeq = e.getAttributeInt(MailConstants.A_MODIFIED_SEQUENCE, -1);
 
-        HashMap<String, String> attrs = new HashMap<String, String>();
-        HashMap<String, ZContactAttachmentInfo> attachments = new HashMap<String, ZContactAttachmentInfo>();
+        HashMap<String, String> attrs = new HashMap<>();
+        HashMap<String, ZContactAttachmentInfo> attachments = new HashMap<>();
 
         for (Element attrEl : e.listElements(MailConstants.E_ATTRIBUTE)) {
             String name = attrEl.getAttribute(MailConstants.A_ATTRIBUTE_NAME);
@@ -299,14 +304,16 @@ public class ZContactHit implements ZImapSearchHit {
     public String getFileAs() { return mFileAs; }
     public String getNickname() { return mNickname; }
     public String getNamePrefix() { return mNamePrefix; }
-    public String getFirstName() { return mFirstName; };
+    public String getFirstName() { return mFirstName; }
+
     public String getPhoneticFirstName() { return mPhoneticFirstName; }
     public String getMiddleName() { return mMiddleName; }
     public String getMaidenName() { return mMaidenName; }
     public String getLastName() { return mLastName; }
     public String getPhoneticLastName() { return mPhoneticLastName; }
     public String getNameSuffix() { return mNameSuffix; }
-    public String getCompany() { return mCompany; };
+    public String getCompany() { return mCompany; }
+
     public String getPhoneticCompany() { return mPhoneticCompany; }
 
     @Override

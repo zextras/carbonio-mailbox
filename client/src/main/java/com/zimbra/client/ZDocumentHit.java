@@ -13,9 +13,9 @@ import org.json.JSONException;
 
 public class ZDocumentHit implements ZSearchHit {
 
-    private ZDocument mDoc;
-    private String mId;
-    private String mSortField;
+    private final ZDocument mDoc;
+    private final String mId;
+    private final String mSortField;
 
     public ZDocumentHit(Element e) throws ServiceException {
         mId = e.getAttribute(MailConstants.A_ID);

@@ -73,8 +73,8 @@ public class GetEffectiveRightsRequest {
     public static final String EXPAND_SET_ATTRS = "setAttrs";
     public static final String EXPAND_GET_ATTRS = "getAttrs";
 
-    private static Splitter COMMA_SPLITTER = Splitter.on(",");
-    private static Joiner COMMA_JOINER = Joiner.on(",");
+    private static final Splitter COMMA_SPLITTER = Splitter.on(",");
+    private static final Joiner COMMA_JOINER = Joiner.on(",");
 
     @XmlTransient
     private Boolean expandSetAttrs;
@@ -99,8 +99,8 @@ public class GetEffectiveRightsRequest {
      */
     @SuppressWarnings("unused")
     private GetEffectiveRightsRequest() {
-        this((EffectiveRightsTargetSelector) null, (GranteeSelector) null,
-                (Boolean) null, (Boolean) null);
+        this(null, null,
+            null, null);
     }
 
     public GetEffectiveRightsRequest(EffectiveRightsTargetSelector target,

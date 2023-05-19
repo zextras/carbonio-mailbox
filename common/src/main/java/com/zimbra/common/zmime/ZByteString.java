@@ -12,10 +12,10 @@ import com.zimbra.common.zmime.ZMimeUtility.ByteBuilder;
 
 public class ZByteString {
 
-    private byte[] bytes;
-    private int offset;
-    private int length;
-    private Charset charset;
+    private final byte[] bytes;
+    private final int offset;
+    private final int length;
+    private final Charset charset;
 
     public ZByteString(byte[] bytes, int offset, int length, Charset charset) {
         this.bytes = bytes;
@@ -44,7 +44,7 @@ public class ZByteString {
                     lastByteString = lastByteString.merge(bStr);
                 }
                 else {
-                    builder.append(lastByteString.toString());
+                    builder.append(lastByteString);
                     lastByteString = bStr;
                 }
             }
@@ -53,7 +53,7 @@ public class ZByteString {
             }
         }
         if (lastByteString != null) {
-            builder.append(lastByteString.toString());
+            builder.append(lastByteString);
         }
         return builder.toString();
     }

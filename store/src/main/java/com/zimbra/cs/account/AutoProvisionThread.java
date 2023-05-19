@@ -17,7 +17,7 @@ import com.zimbra.cs.util.Zimbra;
 public class AutoProvisionThread extends Thread implements Provisioning.EagerAutoProvisionScheduler{
 
     private static volatile AutoProvisionThread autoProvThread = null;
-    private static Object THREAD_CONTROL_LOCK = new Object();
+    private static final Object THREAD_CONTROL_LOCK = new Object();
     private boolean shutdownRequested = false;
 
     @VisibleForTesting
@@ -63,11 +63,7 @@ public class AutoProvisionThread extends Thread implements Provisioning.EagerAut
      */
     public synchronized static boolean isRunning() {
         synchronized (THREAD_CONTROL_LOCK) {
-            if (autoProvThread != null) {
-                return true;
-            } else {
-                return false;
-            }
+          return autoProvThread != null;
         }
     }
 

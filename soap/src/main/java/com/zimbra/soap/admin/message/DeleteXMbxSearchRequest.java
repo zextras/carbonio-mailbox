@@ -38,14 +38,14 @@ public class DeleteXMbxSearchRequest {
      * @zm-api-field-description Account
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT /* account */,  required=false)
-    private AccountSelector account;
+    private final AccountSelector account;
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private DeleteXMbxSearchRequest() {
-        this((SearchID) null, (AccountSelector)null);
+        this(null, null);
     }
 
     /*public DeleteXMbxSearchRequest(SearchID searchTask) {

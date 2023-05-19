@@ -8,6 +8,7 @@ package com.zimbra.cs.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
@@ -111,7 +112,8 @@ public class UserServletContext {
         public MailItem mailItem;
         public Item(String itemId, Account targetAccount) throws ServiceException {
             String[] vals = itemId.split("\\.");
-            ItemId iid = new ItemId((vals.length > 0) ? vals[0] : itemId, targetAccount == null ? (String) null : targetAccount.getId());
+            ItemId iid = new ItemId((vals.length > 0) ? vals[0] : itemId, targetAccount == null ? null
+                : targetAccount.getId());
             id = iid.getId();
             if (targetAccount != null && !targetAccount.getId().equals(iid.getAccountId())) {
                 acctId = iid.getAccountId();
@@ -249,7 +251,7 @@ public class UserServletContext {
         String listParam = this.params.get(UserServlet.QP_LIST);
         if (listParam != null && listParam.length() > 0) {
             String[] ids = listParam.split(",");
-            requestedItems = new ArrayList<Item>();
+            requestedItems = new ArrayList<>();
             reqListIds = new int[ids.length];
             String proxyAcct = null;
             for (int i = 0; i < ids.length; ++i) {
@@ -585,9 +587,7 @@ public class UserServletContext {
      *  specified or is set to a non-zero value. */
     public boolean shouldReturnBody() {
         String bodyVal = params.get(UserServlet.QP_BODY);
-        if (bodyVal != null && bodyVal.equals("0"))
-            return false;
-        return true;
+        return bodyVal == null || !bodyVal.equals("0");
     }
 
     public void setAnonymousRequest() {
@@ -691,9 +691,9 @@ public class UserServletContext {
             return value;
         }
 
-        @Override public int read(byte b[]) throws IOException { return (int)check(is.read(b)); }
+        @Override public int read(byte[] b) throws IOException { return (int)check(is.read(b)); }
 
-        @Override public int read(byte b[], int off, int len) throws IOException {
+        @Override public int read(byte[] b, int off, int len) throws IOException {
             return (int)check(is.read(b, off, len));
         }
 
@@ -751,7 +751,7 @@ public class UserServletContext {
                     if (fis.isFormField()) {
                         is = fis.openStream();
                         params.put(fis.getFieldName(),
-                            new String(ByteUtil.getContent(is, -1), "UTF-8"));
+                            new String(ByteUtil.getContent(is, -1), StandardCharsets.UTF_8));
                         if (doCsrfCheck && !this.csrfAuthSucceeded) {
                             String csrfToken = params.get(FileUploadServlet.PARAM_CSRF_TOKEN);
                             if (UserServlet.log.isDebugEnabled()) {

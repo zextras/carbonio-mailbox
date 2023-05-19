@@ -28,7 +28,7 @@ public class ExpandRecurResponse {
      * @zm-api-field-description Expanded recurrence instances
      */
     @XmlElement(name=MailConstants.E_INSTANCE /* inst */, required=false)
-    private List<ExpandedRecurrenceInstance> instances = Lists.newArrayList();
+    private final List<ExpandedRecurrenceInstance> instances = Lists.newArrayList();
 
     public ExpandRecurResponse() {
     }

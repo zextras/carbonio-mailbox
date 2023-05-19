@@ -27,7 +27,7 @@ public class PurgeMessagesResponse {
      * @zm-api-field-description Information about mailboxes where aged messages have been purged
      */
     @XmlElement(name=AdminConstants.E_MAILBOX, required=false)
-    private List <MailboxWithMailboxId> mailboxes = Lists.newArrayList();
+    private final List <MailboxWithMailboxId> mailboxes = Lists.newArrayList();
 
     public PurgeMessagesResponse() {
     }

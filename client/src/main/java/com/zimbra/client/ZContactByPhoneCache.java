@@ -16,8 +16,8 @@ import java.util.Map;
 
 public class ZContactByPhoneCache extends ZEventHandler {
 	public static class ContactPhone {
-		private ZContact mContact;
-		private String mField;
+		private final ZContact mContact;
+		private final String mField;
 		public ContactPhone(ZContact contact, String field) {
 			mContact = contact;
 			mField = field;
@@ -25,7 +25,7 @@ public class ZContactByPhoneCache extends ZEventHandler {
 		public ZContact getContact() { return mContact; }
 		public String getField() { return mField; }
 	}
-	private static List<String> sATTRS = Arrays.asList(
+	private static final List<String> sATTRS = Arrays.asList(
 			ContactConstants.A_homePhone, ContactConstants.A_homePhone2, ContactConstants.A_mobilePhone,
 			ContactConstants.A_otherPhone, ContactConstants.A_workPhone, ContactConstants.A_workPhone2,
 			ContactConstants.A_homeFax, ContactConstants.A_workFax, ContactConstants.A_workMobile,
@@ -33,18 +33,18 @@ public class ZContactByPhoneCache extends ZEventHandler {
 			ContactConstants.A_companyPhone);
 
 	// Map of phone fields to contacts
-    private Map<String, ContactPhone> mCache;
+    private final Map<String, ContactPhone> mCache;
 
     /** true if we have been cleared and need to refetch contacts on next auto-compleete */
     private boolean mCleared;
 
 	// id to contact map of all contacts in our cache
-	private Map<String,ZContact> mContacts;
+	private final Map<String,ZContact> mContacts;
 
     public ZContactByPhoneCache() {
-        mCache = new HashMap<String, ContactPhone>();
+        mCache = new HashMap<>();
         mCleared = true;
-		mContacts = new HashMap<String, ZContact>();
+		mContacts = new HashMap<>();
     }
 
     private void addPhoneKey(String field, ZContact contact) {

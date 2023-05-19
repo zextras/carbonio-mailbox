@@ -78,9 +78,9 @@ public abstract class ExternalStoreManager extends StoreManager implements Exter
             // Don't remove blobs that are being referenced by a cached message.
             return !MessageCache.contains(item.digest);
         }
-    };
+    }
 
-    @Override
+  @Override
     public MailboxBlob copy(MailboxBlob src, Mailbox destMbox, int destItemId, int destRevision)
     throws IOException, ServiceException {
         //default implementation does not handle de-duping
@@ -296,7 +296,7 @@ public abstract class ExternalStoreManager extends StoreManager implements Exter
      * @throws IOException
      */
     public List<String> getAllBlobPaths(Mailbox mbox) throws IOException {
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     @Override

@@ -34,7 +34,7 @@ public class DeleteDataSource extends AdminDocumentHandler {
         return true;
     }
     
-    public Element handle(Element request, Map<String, Object> context) throws ServiceException, SoapFaultException {
+    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         Provisioning prov = Provisioning.getInstance();
 

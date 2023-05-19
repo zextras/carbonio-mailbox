@@ -14,7 +14,7 @@ import java.io.Writer;
  */
 public class CsvWriter {
 
-    private BufferedWriter writer;
+    private final BufferedWriter writer;
     
     public CsvWriter(Writer writer) throws IOException {
         this.writer = new BufferedWriter(writer);

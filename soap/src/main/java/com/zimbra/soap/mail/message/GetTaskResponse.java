@@ -34,7 +34,7 @@ public class GetTaskResponse {
      */
     @SuppressWarnings("unused")
     private GetTaskResponse() {
-        this((CalendarItemInfo) null);
+        this(null);
     }
 
     public GetTaskResponse(CalendarItemInfo item) {

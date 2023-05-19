@@ -129,7 +129,7 @@ public class ZimbraMemcachedClient {
         if (servers != null && servers.length > 0) {
             // Eliminate duplicates and sort case-insensitively.  This negates operator error
             // configuring server list with inconsistent order on different memcached clients.
-            TreeSet<String> tset = new TreeSet<String>();  // TreeSet provides deduping and sorting.
+            TreeSet<String> tset = new TreeSet<>();  // TreeSet provides deduping and sorting.
             for (int i = 0; i < servers.length; ++i) {
                 tset.add(servers[i].toLowerCase());
             }
@@ -209,7 +209,7 @@ public class ZimbraMemcachedClient {
      */
     private static List<InetSocketAddress> parseServerList(String[] servers) {
         if (servers != null) {
-            List<InetSocketAddress> addrs = new ArrayList<InetSocketAddress>(servers.length);
+            List<InetSocketAddress> addrs = new ArrayList<>(servers.length);
             for (String server : servers) {
                 if (server.length() == 0)
                     continue;
@@ -240,7 +240,7 @@ public class ZimbraMemcachedClient {
             }
             return addrs;
         } else {
-            return new ArrayList<InetSocketAddress>(0);
+            return new ArrayList<>(0);
         }
     }
 
@@ -342,7 +342,7 @@ public class ZimbraMemcachedClient {
         // Make sure the returned map contains an entry for every key passed in.  Add null value
         // for any keys missing from memcached response.
         if (value == null)
-            value = new HashMap<String, Object>(keys.size());
+            value = new HashMap<>(keys.size());
         for (String key : keys) {
             if (!value.containsKey(key))
                 value.put(key, null);
@@ -378,7 +378,7 @@ public class ZimbraMemcachedClient {
         key = hashMemcacheKey(key);
         if (StringUtil.isNullOrEmpty(key)) {
             return false;
-        };
+        }
         synchronized (this) {
             client = mMCDClient;
             if (expirySec == DEFAULT_EXPIRY)
@@ -459,7 +459,7 @@ public class ZimbraMemcachedClient {
 
     // simple wrapper around a byte[]
     private static class ByteArray {
-        private byte[] mBytes;
+        private final byte[] mBytes;
         ByteArray(byte[] bytes) { mBytes = bytes; }
         public byte[] getBytes() { return mBytes; }
     }
@@ -504,10 +504,10 @@ public class ZimbraMemcachedClient {
     // - length of each chunk
     // - checksum of each chunk
     private static class ByteArrayChunksTOC {
-        private int mNumChunks;
-        private int[] mLength;  // length of each chunk
-        private long[] mChecksum;  // checksum of each chunk
-        private long mFingerprint;
+        private final int mNumChunks;
+        private final int[] mLength;  // length of each chunk
+        private final long[] mChecksum;  // checksum of each chunk
+        private final long mFingerprint;
 
         public int getNumChunks() { return mNumChunks; }
         public int getLength(int chunkIndex) { return mLength[chunkIndex]; }
@@ -520,7 +520,7 @@ public class ZimbraMemcachedClient {
         private static final String FN_CHECKSUM = "cs";
 
         public String encode() {
-            Map<String, Long> map = new HashMap<String, Long>();
+            Map<String, Long> map = new HashMap<>();
             map.put(FN_NUM_CHUNKS, (long) mNumChunks);
             map.put(FN_FINGERPRINT, mFingerprint);
             for (int i = 0; i < mNumChunks; ++i) {
@@ -543,10 +543,10 @@ public class ZimbraMemcachedClient {
                 try {
                     return Long.parseLong((String) val);
                 } catch (NumberFormatException e) {
-                    throw ServiceException.FAILURE("Invalid number " + val.toString(), null);
+                    throw ServiceException.FAILURE("Invalid number " + val, null);
                 }
             } else {
-                throw ServiceException.FAILURE("Invalid number " + val.toString(), null);
+                throw ServiceException.FAILURE("Invalid number " + val, null);
             }
         }
 
@@ -554,7 +554,7 @@ public class ZimbraMemcachedClient {
         public ByteArrayChunksTOC(String encoded) throws ServiceException {
             Map map;
             try {
-                map = (Map) BEncoding.decode(encoded);
+                map = BEncoding.decode(encoded);
             } catch (BEncodingException e) {
                 throw ServiceException.FAILURE("Invalid ByteArrayChunksTOC value: " + encoded, null);
             }
@@ -578,11 +578,11 @@ public class ZimbraMemcachedClient {
 
     // class for dividing a byte array into smaller chunks
     private static class ByteArrayChunks {
-        private int mTotalLen;
-        private int mNumChunks;
-        private ByteArray[] mChunks;
-        private long mFingerprint;
-        private long[] mChecksum;
+        private final int mTotalLen;
+        private final int mNumChunks;
+        private final ByteArray[] mChunks;
+        private final long mFingerprint;
+        private final long[] mChecksum;
 
         // Splits big byte array into smaller chunks.
         // Checksum is computed for each chunk from the first 32KB.
@@ -622,7 +622,7 @@ public class ZimbraMemcachedClient {
         public ByteArray getChunk(int chunkIndex) { return mChunks[chunkIndex]; }
 
         public ByteArrayChunksTOC makeTOC() {
-            int lengths[] = new int[mNumChunks];
+            int[] lengths = new int[mNumChunks];
             for (int i = 0; i < mNumChunks; ++i) {
                 lengths[i] = mChunks[i].getBytes().length;
             }
@@ -786,12 +786,7 @@ public class ZimbraMemcachedClient {
             // Put the table of contents as the main value.  Do this after all chunks have been
             // added successfully.
             byte[] tocBytes;
-            try {
-                tocBytes = toc.encode().getBytes("utf-8");
-            } catch (UnsupportedEncodingException e) {
-                ZimbraLog.misc.warn("Unable to get bytes for BBA table of contents", e);
-                return false;
-            }
+            tocBytes = toc.encode().getBytes(StandardCharsets.UTF_8);
             byte[] prefixed = new byte[tocBytes.length + 1];
             System.arraycopy(tocBytes, 0, prefixed, 0, tocBytes.length);
             prefixed[tocBytes.length] = BBA_PREFIX_TOC;
@@ -880,11 +875,8 @@ public class ZimbraMemcachedClient {
         String tocEncoded = null;
         ByteArrayChunksTOC toc;
         try {
-            tocEncoded = new String(value, "utf-8");
+            tocEncoded = new String(value, StandardCharsets.UTF_8);
             toc = new ByteArrayChunksTOC(tocEncoded);
-        } catch (UnsupportedEncodingException e) {
-            ZimbraLog.misc.warn("Unable to decode BBA table of contents", e);
-            return null;
         } catch (ServiceException e) {
             ZimbraLog.misc.warn("Invalid big byte array TOC: " + tocEncoded);
             return null;
@@ -895,7 +887,7 @@ public class ZimbraMemcachedClient {
             ZimbraLog.misc.warn("Big byte array TOC has numChunks=0");
             return null;
         }
-        List<String> chunkKeys = new ArrayList<String>(numChunks);
+        List<String> chunkKeys = new ArrayList<>(numChunks);
         for (int i = 0; i < numChunks; ++i) {
             String ck = key + ":" + toc.getFingerprint() + "." + i;
             chunkKeys.add(ck);
@@ -919,7 +911,7 @@ public class ZimbraMemcachedClient {
         ByteArray[] byteArrays = new ByteArray[numChunks];
         int index = 0;
         for (String ck : chunkKeys) {
-            ByteArray ba = (ByteArray) vals.get(ck);
+            ByteArray ba = vals.get(ck);
             if (ba == null)
                 return null;
             byteArrays[index] = ba;
@@ -948,7 +940,7 @@ public class ZimbraMemcachedClient {
 
         public void test() throws Exception {
             ZimbraMemcachedClient client = new ZimbraMemcachedClient();
-            String servers[] = { "localhost:11211" };
+            String[] servers = { "localhost:11211" };
             client.connect(servers, false, null, 3600, 5000);
             try {
                 int reps = 100;
@@ -990,7 +982,7 @@ public class ZimbraMemcachedClient {
         }
 
         private static class TestKey implements MemcachedKey {
-            private String mKey;
+            private final String mKey;
             public TestKey(String k) { mKey = k; }
             public String getKeyPrefix() { return null; }
             public String getKeyValue() { return mKey; }
@@ -1003,7 +995,7 @@ public class ZimbraMemcachedClient {
 
         private boolean testInteger(ZimbraMemcachedClient client, int reps) throws Exception {
             MemcachedMap<TestKey, Integer> map =
-                new MemcachedMap<TestKey, Integer>(client, new IntegerSerializer());
+                new MemcachedMap<>(client, new IntegerSerializer());
             TestKey foo = new TestKey("fooInt");
             int val1 = 1234567890;
 
@@ -1032,7 +1024,7 @@ public class ZimbraMemcachedClient {
         private boolean testString(ZimbraMemcachedClient client, String testName, int dataLen, int reps)
         throws Exception {
             MemcachedMap<TestKey, String> map =
-                new MemcachedMap<TestKey, String>(client, new StringSerializer());
+                new MemcachedMap<>(client, new StringSerializer());
             TestKey foo = new TestKey("fooStr");
             StringBuilder sb = new StringBuilder(dataLen + 20);
             while (sb.length() < dataLen) {
@@ -1069,13 +1061,13 @@ public class ZimbraMemcachedClient {
         private boolean testBBA(ZimbraMemcachedClient client, String testName, int dataLen, int reps)
         throws Exception {
             BigByteArrayMemcachedMap<TestKey, ByteArray> map =
-                new BigByteArrayMemcachedMap<TestKey, ByteArray>(client, new BBASerializer());
+                new BigByteArrayMemcachedMap<>(client, new BBASerializer());
             TestKey foo = new TestKey("fooBBA");
             StringBuilder sb = new StringBuilder(dataLen + 20);
             while (sb.length() < dataLen) {
                 sb.append("Hello, BBA!  ");
             }
-            byte[] sbBytes = sb.toString().getBytes("utf-8");
+            byte[] sbBytes = sb.toString().getBytes(StandardCharsets.UTF_8);
             byte[] data = new byte[dataLen];
             System.arraycopy(sbBytes, 0, data, 0, dataLen);
             ByteArray bytes1 = new ByteArray(data);

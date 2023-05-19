@@ -27,8 +27,8 @@ public abstract class MimePart implements Cloneable {
     public static final String PROP_CHARSET_DEFAULT = "charset.default";
 
     public interface InputStreamSource {
-        public InputStream newStream(long start, long end);
-        public long getSize();
+        InputStream newStream(long start, long end);
+        long getSize();
     }
 
     enum Dirty {
@@ -476,14 +476,14 @@ public abstract class MimePart implements Cloneable {
         private InputStream mCurrentStream;
 
         public VectorInputStream(List<? extends Object> items) throws IOException {
-            mItems = new ArrayList<Object>(items);
+            mItems = new ArrayList<>(items);
             while (mItems.remove(null))
                 ;
             getNextStream();
         }
 
         public VectorInputStream(Object... items) throws IOException {
-            mItems = new ArrayList<Object>(items.length);
+            mItems = new ArrayList<>(items.length);
             for (Object item : items) {
                 if (item != null) {
                     mItems.add(item);

@@ -15,7 +15,7 @@ public class LdapGalValueMap {
     private Pattern mRegex;
     private String mReplacement;
     
-    private static Pattern sPattern = Pattern.compile("(\\S*): (\\S*) (.*)");
+    private static final Pattern sPattern = Pattern.compile("(\\S*): (\\S*) (.*)");
     
     /**
      * 

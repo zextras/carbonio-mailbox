@@ -15,8 +15,8 @@ package com.zimbra.cs.ephemeral;
  */
 public class EphemeralKey {
 
-    private String key;
-    private String dynamicComponent;
+    private final String key;
+    private final String dynamicComponent;
 
     public EphemeralKey(String key) {
         this(key, null);

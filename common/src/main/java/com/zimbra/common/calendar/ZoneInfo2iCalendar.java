@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -101,7 +102,7 @@ public class ZoneInfo2iCalendar {
   }
 
   private static List<RuleLine> getRuleLinesForYear(List<RuleLine> ruleLines, int year) {
-    List<RuleLine> result = new ArrayList<RuleLine>();
+    List<RuleLine> result = new ArrayList<>();
     for (RuleLine rline : ruleLines) {
       if (rline.getFromYear() <= year && rline.getToYear() >= year) result.add(rline);
     }
@@ -442,10 +443,10 @@ public class ZoneInfo2iCalendar {
     public String toString() {
       StringBuilder sb = new StringBuilder("Observances:\n");
       if (null != std) {
-        sb.append("    Standard Observance:\n").append(std.toString());
+        sb.append("    Standard Observance:\n").append(std);
       }
       if (null != daylight) {
-        sb.append("    Daylight Observance=\n").append(daylight.toString());
+        sb.append("    Daylight Observance=\n").append(daylight);
       }
       return sb.toString();
     }
@@ -469,10 +470,10 @@ public class ZoneInfo2iCalendar {
       StringBuilder sb = new StringBuilder("RuleLines:hasRule=").append(hasRule);
       sb.append(" saveDuration=").append(saveDuration == null ? "<null>" : saveDuration.toString());
       if (null != standard) {
-        sb.append(" STD=").append(standard.toString());
+        sb.append(" STD=").append(standard);
       }
       if (null != daylight) {
-        sb.append(" DAY=").append(daylight.toString());
+        sb.append(" DAY=").append(daylight);
       }
       return sb.toString();
     }
@@ -596,11 +597,11 @@ public class ZoneInfo2iCalendar {
             System.err.println(
                 String.format(
                     "1st zoneLine '%s' for '%s' only has STANDARD time.",
-                    zline1.toString(), zline1.getName()));
+                    zline1, zline1.getName()));
             System.err.println(
                 String.format(
                     "Reference date %s would be in DAYLIGHT time by rules of 2nd zoneLine '%s'",
-                    fmtRefDate, zline2.toString()));
+                    fmtRefDate, zline2));
             System.err.println("Therefore, Ignoring 2nd zoneLine.");
             suppressWarning = true;
           } else {
@@ -616,16 +617,16 @@ public class ZoneInfo2iCalendar {
             System.err.println(
                 String.format(
                     "1st zoneLine '%s' for '%s' only has STANDARD time.",
-                    zline1.toString(), zline1.getName()));
+                    zline1, zline1.getName()));
             System.err.println(
                 String.format(
                     "Reference date %s would also be in STANDARD time by rules of 2nd zoneLine"
                         + " '%s'",
-                    fmtRefDate, zline2.toString()));
+                    fmtRefDate, zline2));
             System.err.println(
                 String.format(
                     "BUT OLD STANDARD has TZOFFSETTO=%s which differs from new TZOFFSETTO=%s.",
-                    oldOffsetTo.toString(), newOffsetTo.toString()));
+                    oldOffsetTo, newOffsetTo.toString()));
             System.err.println("Therefore, Ignoring 2nd zoneLine.");
             suppressWarning = true;
           }
@@ -637,7 +638,7 @@ public class ZoneInfo2iCalendar {
           String.format(
               "More than 1 zoneLine for zone '%s' but unknown scenario.  Using only zoneLine:\n"
                   + "    %s",
-              zline1.getName(), zline1.toString()));
+              zline1.getName(), zline1));
     }
     return toVTimeZoneComp(hintYear, toObservances(hintYear, zline1), vtzProps);
   }
@@ -759,7 +760,6 @@ public class ZoneInfo2iCalendar {
           return null;
         }
         daylightOffset = standardOffset; /* random value - fix later */
-        ;
         obs4zl2 =
             toObservanceComp(hintYear, newRule, true, standardOffset, daylightOffset, tznameFormat);
         TzOffsetFrom stdOffsetFrom =
@@ -850,11 +850,11 @@ public class ZoneInfo2iCalendar {
     }
   }
 
-  private static Set<String /* TZID */> sPrimaryTZIDs = new HashSet<String>();
-  private static Map<String /* TZID */, Integer /* matchScore */> sMatchScores =
-      new HashMap<String, Integer>();
+  private static final Set<String /* TZID */> sPrimaryTZIDs = new HashSet<>();
+  private static final Map<String /* TZID */, Integer /* matchScore */> sMatchScores =
+      new HashMap<>();
 
-  private static enum LineType {
+  private enum LineType {
     PRIMARYZONE,
     ZONEMATCHSCORE,
     UNKNOWN;
@@ -891,7 +891,7 @@ public class ZoneInfo2iCalendar {
     tokenizer.quoteChar(dquote);
     tokenizer.eolIsSignificant(true);
 
-    List<String> tokenList = new ArrayList<String>();
+    List<String> tokenList = new ArrayList<>();
     LineType lineType = LineType.UNKNOWN;
     boolean atLineStart = true;
 
@@ -960,7 +960,7 @@ public class ZoneInfo2iCalendar {
   private static final String OPT_LAST_MODIFIED = "last-modified";
   private static final String OPT_OLD_TIMEZONES_FILE = "old-timezones-file";
 
-  private static Options sOptions = new Options();
+  private static final Options sOptions = new Options();
 
   static {
     sOptions.addOption(OPT_HELP, "help", false, "Show help (this output)");
@@ -1007,7 +1007,7 @@ public class ZoneInfo2iCalendar {
     pw.flush();
   }
 
-  private static CommandLine parseArgs(String args[]) throws org.apache.commons.cli.ParseException {
+  private static CommandLine parseArgs(String[] args) throws org.apache.commons.cli.ParseException {
     CommandLineParser parser = new GnuParser();
     CommandLine cl = null;
     try {
@@ -1098,7 +1098,7 @@ public class ZoneInfo2iCalendar {
       params.extraDataFile = file;
     }
 
-    List<File> sourceFiles = new ArrayList<File>();
+    List<File> sourceFiles = new ArrayList<>();
 
     if (cl.hasOption(OPT_TZDATA_DIR)) {
       File dir = new File(cl.getOptionValue(OPT_TZDATA_DIR));
@@ -1108,7 +1108,7 @@ public class ZoneInfo2iCalendar {
       if (!dir.canRead())
         throw new IOException("Permission denied on directory " + dir.getAbsolutePath());
 
-      File files[] = dir.listFiles();
+      File[] files = dir.listFiles();
       if (files != null) {
         for (File file : files) {
           if (!file.isFile()) continue;
@@ -1138,7 +1138,7 @@ public class ZoneInfo2iCalendar {
     }
 
     // Any leftover arguments are tzdata source filenames.
-    String dataFiles[] = cl.getArgs();
+    String[] dataFiles = cl.getArgs();
     if (dataFiles != null) {
       for (String fname : dataFiles) {
         File file = new File(fname);
@@ -1286,7 +1286,7 @@ public class ZoneInfo2iCalendar {
     for (File tzdataFile : params.tzdataFiles) {
       Reader r = null;
       try {
-        r = new InputStreamReader(new FileInputStream(tzdataFile), "UTF-8");
+        r = new InputStreamReader(new FileInputStream(tzdataFile), StandardCharsets.UTF_8);
         parser.readTzdata(r);
       } catch (ParseException e) {
         System.err.println(e.getMessage());
@@ -1304,7 +1304,7 @@ public class ZoneInfo2iCalendar {
     if (params.extraDataFile != null) {
       Reader r = null;
       try {
-        r = new InputStreamReader(new FileInputStream(params.extraDataFile), "UTF-8");
+        r = new InputStreamReader(new FileInputStream(params.extraDataFile), StandardCharsets.UTF_8);
         readExtraData(r);
       } catch (ParseException e) {
         System.err.println(e.getMessage());
@@ -1319,9 +1319,9 @@ public class ZoneInfo2iCalendar {
 
     Writer out;
     if (params.outputFile != null) {
-      out = new PrintWriter(params.outputFile, "UTF-8");
+      out = new PrintWriter(params.outputFile, StandardCharsets.UTF_8);
     } else {
-      out = new PrintWriter(new OutputStreamWriter(System.out, "UTF-8"));
+      out = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8));
     }
 
     try {
@@ -1333,9 +1333,9 @@ public class ZoneInfo2iCalendar {
       out.write(hdr.toString());
 
       Map<String, VTimeZone> oldTimeZones = makeOldTimeZonesMap(params);
-      Set<Zone> zones = new TreeSet<Zone>(new ZoneComparatorByGmtOffset());
+      Set<Zone> zones = new TreeSet<>(new ZoneComparatorByGmtOffset());
       zones.addAll(parser.getZones());
-      Set<String> zoneIDs = new TreeSet<String>();
+      Set<String> zoneIDs = new TreeSet<>();
       for (Zone zone : zones) {
         zoneIDs.add(zone.getName());
       }

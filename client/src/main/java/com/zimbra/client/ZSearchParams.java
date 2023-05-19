@@ -404,8 +404,7 @@ public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
       if (!(obj instanceof Cursor)) return false;
       Cursor that = (Cursor) obj;
       if (!StringUtil.equal(this.mPreviousId, that.mPreviousId)) return false;
-      if (!StringUtil.equal(this.mPreviousSortValue, that.mPreviousSortValue)) return false;
-      return true;
+      return StringUtil.equal(this.mPreviousSortValue, that.mPreviousSortValue);
     }
 
     @Override

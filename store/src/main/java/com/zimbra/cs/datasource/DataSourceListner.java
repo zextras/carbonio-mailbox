@@ -18,20 +18,20 @@ public abstract class DataSourceListner {
     private static final HashSet<DataSourceListner> listeners;
 
     static {
-        listeners = new HashSet<DataSourceListner>();
+        listeners = new HashSet<>();
         reset();
     }
 
     public enum DataSourceAction {
         CREATE(CREATE_DATASOURCE), DELETE(DELETE_DATASOURCE);
 
-        private String action;
+        private final String action;
 
         /**
          * @param name
          * @param ordinal
          */
-        private DataSourceAction(String name) {
+        DataSourceAction(String name) {
             this.action = name;
         }
 

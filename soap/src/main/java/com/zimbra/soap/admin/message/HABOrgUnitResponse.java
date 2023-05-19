@@ -34,7 +34,7 @@ public class HABOrgUnitResponse {
      * @zm-api-field-description List of HabOrg units under a domain
      */
     @XmlElement(name=AdminConstants.E_HAB_ORG_UNIT_NAME, required=false)
-    private List<String> habOrgList = new ArrayList<String>();
+    private List<String> habOrgList = new ArrayList<>();
     
     public HABOrgUnitResponse() {
         

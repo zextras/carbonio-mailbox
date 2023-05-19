@@ -10,9 +10,9 @@ import com.zimbra.cs.memcached.MemcachedKeyPrefix;
 
 // cache key for a calendar folder in an account
 public class CalendarKey implements MemcachedKey {
-    private String mAccountId;
-    private int mFolderId;
-    private String mKeyVal;
+    private final String mAccountId;
+    private final int mFolderId;
+    private final String mKeyVal;
 
     public CalendarKey(String accountId, int folderId) {
         mAccountId = accountId;

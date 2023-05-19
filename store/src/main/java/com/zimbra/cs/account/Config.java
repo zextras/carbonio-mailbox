@@ -22,8 +22,8 @@ import java.util.Map;
  */
 public class Config extends ZAttrConfig {
     
-    private Map<String, Object> mDomainDefaults = new HashMap<String, Object>();
-    private Map<String, Object> mServerDefaults = new HashMap<String, Object>();    
+    private final Map<String, Object> mDomainDefaults = new HashMap<>();
+    private final Map<String, Object> mServerDefaults = new HashMap<>();
 
     public Config(Map<String, Object> attrs, Provisioning provisioning) {
         super(attrs, provisioning);

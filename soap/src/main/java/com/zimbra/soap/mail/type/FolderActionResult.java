@@ -44,7 +44,7 @@ public class FolderActionResult extends ActionResult {
      */
     @SuppressWarnings("unused")
     private FolderActionResult() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public FolderActionResult(String id, String operation) {

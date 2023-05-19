@@ -28,7 +28,7 @@ import com.zimbra.cs.zimlet.ZimletUtil;
  */
 public class ObjectHandler {
 
-    private static Log mLog = LogFactory.getLog(ObjectHandler.class);
+    private static final Log mLog = LogFactory.getLog(ObjectHandler.class);
 
     private static List<ObjectHandler> mHandlerList;
 
@@ -58,7 +58,7 @@ public class ObjectHandler {
         if (mHandlerList != null)
             return mHandlerList;
 
-        mHandlerList = new ArrayList<ObjectHandler>();
+        mHandlerList = new ArrayList<>();
         List<Zimlet> dots = Provisioning.getInstance().listAllZimlets();
         for (Iterator<Zimlet> it=dots.iterator(); it.hasNext();) {
             Zimlet dot = it.next();

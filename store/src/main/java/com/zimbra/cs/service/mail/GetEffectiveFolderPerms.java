@@ -23,7 +23,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 public class GetEffectiveFolderPerms extends MailDocumentHandler {
     
     @Override
-    public Element handle(Element request, Map<String, Object> context) throws ServiceException, SoapFaultException {
+    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         OperationContext octxt = getOperationContext(zsc, context);
         

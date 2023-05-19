@@ -36,7 +36,7 @@ public class CurrentAccounts {
      * @zm-api-field-description Information on accounts
      */
     @XmlElement(name=BackupConstants.E_ACCOUNT /* account */, required=false)
-    private List<Name> accounts = Lists.newArrayList();
+    private final List<Name> accounts = Lists.newArrayList();
 
     public CurrentAccounts() {
     }

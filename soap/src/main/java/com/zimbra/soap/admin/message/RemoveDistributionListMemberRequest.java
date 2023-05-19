@@ -44,17 +44,17 @@ public class RemoveDistributionListMemberRequest {
      * @zm-api-field-description Members
      */
     @XmlElement(name=AdminConstants.E_DLM, required=true)
-    private List <String> members = Lists.newArrayList();
+    private final List <String> members = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag account
      * @zm-api-field-description specify Accounts insteaf of members if you want to remove all addresses that belong to an account from the list
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT, required=false)
-    private List <String> accounts = Lists.newArrayList();
+    private final List <String> accounts = Lists.newArrayList();
 
     public RemoveDistributionListMemberRequest() {
-        this((String) null, (Collection<String>) null, (Collection<String>) null);
+        this(null, null, null);
     }
 
     public RemoveDistributionListMemberRequest(String id, Collection<String> members) {

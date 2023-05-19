@@ -20,8 +20,8 @@ import com.zimbra.cs.mime.Mime;
 
 public class AttachmentDataSource implements DataSource {
 
-    private Contact mContact;
-    private String mPartName;
+    private final Contact mContact;
+    private final String mPartName;
 
     public AttachmentDataSource(Contact contact, String partName) {
         if (contact == null) {

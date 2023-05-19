@@ -286,9 +286,7 @@ public class CheckPresetRight extends CheckRight {
 
             // public
             result = checkPresetRight(acl, (GranteeFlag.F_PUBLIC), subDomain);
-            if (result != null) {
-                return result;
-            }
+            return result;
         }
 
         return null;
@@ -334,12 +332,9 @@ public class CheckPresetRight extends CheckRight {
         }
 
         Right rightGranted = ace.getRight();
-        if ((rightGranted.isPresetRight() && rightGranted == mRightNeeded) ||
-             rightGranted.isComboRight() && ((ComboRight)rightGranted).containsPresetRight(mRightNeeded)) {
-            return true;
-        }
-
-        return false;
+        return (rightGranted.isPresetRight() && rightGranted == mRightNeeded) ||
+            rightGranted.isComboRight() && ((ComboRight) rightGranted).containsPresetRight(
+                mRightNeeded);
     }
 
 

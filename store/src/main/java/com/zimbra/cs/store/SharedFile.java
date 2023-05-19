@@ -20,7 +20,7 @@ import com.zimbra.cs.stats.ZimbraPerf;
  */
 public class SharedFile {
 
-    private File mFile;
+    private final File mFile;
     private RandomAccessFile mRAF;
     private long mPos = 0;
     
@@ -35,7 +35,7 @@ public class SharedFile {
      * Remember the file's length, in case we have an open file descriptor and the
      * uncompressed cache deletes this file from disk.
      */
-    private long mLength;
+    private final long mLength;
 
     /**
      * Creates a new <tt>SharedFile</tt> and opens the underlying

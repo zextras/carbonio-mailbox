@@ -25,7 +25,7 @@ public class ConflictRecurrenceInstance extends ExpandedRecurrenceInstance {
      * @zm-api-field-description Free/Busy user status
      */
     @XmlElement(name=MailConstants.E_FREEBUSY_USER /* usr */, required=false)
-    private List<FreeBusyUserStatus> freebusyUsers = Lists.newArrayList();
+    private final List<FreeBusyUserStatus> freebusyUsers = Lists.newArrayList();
 
     public ConflictRecurrenceInstance() {
     }

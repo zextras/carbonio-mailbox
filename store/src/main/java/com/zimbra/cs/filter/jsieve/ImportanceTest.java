@@ -75,6 +75,6 @@ public final class ImportanceTest extends Header {
                 match(mail, Sieve.Comparator.iasciicasemap.toString(), MatchTypeTags.IS_TAG, headers, values, context);
 
         // normal is when it is neither high importance nor low importance
-        return importance == FilterTest.ImportanceTest.Importance.normal ? !(result1 || result2) : result1 || result2;
+        return (importance == FilterTest.ImportanceTest.Importance.normal) != (result1 || result2);
     }
 }

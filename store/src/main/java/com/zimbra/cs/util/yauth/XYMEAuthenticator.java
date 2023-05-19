@@ -9,6 +9,7 @@ import com.zimbra.cs.mailclient.auth.Authenticator;
 import com.zimbra.cs.mailclient.MailConfig;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Support for IMAP XYMECookie authentication.
@@ -38,14 +39,10 @@ public class XYMEAuthenticator extends Authenticator {
 
     @Override
     public byte[] evaluateChallenge(byte[] challenge) {
-        try {
-            String response = String.format(
-                "cookies=%s appid=%s wssid=%s src=%s",
-                auth.getCookie(), auth.getAppId(), auth.getWSSID(), partner);
-            return response.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new InternalError();
-        }
+      String response = String.format(
+          "cookies=%s appid=%s wssid=%s src=%s",
+          auth.getCookie(), auth.getAppId(), auth.getWSSID(), partner);
+      return response.getBytes(StandardCharsets.UTF_8);
     }
 
     @Override

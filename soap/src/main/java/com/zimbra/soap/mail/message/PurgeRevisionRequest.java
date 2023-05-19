@@ -34,7 +34,7 @@ public class PurgeRevisionRequest {
      */
     @SuppressWarnings("unused")
     private PurgeRevisionRequest() {
-        this((PurgeRevisionSpec) null);
+        this(null);
     }
 
     public PurgeRevisionRequest(PurgeRevisionSpec revision) {

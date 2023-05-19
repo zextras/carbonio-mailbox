@@ -26,7 +26,7 @@ public class ItemId {
      */
     @SuppressWarnings("unused")
     private ItemId() {
-        this((String) null);
+        this(null);
     }
 
     public ItemId(String id) {

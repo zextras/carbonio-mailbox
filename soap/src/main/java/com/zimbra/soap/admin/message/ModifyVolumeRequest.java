@@ -25,20 +25,20 @@ public class ModifyVolumeRequest {
      * @zm-api-field-description Volume ID
      */
     @XmlAttribute(name=AdminConstants.A_ID, required=true)
-    private short id;
+    private final short id;
 
     /**
      * @zm-api-field-description Volume information
      */
     @XmlElement(name=AdminConstants.E_VOLUME, required=true)
-    private VolumeInfo volume;
+    private final VolumeInfo volume;
 
     /**
      * no-argument constructor wanted by JAXB
      */
      @SuppressWarnings("unused")
     private ModifyVolumeRequest() {
-        this((short)-1, (VolumeInfo)null);
+        this((short)-1, null);
     }
 
     public ModifyVolumeRequest(short id, VolumeInfo volume) {

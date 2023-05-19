@@ -8,5 +8,5 @@ package com.zimbra.soap.account.type;
 public enum DistributionListSubscribeStatus {
     subscribed,
     unsubscribed,
-    awaiting_approval;
+    awaiting_approval
 }

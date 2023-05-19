@@ -61,7 +61,7 @@ public final class FieldQuery extends TextQuery {
 
             private final String sign;
 
-            private Range(String sign) {
+            Range(String sign) {
                 this.sign = sign;
             }
 

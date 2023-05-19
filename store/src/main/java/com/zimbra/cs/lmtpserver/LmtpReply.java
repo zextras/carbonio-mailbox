@@ -43,8 +43,8 @@ public enum LmtpReply {
     PERMANENT_FAILURE_OVER_QUOTA(552, "5.2.2", "Over quota"),
     PERMANENT_FAILURE(554, "5.0.0", "Permanent message delivery failure");
     
-    private int mCode;
-    private String mEnhancedCode;
+    private final int mCode;
+    private final String mEnhancedCode;
     private String mDetail;
     private DetailCB mDetailCallback;
     
@@ -52,13 +52,13 @@ public enum LmtpReply {
 	protected abstract String detail();
     }
     
-    private LmtpReply(int code, String enhancedCode, String detail) {
+    LmtpReply(int code, String enhancedCode, String detail) {
 	mCode = code;
 	mEnhancedCode = enhancedCode;
 	mDetail = detail;
     }
 
-    private LmtpReply(int code, String enhancedCode, DetailCB detail) {
+    LmtpReply(int code, String enhancedCode, DetailCB detail) {
 	mCode = code;
 	mEnhancedCode = enhancedCode;
 	mDetailCallback = detail;
@@ -77,8 +77,6 @@ public enum LmtpReply {
     }
 
     public boolean success() {
-	if (mCode > 199 && mCode < 400)
-	    return true;
-	return false;
+      return mCode > 199 && mCode < 400;
     }
 }

@@ -19,7 +19,7 @@ import java.util.Map.Entry;
 public class LruMap<K, V>
 extends LinkedHashMap<K, V> {
     
-    private int maxSize;
+    private final int maxSize;
     
     public LruMap(int maxSize) {
         super(16, 0.75f, true);

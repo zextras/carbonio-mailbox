@@ -21,8 +21,8 @@ import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 public final class NumberTokenizer extends Tokenizer {
 
     private int endPos = 0;
-    private CharTermAttribute termAttr = addAttribute(CharTermAttribute.class);
-    private OffsetAttribute offsetAttr = addAttribute(OffsetAttribute.class);
+    private final CharTermAttribute termAttr = addAttribute(CharTermAttribute.class);
+    private final OffsetAttribute offsetAttr = addAttribute(OffsetAttribute.class);
 
     public NumberTokenizer(Reader reader) {
         super(reader);

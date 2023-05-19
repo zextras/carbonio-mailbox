@@ -133,85 +133,85 @@ public final class ReSortingQueryResults implements ZimbraQueryResults {
 
     private void bufferAllHits() throws ServiceException {
         assert(mHitBuffer == null);
-        mHitBuffer = new ArrayList<ZimbraHit>();
+        mHitBuffer = new ArrayList<>();
 
         // get the proper comparator
         Comparator<ZimbraHit> comp;
         switch (sort) {
             default:
-                comp = new Comparator<ZimbraHit>() {
-                    @Override
-                    public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                        if (lhs  instanceof TaskHit) {
-                            return TaskHit.compareByDueDate(true, lhs, rhs);
-                        } else{
-                            return ZimbraHit.compareByReadFlag(true, lhs, rhs);
-                        } 
+                comp = new Comparator<>() {
+                  @Override
+                  public int compare(ZimbraHit lhs, ZimbraHit rhs) {
+                    if (lhs instanceof TaskHit) {
+                      return TaskHit.compareByDueDate(true, lhs, rhs);
+                    } else {
+                      return ZimbraHit.compareByReadFlag(true, lhs, rhs);
                     }
+                  }
                 };
                 break;
             case READ_ASC:
-                comp = new Comparator<ZimbraHit>() {
-                    @Override
-                    public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                        return ZimbraHit.compareByReadFlag(true, lhs, rhs);
-                    }
+                comp = new Comparator<>() {
+                  @Override
+                  public int compare(ZimbraHit lhs, ZimbraHit rhs) {
+                    return ZimbraHit.compareByReadFlag(true, lhs, rhs);
+                  }
                 };
                 break;
             case READ_DESC:
-                comp = new Comparator<ZimbraHit>() {
-                    @Override
-                    public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                        return ZimbraHit.compareByReadFlag(false, lhs, rhs);
-                    }
+                comp = new Comparator<>() {
+                  @Override
+                  public int compare(ZimbraHit lhs, ZimbraHit rhs) {
+                    return ZimbraHit.compareByReadFlag(false, lhs, rhs);
+                  }
                 };
                 break;
             case TASK_DUE_ASC:
-                comp = new Comparator<ZimbraHit>() {
-                    @Override
-                    public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                        return TaskHit.compareByDueDate(true, lhs, rhs);
-                    }
+                comp = new Comparator<>() {
+                  @Override
+                  public int compare(ZimbraHit lhs, ZimbraHit rhs) {
+                    return TaskHit.compareByDueDate(true, lhs, rhs);
+                  }
                 };
                 break;
             case TASK_DUE_DESC:
-                comp = new Comparator<ZimbraHit>() {
-                    @Override
-                    public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                        return TaskHit.compareByDueDate(false, lhs, rhs);
-                    }
+                comp = new Comparator<>() {
+                  @Override
+                  public int compare(ZimbraHit lhs, ZimbraHit rhs) {
+                    return TaskHit.compareByDueDate(false, lhs, rhs);
+                  }
                 };
                 break;
             case TASK_STATUS_ASC:
-                comp = new Comparator<ZimbraHit>() {
-                    @Override
-                    public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                        return TaskHit.compareByStatus(true, lhs, rhs);
-                    }
+                comp = new Comparator<>() {
+                  @Override
+                  public int compare(ZimbraHit lhs, ZimbraHit rhs) {
+                    return TaskHit.compareByStatus(true, lhs, rhs);
+                  }
                 };
                 break;
             case TASK_STATUS_DESC:
-                comp = new Comparator<ZimbraHit>() {
-                    @Override
-                    public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                        return TaskHit.compareByStatus(false, lhs, rhs);
-                    }
+                comp = new Comparator<>() {
+                  @Override
+                  public int compare(ZimbraHit lhs, ZimbraHit rhs) {
+                    return TaskHit.compareByStatus(false, lhs, rhs);
+                  }
                 };
                 break;
             case TASK_PERCENT_COMPLETE_ASC:
-                comp = new Comparator<ZimbraHit>() {
-                    @Override
-                    public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                        return TaskHit.compareByCompletionPercent(true, lhs, rhs);
-                    }
+                comp = new Comparator<>() {
+                  @Override
+                  public int compare(ZimbraHit lhs, ZimbraHit rhs) {
+                    return TaskHit.compareByCompletionPercent(true, lhs, rhs);
+                  }
                 };
                 break;
             case TASK_PERCENT_COMPLETE_DESC:
-                comp = new Comparator<ZimbraHit>() {
-                    @Override
-                    public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                        return TaskHit.compareByCompletionPercent(false, lhs, rhs);
-                    }
+                comp = new Comparator<>() {
+                  @Override
+                  public int compare(ZimbraHit lhs, ZimbraHit rhs) {
+                    return TaskHit.compareByCompletionPercent(false, lhs, rhs);
+                  }
                 };
                 break;
             case NAME_LOCALIZED_ASC:

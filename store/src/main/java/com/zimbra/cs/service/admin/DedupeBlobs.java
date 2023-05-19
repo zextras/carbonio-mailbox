@@ -43,7 +43,7 @@ public final class DedupeBlobs extends AdminDocumentHandler {
         DedupeBlobsResponse resp = new DedupeBlobsResponse();
         // Assemble the list of volumes.
         List<IntIdAttr> volumeList = req.getVolumes();
-        List<Short> volumeIds = new ArrayList<Short>();
+        List<Short> volumeIds = new ArrayList<>();
         if ((req.getAction() == DedupeBlobsRequest.DedupAction.start) ||
                 (req.getAction() == DedupeBlobsRequest.DedupAction.reset)) {
             if (volumeList.isEmpty()) {
@@ -79,7 +79,7 @@ public final class DedupeBlobs extends AdminDocumentHandler {
             deduper.stopProcessing();
         } else if (req.getAction() == DedupeBlobsRequest.DedupAction.reset) {
             if (volumeList.isEmpty()) {
-                deduper.resetVolumeBlobs(new ArrayList<Short>());
+                deduper.resetVolumeBlobs(new ArrayList<>());
             } else {
                 deduper.resetVolumeBlobs(volumeIds);
             }

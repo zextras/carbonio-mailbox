@@ -16,7 +16,7 @@ import com.zimbra.cs.util.Zimbra;
 
 public class ParallelRedoPlayer extends RedoPlayer {
 
-    private PlayerThread[] mPlayerThreads;
+    private final PlayerThread[] mPlayerThreads;
 
     public ParallelRedoPlayer(boolean writable, boolean unloggedReplay,
                               boolean ignoreReplayErrors, boolean skipDeleteOps,
@@ -26,7 +26,7 @@ public class ParallelRedoPlayer extends RedoPlayer {
         numThreads = Math.max(numThreads, 1);
         mPlayerThreads = new PlayerThread[numThreads];
         for (int i = 0; i < numThreads; i++) {
-            String name = "RedoPlayer-" + Integer.toString(i);
+            String name = "RedoPlayer-" + i;
             PlayerThread player = new PlayerThread(queueCapacity);
             mPlayerThreads[i] = player;
             player.setName(name);
@@ -53,7 +53,7 @@ public class ParallelRedoPlayer extends RedoPlayer {
             // Multi-mailbox ops are executed by the main thread to prevent later ops
             // that depend on this op's result aren't run out of order.
             if (ZimbraLog.redolog.isDebugEnabled())
-                ZimbraLog.redolog.info("Executing: " + op.toString());
+                ZimbraLog.redolog.info("Executing: " + op);
             op.redo();
         } else {
             // Ops for the same mailbox must be played back in order.  To ensure that,
@@ -64,7 +64,7 @@ public class ParallelRedoPlayer extends RedoPlayer {
             PlayerThread player = mPlayerThreads[index];
             RedoTask task = new RedoTask(op);
             if (ZimbraLog.redolog.isDebugEnabled())
-                ZimbraLog.redolog.info("Enqueuing: " + op.toString());
+                ZimbraLog.redolog.info("Enqueuing: " + op);
             try {
                 player.enqueue(task);
             } catch (InterruptedException e) {}
@@ -95,7 +95,7 @@ public class ParallelRedoPlayer extends RedoPlayer {
     }
 
     private static class RedoTask {
-        private RedoableOp mOp;
+        private final RedoableOp mOp;
         public RedoTask(RedoableOp op)  { mOp = op; }
         public RedoableOp getOp()       { return mOp; }
         public boolean isShutdownTask() { return false; }
@@ -111,11 +111,11 @@ public class ParallelRedoPlayer extends RedoPlayer {
     }
 
     private class PlayerThread extends Thread {
-        private BlockingQueue<RedoTask> mQueue;
+        private final BlockingQueue<RedoTask> mQueue;
 
         private PlayerThread(int queueCapacity) {
             queueCapacity = Math.max(queueCapacity, 1);
-            mQueue = new LinkedBlockingQueue<RedoTask>(queueCapacity);
+            mQueue = new LinkedBlockingQueue<>(queueCapacity);
         }
 
         public void enqueue(RedoTask task) throws InterruptedException {

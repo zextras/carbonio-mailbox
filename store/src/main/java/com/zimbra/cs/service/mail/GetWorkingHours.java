@@ -35,7 +35,7 @@ public class GetWorkingHours extends GetFreeBusy {
         String nameParam = request.getAttribute(MailConstants.A_NAME, null); // comma-separated list of account emails
 
         Provisioning prov = Provisioning.getInstance();
-        Map<String /* zimbraId or name */, String /* zimbraId */> idMap = new LinkedHashMap<String, String>();  // preserve iteration order
+        Map<String /* zimbraId or name */, String /* zimbraId */> idMap = new LinkedHashMap<>();  // preserve iteration order
         if (idParam != null) {
             String[] idStrs = idParam.split(",");
             for (String idStr : idStrs) {

@@ -10,6 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface ByWeekNoRuleInterface {
-    public ByWeekNoRuleInterface create(String list);
-    public String getList();
+    ByWeekNoRuleInterface create(String list);
+    String getList();
 }

@@ -34,7 +34,7 @@ public class CreateNoteRequest {
      */
     @SuppressWarnings("unused")
     private CreateNoteRequest() {
-        this((NewNoteSpec) null);
+        this(null);
     }
 
     public CreateNoteRequest(NewNoteSpec note) {

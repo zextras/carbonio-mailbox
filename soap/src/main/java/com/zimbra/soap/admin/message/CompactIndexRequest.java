@@ -49,11 +49,11 @@ public class CompactIndexRequest {
      */
     @SuppressWarnings("unused")
     private CompactIndexRequest() {
-        this((String)null, (MailboxByAccountIdSelector) null);
+        this(null, null);
     }
 
     public CompactIndexRequest(String accountId) {
-        this((String)null, new MailboxByAccountIdSelector(accountId));
+        this(null, new MailboxByAccountIdSelector(accountId));
     }
 
     public CompactIndexRequest(String action, MailboxByAccountIdSelector mbox) {

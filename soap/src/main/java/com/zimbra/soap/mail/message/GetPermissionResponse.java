@@ -32,7 +32,7 @@ public class GetPermissionResponse {
      * @zm-api-field-description Account ACE information
      */
     @XmlElement(name=MailConstants.E_ACE /* ace */, required=false)
-    private List<AccountACEinfo> aces = Lists.newArrayList();
+    private final List<AccountACEinfo> aces = Lists.newArrayList();
 
     public GetPermissionResponse() {
     }

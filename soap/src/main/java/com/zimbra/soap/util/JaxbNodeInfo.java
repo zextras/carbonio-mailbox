@@ -6,8 +6,8 @@
 package com.zimbra.soap.util;
 
 public interface JaxbNodeInfo {
-    public String getName();
-    public String getNamespace();
-    public boolean isRequired();
-    public boolean isMultiElement();
+    String getName();
+    String getNamespace();
+    boolean isRequired();
+    boolean isMultiElement();
 }

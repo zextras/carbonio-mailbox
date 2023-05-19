@@ -33,7 +33,7 @@ public class ServerMailQueueQuery {
      */
     @SuppressWarnings("unused")
     private ServerMailQueueQuery() {
-        this((String) null, (MailQueueQuery) null);
+        this(null, null);
     }
 
     public ServerMailQueueQuery(String serverName, MailQueueQuery queue) {

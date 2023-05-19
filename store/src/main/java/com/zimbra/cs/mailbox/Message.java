@@ -283,7 +283,7 @@ public class Message extends MailItem {
         if (iaddrs == null || iaddrs.isEmpty()) {
             return null;
         }
-        List<ParsedAddress> paddrs = new ArrayList<ParsedAddress>(iaddrs.size());
+        List<ParsedAddress> paddrs = new ArrayList<>(iaddrs.size());
         for (InternetAddress iaddr : iaddrs) {
             paddrs.add(new ParsedAddress(iaddr));
         }
@@ -408,7 +408,7 @@ public class Message extends MailItem {
         if (calendarItemInfos != null) {
             return calendarItemInfos.iterator();
         } else {
-            return Collections.<CalendarItemInfo>emptyList().iterator();
+            return Collections.emptyIterator();
         }
     }
 
@@ -803,7 +803,7 @@ public class Message extends MailItem {
         boolean allowOrganizerAlarm = DebugConfig.calendarAllowOrganizerSpecifiedAlarms;
 
         if (calendarItemInfos == null) {
-            calendarItemInfos = new ArrayList<CalendarItemInfo>();
+            calendarItemInfos = new ArrayList<>();
         }
 
         // Clean up invalid missing organizer/attendee from some Exchanged-originated invite. (bug 43195)
@@ -869,7 +869,7 @@ public class Message extends MailItem {
         boolean publicInvites = true;  // used to check if any invite is non-public
         status.calItemFolderId = invites.size() > 0 && invites.get(0).isTodo() ? Mailbox.ID_FOLDER_TASKS : Mailbox.ID_FOLDER_CALENDAR;
         CalendarItem firstCalItem = null;
-        Set<String> calUidsSeen = new HashSet<String>();
+        Set<String> calUidsSeen = new HashSet<>();
         for (Invite cur : invites) {
             if (!cur.isPublic()) {
                 publicInvites = false;
@@ -906,7 +906,7 @@ public class Message extends MailItem {
                             cur.setOrganizer(org);
                             ZimbraLog.calendar.info(
                                     "Got malformed invite that lists attendees without specifying an organizer.  " +
-                                    "Defaulting organizer to: " + org.toString());
+                                    "Defaulting organizer to: " + org);
                         } else {
                             // For attendee-originated methods, look up organizer from appointment on calendar.
                             // If appointment is not found, fall back to the intended-for address, then finally to self.
@@ -930,7 +930,7 @@ public class Message extends MailItem {
                             }
                             cur.setOrganizer(org);
                             cur.setIsOrganizer(status.intendedForMe);
-                            ZimbraLog.calendar.info("Got malformed reply missing organizer.  Defaulting to " + org.toString());
+                            ZimbraLog.calendar.info("Got malformed reply missing organizer.  Defaulting to " + org);
                         }
                     }
                 }
@@ -1014,8 +1014,8 @@ public class Message extends MailItem {
                     senderAcct = Provisioning.getInstance().get(AccountBy.name, senderEmail);
 
                 if (forwardTo != null && forwardTo.length > 0) {
-                    List<String> rcptsUnfiltered = new ArrayList<String>();  // recipients to receive unfiltered message
-                    List<String> rcptsFiltered = new ArrayList<String>();    // recipients to receive message filtered to remove private data
+                    List<String> rcptsUnfiltered = new ArrayList<>();  // recipients to receive unfiltered message
+                    List<String> rcptsFiltered = new ArrayList<>();    // recipients to receive message filtered to remove private data
                     Folder calFolder = null;
                     try {
                         calFolder = getMailbox().getFolderById(status.calItemFolderId);
@@ -1524,7 +1524,7 @@ public class Message extends MailItem {
         fragment = meta.get(Metadata.FN_FRAGMENT, null);
 
         if (meta.containsKey(Metadata.FN_CALITEM_IDS)) {
-            calendarItemInfos = new ArrayList<CalendarItemInfo>();
+            calendarItemInfos = new ArrayList<>();
             MetadataList mdList = meta.getList(Metadata.FN_CALITEM_IDS);
             for (int i = 0; i < mdList.size(); i++) {
                 Metadata md = mdList.getMap(i);

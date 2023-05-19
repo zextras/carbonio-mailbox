@@ -49,7 +49,7 @@ public class RevokeOAuthConsumer extends AccountDocumentHandler {
     }
 
     private void removeOAuthAccessor() throws ServiceException {
-        String accessors[] = account.getOAuthAccessor();
+        String[] accessors = account.getOAuthAccessor();
 
         for (String val : accessors) {
             if (val.startsWith(accessTokenToBeRemoved)) {
@@ -69,7 +69,7 @@ public class RevokeOAuthConsumer extends AccountDocumentHandler {
     }
 
     private void removeAccessTokenFromForeignPrincipal() throws ServiceException {
-        String data[] = account.getForeignPrincipal();
+        String[] data = account.getForeignPrincipal();
 
         for (String val : data) {
             //Access token is stored in foreign principle attribute in format "oAuthAccessToken:<token>"

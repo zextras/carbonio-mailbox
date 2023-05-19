@@ -64,7 +64,7 @@ public final class ProxiedQueryResults extends ZimbraQueryResultsImpl {
      */
     private long mTimeout = -1;
 
-    private List<QueryInfo> queryInfo = new ArrayList<QueryInfo>();
+    private final List<QueryInfo> queryInfo = new ArrayList<>();
 
     /**
      * A search request in the current mailbox on a different server.
@@ -227,7 +227,7 @@ public final class ProxiedQueryResults extends ZimbraQueryResultsImpl {
         }
 
         bufferEndOffset = bufferStartOffset + chunkSizeToUse;
-        hitBuffer = new ArrayList<ProxiedHit>(chunkSizeToUse);
+        hitBuffer = new ArrayList<>(chunkSizeToUse);
 
         Element searchElt = Element.create(responseProto, MailConstants.SEARCH_REQUEST);
 
@@ -289,7 +289,7 @@ public final class ProxiedQueryResults extends ZimbraQueryResultsImpl {
             throw e;
         } finally {
             long elapsed = System.currentTimeMillis() - start;
-            ZimbraLog.index.debug("Remote query took " + elapsed + "ms; URL=" + proxy.toString() + "; QUERY=" + searchElt.toString());
+            ZimbraLog.index.debug("Remote query took " + elapsed + "ms; URL=" + proxy + "; QUERY=" + searchElt);
         }
 
         int hitOffset;
@@ -327,9 +327,7 @@ public final class ProxiedQueryResults extends ZimbraQueryResultsImpl {
             // update the buffer-end-pointer
             bufferEndOffset = bufferStartOffset + bufferIdx;
 
-            if (hasMore) {
-                assert(!hasMore); // if bufferIdx < stop then !hasMore should be set...server bug!
-            }
+          assert !hasMore || (!hasMore); // if bufferIdx < stop then !hasMore should be set...server bug!
             atEndOfList = true;
         } else {
             assert(bufferEndOffset == bufferStartOffset+bufferIdx);

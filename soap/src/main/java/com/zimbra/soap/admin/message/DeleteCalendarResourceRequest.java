@@ -37,7 +37,7 @@ public class DeleteCalendarResourceRequest {
      */
      @SuppressWarnings("unused")
     private DeleteCalendarResourceRequest() {
-        this((String)null);
+        this(null);
     }
 
     public DeleteCalendarResourceRequest(String id) {

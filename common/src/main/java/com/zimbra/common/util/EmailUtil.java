@@ -41,7 +41,7 @@ public class EmailUtil
             return null;
         }
 
-        String domain = address.substring(at + 1, address.length());
+        String domain = address.substring(at + 1);
         if (domain.length() == 0) {
             return null;
         }
@@ -50,7 +50,7 @@ public class EmailUtil
     }
     
     public static String getValidDomainPart(String address) {
-        String parts[] = getLocalPartAndDomain(address);
+        String[] parts = getLocalPartAndDomain(address);
         if (parts == null)
             return null;
         String domain = parts[1];

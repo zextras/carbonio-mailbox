@@ -29,7 +29,7 @@ public class CreateSignatureResponse {
      */
     @SuppressWarnings("unused")
     private CreateSignatureResponse() {
-        this((NameId) null);
+        this(null);
     }
 
     public CreateSignatureResponse(NameId signature) {

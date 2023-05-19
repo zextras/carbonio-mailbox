@@ -31,7 +31,7 @@ public class GetAllMailboxesResponse {
      * @zm-api-field-description Mailboxes
      */
     @XmlElement(name=AdminConstants.E_MAILBOX, required=false)
-    private List <MailboxInfo> mboxes = Lists.newArrayList();
+    private final List <MailboxInfo> mboxes = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag more-flag

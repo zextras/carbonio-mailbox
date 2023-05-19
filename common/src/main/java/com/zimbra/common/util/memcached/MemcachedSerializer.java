@@ -14,6 +14,6 @@ import com.zimbra.common.service.ServiceException;
  */
 public interface MemcachedSerializer<V> {
 
-    public Object serialize(V value) throws ServiceException;
-    public V deserialize(Object obj) throws ServiceException;
+    Object serialize(V value) throws ServiceException;
+    V deserialize(Object obj) throws ServiceException;
 }

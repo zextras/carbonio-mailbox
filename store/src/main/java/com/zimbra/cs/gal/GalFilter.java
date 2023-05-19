@@ -9,7 +9,7 @@ public class GalFilter {
     static final String DEFAULT_SYNC_FILTER = 
         "(&(|(objectclass=zimbraAccount)(objectclass=zimbraDistributionList)(objectclass=zimbraGroup))(!(&(objectclass=zimbraCalendarResource)(!(zimbraAccountStatus=active)))))";
 
-    static enum NamedFilter {
+    enum NamedFilter {
         zimbraAccounts,
         zimbraResources,
         zimbraGroups,
@@ -24,7 +24,7 @@ public class GalFilter {
         
         zimbraAutoComplete,
         zimbraSearch,
-        zimbraSync;
-    };
-    
+        zimbraSync
+    }
+
 }

@@ -49,7 +49,7 @@ public class BackupQueryAccountStatus {
      */
     @SuppressWarnings("unused")
     private BackupQueryAccountStatus() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public BackupQueryAccountStatus(String name, String status) {

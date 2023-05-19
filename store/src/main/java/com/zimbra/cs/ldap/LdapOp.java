@@ -24,9 +24,9 @@ public enum LdapOp {
     SET_PASSWORD("set password"),
     COMPARE("compare");
 
-    private String desc;
+    private final String desc;
 
-    private LdapOp(String desc) {
+    LdapOp(String desc) {
         this.desc = desc;
     }
 

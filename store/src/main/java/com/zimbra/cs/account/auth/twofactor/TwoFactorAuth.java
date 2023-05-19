@@ -141,13 +141,13 @@ public abstract class TwoFactorAuth implements SecondFactor {
 
     //  Helper classes and interfaces ----------------------------
 
-    public static interface Credentials {
+    public interface Credentials {
 
-        public String getSecret();
+        String getSecret();
 
-        public List<String> getScratchCodes();
+        List<String> getScratchCodes();
 
-        public String getTimestamp();
+        String getTimestamp();
     }
 
     public static class CredentialConfig {
@@ -223,7 +223,7 @@ public abstract class TwoFactorAuth implements SecondFactor {
     }
 
     public static abstract class TwoFactorChangeListener {
-        private static Map<String, TwoFactorChangeListener> listeners = new HashMap<String, TwoFactorChangeListener>();
+        private static final Map<String, TwoFactorChangeListener> listeners = new HashMap<>();
 
         public abstract void twoFactorAuthEnabled(Account acct);
         public abstract void twoFactorAuthDisabled(Account acct);

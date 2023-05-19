@@ -23,7 +23,7 @@ public enum TrueOrFalse {
     @XmlEnumValue("true") TRUE("true"),
     @XmlEnumValue("false") FALSE("false");
 
-    private static Map<String, TrueOrFalse> nameToView = Maps.newHashMap();
+    private static final Map<String, TrueOrFalse> nameToView = Maps.newHashMap();
 
     static {
         for (TrueOrFalse v : TrueOrFalse.values()) {
@@ -31,9 +31,9 @@ public enum TrueOrFalse {
         }
     }
 
-    private String name;
+    private final String name;
 
-    private TrueOrFalse(String name) {
+    TrueOrFalse(String name) {
         this.name = name;
     }
 
@@ -60,10 +60,6 @@ public enum TrueOrFalse {
         }
     }
     public static boolean toBool(TrueOrFalse val) {
-        if (val.equals(TRUE)) {
-            return true;
-        } else {
-            return false;
-        }
+      return val.equals(TRUE);
     }
 }

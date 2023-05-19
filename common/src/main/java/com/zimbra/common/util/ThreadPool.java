@@ -18,13 +18,13 @@ import com.zimbra.common.util.LogFactory;
 /**
  */
 public class ThreadPool implements Executor {
-    private static Log mLog = LogFactory.getLog(ThreadPool.class);
-    private static long TIMEOUT = 30 * 1000;
+    private static final Log mLog = LogFactory.getLog(ThreadPool.class);
+    private static final long TIMEOUT = 30 * 1000;
 
-    private ThreadCounter mActiveThreadsCounter;
-    private String mName;
-    private ThreadPoolExecutor mPool;
-    private long mTimeout;
+    private final ThreadCounter mActiveThreadsCounter;
+    private final String mName;
+    private final ThreadPoolExecutor mPool;
+    private final long mTimeout;
 
     public ThreadPool(String name, int poolSize) {
         this(name, poolSize, TIMEOUT);
@@ -36,7 +36,7 @@ public class ThreadPool implements Executor {
         NamedThreadFactory tfac = new NamedThreadFactory(name,
             Thread.NORM_PRIORITY);
         mPool = new ThreadPoolExecutor(1, poolSize, 60, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<Runnable>());
+            new LinkedBlockingQueue<>());
         mPool.setThreadFactory(tfac);
         mActiveThreadsCounter = new ThreadCounter();
     }
@@ -129,8 +129,8 @@ public class ThreadPool implements Executor {
     }
 
     private static class NamedThreadFactory implements ThreadFactory {
-        private String mName;
-        private int mPriority;
+        private final String mName;
+        private final int mPriority;
         private int mThreadNumber;
 
         public NamedThreadFactory(String name, int priority) {

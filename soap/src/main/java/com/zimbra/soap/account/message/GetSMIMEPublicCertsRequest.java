@@ -49,14 +49,14 @@ public class GetSMIMEPublicCertsRequest {
      * @zm-api-field-description List of email addresses
      */
     @XmlElement(name=AccountConstants.E_EMAIL /* email */, required=false)
-    private List<String> emails = Lists.newArrayList();
+    private final List<String> emails = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private GetSMIMEPublicCertsRequest() {
-        this((SMIMEPublicCertsStoreSpec) null);
+        this(null);
     }
 
     public GetSMIMEPublicCertsRequest(SMIMEPublicCertsStoreSpec store) {

@@ -17,7 +17,7 @@ import com.zimbra.common.util.ZimbraLog;
 
 public class IncomingDirectory {
     private String mPath;
-    private UniqueFileNameGenerator mNameGenerator;
+    private final UniqueFileNameGenerator mNameGenerator;
 
     public IncomingDirectory(String path) {
         mPath = path;
@@ -96,7 +96,7 @@ public class IncomingDirectory {
             IncomingDirectorySweeper.sSweptDirectories = Collections.emptyList();
             ZimbraLog.store.debug("Clearing swept directories.");
         } else {
-            IncomingDirectorySweeper.sSweptDirectories = new ArrayList<IncomingDirectory>(swept);
+            IncomingDirectorySweeper.sSweptDirectories = new ArrayList<>(swept);
             if (ZimbraLog.store.isDebugEnabled()) {
                 for (IncomingDirectory inc: swept) {
                     ZimbraLog.store.debug("Adding %s to swept directories.", inc.getPath());
@@ -109,8 +109,8 @@ public class IncomingDirectory {
         static List<IncomingDirectory> sSweptDirectories;
 
         private boolean mShutdown = false;
-        private long mSweepIntervalMS;
-        private long mMaxAgeMS;
+        private final long mSweepIntervalMS;
+        private final long mMaxAgeMS;
 
         public IncomingDirectorySweeper(long sweepIntervalMS, long maxAgeMS) {
             super("IncomingDirectorySweeper");

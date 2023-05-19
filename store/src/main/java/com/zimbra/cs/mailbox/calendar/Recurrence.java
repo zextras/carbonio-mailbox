@@ -112,38 +112,38 @@ public class Recurrence
      *
      */
     public interface IRecurrence extends Cloneable {
-        public Metadata encodeMetadata();
+        Metadata encodeMetadata();
 
-        abstract List<Instance> expandInstances(int calItemId, long start, long end)
+        List<Instance> expandInstances(int calItemId, long start, long end)
         throws ServiceException;
 
         // get the first time for which the rule has instances
-        public ParsedDateTime getStartTime();
+        ParsedDateTime getStartTime();
         // get the last time (-1 means forever) for which the rule has instances
-        public ParsedDateTime getEndTime() throws ServiceException;
+        ParsedDateTime getEndTime() throws ServiceException;
 
-        public Object clone();
+        Object clone();
 
         /**
          * @return TYPE_RECURRENCE, TYPE_EXCEPTION, TYPE_CANCELLATION, TYPE_SINGLE_DATES, or TYPE_REPEATING
          */
-        public int getType();
+        int getType();
 
         /**
          * @return an Iterator over all child rules that add instances to this current node, or NULL if none
          */
-        public Iterator /* IRecurrence */ addRulesIterator();
+        Iterator /* IRecurrence */ addRulesIterator();
 
         /**
          * @return an Iterator over all child rules that add instances to this current node, or NULL if none
          */
-        public Iterator /* IRecurrence */ subRulesIterator();
+        Iterator /* IRecurrence */ subRulesIterator();
 
 
         /**
          * @return Identifier for the Invite which created this particular rule
          */
-        public InviteInfo getInviteInfo();
+        InviteInfo getInviteInfo();
 
 
         /**
@@ -154,9 +154,9 @@ public class Recurrence
          *
          * @param invId
          */
-        public void setInviteId(InviteInfo invId);
+        void setInviteId(InviteInfo invId);
 
-        abstract public Element toXml(Element parent);
+        Element toXml(Element parent);
     }
 
 
@@ -167,11 +167,11 @@ public class Recurrence
      *
      * Real implementations are ExceptionRule and CancellationRule
      */
-    public static interface IException extends IRecurrence
+    public interface IException extends IRecurrence
     {
-        public boolean matches(long date);
+        boolean matches(long date);
 
-        public RecurId getRecurId();
+        RecurId getRecurId();
     }
 
     /**
@@ -181,9 +181,9 @@ public class Recurrence
      * or SimpleRepeatingRule
      *
      */
-    public static interface IInstanceGeneratingRule extends IRecurrence {
+    public interface IInstanceGeneratingRule extends IRecurrence {
         @Override
-        public InviteInfo getInviteInfo();
+        InviteInfo getInviteInfo();
     }
 
 
@@ -244,7 +244,7 @@ public class Recurrence
 
         @Override
         public Object clone() {
-            List<IRecurrence> newRules = new ArrayList<IRecurrence>();
+            List<IRecurrence> newRules = new ArrayList<>();
             for (Iterator iter = mRules.iterator(); iter.hasNext();) {
                 IRecurrence rule = (IRecurrence) iter.next();
                 newRules.add((IRecurrence) rule.clone());
@@ -258,7 +258,7 @@ public class Recurrence
 
         public MultiRuleSorter(Metadata meta, TimeZoneMap tzmap) throws ServiceException {
             int numRules = (int) meta.getLong(FN_NUM_RULES);
-            mRules = new ArrayList<IRecurrence>(numRules);
+            mRules = new ArrayList<>(numRules);
             for (int i = 0; i < numRules; i++) {
                 try {
                     IRecurrence recurrence = Recurrence.decodeMetadata(meta.getMap(FN_RULE + i), tzmap);
@@ -291,7 +291,7 @@ public class Recurrence
 
         List<Instance> expandInstances(int calItemId, long start, long end)
         throws ServiceException {
-            List lists[] = new ArrayList[mRules.size()];
+            List[] lists = new ArrayList[mRules.size()];
             int num = 0;
             for (Iterator iter = mRules.iterator(); iter.hasNext();) {
                 IRecurrence cur = (IRecurrence)iter.next();
@@ -299,7 +299,7 @@ public class Recurrence
                 num++;
             }
 
-            List<Instance> toRet = new LinkedList<Instance>();
+            List<Instance> toRet = new LinkedList<>();
             ListUtil.mergeSortedLists(toRet, lists, true);
 
             return toRet;
@@ -378,13 +378,13 @@ public class Recurrence
                     toRet.append("rdate=[");
                 else
                     toRet.append("exdate=[");
-                toRet.append(mRdateExdate.toString()).append("]");
+                toRet.append(mRdateExdate).append("]");
             } else {
                 toRet.append("rdate/exdate=<none>");
             }
             toRet.append(", defaultDuration=").append(mDefaultDuration.toString());
             if (mInvId != null)
-                toRet.append(", InvId=").append(mInvId.toString());
+                toRet.append(", InvId=").append(mInvId);
             toRet.append("]");
 
             return toRet.toString();
@@ -424,7 +424,7 @@ public class Recurrence
          * @return returns ALL instances - know this will not be an infinite list...
          */
         public List<Instance> expandInstances(int calItemId) {
-            List<Instance> list = new ArrayList<Instance>();
+            List<Instance> list = new ArrayList<>();
             if (mRdateExdate.isEXDATE() || DebugConfig.enableRdate) {
                 for (DateValue val : mDates) {
                     ParsedDateTime valStart = val.getStartTime();
@@ -476,7 +476,7 @@ public class Recurrence
 
         private void setDates() {
             List<DateValue> list =
-                new ArrayList<DateValue>(mRdateExdate.numValues());
+                new ArrayList<>(mRdateExdate.numValues());
             for (Iterator<Object> iter = mRdateExdate.valueIterator(); iter.hasNext(); ) {
                 Object val = iter.next();
                 if (val instanceof ParsedDateTime) {
@@ -527,8 +527,8 @@ public class Recurrence
             @Override
             public String toString() {
                 StringBuilder sb = new StringBuilder();
-                sb.append("[start=").append(mStart.toString());
-                sb.append(", end=").append(mEnd.toString());
+                sb.append("[start=").append(mStart);
+                sb.append(", end=").append(mEnd);
                 sb.append("]");
                 return sb.toString();
             }
@@ -542,7 +542,7 @@ public class Recurrence
      *
      */
     public static class SimpleRepeatingRule implements IInstanceGeneratingRule {
-        Map<String, List<Instance>> expandMap = new HashMap<String, List<Instance>>();
+        Map<String, List<Instance>> expandMap = new HashMap<>();
         public SimpleRepeatingRule(ParsedDateTime dtstart, ParsedDuration duration,
                 ZRecur recur, InviteInfo invId)
         {
@@ -714,7 +714,7 @@ public class Recurrence
         {
             if (mDtStart == null) {
                 ZimbraLog.calendar.warn("Unable to expand a recurrence with no DTSTART");
-                return new ArrayList<Instance>();
+                return new ArrayList<>();
             }
             String KEY = String.valueOf(calItemId) + '-' + start + '-' + end;
             List<Instance> toRet = expandMap.get(KEY);
@@ -732,7 +732,7 @@ public class Recurrence
                 }
                 List <java.util.Date> dateList = mRecur.expandRecurrenceOverRange(mDtStart, start - duration, end);
 
-                toRet = new ArrayList<Instance>(dateList.size());
+                toRet = new ArrayList<>(dateList.size());
 
                 int num = 0;
                 for (Iterator iter = dateList.iterator(); iter.hasNext();) {
@@ -755,12 +755,12 @@ public class Recurrence
                 }
             } catch (ServiceException se) {
                 // Bugs 3172 and 3240.  Ignore recurrence rules with bad data.
-                ZimbraLog.calendar.warn("ServiceException expanding recurrence rule: " + mRecur.toString(), se);
-                toRet = new ArrayList<Instance>();
+                ZimbraLog.calendar.warn("ServiceException expanding recurrence rule: " + mRecur, se);
+                toRet = new ArrayList<>();
             } catch (IllegalArgumentException iae) {
                 // Bugs 3172 and 3240.  Ignore recurrence rules with bad data.
             	ZimbraLog.calendar.warn("Invalid recurrence rule: " + mRecur.toString(), iae);
-                toRet = new ArrayList<Instance>();
+                toRet = new ArrayList<>();
             }
             // cache and return;
             expandMap.put(KEY, toRet);
@@ -846,14 +846,14 @@ public class Recurrence
             } catch (ParseException e) {
                 throw ServiceException.FAILURE("ParseException ", e);
             }
-            mRecur = new ZRecur(meta.get(FN_RECUR).toString(), tzmap);
+            mRecur = new ZRecur(meta.get(FN_RECUR), tzmap);
             Metadata metaInvId = meta.getMap(FN_INVID, true);
             if (metaInvId != null)
                 mInvId = InviteInfo.fromMetadata(metaInvId, tzmap);
         }
 
         // define the value
-        private ParsedDateTime mDtStart;
+        private final ParsedDateTime mDtStart;
         private final ZRecur mRecur;
         private ParsedDuration mDuration;
         private InviteInfo mInvId;
@@ -939,7 +939,7 @@ public class Recurrence
         throws ServiceException {
             if (mDtStart == null) {
                 ZimbraLog.calendar.warn("Unable to expand a recurrence with no DTSTART");
-                return new ArrayList<Instance>(0);
+                return new ArrayList<>(0);
             }
 
             // expansion = DTSTART + RRULEs + RDATEs - (EXRULEs + EXDATEs)
@@ -949,7 +949,7 @@ public class Recurrence
             if (mAddRules != null)
                 toAdd = mAddRules.expandInstances(calItemId, start, end);
             else
-                toAdd = new ArrayList<Instance>(1);
+                toAdd = new ArrayList<>(1);
 
             // DTSTART
             long firstStart = mDtStart.getUtcTime();
@@ -1078,10 +1078,10 @@ public class Recurrence
             toRet.append("FIRST=").append(mDtStart != null ? mDtStart.getDate() : "<none>");
             toRet.append(",DUR=").append(mDuration);
             if (mAddRules != null) {
-                toRet.append("\n\t\tADD[").append(mAddRules.toString()).append("]");
+                toRet.append("\n\t\tADD[").append(mAddRules).append("]");
             }
             if (mSubtractRules != null) {
-                toRet.append("\n\t\tSUBTRACT[").append(mSubtractRules.toString()).append("]");
+                toRet.append("\n\t\tSUBTRACT[").append(mSubtractRules).append("]");
             }
             return toRet.toString();
         }
@@ -1209,7 +1209,7 @@ public class Recurrence
 
         @Override
         public List<Instance> expandInstances(int calItemId, long start, long end) {
-            return new ArrayList<Instance>(); // NONE!
+            return new ArrayList<>(); // NONE!
         }
 
         @Override
@@ -1377,14 +1377,14 @@ public class Recurrence
                 List<IRecurrence> addRules, List<IRecurrence> subtractRules)
         {
             super(dtstart, duration, invId, addRules, subtractRules);
-            mExceptions = new ArrayList<IException>();
+            mExceptions = new ArrayList<>();
         }
 
         public RecurrenceRule(ParsedDateTime dtstart, ParsedDuration duration,
                 InviteInfo invId)
         {
             super(dtstart, duration, invId);
-            mExceptions = new ArrayList<IException>();
+            mExceptions = new ArrayList<>();
         }
 
         @Override
@@ -1405,7 +1405,7 @@ public class Recurrence
             super(meta, tzmap);
 
             int numEx = (int) meta.getLong(FN_NUM_EXCEPTIONS);
-            mExceptions = new ArrayList<IException>(numEx);
+            mExceptions = new ArrayList<>(numEx);
 
             for (int i = 0; i < numEx; i++) {
                 if (meta.containsKey(FN_EXCEPTION+i)) {
@@ -1508,7 +1508,7 @@ public class Recurrence
             }
 
             // Expand and add all exceptions in the range.
-            List<List<Instance>> exceptionInstancesList = new ArrayList<List<Instance>>();
+            List<List<Instance>> exceptionInstancesList = new ArrayList<>();
             for (IException except : mExceptions) {
                 if (except != null) {
                     List<Instance> instances = except.expandInstances(calItemId, startAdjusted, endAdjusted);
@@ -1532,8 +1532,8 @@ public class Recurrence
             if (exceptionInstancesList.isEmpty()) {
                 toRet = stdInstances;
             } else {
-                toRet = new ArrayList<Instance>();
-                List<Instance> toAdd[] = new List[exceptionInstancesList.size() + 1];
+                toRet = new ArrayList<>();
+                List<Instance>[] toAdd = new List[exceptionInstancesList.size() + 1];
                 toAdd[0] = stdInstances;
                 int offset = 1;
                 for (List<Instance> except : exceptionInstancesList) {
@@ -1588,7 +1588,7 @@ public class Recurrence
                   other.mAddRules == null ? null : (MultiRuleSorter) other.mAddRules.clone(),
                   other.mSubtractRules == null ? null : (MultiRuleSorter) other.mSubtractRules.clone(),
                   other.mInvId == null ? null : (InviteInfo) other.mInvId.clone());
-            mExceptions = new ArrayList<IException>();
+            mExceptions = new ArrayList<>();
             for (Iterator iter = other.mExceptions.iterator(); iter.hasNext();) {
                 IException cur = (IException)iter.next();
                 mExceptions.add((IException) cur.clone());
@@ -1611,7 +1611,7 @@ public class Recurrence
         // Eliminate duplicate instances.  For example, an instance may be mentioned both as
         // a RDATE and an exception VEVENT.  Outlook seems to generate this type of data upon
         // update of series.  Always prefer exception VEVENT over RDATE.
-        List<Instance> toRet = new ArrayList<Instance>(list.size());
+        List<Instance> toRet = new ArrayList<>(list.size());
         Instance prev = null;
         for (Instance inst : list) {
             if (prev == null) {
@@ -1637,7 +1637,7 @@ public class Recurrence
 
     // Get the set of TZIDs referenced in a recurrence.  RDATE and EXDATE can use TZID parameter.
     public static Set<String> getReferencedTZIDs(IRecurrence recur) {
-        Set<String> tzids = new HashSet<String>();
+        Set<String> tzids = new HashSet<>();
         // RDATE
         for (Iterator iter = recur.addRulesIterator(); iter!=null && iter.hasNext();) {
             IRecurrence cur = (IRecurrence) iter.next();
@@ -1706,8 +1706,8 @@ public class Recurrence
         ParsedDateTime dtStart = ParsedDateTime.parse(str, tzmap);
         ParsedDuration duration = ParsedDuration.parse("PT1H");
 
-        List<IRecurrence> addRules = new ArrayList<IRecurrence>();
-        List<IRecurrence> subRules = new ArrayList<IRecurrence>();
+        List<IRecurrence> addRules = new ArrayList<>();
+        List<IRecurrence> subRules = new ArrayList<>();
 
         // weekly from 2009/01/05, for 52 weeks
         ZRecur rule = new ZRecur("FREQ=WEEKLY;INTERVAL=1", tzmap);

@@ -40,7 +40,7 @@ implements ZimletHostConfigInfo {
      * @zm-api-field-description Host specifice zimlet configuration properties
      */
     @XmlElement(name=ZimletConstants.ZIMLET_TAG_PROPERTY /* property */, required=false)
-    private List<AdminZimletProperty> properties = Lists.newArrayList();
+    private final List<AdminZimletProperty> properties = Lists.newArrayList();
 
     public AdminZimletHostConfigInfo() {
     }

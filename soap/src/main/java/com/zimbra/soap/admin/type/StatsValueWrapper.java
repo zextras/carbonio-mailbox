@@ -28,7 +28,7 @@ public class StatsValueWrapper {
      * @zm-api-field-description Stats specification
      */
     @XmlElement(name=AdminConstants.E_STAT /* stat */, required=false)
-    private List<NamedElement> stats = Lists.newArrayList();
+    private final List<NamedElement> stats = Lists.newArrayList();
 
     public StatsValueWrapper() {
     }

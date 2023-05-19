@@ -17,9 +17,9 @@ class AsyncFileCopier extends AbstractAsyncFileCopier implements FileCopier {
     private static final int MAX_COPY_BUFSIZE = 1024 * 1024;  // 1MB
     private static final int MAX_WORKER_THREADS = 100;
 
-    private boolean mUseNIO;
+    private final boolean mUseNIO;
     private int mCopyBufSizeOIO;
-    private WorkerThread[] mWorkers;
+    private final WorkerThread[] mWorkers;
 
     AsyncFileCopier(boolean useNIO, int copyBufSizeOIO,
                     int queueCapacity, int numWorkers) {
@@ -82,7 +82,7 @@ class AsyncFileCopier extends AbstractAsyncFileCopier implements FileCopier {
 
     private class WorkerThread extends Thread {
 
-        private byte[] mCopyBuffer;
+        private final byte[] mCopyBuffer;
 
         public WorkerThread(int num) {
             setName("AsyncFileCopierWorker-" + num);

@@ -36,7 +36,7 @@ public class PurgeAccountCalendarCacheRequest {
      */
     @SuppressWarnings("unused")
     private PurgeAccountCalendarCacheRequest() {
-        this((String) null);
+        this(null);
     }
 
     public PurgeAccountCalendarCacheRequest(String id) {

@@ -71,20 +71,20 @@ public class SessionInfo {
      * @zm-api-field-description Extra attributes - possibly including "push"
      */
     @XmlAnyAttribute
-    private Map<QName,Object> extraAttributes = Maps.newHashMap();
+    private final Map<QName,Object> extraAttributes = Maps.newHashMap();
 
     /**
      * @zm-api-field-description Extra elements - possibly including an "imap" element
      */
     @XmlAnyElement
-    private List<org.w3c.dom.Element> extraElements = Lists.newArrayList();
+    private final List<org.w3c.dom.Element> extraElements = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private SessionInfo() {
-        this((String) null, (String) null, (String) null, -1L, -1L);
+        this(null, null, null, -1L, -1L);
     }
 
     public SessionInfo(String zimbraId, String name, String sessionId,

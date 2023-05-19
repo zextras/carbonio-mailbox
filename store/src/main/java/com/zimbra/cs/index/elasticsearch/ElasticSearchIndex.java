@@ -177,12 +177,12 @@ public final class ElasticSearchIndex extends IndexStore {
         JSONObject emailaddress = new JSONObject();
         analyzer.put("emailaddress", emailaddress);
         emailaddress.put("type", "pattern");
-        emailaddress.put("pattern", "(\\s+)|([<>,\\\'\\\"]+)|(\\)+)|(\\(+)|(\\]+)|(\\[+)");
+        emailaddress.put("pattern", "(\\s+)|([<>,\\'\\\"]+)|(\\)+)|(\\(+)|(\\]+)|(\\[+)");
 
         JSONObject contactdata = new JSONObject();
         analyzer.put("contactdata", contactdata);
         contactdata.put("type", "pattern");
-        contactdata.put("pattern", "(\\s+)|([<>,\\\'\\\"]+)|(\\)+)|(\\(+)|(\\]+)|(\\[+)");
+        contactdata.put("pattern", "(\\s+)|([<>,\\'\\\"]+)|(\\)+)|(\\(+)|(\\]+)|(\\[+)");
         JSONArray stopwords = new JSONArray();
         stopwords.put(".");
         contactdata.put("stopwords", stopwords);
@@ -457,12 +457,9 @@ public final class ElasticSearchIndex extends IndexStore {
          */
         private boolean useZimbraAnalyzer(String fieldName) {
             LuceneFields.IndexField field = LuceneFields.IndexField.fromFieldName(fieldName);
-            if ( (field.getIndexSetting().equals(Field.Index.NOT_ANALYZED)) ||
-                 (field.getIndexSetting().equals(Field.Index.NOT_ANALYZED_NO_NORMS)) ||
-                 (field.getIndexSetting().equals(Field.Index.NO))) {
-                return false;
-            }
-            return true;
+          return (!field.getIndexSetting().equals(Field.Index.NOT_ANALYZED)) &&
+              (!field.getIndexSetting().equals(Field.Index.NOT_ANALYZED_NO_NORMS)) &&
+              (!field.getIndexSetting().equals(Field.Index.NO));
         }
 
         private String readerToTokenString(String fieldName, Reader original) throws IOException {
@@ -686,15 +683,15 @@ public final class ElasticSearchIndex extends IndexStore {
                 } catch (IOException e) {
                     ZimbraLog.index.error("Problem getting stats for index %s", url, e);
                 }
-                Collections.sort(allValues, new Comparator<BrowseTerm>() {
-                    @Override
-                    public int compare(BrowseTerm o1, BrowseTerm o2) {
-                        int retVal = o1.getText().compareTo(o2.getText());
-                        if (retVal == 0) {
-                            retVal = o2.getFreq() - o1.getFreq();
-                        }
-                        return retVal;
+                Collections.sort(allValues, new Comparator<>() {
+                  @Override
+                  public int compare(BrowseTerm o1, BrowseTerm o2) {
+                    int retVal = o1.getText().compareTo(o2.getText());
+                    if (retVal == 0) {
+                      retVal = o2.getFreq() - o1.getFreq();
                     }
+                    return retVal;
+                  }
                 });
                 termValues.addAll(allValues);
             }
@@ -751,7 +748,7 @@ public final class ElasticSearchIndex extends IndexStore {
             }
             if (docID instanceof ZimbraElasticDocumentID) {
                 ZimbraElasticDocumentID eDocID = (ZimbraElasticDocumentID) docID;
-                String storedFields[] = { LuceneFields.L_PARTNAME, LuceneFields.L_FILENAME, LuceneFields.L_SORT_SIZE,
+                String[] storedFields = { LuceneFields.L_PARTNAME, LuceneFields.L_FILENAME, LuceneFields.L_SORT_SIZE,
                         LuceneFields.L_SORT_ATTACH, LuceneFields.L_SORT_FLAG, LuceneFields.L_SORT_PRIORITY,
                         LuceneFields.L_MAILBOX_BLOB_ID, LuceneFields.L_SORT_DATE, LuceneFields.L_VERSION };
                 String url = String.format("%s%s/%s?fields=%s", indexUrl, indexType, eDocID.getDocID(),

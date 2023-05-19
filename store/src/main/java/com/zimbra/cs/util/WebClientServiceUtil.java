@@ -110,7 +110,7 @@ public class WebClientServiceUtil {
    */
   public static String sendServiceRequestToOneRandomUiNode(String serviceUrl)
       throws ServiceException {
-    return sendServiceRequestToOneRandomUiNode(serviceUrl, Collections.<String, String>emptyMap());
+    return sendServiceRequestToOneRandomUiNode(serviceUrl, Collections.emptyMap());
   }
 
   /**

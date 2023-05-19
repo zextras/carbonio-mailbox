@@ -32,14 +32,14 @@ public class QueueSummary {
      * @zm-api-field-description Queue summary items
      */
     @XmlElement(name=AdminConstants.A_QUEUE_SUMMARY_ITEM /* qsi */, required=true)
-    private List<QueueSummaryItem> items = Lists.newArrayList();
+    private final List<QueueSummaryItem> items = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private QueueSummary() {
-        this((String) null);
+        this(null);
     }
 
     public QueueSummary(String type) {

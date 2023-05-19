@@ -11,7 +11,7 @@ import org.apache.jsieve.mail.Action;
  */
 public class ActionReply implements Action {
 
-    private String bodyTemplate;
+    private final String bodyTemplate;
 
     public ActionReply(String bodyTemplate) {
         this.bodyTemplate = bodyTemplate;

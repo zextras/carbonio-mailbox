@@ -102,7 +102,7 @@ public class PropPatch extends DavMethod {
                 }
             }
         }
-        return new Pair<List<Element>, List<Element>>(set, remove);
+        return new Pair<>(set, remove);
     }
 
     /**
@@ -140,7 +140,7 @@ public class PropPatch extends DavMethod {
                 rp.addPropError(propName, new DavException.CannotModifyProtectedProperty(propName));
             }
         }
-        return new Pair<List<Element>, List<QName>>(set, remove);
+        return new Pair<>(set, remove);
     }
 
     public static void handlePropertyUpdate(DavContext ctxt, Element top, DavResource resource, boolean isCreate,

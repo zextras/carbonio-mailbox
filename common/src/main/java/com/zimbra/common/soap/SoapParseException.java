@@ -12,7 +12,7 @@ package com.zimbra.common.soap;
 
 public class SoapParseException extends java.io.IOException {
 
-    private String mSoapMessage;
+    private final String mSoapMessage;
     
     public SoapParseException(String message, String soapMessage)
     {

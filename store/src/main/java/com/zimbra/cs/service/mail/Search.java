@@ -166,7 +166,7 @@ public class Search extends MailDocumentHandler  {
                 } else if (expandValue == ExpandResults.ALL) {
                     expand = true;
                 } else if (expandValue == ExpandResults.FIRST) {
-                    expand = params.getOffset() > 0 ? false : hitNum == 1;
+                    expand = params.getOffset() <= 0 && hitNum == 1;
                 } else {
                     expand = expandValue.matches(hit.getParsedItemID());
                 }
@@ -220,7 +220,7 @@ public class Search extends MailDocumentHandler  {
             return null;
         }
         String[] terms = queryString.split("\\s+or\\s+");
-        List<String> folderIdStrs = new ArrayList<String>();
+        List<String> folderIdStrs = new ArrayList<>();
         for (String term : terms) {
             term = term.trim();
             // remove outermost parentheses (light client does this, e.g. "(inid:10)")
@@ -265,7 +265,7 @@ public class Search extends MailDocumentHandler  {
         parent.addAttribute(MailConstants.A_QUERY_OFFSET, params.getOffset());
         parent.addAttribute(MailConstants.A_QUERY_MORE, false);
 
-        List<ItemId> folderIids = new ArrayList<ItemId>(folderIdStrs.size());
+        List<ItemId> folderIids = new ArrayList<>(folderIdStrs.size());
         for (String folderIdStr : folderIdStrs) {
             folderIids.add(new ItemId(folderIdStr, zsc));
         }
@@ -450,7 +450,7 @@ public class Search extends MailDocumentHandler  {
             Map<String /* account id */, List<Integer> /* folder ids */> acctFolders)
     throws ServiceException {
         Map<Server, Map<String /* account id */, List<Integer> /* folder ids */>> groupedByServer =
-            new HashMap<Server, Map<String, List<Integer>>>();
+            new HashMap<>();
         Provisioning prov = Provisioning.getInstance();
         for (Map.Entry<String, List<Integer>> entry : acctFolders.entrySet()) {
             String acctId = entry.getKey();
@@ -467,7 +467,7 @@ public class Search extends MailDocumentHandler  {
             }
             Map<String, List<Integer>> map = groupedByServer.get(server);
             if (map == null) {
-                map = new HashMap<String, List<Integer>>();
+                map = new HashMap<>();
                 groupedByServer.put(server, map);
             }
             map.put(acctId, folderIds);

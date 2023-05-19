@@ -34,7 +34,7 @@ public class AddCommentRequest {
      */
     @SuppressWarnings("unused")
     private AddCommentRequest() {
-        this((AddedComment) null);
+        this(null);
     }
 
     public AddCommentRequest(AddedComment comment) {

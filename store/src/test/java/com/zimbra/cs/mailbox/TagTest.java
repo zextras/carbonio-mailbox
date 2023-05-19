@@ -39,7 +39,7 @@ public class TagTest {
         MailboxTestUtil.initServer();
 
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", Maps.<String, Object>newHashMap());
+        prov.createAccount("test@zimbra.com", "secret", Maps.newHashMap());
 
         Map<String, Object> attrs = Maps.newHashMap();
         attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());

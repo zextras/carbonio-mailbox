@@ -105,11 +105,11 @@ public class CalItemReminderService extends MailboxListener {
     static boolean cancelExistingReminders(int calItemId, int mailboxId) {
         try {
             ScheduledTaskManager.cancel(CalItemEmailReminderTask.class.getName(),
-                                        CalItemEmailReminderTask.TASK_NAME_PREFIX + Integer.toString(calItemId),
+                                        CalItemEmailReminderTask.TASK_NAME_PREFIX + calItemId,
                                         mailboxId,
                                         false);
             ScheduledTaskManager.cancel(CalItemSmsReminderTask.class.getName(),
-                                        CalItemSmsReminderTask.TASK_NAME_PREFIX + Integer.toString(calItemId),
+                                        CalItemSmsReminderTask.TASK_NAME_PREFIX + calItemId,
                                         mailboxId,
                                         false);
         } catch (ServiceException e) {

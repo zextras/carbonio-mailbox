@@ -16,7 +16,7 @@ import com.zimbra.cs.memcached.MemcachedKeyPrefix;
 public class MemcachedItemCache {
     
     public static class ItemCacheKey implements MemcachedKey {
-        private String keyStr;
+        private final String keyStr;
 
         public ItemCacheKey(Mailbox mbox, int itemId) {
             keyStr = mbox.getAccountId() + ":" + mbox.getItemcacheCheckpoint() + ":" + itemId;
@@ -40,7 +40,7 @@ public class MemcachedItemCache {
     }
 
     public static class ItemCacheUuidKey implements MemcachedKey {
-        private String keyStr;
+        private final String keyStr;
 
         public ItemCacheUuidKey(Mailbox mbox, String uuid) {
             keyStr = mbox.getAccountId() + ":" + mbox.getItemcacheCheckpoint() + ":" + uuid;
@@ -63,17 +63,17 @@ public class MemcachedItemCache {
         public String getKeyValue() { return keyStr; }
     }
     
-    private static MemcachedItemCache sTheInstance = new MemcachedItemCache();
+    private static final MemcachedItemCache sTheInstance = new MemcachedItemCache();
 
-    private MemcachedMap<ItemCacheKey, Metadata> memcachedLookup;
-    private MemcachedMap<ItemCacheUuidKey, Integer> memcachedUuidLookup;
+    private final MemcachedMap<ItemCacheKey, Metadata> memcachedLookup;
+    private final MemcachedMap<ItemCacheUuidKey, Integer> memcachedUuidLookup;
 
     public static MemcachedItemCache getInstance() { return sTheInstance; }
 
     MemcachedItemCache() {
         ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
-        memcachedLookup = new MemcachedMap<ItemCacheKey, Metadata>(memcachedClient, new MailItemSerializer(), false);
-        memcachedUuidLookup = new MemcachedMap<ItemCacheUuidKey, Integer>(memcachedClient, new IntegerSerializer(), false);
+        memcachedLookup = new MemcachedMap<>(memcachedClient, new MailItemSerializer(), false);
+        memcachedUuidLookup = new MemcachedMap<>(memcachedClient, new IntegerSerializer(), false);
     }
 
     private static class IntegerSerializer implements MemcachedSerializer<Integer> {

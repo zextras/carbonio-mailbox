@@ -53,7 +53,7 @@ public abstract class LdapSignatureBase extends Signature implements LdapEntry {
         if (!hasAccountSignature(acct))
             return null;
         
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         Set<String> signatureAttrs = AttributeManager.getInstance().getAttrsInClass(AttributeClass.signature);
         
         for (String name : signatureAttrs) {
@@ -65,7 +65,7 @@ public abstract class LdapSignatureBase extends Signature implements LdapEntry {
         // for backward compatibility, we recognize an existing signature on the account if 
         // it has a A_zimbraPrefMailSignature value.  We write back name and id if they are not
         // present.  This write back should happen only once for the account.
-        Map<String, Object> putbackAttrs = new HashMap<String, Object>();
+        Map<String, Object> putbackAttrs = new HashMap<>();
         String sigName = acct.getAttr(Provisioning.A_zimbraSignatureName);
         if (sigName == null) {
             sigName = acct.getName();
@@ -104,7 +104,7 @@ public abstract class LdapSignatureBase extends Signature implements LdapEntry {
     }
 
     public static void deleteAccountSignature(Provisioning prov, Account acct) throws ServiceException {
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         Set<String> signatureAttrs = AttributeManager.getInstance().getAttrsInClass(AttributeClass.signature);
         
         for (String name : signatureAttrs) {

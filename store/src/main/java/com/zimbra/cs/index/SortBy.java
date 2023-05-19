@@ -87,7 +87,7 @@ public enum SortBy {
         NAME2SORT = builder.build();
     }
 
-    private SortBy(String name, Key key, Direction dir, ZimbraSortBy zimbraSortBy) {
+    SortBy(String name, Key key, Direction dir, ZimbraSortBy zimbraSortBy) {
         this.name = name;
         this.key = key;
         direction = dir;
@@ -171,7 +171,7 @@ public enum SortBy {
                 return collator;
             }
             String jaRules = jaCollator.getRules();
-            String supplementaryString = "& \u3001 < '!' < '\"' < '#' < '$' < '%' < '&' < '\'' < '(' < ')' < '*' < '+' < ',' < '-' < '.' < '/' < ':' < ';' < '<' < '=' < '>' < '?' < '@' < '[' < '\u00a2' = \uffe0 < '\u00a3' = '\uffe1' < '\\' < '\u00a5' = \uffe5 < ']' < '\u00a6' = '\uffe4' < '^' < '_' < '`' < '{' < '|' < '}' < '~' < \u309d < \u309e < \u30fd <  \u30fe <  \u20a1 < \u20a2 < \u20ab < \u20ac < \u20a3 < \u20a4 < \u20a5 < \u20a6 < \u20a7 < \uffe1 < \u20aa < \u20a9 < \uffe6";
+            String supplementaryString = "& \u3001 < '!' < '\"' < '#' < '$' < '%' < '&' < ''' < '(' < ')' < '*' < '+' < ',' < '-' < '.' < '/' < ':' < ';' < '<' < '=' < '>' < '?' < '@' < '[' < '\u00a2' = \uffe0 < '\u00a3' = '\uffe1' < '\\' < '\u00a5' = \uffe5 < ']' < '\u00a6' = '\uffe4' < '^' < '_' < '`' < '{' < '|' < '}' < '~' < \u309d < \u309e < \u30fd <  \u30fe <  \u20a1 < \u20a2 < \u20ab < \u20ac < \u20a3 < \u20a4 < \u20a5 < \u20a6 < \u20a7 < \uffe1 < \u20aa < \u20a9 < \uffe6";
             try {
                 return new RuleBasedCollator (jaRules + supplementaryString);
             } catch (ParseException e) {

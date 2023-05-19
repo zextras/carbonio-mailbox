@@ -29,13 +29,13 @@ public class GetCommentsResponse {
      * @zm-api-field-description Users
      */
     @XmlElement(name=MailConstants.A_USER /* user */, required=false)
-    private List<IdEmailName> users = Lists.newArrayList();
+    private final List<IdEmailName> users = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Comment information
      */
     @XmlElement(name=MailConstants.E_COMMENT /* comment */, required=false)
-    private List<CommentInfo> comments = Lists.newArrayList();
+    private final List<CommentInfo> comments = Lists.newArrayList();
 
     public GetCommentsResponse() {
     }

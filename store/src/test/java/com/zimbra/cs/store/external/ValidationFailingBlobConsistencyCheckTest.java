@@ -12,7 +12,7 @@ import com.zimbra.cs.store.file.BlobConsistencyChecker;
 
 public class ValidationFailingBlobConsistencyCheckTest extends ExternalBlobConsistencyCheckTest {
 
-    private MockValidationFailingStore storeManager = new MockValidationFailingStore();
+    private final MockValidationFailingStore storeManager = new MockValidationFailingStore();
 
     @Override
     protected StoreManager getStoreManager() {

@@ -173,7 +173,7 @@ public class MessageBuilder {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         msg.writeTo(out);
-        return new String(out.toByteArray());
+        return out.toString();
     }
 
     public static void main(String[] args) throws Exception {

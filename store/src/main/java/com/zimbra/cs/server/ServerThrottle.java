@@ -23,7 +23,7 @@ import com.zimbra.cs.account.Provisioning;
 
 public class ServerThrottle {
 
-    private static final ConcurrentMap<String, ServerThrottle> instances = new ConcurrentHashMap<String, ServerThrottle>();
+    private static final ConcurrentMap<String, ServerThrottle> instances = new ConcurrentHashMap<>();
 
     public static ServerThrottle getThrottle(String serverType) {
         return instances.get(serverType);
@@ -100,21 +100,21 @@ public class ServerThrottle {
         this.serverType = serverType;
     }
 
-    private String serverType;
+    private final String serverType;
 
     private int ipReqsPerSecond = 0; // max reqs/second per IP
 
     private int acctReqsPerSecond = 0; // max reqs/second per account
 
-    private ConcurrentMap<String, List<Long>> ipReqs = new ConcurrentHashMap<String, List<Long>>();
+    private final ConcurrentMap<String, List<Long>> ipReqs = new ConcurrentHashMap<>();
     // map containing a list of the timestamps for prior requests by ip
 
-    private ConcurrentMap<String, List<Long>> acctReqs = new ConcurrentHashMap<String, List<Long>>();
+    private final ConcurrentMap<String, List<Long>> acctReqs = new ConcurrentHashMap<>();
     // map containing a list of the timestamps for prior requests by acct
 
-    private Set<String> ignoredIps = new HashSet<String>();
+    private final Set<String> ignoredIps = new HashSet<>();
 
-    private Set<String> whitelistIps = new HashSet<String>();
+    private final Set<String> whitelistIps = new HashSet<>();
 
     @VisibleForTesting
     void setIpReqsPerSecond(int ipReqsPerSecond) {
@@ -189,16 +189,13 @@ public class ServerThrottle {
     private boolean isIpInSet(String ip, Set<String> ips) {
         if (ip == null) {
             return false;
-        } else if (ips.contains(ip)) {
+        } else // edge case with IPv6 scoped interface; the client
+          // connection is scoped but InetAddress.getAllByName()
+          // returned unscoped address
+          if (ips.contains(ip)) {
             return true;
-        } else if (ip.indexOf('%') >= 0 && ips.contains(ip.substring(0, ip.indexOf('%')))) {
-            // edge case with IPv6 scoped interface; the client
-            // connection is scoped but InetAddress.getAllByName()
-            // returned unscoped address
-            return true;
-        } else {
-            return false;
-        }
+        } else
+            return ip.indexOf('%') >= 0 && ips.contains(ip.substring(0, ip.indexOf('%')));
     }
 
     private boolean isThrottled(Map<String, List<Long>> reqMap, String key, int limit) {
@@ -239,7 +236,7 @@ public class ServerThrottle {
             // race here; duplicate initialization is tolerable since it only
             // makes our count slightly inaccurate for the first second. a real
             // flood will be detected +/- a few requests
-            reqs = new ArrayList<Long>();
+            reqs = new ArrayList<>();
             reqMap.put(key, reqs);
         }
         return reqs;

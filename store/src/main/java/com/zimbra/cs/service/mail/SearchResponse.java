@@ -69,12 +69,12 @@ final class SearchResponse {
     private boolean includeMailbox = false;
     private int size = 0;
     private final ExpandResults expand;
-    private SortBy sortOrder = SortBy.NONE;;
+    private SortBy sortOrder = SortBy.NONE;
     private boolean allRead = false;
     private final Map<String,Set<String>> memberOfMap;
 
     protected SearchResponse(ZimbraSoapContext zsc, OperationContext octxt, Element el, SearchParams params) {
-        this(zsc, octxt, el, params, (Map<String,Set<String>>) null);
+        this(zsc, octxt, el, params, null);
     }
 
     protected SearchResponse(ZimbraSoapContext zsc, OperationContext octxt, Element el, SearchParams params,
@@ -325,10 +325,10 @@ final class SearchResponse {
     }
 
     private Element add(ContactHit hit) throws ServiceException {
-        return ToXML.encodeContact(element, ifmt, octxt, hit.getContact(), (ContactGroup)null,
-                (Collection<String>)null /* memberAttrFilter */, true /* summary */,
-                (Collection<String>)null /* attrFilter */, getFieldBitmask(),
-                (String)null /* migratedDlist */, false /* returnHiddenAttrs */,
+        return ToXML.encodeContact(element, ifmt, octxt, hit.getContact(), null,
+            null /* memberAttrFilter */, true /* summary */,
+            null /* attrFilter */, getFieldBitmask(),
+            null /* migratedDlist */, false /* returnHiddenAttrs */,
                 GetContacts.NO_LIMIT_MAX_MEMBERS, true /* returnCertInfo */,
                 ContactMemberOfMap.setOfMemberOf(zsc.getRequestedAccountId(), hit.getItemId(), memberOfMap));
     }

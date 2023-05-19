@@ -20,8 +20,8 @@ import com.zimbra.common.soap.AdminConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 abstract public class AttributeSelectorImpl implements AttributeSelector {
 
-    private static Joiner COMMA_JOINER = Joiner.on(",");
-    private List<String> attrs = Lists.newArrayList();
+    private static final Joiner COMMA_JOINER = Joiner.on(",");
+    private final List<String> attrs = Lists.newArrayList();
 
     public AttributeSelectorImpl() {
     }

@@ -6,8 +6,8 @@
 package com.zimbra.common.net;
 
 public class UsernamePassword {
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
     public UsernamePassword(String username, String password) {
         this.username = username;
         this.password = password;

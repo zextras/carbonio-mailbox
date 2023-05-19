@@ -37,7 +37,7 @@ public class MailboxBlobConsistency {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_MISSING_BLOBS /* missingBlobs */, required=true)
     @XmlElement(name=AdminConstants.E_ITEM /* item */, required=false)
-    private List<MissingBlobInfo> missingBlobs = Lists.newArrayList();
+    private final List<MissingBlobInfo> missingBlobs = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Information about items with incorrect sizes
@@ -45,7 +45,7 @@ public class MailboxBlobConsistency {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_INCORRECT_SIZE /* incorrectSize */, required=true)
     @XmlElement(name=AdminConstants.E_ITEM /* item */, required=false)
-    private List<IncorrectBlobSizeInfo> incorrectSizes = Lists.newArrayList();
+    private final List<IncorrectBlobSizeInfo> incorrectSizes = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Information about unexpected blobs
@@ -53,7 +53,7 @@ public class MailboxBlobConsistency {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_UNEXPECTED_BLOBS /* unexpectedBlobs */, required=true)
     @XmlElement(name=AdminConstants.E_BLOB /* blob */, required=false)
-    private List<UnexpectedBlobInfo> unexpectedBlobs = Lists.newArrayList();
+    private final List<UnexpectedBlobInfo> unexpectedBlobs = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Information about items with incorrect revisions
@@ -61,7 +61,7 @@ public class MailboxBlobConsistency {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_INCORRECT_REVISION /* incorrectRevision */, required=true)
     @XmlElement(name=AdminConstants.E_ITEM /* item */, required=false)
-    private List<IncorrectBlobRevisionInfo> incorrectRevisions = Lists.newArrayList();
+    private final List<IncorrectBlobRevisionInfo> incorrectRevisions = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Information about used Blobs
@@ -69,7 +69,7 @@ public class MailboxBlobConsistency {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_USED_BLOBS /* usedBlobs */, required=true)
     @XmlElement(name=AdminConstants.E_ITEM /* item */, required=false)
-    private List<UsedBlobInfo> usedBlobs = Lists.newArrayList();
+    private final List<UsedBlobInfo> usedBlobs = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

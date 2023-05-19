@@ -28,7 +28,7 @@ public class DateAttr implements DateAttrInterface {
      */
     @SuppressWarnings("unused")
     private DateAttr() {
-        this((String) null);
+        this(null);
     }
 
     public DateAttr(String date) {

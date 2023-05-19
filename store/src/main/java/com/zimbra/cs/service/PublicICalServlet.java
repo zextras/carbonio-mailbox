@@ -37,7 +37,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 public class PublicICalServlet extends ZimbraServlet {
     private static final long serialVersionUID = -7350146465570984660L;
 
-    private static Log sLog = LogFactory.getLog(PublicICalServlet.class);
+    private static final Log sLog = LogFactory.getLog(PublicICalServlet.class);
 
     public final void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         ZimbraLog.clearContext();

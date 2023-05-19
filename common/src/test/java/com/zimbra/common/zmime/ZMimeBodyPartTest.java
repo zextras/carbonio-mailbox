@@ -5,6 +5,7 @@
 
 package com.zimbra.common.zmime;
 
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -31,10 +32,10 @@ public class ZMimeBodyPartTest {
         Assert.assertArrayEquals(content.getBytes(), ByteUtil.getContent(mbp.getInputStream(), -1));
 
         mbp.setContent(content, "text/plain; charset=utf-8");
-        Assert.assertArrayEquals(content.getBytes("utf-8"), ByteUtil.getContent(mbp.getInputStream(), -1));
+        Assert.assertArrayEquals(content.getBytes(StandardCharsets.UTF_8), ByteUtil.getContent(mbp.getInputStream(), -1));
 
         mbp.setText(content, "utf-8");
-        Assert.assertArrayEquals(content.getBytes("utf-8"), ByteUtil.getContent(mbp.getInputStream(), -1));
+        Assert.assertArrayEquals(content.getBytes(StandardCharsets.UTF_8), ByteUtil.getContent(mbp.getInputStream(), -1));
 
         mbp.setHeader("Content-Type", "xml/x-share");
         Assert.assertArrayEquals(content.getBytes(), ByteUtil.getContent(mbp.getInputStream(), -1));
@@ -76,7 +77,8 @@ public class ZMimeBodyPartTest {
 
         testEncodingSelection("line too long (ascii)", StringUtils.leftPad("", 1000, "X"), ZTransferEncoding.QUOTED_PRINTABLE);
         testEncodingSelection("line too long (JIS)", new String(StringUtils.leftPad("", 1000, "あ").getBytes("ISO-2022-JP")), ZTransferEncoding.QUOTED_PRINTABLE);
-        testEncodingSelection("line too long (utf-8)", new String(StringUtils.leftPad("", 1000, "あ").getBytes("UTF-8")), ZTransferEncoding.BASE64);
+        testEncodingSelection("line too long (utf-8)", new String(StringUtils.leftPad("", 1000, "あ").getBytes(
+            StandardCharsets.UTF_8)), ZTransferEncoding.BASE64);
         testEncodingSelection("line too long (shift-jis)", new String(StringUtils.leftPad("", 1000, "あ").getBytes("Shift-JIS")), ZTransferEncoding.BASE64);
     }
 }

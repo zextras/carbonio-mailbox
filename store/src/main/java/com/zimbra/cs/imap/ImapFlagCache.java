@@ -193,7 +193,7 @@ public class ImapFlagCache implements Iterable<ImapFlagCache.ImapFlag>, java.io.
             return Collections.emptyList();
         }
 
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (Map.Entry<String, ImapFlag> entry : mImapNames.entrySet()) {
             ImapFlag i4flag = entry.getValue();
             if (i4flag.mListed && (!permanentOnly || i4flag.mPermanent)) {

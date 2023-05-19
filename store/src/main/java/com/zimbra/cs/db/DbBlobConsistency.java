@@ -33,7 +33,7 @@ public class DbBlobConsistency {
     throws ServiceException {
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        List<BlobInfo> blobs = new ArrayList<BlobInfo>();
+        List<BlobInfo> blobs = new ArrayList<>();
 
         try {
             stmt = conn.prepareStatement(
@@ -131,7 +131,7 @@ public class DbBlobConsistency {
     throws ServiceException {
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        List<BlobInfo> blobs = new ArrayList<BlobInfo>();
+        List<BlobInfo> blobs = new ArrayList<>();
 
         try {
             stmt = conn.prepareStatement(query);
@@ -193,7 +193,7 @@ public class DbBlobConsistency {
     public static int getNumRows(DbConnection conn, Mailbox mbox, String tableName,
                                  String idColName, Multimap<Integer, Integer> idRevs)
     throws ServiceException {
-        Set<Integer> mail_itemIds = new HashSet<Integer>();
+        Set<Integer> mail_itemIds = new HashSet<>();
         Multimap<Integer, Integer> rev_itemIds = HashMultimap.create();
         for (Integer itemId : idRevs.keySet()) {
             Collection<Integer> revs = idRevs.get(itemId);
@@ -261,7 +261,7 @@ public class DbBlobConsistency {
     public static void export(DbConnection conn, Mailbox mbox, String tableName,
                               String idColName, Multimap<Integer, Integer> idRevs, String path)
     throws ServiceException {
-        Set<Integer> mail_itemIds = new HashSet<Integer>();
+        Set<Integer> mail_itemIds = new HashSet<>();
         Multimap<Integer, Integer> rev_itemIds = HashMultimap.create();
         for (Integer itemId : idRevs.keySet()) {
             Collection<Integer> revs = idRevs.get(itemId);
@@ -329,7 +329,7 @@ public class DbBlobConsistency {
 
     public static void delete(DbConnection conn, Mailbox mbox, Multimap<Integer, Integer> idRevs)
     throws ServiceException {
-        Set<Integer> mail_itemIds = new HashSet<Integer>();
+        Set<Integer> mail_itemIds = new HashSet<>();
         Multimap<Integer, Integer> rev_itemIds = HashMultimap.create();
         for (Integer itemId : idRevs.keySet()) {
             Collection<Integer> revs = idRevs.get(itemId);

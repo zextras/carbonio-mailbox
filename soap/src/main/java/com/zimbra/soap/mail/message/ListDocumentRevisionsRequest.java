@@ -37,7 +37,7 @@ public class ListDocumentRevisionsRequest {
      */
     @SuppressWarnings("unused")
     private ListDocumentRevisionsRequest() {
-        this((ListDocumentRevisionsSpec) null);
+        this(null);
     }
 
     public ListDocumentRevisionsRequest(ListDocumentRevisionsSpec doc) {

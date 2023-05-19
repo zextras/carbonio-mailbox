@@ -116,7 +116,7 @@ public final class VolumeCLI extends SoapCLI {
         System.exit(1);
     }
 
-    private void setCurrentVolume() throws ParseException, SoapFaultException, IOException, ServiceException, NumberFormatException, HttpException {
+    private void setCurrentVolume() throws ParseException, IOException, ServiceException, NumberFormatException, HttpException {
         if (id == null) {
             throw new ParseException("id is missing");
         }
@@ -131,14 +131,14 @@ public final class VolumeCLI extends SoapCLI {
         System.out.println("Volume " + id + " is now the current " + toTypeName(vol.getType()) + " volume.");
     }
 
-    private void unsetCurrentSecondaryMessageVolume() throws SoapFaultException, IOException, ServiceException, HttpException {
+    private void unsetCurrentSecondaryMessageVolume() throws IOException, ServiceException, HttpException {
         SetCurrentVolumeRequest req = new SetCurrentVolumeRequest(Volume.ID_NONE, Volume.TYPE_MESSAGE_SECONDARY);
         auth(auth);
         getTransport().invokeWithoutSession(JaxbUtil.jaxbToElement(req));
         System.out.println("Turned off the current secondary message volume.");
     }
 
-    private void getCurrentVolumes() throws SoapFaultException, IOException, ServiceException, HttpException {
+    private void getCurrentVolumes() throws IOException, ServiceException, HttpException {
         GetAllVolumesRequest req = new GetAllVolumesRequest();
         auth(auth);
         GetAllVolumesResponse all = JaxbUtil.elementToJaxb(getTransport().invokeWithoutSession(
@@ -183,7 +183,7 @@ public final class VolumeCLI extends SoapCLI {
         System.out.println();
     }
 
-    private void deleteVolume() throws ParseException, SoapFaultException, IOException, ServiceException, HttpException {
+    private void deleteVolume() throws ParseException, IOException, ServiceException, HttpException {
         if (id == null) {
             throw new ParseException("id is missing");
         }
@@ -194,7 +194,7 @@ public final class VolumeCLI extends SoapCLI {
         System.out.println("Deleted volume " + id);
     }
 
-    private void editVolume() throws ParseException, SoapFaultException, IOException, ServiceException, HttpException {
+    private void editVolume() throws ParseException, IOException, ServiceException, HttpException {
         if (Strings.isNullOrEmpty(id)) {
             throw new ParseException("id is missing");
         }
@@ -221,7 +221,7 @@ public final class VolumeCLI extends SoapCLI {
         System.out.println("Edited volume " + id);
     }
 
-    private void addVolume() throws ParseException, SoapFaultException, IOException, ServiceException, HttpException {
+    private void addVolume() throws ParseException, IOException, ServiceException, HttpException {
         if (id != null) {
             throw new ParseException("id cannot be specified when adding a volume");
         }
@@ -239,7 +239,7 @@ public final class VolumeCLI extends SoapCLI {
         vol.setType(toType(type));
         vol.setName(name);
         vol.setRootPath(path);
-        vol.setCompressBlobs(compress != null ? Boolean.parseBoolean(compress) : false);
+        vol.setCompressBlobs(compress != null && Boolean.parseBoolean(compress));
         vol.setCompressionThreshold(compressThreshold != null ? Long.parseLong(compressThreshold) : 4096L);
         CreateVolumeRequest req = new CreateVolumeRequest(vol);
         auth();
@@ -318,7 +318,7 @@ public final class VolumeCLI extends SoapCLI {
         }
         buf.append(Strings.repeat(" ", 35 - buf.length()));
         buf.append(opt.getDescription());
-        System.err.println(buf.toString());
+        System.err.println(buf);
     }
 
     /**

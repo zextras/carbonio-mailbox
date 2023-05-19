@@ -18,10 +18,10 @@ public class SubscribeDistributionListResponse {
      * @zm-api-field-description Status of subscription attempt
      */
     @XmlAttribute(name=AccountConstants.A_STATUS, required=true)
-    private DistributionListSubscribeStatus status;
+    private final DistributionListSubscribeStatus status;
 
     public SubscribeDistributionListResponse() {
-        this((DistributionListSubscribeStatus) null);
+        this(null);
     }
     public SubscribeDistributionListResponse(DistributionListSubscribeStatus status) {
         this.status = status;

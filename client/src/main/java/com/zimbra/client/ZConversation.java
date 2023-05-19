@@ -31,7 +31,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
         forwarded('w'),
         attachment('a');
 
-        private char mFlagChar;
+        private final char mFlagChar;
 
         public char getFlagChar() { return mFlagChar; }
 
@@ -58,12 +58,12 @@ public class ZConversation implements ZItem, ToZJSONObject {
         }
     }
 
-    private String mId;
+    private final String mId;
     private String mFlags;
     private String mSubject;
     private String mTags;
     private int mMessageCount;
-    private List<ZMessageSummary> mMessageSummaries;
+    private final List<ZMessageSummary> mMessageSummaries;
     private ZMailbox mMailbox;
 
     public ZConversation(Element e, ZMailbox mailbox) throws ServiceException {
@@ -73,7 +73,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
         mSubject = e.getAttribute(MailConstants.E_SUBJECT, null);
         mMessageCount = (int) e.getAttributeLong(MailConstants.A_NUM);
 
-        mMessageSummaries = new ArrayList<ZMessageSummary>();
+        mMessageSummaries = new ArrayList<>();
         for (Element msgEl: e.listElements(MailConstants.E_MSG)) {
             mMessageSummaries.add(new ZMessageSummary(msgEl));
         }
@@ -150,16 +150,16 @@ public class ZConversation implements ZItem, ToZJSONObject {
 
     public class ZMessageSummary implements ZItem, ToZJSONObject {
 
-        private long mDate;
+        private final long mDate;
         private String mFlags;
         private String mTags;
-        private String mFragment;
-        private String mId;
+        private final String mFragment;
+        private final String mId;
         private String mFolderId;
         private ZEmailAddress mSender;
-        private long mSize;
-        private Element mElement;
-        private String mSubject;
+        private final long mSize;
+        private final Element mElement;
+        private final String mSubject;
 
         public ZMessageSummary(Element e) throws ServiceException {
             mElement = e;

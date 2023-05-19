@@ -18,11 +18,11 @@ public class ZSelectiveCallForwarding extends ZCallFeature {
 
     public ZSelectiveCallForwarding(String name) {
         super(name);
-        mForwardFrom = new ArrayList<String>();        
+        mForwardFrom = new ArrayList<>();
     }
 
     public List<String> getForwardFrom() {
-        return new ArrayList<String>(mForwardFrom);
+        return new ArrayList<>(mForwardFrom);
     }
 
     public synchronized void setForwardFrom(List<String> list) {
@@ -33,13 +33,13 @@ public class ZSelectiveCallForwarding extends ZCallFeature {
     public synchronized void assignFrom(ZCallFeature that) {
         super.assignFrom(that);
         if (that instanceof ZSelectiveCallForwarding) {
-            this.mForwardFrom = new ArrayList<String>(((ZSelectiveCallForwarding)that).mForwardFrom);
+            this.mForwardFrom = new ArrayList<>(((ZSelectiveCallForwarding) that).mForwardFrom);
         }
     }
 
     synchronized void fromElement(Element element) throws ServiceException {
         super.fromElement(element);
-        mForwardFrom = new ArrayList<String>();
+        mForwardFrom = new ArrayList<>();
         for (Element fromEl : element.listElements(VoiceConstants.E_PHONE)) {
              mForwardFrom.add(fromEl.getAttribute(VoiceConstants.A_PHONE_NUMBER));
         }

@@ -20,7 +20,7 @@ public class Command implements java.io.Serializable {
     private XmlElementDescription request;
     private XmlElementDescription response;
 
-    private List<XmlElementDescription> allElements = new LinkedList<XmlElementDescription>();
+    private final List<XmlElementDescription> allElements = new LinkedList<>();
 
     private Service service = null;
     private String name = null;
@@ -44,9 +44,7 @@ public class Command implements java.io.Serializable {
      * @return    <code>true</code> if the command is loaded
      */
     public boolean getLoaded() {
-        if (this.response == null || this.request == null)
-            return false;
-        return true;
+      return this.response != null && this.request != null;
     }
 
     public XmlElementDescription getResponse() {

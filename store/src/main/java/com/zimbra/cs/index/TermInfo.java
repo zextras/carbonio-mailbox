@@ -31,7 +31,7 @@ public final class TermInfo {
 
     void addPosition(int value) {
         if (positions == null) {
-            positions = new ArrayList<Integer>();
+            positions = new ArrayList<>();
         }
         positions.add(value);
     }

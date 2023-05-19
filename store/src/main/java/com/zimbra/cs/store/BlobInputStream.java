@@ -55,16 +55,16 @@ implements SharedInputStream, InputStreamSource {
     /**
      * Start index of this stream (inclusive).
      */
-    private long mStart;
+    private final long mStart;
 
     /**
      * End index of this stream (exclusive).
      */
-    private long mEnd;
+    private final long mEnd;
 
-    private BlobInputStream mRoot;
+    private final BlobInputStream mRoot;
 
-    private static int BUFFER_SIZE = Math.max(LC.zimbra_blob_input_stream_buffer_size_kb.intValue(), 1) * 1024;
+    private static final int BUFFER_SIZE = Math.max(LC.zimbra_blob_input_stream_buffer_size_kb.intValue(), 1) * 1024;
 
     /**
      * Read buffer.

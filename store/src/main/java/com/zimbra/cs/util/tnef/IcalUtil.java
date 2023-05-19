@@ -261,7 +261,7 @@ public class IcalUtil {
         String myString = null;
         if (oemCodePage != null) {
             if (oemCodePage.equals("Cp932")) {
-                oemCodePage = new String("Cp942"); // IBM OS/2 Japanese, superset of Cp932
+                oemCodePage = "Cp942"; // IBM OS/2 Japanese, superset of Cp932
             }
         }
         byte[] asBytes = ris.readBytes(len);

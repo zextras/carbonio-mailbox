@@ -26,7 +26,7 @@ import com.zimbra.common.soap.AdminConstants;
 public class AutoProvTaskControlRequest {
     
     @XmlEnum
-    public static enum Action {
+    public enum Action {
         start,
         status,
         stop;
@@ -51,7 +51,7 @@ public class AutoProvTaskControlRequest {
      */
     @SuppressWarnings("unused")
     private AutoProvTaskControlRequest() {
-        this((Action)null);
+        this(null);
     }
     
     public AutoProvTaskControlRequest(Action action) {

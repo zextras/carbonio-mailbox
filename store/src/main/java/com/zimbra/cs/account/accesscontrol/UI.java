@@ -9,7 +9,7 @@ import com.zimbra.common.service.ServiceException;
 
 public class UI implements Comparable<UI> {
     
-    private String name;
+    private final String name;
     private String desc;
     
     public UI(String name) {
@@ -29,7 +29,7 @@ public class UI implements Comparable<UI> {
     }
     
     void setDesc(String desc) {
-        this.desc = new String(desc);
+        this.desc = desc;
     }
     
     String getDesc() {

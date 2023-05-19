@@ -41,7 +41,7 @@ import com.zimbra.soap.ZimbraSoapContext;
  */
 public class CheckSpelling extends MailDocumentHandler {
 
-    private Log log = ZimbraLog.misc;
+    private final Log log = ZimbraLog.misc;
 
     private class ServerResponse {
         int statusCode;
@@ -83,7 +83,7 @@ public class CheckSpelling extends MailDocumentHandler {
         }
 
         // Assemble the list of words to ignore from the account, domain, and COS.
-        List<String> ignoreWords = new ArrayList<String>();
+        List<String> ignoreWords = new ArrayList<>();
         addToList(ignoreWords, account.getPrefSpellIgnoreWord());
         addToList(ignoreWords, prov.getDomain(account).getPrefSpellIgnoreWord());
         addToList(ignoreWords, prov.getCOS(account).getPrefSpellIgnoreWord());
@@ -136,7 +136,7 @@ public class CheckSpelling extends MailDocumentHandler {
 
                     if (colonPos > 0) {
                         String word = line.substring(0, colonPos);
-                        String suggestions = line.substring(colonPos + 1, line.length());
+                        String suggestions = line.substring(colonPos + 1);
                         if (ignorePattern != null && word.matches(ignorePattern)) {
                             continue;
                         }
@@ -173,7 +173,7 @@ public class CheckSpelling extends MailDocumentHandler {
     throws IOException, HttpException {
         HttpPost post = new HttpPost(url);
         post.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        List <NameValuePair> nvps = new ArrayList <NameValuePair>();
+        List <NameValuePair> nvps = new ArrayList<>();
        
         if (dictionary != null) {
             nvps.add(new BasicNameValuePair("dictionary", dictionary));

@@ -86,7 +86,7 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
         flagged('f'),
         attachment('a');
 
-        private char mFlagChar;
+        private final char mFlagChar;
 
         public char getFlagChar() { return mFlagChar; }
 
@@ -117,7 +117,7 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
         galContact("G"),
         inlineContact("I");
 
-        private String contactMemberType;
+        private final String contactMemberType;
 
         public String getContactMemberType() { return contactMemberType;}
 
@@ -165,8 +165,8 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
         mDate = e.getAttributeLong(MailConstants.A_DATE, 0);
         mMetaDataChangedDate = e.getAttributeLong(MailConstants.A_CHANGE_DATE, 0) * 1000;
 
-        HashMap<String, String> attrs = new HashMap<String, String>();
-        HashMap<String, ZContactAttachmentInfo> attachments = new HashMap<String, ZContactAttachmentInfo>();
+        HashMap<String, String> attrs = new HashMap<>();
+        HashMap<String, ZContactAttachmentInfo> attachments = new HashMap<>();
 
         for (Element attrEl : e.listElements(MailConstants.E_ATTRIBUTE)) {
             String name = attrEl.getAttribute(MailConstants.A_ATTRIBUTE_NAME);
@@ -184,14 +184,14 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
         mAttrs = Collections.unmodifiableMap(attrs);
         mAttachments = Collections.unmodifiableMap(attachments);
 
-        HashMap<String, ZContact> members = new HashMap<String, ZContact>();
+        HashMap<String, ZContact> members = new HashMap<>();
         for (Element memberEl : e.listElements(MailConstants.E_CONTACT_GROUP_MEMBER)) {
             String id = memberEl.getAttribute(MailConstants.A_CONTACT_GROUP_MEMBER_VALUE);
             String type = memberEl.getAttribute(MailConstants.A_CONTACT_GROUP_MEMBER_TYPE);
             Element cnEl = memberEl.getOptionalElement(MailConstants.E_CONTACT);
             ZContact contact = null;
             if (cnEl != null)
-                contact = new ZContact(cnEl, type.equals("G") ? true : false, zmailbox);
+                contact = new ZContact(cnEl, type.equals("G"), zmailbox);
             else
                 /**
                  * Inline contacts only have the email address as value and type as I.

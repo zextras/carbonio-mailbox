@@ -27,12 +27,12 @@ import com.zimbra.cs.mailbox.Contact;
 public class GalContact implements Comparable {
     
     public interface Visitor  {
-        public void visit(GalContact gc) throws ServiceException;
+        void visit(GalContact gc) throws ServiceException;
     }
    
     private GalType mGalType;
-    private Map<String, Object> mAttrs;
-    private String mId;
+    private final Map<String, Object> mAttrs;
+    private final String mId;
     private String mSortField;
 
     public GalContact(String dn, Map<String,Object> attrs) {
@@ -130,7 +130,7 @@ public class GalContact implements Comparable {
     
     public static GalContact fromElement(Element elm) throws ServiceException {
         String dn = elm.getAttribute(AccountConstants.A_REF);
-        Map<String,Object> attrs = new HashMap<String,Object>();
+        Map<String,Object> attrs = new HashMap<>();
         for (Element attr : elm.listElements(MailConstants.E_ATTRIBUTE)) {
             String name = attr.getAttribute(MailConstants.A_ATTRIBUTE_NAME);
             String value = attr.getText();

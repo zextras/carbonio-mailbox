@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import com.zimbra.common.iochannel.Client.PeerServer;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Packet is smallest unit of data transmitted among the machines
@@ -36,7 +37,7 @@ public class Packet {
     }
 
     public String getHeader() throws IOException {
-        return new String(payload[0].array(), "UTF-8");
+        return new String(payload[0].array(), StandardCharsets.UTF_8);
     }
 
     public ByteBuffer getContent() {
@@ -57,12 +58,8 @@ public class Packet {
 
     private Packet(String clientId, PeerServer server, ByteBuffer message) {
         byte[] clientIdBytes;
-        try {
-            clientIdBytes = clientId.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            clientIdBytes = clientId.getBytes();
-        }
-        ByteBuffer header = ByteBuffer.allocate(maxHeaderSize);
+      clientIdBytes = clientId.getBytes(StandardCharsets.UTF_8);
+      ByteBuffer header = ByteBuffer.allocate(maxHeaderSize);
         header.putInt(magic).putLong(clientId.length()).putLong(message.remaining()).put(clientIdBytes).flip();
         payload = new ByteBuffer[2];
         payload[0] = header;
@@ -108,10 +105,8 @@ public class Packet {
         buffer.flip().position(copy.position());
         buffer.compact();
         if (log.isDebugEnabled()) {
-            try {
-                log.debug("msg from %s '%s'", new String(headerBuf, "UTF-8"), new String(contentBuf, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-            }
+          log.debug("msg from %s '%s'", new String(headerBuf, StandardCharsets.UTF_8), new String(contentBuf,
+              StandardCharsets.UTF_8));
         }
         return new Packet(headerBuf, contentBuf);
     }

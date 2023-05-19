@@ -46,7 +46,7 @@ public class GetImportStatusResponse {
         @XmlElement(name=MailConstants.E_DS_CAL /* cal */, type=CalImportStatusInfo.class),
         @XmlElement(name=MailConstants.E_DS_UNKNOWN /* unknown */, type=UnknownImportStatusInfo.class)
     })
-    private List<ImportStatusInfo> statuses = Lists.newArrayList();
+    private final List<ImportStatusInfo> statuses = Lists.newArrayList();
 
     public GetImportStatusResponse() {
     }

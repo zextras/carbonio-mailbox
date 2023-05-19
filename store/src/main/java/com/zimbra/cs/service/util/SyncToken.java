@@ -160,11 +160,7 @@ public class SyncToken implements Cloneable, Comparable {
     }
 
     public boolean after(SyncToken other) {
-        if (this.compareTo(other) > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.compareTo(other) > 0;
     }
 
     @Override public SyncToken clone() {

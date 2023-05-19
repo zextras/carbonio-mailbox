@@ -46,7 +46,7 @@ public abstract class PhantomResource extends DavResource {
     }
 
     protected static List<String> parseUri(String uri) {
-        ArrayList<String> l = new ArrayList<String>();
+        ArrayList<String> l = new ArrayList<>();
         StringTokenizer tok = new StringTokenizer(uri, "/");
         while (tok.hasMoreTokens())
             l.add(tok.nextToken());

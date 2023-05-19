@@ -33,7 +33,7 @@ public class PackageRightsInfo {
      * @zm-api-field-description Command rights information
      */
     @XmlElement(name=AdminConstants.E_CMD /* cmd */, required=false)
-    private List <CmdRightsInfo> cmds = Lists.newArrayList();
+    private final List <CmdRightsInfo> cmds = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

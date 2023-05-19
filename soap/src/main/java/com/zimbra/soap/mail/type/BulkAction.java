@@ -17,7 +17,7 @@ import com.zimbra.common.soap.MailConstants;
 public class BulkAction {
 
     @XmlEnum
-    public static enum Operation {
+    public enum Operation {
         move, read, unread;
 
         public static Operation fromString(String s) throws ServiceException {

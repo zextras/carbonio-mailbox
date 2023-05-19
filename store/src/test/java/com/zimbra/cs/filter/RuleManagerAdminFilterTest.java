@@ -403,7 +403,7 @@ public final class RuleManagerAdminFilterTest {
                 .getIds(MailItem.Type.MESSAGE).get(0);
         Message msg = mbox.getMessageById(null, item);
         Assert.assertEquals("Hello World", msg.getFragment());
-        String tags[] = msg.getTags();
+        String[] tags = msg.getTags();
         Assert.assertEquals(2, tags.length);
     }
 

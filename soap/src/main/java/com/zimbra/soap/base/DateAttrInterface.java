@@ -10,6 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface DateAttrInterface {
-    public DateAttrInterface create(String date);
-    public String getDate();
+    DateAttrInterface create(String date);
+    String getDate();
 }

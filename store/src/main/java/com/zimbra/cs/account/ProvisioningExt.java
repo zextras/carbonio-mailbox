@@ -27,7 +27,7 @@ public abstract class ProvisioningExt {
     }
     
     private static final ArrayList<PostCreateAccountListener> 
-                postCreateAccountListeners = new ArrayList<PostCreateAccountListener>();
+                postCreateAccountListeners = new ArrayList<>();
     
     public static void addPostCreateAccountListener(PostCreateAccountListener listener) {
         synchronized (postCreateAccountListeners) {

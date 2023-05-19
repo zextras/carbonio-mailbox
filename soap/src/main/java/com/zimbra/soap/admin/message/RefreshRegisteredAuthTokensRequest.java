@@ -30,7 +30,7 @@ public class RefreshRegisteredAuthTokensRequest {
      * @zm-api-field-description Tokens
      */
     @XmlElement(name=AdminConstants.E_TOKEN /* token */, required=true)
-    private List<String> tokens = Lists.newArrayList();
+    private final List<String> tokens = Lists.newArrayList();
 
     public List<String> getTokens() {
         return tokens;

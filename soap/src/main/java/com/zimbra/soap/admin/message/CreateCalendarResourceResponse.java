@@ -28,7 +28,7 @@ public class CreateCalendarResourceResponse {
      */
      @SuppressWarnings("unused")
     private CreateCalendarResourceResponse() {
-        this((CalendarResourceInfo)null);
+        this(null);
     }
 
     public CreateCalendarResourceResponse(CalendarResourceInfo calResource) {

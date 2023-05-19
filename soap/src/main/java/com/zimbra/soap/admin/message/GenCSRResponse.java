@@ -30,7 +30,7 @@ public class GenCSRResponse {
      */
     @SuppressWarnings("unused")
     private GenCSRResponse() {
-        this((String) null);
+        this(null);
     }
 
     public GenCSRResponse(String server) {

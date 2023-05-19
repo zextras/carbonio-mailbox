@@ -16,7 +16,7 @@ import java.util.List;
 public class DeltaCalculator
 implements Accumulator {
 
-    private Counter mCounter;
+    private final Counter mCounter;
     private long mLastCount = 0;
     private long mSecondToLastCount = 0;
     private long mLastTotal = 0;
@@ -74,7 +74,7 @@ implements Accumulator {
     }
     
     private void updateNames() {
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
         if (mCountName != null) {
             names.add(mCountName);
         }
@@ -162,7 +162,7 @@ implements Accumulator {
             return Collections.emptyList();
         }
         
-        List<Object> data = new ArrayList<Object>(mNames.size());
+        List<Object> data = new ArrayList<>(mNames.size());
         synchronized (mCounter) {
             if (mCountName != null) {
                 data.add(getCount());

@@ -35,7 +35,7 @@ public class DeleteAddressListRequest {
      */
      @SuppressWarnings("unused")
     private DeleteAddressListRequest() {
-        this((String)null);
+        this(null);
     }
 
     public DeleteAddressListRequest(String id) {

@@ -35,7 +35,7 @@ import com.zimbra.cs.servlet.ETagHeaderFilter;
 
 public class AddressbookCollection extends Collection {
 
-    private static QName[] SUPPORTED_REPORTS = {
+    private static final QName[] SUPPORTED_REPORTS = {
             DavElements.CardDav.E_ADDRESSBOOK_MULTIGET,
             DavElements.CardDav.E_ADDRESSBOOK_QUERY,
             DavElements.E_ACL_PRINCIPAL_PROP_SET,
@@ -139,7 +139,7 @@ public class AddressbookCollection extends Collection {
      */
     @Override
     public java.util.Collection<DavResource> getChildren(DavContext ctxt) throws DavException {
-        ArrayList<DavResource> children = new ArrayList<DavResource>();
+        ArrayList<DavResource> children = new ArrayList<>();
         java.util.Collection<DavResource> allChildren = super.getChildren(ctxt);
         for (DavResource child: allChildren) {
             if (child.isCollection() || child instanceof AddressObject) {

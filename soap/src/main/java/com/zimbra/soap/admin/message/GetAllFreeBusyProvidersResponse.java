@@ -27,7 +27,7 @@ public class GetAllFreeBusyProvidersResponse {
      * @zm-api-field-description Information on Free/Busy providers
      */
     @XmlElement(name=AdminConstants.E_PROVIDER, required=false)
-    private List<FreeBusyProviderInfo> providers = Lists.newArrayList();
+    private final List<FreeBusyProviderInfo> providers = Lists.newArrayList();
 
     public GetAllFreeBusyProvidersResponse() {
     }

@@ -47,7 +47,7 @@ public class WatcherInfo {
      * @zm-api-field-description List of items in the user's mailbox currently being watched by other users
      */
     @XmlElement(name=MailConstants.E_ITEM /* item */, required=false)
-    private List<IntegerIdAttr> items = Lists.newArrayList();
+    private final List<IntegerIdAttr> items = Lists.newArrayList();
 
     private WatcherInfo() {
     }

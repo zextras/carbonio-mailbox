@@ -16,12 +16,12 @@ import org.dom4j.Namespace;
  */
 public class WsdlInfoForNamespace {
 
-    private String xsdNamespaceString; // e.g. urn:zimbraAccount
-    private Namespace xsdNamespace;
-    private String xsdPrefix;          // e.g. zimbraAdmin
-    private String tag;                // e.g. Admin
-    private WsdlServiceInfo svcInfo;
-    private List <String> requests;
+    private final String xsdNamespaceString; // e.g. urn:zimbraAccount
+    private final Namespace xsdNamespace;
+    private final String xsdPrefix;          // e.g. zimbraAdmin
+    private final String tag;                // e.g. Admin
+    private final WsdlServiceInfo svcInfo;
+    private final List <String> requests;
 
     public WsdlInfoForNamespace(String xsdNs, WsdlServiceInfo svcInfo, Iterable<String> requests) {
         this.xsdNamespaceString = xsdNs;

@@ -22,8 +22,8 @@ import com.zimbra.common.util.ZimbraLog;
  */
 public class MimeMessageOutputThread implements Runnable {
     
-    private PipedOutputStream mOut;
-    private MimeMessage mMsg;
+    private final PipedOutputStream mOut;
+    private final MimeMessage mMsg;
     
     MimeMessageOutputThread(MimeMessage msg, PipedOutputStream out) {
         if (msg == null) {

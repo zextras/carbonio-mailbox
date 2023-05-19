@@ -45,10 +45,10 @@ public class AddDistributionListMemberRequest {
      * @zm-api-field-description Members
      */
     @XmlElement(name=AdminConstants.E_DLM, required=true)
-    private List <String> members = Lists.newArrayList();
+    private final List <String> members = Lists.newArrayList();
 
     public AddDistributionListMemberRequest() {
-        this((String) null, (Collection<String>) null);
+        this(null, null);
     }
 
     public AddDistributionListMemberRequest(String id, Collection<String> members) {

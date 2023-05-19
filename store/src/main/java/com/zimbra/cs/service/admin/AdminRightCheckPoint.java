@@ -14,7 +14,7 @@ public interface AdminRightCheckPoint {
     /**
      * canned notes
      */
-    static class Notes {
+    class Notes {
         // only system admins are allowed
         public static final String SYSTEM_ADMINS_ONLY = "Only system admins are allowed.";
 
@@ -44,5 +44,5 @@ public interface AdminRightCheckPoint {
 
     }
 
-    public void docRights(List<AdminRight> relatedRights, List<String> notes);
+    void docRights(List<AdminRight> relatedRights, List<String> notes);
 }

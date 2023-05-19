@@ -11,11 +11,11 @@ public interface GalSearchQueryCallback {
      * 
      * @return extra query to be ANDed with the query for GAL sync account search
      */
-    public String getMailboxSearchQuery();
+    String getMailboxSearchQuery();
     
     /**
      * 
      * @return extra query to be ANDed with the query for Zimbra GAL LDAP search
      */
-    public String getZimbraLdapSearchQuery();
+    String getZimbraLdapSearchQuery();
 }

@@ -29,7 +29,7 @@ public class ContactAttachSpec extends AttachSpec {
      */
     @SuppressWarnings("unused")
     private ContactAttachSpec() {
-        this((String) null);
+        this(null);
     }
 
     public ContactAttachSpec(String id) {

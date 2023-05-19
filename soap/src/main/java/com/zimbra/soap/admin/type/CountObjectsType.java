@@ -28,10 +28,10 @@ public enum CountObjectsType {
     internalArchivingAccount(true, false),
     internalUserAccountX(true, false);
     
-    private boolean allowsDomain;
-    private boolean allowsUCService;
+    private final boolean allowsDomain;
+    private final boolean allowsUCService;
     
-    private CountObjectsType(boolean allowsDomain, boolean allowsUCService) {
+    CountObjectsType(boolean allowsDomain, boolean allowsUCService) {
         this.allowsDomain = allowsDomain;
         this.allowsUCService = allowsUCService;
     }

@@ -29,7 +29,7 @@ import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
 
 public class MimeHeaderTest {
-    private static String sampleMsg = "from: xyz@example.com\n"
+    private static final String sampleMsg = "from: xyz@example.com\n"
             + "Subject: test message\n"
             + "to: foo@example.com, baz@example.com\n"
             + "cc: qux@example.com\n"

@@ -17,7 +17,7 @@ import com.zimbra.cs.ldap.ZAttributes;
  */
 public class LdapSignature extends LdapSignatureBase {
 
-    private String mDn;
+    private final String mDn;
 
     public LdapSignature(Account acct, String dn, ZAttributes attrs, Provisioning prov) throws LdapException {
         super(acct, attrs.getAttrString(Provisioning.A_zimbraSignatureName),

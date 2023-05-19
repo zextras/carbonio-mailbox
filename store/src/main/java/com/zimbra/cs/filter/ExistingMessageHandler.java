@@ -188,10 +188,7 @@ public final class ExistingMessageHandler implements FilterHandler {
             octxt, Mailbox.ID_FOLDER_USER_ROOT, folderPath);
         Folder folder = folderAndPath.getFirst();
         String remainingPath = folderAndPath.getSecond();
-        if (folder instanceof Mountpoint || !StringUtil.isNullOrEmpty(remainingPath)) {
-            return false;
-        }
-        return true;
+      return !(folder instanceof Mountpoint) && StringUtil.isNullOrEmpty(remainingPath);
     }
 
     @Override

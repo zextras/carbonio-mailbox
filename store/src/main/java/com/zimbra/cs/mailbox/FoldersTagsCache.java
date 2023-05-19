@@ -23,23 +23,23 @@ import com.zimbra.cs.memcached.MemcachedConnector;
  * folder state.
  */
 public class FoldersTagsCache {
-    private static FoldersTagsCache sTheInstance = new FoldersTagsCache();
+    private static final FoldersTagsCache sTheInstance = new FoldersTagsCache();
 
-    private MemcachedMap<FoldersTagsCacheKey, FoldersTags> mMemcachedLookup;
+    private final MemcachedMap<FoldersTagsCacheKey, FoldersTags> mMemcachedLookup;
 
     public static FoldersTagsCache getInstance() { return sTheInstance; }
 
     FoldersTagsCache() {
         ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
         FoldersTagsSerializer serializer = new FoldersTagsSerializer();
-        mMemcachedLookup = new MemcachedMap<FoldersTagsCacheKey, FoldersTags>(memcachedClient, serializer, false);
+        mMemcachedLookup = new MemcachedMap<>(memcachedClient, serializer, false);
     }
 
     static class FoldersTags {
         private static final int DATA_VERSION = 1;
 
-        private MetadataList mFolders;
-        private MetadataList mTags;
+        private final MetadataList mFolders;
+        private final MetadataList mTags;
 
         public FoldersTags(List<Folder> folders, List<Tag> tags) {
             mFolders = new MetadataList();
@@ -81,7 +81,7 @@ public class FoldersTagsCache {
         }
 
         public List<Metadata> getFolders() {
-            List<Metadata> toRet = new ArrayList<Metadata>();
+            List<Metadata> toRet = new ArrayList<>();
             List list = mFolders.asList();
             for (Object obj : list) {
                 if (obj instanceof Metadata)
@@ -91,7 +91,7 @@ public class FoldersTagsCache {
         }
 
         public List<Metadata> getTags() {
-            List<Metadata> toRet = new ArrayList<Metadata>();
+            List<Metadata> toRet = new ArrayList<>();
             List list = mTags.asList();
             for (Object obj : list) {
                 if (obj instanceof Metadata)

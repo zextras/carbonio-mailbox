@@ -40,7 +40,7 @@ public class TypeIdName {
      */
     @SuppressWarnings("unused")
     private TypeIdName() {
-        this((String) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public TypeIdName(String type, String id, String name) {

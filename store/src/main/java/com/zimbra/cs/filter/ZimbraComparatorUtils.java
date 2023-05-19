@@ -217,7 +217,7 @@ public class ZimbraComparatorUtils {
             String operator, List<String> matchTarget, String matchArgument,
             SieveContext context) throws LookupException, FeatureException, SyntaxException {
         if (mail instanceof ZimbraMailAdapter) {
-            Require.checkCapability((ZimbraMailAdapter) mail, CAPABILITY_RELATIONAL);
+            Require.checkCapability(mail, CAPABILITY_RELATIONAL);
         }
         Counts comparatorObj = (Counts) context.getComparatorManager().getComparator(comparatorName);
         return comparatorObj.counts(operator, matchTarget, matchArgument);
@@ -239,7 +239,7 @@ public class ZimbraComparatorUtils {
     public static boolean values(MailAdapter mail, String comparatorName, String operator,
             String lhs, String rhs, SieveContext context) throws LookupException, FeatureException, SyntaxException {
         if (mail instanceof ZimbraMailAdapter) {
-            Require.checkCapability((ZimbraMailAdapter) mail, CAPABILITY_RELATIONAL);
+            Require.checkCapability(mail, CAPABILITY_RELATIONAL);
         }
         Values comparatorObj = (Values) context.getComparatorManager().getComparator(comparatorName);
         return comparatorObj.values(operator, lhs, rhs);

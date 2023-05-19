@@ -160,7 +160,7 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
         return true;
     }
 
-    private static TrustManager[] trustAllCerts =
+    private static final TrustManager[] trustAllCerts =
         new TrustManager[] { new X509TrustManager() {
 
             @Override
@@ -182,7 +182,7 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
 
         } };
 
-    private static HostnameVerifier hv = new HostnameVerifier() {
+    private static final HostnameVerifier hv = new HostnameVerifier() {
 
         @Override
         public boolean verify(String hostname, SSLSession session) {
@@ -228,7 +228,7 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
                 Account acct =
                     Provisioning.getInstance().get(AccountBy.name, emailAddr);
                 if (acct != null) {
-                    String fps[] =
+                    String[] fps =
                         acct.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
                     if (fps != null && fps.length > 0) {
                         for (String fp : fps) {
@@ -279,7 +279,7 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
     }
 
     public ExchangeEWSFreeBusyProvider() {
-        mRequests = new HashMap<String, ArrayList<Request>>();
+        mRequests = new HashMap<>();
     }
 
     @Override
@@ -305,9 +305,9 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
         RequestServerVersion serverVersion = new RequestServerVersion();
         serverVersion.setVersion(ExchangeVersionType.EXCHANGE_2010_SP_1);
         Holder<ServerVersionInfo> gfversionInfo =
-            new Holder<ServerVersionInfo>();
+            new Holder<>();
         Holder<GetFolderResponseType> gfresponseHolder =
-            new Holder<GetFolderResponseType>();
+            new Holder<>();
         MailboxCultureType mct = new MailboxCultureType();
         mct.setValue("EN");
         TimeZoneDefinitionType tzdt = new TimeZoneDefinitionType();
@@ -358,10 +358,11 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
 
         PathToUnindexedFieldType pix = new PathToUnindexedFieldType();
         pix.setFieldURI(prop);
-        ieq.setPath(new JAXBElement<PathToUnindexedFieldType>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
-            "FieldURI"),
-            PathToUnindexedFieldType.class,
-            pix));
+        ieq.setPath(
+            new JAXBElement<>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
+                "FieldURI"),
+                PathToUnindexedFieldType.class,
+                pix));
 
         FieldURIOrConstantType ct = new FieldURIOrConstantType();
         ConstantValueType cv = new ConstantValueType();
@@ -370,19 +371,20 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
 
         ieq.setFieldURIOrConstant(ct);
 
-        rtRestriction.setSearchExpression(new JAXBElement<SearchExpressionType>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
-            "IsEqualTo"),
-            SearchExpressionType.class,
-            ieq));
+        rtRestriction.setSearchExpression(
+            new JAXBElement<>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
+                "IsEqualTo"),
+                SearchExpressionType.class,
+                ieq));
 
         findFolderRequest.setRestriction(rtRestriction);
 
         Holder<FindFolderResponseType> findFolderResponse =
-            new Holder<FindFolderResponseType>();
+            new Holder<>();
         RequestServerVersion serverVersion = new RequestServerVersion();
         serverVersion.setVersion(ExchangeVersionType.EXCHANGE_2010_SP_1);
         Holder<ServerVersionInfo> gfversionInfo =
-            new Holder<ServerVersionInfo>();
+            new Holder<>();
 
         MailboxCultureType mct = new MailboxCultureType();
         mct.setValue("EN");
@@ -428,10 +430,11 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
         ContainsExpressionType contains = new ContainsExpressionType();
         PathToUnindexedFieldType pix = new PathToUnindexedFieldType();
         pix.setFieldURI(prop);
-        contains.setPath(new JAXBElement<PathToUnindexedFieldType>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
-            "FieldURI"),
-            PathToUnindexedFieldType.class,
-            pix));
+        contains.setPath(
+            new JAXBElement<>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
+                "FieldURI"),
+                PathToUnindexedFieldType.class,
+                pix));
 
         FieldURIOrConstantType ct = new FieldURIOrConstantType();
         ConstantValueType cv = new ConstantValueType();
@@ -441,19 +444,20 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
         contains.setConstant(cv);
         contains.setContainmentMode(ContainmentModeType.SUBSTRING);
 
-        rtRestriction.setSearchExpression(new JAXBElement<SearchExpressionType>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
-            "Contains"),
-            SearchExpressionType.class,
-            contains));
+        rtRestriction.setSearchExpression(
+            new JAXBElement<>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
+                "Contains"),
+                SearchExpressionType.class,
+                contains));
 
         findFolderRequest.setRestriction(rtRestriction);
 
         Holder<FindFolderResponseType> findFolderResponse =
-            new Holder<FindFolderResponseType>();
+            new Holder<>();
         RequestServerVersion serverVersion = new RequestServerVersion();
         serverVersion.setVersion(ExchangeVersionType.EXCHANGE_2010_SP_1);
         Holder<ServerVersionInfo> gfversionInfo =
-            new Holder<ServerVersionInfo>();
+            new Holder<>();
 
         MailboxCultureType mct = new MailboxCultureType();
         mct.setValue("EN");
@@ -491,10 +495,11 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
 
         PathToUnindexedFieldType pix = new PathToUnindexedFieldType();
         pix.setFieldURI(prop);
-        ieq.setPath(new JAXBElement<PathToUnindexedFieldType>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
-            "FieldURI"),
-            PathToUnindexedFieldType.class,
-            pix));
+        ieq.setPath(
+            new JAXBElement<>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
+                "FieldURI"),
+                PathToUnindexedFieldType.class,
+                pix));
 
         FieldURIOrConstantType ct = new FieldURIOrConstantType();
         ConstantValueType cv = new ConstantValueType();
@@ -503,10 +508,11 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
 
         ieq.setFieldURIOrConstant(ct);
 
-        rtRestriction.setSearchExpression(new JAXBElement<SearchExpressionType>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
-            "IsEqualTo"),
-            SearchExpressionType.class,
-            ieq));
+        rtRestriction.setSearchExpression(
+            new JAXBElement<>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
+                "IsEqualTo"),
+                SearchExpressionType.class,
+                ieq));
 
         findItemRequest.setRestriction(rtRestriction);
 
@@ -523,9 +529,9 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
         serverVersion.setVersion(ExchangeVersionType.EXCHANGE_2010_SP_1);
 
         Holder<FindItemResponseType> fiResponse =
-            new Holder<FindItemResponseType>();
+            new Holder<>();
         Holder<ServerVersionInfo> gfversionInfo =
-            new Holder<ServerVersionInfo>();
+            new Holder<>();
         MailboxCultureType mct = new MailboxCultureType();
         mct.setValue("EN");
         TimeZoneDefinitionType tzdt = new TimeZoneDefinitionType();
@@ -654,7 +660,8 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
                                 ItemType itemEmptyMessage = new ItemType();
                                 SetItemFieldType sifItem =
                                     new SetItemFieldType();
-                                sifItem.setPath(new JAXBElement<PathToExtendedFieldType>(new QName("http://schemas.microsoft.com/exchange/services/2006/types",
+                                sifItem.setPath(new JAXBElement<>(new QName(
+                                    "http://schemas.microsoft.com/exchange/services/2006/types",
                                     "Path"),
                                     PathToExtendedFieldType.class,
                                     pathExProp));
@@ -706,9 +713,9 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
                             updateItemRequest.setItemChanges(ctExPropArr);
 
                             Holder<UpdateItemResponseType> updateItemResponse =
-                                new Holder<UpdateItemResponseType>();
+                                new Holder<>();
                             Holder<ServerVersionInfo> gfversionInfo =
-                                new Holder<ServerVersionInfo>();
+                                new Holder<>();
                             MailboxCultureType mct = new MailboxCultureType();
                             mct.setValue("EN");
                             TimeZoneDefinitionType tzdt = new TimeZoneDefinitionType();
@@ -779,9 +786,9 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
                                 .add(itemMessage);
                             createItemRequest.setItems(createItems);
                             Holder<CreateItemResponseType> createItemResponse =
-                                new Holder<CreateItemResponseType>();
+                                new Holder<>();
                             Holder<ServerVersionInfo> gfversionInfo =
-                                new Holder<ServerVersionInfo>();
+                                new Holder<>();
                             MailboxCultureType mct = new MailboxCultureType();
                             mct.setValue("EN");
                             TimeZoneDefinitionType tzdt = new TimeZoneDefinitionType();
@@ -826,7 +833,7 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
             throws IOException {
         int fb_interval = LC.exchange_free_busy_interval_min.intValueWithinRange(5, 1444);
         List<FreeBusyResponseType> results = null;
-        ArrayList<FreeBusy> ret = new ArrayList<FreeBusy>();
+        ArrayList<FreeBusy> ret = new ArrayList<>();
 
 		Request r = req.get(0);
         long start = Request.offsetInterval(req.get(0).start, fb_interval);
@@ -885,9 +892,9 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
             RequestServerVersion serverVersion = new RequestServerVersion();
             serverVersion.setVersion(ExchangeVersionType.EXCHANGE_2010_SP_1);
             Holder<GetUserAvailabilityResponseType> availabilityResponse =
-                new Holder<GetUserAvailabilityResponseType>();
+                new Holder<>();
             Holder<ServerVersionInfo> gfversionInfo =
-                new Holder<ServerVersionInfo>();
+                new Holder<>();
 
             TimeZoneDefinitionType tzdt = new TimeZoneDefinitionType();
             tzdt.setId("Greenwich Standard Time");
@@ -938,7 +945,7 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
                         }
                         String fb = attendeeAvailability.getFreeBusyView().getMergedFreeBusy();
                         ZimbraLog.fb.info("Merged view Free Busy info received for user:%s is %s: ", emailAddress, fb);
-                        ArrayList<FreeBusy> userIntervals = new ArrayList<FreeBusy>();
+                        ArrayList<FreeBusy> userIntervals = new ArrayList<>();
                         
                         if (fb == null) {
                             ZimbraLog.fb.warn("Merged view Free Busy info not avaiable for the user");
@@ -1089,9 +1096,9 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
         }
     }
 
-    private static ArrayList<ExchangeUserResolver> sRESOLVERS;
+    private static final ArrayList<ExchangeUserResolver> sRESOLVERS;
     static {
-        sRESOLVERS = new ArrayList<ExchangeUserResolver>();
+        sRESOLVERS = new ArrayList<>();
 
         registerResolver(new BasicUserResolver(), 0);
         register(new ExchangeEWSFreeBusyProvider());
@@ -1101,7 +1108,7 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
 
     @Override
     public List<FreeBusy> getResults() {
-        ArrayList<FreeBusy> ret = new ArrayList<FreeBusy>();
+        ArrayList<FreeBusy> ret = new ArrayList<>();
         for (Map.Entry<String, ArrayList<Request>> entry : mRequests.entrySet()) {
             try {
                 ret.addAll(this.getFreeBusyForHost(entry.getKey(),
@@ -1117,7 +1124,7 @@ public class ExchangeEWSFreeBusyProvider extends FreeBusyProvider {
     protected void addRequest(ServerInfo info, Request req) {
         ArrayList<Request> r = mRequests.get(info.url);
         if (r == null) {
-            r = new ArrayList<Request>();
+            r = new ArrayList<>();
             mRequests.put(info.url, r);
         }
         req.data = info;

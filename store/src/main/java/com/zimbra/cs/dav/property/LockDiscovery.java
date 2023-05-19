@@ -22,12 +22,12 @@ import com.zimbra.cs.dav.LockMgr.Lock;
  */
 public class LockDiscovery extends ResourceProperty {
 
-	private HashSet<LockMgr.Lock> mLocks;
+	private final HashSet<LockMgr.Lock> mLocks;
 	
 	public LockDiscovery() {
 		super(DavElements.E_LOCKDISCOVERY);
 		setProtected(true);
-		mLocks = new HashSet<LockMgr.Lock>();
+		mLocks = new HashSet<>();
 	}
 	
 	public LockDiscovery(LockMgr.Lock lock) {

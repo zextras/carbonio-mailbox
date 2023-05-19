@@ -38,7 +38,7 @@ public class GetComments extends MailDocumentHandler {
         ItemId iid = new ItemId(itemId, zsc);
 
         Element response = zsc.createElement(MailConstants.GET_COMMENTS_RESPONSE);
-        HashSet<Account> accounts = new HashSet<Account>();
+        HashSet<Account> accounts = new HashSet<>();
         for (Comment comment : mbox.getComments(octxt, iid.getId(), 0, -1)) {
             accounts.add(comment.getCreatorAccount());
             ToXML.encodeComment(response, ifmt, octxt, comment);

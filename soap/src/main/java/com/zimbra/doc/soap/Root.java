@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
  */
 public class Root {
 
-    private List<Service> services = Lists.newLinkedList();
+    private final List<Service> services = Lists.newLinkedList();
 
     Root() {
     }

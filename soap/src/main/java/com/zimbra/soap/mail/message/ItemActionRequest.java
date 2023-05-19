@@ -36,7 +36,7 @@ public class ItemActionRequest {
      */
     @SuppressWarnings("unused")
     private ItemActionRequest() {
-        this((ActionSelector) null);
+        this(null);
     }
 
     public ItemActionRequest(ActionSelector action) {

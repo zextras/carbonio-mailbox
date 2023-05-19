@@ -13,6 +13,7 @@ import static java.lang.Character.isDigit;
 import java.lang.reflect.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -91,7 +92,7 @@ public class CompactEncoder {
             byte[] str = new byte[type - ' '];
 
             bb.get(str);
-            return new String(str, "UTF-8");
+            return new String(str, StandardCharsets.UTF_8);
         } case 'A': {
             byte atype = bb.get();
             int len = (int)getStringLong(bb);
@@ -240,16 +241,14 @@ public class CompactEncoder {
             return null;
         } case 'M': {
             int cnt = (int)getStringLong(bb);
-            Map<Object, Object> map = new HashMap<Object,
-                Object>((int)(cnt * 1.5));
+            Map<Object, Object> map = new HashMap<>((int) (cnt * 1.5));
 
             for (int i = 0; i < cnt; i++)
                 map.put(decode(bb), decode(bb));
             return map;
         } case 'm': {
             int cnt = bb.getInt();
-            Map<Object, Object> map = new HashMap<Object,
-                Object>((int)(cnt * 1.5));
+            Map<Object, Object> map = new HashMap<>((int) (cnt * 1.5));
 
             for (int i = 0; i < cnt; i++)
                 map.put(decode(bb), decode(bb));
@@ -258,27 +257,27 @@ public class CompactEncoder {
             byte[] val = new byte[bb.getShort()];
 
             bb.get(val);
-            return new String(val, "UTF-8");
+            return new String(val, StandardCharsets.UTF_8);
         } case 'T': {
             byte[] str = new byte[(int)getStringLong(bb)];
 
             bb.get(str);
-            return new String(str, "UTF-8");
+            return new String(str, StandardCharsets.UTF_8);
         } case 't': {
             byte[] val = new byte[bb.getInt()];
 
             bb.get(val);
-            return new String(val, "UTF-8");
+            return new String(val, StandardCharsets.UTF_8);
         } case 'V': {
             int cnt = (int)getStringLong(bb);
-            ArrayList<Object> array = new ArrayList<Object>(cnt);
+            ArrayList<Object> array = new ArrayList<>(cnt);
 
             for (int i = 0; i < cnt; i++)
                 array.add(i, decode(bb));
             return array;
         } case 'v': {
             int cnt = bb.getInt();
-            ArrayList<Object> array = new ArrayList<Object>(cnt);
+            ArrayList<Object> array = new ArrayList<>(cnt);
 
             for (int i = 0; i < cnt; i++)
                 array.add(i, decode(bb));
@@ -371,7 +370,7 @@ public class CompactEncoder {
         }
         byte[] val = null;
         try {
-            val = obj.toString().getBytes("UTF-8");
+            val = obj.toString().getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
         }
         if (val.length < 'A' - ' ')
@@ -462,7 +461,7 @@ public class CompactEncoder {
         }
         byte[] val = null;
         try {
-            val = obj.toString().getBytes("UTF-8");
+            val = obj.toString().getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
         }
         if (val.length < 'A' - ' ')
@@ -476,7 +475,7 @@ public class CompactEncoder {
         byte[] val = new byte[len];
 
         bb.get(val);
-        return new String(val, "UTF-8");
+        return new String(val, StandardCharsets.UTF_8);
     }
 
     private static long getStringLong(ByteBuffer bb) throws
@@ -513,7 +512,7 @@ public class CompactEncoder {
         byte [] str;
 
         try {
-            str = obj.toString().getBytes("UTF-8");
+            str = obj.toString().getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
             str = obj.getClass().getName().getBytes();
         }
@@ -525,7 +524,7 @@ public class CompactEncoder {
         byte [] str;
 
         try {
-            str = obj.toString().getBytes("UTF-8");
+            str = obj.toString().getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
             str = obj.getClass().getName().getBytes();
         }
@@ -536,10 +535,10 @@ public class CompactEncoder {
         char[] carray = new char[] { 'a', 'r', 'r', 'a', 'y'};
         ArrayList<?> dlist;
         Map<?, ?> dmap;
-        ArrayList<Object> list = new ArrayList<Object>();
-        Map<Object, Object> map = new HashMap<Object, Object>();
+        ArrayList<Object> list = new ArrayList<>();
+        Map<Object, Object> map = new HashMap<>();
         Object[] darray, oarray = new Object[] {
-            new String("arraystring"), Integer.valueOf(9)
+            "arraystring", Integer.valueOf(9)
         };
         byte [] print, raw;
 
@@ -559,7 +558,7 @@ public class CompactEncoder {
         map.put("byteorder", ByteOrder.nativeOrder());
         map.put("emptystring", "");
         map.put("float", new Float(1.1));
-        map.put("hashmap", new HashMap<Object, Object>());
+        map.put("hashmap", new HashMap<>());
         map.put("list", list);
         map.put("long", Long.valueOf(3));
         map.put("mapstring", "test");

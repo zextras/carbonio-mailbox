@@ -98,7 +98,7 @@ public class SetPassword extends AdminDocumentHandler {
                 ZimbraLog.security.info(result.getMessage());
                 resp = new SetPasswordResponse(result.getMessage());
             } else {
-                resp = new SetPasswordResponse((String) null);
+                resp = new SetPasswordResponse(null);
             }
 
         }

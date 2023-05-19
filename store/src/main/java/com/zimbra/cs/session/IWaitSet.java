@@ -44,7 +44,7 @@ public interface IWaitSet {
      * @return
      * @throws ServiceException
      */
-    public List<WaitSetError> doWait(WaitSetCallback cb, String lastKnownSeqNo,
+    List<WaitSetError> doWait(WaitSetCallback cb, String lastKnownSeqNo,
         List<WaitSetAccount> addAccounts, List<WaitSetAccount> updateAccounts)
         throws ServiceException;
 
@@ -54,31 +54,31 @@ public interface IWaitSet {
      *
      * @return
      */
-    public List<WaitSetError> removeAccounts(List<String> removeAccounts);
+    List<WaitSetError> removeAccounts(List<String> removeAccounts);
 
     /**
      * Called to signal that the supplied WaitSetCallback should not be notified of any more changes
      * @param myCb - the callback that will no longer accept change notifications
      */
-    public void doneWaiting(WaitSetCallback myCb);
+    void doneWaiting(WaitSetCallback myCb);
 
     /**
      * Just a helper: the 'default interest' is set when the WaitSet is created,
      * and subsequent requests can access it when creating/updating WaitSetAccounts
      * if the client didn't specify one with the update.
      */
-    public Set<MailItem.Type> getDefaultInterest();
+    Set<MailItem.Type> getDefaultInterest();
 
     /**
      * @return The accountID of the owner/creator
      */
-    public String getOwnerAccountId();
+    String getOwnerAccountId();
 
     /**
      * @return the id of this wait set
      */
-    public String getWaitSetId();
+    String getWaitSetId();
 
     /** Handle a QueryWaitSet request by encoding all of our internal data into a JAXB object for the response */
-    public WaitSetInfo handleQuery();
+    WaitSetInfo handleQuery();
 }

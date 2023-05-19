@@ -38,7 +38,7 @@ public class CertValidationUtil {
             cert.checkValidity();
 
             if(revocationCheckEnabled) {
-                List<X509Certificate> certificates = new ArrayList<X509Certificate>();
+                List<X509Certificate> certificates = new ArrayList<>();
                 certificates.add(cert);
                 CertificateFactory cf;
                 CertPath cp;
@@ -70,7 +70,7 @@ public class CertValidationUtil {
             ByteUtil.closeStream(fis);
         }
 
-        Set<TrustAnchor> trustedCertsSet = new HashSet<TrustAnchor>();
+        Set<TrustAnchor> trustedCertsSet = new HashSet<>();
         Enumeration<String> aliases = ks.aliases();
         while (aliases.hasMoreElements()) {
             String alias = aliases.nextElement();

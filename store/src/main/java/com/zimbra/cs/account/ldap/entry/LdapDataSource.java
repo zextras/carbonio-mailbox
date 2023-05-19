@@ -25,10 +25,10 @@ import com.zimbra.soap.admin.type.DataSourceType;
  */
 public class LdapDataSource extends DataSource implements LdapEntry {
 
-	private String mDn;
+	private final String mDn;
 
 	public LdapDataSource(Account acct, String dn, ZAttributes attrs, Provisioning prov) 
-	throws LdapException, ServiceException {
+	throws ServiceException {
 		super(acct, getObjectType(attrs),
 		        attrs.getAttrString(Provisioning.A_zimbraDataSourceName),
 		        attrs.getAttrString(Provisioning.A_zimbraDataSourceId),                

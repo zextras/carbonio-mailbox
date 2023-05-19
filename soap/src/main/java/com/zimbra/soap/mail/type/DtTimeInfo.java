@@ -60,7 +60,7 @@ implements DtTimeInfoInterface {
      */
     @SuppressWarnings("unused")
     private DtTimeInfo() {
-        this((String) null);
+        this(null);
     }
 
     public DtTimeInfo( String dateTime) {

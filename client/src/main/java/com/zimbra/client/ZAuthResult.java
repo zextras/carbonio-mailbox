@@ -16,11 +16,11 @@ import com.zimbra.soap.type.ZmBoolean;
 
 public class ZAuthResult {
 
-    private long expires;
+    private final long expires;
     private long trustExpires;
-    private boolean twoFactorAuthRequired;
-    private boolean trustedDevicesEnabled;
-    private AuthResponse data;
+    private final boolean twoFactorAuthRequired;
+    private final boolean trustedDevicesEnabled;
+    private final AuthResponse data;
 
     /*
     public ZAuthResult(Element e) throws ServiceException {

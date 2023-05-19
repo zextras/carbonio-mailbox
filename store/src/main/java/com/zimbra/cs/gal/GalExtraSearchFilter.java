@@ -101,7 +101,7 @@ public class GalExtraSearchFilter {
         private final StringBuilder query;
 
         public MailboxQueryVisitor() {
-            parentTerms = new Stack<Multi>();
+            parentTerms = new Stack<>();
             query = new StringBuilder();
         }
 
@@ -210,9 +210,9 @@ public class GalExtraSearchFilter {
     }
 
     private static class FilterVisitor implements Visitor {
-        private static interface KeyValue {
+        private interface KeyValue {
             // returns a String or String[]
-            public Object get(String key);
+            Object get(String key);
         }
 
         private static class ContactKV implements KeyValue {
@@ -278,12 +278,12 @@ public class GalExtraSearchFilter {
 
         private FilterVisitor(Contact contact) {
             mContact = new ContactKV(contact);
-            mParentResult = new Stack<Result>();
+            mParentResult = new Stack<>();
         }
 
         private FilterVisitor(GalContact galContact) {
             mContact = new GalContactKV(galContact);
-            mParentResult = new Stack<Result>();
+            mParentResult = new Stack<>();
         }
 
         public boolean getResult() {
@@ -362,22 +362,22 @@ public class GalExtraSearchFilter {
             boolean result = true;
 
             if (op.equals(Operator.has)) {
-                result = (value == null) ? false : value.toLowerCase().contains(opVal.toLowerCase());
+                result = value != null && value.toLowerCase().contains(opVal.toLowerCase());
             } else if (op.equals(Operator.eq)) {
-                result = (value == null) ? false : value.toLowerCase().equals(opVal.toLowerCase());
+                result = value != null && value.equalsIgnoreCase(opVal);
             } else if (op.equals(Operator.ge)) {
                 // always use number comparison
-                result = (value == null) ? false : Integer.valueOf(value) >= Integer.valueOf(opVal);
+                result = value != null && Integer.valueOf(value) >= Integer.valueOf(opVal);
             } else if (op.equals(Operator.le)) {
                 // always use number comparison
-                result = (value == null) ? false : Integer.valueOf(value) <= Integer.valueOf(opVal);
+                result = value != null && Integer.valueOf(value) <= Integer.valueOf(opVal);
             } else if (op.equals(Operator.startswith)) {
-                result = (value == null) ? false : value.toLowerCase().startsWith(opVal.toLowerCase());
+                result = value != null && value.toLowerCase().startsWith(opVal.toLowerCase());
             } else if (op.equals(Operator.endswith)) {
-                result = (value == null) ? false : value.toLowerCase().endsWith(opVal.toLowerCase());
+                result = value != null && value.toLowerCase().endsWith(opVal.toLowerCase());
             } else {
                 // fallback to EQUALS
-                result = (value == null) ? false : value.toLowerCase().equals(opVal.toLowerCase());
+                result = value != null && value.equalsIgnoreCase(opVal);
             }
 
             if (term.isNegation())

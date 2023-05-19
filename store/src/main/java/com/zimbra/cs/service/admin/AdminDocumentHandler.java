@@ -123,7 +123,7 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
     }
 
     public static Entry pseudoTargetInSameDomainAsEmail(TargetType targetType, String emailAddr) {
-        String parts[] = EmailUtil.getLocalPartAndDomain(emailAddr);
+        String[] parts = EmailUtil.getLocalPartAndDomain(emailAddr);
         if (parts == null || parts.length < 2) {
             return null;
         }
@@ -266,7 +266,7 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
     }
 
     protected interface AccountHarvestingChecker {
-        public void check(Account account, String selectorKey) throws ServiceException;
+        void check(Account account, String selectorKey) throws ServiceException;
     }
 
     protected abstract class AccountHarvestingCheckerBase implements AccountHarvestingChecker {
@@ -346,7 +346,7 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
     }
 
     protected interface CalResourceHarvestingChecker {
-        public void check(CalendarResource account, String selectorKey) throws ServiceException;
+        void check(CalendarResource account, String selectorKey) throws ServiceException;
     }
 
     protected abstract class CalResourceHarvestingCheckerBase implements CalResourceHarvestingChecker {
@@ -402,7 +402,7 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
     }
 
     protected interface GroupHarvestingChecker {
-        public void check(Group group, String groupSelectorKey) throws ServiceException;
+        void check(Group group, String groupSelectorKey) throws ServiceException;
     }
 
     protected abstract class GroupHarvestingCheckerBase implements GroupHarvestingChecker {
@@ -674,7 +674,7 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
         String[] attrs = attrsStr.split(",");
 
         Set<String> attrsOnEntry = AttributeManager.getInstance().getAllAttrsInClass(klass);
-        Set<String> validAttrs = new HashSet<String>();
+        Set<String> validAttrs = new HashSet<>();
 
         for (String attr : attrs) {
             if (attrsOnEntry.contains(attr)) {

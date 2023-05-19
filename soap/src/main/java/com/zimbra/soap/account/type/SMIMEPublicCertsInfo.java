@@ -35,7 +35,7 @@ public class SMIMEPublicCertsInfo {
      * @zm-api-field-description Certificates
      */
     @XmlElement(name=AccountConstants.E_CERT /* cert */, required=false)
-    private List<SMIMEPublicCertInfo> certs = Lists.newArrayList();
+    private final List<SMIMEPublicCertInfo> certs = Lists.newArrayList();
 
     public SMIMEPublicCertsInfo() {
     }

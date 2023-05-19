@@ -30,7 +30,7 @@ public class ClientInfoResponse {
     private Collection<Attr> attrList;
 
     public ClientInfoResponse () {
-        this((Collection <Attr>)null);
+        this(null);
     }
     public ClientInfoResponse(Collection<Attr> attrList) {
         this.attrList = attrList;

@@ -28,7 +28,7 @@ public class GetSpellDictionariesResponse {
      * @zm-api-field-description Dictionaries
      */
     @XmlElement(name=MailConstants.E_DICTIONARY, required=false)
-    private List<String> dictionaries = Lists.newArrayList();
+    private final List<String> dictionaries = Lists.newArrayList();
 
     public GetSpellDictionariesResponse() {
     }

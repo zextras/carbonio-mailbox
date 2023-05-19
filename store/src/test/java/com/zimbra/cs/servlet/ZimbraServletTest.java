@@ -14,6 +14,7 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.MockHttpServletRequest;
 import com.zimbra.cs.service.MockHttpServletResponse;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +25,7 @@ import org.mockito.Mockito;
 
 public class ZimbraServletTest {
 
-  private static String uri = "/Briefcase/上的发生的发";
+  private static final String uri = "/Briefcase/上的发生的发";
 
   @BeforeClass
   public static void init() throws Exception {
@@ -37,7 +38,7 @@ public class ZimbraServletTest {
   public void proxyTest() throws Exception {
     MockHttpServletRequest req =
         new MockHttpServletRequest(
-            "test".getBytes("UTF-8"), new URL("http://localhost:7070/user1" + uri), "");
+            "test".getBytes(StandardCharsets.UTF_8), new URL("http://localhost:7070/user1" + uri), "");
     MockHttpServletResponse resp = new MockHttpServletResponse();
     ZimbraServlet.proxyServletRequest(
         req, resp, Provisioning.getInstance().getLocalServer(), uri, null);

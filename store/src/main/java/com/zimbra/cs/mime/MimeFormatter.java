@@ -23,7 +23,7 @@ public class MimeFormatter
 extends MimeVisitor {
 
     private int mIndentLevel = 0;
-    private StringBuilder mBuf = new StringBuilder(); 
+    private final StringBuilder mBuf = new StringBuilder();
     
     @Override public boolean visitMessage(MimeMessage mm, VisitPhase visitPhase)
     throws MessagingException {

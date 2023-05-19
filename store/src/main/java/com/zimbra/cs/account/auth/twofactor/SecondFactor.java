@@ -9,5 +9,5 @@ import com.zimbra.common.service.ServiceException;
 
 public interface SecondFactor {
 
-    public void authenticate(String secondFactor) throws ServiceException;
+    void authenticate(String secondFactor) throws ServiceException;
 }

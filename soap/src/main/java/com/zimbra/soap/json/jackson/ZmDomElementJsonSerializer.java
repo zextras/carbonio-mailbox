@@ -51,7 +51,7 @@ extends StdSerializer<Element>
     }
 
     private void serializeInner(Element value, JsonGenerator jgen, SerializerProvider provider, String parentNs)
-    throws IOException, JsonGenerationException {
+    throws IOException {
         String namespaceURI = value.getNamespaceURI();
         jgen.writeStartObject();
         NamedNodeMap attributes = value.getAttributes();

@@ -30,7 +30,7 @@ public class GetApplianceHSMFSResponse {
      * @zm-api-field-description HSM filesystem information
      */
     @XmlElement(name=HsmConstants.E_FS /* fs */, required=false)
-    private List<HsmFileSystemInfo> fileSystems = Lists.newArrayList();
+    private final List<HsmFileSystemInfo> fileSystems = Lists.newArrayList();
 
     public GetApplianceHSMFSResponse() {
     }

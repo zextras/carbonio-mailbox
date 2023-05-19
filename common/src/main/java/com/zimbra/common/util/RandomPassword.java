@@ -110,12 +110,12 @@ public class RandomPassword {
     }
 
     private static void usage() {
-        System.out.println("");
+        System.out.println();
         System.out.println("RandomPassword [-l] <minLength> <maxLength>");
         System.exit(1);
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         CommandLineParser parser = new GnuParser();
         Options options = new Options();
         options.addOption("l", "localpart", false, "generated string does not contain dot(.)");

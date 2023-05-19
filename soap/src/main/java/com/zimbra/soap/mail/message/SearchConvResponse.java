@@ -78,7 +78,7 @@ public class SearchConvResponse {
      * @zm-api-field-description Search hits
      */
     @XmlElement(name=MailConstants.E_MSG /* m */, required=false)
-    private List<MessageHitInfo> messages = Lists.newArrayList();
+    private final List<MessageHitInfo> messages = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Info block.  Used to return general status information about your search.
@@ -93,7 +93,7 @@ public class SearchConvResponse {
         @XmlElement(name=MailConstants.E_SUGEST /* suggest */, type=SuggestedQueryString.class),
         @XmlElement(name="wildcard", type=WildcardExpansionQueryInfo.class)
     })
-    private List<BaseQueryInfo> queryInfos = Lists.newArrayList();
+    private final List<BaseQueryInfo> queryInfos = Lists.newArrayList();
 
     public SearchConvResponse() {
     }

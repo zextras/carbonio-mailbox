@@ -96,8 +96,8 @@ public class ModifyContact extends MailDocumentHandler  {
                 }
                 ItemIdFormatter ifmt = new ItemIdFormatter(zsc);
                 ToXML.encodeContact(response, ifmt, octxt, con,
-                        (ContactGroup)null, (Collection<String>)null /* memberAttrFilter */, true /* summary */,
-                        (Collection<String>)null /* attrFilter */, fields, (String)null /* migratedDList */,
+                    null, null /* memberAttrFilter */, true /* summary */,
+                    null /* attrFilter */, fields, null /* migratedDList */,
                         false /* returnHiddenAttrs */,
                         GetContacts.NO_LIMIT_MAX_MEMBERS, true /* returnCertInfo */);
             } else {
@@ -118,7 +118,7 @@ public class ModifyContact extends MailDocumentHandler  {
         if (elist == null || elist.isEmpty())
             return null;
 
-        HashMap<String, String> attrs = new HashMap<String, String>();
+        HashMap<String, String> attrs = new HashMap<>();
         for (Element e : elist) {
             String name = e.getAttribute(MailConstants.A_ATTRIBUTE_NAME);
             attrs.put(name, e.getText());

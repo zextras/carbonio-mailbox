@@ -37,7 +37,7 @@ public class DeleteSignatureRequest {
      */
     @SuppressWarnings("unused")
     private DeleteSignatureRequest() {
-        this((NameId) null);
+        this(null);
     }
 
     public DeleteSignatureRequest(NameId signature) {

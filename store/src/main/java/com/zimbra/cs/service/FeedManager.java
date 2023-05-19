@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -93,14 +94,14 @@ public class FeedManager {
         private final List<T> items;
         private String lastGuid;
         private long   lastDate;
-        private boolean notModified;
+        private final boolean notModified;
 
         static SubscriptionData<Object> NOT_MODIFIED() {
-            return new SubscriptionData<Object>(new ArrayList<Object>(0), 0, true);
+            return new SubscriptionData<>(new ArrayList<>(0), 0, true);
         }
 
         SubscriptionData() {
-            this(new ArrayList<T>(), 0);
+            this(new ArrayList<>(), 0);
         }
 
         SubscriptionData(List<T> items, long ldate)  {
@@ -278,7 +279,7 @@ public class FeedManager {
         }
 
         String whitelistString = LC.zimbra_feed_manager_whitelist.value();
-        List<String> whitelist = new ArrayList<String>();
+        List<String> whitelist = new ArrayList<>();
         if (!StringUtil.isNullOrEmpty(whitelistString)) {
             whitelist.addAll(Arrays.asList(whitelistString.trim().split(",")));
         }
@@ -287,7 +288,7 @@ public class FeedManager {
         }
 
         String blacklistString = LC.zimbra_feed_manager_blacklist.value();
-        List<String> blacklist = new ArrayList<String>();
+        List<String> blacklist = new ArrayList<>();
         if (!StringUtil.isNullOrEmpty(blacklistString)) {
             blacklist.addAll(Arrays.asList(blacklistString.trim().split(",")));
         }
@@ -312,7 +313,7 @@ public class FeedManager {
         SocketConfig config = SocketConfig.custom().setSoTimeout(60000).build();
         clientBuilder.setDefaultSocketConfig(config);
 
-        ConnectionConfig connConfig = ConnectionConfig.custom().setCharset(Charset.forName(MimeConstants.P_CHARSET_UTF8)).build();
+        ConnectionConfig connConfig = ConnectionConfig.custom().setCharset(StandardCharsets.UTF_8).build();
         clientBuilder.setDefaultConnectionConfig(connConfig);
 
         HttpGet get = null;
@@ -356,7 +357,7 @@ public class FeedManager {
                         String user = httpurl.getUserInfo();
                         if (user.indexOf('%') != -1) {
                             try {
-                                user = URLDecoder.decode(user, "UTF-8");
+                                user = URLDecoder.decode(user, StandardCharsets.UTF_8);
                             } catch (OutOfMemoryError e) {
                                 Zimbra.halt("out of memory", e);
                             } catch (Throwable t) { }
@@ -487,7 +488,7 @@ public class FeedManager {
                         inv.setUid(LdapUtil.generateUUID());
                     }
                 }
-                return new SubscriptionData<Invite>(invites, rdi.lastModified);
+                return new SubscriptionData<>(invites, rdi.lastModified);
             default:
                 throw ServiceException.PARSE_ERROR("unrecognized remote content", null);
         }
@@ -569,11 +570,8 @@ public class FeedManager {
 
         String getContentType() {
             ContentType ctype = new ContentType(cthdr == null ? "text/plain" : cthdr).cleanup();
-            try {
-                ctype.setParameter("name", FileUtil.trimFilename(URLDecoder.decode(url, "utf-8")));
-            } catch (UnsupportedEncodingException e) {
-                ctype.setParameter("name", FileUtil.trimFilename(url));
-            }
+            ctype.setParameter("name", FileUtil.trimFilename(URLDecoder.decode(url,
+                StandardCharsets.UTF_8)));
             return ctype.toString();
         }
     }
@@ -592,8 +590,8 @@ public class FeedManager {
             InternetAddress addrChannel = new JavaMailInternetAddress("", subjChannel, "utf-8");
             Date dateChannel = DateUtil.parseRFC2822Date(channel.getAttribute("lastBuildDate", null), new Date());
 
-            List<Enclosure> enclosures = new ArrayList<Enclosure>(3);
-            SubscriptionData<ParsedMessage> sdata = new SubscriptionData<ParsedMessage>();
+            List<Enclosure> enclosures = new ArrayList<>(3);
+            SubscriptionData<ParsedMessage> sdata = new SubscriptionData<>();
 
             if (rname.equals("rss")) {
                 root = channel;
@@ -667,8 +665,8 @@ public class FeedManager {
                 addrFeed = new JavaMailInternetAddress("", stripXML(feed.getAttribute("title")), "utf-8");
             }
             Date dateFeed = DateUtil.parseISO8601Date(feed.getAttribute("updated", null), new Date());
-            List<Enclosure> enclosures = new ArrayList<Enclosure>();
-            SubscriptionData<ParsedMessage> sdata = new SubscriptionData<ParsedMessage>();
+            List<Enclosure> enclosures = new ArrayList<>();
+            SubscriptionData<ParsedMessage> sdata = new SubscriptionData<>();
 
             for (Element item : feed.listElements("entry")) {
                 // get the item's date
@@ -782,7 +780,7 @@ public class FeedManager {
         // create the MIME message and wrap it
         try {
             MimeMessage mm = new Mime.FixedMimeMessage(JMSession.getSession());
-            MimePart body = hasAttachments ? new ZMimeBodyPart() : (MimePart) mm;
+            MimePart body = hasAttachments ? new ZMimeBodyPart() : mm;
             body.setText(content, "utf-8");
             body.setHeader("Content-Type", ctype);
 

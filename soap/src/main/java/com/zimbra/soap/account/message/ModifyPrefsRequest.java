@@ -58,7 +58,7 @@ public class ModifyPrefsRequest {
      */
     @ZimbraKeyValuePairs
     @XmlElement(name=AccountConstants.E_PREF, required=false)
-    private List<Pref> prefs = Lists.newArrayList();
+    private final List<Pref> prefs = Lists.newArrayList();
 
     public ModifyPrefsRequest() {
     }

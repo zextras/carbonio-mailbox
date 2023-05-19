@@ -42,7 +42,7 @@ implements LocaleInterface {
      * no-argument constructor wanted by JAXB
      */
     private LocaleInfo() {
-        this((String) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     private LocaleInfo(String id, String name, String localName) {

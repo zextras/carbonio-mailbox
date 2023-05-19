@@ -70,15 +70,15 @@ public class CountObjectsRequest {
      */
     @SuppressWarnings("unused")
     public CountObjectsRequest() {
-        this((CountObjectsType) null, (DomainSelector) null, (UCServiceSelector) null);
+        this(null, null, null);
     }
 
     public CountObjectsRequest(CountObjectsType type) {
-        this(type, (DomainSelector) null, (UCServiceSelector) null);
+        this(type, null, null);
     }
 
     public CountObjectsRequest(CountObjectsType type, DomainSelector domain) {
-        this(type, domain, (UCServiceSelector) null);
+        this(type, domain, null);
     }
 
     public CountObjectsRequest(CountObjectsType type, DomainSelector domain, UCServiceSelector ucService) {

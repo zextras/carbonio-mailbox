@@ -100,7 +100,7 @@ public class FolderActionSelector extends ActionSelector {
     private Integer numDays;
 
     public FolderActionSelector() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public FolderActionSelector(String ids, String operation) {

@@ -391,7 +391,7 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
 
     public void addInlinedHeader(String value) {
         if (inlinedHeaders == null) {
-            inlinedHeaders = new HashSet<String>();
+            inlinedHeaders = new HashSet<>();
         }
         inlinedHeaders.add(value);
     }
@@ -554,7 +554,7 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
         params.setIncludeTagMuted(MoreObjects.firstNonNull(soapParams.getIncludeTagMuted(), true));
         String allowableTasks = soapParams.getAllowableTaskStatus();
         if (allowableTasks != null) {
-            params.allowableTaskStatuses = new HashSet<TaskHit.Status>();
+            params.allowableTaskStatuses = new HashSet<>();
             for (String task : Splitter.on(',').split(allowableTasks)) {
                 try {
                     TaskHit.Status status = TaskHit.Status.valueOf(task.toUpperCase());
@@ -670,7 +670,7 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
         params.setIncludeTagMuted(request.getAttributeBool(MailConstants.A_INCLUDE_TAG_MUTED, true));
         String allowableTasks = request.getAttribute(MailConstants.A_ALLOWABLE_TASK_STATUS, null);
         if (allowableTasks != null) {
-            params.allowableTaskStatuses = new HashSet<TaskHit.Status>();
+            params.allowableTaskStatuses = new HashSet<>();
             for (String task : Splitter.on(',').split(allowableTasks)) {
                 try {
                     TaskHit.Status status = TaskHit.Status.valueOf(task.toUpperCase());
@@ -880,7 +880,7 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
         result.prefetch = prefetch;
         result.fetch = fetch;
         if (allowableTaskStatuses != null) {
-            result.allowableTaskStatuses = new HashSet<TaskHit.Status>(allowableTaskStatuses);
+            result.allowableTaskStatuses = new HashSet<>(allowableTaskStatuses);
         }
         if (cursor != null) {
             result.cursor = new Cursor(cursor);
@@ -1082,7 +1082,7 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
 
         private final ZimbraFetchMode zfm;
 
-        private Fetch(ZimbraFetchMode zimbraFetchMode) {
+        Fetch(ZimbraFetchMode zimbraFetchMode) {
             zfm = zimbraFetchMode;
         }
 

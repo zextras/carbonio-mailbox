@@ -205,10 +205,7 @@ public class XsdCleaner {
         if (seqHasMaxOccursUnbounded) {
             return true;
         }
-        if (elemHasMaxOccursUnbounded) {
-            return true;
-        }
-        return false;
+      return elemHasMaxOccursUnbounded;
     }
 
     public static javax.xml.parsers.DocumentBuilder getBuilder() {

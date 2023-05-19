@@ -48,10 +48,10 @@ public abstract class Filter {
 	protected HashSet<TextMatch> mTextMatches;
 
 	public Filter(Element elem) {
-		mProps = new HashSet<PropFilter>();
-		mComps = new HashSet<CompFilter>();
-		mParams = new HashSet<ParamFilter>();
-		mTextMatches = new HashSet<TextMatch>();
+		mProps = new HashSet<>();
+		mComps = new HashSet<>();
+		mParams = new HashSet<>();
+		mTextMatches = new HashSet<>();
 		mName = elem.attributeValue(DavElements.P_NAME);
 		parse(elem);
 	}
@@ -121,9 +121,9 @@ public abstract class Filter {
 	protected boolean canHaveParamFilter() { return true; }
 	
 	public static class TextMatch {
-		private String mCollation;
-		private String mText;
-		private boolean mNegate;
+		private final String mCollation;
+		private final String mText;
+		private final boolean mNegate;
 		
 		public TextMatch(Element elem) {
 			mCollation = elem.attributeValue(DavElements.P_COLLATION, DavElements.ASCII);

@@ -49,10 +49,10 @@ public final class GetCurrentVolumesResponse {
     @XmlAccessorType(XmlAccessType.NONE)
     public static final class CurrentVolumeInfo {
         @XmlAttribute(name=AdminConstants.A_ID, required=true)
-        private short id;
+        private final short id;
 
         @XmlAttribute(name=AdminConstants.A_VOLUME_TYPE, required=true)
-        private short type;
+        private final short type;
 
         /**
          * no-argument constructor wanted by JAXB

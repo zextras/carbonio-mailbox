@@ -10,8 +10,8 @@ import java.util.List;
 import com.zimbra.cs.imap.AppendMessage.Part;
 
 public class AppendCommand extends ImapCommand {
-    private ImapPath path;
-    private List<AppendMessage> appends;
+    private final ImapPath path;
+    private final List<AppendMessage> appends;
 
     /**
      * @param path

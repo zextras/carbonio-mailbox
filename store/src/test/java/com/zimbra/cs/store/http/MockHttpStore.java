@@ -27,11 +27,11 @@ public class MockHttpStore {
     static final String URL_PREFIX = "http://localhost:" + PORT + "/store/";
 
     private static ServerSocket ssock;
-    private static Map<String, byte[]> blobs = Maps.newHashMap();
+    private static final Map<String, byte[]> blobs = Maps.newHashMap();
 
     //for mocking error conditions
-    private static AtomicBoolean fail = new AtomicBoolean(false);
-    private static AtomicBoolean delay = new AtomicBoolean(false);
+    private static final AtomicBoolean fail = new AtomicBoolean(false);
+    private static final AtomicBoolean delay = new AtomicBoolean(false);
 
     public static void startup() throws IOException {
         final ServerSocket s = ssock = new ServerSocket(PORT);

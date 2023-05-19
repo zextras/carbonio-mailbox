@@ -23,7 +23,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 public class CounterCalendarItem extends CalendarRequest {
 
     private class InviteParser extends ParseMimeMessage.InviteParser {
-        private Invite mInv;
+        private final Invite mInv;
         
         InviteParser(Invite inv) {
             mInv = inv;
@@ -34,7 +34,7 @@ public class CounterCalendarItem extends CalendarRequest {
         throws ServiceException {
             return CalendarUtils.parseInviteForCounter(account, mInv, getItemType(), inviteElem);
         }
-    };
+    }
 
     @Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {

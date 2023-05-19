@@ -41,13 +41,13 @@ public class RightsAttrs {
      * @zm-api-field-description Attrs
      */
     @XmlElement(name=AdminConstants.E_A, required=false)
-    private List <Attr> attrs = Lists.newArrayList();
+    private final List <Attr> attrs = Lists.newArrayList();
 
     /**
      * @zm-api-field-description elements of form <b>&lt;attributeName/></b>
      */
     @XmlAnyElement
-    private List <Element> elements = Lists.newArrayList();
+    private final List <Element> elements = Lists.newArrayList();
 
     public RightsAttrs () {
     }

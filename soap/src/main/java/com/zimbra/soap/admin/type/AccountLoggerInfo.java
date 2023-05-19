@@ -28,27 +28,27 @@ public class AccountLoggerInfo {
      * @zm-api-field-description Account name
      */
     @XmlAttribute(name=AdminConstants.A_NAME /* name */, required=true)
-    private String name;
+    private final String name;
 
     /**
      * @zm-api-field-tag account-id
      * @zm-api-field-description Account ID
      */
     @XmlAttribute(name=AdminConstants.A_ID /* id */, required=true)
-    private String id;
+    private final String id;
 
     /**
      * @zm-api-field-description Logger information
      */
     @XmlElement(name=AdminConstants.E_LOGGER /* logger */, required=true)
-    private List<LoggerInfo> loggers = Lists.newArrayList();
+    private final List<LoggerInfo> loggers = Lists.newArrayList();
 
     public AccountLoggerInfo() {
-        this((String) null, (String) null, (Collection<LoggerInfo>) null);
+        this(null, null, null);
     }
 
     public AccountLoggerInfo(String name, String id) {
-        this(name, id, (Collection<LoggerInfo>) null);
+        this(name, id, null);
     }
 
     public AccountLoggerInfo(String name, String id,

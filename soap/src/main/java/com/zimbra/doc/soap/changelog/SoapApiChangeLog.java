@@ -95,7 +95,7 @@ public class SoapApiChangeLog {
     }
 
     public void makeChangeLogDataModel()
-    throws JsonParseException, JsonMappingException, IOException, TemplateException {
+    throws IOException, TemplateException {
         Map<String,SoapApiCommand> baselineCmds = Maps.newTreeMap();
         Map<String,SoapApiCommand> currentCmds = Maps.newTreeMap();
         for (SoapApiCommand cmd : currentDesc.getCommands()) {

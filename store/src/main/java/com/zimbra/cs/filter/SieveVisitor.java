@@ -773,7 +773,7 @@ public abstract class SieveVisitor {
             boolean copy = false;
             String target = null;
             for (int i = 0; i < numArgs; i++) {
-                boolean isTag = getNode(node, 0, i).jjtGetNumChildren() == 0 ? true : false;
+                boolean isTag = getNode(node, 0, i).jjtGetNumChildren() == 0;
                 if (isTag) {
                     String value = getValue(node, 0, i++);
                     if (COPY_EXT.equals(value)) {
@@ -848,7 +848,7 @@ public abstract class SieveVisitor {
                 String tag = null;
                 String value = null;
                 for (int i = 0; i < numArgs; i++) {
-                    boolean isTag = getNode(node, 0, i).jjtGetNumChildren() == 0 ? true : false;
+                    boolean isTag = getNode(node, 0, i).jjtGetNumChildren() == 0;
                     if (isTag) {
                         tag = getValue(node, 0, i++);
                         value = getValue(node, 0, i, 0, 0);
@@ -918,7 +918,8 @@ public abstract class SieveVisitor {
             }
         } else if ("log".equalsIgnoreCase(nodeName)) {
             FilterAction.LogAction.LogLevel logLevel = null;
-            boolean isTag = getNode(node, 0, 0) == null ? false : getNode(node, 0, 0).jjtGetNumChildren() == 0 ? true : false;
+            boolean isTag =
+                getNode(node, 0, 0) != null && getNode(node, 0, 0).jjtGetNumChildren() == 0;
             String logText = null;
             if (isTag) {
                 String level = getValue(node, 0, 0);
@@ -1027,7 +1028,7 @@ public abstract class SieveVisitor {
         String headerName = null;
         String headerValue = null;
         Boolean last = false;
-        boolean isTag = getNode(node, 0, 0) == null ? false : getNode(node, 0, 0).jjtGetNumChildren() == 0 ? true : false;
+        boolean isTag = getNode(node, 0, 0) != null && getNode(node, 0, 0).jjtGetNumChildren() == 0;
         if (isTag) {
             String value = getValue(node, 0, 0);
             if (!StringUtil.isNullOrEmpty(value)) {
@@ -1064,7 +1065,8 @@ public abstract class SieveVisitor {
         int argCount = getNode(node, 0).jjtGetNumChildren();
         int i;
         for(i = 0; i < argCount; i++) {
-            boolean isTag = getNode(node, 0, i) == null ? false : getNode(node, 0, i).jjtGetNumChildren() == 0 ? true : false;
+            boolean isTag =
+                getNode(node, 0, i) != null && getNode(node, 0, i).jjtGetNumChildren() == 0;
             if (isTag) {
                 String tag = getValue(node, 0, i);
                 if (!StringUtil.isNullOrEmpty(tag)) {
@@ -1142,7 +1144,8 @@ public abstract class SieveVisitor {
         int argCount = getNode(node, 0).jjtGetNumChildren();
         int i;
         for(i = 0; i < argCount; i++) {
-            boolean isTag = getNode(node, 0, i) == null ? false : getNode(node, 0, i).jjtGetNumChildren() == 0 ? true : false;
+            boolean isTag =
+                getNode(node, 0, i) != null && getNode(node, 0, i).jjtGetNumChildren() == 0;
             if (isTag) {
                 String tag = getValue(node, 0, i);
                 if (!StringUtil.isNullOrEmpty(tag)) {
@@ -1262,7 +1265,7 @@ public abstract class SieveVisitor {
 
     private List<String> getMultiValue(Node parent, int ... indexes) throws ServiceException {
         Node child = getNode(parent, indexes);
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         int numChildren = child.jjtGetNumChildren();
         if (numChildren > 0) {
             for (int i = 0; i < numChildren; i++) {
@@ -1270,7 +1273,7 @@ public abstract class SieveVisitor {
                 values.add(value == null ? null : value.toString());
             }
         } else {
-            values.add(getValue(parent, indexes).toString());
+            values.add(getValue(parent, indexes));
         }
         return values;
     }
@@ -1280,7 +1283,7 @@ public abstract class SieveVisitor {
         if (s == null || s.length() == 0 || s.charAt(0) != ':') {
             return s;
         }
-        return s.substring(1, s.length());
+        return s.substring(1);
     }
 
     /**
@@ -1330,21 +1333,17 @@ public abstract class SieveVisitor {
         int numArgs = getNode(node, 0).jjtGetNumChildren();
         if (numArgs == 1) {
             String value = getValue(node, 0, 0, 0, 0);
-            if (null != value && value.toLowerCase().startsWith(NotifyMailto.NOTIFY_METHOD_MAILTO)) {
-                return true;
-            } else {
-                return false;
-            }
+          return null != value && value.toLowerCase().startsWith(NotifyMailto.NOTIFY_METHOD_MAILTO);
         } else {
             // If the first parameter is tag (:xxx), the children object of
             // the (current) node is null
-            return getNode(node, 0, 0).jjtGetNumChildren() == 0 ? true : false;
+            return getNode(node, 0, 0).jjtGetNumChildren() == 0;
         }
     }
 
     private void validateCountComparator(boolean isCount, Sieve.Comparator comparator) throws ServiceException {
         if (isCount && comparator != null && !Sieve.Comparator.iasciinumeric.equals(comparator)) {
-            throw ServiceException.PARSE_ERROR("Invalid Comparator For Count: " + comparator.toString(), null);
+            throw ServiceException.PARSE_ERROR("Invalid Comparator For Count: " + comparator, null);
         }
     }
 }

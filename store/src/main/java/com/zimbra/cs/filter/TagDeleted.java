@@ -13,7 +13,7 @@ import org.apache.jsieve.parser.generated.Node;
  */
 public class TagDeleted extends SieveVisitor {
 
-    private String mDeletedTagName;
+    private final String mDeletedTagName;
     private Node mIfNode;
     private boolean mModified = false;
     

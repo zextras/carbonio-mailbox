@@ -44,7 +44,7 @@ public class OwaspHtmlSanitizerTest {
           + "    background-repeat: no-repeat; background-position: center;";
   private static final String defangedUrlWithInlinePNG = "background-repeat:no-repeat;background-position:center";
   private static String EMAIL_BASE_DIR = "data/unittest/email/";
-  private static String htmlTemplateForUrlWithInlinePNG = "<table><tbody><tr><td style=\"%s\"></td></tr></tbody></table>";
+  private static final String htmlTemplateForUrlWithInlinePNG = "<table><tbody><tr><td style=\"%s\"></td></tr></tbody></table>";
   /*
    * Verified in Firefox that multi-line url with this html displays the
    * background image (give a valid paper.gif file from
@@ -52,9 +52,9 @@ public class OwaspHtmlSanitizerTest {
    * stripping out multi-line functions Owasp policy doesn't allow text inside
    * style by default
    */
-  private static String templateHtmlWithNonInlinedBackgroundImageURL = "<html><head><style>"
+  private static final String templateHtmlWithNonInlinedBackgroundImageURL = "<html><head><style>"
       + "</style></head><body><h1>Hello World!</h1></body></html>";
-  private static String nonInlinedBackgroundImageURL = "url(\n" + "            \"paper.gif\"\n"
+  private static final String nonInlinedBackgroundImageURL = "url(\n" + "            \"paper.gif\"\n"
       + "            )";
   @Rule
   public TestName testName = new TestName();

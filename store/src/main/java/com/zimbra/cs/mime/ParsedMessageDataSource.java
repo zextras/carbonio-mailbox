@@ -15,7 +15,7 @@ import javax.activation.DataSource;
 
 public class ParsedMessageDataSource implements DataSource {
     
-    private ParsedMessage mParsedMessage;
+    private final ParsedMessage mParsedMessage;
     
     public ParsedMessageDataSource(ParsedMessage pm) {
         if (pm == null) {

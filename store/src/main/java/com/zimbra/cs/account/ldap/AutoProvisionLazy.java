@@ -23,8 +23,8 @@ import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
 import com.zimbra.cs.account.krb5.Krb5Login;
 
 class AutoProvisionLazy extends AutoProvision {
-    private String loginName;
-    private String loginPassword;
+    private final String loginName;
+    private final String loginPassword;
     private AutoProvAuthMech authedByMech;
 
     AutoProvisionLazy(LdapProv prov, Domain domain, String loginName, String loginPassword,
@@ -88,7 +88,7 @@ class AutoProvisionLazy extends AutoProvision {
         
         // only support external LDAP auth for now
         if (AuthMech.ldap == authMech  || AuthMech.ad == authMech) {
-            Map<String, Object> authCtxt = new HashMap<String, Object>();
+            Map<String, Object> authCtxt = new HashMap<>();
             try {
                 prov.externalLdapAuth(domain, authMech, loginName, loginPassword, authCtxt);
                 return AutoProvAuthMech.LDAP;

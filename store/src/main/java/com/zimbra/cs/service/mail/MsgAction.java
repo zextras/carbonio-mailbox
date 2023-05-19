@@ -23,7 +23,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 public class MsgAction extends ItemAction {
 
     @Override
-    public Element handle(Element request, Map<String, Object> context) throws ServiceException, SoapFaultException {
+    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext lc = getZimbraSoapContext(context);
 
         Element action = request.getElement(MailConstants.E_ACTION);

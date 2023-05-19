@@ -47,7 +47,7 @@ public abstract class CalendarUser {
   }
 
   private ScheduleAgent scheduleAgent;
-  private List<ZParameter> mXParams = new ArrayList<ZParameter>();
+  private List<ZParameter> mXParams = new ArrayList<>();
 
   public String getAddress() {
     return mAddress;
@@ -341,7 +341,6 @@ public abstract class CalendarUser {
     if (!sameValues(mSentBy, other.mSentBy)) return false;
     if (!sameValues(mDir, other.mDir)) return false;
     if (!sameValues(mLanguage, other.mLanguage)) return false;
-    if (!sameValues(mXParams, other.mXParams)) return false;
-    return true;
+    return sameValues(mXParams, other.mXParams);
   }
 }

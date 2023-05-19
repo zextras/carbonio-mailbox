@@ -17,9 +17,9 @@ public class TrustedTokenKey {
 
     public static final int KEY_SIZE_BYTES = 32;
     private byte[] mKey;
-    private long mVersion;
-    private long mCreated;
-    private static HashMap<String, TrustedTokenKey> mCache = new HashMap<String, TrustedTokenKey>();
+    private final long mVersion;
+    private final long mCreated;
+    private static final HashMap<String, TrustedTokenKey> mCache = new HashMap<>();
     private static TrustedTokenKey sLatestKey;
 
     public byte[] getKey() {
@@ -51,7 +51,7 @@ public class TrustedTokenKey {
     }
 
     private TrustedTokenKey(String k) throws ServiceException {
-        String parts[] = k.split(":");
+        String[] parts = k.split(":");
         if (parts.length != 3)
             throw ServiceException.INVALID_REQUEST("invalid tusted device token key", null);
         String ver = parts[0];
@@ -122,7 +122,7 @@ public class TrustedTokenKey {
         // bootstrap. automatically create new random key
         if (keys.length == 0) {
             TrustedTokenKey key = new TrustedTokenKey(0, null);
-            HashMap<String, String> attrs = new HashMap<String, String>();
+            HashMap<String, String> attrs = new HashMap<>();
             attrs.put(Provisioning.A_zimbraTwoFactorAuthTrustedDeviceTokenKey, key.getEncoded());
             Provisioning.getInstance().modifyAttrs(config, attrs);
             keys = config.getMultiAttr(Provisioning.A_zimbraTwoFactorAuthTrustedDeviceTokenKey);

@@ -24,8 +24,8 @@ public class TZRule {
 
     static Log sLog = ZimbraLog.tnef;
 
-    private boolean isEffectiveRule;
-    private boolean isAssociatedWithRecurrence;
+    private final boolean isEffectiveRule;
+    private final boolean isAssociatedWithRecurrence;
     private int StartYear;
     private int Bias;
     private int StandardBias;
@@ -371,11 +371,7 @@ public class TZRule {
     }
 
     public boolean hasDaylightSaving() {
-        if (getStandardDate().getMonth() == 0) {
-            return false;
-        } else {
-            return true;
-        }
+      return getStandardDate().getMonth() != 0;
     }
 
     public DtStart getStandardDtStart() {
@@ -427,9 +423,6 @@ public class TZRule {
         if (!this.getStandardDate().equivalentInTimeZones(other.getStandardDate())) {
             return false;
         }
-        if (!this.getDaylightDate().equivalentInTimeZones(other.getDaylightDate())) {
-            return false;
-        }
-        return true;
+      return this.getDaylightDate().equivalentInTimeZones(other.getDaylightDate());
     }
 }

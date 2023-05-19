@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class MockMimeTypeInfo implements MimeTypeInfo {
     private String[] mimeTypes = new String[0];
-    private Set<String> fileExtensions = new HashSet<String>();
+    private final Set<String> fileExtensions = new HashSet<String>();
     private String description;
     private boolean indexingEnabled;
     private String extension;

@@ -16,7 +16,7 @@ public final class MailboxMaintenance {
     private final String accountId;
     private final int mailboxId;
     private Mailbox mailbox;
-    private List<Thread> allowedThreads;
+    private final List<Thread> allowedThreads;
     private boolean nestedAllowed = false;
     private boolean inner = false;
 
@@ -28,7 +28,7 @@ public final class MailboxMaintenance {
         accountId = acct.toLowerCase();
         mailboxId = id;
         mailbox = mbox;
-        allowedThreads = new ArrayList<Thread>();
+        allowedThreads = new ArrayList<>();
         allowedThreads.add(Thread.currentThread());
     }
 

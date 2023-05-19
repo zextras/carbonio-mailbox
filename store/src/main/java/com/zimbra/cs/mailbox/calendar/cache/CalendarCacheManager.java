@@ -19,15 +19,15 @@ import com.zimbra.cs.session.PendingLocalModifications;
 public class CalendarCacheManager {
 
     // for appointment summary caching (primarily for ZWC)
-    private boolean mSummaryCacheEnabled;
-    private CalSummaryCache mSummaryCache;
+    private final boolean mSummaryCacheEnabled;
+    private final CalSummaryCache mSummaryCache;
 
     // for CalDAV ctag caching
-    private CalListCache mCalListCache;
-    private CtagInfoCache mCtagCache;
-    private CtagResponseCache mCtagResponseCache;
+    private final CalListCache mCalListCache;
+    private final CtagInfoCache mCtagCache;
+    private final CtagResponseCache mCtagResponseCache;
 
-    private static CalendarCacheManager sInstance = new CalendarCacheManager();
+    private static final CalendarCacheManager sInstance = new CalendarCacheManager();
 
     public static CalendarCacheManager getInstance() { return sInstance; }
 
@@ -68,7 +68,7 @@ public class CalendarCacheManager {
         CalList calList = mCalListCache.get(key);
         if (calList == null) return null;
         Collection<Integer> calendarIds = calList.getCalendars();
-        List<CalendarKey> calKeys = new ArrayList<CalendarKey>(calendarIds.size());
+        List<CalendarKey> calKeys = new ArrayList<>(calendarIds.size());
         String accountId = key.getAccountId();
         for (int calFolderId : calendarIds) {
             calKeys.add(new CalendarKey(accountId, calFolderId));

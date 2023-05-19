@@ -254,7 +254,7 @@ public class MailDataSource implements DataSource {
      * @zm-api-field-description Properties for the data source
      */
     @XmlElement(name=MailConstants.E_ATTRIBUTE /* a */, required=false)
-    private List<String> attributes = Lists.newArrayList();
+    private final List<String> attributes = Lists.newArrayList();
 
     public MailDataSource() {
     }

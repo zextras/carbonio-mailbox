@@ -13,10 +13,10 @@ import com.zimbra.common.util.ZimbraLog;
 public class JaxbAttributeInfo {
     private static final Log LOG = ZimbraLog.soap;
     private String name;
-    private boolean required;
-    private String fieldName;
-    private String stamp;
-    private Class<?> atomClass;
+    private final boolean required;
+    private final String fieldName;
+    private final String stamp;
+    private final Class<?> atomClass;
 
     public JaxbAttributeInfo(JaxbInfo jaxbInfo, XmlAttribute annot, String fieldName, Type defaultGenericType) {
         this.required = annot.required();
@@ -29,7 +29,7 @@ public class JaxbAttributeInfo {
         if (name == null) {
             LOG.debug("%s Ignoring element with annotation '%s' unable to determine name", stamp, annot);
         }
-        atomClass = jaxbInfo.classFromType(defaultGenericType);
+        atomClass = JaxbInfo.classFromType(defaultGenericType);
         if (atomClass == null) {
             LOG.debug("%s Ignoring attribute with annotation '%s' unable to determine class", stamp, annot);
         }

@@ -115,7 +115,7 @@ public abstract class TemplateHandler {
     }
 
     protected Map<String,String> getBuildInfo() {
-        Map<String,String>    buildInfo = new HashMap<String,String>();
+        Map<String,String>    buildInfo = new HashMap<>();
 
         buildInfo.put(KEY_BUILD_INFO_VERSION, this.buildVersion);
         buildInfo.put(KEY_BUILD_INFO_DATE, this.buildDate);
@@ -184,7 +184,7 @@ public abstract class TemplateHandler {
      * @param    filesnames        an array of file names
      */
     protected void copyFiles(String[] filenames)
-    throws java.io.FileNotFoundException, IOException {
+    throws IOException {
         for (int i=0; i < filenames.length; i++) {
             File tmp = new File(templatesDir, getName());
             File fromFile = new File(tmp, filenames[i]);

@@ -15,6 +15,6 @@ public class ContactIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private ContactIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

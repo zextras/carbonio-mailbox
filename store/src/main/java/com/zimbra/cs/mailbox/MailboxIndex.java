@@ -78,11 +78,11 @@ public final class MailboxIndex {
 
     private static final ThreadPoolExecutor INDEX_EXECUTOR = new ThreadPoolExecutor(
             LC.zimbra_index_threads.intValue(), LC.zimbra_index_threads.intValue(),
-            Long.MAX_VALUE, TimeUnit.NANOSECONDS, new SynchronousQueue<Runnable>(),
+            Long.MAX_VALUE, TimeUnit.NANOSECONDS, new SynchronousQueue<>(),
             new ThreadFactoryBuilder().setNameFormat("Index-%d").setDaemon(true).build());
     // Re-index threads are created on demand basis. The number of threads are capped.
     private static final ExecutorService REINDEX_EXECUTOR = new ThreadPoolExecutor(
-            0, LC.zimbra_reindex_threads.intValue(), 0L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
+            0, LC.zimbra_reindex_threads.intValue(), 0L, TimeUnit.SECONDS, new SynchronousQueue<>(),
             new ThreadFactoryBuilder().setNameFormat("ReIndex-%d").setDaemon(true).build());
 
     private volatile long lastFailedTime = -1;
@@ -626,7 +626,7 @@ public final class MailboxIndex {
      */
     @SuppressWarnings("deprecation")
     void indexAllDeferredFlagItems() throws ServiceException {
-        Set<Integer> ids = new HashSet<Integer>();
+        Set<Integer> ids = new HashSet<>();
         boolean success = false;
         try {
             mailbox.beginTransaction("indexAllDeferredFlagItems", null);
@@ -656,7 +656,7 @@ public final class MailboxIndex {
                             List<DbSearch.Result> list = new DbSearch(mailbox).search(mailbox.getOperationConnection(),
                                     c, SortBy.NONE, -1, -1, DbSearch.FetchMode.MODCONTENT);
 
-                            List<Integer> deferredTagsToClear = new ArrayList<Integer>();
+                            List<Integer> deferredTagsToClear = new ArrayList<>();
 
                             Flag indexingDeferredFlag = mailbox.getFlagById(Flag.ID_INDEXING_DEFERRED);
 
@@ -720,7 +720,7 @@ public final class MailboxIndex {
         }
 
         // we re-index 'chunks' of items -- up to a certain size or count
-        List<Mailbox.IndexItemEntry> chunk = new ArrayList<Mailbox.IndexItemEntry>();
+        List<Mailbox.IndexItemEntry> chunk = new ArrayList<>();
         long chunkByteSize = 0;
         int i = 0;
         for (int id : ids) {
@@ -915,7 +915,7 @@ public final class MailboxIndex {
             return;
         }
 
-        List<MailItem> indexed = new ArrayList<MailItem>(entries.size());
+        List<MailItem> indexed = new ArrayList<>(entries.size());
         try {
             for (IndexItemEntry entry : entries) {
                 if ((indexStore != null) && indexStore.isPendingDelete()) {
@@ -948,7 +948,7 @@ public final class MailboxIndex {
             }
         }
 
-        List<Integer> ids = new ArrayList<Integer>(indexed.size());
+        List<Integer> ids = new ArrayList<>(indexed.size());
         for (MailItem item : indexed) {
             ids.add(item.getId());
         }
@@ -1100,7 +1100,7 @@ public final class MailboxIndex {
     public List<BrowseTerm> getDomains(String field, String regex) throws IOException, ServiceException {
         Pattern pattern = Strings.isNullOrEmpty(regex) ? null : Pattern.compile(
                 regex.startsWith("@") ? regex : "@" + regex);
-        List<BrowseTerm> result = new ArrayList<BrowseTerm>();
+        List<BrowseTerm> result = new ArrayList<>();
         try (ZimbraIndexSearcher searcher = indexStore.openSearcher()) {
             try (TermFieldEnumeration values = searcher.getIndexReader().getTermsForField(field,
                 "")) {
@@ -1129,7 +1129,7 @@ public final class MailboxIndex {
      */
     public List<BrowseTerm> getAttachmentTypes(String regex) throws IOException, ServiceException {
         Pattern pattern = Strings.isNullOrEmpty(regex) ? null : Pattern.compile(regex);
-        List<BrowseTerm> result = new ArrayList<BrowseTerm>();
+        List<BrowseTerm> result = new ArrayList<>();
         try (ZimbraIndexSearcher searcher = indexStore.openSearcher()) {
             try (TermFieldEnumeration values = searcher.getIndexReader()
                 .getTermsForField(LuceneFields.L_ATTACHMENTS, "")) {
@@ -1153,7 +1153,7 @@ public final class MailboxIndex {
      */
     public List<BrowseTerm> getObjects(String regex) throws IOException, ServiceException {
         Pattern pattern = Strings.isNullOrEmpty(regex) ? null : Pattern.compile(regex);
-        List<BrowseTerm> result = new ArrayList<BrowseTerm>();
+        List<BrowseTerm> result = new ArrayList<>();
         try (ZimbraIndexSearcher searcher = indexStore.openSearcher()) {
             try (TermFieldEnumeration values = searcher.getIndexReader()
                 .getTermsForField(LuceneFields.L_OBJECTS, "")) {

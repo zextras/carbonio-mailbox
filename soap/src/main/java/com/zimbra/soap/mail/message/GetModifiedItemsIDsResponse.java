@@ -21,7 +21,7 @@ public class GetModifiedItemsIDsResponse {
      * @zm-api-field-description IDs of modified items
      */
     @XmlElement(name=MailConstants.A_IDS /* ids */, required=false)
-    private List<Integer> ids = Lists.newArrayList();
+    private final List<Integer> ids = Lists.newArrayList();
 
     public GetModifiedItemsIDsResponse() {
     }

@@ -72,7 +72,7 @@ public class AutoCompleteGalRequest {
      * no-argument constructor wanted by JAXB
      */
     private AutoCompleteGalRequest() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     private AutoCompleteGalRequest(String domain, String name) {

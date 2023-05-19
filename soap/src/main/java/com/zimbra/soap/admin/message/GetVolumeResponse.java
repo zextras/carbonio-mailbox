@@ -21,14 +21,14 @@ public class GetVolumeResponse {
      * @zm-api-field-description Volume information
      */
     @XmlElement(name=AdminConstants.E_VOLUME, required=true)
-    private VolumeInfo volume;
+    private final VolumeInfo volume;
 
     /**
      * no-argument constructor wanted by JAXB
      */
      @SuppressWarnings("unused")
     private GetVolumeResponse() {
-        this((VolumeInfo)null);
+        this(null);
     }
 
     public GetVolumeResponse(VolumeInfo volume) {

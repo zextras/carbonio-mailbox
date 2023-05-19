@@ -250,7 +250,7 @@ public final class GetInfoResponse {
   @ZimbraKeyValuePairs
   @XmlElementWrapper(name = AccountConstants.E_PREFS /* prefs */, required = false)
   @XmlElement(name = AccountConstants.E_PREF /* pref */, required = false)
-  private List<Pref> prefs = Lists.newArrayList();
+  private final List<Pref> prefs = Lists.newArrayList();
 
   /**
    * @zm-api-field-description Account attributes that aren't user-settable, but the front-end
@@ -259,35 +259,35 @@ public final class GetInfoResponse {
   @ZimbraKeyValuePairs
   @XmlElementWrapper(name = AccountConstants.E_ATTRS /* attrs */, required = false)
   @XmlElement(name = AccountConstants.E_ATTR /* attr */, required = false)
-  private List<Attr> attrs = Lists.newArrayList();
+  private final List<Attr> attrs = Lists.newArrayList();
 
   /**
    * @zm-api-field-description Zimlets
    */
   @XmlElementWrapper(name = AccountConstants.E_ZIMLETS /* zimlets */, required = false)
   @XmlElement(name = AccountConstants.E_ZIMLET /* zimlet */, required = false)
-  private List<AccountZimletInfo> zimlets = Lists.newArrayList();
+  private final List<AccountZimletInfo> zimlets = Lists.newArrayList();
 
   /**
    * @zm-api-field-description Properties
    */
   @XmlElementWrapper(name = AccountConstants.E_PROPERTIES /* props */, required = false)
   @XmlElement(name = AccountConstants.E_PROPERTY /* prop */, required = false)
-  private List<Prop> props = Lists.newArrayList();
+  private final List<Prop> props = Lists.newArrayList();
 
   /**
    * @zm-api-field-description Identities
    */
   @XmlElementWrapper(name = AccountConstants.E_IDENTITIES /* identities */, required = false)
   @XmlElement(name = AccountConstants.E_IDENTITY /* identity */, required = false)
-  private List<Identity> identities = Lists.newArrayList();
+  private final List<Identity> identities = Lists.newArrayList();
 
   /**
    * @zm-api-field-description Signatures
    */
   @XmlElementWrapper(name = AccountConstants.E_SIGNATURES /* signatures */, required = false)
   @XmlElement(name = AccountConstants.E_SIGNATURE /* signature */, required = false)
-  private List<Signature> signatures = Lists.newArrayList();
+  private final List<Signature> signatures = Lists.newArrayList();
 
   /**
    * @zm-api-field-description Data sources
@@ -307,14 +307,14 @@ public final class GetInfoResponse {
         name = MailConstants.E_DS_UNKNOWN /* unknown */,
         type = AccountUnknownDataSource.class)
   })
-  private List<AccountDataSource> dataSources = Lists.newArrayList();
+  private final List<AccountDataSource> dataSources = Lists.newArrayList();
 
   /**
    * @zm-api-field-description Child accounts
    */
   @XmlElementWrapper(name = AccountConstants.E_CHILD_ACCOUNTS /* childAccounts */, required = false)
   @XmlElement(name = AccountConstants.E_CHILD_ACCOUNT /* childAccount */, required = false)
-  private List<ChildAccount> childAccounts = Lists.newArrayList();
+  private final List<ChildAccount> childAccounts = Lists.newArrayList();
 
   /**
    * @zm-api-field-description Discovered Rights - same as for <b>DiscoverRightsResponse</b>

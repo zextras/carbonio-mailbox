@@ -24,7 +24,7 @@ public class ArchiveFormatterTest {
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", Maps.<String, Object>newHashMap());
+        prov.createAccount("test@zimbra.com", "secret", Maps.newHashMap());
     }
 
     @Before

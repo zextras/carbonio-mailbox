@@ -28,12 +28,12 @@ import com.zimbra.cs.ldap.LdapDateUtil;
 
 public class LdapLockoutPolicy {
 
-    private Provisioning mProv;
-    private Account mAccount;
-    private boolean mEnabled;
+    private final Provisioning mProv;
+    private final Account mAccount;
+    private final boolean mEnabled;
     private boolean mLockoutExpired;
-    private boolean mIsLockedOut;
-    private String mAccountStatus;
+    private final boolean mIsLockedOut;
+    private final String mAccountStatus;
     private FailedLoginState failedLogins = null;
     private FailedLoginState twoFactorFailedLogins = null;
 
@@ -96,7 +96,7 @@ public class LdapLockoutPolicy {
 
     public void successfulLogin() {
         if (!mEnabled) return;
-        Map<String, Object> attrs = new HashMap<String,Object>();
+        Map<String, Object> attrs = new HashMap<>();
         if (failedLogins.mEnabled && failedLogins.mFailures.length > 0) {
             attrs.put(failedLogins.failuresAttrName, "");
         }
@@ -122,9 +122,9 @@ public class LdapLockoutPolicy {
     }
 
     private static class PasswordLockoutCache {
-        private static long maxCacheSize = DebugConfig.invalidPasswordMaxCacheSize;
-        private static int cacheExpiryInMinute = DebugConfig.invalidPasswordCacheExpirationInMinutes;
-        private static Cache<String, List<String>> cache =
+        private static final long maxCacheSize = DebugConfig.invalidPasswordMaxCacheSize;
+        private static final int cacheExpiryInMinute = DebugConfig.invalidPasswordCacheExpirationInMinutes;
+        private static final Cache<String, List<String>> cache =
             CacheBuilder.newBuilder().maximumSize(maxCacheSize).expireAfterWrite(cacheExpiryInMinute, TimeUnit.MINUTES).build();
 
         private static boolean suppressPasswordLockOut(Account acct, String protocol, String password) throws ServiceException {
@@ -134,11 +134,11 @@ public class LdapLockoutPolicy {
                         if (protocol.equalsIgnoreCase(suppressionProtocol)) {
                             List<String> pwds = null;
                             try {
-                                pwds = cache.get(acct.getId(), new Callable<List<String>>() {
-                                    @Override
-                                    public List<String> call() throws Exception {
-                                        return new ArrayList<String>();
-                                    }
+                                pwds = cache.get(acct.getId(), new Callable<>() {
+                                  @Override
+                                  public List<String> call() throws Exception {
+                                    return new ArrayList<>();
+                                  }
                                 });
                             } catch (ExecutionException e) {
                                 ZimbraLog.account.warn("Error while retrieving invalid password cache entry", e);
@@ -201,7 +201,7 @@ public class LdapLockoutPolicy {
             ZimbraLog.security.info("Account is lockout, not updating failure time.");
             return;
         }
-        Map<String, Object> attrs = new HashMap<String,Object>();
+        Map<String, Object> attrs = new HashMap<>();
 
         int totalFailures = login.updateFailureTimes(attrs);
 
@@ -221,12 +221,12 @@ public class LdapLockoutPolicy {
 
     private static class FailedLoginState {
 
-        private Account mAccount;
-        private String[] mFailures;
+        private final Account mAccount;
+        private final String[] mFailures;
         private List<String> mFailuresToRemove;
-        private long mMaxFailures;
-        private String failuresAttrName;
-        private boolean mEnabled;
+        private final long mMaxFailures;
+        private final String failuresAttrName;
+        private final boolean mEnabled;
 
         FailedLoginState(Account account, String failuresAttr, String maxFailuresAttr) {
             mAccount = account;
@@ -252,7 +252,7 @@ public class LdapLockoutPolicy {
                 String expiredTime = LdapDateUtil.toGeneralizedTime(new Date(System.currentTimeMillis() - duration));
                 for (String failure : mFailures) {
                     if (failure.compareTo(expiredTime) < 0) {
-                        if (mFailuresToRemove == null) mFailuresToRemove = new ArrayList<String>();
+                        if (mFailuresToRemove == null) mFailuresToRemove = new ArrayList<>();
                         mFailuresToRemove.add(failure);
                     }
                 }

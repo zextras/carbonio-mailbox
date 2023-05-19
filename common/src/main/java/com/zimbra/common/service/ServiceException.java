@@ -89,7 +89,7 @@ public class ServiceException extends Exception {
         toRet.append("\nCode:").append(mCode);
         if (mArgs != null) {
             for (Argument arg : mArgs) {
-                toRet.append(" Arg:").append(arg.toString()).append("");
+                toRet.append(" Arg:").append(arg.toString());
             }
         }
 
@@ -97,7 +97,7 @@ public class ServiceException extends Exception {
     }
 
     public static class Argument {
-        public static enum Type {
+        public enum Type {
             IID,       // mail-item ID or UUID or mailbox-id
             ACCTID,    // account ID
             STR,       // opaque string
@@ -211,7 +211,7 @@ public class ServiceException extends Exception {
 
     protected ServiceException(String message, String code, boolean isReceiversFault, Throwable cause, Argument... arguments) {
         super(message, cause);
-        List<Argument> argList = (arguments == null ? Collections.<Argument>emptyList() : Arrays.asList(arguments));
+        List<Argument> argList = (arguments == null ? Collections.emptyList() : Arrays.asList(arguments));
         init(message, code, isReceiversFault, cause, argList);
     }
 

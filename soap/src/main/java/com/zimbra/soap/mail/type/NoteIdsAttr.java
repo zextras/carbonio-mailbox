@@ -15,6 +15,6 @@ public class NoteIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private NoteIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zimbra.soap.DocumentHandler;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class LockoutMailbox extends AdminDocumentHandler {
 
     @Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
-        ZimbraSoapContext zsc = super.getZimbraSoapContext(context);
+        ZimbraSoapContext zsc = getZimbraSoapContext(context);
         LockoutMailboxRequest req = zsc.elementToJaxb(request);
         AccountNameSelector acctSel = req.getAccount();
         if (acctSel == null) {

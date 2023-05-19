@@ -55,7 +55,7 @@ public class LinkInfo {
      */
     @SuppressWarnings("unused")
     private LinkInfo() {
-        this((String) null, (String) null, (String) null, (String) null, (String) null);
+        this(null, null, null, null, null);
     }
 
     public LinkInfo(String id, String uuid, String name, String defaultView, String rights) {

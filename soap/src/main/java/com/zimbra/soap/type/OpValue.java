@@ -39,7 +39,7 @@ public class OpValue {
      */
     @SuppressWarnings("unused")
     private OpValue() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public OpValue( String op,

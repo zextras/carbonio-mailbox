@@ -20,16 +20,16 @@ import com.zimbra.cs.account.Provisioning;
 
 public class HardRules {
 
-    private static Set<String> ALWAYS_FORBIDDEN_ATTRS;
+    private static final Set<String> ALWAYS_FORBIDDEN_ATTRS;
 
     static {
-        Set<String> forbiddenAttr = new HashSet<String>();
+        Set<String> forbiddenAttr = new HashSet<>();
         forbiddenAttr.add(Provisioning.A_zimbraIsAdminAccount.toLowerCase());
 
         ALWAYS_FORBIDDEN_ATTRS = Collections.unmodifiableSet(forbiddenAttr);
     }
 
-    public static enum HardRule {
+    public enum HardRule {
         NOT_EFFECTIVE_DELEGATED_ADMIN_ACCOUNT,
         DELEGATED_ADMIN_CANNOT_ACCESS_GLOBAL_ADMIN;
 

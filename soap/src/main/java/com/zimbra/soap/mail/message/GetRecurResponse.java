@@ -45,7 +45,7 @@ public class GetRecurResponse {
         @XmlElement(name=MailConstants.E_CAL_EXCEPT /* except */, type=ExceptionItemRecur.class),
         @XmlElement(name=MailConstants.E_INVITE_COMPONENT /* comp */, type=InviteItemRecur.class)
     })
-    private List<CalendarItemRecur> components = Lists.newArrayList();
+    private final List<CalendarItemRecur> components = Lists.newArrayList();
 
     public GetRecurResponse() {
     }

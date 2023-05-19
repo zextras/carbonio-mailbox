@@ -24,7 +24,7 @@ public class DavProtocol {
         calendarserver_principal_property_search
     }
 
-    private static HashMap<Compliance,String> sComplianceStrMap;
+    private static final HashMap<Compliance,String> sComplianceStrMap;
 
     // WEBDAV compliances:
     // Each DAV resources must declare the ones they are compliant to.
@@ -47,7 +47,7 @@ public class DavProtocol {
     // addressbook-access: draft-daboo-carddav
 
     static {
-        sComplianceStrMap = new HashMap<Compliance,String>();
+        sComplianceStrMap = new HashMap<>();
         sComplianceStrMap.put(Compliance.one, "1");
         sComplianceStrMap.put(Compliance.two, "2");
         sComplianceStrMap.put(Compliance.three, "3");

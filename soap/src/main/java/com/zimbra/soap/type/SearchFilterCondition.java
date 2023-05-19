@@ -6,6 +6,6 @@
 package com.zimbra.soap.type;
 
 public interface SearchFilterCondition {
-    public Boolean isNot();
-    public void setNot(Boolean isNot);
+    Boolean isNot();
+    void setNot(Boolean isNot);
 }

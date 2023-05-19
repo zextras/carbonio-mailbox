@@ -59,7 +59,7 @@ public class TwoFactorAuthStatus extends AttributeCallback {
 
     private boolean setting2faAttr(Map attrs, String attr, String value) {
         String attrValue = (String) attrs.get(Provisioning.A_zimbraFeatureTwoFactorAuthAvailable);
-        return attrValue != null ? attrValue.equals(value) : false;
+        return attrValue != null && attrValue.equals(value);
     }
 
     private boolean is2faExtensionInstalled() {

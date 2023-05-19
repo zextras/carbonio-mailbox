@@ -79,14 +79,14 @@ public abstract class SoapCLI {
     public static final Option OPT_AUTHTOKENFILE = new Option(O_AUTHTOKENFILE, "authtokenfile", true, "read auth token (has to be in JSON format) from a file");
 
 
-    private String mUser;
-    private String mPassword;
+    private final String mUser;
+    private final String mPassword;
     private String mHost;
-    private int mPort;
+    private final int mPort;
     private boolean mAuth;
-    private Options mOptions;
-    private Options mHiddenOptions;
-    private boolean mDisableTargetServerOption;
+    private final Options mOptions;
+    private final Options mHiddenOptions;
+    private final boolean mDisableTargetServerOption;
     
     private SoapTransport mTrans = null;
     private String mServerUrl;
@@ -158,7 +158,7 @@ public abstract class SoapCLI {
     @SuppressWarnings("unchecked")
     private Options getAllOptions() {
         Options newOptions = new Options();
-        Set<OptionGroup> groups = new HashSet<OptionGroup>();
+        Set<OptionGroup> groups = new HashSet<>();
         Options[] optionses =
             new Options[] { mOptions, mHiddenOptions };
         for (Options options : optionses) {

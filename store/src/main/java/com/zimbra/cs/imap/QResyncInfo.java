@@ -80,9 +80,6 @@ public class QResyncInfo {
         } else if (!uidMilestones.equals(other.uidMilestones)) {
             return false;
         }
-        if (uvv != other.uvv) {
-            return false;
-        }
-        return true;
+      return uvv == other.uvv;
     }
 }

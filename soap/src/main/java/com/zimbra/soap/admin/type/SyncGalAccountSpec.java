@@ -33,7 +33,7 @@ public class SyncGalAccountSpec {
      * @zm-api-field-description SyncGalAccount data source specifications
      */
     @XmlElement(name=AdminConstants.E_DATASOURCE /* datasource */, required=false)
-    private List<SyncGalAccountDataSourceSpec> dataSources = Lists.newArrayList();
+    private final List<SyncGalAccountDataSourceSpec> dataSources = Lists.newArrayList();
 
     public SyncGalAccountSpec() {
     }

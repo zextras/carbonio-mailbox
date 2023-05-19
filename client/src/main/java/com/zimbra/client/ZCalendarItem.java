@@ -22,7 +22,7 @@ public class ZCalendarItem implements ZItem, ToZJSONObject {
         flagged('f'),
         attachment('a');
 
-        private char mFlagChar;
+        private final char mFlagChar;
 
         public char getFlagChar() { return mFlagChar; }
 
@@ -49,14 +49,14 @@ public class ZCalendarItem implements ZItem, ToZJSONObject {
         }
     }
 
-    private String mId;
+    private final String mId;
     private String mFlags;
     private String mTags;
     private String mFolderId;
-    private long mDate;
-    private long mSize;
-    private String mUID;
-    private List<ZInvite> mInvites;
+    private final long mDate;
+    private final long mSize;
+    private final String mUID;
+    private final List<ZInvite> mInvites;
 
     public ZCalendarItem(Element e) throws ServiceException {
         mId = e.getAttribute(MailConstants.A_ID);
@@ -66,7 +66,7 @@ public class ZCalendarItem implements ZItem, ToZJSONObject {
         mDate = e.getAttributeLong(MailConstants.A_DATE, 0);
         mFolderId = e.getAttribute(MailConstants.A_FOLDER, null);
         mSize = e.getAttributeLong(MailConstants.A_SIZE);
-        mInvites = new ArrayList<ZInvite>();
+        mInvites = new ArrayList<>();
         for (Element inviteEl : e.listElements(MailConstants.E_INVITE)) {
             mInvites.add(new ZInvite(inviteEl));
         }

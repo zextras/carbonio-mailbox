@@ -260,7 +260,7 @@ public class SearchGal extends GalDocumentHandler {
             params.setExtraQueryCallback(new SearchGalExtraQueryCallback(filter));
         }
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         GalSearchControl galSearchControl = new GalSearchControl(params);
 
         String galQuery = galSearchControl.getGalQuery();

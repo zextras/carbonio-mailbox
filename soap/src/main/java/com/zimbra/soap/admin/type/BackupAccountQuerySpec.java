@@ -73,7 +73,7 @@ public class BackupAccountQuerySpec {
      * @zm-api-field-description Either the account email address or <b>all</b>
      */
     @XmlElement(name=BackupConstants.E_ACCOUNT /* account */, required=false)
-    private List<Name> accounts = Lists.newArrayList();
+    private final List<Name> accounts = Lists.newArrayList();
 
     public BackupAccountQuerySpec() {
     }

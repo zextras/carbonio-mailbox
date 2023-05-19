@@ -6,7 +6,7 @@
 package com.zimbra.cs.imap;
 
 public abstract class ImapCommand {
-    private long createTime;
+    private final long createTime;
 
     public ImapCommand() {
         this.createTime = System.currentTimeMillis();

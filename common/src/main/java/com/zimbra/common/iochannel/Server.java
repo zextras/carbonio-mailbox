@@ -61,7 +61,7 @@ public class Server implements Runnable {
      * peer.
      */
     public interface NotifyCallback {
-        public void dataReceived(String sender, ByteBuffer buffer);
+        void dataReceived(String sender, ByteBuffer buffer);
     }
 
     /**
@@ -247,7 +247,7 @@ public class Server implements Runnable {
         }
     }
 
-    private static Log log = LogFactory.getLog("iochannel");
+    private static final Log log = LogFactory.getLog("iochannel");
 
     private Thread serverThread;
     private boolean shutdown;

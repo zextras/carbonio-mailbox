@@ -47,8 +47,8 @@ public class GrantRightRequest {
      */
     @SuppressWarnings("unused")
     private GrantRightRequest() {
-        this((EffectiveRightsTargetSelector) null, (GranteeSelector) null,
-                (RightModifierInfo) null);
+        this(null, null,
+            null);
     }
 
     public GrantRightRequest(EffectiveRightsTargetSelector target,

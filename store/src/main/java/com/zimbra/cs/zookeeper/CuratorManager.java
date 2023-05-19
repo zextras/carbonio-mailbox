@@ -6,6 +6,7 @@
 package com.zimbra.cs.zookeeper;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -50,8 +51,8 @@ public class CuratorManager {
                 .payload(new Service(server.getId()))
                 .build();
 
-        JsonInstanceSerializer<Service> serializer = new JsonInstanceSerializer<Service>(
-                Service.class);
+        JsonInstanceSerializer<Service> serializer = new JsonInstanceSerializer<>(
+            Service.class);
 
         serviceDiscovery = ServiceDiscoveryBuilder.builder(Service.class)
                 .client(client)
@@ -75,7 +76,7 @@ public class CuratorManager {
         if (initialized == false) {
             String[] servers = Provisioning.getInstance().getLocalServer().getZookeeperClientServerList();
             if (servers.length > 0) {
-                TreeSet<String> tset = new TreeSet<String>(); // TreeSet provides deduping and sorting.
+                TreeSet<String> tset = new TreeSet<>(); // TreeSet provides deduping and sorting.
                 for (int i = 0; i < servers.length; ++i) {
                     tset.add(servers[i].toLowerCase());
                 }
@@ -103,12 +104,8 @@ public class CuratorManager {
 
     public void setData(String key, String value) throws Exception {
         byte[] data;
-        try {
-            data = value.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            data = value.getBytes();
-        }
-        String path = DATA + key;
+      data = value.getBytes(StandardCharsets.UTF_8);
+      String path = DATA + key;
         if (client.checkExists().forPath(path) == null) {
             client.create().creatingParentsIfNeeded().forPath(path);
         }
@@ -118,14 +115,14 @@ public class CuratorManager {
     public String getData(String key) {
         try {
             byte[] data = client.getData().forPath(DATA + key);
-            return new String(data, "UTF-8");
+            return new String(data, StandardCharsets.UTF_8);
         } catch (Exception e) {
             return null;
         }
     }
 
     public Set<String> getActiveServers() throws Exception {
-        Set<String> activeServers = new HashSet<String>();
+        Set<String> activeServers = new HashSet<>();
         Collection<ServiceInstance<Service>> instances = serviceCache.getInstances();
         for (ServiceInstance<Service> instance : instances ) {
             activeServers.add(instance.getPayload().getService());

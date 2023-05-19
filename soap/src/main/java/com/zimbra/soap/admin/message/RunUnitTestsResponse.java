@@ -43,7 +43,7 @@ public class RunUnitTestsResponse {
      */
     @SuppressWarnings("unused")
     private RunUnitTestsResponse() {
-        this((TestResultInfo) null, -1, -1);
+        this(null, -1, -1);
     }
 
     public RunUnitTestsResponse(TestResultInfo results,

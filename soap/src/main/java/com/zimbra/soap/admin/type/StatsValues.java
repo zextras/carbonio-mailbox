@@ -32,14 +32,14 @@ public class StatsValues {
      * @zm-api-field-description Stats
      */
     @XmlElement(name=AdminConstants.E_STAT /* stat */, required=false)
-    private List<NameAndValue> stats = Lists.newArrayList();
+    private final List<NameAndValue> stats = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private StatsValues() {
-        this((String) null);
+        this(null);
     }
 
     public StatsValues(String t) {

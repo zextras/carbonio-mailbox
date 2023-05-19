@@ -7,8 +7,8 @@ package com.zimbra.cs.imap;
 
 public class CopyCommand extends ImapCommand {
 
-    private ImapPath destPath;
-    private String sequenceSet;
+    private final ImapPath destPath;
+    private final String sequenceSet;
 
     public CopyCommand(String sequenceSet, ImapPath destPath) {
         super();
@@ -45,12 +45,8 @@ public class CopyCommand extends ImapCommand {
             return false;
         }
         if (destPath == null) {
-            if (other.destPath != null) {
-                return false;
-            }
-        } else if (!destPath.equals(other.destPath)) {
-            return false;
-        }
-        return true;
+          return other.destPath == null;
+        } else
+          return destPath.equals(other.destPath);
     }
 }

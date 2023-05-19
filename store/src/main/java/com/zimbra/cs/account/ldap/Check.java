@@ -67,7 +67,7 @@ public class Check {
         Object v = attrs.get(name);
         if (v instanceof String) return new String[] {(String)v};
         else if (v instanceof String[]) {
-            String value[] = (String[]) v;
+            String[] value = (String[]) v;
             if (value != null && value.length > 0)
                 return value;
         }
@@ -78,9 +78,9 @@ public class Check {
         try {
             InetAddress.getByName(hostname);
         } catch (UnknownHostException e) {
-            return new Provisioning.Result(STATUS_UNKNOWN_HOST, e, (String)null);
+            return new Provisioning.Result(STATUS_UNKNOWN_HOST, e, null);
         }
-        return new Provisioning.Result(STATUS_OK, "", (String) null);
+        return new Provisioning.Result(STATUS_OK, "", null);
     }
 
     public static Provisioning.Result checkExchangeAuth(ExchangeFreeBusyProvider.ServerInfo sinfo, Account acct) throws ServiceException {
@@ -134,7 +134,7 @@ public class Check {
         System.out.println(r);
     }
    
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         testCheckHostnameResolve();
         //testCheckGal();       
     }

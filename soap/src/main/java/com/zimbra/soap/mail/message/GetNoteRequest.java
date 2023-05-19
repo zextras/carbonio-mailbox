@@ -34,7 +34,7 @@ public class GetNoteRequest {
      */
     @SuppressWarnings("unused")
     private GetNoteRequest() {
-        this((Id) null);
+        this(null);
     }
 
     public GetNoteRequest(Id note) {

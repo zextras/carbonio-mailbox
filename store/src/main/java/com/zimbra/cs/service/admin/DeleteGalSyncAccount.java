@@ -46,13 +46,13 @@ public class DeleteGalSyncAccount extends AdminDocumentHandler {
 		checkAccountRight(zsc, account, Admin.R_deleteAccount); 
 		
 		String id = account.getId();
-		HashSet<String> acctIds = new HashSet<String>();
+		HashSet<String> acctIds = new HashSet<>();
 		Domain domain = prov.getDomain(account);
 		Collections.addAll(acctIds, domain.getGalAccountId());
 		if (!acctIds.contains(id))
 			throw AccountServiceException.NO_SUCH_ACCOUNT(id);
 		acctIds.remove(id);
-		HashMap<String,Object> attrs = new HashMap<String,Object>();
+		HashMap<String,Object> attrs = new HashMap<>();
 		attrs.put(Provisioning.A_zimbraGalAccountId, acctIds);
 		prov.modifyAttrs(domain, attrs);
 		prov.deleteAccount(id);

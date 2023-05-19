@@ -197,7 +197,7 @@ public final class DbVolume {
     public static Map<Short, Volume> getAll(DbConnection conn) throws ServiceException {
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        Map<Short, Volume> result = new HashMap<Short, Volume>();
+        Map<Short, Volume> result = new HashMap<>();
         try {
             stmt = conn.prepareStatement("SELECT * FROM volume");
             rs = stmt.executeQuery();

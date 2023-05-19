@@ -8,6 +8,7 @@ package com.zimbra.cs.mailclient.imap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import com.zimbra.cs.mailclient.util.Ascii;
  * Base class for basic IMAP data types.
  */
 public abstract class ImapData {
-    public static enum Type { ATOM, QUOTED, LITERAL }
+    public enum Type { ATOM, QUOTED, LITERAL }
 
     public static ImapData asAString(String s) {
         if (s.length() > 64) {
@@ -63,11 +64,7 @@ public abstract class ImapData {
     }
 
     private static byte[] encodeUtf8(String s) {
-        try {
-            return s.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new InternalError("UTF-8 charset not found");
-        }
+      return s.getBytes(StandardCharsets.UTF_8);
 
     }
 

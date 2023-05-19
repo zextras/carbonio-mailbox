@@ -19,5 +19,5 @@ public enum AttributeServerType {
     spell,
     memcached,
     nginxproxy,
-    stats;
+    stats
 }

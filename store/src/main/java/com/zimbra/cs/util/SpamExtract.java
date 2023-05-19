@@ -81,9 +81,9 @@ import com.zimbra.cs.service.util.ItemData;
 
 public class SpamExtract {
 
-    private static Log LOG = LogFactory.getLog(SpamExtract.class);
+    private static final Log LOG = LogFactory.getLog(SpamExtract.class);
 
-    private static Options options = new Options();
+    private static final Options options = new Options();
 
     private static boolean verbose = false;
 
@@ -122,7 +122,7 @@ public class SpamExtract {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         CommandLineParser parser = new GnuParser();
         CommandLine cl = null;
         try {
@@ -137,7 +137,7 @@ public class SpamExtract {
         return cl;
     }
 
-    public static void main(String[] args) throws ServiceException, HttpException, SoapFaultException, IOException {
+    public static void main(String[] args) throws ServiceException, HttpException, IOException {
         CommandLine cl = parseArgs(args);
 
         if (cl.hasOption('D')) {
@@ -210,7 +210,7 @@ public class SpamExtract {
         extract(authToken, account, server, optQuery, outputDirectory, optDelete, optRaw);
     }
 
-    private static void extract(String authToken, Account account, Server server, String query, File outdir, boolean delete, boolean raw) throws ServiceException, HttpException, SoapFaultException, IOException {
+    private static void extract(String authToken, Account account, Server server, String query, File outdir, boolean delete, boolean raw) throws ServiceException, HttpException, IOException {
         String soapURL = getSoapURL(server, false);
 
         URL restURL = getServerURL(server, false);
@@ -263,7 +263,7 @@ public class SpamExtract {
 
                 StringBuilder deleteList = new StringBuilder();
 
-                List<String> ids = new ArrayList<String>();
+                List<String> ids = new ArrayList<>();
                 for (Iterator<Element> iter = searchResp.elementIterator(MailConstants.E_MSG); iter.hasNext();) {
                     offset++;
                     Element e = iter.next();
@@ -276,7 +276,8 @@ public class SpamExtract {
                     LOG.debug("adding id %s", mid);
                     ids.add(mid);
                     if (ids.size() >= BATCH_SIZE || !iter.hasNext()) {
-                        StringBuilder path = new StringBuilder(restURL.toString() + "/service/user/" + account.getName() + "/?fmt=tgz&list=" + StringUtils.join(ids, ","));
+                        StringBuilder path = new StringBuilder(
+                            restURL + "/service/user/" + account.getName() + "/?fmt=tgz&list=" + StringUtils.join(ids, ","));
                         LOG.debug("sending request for path %s", path.toString());
                         List<String> extractedIds = extractMessages(hc, gm, path.toString(), outdir, raw);
                         if (ids.size() > extractedIds.size()) {
@@ -333,9 +334,9 @@ public class SpamExtract {
         LOG.info("Total messages processed: " + totalProcessed);
     }
 
-    private static Session mJMSession;
+    private static final Session mJMSession;
 
-    private static String mOutputPrefix;
+    private static final String mOutputPrefix;
 
     static {
         Properties props = new Properties();
@@ -348,7 +349,7 @@ public class SpamExtract {
     private static final int MAX_BUFFER_SIZE = 10 * 1024 * 1024;
 
     private static List<String> extractMessages(HttpClientBuilder hc, HttpGet gm, String path, File outdir, boolean raw) throws HttpException, IOException {
-        List<String> extractedIds = new ArrayList<String>();
+        List<String> extractedIds = new ArrayList<>();
         HttpClient client = hc.build();
       
         if (LOG.isDebugEnabled()) {

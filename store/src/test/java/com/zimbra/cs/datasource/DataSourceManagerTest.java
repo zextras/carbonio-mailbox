@@ -29,21 +29,21 @@ import com.zimbra.soap.admin.type.DataSourceType;
 
 public class DataSourceManagerTest {
     private Account testAccount = null;
-    private String OAUTH_DS_ID = "testOAuthDS";
-    private String POP3_DS_ID = "testPop3DS";
-    private String IMAP_DS_ID = "testImap3DS";
-    private String CALDAV_DS_ID = "CalDavDS";
-    private String RSS_DS_ID = "RSSDataSource";
-    private String CAL_DS_ID = "CalDataSource";
-    private String GAL_DS_ID = "GALDataSource";
+    private final String OAUTH_DS_ID = "testOAuthDS";
+    private final String POP3_DS_ID = "testPop3DS";
+    private final String IMAP_DS_ID = "testImap3DS";
+    private final String CALDAV_DS_ID = "CalDavDS";
+    private final String RSS_DS_ID = "RSSDataSource";
+    private final String CAL_DS_ID = "CalDataSource";
+    private final String GAL_DS_ID = "GALDataSource";
 
-    private String OAUTH_DS_NAME = "TestOAuthDataSource";
-    private String POP3_DS_NAME = "TestPop3DataSource";
-    private String IMAP_DS_NAME = "TestImapDataSource";
-    private String CALDAV_DS_NAME = "TestCalDavDataSource";
-    private String RSS_DS_NAME = "TestRSSDataSource";
-    private String CAL_DS_NAME = "TestCalDataSource";
-    private String GAL_DS_NAME = "TestGALDataSource";
+    private final String OAUTH_DS_NAME = "TestOAuthDataSource";
+    private final String POP3_DS_NAME = "TestPop3DataSource";
+    private final String IMAP_DS_NAME = "TestImapDataSource";
+    private final String CALDAV_DS_NAME = "TestCalDavDataSource";
+    private final String RSS_DS_NAME = "TestRSSDataSource";
+    private final String CAL_DS_NAME = "TestCalDataSource";
+    private final String GAL_DS_NAME = "TestGALDataSource";
     
     @BeforeClass
     public static void init() throws Exception {

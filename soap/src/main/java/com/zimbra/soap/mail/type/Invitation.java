@@ -66,7 +66,7 @@ public class Invitation {
      * @zm-api-field-description Timezones
      */
     @XmlElement(name=MailConstants.E_CAL_TZ /* tz */, required=false)
-    private List<CalTZInfo> timezones = Lists.newArrayList();
+    private final List<CalTZInfo> timezones = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Invite component
@@ -82,14 +82,14 @@ public class Invitation {
         @XmlElement(name=MailConstants.E_SHARE_NOTIFICATION /* shr */, type=ShareNotification.class),
         @XmlElement(name=MailConstants.E_DL_SUBSCRIPTION_NOTIFICATION /* dlSubs */, type=DLSubscriptionNotification.class)
     })
-    private List<Object> contentElems = Lists.newArrayList();
+    private final List<Object> contentElems = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private Invitation() {
-        this((String) null, (Integer) null, (Integer) null, (Integer) null);
+        this(null, null, null, null);
     }
 
     public Invitation(String calItemType, Integer sequence, Integer id, Integer componentNum) {

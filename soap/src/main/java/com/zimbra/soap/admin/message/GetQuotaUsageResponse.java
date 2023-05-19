@@ -43,7 +43,7 @@ public class GetQuotaUsageResponse {
      * @zm-api-field-description Account quota information
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT, required=false)
-    private List <AccountQuotaInfo> accountQuotas = Lists.newArrayList();
+    private final List <AccountQuotaInfo> accountQuotas = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
@@ -54,7 +54,7 @@ public class GetQuotaUsageResponse {
     }
 
     public GetQuotaUsageResponse(boolean more, int searchTotal) {
-        this(more, searchTotal, (Collection <AccountQuotaInfo>) null);
+        this(more, searchTotal, null);
     }
 
     public GetQuotaUsageResponse(boolean more, int searchTotal,

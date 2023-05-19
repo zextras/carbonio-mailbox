@@ -18,16 +18,16 @@ public class ForgetPasswordEnums {
         SUSPENSION_TIME("suspensionTime"),
         ACCOUNT_ID("accountId");
 
-        private static Map<String, CodeConstants> nameToCodeConstants = Maps.newHashMap();
+        private static final Map<String, CodeConstants> nameToCodeConstants = Maps.newHashMap();
         static {
             for (CodeConstants v : CodeConstants.values()) {
                 nameToCodeConstants.put(v.toString(), v);
             }
         }
 
-        private String name;
+        private final String name;
 
-        private CodeConstants(String name) {
+        CodeConstants(String name) {
             this.name = name;
         }
 

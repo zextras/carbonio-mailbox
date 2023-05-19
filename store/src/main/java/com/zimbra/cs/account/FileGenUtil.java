@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import com.zimbra.common.util.ByteUtil;
@@ -138,7 +139,7 @@ public class FileGenUtil {
     public static void replaceFile(String outFile, String templateFile, Map<String,String> templateFillers)
     throws IOException {
         byte[] templateBytes = ByteUtil.getContent(new File(templateFile));
-        String templateString = new String(templateBytes, "utf-8");
+        String templateString = new String(templateBytes, StandardCharsets.UTF_8);
 
         String content = StringUtil.fillTemplate(templateString, templateFillers);
 

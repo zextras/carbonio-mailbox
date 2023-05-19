@@ -40,8 +40,8 @@ import com.zimbra.soap.mail.type.ImapMessageInfo;
 
 public class RemoteImapMailboxStore extends ImapMailboxStore {
 
-    private transient ZMailbox zMailbox;
-    private transient String accountId;
+    private final transient ZMailbox zMailbox;
+    private final transient String accountId;
 
     public RemoteImapMailboxStore(ZMailbox mailbox) throws ServiceException {
         super();
@@ -256,7 +256,7 @@ public class RemoteImapMailboxStore extends ImapMailboxStore {
 
     @Override
     public List<ImapMessage> openImapFolder(OperationContext octxt, ItemIdentifier folderId) throws ServiceException {
-        List<ImapMessage> msgs = new ArrayList<ImapMessage>();
+        List<ImapMessage> msgs = new ArrayList<>();
         Integer chunkSize = Provisioning.getInstance().getLocalServer().getOpenImapFolderRequestChunkSize();
         for (ImapMessageInfo msg: zMailbox.openImapFolder(folderId, chunkSize)) {
             msgs.add(new ImapMessage(msg));

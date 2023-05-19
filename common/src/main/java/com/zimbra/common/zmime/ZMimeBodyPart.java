@@ -239,7 +239,7 @@ public class ZMimeBodyPart extends MimeBodyPart implements ZMimePart {
         return !ZPARSER ? super.getFileName() : getFileName(this);
     }
 
-    private static boolean decodeFileName = PropUtil.getBooleanSystemProperty("mail.mime.decodefilename", false);
+    private static final boolean decodeFileName = PropUtil.getBooleanSystemProperty("mail.mime.decodefilename", false);
 
     static String getFileName(ZMimePart part) throws MessagingException {
         String filename = null;

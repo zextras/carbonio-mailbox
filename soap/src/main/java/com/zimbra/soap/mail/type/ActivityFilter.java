@@ -43,7 +43,7 @@ public class ActivityFilter {
      */
     @SuppressWarnings("unused")
     private ActivityFilter() {
-        this((String) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public ActivityFilter(String accountIds, String ops, String sessionId) {

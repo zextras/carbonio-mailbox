@@ -52,7 +52,7 @@ public class BackupQueryResponse {
      * @zm-api-field-description Backup information
      */
     @XmlElement(name=BackupConstants.E_BACKUP /* backup */, required=false)
-    private List<BackupQueryInfo> backups = Lists.newArrayList();
+    private final List<BackupQueryInfo> backups = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

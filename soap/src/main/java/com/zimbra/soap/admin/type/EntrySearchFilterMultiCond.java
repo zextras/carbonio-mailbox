@@ -53,7 +53,7 @@ public class EntrySearchFilterMultiCond implements SearchFilterCondition {
         @XmlElement(name=AccountConstants.E_ENTRY_SEARCH_FILTER_SINGLECOND /* cond */,
             type=EntrySearchFilterSingleCond.class)
     })
-    private List <SearchFilterCondition> conditions = Lists.newArrayList();
+    private final List <SearchFilterCondition> conditions = Lists.newArrayList();
 
     public EntrySearchFilterMultiCond() {
     }

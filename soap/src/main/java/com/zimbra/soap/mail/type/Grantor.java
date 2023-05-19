@@ -41,7 +41,7 @@ public class Grantor {
      */
     @SuppressWarnings("unused")
     private Grantor() {
-        this((String) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public Grantor(String id, String email, String name) {

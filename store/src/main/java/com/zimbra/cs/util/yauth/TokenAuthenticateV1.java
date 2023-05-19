@@ -44,7 +44,7 @@ public class TokenAuthenticateV1 {
         if (response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() < 300) { 
             String body = EntityUtils.toString(response.getEntity());
             
-            HashMap<String,String> map = new HashMap<String, String>();
+            HashMap<String,String> map = new HashMap<>();
             map.put("ymsgr", null);
 
             parseResponseBody(body, map);
@@ -87,7 +87,7 @@ public class TokenAuthenticateV1 {
         if (response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() < 300) { 
             String body = EntityUtils.toString(response.getEntity());
             
-            HashMap<String,String> map = new HashMap<String, String>();
+            HashMap<String,String> map = new HashMap<>();
             map.put("crumb", null);
             map.put("Y", null);
             map.put("T", null);
@@ -113,13 +113,14 @@ public class TokenAuthenticateV1 {
         mT = T; //mT = mT.substring(0,mT.indexOf(';')); 
     }
     
-    public String getCrumb() { return mCrumb; };
-    public String getY(){ return mY; }
+    public String getCrumb() { return mCrumb; }
+
+  public String getY(){ return mY; }
     public String getT() {return mT; }
    
-    private String mCrumb;
-    private String mY;
-    private String mT;
+    private final String mCrumb;
+    private final String mY;
+    private final String mT;
     
     public static void main(String[] argv) {
         try {
@@ -128,7 +129,7 @@ public class TokenAuthenticateV1 {
             
             TokenAuthenticateV1 ta = TokenAuthenticateV1.doAuth("XXXX", ymsgr);
             
-            System.out.println("Got token: "+ta.toString());
+            System.out.println("Got token: "+ ta);
         } catch (Exception e) {
             System.out.println("Caught exception"+e);
             e.printStackTrace();

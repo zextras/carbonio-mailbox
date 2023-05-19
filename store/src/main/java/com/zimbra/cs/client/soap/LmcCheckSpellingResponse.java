@@ -11,8 +11,8 @@ import java.util.Map;
 
 
 public class LmcCheckSpellingResponse extends LmcSoapResponse {
-    private Map<String, String[]> mMisspelled = new HashMap<String, String[]>();
-    private boolean mIsAvailable;
+    private final Map<String, String[]> mMisspelled = new HashMap<>();
+    private final boolean mIsAvailable;
     
     public LmcCheckSpellingResponse(boolean isAvailable) {
         mIsAvailable = isAvailable;

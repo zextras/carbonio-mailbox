@@ -93,7 +93,7 @@ public final class ZimbraSocketAcceptor
 
   @Override
   public SocketSessionConfig getSessionConfig() {
-    return (SocketSessionConfig) super.getSessionConfig();
+    return super.getSessionConfig();
   }
 
   @Override

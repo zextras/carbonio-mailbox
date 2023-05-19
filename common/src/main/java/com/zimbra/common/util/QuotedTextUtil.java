@@ -40,20 +40,20 @@ import org.xml.sax.SAXException;
 public class QuotedTextUtil {
 
     // for detecting quoted email msg content
-    private static String FORWARDED_MESSAGE = "Forwarded Message";
-    private static String BEGIN_FORWARDED_MESSAGE = "Begin forwarded message:";
-    private static String ORIG_MSG = "Original Message";
-    private static String ORIG_APPT = "Original Appointment";
-    private static String FROM = "from:";
-    private static String TO = "to:";
-    private static String SUBJECT = "subject:";
-    private static String DATE = "date:";
-    private static String SENT = "sent:";
-    private static String CC = "cc:";
+    private static final String FORWARDED_MESSAGE = "Forwarded Message";
+    private static final String BEGIN_FORWARDED_MESSAGE = "Begin forwarded message:";
+    private static final String ORIG_MSG = "Original Message";
+    private static final String ORIG_APPT = "Original Appointment";
+    private static final String FROM = "from:";
+    private static final String TO = "to:";
+    private static final String SUBJECT = "subject:";
+    private static final String DATE = "date:";
+    private static final String SENT = "sent:";
+    private static final String CC = "cc:";
     /* used to recognize attribution such as "On Feb 5, 2013, John wrote:" */
-    private static String ON = "on";
-    private static String WROTE = "wrote";
-    private static String CHANGED = "changed";
+    private static final String ON = "on";
+    private static final String WROTE = "wrote";
+    private static final String CHANGED = "changed";
 
     private static final String RE_ORIG_EMAIL = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
         + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})";
@@ -63,20 +63,20 @@ public class QuotedTextUtil {
     //private static final String RE_SCRIPT = "/<script\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\\/script>/gi";
     private static final String RE_ASCII_ART = "/^\\s*\\|.*\\|\\s*$/";
 
-    private static Matcher MATCHER_ORIG_EMAIL = Pattern.compile(RE_ORIG_EMAIL).matcher("");
-    private static Matcher MATCHER_ORIG_DATE = Pattern.compile(RE_ORIG_DATE).matcher("");
-    private static Matcher MATCHER_ORIG_INTRO = Pattern.compile(RE_ORIG_INTRO).matcher("");
-    private static Matcher MATCHER_ASCII_ART = Pattern.compile(RE_ASCII_ART).matcher("");
+    private static final Matcher MATCHER_ORIG_EMAIL = Pattern.compile(RE_ORIG_EMAIL).matcher("");
+    private static final Matcher MATCHER_ORIG_DATE = Pattern.compile(RE_ORIG_DATE).matcher("");
+    private static final Matcher MATCHER_ORIG_INTRO = Pattern.compile(RE_ORIG_INTRO).matcher("");
+    private static final Matcher MATCHER_ASCII_ART = Pattern.compile(RE_ASCII_ART).matcher("");
 
     // ID for an HR to mark it as ours
-    private static String HTML_SEP_ID = "zwchr";
-    private static short ELEMENT_NODE = 1;
+    private static final String HTML_SEP_ID = "zwchr";
+    private static final short ELEMENT_NODE = 1;
 
     /**
      * ignore these html tags while parsing html content
      */
-    private Set<String> ignoreNodes = new HashSet<String>(Arrays.asList(new String[] { "#comment",
-        "br", "script", "select", "style" }));
+    private final Set<String> ignoreNodes = new HashSet<>(Arrays.asList("#comment",
+        "br", "script", "select", "style"));
 
     /**
      * Each line of the email message classified into a type based on the regex
@@ -99,9 +99,9 @@ public class QuotedTextUtil {
         LINE("/^\\s*_{5,}\\s*$/"),
         SIG_SEP("");
 
-        private Matcher[] matcher;
+        private final Matcher[] matcher;
 
-        private LineType(String... regex) {
+        LineType(String... regex) {
             matcher = new Matcher[regex.length];
             for (int i = 0; i < regex.length; i++) {
                 matcher[i] = Pattern.compile(regex[i]).matcher("");
@@ -123,7 +123,7 @@ public class QuotedTextUtil {
     private class Fragment {
 
         private LineType type = null;
-        private ArrayList<String> block = new ArrayList<String>();
+        private ArrayList<String> block = new ArrayList<>();
 
         /**
          * @param type the line type
@@ -239,7 +239,7 @@ public class QuotedTextUtil {
         if (getCount(count, LineType.WROTE_STRONG) > 0) {
             ArrayList<String> unknownBlock = null;
             boolean foundSep = false;
-            Map<LineType, Boolean> afterSep = new HashMap<QuotedTextUtil.LineType, Boolean>();
+            Map<LineType, Boolean> afterSep = new HashMap<>();
 
             for (Fragment resFragment : results) {
                 LineType type = resFragment.getType();
@@ -257,8 +257,10 @@ public class QuotedTextUtil {
                 }
             }
 
-            boolean hasUnknown =  afterSep.get(LineType.UNKNOWN) == null ? false : afterSep.get(LineType.UNKNOWN);
-            boolean hasQuoted =  afterSep.get(LineType.QUOTED) == null ? false : afterSep.get(LineType.QUOTED);
+            boolean hasUnknown =
+                afterSep.get(LineType.UNKNOWN) != null && afterSep.get(LineType.UNKNOWN);
+            boolean hasQuoted =
+                afterSep.get(LineType.QUOTED) != null && afterSep.get(LineType.QUOTED);
             boolean mixed = hasUnknown && hasQuoted;
             boolean endsWithUnknown = (getCount(count, LineType.UNKNOWN) == 2)
                 && (results.get(results.size() - 1).getType() == LineType.UNKNOWN);
@@ -267,9 +269,7 @@ public class QuotedTextUtil {
             }
             if (unknownBlock != null && (!mixed || endsWithUnknown)) {
                 String originalText = getTextFromBlock(unknownBlock);
-                if (originalText != null) {
-                    return originalText;
-                }
+                return originalText;
             }
         }
         return null;
@@ -343,7 +343,7 @@ public class QuotedTextUtil {
         // If we have a STRONG separator (eg "--- Original Message ---"),
         // consider it authoritative and return the text that precedes it
         if (getCount(count, LineType.SEP_STRONG) > 0) {
-            ArrayList<String> block = new ArrayList<String>();
+            ArrayList<String> block = new ArrayList<>();
             for (Fragment resFragment : results) {
                 if (resFragment.getType() == LineType.SEP_STRONG) {
                     break;
@@ -372,7 +372,7 @@ public class QuotedTextUtil {
      */
     private ArrayList<String> classifyContent(String text, ArrayList<Fragment> results,
         ArrayList<String> unknownBlock, Map<LineType, Integer> count) {
-        ArrayList<String> currentBlock = new ArrayList<String>();
+        ArrayList<String> currentBlock = new ArrayList<>();
 
         LineType currentType = null;
         boolean isMerged = false;
@@ -435,7 +435,7 @@ public class QuotedTextUtil {
                 unknownBlock = (currentType == LineType.UNKNOWN ? currentBlock : unknownBlock);
                 int currentTypeCount = getCount(count, currentType);
                 count.put(currentType, currentTypeCount + 1);
-                currentBlock = new ArrayList<String>();
+                currentBlock = new ArrayList<>();
                 currentType = type;
             } else {
                 currentType = type;
@@ -488,9 +488,9 @@ public class QuotedTextUtil {
      * @return the original text content
      */
     private String getOriginalTextContent(String text) {
-        ArrayList<Fragment> results = new ArrayList<Fragment>();
-        ArrayList<String> unknownBlock = new ArrayList<String>();
-        Map<LineType, Integer> count = new HashMap<LineType, Integer>();
+        ArrayList<Fragment> results = new ArrayList<>();
+        ArrayList<String> unknownBlock = new ArrayList<>();
+        Map<LineType, Integer> count = new HashMap<>();
 
         unknownBlock = classifyContent(text, results, unknownBlock, count);
 
@@ -507,7 +507,7 @@ public class QuotedTextUtil {
      *         complete message content
      */
     private String getOriginalHtmlContent(String text) {
-        ArrayList<Node> nodeList = new ArrayList<Node>();
+        ArrayList<Node> nodeList = new ArrayList<>();
         Node previousNode = null, sepNode = null;
         LineType previousType = null;
         boolean done = false;

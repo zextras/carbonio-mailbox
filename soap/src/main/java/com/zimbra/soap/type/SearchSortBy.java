@@ -38,9 +38,9 @@ public enum SearchSortBy {
     readAsc(ZimbraSortBy.readAsc),
     readDesc(ZimbraSortBy.readDesc);
 
-    private ZimbraSortBy zsb;
+    private final ZimbraSortBy zsb;
 
-    private SearchSortBy(ZimbraSortBy zsb) {
+    SearchSortBy(ZimbraSortBy zsb) {
         this.zsb = zsb;
     }
 

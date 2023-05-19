@@ -35,7 +35,7 @@ public class XMPPComponentSelector {
      */
     @SuppressWarnings("unused")
     private XMPPComponentSelector() {
-        this((XMPPComponentBy) null, (String) null);
+        this(null, null);
     }
 
     public XMPPComponentSelector(XMPPComponentBy by, String value) {

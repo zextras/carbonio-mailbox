@@ -35,7 +35,7 @@ public class RemoteWipeRequest {
      */
     @SuppressWarnings("unused")
     private RemoteWipeRequest() {
-        this((DeviceId) null);
+        this(null);
     }
 
     public RemoteWipeRequest(DeviceId device) {

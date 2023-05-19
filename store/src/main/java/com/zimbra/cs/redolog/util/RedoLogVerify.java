@@ -43,7 +43,7 @@ import com.zimbra.cs.redolog.op.StoreIncomingBlob;
  */
 public class RedoLogVerify {
 
-    private static Options sOptions = new Options();
+    private static final Options sOptions = new Options();
 
     private static final String OPT_HELP = "h";
     private static final String OPT_QUIET = "q";
@@ -79,7 +79,7 @@ public class RedoLogVerify {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         CommandLineParser parser = new GnuParser();
         CommandLine cl = null;
         try {
@@ -91,7 +91,7 @@ public class RedoLogVerify {
     }
 
     private static class Params {
-        public Set<Integer> mboxIds = new HashSet<Integer>();
+        public Set<Integer> mboxIds = new HashSet<>();
         public boolean quiet = false;
         public boolean hideOffset = false;
         public boolean showBlob = false;
@@ -138,16 +138,16 @@ public class RedoLogVerify {
         public BadFile(File f, Throwable e) { file = f; error = e; }
     }
 
-    private PrintStream mOut;
+    private final PrintStream mOut;
     private Params mParams;
-    private List<BadFile> mBadFiles;
+    private final List<BadFile> mBadFiles;
 
     public RedoLogVerify(Params params, PrintStream out) {
         mOut = out;
         mParams = params;
         if (mParams == null)
             mParams = new Params();
-        mBadFiles = new ArrayList<BadFile>();
+        mBadFiles = new ArrayList<>();
     }
 
     public boolean scanLog(File logfile) throws IOException {
@@ -234,7 +234,7 @@ public class RedoLogVerify {
             try {
                 raf = new RandomAccessFile(logfile, "r");
                 raf.seek(startPos);
-                byte buf[] = new byte[count];
+                byte[] buf = new byte[count];
                 raf.read(buf, 0, count);
                 mOut.printf("Data near error offset %08x:", lastPosition);
                 mOut.println();
@@ -256,7 +256,7 @@ public class RedoLogVerify {
         return good;
     }
 
-    private static SimpleDateFormat sDateFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS z");
+    private static final SimpleDateFormat sDateFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS z");
 
     private static void printOp(PrintStream out, RedoableOp op, boolean hideOffset, long beginOffset, long size) {
         if (!hideOffset)
@@ -296,7 +296,7 @@ public class RedoLogVerify {
         if (all == null || all.length == 0)
             return true;
 
-        List<File> fileList = new ArrayList<File>(all.length);
+        List<File> fileList = new ArrayList<>(all.length);
         for (File f : all) {
             if (!f.isDirectory()) {
                 String fname = f.getName();

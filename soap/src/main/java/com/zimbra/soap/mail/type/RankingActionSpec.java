@@ -39,7 +39,7 @@ public class RankingActionSpec {
      */
     @SuppressWarnings("unused")
     private RankingActionSpec() {
-        this((String) null);
+        this(null);
     }
 
     public RankingActionSpec(String operation) {

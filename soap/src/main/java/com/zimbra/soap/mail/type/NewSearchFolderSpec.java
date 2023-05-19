@@ -76,7 +76,7 @@ public class NewSearchFolderSpec {
      */
     @SuppressWarnings("unused")
     private NewSearchFolderSpec() {
-        this((String) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     private NewSearchFolderSpec(String name, String query, String parentFolderId) {

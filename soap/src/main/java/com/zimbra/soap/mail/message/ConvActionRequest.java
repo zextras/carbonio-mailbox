@@ -36,7 +36,7 @@ public class ConvActionRequest {
      */
     @SuppressWarnings("unused")
     private ConvActionRequest() {
-        this((ConvActionSelector) null);
+        this(null);
     }
 
     public ConvActionRequest(ConvActionSelector action) {

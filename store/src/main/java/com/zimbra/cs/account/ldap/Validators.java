@@ -136,9 +136,8 @@ final public class Validators {
         // Skip license check if we are restoring a calendar resource
         o = attrs.get(Provisioning.A_objectClass);
         if (o instanceof String[]) {
-            Set<String> ocs = new HashSet<String>(Arrays.asList((String[])o));
-            if (ocs.contains(AttributeClass.OC_zimbraCalendarResource))
-                return true;
+            Set<String> ocs = new HashSet<>(Arrays.asList((String[]) o));
+          return ocs.contains(AttributeClass.OC_zimbraCalendarResource);
         }
 
         return false;
@@ -179,11 +178,11 @@ final public class Validators {
             if (args.length < 2)
                 return;
 
-            HashMap<String,Integer> cosCountMap = new HashMap<String,Integer>();
-            HashMap<String,Integer> cosLimitMap = new HashMap<String,Integer>();
-            HashMap<String,Integer> featureCountMap = new HashMap<String,Integer>();
-            HashMap<String,Integer> featureLimitMap = new HashMap<String,Integer>();
-            HashMap<String,Set<String>> cosFeatureMap = new HashMap<String,Set<String>>();
+            HashMap<String,Integer> cosCountMap = new HashMap<>();
+            HashMap<String,Integer> cosLimitMap = new HashMap<>();
+            HashMap<String,Integer> featureCountMap = new HashMap<>();
+            HashMap<String,Integer> featureLimitMap = new HashMap<>();
+            HashMap<String,Set<String>> cosFeatureMap = new HashMap<>();
 
             String emailAddress = (String) args[0];
             if (emailAddress == null)
@@ -264,7 +263,7 @@ final public class Validators {
             }
 
             Set<String> cosFeatures = getCosFeatures(prov, cosFeatureMap, desiredCosId, defaultCosId);
-            Set<String> desiredFeatures = new HashSet<String>();
+            Set<String> desiredFeatures = new HashSet<>();
             // add all new requested features
             if (attrs != null) {
                 for (Map.Entry<String,Object> entry : attrs.entrySet()) {
@@ -359,7 +358,7 @@ final public class Validators {
                     }
                 }
                 Map<String,Object> cosAttrs = cos.getAttrs(true);
-                Set<String> features = new HashSet<String>();
+                Set<String> features = new HashSet<>();
                 for (Map.Entry<String,Object> entry : cosAttrs.entrySet()) {
                     String name = entry.getKey();
                     if (name.toLowerCase().startsWith("zimbrafeature")
@@ -389,12 +388,12 @@ final public class Validators {
 
         private static class BuildDomainCounts extends SearchLdapVisitor {
 
-            private Provisioning prov;
-            private String domain;
-            private String defaultCos;
-            private Map<String,Integer> cosCount;
-            private Map<String,Integer> featureCount;
-            private Map<String,Set<String>> cosFeatureMap;
+            private final Provisioning prov;
+            private final String domain;
+            private final String defaultCos;
+            private final Map<String,Integer> cosCount;
+            private final Map<String,Integer> featureCount;
+            private final Map<String,Set<String>> cosFeatureMap;
 
             private BuildDomainCounts(Provisioning prov, String domain, String defaultCos,
                     Map<String,Integer> cosCount, Map<String,Integer> featureCount,
@@ -447,7 +446,7 @@ final public class Validators {
                     incrementCount(cosCount, cosId);
                     Set<String> cosFeatures = getCosFeatures(prov, cosFeatureMap, cosId, defaultCos);
 
-                    Set<String> acctFeatures = new HashSet<String>();
+                    Set<String> acctFeatures = new HashSet<>();
                     for (Map.Entry<String, Object> attr : attrs.entrySet()) {
                         String attrName = attr.getKey();
                         Object attrValue = attr.getValue();

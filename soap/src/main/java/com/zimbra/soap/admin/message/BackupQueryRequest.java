@@ -35,7 +35,7 @@ public class BackupQueryRequest {
      */
     @SuppressWarnings("unused")
     private BackupQueryRequest() {
-        this((BackupQuerySpec) null);
+        this(null);
     }
 
     public BackupQueryRequest(BackupQuerySpec query) {

@@ -30,13 +30,13 @@ import com.zimbra.cs.mailbox.Metadata;
 
 public class Period {
 
-    private ParsedDateTime mStart;  // DATE-TIME in UTC or local without TZ
-    private ParsedDateTime mEnd;    // DATE-TIME in UTC or local without TZ
-    private ParsedDuration mDuration;
+    private final ParsedDateTime mStart;  // DATE-TIME in UTC or local without TZ
+    private final ParsedDateTime mEnd;    // DATE-TIME in UTC or local without TZ
+    private final ParsedDuration mDuration;
 
     // If this is true, the period was originally specified with end time
     // rather than duration.
-    private boolean mHasEnd;
+    private final boolean mHasEnd;
 
     public Period(ParsedDateTime start, ParsedDateTime end) {
         mStart = start;
@@ -65,14 +65,14 @@ public class Period {
                 sb.append(mEnd.getDateTimePartString(false));
         } else {
             if (mDuration != null)
-                sb.append(mDuration.toString());
+                sb.append(mDuration);
         }
         return sb.toString();
     }
 
     public static Period parse(String value, ICalTimeZone tz, TimeZoneMap tzmap)
     throws ServiceException, ParseException {
-        String parsed[] = value.split("\\/", 2);
+        String[] parsed = value.split("\\/", 2);
         if (parsed.length != 2 ||
             parsed[0].length() == 0 || parsed[1].length() == 1)
             throw ServiceException.INVALID_REQUEST(
@@ -117,7 +117,7 @@ public class Period {
             startTime = ParsedDateTime.parse(start, tzmap, tz, tzmap.getLocalTimeZone());
         } catch (ParseException e) {
             throw ServiceException.INVALID_REQUEST(
-                    "Invalid PERIOD start time in metadata: " + meta.toString(), e);
+                    "Invalid PERIOD start time in metadata: " + meta, e);
         }
 
         String end = meta.get(FN_END, null);
@@ -127,7 +127,7 @@ public class Period {
                 endTime = ParsedDateTime.parse(end, tzmap, tz, tzmap.getLocalTimeZone());
             } catch (ParseException e) {
                 throw ServiceException.INVALID_REQUEST(
-                        "Invalid PERIOD end time in metadata: " + meta.toString(), e);
+                        "Invalid PERIOD end time in metadata: " + meta, e);
             }
             return new Period(startTime, endTime);
         } else {
@@ -135,7 +135,7 @@ public class Period {
             if (durStr == null)
                 throw ServiceException.INVALID_REQUEST(
                         "PERIOD in metadata missing both end time and duration: " +
-                        meta.toString(), null);
+                            meta, null);
             ParsedDuration duration = ParsedDuration.parse(durStr);
             return new Period(startTime, duration);
         }

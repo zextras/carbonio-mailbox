@@ -10,6 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface NumAttrInterface {
-    public NumAttrInterface create(int num);
-    public int getNum();
+    NumAttrInterface create(int num);
+    int getNum();
 }

@@ -7,7 +7,7 @@ package com.zimbra.cs.ephemeral.migrate;
 import com.zimbra.common.service.ServiceException;
 
 public class InvalidAttributeException extends ServiceException {
-    private String attribute;
+    private final String attribute;
 
     public InvalidAttributeException (String attribute) {
         super(String.format("Invalid attribute specified: %s", attribute), ServiceException.NOT_FOUND, RECEIVERS_FAULT);

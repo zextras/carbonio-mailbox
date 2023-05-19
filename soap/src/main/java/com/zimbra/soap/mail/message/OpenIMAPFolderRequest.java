@@ -13,9 +13,9 @@ import com.zimbra.soap.mail.type.ImapCursorInfo;
 
 @XmlRootElement(name=MailConstants.E_OPEN_IMAP_FOLDER_REQUEST)
 public class OpenIMAPFolderRequest {
-    public OpenIMAPFolderRequest() {};
+    public OpenIMAPFolderRequest() {}
 
-    public OpenIMAPFolderRequest(String folderId) {
+  public OpenIMAPFolderRequest(String folderId) {
         setFolderId(folderId);
     }
 

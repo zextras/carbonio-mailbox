@@ -81,7 +81,7 @@ public class SyncGalResponse {
         @XmlElement(name=MailConstants.E_CONTACT /* cn */, type=ContactInfo.class),
         @XmlElement(name=MailConstants.E_DELETED /* deleted */, type=Id.class)
     })
-    private List<Object> hits = Lists.newArrayList();
+    private final List<Object> hits = Lists.newArrayList();
 
     public SyncGalResponse() {
     }

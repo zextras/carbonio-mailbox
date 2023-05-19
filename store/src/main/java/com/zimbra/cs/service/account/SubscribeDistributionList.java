@@ -145,7 +145,7 @@ public class SubscribeDistributionList extends DistributionListDocumentHandler {
 
         private void composeAndSend() throws ServiceException {
             // list of owner emails
-            List<String> owners = new ArrayList<String>();
+            List<String> owners = new ArrayList<>();
 
             Group.GroupOwner.getOwnerEmails(group, owners);
 

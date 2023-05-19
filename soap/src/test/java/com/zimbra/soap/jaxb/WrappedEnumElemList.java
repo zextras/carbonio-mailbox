@@ -22,7 +22,7 @@ import com.google.common.collect.Lists;
 public class WrappedEnumElemList {
     @XmlElementWrapper(name="wrapper", required=false)
     @XmlElement(name="enum-entry", required=false)
-    private List<ViewEnum> entries = Lists.newArrayList();
+    private final List<ViewEnum> entries = Lists.newArrayList();
 
     public WrappedEnumElemList() { }
 

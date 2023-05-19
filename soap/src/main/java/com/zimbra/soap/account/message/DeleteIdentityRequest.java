@@ -39,7 +39,7 @@ public class DeleteIdentityRequest {
      */
     @SuppressWarnings("unused")
     private DeleteIdentityRequest() {
-        this((NameId) null);
+        this(null);
     }
 
     public DeleteIdentityRequest(NameId identity) {

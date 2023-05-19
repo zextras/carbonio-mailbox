@@ -46,7 +46,7 @@ public class GetAccountDistributionLists extends AccountDocumentHandler {
         
         Set<Group> ownerOf = null;
         List<Group> memberOf = null;
-        HashMap<String, String> via = new HashMap<String, String>();
+        HashMap<String, String> via = new HashMap<>();
         
         if (needOwnerOf) {
             ownerOf = Group.GroupOwner.getOwnedGroups(acct);

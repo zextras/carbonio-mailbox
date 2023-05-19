@@ -32,14 +32,14 @@ public class ZimletStatusCos {
      * @zm-api-field-description Information on zimlet status
      */
     @XmlElement(name=AdminConstants.E_ZIMLET, required=false)
-    private List<ZimletStatus> zimlets = Lists.newArrayList();
+    private final List<ZimletStatus> zimlets = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private ZimletStatusCos() {
-        this((String) null);
+        this(null);
     }
 
     public ZimletStatusCos(String name) {

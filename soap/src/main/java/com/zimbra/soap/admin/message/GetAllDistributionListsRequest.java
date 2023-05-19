@@ -35,7 +35,7 @@ public class GetAllDistributionListsRequest {
      */
      @SuppressWarnings("unused")
     private GetAllDistributionListsRequest() {
-        this((DomainSelector)null);
+        this(null);
     }
 
     public GetAllDistributionListsRequest(DomainSelector domain) {

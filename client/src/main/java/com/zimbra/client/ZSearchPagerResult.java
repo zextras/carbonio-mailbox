@@ -9,10 +9,10 @@ import org.json.JSONException;
 
 public class ZSearchPagerResult implements ToZJSONObject {
 
-    private ZSearchResult mSearchResult;
-    private int mActualPage;
-    private int mRequstedPage;
-    private int mLimit;
+    private final ZSearchResult mSearchResult;
+    private final int mActualPage;
+    private final int mRequstedPage;
+    private final int mLimit;
 
     ZSearchPagerResult(ZSearchResult result, int requestedPage, int actualPage, int limit) {
         mSearchResult = result;

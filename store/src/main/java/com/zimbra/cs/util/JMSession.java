@@ -339,7 +339,7 @@ public final class JMSession {
      * @param props
      */
     public static void addOAuth2Properties(String oauthToken, Properties props, String protocol) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         addOAuth2Properties(oauthToken, map, protocol);
         props.putAll(map);
     }
@@ -372,8 +372,8 @@ public final class JMSession {
      * Caches the set of SMTP hosts that we've failed to connect to.  Only
      * the key is used.  The value is ignored.
      */
-    private static Map<String, Object> sBadSmtpHosts =
-        Collections.synchronizedMap(new TimeoutMap<String, Object>(LC.smtp_host_retry_millis.intValue()));
+    private static final Map<String, Object> sBadSmtpHosts =
+        Collections.synchronizedMap(new TimeoutMap<>(LC.smtp_host_retry_millis.intValue()));
 
     public static void resetSmtpHosts() {
         ZimbraLog.smtp.debug("Resetting bad SMTP hosts.");
@@ -410,7 +410,7 @@ public final class JMSession {
      * hosts that were marked as bad with {@link #markSmtpHostBad}.
      */
     public static List<String> getSmtpHosts(Domain domain) throws ServiceException {
-        List<String> hosts = new ArrayList<String>();
+        List<String> hosts = new ArrayList<>();
         for (String host : lookupSmtpHosts(domain)) {
             if (!isHostBad(host)) {
                 hosts.add(host);

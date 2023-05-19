@@ -118,7 +118,7 @@ public final class ProxyTarget {
 
     public Pair<Element, Element> execute(Element request, ZimbraSoapContext zsc) throws ServiceException {
         if (zsc == null)
-            return new Pair<Element, Element>(null, dispatch(request));
+            return new Pair<>(null, dispatch(request));
 
         SoapProtocol proto = request instanceof Element.JSONElement ? SoapProtocol.SoapJS : SoapProtocol.Soap12;
         if (proto == SoapProtocol.Soap12 && zsc.getRequestProtocol() == SoapProtocol.Soap11) {
@@ -129,10 +129,9 @@ public final class ProxyTarget {
          * was supplied.  The server handler rejects a context which has account information but no authentication
          * info - see ZimbraSoapContext constructor - solution is to exclude the account info from the context.
          */
-        boolean excludeAccountDetails = false;
-        if (AccountConstants.CHANGE_PASSWORD_REQUEST.equals(request.getQName()) || MailConstants.RECOVER_ACCOUNT_REQUEST.equals(request.getQName())) {
-            excludeAccountDetails = true;
-        }
+        boolean excludeAccountDetails =
+            AccountConstants.CHANGE_PASSWORD_REQUEST.equals(request.getQName())
+                || MailConstants.RECOVER_ACCOUNT_REQUEST.equals(request.getQName());
         Element envelope = proto.soapEnvelope(request, zsc.toProxyContext(proto, excludeAccountDetails));
 
         SoapHttpTransport transport = null;
@@ -158,7 +157,7 @@ public final class ProxyTarget {
 
             Element response = transport.invokeRaw(envelope);
             Element body = transport.extractBodyElement(response);
-            return new Pair<Element, Element>(transport.getZimbraContext(), body);
+            return new Pair<>(transport.getZimbraContext(), body);
         } catch (IOException e) {
             throw ServiceException.PROXY_ERROR(e, mURL);
         } finally {

@@ -49,7 +49,7 @@ public class ClusterServiceInfo {
      */
     @SuppressWarnings("unused")
     private ClusterServiceInfo() {
-        this((String) null, (String) null, (String) null, (String) null);
+        this(null, null, null, null);
     }
 
     public ClusterServiceInfo(String name, String state, String owner, String lastOwner) {

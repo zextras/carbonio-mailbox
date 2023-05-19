@@ -35,7 +35,7 @@ public class LmtpMessageInputStream extends InputStream {
     private static final int CR = 13;
     private static final int LF = 10;
 
-    private PushbackInputStream mIn;
+    private final PushbackInputStream mIn;
     private int mMessageSize = 0;
     private boolean mDone = false;
     private LinkedList<Integer> mPrefix;
@@ -58,7 +58,7 @@ public class LmtpMessageInputStream extends InputStream {
         mIn = new PushbackInputStream(in);
         
         if (prefix != null) {
-            mPrefix = new LinkedList<Integer>();
+            mPrefix = new LinkedList<>();
             byte[] bytes = prefix.getBytes();
             for (byte b : bytes) {
                 mPrefix.add((int) b);

@@ -60,7 +60,7 @@ public class FileLogWriter implements LogWriter {
     // wait/notify between logger threads and fsync thread
     private final Object mFsyncCond = new Object();
 
-    private FileHeader mHeader;
+    private final FileHeader mHeader;
     private long mFirstOpTstamp;
     private long mLastOpTstamp;
     private long mCreateTime;
@@ -70,8 +70,8 @@ public class FileLogWriter implements LogWriter {
     private long mFileSize;
     private long mLastLogTime;
 
-    private long mFsyncIntervalMS;          // how many milliseconds fsync thread sleeps after each fync
-    private boolean mFsyncDisabled;
+    private final long mFsyncIntervalMS;          // how many milliseconds fsync thread sleeps after each fync
+    private final boolean mFsyncDisabled;
 
     private FsyncThread mFsyncer;   // fsync thread
 
@@ -82,7 +82,7 @@ public class FileLogWriter implements LogWriter {
     private int mLogCount;          // how many times log was called
     private int mFsyncCount;        // how many times fsync was called
 
-    private CommitNotifyQueue mCommitNotifyQueue;
+    private final CommitNotifyQueue mCommitNotifyQueue;
 
     public FileLogWriter(RedoLogManager redoLogMgr,
                          File logfile,
@@ -478,8 +478,8 @@ public class FileLogWriter implements LogWriter {
     // after sync to disk has occurred.  This way, there are fewer fsyncs
     // than there are calls to log(), resulting in improved throughput.
     private class FsyncThread extends Thread {
-        private long mSleepMS;
-        private Object mFsyncLock;  // synchronizes access to mRunning
+        private final long mSleepMS;
+        private final Object mFsyncLock;  // synchronizes access to mRunning
         private boolean mRunning;
 
         private static final long MIN_SLEEP_MILLIS = 1;
@@ -555,8 +555,8 @@ public class FileLogWriter implements LogWriter {
     // Commit callback handling
 
     private static class Notif {
-        private RedoCommitCallback mCallback;
-        private CommitId mCommitId;
+        private final RedoCommitCallback mCallback;
+        private final CommitId mCommitId;
 
         public Notif(RedoCommitCallback callback, CommitId cid) {
             mCallback = callback;

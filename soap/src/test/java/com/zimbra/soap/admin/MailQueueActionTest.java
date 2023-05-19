@@ -8,6 +8,7 @@ package com.zimbra.soap.admin;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -106,7 +107,7 @@ public class MailQueueActionTest {
         MailQueueActionRequest gsr = new MailQueueActionRequest(server);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         marshaller.marshal(gsr, out);
-        String xml = out.toString("UTF-8");
+        String xml = out.toString(StandardCharsets.UTF_8);
         if (LOG.isInfoEnabled())
             LOG.info("Xml:\n" + xml);
         Assert.assertTrue("Marshalled XML should end with 'MailQueueActionRequest>'",
@@ -126,7 +127,7 @@ public class MailQueueActionTest {
         MailQueueActionRequest gsr = new MailQueueActionRequest(server);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         marshaller.marshal(gsr, out);
-        String xml = out.toString("UTF-8");
+        String xml = out.toString(StandardCharsets.UTF_8);
         if (LOG.isInfoEnabled())
             LOG.info("Xml:\n" + xml);
         Assert.assertTrue("Marshalled XML should end with 'MailQueueActionRequest>'",

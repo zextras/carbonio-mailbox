@@ -36,7 +36,7 @@ public class GetMailQueueInfoRequest {
      */
     @SuppressWarnings("unused")
     private GetMailQueueInfoRequest() {
-        this((NamedElement) null);
+        this(null);
     }
 
     public GetMailQueueInfoRequest(NamedElement server) {

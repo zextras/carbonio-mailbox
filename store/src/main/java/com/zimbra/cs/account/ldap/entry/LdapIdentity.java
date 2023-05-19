@@ -18,7 +18,7 @@ import com.zimbra.cs.ldap.ZAttributes;
  */
 public class LdapIdentity extends Identity implements LdapEntry {
 
-    private String mDn;
+    private final String mDn;
 
     public LdapIdentity(Account acct, String dn, ZAttributes attrs, Provisioning prov) throws LdapException {
         super(acct, attrs.getAttrString(Provisioning.A_zimbraPrefIdentityName),

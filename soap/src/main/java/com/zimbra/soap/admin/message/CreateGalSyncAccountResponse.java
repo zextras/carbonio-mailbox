@@ -28,7 +28,7 @@ public class CreateGalSyncAccountResponse {
      */
     @SuppressWarnings("unused")
     private CreateGalSyncAccountResponse() {
-        this((AccountInfo) null);
+        this(null);
     }
 
     public CreateGalSyncAccountResponse(AccountInfo account) {

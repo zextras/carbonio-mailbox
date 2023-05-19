@@ -31,11 +31,11 @@ public class InviteInfo implements Comparable<InviteInfo>, Cloneable {
 
     /** ID of the MESSAGE which this invite was originally encoded in or a unique pseudo item ID associated
      *  with a component. (ZWC expects each exception to have a different mMsgId) */
-    private int mMsgId;
+    private final int mMsgId;
     /** component number in that message, or perhaps 0 if each component has a different mMsgId */
-    private int mComponentId;
-    private RecurId mRecurrenceId; // RECURID, in the iCal (rfc2445) sense
-    private String mMethod; // REQUEST, REPLY, PUBLISH, COUNTER, etc...
+    private final int mComponentId;
+    private final RecurId mRecurrenceId; // RECURID, in the iCal (rfc2445) sense
+    private final String mMethod; // REQUEST, REPLY, PUBLISH, COUNTER, etc...
 
     public InviteInfo(Invite inv) {
         mMsgId = inv.getMailItemId();

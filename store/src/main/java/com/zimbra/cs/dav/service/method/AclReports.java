@@ -72,7 +72,7 @@ public class AclReports extends Report {
 
     private ArrayList<DavResource> getMatchingResources(DavContext ctxt, Element query) throws DavException, ServiceException {
         // needs to be /principals/users, or apply-to-principal-collection-set is set.
-        ArrayList<DavResource> ret = new ArrayList<DavResource>();
+        ArrayList<DavResource> ret = new ArrayList<>();
         boolean applyToPrincipalCollection = query.element(DavElements.E_APPLY_TO_PRINCIPAL_COLLECTION_SET) != null;
         String path = ctxt.getUri();
         if (!applyToPrincipalCollection && !path.startsWith(UrlNamespace.PRINCIPALS_PATH))
@@ -96,7 +96,7 @@ public class AclReports extends Report {
             Element prop = ps.element(DavElements.E_PROP);
             Element match = ps.element(DavElements.E_MATCH);
             if (prop != null && match != null) {
-                Element e = (Element)prop.elements().get(0);
+                Element e = prop.elements().get(0);
                 ret.addAll(getMatchingPrincipals(ctxt, e.getQName(), match.getText(), type));
             }
         }
@@ -106,7 +106,7 @@ public class AclReports extends Report {
 
     private ArrayList<DavResource> getMatchingPrincipals(DavContext ctxt, QName prop, String match, GalSearchType type) throws DavException, ServiceException {
         Provisioning prov = Provisioning.getInstance();
-        ArrayList<DavResource> ret = new ArrayList<DavResource>();
+        ArrayList<DavResource> ret = new ArrayList<>();
         Account authAccount = ctxt.getAuthAccount();
         if (prop.equals(DavElements.E_DISPLAYNAME)) {
             if (!authAccount.isFeatureGalEnabled() || !authAccount.isFeatureGalAutoCompleteEnabled())
@@ -157,7 +157,7 @@ public class AclReports extends Report {
     }
 
     private ArrayList<DavResource> getAclPrincipals(DavContext ctxt) throws DavException, ServiceException {
-        ArrayList<DavResource> ret = new ArrayList<DavResource>();
+        ArrayList<DavResource> ret = new ArrayList<>();
         DavResource res = ctxt.getRequestedResource();
         if (!(res instanceof MailItemResource))
             return ret;
@@ -182,7 +182,7 @@ public class AclReports extends Report {
         if (ctxt.getDepth() != Depth.zero) {
             throw new DavException.REPORTwithDisallowedDepthException(query.getQName().getName(), ctxt.getDepth());
         }
-        ArrayList<DavResource> ret = new ArrayList<DavResource>();
+        ArrayList<DavResource> ret = new ArrayList<>();
         RequestProp reqProp = ctxt.getRequestProp();
         DavResponse resp = ctxt.getDavResponse();
         // The response body for a successful request MUST be a DAV:multistatus XML element.  In the case where there
@@ -211,7 +211,7 @@ public class AclReports extends Report {
     private static final ArrayList<Pair<QName,Element>> PRINCIPAL_SEARCH_PROPERTIES;
 
     static {
-        PRINCIPAL_SEARCH_PROPERTIES = new ArrayList<Pair<QName,Element>>();
+        PRINCIPAL_SEARCH_PROPERTIES = new ArrayList<>();
         addSearchProperty(DavElements.E_DISPLAYNAME, "Full name");
         addSearchProperty(DavElements.E_EMAIL_ADDRESS_SET, "Email Address");
         addSearchProperty(DavElements.E_CALENDAR_USER_TYPE, "User type");
@@ -223,7 +223,7 @@ public class AclReports extends Report {
         Element elem = DocumentHelper.createElement(DavElements.E_DESCRIPTION);
         elem.addAttribute(DavElements.E_LANG, DavElements.LANG_EN_US);
         elem.setText(desc);
-        PRINCIPAL_SEARCH_PROPERTIES.add(new Pair<QName,Element>(prop, elem));
+        PRINCIPAL_SEARCH_PROPERTIES.add(new Pair<>(prop, elem));
     }
 
     /**

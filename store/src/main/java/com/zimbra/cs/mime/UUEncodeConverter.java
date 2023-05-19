@@ -83,7 +83,7 @@ public class UUEncodeConverter extends MimeVisitor {
                         String filename = FileUtil.trimFilename(sb.toString().trim());
                         if (c != -1 && filename.length() > 0) {
                             if (uufiles == null)
-                                uufiles = new ArrayList<UUDecodedFile>(3);
+                                uufiles = new ArrayList<>(3);
                             try {
                                 uufiles.add(new UUDecodedFile(is, filename, start));
                                 // check to make sure that the caller's OK with altering the message

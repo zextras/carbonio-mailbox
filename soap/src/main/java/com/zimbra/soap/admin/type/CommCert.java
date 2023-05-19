@@ -37,7 +37,7 @@ public class CommCert {
      * @zm-api-field-description intermediateCA information
      */
     @XmlElement(name=CertMgrConstants.E_intermediateCA /* intermediateCA */, required=false)
-    private List<AidAndFilename> intermediateCAs = Lists.newArrayList();
+    private final List<AidAndFilename> intermediateCAs = Lists.newArrayList();
 
     public CommCert() {
     }

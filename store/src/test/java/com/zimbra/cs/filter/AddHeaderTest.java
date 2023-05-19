@@ -36,7 +36,7 @@ import com.zimbra.cs.service.util.ItemId;
 
 public class AddHeaderTest {
 
-    private static String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
+    private static final String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
             + "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
             + "Received: from localhost (localhost [127.0.0.1])\n"
@@ -45,7 +45,7 @@ public class AddHeaderTest {
             + "from: test2@zimbra.com\n"
             + "Subject: example\n"
             + "to: test@zimbra.com\n";
-    private static String[] sampleBaseMsg2 = {
+    private static final String[] sampleBaseMsg2 = {
             "Return-Path: user1@domain1.zimbra.com",
             "Received: from domain1.zimbra.com (LHLO zcs-ubuntu.local) (192.168.44.131)\r\n"
           + " by zcs-ubuntu.local with LMTP; Wed, 7 Dec 2016 15:10:58 +0900 (JST)",
@@ -420,8 +420,8 @@ public class AddHeaderTest {
             Assert.assertTrue(e.hasMoreElements());
 
             // The 1st and 2nd line of the headers
-            Assert.assertEquals("Return-Path: user1@domain1.zimbra.com", (String) e.nextElement());
-            Assert.assertEquals("X-Dummy-Header: new value", (String) e.nextElement());
+            Assert.assertEquals("Return-Path: user1@domain1.zimbra.com", e.nextElement());
+            Assert.assertEquals("X-Dummy-Header: new value", e.nextElement());
 
             // The rest of the headers
             int index = 1;

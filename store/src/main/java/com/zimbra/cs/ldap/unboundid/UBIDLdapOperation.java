@@ -35,7 +35,7 @@ import java.util.List;
 abstract class UBIDLdapOperation {
   private static final boolean STATS_ENABLED = true;
 
-  private static Log debugLogger = ZimbraLog.ldap;
+  private static final Log debugLogger = ZimbraLog.ldap;
 
   static final GetConnection GET_CONNECTION = new GetConnection();
   static final CreateEntry CREATE_ENTRY = new CreateEntry();

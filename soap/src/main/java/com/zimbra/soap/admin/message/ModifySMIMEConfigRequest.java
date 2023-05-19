@@ -88,7 +88,7 @@ public class ModifySMIMEConfigRequest {
      */
     @SuppressWarnings("unused")
     private ModifySMIMEConfigRequest() {
-        this((SMIMEConfigModifications) null, (DomainSelector) null);
+        this(null, null);
     }
 
     public ModifySMIMEConfigRequest(SMIMEConfigModifications config,

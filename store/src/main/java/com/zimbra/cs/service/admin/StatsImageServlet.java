@@ -44,7 +44,7 @@ import com.zimbra.cs.servlet.ZimbraServlet;
 
 public class StatsImageServlet extends ZimbraServlet {
 
-    private static Log mLog = LogFactory.getLog(StatsImageServlet.class);
+    private static final Log mLog = LogFactory.getLog(StatsImageServlet.class);
 
     private static final String IMG_NOT_AVAIL = "data_not_available.gif";
 
@@ -76,11 +76,9 @@ public class StatsImageServlet extends ZimbraServlet {
         String serverAddr = "";
     	
         String noDefaultImg = req.getParameter("nodef");
-        boolean noDefault = false;
-        if (noDefaultImg != null && !noDefaultImg.equals("") && noDefaultImg.equals("1")){
-            noDefault = true;
-        }
-        String reqPath = req.getRequestURI(); 
+        boolean noDefault =
+            noDefaultImg != null && !noDefaultImg.equals("") && noDefaultImg.equals("1");
+      String reqPath = req.getRequestURI();
         try { 
         	
         	
@@ -141,7 +139,7 @@ public class StatsImageServlet extends ZimbraServlet {
 	        if (mLog.isDebugEnabled())
 	            mLog.debug("received request to:("+reqPath+")");
 
-	        String reqParts[] = reqPath.split("/");
+	        String[] reqParts = reqPath.split("/");
 	
 	        String reqFilename = reqParts[3];
 	        imgName = LC.stats_img_folder.value() + File.separator + reqFilename;        	

@@ -487,7 +487,7 @@ public final class ZimbraLog {
             return Collections.emptySet();
         }
 
-        Set<String> names = new HashSet<String>();
+        Set<String> names = new HashSet<>();
         if (name != null) {
             names.add(name);
         }
@@ -497,10 +497,10 @@ public final class ZimbraLog {
         return names;
     }
 
-    private static final ThreadLocal<Map<String, String>> sContextMap = new ThreadLocal<Map<String, String>>();
-    private static final ThreadLocal<String> sContextString = new ThreadLocal<String>();
+    private static final ThreadLocal<Map<String, String>> sContextMap = new ThreadLocal<>();
+    private static final ThreadLocal<String> sContextString = new ThreadLocal<>();
 
-    private static final Set<String> CONTEXT_KEY_ORDER = new LinkedHashSet<String>();
+    private static final Set<String> CONTEXT_KEY_ORDER = new LinkedHashSet<>();
 
     static {
         CONTEXT_KEY_ORDER.add(C_NAME);
@@ -510,7 +510,7 @@ public final class ZimbraLog {
 
         // Initialize log category descriptions. Categories that don't have a description
         // won't be listed in zmprov online help.
-        Map<String, String> descriptions = new TreeMap<String, String>();
+        Map<String, String> descriptions = new TreeMap<>();
         descriptions.put(misc.getCategory(), "Miscellaneous");
         descriptions.put(index.getCategory(), "Indexing operations");
         descriptions.put(search.getCategory(), "Search operations");
@@ -563,7 +563,7 @@ public final class ZimbraLog {
     }
 
     // this is called from offline and only at LC init so we are taking chances with race
-    private static final Set<String> CONTEXT_FILTER = new HashSet<String>();
+    private static final Set<String> CONTEXT_FILTER = new HashSet<>();
 
     public static void addContextFilters(String filters) {
         for (String item : filters.split(","))
@@ -592,7 +592,7 @@ public final class ZimbraLog {
         } else {
             // Add
             if (contextMap == null) {
-                contextMap = new LinkedHashMap<String, String>();
+                contextMap = new LinkedHashMap<>();
                 sContextMap.set(contextMap);
             }
             String oldValue = contextMap.put(key, value);

@@ -106,7 +106,7 @@ public class WorkingHours {
     }
 
     private static class DayOfWeekName {
-        private static ZWeekDay[] sNames = new ZWeekDay[] {
+        private static final ZWeekDay[] sNames = new ZWeekDay[] {
             ZWeekDay.SU, ZWeekDay.MO, ZWeekDay.TU, ZWeekDay.WE, ZWeekDay.TH, ZWeekDay.FR, ZWeekDay.SA
         };
         public static String lookup(int dayOfWeek) throws ServiceException {
@@ -170,7 +170,7 @@ public class WorkingHours {
 
     private static class HoursByDay {
 
-        private Map<Integer /* 1..7 */, TimeRange> mHours = new HashMap<Integer, TimeRange>(7);
+        private final Map<Integer /* 1..7 */, TimeRange> mHours = new HashMap<>(7);
 
         public HoursByDay() {
             HourMinute hhmm0000 = new HourMinute(0, 0);
@@ -191,16 +191,16 @@ public class WorkingHours {
             if (prefStr.endsWith(","))
                 throw ServiceException.INVALID_REQUEST("Working hours spec should not have trailing commas", null);
 
-            int daySpecified[] = new int[] { 0, 0, 0, 0, 0, 0, 0 };  // tracks which days of the week are specified
+            int[] daySpecified = new int[] { 0, 0, 0, 0, 0, 0, 0 };  // tracks which days of the week are specified
 
-            String days[] = prefStr.split(",");
+            String[] days = prefStr.split(",");
             if (days.length != 7)
                 throw ServiceException.INVALID_REQUEST("Working hours spec must specify all days of a week", null);
             for (int i = 0; i < days.length; ++i) {
                 if (days[i].endsWith(":"))
                     throw ServiceException.INVALID_REQUEST(
                             "Working hours spec day section \"" + days[i] + "\" should not have trailing colons", null);
-                String parts[] = days[i].split(":");
+                String[] parts = days[i].split(":");
                 if (parts.length != 4)
                     throw ServiceException.INVALID_REQUEST(
                             "Working hours spec day section \"" + days[i] + "\" must have 4 colon-separated parts", null);
@@ -247,9 +247,9 @@ public class WorkingHours {
     }
 
     private static class StartSpec {
-        private ICalTimeZone mTZ;
-        private long mUtcTime;
-        private Calendar mCal;
+        private final ICalTimeZone mTZ;
+        private final long mUtcTime;
+        private final Calendar mCal;
 
         public StartSpec(long time, ICalTimeZone tz) {
             mTZ = tz;

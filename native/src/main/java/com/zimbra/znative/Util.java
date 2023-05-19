@@ -88,7 +88,7 @@ public final class Util {
             PrintWriter pw = new PrintWriter(sw);
             pw.println(message);
             t.printStackTrace(pw);
-            System.err.println("Fatal error: terminating: " + sw.toString());
+            System.err.println("Fatal error: terminating: " + sw);
         } finally {
             Runtime.getRuntime().halt(1);
         }

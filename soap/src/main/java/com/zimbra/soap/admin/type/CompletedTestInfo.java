@@ -40,7 +40,7 @@ public class CompletedTestInfo {
      */
     @SuppressWarnings("unused")
     private CompletedTestInfo() {
-        this((String) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public CompletedTestInfo(String name, String execSeconds, String className) {

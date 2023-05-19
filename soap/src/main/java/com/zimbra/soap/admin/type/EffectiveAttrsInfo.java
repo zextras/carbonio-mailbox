@@ -36,14 +36,14 @@ public class EffectiveAttrsInfo {
      * @zm-api-field-description Attributes
      */
     @XmlElement(name=AdminConstants.E_A /* a */, required=false)
-    private List <EffectiveAttrInfo> attrs = Lists.newArrayList();
+    private final List <EffectiveAttrInfo> attrs = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private EffectiveAttrsInfo() {
-        this((Boolean) null);
+        this(null);
     }
 
     private EffectiveAttrsInfo(Boolean all) {

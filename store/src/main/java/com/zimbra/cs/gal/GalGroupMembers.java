@@ -42,7 +42,7 @@ public class GalGroupMembers {
         protected abstract Set<String> getAllMembers() throws ServiceException;
 
         protected Set<String> createMembersSet() {
-            return new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            return new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         }
     }
 
@@ -66,7 +66,7 @@ public class GalGroupMembers {
     }
 
     public static class ContactDLMembers extends DLMembers {
-        private Contact mContact;
+        private final Contact mContact;
         private JSONArray mMembers;
 
         public ContactDLMembers(Contact contact) {
@@ -136,7 +136,7 @@ public class GalGroupMembers {
     }
 
     public static class GalContactDLMembers extends DLMembers {
-        private GalContact mGalContact;
+        private final GalContact mGalContact;
         private String[] mMembers;
         private Set<String> mMembersSet;
 
@@ -193,8 +193,8 @@ public class GalGroupMembers {
     }
 
     public static class LdapDLMembers extends DLMembers {
-        private Group group;
-        private String[] allMembers;
+        private final Group group;
+        private final String[] allMembers;
 
         public LdapDLMembers(Group group) throws ServiceException {
             this.group = group;
@@ -228,8 +228,8 @@ public class GalGroupMembers {
     }
 
     public static class LdapHABMembers extends DLMembers {
-        private Group group;
-        private List<HABGroupMember> habMembers;
+        private final Group group;
+        private final List<HABGroupMember> habMembers;
 
         public LdapHABMembers(Group group) throws ServiceException {
             this.group = group;
@@ -268,7 +268,7 @@ public class GalGroupMembers {
     }
 
     public static class ProxiedDLMembers extends DLMembersResult {
-        private Element mResponse;
+        private final Element mResponse;
         Set<String> mMembersSet;
 
         public ProxiedDLMembers(Element response) {

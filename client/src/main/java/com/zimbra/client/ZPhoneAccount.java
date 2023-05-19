@@ -11,10 +11,10 @@ import com.zimbra.common.soap.VoiceConstants;
 import com.zimbra.common.service.ServiceException;
 
 public class ZPhoneAccount {
-    private ZFolder folder;
-    private ZPhone phone;
-    private ZCallFeatures callFeatures;
-	private boolean hasVoiceMail;
+    private final ZFolder folder;
+    private final ZPhone phone;
+    private final ZCallFeatures callFeatures;
+	private final boolean hasVoiceMail;
     private String phoneType;
 
 	public ZPhoneAccount(Element e, ZMailbox mbox) throws ServiceException {

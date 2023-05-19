@@ -38,7 +38,7 @@ import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.ZTestWatchman;
 
 public class EnvelopeTest {
-    private static String sampleMsg =
+    private static final String sampleMsg =
               "from: tim@example.com\n"
             + "to: testEnv@zimbra.com\n"
             + "Subject: Example\n";

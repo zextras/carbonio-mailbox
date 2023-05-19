@@ -53,9 +53,9 @@ public class WaitSetMgr {
         }
     };
 
-    private static final HashMap<String, WaitSetBase> sWaitSets = new HashMap<String, WaitSetBase>();
+    private static final HashMap<String, WaitSetBase> sWaitSets = new HashMap<>();
 
-    private static final HashMap<String /*AccountId*/, List<String /*WaitSetId*/>> sWaitSetsByAccountId = new HashMap<String, List<String>>();
+    private static final HashMap<String /*AccountId*/, List<String /*WaitSetId*/>> sWaitSetsByAccountId = new HashMap<>();
 
     private static final int WAITSET_SWEEP_DELAY = 1000 * 60; // once every minute
 
@@ -94,7 +94,7 @@ public class WaitSetMgr {
         if (allAccts) {
             AllAccountsWaitSet aws = AllAccountsWaitSet.create(ownerAccountId, id, defaultInterest);
             ws = aws;
-            errors = new ArrayList<WaitSetError>();
+            errors = new ArrayList<>();
         } else {
             SomeAccountsWaitSet sws = new SomeAccountsWaitSet(ownerAccountId, id, defaultInterest);
             errors = sws.addAccountErrors(add);
@@ -128,13 +128,13 @@ public class WaitSetMgr {
             sWaitSets.put(id, ws);
             List<String> list = sWaitSetsByAccountId.get(ownerAccountId);
             if (list == null) {
-                list = new ArrayList<String>();
+                list = new ArrayList<>();
                 sWaitSetsByAccountId.put(ownerAccountId, list);
             }
             list.add(id);
 
             // return!
-            return new Pair<String, List<WaitSetError>>(id, errors);
+            return new Pair<>(id, errors);
         }
     }
 
@@ -223,7 +223,7 @@ public class WaitSetMgr {
                 sWaitSets.put(id, ws);
                 List<String> list = sWaitSetsByAccountId.get(ownerAccountId);
                 if (list == null) {
-                    list = new ArrayList<String>();
+                    list = new ArrayList<>();
                     sWaitSetsByAccountId.put(ownerAccountId, list);
                 }
                 list.add(id);
@@ -245,7 +245,7 @@ public class WaitSetMgr {
 
     public static List<IWaitSet> getAll() {
         synchronized(sWaitSets) {
-            List<IWaitSet> toRet = new ArrayList<IWaitSet>(sWaitSets.size());
+            List<IWaitSet> toRet = new ArrayList<>(sWaitSets.size());
             toRet.addAll(sWaitSets.values());
             return toRet;
         }

@@ -27,7 +27,7 @@ public class GetAvailableCsvFormatsResponse {
      * @zm-api-field-description The known CSV formats that can be used for import and export of addressbook.
      */
     @XmlElement(name=AccountConstants.E_CSV, required=false)
-    private List<NamedElement> csvFormats = Lists.newArrayList();
+    private final List<NamedElement> csvFormats = Lists.newArrayList();
 
     public GetAvailableCsvFormatsResponse() {
     }

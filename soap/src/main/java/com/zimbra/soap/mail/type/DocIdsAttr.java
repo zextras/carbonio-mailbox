@@ -15,6 +15,6 @@ public class DocIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private DocIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

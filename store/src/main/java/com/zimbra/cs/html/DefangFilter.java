@@ -86,7 +86,7 @@ public class DefangFilter extends DefaultFilter {
     private String reqVirtualHost = null;
 
     /** enable same host post request for a form in email */
-    private static boolean sameHostFormPostCheck = DebugConfig.defang_block_form_same_host_post_req;
+    private static final boolean sameHostFormPostCheck = DebugConfig.defang_block_form_same_host_post_req;
 
     //
     // Constants
@@ -108,7 +108,7 @@ public class DefangFilter extends DefaultFilter {
     private static final Pattern VALID_IMG_FILE = Pattern.compile(DebugConfig.defangValidImgFile);
     private static final Pattern VALID_INT_IMG = Pattern.compile(DebugConfig.defangValidIntImg,
             Pattern.CASE_INSENSITIVE);
-    private static List<String> ATTRIBUTES_CAN_ALLOW_SCRIPTS= Arrays.asList(DebugConfig.defangACanAllowScripts.split(","));
+    private static final List<String> ATTRIBUTES_CAN_ALLOW_SCRIPTS= Arrays.asList(DebugConfig.defangACanAllowScripts.split(","));
 
     // matches the file format that convertd uses so it doesn't get 'pnsrc'ed
     private static final Pattern VALID_CONVERTD_FILE = Pattern
@@ -124,13 +124,13 @@ public class DefangFilter extends DefaultFilter {
     // information
 
     /** attr Set cache */
-    private static HashMap<String, HashSet<String>> mAttrSetCache = new HashMap<String, HashSet<String>>();
+    private static final HashMap<String, HashSet<String>> mAttrSetCache = new HashMap<>();
 
     /** Accepted elements. */
-    private static HashMap<String, HashSet<String>> mAcceptedElements = new HashMap<String, HashSet<String>>();
+    private static final HashMap<String, HashSet<String>> mAcceptedElements = new HashMap<>();
 
     /** Removed elements. */
-    private static HashMap<String, Object> mRemovedElements = new HashMap<String, Object>();
+    private static final HashMap<String, Object> mRemovedElements = new HashMap<>();
 
     // state
 
@@ -158,10 +158,10 @@ public class DefangFilter extends DefaultFilter {
     protected int mStyleDepth;
 
     //private static String[] STD_CORE = { "id", "class", "title", "style" };
-    private static String CORE = "id,class,title,style,";
-    private static String LANG = "dir,lang,xml:lang,";
-    private static String CORE_LANG = CORE+LANG;
-    private static String KBD = "accesskey,tabindex,";
+    private static final String CORE = "id,class,title,style,";
+    private static final String LANG = "dir,lang,xml:lang,";
+    private static final String CORE_LANG = CORE+LANG;
+    private static final String KBD = "accesskey,tabindex,";
 
     static {
         // set which elements to accept
@@ -331,8 +331,8 @@ public class DefangFilter extends DefaultFilter {
             mAcceptedElements.put(element, set);
             return;
         }
-        set = new HashSet<String>();
-        String attrs[] = attributes.toLowerCase().split(",");
+        set = new HashSet<>();
+        String[] attrs = attributes.toLowerCase().split(",");
         if (attrs != null && attrs.length > 0) {
             for (int i=0; i < attrs.length; i++) {
                 //deal with consecutive commas
@@ -853,7 +853,7 @@ public class DefangFilter extends DefaultFilter {
      */
     @VisibleForTesting
     String extractAndSanitizeAsciiData(String data) {
-        char c[] = data.toCharArray();
+        char[] c = data.toCharArray();
         StringBuilder sanitizedStrg = new StringBuilder();
         StringBuilder asciiData = new StringBuilder();
         for (int i = 0; i < c.length; ++i) {

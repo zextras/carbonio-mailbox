@@ -69,7 +69,7 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 public class ZimbraServlet extends HttpServlet {
   private static final long serialVersionUID = 5025244890767551679L;
 
-  private static Log mLog = LogFactory.getLog(ZimbraServlet.class);
+  private static final Log mLog = LogFactory.getLog(ZimbraServlet.class);
 
   private static final String PARAM_ALLOWED_PORTS = "allowed.ports";
 
@@ -109,7 +109,7 @@ public class ZimbraServlet extends HttpServlet {
 
   private static final int MAX_PROXY_HOPCOUNT = 3;
 
-  private static Map<String, ZimbraServlet> sServlets = new HashMap<String, ZimbraServlet>();
+  private static final Map<String, ZimbraServlet> sServlets = new HashMap<>();
 
   private int[] mAllowedPorts;
 
@@ -126,7 +126,7 @@ public class ZimbraServlet extends HttpServlet {
               "Must specify comma-separated list of port numbers for "
                   + PARAM_ALLOWED_PORTS
                   + " parameter");
-        List<Integer> allowedPorts = new ArrayList<Integer>();
+        List<Integer> allowedPorts = new ArrayList<>();
         int port;
         for (int i = 0; i < vals.length; i++) {
           try {
@@ -266,7 +266,7 @@ public class ZimbraServlet extends HttpServlet {
       throws AuthTokenException {
     AuthToken authToken = AuthProvider.getAuthToken(req, isAdminReq);
     if (authToken == null) {
-      Map<Object, Object> engineCtxt = new HashMap<Object, Object>();
+      Map<Object, Object> engineCtxt = new HashMap<>();
       engineCtxt.put(SoapServlet.SERVLET_REQUEST, req);
       authToken = AuthProvider.getJWToken(null, engineCtxt);
     }
@@ -389,7 +389,7 @@ public class ZimbraServlet extends HttpServlet {
       BasicCookieStore state)
       throws IOException, ServiceException, HttpException {
     // create an HTTP client with the same cookies
-    javax.servlet.http.Cookie cookies[] = req.getCookies();
+    javax.servlet.http.Cookie[] cookies = req.getCookies();
     String hostname = method.getURI().getHost();
     boolean hasZMAuth = hasZimbraAuthCookie(state);
     boolean hasJwtSalt = hasJWTSaltCookie(state);

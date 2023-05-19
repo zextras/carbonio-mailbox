@@ -25,7 +25,7 @@ public enum GrantGranteeType {
         guest((byte)7),   /** access is granted to a non-Zimbra email address and a password */
         key((byte)8);     /** access is granted to a non-Zimbra email address and an accesskey */
 
-        private byte byteEquiv;
+        private final byte byteEquiv;
 
         GrantGranteeType(byte asByte) {
             byteEquiv = asByte;

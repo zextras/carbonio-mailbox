@@ -39,8 +39,8 @@ public class RightViaInfo {
      */
     @SuppressWarnings("unused")
     private RightViaInfo() {
-        this((TargetWithType) null, (GranteeWithType) null,
-                (CheckedRight) null);
+        this(null, null,
+            null);
     }
 
     public RightViaInfo(TargetWithType target, GranteeWithType grantee,

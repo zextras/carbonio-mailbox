@@ -12,7 +12,7 @@ import org.apache.lucene.analysis.NormalizeCharMap;
 import org.apache.lucene.analysis.CharStream;
 
 public class HalfwidthKanaVoicedMappingFilter extends MappingCharFilter {
-    private static NormalizeCharMap normMap = new NormalizeCharMap();
+    private static final NormalizeCharMap normMap = new NormalizeCharMap();
     static {
         normMap.add("\uff76\uff9e","\u30ac");
         normMap.add("\uff77\uff9e","\u30ae");

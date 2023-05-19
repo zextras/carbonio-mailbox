@@ -96,7 +96,7 @@ public final class AttachmentQuery extends LuceneQuery {
         if (types.size() == 1) {
             return new AttachmentQuery(Lists.newArrayList(types).get(0));
         } else {
-            List<Query> clauses = new ArrayList<Query>(types.size() * 2 - 1);
+            List<Query> clauses = new ArrayList<>(types.size() * 2 - 1);
             for (String contentType : types) {
                 if (!clauses.isEmpty()) {
                     clauses.add(new ConjQuery(ConjQuery.Conjunction.OR));

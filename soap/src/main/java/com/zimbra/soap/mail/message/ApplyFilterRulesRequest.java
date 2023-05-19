@@ -40,7 +40,7 @@ public class ApplyFilterRulesRequest {
      */
     @XmlElementWrapper(name=MailConstants.E_FILTER_RULES /* filterRules */, required=true)
     @XmlElement(name=MailConstants.E_FILTER_RULE /* filterRule */, required=false)
-    private List<NamedElement> filterRules = Lists.newArrayList();
+    private final List<NamedElement> filterRules = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag comma-sep-msg-ids

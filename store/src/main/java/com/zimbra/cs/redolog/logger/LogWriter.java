@@ -30,13 +30,13 @@ public interface LogWriter {
 	 * Opens the log.
 	 * @throws IOException
 	 */
-	public void open() throws IOException;
+  void open() throws IOException;
 
 	/**
 	 * Closes the log.
 	 * @throws IOException
 	 */
-	public void close() throws IOException;
+  void close() throws IOException;
 
 	/**
 	 * Logs an entry.
@@ -50,7 +50,7 @@ public interface LogWriter {
 	 *                    on the logger implementation
 	 * @throws IOException
 	 */
-	public void log(RedoableOp op, InputStream data, boolean synchronous) throws IOException;
+  void log(RedoableOp op, InputStream data, boolean synchronous) throws IOException;
     
     /**
      * Make sure all writes are committed to disk, or whatever the log
@@ -60,58 +60,58 @@ public interface LogWriter {
      * reasons.
      * @throws IOException
      */
-    public void flush() throws IOException;
+    void flush() throws IOException;
 
 	/**
 	 * Returns the current size of the log.  Used for rollover tracking.
 	 * @return
 	 */
-	public long getSize();
+  long getSize();
 
 	/**
 	 * Returns the time of the log creation.
 	 * @return
 	 */
-	public long getCreateTime();
+  long getCreateTime();
 
 	/**
      * Returns the time of the last entry logged.
      * @return
      */
-    public long getLastLogTime();
+  long getLastLogTime();
 
 	/**
 	 * Whether the current log is empty, i.e. has no entries logged.
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean isEmpty() throws IOException;
+  boolean isEmpty() throws IOException;
 
 	/**
 	 * Whether the underlying logfile exists.
 	 * @return
 	 */
-	public boolean exists();
+  boolean exists();
 
 	/**
 	 * Returns the absolute pathname for the underlying logfile.
 	 * @return
 	 */
-	public String getAbsolutePath();
+  String getAbsolutePath();
 
 	/**
 	 * Renames the underlying logfile.
 	 * @param dest
 	 * @return true if and only if the renaming succeeded; false otherwise
 	 */
-	public boolean renameTo(File dest);
+  boolean renameTo(File dest);
 
 	/**
 	 * Deletes the underlying logfile.  The logger should be closed first
 	 * if open.
 	 * @return true if and only if the deletion succeeded; false otherwise
 	 */
-	public boolean delete();
+  boolean delete();
 
     /**
      * Performs log rollover.
@@ -120,7 +120,7 @@ public interface LogWriter {
      * @return java.io.File object for rolled over logfile
      * @throws IOException
      */
-    public File rollover(LinkedHashMap /*<TxnId, RedoableOp>*/ activeOps)
+    File rollover(LinkedHashMap /*<TxnId, RedoableOp>*/ activeOps)
     throws IOException;
 
     /**
@@ -129,5 +129,5 @@ public interface LogWriter {
      * @return
      * @throws IOException
      */
-    public long getSequence();
+    long getSequence();
 }

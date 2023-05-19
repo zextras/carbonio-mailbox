@@ -68,7 +68,7 @@ public class FirstServlet extends HttpServlet {
         }
     }
     
-    private static void setupOutputRotation() throws FileNotFoundException, SecurityException, IOException {
+    private static void setupOutputRotation() throws SecurityException, IOException {
         long configMillis = LC.mailboxd_output_rotate_interval.intValue() * 1000;
         
         if (configMillis <= 0)
@@ -97,7 +97,7 @@ public class FirstServlet extends HttpServlet {
 
     private static boolean mInitialized = false;
 
-    private static Object mInitializedCondition = new Object(); 
+    private static final Object mInitializedCondition = new Object();
         
     public static void waitForInitialization() {
         synchronized (mInitializedCondition) {

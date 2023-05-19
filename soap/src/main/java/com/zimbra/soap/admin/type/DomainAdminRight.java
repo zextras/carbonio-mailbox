@@ -50,7 +50,7 @@ public class DomainAdminRight {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_RIGHTS, required=true)
     @XmlElement(name=AdminConstants.E_R, required=false)
-    private List <RightWithName> rights = Lists.newArrayList();
+    private final List <RightWithName> rights = Lists.newArrayList();
 
     public DomainAdminRight() {
         this(null, null, null);

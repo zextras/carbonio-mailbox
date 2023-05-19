@@ -15,8 +15,8 @@ import com.zimbra.common.util.ZimbraLog;
  */
 public class ForwardingEphemeralStore extends EphemeralStore {
 
-    private EphemeralStore currentStore;
-    private EphemeralStore futureStore;
+    private final EphemeralStore currentStore;
+    private final EphemeralStore futureStore;
 
     public ForwardingEphemeralStore(EphemeralStore primary, EphemeralStore secondary) {
         this.currentStore = primary;
@@ -106,8 +106,8 @@ public class ForwardingEphemeralStore extends EphemeralStore {
 
     public static class Factory extends EphemeralStore.Factory {
 
-        private EphemeralStore.Factory currentFactory;
-        private EphemeralStore.Factory futureFactory;
+        private final EphemeralStore.Factory currentFactory;
+        private final EphemeralStore.Factory futureFactory;
 
         public Factory(EphemeralStore.Factory primaryFactory, EphemeralStore.Factory fallbackFactory) {
             this.currentFactory = primaryFactory;

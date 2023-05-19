@@ -11,9 +11,9 @@ import java.util.Map;
 import com.zimbra.common.service.ServiceException;
 
 public interface AdminAttrs {
-    public void setAttrs(Iterable<Attr> attrs);
-    public void setAttrs(Map<String, ? extends Object> attrs) throws ServiceException;
-    public void addAttr(Attr attr);
-    public void addAttr(String n, String value);
-    public List<Attr> getAttrs();
+    void setAttrs(Iterable<Attr> attrs);
+    void setAttrs(Map<String, ? extends Object> attrs) throws ServiceException;
+    void addAttr(Attr attr);
+    void addAttr(String n, String value);
+    List<Attr> getAttrs();
 }

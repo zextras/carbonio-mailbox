@@ -529,7 +529,7 @@ public class Notification implements LmtpCallback {
 
     	String recipientDomain = getDomain(rcpt);
 
-        Map<String, String> vars = new HashMap<String, String>();
+        Map<String, String> vars = new HashMap<>();
         vars.put("SENDER_ADDRESS", ZInternetHeader.decode(msg.getSender()));
         vars.put("RECIPIENT_ADDRESS", rcpt);
         vars.put("RECIPIENT_DOMAIN", recipientDomain);
@@ -613,7 +613,7 @@ public class Notification implements LmtpCallback {
                         folderName = folder.getName();
                         folderId = Integer.toString(folder.getId());
                     }
-                    Map<String, String> vars = new HashMap<String, String>();
+                    Map<String, String> vars = new HashMap<>();
                     vars.put("ACCOUNT_DOMAIN", getDomain(account.getName()));
                     vars.put("ACCOUNT_ADDRESS", account.getName());
                     vars.put("MESSAGE_SUBJECT", Mime.getSubject(msg));

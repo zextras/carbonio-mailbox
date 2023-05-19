@@ -29,7 +29,7 @@ public class SSLSocketFactoryWrapper extends SSLSocketFactory  {
     }
 
     @Override
-    public Socket createSocket(String host, int port, InetAddress localAddress, int localPort) throws IOException, UnknownHostException {
+    public Socket createSocket(String host, int port, InetAddress localAddress, int localPort) throws IOException {
         return delegate.createSocket(host, port, localAddress, localPort);
     }
 

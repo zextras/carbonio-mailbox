@@ -74,7 +74,7 @@ public class ConversationInfo {
      * @zm-api-field-description Custom metadata information
      */
     @XmlElement(name=MailConstants.E_METADATA /* meta */, required=false)
-    private List<MailCustomMetadata> metadatas = Lists.newArrayList();
+    private final List<MailCustomMetadata> metadatas = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag subject
@@ -91,10 +91,10 @@ public class ConversationInfo {
         @XmlElement(name=MailConstants.E_CHAT /* chat */, type=ChatMessageInfo.class),
         @XmlElement(name=MailConstants.E_MSG /* m */, type=MessageInfo.class)
     })
-    private List<MessageInfo> messages = Lists.newArrayList();
+    private final List<MessageInfo> messages = Lists.newArrayList();
 
     public ConversationInfo() {
-        this((String) null);
+        this(null);
     }
 
     public ConversationInfo(String id) {

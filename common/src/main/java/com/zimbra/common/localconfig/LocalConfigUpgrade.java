@@ -23,10 +23,10 @@ import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.ZimbraLog;
 
 public abstract class LocalConfigUpgrade {
-    private static String O_HELP = "h";
-    private static String O_BUG = "b";
-    private static String O_CONFIG = "c";
-    private static String O_TAG = "t";
+    private static final String O_HELP = "h";
+    private static final String O_BUG = "b";
+    private static final String O_CONFIG = "c";
+    private static final String O_TAG = "t";
     
     private static Options getAllOptions() {
         Options options = new Options();
@@ -259,7 +259,7 @@ public abstract class LocalConfigUpgrade {
     private final static HashMap<String,LocalConfigUpgrade> sUpgrades;
     
     static {
-	sUpgrades = new HashMap<String,LocalConfigUpgrade>();
+	sUpgrades = new HashMap<>();
 	new LocalConfigUpgradeSwitchToCMS("37842");
 	new LocalConfigUpgradeSwitchToServerJVM("37844");
 	new LocalConfigUpgradeUnsetMailboxdJavaHome("37802");

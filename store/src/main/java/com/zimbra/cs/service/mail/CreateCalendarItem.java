@@ -44,7 +44,7 @@ public class CreateCalendarItem extends CalendarRequest {
         {
             return CalendarUtils.parseInviteForCreate(account, getItemType(), inviteElem, null, null, false, CalendarUtils.RECUR_ALLOWED);
         }
-    };
+    }
 
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
@@ -94,16 +94,13 @@ public class CreateCalendarItem extends CalendarRequest {
         if (!dat.mInvite.isOrganizer()) {
             // neverSent is always false for attendee users.
             dat.mInvite.setNeverSent(false);
-        } else if (!dat.mInvite.hasOtherAttendees()) {
+        } else // neverSent is set to false when attendees are notified.
+            // This is the case of organizer saving an invite with attendees, but without sending the notification.
+            if (!dat.mInvite.hasOtherAttendees()) {
             // neverSent is always false for appointments without attendees.
             dat.mInvite.setNeverSent(false);
-        } else if (hasRecipients) {
-            // neverSent is set to false when attendees are notified.
-            dat.mInvite.setNeverSent(false);
-        } else {
-            // This is the case of organizer saving an invite with attendees, but without sending the notification.
-            dat.mInvite.setNeverSent(true);
-        }
+        } else
+                dat.mInvite.setNeverSent(!hasRecipients);
         boolean forceSend = request.getAttributeBool(MailConstants.A_CAL_FORCESEND, true);
         MailSendQueue sendQueue = new MailSendQueue();
         try {

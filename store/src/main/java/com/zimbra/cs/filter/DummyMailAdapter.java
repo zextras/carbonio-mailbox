@@ -23,8 +23,8 @@ import org.apache.jsieve.mail.SieveMailException;
 
 public class DummyMailAdapter implements MailAdapter {
 
-    private List mHeaders = new ArrayList(1);
-    private List mActions = new ArrayList(1);
+    private final List mHeaders = new ArrayList(1);
+    private final List mActions = new ArrayList(1);
 
     public void setContext(SieveContext context) {
     }

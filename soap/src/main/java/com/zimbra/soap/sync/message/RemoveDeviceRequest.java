@@ -36,7 +36,7 @@ public class RemoveDeviceRequest {
      */
     @SuppressWarnings("unused")
     private RemoveDeviceRequest() {
-        this((DeviceId) null);
+        this(null);
     }
 
     public RemoveDeviceRequest(DeviceId device) {

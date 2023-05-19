@@ -37,7 +37,7 @@ public class GetPermission extends MailDocumentHandler {
         Set<Right> specificRights = null;
         for (Element eACE : request.listElements(MailConstants.E_ACE)) {
             if (specificRights == null)
-                specificRights = new HashSet<Right>();
+                specificRights = new HashSet<>();
             specificRights.add(RightManager.getInstance().getUserRight(eACE.getAttribute(MailConstants.A_RIGHT)));
         }
         

@@ -39,14 +39,14 @@ public class AccountSessionInfo {
      * @zm-api-field-description Information on sessions
      */
     @XmlElement(name="s", required=false)
-    private List<SessionInfo> sessions = Lists.newArrayList();
+    private final List<SessionInfo> sessions = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private AccountSessionInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public AccountSessionInfo(String name, String id) {

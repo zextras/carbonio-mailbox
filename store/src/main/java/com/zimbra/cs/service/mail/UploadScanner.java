@@ -19,7 +19,7 @@ import com.zimbra.cs.service.FileUploadServlet.Upload;
 public abstract class UploadScanner {
 
     public static final class Result {
-        private String mDesc;
+        private final String mDesc;
         
         Result(String desc) {
             mDesc = desc;
@@ -34,7 +34,7 @@ public abstract class UploadScanner {
     public static final Result REJECT = new Result("REJECT");
     public static final Result ERROR = new Result("ERROR");
     
-    private static List<UploadScanner> sRegisteredScanners = new LinkedList<UploadScanner>();
+    private static final List<UploadScanner> sRegisteredScanners = new LinkedList<>();
     
     public static void registerScanner(UploadScanner scanner) {
     	sRegisteredScanners.add(scanner);

@@ -16,8 +16,8 @@ import com.zimbra.cs.ldap.LdapTODO.*;
  */
 @TODO
 public interface ZSearchResultEnumeration {
-    public ZSearchResultEntry next() throws LdapException;
-    public boolean hasMore() throws LdapException;
-    public void close() throws LdapException;
+    ZSearchResultEntry next() throws LdapException;
+    boolean hasMore() throws LdapException;
+    void close() throws LdapException;
 }
 

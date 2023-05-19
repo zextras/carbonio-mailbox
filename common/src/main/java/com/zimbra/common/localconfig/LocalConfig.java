@@ -50,8 +50,8 @@ public class LocalConfig {
         return mConfigFile;
     }
 
-    private final Map<String, String> mConfiguredKeys = new HashMap<String, String>();
-    private final Map<String, String> mExpanded = new HashMap<String, String>();
+    private final Map<String, String> mConfiguredKeys = new HashMap<>();
+    private final Map<String, String> mExpanded = new HashMap<>();
 
     public void set(String key, String value) {
         mConfiguredKeys.put(key, value);
@@ -111,7 +111,7 @@ public class LocalConfig {
         if (rawValue == null)
             return null;
 
-        return expandDeep(key, new HashSet<String>());
+        return expandDeep(key, new HashSet<>());
     }
 
 
@@ -278,7 +278,7 @@ public class LocalConfig {
      * Return all keys - known or otherwise.
      */
     String[] allKeys() {
-        Set<String> union = new HashSet<String>();
+        Set<String> union = new HashSet<>();
 
         // Add known keys.
         String[] knownKeys = KnownKey.getAll();

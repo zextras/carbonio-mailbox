@@ -15,8 +15,8 @@ import com.zimbra.common.soap.MailConstants;
 
 public class ZIdHit implements ZImapSearchHit {
 
-    private String id;
-    private String sortField;
+    private final String id;
+    private final String sortField;
 
     public ZIdHit(Element e) throws ServiceException {
         id = e.getAttribute(MailConstants.A_ID);

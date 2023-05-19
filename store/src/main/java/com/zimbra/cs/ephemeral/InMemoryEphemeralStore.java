@@ -16,10 +16,10 @@ import com.zimbra.common.service.ServiceException;
 
 public class InMemoryEphemeralStore extends EphemeralStore {
 
-    private Map<String, Multimap<String, String>> storeMap;
+    private final Map<String, Multimap<String, String>> storeMap;
 
     public InMemoryEphemeralStore() {
-        storeMap = new HashMap<String, Multimap<String, String>>();
+        storeMap = new HashMap<>();
         setAttributeEncoder(new DynamicExpirationEncoder());
     }
 
@@ -81,8 +81,8 @@ public class InMemoryEphemeralStore extends EphemeralStore {
     @Override
     public void deleteData(EphemeralLocation location) throws ServiceException {
         String[] locationHierarchy = location.getLocation();
-        String storeKey = Joiner.on("|").join(locationHierarchy);;
-        storeMap.remove(storeKey);
+        String storeKey = Joiner.on("|").join(locationHierarchy);
+      storeMap.remove(storeKey);
     }
 
 

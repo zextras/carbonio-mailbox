@@ -30,7 +30,7 @@ public class GetAttributeInfoResponse {
      * @zm-api-field-description Attribute descriptions
      */
     @XmlElement(name=AdminConstants.E_A /* a */, required=false)
-    private List<AttributeDescription> attrs = Lists.newArrayList();
+    private final List<AttributeDescription> attrs = Lists.newArrayList();
 
     public GetAttributeInfoResponse() {
     }

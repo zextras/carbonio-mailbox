@@ -35,9 +35,9 @@ import java.util.*;
  *     intervals that are right next to each other (ie 9-10busy, 10-11busy becomes 9-11busy)
  */
 public class FreeBusy implements Iterable<FreeBusy.Interval> {
-  private String mName;
-  private long mStart;
-  private long mEnd;
+  private final String mName;
+  private final long mStart;
+  private final long mEnd;
   protected IntervalList mList;
 
   // free from start to end
@@ -248,7 +248,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     public String toString() {
       StringBuilder toRet = new StringBuilder("\n");
       for (Interval cur = mHead; cur != null; cur = cur.getNext()) {
-        toRet.append("\t").append(cur.toString()).append("\n");
+        toRet.append("\t").append(cur).append("\n");
       }
       return toRet.toString();
     }
@@ -285,7 +285,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
       } else {
         mStatus = IcalXmlStrMap.FBTYPE_FREE;
       }
-      mInstances = new LinkedHashSet<FBInstance>();
+      mInstances = new LinkedHashSet<>();
     }
 
     public Interval(long start, long end, String status, FBInstance instance) {
@@ -452,7 +452,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
   public static final String FBTYPE_OUTLOOK_TENTATIVE = "TENTATIVE";
   public static final String FBTYPE_OUTLOOK_OUTOFOFFICE = "OOF";
 
-  private static String sBusyOrder[] = new String[5];
+  private static final String[] sBusyOrder = new String[5];
 
   static {
     // The lower index, the busier.
@@ -512,9 +512,9 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
         toRet.append(MAILTO);
       toRet.append(attendee).append(NL);
     }
-    toRet.append("DTSTAMP:").append(now.toString()).append(NL);
-    toRet.append("DTSTART:").append(startTime.toString()).append(NL);
-    toRet.append("DTEND:").append(endTime.toString()).append(NL);
+    toRet.append("DTSTAMP:").append(now).append(NL);
+    toRet.append("DTSTART:").append(startTime).append(NL);
+    toRet.append("DTEND:").append(endTime).append(NL);
     if (url != null) toRet.append("URL:").append(url).append(NL);
 
     //		BEGIN:VFREEBUSY
@@ -553,7 +553,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
       ParsedDateTime curStart = ParsedDateTime.fromUTCTime(cur.getStart());
       ParsedDateTime curEnd = ParsedDateTime.fromUTCTime(cur.getEnd());
 
-      toRet.append(curStart.toString()).append('/').append(curEnd.toString()).append(NL);
+      toRet.append(curStart).append('/').append(curEnd).append(NL);
     }
 
     toRet.append("END:VFREEBUSY").append(NL);
@@ -615,7 +615,6 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
   public String toString() {
     return mList.toString();
   }
-  ;
 
   public long getStartTime() {
     return mStart;
@@ -626,11 +625,11 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
   }
 
   public static class FBInstance implements Comparable<FBInstance> {
-    private long mStartTime;
-    private long mEndTime;
-    private int mApptId;
-    private long mRecurIdDt;
-    private String mFreeBusy;
+    private final long mStartTime;
+    private final long mEndTime;
+    private final int mApptId;
+    private final long mRecurIdDt;
+    private final String mFreeBusy;
 
     public FBInstance(String fb, long start, long end, int apptId, long recurIdDt) {
       mFreeBusy = fb;
@@ -697,7 +696,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     String name = null;
     ParsedDateTime dtStart = null;
     ParsedDateTime dtEnd = null;
-    List<Interval> intervals = new ArrayList<Interval>();
+    List<Interval> intervals = new ArrayList<>();
     TimeZoneMap tzmap = new TimeZoneMap(ICalTimeZone.getUTC());
     Iterator<ZProperty> propIter = comp.getPropertyIterator();
     while (propIter.hasNext()) {
@@ -709,14 +708,14 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
           try {
             dtStart = ParsedDateTime.parse(prop, tzmap);
           } catch (ParseException e) {
-            throw ServiceException.INVALID_REQUEST("bad DTSTART: " + prop.toString(), e);
+            throw ServiceException.INVALID_REQUEST("bad DTSTART: " + prop, e);
           }
           break;
         case DTEND:
           try {
             dtEnd = ParsedDateTime.parse(prop, tzmap);
           } catch (ParseException e) {
-            throw ServiceException.INVALID_REQUEST("bad DTEND: " + prop.toString(), e);
+            throw ServiceException.INVALID_REQUEST("bad DTEND: " + prop, e);
           }
           break;
         case ORGANIZER:

@@ -267,7 +267,7 @@ public abstract class DocumentHandler {
     /** Returns whether the client making the SOAP request is localhost. */
     protected boolean clientIsLocal(Map<String, Object> context) {
         HttpServletRequest req = (HttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-        return req == null ? true : "127.0.0.1".equals(req.getRemoteAddr());
+        return req == null || "127.0.0.1".equals(req.getRemoteAddr());
     }
 
     /** Updates the {@link ZimbraSoapContext} to treat the specified account
@@ -554,7 +554,7 @@ public abstract class DocumentHandler {
         request.detach();
         if (isLocal && engine != null) {
             // executing on same server; just hand back to the SoapEngine
-            Map<String, Object> contextTarget = new HashMap<String, Object>(context);
+            Map<String, Object> contextTarget = new HashMap<>(context);
             contextTarget.put(SoapEngine.ZIMBRA_ENGINE, engine);
             contextTarget.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
             if (ZimbraLog.soap.isDebugEnabled()) {
@@ -680,7 +680,7 @@ public abstract class DocumentHandler {
 
                 if (UA_ZCO.equalsIgnoreCase(app) || UA_ZCB.equalsIgnoreCase(app) || UA_MIGRATION.equalsIgnoreCase(app)) {
                     try {
-                        return new Pair<String, Version>(app, new Version(version, false));
+                        return new Pair<>(app, new Version(version, false));
                     } catch (ServiceException e) {
                         ZimbraLog.soap.debug("unable to parse zimbra connector client version", e);
                     }

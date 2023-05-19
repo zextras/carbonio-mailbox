@@ -11,32 +11,32 @@ public interface FolderStore extends BaseFolderInfo {
     /** Returns the folder's name.  Note that this is the folder's name (e.g. <code>"foo"</code>),
      * not its absolute pathname (e.g. <code>"/baz/bar/foo"</code>) for which, @see #getPath()
      */
-    public MailboxStore getMailboxStore();
-    public String getName();
-    public ItemIdentifier getFolderItemIdentifier();
-    public String getFolderIdAsString();
-    public boolean isHidden();
-    public boolean isDeletable();
-    public boolean hasSubfolders();
-    public boolean isInboxFolder();
-    public boolean isSearchFolder();
-    public boolean isContactsFolder();
-    public boolean isChatsFolder();
-    public boolean isSyncFolder();
-    public boolean isIMAPSubscribed();
-    public boolean inTrash();
-    public boolean isVisibleInImap(boolean displayMailFoldersOnly);
-    public List<ACLGrant> getACLGrants();
-    public int getUIDValidity();
+    MailboxStore getMailboxStore();
+    String getName();
+    ItemIdentifier getFolderItemIdentifier();
+    String getFolderIdAsString();
+    boolean isHidden();
+    boolean isDeletable();
+    boolean hasSubfolders();
+    boolean isInboxFolder();
+    boolean isSearchFolder();
+    boolean isContactsFolder();
+    boolean isChatsFolder();
+    boolean isSyncFolder();
+    boolean isIMAPSubscribed();
+    boolean inTrash();
+    boolean isVisibleInImap(boolean displayMailFoldersOnly);
+    List<ACLGrant> getACLGrants();
+    int getUIDValidity();
     /** @return number of items in folder, including IMAP \Deleted item */
-    public int getImapMessageCount();
+    int getImapMessageCount();
     /** @return number of unread items in folder, including IMAP \Deleted items */
-    public int getImapUnreadCount();
+    int getImapUnreadCount();
     /** Returns a counter that increments each time an item is added to the folder. */
-    public int getImapUIDNEXT();
+    int getImapUIDNEXT();
     /** Returns the change number of the last time
      *  (a) an item was inserted into the folder or
      *  (b) an item in the folder had its flags or tags changed.
      *  This data is used to enable IMAP client synchronization via the CONDSTORE extension. */
-    public int getImapMODSEQ();
+    int getImapMODSEQ();
 }

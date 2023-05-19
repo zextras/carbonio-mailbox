@@ -14,7 +14,7 @@ public class TwoFactorOptions {
         SHA256("HmacSHA256"),
         SHA512("HmacSHA512");
 
-        private String algorithm;
+        private final String algorithm;
 
         HashAlgorithm(String lookupLabel) {
             this.algorithm = lookupLabel;
@@ -28,9 +28,9 @@ public class TwoFactorOptions {
     public enum CodeLength {
         SIX(6), EIGHT(8);
 
-        private int num;
+        private final int num;
 
-        private CodeLength(int n) {
+        CodeLength(int n) {
             this.num = n;
         }
 
@@ -49,6 +49,6 @@ public class TwoFactorOptions {
     }
 
     public enum Encoding {
-        BASE32, BASE64;
+        BASE32, BASE64
     }
 }

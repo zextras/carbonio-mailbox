@@ -66,11 +66,11 @@ public class DumpSessions extends AdminDocumentHandler {
                 
                 if (groupByAccount) {
                     // stick the sessions into a big map organized by the account ID
-                    HashMap<String/*accountid*/, List<Session>> map = new HashMap<String, List<Session>>();
+                    HashMap<String/*accountid*/, List<Session>> map = new HashMap<>();
                     for (Session s : sessions) {
                         List<Session> list = map.get(s.getAuthenticatedAccountId());
                         if (list == null) {
-                            list = new ArrayList<Session>();
+                            list = new ArrayList<>();
                             map.put(s.getAuthenticatedAccountId(), list);
                         }
                         list.add(s);

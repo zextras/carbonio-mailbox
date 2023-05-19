@@ -26,7 +26,7 @@ public class FolderId {
      */
     @SuppressWarnings("unused")
     private FolderId() {
-        this((String) null);
+        this(null);
     }
 
     public FolderId(String id) {

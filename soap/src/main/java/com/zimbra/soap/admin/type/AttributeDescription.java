@@ -34,7 +34,7 @@ public class AttributeDescription {
      */
     @SuppressWarnings("unused")
     private AttributeDescription() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public AttributeDescription(String name, String description) {

@@ -33,7 +33,7 @@ public class ModifyZimletRequest {
      */
     @SuppressWarnings("unused")
     private ModifyZimletRequest() {
-        this((ZimletAclStatusPri) null);
+        this(null);
     }
 
     public ModifyZimletRequest(ZimletAclStatusPri zimlet) {

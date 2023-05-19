@@ -25,7 +25,7 @@ public class RenewMobileGatewayAppTokenRequest {
      */
     @ZimbraUniqueElement
     @XmlElement(name = AccountConstants.E_APP_ID /* appId */, required = true)
-    private String appId;
+    private final String appId;
 
     /**
      * @zm-api-field-tag app-key
@@ -33,7 +33,7 @@ public class RenewMobileGatewayAppTokenRequest {
      */
     @ZimbraUniqueElement
     @XmlElement(name = AccountConstants.E_APP_KEY /* appKey */, required = true)
-    private String appKey;
+    private final String appKey;
 
     public RenewMobileGatewayAppTokenRequest(String appId, String appKey) {
         this.appId = appId;

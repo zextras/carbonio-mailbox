@@ -137,7 +137,6 @@ public class TestAttributeManager {
             since,
             null);
     am.addAttribute(ai);
-    ;
 
     since =
         Lists.newArrayList(
@@ -171,7 +170,6 @@ public class TestAttributeManager {
             since,
             null);
     am.addAttribute(ai);
-    ;
 
     since = Lists.newArrayList(new Version(Version.FUTURE));
     ai =

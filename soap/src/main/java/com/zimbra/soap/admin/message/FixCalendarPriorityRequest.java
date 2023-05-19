@@ -45,14 +45,14 @@ public class FixCalendarPriorityRequest {
      * @zm-api-field-description Accounts
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT, required=false)
-    private List<NamedElement> accounts = Lists.newArrayList();
+    private final List<NamedElement> accounts = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private FixCalendarPriorityRequest() {
-        this((Boolean) null);
+        this(null);
     }
 
     public FixCalendarPriorityRequest(Boolean sync) {

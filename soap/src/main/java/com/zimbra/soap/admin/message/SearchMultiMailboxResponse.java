@@ -34,7 +34,7 @@ public class SearchMultiMailboxResponse {
      * @zm-api-field-description Search hits
      */
     @XmlElement(name=MailConstants.E_MSG /* m */, required=false)
-    private List<MessageInfo> msgs = Lists.newArrayList();
+    private final List<MessageInfo> msgs = Lists.newArrayList();
 
     public SearchMultiMailboxResponse() {
     }

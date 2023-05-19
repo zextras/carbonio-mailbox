@@ -12,24 +12,24 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface AlarmInfoInterface {
-    public AlarmInfoInterface createFromAction(String action);
-    public void setDescription(String description);
-    public void setSummary(String summary);
-    public String getAction();
-    public String getDescription();
-    public String getSummary();
+    AlarmInfoInterface createFromAction(String action);
+    void setDescription(String description);
+    void setSummary(String summary);
+    String getAction();
+    String getDescription();
+    String getSummary();
 
-    public void setTriggerInterface(AlarmTriggerInfoInterface trigger);
-    public void setRepeatInterface(DurationInfoInterface repeat);
-    public void setAttachInterface(CalendarAttachInterface attach);
-    public void setAttendeeInterfaces(
-            Iterable<CalendarAttendeeInterface> attendees);
-    public void addAttendeeInterface(CalendarAttendeeInterface attendee);
-    public void setXPropsInterface(Iterable<XPropInterface> xProps);
-    public void addXPropInterface(XPropInterface xProp);
-    public AlarmTriggerInfoInterface getTriggerInfo();
-    public DurationInfoInterface getRepeatInfo();
-    public CalendarAttachInterface getAttachInfo();
-    public List<CalendarAttendeeInterface> getAttendeeInterfaces();
-    public List<XPropInterface> getXPropInterfaces();
+    void setTriggerInterface(AlarmTriggerInfoInterface trigger);
+    void setRepeatInterface(DurationInfoInterface repeat);
+    void setAttachInterface(CalendarAttachInterface attach);
+    void setAttendeeInterfaces(
+        Iterable<CalendarAttendeeInterface> attendees);
+    void addAttendeeInterface(CalendarAttendeeInterface attendee);
+    void setXPropsInterface(Iterable<XPropInterface> xProps);
+    void addXPropInterface(XPropInterface xProp);
+    AlarmTriggerInfoInterface getTriggerInfo();
+    DurationInfoInterface getRepeatInfo();
+    CalendarAttachInterface getAttachInfo();
+    List<CalendarAttendeeInterface> getAttendeeInterfaces();
+    List<XPropInterface> getXPropInterfaces();
 }

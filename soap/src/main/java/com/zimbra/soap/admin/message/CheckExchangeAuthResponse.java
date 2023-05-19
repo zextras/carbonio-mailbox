@@ -35,7 +35,7 @@ public class CheckExchangeAuthResponse {
      */
     @SuppressWarnings("unused")
     private CheckExchangeAuthResponse() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public CheckExchangeAuthResponse(String code, String message) {

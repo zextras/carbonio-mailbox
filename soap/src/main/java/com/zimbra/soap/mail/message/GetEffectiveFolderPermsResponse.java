@@ -29,7 +29,7 @@ public class GetEffectiveFolderPermsResponse {
      */
     @SuppressWarnings("unused")
     private GetEffectiveFolderPermsResponse() {
-        this((Rights) null);
+        this(null);
     }
 
     public GetEffectiveFolderPermsResponse(Rights folder) {

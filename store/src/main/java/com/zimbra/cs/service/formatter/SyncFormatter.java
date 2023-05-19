@@ -60,18 +60,18 @@ public class SyncFormatter extends Formatter {
      * add to content as well as http headers for now (unless told not to)...
      */
     private static List<Pair<String, String>> getXZimbraHeaders(MailItem item) {
-        List<Pair<String, String>> hdrs = new ArrayList<Pair<String, String>>();
-        hdrs.add(new Pair<String, String>("X-Zimbra-ItemId", item.getId() + ""));
-        hdrs.add(new Pair<String, String>("X-Zimbra-FolderId", item.getFolderId() + ""));
-        hdrs.add(new Pair<String, String>("X-Zimbra-Tags", TagUtil.getTagIdString(item)));
-        hdrs.add(new Pair<String, String>("X-Zimbra-Tag-Names", TagUtil.encodeTags(item.getTags())));
-        hdrs.add(new Pair<String, String>("X-Zimbra-Flags", item.getFlagString()));
-        hdrs.add(new Pair<String, String>("X-Zimbra-Received", item.getDate() + ""));
-        hdrs.add(new Pair<String, String>("X-Zimbra-Modified", item.getChangeDate() + ""));
-        hdrs.add(new Pair<String, String>("X-Zimbra-Change", item.getModifiedSequence() + ""));
-        hdrs.add(new Pair<String, String>("X-Zimbra-Revision", item.getSavedSequence() + ""));
+        List<Pair<String, String>> hdrs = new ArrayList<>();
+        hdrs.add(new Pair<>("X-Zimbra-ItemId", item.getId() + ""));
+        hdrs.add(new Pair<>("X-Zimbra-FolderId", item.getFolderId() + ""));
+        hdrs.add(new Pair<>("X-Zimbra-Tags", TagUtil.getTagIdString(item)));
+        hdrs.add(new Pair<>("X-Zimbra-Tag-Names", TagUtil.encodeTags(item.getTags())));
+        hdrs.add(new Pair<>("X-Zimbra-Flags", item.getFlagString()));
+        hdrs.add(new Pair<>("X-Zimbra-Received", item.getDate() + ""));
+        hdrs.add(new Pair<>("X-Zimbra-Modified", item.getChangeDate() + ""));
+        hdrs.add(new Pair<>("X-Zimbra-Change", item.getModifiedSequence() + ""));
+        hdrs.add(new Pair<>("X-Zimbra-Revision", item.getSavedSequence() + ""));
         if (item instanceof Message)
-            hdrs.add(new Pair<String, String>("X-Zimbra-Conv", ((Message) item).getConversationId() + ""));
+            hdrs.add(new Pair<>("X-Zimbra-Conv", ((Message) item).getConversationId() + ""));
         return hdrs;
     }
 

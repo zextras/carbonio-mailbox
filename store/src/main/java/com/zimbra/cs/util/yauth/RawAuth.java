@@ -79,7 +79,7 @@ public class RawAuth implements Auth {
     public static String getToken(String appId, String user, String pass)
         throws AuthenticationException, IOException {
         debug("Sending getToken request: appId = %s, user = %s", appId, user);
-        List<NameValuePair> nvp = new ArrayList<NameValuePair>();
+        List<NameValuePair> nvp = new ArrayList<>();
         nvp.add(new BasicNameValuePair(APPID, appId));
         nvp.add(new BasicNameValuePair(LOGIN, user));
         nvp.add(new BasicNameValuePair(PASSWD, pass));
@@ -130,7 +130,7 @@ public class RawAuth implements Auth {
 
     private void authenticate(String token)
         throws AuthenticationException, IOException {
-        List<NameValuePair> nvp = new ArrayList<NameValuePair>();
+        List<NameValuePair> nvp = new ArrayList<>();
         nvp.add(new BasicNameValuePair(APPID, appId));
         nvp.add(new BasicNameValuePair(TOKEN, token));
         try {
@@ -186,7 +186,7 @@ public class RawAuth implements Auth {
 
         Response(HttpResponse resp) throws IOException {
             debug("Response status: %s", resp.getStatusLine());
-            attributes = new HashMap<String, String>();
+            attributes = new HashMap<>();
             InputStream is = null;
             try {
                 is = resp.getEntity().getContent();

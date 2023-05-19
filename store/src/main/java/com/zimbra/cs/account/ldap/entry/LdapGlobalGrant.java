@@ -17,7 +17,7 @@ import com.zimbra.cs.ldap.ZAttributes;
  */
 public class LdapGlobalGrant extends GlobalGrant implements LdapEntry {
     
-    private String mDn;
+    private final String mDn;
     
     public LdapGlobalGrant(String dn, ZAttributes attrs, Provisioning provisioning) throws LdapException {
         super(attrs.getAttrs(), provisioning);

@@ -36,8 +36,8 @@ public class GetAllEffectiveRightsRequest {
     public static final String EXPAND_GET_ATTRS = "getAttrs";
     public static final String EXPAND_SET_ATTRS = "setAttrs";
 
-    private static Splitter COMMA_SPLITTER = Splitter.on(",");
-    private static Joiner COMMA_JOINER = Joiner.on(",");
+    private static final Splitter COMMA_SPLITTER = Splitter.on(",");
+    private static final Joiner COMMA_JOINER = Joiner.on(",");
 
     @XmlTransient
     private Boolean expandGetAttrs;
@@ -51,7 +51,7 @@ public class GetAllEffectiveRightsRequest {
     private GranteeSelector grantee;
 
     public GetAllEffectiveRightsRequest() {
-        this((GranteeSelector) null, (Boolean) null, (Boolean) null);
+        this(null, null, null);
     }
 
     public GetAllEffectiveRightsRequest(GranteeSelector grantee,

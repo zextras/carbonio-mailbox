@@ -91,7 +91,7 @@ public abstract class GalParams {
     }
     
     public static class ExternalGalParams extends GalParams {
-        String mUrl[];
+        String[] mUrl;
         boolean mRequireStartTLS;
         String mSearchBase;
         String mFilter;
@@ -157,7 +157,8 @@ public abstract class GalParams {
                 krb5Keytab = ldapEntry.getAttr(Provisioning.A_zimbraGalLdapKerberos5Keytab);
             }
             
-            boolean startTLS = startTlsEnabled == null ? false : ProvisioningConstants.TRUE.equals(startTlsEnabled);
+            boolean startTLS =
+                startTlsEnabled != null && ProvisioningConstants.TRUE.equals(startTlsEnabled);
             mRequireStartTLS = LdapConnType.requireStartTLS(mUrl,  startTLS);
             mCredential = new LdapGalCredential(authMech, bindDn, bindPassword, krb5Principal, krb5Keytab);
         }
@@ -228,7 +229,8 @@ public abstract class GalParams {
                 krb5Keytab = (String)attrs.get(Provisioning.A_zimbraGalLdapKerberos5Keytab);
             }
                 
-            boolean startTLS = startTlsEnabled == null ? false : ProvisioningConstants.TRUE.equals(startTlsEnabled);
+            boolean startTLS =
+                startTlsEnabled != null && ProvisioningConstants.TRUE.equals(startTlsEnabled);
             mRequireStartTLS = LdapConnType.requireStartTLS(mUrl,  startTLS);
             mCredential = new LdapGalCredential(authMech, bindDn, bindPassword, krb5Principal, krb5Keytab);
         }
@@ -237,7 +239,7 @@ public abstract class GalParams {
             Object v = attrs.get(name);
             if (v instanceof String) return new String[] {(String)v};
             else if (v instanceof String[]) {
-                String value[] = (String[]) v;
+                String[] value = (String[]) v;
                 if (value != null && value.length > 0)
                     return value;
             }

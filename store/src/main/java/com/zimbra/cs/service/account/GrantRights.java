@@ -41,7 +41,7 @@ public class GrantRights extends AccountDocumentHandler {
             throw ServiceException.PERM_DENIED("can not access account");
         }
         
-        Set<ZimbraACE> aces = new HashSet<ZimbraACE>();
+        Set<ZimbraACE> aces = new HashSet<>();
         for (Element eACE : request.listElements(AccountConstants.E_ACE)) {
             ZimbraACE ace = handleACE(eACE, zsc, true);
             aces.add(ace);

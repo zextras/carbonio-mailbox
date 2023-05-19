@@ -46,7 +46,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     int port = 0;
     String remoteAddr = null;
     HashMap<String, String> headers = new HashMap<String, String>();
-    private List<Cookie> cookies = new ArrayList<Cookie>();
+    private final List<Cookie> cookies = new ArrayList<Cookie>();
     HashMap<String, Object> attributes = new HashMap<String, Object>();
 
 
@@ -71,7 +71,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return new IteratorEnumeration<String>(Collections.<String> emptyList());
+        return new IteratorEnumeration<String>(Collections.emptyList());
     }
 
     @Override
@@ -90,7 +90,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     private class MockServletInputStream extends ServletInputStream {
-        private ByteArrayInputStream bais = new ByteArrayInputStream(body);
+        private final ByteArrayInputStream bais = new ByteArrayInputStream(body);
 
         public MockServletInputStream() {
         }

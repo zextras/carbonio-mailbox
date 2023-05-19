@@ -70,7 +70,7 @@ public abstract class MailboxListener {
     private static final HashSet<MailboxListener> sListeners;
 
     static {
-        sListeners = new HashSet<MailboxListener>();
+        sListeners = new HashSet<>();
         reset();
     }
 

@@ -10,14 +10,14 @@ import java.util.HashMap;
 
 public class LmtpAddress {
 
-    private boolean mIsValid;
+    private final boolean mIsValid;
     private String mLocalPart;
     private String mNormalizedLocalPart;
     private String mDomainPart;
-    private Map<String, String> mParameters;
+    private final Map<String, String> mParameters;
     private LmtpReply mDeliveryReply;
     private String mEmailAddress;
-    private String[] mAllowedParameters;
+    private final String[] mAllowedParameters;
     
     private boolean mSkipFilters = false;
     private String mFolder = null;
@@ -29,7 +29,7 @@ public class LmtpAddress {
 
     public LmtpAddress(String arg, String[] allowedParameters, String rcptDelim) {
 	mAllowedParameters = allowedParameters;
-	mParameters = new HashMap<String, String>();
+	mParameters = new HashMap<>();
 	mIsValid = parse(arg);
 	mDeliveryReply = LmtpReply.TEMPORARY_FAILURE;
 
@@ -118,7 +118,7 @@ public class LmtpAddress {
 	if (mParameters.isEmpty()) {
 	    return null;
 	}
-	return (String)mParameters.get(key.toUpperCase());
+	return mParameters.get(key.toUpperCase());
     }
 
     public LmtpReply getDeliveryStatus() {

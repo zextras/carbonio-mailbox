@@ -240,7 +240,7 @@ public final class ParsedAddressTest {
 
     private static final class Helper {
 
-        private String description;
+        private final String description;
         private String honorific;
         private String first;
         private String middle;

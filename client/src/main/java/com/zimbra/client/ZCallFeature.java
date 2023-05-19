@@ -17,13 +17,13 @@ public class ZCallFeature {
     private String mName;
     private boolean mIsSubscribed;
     private boolean mIsActive;
-    private Map<String, String> mData;
+    private final Map<String, String> mData;
 
     public ZCallFeature(String name) {
         mName = name;
         mIsSubscribed = false;
         mIsActive = false;
-        mData = new HashMap<String, String>();
+        mData = new HashMap<>();
     }
 
     public boolean getIsSubscribed() { return mIsSubscribed; }

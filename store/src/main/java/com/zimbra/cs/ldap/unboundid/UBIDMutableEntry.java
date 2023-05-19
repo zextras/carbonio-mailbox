@@ -23,7 +23,7 @@ import com.zimbra.cs.ldap.ZMutableEntry;
   */
 public class UBIDMutableEntry extends ZMutableEntry {
 
-    private Entry entry;
+    private final Entry entry;
     
     public UBIDMutableEntry() {
         // give a bogus dn ("") since unboundid requires it
@@ -89,8 +89,8 @@ public class UBIDMutableEntry extends ZMutableEntry {
             String attrName = me.getKey();
             Object v = me.getValue();
             
-            boolean containsBinaryData = attrMgr == null ? false : attrMgr.containsBinaryData(attrName);
-            boolean isBinaryTransfer = attrMgr == null ? false : attrMgr.isBinaryTransfer(attrName);
+            boolean containsBinaryData = attrMgr != null && attrMgr.containsBinaryData(attrName);
+            boolean isBinaryTransfer = attrMgr != null && attrMgr.isBinaryTransfer(attrName);
             
             if (v instanceof String) {
                 ASN1OctetString value = UBIDUtil.newASN1OctetString(containsBinaryData, (String) v);

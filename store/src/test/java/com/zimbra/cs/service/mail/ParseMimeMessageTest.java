@@ -59,10 +59,10 @@ public final class ParseMimeMessageTest {
   static ZimbraSoapContext getMockSoapContext() throws ServiceException {
     ZimbraSoapContext parent =
         new ZimbraSoapContext(
-            (Element) null,
-            (QName) null,
-            (DocumentHandler) null,
-            Collections.<String, Object>emptyMap(),
+            null,
+            null,
+            null,
+            Collections.emptyMap(),
             SoapProtocol.SoapJS);
     return new ZimbraSoapContext(parent, MockProvisioning.DEFAULT_ACCOUNT_ID, null);
   }

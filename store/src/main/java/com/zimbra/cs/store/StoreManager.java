@@ -108,7 +108,7 @@ public abstract class StoreManager {
      * handled using zxsuite command
      */
     CUSTOM_STORE_API,
-  };
+  }
 
   /** Returns whether the store supports a given {@link StoreFeature}. */
   public abstract boolean supports(StoreFeature feature);

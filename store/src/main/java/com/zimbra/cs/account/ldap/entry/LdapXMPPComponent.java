@@ -17,7 +17,7 @@ import com.zimbra.cs.ldap.ZAttributes;
  */
 public class LdapXMPPComponent extends XMPPComponent implements LdapEntry {
     
-    private String mDn;
+    private final String mDn;
 
     public LdapXMPPComponent(String dn, ZAttributes attrs, Provisioning prov) throws LdapException {
         super(attrs.getAttrString(Provisioning.A_cn), 

@@ -57,8 +57,8 @@ public class DeployZimletRequest {
      */
     @SuppressWarnings("unused")
     private DeployZimletRequest() {
-        this((String) null, (Boolean) null, (Boolean) null,
-                (AttachmentIdAttrib) null);
+        this(null, null, null,
+            null);
     }
 
     public DeployZimletRequest(String action, Boolean flushCache,

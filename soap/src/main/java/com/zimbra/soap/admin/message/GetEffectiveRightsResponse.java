@@ -38,7 +38,7 @@ public class GetEffectiveRightsResponse {
      */
     @SuppressWarnings("unused")
     private GetEffectiveRightsResponse() {
-        this((GranteeInfo) null, (EffectiveRightsTargetInfo) null);
+        this(null, null);
     }
 
     public GetEffectiveRightsResponse(GranteeInfo grantee, EffectiveRightsTargetInfo target) {

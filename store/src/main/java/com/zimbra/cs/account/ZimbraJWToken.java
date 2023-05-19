@@ -45,7 +45,7 @@ public class ZimbraJWToken extends AuthToken {
     private static final int  SALT_LENGTH = 20;
     private long issuedAt;
     private String salt;
-    private AuthTokenProperties properties;
+    private final AuthTokenProperties properties;
 
     public ZimbraJWToken(Account acct) {
         this(acct, 0);
@@ -71,7 +71,7 @@ public class ZimbraJWToken extends AuthToken {
     }
 
     ZimbraJWToken(Claims body, String jwt) throws AuthTokenException {
-        Map<Object, Object> map = new HashMap<Object, Object>();
+        Map<Object, Object> map = new HashMap<>();
         map.put(AuthTokenProperties.C_ID, body.getSubject());
         if (body.getExpiration() != null) {
             map.put(AuthTokenProperties.C_EXP, String.valueOf(body.getExpiration().getTime()));

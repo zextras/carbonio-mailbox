@@ -16,7 +16,7 @@ import java.io.InputStream;
 public class GetMethodInputStream extends InputStream {
 
 
-    private InputStream mIn;
+    private final InputStream mIn;
     
     public GetMethodInputStream(InputStream in)
     throws IOException {

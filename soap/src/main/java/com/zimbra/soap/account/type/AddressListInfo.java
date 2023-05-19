@@ -71,7 +71,7 @@ public class AddressListInfo {
      * no-argument constructor wanted by JAXB
      */
     public AddressListInfo() {
-        this((String) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public AddressListInfo(String id, String name, String description) {

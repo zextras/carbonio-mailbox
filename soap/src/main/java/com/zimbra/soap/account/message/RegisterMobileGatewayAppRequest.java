@@ -36,7 +36,7 @@ public class RegisterMobileGatewayAppRequest {
      */
     @SuppressWarnings("unused")
     private RegisterMobileGatewayAppRequest() {
-        this((ZmgDeviceSpec) null);
+        this(null);
     }
 
     public RegisterMobileGatewayAppRequest(ZmgDeviceSpec zmgDevice) {

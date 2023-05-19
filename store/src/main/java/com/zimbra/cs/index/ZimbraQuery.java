@@ -76,7 +76,7 @@ public final class ZimbraQuery {
      */
     private static class ParseTree {
         enum Conjunction {
-            AND, OR;
+            AND, OR
         }
 
         static abstract class Node {
@@ -87,9 +87,9 @@ public final class ZimbraQuery {
 
             void setBool(boolean value) {
                 bool = value;
-            };
+            }
 
-            void invert() {
+          void invert() {
                 bool = !bool;
             }
 
@@ -100,7 +100,7 @@ public final class ZimbraQuery {
 
         static class OperatorNode extends Node {
             private Conjunction conjunction;
-            private List<Node> nodes = new ArrayList<Node>();
+            private List<Node> nodes = new ArrayList<>();
 
             OperatorNode(Conjunction conj) {
                 conjunction = conj;
@@ -133,14 +133,14 @@ public final class ZimbraQuery {
                 do {
                     simplifyAgain = false;
                     // first, simplify our sub-ops...
-                    List<Node> simplified = new ArrayList<Node>();
+                    List<Node> simplified = new ArrayList<>();
                     for (Node node : nodes) {
                         simplified.add(node.simplify());
                     }
                     nodes = simplified;
 
                     // now, see if any of our subops can be trivially combined with us
-                    List<Node> combined = new ArrayList<Node>();
+                    List<Node> combined = new ArrayList<>();
                     for (Node node : nodes) {
                         if (node instanceof OperatorNode) {
                             OperatorNode opnode = (OperatorNode) node;
@@ -588,8 +588,8 @@ public final class ZimbraQuery {
                     localOps.operations.add(and);
                 }
             } else {
-                includeTrash = authAcct.isPrefIncludeTrashInSearch();;
-                includeSpam = authAcct.isPrefIncludeSpamInSearch();
+                includeTrash = authAcct.isPrefIncludeTrashInSearch();
+              includeSpam = authAcct.isPrefIncludeSpamInSearch();
             }
             if (!includeTrash || !includeSpam) {
                 // First check that we aren't specifically looking for items in one of these.
@@ -605,7 +605,7 @@ public final class ZimbraQuery {
                     }
             }
             if (!includeTrash || !includeSpam) {
-                List<QueryOperation> toAdd = new ArrayList<QueryOperation>();
+                List<QueryOperation> toAdd = new ArrayList<>();
                 for (Iterator<QueryOperation> iter = localOps.operations.iterator(); iter.hasNext();) {
                     QueryOperation cur = iter.next();
                     if (!cur.hasSpamTrashSetting()) {
@@ -636,7 +636,7 @@ public final class ZimbraQuery {
             // RIGHT_PRIVATE enabled folders, with private items enabled.
             //
             UnionQueryOperation clonedLocal = null;
-            Set<Folder> hasFolderRightPrivateSet = new HashSet<Folder>();
+            Set<Folder> hasFolderRightPrivateSet = new HashSet<>();
 
             // ...don't do any of this if they aren't asking for a calendar type...
             Set<MailItem.Type> types = params.getTypes();
@@ -649,7 +649,7 @@ public final class ZimbraQuery {
                 // folders
                 Set<Folder> allVisibleFolders = mailbox.getVisibleFolders(octxt);
                 if (allVisibleFolders == null) {
-                    allVisibleFolders = new HashSet<Folder>();
+                    allVisibleFolders = new HashSet<>();
                     allVisibleFolders.addAll(mailbox.getFolderList(octxt, SortBy.NONE));
                 }
                 for (Folder f : allVisibleFolders) {
@@ -728,7 +728,8 @@ public final class ZimbraQuery {
             Query query = ((ParseTree.ThingNode) node).getQuery();
             if (query instanceof InQuery) {
                 Folder folder = ((InQuery) query).getFolder();
-                return folder != null? folder.getId() == folderId && query.getModifier() != Modifier.MINUS: false;
+                return folder != null && folder.getId() == folderId
+                    && query.getModifier() != Modifier.MINUS;
             } else {
                 return false;
             }

@@ -34,7 +34,7 @@ import com.zimbra.soap.type.ZmBoolean;
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name=AccountConstants.E_GET_ACCOUNT_DISTRIBUTION_LISTS_REQUEST)
 public class GetAccountDistributionListsRequest {
-    private static Joiner COMMA_JOINER = Joiner.on(",");
+    private static final Joiner COMMA_JOINER = Joiner.on(",");
 
     /**
      * @zm-api-field-tag owner-of
@@ -73,7 +73,7 @@ public class GetAccountDistributionListsRequest {
      */
     @SuppressWarnings("unused")
     private GetAccountDistributionListsRequest() {
-        this((Boolean) null, (MemberOfSelector) null, (Iterable<String>) null);
+        this(null, null, null);
     }
 
     public GetAccountDistributionListsRequest(Boolean owner, MemberOfSelector member,

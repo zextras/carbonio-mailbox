@@ -29,13 +29,13 @@ public class ImapServerListenerPool {
     private final LoadingCache <String, ImapServerListener> serverToListenerMap = CacheBuilder.newBuilder()
             .concurrencyLevel(4)
             .initialCapacity(16) /* TODO - base on the total number of servers or use LDAP config? */
-            .build(new CacheLoader<String, ImapServerListener>() {
+            .build(new CacheLoader<>() {
 
-        @Override
-        public ImapServerListener load(String serverName) throws Exception {
-            return new ImapServerListener(serverName);
-        }
-    });
+              @Override
+              public ImapServerListener load(String serverName) throws Exception {
+                return new ImapServerListener(serverName);
+              }
+            });
 
     private ImapServerListenerPool() {
     }

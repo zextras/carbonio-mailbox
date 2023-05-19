@@ -29,7 +29,7 @@ implements WkstRuleInterface {
      */
     @SuppressWarnings("unused")
     private WkstRule() {
-        this((String) null);
+        this(null);
     }
 
     public WkstRule(String day) {

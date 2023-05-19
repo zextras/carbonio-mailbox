@@ -43,14 +43,14 @@ public final class SQLite extends Db {
     private static final String PRAGMA_JOURNAL_MODE_DEFAULT = "DELETE";
     private static final String PRAGMA_SYNCHRONOUS_DEFAULT  = "FULL";
 
-    private Map<Db.Error, String> mErrorCodes;
+    private final Map<Db.Error, String> mErrorCodes;
     private String cacheSize;
     private String journalMode;
     private String pageSize;
     private String syncMode;
 
     SQLite() {
-        mErrorCodes = new HashMap<Db.Error, String>(6);
+        mErrorCodes = new HashMap<>(6);
         mErrorCodes.put(Db.Error.DUPLICATE_ROW, "not unique");
         mErrorCodes.put(Db.Error.NO_SUCH_TABLE, "no such table");
         mErrorCodes.put(Db.Error.FOREIGN_KEY_CHILD_EXISTS, "foreign key");
@@ -183,7 +183,7 @@ public final class SQLite extends Db {
     private static final int MAX_ATTACHED_DATABASES = readConfigInt("sqlite_max_attached_databases", "max # of attached databases", 7);
 
     private static final HashMap<Connection, LinkedHashMap<String, String>> sAttachedDatabases =
-            new HashMap<Connection, LinkedHashMap<String, String>>(DEFAULT_CONNECTION_POOL_SIZE);
+        new HashMap<>(DEFAULT_CONNECTION_POOL_SIZE);
 
     private LinkedHashMap<String, String> getAttachedDatabases(DbConnection conn) {
         return sAttachedDatabases.get(getInnermostConnection(conn.getConnection()));
@@ -288,7 +288,7 @@ public final class SQLite extends Db {
         if (attachedDBs != null) {
             attachedDBs.put(dbname, null);
         } else {
-            attachedDBs = new LinkedHashMap<String, String>(MAX_ATTACHED_DATABASES * 3 / 2, (float) 0.75, true);
+            attachedDBs = new LinkedHashMap<>(MAX_ATTACHED_DATABASES * 3 / 2, (float) 0.75, true);
             attachedDBs.put(dbname, null);
             sAttachedDatabases.put(getInnermostConnection(conn.getConnection()), attachedDBs);
         }
@@ -342,7 +342,7 @@ public final class SQLite extends Db {
     }
 
 
-    private static ConcurrentMap<Integer, ReentrantLock> lockMap = new ConcurrentHashMap<Integer, ReentrantLock>();
+    private static final ConcurrentMap<Integer, ReentrantLock> lockMap = new ConcurrentHashMap<>();
 
     private boolean checkLockMap(int mboxId) {
         for (Entry<Integer, ReentrantLock> entry : lockMap.entrySet()) {
@@ -409,7 +409,7 @@ public final class SQLite extends Db {
                 (dbname.equals("zimbra") ? "" : dbname + ".") +
                 "sqlite_master WHERE type='table'");
             rs = stmt.executeQuery();
-            boolean complete = rs.next() ? (rs.getInt(1) >= 1) : false;
+            boolean complete = rs.next() && (rs.getInt(1) >= 1);
             return complete;
         } catch (SQLException e) {
             throw ServiceException.FAILURE("sqlite error", e);
@@ -428,7 +428,7 @@ public final class SQLite extends Db {
         }
     }
 
-    private ConcurrentMap<String,Boolean> deleted = new ConcurrentHashMap<String, Boolean>();
+    private final ConcurrentMap<String,Boolean> deleted = new ConcurrentHashMap<>();
 
     @Override
     void deleteDatabaseFile(DbConnection conn, String dbname) {
@@ -514,7 +514,7 @@ public final class SQLite extends Db {
         return 999; //SQLite's SQLITE_MAX_VARIABLE_NUMBER default value
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         // command line argument parsing
         Options options = new Options();
         CommandLine cl = Versions.parseCmdlineArgs(args, options);

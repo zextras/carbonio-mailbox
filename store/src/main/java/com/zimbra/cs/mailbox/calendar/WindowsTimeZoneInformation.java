@@ -18,19 +18,19 @@ public class WindowsTimeZoneInformation {
     // In our iCal code we don't distinguish between standard name and
     // daylight name.  There is only one name for a time zone.  So we
     // don't map Windows fields StandardName[32] and DaylightName[32].
-    private String mName;
-    private String mStandardName;  // Windows field StandardName[32]
-    private String mDaylightName;  // Windows field DaylightName[32]
+    private final String mName;
+    private final String mStandardName;  // Windows field StandardName[32]
+    private final String mDaylightName;  // Windows field DaylightName[32]
 
-    private int mBiasMins;
-    private WindowsSystemTime mStandardDate;
-    private int mStandardBiasMins;  // standard offset = mBias + mStandardBias
+    private final int mBiasMins;
+    private final WindowsSystemTime mStandardDate;
+    private final int mStandardBiasMins;  // standard offset = mBias + mStandardBias
 
-    private WindowsSystemTime mDaylightDate;
-    private int mDaylightBiasMins;  // daylight offset = mBias + mDaylightBias
+    private final WindowsSystemTime mDaylightDate;
+    private final int mDaylightBiasMins;  // daylight offset = mBias + mDaylightBias
 
-    private int mStandardOffsetMillis;
-    private int mDaylightOffsetMillis;
+    private final int mStandardOffsetMillis;
+    private final int mDaylightOffsetMillis;
 
     public WindowsTimeZoneInformation(String name,
                                       int biasMins,

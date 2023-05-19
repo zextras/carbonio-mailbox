@@ -40,12 +40,11 @@ public class NoteAction extends ItemAction {
     public static final String OP_EDIT       = "edit";
     public static final String OP_REPOSITION = "pos";
 
-    private static final Set<String> NOTE_OPS = new HashSet<String>(Arrays.asList(new String[] {
-        OP_EDIT, OP_REPOSITION
-    }));
+    private static final Set<String> NOTE_OPS = new HashSet<>(Arrays.asList(OP_EDIT,
+        OP_REPOSITION));
 
     @Override
-    public Element handle(Element request, Map<String, Object> context) throws ServiceException, SoapFaultException {
+    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext lc = getZimbraSoapContext(context);
 
         Element action = request.getElement(MailConstants.E_ACTION);

@@ -26,10 +26,10 @@ import com.zimbra.cs.store.MailboxBlob;
  */
 public class DeliveryContext {
 
-    private boolean mShared;
+    private final boolean mShared;
     private Blob mIncomingBlob;
     private MailboxBlob mMailboxBlob;
-    private List<Integer> mMailboxIdList;
+    private final List<Integer> mMailboxIdList;
     private boolean mIsFirst = true;
     private Map <Integer,Blob> mailBoxBlobMap;
 
@@ -52,7 +52,7 @@ public class DeliveryContext {
         mMailboxBlob = null;
         mMailboxIdList = mboxIdList;
         if (mShared) {
-            mailBoxBlobMap =  new HashMap<Integer,Blob>();
+            mailBoxBlobMap = new HashMap<>();
         }
     }
 

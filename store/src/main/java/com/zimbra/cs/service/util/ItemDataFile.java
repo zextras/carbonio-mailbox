@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class ItemDataFile {
                     System.out.println(f);
                     out = new FileOutputStream(f);
                     ItemData id = new ItemData(getData(tis, te));
-                    out.write(id.encode(2).getBytes("UTF-8"));
+                    out.write(id.encode(2).getBytes(StandardCharsets.UTF_8));
                 } else {
                     int in;
 
@@ -154,8 +155,8 @@ public class ItemDataFile {
     static void addDir(File f, String topdir, Set<MailItem.Type> types, TarOutputStream tos) throws IOException {
         String path = f.getPath();
         String[] all = f.list();
-        List<File>dirs = new ArrayList<File>();
-        List<File>files = new ArrayList<File>();
+        List<File>dirs = new ArrayList<>();
+        List<File>files = new ArrayList<>();
 
         Arrays.sort(all);
         for (String file : all) {

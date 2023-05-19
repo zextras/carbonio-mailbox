@@ -58,7 +58,7 @@ implements SearchFilterCondition {
             type=EntrySearchFilterSingleCond.class)
     })
 
-    private List<SearchFilterCondition> conditions = Lists.newArrayList();
+    private final List<SearchFilterCondition> conditions = Lists.newArrayList();
 
     public EntrySearchFilterMultiCond() {
     }

@@ -28,7 +28,7 @@ public class QueryWaitSetResponse {
      * @zm-api-field-description Information about WaitSets
      */
     @XmlElement(name=AdminConstants.E_WAITSET /* waitSet */, required=false)
-    private List<WaitSetInfo> waitsets = Lists.newArrayList();
+    private final List<WaitSetInfo> waitsets = Lists.newArrayList();
 
     public QueryWaitSetResponse() {
     }

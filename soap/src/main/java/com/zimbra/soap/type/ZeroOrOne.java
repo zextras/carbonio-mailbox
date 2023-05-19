@@ -21,10 +21,6 @@ public enum ZeroOrOne {
         }
     }
     public static boolean toBool(ZeroOrOne val) {
-        if (val.equals(ONE)) {
-            return true;
-        } else {
-            return false;
-        }
+      return val.equals(ONE);
     }
 }

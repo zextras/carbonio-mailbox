@@ -33,7 +33,7 @@ public class VersionCheckRequest {
      */
     @SuppressWarnings("unused")
     private VersionCheckRequest() {
-        this((String) null);
+        this(null);
     }
 
     public VersionCheckRequest(String action) {

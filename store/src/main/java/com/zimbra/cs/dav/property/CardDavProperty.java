@@ -44,7 +44,7 @@ public class CardDavProperty extends ResourceProperty {
         AddressObject contact;
         public AddressbookData(Element prop, AddressObject c) {
             super(DavElements.CardDav.E_ADDRESS_DATA);
-            props = new ArrayList<String>();
+            props = new ArrayList<>();
             for (Object child : prop.elements()) {
                 if (child instanceof Element) {
                     Element e = (Element) child;

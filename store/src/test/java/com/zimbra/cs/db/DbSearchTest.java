@@ -123,7 +123,7 @@ public final class DbSearchTest {
         Assert.assertEquals(102, result.get(1).getId());
         Assert.assertEquals("00000000102", result.get(1).getSortValue());
         Assert.assertEquals(100, result.get(2).getId());
-        Assert.assertEquals("00000000100", result.get(2).getSortValue());;
+        Assert.assertEquals("00000000100", result.get(2).getSortValue());
     }
 
     @Test

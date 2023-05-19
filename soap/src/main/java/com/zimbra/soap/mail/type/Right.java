@@ -31,7 +31,7 @@ public class Right {
      */
     @SuppressWarnings("unused")
     private Right() {
-        this((String) null);
+        this(null);
     }
 
     public Right(String right) {

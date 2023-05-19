@@ -30,10 +30,10 @@ public class GetDistributionListMembershipResponse {
      * @zm-api-field-description Information about distribution lists
      */
     @XmlElement(name=AdminConstants.E_DL, required=false)
-    private List <DistributionListMembershipInfo> dls = Lists.newArrayList();
+    private final List <DistributionListMembershipInfo> dls = Lists.newArrayList();
 
     public GetDistributionListMembershipResponse() {
-        this((Iterable<DistributionListMembershipInfo>) null);
+        this(null);
     }
 
     public GetDistributionListMembershipResponse(

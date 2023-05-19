@@ -22,7 +22,7 @@ public class ComboRights {
      * @zm-api-field-description Rights information
      */
     @XmlElement(name=AdminConstants.E_R, required=false)
-    private List <ComboRightInfo> comboRights = Lists.newArrayList();
+    private final List <ComboRightInfo> comboRights = Lists.newArrayList();
 
     public ComboRights () {
     }

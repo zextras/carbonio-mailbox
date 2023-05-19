@@ -33,7 +33,7 @@ public class ServerMailQueueDetails {
      */
     @SuppressWarnings("unused")
     private ServerMailQueueDetails() {
-        this((String) null, (MailQueueDetails) null);
+        this(null, null);
     }
 
     public ServerMailQueueDetails(String serverName, MailQueueDetails queue) {

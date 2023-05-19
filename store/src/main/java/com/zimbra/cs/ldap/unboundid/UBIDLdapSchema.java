@@ -20,7 +20,7 @@ import com.zimbra.cs.ldap.ZLdapSchema;
 
 public class UBIDLdapSchema extends ZLdapSchema {
 
-    private Schema schema;
+    private final Schema schema;
 
     UBIDLdapSchema(Schema schema) {
         this.schema = schema;
@@ -32,7 +32,7 @@ public class UBIDLdapSchema extends ZLdapSchema {
 
     public static class UBIDObjectClassDefinition extends ZObjectClassDefinition {
 
-        private ObjectClassDefinition ocDef;
+        private final ObjectClassDefinition ocDef;
 
         private UBIDObjectClassDefinition(ObjectClassDefinition ocDef) {
             this.ocDef = ocDef;
@@ -84,7 +84,7 @@ public class UBIDLdapSchema extends ZLdapSchema {
 
     @Override
     public List<ZObjectClassDefinition> getObjectClasses() throws LdapException {
-        List<ZObjectClassDefinition> ocList = new ArrayList<ZObjectClassDefinition>();
+        List<ZObjectClassDefinition> ocList = new ArrayList<>();
 
         Set<ObjectClassDefinition> ocs = schema.getObjectClasses();
         for (ObjectClassDefinition oc : ocs) {

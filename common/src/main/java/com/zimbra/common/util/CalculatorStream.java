@@ -19,8 +19,8 @@ import java.security.NoSuchAlgorithmException;
 public class CalculatorStream extends InputStream {
 
     private long mSize = 0;
-    private InputStream mIn;
-    private MessageDigest mDigestCalculator;
+    private final InputStream mIn;
+    private final MessageDigest mDigestCalculator;
     
     public CalculatorStream(InputStream in) {
         try {

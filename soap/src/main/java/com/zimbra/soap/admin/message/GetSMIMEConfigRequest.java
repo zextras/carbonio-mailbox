@@ -45,7 +45,7 @@ public class GetSMIMEConfigRequest {
      */
     @SuppressWarnings("unused")
     private GetSMIMEConfigRequest() {
-        this((NamedElement) null, (DomainSelector) null);
+        this(null, null);
     }
 
     public GetSMIMEConfigRequest(NamedElement config, DomainSelector domain) {

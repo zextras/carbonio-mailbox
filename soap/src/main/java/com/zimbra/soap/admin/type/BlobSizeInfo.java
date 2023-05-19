@@ -49,7 +49,7 @@ public class BlobSizeInfo {
      */
     @SuppressWarnings("unused")
     private BlobSizeInfo() {
-        this((String) null, (Long) null, (Long) null, false);
+        this(null, null, null, false);
     }
 
     public BlobSizeInfo(String path, Long size, Long fileSize, boolean external) {

@@ -27,7 +27,7 @@ public class IdsAttr {
      */
     @SuppressWarnings("unused")
     private IdsAttr() {
-        this((String) null);
+        this(null);
     }
 
     public IdsAttr(String ids) {

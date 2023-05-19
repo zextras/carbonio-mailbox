@@ -28,7 +28,7 @@ public class GetAllCalendarResourcesResponse {
      * @zm-api-field-description Information on calendar resources
      */
     @XmlElement(name=AdminConstants.E_CALENDAR_RESOURCE)
-    private List <CalendarResourceInfo> calResources = Lists.newArrayList();
+    private final List <CalendarResourceInfo> calResources = Lists.newArrayList();
 
     public GetAllCalendarResourcesResponse() {
     }

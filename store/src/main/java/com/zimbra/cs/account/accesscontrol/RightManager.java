@@ -86,13 +86,13 @@ public class RightManager {
     private static RightManager mInstance;
 
     // keep the map sorted so "zmmailbox lp" can display in alphabetical order
-    private final Map<String, UserRight> sUserRights = new TreeMap<String, UserRight>();
-    private final Map<String, AdminRight> sAdminRights = new TreeMap<String, AdminRight>();
-    private final Map<String, Help> sHelp = new TreeMap<String, Help>();
-    private final Map<String, UI> sUI = new TreeMap<String, UI>();
+    private final Map<String, UserRight> sUserRights = new TreeMap<>();
+    private final Map<String, AdminRight> sAdminRights = new TreeMap<>();
+    private final Map<String, Help> sHelp = new TreeMap<>();
+    private final Map<String, UI> sUI = new TreeMap<>();
 
     static private class CoreRightDefFiles {
-        private static final HashSet<String> sCoreRightDefFiles = new HashSet<String>();
+        private static final HashSet<String> sCoreRightDefFiles = new HashSet<>();
 
         static void init(boolean unittest) {
             sCoreRightDefFiles.add("rights.xml");
@@ -161,8 +161,8 @@ public class RightManager {
         ZimbraLog.acl.debug("Loading rights from %s", fdir.getAbsolutePath());
 
         File[] files = fdir.listFiles();
-        List<File> yetToProcess = new ArrayList<File>(Arrays.asList(files));
-        List<File> processed = new ArrayList<File>();
+        List<File> yetToProcess = new ArrayList<>(Arrays.asList(files));
+        List<File> processed = new ArrayList<>();
 
         while (!yetToProcess.isEmpty()) {
             File file = yetToProcess.get(0);
@@ -361,7 +361,7 @@ public class RightManager {
 
             right = AdminRight.newAdminSystemRight(name, rightType);
             if (targetTypeStr != null) {
-                String taregtTypes[] = targetTypeStr.split(TARGET_TYPE_DELIMITER);
+                String[] taregtTypes = targetTypeStr.split(TARGET_TYPE_DELIMITER);
                 for (String tt : taregtTypes) {
                     TargetType targetType = TargetType.fromCode(tt);
                     right.setTargetType(targetType);
@@ -755,7 +755,7 @@ public class RightManager {
 
     private void genMessageProperties(StringBuilder result, Map<String, ? extends  Right> rights)
     throws ServiceException {
-        List<String> sortedRights = new ArrayList<String>(rights.keySet());
+        List<String> sortedRights = new ArrayList<>(rights.keySet());
         Collections.sort(sortedRights);
 
         for (String right : sortedRights) {
@@ -864,7 +864,7 @@ public class RightManager {
     }
 
     private static class CL {
-        private static Options sOptions = new Options();
+        private static final Options sOptions = new Options();
 
         static {
             sOptions.addOption("h", "help", false,
@@ -894,7 +894,7 @@ public class RightManager {
             boolean inputDirRequired;
             boolean outputDirRequired;
 
-            private Action(boolean regenFileRequred, boolean inputDirRequired, boolean outputDirRequired) {
+            Action(boolean regenFileRequred, boolean inputDirRequired, boolean outputDirRequired) {
                 this.regenFileRequred = regenFileRequred;
                 this.inputDirRequired = inputDirRequired;
                 this.outputDirRequired = outputDirRequired;
@@ -948,7 +948,7 @@ public class RightManager {
             String dlAttrsFiller = genAttrs(dlAttrs);
             String domainAttrsFiller = genAttrs(domainAttrs);
 
-            Map<String,String> templateFillers = new HashMap<String,String>();
+            Map<String,String> templateFillers = new HashMap<>();
             templateFillers.put("ACCOUNT_AND_CALENDAR_RESOURCE_ATTRS", acctAndCrAttrsFiller);
             templateFillers.put("CALENDAR_RESOURCE_ATTRS", crOnlyAttrsFiller);
             templateFillers.put("DISTRIBUTION_LIST_ATTRS", dlAttrsFiller);
@@ -962,7 +962,7 @@ public class RightManager {
             AttributeManager am = AttributeManager.getInstance();
             Set<String> allAttrs = am.getAllAttrsInClass(klass);
 
-            Set<String> domainAdminModifiableAttrs = new HashSet<String>();
+            Set<String> domainAdminModifiableAttrs = new HashSet<>();
             for (String attr : allAttrs) {
                 if (am.isDomainAdminModifiable(attr, klass)) {
                     domainAdminModifiableAttrs.add(attr);
@@ -973,7 +973,7 @@ public class RightManager {
 
         private static String genAttrs(Set<String> attrs) {
             // sort it
-            Set<String> sortedAttrs = new TreeSet<String>(attrs);
+            Set<String> sortedAttrs = new TreeSet<>(attrs);
 
             StringBuilder sb = new StringBuilder();
             for (String attr : sortedAttrs) {
@@ -991,7 +991,7 @@ public class RightManager {
             System.exit((errmsg == null) ? 0 : 1);
         }
 
-        private static CommandLine parseArgs(String args[]) {
+        private static CommandLine parseArgs(String[] args) {
             StringBuffer gotCL = new StringBuffer("cmdline: ");
             for (int i = 0; i < args.length; i++) {
                 gotCL.append("'").append(args[i]).append("' ");

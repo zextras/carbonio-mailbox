@@ -18,5 +18,5 @@ import com.zimbra.common.soap.MailConstants;
 
 @XmlRootElement(name=MailConstants.E_RESET_RECENT_MESSAGE_COUNT_REQUEST)
 public class ResetRecentMessageCountRequest {
-    public ResetRecentMessageCountRequest() {};
+    public ResetRecentMessageCountRequest() {}
 }

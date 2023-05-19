@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class MockHttpServletResponse implements HttpServletResponse {
   ByteArrayOutputStream output = new ByteArrayOutputStream();
-  private List<Cookie> cookies = new ArrayList<Cookie>();
+  private final List<Cookie> cookies = new ArrayList<Cookie>();
   private final Map<String, String> headers = new HashMap<>();
 
   @Override

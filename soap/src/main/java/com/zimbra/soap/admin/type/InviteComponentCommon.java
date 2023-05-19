@@ -240,7 +240,7 @@ implements InviteComponentCommonInterface {
      */
     @SuppressWarnings("unused")
     private InviteComponentCommon() {
-        this((String) null, -1, false);
+        this(null, -1, false);
     }
 
     public InviteComponentCommon(String method, int componentNum,

@@ -41,19 +41,19 @@ public class SearchDirectoryOptions {
      *    - determine the cos if cos is not set on the account
      *    - account secondary default
      */
-    public static enum MakeObjectOpt {
+    public enum MakeObjectOpt {
         ALL_DEFAULTS,
         NO_DEFAULTS,
         NO_SECONDARY_DEFAULTS
-    };
+    }
 
-    public static enum SortOpt {
+    public enum SortOpt {
         NO_SORT,
         SORT_ASCENDING,
         SORT_DESCENDING
-    };
+    }
 
-    public static enum ObjectType {
+    public enum ObjectType {
         accounts(Provisioning.SD_ACCOUNT_FLAG),
         aliases(Provisioning.SD_ALIAS_FLAG),
         distributionlists(Provisioning.SD_DISTRIBUTION_LIST_FLAG),
@@ -65,8 +65,8 @@ public class SearchDirectoryOptions {
         ucservices(Provisioning.SD_UC_SERVICE_FLAG),
         habgroups(Provisioning.SD_HAB_FLAG),;
 
-        private int flag;
-        private ObjectType(int flag) {
+        private final int flag;
+        ObjectType(int flag) {
             this.flag = flag;
         }
 
@@ -305,11 +305,7 @@ public class SearchDirectoryOptions {
             }
         }
 
-        if (convertIDNToAscii != other.getConvertIDNToAscii()) {
-            return false;
-        }
-
-        return true;
+        return convertIDNToAscii == other.getConvertIDNToAscii();
     }
 
     public void setOnMaster(boolean onMaster) {

@@ -70,17 +70,17 @@ public class SoapServlet extends ZimbraServlet {
     /**
      * Keeps track of extra services added by extensions.
      */
-    private static LoadingCache<String, List<DocumentService>> sExtraServices = CacheBuilder.newBuilder()
+    private static final LoadingCache<String, List<DocumentService>> sExtraServices = CacheBuilder.newBuilder()
         .build(CacheLoader.from(new ArrayListFactory()));
 
-    private static Log sLog = LogFactory.getLog(SoapServlet.class);
+    private static final Log sLog = LogFactory.getLog(SoapServlet.class);
     private SoapEngine mEngine;
 
     // Used by sExtraServices
     private static class ArrayListFactory implements Function<String, List<DocumentService>> {
         @Override
         public List<DocumentService> apply(String from) {
-            return new ArrayList<DocumentService>();
+            return new ArrayList<>();
         }
     }
 
@@ -283,7 +283,7 @@ public class SoapServlet extends ZimbraServlet {
             req.setAttribute("com.zimbra.request.buffer", buffer);
         }
 
-        HashMap<String, Object> context = new HashMap<String, Object>();
+        HashMap<String, Object> context = new HashMap<>();
         context.put(SERVLET_CONTEXT, getServletContext());
         context.put(SERVLET_REQUEST, req);
         context.put(SERVLET_RESPONSE, resp);

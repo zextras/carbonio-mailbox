@@ -22,7 +22,7 @@ import com.zimbra.cs.ldap.ZLdapElement.StringLdapElementDebugListener;
  */
 public class UBIDLogger {
     
-    private static Log debugLogger = ZimbraLog.ldap;
+    private static final Log debugLogger = ZimbraLog.ldap;
     
     static class Timer {
         private long startTime;

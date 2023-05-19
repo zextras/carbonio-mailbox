@@ -21,10 +21,10 @@ import com.zimbra.soap.mail.type.RetentionPolicy;
 public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
 
     private Color mColor;
-    private String mId;
+    private final String mId;
     private String mName;
     private int mUnreadCount;
-    private ZMailbox mMailbox;
+    private final ZMailbox mMailbox;
     private RetentionPolicy mRetentionPolicy = new RetentionPolicy();
 
     public enum Color {
@@ -42,7 +42,7 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
         rgbColor;
 
         private long mValue;
-        private static Map<String,Color> colorMap = new HashMap<String,Color>();
+        private static final Map<String,Color> colorMap = new HashMap<>();
 
         static {
           for (Color c : Color.values())

@@ -32,7 +32,7 @@ abstract public class AttrsImpl implements Attrs {
      */
     @ZimbraKeyValuePairs
     @XmlElement(name=AdminConstants.E_A)
-    private List<Attr> attrs = Lists.newArrayList();
+    private final List<Attr> attrs = Lists.newArrayList();
 
     public AttrsImpl() {
         this.setAttrs((Iterable<Attr>) null);

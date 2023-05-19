@@ -20,8 +20,8 @@ import com.zimbra.cs.ldap.ZAttributes;
  * @author pshao
  */
 public class LdapDistributionList extends DistributionList implements LdapEntry {
-    private String mDn;
-    private boolean mIsBasic; // contains only basic attrs in Ldap
+    private final String mDn;
+    private final boolean mIsBasic; // contains only basic attrs in Ldap
 
     public LdapDistributionList(String dn, String email, ZAttributes attrs,
             boolean isBasic, Provisioning prov) throws LdapException {

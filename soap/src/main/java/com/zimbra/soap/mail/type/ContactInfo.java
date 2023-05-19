@@ -37,7 +37,7 @@ import com.zimbra.soap.type.ZmBoolean;
 public class ContactInfo
 implements ContactInterface, SearchHit {
 
-    private static Splitter COMMA_SPLITTER = Splitter.on(",").trimResults().omitEmptyStrings();
+    private static final Splitter COMMA_SPLITTER = Splitter.on(",").trimResults().omitEmptyStrings();
 
     // Added by e.g. GalSearchControl.doLocalGalAccountSearch
     /**

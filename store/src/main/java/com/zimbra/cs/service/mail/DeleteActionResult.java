@@ -13,7 +13,7 @@ public class DeleteActionResult extends ItemActionResult {
     protected List<String> mNonExistentIds;
 
     public DeleteActionResult() {
-        mNonExistentIds = new ArrayList<String>();
+        mNonExistentIds = new ArrayList<>();
     }
 
     public DeleteActionResult(List<String> ids, List<String> nonExistentIds) {

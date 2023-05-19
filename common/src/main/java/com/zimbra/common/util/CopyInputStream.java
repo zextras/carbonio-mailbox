@@ -9,8 +9,8 @@ import java.io.InputStream;
 import java.io.IOException;
 
 public class CopyInputStream extends InputStream {
-    private BufferStream bs;
-    private InputStream is;
+    private final BufferStream bs;
+    private final InputStream is;
 
     public CopyInputStream(InputStream is) { this(is, 0); }
 
@@ -57,7 +57,7 @@ public class CopyInputStream extends InputStream {
         return in;
     }
 
-    public int read(byte data[], int off, int len) throws IOException {
+    public int read(byte[] data, int off, int len) throws IOException {
         int in = is.read(data, off, len);
         
         if (in > 0)

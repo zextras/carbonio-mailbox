@@ -6,7 +6,7 @@
 package com.zimbra.soap.base;
 
 public interface LocaleInterface {
-    public String getId();
-    public String getName();
-    public String getLocalName();
+    String getId();
+    String getName();
+    String getLocalName();
 }

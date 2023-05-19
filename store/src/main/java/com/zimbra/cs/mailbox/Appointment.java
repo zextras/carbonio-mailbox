@@ -95,9 +95,9 @@ public class Appointment extends CalendarItem {
     }
 
     public static class Conflict {
-        private Instance mInstance;
-        private FreeBusy mFreeBusy;
-        private String mFreeBusyStatus;
+        private final Instance mInstance;
+        private final FreeBusy mFreeBusy;
+        private final String mFreeBusyStatus;
 
         public Conflict(Instance inst, String fbStatus, FreeBusy fb) {
             mInstance = inst;
@@ -126,7 +126,7 @@ public class Appointment extends CalendarItem {
 
             // List conflicting appointments and their organizers.
             FreeBusy fb = avail.getFreeBusy();
-            List<FBInstance> instances = new ArrayList<FBInstance>();
+            List<FBInstance> instances = new ArrayList<>();
             for (Iterator<Interval> iter = fb.iterator(); iter.hasNext(); ) {
                 Interval interval = iter.next();
                 // busy intervals only
@@ -222,9 +222,9 @@ public class Appointment extends CalendarItem {
     }
 
     private static class ConflictCheckResult {
-        private List<Conflict> mConflicts;
-        private boolean mTooManyConflicts;
-        private boolean mHasMoreConflicts;
+        private final List<Conflict> mConflicts;
+        private final boolean mTooManyConflicts;
+        private final boolean mHasMoreConflicts;
 
         public ConflictCheckResult(List<Conflict> conflicts, boolean tooManyConflicts, boolean hasMoreConflicts) {
             mConflicts = conflicts;
@@ -269,7 +269,7 @@ public class Appointment extends CalendarItem {
         if (invite.isRecurrence()) {
             instances = expandInstances(st, et, false);
         } else {
-            instances = new ArrayList<Instance>(1);
+            instances = new ArrayList<>(1);
             instances.add(Instance.fromInvite(getId(), invite));
         }
         if (instances == null || instances.isEmpty())
@@ -278,7 +278,7 @@ public class Appointment extends CalendarItem {
         int maxByPct = maxPctConflicts * instances.size() / 100;
         int maxConflicts = Math.min(maxNumConflicts, maxByPct);
 
-        List<Conflict> list = new ArrayList<Conflict>();
+        List<Conflict> list = new ArrayList<>();
         int numConflicts = 0;
         boolean hasMoreConflicts = false;
         for (Instance inst : instances) {
@@ -319,7 +319,7 @@ public class Appointment extends CalendarItem {
                     authAcct = authuser;
             }
         }
-        boolean asAdmin = octxt != null ? octxt.isUsingAdminPrivileges() : false;
+        boolean asAdmin = octxt != null && octxt.isUsingAdminPrivileges();
         boolean allowPrivateAccess = allowPrivateAccess(authAcct, asAdmin);
 
         String partStat = defaultPartStat;
@@ -404,7 +404,7 @@ public class Appointment extends CalendarItem {
                                 // There are some conflicts, but within resource's allowed limit.
                                 if (resource.autoAcceptDecline()) {
                                     // Let's accept partially.  (Accept the series and decline conflicting instances.)
-                                    List<Invite> replyInvites = new ArrayList<Invite>();
+                                    List<Invite> replyInvites = new ArrayList<>();
                                     // the REPLY for the ACCEPT of recurrence series
                                     Invite acceptInv = makeReplyInvite(
                                             account, authAcct, lc, onBehalfOf, allowPrivateAccess, invite, invite.getRecurId(),

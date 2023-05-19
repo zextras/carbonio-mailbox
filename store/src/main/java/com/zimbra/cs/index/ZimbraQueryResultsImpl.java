@@ -51,12 +51,12 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
     private static final int MAX_LRU_ENTRIES = 2048;
     private static final int INITIAL_TABLE_SIZE = 100;
 
-    private Map<Integer, ConversationHit> conversationHits;
-    private Map<Integer, MessageHit> messageHits;
-    private Map<String, MessagePartHit> partHits;
-    private Map<Integer, ContactHit> contactHits;
-    private Map<Integer, NoteHit>  noteHits;
-    private Map<Integer, CalendarItemHit> calItemHits;
+    private final Map<Integer, ConversationHit> conversationHits;
+    private final Map<Integer, MessageHit> messageHits;
+    private final Map<String, MessagePartHit> partHits;
+    private final Map<Integer, ContactHit> contactHits;
+    private final Map<Integer, NoteHit>  noteHits;
+    private final Map<Integer, CalendarItemHit> calItemHits;
 
     private final Set<MailItem.Type> types;
     private final SortBy sortBy;
@@ -67,15 +67,15 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
         this.fetch = fetch;
         this.sortBy = sort;
 
-        conversationHits = new LRUHashMap<Integer, ConversationHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
-        messageHits = new LRUHashMap<Integer, MessageHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
-        partHits = new LRUHashMap<String, MessagePartHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
-        contactHits = new LRUHashMap<Integer, ContactHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
-        noteHits = new LRUHashMap<Integer, NoteHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
-        calItemHits = new LRUHashMap<Integer, CalendarItemHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
-    };
+        conversationHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
+        messageHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
+        partHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
+        contactHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
+        noteHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
+        calItemHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
+    }
 
-    @Override
+  @Override
     public abstract ZimbraHit skipToHit(int hitNo) throws ServiceException;
 
     @Override
@@ -151,7 +151,7 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
     }
 
     protected MessagePartHit getMessagePartHit(Mailbox mbx, int id, Message msg, Document doc, Object sortValue) {
-        String key = Integer.toString(id) + "-" + doc.get(LuceneFields.L_PARTNAME);
+        String key = id + "-" + doc.get(LuceneFields.L_PARTNAME);
         MessagePartHit hit = partHits.get(key);
         if (hit == null) {
             hit = new MessagePartHit(this, mbx, id, msg, doc, sortValue);

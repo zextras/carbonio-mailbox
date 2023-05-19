@@ -25,7 +25,7 @@ public class Stat {
     @XmlTransient
     private static class FilterByName
     implements Predicate<Stat> {
-        private String name;
+        private final String name;
 
         private FilterByName(String name) {
             this.name = name;

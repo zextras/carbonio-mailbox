@@ -34,7 +34,7 @@ public class SnoozeAlarm {
      */
     @SuppressWarnings("unused")
     protected SnoozeAlarm() {
-        this((String) null, -1L);
+        this(null, -1L);
     }
 
     public SnoozeAlarm(String id, long snoozeUntil) {

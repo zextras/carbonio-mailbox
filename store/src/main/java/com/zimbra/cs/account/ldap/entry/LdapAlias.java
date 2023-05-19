@@ -16,7 +16,7 @@ import com.zimbra.cs.ldap.ZAttributes;
  *
  */
 public class LdapAlias extends Alias implements LdapEntry {
-    private String mDn;
+    private final String mDn;
     
     public LdapAlias(String dn, String email, ZAttributes attrs, Provisioning prov) throws LdapException {
         super(email, attrs.getAttrString(Provisioning.A_zimbraId), attrs.getAttrs(), prov);

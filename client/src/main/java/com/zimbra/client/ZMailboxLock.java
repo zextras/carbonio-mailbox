@@ -17,9 +17,9 @@ import com.zimbra.common.util.ZimbraLog;
  *
  */
 public class ZMailboxLock {
-    private Monitor monitor;
-    private Integer maxWaitingThreads;
-    private Integer timeoutSeconds;
+    private final Monitor monitor;
+    private final Integer maxWaitingThreads;
+    private final Integer timeoutSeconds;
 
     public ZMailboxLock(Integer maxWaitingThreads, Integer timeoutSeconds) {
         this.maxWaitingThreads = maxWaitingThreads;

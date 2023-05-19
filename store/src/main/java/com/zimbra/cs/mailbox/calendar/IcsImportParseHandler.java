@@ -40,7 +40,7 @@ import com.zimbra.cs.mailbox.calendar.Invite.InviteVisitor;
 // the referenced VTIMEZONEs.
 public class IcsImportParseHandler implements ZICalendarParseHandler {
     ZVCalendar mCurCal = null;
-    List<ZComponent> mComponents = new ArrayList<ZComponent>();
+    List<ZComponent> mComponents = new ArrayList<>();
     ZProperty mCurProperty = null;
     private int mNumCals;
     private boolean mInZCalendar;
@@ -127,7 +127,7 @@ public class IcsImportParseHandler implements ZICalendarParseHandler {
                         break;
                     }
                 } catch (ServiceException e) {
-                    throw new ParserException("Error while parsing " + tok.toString(), e);
+                    throw new ParserException("Error while parsing " + tok, e);
                 }
             }
         } else {
@@ -210,7 +210,7 @@ public class IcsImportParseHandler implements ZICalendarParseHandler {
         if (tzmap == null)
             tzmap = new TimeZoneMap(mTimeZoneMap.getLocalTimeZone());
 
-        List<ZComponent> comps = new ArrayList<ZComponent>(1);
+        List<ZComponent> comps = new ArrayList<>(1);
         comps.add(comp);
         Invite.createFromCalendar(mAccount, null, mMethod, tzmap, comps.iterator(),
                                  true, mContinueOnError, mInviteVisitor);
@@ -220,7 +220,7 @@ public class IcsImportParseHandler implements ZICalendarParseHandler {
         private final OperationContext mCtxt;
         private final Folder mFolder;
         private final boolean mPreserveExistingAlarms;
-        private final Set<String> mUidsSeen = new HashSet<String>();
+        private final Set<String> mUidsSeen = new HashSet<>();
 
         public ImportInviteVisitor(OperationContext ctxt, Folder folder, boolean preserveExistingAlarms) {
             mCtxt = ctxt;

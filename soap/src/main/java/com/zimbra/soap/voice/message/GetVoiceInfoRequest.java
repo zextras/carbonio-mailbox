@@ -33,7 +33,7 @@ public class GetVoiceInfoRequest {
      * @zm-api-field-description Phones
      */
     @XmlElement(name=VoiceConstants.E_PHONE /* phone */, required=false)
-    private List<PhoneSpec> phones = Lists.newArrayList();
+    private final List<PhoneSpec> phones = Lists.newArrayList();
 
     public GetVoiceInfoRequest() {
     }

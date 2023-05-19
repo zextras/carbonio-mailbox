@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +31,8 @@ class AsyncPipedFileCopier extends AbstractAsyncFileCopier implements FileCopier
     private static final int MAX_TOTAL_READER_THREADS = 50;
     private static final int MAX_TOTAL_WRITER_THREADS = 50;
 
-    private PipedCopier[] mPipes;
-    private boolean mUseNIO;
+    private final PipedCopier[] mPipes;
+    private final boolean mUseNIO;
     private int mCopyBufSizeOIO;
 
     AsyncPipedFileCopier(
@@ -136,10 +137,10 @@ class AsyncPipedFileCopier extends AbstractAsyncFileCopier implements FileCopier
         private static final int INT_BYTES = Integer.SIZE / 8;
         private static final int LONG_BYTES = Long.SIZE / 8;
 
-        private BufferedPipe mPipe;
-        private ReaderThread[] mReaders;
-        private WriterThread[] mWriters;
-        private CallbackMap mCallbackMap;
+        private final BufferedPipe mPipe;
+        private final ReaderThread[] mReaders;
+        private final WriterThread[] mWriters;
+        private final CallbackMap mCallbackMap;
 
         private PipedCopier(int pipeNum, int numReaders, int numWriters, int bufsize) {
             mPipe = new BufferedPipe(bufsize > 0 ? bufsize : FileCopierOptions.DEFAULT_PIPE_BUFFER_SIZE);
@@ -215,9 +216,9 @@ class AsyncPipedFileCopier extends AbstractAsyncFileCopier implements FileCopier
          */
         private class ReaderThread extends Thread {
 
-            private BufferedPipe.SinkChannel mChannel;
-            private ByteBuffer mByteBuffer;
-            private byte[] mCopyBuffer;
+            private final BufferedPipe.SinkChannel mChannel;
+            private final ByteBuffer mByteBuffer;
+            private final byte[] mCopyBuffer;
 
             public ReaderThread(BufferedPipe pipe, int pipeNum, int threadNum) {
                 setName("AsyncPipedFileCopierReader-" + pipeNum + "-" + threadNum);
@@ -297,7 +298,7 @@ class AsyncPipedFileCopier extends AbstractAsyncFileCopier implements FileCopier
 
                 long callbackId = -1;
                 try {
-                    byte destPath[] = dest.getAbsolutePath().getBytes(CHARSET_UTF8);
+                    byte[] destPath = dest.getAbsolutePath().getBytes(StandardCharsets.UTF_8);
                     mByteBuffer.clear();
                     // command
                     mByteBuffer.putInt(CMD_COPY.length);
@@ -389,9 +390,9 @@ class AsyncPipedFileCopier extends AbstractAsyncFileCopier implements FileCopier
          */
         private class WriterThread extends Thread {
 
-            private BufferedPipe.SourceChannel mChannel;
-            private ByteBuffer mByteBuffer;
-            private byte[] mCopyBuffer;
+            private final BufferedPipe.SourceChannel mChannel;
+            private final ByteBuffer mByteBuffer;
+            private final byte[] mCopyBuffer;
 
             public WriterThread(BufferedPipe pipe, int pipeNum, int threadNum) {
                 setName("AsyncPipedFileCopierWriter-" + pipeNum + "-" + threadNum);
@@ -547,7 +548,7 @@ class AsyncPipedFileCopier extends AbstractAsyncFileCopier implements FileCopier
                 byte[] strBytes = new byte[strLen];
                 mByteBuffer.flip();
                 mByteBuffer.get(strBytes);
-                String str = new String(strBytes, CHARSET_UTF8);
+                String str = new String(strBytes, StandardCharsets.UTF_8);
                 return str;
             }
         }
@@ -563,11 +564,11 @@ class AsyncPipedFileCopier extends AbstractAsyncFileCopier implements FileCopier
             }
         }
 
-        private Map<Long, CbObj> mMap;
+        private final Map<Long, CbObj> mMap;
         private long mNextId;
 
         public CallbackMap(int capacity) {
-            mMap = new HashMap<Long, CbObj>(capacity);
+            mMap = new HashMap<>(capacity);
             mNextId = 0;
         }
 

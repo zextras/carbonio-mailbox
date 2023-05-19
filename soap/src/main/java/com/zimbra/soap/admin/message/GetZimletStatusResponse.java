@@ -37,14 +37,14 @@ public class GetZimletStatusResponse {
      * @zm-api-field-description Class Of Service (COS) Information
      */
     @XmlElement(name=AdminConstants.E_COS, required=false)
-    private List<ZimletStatusCos> coses = Lists.newArrayList();
+    private final List<ZimletStatusCos> coses = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private GetZimletStatusResponse() {
-        this((ZimletStatusParent) null);
+        this(null);
     }
 
     public GetZimletStatusResponse(ZimletStatusParent zimlets) {

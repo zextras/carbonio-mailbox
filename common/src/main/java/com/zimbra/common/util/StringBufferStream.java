@@ -98,7 +98,7 @@ public class StringBufferStream extends BufferStream implements Appendable {
         sbs.append("start ");
         sbs.append(new StringBuilder("-middle-"), 1, 7);
         sbs.append(" end");
-        System.out.println(sbs.toString());
+        System.out.println(sbs);
     }
 
 }

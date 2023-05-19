@@ -29,7 +29,7 @@ public class SetCustomMetadataResponse {
      */
     @SuppressWarnings("unused")
     private SetCustomMetadataResponse() {
-        this((String) null);
+        this(null);
     }
 
     public SetCustomMetadataResponse(String id) {

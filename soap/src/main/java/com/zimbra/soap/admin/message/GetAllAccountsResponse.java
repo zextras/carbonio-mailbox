@@ -30,7 +30,7 @@ public class GetAllAccountsResponse {
      * @zm-api-field-description Information on accounts
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT, required=false)
-    private List <AccountInfo> accountList = Lists.newArrayList();
+    private final List <AccountInfo> accountList = Lists.newArrayList();
 
     public GetAllAccountsResponse() {
     }

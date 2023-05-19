@@ -115,6 +115,6 @@ public class MessageChannel {
     private Client client;
     private boolean running;
 
-    private static Log log = LogFactory.getLog("iochannel");
+    private static final Log log = LogFactory.getLog("iochannel");
     private static MessageChannel instance;
 }

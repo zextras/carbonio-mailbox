@@ -365,7 +365,7 @@ public class ICalTimeZone extends SimpleTimeZone {
     }
 
     // maps Java weekday number to iCalendar weekday name
-    private static String sDayOfWeekNames[] = new String[Calendar.SATURDAY + 1];
+    private static final String[] sDayOfWeekNames = new String[Calendar.SATURDAY + 1];
     static {
         sDayOfWeekNames[0] = "XX";  // unused
         sDayOfWeekNames[Calendar.SUNDAY]    = "SU";  // 1
@@ -378,8 +378,8 @@ public class ICalTimeZone extends SimpleTimeZone {
     }
 
     // maps iCalendar weekday name to Java weekday number
-    private static Map<String, Integer> sDayOfWeekMap =
-        new HashMap<String, Integer>(7);
+    private static final Map<String, Integer> sDayOfWeekMap =
+        new HashMap<>(7);
     static {
         sDayOfWeekMap.put("SU", Integer.valueOf(Calendar.SUNDAY));     // 1
         sDayOfWeekMap.put("MO", Integer.valueOf(Calendar.MONDAY));     // 2
@@ -649,7 +649,7 @@ public class ICalTimeZone extends SimpleTimeZone {
             String actualStandardTime = null;
             String actualDaylightTime = null;
 
-            Calendar onsets[] = findOnsetDates(tz, year);
+            Calendar[] onsets = findOnsetDates(tz, year);
             for (int i = 0; i < onsets.length; i++) {
             	System.out.print("  Onset " + (i + 1) + ": ");
                 if (onsets[i] == null) {
@@ -670,7 +670,7 @@ public class ICalTimeZone extends SimpleTimeZone {
                     goodOrBad = false;
                 }
                 System.out.println("  DST supported:   " + hasDaylight);
-                System.out.println("  toString:\n" + tz.toString());
+                System.out.println("  toString:\n" + tz);
             } else {
             	if (onsets[0] == null || onsets[1] == null) {
             		System.out.println("ERROR: Not enough onset dates present in a DST TZ.");
@@ -684,7 +684,7 @@ public class ICalTimeZone extends SimpleTimeZone {
                 System.out.println("  Standard Offset: " + offsetToHHMM(tz.mStandardOffset));
                 System.out.println("  Standard Start:  " + tz.mDayToStdDtStart);
                 System.out.println("  Standard RRule:  " + tz.mDayToStdRule);
-                System.out.println("  toString:\n" + tz.toString());
+                System.out.println("  toString:\n" + tz);
 
                 defStandardTime = parseHHMMSS(tz.mDayToStdDtStart);
                 defDaylightTime = parseHHMMSS(tz.mStdToDayDtStart);
@@ -764,7 +764,7 @@ public class ICalTimeZone extends SimpleTimeZone {
          * @return
          */
         public static Calendar[] findOnsetDates(ICalTimeZone tz, int year) {
-            Calendar onsets[] = new Calendar[2];
+            Calendar[] onsets = new Calendar[2];
         	Calendar cal = new GregorianCalendar(tz);
             cal.clear();
             cal.set(year, Calendar.JANUARY, 1, 12, 0, 0);  // noon on January 1st
@@ -1230,7 +1230,7 @@ public class ICalTimeZone extends SimpleTimeZone {
         return null;
     }
 
-    public enum TZID_NAME_ASSIGNMENT_BEHAVIOR { ALWAYS_KEEP, KEEP_IF_DOESNT_CLASH, USE_MATCHED_NAME };
+    public enum TZID_NAME_ASSIGNMENT_BEHAVIOR { ALWAYS_KEEP, KEEP_IF_DOESNT_CLASH, USE_MATCHED_NAME }
 
     // Lookup a well-known time zone by DST rule.
     public static ICalTimeZone lookupByRule(ICalTimeZone tz, TZID_NAME_ASSIGNMENT_BEHAVIOR assignmentBehavior) {

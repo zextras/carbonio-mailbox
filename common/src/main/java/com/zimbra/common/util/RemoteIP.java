@@ -17,10 +17,10 @@ public class RemoteIP {
   public static final String X_ORIGINATING_PROTOCOL_HEADER = "X-Forwarded-Proto";
 
   /** IP of the http client, Should be always present. */
-  private String mClientIP;
+  private final String mClientIP;
 
   /** port of the http client, Should be always present. */
-  private int mClientPort;
+  private final int mClientPort;
 
   /** IP of the originating client. It can be null. */
   private String mOrigIP;
@@ -35,10 +35,10 @@ public class RemoteIP {
    *
    * <p>Should be always present.
    */
-  private String mRequestIP;
+  private final String mRequestIP;
 
   /** Port number of the http client. */
-  private Integer mRequestPort;
+  private final Integer mRequestPort;
 
   /** Original protocol of the request. */
   private String mOrigProto;
@@ -136,7 +136,7 @@ public class RemoteIP {
   public static class TrustedIPs {
     private static final String IP_LOCALHOST = "127.0.0.1";
 
-    private Set<String> mTrustedIPs = new HashSet<String>();
+    private final Set<String> mTrustedIPs = new HashSet<>();
 
     public TrustedIPs(String[] ips) {
       if (ips != null) {

@@ -17,7 +17,7 @@ import com.zimbra.common.util.ZimbraLog;
 
 public class DocumentDataSource implements DataSource {
 
-    private Document mDocument;
+    private final Document mDocument;
     
     public DocumentDataSource(Document document) {
         if (document == null) {

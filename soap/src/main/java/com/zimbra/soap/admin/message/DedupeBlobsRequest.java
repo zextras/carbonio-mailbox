@@ -33,7 +33,7 @@ import com.zimbra.soap.admin.type.IntIdAttr;
 public class DedupeBlobsRequest {
 
     @XmlEnum
-    public static enum DedupAction {
+    public enum DedupAction {
         start,
         status,
         stop,
@@ -59,7 +59,7 @@ public class DedupeBlobsRequest {
      * @zm-api-field-description Volumes
      */
     @XmlElement(name=AdminConstants.E_VOLUME /* volume */, required=false)
-    private List<IntIdAttr> volumes = Lists.newArrayList();
+    private final List<IntIdAttr> volumes = Lists.newArrayList();
 
     public void setVolumes(Iterable <IntIdAttr> volumes) {
         this.volumes.clear();
@@ -73,7 +73,7 @@ public class DedupeBlobsRequest {
      */
     @SuppressWarnings("unused")
     private DedupeBlobsRequest() {
-        this((DedupAction)null);
+        this(null);
     }
     
     public DedupeBlobsRequest(DedupAction action) {

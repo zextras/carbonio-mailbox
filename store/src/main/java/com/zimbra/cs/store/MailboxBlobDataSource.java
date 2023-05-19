@@ -17,7 +17,7 @@ import com.zimbra.common.mime.MimeConstants;
 // Not doing it now to minimize impact on 6.0.x. 
 public class MailboxBlobDataSource implements DataSource {
     
-    private MailboxBlob mBlob;
+    private final MailboxBlob mBlob;
     
     public MailboxBlobDataSource(MailboxBlob blob) {
         if (blob == null) {

@@ -46,7 +46,7 @@ public class ZAttendeeTest {
         MailboxTestUtil.clearData();
         System.out.println(testName.getMethodName());
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@testdomain.com", "secret", Maps.<String, Object>newHashMap());
+        prov.createAccount("test@testdomain.com", "secret", Maps.newHashMap());
     }
 
 

@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -266,13 +267,13 @@ public class FileHeader {
             mFileSize = in.readLong();
             mSeq = in.readLong();
 
-            int serverIdLen = (int) in.readByte();
+            int serverIdLen = in.readByte();
             if (serverIdLen > SERVER_ID_FIELD_LEN)
                 throw new IOException("ServerId too long (" + serverIdLen +
                                       " bytes) in redolog header");
             byte[] serverIdBuf = new byte[SERVER_ID_FIELD_LEN];
             in.readFully(serverIdBuf, 0, SERVER_ID_FIELD_LEN);
-            mServerId = new String(serverIdBuf, 0, serverIdLen, "UTF-8");
+            mServerId = new String(serverIdBuf, 0, serverIdLen, StandardCharsets.UTF_8);
 
             mFirstOpTstamp = in.readLong();
             mLastOpTstamp = in.readLong();
@@ -293,7 +294,7 @@ public class FileHeader {
         }
     }
 
-    private static String DATE_FORMAT = "EEE, yyyy/MM/dd HH:mm:ss.SSS z";
+    private static final String DATE_FORMAT = "EEE, yyyy/MM/dd HH:mm:ss.SSS z";
 
     public String toString() {
         SimpleDateFormat fmt = new SimpleDateFormat(DATE_FORMAT);

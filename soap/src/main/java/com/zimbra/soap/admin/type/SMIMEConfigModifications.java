@@ -42,7 +42,7 @@ public class SMIMEConfigModifications extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private SMIMEConfigModifications() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public SMIMEConfigModifications(String name, String operation) {

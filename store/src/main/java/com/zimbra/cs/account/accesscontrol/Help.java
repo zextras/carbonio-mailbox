@@ -11,12 +11,12 @@ import com.google.common.collect.Lists;
 import com.zimbra.common.service.ServiceException;
 
 public class Help {
-    private String name;
+    private final String name;
     private String desc;
-    private List<String> items = Lists.newArrayList();
+    private final List<String> items = Lists.newArrayList();
     
     Help(String name) {
-        this.name = new String(name);
+        this.name = name;
     }
     
     String getName() {
@@ -24,7 +24,7 @@ public class Help {
     }
     
     void setDesc(String desc) {
-        this.desc = new String(desc);
+        this.desc = desc;
     }
     
     public String getDesc() {
@@ -32,7 +32,7 @@ public class Help {
     }
 
     void addItem(String item) {
-        items.add(new String(item));
+        items.add(item);
     }
     
     public List<String> getItems() {

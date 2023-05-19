@@ -25,7 +25,7 @@ public class RootVoiceFolder extends VoiceFolder {
      * @zm-api-field-description Folders
      */
     @XmlElement(name=MailConstants.E_FOLDER /* folder */, required=false)
-    private List<VoiceFolder> folders = Lists.newArrayList();
+    private final List<VoiceFolder> folders = Lists.newArrayList();
 
     public RootVoiceFolder() {
     }

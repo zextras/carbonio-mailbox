@@ -60,11 +60,8 @@ public abstract class AccountDocumentHandler extends DocumentHandler {
         }
             
         MailMode mailMode = Provisioning.MailMode.fromString(modeString);
-        if (mailMode == MailMode.mixed && 
-            !server.getBooleanAttr(Provisioning.A_zimbraMailClearTextPasswordEnabled, true)) 
-            return false;
-        else
-            return true;
+        return mailMode != MailMode.mixed ||
+            server.getBooleanAttr(Provisioning.A_zimbraMailClearTextPasswordEnabled, true);
     }
     
     protected Set<String> getReqAttrs(Element request, AttributeClass klass) throws ServiceException {
@@ -76,7 +73,7 @@ public abstract class AccountDocumentHandler extends DocumentHandler {
         String[] attrs = attrsStr.split(",");
 
         Set<String> attrsOnEntry = AttributeManager.getInstance().getAllAttrsInClass(klass);
-        Set<String> validAttrs = new HashSet<String>();
+        Set<String> validAttrs = new HashSet<>();
 
         for (String attr : attrs) {
             if (attrsOnEntry.contains(attr)) {

@@ -14,11 +14,11 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class ZVoiceMailPrefs extends ZCallFeature {
-    private HashMap<String, String> mMap;
+    private final HashMap<String, String> mMap;
 
     public ZVoiceMailPrefs(String name) {
         super(name);
-        mMap = new HashMap<String, String>();
+        mMap = new HashMap<>();
     }
 
     public String getEmailNotificationAddress() {

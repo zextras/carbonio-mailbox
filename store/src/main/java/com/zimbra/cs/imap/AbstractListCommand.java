@@ -55,13 +55,9 @@ public abstract class AbstractListCommand extends ImapCommand {
             return false;
         }
         if (referenceName == null) {
-            if (other.referenceName != null) {
-                return false;
-            }
-        } else if (!referenceName.equals(other.referenceName)) {
-            return false;
-        }
-        return true;
+          return other.referenceName == null;
+        } else
+          return referenceName.equals(other.referenceName);
     }
 
 }

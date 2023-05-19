@@ -111,7 +111,7 @@ public class VoiceInfo {
      */
     @XmlElementWrapper(name=VoiceConstants.E_CALL_FEATURES /* callfeatures */, required=false)
     @XmlElement(name=VoiceConstants.E_CALL_FEATURE /* callfeature */, required=false)
-    private List<CallFeature> callFeatures = Lists.newArrayList();
+    private final List<CallFeature> callFeatures = Lists.newArrayList();
 
     public VoiceInfo() {
     }

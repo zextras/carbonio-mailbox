@@ -23,18 +23,18 @@ public class RetryConnectionFactory extends DriverManagerConnectionFactory {
 
     @Override
     public Connection createConnection() throws SQLException {
-        AbstractRetry<Connection> exec = new AbstractRetry<Connection>() {
-            @Override
-            public ExecuteResult<Connection> execute() throws SQLException {
-                Connection conn = superCreateConnection();
-                Db.getInstance().postCreate(conn);
-                return new ExecuteResult<Connection>(new RetryConnection(conn));
-            }
+        AbstractRetry<Connection> exec = new AbstractRetry<>() {
+          @Override
+          public ExecuteResult<Connection> execute() throws SQLException {
+            Connection conn = superCreateConnection();
+            Db.getInstance().postCreate(conn);
+            return new ExecuteResult<>(new RetryConnection(conn));
+          }
 
-            @Override
-            protected boolean retryException(SQLException sqle) {
-                return (super.retryException(sqle) || Db.errorMatches(sqle, Db.Error.CANTOPEN));
-            }
+          @Override
+          protected boolean retryException(SQLException sqle) {
+            return (super.retryException(sqle) || Db.errorMatches(sqle, Db.Error.CANTOPEN));
+          }
 
         };
         return exec.doRetry().getResult();

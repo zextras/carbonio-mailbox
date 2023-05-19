@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -203,7 +204,7 @@ public abstract class FreeBusyProvider {
 
     public static List<FreeBusy> getRemoteFreeBusy(Account requestor, List<String> remoteIds, long start, long end, int folder, int hopcount) {
         Set<FreeBusyProvider> providers = getProviders();
-        ArrayList<FreeBusy> ret = new ArrayList<FreeBusy>();
+        ArrayList<FreeBusy> ret = new ArrayList<>();
         for (String emailAddr : remoteIds) {
             Request req = new Request(requestor, emailAddr, start, end, folder, hopcount);
             boolean succeed = false;
@@ -222,12 +223,12 @@ public abstract class FreeBusyProvider {
 
         // there could be duplicate results from different providers.
         // construct the map of results.
-        Map<String, ArrayList<FreeBusy>> freebusyMap = new HashMap<String, ArrayList<FreeBusy>>();
+        Map<String, ArrayList<FreeBusy>> freebusyMap = new HashMap<>();
         for (FreeBusyProvider prov : providers) {
             for (FreeBusy fb : prov.getResults()) {
                 ArrayList<FreeBusy> freebusyList = freebusyMap.get(fb.getName());
                 if (freebusyList == null) {
-                    freebusyList = new ArrayList<FreeBusy>();
+                    freebusyList = new ArrayList<>();
                     freebusyMap.put(fb.getName(), freebusyList);
                 }
                 freebusyList.add(fb);
@@ -279,7 +280,7 @@ public abstract class FreeBusyProvider {
     }
 
     protected List<FreeBusy> getEmptyList(ArrayList<Request> req) {
-        ArrayList<FreeBusy> ret = new ArrayList<FreeBusy>();
+        ArrayList<FreeBusy> ret = new ArrayList<>();
         for (Request r : req)
             ret.add(FreeBusy.nodataFreeBusy(r.email, r.start, r.end));
         return ret;
@@ -295,17 +296,17 @@ public abstract class FreeBusyProvider {
         return null;
     }
     public static Set<FreeBusyProvider> getProviders() {
-        HashSet<FreeBusyProvider> ret = new HashSet<FreeBusyProvider>();
+        HashSet<FreeBusyProvider> ret = new HashSet<>();
         for (FreeBusyProvider p : sPROVIDERS)
             ret.add(p.getInstance());
         return ret;
     }
-    private static HashSet<FreeBusyProvider> sPROVIDERS;
-    private static HashMap<String,FreeBusySyncQueue> sPUSHQUEUES;
+    private static final HashSet<FreeBusyProvider> sPROVIDERS;
+    private static final HashMap<String,FreeBusySyncQueue> sPUSHQUEUES;
 
     static {
-        sPROVIDERS = new HashSet<FreeBusyProvider>();
-        sPUSHQUEUES = new HashMap<String,FreeBusySyncQueue>();
+        sPROVIDERS = new HashSet<>();
+        sPUSHQUEUES = new HashMap<>();
         new ExchangeFreeBusyProvider();  // load the class
         new ExchangeEWSFreeBusyProvider();
     }
@@ -388,8 +389,8 @@ public abstract class FreeBusyProvider {
         private long mLastFailed;
         private static final int DEFAULT_RETRY_INTERVAL = 60 * 1000; // 1m
         private static final int MAX_FILE_SIZE = 1024000;  // for sanity check
-        private String mFilename;
-        private FreeBusyProvider mProvider;
+        private final String mFilename;
+        private final FreeBusyProvider mProvider;
 
         public synchronized void writeToDisk() throws IOException {
             StringBuilder buf = new StringBuilder(Integer.toString(size()+1));
@@ -424,7 +425,7 @@ public abstract class FreeBusyProvider {
             try {
                 in = new FileInputStream(f);
                 byte[] buf = ByteUtil.readInput(in, (int)len, MAX_FILE_SIZE);
-                tokens = new String(buf, "UTF-8").split("\n");
+                tokens = new String(buf, StandardCharsets.UTF_8).split("\n");
             } finally {
                 if (in != null)
                     in.close();

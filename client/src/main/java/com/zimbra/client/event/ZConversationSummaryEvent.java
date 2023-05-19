@@ -92,7 +92,7 @@ public class ZConversationSummaryEvent implements ToZJSONObject {
     public List<ZEmailAddress> getRecipients(List<ZEmailAddress> defaultValue) throws ServiceException {
         List<ZEmailAddress> result  = null;
         for (Element emailEl: mConvEl.listElements(MailConstants.E_EMAIL)) {
-            if (result == null) result = new ArrayList<ZEmailAddress>();
+            if (result == null) result = new ArrayList<>();
             result.add(new ZEmailAddress(emailEl));
         }
         return result == null ? defaultValue : result;

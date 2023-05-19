@@ -19,7 +19,7 @@ import com.zimbra.cs.ldap.ZAttributes;
  */
 public class LdapServer extends Server implements LdapEntry {
 
-    private String mDn;
+    private final String mDn;
 
     public LdapServer(String dn, ZAttributes attrs, Map<String,Object> defaults, Provisioning prov) throws LdapException {
         super(attrs.getAttrString(Provisioning.A_cn), 

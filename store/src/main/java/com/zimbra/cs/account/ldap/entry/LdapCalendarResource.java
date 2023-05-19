@@ -19,7 +19,7 @@ import com.zimbra.cs.ldap.ZAttributes;
  */
 public class LdapCalendarResource extends CalendarResource implements LdapEntry {
 
-    private String mDn;
+    private final String mDn;
     
     public LdapCalendarResource(String dn, String email, ZAttributes attrs, Map<String, Object> defaults, Provisioning prov)
     throws LdapException {

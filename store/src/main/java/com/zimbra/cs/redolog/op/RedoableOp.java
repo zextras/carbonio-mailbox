@@ -39,7 +39,7 @@ import com.zimbra.cs.redolog.Version;
 public abstract class RedoableOp {
 
     protected static Log mLog = LogFactory.getLog(RedoableOp.class);
-    private static String sPackageName = RedoableOp.class.getPackage().getName();
+    private static final String sPackageName = RedoableOp.class.getPackage().getName();
 
     // magic marker for each redo item in redo log
     public static final String REDO_MAGIC = "ZMREDO";
@@ -59,7 +59,7 @@ public abstract class RedoableOp {
     private int mChangeId = -1;
     private int mChangeConstraint;
     private int mMailboxId;
-    private RedoLogManager mRedoLogMgr;
+    private final RedoLogManager mRedoLogMgr;
     private boolean mUnloggedReplay;  // true if redo of this op is not redo-logged
     protected RedoCommitCallback mCommitCallback;
 
@@ -423,7 +423,7 @@ public abstract class RedoableOp {
         synchronized (mSBAVGuard) {
             if (mSerializedByteArrayVector == null)
                 setSerializedByteArray(serializeToByteArray());
-            List<InputStream> streams = new ArrayList<InputStream>(mSerializedByteArrayVector.length + 1);
+            List<InputStream> streams = new ArrayList<>(mSerializedByteArrayVector.length + 1);
             for (byte[] array : mSerializedByteArrayVector) {
                 streams.add(new ByteArrayInputStream(array));
             }
@@ -442,7 +442,7 @@ public abstract class RedoableOp {
 
     public synchronized void addChainedOp(RedoableOp subOp) {
         if (mChainedOps == null)
-            mChainedOps = new LinkedList<RedoableOp>();
+            mChainedOps = new LinkedList<>();
         mChainedOps.add(subOp);
     }
 
@@ -480,8 +480,8 @@ public abstract class RedoableOp {
         return allGood;
     }
 
-    private static Map<String, Class> sOpClassMap = new HashMap<String, Class>();
-    private static List<ClassLoader> sOpClassLoaders = new ArrayList<ClassLoader>();
+    private static final Map<String, Class> sOpClassMap = new HashMap<>();
+    private static final List<ClassLoader> sOpClassLoaders = new ArrayList<>();
 
     /**
      * Register a class loader for instantiating redo op objects.
@@ -497,7 +497,7 @@ public abstract class RedoableOp {
 
     public synchronized static void deregisterClassLoader(ClassLoader ldr) {
         mLog.debug("Deregistering class loader " + ldr);
-        List<String> toRemove = new ArrayList<String>();
+        List<String> toRemove = new ArrayList<>();
         for (Map.Entry<String, Class> entry : sOpClassMap.entrySet()) {
             Class clz = entry.getValue();
             if (clz.getClassLoader().equals(ldr))

@@ -45,7 +45,7 @@ implements CalendaringDataInterface {
      * @zm-api-field-description Categories
      */
     @XmlElement(name=MailConstants.E_CAL_CATEGORY /* category */, required=false)
-    private List<String> categories = Lists.newArrayList();
+    private final List<String> categories = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Information for iCalendar GEO property
@@ -65,7 +65,7 @@ implements CalendaringDataInterface {
      * @zm-api-field-description Instances
      */
     @XmlElement(name=MailConstants.E_INSTANCE /* inst */, required=false)
-    private List<InstanceDataInfo> instances = Lists.newArrayList();
+    private final List<InstanceDataInfo> instances = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Alarm information
@@ -78,7 +78,7 @@ implements CalendaringDataInterface {
      */
     @SuppressWarnings("unused")
     protected CalendaringData() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public CalendaringData(String xUid, String uid) {

@@ -32,8 +32,8 @@ import com.zimbra.cs.memcached.MemcachedKeyPrefix;
  */
 final class MemcachedImapCache implements ImapSessionManager.Cache<String, ImapFolder> {
 
-    private final MemcachedMap<ImapMemcachedKey, ImapFolder> map = new MemcachedMap<ImapMemcachedKey, ImapFolder>(
-            MemcachedConnector.getClient(), new ImapMemcachedSerializer());
+    private final MemcachedMap<ImapMemcachedKey, ImapFolder> map = new MemcachedMap<>(
+        MemcachedConnector.getClient(), new ImapMemcachedSerializer());
 
     @Override
     public void put(String key, ImapFolder value) {
@@ -88,10 +88,10 @@ final class MemcachedImapCache implements ImapSessionManager.Cache<String, ImapF
     }
 
     private static final class ImapMemcachedSerializer implements MemcachedSerializer<ImapFolder> {
-        private Set<String> validClassNames;
+        private final Set<String> validClassNames;
 
         public ImapMemcachedSerializer() {
-            this.validClassNames = new HashSet<String>();
+            this.validClassNames = new HashSet<>();
             this.validClassNames.add(ImapFolder.class.getName());
             this.validClassNames.add(ItemIdentifier.class.getName());
             this.validClassNames.add(ImapMessage.class.getName());

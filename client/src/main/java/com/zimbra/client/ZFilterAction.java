@@ -51,7 +51,7 @@ public abstract class ZFilterAction implements ToZJSONObject {
 
     private ZFilterAction(String name, String... args) {
         this.name = name;
-        this.args = args != null ? ImmutableList.copyOf(args) : Collections.<String>emptyList();
+        this.args = args != null ? ImmutableList.copyOf(args) : Collections.emptyList();
     }
 
     public static ZFilterAction of(FilterAction action) throws ServiceException {
@@ -187,7 +187,7 @@ public abstract class ZFilterAction implements ToZJSONObject {
     }
 
     public static class ZMarkAction extends ZFilterAction {
-        private MarkOp op;
+        private final MarkOp op;
 
         public ZMarkAction(MarkOp op) {
             super(A_FLAG, op.name().toLowerCase());

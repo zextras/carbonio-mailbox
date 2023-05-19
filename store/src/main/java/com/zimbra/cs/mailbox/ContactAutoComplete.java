@@ -60,8 +60,8 @@ public class ContactAutoComplete {
         private final List<String> keys;
 
         public AutoCompleteResult(int l) {
-            entries = new TreeSet<ContactEntry>();
-            keys = new ArrayList<String>();
+            entries = new TreeSet<>();
+            keys = new ArrayList<>();
             canBeCached = true;
             limit = l;
         }
@@ -309,11 +309,11 @@ public class ContactAutoComplete {
     private Collection<String> mEmailKeys;
 
     private GalSearchType mSearchType;
-    private ZimbraSoapContext mZsc;
+    private final ZimbraSoapContext mZsc;
     private Account mAuthedAcct;
     private Account mRequestedAcct;
-    private OperationContext octxt;
-    private boolean returnFullContactData;
+    private final OperationContext octxt;
+    private final boolean returnFullContactData;
 
     private static final List<String> DEFAULT_EMAIL_KEYS = ImmutableList.of(
             ContactConstants.A_email, ContactConstants.A_email2, ContactConstants.A_email3);
@@ -605,10 +605,8 @@ public class ContactAutoComplete {
                 return true;
             }
             String phoneticFirstName = getFieldAsString(attrs, ContactConstants.A_phoneticFirstName);
-            if (!Strings.isNullOrEmpty(phoneticFirstName) && phoneticFirstName.toLowerCase().startsWith(token)) {
-                return true;
-            }
-            return false;
+            return !Strings.isNullOrEmpty(phoneticFirstName) && phoneticFirstName.toLowerCase()
+                .startsWith(token);
         } else { // multi tokens
             Pattern pattern = toPattern(tokens);
 
@@ -642,10 +640,8 @@ public class ContactAutoComplete {
                 return true;
             }
             // phonetic-first phonetic-last pattern (check this next as it's less common in Japanese)
-            if (pattern.matcher(Joiner.on(' ').skipNulls().join(phoneticFirstName, phoneticLastName)).matches()) {
-                return true;
-            }
-            return false;
+            return pattern.matcher(
+                Joiner.on(' ').skipNulls().join(phoneticFirstName, phoneticLastName)).matches();
         }
     }
 
@@ -747,9 +743,9 @@ public class ContactAutoComplete {
     }
 
     private Pair<List<Folder>, Map<ItemId, Mountpoint>> getLocalRemoteContactFolders(Collection<Integer> folderIDs) throws ServiceException {
-        List<Folder> folders = new ArrayList<Folder>();
-        Map<ItemId, Mountpoint> mountpoints = new HashMap<ItemId, Mountpoint>();
-        Pair<List<Folder>, Map<ItemId, Mountpoint>> pair = new Pair<List<Folder>, Map<ItemId,Mountpoint>>(folders, mountpoints);
+        List<Folder> folders = new ArrayList<>();
+        Map<ItemId, Mountpoint> mountpoints = new HashMap<>();
+        Pair<List<Folder>, Map<ItemId, Mountpoint>> pair = new Pair<>(folders, mountpoints);
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(getRequestedAcctId());
         if (folderIDs == null) {
             for (Folder folder : mbox.getFolderList(octxt, SortBy.NONE)) {
@@ -808,7 +804,7 @@ public class ContactAutoComplete {
                         }
                     }
                 } else if (hit instanceof ProxiedHit) {
-                    fields = new HashMap<String, String>();
+                    fields = new HashMap<>();
                     Element top = ((ProxiedHit) hit).getElement();
                     id = new ItemId(top.getAttribute(MailConstants.A_ID), (String) null);
                     ZimbraLog.gal.debug("hit: %s", id);

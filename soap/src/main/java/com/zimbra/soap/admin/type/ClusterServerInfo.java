@@ -34,7 +34,7 @@ public class ClusterServerInfo {
      */
     @SuppressWarnings("unused")
     private ClusterServerInfo() {
-        this((String) null, -1);
+        this(null, -1);
     }
 
     public ClusterServerInfo(String name, int status) {

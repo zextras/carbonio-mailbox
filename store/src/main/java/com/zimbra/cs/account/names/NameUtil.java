@@ -18,10 +18,7 @@ public class NameUtil {
     private static final int MAX_DOMAIN_NAME_LEN = 255; // bug 15919, (RFC 1035)
 
     private static boolean isDot(int c) {
-        if (c == '.' || c == '\u3002' || c == '\uff0e' || c == '\uff61')
-            return true;
-        else
-            return false;
+      return c == '.' || c == '\u3002' || c == '\uff0e' || c == '\uff61';
     }
 
     private static boolean containsNonLDH(String input) {
@@ -91,8 +88,8 @@ public class NameUtil {
      */
     public static class EmailAddress {
 
-        private String localPart;
-        private String domain;
+        private final String localPart;
+        private final String domain;
 
         public EmailAddress(String addr) throws ServiceException {
             this(addr, true);

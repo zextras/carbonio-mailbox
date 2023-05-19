@@ -44,7 +44,7 @@ public class RejectTest {
     @Rule public TestName testName = new TestName();
     @Rule public MethodRule watchman = new ZTestWatchman();
     
-    private static String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
+    private static final String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
             + "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
             + "Received: from localhost (localhost [127.0.0.1])\n"
@@ -123,7 +123,7 @@ public class RejectTest {
             Message mdnMsg = mbox2.getMessageById(null, item);
             String ctStr = mdnMsg.getMimeMessage().getContentType().toLowerCase();
             boolean isReport = ctStr.startsWith("multipart/report;");
-            boolean isMdn = ctStr.indexOf("report-type=disposition-notification") < 0 ? false : true;
+            boolean isMdn = ctStr.indexOf("report-type=disposition-notification") >= 0;
             Assert.assertEquals(isReport & isMdn, true);
         } catch (Exception e) {
             fail("No exception should be thrown: " + e.getMessage());
@@ -183,7 +183,7 @@ public class RejectTest {
             Message mdnMsg = mbox2.getMessageById(null, item);
             String ctStr = mdnMsg.getMimeMessage().getContentType().toLowerCase();
             boolean isReport = ctStr.startsWith("multipart/report;");
-            boolean isMdn = ctStr.indexOf("report-type=disposition-notification") < 0 ? false : true;
+            boolean isMdn = ctStr.indexOf("report-type=disposition-notification") >= 0;
             Assert.assertEquals(isReport & isMdn, true);
         } catch (Exception e) {
         	e.printStackTrace();
@@ -225,7 +225,7 @@ public class RejectTest {
             Message mdnMsg = mbox2.getMessageById(null, item);
             String ctStr = mdnMsg.getMimeMessage().getContentType().toLowerCase();
             boolean isReport = ctStr.startsWith("multipart/report;");
-            boolean isMdn = ctStr.indexOf("report-type=disposition-notification") < 0 ? false : true;
+            boolean isMdn = ctStr.indexOf("report-type=disposition-notification") >= 0;
             Assert.assertEquals(isReport & isMdn, true);
         } catch (Exception e) {
             fail("No exception should be thrown: " + e.getMessage());

@@ -15,14 +15,14 @@ public class CookieSpec {
     * @zm-api-field-description Cookie name
     */
    @XmlAttribute(name=AdminConstants.A_NAME, required=true)
-   private String name;
+   private final String name;
    
    /**
     * no-argument constructor wanted by JAXB
     */
    @SuppressWarnings("unused")
    private CookieSpec() {
-       this((String) null);
+       this(null);
    }
    
    public CookieSpec(String name) {

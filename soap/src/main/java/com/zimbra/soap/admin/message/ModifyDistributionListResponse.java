@@ -25,7 +25,7 @@ public class ModifyDistributionListResponse {
     DistributionListInfo dl;
 
     public ModifyDistributionListResponse() {
-        this((DistributionListInfo)null);
+        this(null);
     }
 
     public ModifyDistributionListResponse(DistributionListInfo dl) {

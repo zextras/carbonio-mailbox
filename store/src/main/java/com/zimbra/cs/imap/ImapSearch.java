@@ -93,7 +93,7 @@ abstract class ImapSearch {
 
 
     static abstract class LogicalOperation extends ImapSearch {
-        protected List<ImapSearch> mChildren = new ArrayList<ImapSearch>();
+        protected List<ImapSearch> mChildren = new ArrayList<>();
 
         protected LogicalOperation addChild(ImapSearch i4search) {
             mChildren.add(i4search);  return this;
@@ -140,13 +140,9 @@ abstract class ImapSearch {
             }
             LogicalOperation other = (LogicalOperation) obj;
             if (mChildren == null) {
-                if (other.mChildren != null) {
-                    return false;
-                }
-            } else if (!mChildren.equals(other.mChildren)) {
-                return false;
-            }
-            return true;
+              return other.mChildren == null;
+            } else
+              return mChildren.equals(other.mChildren);
         }
     }
 
@@ -264,9 +260,9 @@ abstract class ImapSearch {
     }
 
     static class SequenceSearch extends ImapSearch {
-        private String mTag;
-        private String mSubSequence;
-        private boolean mIsUidSearch;
+        private final String mTag;
+        private final String mSubSequence;
+        private final boolean mIsUidSearch;
         SequenceSearch(String tag, String subSequence, boolean byUID)  { mTag = tag;  mSubSequence = subSequence;  mIsUidSearch = byUID; }
 
         @Override
@@ -307,18 +303,14 @@ abstract class ImapSearch {
                 return false;
             }
             if (mSubSequence == null) {
-                if (other.mSubSequence != null) {
-                    return false;
-                }
-            } else if (!mSubSequence.equals(other.mSubSequence)) {
-                return false;
-            }
-            return true;
+              return other.mSubSequence == null;
+            } else
+              return mSubSequence.equals(other.mSubSequence);
         }
     }
 
     static class FlagSearch extends ImapSearch {
-        private String mFlagName;
+        private final String mFlagName;
         FlagSearch(String flagName)  { mFlagName = flagName; }
 
         @Override
@@ -373,13 +365,9 @@ abstract class ImapSearch {
             }
             FlagSearch other = (FlagSearch) obj;
             if (mFlagName == null) {
-                if (other.mFlagName != null) {
-                    return false;
-                }
-            } else if (!mFlagName.equals(other.mFlagName)) {
-                return false;
-            }
-            return true;
+              return other.mFlagName == null;
+            } else
+              return mFlagName.equals(other.mFlagName);
         }
     }
 
@@ -390,10 +378,11 @@ abstract class ImapSearch {
             String query;
             Relation(String rep)                { query = rep; }
             @Override public String toString()  { return query; }
-        };
-        private Relation mRelation;
-        private Date mDate;
-        private long mTimestamp;
+        }
+
+      private final Relation mRelation;
+        private final Date mDate;
+        private final long mTimestamp;
         DateSearch(Relation relation, Date date)  { mDate = date;  mTimestamp = date.getTime();  mRelation = relation; }
 
         @Override
@@ -464,8 +453,8 @@ abstract class ImapSearch {
     }
 
     static class RelativeDateSearch extends ImapSearch {
-        private DateSearch.Relation mRelation;
-        private int mOffset;
+        private final DateSearch.Relation mRelation;
+        private final int mOffset;
         RelativeDateSearch(DateSearch.Relation relation, int offset)  { mOffset = offset;  mRelation = relation; }
 
         @Override
@@ -505,18 +494,14 @@ abstract class ImapSearch {
                 return false;
             }
             if (mRelation == null) {
-                if (other.mRelation != null) {
-                    return false;
-                }
-            } else if (!mRelation.equals(other.mRelation)) {
-                return false;
-            }
-            return true;
+              return other.mRelation == null;
+            } else
+              return mRelation.equals(other.mRelation);
         }
     }
 
     static class ModifiedSearch extends ImapSearch {
-        private int mChangedSince;
+        private final int mChangedSince;
         ModifiedSearch(int changeId)  { mChangedSince = changeId; }
 
         @Override
@@ -555,9 +540,10 @@ abstract class ImapSearch {
     }
 
     static class SizeSearch extends ImapSearch {
-        enum Relation { larger, smaller };
-        private Relation mRelation;
-        private long mSize;
+        enum Relation { larger, smaller }
+
+      private final Relation mRelation;
+        private final long mSize;
         SizeSearch(Relation relation, long size)  { mSize = size;  mRelation = relation; }
 
         @Override
@@ -602,7 +588,7 @@ abstract class ImapSearch {
     }
 
     static class ContentSearch extends ImapSearch {
-        private String mValue;
+        private final String mValue;
         ContentSearch(String value)  { mValue = value; }
 
         @Override
@@ -637,20 +623,16 @@ abstract class ImapSearch {
             }
             ContentSearch other = (ContentSearch) obj;
             if (mValue == null) {
-                if (other.mValue != null) {
-                    return false;
-                }
-            } else if (!mValue.equals(other.mValue)) {
-                return false;
-            }
-            return true;
+              return other.mValue == null;
+            } else
+              return mValue.equals(other.mValue);
         }
     }
 
     static class HeaderSearch extends ImapSearch {
 
-        private Header mHeader;
-        private String mValue;
+        private final Header mHeader;
+        private final String mValue;
         private boolean mPrefixSearch = true;
 
         static class Header {
@@ -713,17 +695,13 @@ abstract class ImapSearch {
                     return false;
                 }
                 if (mKey == null) {
-                    if (other.mKey != null) {
-                        return false;
-                    }
-                } else if (!mKey.equals(other.mKey)) {
-                    return false;
-                }
-                return true;
+                  return other.mKey == null;
+                } else
+                  return mKey.equals(other.mKey);
             }
-        };
+        }
 
-        protected HeaderSearch(Header header, String origValue) {
+      protected HeaderSearch(Header header, String origValue) {
             String value = origValue;
             while (value.startsWith("<") || value.startsWith(">") || value.startsWith("=")) {
                 value = value.substring(1);
@@ -785,13 +763,9 @@ abstract class ImapSearch {
                 return false;
             }
             if (mValue == null) {
-                if (other.mValue != null) {
-                    return false;
-                }
-            } else if (!mValue.equals(other.mValue)) {
-                return false;
-            }
-            return true;
+              return other.mValue == null;
+            } else
+              return mValue.equals(other.mValue);
         }
     }
 }

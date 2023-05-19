@@ -12,15 +12,15 @@ import com.zimbra.common.soap.Element;
 
 public interface TrustedDeviceToken {
 
-    public Integer getId();
+    Integer getId();
 
-    public Long getExpires();
+    Long getExpires();
 
-    public void setExpires(long expires);
+    void setExpires(long expires);
 
-    public void setDelete();
+    void setDelete();
 
-    public void encode(HttpServletResponse resp, Element el, boolean secure) throws ServiceException;
+    void encode(HttpServletResponse resp, Element el, boolean secure) throws ServiceException;
 
-    public boolean isExpired();
+    boolean isExpired();
 }

@@ -22,8 +22,8 @@ import com.zimbra.common.soap.MailConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public class WaitSetSessionInfo {
 
-    private static Joiner COMMA_JOINER = Joiner.on(",");
-    private static Splitter COMMA_SPLITTER = Splitter.on(",").trimResults().omitEmptyStrings();
+    private static final Joiner COMMA_JOINER = Joiner.on(",");
+    private static final Splitter COMMA_SPLITTER = Splitter.on(",").trimResults().omitEmptyStrings();
 
     /**
      * @zm-api-field-tag bitmask
@@ -75,7 +75,7 @@ public class WaitSetSessionInfo {
      */
     @SuppressWarnings("unused")
     private WaitSetSessionInfo() {
-        this((String) null, -1, -1L, -1L, (String) null);
+        this(null, -1, -1L, -1L, null);
     }
 
     public WaitSetSessionInfo(String interestMask, int highestChangeId,

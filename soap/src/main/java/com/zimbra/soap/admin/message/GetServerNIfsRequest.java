@@ -45,7 +45,7 @@ public class GetServerNIfsRequest {
      */
     @SuppressWarnings("unused")
     private GetServerNIfsRequest() {
-        this((String) null, (ServerSelector) null);
+        this(null, null);
     }
 
     public GetServerNIfsRequest(String type, ServerSelector server) {

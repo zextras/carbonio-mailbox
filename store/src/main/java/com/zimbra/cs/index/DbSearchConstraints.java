@@ -110,7 +110,7 @@ public interface DbSearchConstraints extends Cloneable {
      * Clone is critical for things to work correctly (exploding constraints into multiple trees if the query goes to
      * many target servers).
      */
-    public Object clone();
+    Object clone();
 
     /**
      * Outputs the constraints tree in a format that is parsable via our QueryParser. This is used when we have to send
@@ -128,31 +128,27 @@ public interface DbSearchConstraints extends Cloneable {
      */
     Leaf toLeaf();
 
-    public static final class Leaf implements DbSearchConstraints, Cloneable {
+    final class Leaf implements DbSearchConstraints, Cloneable {
 
         @Override
         public boolean isEmpty() {
             //Check all the attributes that get encoded to SQL.
             //Remote constraints do not appear here
-            if (tags.isEmpty() &&
-            excludeTags.isEmpty() &&
-            folders.isEmpty() &&
-            excludeFolders.isEmpty() &&
-            types.isEmpty() &&
-            //a leaf can only be empty if types have been factored out to another branch
-            typesFactoredOut &&
-            convId == 0 &&
-            prohibitedConvIds.isEmpty() &&
-            itemIds.isEmpty() &&
-            prohibitedItemIds.isEmpty() &&
-            hasIndexId == null &&
-            excludeHasRecipients == false &&
-            ranges.isEmpty() &&
-            cursorRange == null) {
-                return true;
-            } else {
-                return false;
-            }
+          return tags.isEmpty() &&
+              excludeTags.isEmpty() &&
+              folders.isEmpty() &&
+              excludeFolders.isEmpty() &&
+              types.isEmpty() &&
+              //a leaf can only be empty if types have been factored out to another branch
+              typesFactoredOut &&
+              convId == 0 &&
+              prohibitedConvIds.isEmpty() &&
+              itemIds.isEmpty() &&
+              prohibitedItemIds.isEmpty() &&
+              hasIndexId == null &&
+              excludeHasRecipients == false &&
+              ranges.isEmpty() &&
+              cursorRange == null;
 
 
         }
@@ -237,10 +233,10 @@ public interface DbSearchConstraints extends Cloneable {
         // just combine the ranges -- yes this would be easy for positive ranges (foo>5 AND foo >7 and foo<10)
         // but it quickly gets very complicated with negative ranges such as (3<foo<100 AND NOT 7<foo<20)
         public final Multimap<RangeType, Range> ranges = Multimaps.newMultimap(
-                new EnumMap<RangeType, Collection<Range>>(RangeType.class), new Supplier<Set<Range>>() {
+            new EnumMap<>(RangeType.class), new Supplier<Set<Range>>() {
                     @Override
                     public Set<Range> get() {
-                        return new HashSet<Range>();
+                        return new HashSet<>();
                     }
                 }
         );
@@ -368,7 +364,7 @@ public interface DbSearchConstraints extends Cloneable {
             }
             if (!tags.isEmpty()) {
                 out.append("TAG:(");
-                List<String> list = new ArrayList<String>(tags.size());
+                List<String> list = new ArrayList<>(tags.size());
                 for (Tag tag : tags) {
                     list.add(quoteIfNecessary(tag.getName()));
                 }
@@ -377,7 +373,7 @@ public interface DbSearchConstraints extends Cloneable {
             }
             if (!excludeTags.isEmpty()) {
                 out.append("-TAG:(");
-                List<String> list = new ArrayList<String>(excludeTags.size());
+                List<String> list = new ArrayList<>(excludeTags.size());
                 for (Tag tag : excludeTags) {
                     list.add(quoteIfNecessary(tag.getName()));
                 }
@@ -700,7 +696,7 @@ public interface DbSearchConstraints extends Cloneable {
                     //
                     // {1} AND {-1} AND {1} == no-results
                     //  ... NOT {1} (which could happen if you removed from both arrays on combining!)
-                    if (itemIds != null && itemIds.contains(itemId)) {
+                    if (itemIds != null) {
                         itemIds.remove(itemId);
                     }
                     prohibitedItemIds.add(itemId);
@@ -723,7 +719,7 @@ public interface DbSearchConstraints extends Cloneable {
                     //
                     // {1} AND {-1} AND {1} == no-results
                     //  ... NOT {1} (which could happen if you removed from both arrays on combining!)
-                    if (remoteItemIds != null && remoteItemIds.contains(itemId)) {
+                    if (remoteItemIds != null) {
                         remoteItemIds.remove(itemId);
                     }
                     prohibitedRemoteItemIds.add(itemId);
@@ -931,8 +927,8 @@ public interface DbSearchConstraints extends Cloneable {
     }
 
 
-    static final class Intersection implements DbSearchConstraints {
-        private List<DbSearchConstraints> children = new ArrayList<DbSearchConstraints>();
+    final class Intersection implements DbSearchConstraints {
+        private List<DbSearchConstraints> children = new ArrayList<>();
 
         @Override
         public boolean isEmpty() {
@@ -971,7 +967,7 @@ public interface DbSearchConstraints extends Cloneable {
                 return null;
             }
 
-            result.children = new ArrayList<DbSearchConstraints>();
+            result.children = new ArrayList<>();
             for (DbSearchConstraints child : children) {
                 result.children.add((DbSearchConstraints) child.clone());
             }
@@ -1087,8 +1083,8 @@ public interface DbSearchConstraints extends Cloneable {
         }
     }
 
-    static final class Union implements DbSearchConstraints {
-        private List<DbSearchConstraints> children = new ArrayList<DbSearchConstraints>();
+    final class Union implements DbSearchConstraints {
+        private List<DbSearchConstraints> children = new ArrayList<>();
 
         @Override
         public boolean isEmpty() {
@@ -1107,8 +1103,8 @@ public interface DbSearchConstraints extends Cloneable {
          * @return
          */
         private DbSearchConstraints combineFolderConstraints() {
-            List<DbSearchConstraints.Leaf> onlyFolderConstraints = new ArrayList<DbSearchConstraints.Leaf>();
-            List<DbSearchConstraints.Leaf> otherConstraints      = new ArrayList<DbSearchConstraints.Leaf>();
+            List<DbSearchConstraints.Leaf> onlyFolderConstraints = new ArrayList<>();
+            List<DbSearchConstraints.Leaf> otherConstraints      = new ArrayList<>();
             for (DbSearchConstraints child: getChildren()) {
                 //check that we are dealing with a node that has only leaf children
                 if( !(child instanceof DbSearchConstraints.Leaf)) {
@@ -1161,7 +1157,7 @@ public interface DbSearchConstraints extends Cloneable {
             //Populate a map of type constraints mapped to an array of direct child nodes they appear in
             //If the child is not a leaf, recursively optimize it
             HashMap<Set<MailItem.Type>, ArrayList<DbSearchConstraints.Leaf>> byValue =
-                    new HashMap<Set<MailItem.Type>, ArrayList<DbSearchConstraints.Leaf>>();
+                new HashMap<>();
             for (int i = 0; i < children.size(); i++ ) {
                 DbSearchConstraints child = children.get(i);
                 if (child instanceof DbSearchConstraints.Leaf) {
@@ -1169,7 +1165,7 @@ public interface DbSearchConstraints extends Cloneable {
                     Set<MailItem.Type> types = leaf.types;
                     if (!ListUtil.isEmpty(types)) {
                         if (!byValue.containsKey(types)) {
-                            ArrayList<DbSearchConstraints.Leaf> newArray = new ArrayList<DbSearchConstraints.Leaf>();
+                            ArrayList<DbSearchConstraints.Leaf> newArray = new ArrayList<>();
                             byValue.put(types,newArray);
                         }
                         byValue.get(types).add(leaf);
@@ -1229,7 +1225,7 @@ public interface DbSearchConstraints extends Cloneable {
             } catch (CloneNotSupportedException e) { // should never happen
                 return null;
             }
-            result.children = new ArrayList<DbSearchConstraints>();
+            result.children = new ArrayList<>();
             for (DbSearchConstraints child : children) {
                result.children.add((DbSearchConstraints) child.clone());
             }
@@ -1340,7 +1336,7 @@ public interface DbSearchConstraints extends Cloneable {
         }
     }
 
-    static abstract class Range implements Cloneable {
+    abstract class Range implements Cloneable {
         public final boolean bool;
         public final boolean minInclusive;
         public final boolean maxInclusive;
@@ -1357,7 +1353,7 @@ public interface DbSearchConstraints extends Cloneable {
         public abstract Range clone();
     }
 
-    static final class StringRange extends Range {
+    final class StringRange extends Range {
 
         public final String min;
         public final String max;
@@ -1428,7 +1424,7 @@ public interface DbSearchConstraints extends Cloneable {
 
         private final String query;
 
-        private RangeType(String query) {
+        RangeType(String query) {
             this.query = query;
         }
 
@@ -1437,10 +1433,10 @@ public interface DbSearchConstraints extends Cloneable {
         }
     }
 
-    static final class NumericRange extends Range {
+    final class NumericRange extends Range {
 
-        public final long min;;
-        public final long max;
+        public final long min;
+      public final long max;
 
         public NumericRange(long min, boolean minInclusive, long max, boolean maxInclusive, boolean bool) {
             super(minInclusive, maxInclusive, bool);
@@ -1508,7 +1504,7 @@ public interface DbSearchConstraints extends Cloneable {
         }
     }
 
-    public static final class CursorRange {
+    final class CursorRange {
         public final String min;
         public final boolean minInclusive;
         public final String max;
@@ -1529,7 +1525,7 @@ public interface DbSearchConstraints extends Cloneable {
         }
     }
 
-    public static final class RemoteFolderDescriptor {
+    final class RemoteFolderDescriptor {
         private final ItemId folderId;
         private String subfolderPath;
         private final boolean includeSubfolders;
@@ -1580,13 +1576,9 @@ public interface DbSearchConstraints extends Cloneable {
                     return false;
                 }
                 if (subfolderPath == null) {
-                    if (other.subfolderPath != null) {
-                        return false;
-                    }
-                } else if (!subfolderPath.equals(other.subfolderPath)) {
-                    return false;
-                }
-                return true;
+                  return other.subfolderPath == null;
+                } else
+                  return subfolderPath.equals(other.subfolderPath);
             } else {
                 return false;
             }

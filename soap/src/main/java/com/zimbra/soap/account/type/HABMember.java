@@ -34,7 +34,7 @@ public abstract class HABMember {
      */
     @SuppressWarnings("unused")
     public HABMember() {
-        this((String) null);
+        this(null);
     }
 
     public HABMember(String name) {

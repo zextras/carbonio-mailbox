@@ -6,6 +6,7 @@
 package com.zimbra.cs.account.auth;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -21,8 +22,8 @@ public class PasswordUtil {
      */
     public static class SSHA {
 
-        private static int SALT_LEN = 4; // to match LDAP SSHA password encoding
-        private static String SSHA_ENCODING = "{SSHA}";
+        private static final int SALT_LEN = 4; // to match LDAP SSHA password encoding
+        private static final String SSHA_ENCODING = "{SSHA}";
 
         public static boolean isSSHA(String encodedPassword) {
             return encodedPassword.startsWith(SSHA_ENCODING);
@@ -56,7 +57,7 @@ public class PasswordUtil {
                         sr.nextBytes(salt);
                     }
                 }
-                md.update(password.getBytes("UTF-8"));
+                md.update(password.getBytes(StandardCharsets.UTF_8));
                 md.update(salt);
                 byte[] digest = md.digest();
                 byte[] buff = new byte[digest.length + salt.length];
@@ -64,9 +65,6 @@ public class PasswordUtil {
                 System.arraycopy(salt, 0, buff, digest.length, salt.length);
                 return SSHA_ENCODING + new String(Base64.encodeBase64(buff));
             } catch (NoSuchAlgorithmException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
             }
@@ -79,8 +77,8 @@ public class PasswordUtil {
      */
     public static class SSHA512 {
 
-        private static int SALT_LEN = 8; // to match LDAP SSHA512 password encoding
-        private static String SSHA512_ENCODING = "{SSHA512}";
+        private static final int SALT_LEN = 8; // to match LDAP SSHA512 password encoding
+        private static final String SSHA512_ENCODING = "{SSHA512}";
 
         public static boolean isSSHA512(String encodedPassword) {
             return encodedPassword.startsWith(SSHA512_ENCODING);
@@ -114,7 +112,7 @@ public class PasswordUtil {
                         sr.nextBytes(salt);
                     }
                 }
-                md.update(password.getBytes("UTF-8"));
+                md.update(password.getBytes(StandardCharsets.UTF_8));
                 md.update(salt);
                 byte[] digest = md.digest();
                 byte[] buff = new byte[digest.length + salt.length];
@@ -122,9 +120,6 @@ public class PasswordUtil {
                 System.arraycopy(salt, 0, buff, digest.length, salt.length);
                 return SSHA512_ENCODING + new String(Base64.encodeBase64(buff));
             } catch (NoSuchAlgorithmException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
             }
@@ -137,8 +132,8 @@ public class PasswordUtil {
      */
     public static class SHA1 {
 
-        private static String SHA1_ENCODING = "{SHA1}";
-        private static String SHA_ENCODING = "{SHA}";
+        private static final String SHA1_ENCODING = "{SHA1}";
+        private static final String SHA_ENCODING = "{SHA}";
 
         public static boolean isSHA1(String encodedPassword) {
             return encodedPassword.startsWith(SHA1_ENCODING) ||
@@ -168,14 +163,11 @@ public class PasswordUtil {
 			if (prefix == null) prefix = SHA1_ENCODING;
             try {
                 MessageDigest md = MessageDigest.getInstance("SHA1");
-                md.update(password.getBytes("UTF-8"));
+                md.update(password.getBytes(StandardCharsets.UTF_8));
 
                 byte[] digest = md.digest();
                 return prefix + new String(Base64.encodeBase64(digest));
             } catch (NoSuchAlgorithmException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
             }
@@ -187,7 +179,7 @@ public class PasswordUtil {
      */
     public static class MD5 {
 
-        private static String MD5_ENCODING = "{MD5}";
+        private static final String MD5_ENCODING = "{MD5}";
 
         public static boolean isMD5(String encodedPassword) {
             return encodedPassword.startsWith(MD5_ENCODING);
@@ -205,21 +197,18 @@ public class PasswordUtil {
         public static String generateMD5(String password) {
             try {
                 MessageDigest md = MessageDigest.getInstance("MD5");
-                md.update(password.getBytes("UTF-8"));
+                md.update(password.getBytes(StandardCharsets.UTF_8));
 
                 byte[] digest = md.digest();
                 return MD5_ENCODING + new String(Base64.encodeBase64(digest));
             } catch (NoSuchAlgorithmException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
             }
         }
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         String plain = "test123";
         System.out.println("plain:        " + plain);

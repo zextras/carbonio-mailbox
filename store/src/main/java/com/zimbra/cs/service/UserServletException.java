@@ -8,7 +8,7 @@ package com.zimbra.cs.service;
 import javax.servlet.http.HttpServletResponse;
 
 public class UserServletException extends Exception {
-    private int mCode;
+    private final int mCode;
 
     public UserServletException(int code, String message) {
         super(message);

@@ -53,11 +53,11 @@ public class JdbcClient {
         Pattern.compile("^\\s*SELECT", Pattern.CASE_INSENSITIVE);
     private static final Pattern PAT_SEMICOLON = Pattern.compile("([^;]*);(.*)");
 
-    private Options mOptions = new Options();
-    private String mDriverClass;
-    private String mUser;
-    private String mPassword;
-    private String mJdbcUrl;
+    private final Options mOptions = new Options();
+    private final String mDriverClass;
+    private final String mUser;
+    private final String mPassword;
+    private final String mJdbcUrl;
     private boolean mBatch = false;
     private boolean mShowColumnNames = true;
     
@@ -185,7 +185,7 @@ public class JdbcClient {
                 ResultSet rs = stmt.executeQuery(sql);
                 ResultSetMetaData md = rs.getMetaData();
                 int colCount = md.getColumnCount();
-                List<Object[]> firstRows = new ArrayList<Object[]>();
+                List<Object[]> firstRows = new ArrayList<>();
                 int rowCount = 0;
 
                 // Set initial column widths based on column labels

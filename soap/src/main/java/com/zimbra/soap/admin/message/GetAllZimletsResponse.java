@@ -27,7 +27,7 @@ public class GetAllZimletsResponse {
      * @zm-api-field-description Information about zimlets
      */
     @XmlElement(name=AdminConstants.E_ZIMLET, required=false)
-    private List<ZimletInfo> zimlets = Lists.newArrayList();
+    private final List<ZimletInfo> zimlets = Lists.newArrayList();
 
     public GetAllZimletsResponse() {
     }

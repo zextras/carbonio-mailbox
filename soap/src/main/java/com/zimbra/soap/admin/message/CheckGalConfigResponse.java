@@ -42,10 +42,10 @@ public class CheckGalConfigResponse {
      * @zm-api-field-description Information for GAL contacts
      */
     @XmlElement(name=MailConstants.E_CONTACT, required=false)
-    private List <GalContactInfo> galContacts = Lists.newArrayList();
+    private final List <GalContactInfo> galContacts = Lists.newArrayList();
 
     public CheckGalConfigResponse() {
-        this((String)null, (String) null);
+        this(null, null);
     }
 
     public CheckGalConfigResponse(String code, String message) {

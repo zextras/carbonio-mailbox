@@ -93,7 +93,7 @@ public class SearchAccountsRequest {
      */
     @SuppressWarnings("unused")
     private SearchAccountsRequest() {
-        this((String) null, (Integer) null, (Integer) null);
+        this(null, null, null);
     }
 
     public SearchAccountsRequest(String query, Integer limit, Integer offset) {

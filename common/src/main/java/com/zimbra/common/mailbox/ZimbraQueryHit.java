@@ -8,11 +8,11 @@ package com.zimbra.common.mailbox;
 import com.zimbra.common.service.ServiceException;
 
 public interface ZimbraQueryHit {
-    public int getItemId() throws ServiceException;
-    public int getParentId() throws ServiceException;
-    public int getModifiedSequence() throws ServiceException;
-    public MailItemType getMailItemType() throws ServiceException;
-    public int getImapUid() throws ServiceException;
-    public int getFlagBitmask() throws ServiceException;
-    public String[] getTags() throws ServiceException;
+    int getItemId() throws ServiceException;
+    int getParentId() throws ServiceException;
+    int getModifiedSequence() throws ServiceException;
+    MailItemType getMailItemType() throws ServiceException;
+    int getImapUid() throws ServiceException;
+    int getFlagBitmask() throws ServiceException;
+    String[] getTags() throws ServiceException;
 }

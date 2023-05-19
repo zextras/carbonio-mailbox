@@ -330,10 +330,7 @@ public final class FilterUtil {
         if (Mime.isAutoSubmitted(msg)) {
             return true;
         }
-        if (ct.equals("multipart/report")) {
-            return true;
-        }
-        return false;
+      return ct.equals("multipart/report");
     }
 
     public static void reply(OperationContext octxt, Mailbox mailbox, ParsedMessage parsedMessage, String bodyTemplate)
@@ -606,7 +603,7 @@ public final class FilterUtil {
 
         // Envelope TO & Header To/Cc
         // RFC 5436 2.7. (2nd and 5th item of the 'guidelines')
-        Set<String> envelopeTos = new HashSet<String>();
+        Set<String> envelopeTos = new HashSet<>();
         envelopeTos.add(mailto);
         notification.addRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(mailto));
 
@@ -729,11 +726,11 @@ public final class FilterUtil {
     @VisibleForTesting
     static Map<String, String> getVarsMap(Mailbox mailbox, ParsedMessage parsedMessage, MimeMessage mimeMessage)
             throws MessagingException, ServiceException {
-        Map<String, String> vars = new HashMap<String, String>() {
-            @Override
-            public String get(Object key) {
-                return super.get(((String) key).toLowerCase());
-            }
+        Map<String, String> vars = new HashMap<>() {
+          @Override
+          public String get(Object key) {
+            return super.get(((String) key).toLowerCase());
+          }
         };
         Enumeration enumeration = mimeMessage.getAllHeaders();
         while (enumeration.hasMoreElements()) {
@@ -795,13 +792,9 @@ public final class FilterUtil {
                 for (String value : values) {
                     String[] tokens = value.split(";");
                     if (tokens.length > 1) {
-                        if ("no".equalsIgnoreCase(tokens[0].trim())) {
-                            return false;
-                        } else {
-                            // Sample header value
-                            //   Auto-Submitted: auto-notified; owner-email="recipient@example.org"
-                            return true;
-                        }
+                      // Sample header value
+                      //   Auto-Submitted: auto-notified; owner-email="recipient@example.org"
+                      return !"no".equalsIgnoreCase(tokens[0].trim());
                     }
                 }
             }
@@ -871,12 +864,12 @@ public final class FilterUtil {
         // (1) Resolve the Matched Variables (numeric variables; "${N}" (N=0,1,...9)
         int i = 0;
         for (; i < matchedVariables.size() && i < 10; i++) {
-            String keyName = "(?i)" + "\\$\\{0*" + String.valueOf(i) + "\\}";
+            String keyName = "(?i)" + "\\$\\{0*" + i + "\\}";
             resultStr = resultStr.replaceAll(keyName, Matcher.quoteReplacement(matchedVariables.get(i)));
         }
         // (2) Replace the empty string to Matched Variables whose index is out of range
         for (; i < 10; i++) {
-            String keyName = "(?i)" + "\\$\\{0*" + String.valueOf(i) + "\\}";
+            String keyName = "(?i)" + "\\$\\{0*" + i + "\\}";
             resultStr = resultStr.replaceAll(keyName, Matcher.quoteReplacement(""));
         }
 
@@ -910,13 +903,13 @@ public final class FilterUtil {
         while (start1 < sourceStr.length()) {
             int start2 = sourceStr.indexOf("${", start1);
             if (start2 >= 0) {
-                resultStr.append(sourceStr.substring(start1, start2));
+                resultStr.append(sourceStr, start1, start2);
                 end = sourceStr.indexOf("}", start2 + 2);
                 if (end > 0) {
                     int start3 = sourceStr.indexOf("${", start2 + 2);
                     if (start3 > start2 && start3 < end) {
                         start1 = start3;
-                        resultStr.append(sourceStr.substring(start2, start3));
+                        resultStr.append(sourceStr, start2, start3);
                     } else {
                         // a variable name found
                         String key = sourceStr.substring(start2 + 2, end).toLowerCase();
@@ -936,18 +929,18 @@ public final class FilterUtil {
                             }
                         } else {
                             // the variable name contains some invalid characters
-                            resultStr.append(sourceStr.substring(start2, end + 1));
+                            resultStr.append(sourceStr, start2, end + 1);
                         }
                         start1 = end + 1;
                     }
                 } else {
                     // no corresponding }
-                    resultStr.append(sourceStr.substring(start2, sourceStr.length()));
+                    resultStr.append(sourceStr.substring(start2));
                     break;
                 }
             } else {
                 // no more ${
-                resultStr.append(sourceStr.substring(end + 1, sourceStr.length()));
+                resultStr.append(sourceStr.substring(end + 1));
                 break;
             }
         }

@@ -15,6 +15,6 @@ public class ChatIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private ChatIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

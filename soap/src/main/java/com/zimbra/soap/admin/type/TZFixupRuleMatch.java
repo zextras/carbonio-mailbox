@@ -45,7 +45,7 @@ public class TZFixupRuleMatch {
         @XmlElement(name=AdminConstants.E_RULES /* rules */, type=TZFixupRuleMatchRules.class),
         @XmlElement(name=AdminConstants.E_DATES /* dates */, type=TZFixupRuleMatchDates.class)
     })
-    private List<Object> elements = Lists.newArrayList();
+    private final List<Object> elements = Lists.newArrayList();
 
     public TZFixupRuleMatch() {
     }

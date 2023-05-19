@@ -179,7 +179,7 @@ public class GlobalAccessManager extends AccessManager implements AdminConsoleCa
     @Override
     public boolean canAccessEmail(AuthToken at, String email)
             throws ServiceException {
-        String parts[] = EmailUtil.getLocalPartAndDomain(email);
+        String[] parts = EmailUtil.getLocalPartAndDomain(email);
         if (parts == null)
             throw ServiceException.INVALID_REQUEST("must be valid email address: "+email, null);
 
@@ -313,7 +313,7 @@ public class GlobalAccessManager extends AccessManager implements AdminConsoleCa
     @Override
     public Set<TargetType> targetTypesForGrantSearch() {
         // we want only targets type on which user can grant rights on
-        HashSet<TargetType> tts = new HashSet<TargetType>();
+        HashSet<TargetType> tts = new HashSet<>();
         tts.add(TargetType.account);
         tts.add(TargetType.calresource);
         tts.add(TargetType.dl);

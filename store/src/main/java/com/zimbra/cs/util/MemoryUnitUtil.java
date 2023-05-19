@@ -25,7 +25,7 @@ import org.apache.commons.lang.StringUtils;
 public class MemoryUnitUtil {
 
 	// Matches the format used by EHCache 2.5.1
-    private static Pattern EHCACHE_251 = Pattern.compile("^(\\d+)(b?k?m?B?K?M?)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern EHCACHE_251 = Pattern.compile("^(\\d+)(b?k?m?B?K?M?)$", Pattern.CASE_INSENSITIVE);
 
     public static Pattern MEMORYUNIT_PATTERN = Pattern.compile("^(\\d+)(B?[KB]?[MB]?[GB]?[TB]?)$", Pattern.CASE_INSENSITIVE);
 

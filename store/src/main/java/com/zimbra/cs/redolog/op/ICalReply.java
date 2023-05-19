@@ -37,8 +37,8 @@ public class ICalReply extends RedoableOp {
     @Override protected String getPrintableData() {
         StringBuilder sb = new StringBuilder();
         ICalTimeZone localTz = mInvite.getTimeZoneMap().getLocalTimeZone();
-        sb.append("localTZ=").append(Util.encodeAsMetadata(localTz).toString());
-        sb.append(", inv=").append(Invite.encodeMetadata(mInvite).toString());
+        sb.append("localTZ=").append(Util.encodeAsMetadata(localTz));
+        sb.append(", inv=").append(Invite.encodeMetadata(mInvite));
         sb.append(", sender=").append(mSender);
         return sb.toString();
     }
@@ -57,7 +57,7 @@ public class ICalReply extends RedoableOp {
             mSender = in.readUTF();
         } catch (ServiceException ex) {
             ex.printStackTrace();
-            throw new IOException("Cannot read serialized entry for ICalReply " + ex.toString());
+            throw new IOException("Cannot read serialized entry for ICalReply " + ex);
         }
     }
     

@@ -45,11 +45,8 @@ public class ItemIdentifier implements Serializable {
         }
         if (delimiter != -1) {
             accountId = encoded.substring(0, delimiter);
-        } else if (defaultAccountId != null) {
+        } else
             accountId = defaultAccountId;
-        } else {
-            accountId = null;
-        }
         encoded = encoded.substring(delimiter + 1);
 
         // break out the appointment sub-id, if present
@@ -102,7 +99,7 @@ public class ItemIdentifier implements Serializable {
 
     @Override
     public String toString() {
-        return toString((String) null);
+        return toString(null);
     }
 
     public boolean sameAndFullyDefined(ItemIdentifier other) {

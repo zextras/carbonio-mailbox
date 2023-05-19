@@ -13,7 +13,7 @@ import com.zimbra.common.service.ServiceException;
 
 public class ZRemoteQueryHitResults implements ZimbraQueryHitResults {
 
-    private Iterator<ZImapSearchHit> hitsIter;
+    private final Iterator<ZImapSearchHit> hitsIter;
     public ZRemoteQueryHitResults(List<ZImapSearchHit> hits) {
         this.hitsIter = hits.iterator();
     }

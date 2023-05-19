@@ -27,7 +27,7 @@ import com.zimbra.common.localconfig.LC;
  * @author jjzhuang
  */
 class DefaultTrustManager implements X509TrustManager {
-    private X509TrustManager keyStoreTrustManager;
+    private final X509TrustManager keyStoreTrustManager;
 
     protected DefaultTrustManager() throws GeneralSecurityException {
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());

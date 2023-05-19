@@ -23,7 +23,7 @@ import com.zimbra.cs.mailbox.Mailbox;
  */
 public abstract class Db {
 
-    public static enum Error {
+    public enum Error {
         DEADLOCK_DETECTED,
         DUPLICATE_ROW,
         FOREIGN_KEY_CHILD_EXISTS,
@@ -34,10 +34,10 @@ public abstract class Db {
         BUSY,
         LOCKED,
         CANTOPEN,
-        TABLE_FULL;
+        TABLE_FULL
     }
 
-    public static enum Capability {
+    public enum Capability {
         BITWISE_OPERATIONS,
         BOOLEAN_DATATYPE,
         CASE_SENSITIVE_COMPARISON,
@@ -58,7 +58,7 @@ public abstract class Db {
         REQUEST_UTF8_UNICODE_COLLATION, // for mysql
         FORCE_INDEX_EVEN_IF_NO_SORT, // for derby
         SQL_PARAM_LIMIT,
-        DUMPSTER_TABLES;
+        DUMPSTER_TABLES
     }
 
     private static Db sDatabase;

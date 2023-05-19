@@ -88,7 +88,7 @@ public final class Versions {
         System.exit(1);
     }
 
-    static CommandLine parseCmdlineArgs(String args[], Options options) {
+    static CommandLine parseCmdlineArgs(String[] args, Options options) {
         CommandLineParser parser = new GnuParser();
 
         // Loose convention for naming options:

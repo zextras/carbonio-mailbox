@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -74,11 +75,11 @@ public abstract class DavResource {
     public DavResource(String uri, String owner) {
         mNewlyCreated = false;
         mOwner = owner;
-        mProps = new HashMap<QName,ResourceProperty>();
+        mProps = new HashMap<>();
         mUri = uri;
         if (isCollection() && !mUri.endsWith("/"))
             mUri = mUri + "/";
-        mDavCompliance = new TreeSet<Compliance>();
+        mDavCompliance = new TreeSet<>();
         mDavCompliance.add(Compliance.one);
         mDavCompliance.add(Compliance.two);
         mDavCompliance.add(Compliance.three);
@@ -181,7 +182,7 @@ public abstract class DavResource {
     }
 
     public Set<QName> getAllPropertyNames() {
-        Set<QName> ret = new HashSet<QName>();
+        Set<QName> ret = new HashSet<>();
         for (QName key : mProps.keySet())
             if (mProps.get(key).isVisible())
                 ret.add(key);
@@ -271,7 +272,7 @@ public abstract class DavResource {
     }
 
     public InputStream getContent(DavContext ctxt) throws IOException, DavException {
-        return new ByteArrayInputStream(getTextContent(ctxt).getBytes("UTF-8"));
+        return new ByteArrayInputStream(getTextContent(ctxt).getBytes(StandardCharsets.UTF_8));
     }
 
     public abstract boolean isCollection();
@@ -360,7 +361,7 @@ public abstract class DavResource {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLWriter writer = new XMLWriter(baos, format);
         writer.write(e);
-        return new String(baos.toByteArray());
+        return baos.toString();
     }
 
     public static boolean isSchedulingEnabled() {

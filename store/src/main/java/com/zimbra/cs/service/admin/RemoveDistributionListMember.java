@@ -51,7 +51,7 @@ public class RemoveDistributionListMember extends ReloadMemberPostProxyHandler {
                 if(listAddresses.contains(account.getMail())) {
                     memberList.add(account.getMail());
                 }
-                List<String> accountAddresses = Arrays.asList(account.getAliases());
+                String[] accountAddresses = account.getAliases();
                 for(String addr : accountAddresses) {
                     if(listAddresses.contains(addr)) {
                         memberList.add(addr);

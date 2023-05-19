@@ -31,8 +31,8 @@ public abstract class SSOAuthenticator {
 
     public static class ZimbraPrincipal implements Principal {
 
-        private String authenticationName;  // name in the authenticating material 
-        private Account account;  // resolved zimbra account
+        private final String authenticationName;  // name in the authenticating material
+        private final Account account;  // resolved zimbra account
         
         ZimbraPrincipal(String authenticationName, Account account) throws ServiceException {
             if (authenticationName == null) {

@@ -31,7 +31,7 @@ public class ContactActionResponse {
      */
     @SuppressWarnings("unused")
     private ContactActionResponse() {
-        this((FolderActionResult) null);
+        this(null);
     }
 
     public ContactActionResponse(FolderActionResult action) {

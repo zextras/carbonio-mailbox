@@ -159,7 +159,7 @@ public class TnefConverter extends MimeVisitor {
             return false;
         }
 
-        List<MultipartReplacement> tnefReplacements = new ArrayList<MultipartReplacement>();
+        List<MultipartReplacement> tnefReplacements = new ArrayList<>();
         try {
             for (int i = 0; i < mmp.getCount(); i++) {
                 BodyPart bp = mmp.getBodyPart(i);

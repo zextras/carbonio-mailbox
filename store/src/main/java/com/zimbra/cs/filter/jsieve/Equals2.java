@@ -12,5 +12,5 @@ import org.apache.jsieve.exception.FeatureException;
  * For other comparator's :is, see {@link org.apache.jsieve.comparators.Equals#equals(String, String)}
  */
 public interface Equals2 {
-    public boolean equals2(String string1, String string2) throws FeatureException;
+    boolean equals2(String string1, String string2) throws FeatureException;
 }

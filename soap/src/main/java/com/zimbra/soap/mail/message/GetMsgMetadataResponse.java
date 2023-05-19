@@ -33,7 +33,7 @@ public class GetMsgMetadataResponse {
         @XmlElement(name=MailConstants.E_CHAT /* chat */, type=ChatSummary.class),
         @XmlElement(name=MailConstants.E_MSG /* m */, type=MessageSummary.class)
     })
-    private List<MessageSummary> messages = Lists.newArrayList();
+    private final List<MessageSummary> messages = Lists.newArrayList();
 
     public GetMsgMetadataResponse() {
     }

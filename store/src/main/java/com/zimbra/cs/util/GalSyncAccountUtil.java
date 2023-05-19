@@ -72,7 +72,7 @@ public class GalSyncAccountUtil {
 	}
 
 	private static void setup() {
-		mCommands = new HashMap<String,Integer>();
+		mCommands = new HashMap<>();
 		addCommand(CREATE_ACCOUNT_COMMAND, CREATE_ACCOUNT);
 		addCommand(ADD_DATASOURCE_COMMAND, ADD_DATASOURCE);
 		addCommand(DELETE_ACCOUNT_COMMAND, DELETE_ACCOUNT);
@@ -81,9 +81,9 @@ public class GalSyncAccountUtil {
 		addCommand(FORCE_SYNC_COMMAND, FORCE_SYNC);
 	}
 
-	private String mUsername;
-	private String mPassword;
-	private String mAdminURL;
+	private final String mUsername;
+	private final String mPassword;
+	private final String mAdminURL;
 	private ZAuthToken mAuth;
 	private SoapHttpTransport mTransport;
 

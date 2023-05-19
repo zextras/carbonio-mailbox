@@ -30,7 +30,7 @@ import com.zimbra.common.soap.AdminConstants;
 
 public abstract class LmcSoapRequest {
 
-    private static Log sLog = LogFactory.getLog(LmcSoapRequest.class);
+    private static final Log sLog = LogFactory.getLog(LmcSoapRequest.class);
 
     private static boolean sDumpXML = false;
     public static synchronized void setDumpXML(boolean b) { sDumpXML = b; }
@@ -100,8 +100,8 @@ public abstract class LmcSoapRequest {
      * @exception lotsOfthem
      */
     public LmcSoapResponse invoke(String targetURL)
-        throws LmcSoapClientException, IOException, SoapFaultException,
-               ServiceException, SoapParseException, HttpException
+        throws LmcSoapClientException, IOException,
+        ServiceException, HttpException
     {
         LmcSoapResponse result = null;
 
@@ -174,7 +174,7 @@ public abstract class LmcSoapRequest {
         if (contactArray.isEmpty()) {
             return null;
         } else {
-            LmcContact contacts[] = new LmcContact[contactArray.size()];
+            LmcContact[] contacts = new LmcContact[contactArray.size()];
             return (LmcContact []) contactArray.toArray(contacts);
         }
     }
@@ -246,11 +246,11 @@ public abstract class LmcSoapRequest {
 
         // set the arrays in the result object
         if (!emailAddrs.isEmpty()) {
-            LmcEmailAddress a[] = new LmcEmailAddress[emailAddrs.size()];
+            LmcEmailAddress[] a = new LmcEmailAddress[emailAddrs.size()];
             result.setParticipants((LmcEmailAddress[]) emailAddrs.toArray(a));
         }
         if (!msgs.isEmpty()) {
-            LmcMessage m[] = new LmcMessage[msgs.size()];
+            LmcMessage[] m = new LmcMessage[msgs.size()];
             result.setMessages((LmcMessage[]) msgs.toArray(m));
         }
         return result;
@@ -288,7 +288,7 @@ public abstract class LmcSoapRequest {
             cnAttrs.add(parseContactAttr(cnAttrElem));
         }
         if (!cnAttrs.isEmpty()) {
-            LmcContactAttr cnAttrArray[] = new LmcContactAttr[cnAttrs.size()];
+            LmcContactAttr[] cnAttrArray = new LmcContactAttr[cnAttrs.size()];
             result.setAttrs((LmcContactAttr []) cnAttrs.toArray(cnAttrArray));
         }
 
@@ -351,7 +351,7 @@ public abstract class LmcSoapRequest {
         }
 
         if (!emailAddrs.isEmpty()) {
-            LmcEmailAddress a[] = new LmcEmailAddress[emailAddrs.size()];
+            LmcEmailAddress[] a = new LmcEmailAddress[emailAddrs.size()];
             result.setEmailAddresses((LmcEmailAddress[]) emailAddrs.toArray(a));
         }
 
@@ -396,7 +396,7 @@ public abstract class LmcSoapRequest {
         }
 
         if (!subMimeParts.isEmpty()) {
-            LmcMimePart mpArr[] = new LmcMimePart[subMimeParts.size()];
+            LmcMimePart[] mpArr = new LmcMimePart[subMimeParts.size()];
             result.setSubParts((LmcMimePart[]) subMimeParts.toArray(mpArr));
         }
         return result;
@@ -459,7 +459,7 @@ public abstract class LmcSoapRequest {
             subFolders.add(parseFolder(sub));
         }
         if (!subFolders.isEmpty()) {
-            LmcFolder fs[] = new LmcFolder[subFolders.size()];
+            LmcFolder[] fs = new LmcFolder[subFolders.size()];
             response.setSubFolders((LmcFolder []) subFolders.toArray(fs));
         }
         return response;
@@ -567,7 +567,7 @@ public abstract class LmcSoapRequest {
         addAttrNotNull(m, MailConstants.A_TAG, msg.getTag());
 
         // for all e-mail addresses, add them
-        LmcEmailAddress addrs[] = msg.getEmailAddresses();
+        LmcEmailAddress[] addrs = msg.getEmailAddresses();
         for (int i = 0; addrs != null && i < addrs.length; i++)
             addEmailAddress(m, addrs[i]);
 
@@ -589,7 +589,7 @@ public abstract class LmcSoapRequest {
             addMimePart(m, mp);
 
         // attachment ID's if present
-        String attachmentIDs[] = msg.getAttachmentIDs();
+        String[] attachmentIDs = msg.getAttachmentIDs();
         if (attachmentIDs != null) {
             for (int i = 0; i < attachmentIDs.length; i++) {
                 Element aid = DomUtil.add(m, MailConstants.E_ATTACH, "");
@@ -635,7 +635,7 @@ public abstract class LmcSoapRequest {
         }
 
         // add all subparts 
-        LmcMimePart subParts[] = mp.getSubParts();
+        LmcMimePart[] subParts = mp.getSubParts();
         for (int i = 0; subParts != null && i < subParts.length; i++)
             addMimePart(mpElem, subParts[i]);
     }

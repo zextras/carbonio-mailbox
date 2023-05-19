@@ -26,8 +26,8 @@ public class RecurId implements Cloneable
     public static final int RANGE_THISANDFUTURE = 2;
     public static final int RANGE_THISANDPRIOR  = 3;
     
-    private int mRange;
-    private ParsedDateTime mDateTime;
+    private final int mRange;
+    private final ParsedDateTime mDateTime;
     
 //    public RecurrenceId getRecurrenceId(TimeZone localTz) throws ServiceException {
 //        RecurrenceId toRet = new RecurrenceId();
@@ -126,12 +126,8 @@ public class RecurId implements Cloneable
     public boolean equals(Object other) {
         if (other == null) { return false; }
         RecurId rhs = (RecurId)other;
-        
-        if (mRange == rhs.mRange && mDateTime.equals(rhs.mDateTime)) {
-            return true;
-        }
-        
-        return false;
+
+        return mRange == rhs.mRange && mDateTime.equals(rhs.mDateTime);
     }
     
     public int getRange() { return mRange; }

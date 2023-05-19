@@ -46,7 +46,7 @@ public class GetGrantsRequest {
      */
     @SuppressWarnings("unused")
     private GetGrantsRequest() {
-        this((EffectiveRightsTargetSelector) null, (GranteeSelector) null);
+        this(null, null);
     }
 
     public GetGrantsRequest(EffectiveRightsTargetSelector target,

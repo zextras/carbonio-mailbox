@@ -17,7 +17,7 @@ public class LmcGetTagResponse extends LmcSoapResponse {
     public LmcTag[] getTags() {
         if (mTags == null || mTags.size() == 0)
         	return null;
-        LmcTag tags[] = new LmcTag[mTags.size()];
+        LmcTag[] tags = new LmcTag[mTags.size()];
         return (LmcTag []) mTags.toArray(tags);
     }
     

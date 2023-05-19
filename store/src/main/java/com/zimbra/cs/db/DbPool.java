@@ -42,7 +42,7 @@ public class DbPool {
     private static boolean isShutdown;
     private static boolean isUsageWarningEnabled = true;
 
-    static ValueCounter<String> sConnectionStackCounter = new ValueCounter<String>();
+    static ValueCounter<String> sConnectionStackCounter = new ValueCounter<>();
 
     public static class DbConnection {
         private final Connection connection;

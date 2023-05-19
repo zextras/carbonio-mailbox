@@ -74,7 +74,7 @@ public final class MeTest extends AbstractTest {
             return false;
         }
         Mailbox mbox = ((ZimbraMailAdapter) mail).getMailbox();
-        List<InternetAddress> addrs = new ArrayList<InternetAddress>();
+        List<InternetAddress> addrs = new ArrayList<>();
         for (String header : headers) {
             for (String value : mail.getHeader(header)) {
                 List<InternetAddress> inetAddrs = InternetAddress.parseHeader(value);

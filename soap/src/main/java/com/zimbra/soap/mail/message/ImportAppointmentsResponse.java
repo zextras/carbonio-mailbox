@@ -36,7 +36,7 @@ public class ImportAppointmentsResponse {
      */
     @SuppressWarnings("unused")
     private ImportAppointmentsResponse() {
-        this((String) null, -1);
+        this(null, -1);
     }
 
     public ImportAppointmentsResponse(String ids, int num) {

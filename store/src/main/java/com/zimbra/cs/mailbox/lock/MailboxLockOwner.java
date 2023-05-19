@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class MailboxLockOwner {
 
-    private AtomicInteger count = new AtomicInteger(0);
+    private final AtomicInteger count = new AtomicInteger(0);
     private final Thread owner;
 
     MailboxLockOwner() {

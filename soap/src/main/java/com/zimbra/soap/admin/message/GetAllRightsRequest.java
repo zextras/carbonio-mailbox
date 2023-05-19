@@ -61,7 +61,7 @@ public class GetAllRightsRequest {
      */
     @SuppressWarnings("unused")
     private GetAllRightsRequest() {
-        this((String) null, (Boolean) null, (String) null);
+        this(null, null, null);
     }
 
     public GetAllRightsRequest(String targetType, Boolean expandAllAttrs,

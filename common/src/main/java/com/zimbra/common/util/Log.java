@@ -23,10 +23,10 @@ import com.google.common.collect.ImmutableMap;
  */
 public class Log {
 
-    private final Map<String, Logger> mAccountLoggers = new ConcurrentHashMap<String, Logger>();
+    private final Map<String, Logger> mAccountLoggers = new ConcurrentHashMap<>();
 
     private static final Map<Level, org.apache.log4j.Level> ZIMBRA_TO_LOG4J =
-        new EnumMap<Level, org.apache.log4j.Level>(Level.class);
+        new EnumMap<>(Level.class);
     static {
         ZIMBRA_TO_LOG4J.put(Level.error, org.apache.log4j.Level.ERROR);
         ZIMBRA_TO_LOG4J.put(Level.warn, org.apache.log4j.Level.WARN);
@@ -46,10 +46,10 @@ public class Log {
 
     public enum Level {
         // Keep in sync with com.zimbra.soap.type.LoggingLevel
-        error, warn, info, debug, trace;
-    };
+        error, warn, info, debug, trace
+    }
 
-    private final Logger mLogger;
+  private final Logger mLogger;
 
     Log(Logger logger) {
         if (logger == null) {
@@ -550,7 +550,7 @@ public class Log {
         if (mAccountLoggers == null) {
             return null;
         }
-        List<AccountLogger> accountLoggers = new ArrayList<AccountLogger>();
+        List<AccountLogger> accountLoggers = new ArrayList<>();
         for (String accountName : mAccountLoggers.keySet()) {
             Logger log4jLogger = mAccountLoggers.get(accountName);
             AccountLogger al = new AccountLogger(mLogger.getName(), accountName,

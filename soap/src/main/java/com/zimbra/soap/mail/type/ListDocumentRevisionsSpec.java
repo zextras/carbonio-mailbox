@@ -41,7 +41,7 @@ public class ListDocumentRevisionsSpec {
      */
     @SuppressWarnings("unused")
     private ListDocumentRevisionsSpec() {
-        this((String) null);
+        this(null);
     }
 
     public ListDocumentRevisionsSpec(String id) {

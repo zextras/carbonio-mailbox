@@ -24,7 +24,7 @@ public class EffectiveRightsInfo {
      * @zm-api-field-description Rights
      */
     @XmlElement(name=AdminConstants.E_RIGHT /* right */, required=false)
-    private List <RightWithName> rights = Lists.newArrayList();
+    private final List <RightWithName> rights = Lists.newArrayList();
 
     /**
      * @zm-api-field-description All attributes that can be set

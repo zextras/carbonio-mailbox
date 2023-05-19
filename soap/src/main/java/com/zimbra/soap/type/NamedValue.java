@@ -35,7 +35,7 @@ public class NamedValue {
      */
     @SuppressWarnings("unused")
     private NamedValue() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public NamedValue(String name, String value) {

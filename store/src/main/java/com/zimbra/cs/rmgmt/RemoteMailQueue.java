@@ -45,7 +45,7 @@ import com.zimbra.cs.index.LuceneIndex;
 import com.zimbra.cs.service.admin.GetMailQueue;
 
 public class RemoteMailQueue {
-    private static Map<String,RemoteMailQueue> mMailQueueCache = new HashMap<String,RemoteMailQueue>();
+    private static final Map<String,RemoteMailQueue> mMailQueueCache = new HashMap<>();
 
     public static RemoteMailQueue getRemoteMailQueue(Server server, String queueName, boolean forceScan) throws ServiceException {
         synchronized (mMailQueueCache) {
@@ -342,8 +342,8 @@ public class RemoteMailQueue {
     }
 
     public static final class SummaryItem implements Comparable<SummaryItem> {
-        private String mTerm;
-        private int mCount;
+        private final String mTerm;
+        private final int mCount;
 
         public SummaryItem(String term, int count) {
             mTerm = term;
@@ -366,9 +366,9 @@ public class RemoteMailQueue {
 
 
     public static class SearchResult {
-        public Map<QueueAttr, List<SummaryItem>> sitems = new HashMap<QueueAttr,List<SummaryItem>>();
+        public Map<QueueAttr, List<SummaryItem>> sitems = new HashMap<>();
         public int hits;
-        public List<Map<QueueAttr, String>> qitems = new LinkedList<Map<QueueAttr, String>>();
+        public List<Map<QueueAttr, String>> qitems = new LinkedList<>();
     }
 
     private void summarize(SearchResult result, IndexReader indexReader) throws IOException {
@@ -391,7 +391,7 @@ public class RemoteMailQueue {
                     {
                         List<SummaryItem> list = result.sitems.get(attr);
                         if (list == null) {
-                            list = new LinkedList<SummaryItem>();
+                            list = new LinkedList<>();
                             result.sitems.put(attr, list);
                         }
                         int count = 0;
@@ -415,7 +415,7 @@ public class RemoteMailQueue {
     }
 
     private Map<QueueAttr,String> docToQueueItem(Document doc) {
-        Map<QueueAttr, String> qitem = new HashMap<QueueAttr,String>();
+        Map<QueueAttr, String> qitem = new HashMap<>();
         for (QueueAttr attr : QueueAttr.values()) {
             Field[] fields = doc.getFields(attr.toString());
             if (fields != null) {
@@ -475,7 +475,7 @@ public class RemoteMailQueue {
         Searcher searcher = null;
         try {
             searcher = new IndexSearcher(indexReader);
-            TopDocs topDocs = searcher.search(query, (Filter) null, limit);
+            TopDocs topDocs = searcher.search(query, null, limit);
             ScoreDoc[] hits = topDocs.scoreDocs;
 
             if (offset < hits.length) {
@@ -584,9 +584,9 @@ public class RemoteMailQueue {
         }
     }
 
-    private enum TestTask { scan, search, action };
+    private enum TestTask { scan, search, action }
 
-    private static void usage(String err) {
+  private static void usage(String err) {
         if (err != null) {
             System.err.println("ERROR: " + err + "\n");
         }

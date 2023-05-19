@@ -9,9 +9,9 @@ import com.zimbra.common.soap.Element;
 
 public final class WildcardExpansionQueryInfo implements QueryInfo {
 
-    private String mStr;
-    private int mNumExpanded;
-    private boolean mExpandedAll;
+    private final String mStr;
+    private final int mNumExpanded;
+    private final boolean mExpandedAll;
 
     public WildcardExpansionQueryInfo(String baseStr, int numExpanded, boolean expandedAll) {
         mStr = baseStr;

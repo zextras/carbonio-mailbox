@@ -31,7 +31,7 @@ public class PurgeMovedMailboxResponse {
      */
     @SuppressWarnings("unused")
     private PurgeMovedMailboxResponse() {
-        this((PurgeMovedMailboxInfo) null);
+        this(null);
     }
 
     public PurgeMovedMailboxResponse(PurgeMovedMailboxInfo mailbox) {

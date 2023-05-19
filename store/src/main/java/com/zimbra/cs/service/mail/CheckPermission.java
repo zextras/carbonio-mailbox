@@ -75,7 +75,7 @@ public class CheckPermission extends MailDocumentHandler {
             throw ServiceException.INVALID_REQUEST("invalid target type: " + targetType, null);
         }
         
-        List<UserRight> rights = new ArrayList<UserRight>();
+        List<UserRight> rights = new ArrayList<>();
         for (Element eRight : request.listElements(MailConstants.E_RIGHT)) {
             UserRight r = RightManager.getInstance().getUserRight(eRight.getText());
             rights.add(r); 

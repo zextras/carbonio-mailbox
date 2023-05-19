@@ -16,8 +16,8 @@ import com.zimbra.cs.mailbox.Mailbox;
  * @author ysasaki
  */
 public final class ModseqQuery extends Query {
-    static enum Operator {
-        EQ, GT, GTEQ, LT, LTEQ;
+    enum Operator {
+        EQ, GT, GTEQ, LT, LTEQ
     }
 
     private final int modseq;

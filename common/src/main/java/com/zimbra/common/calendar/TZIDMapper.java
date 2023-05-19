@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -27,10 +28,10 @@ import com.zimbra.common.util.ZimbraLog;
 public class TZIDMapper {
 
     public static class TZ implements Comparable<TZ> {
-        private String mID;
+        private final String mID;
         private String[] mAliases;
-        private boolean mIsPrimary;
-        private int mMatchScore;
+        private final boolean mIsPrimary;
+        private final int mMatchScore;
 
         public TZ(String tzid, String[] aliases, boolean isPrimary, int matchScore) {
             mID = tzid;
@@ -78,8 +79,7 @@ public class TZIDMapper {
                 }
                 // All elements matched.  Whichever array that has more elements comes later.
                 comp = mAliases.length - otherAliases.length;
-                if (comp != 0)
-                    return comp;
+              return comp;
             } else if (otherAliases != null) {
                 return -1;
             } // else both null
@@ -128,17 +128,17 @@ public class TZIDMapper {
     private static final String TRUE = "TRUE";
 
     private static synchronized void loadFromFile(File tzFile) throws IOException {
-        Map<String, TZ> map = new HashMap<String, TZ>();
+        Map<String, TZ> map = new HashMap<>();
         // TZ sets user LinkedHashSet to preserve insertion order.
-        Set<TZ> allTZs = new LinkedHashSet<TZ>();
-        Set<TZ> primaryTZs = new LinkedHashSet<TZ>();
+        Set<TZ> allTZs = new LinkedHashSet<>();
+        Set<TZ> primaryTZs = new LinkedHashSet<>();
 
         FileInputStream fi = null;
         InputStreamReader isr = null;
         BufferedReader br = null;
         try {
             fi = new FileInputStream(tzFile);
-            isr = new InputStreamReader(fi, "UTF-8");
+            isr = new InputStreamReader(fi, StandardCharsets.UTF_8);
             br = new BufferedReader(isr);
             String line;
             boolean inVTIMEZONE = false;
@@ -146,7 +146,7 @@ public class TZIDMapper {
             boolean matchScoreSpecified = false;
             int matchScore = 0;
             String tzid = null;
-            Set<String> aliases = new TreeSet<String>();
+            Set<String> aliases = new TreeSet<>();
             while ((line = br.readLine()) != null) {
                 // Remove leading/trailing whitespaces.
                 line = line.replaceAll("^\\s+", "");
@@ -159,7 +159,7 @@ public class TZIDMapper {
                         isPrimary = false;
                         matchScoreSpecified = false;
                         matchScore = 0;
-                        aliases = new TreeSet<String>();
+                        aliases = new TreeSet<>();
                     }
                 } else {  // inVTIMEZONE == true
                     if (lineUpper.equals("END:VTIMEZONE")) {

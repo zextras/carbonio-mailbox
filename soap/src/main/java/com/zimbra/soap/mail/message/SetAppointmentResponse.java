@@ -53,7 +53,7 @@ public class SetAppointmentResponse {
      * @zm-api-field-description Information about exceptions
      */
     @XmlElement(name=MailConstants.E_CAL_EXCEPT /* except */, required=false)
-    private List<ExceptIdInfo> exceptions = Lists.newArrayList();
+    private final List<ExceptIdInfo> exceptions = Lists.newArrayList();
 
     public SetAppointmentResponse() {
     }

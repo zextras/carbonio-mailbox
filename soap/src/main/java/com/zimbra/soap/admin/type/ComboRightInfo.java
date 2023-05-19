@@ -40,7 +40,7 @@ public class ComboRightInfo {
      */
     @SuppressWarnings("unused")
     private ComboRightInfo() {
-        this((String)null, (RightInfo.RightType) null, (String)null);
+        this(null, null, null);
     }
 
     public ComboRightInfo(String name, RightInfo.RightType type,

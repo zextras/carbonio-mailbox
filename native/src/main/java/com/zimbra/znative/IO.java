@@ -12,9 +12,9 @@ import java.io.IOException;
 public class IO {
     
     public static class FileInfo {
-        private long inodeNum;
-        private long size;
-        private int linkCount;
+        private final long inodeNum;
+        private final long size;
+        private final int linkCount;
         
         public FileInfo(long inodeNum, long size, int linkCount) {
             this.inodeNum = inodeNum;

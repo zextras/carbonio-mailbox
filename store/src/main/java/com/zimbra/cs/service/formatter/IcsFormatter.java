@@ -59,7 +59,7 @@ public class IcsFormatter extends Formatter {
     @Override
     public void formatCallback(UserServletContext context) throws IOException, ServiceException {
         Iterator<? extends MailItem> iterator = null;
-        List<CalendarItem> calItems = new ArrayList<CalendarItem>();
+        List<CalendarItem> calItems = new ArrayList<>();
         //ZimbraLog.mailbox.info("start = "+new Date(context.getStartTime()));
         //ZimbraLog.mailbox.info("end = "+new Date(context.getEndTime()));
         try {

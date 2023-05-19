@@ -109,7 +109,7 @@ public class JaxbToJsonTest {
 
     private static final Logger LOG = Logger.getLogger(JaxbToJsonTest.class);
 
-    private static String jsonEmptyGetSystemRetentionPolicyResponse =
+    private static final String jsonEmptyGetSystemRetentionPolicyResponse =
             "{\n" +
             "  \"retentionPolicy\": [{\n" +
             "      \"keep\": [{}],\n" +
@@ -118,7 +118,7 @@ public class JaxbToJsonTest {
             "  \"_jsns\": \"urn:zimbraMail\"\n" +
             "}";
 
-    private static String jsonGetSystemRetentionPolicyResponse =
+    private static final String jsonGetSystemRetentionPolicyResponse =
             "{\n" +
             "  \"retentionPolicy\": [{\n" +
             "      \"keep\": [{\n" +
@@ -735,7 +735,7 @@ Extract from mailbox.log for creation of this DL by ZWC - demonstrating the diff
             Object value = entry.getValue();
 
             if (value instanceof String[]) {
-                String sv[] = (String[]) value;
+                String[] sv = (String[]) value;
                 for (int i = 0; i < sv.length; i++) {
                     encodeAttr(e, name, sv[i], AdminConstants.E_A, key);
                 }
@@ -1837,7 +1837,7 @@ header="X-Spam-Score"/>
             } else if ("attr2".equals(attrib.getKey().getLocalPart())) {
                 Assert.assertTrue("attr2 attribute has correct value", "222".equals(attrib.getValue()));
             } else {
-                Assert.fail("Unexpected attribute name for attrib " + attrib.toString());
+                Assert.fail("Unexpected attribute name for attrib " + attrib);
             }
         }
     }
@@ -1947,7 +1947,7 @@ header="X-Spam-Score"/>
 
     @Test
     public void systemRetentionPolicyResponse() throws Exception {
-        RetentionPolicy rp = new RetentionPolicy((Iterable<Policy>) null, (Iterable<Policy>) null);
+        RetentionPolicy rp = new RetentionPolicy(null, null);
         GetSystemRetentionPolicyResponse jaxb = new GetSystemRetentionPolicyResponse(rp);
         Element jsonJaxbElem = JacksonUtil.jaxbToJSONElement(jaxb);
         logDebug("JSONElement from JAXB ---> prettyPrint\n%1$s", jsonJaxbElem.prettyPrint());

@@ -19,7 +19,7 @@ import com.zimbra.common.util.ByteUtil;
  */
 public class HeadersOnlyInputStream extends InputStream {
 
-    private InputStream mIn;
+    private final InputStream mIn;
     private boolean mEOF = false;
     
     public HeadersOnlyInputStream(InputStream in) {

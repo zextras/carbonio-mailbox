@@ -33,7 +33,7 @@ public class VolumeIdAndProgress {
      */
     @SuppressWarnings("unused")
     private VolumeIdAndProgress() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public VolumeIdAndProgress(String volumeId, String progress) {

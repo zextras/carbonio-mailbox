@@ -35,7 +35,7 @@ public final class ModifyFilterRulesRequest {
      */
     @XmlElementWrapper(name=MailConstants.E_FILTER_RULES /* filterRules */, required=true)
     @XmlElement(name=MailConstants.E_FILTER_RULE /* filterRule */, required=false)
-    private List<FilterRule> filterRules = Lists.newArrayList();
+    private final List<FilterRule> filterRules = Lists.newArrayList();
 
     public ModifyFilterRulesRequest() {
     }

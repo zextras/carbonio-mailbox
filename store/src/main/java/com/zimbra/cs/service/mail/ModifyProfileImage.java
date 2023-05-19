@@ -33,6 +33,7 @@ import com.zimbra.soap.mail.message.ModifyProfileImageRequest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -128,12 +129,12 @@ public class ModifyProfileImage extends SaveDocument {
       }
       if (updateLDAPSuccess && !updateDBSuccess) {
         // Databse update failed; revert from LDAP
-        HashMap<String, Object> prefs = new HashMap<String, Object>();
+        HashMap<String, Object> prefs = new HashMap<>();
         prefs.put(Provisioning.A_thumbnailPhoto, null);
         Provisioning.getInstance().modifyAttrs(mbox.getAccount(), prefs, true, zsc.getAuthToken());
       } else if (removeFromLDAPSuccess && !removeFromDBSuccess) {
         // Databse removal failed; revert to LDAP
-        HashMap<String, Object> prefs = new HashMap<String, Object>();
+        HashMap<String, Object> prefs = new HashMap<>();
         prefs.put(Provisioning.A_thumbnailPhoto, ldapBackup);
         Provisioning.getInstance().modifyAttrs(mbox.getAccount(), prefs, true, zsc.getAuthToken());
       }
@@ -169,7 +170,7 @@ public class ModifyProfileImage extends SaveDocument {
           String code =
               new String(
                   Arrays.copyOfRange(data, 0, NativeFormatter.RETURN_CODE_NO_RESIZE.length()),
-                  "UTF-8");
+                  StandardCharsets.UTF_8);
           if (NativeFormatter.RETURN_CODE_NO_RESIZE.equals(code)) {
             return false;
           }
@@ -189,7 +190,7 @@ public class ModifyProfileImage extends SaveDocument {
       byte[] byteArray = IOUtils.toByteArray(thumbnailIn);
       result = ByteUtil.encodeLDAPBase64(byteArray);
     }
-    HashMap<String, Object> prefs = new HashMap<String, Object>();
+    HashMap<String, Object> prefs = new HashMap<>();
     prefs.put(Provisioning.A_thumbnailPhoto, result);
     Provisioning.getInstance().modifyAttrs(mbox.getAccount(), prefs, true, zsc.getAuthToken());
     return true;
@@ -259,7 +260,7 @@ public class ModifyProfileImage extends SaveDocument {
 
   private static void removeFromLDAP(Mailbox mbox, ZimbraSoapContext zsc)
       throws IOException, ServiceException {
-    HashMap<String, Object> prefs = new HashMap<String, Object>();
+    HashMap<String, Object> prefs = new HashMap<>();
     prefs.put(Provisioning.A_thumbnailPhoto, null);
     Provisioning.getInstance().modifyAttrs(mbox.getAccount(), prefs, true, zsc.getAuthToken());
   }

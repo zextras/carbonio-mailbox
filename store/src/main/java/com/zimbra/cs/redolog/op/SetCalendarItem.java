@@ -45,7 +45,7 @@ public class SetCalendarItem extends RedoableOp implements CreateCalendarItemRec
     private String[] mTags;
     private long mTagBitmask;
     private Mailbox.SetCalendarItemData mDefaultInvite;
-    private Mailbox.SetCalendarItemData mExceptions[];
+    private Mailbox.SetCalendarItemData[] mExceptions;
     private List<ReplyInfo> mReplies;
     private long mNextAlarm;
 
@@ -108,7 +108,7 @@ public class SetCalendarItem extends RedoableOp implements CreateCalendarItemRec
             }
         } catch (ServiceException ex) {
             ex.printStackTrace();
-            throw new IOException("Cannot read serialized entry for CreateInvite "+ex.toString());
+            throw new IOException("Cannot read serialized entry for CreateInvite "+ ex);
         }
 
         return toRet;
@@ -217,7 +217,7 @@ public class SetCalendarItem extends RedoableOp implements CreateCalendarItemRec
             }
         } catch (MessagingException ex) {
             ex.printStackTrace();
-            throw new IOException("Cannot read serialized entry for SetCalendarItem"+ex.toString());
+            throw new IOException("Cannot read serialized entry for SetCalendarItem"+ ex);
         }
 
         if (getVersion().atLeast(1, 15)) {
@@ -236,7 +236,7 @@ public class SetCalendarItem extends RedoableOp implements CreateCalendarItemRec
                 // no replies list
                 mReplies = null;
             } else {
-                mReplies = new ArrayList<ReplyInfo>(num);
+                mReplies = new ArrayList<>(num);
                 TimeZoneMap tzMap = tzmapInv.getTimeZoneMap();
                 for (int i = 0; i < num; i++) {
                     String data = in.readUTF();
@@ -245,8 +245,8 @@ public class SetCalendarItem extends RedoableOp implements CreateCalendarItemRec
                         ReplyInfo reply = ReplyInfo.decodeFromMetadata(md, tzMap);
                         mReplies.add(reply);
                     } catch (ServiceException e) {
-                        IOException ioe = new IOException("Cannot read serialized entry for ReplyInfo");
-                        ioe.initCause(e);
+                        IOException ioe = new IOException("Cannot read serialized entry for ReplyInfo",
+                            e);
                         throw ioe;
                     }
                 }
@@ -267,7 +267,7 @@ public class SetCalendarItem extends RedoableOp implements CreateCalendarItemRec
     }
 
     public void setData(Mailbox.SetCalendarItemData defaultInvite,
-                        Mailbox.SetCalendarItemData exceptions[],
+                        Mailbox.SetCalendarItemData[] exceptions,
                         List<ReplyInfo> replies, long nextAlarm) {
         mDefaultInvite = defaultInvite;
         mExceptions = exceptions;
@@ -328,7 +328,7 @@ public class SetCalendarItem extends RedoableOp implements CreateCalendarItemRec
         }
         toRet.append("\n");
         if (mDefaultInvite != null) {
-            toRet.append("Default=").append(mDefaultInvite.toString()).append("\n");
+            toRet.append("Default=").append(mDefaultInvite).append("\n");
         }
         if (mExceptions != null) {
             for (int i = 0; i < mExceptions.length; i++) {

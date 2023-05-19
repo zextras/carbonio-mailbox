@@ -31,10 +31,10 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
  * @author ysasaki
  */
 public final class UniversalAnalyzerTest {
-    private UniversalAnalyzer universalAnalyzer = new UniversalAnalyzer();
+    private final UniversalAnalyzer universalAnalyzer = new UniversalAnalyzer();
     // for backward compatibility
-    private StandardAnalyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_24);
-    private CJKAnalyzer cjkAnalyzer = new CJKAnalyzer(Version.LUCENE_31);
+    private final StandardAnalyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_24);
+    private final CJKAnalyzer cjkAnalyzer = new CJKAnalyzer(Version.LUCENE_31);
     // See https://issues.apache.org/jira/browse/LUCENE-1068
     private boolean assertOffset = true;
 

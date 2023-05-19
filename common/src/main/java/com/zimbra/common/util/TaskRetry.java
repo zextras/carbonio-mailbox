@@ -8,7 +8,7 @@ package com.zimbra.common.util;
 public class TaskRetry {
 
     private int numRetries = 0;
-    private RetryParams params;
+    private final RetryParams params;
     private Delay delay;
 
     public TaskRetry(RetryParams params) {
@@ -27,7 +27,7 @@ public class TaskRetry {
     }
 
     public boolean canRetry() {
-        return params.maxRetries > 0 ? numRetries < params.maxRetries : true;
+        return params.maxRetries <= 0 || numRetries < params.maxRetries;
     }
 
     public void increment() {
@@ -52,8 +52,8 @@ public class TaskRetry {
         long maxDelay;
         DelayPolicy policy;
 
-        public static enum DelayPolicy {
-            constant, linear, exponential;
+        public enum DelayPolicy {
+            constant, linear, exponential
         }
 
         public void setMaxRetries(int retries) { this.maxRetries = retries; }
@@ -68,7 +68,7 @@ public class TaskRetry {
     }
 
     private class ConstantDelay extends Delay {
-        private long delay;
+        private final long delay;
 
         ConstantDelay(long delay) {
             this.delay = delay;
@@ -81,7 +81,7 @@ public class TaskRetry {
 
     private class LinearBackoff extends Delay {
         private static final double MULTIPLIER = 1;
-        private long initial;
+        private final long initial;
 
         LinearBackoff(long initial) {
             this.initial = initial;
@@ -95,7 +95,7 @@ public class TaskRetry {
 
     private class ExponentialBackoff extends Delay {
         private static final double BACKOFF_BASE = 2;
-        private long initial;
+        private final long initial;
 
         ExponentialBackoff(long initial) {
             this.initial = initial;

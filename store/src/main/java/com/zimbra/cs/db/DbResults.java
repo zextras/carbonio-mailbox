@@ -40,8 +40,8 @@ import com.google.common.base.Joiner;
  */
 public class DbResults {
 
-    private List<Object[]> data = new ArrayList<Object[]>();
-    private Map<String, Integer> columnIndexes = new LinkedHashMap<String, Integer>();
+    private final List<Object[]> data = new ArrayList<>();
+    private final Map<String, Integer> columnIndexes = new LinkedHashMap<>();
     private int rowNum = 0;
 
     /**
@@ -266,7 +266,7 @@ public class DbResults {
             return ((Boolean) o).booleanValue();
         }
         int i = ((Number) o).intValue();
-        return (i == 0) ? false : true;
+        return i != 0;
     }
 
     /**

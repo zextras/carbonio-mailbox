@@ -22,10 +22,10 @@ public class SummaryAnalyzer {
 
     private Map<String, List<PlotSettings>> mOutfilePlotsMap = null;
 
-    private List<ReportEntry> mEntryList = new ArrayList<ReportEntry>();
+    private final List<ReportEntry> mEntryList = new ArrayList<>();
 
     public SummaryAnalyzer(List<ChartSettings> chartSettings) {
-        mOutfilePlotsMap = new HashMap<String, List<PlotSettings>>(chartSettings.size());
+        mOutfilePlotsMap = new HashMap<>(chartSettings.size());
         for (ChartSettings cs : chartSettings) {
             mOutfilePlotsMap.put(cs.getOutfile(), cs.getPlots());
         }
@@ -73,7 +73,7 @@ public class SummaryAnalyzer {
         List<PlotSettings> settings = null;
         String key;
         while (it.hasNext()) {
-            key = (String) it.next();
+            key = it.next();
             if (key.indexOf(SummaryConstants.KEY_TO_DISK_UTIL) != -1 ) {
                 settings = mOutfilePlotsMap.get(key);
                 break;

@@ -99,11 +99,7 @@ public final class CsrfUtil {
        }  else if (refHost.equalsIgnoreCase(host)) {
            csrfReq = false;
        } else {
-           if (allowedRefHost != null && allowedRefHostList.contains(refHost)) {
-               csrfReq = false;
-           } else {
-               csrfReq = true;
-           }
+         csrfReq = allowedRefHost == null || !allowedRefHostList.contains(refHost);
        }
 
        if (ZimbraLog.soap.isDebugEnabled()) {
@@ -335,7 +331,7 @@ public final class CsrfUtil {
         String ver = csrfToken.substring(0, pos);
 
         String hmac = csrfToken.substring(pos + 1);
-        return new Pair<String, String>(hmac, ver);
+        return new Pair<>(hmac, ver);
     }
 
     /**
@@ -470,7 +466,7 @@ public final class CsrfUtil {
         AuthToken at = null;
         for (String s : headers) {
             if (!StringUtil.isNullOrEmpty(s)  && s.contains("ZM_AUTH_TOKEN")) {
-                String temp [] = s.split("=");
+                String[] temp = s.split("=");
                 int index = temp[1].indexOf(";");
                 String token = temp[1].substring(0, index);
                 at = AuthToken.getAuthToken(token);
@@ -517,7 +513,7 @@ public final class CsrfUtil {
         return false;
     }
 
-    public static void main(String args[])
+    public static void main(String[] args)
     {
         try {
         AuthToken at = ZimbraAuthToken .getAuthToken("0_f66f9e23c3d6ec89c0723375489c729b13b108d9_69643d33363a34313537336365352d303035352d343066362d626235372d6264396238663136663666393b6578703d31333a313430333935303235363538323b747970653d363a7a696d6272613b7469643d31303a313837363638363831333b76657273696f6e3d303a3b637372663d313a313b");

@@ -30,7 +30,7 @@ public class BigByteBuffer extends OutputStream {
 	private static final int STREAM_CHUNK_SIZE = 8 * 1024;
 
 	final private int maxMemBufSize;
-	private ByteArrayOutputStream bao;
+	private final ByteArrayOutputStream bao;
 	private int bufSize;
 	
 	private File bufFile;
@@ -113,7 +113,7 @@ public class BigByteBuffer extends OutputStream {
 
 	public InputStream getInputStream() throws IOException {
 		return new InputStream() {
-			byte[] memBuf = bao.toByteArray();
+			final byte[] memBuf = bao.toByteArray();
 			private int offset;
 			private InputStream bufFileIn;
 			

@@ -35,10 +35,10 @@ import com.zimbra.common.util.FileUtil;
  */
 public class RolloverManager {
 
-    private static Log mLog = LogFactory.getLog(RolloverManager.class);
+    private static final Log mLog = LogFactory.getLog(RolloverManager.class);
 
-	private RedoLogManager mRedoLogMgr;
-	private File mRedoLogFile;
+	private final RedoLogManager mRedoLogMgr;
+	private final File mRedoLogFile;
 
     // Monotonically increasing sequence number for redolog files.
     // Sequence starts at 0 and increments without gap, and may
@@ -56,7 +56,7 @@ public class RolloverManager {
 	 * RolloverManager.rollover().
 	 */
 	public void crashRecovery() throws IOException {
-		File logs[] = mRedoLogFile.getParentFile().listFiles(new TempLogFilenameFilter());
+		File[] logs = mRedoLogFile.getParentFile().listFiles(new TempLogFilenameFilter());
 		if (logs.length > 0) {
 			FileUtil.sortFilesByModifiedTime(logs);
 
@@ -115,13 +115,12 @@ public class RolloverManager {
     }
 
     public static File[] getArchiveLogs(File archiveDir, final long from, final long to) {
-        File logs[] = archiveDir.listFiles(new FilenameFilter() {
+        File[] logs = archiveDir.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 if (name.indexOf(ARCH_FILENAME_PREFIX) == 0 &&
                     name.lastIndexOf(FILENAME_SUFFIX) == name.length() - FILENAME_SUFFIX.length()) {
                     long seq = getSeqForFile(new File(dir, name));
-                    if (from <= seq && seq <= to)
-                        return true;
+                  return from <= seq && seq <= to;
                 }
                 return false;
             }
@@ -217,11 +216,8 @@ public class RolloverManager {
 
 	private static class TempLogFilenameFilter implements FilenameFilter {
 		public boolean accept(File dir, String name) {
-			if (name.indexOf(TEMP_FILENAME_PREFIX) == 0 &&
-				name.lastIndexOf(FILENAME_SUFFIX) == name.length() - FILENAME_SUFFIX.length())
-				return true;
-			else
-				return false;
+      return name.indexOf(TEMP_FILENAME_PREFIX) == 0 &&
+          name.lastIndexOf(FILENAME_SUFFIX) == name.length() - FILENAME_SUFFIX.length();
 		}
 	}
 

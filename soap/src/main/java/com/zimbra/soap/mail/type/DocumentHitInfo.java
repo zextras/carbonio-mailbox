@@ -30,7 +30,7 @@ implements SearchHit {
      */
     @SuppressWarnings("unused")
     private DocumentHitInfo() {
-        this((String) null);
+        this(null);
     }
 
     public DocumentHitInfo(String id) {

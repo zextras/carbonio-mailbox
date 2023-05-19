@@ -52,7 +52,7 @@ public class ReIndexRequest {
      */
      @SuppressWarnings("unused")
     private ReIndexRequest() {
-        this((String)null, (ReindexMailboxInfo)null);
+        this(null, null);
     }
 
     public ReIndexRequest(String action, ReindexMailboxInfo mbox) {

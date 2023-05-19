@@ -18,8 +18,8 @@ import com.zimbra.cs.mime.Mime;
 
 public class MessageDataSource implements DataSource {
     
-    private Message mMessage;
-    private String mContentType;
+    private final Message mMessage;
+    private final String mContentType;
 
     public MessageDataSource(Message message)
     throws MessagingException, ServiceException {

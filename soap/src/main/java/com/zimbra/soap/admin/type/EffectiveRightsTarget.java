@@ -42,13 +42,13 @@ public class EffectiveRightsTarget {
      * @zm-api-field-description inDomains
      */
     @XmlElement(name=AdminConstants.E_IN_DOMAINS /* inDomains */, required=false)
-    private List <InDomainInfo> inDomainLists = Lists.newArrayList();
+    private final List <InDomainInfo> inDomainLists = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Entries
      */
     @XmlElement(name=AdminConstants.E_ENTRIES /* entries */, required=false)
-    private List <RightsEntriesInfo> entriesLists = Lists.newArrayList();
+    private final List <RightsEntriesInfo> entriesLists = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

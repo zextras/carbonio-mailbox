@@ -9,9 +9,9 @@ import com.zimbra.common.util.memcached.MemcachedKey;
 import com.zimbra.cs.memcached.MemcachedKeyPrefix;
 
 public class CalSummaryKey implements MemcachedKey {
-    private String mAccountId;
-    private int mFolderId;
-    private String mKeyVal;
+    private final String mAccountId;
+    private final int mFolderId;
+    private final String mKeyVal;
 
     public CalSummaryKey(String accountId, int folderId) {
         mAccountId = accountId;

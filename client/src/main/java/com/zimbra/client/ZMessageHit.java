@@ -20,25 +20,25 @@ import com.zimbra.common.soap.MailConstants;
 
 public class ZMessageHit implements ZImapSearchHit {
 
-    private String mId;
+    private final String mId;
     private String mFlags;
-    private String mFragment;
-    private String mSubject;
-    private String mSortField;
+    private final String mFragment;
+    private final String mSubject;
+    private final String mSortField;
     private String mTags;
     private String mConvId;
     private String mFolderId;
-    private long mDate;
-    private int mSize;
-    private boolean mContentMatched;
-    private List<String> mMimePartHits;
+    private final long mDate;
+    private final int mSize;
+    private final boolean mContentMatched;
+    private final List<String> mMimePartHits;
     private ZEmailAddress mSender;
-    private List<ZEmailAddress> mAddresses;
+    private final List<ZEmailAddress> mAddresses;
     private ZMessage mMessage;
-    private boolean mIsInvite;
-    private long mAutoSendTime;
-    private int imapUid;
-    private int modSeq;
+    private final boolean mIsInvite;
+    private final long mAutoSendTime;
+    private final int imapUid;
+    private final int modSeq;
 
     public ZMessageHit(Element e) throws ServiceException {
         mId = e.getAttribute(MailConstants.A_ID);
@@ -53,7 +53,7 @@ public class ZMessageHit implements ZImapSearchHit {
         mConvId = e.getAttribute(MailConstants.A_CONV_ID);
         mContentMatched = e.getAttributeBool(MailConstants.A_CONTENTMATCHED, false);
         mAutoSendTime = e.getAttributeLong(MailConstants.A_AUTO_SEND_TIME, -1);
-        mMimePartHits = new ArrayList<String>();
+        mMimePartHits = new ArrayList<>();
         for (Element hp: e.listElements(MailConstants.E_HIT_MIMEPART)) {
             mMimePartHits.add(hp.getAttribute(MailConstants.A_PART));
         }
@@ -64,7 +64,7 @@ public class ZMessageHit implements ZImapSearchHit {
                 break;
             }
         }
-        mAddresses = new ArrayList<ZEmailAddress>();
+        mAddresses = new ArrayList<>();
         for (Element emailEl : e.listElements(MailConstants.E_EMAIL)) {
             mAddresses.add(new ZEmailAddress(emailEl));
         }

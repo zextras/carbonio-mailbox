@@ -50,7 +50,7 @@ public class CompleteTaskInstanceRequest {
      */
     @SuppressWarnings("unused")
     private CompleteTaskInstanceRequest() {
-        this((String) null, (DtTimeInfo) null);
+        this(null, null);
     }
 
     public CompleteTaskInstanceRequest(String id, DtTimeInfo exceptionId) {

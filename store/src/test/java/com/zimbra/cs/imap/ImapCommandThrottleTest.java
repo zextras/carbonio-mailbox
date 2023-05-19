@@ -341,7 +341,7 @@ public class ImapCommandThrottleTest {
     @Test
     public void list() {
         String refName = "refName";
-        Set<String> mailboxNames = new HashSet<String>(Arrays.asList(new String[] { "mbox1", "mbox2", "mbox3" }));
+        Set<String> mailboxNames = new HashSet<String>(Arrays.asList("mbox1", "mbox2", "mbox3"));
         byte selectOptions = (byte) 24;
         byte returnOptions = (byte) 38;
         byte status = (byte) 67;
@@ -355,7 +355,7 @@ public class ImapCommandThrottleTest {
         list2 = new ListCommand(refName + "foo", mailboxNames, selectOptions, returnOptions, status);
         Assert.assertFalse("different ref name", list.isDuplicate(list2));
 
-        list2 = new ListCommand(refName, new HashSet<String>(Arrays.asList(new String[] { "mbox1", "mbox2" })),
+        list2 = new ListCommand(refName, new HashSet<String>(Arrays.asList("mbox1", "mbox2")),
                 selectOptions, returnOptions, status);
         Assert.assertFalse("different mailbox names", list.isDuplicate(list2));
 

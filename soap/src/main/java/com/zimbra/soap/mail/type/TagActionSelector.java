@@ -21,7 +21,7 @@ public class TagActionSelector extends ActionSelector {
     protected RetentionPolicy retentionPolicy;
 
     public TagActionSelector() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public TagActionSelector(String ids, String operation) {

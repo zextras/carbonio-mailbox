@@ -101,7 +101,7 @@ public enum MailboxOperation {
     SetWebOfflineSyncDays(92),
     DeleteConfig(93);
 
-    private MailboxOperation(int c) {
+    MailboxOperation(int c) {
         code = c;
     }
 
@@ -109,9 +109,9 @@ public enum MailboxOperation {
         return code;
     }
 
-    private int code;
+    private final int code;
 
-    private static final HashMap<Integer,MailboxOperation> operations = new HashMap<Integer,MailboxOperation>();
+    private static final HashMap<Integer,MailboxOperation> operations = new HashMap<>();
 
     static {
         for (MailboxOperation op : EnumSet.allOf(MailboxOperation.class)) {

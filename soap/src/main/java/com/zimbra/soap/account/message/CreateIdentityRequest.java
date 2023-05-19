@@ -59,7 +59,7 @@ public class CreateIdentityRequest {
      */
     @SuppressWarnings("unused")
     private CreateIdentityRequest() {
-        this((Identity) null);
+        this(null);
     }
 
     public CreateIdentityRequest(Identity identity) {

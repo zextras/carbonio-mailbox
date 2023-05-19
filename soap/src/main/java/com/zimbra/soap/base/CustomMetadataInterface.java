@@ -8,6 +8,6 @@ package com.zimbra.soap.base;
 import com.zimbra.soap.type.KeyValuePairs;
 
 public interface CustomMetadataInterface extends KeyValuePairs {
-    public void setSection(String section);
-    public String getSection();
+    void setSection(String section);
+    String getSection();
 }

@@ -30,7 +30,7 @@ public class GetCertResponse {
      * @zm-api-field-description Certificate information
      */
     @XmlElement(name=CertMgrConstants.E_cert /* cert */, required=false)
-    private List<CertInfo> certs = Lists.newArrayList();
+    private final List<CertInfo> certs = Lists.newArrayList();
 
     public GetCertResponse() {
     }

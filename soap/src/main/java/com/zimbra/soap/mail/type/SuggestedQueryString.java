@@ -21,13 +21,13 @@ public class SuggestedQueryString implements BaseQueryInfo {
      * @zm-api-field-description Suggested query string
      */
     @XmlValue
-    private String suggestedQueryString;
+    private final String suggestedQueryString;
 
     /**
      * no-argument constructor wanted by JAXB
      */
     private SuggestedQueryString() {
-        this((String) null);
+        this(null);
     }
 
     private SuggestedQueryString(String suggestedQueryString) {

@@ -41,7 +41,7 @@ final class NioImapDecoder extends CumulativeProtocolDecoder {
      */
     @Override
     protected boolean doDecode(IoSession session, IoBuffer in, ProtocolDecoderOutput out)
-            throws ProtocolDecoderException, IOException, Exception {
+            throws Exception {
         /** the allowed maximum size of a literal to be decoded. If the size of the literal to be
          * decoded exceeds this value, the decoder will throw a {@link TooBigLiteralException}.
          */

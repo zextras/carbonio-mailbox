@@ -150,7 +150,7 @@ public final class ParsedContact {
         }
 
         // Initialize fields.
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (Map.Entry<String, ? extends Object> entry : fields.entrySet()) {
             String key = StringUtil.stripControlCharacters(entry.getKey());
             String value = null;
@@ -249,7 +249,7 @@ public final class ParsedContact {
             throw ServiceException.FAILURE("MimeMultipart content expected but got " + mm.getContent().toString(), x);
         }
 
-        List<Attachment> attachments = new ArrayList<Attachment>(multi.getCount());
+        List<Attachment> attachments = new ArrayList<>(multi.getCount());
         for (int i = 1; i <= multi.getCount(); i++) {
             MimeBodyPart bp = (MimeBodyPart) multi.getBodyPart(i - 1);
             ContentDisposition cdisp = new ContentDisposition(bp.getHeader("Content-Disposition", null));
@@ -297,7 +297,7 @@ public final class ParsedContact {
     public static abstract class FieldDelta {
         private final Op op;
 
-        public static enum Op {
+        public enum Op {
             ADD,
             REMOVE;
 
@@ -363,7 +363,7 @@ public final class ParsedContact {
     }
 
     public static class FieldDeltaList {
-        private final List<FieldDelta> deltaList = new ArrayList<FieldDelta>();
+        private final List<FieldDelta> deltaList = new ArrayList<>();
 
         public void addAttrDelta(String name, String value, FieldDelta.Op op) {
             // name cannot be null or empty
@@ -434,7 +434,7 @@ public final class ParsedContact {
                 // add the new attachments to the contact
                 removeAttachment(attach.getName());
                 if (contactAttachments == null) {
-                    contactAttachments = new ArrayList<Attachment>(attachDelta.size());
+                    contactAttachments = new ArrayList<>(attachDelta.size());
                 }
                 contactAttachments.add(attach);
             }
@@ -534,7 +534,8 @@ public final class ParsedContact {
         } else {
             List<String> curValuesList = null;
             try {
-                curValuesList = new ArrayList<String>(Arrays.asList(Contact.parseMultiValueAttr(curValue)));
+                curValuesList = new ArrayList<>(
+                    Arrays.asList(Contact.parseMultiValueAttr(curValue)));
             } catch (JSONException e) {
                 // log a warning and continue
                 ZimbraLog.misc.warn("unable to modify contact for: " +
@@ -628,7 +629,7 @@ public final class ParsedContact {
         if (indexDocs != null) {
             return;
         }
-        indexDocs = new ArrayList<IndexDocument>();
+        indexDocs = new ArrayList<>();
         StringBuilder attachContent = new StringBuilder();
 
         ServiceException conversionError = null;
@@ -708,7 +709,7 @@ public final class ParsedContact {
 
         StringBuilder contentText = new StringBuilder();
 
-        String emailFields[] = Contact.getEmailFields(acct);
+        String[] emailFields = Contact.getEmailFields(acct);
 
         FieldTokenStream fields = new FieldTokenStream();
         for (Map.Entry<String, String> entry : getFields().entrySet()) {

@@ -15,11 +15,11 @@ import com.zimbra.cs.account.oauth.utils.MemcachedMapPlusPutWithExtraParam;
 import com.zimbra.cs.memcached.MemcachedConnector;
 
 public class OAuthTokenCache {
-    private static OAuthTokenCache sTheInstance = new OAuthTokenCache();
+    private static final OAuthTokenCache sTheInstance = new OAuthTokenCache();
 
     private static final Log LOG = ZimbraLog.oauth;
 
-    private MemcachedMapPlusPutWithExtraParam<OAuthTokenCacheKey, OAuthAccessor> mMemcachedLookup;
+    private final MemcachedMapPlusPutWithExtraParam<OAuthTokenCacheKey, OAuthAccessor> mMemcachedLookup;
 
     public static OAuthTokenCache getInstance() { return sTheInstance; }
 
@@ -32,7 +32,7 @@ public class OAuthTokenCache {
     OAuthTokenCache() {
         ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
         OAuthAccessorSerializer serializer = new OAuthAccessorSerializer();
-        mMemcachedLookup = new MemcachedMapPlusPutWithExtraParam<OAuthTokenCacheKey, OAuthAccessor>(memcachedClient, serializer);
+        mMemcachedLookup = new MemcachedMapPlusPutWithExtraParam<>(memcachedClient, serializer);
     }
 
     private OAuthAccessor get(OAuthTokenCacheKey key) throws ServiceException {

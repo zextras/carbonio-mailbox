@@ -133,7 +133,7 @@ extends AttributeSelectorImpl {
      */
     @SuppressWarnings("unused")
     private SearchCalendarResourcesRequest() {
-        this((String) null);
+        this(null);
     }
 
     public SearchCalendarResourcesRequest(String name) {

@@ -81,7 +81,7 @@ public class AlarmInfo implements AlarmInfoInterface {
      * @zm-api-field-description Attendee information
      */
     @XmlElement(name=MailConstants.E_CAL_ATTENDEE /* at */, required=false)
-    private List<CalendarAttendee> attendees = Lists.newArrayList();
+    private final List<CalendarAttendee> attendees = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Non-standard properties (see RFC2445 section 4.8.8.1)
@@ -100,14 +100,14 @@ public class AlarmInfo implements AlarmInfoInterface {
      * </pre>
      */
     @XmlElement(name=MailConstants.E_CAL_XPROP /* xprop */, required=false)
-    private List<XProp> xProps = Lists.newArrayList();
+    private final List<XProp> xProps = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private AlarmInfo() {
-        this((String) null);
+        this(null);
     }
 
     public AlarmInfo(

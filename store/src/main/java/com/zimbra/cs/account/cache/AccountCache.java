@@ -23,14 +23,14 @@ import com.zimbra.cs.account.Provisioning;
 
 public class AccountCache implements IAccountCache {
 
-    private Map<String, CacheEntry> mNameCache;
-    private Map<String, CacheEntry> mIdCache;
-    private Map<String, CacheEntry> mAliasCache;
-    private Map<String, CacheEntry> mForeignPrincipalCache;
-    private Map<String, CacheEntry> mOldNameCache;
-    private Counter mHitRate = new HitRateCounter();
+    private final Map<String, CacheEntry> mNameCache;
+    private final Map<String, CacheEntry> mIdCache;
+    private final Map<String, CacheEntry> mAliasCache;
+    private final Map<String, CacheEntry> mForeignPrincipalCache;
+    private final Map<String, CacheEntry> mOldNameCache;
+    private final Counter mHitRate = new HitRateCounter();
 
-    private long mRefreshTTL;
+    private final long mRefreshTTL;
 
     static class CacheEntry {
         long mLifetime;
@@ -74,12 +74,12 @@ public class AccountCache implements IAccountCache {
             mNameCache.remove(entry.getName());
             mIdCache.remove(entry.getId());
 
-            String aliases[] = entry.getMultiAttr(Provisioning.A_zimbraMailAlias);
+            String[] aliases = entry.getMultiAttr(Provisioning.A_zimbraMailAlias);
             for (String alias : aliases) {
                 mAliasCache.remove(alias);
             }
 
-            String fps[] = entry.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
+            String[] fps = entry.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
             for (String fp : fps) {
                 mForeignPrincipalCache.remove(fp);
             }
@@ -94,12 +94,12 @@ public class AccountCache implements IAccountCache {
             mNameCache.put(entry.getName(), cacheEntry);
             mIdCache.put(entry.getId(), cacheEntry);
 
-            String aliases[] = entry.getMultiAttr(Provisioning.A_zimbraMailAlias);
+            String[] aliases = entry.getMultiAttr(Provisioning.A_zimbraMailAlias);
             for (String alias : aliases) {
                 mAliasCache.put(alias, cacheEntry);
             }
 
-            String fps[] = entry.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
+            String[] fps = entry.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
             for (String fp : fps) {
                 mForeignPrincipalCache.put(fp, cacheEntry);
             }

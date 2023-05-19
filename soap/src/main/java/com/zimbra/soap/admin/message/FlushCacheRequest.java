@@ -46,7 +46,7 @@ public class FlushCacheRequest {
      */
     @SuppressWarnings("unused")
     private FlushCacheRequest() {
-        this((CacheSelector) null);
+        this(null);
     }
 
     public FlushCacheRequest(CacheSelector cache) {

@@ -22,7 +22,7 @@ public class GetDataSourceUsageResponse {
     @XmlElements({
         @XmlElement(name=AccountConstants.E_DATA_SOURCE_USAGE, type=DataSourceUsage.class),
     })
-    private List<DataSourceUsage> usages = Lists.newArrayList();
+    private final List<DataSourceUsage> usages = Lists.newArrayList();
 
     @XmlElement(name=AccountConstants.E_DS_QUOTA, required=true)
     private Long dataSourceQuota;

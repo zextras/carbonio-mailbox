@@ -36,7 +36,7 @@ import com.zimbra.cs.filter.ZimbraMailAdapter.PARSESTATUS;
 import com.zimbra.cs.mime.MimeUtil;
 
 public class ReplaceHeader extends AbstractCommand {
-    private EditHeaderExtension ehe = new EditHeaderExtension();
+    private final EditHeaderExtension ehe = new EditHeaderExtension();
 
     /** (non-Javadoc)
      * @see org.apache.jsieve.commands.AbstractCommand#executeBasic(org.apache.jsieve.mail.MailAdapter, org.apache.jsieve.Arguments, org.apache.jsieve.Block, org.apache.jsieve.SieveContext)
@@ -51,7 +51,7 @@ public class ReplaceHeader extends AbstractCommand {
         }
         ZimbraMailAdapter mailAdapter = (ZimbraMailAdapter) mail;
         if (ASCII_NUMERIC_COMPARATOR.equalsIgnoreCase(ehe.getComparator())) {
-            Require.checkCapability((ZimbraMailAdapter) mail, ASCII_NUMERIC_COMPARATOR);
+            Require.checkCapability(mail, ASCII_NUMERIC_COMPARATOR);
         }
         Require.checkCapability(mailAdapter, CAPABILITY_EDITHEADER);
         if (!mailAdapter.getAccount().isSieveEditHeaderEnabled()) {
@@ -101,7 +101,7 @@ public class ReplaceHeader extends AbstractCommand {
         }
         ehe.setEffectiveIndex(headerCount);
         int matchIndex = 0;
-        List<Header> newHeaderList = new ArrayList<Header>();
+        List<Header> newHeaderList = new ArrayList<>();
         try {
             boolean hasEdited = false;
             while (headers.hasMoreElements()) {

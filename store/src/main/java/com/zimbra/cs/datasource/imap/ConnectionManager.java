@@ -43,8 +43,8 @@ import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.type.DataSource.ConnectionType;
 
 final class ConnectionManager {
-    private Map<String, ImapConnection> connections =
-        Collections.synchronizedMap(new HashMap<String, ImapConnection>());
+    private final Map<String, ImapConnection> connections =
+        Collections.synchronizedMap(new HashMap<>());
 
     private static final ConnectionManager INSTANCE = new ConnectionManager();
 
@@ -226,7 +226,7 @@ final class ConnectionManager {
 
     public static ImapConfig newImapConfig(DataSource ds) {
         ImapConfig config = new ImapConfig();
-        Map<String, String> props = new HashMap<String, String>();
+        Map<String, String> props = new HashMap<>();
         config.setHost(ds.getHost());
         config.setPort(ds.getPort());
         config.setAuthenticationId(ds.getUsername());

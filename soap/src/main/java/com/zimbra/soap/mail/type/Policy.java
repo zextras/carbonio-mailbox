@@ -28,9 +28,9 @@ public class Policy {
         @XmlEnumValue("user") USER ("user"),
         @XmlEnumValue("system") SYSTEM ("system");
 
-        private String name;
+        private final String name;
 
-        private Type(String name) {
+        Type(String name) {
             this.name = name;
         }
 
@@ -48,9 +48,9 @@ public class Policy {
                 throw new IllegalArgumentException("Invalid Type value: " + name);
             }
         }
-    };
+    }
 
-    /**
+  /**
      * @zm-api-field-tag retention-policy-type
      * @zm-api-field-description Retention policy type
      */

@@ -30,7 +30,7 @@ public class DeployZimletResponse {
      * @zm-api-field-description Progress information on deployment to servers
      */
     @XmlElement(name=AdminConstants.E_PROGRESS /* progress */, required=false)
-    private List<ZimletDeploymentStatus> progresses = Lists.newArrayList();
+    private final List<ZimletDeploymentStatus> progresses = Lists.newArrayList();
 
     public DeployZimletResponse() {
     }

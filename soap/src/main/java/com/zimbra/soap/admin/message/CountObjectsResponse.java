@@ -18,10 +18,10 @@ public class CountObjectsResponse {
      * @zm-api-field-description Number of objects of the requested type
      */
     @XmlAttribute(name = AdminConstants.A_NUM, required = true)
-    private long num;
+    private final long num;
 
     @XmlAttribute(name = AdminConstants.A_TYPE, required = true)
-    private String type;
+    private final String type;
 
     /**
      * no-argument constructor wanted by JAXB

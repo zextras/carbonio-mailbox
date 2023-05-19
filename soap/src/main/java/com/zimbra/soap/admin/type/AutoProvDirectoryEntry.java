@@ -33,7 +33,7 @@ public class AutoProvDirectoryEntry extends AdminKeyValuePairs {
      * @zm-api-field-description Keys
      */
     @XmlElement(name=AdminConstants.E_KEY /* key */, required=false)
-    private List<String> keys = Lists.newArrayList();
+    private final List<String> keys = Lists.newArrayList();
 
     public AutoProvDirectoryEntry() {
     }

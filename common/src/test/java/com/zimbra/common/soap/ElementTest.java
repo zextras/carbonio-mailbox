@@ -154,7 +154,7 @@ public class ElementTest {
                 mDocumentFactory.get()).read(is).getRootElement(), factory);
     }
 
-    private static String provisioningXMLTemplate =
+    private static final String provisioningXMLTemplate =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "##DOCTYPE##" +
             "<ZCSImport>\n" +
@@ -170,13 +170,13 @@ public class ElementTest {
             "</ImportUsers>\n" +
             "</ZCSImport>";
 
-    private static String provisioningXMLWithNoEntityRefNoDocType =
+    private static final String provisioningXMLWithNoEntityRefNoDocType =
             provisioningXMLTemplate.replace("##DOCTYPE##", "").replace("##ENTITY_REF##", "");
 
-    private static String provisioningXMLWithEntityRefButNoDecl =
+    private static final String provisioningXMLWithEntityRefButNoDecl =
             provisioningXMLTemplate.replace("##DOCTYPE##", "").replace("##ENTITY_REF##", "&xxe;");
 
-    private static String provisioningXMLWithEntityRefAndDecl =
+    private static final String provisioningXMLWithEntityRefAndDecl =
             provisioningXMLTemplate.replace("##DOCTYPE##",
                                             "<!DOCTYPE foo [ \n" +
                                             "   <!ELEMENT foo ANY >\n" +
@@ -369,7 +369,7 @@ public class ElementTest {
         Assert.assertEquals("toString value unchanged", legacyElem.toString(), elem.toString());
     }
 
-    private static String xhtmlString =
+    private static final String xhtmlString =
             "<html xml:lang=\"en\" lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" " +
                     "xmlns:xml=\"http://www.w3.org/XML/1998/namespace\">\n" +
             "&lt;head xmlns=\"http://www.w3.org/1999/xhtml\">\n" +

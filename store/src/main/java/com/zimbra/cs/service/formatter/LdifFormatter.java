@@ -63,8 +63,8 @@ public class LdifFormatter extends Formatter {
         StringBuilder sb = new StringBuilder();
         try {
             contacts = getMailItems(context, -1, -1, Integer.MAX_VALUE);
-            ArrayList<Map<String, String>> allContacts = new ArrayList<Map<String, String>>();
-            HashSet<String> fields = new HashSet<String>();
+            ArrayList<Map<String, String>> allContacts = new ArrayList<>();
+            HashSet<String> fields = new HashSet<>();
             UserServletUtil.populateContactFields(contacts, context.targetMailbox,
                 context.opContext, allContacts, fields);
             for (Map<String, String> contactMap : allContacts) {
@@ -86,7 +86,7 @@ public class LdifFormatter extends Formatter {
         context.resp.addHeader("Content-Disposition", cd);
         context.resp.setCharacterEncoding(context.getCharset().name());
         context.resp.setContentType(MimeConstants.CT_TEXT_LDIF);
-        context.resp.getWriter().print(sb.toString());
+        context.resp.getWriter().print(sb);
     }
 
     protected boolean toLDIFContact(Map<String, String> contact, StringBuilder sb, String[] galLdapAttrMap) {
@@ -237,16 +237,16 @@ public class LdifFormatter extends Formatter {
 
     private enum NonSafeChars {
         NUL(0), LF(10), CR(13);
-        private int value;
-        private NonSafeChars(int value) {
+        private final int value;
+        NonSafeChars(int value) {
             this.value = value;
         }
     }
 
     private enum NonSafeInitChars {
         NUL(0), LF(10), CR(13), SPACE(32), COLON(58), LESSTHAN(60);
-        private int value;
-        private NonSafeInitChars(int value) {
+        private final int value;
+        NonSafeInitChars(int value) {
             this.value = value;
         }
     }
@@ -332,7 +332,7 @@ public class LdifFormatter extends Formatter {
         String domain;
 
         if (lastIndexOfAt != -1) {
-            domain = value.substring(lastIndexOfAt + 1, value.length());
+            domain = value.substring(lastIndexOfAt + 1);
             dc = domain.split("\\.");
         }
         return dc;
@@ -349,7 +349,7 @@ public class LdifFormatter extends Formatter {
         }
         String uid = null;
         String[] dc = null;
-        List<String> dnElements = new ArrayList<String>();
+        List<String> dnElements = new ArrayList<>();
         uid = extractUid(email);
         dc = extractDc(email);
 

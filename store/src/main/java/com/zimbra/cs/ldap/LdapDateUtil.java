@@ -26,7 +26,7 @@ public class LdapDateUtil {
     public static String toGeneralizedTime(Date date) {
         boolean enabled = false;
         Server server = Provisioning.getInstance().getLocalServerIfDefined();
-        enabled = server == null ? false : server.isLdapGentimeFractionalSecondsEnabled();
+        enabled = server != null && server.isLdapGentimeFractionalSecondsEnabled();
         if (enabled) {
             return toGeneralizedTimeWithMs(date);
         } else {

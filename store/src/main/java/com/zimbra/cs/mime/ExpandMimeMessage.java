@@ -13,9 +13,9 @@ import com.zimbra.common.util.LogFactory;
 
 public class ExpandMimeMessage {
     
-    private static Log sLog = LogFactory.getLog(ExpandMimeMessage.class);
+    private static final Log sLog = LogFactory.getLog(ExpandMimeMessage.class);
     
-    private MimeMessage mMimeMessage;
+    private final MimeMessage mMimeMessage;
     private MimeMessage mExpandedMessage;
     
     public ExpandMimeMessage(MimeMessage original) {

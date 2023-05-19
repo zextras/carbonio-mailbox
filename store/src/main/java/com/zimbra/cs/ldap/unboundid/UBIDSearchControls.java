@@ -16,8 +16,8 @@ import com.zimbra.cs.ldap.ZSearchScope;
 
 public class UBIDSearchControls extends ZSearchControls {
 
-    private SearchScope searchScope;
-    private int sizeLimit;
+    private final SearchScope searchScope;
+    private final int sizeLimit;
     private List<String> returnAttrs;
     
     UBIDSearchControls(ZSearchScope searchScope, int sizeLimit, String[] returnAttrs) {

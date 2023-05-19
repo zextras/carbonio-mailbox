@@ -12,8 +12,8 @@ import java.net.UnknownHostException;
 import com.zimbra.common.util.ZimbraLog;
 
 public class NginxAuthServer {
-    private String nginxAuthServer;
-    private String nginxAuthUser;
+    private final String nginxAuthServer;
+    private final String nginxAuthUser;
 
     public NginxAuthServer(String authServer, String authPort, String authUser) {
         String format = "%s:%s";

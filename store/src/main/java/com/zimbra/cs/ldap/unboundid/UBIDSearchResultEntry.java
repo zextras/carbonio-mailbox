@@ -16,8 +16,8 @@ import com.zimbra.cs.ldap.ZSearchResultEntry;
  */
 public class UBIDSearchResultEntry extends ZSearchResultEntry  {
 
-    private SearchResultEntry searchResultEntry;
-    private UBIDAttributes zAttributes;
+    private final SearchResultEntry searchResultEntry;
+    private final UBIDAttributes zAttributes;
     
     UBIDSearchResultEntry(SearchResultEntry searchResultEntry) {
         this.searchResultEntry = searchResultEntry;

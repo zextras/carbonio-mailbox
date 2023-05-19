@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -170,7 +171,7 @@ public class AutoDiscoverServlet extends ZimbraServlet {
             sendError(resp, 600, "No content found in the request");
             return;
         }
-        String content = new String(reqBytes, "UTF-8");
+        String content = new String(reqBytes, StandardCharsets.UTF_8);
         log.debug("Request before auth: %s", content);
 
         if (log.isDebugEnabled()) {
@@ -279,7 +280,7 @@ public class AutoDiscoverServlet extends ZimbraServlet {
         log.debug("response length: %d", respDoc.length());
 
         try {
-            ByteUtil.copy(new ByteArrayInputStream(respDoc.getBytes("UTF-8")), true, resp.getOutputStream(), false);
+            ByteUtil.copy(new ByteArrayInputStream(respDoc.getBytes(StandardCharsets.UTF_8)), true, resp.getOutputStream(), false);
         } catch (IOException e) {
             log.error("copy response error", e);
             sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -359,7 +360,7 @@ public class AutoDiscoverServlet extends ZimbraServlet {
             }
 
             try {
-                Map<String, Object> authCtxt = new HashMap<String, Object>();
+                Map<String, Object> authCtxt = new HashMap<>();
                 authCtxt.put(AuthContext.AC_ORIGINATING_CLIENT_IP, ZimbraServlet.getOrigIp(req));
                 authCtxt.put(AuthContext.AC_REMOTE_IP, ZimbraServlet.getClientIp(req));
                 authCtxt.put(AuthContext.AC_ACCOUNT_NAME_PASSEDIN, userPassedIn);
@@ -396,7 +397,7 @@ public class AutoDiscoverServlet extends ZimbraServlet {
     @SuppressWarnings("unused")
     private static List<Element> getChildren(Element e) {
         NodeList nl = e.getChildNodes();
-        List<Element> nodes = new ArrayList<Element>(nl.getLength());
+        List<Element> nodes = new ArrayList<>(nl.getLength());
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
             if (node instanceof Element) {
@@ -621,12 +622,9 @@ public class AutoDiscoverServlet extends ZimbraServlet {
     }
 
     public static boolean isEwsClient(String responseSchema) {
-    	boolean ewsClient = false;
-    	if (responseSchema.equals(NS_OUTLOOK) ) {
-    	    ewsClient = true;
-    	}
+    	boolean ewsClient = responseSchema.equals(NS_OUTLOOK);
 
-    	return ewsClient;
+        return ewsClient;
 
     }
 

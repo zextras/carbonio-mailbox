@@ -76,7 +76,7 @@ public class TestTnefTimeZone {
         return (data[3] << 24) | (data[2] << 16) | (data[1] << 8) | data[0];
     }
     
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         for (int i=0; i < 60; i++)
             try {
                 System.out.println("Index " + i + ": " + TnefTimeZone.getTimeZone(i, true, null));

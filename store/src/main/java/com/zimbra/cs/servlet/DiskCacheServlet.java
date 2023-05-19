@@ -17,6 +17,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -40,7 +41,7 @@ import com.zimbra.cs.service.admin.FlushCache;
 @SuppressWarnings("deprecation")
 public abstract class DiskCacheServlet extends ZimbraServlet {
     private Map<String,File> cache;
-    private String cacheDirName;
+    private final String cacheDirName;
     private File cacheDir;
     private int cacheSize;
     protected String cacheKeyPrefix;
@@ -178,11 +179,11 @@ public abstract class DiskCacheServlet extends ZimbraServlet {
                 // ignore -- just use default
             }
         }
-        cache = new LruMap<String, File>(cacheSize) {
-            @Override
-            protected void willRemove(String cacheId, File file) {
-                processRemovedFile(cacheId, file);
-            }
+        cache = new LruMap<>(cacheSize) {
+          @Override
+          protected void willRemove(String cacheId, File file) {
+            processRemovedFile(cacheId, file);
+          }
         };
     }
 
@@ -341,7 +342,7 @@ public abstract class DiskCacheServlet extends ZimbraServlet {
             if (compress) {
                 out = new GZIPOutputStream(out);
             }
-            out.write(src.getBytes("UTF-8"));
+            out.write(src.getBytes(StandardCharsets.UTF_8));
             if (compress) {
                 ((GZIPOutputStream)out).finish();
             }
@@ -368,7 +369,7 @@ public abstract class DiskCacheServlet extends ZimbraServlet {
     protected void copy(File src, Writer dest) throws IOException {
         char[] buffer = new char[4096];
         int count;
-        Reader in = new InputStreamReader(new FileInputStream(src), "UTF-8");
+        Reader in = new InputStreamReader(new FileInputStream(src), StandardCharsets.UTF_8);
 
         while ((count = in.read(buffer)) != -1) {
             dest.write(buffer, 0, count);
@@ -386,7 +387,7 @@ public abstract class DiskCacheServlet extends ZimbraServlet {
 
     /** Copy a string to output stream in specified encoding. */
     protected void copy(String src, OutputStream dest) throws IOException {
-        Writer out = new OutputStreamWriter(dest, "UTF-8");
+        Writer out = new OutputStreamWriter(dest, StandardCharsets.UTF_8);
         out.write(src);
         out.flush();
     }

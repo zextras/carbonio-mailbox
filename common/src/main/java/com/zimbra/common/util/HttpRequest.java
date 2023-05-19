@@ -35,19 +35,18 @@ public class HttpRequest {
     private static final String NL = "\r\n";
 
     private HttpRequestLine mHttpRequestLine;
-    private HashMap mRequestHeaders;
+    private final HashMap mRequestHeaders;
     
     private boolean mReadBody = false;
     private byte[] mBody;
-    private ByteArrayOutputStream mLineBuff;
-    private InputStream mInputStream;
+    private final ByteArrayOutputStream mLineBuff;
+    private final InputStream mInputStream;
     
     /**
      * Construct a new HttpRequest object from an input stream
      */
     public HttpRequest(InputStream input) 
-        throws java.io.IOException, java.io.EOFException
-    {
+        throws java.io.IOException {
         mRequestHeaders = new LinkedHashMap();
         mLineBuff = new ByteArrayOutputStream(128);
         mInputStream = input;

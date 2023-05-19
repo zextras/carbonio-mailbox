@@ -32,7 +32,7 @@ public class GetUCInfoResponse {
     @ZimbraKeyValuePairs
     @XmlElementWrapper(name=AccountConstants.E_ATTRS /* attrs */, required=false)
     @XmlElement(name=AccountConstants.E_ATTR /* attr */, required=false)
-    private List<Attr> attrs = Lists.newArrayList();
+    private final List<Attr> attrs = Lists.newArrayList();
 
     public GetUCInfoResponse() {
     }

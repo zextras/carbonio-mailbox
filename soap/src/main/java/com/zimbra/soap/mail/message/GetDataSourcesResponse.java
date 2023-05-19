@@ -45,7 +45,7 @@ public class GetDataSourcesResponse {
         @XmlElement(name=MailConstants.E_DS_CAL /* cal */, type=MailCalDataSource.class),
         @XmlElement(name=MailConstants.E_DS_UNKNOWN /* unknown */, type=MailDataSource.class)
     })
-    private List<DataSource> dataSources = Lists.newArrayList();
+    private final List<DataSource> dataSources = Lists.newArrayList();
 
     public GetDataSourcesResponse() {
     }

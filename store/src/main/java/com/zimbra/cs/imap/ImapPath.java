@@ -37,11 +37,12 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.AccountUtil;
+import java.nio.charset.StandardCharsets;
 
 public class ImapPath implements Comparable<ImapPath> {
-    enum Scope { UNPARSED, NAME, CONTENT, REFERENCE };
+    enum Scope { UNPARSED, NAME, CONTENT, REFERENCE }
 
-    protected static Charset FOLDER_ENCODING_CHARSET;
+  protected static Charset FOLDER_ENCODING_CHARSET;
     static {
         try {
             FOLDER_ENCODING_CHARSET = Charset.forName("imap-utf-7");
@@ -49,7 +50,7 @@ public class ImapPath implements Comparable<ImapPath> {
             ZimbraLog.imap.error(
                 "could not load imap-utf-7 charset (perhaps charset.jar is not in the jetty endorsed directory)",
                 e);
-            FOLDER_ENCODING_CHARSET = Charset.forName("utf-8");
+            FOLDER_ENCODING_CHARSET = StandardCharsets.UTF_8;
         }
     }
 
@@ -149,7 +150,8 @@ public class ImapPath implements Comparable<ImapPath> {
         try {
             Account acct = getOwnerAccount();
             Account otheracct = other.getOwnerAccount();
-            return (acct == null || otheracct == null ? false : acct.getId().equalsIgnoreCase(otheracct.getId()));
+            return (acct != null && otheracct != null && acct.getId()
+                .equalsIgnoreCase(otheracct.getId()));
         } catch (ServiceException e) {
             return false;
         }
@@ -582,7 +584,7 @@ public class ImapPath implements Comparable<ImapPath> {
         if (imapFolderStore == null || !isVisible() || imapFolderStore.isUserRootFolder() || imapFolderStore.isIMAPDeleted()) {
             return false;
         }
-        return (mReferent == this ? true : mReferent.isSelectable());
+        return (mReferent == this || mReferent.isSelectable());
     }
 
     protected boolean isVisible() throws ServiceException {
@@ -612,7 +614,7 @@ public class ImapPath implements Comparable<ImapPath> {
         if (!okPath) {
             return false;
         }
-        return mReferent == this ? true : mReferent.isVisible();
+        return mReferent == this || mReferent.isVisible();
     }
 
     /**
@@ -670,7 +672,7 @@ public class ImapPath implements Comparable<ImapPath> {
             }
             throw se;
         }
-        return mReferent == this ? true : mReferent.isValidImapPath();
+        return mReferent == this || mReferent.isValidImapPath();
     }
 
     /**
@@ -696,7 +698,7 @@ public class ImapPath implements Comparable<ImapPath> {
             return null;
         }
         path = (slash == -1 ? "" : imapPathNoPrefix.substring(slash));
-        return new Pair<String,String>(owner, path);
+        return new Pair<>(owner, path);
     }
 
     protected String asZimbraPath() {

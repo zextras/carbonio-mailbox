@@ -10,11 +10,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface ExceptionRecurIdInfoInterface {
-    public ExceptionRecurIdInfoInterface create(String dateTime);
-    public void setTimezone(String timezone);
-    public void setRecurrenceRangeType(Integer recurrenceRangeType);
+    ExceptionRecurIdInfoInterface create(String dateTime);
+    void setTimezone(String timezone);
+    void setRecurrenceRangeType(Integer recurrenceRangeType);
 
-    public String getDateTime();
-    public String getTimezone();
-    public Integer getRecurrenceRangeType();
+    String getDateTime();
+    String getTimezone();
+    Integer getRecurrenceRangeType();
 }

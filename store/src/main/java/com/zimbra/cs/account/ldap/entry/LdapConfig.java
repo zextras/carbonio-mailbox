@@ -17,7 +17,7 @@ import com.zimbra.cs.ldap.ZAttributes;
  */
 public class LdapConfig extends Config implements LdapEntry {
     
-    private String mDn;
+    private final String mDn;
     
     public LdapConfig(String dn, ZAttributes attrs, Provisioning provisioning) throws LdapException {
         super(attrs.getAttrs(), provisioning);

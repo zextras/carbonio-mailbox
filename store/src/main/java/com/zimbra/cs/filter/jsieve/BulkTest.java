@@ -53,7 +53,7 @@ public final class BulkTest extends AbstractTest {
                 return true;
             } else if (LIST_UNSUBSCRIBE.equals(name)) { // test List-Unsubscribe
                 // Check "to me" to avoid conflicting with legitimate mailing list messages
-                List<InternetAddress> addrs = new ArrayList<InternetAddress>();
+                List<InternetAddress> addrs = new ArrayList<>();
                 for (String to : mail.getHeader("To")) {
                     addrs.addAll(InternetAddress.parseHeader(to));
                 }

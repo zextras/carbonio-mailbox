@@ -21,7 +21,7 @@ public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
 
     private static final String DEFAULT_CONTENT_TYPE = "text/plain";
     
-    private Signature data;
+    private final Signature data;
 
     public ZSignature(Signature sig) {
         data = sig;
@@ -84,7 +84,7 @@ public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
     }
     
     public Map<String, Object> getAttrs() {
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraSignatureId, data.getId());
         attrs.put(ZAttrProvisioning.A_zimbraSignatureName, data.getName());
         

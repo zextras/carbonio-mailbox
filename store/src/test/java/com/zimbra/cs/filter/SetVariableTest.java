@@ -1382,20 +1382,20 @@ public class SetVariableTest {
                     + "Subject: test C-51 abc sample foo bar hoge piyo 123 456 789 sieve test\n"
                     + "\n"
                     + "Hello world.";
-            String expectedHeaderValue1[] = {
+            String[] expectedHeaderValue1 = {
                     "test C-51 abc sample foo bar hoge piyo 123 456 789 sieve test",
                     "test",
                     "51 abc sample foo",
                     "hoge piyo",
                     "456 789 sieve test"
             };
-            String expectedHeaderValue2[] = {
+            String[] expectedHeaderValue2 = {
                     "coyote@ACME.Example.COM",
                     "co",
                     "te",
                     "ACME.Example."
             };
-            String expectedHeaderValue3[] = {
+            String[] expectedHeaderValue3 = {
                     "test@zimbra.com",
                     "tes"
             };
@@ -1860,7 +1860,7 @@ public class SetVariableTest {
                     account.getName(), null, new DeliveryContext(),
                     Mailbox.ID_FOLDER_INBOX, true);
             Message msg = mbox.getMessageById(null, ids.get(0).getId());
-            String value[] = null;
+            String[] value = null;
             value = msg.getMimeMessage().getHeader("X-New-Header-9");
             Assert.assertEquals("{sample}", value[0]);
             value = msg.getMimeMessage().getHeader("X-New-Header-10");

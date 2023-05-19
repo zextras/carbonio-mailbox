@@ -22,7 +22,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 
 public class DeleteIdentity extends DocumentHandler {
 	
-    public Element handle(Element request, Map<String, Object> context) throws ServiceException, SoapFaultException {
+    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         Account account = getRequestedAccount(zsc);
         

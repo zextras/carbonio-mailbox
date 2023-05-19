@@ -39,7 +39,7 @@ public class HABGroup extends HABMember {
      * @zm-api-field-description List of HabGroups under this HAB group
      */
     @XmlElement(name=AccountConstants.A_HAB_GROUPS, required=false)
-    private List<HABGroup> childGroups = new ArrayList<HABGroup>();
+    private List<HABGroup> childGroups = new ArrayList<>();
 
     /**
      * @zm-api-field-description Attributes of the HAB group

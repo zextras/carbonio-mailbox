@@ -21,7 +21,7 @@ public class GetAllUCServicesResponse {
      * @zm-api-field-description Information about uc services
      */
     @XmlElement(name=AdminConstants.E_UC_SERVICE)
-    private List <UCServiceInfo> ucServiceList = new ArrayList<UCServiceInfo>();
+    private final List <UCServiceInfo> ucServiceList = new ArrayList<>();
 
     public GetAllUCServicesResponse() {
     }

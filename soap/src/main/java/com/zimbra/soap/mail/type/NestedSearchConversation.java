@@ -79,7 +79,7 @@ public class NestedSearchConversation {
      * @zm-api-field-description Message hits
      */
     @XmlElement(name=MailConstants.E_MSG /* m */, required=false)
-    private List<MessageHitInfo> messages = Lists.newArrayList();
+    private final List<MessageHitInfo> messages = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Info block.  Used to return general status information about your search.
@@ -94,7 +94,7 @@ public class NestedSearchConversation {
         @XmlElement(name=MailConstants.E_SUGEST, type=SuggestedQueryString.class),
         @XmlElement(name="wildcard", type=WildcardExpansionQueryInfo.class)
     })
-    private List<BaseQueryInfo> queryInfos = Lists.newArrayList();
+    private final List<BaseQueryInfo> queryInfos = Lists.newArrayList();
 
     public NestedSearchConversation() {
     }

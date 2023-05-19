@@ -24,7 +24,7 @@ public class ICalReply extends MailDocumentHandler {
 
     @Override
     public Element handle(Element request, Map<String, Object> context)
-            throws ServiceException, SoapFaultException {
+            throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         Mailbox mbox = getRequestedMailbox(zsc);
         OperationContext octxt = getOperationContext(zsc, context);

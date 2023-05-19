@@ -21,7 +21,7 @@ public final class ConjQuery extends Query {
 
         private final String symbol;
 
-        private Conjunction(String symbol) {
+        Conjunction(String symbol) {
             this.symbol = symbol;
         }
 

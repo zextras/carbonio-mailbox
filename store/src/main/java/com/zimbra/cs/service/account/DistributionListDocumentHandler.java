@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -149,7 +150,7 @@ public abstract class DistributionListDocumentHandler extends AccountDocumentHan
             try {
                 Account acct = prov.get(AccountBy.name, member);
                 if (acct != null) {
-                    if (prov.onLocalServer(acct)) {
+                    if (Provisioning.onLocalServer(acct)) {
                         // localAccts.add(new CacheEntry(CacheEntryBy.id, acct.getId()));
                     } else {
                         Server server = acct.getServer();
@@ -263,7 +264,7 @@ public abstract class DistributionListDocumentHandler extends AccountDocumentHan
 
         protected static abstract class MimePartDataSource implements DataSource {
 
-            private String mText;
+            private final String mText;
             private byte[] mBuf = null;
 
             public MimePartDataSource(String text) {
@@ -276,7 +277,7 @@ public abstract class DistributionListDocumentHandler extends AccountDocumentHan
                     if (mBuf == null) {
                         ByteArrayOutputStream buf = new ByteArrayOutputStream();
                         OutputStreamWriter wout =
-                            new OutputStreamWriter(buf, MimeConstants.P_CHARSET_UTF8);
+                            new OutputStreamWriter(buf, StandardCharsets.UTF_8);
                         String text = mText;
                         wout.write(text);
                         wout.flush();

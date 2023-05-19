@@ -25,7 +25,7 @@ public class SyncStateInfo {
      */
     @SuppressWarnings("unused")
     private SyncStateInfo() {
-        this((String) null);
+        this(null);
     }
 
     public SyncStateInfo(String syncState) {

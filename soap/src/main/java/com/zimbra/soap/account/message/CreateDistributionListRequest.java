@@ -44,14 +44,14 @@ public class CreateDistributionListRequest extends AccountKeyValuePairs {
      * </table>
      */
     @XmlAttribute(name=AccountConstants.A_DYNAMIC, required=false)
-    private ZmBoolean dynamic;
+    private final ZmBoolean dynamic;
 
     public CreateDistributionListRequest() {
-        this((String)null);
+        this(null);
     }
 
     public CreateDistributionListRequest(String name) {
-        this(name, (Collection<KeyValuePair>) null, false);
+        this(name, null, false);
     }
 
     public CreateDistributionListRequest(String name, Collection<KeyValuePair> attrs, Boolean dynamic) {

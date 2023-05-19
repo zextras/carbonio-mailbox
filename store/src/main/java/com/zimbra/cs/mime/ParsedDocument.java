@@ -189,7 +189,7 @@ public final class ParsedDocument {
         if (!parsed){
             performExtraction();
         }
-        return document == null ? Collections.<IndexDocument>emptyList() : Collections.singletonList(document);
+        return document == null ? Collections.emptyList() : Collections.singletonList(document);
     }
 
     public String getFragment() {

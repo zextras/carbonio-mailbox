@@ -182,7 +182,7 @@ public final class LuceneQueryOperation extends QueryOperation {
         curHitNo = 0;
 
         if (filterTerms == null) {
-            filterTerms = new ArrayList<Term>();
+            filterTerms = new ArrayList<>();
         }
         filterTerms.add(t);
     }
@@ -251,9 +251,7 @@ public final class LuceneQueryOperation extends QueryOperation {
 
                 int dbHitCount = dbOp.getDbHitCount();
                 ZimbraLog.search.debug("EstimatedHits lucene=%d,db=%d", getTotalHitCount(), dbHitCount);
-                if (dbHitCount < getTotalHitCount()) {
-                    return true; // run DB-FIRST
-                }
+              return dbHitCount < getTotalHitCount(); // run DB-FIRST
             }
             return false;
         } catch (ServiceException e) {
@@ -691,7 +689,7 @@ public final class LuceneQueryOperation extends QueryOperation {
 
     @Override
     public List<QueryInfo> getResultInfo() {
-        List<QueryInfo> toRet = new ArrayList<QueryInfo>();
+        List<QueryInfo> toRet = new ArrayList<>();
         toRet.addAll(queryInfo);
         if (dbOp != null) {
             toRet.addAll(dbOp.getQueryInfo());

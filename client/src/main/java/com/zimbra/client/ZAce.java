@@ -16,12 +16,12 @@ import java.util.Arrays;
 
 public class ZAce implements ToZJSONObject {
 
-    private String mGranteeName;
+    private final String mGranteeName;
     private String mGranteeId;
-    private ZAce.GranteeType mGranteeType;
-    private String mRight;
-    private boolean mDeny;
-    private String mSecret; // password for guest grantee, accesskey for key grantee
+    private final ZAce.GranteeType mGranteeType;
+    private final String mRight;
+    private final boolean mDeny;
+    private final String mSecret; // password for guest grantee, accesskey for key grantee
 
     /** Stolen shamelessly from ACL.java. */
     /** The pseudo-GUID signifying "all authenticated users". */

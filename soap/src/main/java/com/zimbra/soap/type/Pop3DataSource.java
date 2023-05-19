@@ -8,7 +8,7 @@ package com.zimbra.soap.type;
 public interface Pop3DataSource
 extends DataSource {
 
-    public Boolean isLeaveOnServer();
+    Boolean isLeaveOnServer();
 
-    public void setLeaveOnServer(Boolean leaveOnServer);
+    void setLeaveOnServer(Boolean leaveOnServer);
 }

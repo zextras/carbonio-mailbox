@@ -220,8 +220,9 @@ public class SearchGalRequest {
     public void setLocale(String locale) { this.locale = locale; }
     public void setCursor(CursorInfo cursor) { this.cursor = cursor; }
     public void setSearchFilter(EntrySearchFilterInfo searchFilter) { this.searchFilter = searchFilter; }
-    public void setQuery(String query) { this.query = query; };
-    public String getRef() { return ref; }
+    public void setQuery(String query) { this.query = query; }
+
+  public String getRef() { return ref; }
     public String getName() { return name; }
     public GalSearchType getType() { return type; }
     public Boolean getNeedCanExpand() { return ZmBoolean.toBool(needCanExpand); }

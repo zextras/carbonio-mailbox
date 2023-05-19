@@ -174,7 +174,7 @@ public final class ContactAutoCompleteTest {
         ContactAutoComplete comp = new ContactAutoComplete(account, null);
         ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
         result.rankings = new ContactRankings(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        Map<String, Object> attrs = ImmutableMap.<String, Object>of(
+        Map<String, Object> attrs = ImmutableMap.of(
                 ContactConstants.A_firstName, "First",
                 ContactConstants.A_middleName, "Middle",
                 ContactConstants.A_lastName, "Last",
@@ -208,7 +208,7 @@ public final class ContactAutoCompleteTest {
         Assert.assertEquals(1, result.entries.size());
         result.clear();
 
-        attrs = ImmutableMap.<String, Object>of(
+        attrs = ImmutableMap.of(
                 ContactConstants.A_firstName, "Conf - hillview",
                 ContactConstants.A_lastName, "test.server-vmware - dash",
                 ContactConstants.A_email, "conf-hillview@zimbra.com");
@@ -234,7 +234,7 @@ public final class ContactAutoCompleteTest {
         ContactAutoComplete comp = new ContactAutoComplete(account, null);
         ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
         result.rankings = new ContactRankings(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        Map<String, Object> attrs = ImmutableMap.<String, Object>of(
+        Map<String, Object> attrs = ImmutableMap.of(
                 ContactConstants.A_firstName, "\u0421\u0440\u043f\u0441\u043a\u0438 \u0411\u043e\u0441\u043d\u0430 \u0438 \u0425\u0435\u0440\u0446\u0435\u0433\u043e\u0432\u0438\u043d\u0430",
                 ContactConstants.A_lastName, "\u0441\u043a\u0438 \u0411\u043e\u0441\u043d\u0430 \u0438 \u0425\u0435\u0440\u0446\u0435\u0433\u043e\u0432\u0438\u043d\u0430",
                 ContactConstants.A_email, "sr_BA@i18n.com");

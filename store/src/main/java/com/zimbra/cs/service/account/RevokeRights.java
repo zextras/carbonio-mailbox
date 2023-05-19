@@ -31,7 +31,7 @@ public class RevokeRights extends AccountDocumentHandler {
             throw ServiceException.PERM_DENIED("can not access account");
         }
         
-        Set<ZimbraACE> aces = new HashSet<ZimbraACE>();
+        Set<ZimbraACE> aces = new HashSet<>();
         for (Element eACE : request.listElements(AccountConstants.E_ACE)) {
             ZimbraACE ace = GrantRights.handleACE(eACE, zsc, false);
             aces.add(ace);

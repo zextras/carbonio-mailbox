@@ -183,7 +183,7 @@ public final class LocalConfigCLI {
                         error("argument '" + av[i] + "' not in key=value form", null);
                     }
                     key = av[i].substring(0, eqidx);
-                    value = av[i].substring(eqidx + 1, av[i].length());
+                    value = av[i].substring(eqidx + 1);
                 }
                 if (KnownKey.needForceToEdit(key) && !cl.hasOption("f")) {
                    error("can not edit key " + key, null);

@@ -100,7 +100,7 @@ public class SearchResponse {
         @XmlElement(name=MailConstants.E_APPOINTMENT /* appt */, type=AppointmentHitInfo.class),
         @XmlElement(name=MailConstants.E_TASK /* task */, type=TaskHitInfo.class)
     })
-    private List<SearchHit> searchHits = Lists.newArrayList();
+    private final List<SearchHit> searchHits = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Info block.  Used to return general status information about your search.
@@ -115,7 +115,7 @@ public class SearchResponse {
         @XmlElement(name=MailConstants.E_SUGEST, type=SuggestedQueryString.class),
         @XmlElement(name="wildcard", type=WildcardExpansionQueryInfo.class)
     })
-    private List<BaseQueryInfo> queryInfos = Lists.newArrayList();
+    private final List<BaseQueryInfo> queryInfos = Lists.newArrayList();
 
     public SearchResponse() {
     }

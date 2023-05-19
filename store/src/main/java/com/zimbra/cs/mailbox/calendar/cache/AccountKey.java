@@ -10,7 +10,7 @@ import com.zimbra.cs.memcached.MemcachedKeyPrefix;
 
 // cache key for an account
 public class AccountKey implements MemcachedKey {
-    private String mAccountId;
+    private final String mAccountId;
 
     public AccountKey(String accountId) {
         mAccountId = accountId;

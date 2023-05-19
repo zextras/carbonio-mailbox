@@ -39,7 +39,7 @@ public class DismissCalendarItemAlarmRequest {
         @XmlElement(name=MailConstants.E_APPOINTMENT /* appt */, type=DismissAppointmentAlarm.class),
         @XmlElement(name=MailConstants.E_TASK /* task */, type=DismissTaskAlarm.class)
     })
-    private List<DismissAlarm> alarms = Lists.newArrayList();
+    private final List<DismissAlarm> alarms = Lists.newArrayList();
 
     public DismissCalendarItemAlarmRequest() {
     }

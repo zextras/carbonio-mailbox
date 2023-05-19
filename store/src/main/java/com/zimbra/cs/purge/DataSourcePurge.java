@@ -32,8 +32,8 @@ import com.zimbra.cs.mime.ParsedMessage;
 public abstract class DataSourcePurge {
 
     protected Mailbox mbox;
-    private static long PURGE_BATCH_SIZE = 1000000L;
-    protected Map<String, ConversationPurgeQueue> purgeQueues = new HashMap<String,ConversationPurgeQueue>();
+    private static final long PURGE_BATCH_SIZE = 1000000L;
+    protected Map<String, ConversationPurgeQueue> purgeQueues = new HashMap<>();
 
     public DataSourcePurge(Mailbox mbox) {
         this.mbox = mbox;
@@ -112,7 +112,7 @@ public abstract class DataSourcePurge {
         if (dataSources.size() == 1) {
             return String.format("%s:%s", accountId, dataSources.get(0).getId());
         }
-        List<String> dsIds = new ArrayList<String>();
+        List<String> dsIds = new ArrayList<>();
         for (DataSource ds: dataSources) {
             dsIds.add(ds.getId());
         }
@@ -169,11 +169,11 @@ public abstract class DataSourcePurge {
     }
 
     public static class PurgeableConv {
-        private int id;
-        private int numMsgs;
-        private long size;
-        private long date;
-        private String dataSourceId;
+        private final int id;
+        private final int numMsgs;
+        private final long size;
+        private final long date;
+        private final String dataSourceId;
 
         public PurgeableConv(int id, long size, long date, String datasSourceId, int numMsgs) {
             this.id = id;
@@ -222,12 +222,12 @@ public abstract class DataSourcePurge {
     private static class PurgeableConvs {
         private long totalSize;
         private long latestDate;
-        private List<PurgeableConv> convs;
+        private final List<PurgeableConv> convs;
 
         private PurgeableConvs() {
             totalSize = 0L;
             latestDate = 0L;
-            convs = new LinkedList<PurgeableConv>();
+            convs = new LinkedList<>();
         }
 
         void add(PurgeableConv conv) {
@@ -263,12 +263,12 @@ public abstract class DataSourcePurge {
      */
     public static class ConversationPurgeQueue {
         // map that is used to look up all nodes in all queues containing OldestConvs with the same ID as the key
-        private static Map<Integer, LinkedList<Node>> nodes = new HashMap<Integer, LinkedList<Node>>();
+        private static final Map<Integer, LinkedList<Node>> nodes = new HashMap<>();
         static class Node {
-            private PurgeableConv conv;
+            private final PurgeableConv conv;
             private Node next = null;
             private Node prev = null;
-            private ConversationPurgeQueue queue;
+            private final ConversationPurgeQueue queue;
             public Node(ConversationPurgeQueue queue, PurgeableConv conv) {
                 this.conv = conv;
                 this.queue = queue;
@@ -299,7 +299,7 @@ public abstract class DataSourcePurge {
             }
         }
 
-        private Map<Integer, Node> map = new HashMap<Integer, Node>();
+        private final Map<Integer, Node> map = new HashMap<>();
         private Node head;
         private Node tail = new Node(this, null);
         private int length;
@@ -321,7 +321,7 @@ public abstract class DataSourcePurge {
             map.put(conv.getId(), node);
             LinkedList<Node> instances = nodes.get(conv.getId());
             if (instances == null) {
-                instances = new LinkedList<Node>();
+                instances = new LinkedList<>();
                 nodes.put(conv.getId(), instances);
             }
             instances.add(node);

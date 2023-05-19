@@ -27,7 +27,7 @@ public class GetGrantsResponse {
      * @zm-api-field-description Information about grants
      */
     @XmlElement(name=AdminConstants.E_GRANT, required=false)
-    private List<GrantInfo> grants = Lists.newArrayList();
+    private final List<GrantInfo> grants = Lists.newArrayList();
 
     public GetGrantsResponse() {
     }

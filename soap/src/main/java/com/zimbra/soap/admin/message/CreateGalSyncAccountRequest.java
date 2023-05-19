@@ -112,8 +112,8 @@ public class CreateGalSyncAccountRequest extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private CreateGalSyncAccountRequest() {
-        this((String) null, (String) null, (GalMode) null,
-                (AccountSelector) null, (String) null, (String) null, (String) null);
+        this(null, null, null,
+            null, null, null, null);
     }
 
     public CreateGalSyncAccountRequest(String name, String domain,

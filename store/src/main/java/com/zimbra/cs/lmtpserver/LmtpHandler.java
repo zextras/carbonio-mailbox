@@ -379,7 +379,6 @@ public abstract class LmtpHandler extends ProtocolHandler {
     if (sz != null) {
       try {
         size = Integer.parseInt(sz);
-        ;
       } catch (NumberFormatException nfe) {
         sendReply(LmtpReply.INVALID_SIZE_PARAMETER);
         return;
@@ -519,9 +518,7 @@ public abstract class LmtpHandler extends ProtocolHandler {
 
   private boolean tlsConnectionRequired() {
     if (config.isTLSEnforcedByServer()) {
-      if (!startedTLS) {
-        return true;
-      }
+      return !startedTLS;
     }
     return false;
   }

@@ -17,14 +17,14 @@ import com.zimbra.common.calendar.ICalTimeZone.SimpleOnset;
  */
 public class WindowsSystemTime {
 
-    private int mYear;
-    private int mMonth;
-    private int mDayOfWeek;
-    private int mDay;
-    private int mHour;
-    private int mMinute;
-    private int mSecond;
-    private int mMilliseconds;
+    private final int mYear;
+    private final int mMonth;
+    private final int mDayOfWeek;
+    private final int mDay;
+    private final int mHour;
+    private final int mMinute;
+    private final int mSecond;
+    private final int mMilliseconds;
 
     public WindowsSystemTime(int year, int month, int dayOfWeek, int day,
                              int hour, int minute, int second,

@@ -122,10 +122,10 @@ public class NoteInfo {
      * @zm-api-field-description Custom metadata information
      */
     @XmlElement(name=MailConstants.E_METADATA /* meta */, required=false)
-    private List<MailCustomMetadata> metadatas = Lists.newArrayList();
+    private final List<MailCustomMetadata> metadatas = Lists.newArrayList();
 
     public NoteInfo() {
-        this((String) null);
+        this(null);
     }
 
     public NoteInfo(String id) {

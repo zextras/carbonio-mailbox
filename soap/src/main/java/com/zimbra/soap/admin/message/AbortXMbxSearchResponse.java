@@ -31,7 +31,7 @@ public class AbortXMbxSearchResponse {
      */
     @SuppressWarnings("unused")
     private AbortXMbxSearchResponse() {
-        this((SearchNode) null);
+        this(null);
     }
 
     public AbortXMbxSearchResponse(SearchNode searchNode) {

@@ -34,7 +34,7 @@ public class CreateXMPPComponentRequest {
      */
     @SuppressWarnings("unused")
     private CreateXMPPComponentRequest() {
-        this((XMPPComponentSpec) null);
+        this(null);
     }
 
     public CreateXMPPComponentRequest(XMPPComponentSpec component) {

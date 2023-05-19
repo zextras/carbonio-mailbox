@@ -147,7 +147,7 @@ public class MsgSpec {
      */
     @SuppressWarnings("unused")
     private MsgSpec() {
-        this((String) null);
+        this(null);
     }
 
     public MsgSpec( String id) {

@@ -27,7 +27,7 @@ public class Rights {
      */
     @SuppressWarnings("unused")
     private Rights() {
-        this((String) null);
+        this(null);
     }
 
     public Rights(String effectivePermissions) {

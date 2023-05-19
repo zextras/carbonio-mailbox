@@ -62,8 +62,8 @@ public class ModifyPrefs extends AccountDocumentHandler {
         if (!canModifyOptions(zsc, account))
             throw ServiceException.PERM_DENIED("can not modify options");
 
-        HashMap<String, Object> prefs = new HashMap<String, Object>();
-        Map<String, Set<String>> name2uniqueAttrValues = new HashMap<String, Set<String>>();
+        HashMap<String, Object> prefs = new HashMap<>();
+        Map<String, Set<String>> name2uniqueAttrValues = new HashMap<>();
         for (KeyValuePair kvp : request.listKeyValuePairs(AccountConstants.E_PREF, AccountConstants.A_NAME)) {
             String name = kvp.getKey(), value = kvp.getValue();
             char ch = name.length() > 0 ? name.charAt(0) : 0;
@@ -78,7 +78,7 @@ public class ModifyPrefs extends AccountDocumentHandler {
             if (attrInfo.isCaseInsensitive()) {
                 String valueLowerCase = Strings.nullToEmpty(value).toLowerCase();
                 if (name2uniqueAttrValues.get(name) == null) {
-                    Set<String> set = new HashSet<String>();
+                    Set<String> set = new HashSet<>();
                     set.add(valueLowerCase);
                     name2uniqueAttrValues.put(name, set);
                     StringUtil.addToMultiMap(prefs, name, value);

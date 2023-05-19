@@ -49,7 +49,7 @@ public class LdapTODO {
         Zimbra.halt("TODO", e);
     }
     
-    public static enum FailCode {
+    public enum FailCode {
         /*
          * Turn JVM assertion on.  If this failure never happens, remove 
          * catching the LdapNameNotFoundException exception from all callsites.

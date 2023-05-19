@@ -18,11 +18,11 @@ public class ZSelectiveCallRejection extends ZCallFeature {
 
     public ZSelectiveCallRejection(String name) {
         super(name);
-        mRejectFrom = new ArrayList<String>();        
+        mRejectFrom = new ArrayList<>();
     }
 
     public List<String> getRejectFrom() {
-        return new ArrayList<String>(mRejectFrom);
+        return new ArrayList<>(mRejectFrom);
     }
 
     public synchronized void setRejectFrom(List<String> list) {
@@ -33,13 +33,13 @@ public class ZSelectiveCallRejection extends ZCallFeature {
     public synchronized void assignFrom(ZCallFeature that) {
         super.assignFrom(that);
         if (that instanceof ZSelectiveCallRejection) {
-            this.mRejectFrom = new ArrayList<String>(((ZSelectiveCallRejection)that).mRejectFrom);
+            this.mRejectFrom = new ArrayList<>(((ZSelectiveCallRejection) that).mRejectFrom);
         }
     }
 
     synchronized void fromElement(Element element) throws ServiceException {
         super.fromElement(element);
-        mRejectFrom = new ArrayList<String>();
+        mRejectFrom = new ArrayList<>();
         for (Element fromEl : element.listElements(VoiceConstants.E_PHONE)) {
             mRejectFrom.add(fromEl.getAttribute(VoiceConstants.A_PHONE_NUMBER));
         }

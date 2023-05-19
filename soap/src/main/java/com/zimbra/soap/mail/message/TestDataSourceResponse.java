@@ -36,7 +36,7 @@ public class TestDataSourceResponse {
         @XmlElement(name=MailConstants.E_DS_CAL /* cal */, type=TestDataSource.class),
         @XmlElement(name=MailConstants.E_DS_UNKNOWN /* unknown */, type=TestDataSource.class)
     })
-    private List<TestDataSource> dataSources = Lists.newArrayList();
+    private final List<TestDataSource> dataSources = Lists.newArrayList();
 
     public void setDataSources(Iterable <TestDataSource> dataSources) {
         this.dataSources.clear();

@@ -96,7 +96,7 @@ public class TagInfo {
      * @zm-api-field-description Custom metadata
      */
     @XmlElement(name=MailConstants.E_METADATA /* meta */, required=false)
-    private List<MailCustomMetadata> metadatas = Lists.newArrayList();
+    private final List<MailCustomMetadata> metadatas = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Retention policy
@@ -109,7 +109,7 @@ public class TagInfo {
      */
     @SuppressWarnings("unused")
     private TagInfo() {
-        this((String) null);
+        this(null);
     }
 
     public TagInfo(String id) {

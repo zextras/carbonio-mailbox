@@ -117,7 +117,7 @@ public class RenameDomain {
         // the old domain into the new domain
         phase = RenamePhase.RENAME_ENTRIES;
         if (phase.ordinal() >= startingPhase.ordinal()) {
-            debug("Entering phase " + phase.toString());
+            debug("Entering phase " + phase);
             // don't need to setPhase for the first first, it was set or got from beginRenameDomain
             visitor = getVisitor(phase);
 
@@ -134,7 +134,7 @@ public class RenameDomain {
         // left in the domain should be aliases with target in other domains
         phase = RenamePhase.FIX_FOREIGN_ALIASES;
         if (phase.ordinal() >= startingPhase.ordinal()) {
-            debug("Entering phase " + phase.toString());
+            debug("Entering phase " + phase);
             renameInfo.setPhase(phase);
             renameInfo.write(mProv, mOldDomain);
             visitor = getVisitor(phase);
@@ -156,7 +156,7 @@ public class RenameDomain {
         //       in the first pass.
         phase = RenamePhase.FIX_FOREIGN_DL_MEMBERS;
         if (phase.ordinal() >= startingPhase.ordinal()) {
-            debug("Entering phase " + phase.toString());
+            debug("Entering phase " + phase);
             renameInfo.setPhase(phase);
             renameInfo.write(mProv, mOldDomain);
             visitor = getVisitor(phase);
@@ -200,7 +200,7 @@ public class RenameDomain {
         flushCacheOnAllServers(CacheEntryType.account);
     }
 
-    public static enum RenamePhase {
+    public enum RenamePhase {
         /*
          * Note: the following text is written in zimbraDomainRenameInfo -
          * change would require migration!!
@@ -330,7 +330,7 @@ public class RenameDomain {
         }
 
         public void write(LdapProv prov, Domain domain) throws ServiceException {
-            HashMap<String, Object> attrs = new HashMap<String, Object>();
+            HashMap<String, Object> attrs = new HashMap<>();
 
             String renameInfoStr;
 
@@ -370,7 +370,7 @@ public class RenameDomain {
         // mark domain shutdown and rejecting mails
         // mProv.modifyDomainStatus(mOldDomain, Provisioning.DOMAIN_STATUS_SHUTDOWN);
         debug("Locking old domain %s(%s)", mOldDomainName, mOldDomainId);
-        Map<String, String> attrs = new HashMap<String, String>();
+        Map<String, String> attrs = new HashMap<>();
         attrs.put(Provisioning.A_zimbraDomainStatus, Provisioning.DOMAIN_STATUS_SHUTDOWN);
         attrs.put(Provisioning.A_zimbraMailStatus, Provisioning.MAIL_STATUS_DISABLED);
         mProv.modifyAttrs(mOldDomain, attrs, false, false);  // skip callback
@@ -397,7 +397,7 @@ public class RenameDomain {
 
         // Get existing domain attributes
         // make a copy, we don't want to step over our old domain object
-        Map<String, Object> domainAttrs = new HashMap<String, Object>(mOldDomain.getAttrs(false));
+        Map<String, Object> domainAttrs = new HashMap<>(mOldDomain.getAttrs(false));
 
         // remove attributes that are not needed for createDomain
         domainAttrs.remove(Provisioning.A_o);
@@ -472,7 +472,7 @@ public class RenameDomain {
         debug("endRenameDomain domain=%s(%s), domainId=%s",
                 domain.getName(), domain.getId(), domainId==null?"null":domainId);
 
-        HashMap<String, Object> attrs = new HashMap<String, Object>();
+        HashMap<String, Object> attrs = new HashMap<>();
         if (domainId != null)
             attrs.put(Provisioning.A_zimbraId, domainId);
         attrs.put(Provisioning.A_zimbraDomainRenameInfo, "");
@@ -493,7 +493,7 @@ public class RenameDomain {
         private static final Set<String> sAddrContainsDomainOnly;
 
         static {
-            sAddrContainsDomainOnly = new HashSet<String>();
+            sAddrContainsDomainOnly = new HashSet<>();
 
             sAddrContainsDomainOnly.add(Provisioning.A_zimbraMailCatchAllAddress);
             sAddrContainsDomainOnly.add(Provisioning.A_zimbraMailCatchAllCanonicalAddress);
@@ -716,7 +716,7 @@ public class RenameDomain {
 
                 String[] values = entry.getMultiAttr(attr, false);
                 if (values.length > 0) {
-                    Set<String> newValues = new HashSet<String>();
+                    Set<String> newValues = new HashSet<>();
                     for (int i=0; i<values.length; i++) {
                         String newValue = convertToNewAddr(values[i],
                                 mOldDomainName, mNewDomainName, addrCanBeDomainOnly);
@@ -901,7 +901,7 @@ public class RenameDomain {
          * of DLs in other domains" to the new addrs
          */
         private void handleForeignDLMembers(NamedEntry entry) {
-            Map<String, String> changedPairs = new HashMap<String, String>();
+            Map<String, String> changedPairs = new HashMap<>();
 
             String entryAddr = entry.getName();
             String[] oldNewPair = changedAddrPairs(entryAddr);
@@ -1000,7 +1000,7 @@ public class RenameDomain {
         try {
             Config config = mProv.getConfig();
 
-            HashMap<String, Object> attrMap = new HashMap<String, Object>();
+            HashMap<String, Object> attrMap = new HashMap<>();
             updateSystemAccount(config, Provisioning.A_zimbraSpamIsSpamAccount, attrMap);
             updateSystemAccount(config, Provisioning.A_zimbraSpamIsNotSpamAccount, attrMap);
             updateSystemAccount(config, Provisioning.A_zimbraAmavisQuarantineAccount, attrMap);

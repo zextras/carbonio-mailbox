@@ -42,7 +42,7 @@ public class Signature {
      * @zm-api-field-description Content of the signature
      */
     @XmlElement(name=AccountConstants.E_CONTENT)
-    private List<SignatureContent> contentList = new ArrayList<SignatureContent>();
+    private List<SignatureContent> contentList = new ArrayList<>();
 
     /**
      * @zm-api-field-tag contact-id

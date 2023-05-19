@@ -123,7 +123,7 @@ public class RangeTest
     @Test
     public void parseNull() throws Exception
     {
-        Range range = Range.parse((String)null);
+        Range range = Range.parse(null);
         Assert.assertNull(range);
     }
 

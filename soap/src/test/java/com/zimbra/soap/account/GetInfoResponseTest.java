@@ -76,8 +76,7 @@ public class GetInfoResponseTest {
   public void jaxbUtilUnmarshall() throws Exception {
     // same as unmarshall but use JaxbUtil; this provokes/tests issues with utf8 conversion
     checkAsserts(
-        (GetInfoResponse)
-            JaxbUtil.elementToJaxb(
-                Element.parseXML(getClass().getResourceAsStream("GetInfoResponse.xml"))));
+        JaxbUtil.elementToJaxb(
+            Element.parseXML(getClass().getResourceAsStream("GetInfoResponse.xml"))));
   }
 }

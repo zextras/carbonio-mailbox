@@ -40,7 +40,7 @@ public class ContactAction extends ItemAction {
     private static final Set<String> CONTACT_OPS = ImmutableSet.of(OP_UPDATE);
 
     @Override
-    public Element handle(Element request, Map<String, Object> context) throws ServiceException, SoapFaultException {
+    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
 
         Element action = request.getElement(MailConstants.E_ACTION);
@@ -64,7 +64,7 @@ public class ContactAction extends ItemAction {
     }
 
     private ItemActionResult handleContact(Map<String,Object> context, Element request, String operation)
-    throws ServiceException, SoapFaultException {
+    throws ServiceException {
         Element action = request.getElement(MailConstants.E_ACTION);
 
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
@@ -72,8 +72,8 @@ public class ContactAction extends ItemAction {
         OperationContext octxt = getOperationContext(zsc, context);
 
         // figure out which items are local and which ones are remote, and proxy accordingly
-        ArrayList<Integer> local = new ArrayList<Integer>();
-        HashMap<String, StringBuilder> remote = new HashMap<String, StringBuilder>();
+        ArrayList<Integer> local = new ArrayList<>();
+        HashMap<String, StringBuilder> remote = new HashMap<>();
         partitionItems(zsc, action.getAttribute(MailConstants.A_ID), local, remote);
         ItemActionResult successes = proxyRemoteItems(action, remote, request, context);
 

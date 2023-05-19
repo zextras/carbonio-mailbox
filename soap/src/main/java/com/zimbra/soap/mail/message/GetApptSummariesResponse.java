@@ -34,7 +34,7 @@ public class GetApptSummariesResponse {
         @XmlElement(name=MailConstants.E_APPOINTMENT /* appt */, type=LegacyAppointmentData.class),
         @XmlElement(name=MailConstants.E_TASK /* task */, type=LegacyTaskData.class)
     })
-    private List<LegacyCalendaringData> calEntries = Lists.newArrayList();
+    private final List<LegacyCalendaringData> calEntries = Lists.newArrayList();
 
     public GetApptSummariesResponse() {
     }

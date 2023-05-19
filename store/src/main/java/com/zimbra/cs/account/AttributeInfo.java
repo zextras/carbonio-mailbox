@@ -29,15 +29,15 @@ public class AttributeInfo {
 
     //  8        4  4     4      12
     //8cf3db5d-cfd7-11d9-884f-e7b38f15492d
-    private static Pattern ID_PATTERN =
+    private static final Pattern ID_PATTERN =
         Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
     //yyyyMMddHHmmssZ or yyyyMMddHHmmss.SSSZ
-    private static Pattern GENTIME_PATTERN = Pattern.compile("^\\d{14}(\\.\\d{1,3})?[zZ]$");
+    private static final Pattern GENTIME_PATTERN = Pattern.compile("^\\d{14}(\\.\\d{1,3})?[zZ]$");
 
-    private static Pattern DURATION_PATTERN = Pattern.compile("^\\d+([hmsd]|ms)?$");
+    private static final Pattern DURATION_PATTERN = Pattern.compile("^\\d+([hmsd]|ms)?$");
 
-    public static String DURATION_PATTERN_DOC =
+    public static final String DURATION_PATTERN_DOC =
         "Must be in valid duration format: {digits}{time-unit}.  " +
         "digits: 0-9, time-unit: [hmsd]|ms.  " +
         "h - hours, m - minutes, s - seconds, d - days, ms - milliseconds.  " +
@@ -86,9 +86,11 @@ public class AttributeInfo {
 
     private final List<String> mDefaultCOSValuesUpgrade;
 
-    private long mMin = Long.MIN_VALUE, mMax = Long.MAX_VALUE;
+    private long mMin;
+    private long mMax;
 
-    private String mMinDuration = null, mMaxDuration = null;
+    private String mMinDuration = null;
+    private String mMaxDuration = null;
 
     private final int mId;
 
@@ -223,8 +225,8 @@ public class AttributeInfo {
             }
             break;
         case TYPE_ENUM:
-            String enums[] = value.split(",");
-            mEnumSet = new LinkedHashSet<String>(enums.length);
+            String[] enums = value.split(",");
+            mEnumSet = new LinkedHashSet<>(enums.length);
             for (int i=0; i < enums.length; i++) {
                 mEnumSet.add(enums[i]);
             }
@@ -563,15 +565,15 @@ public class AttributeInfo {
         return AttributeType.TYPE_STRING == mType || AttributeType.TYPE_ASTRING == mType;
     }
 
-    public Boolean isEphemeral() {
+    public boolean isEphemeral() {
         return hasFlag(AttributeFlag.ephemeral);
     }
 
-    public Boolean isDynamic() {
+    public boolean isDynamic() {
         return hasFlag(AttributeFlag.dynamic);
     }
 
-    public Boolean isExpirable() {
+    public boolean isExpirable() {
         return hasFlag(AttributeFlag.expirable);
     }
 }

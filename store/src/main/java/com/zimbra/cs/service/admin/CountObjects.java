@@ -145,7 +145,7 @@ public class CountObjects extends AdminDocumentHandler {
             if (grants != null)
             {
                 Set<RightCommand.ACE> acEs      = grants.getACEs();
-                Set<String>           domainIds = new HashSet<String>();
+                Set<String>           domainIds = new HashSet<>();
                 for (RightCommand.ACE acE : acEs)
                 {
                     if (acE.targetType().equals(TargetType.domain.getCode()) && !domainIds.contains(acE.targetId()))

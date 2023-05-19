@@ -28,7 +28,7 @@ public class GetServerStatsResponse {
      * @zm-api-field-description Details of server monitoring statistics
      */
     @XmlElement(name = AdminConstants.E_STAT)
-    private List<Stat> stats = Lists.newArrayList();
+    private final List<Stat> stats = Lists.newArrayList();
 
     public List<Stat> getStats() {
         return Collections.unmodifiableList(stats);

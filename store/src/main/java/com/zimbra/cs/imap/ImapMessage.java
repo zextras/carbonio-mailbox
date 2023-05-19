@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -170,7 +171,7 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
     }
 
     boolean isTagged(ImapFlag i4flag) {
-        return i4flag == null ? false : i4flag.matches(this);
+        return i4flag != null && i4flag.matches(this);
     }
 
     boolean isExpunged() {
@@ -271,11 +272,11 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
                 baos.write(ImapHandler.LINE_SEPARATOR_BYTES);
                 if(item instanceof Contact) {
                     VCard vcard = VCard.formatContact((Contact) item);
-                    baos.write(vcard.getFormatted().getBytes(MimeConstants.P_CHARSET_UTF8));
+                    baos.write(vcard.getFormatted().getBytes(StandardCharsets.UTF_8));
                     ZimbraLog.test.debug("contact vcard: %s", vcard.getFormatted());
                 } else {
-                    baos.write(IOUtils.toByteArray(((ZContact)item).getContentStream()));
-                    ZimbraLog.test.debug("zcontact vcard: %s", IOUtils.toString(((ZContact)item).getContentStream()));
+                    baos.write(IOUtils.toByteArray(item.getContentStream()));
+                    ZimbraLog.test.debug("zcontact vcard: %s", IOUtils.toString(item.getContentStream()));
                 }
 
                 return new InputStreamWithSize(new SharedByteArrayInputStream(baos.toByteArray()), (long)baos.size());
@@ -432,14 +433,14 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
                 if (nonulls == null) {
                     nonulls = new StringBuilder();
                 }
-                nonulls.append(value.substring(lastNull + 1, i));
+                nonulls.append(value, lastNull + 1, i);
                 lastNull = i;
             } else if (c == '"' || c == '\\' || c >= 0x7f || c < 0x20) {
                 literal = true;
             }
         }
 
-        String content = nonulls == null ? value : nonulls.append(value.substring(lastNull + 1, i)).toString();
+        String content = nonulls == null ? value : nonulls.append(value, lastNull + 1, i).toString();
         if (upcase) {
             content = content.toUpperCase();
         }
@@ -447,14 +448,12 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
         if (!literal) {
             ps.write('"');  ps.print(content);  ps.write('"');
         } else {
-            try {
-                byte[] bytes = content.getBytes(MimeConstants.P_CHARSET_UTF8);
-                ps.write('{');  ps.print(bytes.length);  ps.write('}');
-                ps.write(ImapHandler.LINE_SEPARATOR_BYTES, 0, 2);
-                ps.write(bytes, 0, bytes.length);
-            } catch (UnsupportedEncodingException uee) {
-                ps.write(NIL, 0, 3);
-            }
+          byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+          ps.write('{');
+          ps.print(bytes.length);
+          ps.write('}');
+          ps.write(ImapHandler.LINE_SEPARATOR_BYTES, 0, 2);
+          ps.write(bytes, 0, bytes.length);
         }
     }
 
@@ -607,8 +606,8 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
     private static String nATOM(String value) { return value == null ? "NIL" : '"' + value.toUpperCase() + '"'; }
 
     static void serializeStructure(PrintStream ps, MimeMessage root, boolean extensions) throws IOException, MessagingException {
-        LinkedList<LinkedList<MPartInfo>> queue = new LinkedList<LinkedList<MPartInfo>>();
-        LinkedList<MPartInfo> level = new LinkedList<MPartInfo>();
+        LinkedList<LinkedList<MPartInfo>> queue = new LinkedList<>();
+        LinkedList<MPartInfo> level = new LinkedList<>();
         level.add(Mime.getParts(root).get(0));
         queue.add(level);
 
@@ -640,7 +639,7 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
                     if (!hasChildren) {
                         ps.print("NIL");
                     } else {
-                        queue.addLast(new LinkedList<MPartInfo>(mpi.getChildren()));
+                        queue.addLast(new LinkedList<>(mpi.getChildren()));
                         continue;
                     }
                 }
@@ -682,7 +681,7 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
                         } else {
                             MimeMessage mm = (MimeMessage) mpi.getChildren().get(0).getMimePart();
                             ps.write(' ');  serializeEnvelope(ps, mm);  ps.write(' ');
-                            queue.addLast(new LinkedList<MPartInfo>(mpi.getChildren()));
+                            queue.addLast(new LinkedList<>(mpi.getChildren()));
                             continue;
                         }
                     }

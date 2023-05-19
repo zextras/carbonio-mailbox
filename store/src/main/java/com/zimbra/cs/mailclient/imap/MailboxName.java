@@ -14,11 +14,11 @@ import com.zimbra.cs.mailclient.ParseException;
 import com.zimbra.cs.mailclient.util.Ascii;
 
 public final class MailboxName {
-    private String name; // Decoded name
+    private final String name; // Decoded name
 
     public static final MailboxName INBOX = new MailboxName("INBOX");
 
-    private static final char ENCODE_PEM[] = {
+    private static final char[] ENCODE_PEM = {
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
         'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
@@ -29,7 +29,7 @@ public final class MailboxName {
         '4', '5', '6', '7', '8', '9', '+', ','
     };
 
-    private static final byte DECODE_PEM[] = new byte[256];
+    private static final byte[] DECODE_PEM = new byte[256];
     static {
         for (int i = 0; i < 256; i++) {
             DECODE_PEM[i] = -1;

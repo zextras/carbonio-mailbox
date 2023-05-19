@@ -17,8 +17,8 @@ import com.zimbra.common.util.NetUtil;
 import com.zimbra.cs.account.Provisioning;
 
 public abstract class ServerConfig {
-    private String protocol;
-    private boolean ssl;
+    private final String protocol;
+    private final boolean ssl;
 
     private static final int DEFAULT_SHUTDOWN_TIMEOUT = 10;
     private static final int DEFAULT_MAX_THREADS = 1;
@@ -233,7 +233,7 @@ public abstract class ServerConfig {
     }
 
     public static String[] getAddrListCsv(String[] addrCsvs) {
-        ArrayList<String> addrList = new ArrayList<String>(addrCsvs.length);
+        ArrayList<String> addrList = new ArrayList<>(addrCsvs.length);
         for (String addrCsv : addrCsvs) {
             if (addrCsv != null && addrCsv.length() > 0) {
                 String[] addrs = addrCsv.split(",");

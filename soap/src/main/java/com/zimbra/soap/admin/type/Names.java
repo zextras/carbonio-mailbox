@@ -24,10 +24,10 @@ import com.zimbra.common.soap.AdminConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public class Names {
 
-    private static Splitter COMMA_SPLITTER =
+    private static final Splitter COMMA_SPLITTER =
         Splitter.on(",").trimResults().omitEmptyStrings();
 
-    private static Joiner COMMA_JOINER = Joiner.on(",");
+    private static final Joiner COMMA_JOINER = Joiner.on(",");
 
     /**
      * @zm-api-field-tag comma-sep-names

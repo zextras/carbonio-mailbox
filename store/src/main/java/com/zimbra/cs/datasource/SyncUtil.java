@@ -24,7 +24,7 @@ public final class SyncUtil {
     private static final Flags EMPTY_FLAGS = new Flags();
 
     // Excludes non-IMAP related Zimbra flags
-    private static int IMAP_FLAGS_BITMASK =
+    private static final int IMAP_FLAGS_BITMASK =
          Flag.BITMASK_REPLIED | Flag.BITMASK_DELETED |
          Flag.BITMASK_DRAFT | Flag.BITMASK_FLAGGED | Flag.BITMASK_UNREAD;
 

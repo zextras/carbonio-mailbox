@@ -53,7 +53,7 @@ public class AdminObjectInfo implements AdminObjectInterface {
     public AdminObjectInfo(String id, String name, Collection <Attr> attrs) {
         this.name = name;
         this.id = id;
-        this.attrList = new ArrayList<Attr>();
+        this.attrList = new ArrayList<>();
         if (attrs != null) {
             this.attrList.addAll(attrs);
         }

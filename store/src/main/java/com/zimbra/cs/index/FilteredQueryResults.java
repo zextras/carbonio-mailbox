@@ -170,9 +170,7 @@ public final class FilteredQueryResults implements ZimbraQueryResults {
             if (firstHit != null && comp != null && comp.compare(hit, firstHit) < 0) {
                 return true;
             }
-            if (endHit != null && comp != null && comp.compare(hit, endHit) >= 0) {
-                return true;
-            }
+          return endHit != null && comp != null && comp.compare(hit, endHit) >= 0;
         }
 
         return false; // if we got here, include it

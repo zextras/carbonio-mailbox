@@ -28,7 +28,7 @@ public class ByMinuteRule implements ByMinuteRuleInterface {
      */
     @SuppressWarnings("unused")
     private ByMinuteRule() {
-        this((String) null);
+        this(null);
     }
 
     public ByMinuteRule(String list) {

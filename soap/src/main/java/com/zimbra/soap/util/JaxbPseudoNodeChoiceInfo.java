@@ -19,8 +19,8 @@ import com.google.common.collect.Lists;
  */
 public final class JaxbPseudoNodeChoiceInfo
 implements JaxbNodeInfo {
-    private boolean canHaveMultipleElements;
-    private String fieldName;
+    private final boolean canHaveMultipleElements;
+    private final String fieldName;
     private final List <JaxbElementInfo> elems = Lists.newArrayList();
 
     public JaxbPseudoNodeChoiceInfo(String fieldName, Type defaultGenericType) {

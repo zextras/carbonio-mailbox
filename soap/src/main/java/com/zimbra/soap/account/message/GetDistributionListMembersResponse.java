@@ -45,7 +45,7 @@ public class GetDistributionListMembersResponse {
      * @zm-api-field-description Distribution list members
      */
     @XmlElement(name=AccountConstants.E_DLM /* dlm */, required=false)
-    private List<String> dlMembers = Lists.newArrayList();
+    private final List<String> dlMembers = Lists.newArrayList();
 
     /**
      * @zm-api-field-description HAB Group members

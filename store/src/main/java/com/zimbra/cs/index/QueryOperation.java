@@ -58,11 +58,11 @@ public abstract class QueryOperation implements Cloneable, ZimbraQueryResults {
     private static final float MESSAGES_PER_CONV_ESTIMATE = 2.25f;
 
     // What level of result grouping do we want?  ConversationResult, MessageResult, or DocumentResult?
-    private static enum Grouping {
-        CONVERSATION, MESSAGE, ITEM;
-    };
+    private enum Grouping {
+        CONVERSATION, MESSAGE, ITEM
+    }
 
-    /**
+  /**
      * Executes the query.
      *
      * @param mbox mailbox to search
@@ -97,14 +97,11 @@ public abstract class QueryOperation implements Cloneable, ZimbraQueryResults {
 
         int outerChunkSize = chunkSize;
 
-        boolean usePreloadingGrouper = true;
+        boolean usePreloadingGrouper = params.getFetchMode() != SearchParams.Fetch.IDS;
 
         // don't preload if all we want is IDs!
-        if (params.getFetchMode() == SearchParams.Fetch.IDS) {
-            usePreloadingGrouper = false;
-        }
 
-        ZimbraQueryResultsImpl results = null;
+      ZimbraQueryResultsImpl results = null;
         switch (retType) {
             case CONVERSATION:
                 if (params.getPrefetch() && usePreloadingGrouper) {

@@ -23,6 +23,7 @@ import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.type.FilterRule;
 import com.zimbra.common.soap.SoapProtocol;
+import java.nio.charset.StandardCharsets;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -298,7 +299,8 @@ public class GetFilterRulesTest {
         // first, test the default setup (full tree)
         Map<String, Object> context = new HashMap<String, Object>();
         context.put(SoapEngine.ZIMBRA_CONTEXT, new ZimbraSoapContext(AuthProvider.getAuthToken(acct), acct.getId(), SoapProtocol.Soap12, SoapProtocol.SoapJS));
-        context.put(SoapServlet.SERVLET_REQUEST, new MockHttpServletRequest("test".getBytes("UTF-8"), new URL("http://localhost:7070/service/FooRequest"), ""));
+        context.put(SoapServlet.SERVLET_REQUEST, new MockHttpServletRequest("test".getBytes(
+            StandardCharsets.UTF_8), new URL("http://localhost:7070/service/FooRequest"), ""));
         context.put(SoapEngine.ZIMBRA_ENGINE, new MockSoapEngine(new MailService()));
         //return context;
 

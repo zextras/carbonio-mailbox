@@ -25,9 +25,9 @@ public class GenerateEphemeralGettersTest {
         AttributeManagerUtil.generateGetter(sb, ai, false, AttributeClass.account);
         AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.set, true);
         AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
-        AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.purge, true);;
+        AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.purge, true);
 
-        String getter = "    public String getEphemeralAttribute() throws com.zimbra.common.service.ServiceException {\n" +
+      String getter = "    public String getEphemeralAttribute() throws com.zimbra.common.service.ServiceException {\n" +
                         "        return getEphemeralAttr(Provisioning.A_zimbraEphemeralAttribute, null).getValue(null);\n" +
                         "    }";
 
@@ -61,10 +61,10 @@ public class GenerateEphemeralGettersTest {
         AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.add, true);
         AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
         AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.remove, true);
-        AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.purge, true);;
-        AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.has, true);;
+        AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.purge, true);
+      AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.has, true);
 
-        String getter = "    public String getEphemeralAttribute(String dynamicComponent) throws com.zimbra.common.service.ServiceException {\n" +
+      String getter = "    public String getEphemeralAttribute(String dynamicComponent) throws com.zimbra.common.service.ServiceException {\n" +
                         "        return getEphemeralAttr(Provisioning.A_zimbraEphemeralAttribute, dynamicComponent).getValue(null);\n" +
                         "    }";
 

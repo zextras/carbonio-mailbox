@@ -37,7 +37,7 @@ public class DocumentInfo extends CommonDocumentInfo {
     private String lockOwnerTimestamp;
 
     public DocumentInfo() {
-        this((String) null);
+        this(null);
     }
 
     public DocumentInfo(String id) {

@@ -47,21 +47,21 @@ implements InviteComponentInterface
      * @zm-api-field-description Categories - for iCalendar CATEGORY properties
      */
     @XmlElement(name=MailConstants.E_CAL_CATEGORY /* category */, required=false)
-    private List<String> categories = Lists.newArrayList();
+    private final List<String> categories = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag invite-comp-comment
      * @zm-api-field-description Comments - for iCalendar COMMENT properties
      */
     @XmlElement(name=MailConstants.E_CAL_COMMENT /* comment */, required=false)
-    private List<String> comments = Lists.newArrayList();
+    private final List<String> comments = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag invite-comp-contact
      * @zm-api-field-description Contacts - for iCalendar CONTACT properties
      */
     @XmlElement(name=MailConstants.E_CAL_CONTACT /* contact */, required=false)
-    private List<String> contacts = Lists.newArrayList();
+    private final List<String> contacts = Lists.newArrayList();
 
     /**
      * @zm-api-field-description for iCalendar GEO property
@@ -73,19 +73,19 @@ implements InviteComponentInterface
      * @zm-api-field-description Attendees
      */
     @XmlElement(name=MailConstants.E_CAL_ATTENDEE /* at */, required=false)
-    private List<CalendarAttendee> attendees = Lists.newArrayList();
+    private final List<CalendarAttendee> attendees = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Alarm information
      */
     @XmlElement(name=MailConstants.E_CAL_ALARM /* alarm */, required=false)
-    private List<AlarmInfo> alarms = Lists.newArrayList();
+    private final List<AlarmInfo> alarms = Lists.newArrayList();
 
     /**
      * @zm-api-field-description iCalender XPROP properties
      */
     @XmlElement(name=MailConstants.E_CAL_XPROP /* xprop */, required=false)
-    private List<XProp> xProps = Lists.newArrayList();
+    private final List<XProp> xProps = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag invite-comp-fragment
@@ -149,7 +149,7 @@ implements InviteComponentInterface
      * no-argument constructor wanted by JAXB
      */
     protected InviteComponent() {
-        this((String) null, -1, false);
+        this(null, -1, false);
     }
 
     public InviteComponent(String method, int componentNum, boolean rsvp) {

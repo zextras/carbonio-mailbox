@@ -97,7 +97,7 @@ public class ToXML {
 
         Set<String> reqAttrsLowerCase = null;
         if (reqAttrs != null) {
-            reqAttrsLowerCase = new HashSet<String>();
+            reqAttrsLowerCase = new HashSet<>();
             for (String reqAttr : reqAttrs) {
                 reqAttrsLowerCase.add(reqAttr.toLowerCase());
             }
@@ -125,12 +125,12 @@ public class ToXML {
                 continue;
             }
 
-            boolean allowed = attrRightChecker == null ? true : attrRightChecker.allowAttr(name);
+            boolean allowed = attrRightChecker == null || attrRightChecker.allowAttr(name);
 
             IDNType idnType = AttributeManager.idnType(attrMgr, name);
 
             if (value instanceof String[]) {
-                String sv[] = (String[]) value;
+                String[] sv = (String[]) value;
                 for (int i = 0; i < sv.length; i++) {
                     encodeAttr(e, name, sv[i], AdminConstants.E_A, key, idnType, allowed);
                 }

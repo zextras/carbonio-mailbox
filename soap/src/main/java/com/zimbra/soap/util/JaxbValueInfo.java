@@ -11,8 +11,8 @@ import javax.xml.bind.annotation.XmlValue;
 import com.zimbra.common.util.ZimbraLog;
 
 public class JaxbValueInfo {
-    private String fieldName;
-    private Class<?> atomClass;
+    private final String fieldName;
+    private final Class<?> atomClass;
 
     public JaxbValueInfo(XmlValue annot, String fieldName, Type defaultGenericType) {
         this.fieldName = fieldName;

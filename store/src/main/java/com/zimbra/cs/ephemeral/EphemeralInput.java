@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class EphemeralInput {
-    private EphemeralKey key;
-    private Object value;
+    private final EphemeralKey key;
+    private final Object value;
     private Expiration expiration;
 
     public EphemeralInput(EphemeralKey key, String value) {
@@ -125,7 +125,7 @@ public class EphemeralInput {
      * Class representing the expiration time of a key/value pair in milliseconds since the epoch
      */
     public static class AbsoluteExpiration extends Expiration {
-        private long millis;
+        private final long millis;
 
         public AbsoluteExpiration(long millis) {
             this.millis = millis;

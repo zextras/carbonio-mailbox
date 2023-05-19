@@ -14,8 +14,8 @@ import java.util.List;
 
 public class ZSearchContext implements ToZJSONObject {
 
-    private ZMailbox mMailbox;
-    private ZSearchParams mParams;
+    private final ZMailbox mMailbox;
+    private final ZSearchParams mParams;
     private ZSearchResult mResult;
     private int mIndex;
     private int mCount;

@@ -12,10 +12,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class HtmlBodyTextExtractor extends org.xml.sax.helpers.DefaultHandler {
-    private StringBuilder sb = new StringBuilder(1024);
+    private final StringBuilder sb = new StringBuilder(1024);
     private boolean inCharacters = false;
     private boolean inBody = false;
-    private int maxLength;
+    private final int maxLength;
 
     public HtmlBodyTextExtractor(int maxLength) {
         this.maxLength = maxLength;

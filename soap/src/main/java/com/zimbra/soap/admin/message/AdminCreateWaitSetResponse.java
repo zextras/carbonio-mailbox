@@ -67,7 +67,7 @@ public class AdminCreateWaitSetResponse implements CreateWaitSetResp {
      * no-argument constructor wanted by JAXB
      */
     public AdminCreateWaitSetResponse() {
-        this((String) null, (String) null, -1);
+        this(null, null, -1);
     }
 
     public AdminCreateWaitSetResponse(String waitSetId, String defaultInterests, int sequence) {

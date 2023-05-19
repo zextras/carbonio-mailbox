@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -165,12 +166,12 @@ import com.zimbra.soap.type.WantRecipsSetting;
 public final class ToXML {
     private static final Log LOG = LogFactory.getLog(ToXML.class);
 
-    public static enum OutputParticipants {
+    public enum OutputParticipants {
         PUT_SENDERS(0),
         PUT_RECIPIENTS(1),
         PUT_BOTH(2);
 
-        private int value;
+        private final int value;
         OutputParticipants(int value) {
             this.value = value;
         }
@@ -707,7 +708,7 @@ public final class ToXML {
             boolean summary, Collection<String> attrFilter)
     throws ServiceException {
         return encodeContact(parent, ifmt, octxt, contact,
-                (ContactGroup)null, (Collection<String>)null /* memberAttrFilter */, summary,
+            null, null /* memberAttrFilter */, summary,
                 attrFilter, NOTIFY_FIELDS, null, false /* returnHiddenAttrs */,
                 GetContacts.NO_LIMIT_MAX_MEMBERS, true /* returnCertInfo */);
     }
@@ -716,8 +717,8 @@ public final class ToXML {
             boolean summary, Collection<String> attrFilter, int fields)
     throws ServiceException {
         return encodeContact(parent, ifmt, octxt, contact,
-                (ContactGroup)null, (Collection<String>)null /* memberAttrFilter */, summary,
-                attrFilter, fields, (String)null /* migratedDlist */, false /* returnHiddenAttrs */,
+            null, null /* memberAttrFilter */, summary,
+                attrFilter, fields, null /* migratedDlist */, false /* returnHiddenAttrs */,
                 GetContacts.NO_LIMIT_MAX_MEMBERS, true /* returnCertInfo */);
     }
 
@@ -727,7 +728,7 @@ public final class ToXML {
             boolean returnHiddenAttrs, long maxMembers, boolean returnCertInfo)
     throws ServiceException {
         return encodeContact(parent, ifmt, octxt, contact, contactGroup, memberAttrFilter, summary, attrFilter,
-                fields, migratedDlist, returnHiddenAttrs, maxMembers, returnCertInfo, (Set<String>) null);
+                fields, migratedDlist, returnHiddenAttrs, maxMembers, returnCertInfo, null);
     }
 
     public static Element encodeContact(Element parent, ItemIdFormatter ifmt,
@@ -1124,7 +1125,7 @@ public final class ToXML {
                 m.addAttribute(MailConstants.A_ID, ifmt.formatItemId(msg));
                 m.addAttribute(MailConstants.A_DATE, msg.getDate());
                 m.addAttribute(MailConstants.A_SIZE, msg.getSize());
-                m.addAttribute(MailConstants.A_SUBJECT, msg.getSubject(), Element.Disposition.CONTENT);;
+                m.addAttribute(MailConstants.A_SUBJECT, msg.getSubject(), Element.Disposition.CONTENT);
                 m.addAttribute(MailConstants.A_FOLDER,
                     ifmt.formatItemId(new ItemId(msg.getMailbox().getAccountId(), msg.getFolderId())));
                 recordItemTags(m, msg, octxt, fields);
@@ -1144,7 +1145,7 @@ public final class ToXML {
         public ToRecipsList()  {}
 
         public ToRecipsList add(Message msg) {
-            InternetAddress toRecips[] = Mime.parseAddressHeader(msg.getRecipients());
+            InternetAddress[] toRecips = Mime.parseAddressHeader(msg.getRecipients());
             String sender = msg.getSender();
             if (sender == null || sender.trim().equals("")) {
                 return this;
@@ -1767,7 +1768,7 @@ public final class ToXML {
         if (inv.hasRecurId()) {
             ie.addAttribute(MailConstants.A_CAL_RECURRENCE_ID, inv.getRecurId().toString());
         }
-        encodeInviteComponent(ie, ifmt, octxt, cal, (ItemId) null, inv, NOTIFY_FIELDS, neuter);
+        encodeInviteComponent(ie, ifmt, octxt, cal, null, inv, NOTIFY_FIELDS, neuter);
 
         if (includeContent && (inv.isPublic() || allowPrivateAccess(octxt, cal))) {
             int invId = inv.getMailItemId();
@@ -1979,7 +1980,7 @@ public final class ToXML {
                     encodeCalendarReplies(invElt, calItem, invites[0], recurIdZ);
                 }
                 for (Invite inv : invites) {
-                    encodeInviteComponent(invElt, ifmt, octxt, calItem, (ItemId) null, inv, NOTIFY_FIELDS, neuter);
+                    encodeInviteComponent(invElt, ifmt, octxt, calItem, null, inv, NOTIFY_FIELDS, neuter);
                 }
             }
 
@@ -2037,20 +2038,16 @@ public final class ToXML {
         } else if (mustNotInline || (!mustInline && size > MAX_INLINE_MSG_SIZE)) {
             content.addAttribute(MailConstants.A_URL, CONTENT_SERVLET_URI + ifmt.formatItemId(msg));
         } else {
-            try {
-                byte[] raw = msg.getContent();
-                if (!ByteUtil.isASCII(raw)) {
-                    if (!mustInline) {
-                        content.addAttribute(MailConstants.A_URL, CONTENT_SERVLET_URI + ifmt.formatItemId(msg));
-                    } else {
-                        // Assume the data is utf-8.
-                        content.setText(new String(raw, "utf-8"));
-                    }
+            byte[] raw = msg.getContent();
+            if (!ByteUtil.isASCII(raw)) {
+                if (!mustInline) {
+                    content.addAttribute(MailConstants.A_URL, CONTENT_SERVLET_URI + ifmt.formatItemId(msg));
                 } else {
-                    content.setText(new String(raw, "US-ASCII"));
+                    // Assume the data is utf-8.
+                    content.setText(new String(raw, StandardCharsets.UTF_8));
                 }
-            } catch (IOException ex) {
-                throw ServiceException.FAILURE(ex.getMessage(), ex);
+            } else {
+                content.setText(new String(raw, StandardCharsets.US_ASCII));
             }
         }
 
@@ -2186,7 +2183,7 @@ public final class ToXML {
 
     private static boolean allowPrivateAccess(OperationContext octxt, CalendarItem calItem) throws ServiceException {
         Account authAccount = octxt != null ? octxt.getAuthenticatedUser() : null;
-        boolean asAdmin = octxt != null ? octxt.isUsingAdminPrivileges() : false;
+        boolean asAdmin = octxt != null && octxt.isUsingAdminPrivileges();
         return calItem.allowPrivateAccess(authAccount, asAdmin);
     }
 
@@ -2210,7 +2207,7 @@ public final class ToXML {
             e.addAttribute(MailConstants.A_CAL_RSVP, invite.getRsvp());
         }
 
-        boolean allowPrivateAccess = calItem != null ? allowPrivateAccess(octxt, calItem) : true;
+        boolean allowPrivateAccess = calItem == null || allowPrivateAccess(octxt, calItem);
         if (allFields) {
             if (invite.isPublic() || allowPrivateAccess) {
                 String priority = invite.getPriority();
@@ -2585,8 +2582,9 @@ throws ServiceException {
             boolean neuter, boolean excludeCalendarParts, String defaultCharset, boolean swallowContentExceptions, MsgContent wantContent)
     throws ServiceException {
         MPartInfo mpi = mpiRoot;
-        LinkedList<Pair<Element, LinkedList<MPartInfo>>> queue = new LinkedList<Pair<Element, LinkedList<MPartInfo>>>();
-        Pair<Element, LinkedList<MPartInfo>> level = new Pair<Element, LinkedList<MPartInfo>>(root, new LinkedList<MPartInfo>());
+        LinkedList<Pair<Element, LinkedList<MPartInfo>>> queue = new LinkedList<>();
+        Pair<Element, LinkedList<MPartInfo>> level = new Pair<>(root,
+            new LinkedList<>());
         level.getSecond().add(mpi);
         queue.add(level);
 
@@ -2602,7 +2600,8 @@ throws ServiceException {
             Element child = addPart(phase, level.getFirst(), root, mpi, bodies, prefix, maxSize, neuter,
                     excludeCalendarParts, defaultCharset, swallowContentExceptions, wantContent);
             if (phase == VisitPhase.PREVISIT && child != null && mpi.hasChildren()) {
-                queue.addLast(new Pair<Element, LinkedList<MPartInfo>>(child, new LinkedList<MPartInfo>(mpi.getChildren())));
+                queue.addLast(new Pair<>(child,
+                    new LinkedList<>(mpi.getChildren())));
             } else {
                 parts.removeFirst();  phase = VisitPhase.PREVISIT;
             }
@@ -2850,7 +2849,7 @@ throws ServiceException {
                     data = sw.toString();
                 } else {
                     String cte = mp.getEncoding();
-                    if (cte != null && !cte.trim().toLowerCase().equals(MimeConstants.ET_7BIT)) {
+                    if (cte != null && !cte.trim().equalsIgnoreCase(MimeConstants.ET_7BIT)) {
                         try {
                             DefangFactory.getDefanger(ctype).defang(stream, neuter, out);
                             data = sw.toString();
@@ -2947,7 +2946,7 @@ throws ServiceException {
         NONE(null), FROM("f"), TO("t"), CC("c"), BCC("b"), REPLY_TO("r"), SENDER("s"), READ_RECEIPT("n"), RESENT_FROM("rf");
 
         private final String rep;
-        private EmailType(String c) {
+        EmailType(String c) {
             rep = c;
         }
 
@@ -3466,7 +3465,7 @@ throws ServiceException {
             if (returnAttrs == null || returnAttrs.contains(key)) {
                 Object value = entry.getValue();
                 if (value instanceof String[]) {
-                    String sa[] = (String[]) value;
+                    String[] sa = (String[]) value;
                     for (int i = 0; i < sa.length; i++)
                         cn.addKeyValuePair(key, sa[i], MailConstants.E_ATTRIBUTE, MailConstants.A_ATTRIBUTE_NAME);
                 } else {
@@ -3578,7 +3577,7 @@ throws ServiceException {
                 Document doc, int fields);
     }
 
-    private static Set<ToXMLExtension> extensions = new HashSet<ToXMLExtension>();
+    private static final Set<ToXMLExtension> extensions = new HashSet<>();
 
     public static void addExtension(ToXMLExtension e) {
         extensions.add(e);

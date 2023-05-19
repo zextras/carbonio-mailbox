@@ -29,7 +29,7 @@ public class GetNoteResponse {
      */
     @SuppressWarnings("unused")
     private GetNoteResponse() {
-        this((NoteInfo) null);
+        this(null);
     }
 
     public GetNoteResponse(NoteInfo note) {

@@ -24,7 +24,7 @@ import com.zimbra.cs.mailbox.Document;
  */
 public class Notebook extends MailItemResource {
 
-	private Document mDoc;
+	private final Document mDoc;
 
 	public Notebook(DavContext ctxt, Document doc) throws ServiceException {
 		super(ctxt, doc);

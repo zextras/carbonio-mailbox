@@ -59,7 +59,7 @@ public class ObjectInfo {
     public ObjectInfo(String id, String name, Collection <KeyValuePair> attrs) {
         this.name = name;
         this.id = id;
-        this.attrList = new ArrayList<KeyValuePair>();
+        this.attrList = new ArrayList<>();
         if (attrs != null) {
             this.attrList.addAll(attrs);
         }

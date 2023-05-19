@@ -21,13 +21,13 @@ public class ResetAccountPasswordRequest {
      * @zm-api-field-description Account
      */
     @XmlElement(name=AccountConstants.E_ACCOUNT, required=true)
-    private AccountSelector account;
+    private final AccountSelector account;
 
     /**
      * no-argument constructor wanted by JAXB
      */
     public ResetAccountPasswordRequest() {
-        this((AccountSelector) null);
+        this(null);
     }
 
     public ResetAccountPasswordRequest(AccountSelector account) {

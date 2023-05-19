@@ -8,6 +8,7 @@ package com.zimbra.soap.admin;
 import com.zimbra.soap.admin.message.GetServerRequest;
 import com.zimbra.soap.admin.type.ServerSelector;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -49,7 +50,7 @@ public class GetServerTest {
         gsr.setServer(svrSel);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         marshaller.marshal(gsr, out);
-        String xml = out.toString("UTF-8");
+        String xml = out.toString(StandardCharsets.UTF_8);
         Assert.assertTrue("Marshalled XML should end with 'GetServerRequest>'", xml.endsWith("GetServerRequest>"));
     }
 }

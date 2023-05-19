@@ -19,7 +19,7 @@ import com.zimbra.cs.ldap.ZAttributes;
  */
 public class LdapAccount extends Account implements LdapEntry {
 
-    private String mDn;
+    private final String mDn;
     
     public LdapAccount(String dn, String email, ZAttributes attrs, Map<String, Object> defaults, Provisioning prov)
     throws LdapException {

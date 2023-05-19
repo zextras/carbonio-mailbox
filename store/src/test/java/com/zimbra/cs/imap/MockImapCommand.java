@@ -10,9 +10,9 @@ import com.zimbra.cs.imap.ImapCommand;
 
 public class MockImapCommand extends ImapCommand {
 
-    private String param1;
-    private String param2;
-    private int param3;
+    private final String param1;
+    private final String param2;
+    private final int param3;
 
     public MockImapCommand(String param1, String param2, int param3) {
         super();

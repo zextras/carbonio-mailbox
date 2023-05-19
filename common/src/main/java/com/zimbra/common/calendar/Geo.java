@@ -15,8 +15,8 @@ import com.zimbra.common.soap.MailConstants;
  */
 public class Geo {
 
-    private String mLatitude;
-    private String mLongitude;
+    private final String mLatitude;
+    private final String mLongitude;
 
     public String getLatitude()  { return mLatitude; }
     public String getLongitude() { return mLongitude; }

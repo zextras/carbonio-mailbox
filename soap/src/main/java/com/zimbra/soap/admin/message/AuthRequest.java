@@ -87,7 +87,7 @@ public class AuthRequest {
     private String twoFactorCode;
 
     public AuthRequest() {
-        this((String)null, (String)null);
+        this(null, null);
     }
 
     public AuthRequest(String name, String password) {

@@ -7,7 +7,7 @@ package com.zimbra.cs.imap;
 
 public class SelectCommand extends ImapCommand {
 
-    private ImapPath path;
+    private final ImapPath path;
     byte params;
     QResyncInfo qri;
 
@@ -56,12 +56,8 @@ public class SelectCommand extends ImapCommand {
             return false;
         }
         if (qri == null) {
-            if (other.qri != null) {
-                return false;
-            }
-        } else if (!qri.equals(other.qri)) {
-            return false;
-        }
-        return true;
+          return other.qri == null;
+        } else
+          return qri.equals(other.qri);
     }
 }

@@ -408,7 +408,7 @@ public class MimeTest {
     to.append("\r\n");
     String content =
         "From: user1@example.com\r\n"
-            + to.toString()
+            + to
             + "Subject: test\r\n"
             + "Content-Type: test/plain\r\n\r\n"
             + "test message";

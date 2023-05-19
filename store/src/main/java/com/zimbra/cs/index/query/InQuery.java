@@ -111,7 +111,7 @@ public final class InQuery extends Query {
                 result = mailbox.getFolderByPathLongestMatch(null, iid.getId(), path);
             } else {
                 Folder folder = mailbox.getFolderById(null, iid.getId());
-                result = new Pair<Folder, String>(folder, null);
+                result = new Pair<>(folder, null);
             }
             return recursiveResolve(mailbox, result.getFirst(),
                     result.getSecond(), under);

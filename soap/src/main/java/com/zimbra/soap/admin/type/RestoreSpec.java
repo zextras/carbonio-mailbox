@@ -161,7 +161,7 @@ public class RestoreSpec {
      * @zm-api-field-description Accounts - if all accounts then use <b>&lt;account name="all"/></b>
      */
     @XmlElement(name=BackupConstants.E_ACCOUNT /* account */, required=false)
-    private List<Name> accounts = Lists.newArrayList();
+    private final List<Name> accounts = Lists.newArrayList();
 
     public RestoreSpec() {
     }

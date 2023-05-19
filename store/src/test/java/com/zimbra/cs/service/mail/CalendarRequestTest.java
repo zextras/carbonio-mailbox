@@ -85,8 +85,8 @@ public class CalendarRequestTest {
         .thenReturn(emailAddress);
 
     List<Address> addressList = new ArrayList<Address>();
-    addressList.add((Address) new InternetAddress("test1@zimbra.com", "Test 1"));
-    addressList.add((Address) new InternetAddress("test2@zimbra.com", "Test 2"));
+    addressList.add(new InternetAddress("test1@zimbra.com", "Test 1"));
+    addressList.add(new InternetAddress("test2@zimbra.com", "Test 2"));
     List<ZAttendee> attendeeList = new ArrayList<ZAttendee>();
     attendeeList.add(addedAttendee1);
     attendeeList.add(addedAttendee2);

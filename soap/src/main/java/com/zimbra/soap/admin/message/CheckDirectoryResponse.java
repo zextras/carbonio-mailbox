@@ -29,7 +29,7 @@ public class CheckDirectoryResponse {
      * @zm-api-field-description Information for directories
      */
     @XmlElement(name=AdminConstants.E_DIRECTORY, required=false)
-    private List <DirPathInfo> paths = Lists.newArrayList();
+    private final List <DirPathInfo> paths = Lists.newArrayList();
 
     public CheckDirectoryResponse() {
     }

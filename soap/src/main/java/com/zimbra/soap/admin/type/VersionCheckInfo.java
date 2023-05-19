@@ -40,7 +40,7 @@ public class VersionCheckInfo {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_UPDATES /* updates */, required=false)
     @XmlElement(name=AdminConstants.E_UPDATE /* update */, required=false)
-    private List<VersionCheckUpdateInfo> updates = Lists.newArrayList();
+    private final List<VersionCheckUpdateInfo> updates = Lists.newArrayList();
 
     public VersionCheckInfo() {
     }

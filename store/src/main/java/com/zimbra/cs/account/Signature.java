@@ -41,8 +41,8 @@ public class Signature extends AccountProperty implements Comparable {
     }
 
     public static class SignatureContent {
-        private String mMimeType;
-        private String mContent;
+        private final String mMimeType;
+        private final String mContent;
 
         public SignatureContent(String mimeType, String content) {
             mMimeType = mimeType;
@@ -54,7 +54,7 @@ public class Signature extends AccountProperty implements Comparable {
     }
 
     public Set<SignatureContent> getContents() {
-        Set<SignatureContent> contents = new HashSet<SignatureContent>();
+        Set<SignatureContent> contents = new HashSet<>();
         BrowserDefang defanger = DefangFactory.getDefanger(MimeConstants.CT_TEXT_HTML);
         for (Iterator it = SignatureUtil.ATTR_TYPE_MAP.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry)it.next();

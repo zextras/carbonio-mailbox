@@ -50,7 +50,7 @@ public class DeleteDataSourceRequest {
         @XmlElement(name=MailConstants.E_DS_CAL /* cal */, type=CalDataSourceNameOrId.class),
         @XmlElement(name=MailConstants.E_DS_UNKNOWN /* unknown */, type=DataSourceNameOrId.class)
     })
-    private List<DataSourceNameOrId> dataSources = Lists.newArrayList();
+    private final List<DataSourceNameOrId> dataSources = Lists.newArrayList();
 
     public DeleteDataSourceRequest() {
     }

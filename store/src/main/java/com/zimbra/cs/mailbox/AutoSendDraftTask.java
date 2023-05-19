@@ -77,7 +77,7 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
      */
     public static void cancelTask(int draftId, int mailboxId) throws ServiceException {
         ScheduledTaskManager.cancel(AutoSendDraftTask.class.getName(),
-                                    TASK_NAME_PREFIX + Integer.toString(draftId),
+                                    TASK_NAME_PREFIX + draftId,
                                     mailboxId,
                                     true);
 

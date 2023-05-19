@@ -752,7 +752,7 @@ public class SoapProvisioning extends Provisioning {
   public <T> T invokeJaxb(Object jaxbObject) throws ServiceException {
     Element req = JaxbUtil.jaxbToElement(jaxbObject);
     Element res = invoke(req);
-    return (T) JaxbUtil.elementToJaxb(res);
+    return JaxbUtil.elementToJaxb(res);
   }
 
   @SuppressWarnings("unchecked")
@@ -760,14 +760,14 @@ public class SoapProvisioning extends Provisioning {
       throws ServiceException {
     Element req = JaxbUtil.jaxbToElement(jaxbObject);
     Element res = invokeOnTargetAccount(req, targetId);
-    return (T) JaxbUtil.elementToJaxb(res);
+    return JaxbUtil.elementToJaxb(res);
   }
 
   @SuppressWarnings("unchecked")
   public <T> T invokeJaxb(Object jaxbObject, String serverName) throws ServiceException {
     Element req = JaxbUtil.jaxbToElement(jaxbObject);
     Element res = invoke(req, serverName);
-    return (T) JaxbUtil.elementToJaxb(res);
+    return JaxbUtil.elementToJaxb(res);
   }
 
   public <T> T invokeJaxbAsAdminWithRetry(Object jaxbObject) throws ServiceException {
@@ -808,7 +808,7 @@ public class SoapProvisioning extends Provisioning {
   }
 
   public static Map<String, Object> getAttrs(Element e, String nameAttr) throws ServiceException {
-    Map<String, Object> result = new HashMap<String, Object>();
+    Map<String, Object> result = new HashMap<>();
     for (Element a : e.listElements(AdminConstants.E_A)) {
       StringUtil.addToMultiMap(result, a.getAttribute(nameAttr), a.getText());
     }
@@ -1146,7 +1146,7 @@ public class SoapProvisioning extends Provisioning {
 
   // SoapProvisioning only, for zmprov
   public List<Account> getAllAdminAccounts(boolean applyDefault) throws ServiceException {
-    ArrayList<Account> result = new ArrayList<Account>();
+    ArrayList<Account> result = new ArrayList<>();
     GetAllAdminAccountsResponse resp = invokeJaxb(new GetAllAdminAccountsRequest(applyDefault));
     for (AccountInfo acct : resp.getAccountList()) {
       result.add(new SoapAccount(acct, this));
@@ -1156,7 +1156,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public List<Cos> getAllCos() throws ServiceException {
-    ArrayList<Cos> result = new ArrayList<Cos>();
+    ArrayList<Cos> result = new ArrayList<>();
     GetAllCosResponse resp = invokeJaxb(new GetAllCosRequest());
     for (CosInfo cosInfo : resp.getCosList()) {
       result.add(new SoapCos(cosInfo, this));
@@ -1171,7 +1171,7 @@ public class SoapProvisioning extends Provisioning {
 
   // SoapProvisioning only, for zmprov
   public List<Domain> getAllDomains(boolean applyDefault) throws ServiceException {
-    ArrayList<Domain> result = new ArrayList<Domain>();
+    ArrayList<Domain> result = new ArrayList<>();
     GetAllDomainsResponse resp = invokeJaxb(new GetAllDomainsRequest(applyDefault));
     for (DomainInfo domainInfo : resp.getDomainList()) {
       result.add(new SoapDomain(domainInfo, this));
@@ -1185,7 +1185,7 @@ public class SoapProvisioning extends Provisioning {
   }
 
   public List<Server> getAllActiveServers() throws ServiceException {
-    List<Server> result = new ArrayList<Server>();
+    List<Server> result = new ArrayList<>();
     GetAllActiveServersResponse resp = invokeJaxb(new GetAllActiveServersRequest());
     for (ServerInfo serverInfo : resp.getServerList()) {
       result.add(new SoapServer(serverInfo, this));
@@ -1233,7 +1233,7 @@ public class SoapProvisioning extends Provisioning {
   }
 
   public List<QuotaUsage> getQuotaUsage(String server) throws ServiceException {
-    ArrayList<QuotaUsage> result = new ArrayList<QuotaUsage>();
+    ArrayList<QuotaUsage> result = new ArrayList<>();
     GetQuotaUsageResponse resp = invokeJaxb(new GetQuotaUsageRequest(), server);
     for (AccountQuotaInfo quotaInfo : resp.getAccountQuotas()) {
       result.add(new QuotaUsage(quotaInfo));
@@ -1299,7 +1299,7 @@ public class SoapProvisioning extends Provisioning {
       server = getLocalServer().getName();
     }
     GetAllAccountLoggersResponse resp = invokeJaxb(new GetAllAccountLoggersRequest(), server);
-    Map<String, List<AccountLogger>> result = new HashMap<String, List<AccountLogger>>();
+    Map<String, List<AccountLogger>> result = new HashMap<>();
     for (AccountLoggerInfo acctLogger : resp.getLoggers()) {
       String acctName = acctLogger.getName();
       result.put(acctName, accountLoggersFromLoggerInfos(acctLogger.getLoggers(), acctName));
@@ -1372,9 +1372,9 @@ public class SoapProvisioning extends Provisioning {
     return new MailboxInfo(resp.getMbox());
   }
 
-  public static enum ReIndexBy {
+  public enum ReIndexBy {
     types,
-    ids;
+    ids
   }
 
   public static final class ReIndexInfo {
@@ -1511,7 +1511,7 @@ public class SoapProvisioning extends Provisioning {
 
   // SoapProvisioning only, for zmprov
   public List<Server> getAllServers(String service, boolean applyDefault) throws ServiceException {
-    ArrayList<Server> result = new ArrayList<Server>();
+    ArrayList<Server> result = new ArrayList<>();
     GetAllServersResponse resp = invokeJaxb(new GetAllServersRequest(service, applyDefault));
     for (ServerInfo serverInfo : resp.getServerList()) {
       result.add(new SoapServer(serverInfo, this));
@@ -1694,7 +1694,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public void modifyAccountStatus(Account acct, String newStatus) throws ServiceException {
-    HashMap<String, String> attrs = new HashMap<String, String>();
+    HashMap<String, String> attrs = new HashMap<>();
     attrs.put(Provisioning.A_zimbraAccountStatus, newStatus);
     modifyAttrs(acct, attrs);
   }
@@ -1779,7 +1779,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public void setCOS(Account acct, Cos cos) throws ServiceException {
-    HashMap<String, String> attrs = new HashMap<String, String>();
+    HashMap<String, String> attrs = new HashMap<>();
     attrs.put(Provisioning.A_zimbraCOSId, cos.getId());
     modifyAttrs(acct, attrs);
   }
@@ -1853,7 +1853,7 @@ public class SoapProvisioning extends Provisioning {
 
   private Set<String> getDistributionLists(Account acct, boolean directOnly)
       throws ServiceException {
-    Set<String> dls = new HashSet<String>();
+    Set<String> dls = new HashSet<>();
 
     List<DistributionList> lists = getDistributionLists(acct, directOnly, null);
 
@@ -1874,7 +1874,7 @@ public class SoapProvisioning extends Provisioning {
       return groupIds;
     }
 
-    groupIds = new HashSet<String>();
+    groupIds = new HashSet<>();
 
     List<Group> groups = getGroups(acct, false, null);
 
@@ -1889,7 +1889,7 @@ public class SoapProvisioning extends Provisioning {
   @Override
   public List<DistributionList> getDistributionLists(
       Account acct, boolean directOnly, Map<String, String> via) throws ServiceException {
-    ArrayList<DistributionList> result = new ArrayList<DistributionList>();
+    ArrayList<DistributionList> result = new ArrayList<>();
     GetAccountMembershipResponse resp =
         invokeJaxb(new GetAccountMembershipRequest(getSelector(acct)));
     for (DLInfo dlInfo : resp.getDlList()) {
@@ -1905,7 +1905,7 @@ public class SoapProvisioning extends Provisioning {
   @Override
   public List<Group> getGroups(Account acct, boolean directOnly, Map<String, String> via)
       throws ServiceException {
-    ArrayList<Group> result = new ArrayList<Group>();
+    ArrayList<Group> result = new ArrayList<>();
     GetAccountMembershipResponse resp =
         invokeJaxb(new GetAccountMembershipRequest(getSelector(acct)));
 
@@ -1931,7 +1931,7 @@ public class SoapProvisioning extends Provisioning {
   @Override
   public List<DistributionList> getDistributionLists(
       DistributionList list, boolean directOnly, Map<String, String> via) throws ServiceException {
-    ArrayList<DistributionList> result = new ArrayList<DistributionList>();
+    ArrayList<DistributionList> result = new ArrayList<>();
     GetDistributionListMembershipRequest req =
         new GetDistributionListMembershipRequest(getSelector(list), null, null);
     GetDistributionListMembershipResponse resp = invokeJaxb(req);
@@ -1959,7 +1959,7 @@ public class SoapProvisioning extends Provisioning {
   }
 
   public List<Account> getAllAccounts(Domain d, Server s) throws ServiceException {
-    ArrayList<Account> result = new ArrayList<Account>();
+    ArrayList<Account> result = new ArrayList<>();
     for (AccountInfo acct : getAllAccountsInfo(d, s)) {
       result.add(new SoapAccount(acct, this));
     }
@@ -1968,7 +1968,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public void getAllAccounts(Domain d, Visitor visitor) throws ServiceException {
-    getAllAccounts(d, (Server) null, visitor);
+    getAllAccounts(d, null, visitor);
   }
 
   @Override
@@ -1992,7 +1992,7 @@ public class SoapProvisioning extends Provisioning {
 
   public List<CalendarResource> getAllCalendarResources(Domain d, Server s)
       throws ServiceException {
-    ArrayList<CalendarResource> result = new ArrayList<CalendarResource>();
+    ArrayList<CalendarResource> result = new ArrayList<>();
     for (CalendarResourceInfo rsrc : getAllCalendarResourcesInfo(d, s)) {
       result.add(new SoapCalendarResource(rsrc, this));
     }
@@ -2001,7 +2001,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public void getAllCalendarResources(Domain d, Visitor visitor) throws ServiceException {
-    getAllCalendarResources(d, (Server) null, visitor);
+    getAllCalendarResources(d, null, visitor);
   }
 
   @Override
@@ -2013,7 +2013,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public List<DistributionList> getAllDistributionLists(Domain d) throws ServiceException {
-    ArrayList<DistributionList> result = new ArrayList<DistributionList>();
+    ArrayList<DistributionList> result = new ArrayList<>();
     GetAllDistributionListsResponse resp =
         invokeJaxb(new GetAllDistributionListsRequest(getSelector(d)));
     for (DistributionListInfo dl : resp.getDls()) {
@@ -2024,7 +2024,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public List<Group> getAllGroups(Domain domain) throws ServiceException {
-    ArrayList<Group> result = new ArrayList<Group>();
+    ArrayList<Group> result = new ArrayList<>();
     GetAllDistributionListsResponse resp =
         invokeJaxb(new GetAllDistributionListsRequest(getSelector(domain)));
     for (DistributionListInfo dl : resp.getDls()) {
@@ -2058,7 +2058,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public List<NamedEntry> searchDirectory(SearchDirectoryOptions options) throws ServiceException {
-    List<NamedEntry> result = new ArrayList<NamedEntry>();
+    List<NamedEntry> result = new ArrayList<>();
 
     SearchDirectoryRequest req = new SearchDirectoryRequest();
     req.setQuery(options.getFilterString());
@@ -2214,7 +2214,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public List<Identity> getAllIdentities(Account account) throws ServiceException {
-    List<Identity> result = new ArrayList<Identity>();
+    List<Identity> result = new ArrayList<>();
     GetIdentitiesResponse response =
         invokeJaxbOnTargetAccount(new GetIdentitiesRequest(), account.getId());
     for (com.zimbra.soap.account.type.Identity identity : response.getIdentities()) {
@@ -2279,7 +2279,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public List<Signature> getAllSignatures(Account account) throws ServiceException {
-    List<Signature> result = new ArrayList<Signature>();
+    List<Signature> result = new ArrayList<>();
     XMLElement req = new XMLElement(AccountConstants.GET_SIGNATURES_REQUEST);
     Element resp = invokeOnTargetAccount(req, account.getId());
     for (Element signature : resp.listElements(AccountConstants.E_SIGNATURE)) {
@@ -2331,7 +2331,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public List<DataSource> getAllDataSources(Account account) throws ServiceException {
-    List<DataSource> result = new ArrayList<DataSource>();
+    List<DataSource> result = new ArrayList<>();
     XMLElement req = new XMLElement(AdminConstants.GET_DATA_SOURCES_REQUEST);
     req.addElement(AdminConstants.E_ID).setText(account.getId());
     Element resp = invoke(req);
@@ -2374,7 +2374,7 @@ public class SoapProvisioning extends Provisioning {
     XMLElement req = new XMLElement(AdminConstants.GET_ALL_XMPPCOMPONENTS_REQUEST);
     Element response = invoke(req);
 
-    List<XMPPComponent> toRet = new ArrayList<XMPPComponent>();
+    List<XMPPComponent> toRet = new ArrayList<>();
     for (Element e : response.listElements(AdminConstants.E_XMPP_COMPONENT)) {
       toRet.add(new SoapXMPPComponent(e, this));
     }
@@ -2526,7 +2526,7 @@ public class SoapProvisioning extends Provisioning {
     }
     GetRightsDocResponse resp = invokeJaxb(req);
 
-    Map<String, List<RightsDoc>> allDocs = new TreeMap<String, List<RightsDoc>>();
+    Map<String, List<RightsDoc>> allDocs = new TreeMap<>();
     for (PackageRightsInfo ePkg : resp.getPackages()) {
       List<RightsDoc> docs = Lists.newArrayList();
       allDocs.put(ePkg.getName(), docs);
@@ -2548,7 +2548,7 @@ public class SoapProvisioning extends Provisioning {
       throws ServiceException {
     GetAllRightsResponse resp =
         invokeJaxb(new GetAllRightsRequest(targetType, expandAllAttrs, rightClass));
-    List<Right> rights = new ArrayList<Right>();
+    List<Right> rights = new ArrayList<>();
     for (RightInfo rInfo : resp.getRights()) {
       // Note: Hack which ignores rInfo details and gets right
       //       directly from Rights manager by name
@@ -2838,7 +2838,7 @@ public class SoapProvisioning extends Provisioning {
     }
 
     Element resp = invoke(req);
-    Map<String, Map<String, Object>> result = new HashMap<String, Map<String, Object>>();
+    Map<String, Map<String, Object>> result = new HashMap<>();
     for (Element eConfig : resp.listElements(AdminConstants.E_CONFIG)) {
       result.put(eConfig.getAttribute(AdminConstants.A_NAME), getAttrs(eConfig));
     }
@@ -2888,7 +2888,7 @@ public class SoapProvisioning extends Provisioning {
     }
 
     Element resp = invoke(req);
-    Map<String, Map<String, Object>> result = new HashMap<String, Map<String, Object>>();
+    Map<String, Map<String, Object>> result = new HashMap<>();
     for (Element eConfig : resp.listElements(AdminConstants.E_CONFIG)) {
       result.put(eConfig.getAttribute(AdminConstants.A_NAME), getAttrs(eConfig));
     }
@@ -2962,7 +2962,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public List<UCService> getAllUCServices() throws ServiceException {
-    ArrayList<UCService> result = new ArrayList<UCService>();
+    ArrayList<UCService> result = new ArrayList<>();
     GetAllUCServicesResponse resp = invokeJaxb(new GetAllUCServicesRequest());
     for (UCServiceInfo ucServiceInfo : resp.getUCServiceList()) {
       result.add(new SoapUCService(ucServiceInfo, this));
@@ -3051,7 +3051,7 @@ public class SoapProvisioning extends Provisioning {
     DomainSelector domSel = new DomainSelector(toJaxb(DomainBy.name), domain.getName());
     HABOrgUnitResponse resp =
         invokeJaxb(new HABOrgUnitRequest(domSel, habOrgUnitName, HabOp.create));
-    Set<String> habOrgList = new HashSet<String>();
+    Set<String> habOrgList = new HashSet<>();
     habOrgList.addAll(resp.getHabOrgList());
     return habOrgList;
   }
@@ -3060,7 +3060,7 @@ public class SoapProvisioning extends Provisioning {
   public Set<String> listHabOrgUnit(Domain domain) throws ServiceException {
     DomainSelector domSel = new DomainSelector(toJaxb(DomainBy.name), domain.getName());
     HABOrgUnitResponse resp = invokeJaxb(new HABOrgUnitRequest(domSel, HabOp.list));
-    Set<String> habOrgList = new HashSet<String>();
+    Set<String> habOrgList = new HashSet<>();
     habOrgList.addAll(resp.getHabOrgList());
     return habOrgList;
   }
@@ -3071,7 +3071,7 @@ public class SoapProvisioning extends Provisioning {
     DomainSelector domSel = new DomainSelector(toJaxb(DomainBy.name), domain.getName());
     HABOrgUnitResponse resp =
         invokeJaxb(new HABOrgUnitRequest(domSel, habOrgUnitName, newHabOrgUnitName, HabOp.rename));
-    Set<String> habOrgList = new HashSet<String>();
+    Set<String> habOrgList = new HashSet<>();
     habOrgList.addAll(resp.getHabOrgList());
     return habOrgList;
   }

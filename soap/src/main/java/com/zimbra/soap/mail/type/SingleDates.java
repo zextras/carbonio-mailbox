@@ -35,7 +35,7 @@ implements RecurRuleBase, SingleDatesInterface {
      * @zm-api-field-description Information on start date/time and end date/time or duration
      */
     @XmlElement(name=MailConstants.E_CAL_DATE_VAL /* dtval */, required=false)
-    private List<DtVal> dtVals = Lists.newArrayList();
+    private final List<DtVal> dtVals = Lists.newArrayList();
 
     public SingleDates() {
     }

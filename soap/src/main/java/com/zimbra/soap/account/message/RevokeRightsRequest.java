@@ -33,7 +33,7 @@ public class RevokeRightsRequest {
      * @zm-api-field-description Specify Access Control Entries
      */
     @XmlElement(name=AccountConstants.E_ACE /* ace */, required=false)
-    private List<AccountACEInfo> aces = Lists.newArrayList();
+    private final List<AccountACEInfo> aces = Lists.newArrayList();
 
     public RevokeRightsRequest() {
     }

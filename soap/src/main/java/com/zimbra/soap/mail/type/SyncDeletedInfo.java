@@ -48,14 +48,14 @@ public class SyncDeletedInfo {
         @XmlElement(name=MailConstants.E_WIKIWORD /* w */, type=WikiIdsAttr.class),
         @XmlElement(name=MailConstants.E_DOC /* doc */, type=DocIdsAttr.class)
     })
-    private List<IdsAttr> types = Lists.newArrayList();
+    private final List<IdsAttr> types = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private SyncDeletedInfo() {
-        this((String) null);
+        this(null);
     }
 
     public SyncDeletedInfo(String ids) {

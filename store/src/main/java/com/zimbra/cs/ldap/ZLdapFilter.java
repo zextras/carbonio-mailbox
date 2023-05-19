@@ -9,7 +9,7 @@ import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 
 public abstract class ZLdapFilter extends ZLdapElement {
     
-    private FilterId filterId;
+    private final FilterId filterId;
     
     protected ZLdapFilter(FilterId filterId) {
         this.filterId = filterId;

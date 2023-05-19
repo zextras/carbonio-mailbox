@@ -31,9 +31,9 @@ public class BlobDeduperUtil {
     private static final String LO_VERBOSE = "verbose";
     private static final String LO_VOLUMES = "volumes";
 
-    private Options options;
+    private final Options options;
     private boolean verbose = false;
-    private List<Short> volumeIds = new ArrayList<Short>();
+    private final List<Short> volumeIds = new ArrayList<>();
     private DedupeBlobsRequest.DedupAction action;
 
     private BlobDeduperUtil() {

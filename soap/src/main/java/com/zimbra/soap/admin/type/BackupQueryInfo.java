@@ -99,7 +99,7 @@ public class BackupQueryInfo {
      * <b>&lt;account></b>.
      */
     @XmlElement(name=BackupConstants.E_ERROR /* error */, required=false)
-    private List<BackupQueryError> errors = Lists.newArrayList();
+    private final List<BackupQueryError> errors = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Statistics.  Returned if request specified stats="1" (true)
@@ -107,7 +107,7 @@ public class BackupQueryInfo {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=BackupConstants.E_STATS /* stats */, required=false)
     @XmlElement(name=BackupConstants.E_COUNTER /* counter */, required=false)
-    private List<BackupQueryCounter> stats = Lists.newArrayList();
+    private final List<BackupQueryCounter> stats = Lists.newArrayList();
 
     public BackupQueryInfo() {
     }

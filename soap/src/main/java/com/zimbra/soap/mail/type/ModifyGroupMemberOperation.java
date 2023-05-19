@@ -20,7 +20,7 @@ public enum ModifyGroupMemberOperation {
     @XmlEnumValue("-") REMOVE("-"),
     @XmlEnumValue("reset") RESET("reset") ;
     
-        private static Map<String, ModifyGroupMemberOperation> nameToView = Maps.newHashMap();
+        private static final Map<String, ModifyGroupMemberOperation> nameToView = Maps.newHashMap();
 
         static {
             for (ModifyGroupMemberOperation v : ModifyGroupMemberOperation.values()) {
@@ -28,9 +28,9 @@ public enum ModifyGroupMemberOperation {
             }
         }
 
-        private String name;
+        private final String name;
 
-        private ModifyGroupMemberOperation(String name) {
+        ModifyGroupMemberOperation(String name) {
             this.name = name;
         }
 

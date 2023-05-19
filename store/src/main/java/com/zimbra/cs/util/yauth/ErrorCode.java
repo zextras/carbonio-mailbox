@@ -33,7 +33,7 @@ public enum ErrorCode {
     private static final Map<String, ErrorCode> byName;
 
     static {
-        byName = new HashMap<String, ErrorCode>();
+        byName = new HashMap<>();
         for (ErrorCode error : values()) {
             byName.put(error.name, error);
         }
@@ -46,7 +46,7 @@ public enum ErrorCode {
     private final String name;
     private final String description;
     
-    private ErrorCode(String name, String description) {
+    ErrorCode(String name, String description) {
         this.name = name;
         this.description = description;
     }

@@ -69,8 +69,8 @@ public class CommandChanges {
     }
 
     public class NamedAttr {
-        private SoapApiAttribute info;
-        private String xpath;
+        private final SoapApiAttribute info;
+        private final String xpath;
         public NamedAttr(String parentXpath, SoapApiAttribute attr) {
             info = attr;
             xpath = parentXpath + "@" + attr.getName();
@@ -81,8 +81,8 @@ public class CommandChanges {
     }
 
     public class NamedElem {
-        private SoapApiNamedElement info;
-        private String xpath;
+        private final SoapApiNamedElement info;
+        private final String xpath;
         public NamedElem(String parentXpath, SoapApiNamedElement elem) {
             info = elem;
             xpath = parentXpath + "/" + elem.getName();
@@ -234,7 +234,7 @@ public class CommandChanges {
             Ancestry ancestry, SoapApiSimpleElement baseElem, SoapApiSimpleElement currElem) {
         String baseJaxbClass = baseElem.getJaxb();
         SoapApiType baseType = baselineTypes.get(baseJaxbClass);
-        SoapApiSimpleElement simpleCurr = (SoapApiSimpleElement) currElem;
+        SoapApiSimpleElement simpleCurr = currElem;
         String currJaxbClass = simpleCurr.getJaxb();
         if (currJaxbClass == null) {
             // "curr" doesn't have attributes or sub-elements

@@ -38,14 +38,14 @@ import com.zimbra.cs.service.util.SpamHandler.SpamReport;
  */
 public final class IncomingMessageHandler implements FilterHandler {
 
-    private OperationContext octxt;
-    private DeliveryContext dctxt;
+    private final OperationContext octxt;
+    private final DeliveryContext dctxt;
     private ParsedMessage parsedMessage;
-    private Mailbox mailbox;
-    private int defaultFolderId;
-    private String recipientAddress;
-    private int size;
-    private boolean noICal;
+    private final Mailbox mailbox;
+    private final int defaultFolderId;
+    private final String recipientAddress;
+    private final int size;
+    private final boolean noICal;
 
     public IncomingMessageHandler(OperationContext octxt, DeliveryContext dctxt, Mailbox mbox,
                                   String recipientAddress, ParsedMessage pm, int size,

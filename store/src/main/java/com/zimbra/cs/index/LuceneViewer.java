@@ -40,10 +40,10 @@ import com.zimbra.common.util.SetUtil;
 
 public class LuceneViewer {
 
-    private String mIndexDir;
-    private String mOutputFile;
-    private TermFilters mTermFilters;
-    private Console mConsole;
+    private final String mIndexDir;
+    private final String mOutputFile;
+    private final TermFilters mTermFilters;
+    private final Console mConsole;
 
     /**
      * If filters are used, intersection of doc nums that appear in all terms
@@ -51,14 +51,14 @@ public class LuceneViewer {
      */
     private Set<Integer> mDocsIntersection;
 
-    private IndexReader mIndexReader;
-    private FileWriter mWriter;
+    private final IndexReader mIndexReader;
+    private final FileWriter mWriter;
 
     private static class TermFilters {
 
         private static class TermFilter {
-            private String mField;
-            private String mText;
+            private final String mField;
+            private final String mText;
 
             private TermFilter(String field, String text) {
                 mField = field;
@@ -66,7 +66,7 @@ public class LuceneViewer {
             }
         }
 
-        private List<TermFilter> mFilters = new ArrayList<TermFilter>();
+        private final List<TermFilter> mFilters = new ArrayList<>();
 
         private void addFilter(String field, String text) {
             mFilters.add(new TermFilter(field, text));
@@ -89,7 +89,7 @@ public class LuceneViewer {
         mWriter = new FileWriter(mOutputFile);
 
         if (hasFilters()) {
-            mDocsIntersection = new HashSet<Integer>();
+            mDocsIntersection = new HashSet<>();
         }
     }
 
@@ -102,11 +102,7 @@ public class LuceneViewer {
     private boolean hasFilters() {
         List<TermFilters.TermFilter> filters = mTermFilters == null ?
                 null : mTermFilters.getFilters();
-        if (filters == null || filters.isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
+      return filters != null && !filters.isEmpty();
     }
 
     private boolean wantThisTerm(String termField, String termText) {
@@ -195,7 +191,7 @@ public class LuceneViewer {
         Collection<String> fieldNames = mIndexReader.getFieldNames(
                 IndexReader.FieldOption.ALL);
         for (String fieldName : fieldNames) {
-            outputLn("    " + fieldName.toString());
+            outputLn("    " + fieldName);
         }
     }
 
@@ -244,7 +240,7 @@ public class LuceneViewer {
 
             boolean isDate = "l.date".equals(fieldName);
 
-            outputLn("    Field [" + fieldName + "]: " + field.toString());
+            outputLn("    Field [" + fieldName + "]: " + field);
             String[] values = doc.getValues(fieldName);
             if (values != null) {
                 int i = 0;
@@ -319,7 +315,7 @@ public class LuceneViewer {
             // keep track of docs that appear in all terms that are filtered in.
             Set<Integer> docNums = null;
             if (hasFilters()) {
-                docNums = new HashSet<Integer>();
+                docNums = new HashSet<>();
             }
 
             TermPositions termPos = mIndexReader.termPositions(term);
@@ -368,7 +364,7 @@ public class LuceneViewer {
 
         outputBanner("Documents in which all (filtered in) terms appear");
 
-        List<Integer> sorted = new ArrayList<Integer>(mDocsIntersection);
+        List<Integer> sorted = new ArrayList<>(mDocsIntersection);
         Collections.sort(sorted);
         for (Integer docNum : sorted) {
             outputLn("    " + docNum);
@@ -520,7 +516,7 @@ public class LuceneViewer {
     }
 
     private static class Console {
-        private boolean mVerbose;
+        private final boolean mVerbose;
 
         Console(boolean verbose) {
             mVerbose = verbose;
@@ -583,7 +579,7 @@ public class LuceneViewer {
         console.info("all done");
     }
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
 
         CLI cli = new CLI();
         CommandLine cl = cli.getCommandLine(args);

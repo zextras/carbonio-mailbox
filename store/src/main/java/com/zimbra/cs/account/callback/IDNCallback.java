@@ -32,7 +32,7 @@ public class IDNCallback extends AttributeCallback {
         IDNType idnType = AttributeManager.idnType(AttributeManager.getInstance(), attrName);
         
         if (mod.adding() || mod.replacing()) {
-            Set<String> asciiValues = new HashSet<String>();
+            Set<String> asciiValues = new HashSet<>();
             List<String> addrs = mod.values();
             for (String addr : addrs) {
                 if (addr == null || addr.equals("")) continue;

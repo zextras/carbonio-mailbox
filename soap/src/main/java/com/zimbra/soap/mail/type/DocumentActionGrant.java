@@ -37,11 +37,11 @@ public class DocumentActionGrant {
     private Long expiry;
 
     public DocumentActionGrant() {
-        this((String)null, (String)null, (Long)null);
+        this(null, null, null);
     }
 
     private DocumentActionGrant(String rights, String grantType) {
-        this(rights, grantType, (Long)null);
+        this(rights, grantType, null);
     }
 
     private DocumentActionGrant(String rights, String grantType, Long expiry) {

@@ -58,14 +58,14 @@ public class FixCalendarTZRequest {
      * @zm-api-field-description Accounts
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT /* account */, required=false)
-    private List<NamedElement> accounts = Lists.newArrayList();
+    private final List<NamedElement> accounts = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Fixup rules
      */
     @XmlElementWrapper(name=AdminConstants.E_TZFIXUP /* tzfixup */, required=false)
     @XmlElement(name=AdminConstants.E_FIXUP_RULE /* fixupRule */, required=false)
-    private List<TZFixupRule> fixupRules = Lists.newArrayList();
+    private final List<TZFixupRule> fixupRules = Lists.newArrayList();
 
     public FixCalendarTZRequest() {
     }

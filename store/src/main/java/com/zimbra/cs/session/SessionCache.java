@@ -35,7 +35,7 @@ public final class SessionCache {
     /** The frequency at which we sweep the cache to delete idle sessions. */
     private static final long SESSION_SWEEP_INTERVAL_MSEC = 1 * Constants.MILLIS_PER_MINUTE;
 
-    private static Log sLog = LogFactory.getLog(SessionCache.class);
+    private static final Log sLog = LogFactory.getLog(SessionCache.class);
 
     private static final SessionMap[] sSessionMaps;
         static {
@@ -119,7 +119,7 @@ public final class SessionCache {
     public static Collection<Session> getAllSessions(String accountId) {
         if (sShutdown)
             return null;
-        Collection<Session> ret = new ArrayList<Session>();
+        Collection<Session> ret = new ArrayList<>();
         for (Session.Type type : Session.Type.values()) {
             Collection<Session> sessions = getSessionMap(type).get(accountId);
             if (sessions != null) {
@@ -204,7 +204,7 @@ public final class SessionCache {
     }
 
     protected synchronized static String getNextSessionId(Session.Type type) {
-        return Integer.toString(type.getIndex()) + Long.toString(sContextSeqNo++);
+        return Integer.toString(type.getIndex()) + sContextSeqNo++;
     }
 
     private static void logActiveSessions() {
@@ -212,7 +212,7 @@ public final class SessionCache {
         StringBuilder manySessionsList = new StringBuilder();
         int totalSessions = 0;
 
-        int sessionTypeCounter[] = new int[Session.Type.values().length];
+        int[] sessionTypeCounter = new int[Session.Type.values().length];
 
         for (SessionMap sessionMap: sSessionMaps) {
             synchronized(sessionMap) {
@@ -283,7 +283,7 @@ public final class SessionCache {
         /* @see com.zimbra.common.stats.RealtimeStatsCallback#getStatData() */
         @Override
         public Map<String, Object> getStatData() {
-            Map<String, Object> data = new HashMap<String, Object>();
+            Map<String, Object> data = new HashMap<>();
             SessionMap soapMap = getSessionMap(Session.Type.SOAP);
             data.put(ZimbraPerf.RTS_SOAP_SESSIONS, soapMap.totalActiveSessions());
             return data;
@@ -298,7 +298,7 @@ public final class SessionCache {
                 if (sLog.isDebugEnabled())
                     SessionCache.logActiveSessions();
 
-                int removedByType[] = new int[Session.Type.values().length];
+                int[] removedByType = new int[Session.Type.values().length];
                 int totalActive = 0;
 
                 for (SessionMap sessionMap : sSessionMaps) {

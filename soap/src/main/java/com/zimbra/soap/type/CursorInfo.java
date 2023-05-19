@@ -58,7 +58,7 @@ public final class CursorInfo {
      */
     @SuppressWarnings("unused")
     private CursorInfo() {
-        this((String) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public CursorInfo(String id, String sortVal, String endSortVal) {

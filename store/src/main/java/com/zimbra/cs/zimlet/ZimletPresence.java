@@ -13,12 +13,12 @@ import com.zimbra.common.service.ServiceException;
 
 public class ZimletPresence {
 
-    public static enum Presence {
+    public enum Presence {
         mandatory('!'),
         enabled('+'),
         disabled('-');
         
-        private char mPrefix;
+        private final char mPrefix;
         Presence(char prefix) {
             mPrefix = prefix;
         }
@@ -60,7 +60,7 @@ public class ZimletPresence {
      *      will overwrite the previous presence.
      *      after this put, getPresence("zimlet_foo") will return Presence.disabled.
      */
-    Map<String, Presence> mZimlets = new HashMap<String, Presence>();
+    Map<String, Presence> mZimlets = new HashMap<>();
     
     public void put(String zimletWithPrefix) {
         

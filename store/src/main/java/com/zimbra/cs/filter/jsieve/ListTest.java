@@ -39,10 +39,7 @@ public final class ListTest extends AbstractTest {
         }
 
         ZimbraMailAdapter adapter = (ZimbraMailAdapter) mail;
-        if (!adapter.getHeader("X-Zimbra-DL").isEmpty() || !adapter.getHeader("List-Id").isEmpty()) {
-            return true;
-        }
-        return false;
+      return !adapter.getHeader("X-Zimbra-DL").isEmpty() || !adapter.getHeader("List-Id").isEmpty();
     }
 
 }

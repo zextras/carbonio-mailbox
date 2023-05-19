@@ -15,6 +15,6 @@ public class ConvIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private ConvIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

@@ -34,7 +34,7 @@ public class SnoozeCalendarItemAlarmResponse {
         @XmlElement(name=MailConstants.E_APPOINTMENT /* appt */, type=UpdatedAppointmentAlarmInfo.class),
         @XmlElement(name=MailConstants.E_TASK /* task */, type=UpdatedTaskAlarmInfo.class)
     })
-    private List<UpdatedAlarmInfo> updatedAlarms = Lists.newArrayList();
+    private final List<UpdatedAlarmInfo> updatedAlarms = Lists.newArrayList();
 
     public SnoozeCalendarItemAlarmResponse() {
     }

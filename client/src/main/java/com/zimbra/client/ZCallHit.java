@@ -14,10 +14,10 @@ import org.json.JSONException;
 
 public class ZCallHit implements ZSearchHit {
 
-    private String mId;
-    private String mSortField;
-    private long mDate;
-    private long mDuration;
+    private final String mId;
+    private final String mSortField;
+    private final long mDate;
+    private final long mDuration;
     private ZPhone mCaller;
     private ZPhone mRecipient;
 

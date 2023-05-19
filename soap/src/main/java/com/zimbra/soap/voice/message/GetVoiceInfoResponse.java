@@ -47,7 +47,7 @@ public class GetVoiceInfoResponse {
      * <br />Note that multiple phone numbers can be associated with the same account.
      */
     @XmlElement(name=VoiceConstants.E_PHONE /* phone */, required=false)
-    private List<VoiceInfo> voiceInfoForPhones = Lists.newArrayList();
+    private final List<VoiceInfo> voiceInfoForPhones = Lists.newArrayList();
 
     public GetVoiceInfoResponse() {
     }

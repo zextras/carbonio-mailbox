@@ -33,7 +33,7 @@ public final class ItemQuery extends Query {
         boolean allQuery = false;
         boolean noneQuery = false;
         boolean rangeQuery = false;
-        List<ItemId> itemIds = new ArrayList<ItemId>();
+        List<ItemId> itemIds = new ArrayList<>();
 
         if (str.equalsIgnoreCase("all")) {
             allQuery = true;

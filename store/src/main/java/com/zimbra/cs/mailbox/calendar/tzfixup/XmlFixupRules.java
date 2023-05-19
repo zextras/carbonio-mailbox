@@ -155,7 +155,7 @@ public class XmlFixupRules {
 
     public static List<Matcher> parseTzFixup(Element tzFixupElem)
     throws ServiceException {
-        List<Matcher> matchers = new ArrayList<Matcher>();
+        List<Matcher> matchers = new ArrayList<>();
         for (Iterator<Element> elemIter = tzFixupElem.elementIterator(AdminConstants.E_FIXUP_RULE); elemIter.hasNext(); ) {
             Element fixupRuleElem = elemIter.next();
             parseFixupRule(fixupRuleElem, matchers);

@@ -16,7 +16,7 @@ import javax.activation.DataSource;
 import com.zimbra.common.mime.MimePart.PartSource;
 
 public class MimeParserOutputStream extends FilterOutputStream {
-    private MimeParser parser;
+    private final MimeParser parser;
     private MimePart.PartSource psource;
 
     public MimeParserOutputStream(OutputStream out) {

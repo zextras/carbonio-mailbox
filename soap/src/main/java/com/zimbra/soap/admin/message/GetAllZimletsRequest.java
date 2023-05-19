@@ -34,7 +34,7 @@ public class GetAllZimletsRequest {
     private final String exclude;
 
     public GetAllZimletsRequest() {
-        this((String) null);
+        this(null);
     }
 
     public GetAllZimletsRequest(String exclude) {

@@ -247,7 +247,7 @@ public class ItemId implements java.io.Serializable {
     ItemId foo;
     try {
       foo = new ItemId("34480-508bc90b-d85e-45d6-bca2-7c34b7c407cb:34479", (String) null);
-      System.out.println(foo.toString());
+      System.out.println(foo);
     } catch (ServiceException e) {
       e.printStackTrace();
     }

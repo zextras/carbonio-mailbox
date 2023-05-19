@@ -33,7 +33,7 @@ public class GetAdminExtensionZimletsResponse {
      */
     @XmlElementWrapper(name=AccountConstants.E_ZIMLETS, required=true)
     @XmlElement(name=AccountConstants.E_ZIMLET /* zimlet */, required=false)
-    private List<AdminZimletInfo> zimlets = Lists.newArrayList();
+    private final List<AdminZimletInfo> zimlets = Lists.newArrayList();
 
     public GetAdminExtensionZimletsResponse() {
     }

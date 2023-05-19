@@ -47,7 +47,7 @@ public class ListDocumentRevisions extends DocDocumentHandler {
             version = item.getVersion();
         }
         MailItem.Type type = item.getType();
-        HashSet<Account> accounts = new HashSet<Account>();
+        HashSet<Account> accounts = new HashSet<>();
         Provisioning prov = Provisioning.getInstance();
         while (version > 0 && count > 0) {
             item = (Document) mbox.getItemRevision(octxt, iid.getId(), type, version);

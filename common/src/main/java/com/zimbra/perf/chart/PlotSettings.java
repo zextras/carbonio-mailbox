@@ -30,20 +30,20 @@ public class PlotSettings {
     public static final boolean DEFAULT_PLOT_OPTIONAL = false;
 
     private String mLegend;
-    private String mInfile;
+    private final String mInfile;
     private String mDataColumn;
-    private boolean mShowRaw;
-    private boolean mShowMovingAvg;
-    private int mMovingAvgPoints;
-    private double mMultiplier;
-    private double mDivisor;
+    private final boolean mShowRaw;
+    private final boolean mShowMovingAvg;
+    private final int mMovingAvgPoints;
+    private final double mMultiplier;
+    private final double mDivisor;
     private boolean mNonNegative;
-    private boolean mPercentTime;
-    private String mDataFunction;
-    private String mAggregateFunction;
-    private boolean mOptional;
-    private String mRatioTop;
-    private String mRatioBottom;
+    private final boolean mPercentTime;
+    private final String mDataFunction;
+    private final String mAggregateFunction;
+    private final boolean mOptional;
+    private final String mRatioTop;
+    private final String mRatioBottom;
 
     public PlotSettings(String legend, String infile,
                         String dataCol, boolean showRaw,

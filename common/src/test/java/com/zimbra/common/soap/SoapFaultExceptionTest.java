@@ -22,9 +22,9 @@ public class SoapFaultExceptionTest {
         TestException(String msg, String code, List<Argument> args) {
             super(msg, code, true, null, args);
         }
-    };
-    
-    /**
+    }
+
+  /**
      * Confirms that SOAP fault arguments are marshalled to and from elements.
      */
     @Test

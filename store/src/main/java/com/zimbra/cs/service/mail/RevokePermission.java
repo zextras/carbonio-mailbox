@@ -33,7 +33,7 @@ public class RevokePermission extends MailDocumentHandler {
         if (!canAccessAccount(zsc, account))
             throw ServiceException.PERM_DENIED("can not access account");
         
-        Set<ZimbraACE> aces = new HashSet<ZimbraACE>();
+        Set<ZimbraACE> aces = new HashSet<>();
         for (Element eACE : request.listElements(MailConstants.E_ACE)) {
             ZimbraACE ace = GrantPermission.handleACE(eACE, zsc, false);
             aces.add(ace);

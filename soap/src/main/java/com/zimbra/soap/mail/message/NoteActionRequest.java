@@ -34,7 +34,7 @@ public class NoteActionRequest {
      */
     @SuppressWarnings("unused")
     private NoteActionRequest() {
-        this((NoteActionSelector) null);
+        this(null);
     }
 
     public NoteActionRequest(NoteActionSelector action) {

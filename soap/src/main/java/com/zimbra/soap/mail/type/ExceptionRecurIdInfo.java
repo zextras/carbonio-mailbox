@@ -62,7 +62,7 @@ implements ExceptionRecurIdInfoInterface {
      */
     @SuppressWarnings("unused")
     private ExceptionRecurIdInfo() {
-        this((String) null);
+        this(null);
     }
 
     public ExceptionRecurIdInfo(

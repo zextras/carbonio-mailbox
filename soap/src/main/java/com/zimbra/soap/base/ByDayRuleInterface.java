@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface ByDayRuleInterface {
-    public void setDayInterfaces(Iterable<WkDayInterface> days);
-    public void addDayInterface(WkDayInterface day);
-    public List<WkDayInterface> getDayInterfaces();
+    void setDayInterfaces(Iterable<WkDayInterface> days);
+    void addDayInterface(WkDayInterface day);
+    List<WkDayInterface> getDayInterfaces();
 }

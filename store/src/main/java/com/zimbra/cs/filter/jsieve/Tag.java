@@ -32,7 +32,7 @@ public class Tag extends AbstractActionCommand {
             return null;
         }
         String tagName =
-            (String) ((StringListArgument) args.getArgumentList().get(0))
+            ((StringListArgument) args.getArgumentList().get(0))
                 .getList().get(0);
 
         // Only one tag with the same tag name allowed, others should be

@@ -56,7 +56,7 @@ public class CheckSpellingRequest {
      */
     @SuppressWarnings("unused")
     private CheckSpellingRequest() {
-        this((String) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public CheckSpellingRequest(String dictionary, String ignoreList, String text) {

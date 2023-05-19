@@ -47,7 +47,7 @@ public class GetDistributionListResponse {
     DistributionListInfo dl;
 
     public GetDistributionListResponse() {
-        this((DistributionListInfo)null, (Boolean) null, (Integer) null);
+        this(null, null, null);
     }
 
     public GetDistributionListResponse(DistributionListInfo dl,

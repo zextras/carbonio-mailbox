@@ -10,5 +10,5 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface IntervalRuleInterface {
-    public int getIval();
+    int getIval();
 }

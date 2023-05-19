@@ -103,7 +103,7 @@ public class BodyStructure {
     
     private void readMPart(ImapInputStream is, boolean ext) throws IOException {
         type = "MULTIPART";
-        List<BodyStructure> parts = new ArrayList<BodyStructure>();
+        List<BodyStructure> parts = new ArrayList<>();
         while (is.peekChar() == '(') {
             parts.add(read(is, ext));
             is.skipSpaces();
@@ -176,7 +176,7 @@ public class BodyStructure {
             is.skipNil();
             return null;
         }
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<>();
         is.skipSpaces();
         while (!is.match(')')) {
             String name = is.readString().toLowerCase();
@@ -210,7 +210,7 @@ public class BodyStructure {
             return lang != null ? new String[] { lang } : null;
         }
         is.skipChar('(');
-        ArrayList<String> lang = new ArrayList<String>();
+        ArrayList<String> lang = new ArrayList<>();
         is.skipSpaces();
         while (!is.match(')')) {
             lang.add(is.readString());

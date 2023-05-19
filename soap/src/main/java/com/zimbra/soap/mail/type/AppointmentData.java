@@ -11,7 +11,7 @@ public class AppointmentData extends CalendaringData {
      */
     @SuppressWarnings("unused")
     private AppointmentData() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public AppointmentData(String xUid, String uid) {

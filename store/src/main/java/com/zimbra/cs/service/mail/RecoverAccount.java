@@ -97,7 +97,7 @@ public final class RecoverAccount extends MailDocumentHandler {
             throw ServiceException.FAILURE("Error while fetching Password Recovery Code.", e);
         }
         if(Objects.isNull(recoveryCodeMap)) {
-            recoveryCodeMap = new HashMap<String, String>();
+            recoveryCodeMap = new HashMap<>();
         }
         checkVerifiedRecoveryAccAndSetResendCount(account, recoveryCodeMap, maxAttempts, zsc, resp);
         fetchAndFormRecoveryCodeParams(account, recoveryCodeMap, recoveryAccount, zsc);
@@ -119,7 +119,7 @@ public final class RecoverAccount extends MailDocumentHandler {
                     Date now = new Date();
                     long suspensionTime = now.getTime() + suspension;
                     recoveryCodeMap.put(CodeConstants.SUSPENSION_TIME.toString(), String.valueOf(suspensionTime));
-                    HashMap<String, Object> prefs = new HashMap<String, Object>();
+                    HashMap<String, Object> prefs = new HashMap<>();
                     prefs.put(Provisioning.A_zimbraResetPasswordRecoveryCode, JWEUtil.getJWE(recoveryCodeMap));
                     Provisioning.getInstance().modifyAttrs(account, prefs, true, zsc.getAuthToken());
                     throw ForgetPasswordException.MAX_ATTEMPTS_REACHED_SUSPEND_FEATURE("Max re-send attempts reached, feature is suspended.");

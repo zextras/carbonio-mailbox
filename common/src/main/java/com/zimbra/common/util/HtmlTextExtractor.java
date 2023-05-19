@@ -12,7 +12,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class HtmlTextExtractor extends org.xml.sax.helpers.DefaultHandler {
-    private StringBuilder sb = new StringBuilder(1024);
+    private final StringBuilder sb = new StringBuilder(1024);
     boolean inCharacters = false;
     int skipping = 0;
     int maxLength;

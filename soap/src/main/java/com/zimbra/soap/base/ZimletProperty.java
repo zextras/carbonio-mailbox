@@ -6,8 +6,8 @@
 package com.zimbra.soap.base;
 
 public interface ZimletProperty {
-    public void setName(String name);
-    public void setValue(String value);
-    public String getName();
-    public String getValue();
+    void setName(String name);
+    void setValue(String value);
+    String getName();
+    String getValue();
 }

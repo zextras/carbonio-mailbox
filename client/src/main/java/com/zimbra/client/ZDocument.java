@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import java.nio.charset.StandardCharsets;
 import org.json.JSONException;
 
 import com.zimbra.client.event.ZModifyEvent;
@@ -31,7 +32,7 @@ public class ZDocument implements ZItem, ToZJSONObject {
     private final long modifiedDate; /* content last modified - millis since 1970-01-01 00:00 UTC. */
     private final long metadataChangeDate; /* metadata &/or content last modified - millis since 1970-01-01 00:00 UTC */
     private final long size;
-    private String contentType;
+    private final String contentType;
     private final String tagIds;
     private final String flags;
 
@@ -103,12 +104,7 @@ public class ZDocument implements ZItem, ToZJSONObject {
     }
 
     public String getNameURLEncoded() {
-        try {
-            return URLEncoder.encode(name, "utf-8").replace("+", "%20");
-        }
-        catch (UnsupportedEncodingException e) {
-            return name;
-        }
+      return URLEncoder.encode(name, StandardCharsets.UTF_8).replace("+", "%20");
     }
 
     public String getFolderId() {

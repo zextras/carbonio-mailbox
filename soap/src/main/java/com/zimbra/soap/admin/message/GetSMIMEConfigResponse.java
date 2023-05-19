@@ -30,7 +30,7 @@ public class GetSMIMEConfigResponse {
      * @zm-api-field-description SMIME configuration information
      */
     @XmlElement(name=AdminConstants.E_CONFIG /* config */, required=false)
-    private List<SMIMEConfigInfo> configs = Lists.newArrayList();
+    private final List<SMIMEConfigInfo> configs = Lists.newArrayList();
 
     public GetSMIMEConfigResponse() {
     }

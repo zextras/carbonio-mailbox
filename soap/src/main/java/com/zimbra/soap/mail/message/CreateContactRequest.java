@@ -60,7 +60,7 @@ public class CreateContactRequest {
      */
     @SuppressWarnings("unused")
     private CreateContactRequest() {
-        this((ContactSpec) null);
+        this(null);
     }
 
     public CreateContactRequest(ContactSpec contact) {

@@ -133,7 +133,7 @@ public class Base64Filter implements Filter {
         }
 
         @Override
-        public void write(byte b[], int off, int len) throws IOException {
+        public void write(byte[] b, int off, int len) throws IOException {
             output.write(b, off, len);
         }
 

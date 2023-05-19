@@ -27,10 +27,10 @@ public class GetAllAccountLoggersResponse {
      * @zm-api-field-description Account loggers that have been created on the given server since the last server start
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT_LOGGER, required=false)
-    private List <AccountLoggerInfo> loggers = Lists.newArrayList();
+    private final List <AccountLoggerInfo> loggers = Lists.newArrayList();
 
     public GetAllAccountLoggersResponse() {
-        this((Collection <AccountLoggerInfo>) null);
+        this(null);
     }
 
     public GetAllAccountLoggersResponse(

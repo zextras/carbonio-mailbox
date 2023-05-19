@@ -65,7 +65,7 @@ public class SearchCalendarResourcesResponse {
      * @zm-api-field-description Matching calendar resources
      */
     @XmlElement(name=AccountConstants.E_CALENDAR_RESOURCE /* calresource */, required=false)
-    private List<CalendarResourceInfo> calendarResources = Lists.newArrayList();
+    private final List<CalendarResourceInfo> calendarResources = Lists.newArrayList();
 
     public SearchCalendarResourcesResponse() {
     }

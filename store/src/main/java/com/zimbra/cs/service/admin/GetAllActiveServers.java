@@ -39,7 +39,7 @@ public final class GetAllActiveServers extends AdminDocumentHandler {
             throw ServiceException.FAILURE("error while getting active servers", e);
         }
         Provisioning prov = Provisioning.getInstance();
-        List<Server> servers = new ArrayList<Server>();
+        List<Server> servers = new ArrayList<>();
         for (String serverId : serverIds) {
             Server server = prov.getServerById(serverId);
             servers.add(server);

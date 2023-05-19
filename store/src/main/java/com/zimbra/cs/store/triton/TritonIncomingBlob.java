@@ -38,7 +38,7 @@ public class TritonIncomingBlob extends ExternalResumableIncomingBlob {
     private final HashType hashType;
     private final MessageDigest digest;
     private TritonIncomingOutputStream outStream;
-    private AtomicLong written;
+    private final AtomicLong written;
 
     public TritonIncomingBlob(String id, String baseUrl, BlobBuilder blobBuilder, Object ctx, MessageDigest digest, HashType hashType) throws ServiceException, IOException {
         super(id, blobBuilder, ctx);

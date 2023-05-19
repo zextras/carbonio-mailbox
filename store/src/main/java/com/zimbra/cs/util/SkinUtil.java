@@ -43,7 +43,7 @@ public class SkinUtil {
 
     private static String[] loadSkins() throws ServiceException {
 		ZimbraLog.webclient.debug("Loading skins..." );
-        List<String> skins = new ArrayList<String>();
+        List<String> skins = new ArrayList<>();
         if (WebClientServiceUtil.isServerInSplitMode()) {
             String resp = WebClientServiceUtil.sendServiceRequestToOneRandomUiNode(LOAD_SKINS_ON_UI_NODE);
             Collections.addAll(skins, resp.split(","));
@@ -84,7 +84,7 @@ public class SkinUtil {
         if (allowedSkins.size() == 0) {
             availSkins = installedSkins;
         } else {
-            List<String> skins = new ArrayList<String>();
+            List<String> skins = new ArrayList<>();
             // take intersection of the two, loop thru installedSkins because it is sorted
             for (String skin : installedSkins) {
                 if (allowedSkins.contains(skin)) {

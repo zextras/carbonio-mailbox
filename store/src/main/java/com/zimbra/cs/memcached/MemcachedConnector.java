@@ -14,7 +14,7 @@ import net.spy.memcached.DefaultHashAlgorithm;
 
 public class MemcachedConnector {
 
-    private static ZimbraMemcachedClient sTheClient = new ZimbraMemcachedClient();
+    private static final ZimbraMemcachedClient sTheClient = new ZimbraMemcachedClient();
 
     /**
      * Returns the one and only memcached client object.

@@ -603,7 +603,6 @@ public final class MailboxTest {
     addrs = new ArrayList<InternetAddress>();
     addrs.add(new InternetAddress("\"Last First\" <user@email.com>"));
     acct1.setPrefLocale("ja");
-    ;
     contactList = mbox.createAutoContact(new OperationContext(acct1), addrs);
     contact = contactList.get(0);
     assertEquals("First", contact.get("firstName"));

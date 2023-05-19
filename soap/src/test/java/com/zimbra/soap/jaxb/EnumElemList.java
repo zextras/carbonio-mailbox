@@ -20,7 +20,7 @@ import com.google.common.collect.Lists;
 @XmlRootElement(name="enum-elem-list")
 public class EnumElemList {
     @XmlElement(name="enum-entry", required=false)
-    private List<ViewEnum> entries = Lists.newArrayList();
+    private final List<ViewEnum> entries = Lists.newArrayList();
 
     public EnumElemList() { }
 

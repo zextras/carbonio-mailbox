@@ -136,7 +136,7 @@ implements RecurRuleBase, SimpleRepeatingRuleInterface {
      */
     @SuppressWarnings("unused")
     private SimpleRepeatingRule() {
-        this((String) null);
+        this(null);
     }
 
     public SimpleRepeatingRule( String frequency) {

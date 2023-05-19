@@ -25,20 +25,20 @@ import com.zimbra.cs.account.Provisioning;
  **/
 public class DomainCache implements IDomainCache {
     
-    private Map mNameCache;
-    private Map mIdCache;
-    private Map mVirtualHostnameCache;
-    private Map mForeignNameCache;
-    private Map mKrb5RealmCache;
+    private final Map mNameCache;
+    private final Map mIdCache;
+    private final Map mVirtualHostnameCache;
+    private final Map mForeignNameCache;
+    private final Map mKrb5RealmCache;
     
-    private long mRefreshTTL;
-    private Counter mHitRate = new HitRateCounter();
+    private final long mRefreshTTL;
+    private final Counter mHitRate = new HitRateCounter();
 
     
     public enum GetFromDomainCacheOption {
         POSITIVE, // only get from positive cache
         NEGATIVE, // only get from negative cache
-        BOTH;     // try positive cache first, if not found then try the negative cache
+        BOTH     // try positive cache first, if not found then try the negative cache
     }
     
     /*
@@ -47,7 +47,7 @@ public class DomainCache implements IDomainCache {
      * 
      * entries in the NegativeCache has the same TTS/max as this DomainCache.
      */
-    private NegativeCache mNegativeCache;
+    private final NegativeCache mNegativeCache;
 
     static class CacheEntry {
         long mLifetime;
@@ -70,19 +70,19 @@ public class DomainCache implements IDomainCache {
     
 
     class NegativeCache {
-        private Map mNegativeNameCache;
-        private Map mNegativeIdCache;
-        private Map mNegativeVirtualHostnameCache;
-        private Map mNegativeForeignNameCache;
-        private Map mNegativeKrb5RealmCache;
+        private final Map mNegativeNameCache;
+        private final Map mNegativeIdCache;
+        private final Map mNegativeVirtualHostnameCache;
+        private final Map mNegativeForeignNameCache;
+        private final Map mNegativeKrb5RealmCache;
 
-        private long mNERefreshTTL;
+        private final long mNERefreshTTL;
         
         /*
          * if for any reason we want to disable caching of non-existing entries
          * just set mEnabled to false, as a master switch for emergency fix.
          */
-        private boolean mEnabled = true;
+        private final boolean mEnabled = true;
         
         private NegativeCache(int maxItems, long refreshTTL) {
             mNegativeNameCache = MapUtil.newLruMap(maxItems);
@@ -164,11 +164,11 @@ public class DomainCache implements IDomainCache {
             mNegativeNameCache.remove(entry.getName());
             mNegativeIdCache.remove(entry.getId());
             
-            String vhost[] = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);            
+            String[] vhost = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);
             for (String vh : vhost)
                 mNegativeVirtualHostnameCache.remove(vh.toLowerCase());
             
-            String foreignName[] = entry.getMultiAttr(Provisioning.A_zimbraForeignName);            
+            String[] foreignName = entry.getMultiAttr(Provisioning.A_zimbraForeignName);
             for (String fn : foreignName)
                 mNegativeForeignNameCache.remove(fn.toLowerCase());
             
@@ -219,11 +219,11 @@ public class DomainCache implements IDomainCache {
             mNameCache.remove(entry.getName());
             mIdCache.remove(entry.getId());
             
-            String vhost[] = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);            
+            String[] vhost = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);
             for (String vh : vhost)
                 mVirtualHostnameCache.remove(vh.toLowerCase());
             
-            String foreignName[] = entry.getMultiAttr(Provisioning.A_zimbraForeignName);            
+            String[] foreignName = entry.getMultiAttr(Provisioning.A_zimbraForeignName);
             for (String fn : foreignName)
                 mForeignNameCache.remove(fn.toLowerCase());
             
@@ -254,11 +254,11 @@ public class DomainCache implements IDomainCache {
             mNameCache.put(entry.getName(), cacheEntry);
             mIdCache.put(entry.getId(), cacheEntry);
             
-            String vhost[] = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);            
+            String[] vhost = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);
             for (String vh : vhost)
                 mVirtualHostnameCache.put(vh.toLowerCase(), cacheEntry);          
             
-            String foreignName[] = entry.getMultiAttr(Provisioning.A_zimbraForeignName);            
+            String[] foreignName = entry.getMultiAttr(Provisioning.A_zimbraForeignName);
             for (String fn : foreignName)
                 mForeignNameCache.put(fn.toLowerCase(), cacheEntry);  
             

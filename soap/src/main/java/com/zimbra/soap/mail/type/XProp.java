@@ -44,14 +44,14 @@ public class XProp implements XPropInterface {
      * @zm-api-field-description XPARAMs
      */
     @XmlElement(name=MailConstants.E_CAL_XPARAM, required=false)
-    private List<XParam> xParams = Lists.newArrayList();
+    private final List<XParam> xParams = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private XProp() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public XProp(

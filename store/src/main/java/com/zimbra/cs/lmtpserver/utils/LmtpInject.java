@@ -37,16 +37,16 @@ import com.zimbra.common.util.LogFactory;
 @SuppressWarnings("static-access")
 public class LmtpInject {
 
-    private static Log mLog = LogFactory.getLog(LmtpInject.class);
+    private static final Log mLog = LogFactory.getLog(LmtpInject.class);
 
-    private static Options mOptions = new Options();
+    private static final Options mOptions = new Options();
 
-    private String mSender;
-    private String[] mRecipients;
-    private List<File> mFiles;
-    private String mHost;
-    private int mPort;
-    private Protocol mProto;
+    private final String mSender;
+    private final String[] mRecipients;
+    private final List<File> mFiles;
+    private final String mHost;
+    private final int mPort;
+    private final Protocol mProto;
     private int mCurrentFileIndex = 0;
 
     private int mSucceeded;
@@ -60,8 +60,8 @@ public class LmtpInject {
     private boolean mVerbose = false;
 
     private volatile long mFileSizeTotal = 0;
-    private int mNumThreads;
-    private boolean skipTLSCertValidation;
+    private final int mNumThreads;
+    private final boolean skipTLSCertValidation;
 
 
 	private LmtpInject(int numThreads,
@@ -191,18 +191,14 @@ public class LmtpInject {
     }
 
     private static class LmtpInjectTask implements Runnable {
-        private LmtpInject mDriver;
-        private LmtpClient mClient;
+        private final LmtpInject mDriver;
+        private final LmtpClient mClient;
 
         public LmtpInjectTask(LmtpInject driver)
         throws IOException {
             mDriver = driver;
             mClient = new LmtpClient(driver.getHost(), driver.getPort(), mDriver.getProtocol(),mDriver.isSkipTLSCertValidation());
-            if (mDriver.isVerbose() && !mDriver.isQuiet()) {
-                mClient.quiet(false);
-            } else {
-                mClient.quiet(true);
-            }
+            mClient.quiet(!mDriver.isVerbose() || mDriver.isQuiet());
         }
 
         public void run() {
@@ -278,7 +274,7 @@ public class LmtpInject {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         StringBuffer gotCL = new StringBuffer("cmdline: ");
         for (int i = 0; i < args.length; i++) {
             gotCL.append("'").append(args[i]).append("' ");
@@ -337,7 +333,7 @@ public class LmtpInject {
         }
 
         // Process files from the -d option.
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         if (cl.hasOption("d")) {
             File dir = new File(cl.getOptionValue("d"));
             if (!dir.isDirectory()) {
@@ -375,7 +371,7 @@ public class LmtpInject {
                         valid = true;
                     }
                 } catch (IOException e) {
-                    System.err.format("Unable to validate %s: %s.\n", file.getPath(), e.toString());
+                    System.err.format("Unable to validate %s: %s.\n", file.getPath(), e);
                 } finally {
                     ByteUtil.closeStream(in);
                 }

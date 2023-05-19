@@ -76,7 +76,7 @@ public class SearchGalResponse {
      * @zm-api-field-description Matching contacts
      */
     @XmlElement(name=MailConstants.E_CONTACT /* cn */, required=false)
-    private List<ContactInfo> contacts = Lists.newArrayList();
+    private final List<ContactInfo> contacts = Lists.newArrayList();
 
     public SearchGalResponse() {
     }

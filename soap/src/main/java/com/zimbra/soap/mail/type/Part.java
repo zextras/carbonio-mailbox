@@ -27,7 +27,7 @@ public class Part {
      */
     @SuppressWarnings("unused")
     private Part() {
-        this((String) null);
+        this(null);
     }
 
     public Part(String part) {

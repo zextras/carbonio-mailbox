@@ -10,6 +10,7 @@ package com.zimbra.common.soap;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -59,9 +60,9 @@ public class SoapTestHarness {
     public static final String A_DUMP = "dump";
     public static final String A_MATCH = "match";
 
-    private static Pattern mPropPattern = Pattern.compile("(\\$\\{([^}]+)\\})");
+    private static final Pattern mPropPattern = Pattern.compile("(\\$\\{([^}]+)\\})");
 
-    private SoapProtocol mSoapProto;
+    private final SoapProtocol mSoapProto;
     private SoapProtocol mResponseProto;
     private SoapHttpTransport mTransport;
     private String mTargetUser;
@@ -70,7 +71,7 @@ public class SoapTestHarness {
     private long mCounter = 0;
 
     /** any props we have set */
-    private HashMap<String, String> mProps; 
+    private final HashMap<String, String> mProps;
     private boolean mDebug;
 
     /** <uri> */
@@ -79,7 +80,7 @@ public class SoapTestHarness {
     private int mTestNum;
 
     private Test mCurrent;
-    private List<Test> mTests;
+    private final List<Test> mTests;
 
     public static class Test {
         /** the <test> element */
@@ -171,20 +172,20 @@ public class SoapTestHarness {
         System.exit(1);
     }
 
-    public static void main(String args[]) 
+    public static void main(String[] args)
     throws HarnessException, IOException, ServiceException {
         SoapTestHarness harness = new SoapTestHarness();
         harness.runTests(args);
     }
 
     public SoapTestHarness() {
-        mProps = new HashMap<String, String>();
+        mProps = new HashMap<>();
         mSoapProto = SoapProtocol.Soap12;
         mResponseProto = SoapProtocol.Soap12;
-        mTests = new ArrayList<Test>();
+        mTests = new ArrayList<>();
     }
 
-    public void runTests(String args[]) 
+    public void runTests(String[] args)
     throws HarnessException, IOException, ServiceException {
 
         CliUtil.toolSetup();
@@ -218,9 +219,9 @@ public class SoapTestHarness {
         String file = cl.getOptionValue("f");
 
         if (cl.hasOption("s"))
-            expandSystemProperties();;
+            expandSystemProperties();
 
-            String docStr = new String(ByteUtil.getContent(new File(file)), "utf-8");
+        String docStr = new String(ByteUtil.getContent(new File(file)), StandardCharsets.UTF_8);
             doTests(Element.parseXML(docStr));
 
             //Element request = doc.getRootElement();
@@ -452,7 +453,7 @@ public class SoapTestHarness {
 
     private static Map<String, String> getURIs(SoapProtocol proto) {
         if (mURIs == null) {
-            mURIs = new HashMap<String, String>();
+            mURIs = new HashMap<>();
             mURIs.put("zimbra", "urn:zimbra");
             mURIs.put("acct", "urn:zimbraAccount");
             mURIs.put("mail", "urn:zimbraMail");
@@ -461,7 +462,7 @@ public class SoapTestHarness {
             mURIs.put("soap12", "http://www.w3.org/2003/05/soap-envelope");            
             mURIs.put("soap11", "http://schemas.xmlsoap.org/soap/envelope/");
 
-            mJSURIs = new HashMap<String, String>();
+            mJSURIs = new HashMap<>();
             mJSURIs.put("zimbra", "urn:zimbra");
             mJSURIs.put("acct", "urn:zimbraAccount");
             mJSURIs.put("mail", "urn:zimbraMail");
@@ -564,7 +565,7 @@ public class SoapTestHarness {
             Enumeration<?> keys = props.propertyNames();
             while (keys.hasMoreElements()) {
                 String key = keys.nextElement().toString();
-                String value = props.getProperty(key).toString();
+                String value = props.getProperty(key);
                 if (value != null)
                     setProperty(key, value);
                 else

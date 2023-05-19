@@ -46,10 +46,8 @@ public class LocalBind extends AttributeCallback {
                             server.setAdminLocalBind(false);
                             return;
                         }
-                        if (inetAddress.isAnyLocalAddress() || inetAddress.isLoopbackAddress())
-                            server.setAdminLocalBind(false);
-                        else
-                            server.setAdminLocalBind(true);
+                      server.setAdminLocalBind(
+                          !inetAddress.isAnyLocalAddress() && !inetAddress.isLoopbackAddress());
                     }
                 } catch (ServiceException se) {
                     ZimbraLog.misc.warn("Unable to update zimbraAdminLocalBind " + se);
@@ -62,7 +60,7 @@ public class LocalBind extends AttributeCallback {
         // zimbraMailMode is also in globalConfig. Make sure to update the zimbraMailLocalBind of all the
         // servers if this globalconfig is changed.
         
-        List<Server> serverList = new ArrayList<Server>();
+        List<Server> serverList = new ArrayList<>();
         if (entry instanceof Config) {
             try {
                 serverList = Provisioning.getInstance().getAllServers();
@@ -94,10 +92,8 @@ public class LocalBind extends AttributeCallback {
                                 server.setMailLocalBind(false);
                                 continue;
                             }
-                            if (inetAddress.isAnyLocalAddress() || inetAddress.isLoopbackAddress())
-                                server.setMailLocalBind(false);
-                            else
-                                server.setMailLocalBind(true);
+                          server.setMailLocalBind(
+                              !inetAddress.isAnyLocalAddress() && !inetAddress.isLoopbackAddress());
                         }
                     } else {
                         // mailmode set to https. Enable http for localhost binding.

@@ -64,7 +64,7 @@ public class CheckPermissionRequest {
      * @zm-api-field-description Rights to check
      */
     @XmlElement(name=MailConstants.E_RIGHT /* right */, required=false)
-    private List<String> rights = Lists.newArrayList();
+    private final List<String> rights = Lists.newArrayList();
 
     public CheckPermissionRequest() {
     }

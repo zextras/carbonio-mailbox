@@ -43,7 +43,7 @@ public class GetSessionsResponse {
      * @zm-api-field-description Session information
      */
     @XmlElement(name="s", required=false)
-    private List<SimpleSessionInfo> sessions = Lists.newArrayList();
+    private final List<SimpleSessionInfo> sessions = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

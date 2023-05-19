@@ -29,7 +29,7 @@ implements ZimletGlobalConfigInfo {
      * @zm-api-field-description Global zimlet configuration property
      */
     @XmlElement(name=ZimletConstants.ZIMLET_TAG_PROPERTY /* property */, required=false)
-    private List<AdminZimletProperty> properties = Lists.newArrayList();
+    private final List<AdminZimletProperty> properties = Lists.newArrayList();
 
     public AdminZimletGlobalConfigInfo() {
     }

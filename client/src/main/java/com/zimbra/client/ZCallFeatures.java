@@ -23,15 +23,15 @@ public class ZCallFeatures {
     public static final String SELECTIVE_CALL_FORWARD_ALREADY_IN_LIST = "voice.SELECTIVE_CALL_FORWARD_ALREADY_IN_LIST";
     public static final String SELECTIVE_CALL_REJECT_ALREADY_IN_LIST = "voice.SELECTIVE_CALL_REJECT_ALREADY_IN_LIST";
 
-    private ZMailbox mMbox;
-    private ZPhone mPhone;
-    private Map<String, ZCallFeature> mCallFeatures;
+    private final ZMailbox mMbox;
+    private final ZPhone mPhone;
+    private final Map<String, ZCallFeature> mCallFeatures;
     private boolean mCallFeaturesLoaded;
 
     public ZCallFeatures(ZMailbox mbox, ZPhone phone) {
         mMbox = mbox;
         mPhone = phone;
-        mCallFeatures = new HashMap<String, ZCallFeature>();
+        mCallFeatures = new HashMap<>();
         mCallFeaturesLoaded = false;
     }
 
@@ -114,7 +114,7 @@ public class ZCallFeatures {
 
     public List<ZCallFeature> getSubscribedFeatures() {
         Collection<ZCallFeature> allFeatures = mCallFeatures.values();
-        List<ZCallFeature> result = new ArrayList<ZCallFeature>();
+        List<ZCallFeature> result = new ArrayList<>();
         for (ZCallFeature feature : allFeatures) {
             if (feature.getIsSubscribed()) {
                 result.add(feature);

@@ -23,8 +23,8 @@ import com.zimbra.common.util.CharsetUtil;
 import com.zimbra.common.zmime.ZMimeUtility.ByteBuilder;
 
 public class ZMimeParserTest {
-    private static String BOUNDARY1 = "-=_sample1";
-    private static String BOUNDARY2 = "-=_sample2";
+    private static final String BOUNDARY1 = "-=_sample1";
+    private static final String BOUNDARY2 = "-=_sample2";
 
     private ByteBuilder appendMultipartWithoutBoundary(ByteBuilder bb) {
         bb.append("Content-Type: multipart/mixed\r\n");

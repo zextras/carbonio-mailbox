@@ -33,7 +33,7 @@ public class ElasticSearchConnector {
     public ElasticSearchConnector () {
     }
 
-    public int executeMethod(HttpRequestBase method) throws IndexStoreException, IOException {
+    public int executeMethod(HttpRequestBase method) throws IOException {
         String reqBody = "";
         if (ZimbraLog.elasticsearch.isTraceEnabled() && method instanceof HttpEntityEnclosingRequestBase) {
             HttpEntityEnclosingRequestBase eem = (HttpEntityEnclosingRequestBase) method;

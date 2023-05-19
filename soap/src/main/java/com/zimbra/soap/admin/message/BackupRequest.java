@@ -79,7 +79,7 @@ public class BackupRequest {
      */
     @SuppressWarnings("unused")
     private BackupRequest() {
-        this((BackupSpec) null);
+        this(null);
     }
 
     public BackupRequest(BackupSpec backup) {

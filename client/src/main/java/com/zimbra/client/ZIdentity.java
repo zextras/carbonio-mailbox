@@ -21,7 +21,7 @@ import com.zimbra.soap.account.type.Identity;
 
 public class ZIdentity  implements ToZJSONObject {
 
-    private Identity data;
+    private final Identity data;
 
     public ZIdentity(Identity data) {
         this.data = data;

@@ -28,7 +28,7 @@ public class AddAccountLoggerResponse {
      * @zm-api-field-description Information on loggers
      */
     @XmlElement(name=AdminConstants.E_LOGGER /* logger */, required=false)
-    private List<LoggerInfo> loggers = Lists.newArrayList();
+    private final List<LoggerInfo> loggers = Lists.newArrayList();
 
     private AddAccountLoggerResponse() {
     }

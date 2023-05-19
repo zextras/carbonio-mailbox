@@ -1010,7 +1010,7 @@ public abstract class AdminAccessControl {
         }
 
         private String printNeededRight(Entry target, Object needed) throws ServiceException {
-            if ((needed instanceof AdminRight) && AdminRight.PR_SYSTEM_ADMIN_ONLY == ((AdminRight)needed)) {
+            if ((needed instanceof AdminRight) && AdminRight.PR_SYSTEM_ADMIN_ONLY == needed) {
                 return AdminRightCheckPoint.Notes.SYSTEM_ADMINS_ONLY;
             }
 
@@ -1177,7 +1177,7 @@ public abstract class AdminAccessControl {
             }
 
             // 2. see if the admin has the right on domain scope
-            String targetDomainName = targetType.getTargetDomainName(mProv, target);
+            String targetDomainName = TargetType.getTargetDomainName(mProv, target);
             if (targetDomainName != null) {
                 if (rbtt instanceof RightCommand.DomainedRightsByTargetType) {
                     RightCommand.DomainedRightsByTargetType domainedRights = (RightCommand.DomainedRightsByTargetType)rbtt;
@@ -1193,11 +1193,7 @@ public abstract class AdminAccessControl {
 
             // 3. see if the admin has the right on all entries of the type on the system
             RightCommand.EffectiveRights er = rbtt.all();
-            if (hasRightBulk(er, target, rightNeeded)) {
-                return true;
-            }
-
-            return false;
+            return hasRightBulk(er, target, rightNeeded);
         }
 
         private boolean hasRightBulk(RightCommand.EffectiveRights effRights,
@@ -1406,7 +1402,7 @@ public abstract class AdminAccessControl {
      * dynamic get attrs right
      */
     public static class GetAttrsRight extends DynamicAttrsRight {
-        private final Set<String> mAttrs = new HashSet<String>();
+        private final Set<String> mAttrs = new HashSet<>();
 
         public void addAttr(String attrName) {
             mAttrs.add(attrName);
@@ -1423,7 +1419,7 @@ public abstract class AdminAccessControl {
      * dynamic set attrs right, no constraint checking
      */
     public static class SetAttrsRight extends DynamicAttrsRight {
-        private final Set<String> mAttrs = new HashSet<String>();
+        private final Set<String> mAttrs = new HashSet<>();
 
         public void addAttr(String attrName) {
             mAttrs.add(attrName);
@@ -1437,7 +1433,7 @@ public abstract class AdminAccessControl {
     }
 
     public static class SetAttrsRightWithConstraintChecking extends DynamicAttrsRight {
-        private final Map<String, Object> mAttrs = new HashMap<String, Object>();
+        private final Map<String, Object> mAttrs = new HashMap<>();
 
         public void addAttr(String attrName, Object attrValue) {
             mAttrs.put(attrName, attrValue);

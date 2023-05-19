@@ -33,7 +33,7 @@ public class CheckDirectoryRequest {
      * @zm-api-field-description Directories
      */
     @XmlElement(name=AdminConstants.E_DIRECTORY, required=false)
-    private List <CheckDirSelector> paths = Lists.newArrayList();
+    private final List <CheckDirSelector> paths = Lists.newArrayList();
 
     public CheckDirectoryRequest() {
     }

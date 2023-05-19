@@ -30,7 +30,7 @@ public class CreateContactResponse {
      */
     @SuppressWarnings("unused")
     private CreateContactResponse() {
-        this((ContactInfo) null);
+        this(null);
     }
 
     public CreateContactResponse(ContactInfo contact) {

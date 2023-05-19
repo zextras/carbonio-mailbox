@@ -35,7 +35,7 @@ import com.zimbra.cs.util.AccountUtil;
 
 public class LocalImapMailboxStore extends ImapMailboxStore {
 
-    private transient Mailbox mailbox;
+    private final transient Mailbox mailbox;
 
 
     public LocalImapMailboxStore(Mailbox mailbox) {
@@ -89,7 +89,7 @@ public class LocalImapMailboxStore extends ImapMailboxStore {
 
     @Override
     public List<ImapListener> getListeners(ItemIdentifier ident) {
-        List<ImapListener> listeners = new ArrayList<ImapListener>();
+        List<ImapListener> listeners = new ArrayList<>();
         if (ident == null) {
             ZimbraLog.imap.warnQuietlyFmt("Attempted to getListeners for null item ID on mailbox %s", this);
             return listeners;

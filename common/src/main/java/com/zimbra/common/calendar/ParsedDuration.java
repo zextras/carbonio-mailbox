@@ -161,11 +161,7 @@ public final class ParsedDuration
     
     public static ParsedDuration parse(boolean negative, int weeks, int days, int hours, int mins, int secs) {
         ParsedDuration toRet = new ParsedDuration();
-        if (negative) {
-            toRet.mNegative = true;
-        } else {
-            toRet.mNegative = false;
-        }
+        toRet.mNegative = negative;
         toRet.mWeeks = weeks;
         toRet.mDays = days;
         toRet.mHours = hours;

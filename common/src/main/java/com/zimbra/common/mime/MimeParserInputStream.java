@@ -16,7 +16,7 @@ import javax.activation.DataSource;
 import com.zimbra.common.mime.MimePart.PartSource;
 
 public class MimeParserInputStream extends FilterInputStream {
-    private MimeParser parser;
+    private final MimeParser parser;
     private MimePart.PartSource psource;
     private MimeHeaderBlock headers;
 
@@ -50,7 +50,7 @@ public class MimeParserInputStream extends FilterInputStream {
     @Override public long skip(long n) throws IOException {
         long remaining = n;
         int max = (int) Math.min(n, 32768), read = 0;
-        final byte buffer[] = new byte[max];
+        final byte[] buffer = new byte[max];
 
         while (remaining > 0 && (read = read(buffer, 0, (int) Math.min(remaining, max))) != -1) {
             remaining -= read;

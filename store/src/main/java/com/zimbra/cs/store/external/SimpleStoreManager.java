@@ -94,13 +94,13 @@ public class SimpleStoreManager extends ExternalStoreManager {
         File dir = new File(dirName(mbox));
         if (dir.exists()) {
             File[] files = dir.listFiles((FileFilter) FileFileFilter.FILE);
-            List<String> locators = new ArrayList<String>();
+            List<String> locators = new ArrayList<>();
             for (File file : files) {
                 locators.add(file.getCanonicalPath());
             }
             return locators;
         } else {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
     }
 

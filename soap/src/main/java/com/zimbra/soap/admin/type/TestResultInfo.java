@@ -26,13 +26,13 @@ public class TestResultInfo {
      * @zm-api-field-description Information for completed tests
      */
     @XmlElement(name="completed", required=false)
-    private List<CompletedTestInfo> completedTests = Lists.newArrayList();
+    private final List<CompletedTestInfo> completedTests = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Information for failed tests
      */
     @XmlElement(name="failure", required=false)
-    private List<FailedTestInfo> failedTests = Lists.newArrayList();
+    private final List<FailedTestInfo> failedTests = Lists.newArrayList();
 
     public TestResultInfo() {
     }

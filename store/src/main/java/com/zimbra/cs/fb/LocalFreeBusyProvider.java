@@ -59,7 +59,7 @@ public class LocalFreeBusyProvider {
         if (folder == FreeBusyQuery.CALENDAR_FOLDER_ALL) {
             calDataResultList = mbox.getAllCalendarsSummaryForRange(null, MailItem.Type.APPOINTMENT, start, end);
         } else {
-            calDataResultList = new ArrayList<CalendarDataResult>(1);
+            calDataResultList = new ArrayList<>(1);
             calDataResultList.add(mbox.getCalendarSummaryForRange(null, folder, MailItem.Type.APPOINTMENT, start, end));
         }
         for (CalendarDataResult result : calDataResultList) {
@@ -140,25 +140,25 @@ public class LocalFreeBusyProvider {
         IntervalList l = new IntervalList(0, 100);
         Interval toAdd;
 
-        System.out.println("List: "+ l.toString());
+        System.out.println("List: "+ l);
 
         toAdd = new Interval(50, 60, IcalXmlStrMap.FBTYPE_BUSY);
         l.addInterval(toAdd);
-        System.out.println("Added: "+toAdd+l.toString());
+        System.out.println("Added: "+toAdd+ l);
         toAdd = new Interval(10, 20, IcalXmlStrMap.FBTYPE_BUSY_TENTATIVE);
         l.addInterval(toAdd);
-        System.out.println("Added: "+toAdd+l.toString());
+        System.out.println("Added: "+toAdd+ l);
         toAdd = new Interval(20, 30, IcalXmlStrMap.FBTYPE_BUSY_UNAVAILABLE);
         l.addInterval(toAdd);
-        System.out.println("Added: "+toAdd+l.toString());
+        System.out.println("Added: "+toAdd+ l);
         toAdd = new Interval(15, 35, IcalXmlStrMap.FBTYPE_BUSY);
         l.addInterval(toAdd);
-        System.out.println("Added: "+toAdd+l.toString());
+        System.out.println("Added: "+toAdd+ l);
 
         try {
             Mailbox mbox = MailboxManager.getInstance().getMailboxById(1);
             FreeBusy fb = getFreeBusyList(mbox.getAccount(), false, mbox, mbox.getAccount().getName(), 0, Long.MAX_VALUE, FreeBusyQuery.CALENDAR_FOLDER_ALL, null);
-            System.out.println(fb.toString());
+            System.out.println(fb);
         } catch (ServiceException e){
             System.out.println("EXCEPTION: "+e);
             e.printStackTrace();

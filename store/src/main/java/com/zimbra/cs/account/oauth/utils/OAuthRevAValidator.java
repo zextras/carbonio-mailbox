@@ -48,7 +48,7 @@ public class OAuthRevAValidator implements OAuthValidator {
     public static final Set<String> SINGLE_PARAMETERS = constructSingleParameters();
 
     private static Set<String> constructSingleParameters() {
-        Set<String> s = new HashSet<String>();
+        Set<String> s = new HashSet<>();
         for (String p : new String[] { OAuth.OAUTH_CONSUMER_KEY, OAuth.OAUTH_TOKEN, OAuth.OAUTH_TOKEN_SECRET,
                 OAuth.OAUTH_CALLBACK, OAuth.OAUTH_SIGNATURE_METHOD, OAuth.OAUTH_SIGNATURE, OAuth.OAUTH_TIMESTAMP,
                 OAuth.OAUTH_NONCE, OAuth.OAUTH_VERSION }) {
@@ -122,13 +122,13 @@ public class OAuthRevAValidator implements OAuthValidator {
     protected void checkSingleParameters(OAuthMessage message) throws IOException, OAuthException {
         // Check for repeated oauth_ parameters:
         boolean repeated = false;
-        Map<String, Collection<String>> nameToValues = new HashMap<String, Collection<String>>();
+        Map<String, Collection<String>> nameToValues = new HashMap<>();
         for (Map.Entry<String, String> parameter : message.getParameters()) {
             String name = parameter.getKey();
             if (SINGLE_PARAMETERS.contains(name)) {
                 Collection<String> values = nameToValues.get(name);
                 if (values == null) {
-                    values = new ArrayList<String>();
+                    values = new ArrayList<>();
                     nameToValues.put(name, values);
                 } else {
                     repeated = true;
@@ -137,7 +137,7 @@ public class OAuthRevAValidator implements OAuthValidator {
             }
         }
         if (repeated) {
-            Collection<OAuth.Parameter> rejected = new ArrayList<OAuth.Parameter>();
+            Collection<OAuth.Parameter> rejected = new ArrayList<>();
             for (Map.Entry<String, Collection<String>> p : nameToValues.entrySet()) {
                 String name = p.getKey();
                 Collection<String> values = p.getValue();

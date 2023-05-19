@@ -31,7 +31,7 @@ public class ZmBooleanSerializer extends JsonSerializer<ZmBoolean> {
 
     @Override
     public void serialize(ZmBoolean value, JsonGenerator jgen, SerializerProvider provider)
-    throws IOException, JsonProcessingException {
+    throws IOException {
         if (value == null) {
             return;
         }

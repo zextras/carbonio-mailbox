@@ -39,8 +39,8 @@ public class MailUtil {
                 "could not be delivered to one or more recipients.\n\n" +
                 "For further assistance, please send mail to postmaster.\n\n");
 
-        List<String> invalidAddrs = new ArrayList<String> ();
-        List<String> unsentAddrs = new ArrayList<String> ();
+        List<String> invalidAddrs = new ArrayList<>();
+        List<String> unsentAddrs = new ArrayList<>();
 
         if (addressArgs != null) {
             for (Argument arg : addressArgs) {

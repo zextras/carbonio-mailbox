@@ -115,7 +115,7 @@ public class JWTUtil {
                 ZimbraLog.account.debug("salt not found in soap context or engine context, looking in cookie");
                 HttpServletRequest req = (HttpServletRequest) engineCtxt.get(SoapServlet.SERVLET_REQUEST);
                 if (req != null) {
-                    javax.servlet.http.Cookie cookies[] =  req.getCookies();
+                    javax.servlet.http.Cookie[] cookies =  req.getCookies();
                     if (cookies != null) {
                         for (int i = 0; i < cookies.length; i++) {
                             if (ZimbraCookie.COOKIE_ZM_JWT.equals(cookies[i].getName())) {
@@ -313,7 +313,7 @@ public class JWTUtil {
     public static String getZMJWTCookieValue(HttpServletRequest httpReq) {
         String cookieVal = null;
         if (httpReq != null) {
-            Cookie cookies[] =  httpReq.getCookies();
+            Cookie[] cookies =  httpReq.getCookies();
             if (cookies != null) {
                 for (int i = 0; i < cookies.length; i++) {
                     if (cookies[i].getName().equals(ZimbraCookie.COOKIE_ZM_JWT)) {
@@ -327,7 +327,7 @@ public class JWTUtil {
     }
 
     public static boolean isJWT(AuthToken token) {
-        return token instanceof ZimbraJWToken ? true : false;
+        return token instanceof ZimbraJWToken;
     }
 
     /**

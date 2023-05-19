@@ -48,7 +48,7 @@ public class GetDistributionListMembersRequest {
      */
     @SuppressWarnings("unused")
     private GetDistributionListMembersRequest() {
-        this((Integer) null, (Integer) null, (String) null);
+        this(null, null, null);
     }
 
     public GetDistributionListMembersRequest(Integer limit, Integer offset,

@@ -56,7 +56,7 @@ public class EntrySearchFilterSingleCond implements SearchFilterCondition {
     private String value;
 
     public EntrySearchFilterSingleCond() {
-        this((String) null, (String) null, (String) null, (Boolean) null);
+        this(null, null, null, null);
     }
 
     public EntrySearchFilterSingleCond(String attr, String op, String value, Boolean not) {

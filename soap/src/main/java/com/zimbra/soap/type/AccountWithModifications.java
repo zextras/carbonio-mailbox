@@ -49,7 +49,7 @@ public class AccountWithModifications {
      */
     @SuppressWarnings("unused")
     private AccountWithModifications() {
-        this((String) null, (Collection<PendingFolderModifications>)null, 0);
+        this((String) null, null, 0);
     }
 
     public AccountWithModifications(String id, int lastChangeId) {

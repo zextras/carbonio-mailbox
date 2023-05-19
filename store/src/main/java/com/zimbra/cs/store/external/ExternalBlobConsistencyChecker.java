@@ -30,7 +30,7 @@ import com.zimbra.cs.store.file.BlobConsistencyChecker;
 public class ExternalBlobConsistencyChecker extends BlobConsistencyChecker {
     private static final int CHUNK_SIZE = 500;
 
-    private List<String> unexpectedBlobPaths = new ArrayList<String>();
+    private List<String> unexpectedBlobPaths = new ArrayList<>();
 
     @Override
     public Results check(Collection<Short> volumeIds, int mboxId, boolean checkSize, boolean reportUsedBlobs) throws ServiceException {

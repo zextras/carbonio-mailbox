@@ -76,7 +76,7 @@ public class UBIDLdapContext extends ZLdapContext {
     private static LDAPConnectionPool replicaConnPool;
     private static LDAPConnectionPool masterConnPool;
 
-    private LDAPConnectionPool connPool;
+    private final LDAPConnectionPool connPool;
     private LDAPConnection conn;
     private final boolean isZimbraLdap;
     private DereferencePolicy derefAliasPolicy;
@@ -304,7 +304,7 @@ public class UBIDLdapContext extends ZLdapContext {
         UBIDMutableEntry entry = new UBIDMutableEntry();
         entry.setDN(dn);
 
-        Set<String> ocs = new HashSet<String>(Arrays.asList(objectClasses));
+        Set<String> ocs = new HashSet<>(Arrays.asList(objectClasses));
         entry.addAttr(LdapConstants.ATTR_objectClass, ocs);
 
         for (int i=0; i < attrs.length; i += 2) {

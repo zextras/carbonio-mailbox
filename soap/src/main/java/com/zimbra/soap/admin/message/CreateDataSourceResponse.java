@@ -29,7 +29,7 @@ public class CreateDataSourceResponse {
      */
     @SuppressWarnings("unused")
     private CreateDataSourceResponse() {
-        this((DataSourceInfo) null);
+        this(null);
     }
 
     public CreateDataSourceResponse(DataSourceInfo dataSource) {

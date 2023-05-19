@@ -27,7 +27,7 @@ public class FileTokenStore extends TokenStore {
 
     public FileTokenStore(File file) throws IOException {
         this.file = file;
-        tokens = new HashMap<String, String>();
+        tokens = new HashMap<>();
         loadTokens();
     }
 

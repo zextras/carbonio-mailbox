@@ -35,7 +35,7 @@ public class DeleteGalSyncAccountRequest {
      */
     @SuppressWarnings("unused")
     private DeleteGalSyncAccountRequest() {
-        this((AccountSelector) null);
+        this(null);
     }
 
     public DeleteGalSyncAccountRequest(AccountSelector account) {

@@ -44,7 +44,7 @@ public class CheckPermissionResponse {
      * @zm-api-field-description Individual right information
      */
     @XmlElement(name=MailConstants.E_RIGHT /* right */, required=false)
-    private List<RightPermission> rights = Lists.newArrayList();
+    private final List<RightPermission> rights = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

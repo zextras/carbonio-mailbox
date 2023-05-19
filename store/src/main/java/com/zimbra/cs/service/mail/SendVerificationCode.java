@@ -33,7 +33,7 @@ import com.zimbra.soap.ZimbraSoapContext;
  */
 public class SendVerificationCode extends MailDocumentHandler {
 
-    static Map<String, String> emailToCodeMap = Collections.synchronizedMap(new LruMap<String, String>(1000));
+    static Map<String, String> emailToCodeMap = Collections.synchronizedMap(new LruMap<>(1000));
 
     @Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
@@ -65,7 +65,7 @@ public class SendVerificationCode extends MailDocumentHandler {
     static String generateVerificationCode() {
         ZimbraLog.misc.debug("Generating verification code");
         SecureRandom random = new SecureRandom();
-        byte bytes[] = new byte[3];
+        byte[] bytes = new byte[3];
         random.nextBytes(bytes);
         return new String(Hex.encodeHex(bytes));
     }

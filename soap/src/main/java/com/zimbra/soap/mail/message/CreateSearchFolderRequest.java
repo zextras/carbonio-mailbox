@@ -36,7 +36,7 @@ public class CreateSearchFolderRequest {
      */
     @SuppressWarnings("unused")
     private CreateSearchFolderRequest() {
-        this((NewSearchFolderSpec) null);
+        this(null);
     }
 
     public CreateSearchFolderRequest(NewSearchFolderSpec searchFolder) {

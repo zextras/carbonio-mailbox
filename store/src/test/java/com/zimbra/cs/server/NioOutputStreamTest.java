@@ -73,7 +73,7 @@ public final class NioOutputStreamTest {
 
     private static final class TestIoHandler extends IoHandlerAdapter {
         private int writes = 0;
-        private StringBuilder out = new StringBuilder();
+        private final StringBuilder out = new StringBuilder();
 
         @Override
         public void messageSent(IoSession session, Object message) {

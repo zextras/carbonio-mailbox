@@ -14,7 +14,7 @@ public class AuthProxy extends Proxy {
 
     private String username;
     private String password;
-    private Type type;
+    private final Type type;
     
     public AuthProxy(Type type, SocketAddress sa) {
         super(type, sa);

@@ -34,7 +34,7 @@ public class VerifyIndexRequest {
      */
      @SuppressWarnings("unused")
     private VerifyIndexRequest() {
-        this((MailboxByAccountIdSelector)null);
+        this(null);
     }
 
     public VerifyIndexRequest(MailboxByAccountIdSelector mbox) {

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import java.nio.charset.StandardCharsets;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,7 +63,7 @@ public class OAuthServiceProvider {
 
         OAuthConsumer oAuthConsumer = null;
         for (String consumer : registeredConsumers) {
-            String s[] = consumer.split(":");
+            String[] s = consumer.split(":");
             if (s.length >= 2 && s[0].equals(consumer_key)) {
                 oAuthConsumer = new OAuthConsumer(null, consumer_key, s[1], null);
                 oAuthConsumer.setProperty("key", consumer_key);
@@ -101,11 +102,16 @@ public class OAuthServiceProvider {
     }
 
     public static synchronized void setAccountPropertiesForAccessor(Account account, OAuthAccessor accessor) throws UnsupportedEncodingException {
-        accessor.setProperty("ZM_ACC_DISPLAYNAME", account.getAttr(Provisioning.A_displayName) == null ? "" : URLEncoder.encode(account.getAttr(Provisioning.A_displayName), "UTF-8"));
-        accessor.setProperty("ZM_ACC_CN", account.getName()==null ? "" : URLEncoder.encode(account.getName(), "UTF-8"));
-        accessor.setProperty("ZM_ACC_GIVENNAME", account.getAttr(Provisioning.A_givenName) == null ? "" : URLEncoder.encode(account.getAttr(Provisioning.A_givenName), "UTF-8"));
-        accessor.setProperty("ZM_ACC_SN", account.getAttr(Provisioning.A_sn) == null ? "" : URLEncoder.encode(account.getAttr(Provisioning.A_sn), "UTF-8"));
-        accessor.setProperty("ZM_ACC_EMAIL", account.getMail() == null ? "" :  URLEncoder.encode(account.getMail(), "UTF-8"));
+        accessor.setProperty("ZM_ACC_DISPLAYNAME", account.getAttr(Provisioning.A_displayName) == null ? "" : URLEncoder.encode(account.getAttr(Provisioning.A_displayName),
+            StandardCharsets.UTF_8));
+        accessor.setProperty("ZM_ACC_CN", account.getName()==null ? "" : URLEncoder.encode(account.getName(),
+            StandardCharsets.UTF_8));
+        accessor.setProperty("ZM_ACC_GIVENNAME", account.getAttr(Provisioning.A_givenName) == null ? "" : URLEncoder.encode(account.getAttr(Provisioning.A_givenName),
+            StandardCharsets.UTF_8));
+        accessor.setProperty("ZM_ACC_SN", account.getAttr(Provisioning.A_sn) == null ? "" : URLEncoder.encode(account.getAttr(Provisioning.A_sn),
+            StandardCharsets.UTF_8));
+        accessor.setProperty("ZM_ACC_EMAIL", account.getMail() == null ? "" :  URLEncoder.encode(account.getMail(),
+            StandardCharsets.UTF_8));
     }
 
     /**

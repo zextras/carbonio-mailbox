@@ -27,7 +27,7 @@ public class GetPrefsResponse {
      * @zm-api-field-description Preferences
      */
     @XmlElement(name=AccountConstants.E_PREF)
-    private List<Pref> pref = new ArrayList<Pref>();
+    private List<Pref> pref = new ArrayList<>();
 
     public void setPref(List<Pref> pref) {
         this.pref = pref;

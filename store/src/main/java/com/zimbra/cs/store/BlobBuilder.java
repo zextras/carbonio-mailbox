@@ -190,7 +190,7 @@ public class BlobBuilder {
             try {
                 init();
             } catch (Exception e) {
-                throw (IOException) new IOException("Unable to initialize BlobBuilder").initCause(e);
+                throw (IOException) new IOException("Unable to initialize BlobBuilder", e);
             }
         }
     }

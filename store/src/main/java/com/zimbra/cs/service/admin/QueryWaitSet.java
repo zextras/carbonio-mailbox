@@ -29,14 +29,14 @@ public class QueryWaitSet extends AdminDocumentHandler {
 
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         WaitSetMgr.checkRightForAllAccounts(zsc); // must be a global admin
-        QueryWaitSetRequest req = (QueryWaitSetRequest) zsc.elementToJaxb(request);
+        QueryWaitSetRequest req = zsc.elementToJaxb(request);
         QueryWaitSetResponse resp = new QueryWaitSetResponse();
 
         String waitSetId = req.getWaitSetId();
         List<IWaitSet> sets;
 
         if (waitSetId != null) {
-            sets = new ArrayList<IWaitSet>(1);
+            sets = new ArrayList<>(1);
             IWaitSet ws = WaitSetMgr.lookup(waitSetId);
             if (ws == null) {
                 throw AdminServiceException.NO_SUCH_WAITSET(waitSetId);

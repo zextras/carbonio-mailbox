@@ -102,7 +102,7 @@ public class ZoneInfoParser {
 
     }
 
-    public static enum Weekday {
+    public enum Weekday {
         SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY;
 
         public static Weekday lookUp(String str) {
@@ -136,13 +136,13 @@ public class ZoneInfoParser {
     }
 
     public static class Day implements Comparable<Day> {
-        public static enum DayType {
+        public enum DayType {
             ON,            // on day N
             WEEKNUM,       // on Nth weekday (N=-1 => last week of the month)
             BEFORE,        // W<D (last weekday W before date D; e.g. Sun<8)
             ON_OR_BEFORE,  // W<=D (last weekday W on or before date D; e.g. Sun<=8)
             ON_OR_AFTER,   // W>=D (first weekday W on or after date D; e.g. Sun>=8)
-            AFTER;         // W>D (first weekday W after date D; e.g. Sun>8)
+            AFTER         // W>D (first weekday W after date D; e.g. Sun>8)
         }
 
         private DayType mType;
@@ -219,12 +219,12 @@ public class ZoneInfoParser {
                 return Integer.toString(mDate);
 
             String wday = mWeekday.toString();
-            wday = wday.substring(0, 1) + wday.toLowerCase().substring(1, 3);
+            wday = wday.charAt(0) + wday.toLowerCase().substring(1, 3);
 
             if (DayType.WEEKNUM.equals(mType)) {
                 if (mWeeknum == -1)
                     return "last" + wday;
-                return Integer.toString(mWeeknum) + wday;
+                return mWeeknum + wday;
             }
 
             String oper = null;
@@ -244,7 +244,7 @@ public class ZoneInfoParser {
             }
 
             if (oper != null)
-                return wday + oper + Integer.toString(mDate);
+                return wday + oper + mDate;
 
             return "type=" + mType + ", weeknum=" + mWeeknum + ", wkday=" + mWeekday + ", date=" + mDate;
         }
@@ -346,8 +346,8 @@ public class ZoneInfoParser {
             if (comp != 0)
                 return comp;
 
-            DayType dt[] = { mType, other.getType() };
-            int dtIndex[] = new int[2];
+            DayType[] dt = { mType, other.getType() };
+            int[] dtIndex = new int[2];
             for (int i = 0; i < dt.length; ++i) {
                 switch (dt[i]) {
                 case ON:
@@ -383,13 +383,13 @@ public class ZoneInfoParser {
 
     // Represents either duration in seconds, or time in seconds from midnight.
     public static class Time implements Comparable<Time> {
-        public static enum TimeType { WALL_TIME, STANDARD_TIME, UTC_TIME }
+        public enum TimeType { WALL_TIME, STANDARD_TIME, UTC_TIME }
 
         private int mHour;
         private int mMin;
         private int mSec;
         private boolean mNegative;
-        private TimeType mType;
+        private final TimeType mType;
 
         public Time(boolean negative, int hour, int min, int sec, TimeType type) {
             mNegative = negative;
@@ -541,9 +541,9 @@ public class ZoneInfoParser {
 
     public static class Until implements Comparable<Until> {
         private final int mYear;
-        private int mMonth;  // January == 1
-        private Day mDay;
-        private Time mTime;
+        private final int mMonth;  // January == 1
+        private final Day mDay;
+        private final Time mTime;
 
         public Until(List<String> tokens) throws TZDataParseException {
             int numFields = tokens.size();
@@ -624,7 +624,7 @@ public class ZoneInfoParser {
     public static class RuleLine {
         private final String mName;
         private final int mFromYear;
-        private int mToYear;
+        private final int mToYear;
         private final String mType;
         private final int mIn;
         private final Day mOn;
@@ -686,9 +686,9 @@ public class ZoneInfoParser {
     }
 
     public static class ZoneLine implements Comparable<ZoneLine> {
-        public static enum RuleSaveType { RULE, SAVE };
+        public enum RuleSaveType { RULE, SAVE }
 
-        private String mName;
+      private String mName;
         private final Time mGmtOff;  // in seconds
         private RuleSaveType mRuleSaveType;
         private String mRuleName;
@@ -831,10 +831,10 @@ public class ZoneInfoParser {
     public static class Leap {
         private final int mYear;
         private final int mMonth;             // 1=January, ..., 12=December
-        private int mDay;
+        private final int mDay;
         private final Time mTime;
-        private boolean mCorrPositive;  // true=+, false=-
-        private boolean mRolling;       // true=Rolling, false=Stationary
+        private final boolean mCorrPositive;  // true=+, false=-
+        private final boolean mRolling;       // true=Rolling, false=Stationary
 
         public Leap(List<String> tokens) throws TZDataParseException {
             if (tokens.size() < 6)
@@ -877,7 +877,7 @@ public class ZoneInfoParser {
 
         public Rule(String name) {
             mName = name;
-            mRuleLines = new ArrayList<RuleLine>();
+            mRuleLines = new ArrayList<>();
         }
 
         public String getName() { return mName; }
@@ -892,8 +892,8 @@ public class ZoneInfoParser {
 
         public Zone(String name) {
             mName = name;
-            mZoneLines = new TreeSet<ZoneLine>();
-            mAliases = new TreeSet<String>();  // sorted
+            mZoneLines = new TreeSet<>();
+            mAliases = new TreeSet<>();  // sorted
         }
 
         public String getName() { return mName; }
@@ -912,14 +912,14 @@ public class ZoneInfoParser {
     private final List<Leap> mLeaps;
 
     public ZoneInfoParser() {
-        mRules = new HashMap<String, Rule>();
-        mZones = new HashMap<String, Zone>();
-        mLinks = new HashMap<String, String>();
+        mRules = new HashMap<>();
+        mZones = new HashMap<>();
+        mLinks = new HashMap<>();
         mLinks.put("Etc/UTC", "UTC");  // Map Etc/UTC to built-in "UTC" time zone.
-        mLeaps = new ArrayList<Leap>();
+        mLeaps = new ArrayList<>();
     }
 
-    private static enum LineType {
+    private enum LineType {
         RULE, ZONE, LINK, LEAP, UNKNOWN;
 
         public static LineType lookUp(String str) {
@@ -945,7 +945,7 @@ public class ZoneInfoParser {
         tokenizer.quoteChar(dquote);
         tokenizer.eolIsSignificant(true);
 
-        List<String> tokenList = new ArrayList<String>();
+        List<String> tokenList = new ArrayList<>();
         LineType lineType = LineType.UNKNOWN;
         boolean atLineStart = true;
 
@@ -1047,8 +1047,8 @@ public class ZoneInfoParser {
         }
 
         // Flatten links map.
-        List<String> aliasesToRemove = new ArrayList<String>();
-        Map<String, String> flattenedLinks = new HashMap<String, String>();
+        List<String> aliasesToRemove = new ArrayList<>();
+        Map<String, String> flattenedLinks = new HashMap<>();
         for (Iterator<Entry<String, String>> liter = mLinks.entrySet().iterator(); liter.hasNext(); ) {
             Entry<String, String> lentry = liter.next();
             String alias = lentry.getKey();

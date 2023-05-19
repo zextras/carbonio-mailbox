@@ -125,7 +125,7 @@ public class SendShareNotificationRequest {
     }
 
     @XmlEnum
-    public static enum Action {
+    public enum Action {
         edit,
         revoke,
         expire;

@@ -60,7 +60,7 @@ public class GetDistributionList extends DistributionListDocumentHandler {
         return Provisioning.getInstance().getGroup(Key.DistributionListBy.fromString(key), value);
     }
 
-    private static String[] minimumAttrs = {Provisioning.A_zimbraId, Provisioning.A_zimbraMailAlias};
+    private static final String[] minimumAttrs = {Provisioning.A_zimbraId, Provisioning.A_zimbraMailAlias};
 
     @Override
     public Element handle(Element request, Map<String, Object> context)
@@ -114,9 +114,9 @@ public class GetDistributionList extends DistributionListDocumentHandler {
         // return member info only if the authed has right to see zimbraMailForwardingAddress
         boolean allowMembers = true;
         if (group.isDynamic()) {
-            allowMembers = arc == null ? true : arc.allowAttr(Provisioning.A_member);
+            allowMembers = arc == null || arc.allowAttr(Provisioning.A_member);
         } else {
-            allowMembers = arc == null ? true : arc.allowAttr(Provisioning.A_zimbraMailForwardingAddress);
+            allowMembers = arc == null || arc.allowAttr(Provisioning.A_zimbraMailForwardingAddress);
         }
 
         if (allowMembers) {
@@ -183,7 +183,7 @@ public class GetDistributionList extends DistributionListDocumentHandler {
         if (encodeAttrs) {
             Set<String> hideAttrs = null;
             if (hideMembers) {
-                hideAttrs = new HashSet<String>();
+                hideAttrs = new HashSet<>();
                 if (group.isDynamic()) {
                     hideAttrs.add(Provisioning.A_member);
                 } else {

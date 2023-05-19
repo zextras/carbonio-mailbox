@@ -28,7 +28,7 @@ public class GetIndexStatsRequest {
      */
     @SuppressWarnings("unused")
     private GetIndexStatsRequest() {
-        this((MailboxByAccountIdSelector) null);
+        this(null);
     }
 
     public GetIndexStatsRequest(MailboxByAccountIdSelector mbox) {

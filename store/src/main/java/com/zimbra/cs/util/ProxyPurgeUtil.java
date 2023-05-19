@@ -70,7 +70,7 @@ public class ProxyPurgeUtil
            this is equivalent to the $(zmprov gamcs) command
          */
         memcachedServers = prov.getAllServers(Provisioning.SERVICE_MEMCACHED);
-        servers = new ArrayList <String> ();
+        servers = new ArrayList<>();
 
         for (Iterator<Server> it=memcachedServers.iterator(); it.hasNext();) {
             Server s = it.next();
@@ -137,7 +137,7 @@ public class ProxyPurgeUtil
         
         if (servers == null) {
             List<Server> memcachedServers = prov.getAllServers(Provisioning.SERVICE_MEMCACHED);
-            servers = new ArrayList<String> ();
+            servers = new ArrayList<>();
             
             for (Iterator<Server> it=memcachedServers.iterator(); it.hasNext();) {
                 Server s = it.next();
@@ -150,7 +150,7 @@ public class ProxyPurgeUtil
         
         // Connect to all memcached servers.
         int numServers = servers.size();
-        ArrayList<ZimbraMemcachedClient> zmcs = new ArrayList<ZimbraMemcachedClient>();
+        ArrayList<ZimbraMemcachedClient> zmcs = new ArrayList<>();
         
         for (int i = 0; i < numServers; ++i) {
             ZimbraMemcachedClient zmc = new ZimbraMemcachedClient();
@@ -187,7 +187,7 @@ public class ProxyPurgeUtil
             //       the utility will append the default domain to that entry and will execute step 1.
             //       (In this case the provisioning lookup will return the correct domain)
                         
-            ArrayList<String> routes = new ArrayList<String> ();
+            ArrayList<String> routes = new ArrayList<>();
             
             // Lookup the account; at this point we don't whether the user is fully qualified.
             Account account = prov.get(Key.AccountBy.name, a);
@@ -240,7 +240,7 @@ public class ProxyPurgeUtil
                 }
 
                 String[] aliases = account.getMailAlias();
-                List<String> uids = new ArrayList<String>();
+                List<String> uids = new ArrayList<>();
                 uids.add(uid);
                 for (String alias : aliases) {
                     if (alias.indexOf('@') != -1 && alias.substring(alias.indexOf('@') + 1).equals(domain)) {
@@ -331,7 +331,7 @@ public class ProxyPurgeUtil
      */
     static ArrayList<String> getAccounts (CommandLine commandLine)
     {
-        ArrayList<String>   accounts = new ArrayList<String> ();
+        ArrayList<String>   accounts = new ArrayList<>();
         String[]            values = commandLine.getOptionValues ("a");
         String              filename = commandLine.getOptionValue ("L");
 
@@ -386,7 +386,7 @@ public class ProxyPurgeUtil
      */
     static ArrayList<String> getCacheServers (CommandLine commandLine)
     {
-        ArrayList<String>   servers = new ArrayList<String> ();
+        ArrayList<String>   servers = new ArrayList<>();
         String[]            values = commandLine.getArgs ();
 
         if (values != null) {

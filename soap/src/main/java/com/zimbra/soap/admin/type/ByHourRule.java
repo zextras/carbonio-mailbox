@@ -28,7 +28,7 @@ public class ByHourRule implements ByHourRuleInterface {
      */
     @SuppressWarnings("unused")
     private ByHourRule() {
-        this((String) null);
+        this(null);
     }
 
     public ByHourRule(String list) {

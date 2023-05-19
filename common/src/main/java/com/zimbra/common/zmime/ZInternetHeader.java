@@ -208,7 +208,7 @@ public class ZInternetHeader {
             this.unique = unique;  this.prepend = prepend;  this.first = first;
         }
 
-        private static final Map<String, HeaderInfo> lookup = new HashMap<String, HeaderInfo>(40);
+        private static final Map<String, HeaderInfo> lookup = new HashMap<>(40);
         static {
             for (HeaderInfo hinfo : EnumSet.allOf(HeaderInfo.class)) {
                 if (hinfo.name != null) {
@@ -420,17 +420,19 @@ public class ZInternetHeader {
         if (null != decoded) {
             text.append(decoded);
         } else {
-            text.append(needDecode.toString());
+            text.append(needDecode);
         }
     }
 
-    public enum SequenceType {UNDEFINED, ERROR, COMMENT /* comment */, EW /* encoded-word */, LWS /* linear-white-space */};
-    public enum EncodeSequenceState {CHARSET, ENCODEMETHOD, TEXT, UNDEFINED};
+    public enum SequenceType {UNDEFINED, ERROR, COMMENT /* comment */, EW /* encoded-word */, LWS /* linear-white-space */}
+
+    public enum EncodeSequenceState {CHARSET, ENCODEMETHOD, TEXT, UNDEFINED}
+
     static public class FieldElement {
         private SequenceType seqType;
-        private ByteArrayOutputStream bytes;
-        private ByteArrayOutputStream charset;
-        private ByteArrayOutputStream decodeType;
+        private final ByteArrayOutputStream bytes;
+        private final ByteArrayOutputStream charset;
+        private final ByteArrayOutputStream decodeType;
 
         public FieldElement(SequenceType type) {
             seqType = type;
@@ -460,7 +462,7 @@ public class ZInternetHeader {
      *
      */
     static class Fields {
-        private List<FieldElement> fields = new ArrayList<FieldElement>();
+        private final List<FieldElement> fields = new ArrayList<>();
         public void add(FieldElement element) {
             int end = fields.size() - 1;
             if (element.getSeqType() != SequenceType.EW && element.getText().isEmpty()) {

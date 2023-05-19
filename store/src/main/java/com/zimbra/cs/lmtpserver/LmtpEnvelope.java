@@ -22,18 +22,18 @@ import java.util.List;
 
 public class LmtpEnvelope {
 	
-	private List<LmtpAddress> mRecipients; 
-	private List<LmtpAddress> mLocalRecipients;
-	private List<LmtpAddress> mRemoteRecipients;
-    private Multimap<String, LmtpAddress> mRemoteServerToRecipientsMap;
+	private final List<LmtpAddress> mRecipients;
+	private final List<LmtpAddress> mLocalRecipients;
+	private final List<LmtpAddress> mRemoteRecipients;
+    private final Multimap<String, LmtpAddress> mRemoteServerToRecipientsMap;
     private LmtpAddress mSender;
     private int mSize;
     private LmtpBodyType mBodyType;
     
     public LmtpEnvelope() {
-    	mRecipients = new LinkedList<LmtpAddress>();
-    	mLocalRecipients = new LinkedList<LmtpAddress>();
-    	mRemoteRecipients = new LinkedList<LmtpAddress>();
+    	mRecipients = new LinkedList<>();
+    	mLocalRecipients = new LinkedList<>();
+    	mRemoteRecipients = new LinkedList<>();
     	mRemoteServerToRecipientsMap = ArrayListMultimap.create();
     }
     

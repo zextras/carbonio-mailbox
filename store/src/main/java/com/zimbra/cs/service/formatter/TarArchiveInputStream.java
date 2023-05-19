@@ -15,7 +15,7 @@ import com.zimbra.cs.service.formatter.ArchiveFormatter.ArchiveInputStream;
 
 public class TarArchiveInputStream implements ArchiveInputStream {
     public class TarArchiveInputEntry implements ArchiveInputEntry {
-        private TarEntry entry;
+        private final TarEntry entry;
 
         public TarArchiveInputEntry(TarInputStream is) throws IOException {
             entry = is.getNextEntry();
@@ -32,7 +32,7 @@ public class TarArchiveInputStream implements ArchiveInputStream {
         public boolean isUnread() { return (entry.getMode() & 0200) == 0; }
     }
 
-    private TarInputStream is;
+    private final TarInputStream is;
 
     public TarArchiveInputStream(InputStream is, String cset) {
         this.is = new TarInputStream(is, cset);

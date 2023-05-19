@@ -34,7 +34,7 @@ public class PhoneInfo {
      * @zm-api-field-description Preference information
      */
     @XmlElement(name=AccountConstants.E_PREF /* pref */, required=false)
-    private List<PrefInfo> prefs = Lists.newArrayList();
+    private final List<PrefInfo> prefs = Lists.newArrayList();
 
     public PhoneInfo() {
     }

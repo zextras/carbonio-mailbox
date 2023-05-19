@@ -48,7 +48,7 @@ import com.zimbra.soap.ZimbraSoapContext;
  */
 public class GetCalendarItemSummaries extends CalendarRequest {
 
-    private static Log mLog = LogFactory.getLog(GetCalendarItemSummaries.class);
+    private static final Log mLog = LogFactory.getLog(GetCalendarItemSummaries.class);
 
     private static final String[] TARGET_FOLDER_PATH = new String[] { MailConstants.A_FOLDER };
     private static final String[] RESPONSE_ITEM_PATH = new String[] { };

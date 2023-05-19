@@ -12,10 +12,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface XPropInterface {
-    public XPropInterface createFromNameAndValue(String name, String value);
-    public String getName();
-    public String getValue();
-    public void setXParamInterfaces(Iterable<XParamInterface> xParams);
-    public void addXParamInterface(XParamInterface xParam);
-    public List<XParamInterface> getXParamInterfaces();
+    XPropInterface createFromNameAndValue(String name, String value);
+    String getName();
+    String getValue();
+    void setXParamInterfaces(Iterable<XParamInterface> xParams);
+    void addXParamInterface(XParamInterface xParam);
+    List<XParamInterface> getXParamInterfaces();
 }

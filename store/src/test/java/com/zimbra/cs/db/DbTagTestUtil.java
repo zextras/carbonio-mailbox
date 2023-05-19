@@ -110,7 +110,7 @@ public class DbTagTestUtil extends DbTag {
               int id = rs.getInt(1);
               int flags = (rs.getInt(2) & flagMask) | (rs.getBoolean(4) ? Flag.BITMASK_UNREAD : 0);
               String[] tagset = deserializeTags(rs.getString(3));
-              Set<String> tags = tagset == null ? Collections.<String>emptySet() : Sets.newHashSet(tagset);
+              Set<String> tags = tagset == null ? Collections.emptySet() : Sets.newHashSet(tagset);
 
               PreparedStatement stmtcheck = null;
               ResultSet rscheck = null;

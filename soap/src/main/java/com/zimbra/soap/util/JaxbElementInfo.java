@@ -15,10 +15,10 @@ public class JaxbElementInfo
 implements JaxbNodeInfo {
     private static final Log LOG = ZimbraLog.soap;
     private String name;
-    private String namespace;
-    private boolean required;
-    private boolean canHaveMultipleElements;
-    private String fieldName;
+    private final String namespace;
+    private final boolean required;
+    private final boolean canHaveMultipleElements;
+    private final String fieldName;
     private String stamp;
     private Class<?> atomClass;
 
@@ -32,7 +32,7 @@ implements JaxbNodeInfo {
         }
         if (name == null) {
             throw new RuntimeException(
-                String.format("Ignoring element with annotation %s unable to determine name", annot.toString()));
+                String.format("Ignoring element with annotation %s unable to determine name", annot));
         }
         stamp = String.format("[element=%s]", name);
         atomClass = annot.type();
@@ -70,7 +70,7 @@ implements JaxbNodeInfo {
         }
         if (name == null) {
             throw new RuntimeException(
-                String.format("Ignoring element with annotation %s unable to determine name", annot.toString()));
+                String.format("Ignoring element with annotation %s unable to determine name", annot));
         }
         stamp = String.format("[element=%s]", name);
         canHaveMultipleElements = JaxbInfo.representsMultipleElements(defaultGenericType);

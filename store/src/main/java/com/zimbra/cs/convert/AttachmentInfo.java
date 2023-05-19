@@ -12,6 +12,7 @@ package com.zimbra.cs.convert;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,13 +26,13 @@ import com.zimbra.common.util.ZimbraLog;
  * @author kchen
  */
 public class AttachmentInfo {
-    private InputStream mInstream;
-    private String mContentType;
-    private String mPart;
-    private List<String> mSeqInArchive;
-    private String mDigest;
-    private String mFilename;
-    private long mLength;
+    private final InputStream mInstream;
+    private final String mContentType;
+    private final String mPart;
+    private final List<String> mSeqInArchive;
+    private final String mDigest;
+    private final String mFilename;
+    private final long mLength;
     private Charset charset;
     
     public AttachmentInfo(InputStream in, String digest, String ct, String p, String filename, long length, List<String> seq, String cset) {
@@ -41,13 +42,13 @@ public class AttachmentInfo {
         mPart = p;
         mFilename = filename;
         mLength = length;
-        mSeqInArchive = new ArrayList<String>(seq.size());
+        mSeqInArchive = new ArrayList<>(seq.size());
         mSeqInArchive.addAll(seq);
         try {
             charset = Charset.forName(cset);
         } catch (Exception e) {
-            charset = Charset.forName("UTF-8");
-            ZimbraLog.mailbox.error("Invalid character set - %s", cset);;
+            charset = StandardCharsets.UTF_8;
+            ZimbraLog.mailbox.error("Invalid character set - %s", cset);
         }
     }
     
@@ -79,7 +80,7 @@ public class AttachmentInfo {
      * @return Returns the Seq ID of a piece of content in the Archive.
      */
     public List<String> getSeqInArchive() {
-        return new ArrayList<String>(mSeqInArchive);
+        return new ArrayList<>(mSeqInArchive);
     }
 
     /**

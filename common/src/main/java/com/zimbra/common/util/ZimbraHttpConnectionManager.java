@@ -182,11 +182,11 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
         return EXTERNAL_CONN_MGR;
     }
 
-    private String name;
-    private ZimbraConnMgrParams zimbraConnMgrParams;
+    private final String name;
+    private final ZimbraConnMgrParams zimbraConnMgrParams;
     private PoolingHttpClientConnectionManager httpConnMgr;
-    private HttpClientBuilder defaultHttpClient;
-    private IdleReaper idleReaper;
+    private final HttpClientBuilder defaultHttpClient;
+    private final IdleReaper idleReaper;
 
 
     private ZimbraHttpConnectionManager(String name, ZimbraConnMgrParams zimbraConnMgrParams) {
@@ -339,7 +339,7 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
      */
     private static class IdleReaper {
         // the ZimbraHttpConnectionManager instance this IdleReaper is for.
-        private ZimbraHttpConnectionManager connMgr;
+        private final ZimbraHttpConnectionManager connMgr;
 
         private IdleConnectionMonitorThread reaperThread;
 

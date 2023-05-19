@@ -294,7 +294,7 @@ public final class EscapeSequencesTest {
         doTestNotifyEscape(filterScript, "Sample\\\\Message");
     }
 
-    private String triggeringMsg =
+    private final String triggeringMsg =
               "To: user123@zimbra.com\n"
             + "From: sender@zimbra.com\n"
             + "Subject: test\\123\n"

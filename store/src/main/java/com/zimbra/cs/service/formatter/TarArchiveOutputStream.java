@@ -15,7 +15,7 @@ import com.zimbra.cs.service.formatter.ArchiveFormatter.ArchiveOutputStream;
 
 public class TarArchiveOutputStream implements ArchiveOutputStream {
     public class TarArchiveOutputEntry implements ArchiveOutputEntry {
-        private TarEntry entry;
+        private final TarEntry entry;
 
         public TarArchiveOutputEntry(String path, String name, int type, long
             date) {
@@ -31,7 +31,7 @@ public class TarArchiveOutputStream implements ArchiveOutputStream {
         public void setSize(long size) { entry.setSize(size); }
     }
 
-    private TarOutputStream os;
+    private final TarOutputStream os;
 
     public TarArchiveOutputStream(OutputStream os, String cset) throws
         IOException {

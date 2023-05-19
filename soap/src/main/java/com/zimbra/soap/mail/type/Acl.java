@@ -53,7 +53,7 @@ public class Acl {
      * @zm-api-field-description Grants
      */
     @XmlElement(name=MailConstants.E_GRANT /* grant */, required=false)
-    private List<Grant> grants = Lists.newArrayList();
+    private final List<Grant> grants = Lists.newArrayList();
 
     public Acl() {
     }

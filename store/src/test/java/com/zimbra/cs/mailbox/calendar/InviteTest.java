@@ -28,8 +28,8 @@ public class InviteTest {
   }
 
   private Provisioning prov;
-  private ScheduleAgent scheduleAgentExpected;
-  private String scheduleAgentParam;
+  private final ScheduleAgent scheduleAgentExpected;
+  private final String scheduleAgentParam;
 
   @Before
   public void setUp() throws Exception {

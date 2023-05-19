@@ -41,9 +41,9 @@ public class ServerTest {
         private static final int mainPort = 7185;
         private static final int alternatePort = 7187;
 
-        private enum C { main, alternate };
+        private enum C { main, alternate }
 
-        public TestConfig(C conf) {
+      public TestConfig(C conf) {
             switch (conf) {
             case main:
                 port = mainPort;

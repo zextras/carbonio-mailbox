@@ -40,10 +40,10 @@ public class ConstraintInfo {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_VALUES, required=false)
     @XmlElement(name=AdminConstants.E_VALUE, required=false)
-    private List <String> values = Lists.newArrayList();
+    private final List <String> values = Lists.newArrayList();
 
     public ConstraintInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public ConstraintInfo(String min, String max) {

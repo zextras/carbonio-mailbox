@@ -12,9 +12,9 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.soap.account.message.ChangePasswordResponse;
 
 public class ZChangePasswordResult {
-    private ZAuthToken mAuthToken;
-    private long mExpires;
-    private long mLifetime;
+    private final ZAuthToken mAuthToken;
+    private final long mExpires;
+    private final long mLifetime;
 
     public ZChangePasswordResult(Element e) throws ServiceException {
         String authToken = e.getAttribute(AccountConstants.E_AUTH_TOKEN);

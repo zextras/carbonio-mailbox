@@ -30,7 +30,7 @@ public class AdminDestroyWaitSetResponse {
      */
     @SuppressWarnings("unused")
     private AdminDestroyWaitSetResponse() {
-        this((String) null);
+        this(null);
     }
 
     public AdminDestroyWaitSetResponse(String waitSetId) {

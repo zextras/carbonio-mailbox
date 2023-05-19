@@ -25,7 +25,7 @@ public class GetImportStatus extends MailDocumentHandler {
 
     @Override
     public Element handle(Element request, Map<String, Object> context)
-    throws ServiceException, SoapFaultException {
+    throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         Account account = getRequestedAccount(zsc);
         Provisioning prov = Provisioning.getInstance();

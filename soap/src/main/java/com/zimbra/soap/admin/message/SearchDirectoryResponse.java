@@ -67,7 +67,7 @@ public class SearchDirectoryResponse {
         @XmlElement(name=AdminConstants.E_DOMAIN /* domain */, type=DomainInfo.class),
         @XmlElement(name=AdminConstants.E_COS /* cos */, type=CosInfo.class)
     })
-    private List<AdminObjectInterface> entries = Lists.newArrayList();
+    private final List<AdminObjectInterface> entries = Lists.newArrayList();
 
     public SearchDirectoryResponse() {
     }

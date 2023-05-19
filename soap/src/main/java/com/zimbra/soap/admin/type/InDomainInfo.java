@@ -25,7 +25,7 @@ public class InDomainInfo {
      * @zm-api-field-description Domains
      */
     @XmlElement(name=AdminConstants.E_DOMAIN, required=false)
-    private List <NamedElement> domains = Lists.newArrayList();
+    private final List <NamedElement> domains = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Rights

@@ -165,7 +165,7 @@ public class Auth extends AdminDocumentHandler {
                 ZimbraLog.security.info(ZimbraLog.encodeAttrs(
                         new String[] {"cmd", "AdminAuth","account", value}));
 
-                Map<String, Object> authCtxt = new HashMap<String, Object>();
+                Map<String, Object> authCtxt = new HashMap<>();
                 authCtxt.put(AuthContext.AC_ORIGINATING_CLIENT_IP, context.get(SoapEngine.ORIG_REQUEST_IP));
                 authCtxt.put(AuthContext.AC_REMOTE_IP, context.get(SoapEngine.SOAP_REQUEST_IP));
                 authCtxt.put(AuthContext.AC_ACCOUNT_NAME_PASSEDIN, valuePassedIn);
@@ -346,7 +346,7 @@ public class Auth extends AdminDocumentHandler {
 	}
 
     private Map<String, Object> getTrustedDeviceAttrs(ZimbraSoapContext zsc, String deviceId) {
-        Map<String, Object> deviceAttrs = new HashMap<String, Object>();
+        Map<String, Object> deviceAttrs = new HashMap<>();
         deviceAttrs.put(AuthContext.AC_DEVICE_ID, deviceId);
         deviceAttrs.put(AuthContext.AC_USER_AGENT, zsc.getUserAgent());
         return deviceAttrs;

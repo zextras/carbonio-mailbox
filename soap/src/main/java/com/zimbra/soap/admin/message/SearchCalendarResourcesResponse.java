@@ -44,10 +44,10 @@ public class SearchCalendarResourcesResponse {
      * @zm-api-field-description Information about calendar resources
      */
     @XmlElement(name=AdminConstants.E_CALENDAR_RESOURCE)
-    private List <CalendarResourceInfo> calResources = Lists.newArrayList();
+    private final List <CalendarResourceInfo> calResources = Lists.newArrayList();
 
     public SearchCalendarResourcesResponse() {
-        this(false, 0L, (Iterable <CalendarResourceInfo>) null);
+        this(false, 0L, null);
     }
 
     public SearchCalendarResourcesResponse(boolean more, long searchTotal,

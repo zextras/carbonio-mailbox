@@ -13,7 +13,7 @@ import com.zimbra.cs.mailbox.Mailbox;
 
 public class LocalImapFolderStore implements ImapFolderStore {
 
-    private transient Folder folder;
+    private final transient Folder folder;
 
     public LocalImapFolderStore(Folder folder) {
         this.folder = folder;

@@ -8,6 +8,7 @@ package com.zimbra.cs.dav.resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -164,14 +165,14 @@ public class CalendarCollection extends Collection {
     }
 
     protected Map<String,String> getUidToHrefMap(java.util.Collection<String> hrefs) {
-        HashMap<String,String> uidmap = new HashMap<String,String>();
+        HashMap<String,String> uidmap = new HashMap<>();
         for (String href : hrefs) {
             try {
                 int start = href.lastIndexOf('/') + 1;
                 int end = href.lastIndexOf(".ics");
                 if ((start >= 0) && (end > start)) {
                     String uid = href.substring(start, end);
-                    uid = URLDecoder.decode(uid, "UTF-8");
+                    uid = URLDecoder.decode(uid, StandardCharsets.UTF_8);
                     if (start > 0 && end > 0 && end > start) {
                         uidmap.put(uid, href);
                     }
@@ -189,7 +190,7 @@ public class CalendarCollection extends Collection {
     // to prevent scanning and improve performance.
     private static final HashSet<QName> sMetaProps;
     static {
-        sMetaProps = new HashSet<QName>();
+        sMetaProps = new HashSet<>();
         sMetaProps.add(DavElements.E_GETETAG);
         sMetaProps.add(DavElements.E_RESOURCETYPE);
         sMetaProps.add(DavElements.E_DISPLAYNAME);
@@ -209,7 +210,7 @@ public class CalendarCollection extends Collection {
     protected Map<String,DavResource> getAppointmentMap(DavContext ctxt, TimeRange range) throws ServiceException, DavException {
         Mailbox mbox = getCalendarMailbox(ctxt);
 
-        HashMap<String,DavResource> appts = new HashMap<String,DavResource>();
+        HashMap<String,DavResource> appts = new HashMap<>();
         ctxt.setCollectionPath(getUri());
         if (range == null)
             range = new TimeRange(getOwner());
@@ -234,9 +235,10 @@ public class CalendarCollection extends Collection {
         Map<String,String> uidmap = getUidToHrefMap(hrefs);
         Mailbox mbox = getCalendarMailbox(ctxt);
 
-        ArrayList<DavResource> appts = new ArrayList<DavResource>();
+        ArrayList<DavResource> appts = new ArrayList<>();
         ctxt.setCollectionPath(getUri());
-        Map<String,CalendarItem> calItems = mbox.getCalendarItemsByUid(ctxt.getOperationContext(), new ArrayList<String>(uidmap.keySet()));
+        Map<String,CalendarItem> calItems = mbox.getCalendarItemsByUid(ctxt.getOperationContext(),
+            new ArrayList<>(uidmap.keySet()));
         for (String uid : calItems.keySet()) {
             CalendarItem calItem = calItems.get(uid);
             if (calItem == null)
@@ -261,7 +263,7 @@ public class CalendarCollection extends Collection {
     private String findEventUid(List<Invite> invites) throws DavException {
         String uid = null;
         MailItem.Type itemType = null;
-        LinkedList<Invite> inviteList = new LinkedList<Invite>();
+        LinkedList<Invite> inviteList = new LinkedList<>();
         for (Invite i : invites) {
             MailItem.Type mItemType = i.getItemType();
             if (mItemType == MailItem.Type.APPOINTMENT || mItemType == MailItem.Type.TASK) {
@@ -538,7 +540,7 @@ public class CalendarCollection extends Collection {
 
             // prepare to call Mailbox.setCalendarItem()
             int flags = 0; String[] tags = null; List<ReplyInfo> replies = null;
-            Invite origInvites[] = null;
+            Invite[] origInvites = null;
             if (origCalItem != null) {
                 flags = origCalItem.getFlagBitmask();
                 tags = origCalItem.getTags();
@@ -546,7 +548,7 @@ public class CalendarCollection extends Collection {
                 origInvites = origCalItem.getInvites();
             }
             SetCalendarItemData scidDefault = new SetCalendarItemData();
-            SetCalendarItemData scidExceptions[] = null;
+            SetCalendarItemData[] scidExceptions = null;
 
             int idxExceptions = 0;
             boolean first = true;
@@ -563,7 +565,7 @@ public class CalendarCollection extends Collection {
                     Invite oldInv = origCalItem.getInvite(i.getRecurId());
                     if (oldInv == null && i.hasRecurId()) {
                         // It's a new exception instance.  Inherit from series.
-                        oldInv = origCalItem.getInvite((RecurId) null);
+                        oldInv = origCalItem.getInvite(null);
                     }
                     if (oldInv != null) {
                         MimeMessage mmInv = origCalItem.getSubpartMessage(oldInv.getMailItemId());

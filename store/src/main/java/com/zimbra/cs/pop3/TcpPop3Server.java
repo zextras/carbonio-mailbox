@@ -66,7 +66,7 @@ public final class TcpPop3Server extends TcpServer implements Pop3Server, Realti
    */
   @Override
   public Map<String, Object> getStatData() {
-    Map<String, Object> data = new HashMap<String, Object>();
+    Map<String, Object> data = new HashMap<>();
     if (getConfig().isSslEnabled()) {
       data.put(ZimbraPerf.RTS_POP_SSL_CONN, numActiveHandlers());
       data.put(ZimbraPerf.RTS_POP_SSL_THREADS, numThreads());

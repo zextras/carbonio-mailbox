@@ -12,27 +12,27 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface PartInfoInterface {
-    public PartInfoInterface createFromPartAndContentType(String part,
-            String contentType);
-    public void setSize(Integer size);
-    public void setContentDisposition(String contentDisposition);
-    public void setContentFilename(String contentFilename);
-    public void setContentId(String contentId);
-    public void setLocation(String location);
-    public void setBody(Boolean body);
-    public void setTruncatedContent(Boolean truncatedContent);
-    public void setContent(String content);
-    public String getPart();
-    public String getContentType();
-    public Integer getSize();
-    public String getContentDisposition();
-    public String getContentFilename();
-    public String getContentId();
-    public String getLocation();
-    public Boolean getBody();
-    public Boolean getTruncatedContent();
-    public String getContent();
-    public void setMimePartInterfaces(Iterable<PartInfoInterface> mimeParts);
-    public void addMimePartInterface(PartInfoInterface mimePart);
-    public List<PartInfoInterface> getMimePartInterfaces();
+    PartInfoInterface createFromPartAndContentType(String part,
+        String contentType);
+    void setSize(Integer size);
+    void setContentDisposition(String contentDisposition);
+    void setContentFilename(String contentFilename);
+    void setContentId(String contentId);
+    void setLocation(String location);
+    void setBody(Boolean body);
+    void setTruncatedContent(Boolean truncatedContent);
+    void setContent(String content);
+    String getPart();
+    String getContentType();
+    Integer getSize();
+    String getContentDisposition();
+    String getContentFilename();
+    String getContentId();
+    String getLocation();
+    Boolean getBody();
+    Boolean getTruncatedContent();
+    String getContent();
+    void setMimePartInterfaces(Iterable<PartInfoInterface> mimeParts);
+    void addMimePartInterface(PartInfoInterface mimePart);
+    List<PartInfoInterface> getMimePartInterfaces();
 }

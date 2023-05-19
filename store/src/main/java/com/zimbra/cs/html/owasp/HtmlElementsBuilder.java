@@ -24,9 +24,9 @@ import com.zimbra.cs.html.owasp.policies.ImgInputElementPolicy;
 public class HtmlElementsBuilder {
 
     static final String COMMA = "(\\s)?+,(\\s)?+";
-    private HtmlAttributesBuilder builder;
-    private boolean neuterImages;
-    private Map<String, ElementPolicy> elementSpecificPolicies = new HashMap<String, ElementPolicy>();
+    private final HtmlAttributesBuilder builder;
+    private final boolean neuterImages;
+    private final Map<String, ElementPolicy> elementSpecificPolicies = new HashMap<>();
 
     public HtmlElementsBuilder(HtmlAttributesBuilder builder, boolean neuterImages) {
         this.builder = builder;

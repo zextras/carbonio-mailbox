@@ -43,9 +43,9 @@ import com.zimbra.common.service.ServiceException;
  */
 public class BigByteArrayMemcachedMap<K extends MemcachedKey, V> {
 
-    private ZimbraMemcachedClient mClient;
-    private ByteArraySerializer<V> mSerializer;
-    private boolean mAckWrites;
+    private final ZimbraMemcachedClient mClient;
+    private final ByteArraySerializer<V> mSerializer;
+    private final boolean mAckWrites;
 
     /**
      * Creates a map using a memcached client and serializer.

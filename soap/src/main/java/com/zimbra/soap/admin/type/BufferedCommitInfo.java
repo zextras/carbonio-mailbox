@@ -33,7 +33,7 @@ public class BufferedCommitInfo {
      */
     @SuppressWarnings("unused")
     private BufferedCommitInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public BufferedCommitInfo(String aid, String cid) {

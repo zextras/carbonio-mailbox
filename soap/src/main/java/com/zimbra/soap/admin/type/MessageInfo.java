@@ -116,7 +116,7 @@ implements MessageInfoInterface {
      * @zm-api-field-description Email addresses
      */
     @XmlElement(name=MailConstants.E_EMAIL /* e */, required=false)
-    private List<EmailInfo> emails = Lists.newArrayList();
+    private final List<EmailInfo> emails = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag msg-subject
@@ -149,7 +149,7 @@ implements MessageInfoInterface {
      * @zm-api-field-description Headers
      */
     @XmlElement(name=MailConstants.A_HEADER /* header */, required=false)
-    private List<KeyValuePair> headers = Lists.newArrayList();
+    private final List<KeyValuePair> headers = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Content elements
@@ -160,7 +160,7 @@ implements MessageInfoInterface {
         @XmlElement(name=MailConstants.E_DL_SUBSCRIPTION_NOTIFICATION /* dlSubs */,
             type=DLSubscriptionNotification.class)
     })
-    private List<Object> contentElems = Lists.newArrayList();
+    private final List<Object> contentElems = Lists.newArrayList();
 
     public MessageInfo() {
     }

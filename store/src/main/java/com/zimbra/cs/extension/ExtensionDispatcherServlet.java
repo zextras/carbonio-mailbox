@@ -35,7 +35,7 @@ import com.zimbra.cs.servlet.ZimbraServlet;
  *
  */
 public class ExtensionDispatcherServlet extends ZimbraServlet {
-    private static Map sHandlers = Collections.synchronizedMap(new HashMap());
+    private static final Map sHandlers = Collections.synchronizedMap(new HashMap());
     public static final String EXTENSION_PATH = "/service/extension";
 
     /**

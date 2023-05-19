@@ -21,7 +21,7 @@ import com.zimbra.cs.ldap.ZAttributes;
 
 public class UBIDAttributes extends ZAttributes {
 
-    private static String[] EMPTY_STRING_ARRAY = new String[0];
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
     
     //
     // The wrapped object here is actually the SearchResultEntry or Entry object.
@@ -30,7 +30,7 @@ public class UBIDAttributes extends ZAttributes {
     // implementation just delegate all operations on the wrapped (SearchResult)Entry 
     // object.
     //
-    private Entry entry;
+    private final Entry entry;
     
     UBIDAttributes(SearchResultEntry entry) {
         this.entry = entry;
@@ -62,7 +62,7 @@ public class UBIDAttributes extends ZAttributes {
     }
     
     private String[] getMultiAttrStringInternal(Attribute attr, boolean containsBinaryData) {
-        String result[] = new String[attr.size()];
+        String[] result = new String[attr.size()];
         
         if (containsBinaryData) {
             byte[][] bytesArrays = attr.getValueByteArrays();
@@ -108,7 +108,7 @@ public class UBIDAttributes extends ZAttributes {
     @Override
     public Map<String, Object> getAttrs(Set<String> extraBinaryAttrs)
             throws LdapException {
-        Map<String,Object> map = new HashMap<String,Object>();  
+        Map<String,Object> map = new HashMap<>();
         
         AttributeManager attrMgr = AttributeManager.getInst();
         
@@ -124,7 +124,7 @@ public class UBIDAttributes extends ZAttributes {
             if (attr.size() == 1) {
                 map.put(attrName, getAttrStringInternal(attr, containsBinaryData));
             } else {
-                String result[] = getMultiAttrStringInternal(attr, containsBinaryData);
+                String[] result = getMultiAttrStringInternal(attr, containsBinaryData);
                 map.put(attrName, result);
             }
         }

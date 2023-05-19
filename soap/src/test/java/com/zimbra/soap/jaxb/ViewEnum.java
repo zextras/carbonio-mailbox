@@ -29,7 +29,7 @@ public enum ViewEnum {
     @XmlEnumValue("task") TASK ("task"),
     @XmlEnumValue("chat") CHAT ("chat");
 
-    private static Map<String, ViewEnum> nameToView = Maps.newHashMap();
+    private static final Map<String, ViewEnum> nameToView = Maps.newHashMap();
 
     static {
         for (ViewEnum v : ViewEnum.values()) {
@@ -37,9 +37,9 @@ public enum ViewEnum {
         }
     }
 
-    private String name;
+    private final String name;
 
-    private ViewEnum(String name) {
+    ViewEnum(String name) {
         this.name = name;
     }
 

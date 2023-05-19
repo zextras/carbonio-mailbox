@@ -28,7 +28,7 @@ public class GetBulkIMAPImportTaskListResponse {
      * @zm-api-field-description Information on inport tasks
      */
     @XmlElement(name=AdminExtConstants.E_Task /* task */, required=false)
-    private List<BulkIMAPImportTaskInfo> tasks = Lists.newArrayList();
+    private final List<BulkIMAPImportTaskInfo> tasks = Lists.newArrayList();
 
     public GetBulkIMAPImportTaskListResponse() {
     }

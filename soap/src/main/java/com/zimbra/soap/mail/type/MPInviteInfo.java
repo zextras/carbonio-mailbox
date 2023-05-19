@@ -37,7 +37,7 @@ public class MPInviteInfo {
      * @zm-api-field-description Timezones
      */
     @XmlElement(name=MailConstants.E_CAL_TZ /* tz */, required=false)
-    private List<CalTZInfo> timezones = Lists.newArrayList();
+    private final List<CalTZInfo> timezones = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Replies
@@ -45,20 +45,20 @@ public class MPInviteInfo {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=MailConstants.E_CAL_REPLIES /* replies */, required=false)
     @XmlElement(name=MailConstants.E_CAL_REPLY /* reply */, required=false)
-    private List<CalendarReply> calendarReplies = Lists.newArrayList();
+    private final List<CalendarReply> calendarReplies = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Invite components
      */
     @XmlElement(name=MailConstants.E_INVITE_COMPONENT /* comp */, required=false)
-    private List<InviteComponent> inviteComponents = Lists.newArrayList();
+    private final List<InviteComponent> inviteComponents = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private MPInviteInfo() {
-        this((String) null);
+        this(null);
     }
 
     public MPInviteInfo( String calItemType) {

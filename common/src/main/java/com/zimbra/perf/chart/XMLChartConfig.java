@@ -158,7 +158,7 @@ public class XMLChartConfig {
      */
     public static List<ChartSettings> load(File xmlFile)
             throws IOException, DocumentException, XmlParseException {
-        List<ChartSettings> charts = new ArrayList<ChartSettings>();
+        List<ChartSettings> charts = new ArrayList<>();
         Document document;
         try (FileInputStream fis = new FileInputStream(xmlFile)) {
             document = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fis);

@@ -6,11 +6,11 @@
 package com.zimbra.soap.base;
 
 public interface ZimletServerExtensionInterface {
-    public void setHasKeyword(String hasKeyword);
-    public void setExtensionClass(String extensionClass);
-    public void setRegex(String regex);
+    void setHasKeyword(String hasKeyword);
+    void setExtensionClass(String extensionClass);
+    void setRegex(String regex);
 
-    public String getHasKeyword();
-    public String getExtensionClass();
-    public String getRegex();
+    String getHasKeyword();
+    String getExtensionClass();
+    String getRegex();
 }

@@ -12,6 +12,7 @@ package com.zimbra.common.soap;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,13 +73,13 @@ public class SoapHttpTransport extends SoapTransport {
     private int mRetryCount = defaultRetryCount;
     private int mTimeout = defaultTimeout;
     private final String mUri;
-    private static boolean defaultKeepAlive = LC.httpclient_soaphttptransport_keepalive_connections.booleanValue();
-    private static int defaultRetryCount = LC.httpclient_soaphttptransport_retry_count.intValue();
-    private static int defaultTimeout = LC.httpclient_soaphttptransport_so_timeout.intValue();
+    private static final boolean defaultKeepAlive = LC.httpclient_soaphttptransport_keepalive_connections.booleanValue();
+    private static final int defaultRetryCount = LC.httpclient_soaphttptransport_retry_count.intValue();
+    private static final int defaultTimeout = LC.httpclient_soaphttptransport_so_timeout.intValue();
 
     public interface HttpDebugListener {
-        public void sendSoapMessage(HttpPost postMethod, Element envelope, BasicCookieStore httpState);
-        public void receiveSoapMessage(HttpPost postMethod, Element envelope);
+        void sendSoapMessage(HttpPost postMethod, Element envelope, BasicCookieStore httpState);
+        void receiveSoapMessage(HttpPost postMethod, Element envelope);
     }
 
     @Override public String toString() {
@@ -117,7 +118,7 @@ public class SoapHttpTransport extends SoapTransport {
 
     public Map<String, String> getCustomHeaders() {
         if (mCustomHeaders == null)
-            mCustomHeaders = new HashMap<String, String>();
+            mCustomHeaders = new HashMap<>();
         return mCustomHeaders;
     }
 
@@ -374,7 +375,7 @@ public class SoapHttpTransport extends SoapTransport {
         return name;
     }
 
-    public static interface ResponseHandler {
+    public interface ResponseHandler {
         void process(Reader src) throws ServiceException;
     }
 
@@ -441,7 +442,7 @@ public class SoapHttpTransport extends SoapTransport {
         //SOAP message
         Element soapReq = generateSoapMessage(document, raw, noSession, requestedAccountId, changeToken, tokenType, nFormat, curWaitSetID);
         String soapMessage = SoapProtocol.toString(soapReq, getPrettyPrint());
-        post.setEntity(new ByteArrayEntity(soapMessage.getBytes("UTF-8")));
+        post.setEntity(new ByteArrayEntity(soapMessage.getBytes(StandardCharsets.UTF_8)));
         HttpClientContext context = HttpClientContext.create();
         String host = post.getURI().getHost();
         CookieStore cookieStore = HttpClientUtil.newCookieStore(getAuthToken(), host, isAdmin());

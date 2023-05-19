@@ -30,8 +30,8 @@ public class ZPhone implements ToZJSONObject {
 
     public static final Pattern LEADING_ONE = Pattern.compile("^1");
 
-    private String mName;
-    private String mCallerId;
+    private final String mName;
+    private final String mCallerId;
 
     public ZPhone(String name, String callerId) throws ServiceException {
         mName = name;

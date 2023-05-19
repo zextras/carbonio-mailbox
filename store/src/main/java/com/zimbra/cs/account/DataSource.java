@@ -6,6 +6,7 @@
 package com.zimbra.cs.account;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -47,16 +48,16 @@ public class DataSource extends AccountProperty {
          * Tests connecting to a data source.
          * @throws ServiceException if an error occurred
          */
-        public abstract void test() throws ServiceException;
+        void test() throws ServiceException;
 
-        public abstract void importData(List<Integer> folderIds, boolean fullSync)
+        void importData(List<Integer> folderIds, boolean fullSync)
             throws ServiceException;
     }
 
     public static final String CT_CLEARTEXT = "cleartext";
     public static final String CT_SSL = "ssl";
 
-    private DataSourceType mType;
+    private final DataSourceType mType;
     protected DataSourceConfig.Service knownService;
 
     public DataSource(Account acct, DataSourceType type, String name, String id, Map<String, Object> attrs, Provisioning prov) {
@@ -259,7 +260,7 @@ public class DataSource extends AccountProperty {
         String oldInterval = account.getAttr(Provisioning.A_zimbraDataSourcePollingInterval, false);
         if (!StringUtil.isNullOrEmpty(oldInterval)) {
             ZimbraLog.datasource.info("Migrating account POP3 and IMAP polling intervals to %s.", oldInterval);
-            Map<String, Object> attrs = new HashMap<String, Object>();
+            Map<String, Object> attrs = new HashMap<>();
             attrs.put(Provisioning.A_zimbraDataSourcePollingInterval, "");
             attrs.put(Provisioning.A_zimbraDataSourcePop3PollingInterval, oldInterval);
             attrs.put(Provisioning.A_zimbraDataSourceImapPollingInterval, oldInterval);
@@ -271,7 +272,7 @@ public class DataSource extends AccountProperty {
         oldInterval = cos.getAttr(Provisioning.A_zimbraDataSourcePollingInterval, false);
         if (!StringUtil.isNullOrEmpty(oldInterval)) {
             ZimbraLog.datasource.info("Migrating COS POP3 and IMAP polling intervals to %s.", oldInterval);
-            Map<String, Object> attrs = new HashMap<String, Object>();
+            Map<String, Object> attrs = new HashMap<>();
             attrs.put(Provisioning.A_zimbraDataSourcePollingInterval, "");
             attrs.put(Provisioning.A_zimbraDataSourcePop3PollingInterval, oldInterval);
             attrs.put(Provisioning.A_zimbraDataSourceImapPollingInterval, oldInterval);
@@ -425,7 +426,7 @@ public class DataSource extends AccountProperty {
     private static Cipher getCipher(String dataSourceId, byte[] salt, boolean encrypt) throws GeneralSecurityException, UnsupportedEncodingException {
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         md5.update(salt);
-        md5.update(dataSourceId.getBytes("utf-8"));
+        md5.update(dataSourceId.getBytes(StandardCharsets.UTF_8));
         byte[] key = md5.digest();
         SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
 
@@ -435,11 +436,7 @@ public class DataSource extends AccountProperty {
     }
 
     public static String encryptData(String dataSourceId, String data) throws ServiceException {
-        try {
-            return new String(encryptData(dataSourceId, data.getBytes("utf-8")));
-        } catch (UnsupportedEncodingException e) {
-            throw ServiceException.FAILURE("caught unsupport encoding exception", e);
-        }
+        return new String(encryptData(dataSourceId, data.getBytes(StandardCharsets.UTF_8)));
     }
 
     public static byte[] encryptData(String dataSourceId, byte[] data) throws ServiceException {
@@ -460,11 +457,7 @@ public class DataSource extends AccountProperty {
     }
 
     public static String decryptData(String dataSourceId, String data) throws ServiceException {
-        try {
-            return new String(decryptData(dataSourceId, data.getBytes()), "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            throw ServiceException.FAILURE("caught unsupport encoding exception", e);
-        }
+        return new String(decryptData(dataSourceId, data.getBytes()), StandardCharsets.UTF_8);
     }
 
     public static byte[] decryptData(String dataSourceId, byte[] data) throws ServiceException {
@@ -563,7 +556,7 @@ public class DataSource extends AccountProperty {
             .toString();
     }
 
-    public static void main(String args[]) throws ServiceException {
+    public static void main(String[] args) throws ServiceException {
         String dataSourceId = UUID.randomUUID().toString();
         String enc = encryptData(dataSourceId, "helloworld");
         System.out.println(enc);

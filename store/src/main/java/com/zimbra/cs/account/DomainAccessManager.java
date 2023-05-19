@@ -166,7 +166,7 @@ public class DomainAccessManager extends AccessManager {
 
     @Override
     public boolean canAccessEmail(AuthToken at, String email) throws ServiceException {
-        String parts[] = EmailUtil.getLocalPartAndDomain(email);
+        String[] parts = EmailUtil.getLocalPartAndDomain(email);
         if (parts == null)
             throw ServiceException.INVALID_REQUEST("must be valid email address: "+email, null);
 

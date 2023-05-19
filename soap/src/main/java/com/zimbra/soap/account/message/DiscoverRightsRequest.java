@@ -73,7 +73,7 @@ public class DiscoverRightsRequest {
      * @zm-api-field-description The rights.
      */
     @XmlElement(name=AccountConstants.E_RIGHT /* right */, required=true)
-    private List<String> rights = Lists.newArrayList();
+    private final List<String> rights = Lists.newArrayList();
 
     public DiscoverRightsRequest() {
         this(null);

@@ -45,7 +45,7 @@ public class RestoreResponse {
      * @zm-api-field-description Accounts
      */
     @XmlElement(name=BackupConstants.E_ACCOUNT /* account */, required=false)
-    private List<Name> accounts = Lists.newArrayList();
+    private final List<Name> accounts = Lists.newArrayList();
 
     public RestoreResponse() {
     }

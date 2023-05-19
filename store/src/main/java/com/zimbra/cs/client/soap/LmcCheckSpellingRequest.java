@@ -17,7 +17,7 @@ import com.zimbra.common.soap.MailConstants;
 
 public class LmcCheckSpellingRequest extends LmcSoapRequest {
 
-    private String mText;
+    private final String mText;
 
     public LmcCheckSpellingRequest(String text) {
         mText = text;

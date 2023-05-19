@@ -10,7 +10,7 @@ import com.zimbra.client.ZItem;
 
 public interface ZCreateItemEvent extends ZCreateEvent {
 
-    public String getId() throws ServiceException;
+    String getId() throws ServiceException;
 
     /**
      *
@@ -18,5 +18,5 @@ public interface ZCreateItemEvent extends ZCreateEvent {
      *
      * @throws ServiceException on error
      */
-    public ZItem getItem() throws ServiceException;
+    ZItem getItem() throws ServiceException;
 }

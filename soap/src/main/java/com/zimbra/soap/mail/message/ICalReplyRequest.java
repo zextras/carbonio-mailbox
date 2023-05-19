@@ -36,7 +36,7 @@ public class ICalReplyRequest {
      */
     @SuppressWarnings("unused")
     private ICalReplyRequest() {
-        this((String) null);
+        this(null);
     }
 
     public ICalReplyRequest(String ical) {

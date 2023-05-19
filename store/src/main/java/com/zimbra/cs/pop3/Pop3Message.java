@@ -16,9 +16,9 @@ import com.zimbra.cs.mailbox.Message;
 public final class Pop3Message {
     private boolean retrieved = false;
     private boolean deleted = false;
-    private int id;
-    private long size; // raw size from blob store
-    private String digest;
+    private final int id;
+    private final long size; // raw size from blob store
+    private final String digest;
 
     /**
      * save enough info from the Message so we don't have to keep a reference to it.

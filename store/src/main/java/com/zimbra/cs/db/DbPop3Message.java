@@ -93,7 +93,7 @@ public class DbPop3Message {
      */
     public static Map<Integer, String> getMappings(Mailbox mbox, String dataSourceId)
     throws ServiceException {
-        Map<Integer, String> mappings = new HashMap<Integer, String>();
+        Map<Integer, String> mappings = new HashMap<>();
         DbConnection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -132,7 +132,7 @@ public class DbPop3Message {
         ZimbraLog.mailbox.debug("%s: looking for uids that match a set of size %d", ds, uids.size());
 
         List<List<String>> splitIds = ListUtil.split(uids, Db.getINClauseBatchSize());
-        Set<String> matchingUids = new HashSet<String>();
+        Set<String> matchingUids = new HashSet<>();
 
         DbConnection conn = null;
         PreparedStatement stmt = null;

@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
  */
 public class CsvReader {
 
-    private BufferedReader mReader;
-    private String[] mColNames;
+    private final BufferedReader mReader;
+    private final String[] mColNames;
     private Map<String, String> mCurrent;
 
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\\\"?\\s*,\\s*\\\"?");
@@ -57,7 +57,7 @@ public class CsvReader {
         String[] values = SPLIT_PATTERN.split(line);
         int length = Math.min(values.length, mColNames.length);
         if (mCurrent == null) {
-            mCurrent = new HashMap<String, String>();
+            mCurrent = new HashMap<>();
         } else {
             mCurrent.clear();
         }

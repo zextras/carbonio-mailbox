@@ -34,7 +34,7 @@ public class ConfigureZimletRequest {
      */
     @SuppressWarnings("unused")
     private ConfigureZimletRequest() {
-        this((AttachmentIdAttrib) null);
+        this(null);
     }
 
     public ConfigureZimletRequest(AttachmentIdAttrib content) {

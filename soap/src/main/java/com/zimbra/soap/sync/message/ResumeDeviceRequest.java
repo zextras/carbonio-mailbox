@@ -36,7 +36,7 @@ public class ResumeDeviceRequest {
      */
     @SuppressWarnings("unused")
     private ResumeDeviceRequest() {
-        this((DeviceId) null);
+        this(null);
     }
 
     public ResumeDeviceRequest(DeviceId device) {

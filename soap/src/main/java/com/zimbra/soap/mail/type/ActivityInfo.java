@@ -71,14 +71,14 @@ public class ActivityInfo {
      * @zm-api-field-description Extra data for some of the operations
      */
     @XmlElement(name=MailConstants.E_ARG /* arg */, required=false)
-    private List<NamedValue> args = Lists.newArrayList();
+    private final List<NamedValue> args = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private ActivityInfo() {
-        this((String) null, -1L, (String) null);
+        this(null, -1L, null);
     }
 
     public ActivityInfo(String operation, long timeStamp, String itemId) {

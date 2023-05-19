@@ -39,7 +39,7 @@ public class BEncodingTest {
         Assert.assertEquals("d3:Foo3:6.74:foo23:bar4:herpli654e7:hwhergk3:74xe7:testingi5e2:yydee", encoded);
 
         @SuppressWarnings("unchecked")
-        Map<String, Object> decoded = (Map<String, Object>) BEncoding.decode(encoded);
+        Map<String, Object> decoded = BEncoding.decode(encoded);
         Assert.assertEquals(5, decoded.size());
         Assert.assertEquals(5L, decoded.get("testing"));
         Assert.assertEquals("bar", decoded.get("foo2"));

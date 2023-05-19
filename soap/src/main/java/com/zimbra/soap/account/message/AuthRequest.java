@@ -130,7 +130,7 @@ public class AuthRequest {
      */
     @XmlElementWrapper(name=AccountConstants.E_PREFS /* prefs */, required=false)
     @XmlElement(name=AccountConstants.E_PREF /* pref */, required=false)
-    private final List<Pref> prefs = new ArrayList<Pref>();
+    private final List<Pref> prefs = new ArrayList<>();
 
     /**
      * @zm-api-field-description Requested attribute settings.  Only attributes that are allowed to be returned by
@@ -138,7 +138,7 @@ public class AuthRequest {
      */
     @XmlElementWrapper(name=AccountConstants.E_ATTRS /* attrs */, required=false)
     @XmlElement(name=AccountConstants.E_ATTR /* attr */, required=false)
-    private final List<Attr> attrs = new ArrayList<Attr>();
+    private final List<Attr> attrs = new ArrayList<>();
 
     /**
      * @zm-api-field-tag requested-skin

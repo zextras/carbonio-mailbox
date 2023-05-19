@@ -75,7 +75,7 @@ public class AutoCompleteGalRequest {
      * no-argument constructor wanted by JAXB
      */
     private AutoCompleteGalRequest() {
-        this((String) null);
+        this(null);
     }
 
     private AutoCompleteGalRequest(String name) {

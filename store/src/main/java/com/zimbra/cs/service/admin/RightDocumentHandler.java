@@ -116,6 +116,6 @@ public abstract class RightDocumentHandler extends AdminDocumentHandler {
             }
         }
 
-        return new Pair<Boolean, Boolean>(expandSetAttrs, expandGetAttrs);
+        return new Pair<>(expandSetAttrs, expandGetAttrs);
     }
 }

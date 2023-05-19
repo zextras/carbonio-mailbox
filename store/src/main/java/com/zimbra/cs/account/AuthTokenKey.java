@@ -26,9 +26,9 @@ public class AuthTokenKey {
     
     public static final int KEY_SIZE_BYTES = 32;
     private byte[] mKey;
-    private long mVersion;
-    private long mCreated;
-    private static HashMap<String, AuthTokenKey> mCache = new HashMap<String, AuthTokenKey>();
+    private final long mVersion;
+    private final long mCreated;
+    private static final HashMap<String, AuthTokenKey> mCache = new HashMap<>();
     private static AuthTokenKey sLatestKey;
     
     public byte[] getKey() {
@@ -60,7 +60,7 @@ public class AuthTokenKey {
     }
 
     private AuthTokenKey(String k) throws ServiceException {
-        String parts[] = k.split(":");
+        String[] parts = k.split(":");
         if (parts.length != 3)
             throw ServiceException.INVALID_REQUEST("invalid auth token key", null);
         String ver = parts[0];
@@ -131,7 +131,7 @@ public class AuthTokenKey {
         // bootstrap. automatically create new random key
         if (keys.length == 0) {
             AuthTokenKey key = new AuthTokenKey(0, null);
-            HashMap<String, String> attrs = new HashMap<String, String>();
+            HashMap<String, String> attrs = new HashMap<>();
             attrs.put(Provisioning.A_zimbraAuthTokenKey, key.getEncoded());
             Provisioning.getInstance().modifyAttrs(config, attrs);
             keys = config.getMultiAttr(Provisioning.A_zimbraAuthTokenKey);

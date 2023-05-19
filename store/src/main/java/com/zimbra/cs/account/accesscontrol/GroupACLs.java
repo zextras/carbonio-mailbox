@@ -25,14 +25,14 @@ import com.zimbra.cs.account.Provisioning;
  */
 
 public class GroupACLs {
-    private NamedEntry target;
+    private final NamedEntry target;
     
     // Set of zimbraId of groups the account target is a direct member of
     private Set<String> directGroupsOfAccountTarget;
     
-    private Set<ZimbraACE> aclsOnGroupTargetsAllowedNotDelegable = new HashSet<ZimbraACE>();
-    private Set<ZimbraACE> aclsOnGroupTargetsAllowedDelegable = new HashSet<ZimbraACE>();
-    private Set<ZimbraACE> aclsOnGroupTargetsDenied = new HashSet<ZimbraACE>();
+    private final Set<ZimbraACE> aclsOnGroupTargetsAllowedNotDelegable = new HashSet<>();
+    private final Set<ZimbraACE> aclsOnGroupTargetsAllowedDelegable = new HashSet<>();
+    private final Set<ZimbraACE> aclsOnGroupTargetsDenied = new HashSet<>();
     
     GroupACLs(Entry target) throws ServiceException {
         if (target instanceof Account) {
@@ -106,7 +106,7 @@ public class GroupACLs {
             !aclsOnGroupTargetsAllowedDelegable.isEmpty() ||   
             !aclsOnGroupTargetsDenied.isEmpty()) {
                 
-            List<ZimbraACE> aclsOnGroupTargets = new ArrayList<ZimbraACE>();
+            List<ZimbraACE> aclsOnGroupTargets = new ArrayList<>();
             aclsOnGroupTargets.addAll(aclsOnGroupTargetsDenied);
             aclsOnGroupTargets.addAll(aclsOnGroupTargetsAllowedDelegable);
             aclsOnGroupTargets.addAll(aclsOnGroupTargetsAllowedNotDelegable);

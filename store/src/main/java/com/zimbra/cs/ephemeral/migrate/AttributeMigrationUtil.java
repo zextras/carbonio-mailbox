@@ -39,7 +39,7 @@ import com.zimbra.cs.util.Zimbra;
  */
 public class AttributeMigrationUtil {
 
-    private static Options OPTIONS = new Options();
+    private static final Options OPTIONS = new Options();
 
     static {
         OPTIONS.addOption("r", "dry-run", false, "Dry run: display info on what the migration would accomplish");
@@ -113,7 +113,8 @@ public class AttributeMigrationUtil {
         if (clArgs.size() > 1) {
             attrsToMigrate = clArgs.subList(1, clArgs.size());
         } else {
-            attrsToMigrate = new ArrayList<String>(AttributeManager.getInstance().getEphemeralAttributeNames());
+            attrsToMigrate = new ArrayList<>(
+                AttributeManager.getInstance().getEphemeralAttributeNames());
         }
 
         if (!dryRun) {

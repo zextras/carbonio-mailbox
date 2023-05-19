@@ -26,7 +26,7 @@ public class TimeAttr {
      */
     @SuppressWarnings("unused")
     private TimeAttr() {
-        this((String) null);
+        this(null);
     }
 
     public TimeAttr(String time) {

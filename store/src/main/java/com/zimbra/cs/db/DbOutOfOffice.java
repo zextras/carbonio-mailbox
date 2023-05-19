@@ -27,7 +27,7 @@ import com.zimbra.cs.mailbox.Mailbox;
 
 public class DbOutOfOffice {
     public static String TABLE_NAME = "out_of_office";
-    private static Log mLog = LogFactory.getLog(DbOutOfOffice.class);
+    private static final Log mLog = LogFactory.getLog(DbOutOfOffice.class);
 
     /**
      * Determines whether an out-of-office reply has already been sent to the

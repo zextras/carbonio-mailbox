@@ -35,7 +35,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
         break;
       default:
         jj_la1[1] = jj_gen;
-        ;
       }
                              jjtree.closeNodeScope(jjtn000, true);
                              jjtc000 = false;
@@ -78,7 +77,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
         break;
       default:
         jj_la1[2] = jj_gen;
-        ;
       }
       Clause();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -88,7 +86,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
         break;
       default:
         jj_la1[3] = jj_gen;
-        ;
       }
       label_1:
       while (true) {
@@ -154,7 +151,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
         case TYPE:
         case ATTACHMENT:
         case ITEM:
-          ;
           break;
         default:
           jj_la1[4] = jj_gen;
@@ -167,7 +163,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
           break;
         default:
           jj_la1[5] = jj_gen;
-          ;
         }
         Clause();
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -177,7 +172,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
           break;
         default:
           jj_la1[6] = jj_gen;
-          ;
         }
       }
     } catch (Throwable jjte000) {
@@ -217,7 +211,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
         break;
       default:
         jj_la1[7] = jj_gen;
-        ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LPAREN:
@@ -728,7 +721,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
           break;
         default:
           jj_la1[15] = jj_gen;
-          ;
         }
         TextTerm();
         label_2:
@@ -742,7 +734,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
           case MINUS:
           case TERM:
           case QUOTED_TERM:
-            ;
             break;
           default:
             jj_la1[16] = jj_gen;
@@ -755,7 +746,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
             break;
           default:
             jj_la1[17] = jj_gen;
-            ;
           }
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case NOT:
@@ -765,7 +755,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
             break;
           default:
             jj_la1[18] = jj_gen;
-            ;
           }
           TextTerm();
         }
@@ -822,7 +811,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
           break;
         default:
           jj_la1[20] = jj_gen;
-          ;
         }
         ItemTerm();
         label_3:
@@ -837,7 +825,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
           case TERM:
           case QUOTED_TERM:
           case BRACED_TERM:
-            ;
             break;
           default:
             jj_la1[21] = jj_gen;
@@ -850,7 +837,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
             break;
           default:
             jj_la1[22] = jj_gen;
-            ;
           }
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case NOT:
@@ -860,7 +846,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
             break;
           default:
             jj_la1[23] = jj_gen;
-            ;
           }
           ItemTerm();
         }
@@ -918,7 +903,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
           break;
         default:
           jj_la1[25] = jj_gen;
-          ;
         }
         DateTerm();
         label_4:
@@ -932,7 +916,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
           case MINUS:
           case TERM:
           case QUOTED_TERM:
-            ;
             break;
           default:
             jj_la1[26] = jj_gen;
@@ -945,7 +928,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
             break;
           default:
             jj_la1[27] = jj_gen;
-            ;
           }
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case NOT:
@@ -953,7 +935,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
             break;
           default:
             jj_la1[28] = jj_gen;
-            ;
           }
           DateTerm();
         }
@@ -981,7 +962,6 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
           break;
         default:
           jj_la1[30] = jj_gen;
-          ;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case TERM:
@@ -1161,7 +1141,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
       return (jj_ntk = jj_nt.kind);
   }
 
-  private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
+  private final java.util.List<int[]> jj_expentries = new java.util.ArrayList<>();
   private int[] jj_expentry;
   private int jj_kind = -1;
 

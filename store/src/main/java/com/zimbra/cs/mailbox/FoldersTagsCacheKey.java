@@ -9,7 +9,7 @@ import com.zimbra.common.util.memcached.MemcachedKey;
 import com.zimbra.cs.memcached.MemcachedKeyPrefix;
 
 public class FoldersTagsCacheKey implements MemcachedKey {
-    private String mKeyStr;
+    private final String mKeyStr;
 
     public FoldersTagsCacheKey(String accountId) {
         mKeyStr = accountId;

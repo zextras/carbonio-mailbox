@@ -15,7 +15,7 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
  * in the token.
  */
 public final class ContactTokenFilter extends TokenFilter {
-    private CharTermAttribute termAttr = addAttribute(CharTermAttribute.class);
+    private final CharTermAttribute termAttr = addAttribute(CharTermAttribute.class);
 
     public ContactTokenFilter(AddrCharTokenizer input) {
         super(input);

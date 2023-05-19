@@ -27,6 +27,7 @@ import com.zimbra.soap.mail.type.RetentionPolicy;
 import com.zimbra.soap.mail.type.SearchFolder;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +110,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     syncEnabled('~'),
     noInferiors('o');
 
-    private char mFlagChar;
+    private final char mFlagChar;
 
     public char getFlagChar() {
       return mFlagChar;
@@ -151,7 +152,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     public static final Color ORANGE = new Color("orange", 9);
 
     private static final Map<String, Color> colorMap =
-        new HashMap<String, Color>() {
+        new HashMap<>() {
           {
             put("defaultColor", DEFAULTCOLOR);
             put("blue", BLUE);
@@ -294,8 +295,8 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     mDeletable = e.getAttributeBool(MailConstants.A_DELETABLE, true);
     mAbsolutePath = e.getAttribute(MailConstants.A_ABS_FOLDER_PATH, null);
 
-    mGrants = new ArrayList<ZGrant>();
-    mSubFolders = new ArrayList<ZFolder>();
+    mGrants = new ArrayList<>();
+    mSubFolders = new ArrayList<>();
 
     Element aclEl = e.getOptionalElement(MailConstants.E_ACL);
 
@@ -360,8 +361,8 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     mSize = SystemUtil.coalesce(f.getTotalSize(), 0L);
     if (f.isActiveSyncDisabled() != null) mActiveSyncDisabled = f.isActiveSyncDisabled();
 
-    mGrants = new ArrayList<ZGrant>();
-    mSubFolders = new ArrayList<ZFolder>();
+    mGrants = new ArrayList<>();
+    mSubFolders = new ArrayList<>();
 
     Acl acl = f.getAcl();
     if (acl != null) {
@@ -401,13 +402,13 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   synchronized void addChild(ZFolder folder) {
-    List<ZFolder> newSubs = new ArrayList<ZFolder>(mSubFolders);
+    List<ZFolder> newSubs = new ArrayList<>(mSubFolders);
     newSubs.add(folder);
     mSubFolders = newSubs;
   }
 
   synchronized void removeChild(ZFolder folder) {
-    List<ZFolder> newSubs = new ArrayList<ZFolder>(mSubFolders);
+    List<ZFolder> newSubs = new ArrayList<>(mSubFolders);
     newSubs.remove(folder);
     mSubFolders = newSubs;
   }
@@ -595,11 +596,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   public String getNameURLEncoded() {
-    try {
-      return URLEncoder.encode(mName, "utf-8").replace("+", "%20");
-    } catch (UnsupportedEncodingException e) {
-      return mName;
-    }
+    return URLEncoder.encode(mName, StandardCharsets.UTF_8).replace("+", "%20");
   }
 
   /**
@@ -646,11 +643,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     else {
       String pp = mParent.getPathURLEncoded();
       String n = null;
-      try {
-        n = URLEncoder.encode(mName, "utf-8").replace("+", "%20");
-      } catch (UnsupportedEncodingException e) {
-        n = mName;
-      }
+      n = URLEncoder.encode(mName, StandardCharsets.UTF_8).replace("+", "%20");
       return pp.length() == 1 ? (pp + n) : (pp + ZMailbox.PATH_SEPARATOR + n);
     }
   }
@@ -994,7 +987,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   public void clearGrants() throws ServiceException {
-    mMailbox.updateFolder(mId, null, null, null, null, null, new ArrayList<ZGrant>());
+    mMailbox.updateFolder(mId, null, null, null, null, null, new ArrayList<>());
   }
 
   public void empty(boolean recursive) throws ServiceException {

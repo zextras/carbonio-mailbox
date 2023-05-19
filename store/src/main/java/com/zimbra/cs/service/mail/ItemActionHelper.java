@@ -290,7 +290,7 @@ public class ItemActionHelper {
         return ia;
     }
 
-    public static enum Op {
+    public enum Op {
         TAG("tag"),
         FLAG("flag"),
         PRIORITY("priority"),
@@ -309,7 +309,7 @@ public class ItemActionHelper {
 
         private final String name;
 
-        private Op(String name) {
+        Op(String name) {
             this.name = name;
         }
 
@@ -327,7 +327,7 @@ public class ItemActionHelper {
         toRet.append(" Type=").append(type);
         toRet.append(" FlagValue=").append(mFlagValue);
         if (mTargetConstraint != null) {
-            toRet.append(" TargetConst=").append(mTargetConstraint.toString());
+            toRet.append(" TargetConst=").append(mTargetConstraint);
         }
 
         if (mOperation == Op.TAG) {
@@ -444,7 +444,7 @@ public class ItemActionHelper {
     private ItemActionResult executeLocalBatch(int[] ids) throws ServiceException {
         // iterate over the local items and perform the requested operation
 
-        List<String> originalIds = new ArrayList<String>(ids.length);
+        List<String> originalIds = new ArrayList<>(ids.length);
         for (int id : ids) {
             originalIds.add(mIdFormatter.formatItemId(id));
         }
@@ -468,9 +468,9 @@ public class ItemActionHelper {
                 getMailbox().setColor(getOpCtxt(), ids, type, mColor);
                 break;
             case HARD_DELETE:
-                List<Integer> nonExistentItems = new ArrayList<Integer>();
+                List<Integer> nonExistentItems = new ArrayList<>();
                 getMailbox().delete(getOpCtxt(), ids, type, mTargetConstraint, nonExistentItems);
-                List<String> nonExistentIds = new ArrayList<String>();
+                List<String> nonExistentIds = new ArrayList<>();
                 for (Integer id: nonExistentItems) {
                     nonExistentIds.add(id.toString());
                 }
@@ -488,7 +488,7 @@ public class ItemActionHelper {
                 break;
             case COPY:
                 List<MailItem> copies = getMailbox().copy(getOpCtxt(), ids, type, mIidFolder.getId());
-                List<String> createdIds = new ArrayList<String>(ids.length);
+                List<String> createdIds = new ArrayList<>(ids.length);
                 for (MailItem item : copies) {
                      createdIds.add(mIdFormatter.formatItemId(item));
                 }
@@ -623,8 +623,8 @@ public class ItemActionHelper {
 
         boolean deleteOriginal = mOperation != Op.COPY;
         String folderStr = mIidFolder.toString();
-        List<String> createdIds = new ArrayList<String>(itemIds.length);
-        List<String> nonExistentIds = new ArrayList<String>();
+        List<String> createdIds = new ArrayList<>(itemIds.length);
+        List<String> nonExistentIds = new ArrayList<>();
 
         boolean toSpam = mIidFolder.getId() == Mailbox.ID_FOLDER_SPAM;
         boolean toMailbox = !toSpam && mIidFolder.getId() != Mailbox.ID_FOLDER_TRASH;
@@ -678,7 +678,7 @@ public class ItemActionHelper {
                 } catch (OutOfMemoryError e) {
                     Zimbra.halt("out of memory", e);
                 } catch (Throwable t) {
-                    ZimbraLog.mailop.info("could not train spam filter: " + new ItemId(item).toString(), t);
+                    ZimbraLog.mailop.info("could not train spam filter: " + new ItemId(item), t);
                 }
             }
 
@@ -691,14 +691,14 @@ public class ItemActionHelper {
             switch (item.getType()) {
             case CONTACT:
                 Contact ct = (Contact) item;
-                Map<String, ZMailbox.ZAttachmentInfo> attachments = new HashMap<String, ZMailbox.ZAttachmentInfo>();
+                Map<String, ZMailbox.ZAttachmentInfo> attachments = new HashMap<>();
                 for (Contact.Attachment att : ct.getAttachments()) {
                     String attachmentId = zmbx.uploadAttachment(att.getFilename(), att.getContent(), att.getContentType(), 0);
                     ZMailbox.ZAttachmentInfo info = new ZMailbox.ZAttachmentInfo().setAttachmentId(attachmentId);
                     attachments.put(att.getName(), info);
                 }
                 Map<String, String> fields = ct.getFields();
-                Map<String, String> members = new HashMap<String, String>();
+                Map<String, String> members = new HashMap<>();
                 for (String key : fields.keySet()) {
                     if (ContactConstants.A_groupMember.equals(key)) {
                         String memberEncoded = fields.get(key);
@@ -768,7 +768,7 @@ public class ItemActionHelper {
                 CalendarItem cal = (CalendarItem) item;
                 // private calendar item may not be moved by non-owner unless permission was granted
                 if (!cal.isPublic()) {
-                    boolean asAdmin = mOpCtxt != null ? mOpCtxt.isUsingAdminPrivileges() : false;
+                    boolean asAdmin = mOpCtxt != null && mOpCtxt.isUsingAdminPrivileges();
                     if (!cal.allowPrivateAccess(mAuthenticatedAccount, asAdmin))
                         throw ServiceException.PERM_DENIED(
                                 "you do not have permission to move/copy a private calendar item from the current folder/mailbox");
@@ -824,7 +824,7 @@ public class ItemActionHelper {
 
             try {
                 if (deleteOriginal && !mIdFormatter.formatItemId(item).equals(createdId)) {
-                    List<Integer> nonExistentItems = new ArrayList<Integer>();
+                    List<Integer> nonExistentItems = new ArrayList<>();
 
                     if (msgs == null) {
                         mMailbox.delete(mOpCtxt, new int[] { item.getId() }, item.getType(), null, nonExistentItems);

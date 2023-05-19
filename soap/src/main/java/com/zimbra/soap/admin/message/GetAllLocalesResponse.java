@@ -30,7 +30,7 @@ public class GetAllLocalesResponse {
      * @zm-api-field-description Information for system locales
      */
     @XmlElement(name=AccountConstants.E_LOCALE, required=false)
-    private List <LocaleInfo> locales = Lists.newArrayList();
+    private final List <LocaleInfo> locales = Lists.newArrayList();
 
     public GetAllLocalesResponse() {
     }

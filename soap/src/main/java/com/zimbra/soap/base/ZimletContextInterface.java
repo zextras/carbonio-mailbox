@@ -6,11 +6,11 @@
 package com.zimbra.soap.base;
 
 public interface ZimletContextInterface {
-    public void setZimletBaseUrl(String zimletBaseUrl);
-    public void setZimletPriority(Integer zimletPriority);
-    public void setZimletPresence(String zimletPresence);
+    void setZimletBaseUrl(String zimletBaseUrl);
+    void setZimletPriority(Integer zimletPriority);
+    void setZimletPresence(String zimletPresence);
 
-    public String getZimletBaseUrl();
-    public Integer getZimletPriority();
-    public String getZimletPresence();
+    String getZimletBaseUrl();
+    Integer getZimletPriority();
+    String getZimletPresence();
 }

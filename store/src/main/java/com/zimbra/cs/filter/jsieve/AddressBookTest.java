@@ -71,7 +71,7 @@ public final class AddressBookTest extends AbstractTest {
             return false;
         }
         Mailbox mbox = ((ZimbraMailAdapter) mail).getMailbox();
-        List<InternetAddress> addrs = new ArrayList<InternetAddress>();
+        List<InternetAddress> addrs = new ArrayList<>();
         for (String header : headers) {
             for (String value : mail.getHeader(header)) {
                 addrs.add(new InternetAddress(value));

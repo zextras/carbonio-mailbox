@@ -9,8 +9,8 @@ package com.zimbra.doc.soap;
  * Used for table entries describing either XML attributes or elements
  */
 public interface XmlUnit {
-    public String getTableKeyColumnContents();
-    public String getName();
-    public OccurrenceSpec getOccurrence();
-    public String getDescriptionForTable();
+    String getTableKeyColumnContents();
+    String getName();
+    OccurrenceSpec getOccurrence();
+    String getDescriptionForTable();
 }

@@ -35,7 +35,7 @@ public class ZimbraBeanSerializer extends BeanSerializer {
      */
     public final void serializeWithNamespace(Object bean, JsonGenerator jgen, SerializerProvider provider,
             String namespace)
-    throws IOException, JsonGenerationException {
+    throws IOException {
         jgen.writeStartObject();
         if (_propertyFilterId != null) {
             serializeFieldsFiltered(bean, jgen, provider);

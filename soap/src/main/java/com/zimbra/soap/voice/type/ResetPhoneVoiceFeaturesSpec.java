@@ -46,7 +46,7 @@ public class ResetPhoneVoiceFeaturesSpec {
         @XmlElement(name=VoiceConstants.E_SELECTIVE_CALL_ACCEPTANCE /* selectivecallacceptance */, type=PhoneVoiceFeaturesSpec.SelectiveCallAcceptanceReq.class),
         @XmlElement(name=VoiceConstants.E_SELECTIVE_CALL_REJECTION /* selectivecallrejection */, type=PhoneVoiceFeaturesSpec.SelectiveCallRejectionReq.class)
     })
-    private List<PhoneVoiceFeaturesSpec.CallFeatureReq> callFeatures = Lists.newArrayList();
+    private final List<PhoneVoiceFeaturesSpec.CallFeatureReq> callFeatures = Lists.newArrayList();
 
     public ResetPhoneVoiceFeaturesSpec() {
     }

@@ -36,7 +36,7 @@ public class ModifySearchFolderRequest {
      */
     @SuppressWarnings("unused")
     private ModifySearchFolderRequest() {
-        this((ModifySearchFolderSpec) null);
+        this(null);
     }
 
     public ModifySearchFolderRequest(ModifySearchFolderSpec searchFolder) {

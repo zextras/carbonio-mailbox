@@ -32,7 +32,7 @@ public class RevokePermissionResponse {
      * @zm-api-field-description Permissions that were successfully revoked
      */
     @XmlElement(name=MailConstants.E_ACE /* ace */, required=false)
-    private List<AccountACEinfo> aces = Lists.newArrayList();
+    private final List<AccountACEinfo> aces = Lists.newArrayList();
 
     public RevokePermissionResponse() {
     }

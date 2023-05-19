@@ -27,7 +27,7 @@ public class LdapEntrySearchFilter {
 
     
     public static class LdapQueryVisitor implements Visitor {
-        private StringBuilder mLdapFilter;
+        private final StringBuilder mLdapFilter;
         
         /*
          * Whether values in the EntrySearchFilter.Term tree is raw and therefore

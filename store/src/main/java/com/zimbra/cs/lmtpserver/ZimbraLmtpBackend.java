@@ -72,7 +72,7 @@ import com.zimbra.cs.util.Zimbra;
 
 public class ZimbraLmtpBackend implements LmtpBackend {
 
-    private static List<LmtpCallback> callbacks = new CopyOnWriteArrayList<LmtpCallback>();
+    private static final List<LmtpCallback> callbacks = new CopyOnWriteArrayList<>();
     private static Map<String, Set<Integer>> receivedMessageIDs;
     private static final LoadingCache<Integer, ReentrantLock> mailboxDeliveryLocks = createMailboxDeliveryLocks();
 
@@ -102,11 +102,11 @@ public class ZimbraLmtpBackend implements LmtpBackend {
     }
 
     private static LoadingCache<Integer, ReentrantLock> createMailboxDeliveryLocks() {
-        Function<Integer, ReentrantLock> lockCreator = new Function<Integer,  ReentrantLock>() {
-            @Override
-            public ReentrantLock apply(Integer from) {
-                return new ReentrantLock();
-            }
+        Function<Integer, ReentrantLock> lockCreator = new Function<>() {
+          @Override
+          public ReentrantLock apply(Integer from) {
+            return new ReentrantLock();
+          }
         };
         LoadingCache<Integer, ReentrantLock> cache = CacheBuilder.newBuilder()
             .build(CacheLoader.from(lockCreator));
@@ -228,8 +228,8 @@ public class ZimbraLmtpBackend implements LmtpBackend {
                 if (receivedMessageIDs == null) {
                     // if non-zero entry timeout is specified then use a timeout map, else use an lru map
                     receivedMessageIDs = entryTimeout == 0 ?
-                            new LruMap<String, Set<Integer>>(cacheSize) :
-                            new TimeoutMap<String, Set<Integer>>(entryTimeout);
+                        new LruMap<>(cacheSize) :
+                        new TimeoutMap<>(entryTimeout);
                 } else if (receivedMessageIDs instanceof LruMap) {
                     if (entryTimeout != 0) {
                         // change to a timeout map
@@ -259,7 +259,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
             // create an empty lru map if it doesn't exist already.
             synchronized (ZimbraLmtpBackend.class) {
                 if (receivedMessageIDs == null) {
-                    receivedMessageIDs = new LruMap<String, Set<Integer>>(0);
+                    receivedMessageIDs = new LruMap<>(0);
                 }
             }
         }
@@ -275,7 +275,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
         synchronized (ZimbraLmtpBackend.class) {
             Set<Integer> mboxIds = receivedMessageIDs.get(msgid);
             if (mboxIds == null) {
-                mboxIds = new HashSet<Integer>();
+                mboxIds = new HashSet<>();
                 receivedMessageIDs.put(msgid, mboxIds);
             }
             mboxIds.add(mbox.getId());
@@ -412,9 +412,9 @@ public class ZimbraLmtpBackend implements LmtpBackend {
         String envSender = env.getSender().getEmailAddress();
 
         boolean shared = recipients.size() > 1;
-        List<Integer> targetMailboxIds = new ArrayList<Integer>(recipients.size());
+        List<Integer> targetMailboxIds = new ArrayList<>(recipients.size());
 
-        Map<LmtpAddress, RecipientDetail> rcptMap = new HashMap<LmtpAddress, RecipientDetail>(recipients.size());
+        Map<LmtpAddress, RecipientDetail> rcptMap = new HashMap<>(recipients.size());
         try {
             // Examine attachments indexing option for all recipients and
             // prepare ParsedMessage versions needed.  Parsing is done before
@@ -512,7 +512,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
             ZimbraLog.removeAccountFromContext();
             if (ZimbraLog.lmtp.isInfoEnabled()) {
                 ZimbraLog.lmtp.info("Delivering message: size=%s, nrcpts=%d, sender=%s, msgid=%s",
-                                    env.getSize() == 0 ? "unspecified" : Integer.toString(env.getSize()) + " bytes",
+                                    env.getSize() == 0 ? "unspecified" : env.getSize() + " bytes",
                                     recipients.size(),
                                     env.getSender(),
                                     msgId == null ? "" : msgId);

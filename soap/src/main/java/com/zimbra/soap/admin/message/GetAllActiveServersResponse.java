@@ -24,7 +24,7 @@ public class GetAllActiveServersResponse {
      * @zm-api-field-description Information about active servers
      */
     @XmlElement(name=AdminConstants.E_SERVER)
-    private final List <ServerInfo> serverList = new ArrayList<ServerInfo>();
+    private final List <ServerInfo> serverList = new ArrayList<>();
 
     public GetAllActiveServersResponse() {
     }

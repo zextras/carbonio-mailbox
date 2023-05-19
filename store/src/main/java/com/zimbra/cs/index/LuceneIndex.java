@@ -95,11 +95,11 @@ public final class LuceneIndex extends IndexStore {
     private static final ConcurrentMap<Integer, IndexSearcherImpl> GAL_SEARCHER_CACHE =
         new ConcurrentLinkedHashMap.Builder<Integer, IndexSearcherImpl>()
         .maximumWeightedCapacity(LC.zimbra_galsync_index_reader_cache_size.intValue())
-        .listener(new EvictionListener<Integer, IndexSearcherImpl>() {
-            @Override
-            public void onEviction(Integer mboxId, IndexSearcherImpl searcher) {
-                IOUtil.closeQuietly(searcher);
-            }
+        .listener(new EvictionListener<>() {
+          @Override
+          public void onEviction(Integer mboxId, IndexSearcherImpl searcher) {
+            IOUtil.closeQuietly(searcher);
+          }
         })
         .build();
 
@@ -602,7 +602,7 @@ public final class LuceneIndex extends IndexStore {
          * Skip the merge unless the lock is held.
          */
         @Override
-        public void merge(IndexWriter writer) throws CorruptIndexException, IOException {
+        public void merge(IndexWriter writer) throws IOException {
             if (lock.isHeldByCurrentThread()) {
                 super.merge(writer);
             }

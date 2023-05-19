@@ -21,22 +21,22 @@ public interface IAttributes {
      *   and binary transfer based on AttributeManager if CheckBinary is CHECK.
      *   It will assume all attributes are *not* binary if CheckBinary is NOCHECK.
      */
+
+
+    String getAttrString(String attrName) throws ServiceException;
+    
+    String[] getMultiAttrString(String attrName) throws ServiceException;
+    
+    String[] getMultiAttrString(String attrName,
+        boolean containsBinaryData, boolean isBinaryTransfer) throws ServiceException;
     
     
-    public String getAttrString(String attrName) throws ServiceException;
-    
-    public String[] getMultiAttrString(String attrName) throws ServiceException;
-    
-    public String[] getMultiAttrString(String attrName, 
-            boolean containsBinaryData, boolean isBinaryTransfer) throws ServiceException;
-    
-    
-    public static enum CheckBinary {
+    enum CheckBinary {
         CHECK,
-        NOCHECK;
+        NOCHECK
     }
     
-    public List<String> getMultiAttrStringAsList(String attrName, CheckBinary checkBinary) 
+    List<String> getMultiAttrStringAsList(String attrName, CheckBinary checkBinary)
     throws ServiceException;
     
     /**
@@ -45,7 +45,7 @@ public interface IAttributes {
      * @param attrName
      * @return
      */
-    public abstract boolean hasAttribute(String attrName);
+    boolean hasAttribute(String attrName);
     
     /**
      * Whether it contains the specified attribute with the specified value.
@@ -54,6 +54,6 @@ public interface IAttributes {
      * @param value
      * @return
      */
-    public abstract boolean hasAttributeValue(String attrName, String value);
+    boolean hasAttributeValue(String attrName, String value);
 
 }

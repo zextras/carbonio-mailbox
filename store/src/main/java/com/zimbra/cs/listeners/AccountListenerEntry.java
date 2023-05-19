@@ -10,7 +10,7 @@ import com.zimbra.cs.listeners.ListenerUtil.Priority;
 public class AccountListenerEntry implements Comparable<AccountListenerEntry> {
 
     private String listenerName;
-    private Priority priority;
+    private final Priority priority;
     private AccountListener accountListener;
 
     public AccountListenerEntry(String listenerName, Priority priority, AccountListener accountListener) {

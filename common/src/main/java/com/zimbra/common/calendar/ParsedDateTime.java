@@ -507,11 +507,7 @@ public final class ParsedDateTime {
     }
 
     public boolean isUTC() {
-        if (mICalTimeZone.getID()!=null && mICalTimeZone.getID().equals("Z")) {
-            return true;
-        } else {
-            return false;
-        }
+        return mICalTimeZone.getID() != null && mICalTimeZone.getID().equals("Z");
     }
 
     public void toUTC() {

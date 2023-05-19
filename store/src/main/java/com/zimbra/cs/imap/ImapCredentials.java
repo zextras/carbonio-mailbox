@@ -43,7 +43,7 @@ public class ImapCredentials implements java.io.Serializable {
    * logging into the IMAP server; for instance, the Windows Mobile 5 hack is enabled via the suffix
    * "/wm".
    */
-  static enum EnabledHack {
+  enum EnabledHack {
     NONE,
     WM5("/wm"),
     THUNDERBIRD("/tb"),
@@ -189,7 +189,7 @@ public class ImapCredentials implements java.io.Serializable {
         if (upcase.equals(sub.toUpperCase())) return;
       }
     }
-    if (subscriptions == null) subscriptions = new HashSet<String>();
+    if (subscriptions == null) subscriptions = new HashSet<>();
     subscriptions.add(path.asImapPath());
     saveSubscriptions(subscriptions);
   }
@@ -210,12 +210,12 @@ public class ImapCredentials implements java.io.Serializable {
   }
 
   protected void hideFolder(ImapPath path) {
-    if (mHiddenFolders == null) mHiddenFolders = new HashSet<ImapPath>();
+    if (mHiddenFolders == null) mHiddenFolders = new HashSet<>();
     mHiddenFolders.add(path);
   }
 
   protected boolean isFolderHidden(ImapPath path) {
-    return mHiddenFolders == null ? false : mHiddenFolders.contains(path);
+    return mHiddenFolders != null && mHiddenFolders.contains(path);
   }
 
   @Override

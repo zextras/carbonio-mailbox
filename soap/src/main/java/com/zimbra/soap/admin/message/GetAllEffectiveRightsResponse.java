@@ -36,14 +36,14 @@ public class GetAllEffectiveRightsResponse {
      * @zm-api-field-description Effective rights targets
      */
     @XmlElement(name=AdminConstants.E_TARGET, required=false)
-    private List <EffectiveRightsTarget> targets = Lists.newArrayList();
+    private final List <EffectiveRightsTarget> targets = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private GetAllEffectiveRightsResponse() {
-        this((GranteeInfo) null);
+        this(null);
     }
 
     public GetAllEffectiveRightsResponse(GranteeInfo grantee) {

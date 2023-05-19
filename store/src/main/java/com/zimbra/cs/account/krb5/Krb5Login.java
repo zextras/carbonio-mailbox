@@ -78,7 +78,7 @@ public class Krb5Login {
         }
     }
 
-    private static String S_CONFIG_NAME = "krb5";
+    private static final String S_CONFIG_NAME = "krb5";
     /**
      * private constructor.
      */
@@ -177,8 +177,8 @@ public class Krb5Login {
 
     static class DynamicConfiguration extends Configuration
     {
-        private String mName;
-        private AppConfigurationEntry[] mEntry;
+        private final String mName;
+        private final AppConfigurationEntry[] mEntry;
 
         DynamicConfiguration(String name, AppConfigurationEntry[] entry) {
             mName = name;
@@ -216,7 +216,7 @@ public class Krb5Login {
         }
 
         public static Krb5Config getInstance() {
-            HashMap<String, String> options = new HashMap<String, String>();
+            HashMap<String, String> options = new HashMap<>();
             Krb5Config kc = new Krb5Config(DEFAULT_LOGIN_MODULE_NAME, DEFAULT_CONTROL_FLAG, options);
             kc.mOptions = options;
             return kc;
@@ -306,7 +306,7 @@ public class Krb5Login {
         }
     }
 
-    public static void main(String arsg[]) throws LoginException {
+    public static void main(String[] arsg) throws LoginException {
         // verifyPassword("user1@MACPRO.LOCAL", "test123");
         testPerformAs();
         

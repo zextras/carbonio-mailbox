@@ -361,7 +361,7 @@ class ImapPartSpecifier {
                 if (mp instanceof MimeBodyPart) {
                     if (command.startsWith("BINARY")) {
                         try {
-                            is = ((MimeBodyPart) mp).getInputStream();
+                            is = mp.getInputStream();
                         } catch (IOException ioe) {
                             throw new BinaryDecodingException();
                         }
@@ -375,7 +375,7 @@ class ImapPartSpecifier {
                         return new ImapPartSpecifier(command, parentPart, "TEXT").getContent(msg);
                     } else if (command.startsWith("BINARY")) {
                         try {
-                            is = ((MimeMessage) mp).getInputStream();
+                            is = mp.getInputStream();
                         } catch (IOException ioe) {
                             throw new BinaryDecodingException();
                         }
@@ -501,12 +501,8 @@ class ImapPartSpecifier {
             return false;
         }
         if (part == null) {
-            if (other.part != null) {
-                return false;
-            }
-        } else if (!part.equals(other.part)) {
-            return false;
-        }
-        return true;
+          return other.part == null;
+        } else
+          return part.equals(other.part);
     }
 }

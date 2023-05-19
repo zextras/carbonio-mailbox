@@ -113,19 +113,16 @@ public class ProxyServlet extends ZimbraServlet {
     private boolean canProxyHeader(String header) {
         if (header == null) return false;
         header = header.toLowerCase();
-        if (header.startsWith("accept") ||
-            header.equals("content-length") ||
-            header.equals("connection") ||
-            header.equals("keep-alive") ||
-            header.equals("pragma") ||
-            header.equals("host") ||
-            //header.equals("user-agent") ||
-            header.equals("cache-control") ||
-            header.equals("cookie") ||
-            header.equals("transfer-encoding")) {
-            return false;
-        }
-        return true;
+      return !header.startsWith("accept") &&
+          !header.equals("content-length") &&
+          !header.equals("connection") &&
+          !header.equals("keep-alive") &&
+          !header.equals("pragma") &&
+          !header.equals("host") &&
+          //header.equals("user-agent") ||
+          !header.equals("cache-control") &&
+          !header.equals("cookie") &&
+          !header.equals("transfer-encoding");
     }
 
     private byte[] copyPostedData(HttpServletRequest req) throws IOException {

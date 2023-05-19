@@ -15,7 +15,7 @@ class ProxyConfUtil {
 
   public static void writeContentToFile(String content, String filePath) throws ServiceException {
 
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath)); ) {
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
       bw.write(content);
     } catch (IOException e) {
       throw ServiceException.FAILURE(

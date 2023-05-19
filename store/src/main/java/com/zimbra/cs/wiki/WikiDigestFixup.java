@@ -35,8 +35,8 @@ public class WikiDigestFixup {
     private static StoreManager sStore;
 
     private static class Mbox {
-        private int mId;
-        private String mEmail;
+        private final int mId;
+        private final String mEmail;
         public Mbox(int id, String email) {
             mId = id;
             mEmail = email;
@@ -46,7 +46,7 @@ public class WikiDigestFixup {
     }
 
     private static List<Mbox> getMboxList(DbConnection conn) throws SQLException {
-        List<Mbox> list = new ArrayList<Mbox>(1000);
+        List<Mbox> list = new ArrayList<>(1000);
         String sql = "SELECT id, comment FROM mailbox ORDER BY id";
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -66,9 +66,9 @@ public class WikiDigestFixup {
     }
 
     private static class WikiDigest {
-        private int mMboxId;
-        private int mItemId;
-        private String mDigest;
+        private final int mMboxId;
+        private final int mItemId;
+        private final String mDigest;
 
         public WikiDigest(int mboxId, int itemId, String digest) {
             mMboxId = mboxId;
@@ -94,7 +94,7 @@ public class WikiDigestFixup {
                 throw e;
         }
         OperationContext octxt = new OperationContext(mbox);
-        List<MailItem> items = new ArrayList<MailItem>();
+        List<MailItem> items = new ArrayList<>();
         List<MailItem> wikis = mbox.getItemList(octxt, MailItem.Type.WIKI);
         if (wikis != null && wikis.size() > 0)
             items.addAll(wikis);
@@ -102,7 +102,7 @@ public class WikiDigestFixup {
         if (documents != null && documents.size() > 0)
             items.addAll(documents);
         int len = items.size();
-        List<WikiDigest> list = new ArrayList<WikiDigest>(len);
+        List<WikiDigest> list = new ArrayList<>(len);
         if (len > 0) {
             for (MailItem item : items) {
                 // didn't support >2GB wiki items when the bug was occurring
@@ -169,7 +169,7 @@ public class WikiDigestFixup {
         }
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         CliUtil.toolSetup("WARN");
         sStore = StoreManager.getInstance();
         DbPool.startup();

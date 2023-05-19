@@ -56,7 +56,7 @@ public class GetAttributeInfo extends AdminDocumentHandler {
         } else if (entryTypes != null) {
             for (String entry : entryTypes) {
                 AttributeClass attrClass = AttributeClass.fromString(entry.trim());
-                TreeSet<String> attrsOnEntry = new TreeSet<String>(attrMgr.getAllAttrsInClass(attrClass));
+                TreeSet<String> attrsOnEntry = new TreeSet<>(attrMgr.getAllAttrsInClass(attrClass));
                 for (String attr : attrsOnEntry) {
                     encodeAttr(response, attrMgr, attr);
                 }
@@ -67,7 +67,7 @@ public class GetAttributeInfo extends AdminDocumentHandler {
             // attrs = new TreeSet<String>(am.getAllAttrs());
             //
             // attr sets for each AttributeClass contain attrs in the extensions, use them
-            TreeSet<String> allAttrs = new TreeSet<String>();
+            TreeSet<String> allAttrs = new TreeSet<>();
             for (AttributeClass ac : AttributeClass.values()) {
                 allAttrs.addAll(attrMgr.getAllAttrsInClass(ac));
             }

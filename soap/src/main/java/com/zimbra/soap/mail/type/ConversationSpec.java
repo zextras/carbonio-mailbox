@@ -59,7 +59,7 @@ public class ConversationSpec {
      * inlined into the response (not available when <b>raw</b> is set)
      */
     @XmlElement(name=MailConstants.A_HEADER /* header */, required=false)
-    private List<AttributeName> headers = Lists.newArrayList();
+    private final List<AttributeName> headers = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag need-can-expand
@@ -74,7 +74,7 @@ public class ConversationSpec {
      */
     @SuppressWarnings("unused")
     private ConversationSpec() {
-        this((String) null);
+        this(null);
     }
 
     public ConversationSpec(String id) {

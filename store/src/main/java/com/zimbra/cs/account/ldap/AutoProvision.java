@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -170,7 +171,7 @@ public abstract class AutoProvision {
         }
 
         private static final String DELIMITER = "=";
-        private final Map<String, String> attrMap = new HashMap<String, String>();
+        private final Map<String, String> attrMap = new HashMap<>();
         private final String[] attrsToFetch;
         private AutoProvisionListener listener;
 
@@ -201,7 +202,7 @@ public abstract class AutoProvision {
                 attrMap.put(externalAttr, zimbraAttr);
             }
 
-            Set<String> attrs = new HashSet<String>();
+            Set<String> attrs = new HashSet<>();
             attrs.addAll(attrMap.keySet());
             attrs.add(LdapConstants.ATTR_createTimestamp);
             String nameMapAttr = domain.getAutoProvAccountNameMap();
@@ -287,7 +288,7 @@ public abstract class AutoProvision {
         AutoProvisionCachedInfo attrMap = AutoProvisionCachedInfo.getInfo(domain);
 
         Map<String, Object> extAttrs = externalAttrs.getAttrs();
-        Map<String, Object> zimbraAttrs = new HashMap<String, Object>();
+        Map<String, Object> zimbraAttrs = new HashMap<>();
 
         for (Map.Entry<String, Object> extAttr : extAttrs.entrySet()) {
             String extAttrName = extAttr.getKey();
@@ -509,7 +510,7 @@ public abstract class AutoProvision {
                 if (mBuf == null) {
                     ByteArrayOutputStream buf = new ByteArrayOutputStream();
                     OutputStreamWriter wout =
-                        new OutputStreamWriter(buf, MimeConstants.P_CHARSET_UTF8);
+                        new OutputStreamWriter(buf, StandardCharsets.UTF_8);
                     String text = mText;
                     wout.write(text);
                     wout.flush();

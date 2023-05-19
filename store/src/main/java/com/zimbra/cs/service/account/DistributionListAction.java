@@ -289,9 +289,9 @@ public class DistributionListAction extends DistributionListDocumentHandler {
                 this.by = by;
                 this.grantee = grantee;
             }
-        };
+        }
 
-        protected List<Grantee> parseGrantees(Element parent, String granteeElem)
+      protected List<Grantee> parseGrantees(Element parent, String granteeElem)
         throws ServiceException {
             List<Grantee> grantees = Lists.newArrayList();
 
@@ -487,7 +487,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
             RightManager rightMgr = RightManager.getInstance();
 
             // keep the soap order, use LinkedHashMap
-            Map<Right, List<Grantee>> rights = new LinkedHashMap<Right, List<Grantee>>();
+            Map<Right, List<Grantee>> rights = new LinkedHashMap<>();
             for (Element eRight : eAction.listElements(AccountConstants.E_RIGHT)) {
                 Right right = rightMgr.getUserRight(eRight.getAttribute(AccountConstants.A_RIGHT));
 
@@ -604,7 +604,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
 
         @Override
         void handle() throws ServiceException {
-            List<String> memberList = new LinkedList<String>();
+            List<String> memberList = new LinkedList<>();
             for (Element elem : eAction.listElements(AccountConstants.E_DLM)) {
                 memberList.add(elem.getTextTrim());
             }
@@ -632,7 +632,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
 
         @Override
         void handle() throws ServiceException {
-            List<String> memberList = new LinkedList<String>();
+            List<String> memberList = new LinkedList<>();
             for (Element elem : eAction.listElements(AccountConstants.E_DLM)) {
                 memberList.add(elem.getTextTrim());
             }
@@ -683,7 +683,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
 
                 // Bcc all other owners of the list
                 if (bccOwners) {
-                    List<String> owners = new ArrayList<String>();
+                    List<String> owners = new ArrayList<>();
                     Group.GroupOwner.getOwnerEmails(group, owners);
 
                     List<Address> addrs = Lists.newArrayList();

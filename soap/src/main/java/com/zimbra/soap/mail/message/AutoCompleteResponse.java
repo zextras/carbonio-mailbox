@@ -37,7 +37,7 @@ public class AutoCompleteResponse {
      * @zm-api-field-description Matches
      */
     @XmlElement(name=MailConstants.E_MATCH /* match */, required=false)
-    private List<AutoCompleteMatch> matches = Lists.newArrayList();
+    private final List<AutoCompleteMatch> matches = Lists.newArrayList();
 
     public AutoCompleteResponse() {
     }

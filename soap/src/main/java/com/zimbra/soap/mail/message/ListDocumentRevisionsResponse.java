@@ -31,13 +31,13 @@ public class ListDocumentRevisionsResponse {
      * @zm-api-field-description Document revision information
      */
     @XmlElement(name=MailConstants.E_DOC /* doc */, required=false)
-    private List<DocumentInfo> revisions = Lists.newArrayList();
+    private final List<DocumentInfo> revisions = Lists.newArrayList();
 
     /**
      * @zm-api-field-description User information
      */
     @XmlElement(name=MailConstants.A_USER /* user */, required=false)
-    private List<IdEmailName> users = Lists.newArrayList();
+    private final List<IdEmailName> users = Lists.newArrayList();
 
     public ListDocumentRevisionsResponse() {
     }

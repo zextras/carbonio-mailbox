@@ -16,6 +16,6 @@ package com.zimbra.cs.account.ldap.entry;
  */
 public interface LdapEntry {
 
-    public String getDN();
+    String getDN();
 
 }

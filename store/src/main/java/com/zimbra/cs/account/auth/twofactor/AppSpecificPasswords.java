@@ -11,10 +11,10 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AppSpecificPassword;
 
 public interface AppSpecificPasswords extends SecondFactor {
-    public boolean isEnabled() throws ServiceException;
-    public AppSpecificPassword generatePassword(String name) throws ServiceException;
-    public Set<AppSpecificPasswordData> getPasswords() throws ServiceException;
-    public void revoke(String appName) throws ServiceException;
-    public void revokeAll() throws ServiceException;
-    public String getAppNameByPassword(String password) throws ServiceException;
+    boolean isEnabled() throws ServiceException;
+    AppSpecificPassword generatePassword(String name) throws ServiceException;
+    Set<AppSpecificPasswordData> getPasswords() throws ServiceException;
+    void revoke(String appName) throws ServiceException;
+    void revokeAll() throws ServiceException;
+    String getAppNameByPassword(String password) throws ServiceException;
 }

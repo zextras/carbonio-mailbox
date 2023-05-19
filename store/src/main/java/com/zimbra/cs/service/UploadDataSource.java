@@ -22,7 +22,7 @@ import com.zimbra.cs.service.FileUploadServlet.Upload;
  */
 public class UploadDataSource implements DataSource {
 
-    private Upload mUpload;
+    private final Upload mUpload;
     private ContentType mContentType;
 
     public UploadDataSource(Upload up) {

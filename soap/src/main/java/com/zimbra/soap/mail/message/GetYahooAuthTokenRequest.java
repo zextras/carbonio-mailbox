@@ -41,7 +41,7 @@ public class GetYahooAuthTokenRequest {
      */
     @SuppressWarnings("unused")
     private GetYahooAuthTokenRequest() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public GetYahooAuthTokenRequest(String user, String password) {

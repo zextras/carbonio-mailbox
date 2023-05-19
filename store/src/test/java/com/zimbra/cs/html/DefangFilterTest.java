@@ -115,14 +115,14 @@ public class DefangFilterTest {
     private static final String defangedUrlWithInlinePNG =
             "background-image:\n  ;\n" + "    background-repeat: no-repeat; background-position: center;";
 
-    private static String htmlTemplateForUrlWithInlinePNG =
+    private static final String htmlTemplateForUrlWithInlinePNG =
             "<td style=\"%s\n\"></td>";
 
     /* Verified in Firefox that multi-line url with this html displays the background image
      * (give a valid paper.gif file from http://www.w3schools.com/cssref/paper.gif)
      * So we definitely should be stripping out multi-line functions
      */
-    private static String templateHtmlWithNonInlinedBackgroundImageURL =
+    private static final String templateHtmlWithNonInlinedBackgroundImageURL =
             "<html><head><style>\n" +
             "body  {\n" +
             "    background-image: %s;\n" +
@@ -132,7 +132,7 @@ public class DefangFilterTest {
             "</head>\n" +
             "<body><h1>Hello World!</h1></body>\n" +
             "</html>\n";
-    private static String nonInlinedBackgroundImageURL =
+    private static final String nonInlinedBackgroundImageURL =
             "url(\n" +
             "            \"paper.gif\"\n" +
             "            )";
@@ -685,7 +685,7 @@ public class DefangFilterTest {
     public void testBug81641() throws Exception {
 
         String html = "<td style=\"background: #e7e7e7; background-image:"
-            + "url(\'http://www.househuntnews.com/marketing/images/keller-header.jpg');"
+            + "url('http://www.househuntnews.com/marketing/images/keller-header.jpg');"
             + "height=\"97\" width=\"598\">";
         InputStream htmlStream = new ByteArrayInputStream(html.getBytes());
         String result = DefangFactory.getDefanger(MimeConstants.CT_TEXT_HTML).defang(htmlStream,
@@ -961,7 +961,7 @@ public class DefangFilterTest {
             true);
         Assert.assertTrue(!result.contains("@import 'https://emailprivacytester"));
 
-        html = "<style type=\"text/css=\">@import url(\'newstyles.css\');</style>";
+        html = "<style type=\"text/css=\">@import url('newstyles.css');</style>";
         htmlStream = new ByteArrayInputStream(html.getBytes());
         result = DefangFactory.getDefanger(MimeConstants.CT_TEXT_HTML).defang(htmlStream,
         true);

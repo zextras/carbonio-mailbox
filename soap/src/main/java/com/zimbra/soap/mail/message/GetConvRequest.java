@@ -45,7 +45,7 @@ public class GetConvRequest {
      */
     @SuppressWarnings("unused")
     private GetConvRequest() {
-        this((ConversationSpec) null);
+        this(null);
     }
 
     public GetConvRequest(ConversationSpec conversation) {

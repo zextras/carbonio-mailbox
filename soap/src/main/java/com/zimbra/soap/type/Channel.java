@@ -17,16 +17,16 @@ import com.google.common.collect.Maps;
 public enum Channel {
     @XmlEnumValue("email") EMAIL("email");
 
-    private static Map<String, Channel> nameToChannel = Maps.newHashMap();
+    private static final Map<String, Channel> nameToChannel = Maps.newHashMap();
     static {
         for (Channel v : Channel.values()) {
             nameToChannel.put(v.toString(), v);
         }
     }
 
-    private String name;
+    private final String name;
 
-    private Channel(String name) {
+    Channel(String name) {
         this.name = name;
     }
 

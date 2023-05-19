@@ -27,7 +27,7 @@ public class VoiceProviderInfo {
      */
     @XmlElementWrapper(name=AdminConstants.E_ATTRS /* attrs */, required=true)
     @XmlElement(name=AdminConstants.E_A /* a */, required=false)
-    private List<UCServiceAttribute> attrs = Lists.newArrayList();
+    private final List<UCServiceAttribute> attrs = Lists.newArrayList();
 
     public VoiceProviderInfo() {
     }

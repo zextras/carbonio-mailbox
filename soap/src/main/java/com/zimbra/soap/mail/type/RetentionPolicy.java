@@ -37,7 +37,7 @@ public class RetentionPolicy {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=MailConstants.E_KEEP, required=false)
     @XmlElement(name=MailConstants.E_POLICY, required=false)
-    private List<Policy> keep = Lists.newArrayList();
+    private final List<Policy> keep = Lists.newArrayList();
 
     /**
      * @zm-api-field-description "Purge" retention policies
@@ -45,7 +45,7 @@ public class RetentionPolicy {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=MailConstants.E_PURGE, required=false)
     @XmlElement(name=MailConstants.E_POLICY, required=false)
-    private List<Policy> purge = Lists.newArrayList();
+    private final List<Policy> purge = Lists.newArrayList();
 
     public RetentionPolicy() {
     }

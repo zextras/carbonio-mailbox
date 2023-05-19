@@ -67,7 +67,7 @@ public class WaitSetResponse implements WaitSetResp {
      * no-argument constructor wanted by JAXB
      */
     public WaitSetResponse() {
-        this((String) null);
+        this(null);
     }
 
     public WaitSetResponse(String waitSetId) {

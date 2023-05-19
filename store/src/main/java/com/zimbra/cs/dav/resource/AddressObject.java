@@ -8,6 +8,7 @@ package com.zimbra.cs.dav.resource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -82,7 +83,7 @@ public class AddressObject extends MailItemResource {
     @Override
     public InputStream getContent(DavContext ctxt) throws DavException, IOException {
         try {
-            return new ByteArrayInputStream(toVCard(ctxt).getBytes("UTF-8"));
+            return new ByteArrayInputStream(toVCard(ctxt).getBytes(StandardCharsets.UTF_8));
         } catch (ServiceException e) {
             ZimbraLog.dav.warn("can't get content for Contact %d", mId, e);
         }
@@ -103,7 +104,7 @@ public class AddressObject extends MailItemResource {
                 } else { // modify
                     contactGroup = ContactGroup.init(existingContact, true);
                     // remove all the contacts of type CONTACT_REF that belong to the collection same as the group
-                    ArrayList<Member> membersToRemove = new ArrayList<Member>();
+                    ArrayList<Member> membersToRemove = new ArrayList<>();
                     for (Member member : contactGroup.getMembers()) {
                         if (Member.Type.CONTACT_REF.equals(member.getType())) {
                             ItemId itemId = new ItemId(member.getValue(), existingContact.getAccount().getId());
@@ -219,7 +220,8 @@ public class AddressObject extends MailItemResource {
         }
         List<VCard> vcards = null;
         try (InputStream is = ctxt.getUpload().getInputStream()) {
-            String buf = new String(ByteUtil.getContent(is, (int)uploadSize), MimeConstants.P_CHARSET_UTF8);
+            String buf = new String(ByteUtil.getContent(is, (int)uploadSize),
+                StandardCharsets.UTF_8);
             vcards = VCard.parseVCard(buf);
         } catch (ServiceException se) {
             throw new DavException.InvalidData(DavElements.CardDav.E_VALID_ADDRESS_DATA,

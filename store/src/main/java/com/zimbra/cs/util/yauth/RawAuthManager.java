@@ -18,7 +18,7 @@ public final class RawAuthManager {
 
     public RawAuthManager(TokenStore store) {
         this.store = store;
-        cookies = new HashMap<String, RawAuth>();
+        cookies = new HashMap<>();
     }
 
     public RawAuth authenticate(String appId, String user, String pass)

@@ -6,6 +6,7 @@
 package com.zimbra.cs.service.mail;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +39,8 @@ public class ServiceTestUtil {
     public static Map<String, Object> getRequestContext(Account authAcct, Account targetAcct, DocumentService service) throws Exception {
         Map<String, Object> context = new HashMap<String, Object>();
         context.put(SoapEngine.ZIMBRA_CONTEXT, new ZimbraSoapContext(AuthProvider.getAuthToken(authAcct), targetAcct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
-        context.put(SoapServlet.SERVLET_REQUEST, new MockHttpServletRequest("test".getBytes("UTF-8"), new URL("http://localhost:7070/service/FooRequest"), ""));
+        context.put(SoapServlet.SERVLET_REQUEST, new MockHttpServletRequest("test".getBytes(
+            StandardCharsets.UTF_8), new URL("http://localhost:7070/service/FooRequest"), ""));
         context.put(SoapEngine.ZIMBRA_ENGINE, new MockSoapEngine(service));
         context.put(SoapServlet.SERVLET_RESPONSE, new MockHttpServletResponse());
         return context;

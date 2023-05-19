@@ -55,9 +55,9 @@ public class GetCalendarItem extends CalendarRequest {
         ItemIdFormatter ifmt = new ItemIdFormatter(zsc);
         GetCalendarItemRequestBase req = zsc.elementToJaxb(request);
 
-        boolean sync = req.getSync() == null ? false : req.getSync();
-        boolean includeContent = req.getIncludeContent() == null ? false : req.getIncludeContent();
-        boolean includeInvites = req.getIncludeInvites() == null ? true : req.getIncludeInvites();
+        boolean sync = req.getSync() != null && req.getSync();
+        boolean includeContent = req.getIncludeContent() != null && req.getIncludeContent();
+        boolean includeInvites = req.getIncludeInvites() == null || req.getIncludeInvites();
         ItemId iid = null;
         String uid = req.getUid();
         String id = req.getId();

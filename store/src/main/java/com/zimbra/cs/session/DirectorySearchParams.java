@@ -18,9 +18,9 @@ import com.zimbra.cs.account.SearchDirectoryOptions;
 
 class DirectorySearchParams {
 
-    private SearchDirectoryOptions mSearchOpts;
+    private final SearchDirectoryOptions mSearchOpts;
     private List<NamedEntry> mResult;
-    private NamedEntry.CheckRight mRightChecker;
+    private final NamedEntry.CheckRight mRightChecker;
     
     DirectorySearchParams(SearchDirectoryOptions searchOpts, NamedEntry.CheckRight rightChecker) {
         mSearchOpts = searchOpts;
@@ -50,9 +50,9 @@ class DirectorySearchParams {
         mResult = prov.searchDirectory(mSearchOpts);
         
         if (mRightChecker != null) {
-            List<NamedEntry> allowed = new ArrayList<NamedEntry>();
+            List<NamedEntry> allowed = new ArrayList<>();
             for (int i = 0; i < mResult.size(); i++) {
-                NamedEntry entry = (NamedEntry)mResult.get(i);
+                NamedEntry entry = mResult.get(i);
                 if (mRightChecker.allow(entry)) {
                     allowed.add(entry);
                 }

@@ -122,12 +122,12 @@ public abstract class AbstractIndexStoreTest {
         ZimbraTopDocs result = searcher.search(
                   new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "none@zimbra.com")), 100);
         Assert.assertNotNull("searcher.search result object - searching for none@zimbra.com", result);
-        ZimbraLog.test.debug("Result for search for 'none@zimbra.com'\n" + result.toString());
+        ZimbraLog.test.debug("Result for search for 'none@zimbra.com'\n" + result);
         Assert.assertEquals("Number of hits searching for none@zimbra.com", 0, result.getTotalHits());
 
         result = searcher.search(new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "test@zimbra.com")), 100);
         Assert.assertNotNull("searcher.search result object - searching for test@zimbra.com", result);
-        ZimbraLog.test.debug("Result for search for 'test@zimbra.com'\n" + result.toString());
+        ZimbraLog.test.debug("Result for search for 'test@zimbra.com'\n" + result);
         Assert.assertEquals("Number of hits searching for test@zimbra.com", 1, result.getTotalHits());
         Assert.assertEquals(String.valueOf(contact.getId()), getBlobIdForResultDoc(searcher, result, 0));
         Assert.assertEquals(4, searcher.getIndexReader().numDocs());
@@ -245,7 +245,7 @@ public abstract class AbstractIndexStoreTest {
         Query query = queryParser.parse("*irst");
         ZimbraTopDocs result = searcher.search(query, 100);
         Assert.assertNotNull("searcher.search result object - searching for *irst", result);
-        ZimbraLog.test.debug("Result for search for '*irst'\n" + result.toString());
+        ZimbraLog.test.debug("Result for search for '*irst'\n" + result);
         Assert.assertEquals("Number of hits searching for *irst", 1, result.getTotalHits());
         String expected1Id = String.valueOf(contact.getId());
         String match1Id = searcher.doc(result.getScoreDoc(0).getDocumentID()).get(LuceneFields.L_MAILBOX_BLOB_ID);
@@ -404,7 +404,7 @@ public abstract class AbstractIndexStoreTest {
         ZimbraIndexSearcher searcher = index.openSearcher();
         ZimbraTopDocs result = searcher.search(new PrefixQuery(new Term(LuceneFields.L_CONTACT_DATA, "ab")), 100);
         Assert.assertNotNull("searcher.search result object - searching for 'ab' prefix", result);
-        ZimbraLog.test.debug("Result for search for 'ab'\n" + result.toString());
+        ZimbraLog.test.debug("Result for search for 'ab'\n" + result);
         Assert.assertEquals("Number of hits searching for 'ab' prefix", 2, result.getTotalHits());
         String contact1Id = String.valueOf(contact1.getId());
         String contact2Id = String.valueOf(contact2.getId());
@@ -471,7 +471,7 @@ public abstract class AbstractIndexStoreTest {
         ZimbraTopDocs result = searcher.search(
         new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "@zimbra.com")), 100);
         Assert.assertNotNull("searcher.search result object - searching for '@zimbra.com'", result);
-        ZimbraLog.test.debug("Result for search for '@zimbra.com'\n" + result.toString());
+        ZimbraLog.test.debug("Result for search for '@zimbra.com'\n" + result);
         Assert.assertEquals("Total hits after 2 adds", 2, result.getTotalHits());
         searcher.close();
 
@@ -483,7 +483,7 @@ public abstract class AbstractIndexStoreTest {
         Assert.assertEquals("numDocs after 2 adds/1 del", 1, searcher.getIndexReader().numDocs());
         result = searcher.search(new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "@zimbra.com")), 100);
         Assert.assertNotNull("searcher.search result object after 2 adds/1 del", result);
-        ZimbraLog.test.debug("Result for search for '@zimbra.com'\n" + result.toString());
+        ZimbraLog.test.debug("Result for search for '@zimbra.com'\n" + result);
         Assert.assertEquals("Total hits after 2 adds/1 del", 1, result.getTotalHits());
         searcher.close();
     }
@@ -517,7 +517,7 @@ public abstract class AbstractIndexStoreTest {
     private void checkNextTerm(TermFieldEnumeration fields, Term term) {
         Assert.assertTrue("fields.hasMoreElements() value when expecting:" + term.toString(), fields.hasMoreElements());
         BrowseTerm browseTerm = fields.nextElement();
-        Assert.assertNotNull("fields.nextElement() value when expecting:" + term.toString(), browseTerm);
+        Assert.assertNotNull("fields.nextElement() value when expecting:" + term, browseTerm);
         ZimbraLog.test.debug("Expecting %s=%s value is %s docFreq=%d",
                 term.field(), term.text(), browseTerm.getText(), browseTerm.getFreq());
         Assert.assertEquals("field value", term.text(), browseTerm.getText());
@@ -643,7 +643,7 @@ public abstract class AbstractIndexStoreTest {
             throws ServiceException {
         Folder folder = mbox.getFolderById(null, Mailbox.ID_FOLDER_CONTACTS);
         Map<String, Object> fields;
-        fields = ImmutableMap.<String, Object>of(
+        fields = ImmutableMap.of(
                 ContactConstants.A_firstName, firstName,
                 ContactConstants.A_lastName, lastName,
                 ContactConstants.A_email, email);
@@ -654,7 +654,7 @@ public abstract class AbstractIndexStoreTest {
             throws ServiceException {
         Folder folder = mbox.getFolderById(null, Mailbox.ID_FOLDER_CONTACTS);
         Map<String, Object> fields;
-        fields = ImmutableMap.<String, Object>of(
+        fields = ImmutableMap.of(
                 ContactConstants.A_firstName, firstName,
                 ContactConstants.A_lastName, lastName,
                 ContactConstants.A_jobTitle, jobTitle,

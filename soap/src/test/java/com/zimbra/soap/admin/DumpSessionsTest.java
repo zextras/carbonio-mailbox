@@ -7,6 +7,7 @@ package com.zimbra.soap.admin;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -151,7 +152,7 @@ public class DumpSessionsTest {
         gsr.setImapSessions(imapSessions);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         marshaller.marshal(gsr, out);
-        String xml = out.toString("UTF-8");
+        String xml = out.toString(StandardCharsets.UTF_8);
         if (LOG.isInfoEnabled())
             LOG.info("Xml:\n" + xml);
         Assert.assertTrue("Marshalled XML should contain 'push=\"true\"'", xml.indexOf("push=\"true\"") > 0);

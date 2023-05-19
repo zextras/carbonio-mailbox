@@ -20,7 +20,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 public class ImapServerListenerPoolTest {
-    private Provisioning prov = Provisioning.getInstance();
+    private final Provisioning prov = Provisioning.getInstance();
     @BeforeClass
     public static void init() throws Exception {
         MailboxTestUtil.initProvisioning();

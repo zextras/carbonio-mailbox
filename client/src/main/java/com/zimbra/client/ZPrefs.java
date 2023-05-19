@@ -16,7 +16,7 @@ import com.zimbra.common.calendar.TZIDMapper;
 
 public class ZPrefs {
 
-    private Map<String, Collection<String>> mPrefs;
+    private final Map<String, Collection<String>> mPrefs;
 
     public ZPrefs(Map<String, Collection<String>> prefs) {
         mPrefs = prefs;

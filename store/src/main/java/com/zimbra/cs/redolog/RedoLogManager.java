@@ -70,36 +70,36 @@ public class RedoLogManager {
     private boolean mShuttingDown;
     private final Object mShuttingDownGuard = new Object();
     private boolean mInPostStartupCrashRecovery;  // also protected by mShuttingDownGuard
-    private boolean mSupportsCrashRecovery;
+    private final boolean mSupportsCrashRecovery;
     private boolean mRecoveryMode;	// Are we in crash-recovery mode?
-    private File mArchiveDir;		// where log files are archived as they get rolled over
-    private File mLogFile;			// full path to the "redo.log" file
+    private final File mArchiveDir;		// where log files are archived as they get rolled over
+    private final File mLogFile;			// full path to the "redo.log" file
 
     // This read/write lock is used to allow multiple threads to call log()
     // simultaneously under normal circumstances, while locking them out
     // when checkpoint or rollover is in progress.  Thus, "loggers" are
     // "readers", and threads that do checkpoint/rollover are "writers".
-    private ReentrantReadWriteLock mRWLock;
+    private final ReentrantReadWriteLock mRWLock;
 
     // Insertion-order-preserved map of active transactions.  Each thread
     // reading from or writing to this map must first acquire a read or
     // write lock on mRWLock, then do "synchronzed (mActiveOps) { ... }".
     // This is done to prevent deadlock.
-    private LinkedHashMap<TransactionId, RedoableOp> mActiveOps;
+    private final LinkedHashMap<TransactionId, RedoableOp> mActiveOps;
 
     private long mLogRolloverMinAgeMillis;
     private long mLogRolloverSoftMaxBytes;
     private long mLogRolloverHardMaxBytes;
 
-    private TxnIdGenerator mTxnIdGenerator;
-    private RolloverManager mRolloverMgr;
+    private final TxnIdGenerator mTxnIdGenerator;
+    private final RolloverManager mRolloverMgr;
 
     private long mInitialLogSize;	// used in log rollover
 
     // the actual logger
     private LogWriter mLogWriter;
 
-    private Object mStatGuard;
+    private final Object mStatGuard;
     private long mElapsed;
     private int mCounter;
 
@@ -114,7 +114,7 @@ public class RedoLogManager {
         mArchiveDir = archdir;
 
         mRWLock = new ReentrantReadWriteLock();
-        mActiveOps = new LinkedHashMap<TransactionId, RedoableOp>(100);
+        mActiveOps = new LinkedHashMap<>(100);
         mTxnIdGenerator = new TxnIdGenerator();
         long minAge = RedoConfig.redoLogRolloverMinFileAge() * 60 * 1000;     // milliseconds
         long softMax = RedoConfig.redoLogRolloverFileSizeKB() * 1024;         // bytes
@@ -201,7 +201,7 @@ public class RedoLogManager {
         long fsyncInterval = RedoConfig.redoLogFsyncIntervalMS();
         mLogWriter = createLogWriter(this, mLogFile, fsyncInterval);
 
-        ArrayList<RedoableOp> postStartupRecoveryOps = new ArrayList<RedoableOp>(100);
+        ArrayList<RedoableOp> postStartupRecoveryOps = new ArrayList<>(100);
         int numRecoveredOps = 0;
         if (mSupportsCrashRecovery) {
             mRecoveryMode = true;
@@ -436,7 +436,7 @@ public class RedoLogManager {
                         mCounter++;
                     }
                 } catch (NullPointerException e) {
-                    StackTraceElement stack[] = e.getStackTrace();
+                    StackTraceElement[] stack = e.getStackTrace();
                     if (stack == null || stack.length == 0) {
                         ZimbraLog.redolog.warn("Caught NullPointerException during redo logging, but " +
                                                "there is no stack trace in the exception.  " +
@@ -505,7 +505,7 @@ public class RedoLogManager {
 
             // Create an empty LinkedHashSet and insert keys from mActiveOps
             // by iterating the keyset.
-            txns = new LinkedHashSet<TransactionId>();
+            txns = new LinkedHashSet<>();
             for (Iterator<Map.Entry<TransactionId, RedoableOp>>
                  it = mActiveOps.entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry<TransactionId, RedoableOp> entry = it.next();
@@ -706,7 +706,7 @@ public class RedoLogManager {
      */
     public Pair<Set<Integer>, CommitId> getChangedMailboxesSince(CommitId cid)
     throws IOException, MailServiceException {
-        Set<Integer> mailboxes = new HashSet<Integer>();
+        Set<Integer> mailboxes = new HashSet<>();
 
         // Grab a read lock to prevent rollover.
         ReadLock readLock = mRWLock.readLock();
@@ -803,7 +803,7 @@ public class RedoLogManager {
                 throw MailServiceException.INVALID_COMMIT_ID(cid.toString());
             }
             CommitId lastCommitId = new CommitId(lastSeq, lastCommitTxn);
-            return new Pair<Set<Integer>, CommitId>(mailboxes, lastCommitId);
+            return new Pair<>(mailboxes, lastCommitId);
         } finally {
             if (linkDir != null) {
                 // Clean up the temp dir with links.

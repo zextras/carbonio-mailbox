@@ -16,7 +16,7 @@ import com.zimbra.cs.account.DataSource;
  * @author bburtin
  */
 public class ImportStatus {
-    private String mDataSourceId;
+    private final String mDataSourceId;
     boolean mIsRunning = false;
     boolean mSuccess = false;
     String mError = null;

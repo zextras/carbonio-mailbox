@@ -27,7 +27,7 @@ public class Name {
      */
     @SuppressWarnings("unused")
     private Name() {
-        this((String) null);
+        this(null);
     }
 
     public Name(String name) {

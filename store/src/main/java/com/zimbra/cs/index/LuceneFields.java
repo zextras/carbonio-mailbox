@@ -210,9 +210,9 @@ public final class LuceneFields {
         OBJECTS(L_OBJECTS, Field.Store.NO, Field.Index.ANALYZED),
         VERSION(L_VERSION, Field.Store.YES, Field.Index.NOT_ANALYZED);
 
-        private String fieldName;
-        private Field.Store storeSetting;
-        private Field.Index indexSetting;
+        private final String fieldName;
+        private final Field.Store storeSetting;
+        private final Field.Index indexSetting;
         IndexField(String fieldName, Field.Store storeSetting, Field.Index indexSetting) {
             this.fieldName = fieldName;
             this.storeSetting = storeSetting;

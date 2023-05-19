@@ -31,7 +31,7 @@ public class L10nUtil {
     /**
      * List all message keys here
      */
-    public static enum MsgKey {
+    public enum MsgKey {
 
         replySubjectPrefix,
 
@@ -289,12 +289,12 @@ public class L10nUtil {
     // /opt/zextras/conf/msgs directory
     private static ClassLoader sMsgClassLoader = getClassLoader(LC.localized_msgs_directory.value());
 
-    private static Map<String, Locale> sLocaleMap = new HashMap<String, Locale>();
+    private static final Map<String, Locale> sLocaleMap = new HashMap<>();
 
     private static ClassLoader getClassLoader(String directory) {
         ClassLoader classLoader = null;
         try {
-            URL urls[] = new URL[] { new File(directory).toURL() };
+            URL[] urls = new URL[] { new File(directory).toURL() };
             classLoader = new URLClassLoader(urls);
         } catch (MalformedURLException e) {
             try {
@@ -417,7 +417,7 @@ public class L10nUtil {
                 lc = Locale.getDefault();
             }
             rb = ResourceBundle.getBundle(basename, lc, sMsgClassLoader);
-            Set<String> result = new HashSet<String>();
+            Set<String> result = new HashSet<>();
             Enumeration<String> keysEnum =  rb.getKeys();
             while (keysEnum.hasMoreElements()) {
                 result.add(keysEnum.nextElement());
@@ -441,7 +441,7 @@ public class L10nUtil {
             return Collections.emptySet();
         }
 
-        Set<String> messages = new HashSet<String>();
+        Set<String> messages = new HashSet<>();
         for (File file : dir.listFiles(new MatchingPropertiesFilter(new String[] { MSG_FILE_BASENAME }))) {
             Locale locale = getLocaleForPropertiesFile(file, false);
             if (locale != null) {
@@ -516,7 +516,7 @@ public class L10nUtil {
             synchronized (sLocaleMap) {
                 lc = sLocaleMap.get(name);
                 if (lc == null) {
-                    String parts[] = name.indexOf('_') != -1 ? name.split("_") : name.split("-");
+                    String[] parts = name.indexOf('_') != -1 ? name.split("_") : name.split("-");
                     if (parts.length == 1) {
                         lc = new Locale(parts[0]);
                     } else if (parts.length == 2) {

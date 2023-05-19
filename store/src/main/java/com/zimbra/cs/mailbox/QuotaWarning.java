@@ -76,7 +76,7 @@ public class QuotaWarning implements LmtpCallback {
             String address = account.getAttr(Provisioning.A_zimbraMailDeliveryAddress);
             String domain = EmailUtil.getLocalPartAndDomain(address)[1];
 
-            Map<String, Object> vars = new HashMap<String, Object>();
+            Map<String, Object> vars = new HashMap<>();
             vars.put("RECIPIENT_NAME", account.getAttr(Provisioning.A_displayName));
             vars.put("RECIPIENT_DOMAIN", domain);
             vars.put("RECIPIENT_ADDRESS", address);
@@ -92,7 +92,7 @@ public class QuotaWarning implements LmtpCallback {
             mbox.addMessage(null, pm, dopt, null);
 
             // Update last sent date
-            Map<String, String> attrs = new HashMap<String, String>();
+            Map<String, String> attrs = new HashMap<>();
             attrs.put(Provisioning.A_zimbraQuotaLastWarnTime, LdapDateUtil.toGeneralizedTime(now));
             Provisioning.getInstance().modifyAttrs(account, attrs);
         } catch (Exception e) {

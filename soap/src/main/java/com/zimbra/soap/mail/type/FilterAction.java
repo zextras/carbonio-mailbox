@@ -75,7 +75,7 @@ public class FilterAction {
          *                           "Sieve Extension: Copying Without Side Effects"
          */
         @XmlAttribute(name=MailConstants.A_COPY /* copy */, required=false)
-        private ZmBoolean copy;
+        private final ZmBoolean copy;
 
         @SuppressWarnings("unused")
         private FileIntoAction() {
@@ -153,7 +153,7 @@ public class FilterAction {
          *                           "Sieve Extension: Copying Without Side Effects"
          */
         @XmlAttribute(name=MailConstants.A_COPY /* copy */, required=false)
-        private ZmBoolean copy;
+        private final ZmBoolean copy;
 
         @SuppressWarnings("unused")
         private RedirectAction() {

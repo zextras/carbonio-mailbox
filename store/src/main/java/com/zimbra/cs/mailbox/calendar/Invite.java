@@ -175,9 +175,9 @@ public class Invite {
     mSentByMe = sentByMe;
     setDescription(description, descHtml);
     mFragment = fragment != null ? fragment : "";
-    mComments = comments != null ? comments : new ArrayList<String>();
-    mCategories = categories != null ? categories : new ArrayList<String>();
-    mContacts = contacts != null ? contacts : new ArrayList<String>();
+    mComments = comments != null ? comments : new ArrayList<>();
+    mCategories = categories != null ? categories : new ArrayList<>();
+    mContacts = contacts != null ? contacts : new ArrayList<>();
     mGeo = geo;
     setUrl(url);
 
@@ -685,7 +685,7 @@ public class Invite {
     }
 
     long numAts = meta.getLong(FN_NUM_ATTENDEES, 0);
-    ArrayList<ZAttendee> attendees = new ArrayList<ZAttendee>((int) numAts);
+    ArrayList<ZAttendee> attendees = new ArrayList<>((int) numAts);
     for (int i = 0; i < numAts; i++) {
       try {
         Metadata metaAttendee = meta.getMap(FN_ATTENDEE + i, true);
@@ -724,7 +724,7 @@ public class Invite {
     List<String> comments = null;
     int numComm = (int) meta.getLong(FN_NUM_COMMENTS, 0);
     if (numComm > 0) {
-      comments = new ArrayList<String>(numComm);
+      comments = new ArrayList<>(numComm);
       for (int i = 0; i < numComm; i++) {
         String comm = meta.get(FN_COMMENT + i, null);
         if (comm != null) comments.add(comm);
@@ -734,7 +734,7 @@ public class Invite {
     List<String> contacts = null;
     int numContacts = (int) meta.getLong(FN_NUM_CONTACTS, 0);
     if (numContacts > 0) {
-      contacts = new ArrayList<String>(numContacts);
+      contacts = new ArrayList<>(numContacts);
       for (int i = 0; i < numContacts; i++) {
         String contact = meta.get(FN_CONTACT + i, null);
         if (contact != null) contacts.add(contact);
@@ -744,7 +744,7 @@ public class Invite {
     List<String> categories = null;
     int numCat = (int) meta.getLong(FN_NUM_CATEGORIES, 0);
     if (numCat > 0) {
-      categories = new ArrayList<String>(numCat);
+      categories = new ArrayList<>(numCat);
       for (int i = 0; i < numCat; i++) {
         String cat = meta.get(FN_CATEGORY + i, null);
         if (cat != null) categories.add(cat);
@@ -1157,7 +1157,6 @@ public class Invite {
   public String getUid() {
     return mUid;
   }
-  ;
 
   public void setUid(String uid) {
     mUid = uid;
@@ -1166,7 +1165,6 @@ public class Invite {
   public String getName() {
     return mName;
   }
-  ;
 
   public void setName(String name) {
     mName = name;
@@ -1478,7 +1476,7 @@ public class Invite {
    * @return
    */
   public List<Attach> getIcalendarAttaches() {
-    return attaches != null ? attaches : new ArrayList<Attach>();
+    return attaches != null ? attaches : new ArrayList<>();
   }
 
   public void addIcalendarAttach(Attach attach) {
@@ -1629,7 +1627,7 @@ public class Invite {
   protected int mMailItemId = 0;
   protected int mComponentNum = 0;
 
-  private List<ZAttendee> mAttendees = new ArrayList<ZAttendee>();
+  private List<ZAttendee> mAttendees = new ArrayList<>();
   private ZOrganizer mOrganizer;
   private boolean mIsOrganizer;
 
@@ -1672,9 +1670,9 @@ public class Invite {
   private String mPriority; // 0 .. 9
   private String mPercentComplete; // 0 .. 100
 
-  private List<String> mCategories = new ArrayList<String>();
-  private List<String> mContacts = new ArrayList<String>();
-  private List<String> mComments = new ArrayList<String>();
+  private List<String> mCategories = new ArrayList<>();
+  private List<String> mContacts = new ArrayList<>();
+  private List<String> mComments = new ArrayList<>();
   private Geo mGeo;
 
   private String mUrl;
@@ -1684,9 +1682,9 @@ public class Invite {
 
   private ICalTok mMethod;
 
-  private final List<Alarm> mAlarms = new ArrayList<Alarm>();
+  private final List<Alarm> mAlarms = new ArrayList<>();
 
-  private final List<ZProperty> mXProps = new ArrayList<ZProperty>();
+  private final List<ZProperty> mXProps = new ArrayList<>();
 
   public Invite(String method, TimeZoneMap tzMap, boolean isOrganizer) {
     setItemType(MailItem.Type.APPOINTMENT);
@@ -1853,7 +1851,7 @@ public class Invite {
     // Find my ATTENDEE record in the Invite, it must be in our response
     List<ZAttendee> attendees = getAttendees();
 
-    ArrayList<ZAttendee> toAdd = new ArrayList<ZAttendee>();
+    ArrayList<ZAttendee> toAdd = new ArrayList<>();
 
     boolean modified = false;
 
@@ -2018,8 +2016,8 @@ public class Invite {
     return vcal;
   }
 
-  public static interface InviteVisitor {
-    public void visit(Invite inv) throws ServiceException;
+  public interface InviteVisitor {
+    void visit(Invite inv) throws ServiceException;
   }
 
   public static List<Invite> createFromCalendar(
@@ -2035,7 +2033,7 @@ public class Invite {
       Mailbox mbx,
       int mailItemId)
       throws ServiceException {
-    List<Invite> list = new ArrayList<Invite>();
+    List<Invite> list = new ArrayList<>();
     createFromCalendar(list, account, fragment, cal, sentByMe, mbx, mailItemId, false, null);
     return list;
   }
@@ -2078,10 +2076,10 @@ public class Invite {
       boolean continueOnError,
       InviteVisitor visitor)
       throws ServiceException {
-    List<Invite> list = new ArrayList<Invite>();
+    List<Invite> list = new ArrayList<>();
     for (ZVCalendar cal : cals) {
       createFromCalendar(
-          list, account, fragment, cal, sentByMe, (Mailbox) null, 0, continueOnError, visitor);
+          list, account, fragment, cal, sentByMe, null, 0, continueOnError, visitor);
     }
     return list;
   }
@@ -2189,8 +2187,8 @@ public class Invite {
               newInv.setLocalOnly(false); // set to true later if X-ZIMBRA-LOCAL-ONLY is present
               if (toAdd != null) toAdd.add(newInv);
 
-              List<Object> addRecurs = new ArrayList<Object>();
-              List<Object> subRecurs = new ArrayList<Object>();
+              List<Object> addRecurs = new ArrayList<>();
+              List<Object> subRecurs = new ArrayList<>();
 
               newInv.setComponentNum(compNum);
               if (mbx != null) newInv.setMailboxId(mbx.getId());
@@ -2501,7 +2499,7 @@ public class Invite {
               }
 
               InviteInfo inviteInfo = new InviteInfo(newInv);
-              List<IRecurrence> addRules = new ArrayList<IRecurrence>();
+              List<IRecurrence> addRules = new ArrayList<>();
               if (addRecurs.size() > 0) {
                 for (Iterator<Object> iter = addRecurs.iterator(); iter.hasNext(); ) {
                   Object next = iter.next();
@@ -2516,7 +2514,7 @@ public class Invite {
                   }
                 }
               }
-              List<IRecurrence> subRules = new ArrayList<IRecurrence>();
+              List<IRecurrence> subRules = new ArrayList<>();
               if (subRecurs.size() > 0) {
                 for (Iterator<Object> iter = subRecurs.iterator(); iter.hasNext(); ) {
                   Object next = iter.next();
@@ -2740,7 +2738,7 @@ public class Invite {
       // LOCATION
       String location = getLocation();
       if (location != null && location.length() > 0)
-        component.addProperty(new ZProperty(ICalTok.LOCATION, location.toString()));
+        component.addProperty(new ZProperty(ICalTok.LOCATION, location));
 
       // ATTENDEES
       for (ZAttendee at : getAttendees()) {
@@ -2914,7 +2912,7 @@ public class Invite {
    *
    * @param recurId - if this is null, it means match Series or instance if it is a single instance
    */
-  public static Invite matchingInvite(Invite invites[], RecurId aRecurId) {
+  public static Invite matchingInvite(Invite[] invites, RecurId aRecurId) {
     return matchingInvite(Arrays.asList(invites), aRecurId);
   }
 
@@ -2976,7 +2974,7 @@ public class Invite {
       boolean convertCanceledInstancesToExdates,
       boolean includeAttaches)
       throws ServiceException {
-    List<ZComponent> comps = new ArrayList<ZComponent>(invites.length);
+    List<ZComponent> comps = new ArrayList<>(invites.length);
     if (!convertCanceledInstancesToExdates || invites.length <= 1) {
       for (Invite inv : invites) {
         ZComponent comp =
@@ -3120,7 +3118,7 @@ public class Invite {
   }
 
   public Invite newCopy() {
-    List<ZAttendee> attendees = new ArrayList<ZAttendee>(mAttendees.size());
+    List<ZAttendee> attendees = new ArrayList<>(mAttendees.size());
     for (ZAttendee at : mAttendees) {
       attendees.add(new ZAttendee(at)); // add a copy of attendee
     }
@@ -3163,9 +3161,9 @@ public class Invite {
             mDescription,
             mDescHtml,
             mFragment,
-            new ArrayList<String>(mComments),
-            new ArrayList<String>(mCategories),
-            new ArrayList<String>(mContacts),
+            new ArrayList<>(mComments),
+            new ArrayList<>(mCategories),
+            new ArrayList<>(mContacts),
             mGeo != null ? new Geo(mGeo.getLatitude(), mGeo.getLongitude()) : null,
             mUrl);
     inv.setClassPropSetByMe(classPropSetByMe());
@@ -3367,7 +3365,7 @@ public class Invite {
   }
 
   public Set<String> getReferencedTZIDs() {
-    Set<String> tzids = new HashSet<String>();
+    Set<String> tzids = new HashSet<>();
     // DTSTART
     if (mStart != null && mStart.hasTime()) {
       ICalTimeZone tz = mStart.getTimeZone();

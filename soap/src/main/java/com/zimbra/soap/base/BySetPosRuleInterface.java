@@ -10,6 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface BySetPosRuleInterface {
-    public BySetPosRuleInterface create(String list);
-    public String getList();
+    BySetPosRuleInterface create(String list);
+    String getList();
 }

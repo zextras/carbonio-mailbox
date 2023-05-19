@@ -15,11 +15,11 @@ import com.zimbra.cs.client.*;
 
 public class LmcGetContactsRequest extends LmcSoapRequest {
 
-    private LmcContactAttr mAttrs[];
-    private String mIDList[];
+    private LmcContactAttr[] mAttrs;
+    private String[] mIDList;
     
-    public void setContacts(String c[]) { mIDList = c; }
-    public void setAttrs(LmcContactAttr attrs[]) { mAttrs = attrs; }
+    public void setContacts(String[] c) { mIDList = c; }
+    public void setAttrs(LmcContactAttr[] attrs) { mAttrs = attrs; }
     
     public String[] getContacts() { return mIDList; }
     public LmcContactAttr[] getAttrs() { return mAttrs; }
@@ -44,7 +44,7 @@ public class LmcGetContactsRequest extends LmcSoapRequest {
         throws ServiceException, LmcSoapClientException 
     {
         LmcGetContactsResponse response = new LmcGetContactsResponse();
-        LmcContact cons[] = parseContactArray(responseXML);
+        LmcContact[] cons = parseContactArray(responseXML);
         response.setContacts(cons);
         return response;
     }

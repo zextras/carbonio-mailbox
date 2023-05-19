@@ -25,7 +25,7 @@ public class RightsEntriesInfo {
      * @zm-api-field-description Entries
      */
     @XmlElement(name=AdminConstants.E_ENTRY /* entry */, required=false)
-    private List <NamedElement> entries = Lists.newArrayList();
+    private final List <NamedElement> entries = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Effective rights

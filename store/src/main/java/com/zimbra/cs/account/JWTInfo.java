@@ -7,8 +7,8 @@ package com.zimbra.cs.account;
 
 public class JWTInfo {
 
-    private String salt;
-    private long expiryTime;
+    private final String salt;
+    private final long expiryTime;
 
     public JWTInfo(String salt, long expiryTime) {
         this.salt = salt;

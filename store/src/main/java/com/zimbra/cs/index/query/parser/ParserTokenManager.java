@@ -1191,7 +1191,7 @@ private int jjMoveNfa_1(int startState, int curPos)
       }
       else
       {
-         int hiByte = (int)(curChar >> 8);
+         int hiByte = curChar >> 8;
          int i1 = hiByte >> 6;
          long l1 = 1L << (hiByte & 077);
          int i2 = (curChar & 0xff) >> 6;
@@ -1423,7 +1423,7 @@ private int jjMoveNfa_0(int startState, int curPos)
       }
       else
       {
-         int hiByte = (int)(curChar >> 8);
+         int hiByte = curChar >> 8;
          int i1 = hiByte >> 6;
          long l1 = 1L << (hiByte & 077);
          int i2 = (curChar & 0xff) >> 6;
@@ -1476,9 +1476,7 @@ private static final boolean jjCanMove_0(int hiByte, int i1, int i2, long l1, lo
       case 0:
          return ((jjbitVec2[i2] & l2) != 0L);
       default :
-         if ((jjbitVec0[i1] & l1) != 0L)
-            return true;
-         return false;
+        return (jjbitVec0[i1] & l1) != 0L;
    }
 }
 

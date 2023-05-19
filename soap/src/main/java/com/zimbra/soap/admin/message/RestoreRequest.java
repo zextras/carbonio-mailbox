@@ -42,7 +42,7 @@ public class RestoreRequest {
      */
     @SuppressWarnings("unused")
     private RestoreRequest() {
-        this((RestoreSpec) null);
+        this(null);
     }
 
     public RestoreRequest(RestoreSpec restore) {

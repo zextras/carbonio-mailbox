@@ -15,7 +15,7 @@ public class Service implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List<Command> commands = Lists.newLinkedList();
+    private final List<Command> commands = Lists.newLinkedList();
 
     private String className = null;
     private String namespace = null;

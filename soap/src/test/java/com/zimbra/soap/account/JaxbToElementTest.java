@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,13 +99,13 @@ import junit.framework.Assert;
  */
 @Ignore("add required xml files to run")
 public class JaxbToElementTest {
-    private static String getInfoResponseXMLfileName = "GetInfoResponse.xml";
+    private static final String getInfoResponseXMLfileName = "GetInfoResponse.xml";
     private static Unmarshaller unmarshaller;
     // one run with iterationNum = 80000:
     //     elementToJaxbTest time="30.013" (using w3c dom document)
     //     elementToJaxbUsingDom4jTest time="41.165"
     //     elementToJaxbUsingByteArrayTest time="122.265"
-    private static int iterationNum = 2;
+    private static final int iterationNum = 2;
     static GetInfoResponse getInfoRespJaxb;
     static String getInfoResponseXml;
     static String getInfoResponseJSON;
@@ -156,7 +157,7 @@ public class JaxbToElementTest {
             return str;
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(str.substring(0, commentIndex));
+        sb.append(str, 0, commentIndex);
         str = str.substring(commentIndex + 4);
         int endCommentIndex = str.indexOf("-->");
         if (endCommentIndex != -1) {
@@ -220,7 +221,8 @@ public class JaxbToElementTest {
                 String expectedFile, String actualFile) {
         if (!actual.equals(expected)) {
             try{
-                OutputStreamWriter out = new OutputStreamWriter( new FileOutputStream(actualFile),"UTF-8");
+                OutputStreamWriter out = new OutputStreamWriter( new FileOutputStream(actualFile),
+                    StandardCharsets.UTF_8);
                 out.write(actual);
                 out.close();
             }catch (Exception e){//Catch exception if any
@@ -253,7 +255,7 @@ public class JaxbToElementTest {
         }
     }
 
-    private static String searchConvJson =
+    private static final String searchConvJson =
         "{\n" +
         "    \"SearchConvRequest\": {\n" +
         "      \"includeTagDeleted\": false,\n" +
@@ -285,7 +287,7 @@ public class JaxbToElementTest {
         "    }\n" +
         "}\n";
 
-    private static String searchConvXml =
+    private static final String searchConvXml =
         "<SearchConvRequest\n" +
         "        includeTagDeleted=\"false\"\n" +
         "        calExpandInstStart=\"-1\"\n" +
@@ -968,7 +970,7 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
         }
     }
 
-    private static String modifyPrefsAsJson = "{\"_attrs\":{\"zimbraPrefGroupMailBy\":\"message\","
+    private static final String modifyPrefsAsJson = "{\"_attrs\":{\"zimbraPrefGroupMailBy\":\"message\","
             + "\"zimbraPrefMailItemsPerPage\":\"200\",\"+zimbraPrefTimeZoneId\":\"Africa/Harare\","
             + "\"zimbraPrefSpellIgnoreWord\":[\"zimbra\",\"jaxb\"]},\"_jsns\":\"urn:zimbraAccount\"}";
 

@@ -44,7 +44,7 @@ public class EmailAddrInfo {
      */
     @SuppressWarnings("unused")
     private EmailAddrInfo() {
-        this((String) null);
+        this(null);
     }
 
     public EmailAddrInfo(String address) {

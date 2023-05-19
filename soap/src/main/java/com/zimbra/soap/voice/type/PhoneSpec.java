@@ -37,7 +37,7 @@ public class PhoneSpec {
      * If <b>&lt;pref></b> elements are provided, only those prefs are returned in the response.
      */
     @XmlElement(name=AccountConstants.E_PREF /* pref */, required=false)
-    private List<PrefSpec> prefs = Lists.newArrayList();
+    private final List<PrefSpec> prefs = Lists.newArrayList();
 
     public PhoneSpec() {
     }

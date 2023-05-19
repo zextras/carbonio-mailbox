@@ -23,7 +23,7 @@ import com.zimbra.client.event.ZRefreshEvent;
 class ZSearchPagerCache extends ZEventHandler {
 
     Map<ZSearchParams, ZSearchPager> mSearchPagerCache;
-    private boolean mClearOnModifyItemFolder;
+    private final boolean mClearOnModifyItemFolder;
 
     ZSearchPagerCache(int maxItems, boolean clearOnModifyItemFolder) {
         mSearchPagerCache = MapUtil.newLruMap(maxItems);

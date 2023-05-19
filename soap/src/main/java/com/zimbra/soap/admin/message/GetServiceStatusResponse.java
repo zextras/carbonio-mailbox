@@ -35,7 +35,7 @@ public class GetServiceStatusResponse {
      * @zm-api-field-description Service status information
      */
     @XmlElement(name=AdminConstants.E_STATUS, required=false)
-    private List <ServiceStatus> serviceStatuses = Lists.newArrayList();
+    private final List <ServiceStatus> serviceStatuses = Lists.newArrayList();
 
     public GetServiceStatusResponse() {
     }

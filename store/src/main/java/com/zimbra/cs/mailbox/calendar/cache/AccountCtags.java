@@ -17,12 +17,12 @@ import com.zimbra.cs.mailbox.Mailbox;
 // AccountCtags is a convenience class that aggregates all ctag-related info for an account.
 // It combines data from CalListCache and CtagInfoCache.
 public class AccountCtags {
-    private CalList mCalList;
-    private Map<Integer /* cal folder id */, CtagInfo> mCtagMap;
+    private final CalList mCalList;
+    private final Map<Integer /* cal folder id */, CtagInfo> mCtagMap;
 
     AccountCtags(CalList calList, Collection<CtagInfo> ctags) {
         mCalList = calList;
-        mCtagMap = new HashMap<Integer, CtagInfo>(ctags.size());
+        mCtagMap = new HashMap<>(ctags.size());
         for (CtagInfo ctag : ctags) {
             mCtagMap.put(ctag.getId(), ctag);
         }
@@ -65,7 +65,7 @@ public class AccountCtags {
         Collection<CtagInfo> allFolders = mCtagMap.values();
         if (parentFolderId == Mailbox.ID_FOLDER_USER_ROOT)
             return allFolders;
-        List<CtagInfo> children = new ArrayList<CtagInfo>();
+        List<CtagInfo> children = new ArrayList<>();
         for (CtagInfo calInfo : allFolders) {
             if (calInfo.getFolderId() == parentFolderId)
                 children.add(calInfo);

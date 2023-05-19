@@ -10,7 +10,7 @@ import java.util.List;
 import com.zimbra.soap.type.ShareInfo;
 
 public interface GetShareInfoResponseInterface {
-    public void setShares(Iterable <ShareInfo> shares);
-    public GetShareInfoResponseInterface addShare(ShareInfo shar);
-    public List<ShareInfo> getShares();
+    void setShares(Iterable<ShareInfo> shares);
+    GetShareInfoResponseInterface addShare(ShareInfo shar);
+    List<ShareInfo> getShares();
 }

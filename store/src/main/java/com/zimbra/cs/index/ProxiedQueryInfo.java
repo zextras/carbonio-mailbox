@@ -9,7 +9,7 @@ import com.zimbra.common.soap.Element;
 
 public class ProxiedQueryInfo implements QueryInfo {
 
-    private Element mElt;
+    private final Element mElt;
 
     ProxiedQueryInfo(Element e) {
         mElt = e;

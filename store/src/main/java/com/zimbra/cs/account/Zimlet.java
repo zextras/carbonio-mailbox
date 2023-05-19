@@ -60,7 +60,7 @@ public class Zimlet extends NamedEntry {
 
 	public boolean checkTarget(String target) {
 		Set<String> lTiers = getMultiAttrSet(Provisioning.A_zimbraZimletTarget); 
-		return ((lTiers == null) ? false : lTiers.contains(target));
+		return (lTiers != null && lTiers.contains(target));
 	}
 
 }

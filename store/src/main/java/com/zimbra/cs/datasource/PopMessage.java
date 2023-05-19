@@ -39,7 +39,7 @@ public class PopMessage extends DataSourceMapping {
         throws ServiceException {
         Collection<DataSourceItem> mappings = DbDataSource.getReverseMappings(ds,
             Arrays.asList(remoteIds));
-        Set<PopMessage> matchingMsgs = new HashSet<PopMessage>();
+        Set<PopMessage> matchingMsgs = new HashSet<>();
         
         if (mappings.isEmpty()) {
             Map<Integer, String> oldMappings = DbPop3Message.getMappings(
@@ -67,7 +67,7 @@ public class PopMessage extends DataSourceMapping {
     public static Set<String> getMatchingUids(DataSource ds, String[] remoteIds)
         throws ServiceException {
         Set<PopMessage> matchingMsgs = getMappings(ds, remoteIds);
-        Set<String> matchingUids = new HashSet<String>(matchingMsgs.size());
+        Set<String> matchingUids = new HashSet<>(matchingMsgs.size());
                
         for (PopMessage msg : matchingMsgs)
             matchingUids.add(msg.getRemoteId());

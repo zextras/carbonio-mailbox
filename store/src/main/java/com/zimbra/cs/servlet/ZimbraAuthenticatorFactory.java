@@ -22,7 +22,7 @@ public class ZimbraAuthenticatorFactory extends DefaultAuthenticatorFactory {
 
     public static String ZIMBRA_AUTH_MECHANISM = "ZimbraAuth";
 
-    private ZimbraAuthenticator zimbraAuthenticator = new ZimbraAuthenticator();
+    private final ZimbraAuthenticator zimbraAuthenticator = new ZimbraAuthenticator();
 
     public void setUrlPattern(String pattern) {
         zimbraAuthenticator.setUrlPattern(pattern);

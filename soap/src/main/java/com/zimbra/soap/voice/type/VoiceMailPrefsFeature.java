@@ -25,7 +25,7 @@ public class VoiceMailPrefsFeature extends CallFeatureInfo {
      * @zm-api-field-description Preferences
      */
     @XmlElement(name=AccountConstants.E_PREF /* pref */, required=false)
-    private List<PrefInfo> prefs = Lists.newArrayList();
+    private final List<PrefInfo> prefs = Lists.newArrayList();
 
     public VoiceMailPrefsFeature() {
     }

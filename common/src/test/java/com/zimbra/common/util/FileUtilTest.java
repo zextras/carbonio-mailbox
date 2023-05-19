@@ -21,7 +21,7 @@ import com.google.common.io.Files;
 
 public class FileUtilTest {
 
-    private List<File> tempPaths = Lists.newArrayList();
+    private final List<File> tempPaths = Lists.newArrayList();
 
     /**
      * Overrides {@code lastModified} to return system time.  {@code File.lastModified()} may

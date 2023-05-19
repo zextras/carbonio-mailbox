@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 import javax.security.auth.login.LoginException;
@@ -385,7 +386,7 @@ public final class ImapProxy {
                         if (literal == -1)
                             break;
                         // if there's a literal, copy it and then handle the following line
-                        byte buffer[] = literal == 0 ? null : new byte[Math.min(literal, 65536)];
+                        byte[] buffer = literal == 0 ? null : new byte[Math.min(literal, 65536)];
                         while (literal > 0) {
                             int read = min.read(buffer, 0, Math.min(literal, buffer.length));
                             if (read == -1)
@@ -437,11 +438,7 @@ public final class ImapProxy {
         @Override public byte[] evaluateChallenge(byte[] challenge) {
             complete = true;
             String response = username + '\0' + username + '\0' + authtoken;
-            try {
-                return response.getBytes("utf-8");
-            } catch (UnsupportedEncodingException uee) {
-                return response.getBytes();
-            }
+          return response.getBytes(StandardCharsets.UTF_8);
         }
     }
 }

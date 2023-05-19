@@ -7,10 +7,10 @@ package com.zimbra.cs.client;
 
 public class LmcContactAttr {
     
-    private String mAttrName;
-    private String mID;
-    private String mRef;
-    private String mAttrData;
+    private final String mAttrName;
+    private final String mID;
+    private final String mRef;
+    private final String mAttrData;
 
     public LmcContactAttr(String attrName,
                           String id,

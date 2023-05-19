@@ -241,7 +241,8 @@ public class SendInviteReply extends CalendarRequest {
 
             // Don't allow creating/editing a private appointment on behalf of another user,
             // unless that other user is a calendar resource.
-            boolean allowPrivateAccess = calItem != null ? calItem.allowPrivateAccess(authAcct, isAdmin) : true;
+            boolean allowPrivateAccess =
+                calItem == null || calItem.allowPrivateAccess(authAcct, isAdmin);
             boolean isCalendarResource = acct instanceof CalendarResource;
             if (!allowPrivateAccess && !oldInv.isPublic() && !isCalendarResource)
                 throw ServiceException.PERM_DENIED("Cannot reply to a private appointment/task on behalf of another user");

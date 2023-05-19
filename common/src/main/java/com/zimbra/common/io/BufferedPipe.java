@@ -23,7 +23,7 @@ class BufferedPipe {
     private final SinkChannel mSinkChannel;
     private final SourceChannel mSourceChannel;
 
-    private byte[] mBuffer;
+    private final byte[] mBuffer;
     private boolean mIsOpen;
 
     private final Object mReadLock = new Object();

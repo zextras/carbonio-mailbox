@@ -40,7 +40,7 @@ public class AuthTokenProperties implements Cloneable {
   private String accountId;
   private String adminAccountId;
   private int validityValue = -1;
-  private long expires;
+  private final long expires;
   private String encoded;
   private boolean isAdmin;
   private boolean isDomainAdmin;

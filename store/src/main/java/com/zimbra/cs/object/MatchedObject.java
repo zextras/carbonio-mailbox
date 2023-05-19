@@ -19,8 +19,8 @@ package com.zimbra.cs.object;
  */
 public class MatchedObject {
 	
-	private ObjectHandler mHandler;
-	private String mMatchedText;
+	private final ObjectHandler mHandler;
+	private final String mMatchedText;
 	
 	public MatchedObject(ObjectHandler handler, String matchedText) {
 		mHandler = handler;

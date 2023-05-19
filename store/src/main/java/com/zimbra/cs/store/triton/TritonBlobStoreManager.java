@@ -48,8 +48,9 @@ public class TritonBlobStoreManager extends SisStore implements ExternalResumabl
 
     private String url;
     private String blobApiUrl;
-    enum HashType {SHA0, SHA256};
-    private HashType hashType;
+    enum HashType {SHA0, SHA256}
+
+  private HashType hashType;
     private String emptyLocator;
 
     @VisibleForTesting
@@ -272,12 +273,9 @@ public class TritonBlobStoreManager extends SisStore implements ExternalResumabl
             if (statusCode == HttpStatus.SC_CREATED) {
                 return true; //exists, ref count incremented
             } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
-                if (emptyLocator.equals(locator)) {
-                    //empty file
-                    return true;
-                } else {
-                    return false; //does not exist
-                }
+              //empty file
+              //does not exist
+              return emptyLocator.equals(locator);
             } else if (statusCode == HttpStatus.SC_BAD_REQUEST) {
                 //does not exist, probably wrong hash algorithm
                 ZimbraLog.store.warn("failed with code %d response: %s", statusCode, EntityUtils.toString(httpResp.getEntity()));

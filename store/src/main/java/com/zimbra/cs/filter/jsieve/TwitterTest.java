@@ -42,9 +42,7 @@ public final class TwitterTest extends AbstractTest {
         ParsedAddress sender = adapter.getParsedMessage().getParsedSender();
         if (!Strings.isNullOrEmpty(sender.emailPart)) {
             String email = sender.emailPart.toLowerCase();
-            if (email.equals("notify@twitter.com")) {
-                return true;
-            }
+          return email.equals("notify@twitter.com");
         }
         return false;
     }

@@ -73,7 +73,7 @@ public class AddressTest extends Address {
         }
         params.setComparator(ZimbraComparatorUtils.getComparator(params.getComparator(), params.getMatchType()));
         if (ASCII_NUMERIC_COMPARATOR.equalsIgnoreCase(params.getComparator())) {
-            Require.checkCapability((ZimbraMailAdapter) mail, ASCII_NUMERIC_COMPARATOR);
+            Require.checkCapability(mail, ASCII_NUMERIC_COMPARATOR);
         }
 
         if (HeaderConstants.COUNT.equals(params.getMatchType()) || HeaderConstants.VALUE.equals(params.getMatchType()) || IS_TAG.equalsIgnoreCase(params.getMatchType())) {
@@ -104,7 +104,7 @@ public class AddressTest extends Address {
         boolean isMatched = false;
 
         Iterator headerNamesIter = headerNames.iterator();
-        List<String> headerValues = new ArrayList<String>();
+        List<String> headerValues = new ArrayList<>();
         while(headerNamesIter.hasNext()) {
             final MailAdapter.Address[] addresses = mail.parseAddresses((String) headerNamesIter.next());
             final int length = addresses.length;

@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import org.junit.After;
@@ -40,7 +41,8 @@ public class TestRemoteIP {
         headers.put(RemoteIP.X_ORIGINATING_IP_HEADER, "172.16.150.11");
         headers.put(RemoteIP.X_ORIGINATING_PORT_HEADER, "8080");
         headers.put(RemoteIP.X_ORIGINATING_PROTOCOL_HEADER, "IMAP");
-        MockHttpServletRequest req = new MockHttpServletRequest("test".getBytes("UTF-8"), new URL(
+        MockHttpServletRequest req = new MockHttpServletRequest("test".getBytes(
+            StandardCharsets.UTF_8), new URL(
                 "http://localhost:7070/service/FooRequest"), "", 80, "192.168.1.1", headers);
         RemoteIP remoteIp = new RemoteIP(req, new RemoteIP.TrustedIPs(new String[] { "192.168.1.1" }));
         assertEquals("wrong originating IP", "172.16.150.11", remoteIp.getOrigIP());
@@ -55,7 +57,8 @@ public class TestRemoteIP {
     @Test
     public void testNoXForwardedHeaders() throws UnsupportedEncodingException, MalformedURLException {
         HashMap<String, String> headers = new HashMap<String, String>();
-        MockHttpServletRequest req = new MockHttpServletRequest("test".getBytes("UTF-8"), new URL(
+        MockHttpServletRequest req = new MockHttpServletRequest("test".getBytes(
+            StandardCharsets.UTF_8), new URL(
                 "http://localhost:7070/service/FooRequest"), "", 80, "192.168.1.1", headers);
         RemoteIP remoteIp = new RemoteIP(req, new RemoteIP.TrustedIPs(new String[] { "192.168.1.1" }));
         assertNull("originating IP should be null", remoteIp.getOrigIP());
@@ -71,7 +74,8 @@ public class TestRemoteIP {
     public void testNonTrustedClientIPRemoteIP() throws UnsupportedEncodingException, MalformedURLException {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put(RemoteIP.X_ORIGINATING_PROTOCOL_HEADER, "IMAP");
-        MockHttpServletRequest req = new MockHttpServletRequest("test".getBytes("UTF-8"), new URL(
+        MockHttpServletRequest req = new MockHttpServletRequest("test".getBytes(
+            StandardCharsets.UTF_8), new URL(
                 "http://localhost:7070/service/FooRequest"), "", 80, "10.10.1.1", headers);
         RemoteIP remoteIp = new RemoteIP(req, new RemoteIP.TrustedIPs(new String[] { "192.168.1.1" }));
         // we should ignore X-Forwarded-XXX headers from non-trusted clients
@@ -90,7 +94,8 @@ public class TestRemoteIP {
         headers.put(RemoteIP.X_ORIGINATING_IP_HEADER, "172.16.150.11");
         headers.put(RemoteIP.X_ORIGINATING_PORT_HEADER, "8080");
         headers.put(RemoteIP.X_ORIGINATING_PROTOCOL_HEADER, "IMAP");
-        MockHttpServletRequest req = new MockHttpServletRequest("test".getBytes("UTF-8"), new URL(
+        MockHttpServletRequest req = new MockHttpServletRequest("test".getBytes(
+            StandardCharsets.UTF_8), new URL(
                 "http://localhost:7070/service/FooRequest"), "", 80, "192.168.1.1", headers);
         RemoteIP remoteIp = new RemoteIP(req, new RemoteIP.TrustedIPs(new String[] { "192.168.1.1" }));
         remoteIp.addToLoggingContext();
@@ -108,7 +113,8 @@ public class TestRemoteIP {
         headers.put(RemoteIP.X_ORIGINATING_IP_HEADER, "172.16.150.11");
         headers.put(RemoteIP.X_ORIGINATING_PORT_HEADER, "8080");
         headers.put(RemoteIP.X_ORIGINATING_PROTOCOL_HEADER, "IMAP");
-        MockHttpServletRequest req = new MockHttpServletRequest("test".getBytes("UTF-8"), new URL(
+        MockHttpServletRequest req = new MockHttpServletRequest("test".getBytes(
+            StandardCharsets.UTF_8), new URL(
                 "http://localhost:7070/service/FooRequest"), "", 80, "10.10.1.1", headers);
         RemoteIP remoteIp = new RemoteIP(req, new RemoteIP.TrustedIPs(new String[] { "192.168.1.1" }));
         remoteIp.addToLoggingContext();

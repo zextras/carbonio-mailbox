@@ -6,7 +6,7 @@
 package com.zimbra.cs.account;
 
 public class ZimbraAuthTokenEncoded extends ZimbraAuthToken {
-    private String encoded;
+    private final String encoded;
     
     public ZimbraAuthTokenEncoded(String encoded) {
         this.encoded = encoded;

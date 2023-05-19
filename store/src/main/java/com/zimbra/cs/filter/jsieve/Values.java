@@ -18,5 +18,5 @@ public interface Values {
      * @param rhs right hand side
      * @return boolean
      */
-    public boolean values(String operator, String lhs, String rhs) throws FeatureException;
+    boolean values(String operator, String lhs, String rhs) throws FeatureException;
 }

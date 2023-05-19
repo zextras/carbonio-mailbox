@@ -116,13 +116,13 @@ public class SoapApiDescription {
     }
 
     public static SoapApiDescription deserializeFromJson(InputStream in)
-    throws JsonParseException, JsonMappingException, IOException {
+    throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(in, SoapApiDescription.class);
     }
 
     public static SoapApiDescription deserializeFromJson(File inFile)
-    throws JsonParseException, JsonMappingException, IOException {
+    throws IOException {
         String fname = inFile.getName();
         if ((fname != null) && (fname.endsWith(".gz"))) {
             FileInputStream fis = new FileInputStream(inFile);
@@ -134,7 +134,7 @@ public class SoapApiDescription {
     }
 
     public void serializeToJson(File outFile)
-    throws JsonGenerationException, JsonMappingException, IOException {
+    throws IOException {
         ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); // no more null-valued properties
         mapper.configure(SerializationFeature.INDENT_OUTPUT, false);

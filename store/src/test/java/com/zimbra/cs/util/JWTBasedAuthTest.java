@@ -163,7 +163,7 @@ public class JWTBasedAuthTest {
     @Test
     public void testGetSaltCookie() {
         HttpServletRequest req = EasyMock.createMock(HttpServletRequest.class);
-        Cookie cookies[] =  new Cookie[1];
+        Cookie[] cookies =  new Cookie[1];
         String salt = "s1";
         Cookie cookie = new Cookie("ZM_JWT", salt);
         cookie.setHttpOnly(true);
@@ -263,7 +263,7 @@ public class JWTBasedAuthTest {
         HttpServletRequest req = EasyMock.createMock(HttpServletRequest.class);
         HttpServletResponse resp = EasyMock.createMock(HttpServletResponse.class);
         UserServlet usrSrv = EasyMock.createMock(UserServlet.class);
-        Cookie cookies[] =  new Cookie[1];
+        Cookie[] cookies =  new Cookie[1];
         String salt = "s1";
         Cookie cookie = new Cookie("ZM_JWT", salt);
         cookie.setHttpOnly(true);
@@ -285,7 +285,7 @@ public class JWTBasedAuthTest {
     @Test
     public void testZimbraQoSFilterExtractUserId() {
         HttpServletRequest req = EasyMock.createMock(HttpServletRequest.class);
-        Cookie cookies[] =  new Cookie[1];
+        Cookie[] cookies =  new Cookie[1];
         String salt = "s1";
         Cookie cookie = new Cookie("ZM_JWT", salt);
         cookie.setHttpOnly(true);
@@ -311,7 +311,7 @@ public class JWTBasedAuthTest {
     public void testJWTCookieSizeLimit() {
         HttpServletRequest req = EasyMock.createMock(HttpServletRequest.class);
         HttpServletResponse resp = EasyMock.createMock(HttpServletResponse.class);
-        Cookie cookies[] =  new Cookie[1];
+        Cookie[] cookies =  new Cookie[1];
         String generatedSalt = RandomStringUtils.random(4095, true, true);
         Cookie cookie = new Cookie("ZM_JWT", generatedSalt);
         cookie.setHttpOnly(true);

@@ -20,13 +20,13 @@ public class SearchAccountsOptions extends SearchDirectoryOptions {
     private static final SearchAccountsOptions.IncludeType DEFAULT_INCLUDE_TYPE = 
         IncludeType.ACCOUNTS_AND_CALENDAR_RESOURCES;
     
-    public static enum IncludeType {
+    public enum IncludeType {
         ACCOUNTS_AND_CALENDAR_RESOURCES,
         ACCOUNTS_ONLY,
-        CALENDAR_RESOURCES_ONLY;
-    };
-    
-    private SearchAccountsOptions.IncludeType includeType;
+        CALENDAR_RESOURCES_ONLY
+    }
+
+  private SearchAccountsOptions.IncludeType includeType;
             
     public SearchAccountsOptions() {
         initIncludeType();

@@ -8,31 +8,31 @@ package com.zimbra.soap.base;
 import java.util.List;
 
 public interface MessageCommonInterface {
-    public void setSize(Long size);
-    public void setDate(Long date);
-    public void setFolder(String folder);
-    public void setConversationId(String conversationId);
-    public void setFlags(String flags);
+    void setSize(Long size);
+    void setDate(Long date);
+    void setFolder(String folder);
+    void setConversationId(String conversationId);
+    void setFlags(String flags);
     @Deprecated
-    public void setTags(String tags);
-    public void setTagNames(String tagNames);
-    public void setRevision(Integer revision);
-    public void setChangeDate(Long changeDate);
-    public void setModifiedSequence(Integer modifiedSequence);
-    public void setMetadataInterfaces(Iterable <CustomMetadataInterface> metadatas);
-    public void addMetadataInterfaces(CustomMetadataInterface metadata);
+    void setTags(String tags);
+    void setTagNames(String tagNames);
+    void setRevision(Integer revision);
+    void setChangeDate(Long changeDate);
+    void setModifiedSequence(Integer modifiedSequence);
+    void setMetadataInterfaces(Iterable<CustomMetadataInterface> metadatas);
+    void addMetadataInterfaces(CustomMetadataInterface metadata);
 
-    public Long getSize();
-    public Long getDate();
-    public String getFolder();
-    public String getConversationId();
-    public String getFlags();
+    Long getSize();
+    Long getDate();
+    String getFolder();
+    String getConversationId();
+    String getFlags();
     @Deprecated
-    public String getTags();
-    public String getTagNames();
-    public Integer getRevision();
-    public Long getChangeDate();
-    public Integer getModifiedSequence();
+    String getTags();
+    String getTagNames();
+    Integer getRevision();
+    Long getChangeDate();
+    Integer getModifiedSequence();
 
-    public List<CustomMetadataInterface> getMetadataInterfaces();
+    List<CustomMetadataInterface> getMetadataInterfaces();
 }

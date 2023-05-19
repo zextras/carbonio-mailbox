@@ -75,7 +75,7 @@ public class HtmlDetag extends DefaultFilter {
 
 	private static class UnescapeWriter extends Writer {
 		
-		private static final Map<String, Integer> entityMap = new HashMap<String, Integer>();
+		private static final Map<String, Integer> entityMap = new HashMap<>();
 		static {
 			entityMap.put("quot", 34);
 			entityMap.put("amp", 38);

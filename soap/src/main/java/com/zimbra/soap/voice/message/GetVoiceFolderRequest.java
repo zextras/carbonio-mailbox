@@ -40,7 +40,7 @@ public class GetVoiceFolderRequest {
      * @zm-api-field-description Phone specification
      */
     @XmlElement(name=VoiceConstants.E_PHONE /* phone */, required=false)
-    private List<PhoneSpec> phones = Lists.newArrayList();
+    private final List<PhoneSpec> phones = Lists.newArrayList();
 
     public GetVoiceFolderRequest() {
     }

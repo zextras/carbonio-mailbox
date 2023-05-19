@@ -8,8 +8,8 @@ package com.zimbra.client.event;
 import com.zimbra.common.service.ServiceException;
 
 public class ZModifyVoiceMailItemEvent implements ZModifyItemEvent {
-	private String mId;
-	private boolean mIsHeard;
+	private final String mId;
+	private final boolean mIsHeard;
 	private boolean mMadeChange;
 
 	public ZModifyVoiceMailItemEvent(String id, boolean isHeard) throws ServiceException {

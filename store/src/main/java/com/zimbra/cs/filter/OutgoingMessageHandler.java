@@ -29,14 +29,14 @@ import com.zimbra.cs.service.util.ItemId;
  */
 public final class OutgoingMessageHandler implements FilterHandler {
 
-    private ParsedMessage parsedMessage;
-    private Mailbox mailbox;
-    private int defaultFolderId;
-    private boolean noICal;
-    private int defaultFlags;
-    private String[] defaultTags;
-    private int convId;
-    private OperationContext octxt;
+    private final ParsedMessage parsedMessage;
+    private final Mailbox mailbox;
+    private final int defaultFolderId;
+    private final boolean noICal;
+    private final int defaultFlags;
+    private final String[] defaultTags;
+    private final int convId;
+    private final OperationContext octxt;
 
     public OutgoingMessageHandler(Mailbox mailbox, ParsedMessage pm, int sentFolderId, boolean noICal,
                                   int flags, String[] tags, int convId, OperationContext octxt) {

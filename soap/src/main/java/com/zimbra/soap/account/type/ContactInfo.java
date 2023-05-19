@@ -180,13 +180,13 @@ implements ContactInterface {
      * @zm-api-field-description Contact attributes
      */
     @XmlElement(name=MailConstants.E_A /* a */, required=false)
-    private List<ContactAttr> attrs = Lists.newArrayList();
+    private final List<ContactAttr> attrs = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Contact group members
      */
     @XmlElement(name=MailConstants.E_CONTACT_GROUP_MEMBER /* m */, required=false)
-    private List<ContactGroupMember> contactGroupMembers = Lists.newArrayList();
+    private final List<ContactGroupMember> contactGroupMembers = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag isOwner

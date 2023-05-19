@@ -31,7 +31,7 @@ public class GetAggregateQuotaUsageOnServer extends AdminDocumentHandler {
             throw ServiceException.PERM_DENIED("only global admin is allowed");
         }
 
-        Map<String, Long> domainAggrQuotaUsed = new HashMap<String, Long>();
+        Map<String, Long> domainAggrQuotaUsed = new HashMap<>();
 
         SearchAccountsOptions searchOpts = new SearchAccountsOptions();
         searchOpts.setIncludeType(IncludeType.ACCOUNTS_ONLY);

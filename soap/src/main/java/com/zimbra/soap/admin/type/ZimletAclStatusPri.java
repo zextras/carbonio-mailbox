@@ -45,7 +45,7 @@ public class ZimletAclStatusPri {
      */
     @SuppressWarnings("unused")
     private ZimletAclStatusPri() {
-        this((String) null);
+        this(null);
     }
 
     public ZimletAclStatusPri(String name) {

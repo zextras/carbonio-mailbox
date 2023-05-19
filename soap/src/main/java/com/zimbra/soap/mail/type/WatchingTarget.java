@@ -48,7 +48,7 @@ public class WatchingTarget {
      * @zm-api-field-description Items the user is currently watching
      */
     @XmlElement(name=MailConstants.E_ITEM /* item */, required=false)
-    private List<Id> items = Lists.newArrayList();
+    private final List<Id> items = Lists.newArrayList();
 
     public WatchingTarget() {
     }

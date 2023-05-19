@@ -32,7 +32,7 @@ import com.zimbra.cs.filter.ZimbraMailAdapter;
 import com.zimbra.cs.filter.ZimbraMailAdapter.PARSESTATUS;
 
 public class DeleteHeader extends AbstractCommand {
-    private EditHeaderExtension ehe = new EditHeaderExtension();
+    private final EditHeaderExtension ehe = new EditHeaderExtension();
 
     /** (non-Javadoc)
      * @see org.apache.jsieve.commands.AbstractCommand#executeBasic(org.apache.jsieve.mail.MailAdapter, org.apache.jsieve.Arguments, org.apache.jsieve.Block, org.apache.jsieve.SieveContext)
@@ -47,7 +47,7 @@ public class DeleteHeader extends AbstractCommand {
         }
         ZimbraMailAdapter mailAdapter = (ZimbraMailAdapter) mail;
         if (ASCII_NUMERIC_COMPARATOR.equalsIgnoreCase(ehe.getComparator())) {
-            Require.checkCapability((ZimbraMailAdapter) mail, ASCII_NUMERIC_COMPARATOR);
+            Require.checkCapability(mail, ASCII_NUMERIC_COMPARATOR);
         }
         Require.checkCapability(mailAdapter, CAPABILITY_EDITHEADER);
         if (!mailAdapter.getAccount().isSieveEditHeaderEnabled()) {
@@ -94,7 +94,7 @@ public class DeleteHeader extends AbstractCommand {
         }
         ehe.setEffectiveIndex(headerCount);
         int matchIndex = 0;
-        Set<String> removedHeaders = new HashSet<String>();
+        Set<String> removedHeaders = new HashSet<>();
 
         try {
             boolean hasEdited = false;

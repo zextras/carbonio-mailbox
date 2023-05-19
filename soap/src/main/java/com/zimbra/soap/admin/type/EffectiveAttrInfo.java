@@ -43,18 +43,18 @@ public class EffectiveAttrInfo {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_DEFAULT /* default */, required=false)
     @XmlElement(name=AdminConstants.E_VALUE /* v */, required=false)
-    private List <String> values = Lists.newArrayList();
+    private final List <String> values = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private EffectiveAttrInfo() {
-        this((String) null, (ConstraintInfo) null);
+        this(null, null);
     }
 
     public EffectiveAttrInfo(String name) {
-        this(name, (ConstraintInfo) null);
+        this(name, null);
     }
 
     public EffectiveAttrInfo(String name, ConstraintInfo constraint) {

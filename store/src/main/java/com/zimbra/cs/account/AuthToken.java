@@ -255,12 +255,12 @@ public abstract class AuthToken {
 
     public abstract Usage getUsage();
 
-    public static enum Usage {
+    public enum Usage {
         AUTH("a"), ENABLE_TWO_FACTOR_AUTH("etfa"), TWO_FACTOR_AUTH("tfa"), RESET_PASSWORD("rp");
 
-        private String code;
+        private final String code;
 
-        private Usage(String code) {
+        Usage(String code) {
             this.code = code;
         }
 
@@ -278,11 +278,11 @@ public abstract class AuthToken {
         }
     }
 
-    public static enum TokenType {
+    public enum TokenType {
         AUTH("auth"), JWT("jwt");
-        private String code;
+        private final String code;
 
-        private TokenType(String code) {
+        TokenType(String code) {
             this.code = code;
         }
 

@@ -38,7 +38,7 @@ public class ModifySignatureRequest {
      */
     @SuppressWarnings("unused")
     private ModifySignatureRequest() {
-        this((Signature) null);
+        this(null);
     }
 
     public ModifySignatureRequest(Signature signature) {

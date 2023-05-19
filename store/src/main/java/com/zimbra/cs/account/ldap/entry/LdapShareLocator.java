@@ -12,7 +12,7 @@ import com.zimbra.cs.ldap.ZAttributes;
 
 public class LdapShareLocator extends ShareLocator implements LdapEntry {
 
-    private String mDn;
+    private final String mDn;
 
     public LdapShareLocator(String dn, ZAttributes attrs, Provisioning prov) throws LdapException {
         super(attrs.getAttrString(Provisioning.A_cn), attrs.getAttrs(), prov);

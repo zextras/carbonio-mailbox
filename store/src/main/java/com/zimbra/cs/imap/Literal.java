@@ -185,8 +185,7 @@ abstract class Literal {
     }
 
     static IOException error(String msg, Throwable cause) {
-        IOException e = new IOException(msg);
-        e.initCause(cause);
-        return e;
+        IOException e = new IOException(msg, cause);
+      return e;
     }
 }

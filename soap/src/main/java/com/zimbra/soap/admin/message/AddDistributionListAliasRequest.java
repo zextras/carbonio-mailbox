@@ -42,7 +42,7 @@ public class AddDistributionListAliasRequest {
      */
     @SuppressWarnings("unused")
     private AddDistributionListAliasRequest() {
-        this((String)null, (String)null);
+        this(null, null);
     }
 
     public AddDistributionListAliasRequest(String id, String alias) {

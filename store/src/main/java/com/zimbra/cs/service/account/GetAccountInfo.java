@@ -10,6 +10,7 @@ package com.zimbra.cs.service.account;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -142,7 +143,8 @@ public class GetAccountInfo extends AccountDocumentHandler  {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
                     Mac mac = Mac.getInstance("HmacSHA256");
-                    SecretKeySpec key = new SecretKeySpec(clientSecret.getBytes("UTF8"), "HmacSHA256");
+                    SecretKeySpec key = new SecretKeySpec(clientSecret.getBytes(
+                        StandardCharsets.UTF_8), "HmacSHA256");
                     mac.init(key);
                     byte [] rawHmac = mac.doFinal(
                             String.format(
@@ -150,18 +152,19 @@ public class GetAccountInfo extends AccountDocumentHandler  {
                                     account.getUid(),
                                     formatter.format(today),
                                     socialBaseURL,
-                                    socialTabURL).getBytes("UTF8"));
+                                    socialTabURL).getBytes(StandardCharsets.UTF_8));
                     String Base64Signature = Base64.encodeBase64String(rawHmac);
 
                     String szURL = String.format("%s/api.ashx/v2/oauth/redirect?client_id=%s&username=%s&time_stamp=%s&redirect_uri=%s&signature=%s",
                             socialBaseURL,
-                            URLEncoder.encode(clientID,"UTF8"),
+                            URLEncoder.encode(clientID, StandardCharsets.UTF_8),
                             account.getAttr(nameAttribute),
-                            URLEncoder.encode(formatter.format(today),"UTF8"),
-                            URLEncoder.encode(socialBaseURL.concat(socialTabURL),"UTF8"),
-                            URLEncoder.encode(Base64Signature,"UTF8"));
+                            URLEncoder.encode(formatter.format(today), StandardCharsets.UTF_8),
+                            URLEncoder.encode(socialBaseURL.concat(socialTabURL),
+                                StandardCharsets.UTF_8),
+                            URLEncoder.encode(Base64Signature, StandardCharsets.UTF_8));
                     response.addAttribute(AccountConstants.E_COMMUNITY_URL, szURL, Element.Disposition.CONTENT);
-                } catch (UnsupportedEncodingException | NoSuchAlgorithmException | InvalidKeyException  e) {
+                } catch (NoSuchAlgorithmException | InvalidKeyException  e) {
                     throw ServiceException.FAILURE("Failed to generate community URL", e);
                 }
             }

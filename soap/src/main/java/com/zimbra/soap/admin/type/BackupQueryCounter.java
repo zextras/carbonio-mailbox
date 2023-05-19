@@ -48,7 +48,7 @@ public class BackupQueryCounter {
      */
     @SuppressWarnings("unused")
     private BackupQueryCounter() {
-        this((String) null, (String) null, (Long) null, (Long) null);
+        this(null, null, null, null);
     }
 
     public BackupQueryCounter(String name, String counterUnit,

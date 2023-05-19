@@ -10,6 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface ByYearDayRuleInterface {
-    public ByYearDayRuleInterface create(String list);
-    public String getList();
+    ByYearDayRuleInterface create(String list);
+    String getList();
 }

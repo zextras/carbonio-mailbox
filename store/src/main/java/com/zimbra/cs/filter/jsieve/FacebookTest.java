@@ -45,9 +45,7 @@ public final class FacebookTest extends AbstractTest {
         ParsedAddress sender = adapter.getParsedMessage().getParsedSender();
         if (!Strings.isNullOrEmpty(sender.emailPart)) {
             String email = sender.emailPart.toLowerCase();
-            if (email.endsWith("@facebookmail.com") && email.startsWith("notification+")) {
-                return true;
-            }
+          return email.endsWith("@facebookmail.com") && email.startsWith("notification+");
         }
         return false;
     }

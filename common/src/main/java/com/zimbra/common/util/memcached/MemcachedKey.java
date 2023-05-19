@@ -14,11 +14,11 @@ public interface MemcachedKey {
      * Returns the memcached key prefix.  Can be null.
      * @return
      */
-    public String getKeyPrefix();
+    String getKeyPrefix();
 
     /**
      * Returns the memcached key value, without prefix.
      * @return
      */
-    public String getKeyValue();
+    String getKeyValue();
 }

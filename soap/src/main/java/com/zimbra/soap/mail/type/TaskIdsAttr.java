@@ -15,6 +15,6 @@ public class TaskIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private TaskIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

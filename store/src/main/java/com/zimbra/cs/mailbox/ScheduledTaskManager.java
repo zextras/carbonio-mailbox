@@ -30,7 +30,7 @@ import com.zimbra.cs.mailbox.alerts.CalItemReminderTaskCallback;
 public class ScheduledTaskManager {
 
     private static TaskScheduler<ScheduledTaskResult> sScheduler;
-    private static Random sRandom = new Random();
+    private static final Random sRandom = new Random();
 
     public static void startup()
     throws ServiceException {
@@ -43,7 +43,7 @@ public class ScheduledTaskManager {
         Provisioning prov = Provisioning.getInstance();
         int numThreads = prov.getLocalServer().getIntAttr(Provisioning.A_zimbraScheduledTaskNumThreads, 20);
         int minThreads = numThreads / 2;
-        sScheduler = new TaskScheduler<ScheduledTaskResult>(null, minThreads, numThreads);
+        sScheduler = new TaskScheduler<>(null, minThreads, numThreads);
         sScheduler.addCallback(new TaskCleanup());
         sScheduler.addCallback(new CalItemReminderTaskCallback());
         sScheduler.addCallback(new ExpireGrantsTaskCallback());

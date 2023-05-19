@@ -39,9 +39,7 @@ public class Pair<F,S> {
             Pair that = (Pair) obj;
             if (mFirst != that.mFirst && (mFirst == null || !mFirst.equals(that.mFirst)))
                 return false;
-            if (mSecond != that.mSecond && (mSecond == null || !mSecond.equals(that.mSecond)))
-                return false;
-            return true;
+            return mSecond == that.mSecond || (mSecond != null && mSecond.equals(that.mSecond));
         } else {
             return super.equals(obj);
         }
@@ -58,10 +56,10 @@ public class Pair<F,S> {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Pair<String,String>("foo", "bar").equals(new Pair<String,String>("foo", "bar")));
+        System.out.println(new Pair<String,String>("foo", "bar").equals(new Pair<>("foo", "bar")));
         System.out.println(new Pair<String,String>("foo", null).equals(new Pair<String,String>("fo" + 'o', null)));
         System.out.println(new Pair<String,String>(null, "bar").equals(new Pair<String,String>(null, "foo")));
-        System.out.println(new Pair<String,String>("foo", "bar").equals(new Pair<String,Integer>("foo", 8)));
-        System.out.println(new Pair<String,String>(null, "bar").equals(new Pair<Integer,String>(0, "bar")));
+        System.out.println(new Pair<String,String>("foo", "bar").equals(new Pair<>("foo", 8)));
+        System.out.println(new Pair<String,String>(null, "bar").equals(new Pair<>(0, "bar")));
     }
 }

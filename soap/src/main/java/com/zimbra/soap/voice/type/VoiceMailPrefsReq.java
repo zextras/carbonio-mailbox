@@ -26,7 +26,7 @@ implements PhoneVoiceFeaturesSpec.CallFeatureReq {
      * @zm-api-field-description Preferences
      */
     @XmlElement(name=AccountConstants.E_PREF /* pref */, required=false)
-    private List<VoiceMailPrefName> prefs = Lists.newArrayList();
+    private final List<VoiceMailPrefName> prefs = Lists.newArrayList();
 
     public VoiceMailPrefsReq() {
     }

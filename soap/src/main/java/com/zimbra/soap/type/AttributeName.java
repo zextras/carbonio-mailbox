@@ -26,7 +26,7 @@ public class AttributeName {
      */
     @SuppressWarnings("unused")
     protected AttributeName() {
-        this((String) null);
+        this(null);
     }
 
     public AttributeName(String name) {

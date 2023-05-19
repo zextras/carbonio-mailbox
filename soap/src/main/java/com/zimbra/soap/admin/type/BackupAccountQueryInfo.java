@@ -39,14 +39,14 @@ public class BackupAccountQueryInfo {
      * @zm-api-field-description Information about backup
      */
     @XmlElement(name=BackupConstants.E_BACKUP /* backup */, required=false)
-    private List<BackupAccountQueryBackupInfo> backups = Lists.newArrayList();
+    private final List<BackupAccountQueryBackupInfo> backups = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private BackupAccountQueryInfo() {
-        this((String) null);
+        this(null);
     }
 
     public BackupAccountQueryInfo(String name) {

@@ -88,11 +88,11 @@ public class GetCos extends AdminDocumentHandler {
             if (reqAttrs != null && !reqAttrs.contains(name))
                 continue;
 
-            boolean allowed = attrRightChecker == null ? true : attrRightChecker.allowAttr(name);
+            boolean allowed = attrRightChecker == null || attrRightChecker.allowAttr(name);
 
             boolean isCosAttr = !attrMgr.isAccountInherited(name);
             if (value instanceof String[]) {
-                String sv[] = (String[]) value;
+                String[] sv = (String[]) value;
                 for (int i = 0; i < sv.length; i++) {
                     encodeCosAttr(cos, name, sv[i], isCosAttr, allowed);
                 }

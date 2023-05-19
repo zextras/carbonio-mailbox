@@ -191,7 +191,7 @@ public class ApiReferenceTemplateHandler extends TemplateHandler {
         List<Command>    commands = service.getCommands();
         Iterator<Command> it = commands.iterator();
         while (it.hasNext()) {
-            Command    c = (Command)it.next();
+            Command    c = it.next();
 
             String    filename = c.getName() + ".html";
             File cf = new File(outputFile, filename);

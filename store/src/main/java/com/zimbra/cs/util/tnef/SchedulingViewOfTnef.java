@@ -52,7 +52,7 @@ public class SchedulingViewOfTnef extends Message {
     private String messageClass;
     private GlobalObjectId globalObjectId;
     private GlobalObjectId cleanGlobalObjectId;
-    private boolean tzinfoInitialized;
+    private final boolean tzinfoInitialized;
     private TimeZoneDefinition startTimeTZinfo;
     private TimeZoneDefinition endTimeTZinfo;
     private TimeZoneDefinition recurrenceTZinfo;
@@ -65,8 +65,8 @@ public class SchedulingViewOfTnef extends Message {
     private ICALENDAR_TYPE icalType;
 
     public SchedulingViewOfTnef() {
-        List <Attr> attribs = new ArrayList <Attr>();
-        List <Attachment> attaches = new ArrayList <Attachment>();
+        List <Attr> attribs = new ArrayList<>();
+        List <Attachment> attaches = new ArrayList<>();
         setAttributes(attribs);
         setAttachments(attaches);
         messageClass = null;
@@ -411,7 +411,7 @@ public class SchedulingViewOfTnef extends Message {
         if (values == null) {
             return null;
         }
-        ArrayList <String> categories = new ArrayList <String> ();
+        ArrayList <String> categories = new ArrayList<>();
         for (MAPIValue val:values) {
             categories.add(val.toString());
         }
@@ -787,7 +787,7 @@ public class SchedulingViewOfTnef extends Message {
                 gid = new GlobalObjectId(ris);
             }
         } catch (IOException e) {
-            sLog.debug("Problem getting value of MAPI property " + mpi.toString() + " from TNEF", e);
+            sLog.debug("Problem getting value of MAPI property " + mpi + " from TNEF", e);
         }
         return gid;
     }

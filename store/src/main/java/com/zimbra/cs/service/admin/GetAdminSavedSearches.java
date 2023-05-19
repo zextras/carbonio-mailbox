@@ -40,7 +40,7 @@ public class GetAdminSavedSearches extends AdminDocumentHandler {
         HashSet<String> specificSearches = null;
         for (Iterator it = request.elementIterator(AdminConstants.E_SEARCH); it.hasNext(); ) {
             if (specificSearches == null)
-                specificSearches = new HashSet<String>();
+                specificSearches = new HashSet<>();
             Element e = (Element) it.next();
             String name = e.getAttribute(AdminConstants.A_NAME);
             if (name != null)
@@ -135,7 +135,7 @@ public class GetAdminSavedSearches extends AdminDocumentHandler {
         assert(encoded.equals(encoded2));
     }
     
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         test("name : query");
         test("n a m e : q u e r y");
         test("name\\:\\ : que : ry");

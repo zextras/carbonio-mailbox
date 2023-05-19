@@ -141,8 +141,8 @@ public class ItemAction extends MailDocumentHandler {
         String opStr = getOperation(request);
 
         // figure out which items are local and which ones are remote, and proxy accordingly
-        List<Integer> local = new ArrayList<Integer>();
-        Map<String, StringBuilder> remote = new HashMap<String, StringBuilder>();
+        List<Integer> local = new ArrayList<>();
+        Map<String, StringBuilder> remote = new HashMap<>();
         partitionItems(zsc, action.getAttribute(MailConstants.A_ID), local, remote);
         if (remote.isEmpty() && local.isEmpty()) {
             return ItemActionResult.create(opStr);
@@ -268,9 +268,9 @@ public class ItemAction extends MailDocumentHandler {
             SoapProtocol responseProto, List<Integer> local, MailItem.Type type, TargetConstraint tcon)
     throws ServiceException {
         // determine if any of the items should be moved to an IMAP trash folder
-        Map<String, LinkedList<Integer>> remoteTrashIds = new HashMap<String, LinkedList<Integer>>();
-        LinkedList<Integer> localTrashIds = new LinkedList<Integer>();
-        Map<String, String> msgToConvId = new HashMap<String, String>();
+        Map<String, LinkedList<Integer>> remoteTrashIds = new HashMap<>();
+        LinkedList<Integer> localTrashIds = new LinkedList<>();
+        Map<String, String> msgToConvId = new HashMap<>();
         MailItem[] items = mbox.getItemById(octxt, local, MailItem.Type.UNKNOWN);
         for (MailItem item: items) {
             String dsId = null;
@@ -282,7 +282,7 @@ public class ItemAction extends MailDocumentHandler {
                 Message msg = mbox.getMessageById(octxt, vConv.getMessageId());
                 dsId = getDataSourceOfItem(octxt, mbox, msg);
             } else if (item instanceof Conversation) {
-                Set<String> dsIds = new HashSet<String>();
+                Set<String> dsIds = new HashSet<>();
                 boolean hasLocal = false;
                 List<Message> messages = mbox.getMessagesByConversation(octxt, item.getId());
                 for (Message msg: messages) {
@@ -309,7 +309,7 @@ public class ItemAction extends MailDocumentHandler {
                         } else {
                             LinkedList<Integer> idsInDs = remoteTrashIds.get(dsId);
                             if (idsInDs == null) {
-                                idsInDs = new LinkedList<Integer>();
+                                idsInDs = new LinkedList<>();
                                 remoteTrashIds.put(msgDsId, idsInDs);
                             }
                             idsInDs.add(msg.getId());
@@ -322,7 +322,7 @@ public class ItemAction extends MailDocumentHandler {
                 if (dsId != null) {
                     LinkedList<Integer> idsInDs = remoteTrashIds.get(dsId);
                     if (idsInDs == null) {
-                        idsInDs = new LinkedList<Integer>();
+                        idsInDs = new LinkedList<>();
                         remoteTrashIds.put(dsId, idsInDs);
                     }
                     idsInDs.add(item.getId());
@@ -349,7 +349,7 @@ public class ItemAction extends MailDocumentHandler {
             trashResults.appendSuccessIds(imapTrashResults.getSuccessIds());
         }
         if (!msgToConvId.isEmpty()) {
-            Set<String> reconstructedConvIds = new HashSet<String>();
+            Set<String> reconstructedConvIds = new HashSet<>();
             for (String id: trashResults.getSuccessIds()) {
                 String convId = msgToConvId.get(id);
                 if (convId != null) {
@@ -358,7 +358,7 @@ public class ItemAction extends MailDocumentHandler {
                     reconstructedConvIds.add(id);
                 }
             }
-            List<String> reconstructedIds = new ArrayList<String>();
+            List<String> reconstructedIds = new ArrayList<>();
             for (String id: reconstructedConvIds) {
                 reconstructedConvIds.add(id);
             }
@@ -394,7 +394,7 @@ public class ItemAction extends MailDocumentHandler {
 
     private String getDataSourceOfItem(OperationContext octxt, Mailbox mbox, MailItem item) throws ServiceException {
         Folder folder = mbox.getFolderById(octxt, item.getFolderId());
-        Map<Integer, String> dataSources = new HashMap<Integer, String>();
+        Map<Integer, String> dataSources = new HashMap<>();
         for (DataSource ds: mbox.getAccount().getAllDataSources()) {
             dataSources.put(ds.getFolderId(), ds.getId());
         }
@@ -543,7 +543,7 @@ public class ItemAction extends MailDocumentHandler {
                 if (sb == null) {
                     remote.put(iid.getAccountId(), new StringBuilder(iid.toString()));
                 } else {
-                    sb.append(',').append(iid.toString());
+                    sb.append(',').append(iid);
                 }
             }
         }

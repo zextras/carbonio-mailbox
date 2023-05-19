@@ -29,7 +29,7 @@ import com.zimbra.common.service.ServiceException;
 public final class Version implements Comparable<Version> {
 
     public static final String FUTURE = "future";
-    private static Pattern mPattern = Pattern.compile("([a-zA-Z]+)(\\d*)");
+    private static final Pattern mPattern = Pattern.compile("([a-zA-Z]+)(\\d*)");
 
     private enum Release {
         BETA, M, RC, GA;
@@ -49,7 +49,7 @@ public final class Version implements Comparable<Version> {
     private int mPatch;
     private Release mRel;
     private int mRelNum;
-    private String mVersion;
+    private final String mVersion;
 
     public Version(String version) throws ServiceException {
         this(version, true);

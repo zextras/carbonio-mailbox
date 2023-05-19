@@ -48,7 +48,7 @@ public class ModifyFilterRulesAdminTest {
 
     /******************addheader*********************/
     @Test
-    public void testSoapToSieveAddheaderActionWithoutLast() throws ServiceException, Exception {
+    public void testSoapToSieveAddheaderActionWithoutLast() throws Exception {
         AddheaderAction action = new AddheaderAction("X-New-Header", "Test vallue");
         FilterRule filterRule = new FilterRule("rule1", true);
         filterRule.addFilterAction(action);
@@ -66,7 +66,7 @@ public class ModifyFilterRulesAdminTest {
     }
 
     @Test
-    public void testSoapToSieveAddheaderActionWithLast() throws ServiceException, Exception {
+    public void testSoapToSieveAddheaderActionWithLast() throws Exception {
         AddheaderAction action = new AddheaderAction("X-New-Header", "Test vallue", true);
         FilterRule filterRule = new FilterRule("rule1", true);
         filterRule.addFilterAction(action);
@@ -85,7 +85,7 @@ public class ModifyFilterRulesAdminTest {
 
     /******************deleteheader*********************/
     @Test
-    public void testSoapToSieveDeleteheaderActionBasic() throws ServiceException, Exception {
+    public void testSoapToSieveDeleteheaderActionBasic() throws Exception {
         EditheaderTest test = new EditheaderTest(null, null, null, null, null, "X-Test-Header", null);
         DeleteheaderAction action = new DeleteheaderAction(null, null, test);
         FilterRule filterRule = new FilterRule("rule1", true);
@@ -106,7 +106,7 @@ public class ModifyFilterRulesAdminTest {
     // headerName and headerValue only
     // default comparator and matchType
     @Test
-    public void testSoapToSieveDeleteheaderAction2() throws ServiceException, Exception {
+    public void testSoapToSieveDeleteheaderAction2() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("Test value");
         EditheaderTest test = new EditheaderTest(null, null, null, null, null, "X-Test-Header", values);
@@ -129,7 +129,7 @@ public class ModifyFilterRulesAdminTest {
     // headerName and multiple headerValues
     // default comparator and matchType
     @Test
-    public void testSoapToSieveDeleteheaderAction3() throws ServiceException, Exception {
+    public void testSoapToSieveDeleteheaderAction3() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("Value1");
         values.add("Value2");
@@ -153,7 +153,7 @@ public class ModifyFilterRulesAdminTest {
 
     // headerName, multiple headerValues, matchType and comparator
     @Test
-    public void testSoapToSieveDeleteheaderAction4() throws ServiceException, Exception {
+    public void testSoapToSieveDeleteheaderAction4() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("Value1");
         values.add("Value2");
@@ -177,7 +177,7 @@ public class ModifyFilterRulesAdminTest {
 
     // headerName, multiple headerValues, comparator, value, relationalComparator
     @Test
-    public void testSoapToSieveDeleteheaderAction5() throws ServiceException, Exception {
+    public void testSoapToSieveDeleteheaderAction5() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("2");
         EditheaderTest test = new EditheaderTest(null, null, true, "ge", "i;ascii-numeric", "X-Test-Header", values);
@@ -199,7 +199,7 @@ public class ModifyFilterRulesAdminTest {
 
     // headerName, multiple headerValues, comparator, value, relationalComparator
     @Test
-    public void testSoapToSieveDeleteheaderAction6() throws ServiceException, Exception {
+    public void testSoapToSieveDeleteheaderAction6() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("2");
         EditheaderTest test = new EditheaderTest(null, null, true, "ge", "i;ascii-numeric", "X-Test-Header", values);
@@ -221,7 +221,7 @@ public class ModifyFilterRulesAdminTest {
 
     // headerName, multiple headerValues, comparator, count, relationalComparator
     @Test
-    public void testSoapToSieveDeleteheaderAction7() throws ServiceException, Exception {
+    public void testSoapToSieveDeleteheaderAction7() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("2");
         EditheaderTest test = new EditheaderTest(null, true, null, "ge", "i;ascii-numeric", "X-Test-Header", values);
@@ -243,7 +243,7 @@ public class ModifyFilterRulesAdminTest {
 
     /******************replaceheader*********************/
     @Test
-    public void testSoapToSieveReplaceheaderActionBasic() throws ServiceException, Exception {
+    public void testSoapToSieveReplaceheaderActionBasic() throws Exception {
         EditheaderTest test = new EditheaderTest(null, null, null, null, null, "X-Test-Header", null);
         ReplaceheaderAction action = new ReplaceheaderAction(null, null, test, null, "[test] ${1}");
         FilterRule filterRule = new FilterRule("rule1", true);
@@ -264,7 +264,7 @@ public class ModifyFilterRulesAdminTest {
     // headerName and headerValue only
     // default comparator and matchType
     @Test
-    public void testSoapToSieveReplaceheaderAction2() throws ServiceException, Exception {
+    public void testSoapToSieveReplaceheaderAction2() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("Test value");
         EditheaderTest test = new EditheaderTest(null, null, null, null, null, "X-Test-Header", values);
@@ -287,7 +287,7 @@ public class ModifyFilterRulesAdminTest {
     // headerName and multiple headerValues
     // default comparator and matchType
     @Test
-    public void testSoapToSieveReplaceheaderAction3() throws ServiceException, Exception {
+    public void testSoapToSieveReplaceheaderAction3() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("Value1");
         values.add("Value2");
@@ -311,7 +311,7 @@ public class ModifyFilterRulesAdminTest {
 
     // headerName, multiple headerValues, matchType and comparator
     @Test
-    public void testSoapToSieveReplaceheaderAction4() throws ServiceException, Exception {
+    public void testSoapToSieveReplaceheaderAction4() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("Value1");
         values.add("Value2");
@@ -335,7 +335,7 @@ public class ModifyFilterRulesAdminTest {
 
     // headerName, multiple headerValues, comparator, value, relationalComparator
     @Test
-    public void testSoapToSieveReplaceheaderAction5() throws ServiceException, Exception {
+    public void testSoapToSieveReplaceheaderAction5() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("2");
         EditheaderTest test = new EditheaderTest(null, null, true, "ge", "i;ascii-numeric", "X-Test-Header", values);
@@ -357,7 +357,7 @@ public class ModifyFilterRulesAdminTest {
 
     // headerName, multiple headerValues, comparator, value, relationalComparator
     @Test
-    public void testSoapToSieveReplaceheaderAction6() throws ServiceException, Exception {
+    public void testSoapToSieveReplaceheaderAction6() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("2");
         EditheaderTest test = new EditheaderTest(null, null, true, "ge", "i;ascii-numeric", "X-Test-Header", values);
@@ -379,7 +379,7 @@ public class ModifyFilterRulesAdminTest {
 
     // headerName, multiple headerValues, comparator, count, relationalComparator
     @Test
-    public void testSoapToSieveReplaceheaderAction7() throws ServiceException, Exception {
+    public void testSoapToSieveReplaceheaderAction7() throws Exception {
         List<String> values = new ArrayList<String>();
         values.add("2");
         EditheaderTest test = new EditheaderTest(null, true, null, "ge", "i;ascii-numeric", "X-Test-Header", values);

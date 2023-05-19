@@ -6,7 +6,7 @@
 package com.zimbra.cs.mailclient.imap;
 
 public abstract class FetchResponseHandler implements ResponseHandler {
-    private boolean dispose;
+    private final boolean dispose;
 
     public FetchResponseHandler(boolean dispose) {
         this.dispose = dispose;

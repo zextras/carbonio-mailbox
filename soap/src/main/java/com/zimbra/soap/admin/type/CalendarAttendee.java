@@ -125,7 +125,7 @@ public class CalendarAttendee implements CalendarAttendeeInterface {
      * @zm-api-field-description Non-standard parameters (XPARAMs)
      */
     @XmlElement(name=MailConstants.E_CAL_XPARAM /* xparam */, required=false)
-    private List<XParam> xParams = Lists.newArrayList();
+    private final List<XParam> xParams = Lists.newArrayList();
 
     public CalendarAttendee() {
     }

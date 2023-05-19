@@ -21,6 +21,6 @@ public class CreateHABGroupResponse extends CreateDistributionListResponse {
      */
     @SuppressWarnings("unused")
     private CreateHABGroupResponse() {
-        super((DistributionListInfo) null);
+        super(null);
     }
 }

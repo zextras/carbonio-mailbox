@@ -41,17 +41,17 @@ public class DeployZimlet extends AdminDocumentHandler {
 	public static final String sSUCCEEDED = "succeeded";
 	public static final String sFAILED = "failed";
 
-	private Map<String, Progress> mProgressMap;
+	private final Map<String, Progress> mProgressMap;
 
 	private static class Progress implements DeployListener {
 	    private static class Status {
 	        String value;
 	        Exception error;
 	    }
-		private Map<String,Status> mStatus;
+		private final Map<String,Status> mStatus;
 
 		public Progress(boolean allServers) throws ServiceException {
-			mStatus = new HashMap<String,Status>();
+			mStatus = new HashMap<>();
 			Provisioning prov = Provisioning.getInstance();
 			if (!allServers) {
 				changeStatus(prov.getLocalServer().getName(), sPENDING);

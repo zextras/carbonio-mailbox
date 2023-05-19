@@ -28,7 +28,7 @@ public class BrowseResponse {
      * @zm-api-field-description Browse data
      */
     @XmlElement(name=MailConstants.E_BROWSE_DATA, required=false)
-    private List<BrowseData> browseDatas = Lists.newArrayList();
+    private final List<BrowseData> browseDatas = Lists.newArrayList();
 
     public BrowseResponse() {
     }

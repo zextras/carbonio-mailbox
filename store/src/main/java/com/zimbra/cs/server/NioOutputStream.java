@@ -18,8 +18,8 @@ import com.zimbra.common.util.ZimbraLog;
 public final class NioOutputStream extends OutputStream {
     private final IoSession session;
     private IoBuffer buf;
-    private int maxScheduledBytes;
-    private int maxWritePause;
+    private final int maxScheduledBytes;
+    private final int maxWritePause;
 
     NioOutputStream(IoSession session, int chunkSize, int maxScheduleBytes, int maxWritePause) {
         this.session = session;

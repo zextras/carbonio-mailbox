@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import java.nio.charset.StandardCharsets;
 import javax.activation.DataSource;
 import javax.mail.internet.ContentType;
 
@@ -31,8 +32,8 @@ import com.zimbra.common.mime.MimeConstants;
  */
 public class CalendarDataSource implements DataSource
 {
-    private ZCalendar.ZVCalendar mICal;
-    private String mMethod;
+    private final ZCalendar.ZVCalendar mICal;
+    private final String mMethod;
     private String mAttachName; // NULL if we want a text/calendar part, or set if we want an attached file
     private byte[] mBuf = null;
 
@@ -75,7 +76,7 @@ public class CalendarDataSource implements DataSource
             if (mBuf == null) {
                 ByteArrayOutputStream buf = new ByteArrayOutputStream();
                 OutputStreamWriter wout =
-                    new OutputStreamWriter(buf, MimeConstants.P_CHARSET_UTF8);
+                    new OutputStreamWriter(buf, StandardCharsets.UTF_8);
                 mICal.toICalendar(wout);
                 wout.flush();
                 mBuf = buf.toByteArray();

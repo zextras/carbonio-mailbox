@@ -15,6 +15,6 @@ public class WikiIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private WikiIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

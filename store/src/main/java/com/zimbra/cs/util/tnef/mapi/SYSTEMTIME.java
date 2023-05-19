@@ -17,18 +17,18 @@ import net.freeutils.tnef.RawInputStream;
  */
 public class SYSTEMTIME {
     
-    private int Year;  // For timezone definitions, normally 0.  If not is
+    private final int Year;  // For timezone definitions, normally 0.  If not is
                        // absolute date that occurs once only.
-    private int Month;       // 1=Jan, 12=Dec.
+    private final int Month;       // 1=Jan, 12=Dec.
                              // 0 implies there is no DST (used with TimeZones)
     private DayOfWeek dayOfWeek;
-    private int Day;         // For timezone - the occurrence number of a particular
+    private final int Day;         // For timezone - the occurrence number of a particular
                              // day of the week (e.g. Monday) within the month.
                              // 5 means last one in the month
-    private int Hour;
-    private int Minute;
-    private int Seconds;
-    private int Milliseconds;
+    private final int Hour;
+    private final int Minute;
+    private final int Seconds;
+    private final int Milliseconds;
     
 
     public SYSTEMTIME(RawInputStream ris) throws IOException {
@@ -196,9 +196,6 @@ public class SYSTEMTIME {
         if (Seconds != other.getSeconds()) {
             return false;
         }
-        if (Milliseconds != other.getMilliseconds()) {
-            return false;
-        }
-        return true;
+      return Milliseconds == other.getMilliseconds();
     }
 }

@@ -66,7 +66,7 @@ final class EhcacheImapCache implements ImapSessionManager.Cache<String, ImapFol
 
             protected boolean removeEldestEntry(Cache.Entry<String, Long> eldest) {
               if (removeIfExpired(eldest)) {
-                Set<String> keysToRemove = new HashSet<String>();
+                Set<String> keysToRemove = new HashSet<>();
                 if (size() > ACTIVE_CACHE_THRESHOLD) {
                   // keep size under threshold when possible - can grow if there are many active
                   // sessions but will shrink as they 'expire'

@@ -20,7 +20,7 @@ import com.zimbra.cs.mailbox.Mailbox;
  */
 public final class SubjectQuery extends Query {
     private String subject;
-    private boolean lt;
+    private final boolean lt;
     private boolean inclusive;
 
     /**

@@ -36,14 +36,14 @@ public class AbortXMbxSearchRequest {
      * @zm-api-field-description Select account
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT /* account */,  required=false)
-    private AccountSelector account;
+    private final AccountSelector account;
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private AbortXMbxSearchRequest() {
-        this((SearchID) null, (AccountSelector) null);
+        this(null, null);
     }
 
     public AbortXMbxSearchRequest(SearchID searchTask, AccountSelector account) {

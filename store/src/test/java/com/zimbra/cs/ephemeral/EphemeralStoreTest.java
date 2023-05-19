@@ -197,18 +197,18 @@ public class EphemeralStoreTest {
         store.update(new EphemeralInput(key, "true"), target);
         EphemeralResult result = store.get(key, target);
 
-        assertEquals((Integer) null, result.getIntValue());
+        assertEquals(null, result.getIntValue());
         assertEquals(new Integer(1), result.getIntValue(1));
         assertArrayEquals(new Integer[] {null, 1, null}, result.getIntValues());
         assertArrayEquals(new Integer[] {0, 1, 0}, result.getIntValues(0));
 
-        assertEquals((Boolean) null, store.get(key, target).getBoolValue());
+        assertEquals(null, store.get(key, target).getBoolValue());
         assertEquals(true, store.get(key, target).getBoolValue(true));
         assertArrayEquals(new Boolean[] {null, null, true}, result.getBoolValues());
         assertArrayEquals(new Boolean[] {false, false, true}, result.getBoolValues(false));
 
 
-        assertEquals((Long) null, store.get(key, target).getLongValue());
+        assertEquals(null, store.get(key, target).getLongValue());
         assertEquals(new Long(1), store.get(key, target).getLongValue(1L));
         assertArrayEquals(new Long[] {null, 1L, null}, result.getLongValues());
         assertArrayEquals(new Long[] {0L, 1L, 0L}, result.getLongValues(0L));
@@ -295,7 +295,7 @@ public class EphemeralStoreTest {
 
     static class TestLocation extends EphemeralLocation {
 
-        private String locationName;
+        private final String locationName;
 
         public TestLocation(String locationName) {
             this.locationName = locationName;

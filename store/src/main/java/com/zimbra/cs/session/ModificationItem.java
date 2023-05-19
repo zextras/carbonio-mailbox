@@ -21,7 +21,7 @@ public class ModificationItem implements BaseItemInfo, BaseFolderInfo, ZimbraTag
     private int folderId;
     private int flags;
     private String[] tags;
-    private MailItemType type;
+    private final MailItemType type;
 
     //for folder rename
     private String path;

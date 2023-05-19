@@ -27,7 +27,7 @@ public class ByDayRule implements ByDayRuleInterface {
      * @zm-api-field-description By day weekday rule specification
      */
     @XmlElement(name=MailConstants.E_CAL_RULE_BYDAY_WKDAY /* wkday */, required=false)
-    private List<WkDay> days = Lists.newArrayList();
+    private final List<WkDay> days = Lists.newArrayList();
 
     public ByDayRule() {
     }

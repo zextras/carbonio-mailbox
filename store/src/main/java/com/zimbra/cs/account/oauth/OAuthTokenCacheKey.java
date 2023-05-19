@@ -12,9 +12,9 @@ public class OAuthTokenCacheKey implements MemcachedKey {
     public static final String REQUEST_TOKEN_PREFIX = "req:";
     public static final String ACCESS_TOKEN_PREFIX = "acc:";
 
-    private String mToken;
-    private String mKeyPrefix;
-    private String mKeyVal;
+    private final String mToken;
+    private final String mKeyPrefix;
+    private final String mKeyVal;
 
     public OAuthTokenCacheKey(String consumer_token,String key_prefix) {
 

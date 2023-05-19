@@ -28,7 +28,7 @@ public class GetVersionInfoResponse {
      */
      @SuppressWarnings("unused")
     private GetVersionInfoResponse() {
-        this((VersionInfo)null);
+        this(null);
     }
 
     public GetVersionInfoResponse(VersionInfo info) {

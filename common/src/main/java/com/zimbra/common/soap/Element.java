@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,7 +52,7 @@ public abstract class Element implements Cloneable {
      *
      *  <i>Note that JSON serialization ignores all such hints and serializes
      *  all attributes as <tt>"key": "value"</tt>.</i> */
-    public static enum Disposition {
+    public enum Disposition {
         ATTRIBUTE, CONTENT
     }
 
@@ -148,7 +149,7 @@ public abstract class Element implements Cloneable {
     protected Element setNamespace(String prefix, String uri) {
         if (prefix != null && uri != null && !uri.equals("")) {
             if (mNamespaces == null) {
-                mNamespaces = new HashMap<String, String>();
+                mNamespaces = new HashMap<>();
             }
             mNamespaces.put(prefix, uri);
         }
@@ -461,12 +462,7 @@ public abstract class Element implements Cloneable {
 
     // dumping the element hierarchy
     public byte[] toUTF8() {
-        try {
-            return toString().getBytes("utf-8");
-        } catch (UnsupportedEncodingException e) {
-            // should *never* happen since UTF-8 and UTF-16 cover the exact same character space
-            return null;
-        }
+        return toString().getBytes(StandardCharsets.UTF_8);
     }
 
     public void output(Appendable out) throws IOException {
@@ -614,7 +610,8 @@ public abstract class Element implements Cloneable {
      */
     public static Element parseJSON(InputStream is, ElementFactory factory) throws SoapParseException {
         try {
-            return parseJSON(new String(com.zimbra.common.util.ByteUtil.getContent(is, -1), "utf-8"), factory);
+            return parseJSON(new String(com.zimbra.common.util.ByteUtil.getContent(is, -1),
+                StandardCharsets.UTF_8), factory);
         } catch (SoapParseException e) {
             throw e;
         } catch (Exception e) {
@@ -699,7 +696,7 @@ public abstract class Element implements Cloneable {
                     content.append(node.getText());
                     break;
                 case org.dom4j.Node.ELEMENT_NODE:
-                    content.append(((org.dom4j.Element) node).asXML());
+                    content.append(node.asXML());
                     break;
             }
         }
@@ -756,20 +753,20 @@ public abstract class Element implements Cloneable {
         public ContainerException(String message)  { super(message); }
     }
 
-    public static interface ElementFactory {
-        public Element createElement(String name);
-        public Element createElement(QName qname);
+    public interface ElementFactory {
+        Element createElement(String name);
+        Element createElement(QName qname);
     }
 
-    public static interface KeyValuePair {
-        public KeyValuePair setValue(String value) throws ContainerException;
-        public KeyValuePair addAttribute(String key, String value) throws ContainerException;
-        public KeyValuePair addAttribute(String key, long value) throws ContainerException;
-        public KeyValuePair addAttribute(String key, double value) throws ContainerException;
-        public KeyValuePair addAttribute(String key, boolean value) throws ContainerException;
+    public interface KeyValuePair {
+        KeyValuePair setValue(String value) throws ContainerException;
+        KeyValuePair addAttribute(String key, String value) throws ContainerException;
+        KeyValuePair addAttribute(String key, long value) throws ContainerException;
+        KeyValuePair addAttribute(String key, double value) throws ContainerException;
+        KeyValuePair addAttribute(String key, boolean value) throws ContainerException;
 
-        public String getKey() throws ContainerException;
-        public String getValue() throws ContainerException;
+        String getKey() throws ContainerException;
+        String getValue() throws ContainerException;
     }
 
     public static class Attribute {
@@ -807,7 +804,7 @@ public abstract class Element implements Cloneable {
 
         public JSONElement(String name) {
             mName = name;
-            mAttributes = new LinkedHashMap<String, Object>();
+            mAttributes = new LinkedHashMap<>();
         }
 
         @Override
@@ -944,7 +941,7 @@ public abstract class Element implements Cloneable {
             @SuppressWarnings("unchecked")
             List<Element> content = (List<Element>) obj;
             if (content == null) {
-                mAttributes.put(name, content = new ArrayList<Element>());
+                mAttributes.put(name, content = new ArrayList<>());
             }
             content.add(elt);
             elt.mParent = this;
@@ -1035,7 +1032,7 @@ public abstract class Element implements Cloneable {
             if (existing == null) {
                 attrs.mAttributes.put(key, kvp);
             } else if (existing instanceof KeyValuePair) {
-                List<KeyValuePair> pairs = new ArrayList<KeyValuePair>(3);
+                List<KeyValuePair> pairs = new ArrayList<>(3);
                 pairs.add((KeyValuePair) existing);  pairs.add(kvp);
                 attrs.mAttributes.put(key, pairs);
             } else {
@@ -1074,7 +1071,7 @@ public abstract class Element implements Cloneable {
         public Set<Attribute> listAttributes() {
             if (mAttributes.isEmpty())
                 return Collections.emptySet();
-            HashSet<Attribute> set = new HashSet<Attribute>();
+            HashSet<Attribute> set = new HashSet<>();
             for (Map.Entry<String, Object> attr : mAttributes.entrySet()) {
                 Object obj = attr.getValue();
                 if (obj != null && !attr.getKey().equals(A_CONTENT) && !(obj instanceof Element || obj instanceof List<?>))
@@ -1089,7 +1086,7 @@ public abstract class Element implements Cloneable {
             if (mAttributes.isEmpty())
                 return Collections.emptyList();
 
-            List<Element> list = new ArrayList<Element>();
+            List<Element> list = new ArrayList<>();
             for (Map.Entry<String, Object> entry : mAttributes.entrySet()) {
                 String key = entry.getKey();
                 Object obj = entry.getValue();
@@ -1128,7 +1125,7 @@ public abstract class Element implements Cloneable {
             if (attrs == null || !(attrs instanceof JSONElement))
                 return Collections.emptyList();
 
-            List<KeyValuePair> pairs = new ArrayList<KeyValuePair>();
+            List<KeyValuePair> pairs = new ArrayList<>();
             for (Map.Entry<String, Object> entry : attrs.mAttributes.entrySet()) {
                 List<?> values = (entry.getValue() instanceof List<?> ? (List<?>) entry.getValue() : Arrays.asList(entry.getValue()));
                 for (Object multi : values) {
@@ -1180,7 +1177,7 @@ public abstract class Element implements Cloneable {
             JSONElement clone = new JSONElement(getQName());
             if (mNamespaces != null) {
                 if (clone.mNamespaces == null)
-                    clone.mNamespaces = new HashMap<String, String>(mNamespaces);
+                    clone.mNamespaces = new HashMap<>(mNamespaces);
                 else
                     clone.mNamespaces.putAll(mNamespaces);
             }
@@ -1198,7 +1195,7 @@ public abstract class Element implements Cloneable {
                             Object childclone = child instanceof JSONKeyValuePair ? ((JSONKeyValuePair) child).clone() : child;
                             List<Object> children = (List<Object>) clone.mAttributes.get(key);
                             if (children == null) {
-                                (children = new ArrayList<Object>(((List<?>) value).size())).add(childclone);
+                                (children = new ArrayList<>(((List<?>) value).size())).add(childclone);
                                 clone.mAttributes.put(key, children);
                             } else {
                                 children.add(childclone);
@@ -1354,8 +1351,8 @@ public abstract class Element implements Cloneable {
                                    case ';':  jsr.skipChar();  break;
                                    default:   throw new SoapParseException("missing expected ',' or ']'", jsr.js);
                                }
-                           };
-                           jsr.skipChar();  break;
+                           }
+                    jsr.skipChar();  break;
                 default:   if ((value = jsr.readValue()) != null)
                                parent.addKeyValuePair(key, value.toString());  break;
             }
@@ -1396,8 +1393,8 @@ public abstract class Element implements Cloneable {
                                            case ';':  jsr.skipChar();  break;
                                            default:   throw new SoapParseException("missing expected ',' or ']'", jsr.js);
                                        }
-                                   };
-                                   jsr.skipChar();  break;
+                                   }
+                            jsr.skipChar();  break;
                         default:   if ((value = jsr.readValue()) == null)  break;
                                    if (key.equals(A_NAMESPACE))            elt.setNamespace("", value.toString());
                                    else if (value instanceof Boolean)      elt.addAttribute(key, ((Boolean) value).booleanValue());
@@ -1456,7 +1453,8 @@ public abstract class Element implements Cloneable {
         private void marshal(Appendable out, int indent, boolean safe) throws IOException {
             indent = indent < 0 ? -1 : indent + INDENT_SIZE;
             out.append('{');
-            boolean needNamespace = mNamespaces == null ? false : namespaceDeclarationNeeded("", mNamespaces.get("").toString());
+            boolean needNamespace = mNamespaces != null && namespaceDeclarationNeeded("",
+                mNamespaces.get(""));
             int size = mAttributes.size() + (needNamespace ? 1 : 0), lsize;
             if (size != 0) {
                 int index = 0;
@@ -1646,7 +1644,7 @@ public abstract class Element implements Cloneable {
             }
             assert(elt instanceof XMLElement || elt instanceof FileBackedElement);
             if (mChildren == null) {
-                mChildren = new ArrayList<Element>();
+                mChildren = new ArrayList<>();
             }
             mChildren.add(elt);
             elt.mParent = this;
@@ -1683,7 +1681,7 @@ public abstract class Element implements Cloneable {
                     addNonUniqueElement(key).setText(value);
                 } else {
                     if (mAttributes == null) {
-                        mAttributes = new HashMap<String, Object>();
+                        mAttributes = new HashMap<>();
                     }
                     mAttributes.put(key, value);
                 }
@@ -1760,7 +1758,7 @@ public abstract class Element implements Cloneable {
             if (mAttributes == null || mAttributes.isEmpty()) {
                 return Collections.emptySet();
             }
-            HashSet<Attribute> set = new HashSet<Attribute>();
+            HashSet<Attribute> set = new HashSet<>();
             for (Map.Entry<String, Object> attr : mAttributes.entrySet()) {
                 set.add(new Attribute(attr, this));
             }
@@ -1772,7 +1770,7 @@ public abstract class Element implements Cloneable {
             if (mChildren == null) {
                 return Collections.emptyList();
             }
-            ArrayList<Element> list = new ArrayList<Element>();
+            ArrayList<Element> list = new ArrayList<>();
             if (name == null || name.trim().equals("")) {
                 list.addAll(mChildren);
             } else {
@@ -1795,7 +1793,7 @@ public abstract class Element implements Cloneable {
             eltname = eltname == null ? E_ATTRIBUTE : validateName(eltname);
             attrname = attrname == null ? A_ATTR_NAME : validateName(attrname);
 
-            List<KeyValuePair> pairs = new ArrayList<KeyValuePair>();
+            List<KeyValuePair> pairs = new ArrayList<>();
             for (Element elt : listElements(eltname)) {
                 String key = elt.getAttribute(attrname, null);
                 if (key != null) {
@@ -1862,11 +1860,11 @@ public abstract class Element implements Cloneable {
                 if (sb == null)
                     sb = new StringBuilder(str.substring(0, i));
                 else
-                    sb.append(str.substring(last, i));
+                    sb.append(str, last, i);
                 sb.append(replacement);
                 last = i + 1;
             }
-            return (sb == null ? str : sb.append(str.substring(last, i)).toString());
+            return (sb == null ? str : sb.append(str, last, i).toString());
         }
 
         /**
@@ -1887,15 +1885,12 @@ public abstract class Element implements Cloneable {
             }
 
             //Supported Character range in XML : #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-            if ((codepoint == 0x09) ||
-                    (codepoint == 0x0A) ||
-                    (codepoint == 0x0D) ||
-                    ((codepoint >= 0x20) && (codepoint <= 0xD7FF)) ||
-                    ((codepoint >= 0xE000) && (codepoint <= 0xFFFD)) ||
-                    ((codepoint >= 0x10000) && (codepoint <= 0x10FFFF))) {
-                return true;
-            }
-            return false;
+            return (codepoint == 0x09) ||
+                (codepoint == 0x0A) ||
+                (codepoint == 0x0D) ||
+                ((codepoint >= 0x20) && (codepoint <= 0xD7FF)) ||
+                ((codepoint >= 0xE000) && (codepoint <= 0xFFFD)) ||
+                ((codepoint >= 0x10000) && (codepoint <= 0x10FFFF));
         }
 
         @Override
@@ -1903,11 +1898,11 @@ public abstract class Element implements Cloneable {
             XMLElement clone = new XMLElement(getQName());
             clone.mText = mText;
             if (mAttributes != null) {
-                clone.mAttributes = new HashMap<String, Object>(mAttributes);
+                clone.mAttributes = new HashMap<>(mAttributes);
             }
             if (mNamespaces != null) {
                 if (clone.mNamespaces == null)
-                    clone.mNamespaces = new HashMap<String, String>(mNamespaces);
+                    clone.mNamespaces = new HashMap<>(mNamespaces);
                 else
                     clone.mNamespaces.putAll(mNamespaces);
             }
@@ -2029,17 +2024,14 @@ public abstract class Element implements Cloneable {
             return true;
         } else if (name.equals("a")) {
             String propName = element.getAttribute("n", null);
-            if (propName != null &&
-                    (propName.endsWith("assword") || propName.endsWith("Pwd") ||
-                            propName.contains("webexZimlet_pwd"))) {
-                return true;
-            }
+            return propName != null &&
+                (propName.endsWith("assword") || propName.endsWith("Pwd") ||
+                    propName.contains("webexZimlet_pwd"));
         } else if (name.equals("prop")) {
             String propName = element.getAttribute("name", null);
-            if (propName != null &&
-                    (propName.endsWith("assword") || propName.endsWith("asswd") || propName.endsWith("Pwd"))) {
-                return true;
-            }
+            return propName != null &&
+                (propName.endsWith("assword") || propName.endsWith("asswd") || propName.endsWith(
+                    "Pwd"));
         }
         return false;
     }
@@ -2210,7 +2202,8 @@ public abstract class Element implements Cloneable {
 
 //        System.out.println(com.zimbra.common.soap.SoapProtocol.toString(e.toXML(), true));
         System.out.println(new XMLElement("test").setText("  this\t    is\nthe\rway ").getTextTrim() + "|");
-        System.out.println(Element.parseJSON("{part:\"TEXT\",t:null,h:true,i:\"false\",\"ct\":\"\\x25multipart\\u0025\\/mixed\",\\u0073:3718}").toString());
+        System.out.println(
+            Element.parseJSON("{part:\"TEXT\",t:null,h:true,i:\"false\",\"ct\":\"\\x25multipart\\u0025\\/mixed\",\\u0073:3718}"));
         try {
             Element.parseJSON("{\"wkday\":{\"day\":\"TU\"},\"wkday\":{\"day\":\"WE\"},\"wkday\":{\"day\":\"FR\"}}");
         } catch (SoapParseException spe) {

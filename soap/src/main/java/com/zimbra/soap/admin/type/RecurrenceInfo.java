@@ -36,7 +36,7 @@ implements RecurRuleBase, RecurrenceInfoInterface {
         @XmlElement(name=MailConstants.E_CAL_DATES /* dates */, type=SingleDates.class),
         @XmlElement(name=MailConstants.E_CAL_RULE /* rule */, type=SimpleRepeatingRule.class)
     })
-    private List<RecurRuleBase> rules = Lists.newArrayList();
+    private final List<RecurRuleBase> rules = Lists.newArrayList();
 
     public RecurrenceInfo() {
     }

@@ -219,7 +219,7 @@ public class ShareInfo {
   }
 
   private static Set<Folder> flattenAndSortFolderTree(FolderNode root) {
-    Set<Folder> folders = new HashSet<Folder>();
+    Set<Folder> folders = new HashSet<>();
     flattenAndSortFolderTree(root, folders);
     return folders;
   }
@@ -281,7 +281,7 @@ public class ShareInfo {
     private Map<String, Integer> getLocalMountpoints(OperationContext octxt, Mailbox mbox)
         throws ServiceException {
 
-      Map<String, Integer> mountpoints = new HashMap<String, Integer>();
+      Map<String, Integer> mountpoints = new HashMap<>();
 
       mbox.lock.lock(false);
       try {
@@ -406,7 +406,7 @@ public class ShareInfo {
         PublishedShareInfoVisitor visitor)
         throws ServiceException {
 
-      List<String> granteeIds = new LinkedList<String>();
+      List<String> granteeIds = new LinkedList<>();
       boolean includePublicShares = false;
       boolean includeAllAuthedShares = false;
       String guestAcctDomainId = null;
@@ -472,7 +472,7 @@ public class ShareInfo {
         PublishedShareInfoVisitor visitor)
         throws ServiceException {
 
-      List<String> granteeIds = new LinkedList<String>();
+      List<String> granteeIds = new LinkedList<>();
       granteeIds.add(dl.getId());
       if (!directOnly) {
         granteeIds.addAll(prov.getGroupMembership(dl, false).groupIds());
@@ -865,7 +865,7 @@ public class ShareInfo {
 
     private static class MailSenderVisitor implements PublishedShareInfoVisitor {
 
-      List<ShareInfoData> mShares = new ArrayList<ShareInfoData>();
+      List<ShareInfoData> mShares = new ArrayList<>();
 
       @Override
       public void visit(ShareInfoData sid) throws ServiceException {
@@ -1001,7 +1001,7 @@ public class ShareInfo {
       try {
         if (dlssmfa != null) {
           addr = new JavaMailInternetAddress(dlssmfa);
-          return new Pair<Address, Address>(addr, addr);
+          return new Pair<>(addr, addr);
         }
       } catch (AddressException e) {
         // log and try the next one
@@ -1024,14 +1024,14 @@ public class ShareInfo {
           Address replyToAddr = addr;
           String replyTo = fromAcct.getAttr(Provisioning.A_zimbraPrefReplyToAddress);
           if (replyTo != null) replyToAddr = new JavaMailInternetAddress(replyTo);
-          return new Pair<Address, Address>(addr, replyToAddr);
+          return new Pair<>(addr, replyToAddr);
         } catch (AddressException ignored) {
         }
       }
 
       // 3. otherwise use the DL's address.
       addr = new JavaMailInternetAddress(dl.getName());
-      return new Pair<Address, Address>(addr, addr);
+      return new Pair<>(addr, addr);
     }
 
     private static MimeMultipart buildMailContent(

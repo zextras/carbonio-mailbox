@@ -26,11 +26,11 @@ import com.zimbra.soap.type.TargetBy;
 public class CheckRights extends AccountDocumentHandler {
 
     private static class RequestedTarget {
-        private Entry targetEntry;
-        private TargetType targetType;
-        private TargetBy targetBy;
-        private String targetKey;
-        private List<UserRight> rights = Lists.newArrayList();
+        private final Entry targetEntry;
+        private final TargetType targetType;
+        private final TargetBy targetBy;
+        private final String targetKey;
+        private final List<UserRight> rights = Lists.newArrayList();
         
         private RequestedTarget(Entry targetEntry, TargetType targetType, 
                 TargetBy targetBy, String targetKey) {
@@ -63,8 +63,8 @@ public class CheckRights extends AccountDocumentHandler {
         private List<UserRight> getRights() {
             return rights;
         }
-    };
-    
+    }
+
     @Override
     public Element handle(Element request, Map<String, Object> context)
             throws ServiceException {

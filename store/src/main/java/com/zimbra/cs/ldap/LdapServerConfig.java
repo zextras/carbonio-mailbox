@@ -117,12 +117,12 @@ public abstract class LdapServerConfig {
         // timeout setting
         this.connectTimeoutMillis = LC.ldap_connect_timeout.intValue();
         this.readTimeoutMillis = LC.ldap_read_timeout.intValue();
-        this.isAbandonOnTimeout = Strings.isNullOrEmpty(LC.get("ldap_abandon_on_timeout")) ? true : false;
+        this.isAbandonOnTimeout = Strings.isNullOrEmpty(LC.get("ldap_abandon_on_timeout"));
     }
 
 
     public static class ZimbraLdapConfig extends LdapServerConfig {
-        private LdapServerType serverType;
+        private final LdapServerType serverType;
 
         // This is a Zimbra LDAP setting only.
         private final int connPoolInitSize;
@@ -213,8 +213,8 @@ public abstract class LdapServerConfig {
         // only in external LDAP settings, in ZimbraLDAP the deref policy is never
         protected String derefAliasPolicy;
 
-        private String authMech;
-        private Set<String> binaryAttrs;  // not needed for unboundid
+        private final String authMech;
+        private final Set<String> binaryAttrs;  // not needed for unboundid
         private String notes;  // for debugging purpose
 
         /**
@@ -320,7 +320,7 @@ public abstract class LdapServerConfig {
     }
 
 
-    public static String joinURLS(String urls[]) {
+    public static String joinURLS(String[] urls) {
         if (urls.length == 1) {
             return urls[0];
         }

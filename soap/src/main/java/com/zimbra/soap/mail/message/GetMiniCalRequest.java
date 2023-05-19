@@ -54,7 +54,7 @@ public class GetMiniCalRequest {
      * @zm-api-field-description Local and/or remote calendar folders
      */
     @XmlElement(name=MailConstants.E_FOLDER /* folder */, required=false)
-    private List<Id> folders = Lists.newArrayList();
+    private final List<Id> folders = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Optional timezone specifier.  References an existing server-known timezone by ID or

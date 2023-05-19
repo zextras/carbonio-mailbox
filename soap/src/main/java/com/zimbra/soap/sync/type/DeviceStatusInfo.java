@@ -172,7 +172,7 @@ public class DeviceStatusInfo {
      */
     @SuppressWarnings("unused")
     private DeviceStatusInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public DeviceStatusInfo(String id, String type) {

@@ -16,7 +16,7 @@ public final class NetConfig {
     private boolean allowMismatchedCerts;
     private boolean allowAcceptUntrustedCerts;
 
-    private static NetConfig INSTANCE = new NetConfig();
+    private static final NetConfig INSTANCE = new NetConfig();
 
     public static NetConfig getInstance() {
         return INSTANCE;

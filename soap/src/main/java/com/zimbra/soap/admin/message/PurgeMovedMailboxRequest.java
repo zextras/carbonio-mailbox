@@ -48,7 +48,7 @@ public class PurgeMovedMailboxRequest {
      */
     @SuppressWarnings("unused")
     private PurgeMovedMailboxRequest() {
-        this((Name) null);
+        this(null);
     }
 
     public PurgeMovedMailboxRequest(Name mailbox) {
@@ -62,7 +62,7 @@ public class PurgeMovedMailboxRequest {
     public Name getMailbox() { return mailbox; }
     public Boolean getForceDeleteBlobs() {
         Boolean forceDelete = ZmBoolean.toBool(forceDeleteBlobs);
-        return (forceDelete == null) ? false : forceDelete;
+        return forceDelete != null && forceDelete;
     }
 
     public MoreObjects.ToStringHelper addToStringInfo(

@@ -15,7 +15,7 @@ import com.zimbra.common.mime.MimeConstants;
 
 public class RedoableOpDataSource implements DataSource {
 
-    private RedoableOpData mData;
+    private final RedoableOpData mData;
     
     public RedoableOpDataSource(RedoableOpData data) {
         if (data == null) {

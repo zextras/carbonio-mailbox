@@ -39,7 +39,7 @@ public class SmtpToLmtp {
          * @return one or more valid mailbox addresses, or an empty {@code Iterable}
          * if the recipient is invalid
          */
-        public Iterable<String> validate(String recipient);
+        Iterable<String> validate(String recipient);
     }
 
     private static final RecipientValidator DUMMY_VALIDATOR = new RecipientValidator() {
@@ -55,9 +55,9 @@ public class SmtpToLmtp {
         File file;
     }
 
-    private int smtpPort;
-    private String lmtpHost;
-    private int lmtpPort;
+    private final int smtpPort;
+    private final String lmtpHost;
+    private final int lmtpPort;
     private RecipientValidator validator = DUMMY_VALIDATOR;
 
     public SmtpToLmtp(int smtpPort, String lmtpHost, int lmtpPort) {
@@ -120,8 +120,8 @@ public class SmtpToLmtp {
     private class SmtpHandler
     implements Runnable {
 
-        private InputStream smtpIn;
-        private PrintWriter smtpOut;
+        private final InputStream smtpIn;
+        private final PrintWriter smtpOut;
 
         private SmtpHandler(InputStream smtpIn, OutputStream smtpOut) {
             this.smtpIn = smtpIn;

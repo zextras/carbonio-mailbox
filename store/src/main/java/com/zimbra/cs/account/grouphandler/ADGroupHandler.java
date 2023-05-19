@@ -70,7 +70,7 @@ public class ADGroupHandler extends GroupHandler {
     
     private static class SearchADGroupMembers extends SearchLdapVisitor {
 
-        TreeSet<String> result = new TreeSet<String>();
+        TreeSet<String> result = new TreeSet<>();
         
         SearchADGroupMembers() {
             super(false);
@@ -144,12 +144,8 @@ public class ADGroupHandler extends GroupHandler {
         if (!domainAdminAuthMechIsAD(domain, asAdmin)) {
             return false;
         }
-        
-        if (!domain.getId().equals(zimbraDomainId)) {
-            return false;
-        }
-        
-        return true;
+
+      return domain.getId().equals(zimbraDomainId);
     }
 
     @Override

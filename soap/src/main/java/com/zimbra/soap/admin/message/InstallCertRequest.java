@@ -101,7 +101,7 @@ public class InstallCertRequest {
      */
     @SuppressWarnings("unused")
     private InstallCertRequest() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public InstallCertRequest(String server, String type) {

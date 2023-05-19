@@ -32,7 +32,7 @@ public class ExportAndDeleteMailboxSpec {
      * @zm-api-field-description Items
      */
     @XmlElement(name=AdminConstants.E_ITEM, required=false)
-    private List<ExportAndDeleteItemSpec> items = Lists.newArrayList();
+    private final List<ExportAndDeleteItemSpec> items = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

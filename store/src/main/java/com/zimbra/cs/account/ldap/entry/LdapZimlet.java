@@ -18,7 +18,7 @@ import com.zimbra.cs.ldap.ZSearchResultEntry;
  */
 public class LdapZimlet extends Zimlet implements LdapEntry {
 
-    private String mDn;
+    private final String mDn;
     
 	public LdapZimlet(String dn, ZAttributes attrs, Provisioning prov) throws LdapException {
         super(attrs.getAttrString(Provisioning.A_cn), 

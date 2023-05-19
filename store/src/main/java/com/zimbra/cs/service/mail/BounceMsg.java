@@ -65,7 +65,7 @@ public final class BounceMsg extends MailDocumentHandler {
                 Mailbox mboxSrc = MailboxManager.getInstance().getMailboxByAccountId(iid.getAccountId());
                 is = mboxSrc.getMessageById(octxt, iid.getId()).getContentStream();
             } else {
-                upload = UserServlet.getRemoteResourceAsUpload(zsc.getAuthToken(), iid, Maps.<String, String>newHashMap());
+                upload = UserServlet.getRemoteResourceAsUpload(zsc.getAuthToken(), iid, Maps.newHashMap());
                 is = upload.getInputStream();
             }
 
@@ -109,7 +109,7 @@ public final class BounceMsg extends MailDocumentHandler {
         String msgid = new ZMimeMessage(mm.getSession()).getMessageID();
         mm.addHeader("Resent-Message-ID", msgid);
 
-        List<String> recipients = new ArrayList<String>(5);
+        List<String> recipients = new ArrayList<>(5);
         recipients.addAll(addResentRecipientHeader(mm, "Resent-Bcc", maddrs.get(EmailType.BCC.toString())));
         recipients.addAll(addResentRecipientHeader(mm, "Resent-Cc", maddrs.get(EmailType.CC.toString())));
         recipients.addAll(addResentRecipientHeader(mm, "Resent-To", maddrs.get(EmailType.TO.toString())));
@@ -119,7 +119,7 @@ public final class BounceMsg extends MailDocumentHandler {
         InternetAddress rfrom = ArrayUtil.getFirstElement(maddrs.get(EmailType.FROM.toString()));
         InternetAddress rsender = ArrayUtil.getFirstElement(maddrs.get(EmailType.SENDER.toString()));
         Pair<InternetAddress, InternetAddress> fromsender = msender.getSenderHeaders(rfrom, rsender,
-                acct, getAuthenticatedAccount(zsc), octxt != null ? octxt.isUsingAdminPrivileges() : false);
+                acct, getAuthenticatedAccount(zsc), octxt != null && octxt.isUsingAdminPrivileges());
         InternetAddress from = fromsender.getFirst();
         InternetAddress sender = fromsender.getSecond();
         assert(from != null);
@@ -184,7 +184,7 @@ public final class BounceMsg extends MailDocumentHandler {
 
         mm.addHeader(name, Joiner.on(", ").join(addrs));
 
-        List<String> recipients = new ArrayList<String>(5);
+        List<String> recipients = new ArrayList<>(5);
         for (InternetAddress addr : addrs) {
             recipients.add(addr.getAddress());
         }

@@ -63,7 +63,7 @@ import com.zimbra.cs.service.util.DataSigner;
 public class MobileConfigFormatter extends Formatter {
     public static final String QP_CONFIG_TYPE = "configType";
     public static final String EXTENSION = ".mobileconfig";
-    private DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+    private final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 
     @Override
     public FormatType getType() {
@@ -142,7 +142,7 @@ public class MobileConfigFormatter extends Formatter {
             keyPayloadDescriptionElement.appendChild(payloadDescription);
             dictElement.appendChild(keyPayloadDescriptionElement);
             Element stringPayloadDescriptionElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-            String description = emailPart + "'s " + configType.toString() + " settings";
+            String description = emailPart + "'s " + configType + " settings";
             payloadDescription = document.createTextNode(description);
             stringPayloadDescriptionElement.appendChild(payloadDescription);
             dictElement.appendChild(stringPayloadDescriptionElement);
@@ -153,7 +153,7 @@ public class MobileConfigFormatter extends Formatter {
             keyPayloadDisplayNameElement.appendChild(payloadDisplayName);
             dictElement.appendChild(keyPayloadDisplayNameElement);
             Element stringPayloadDisplayNameElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-            String displayName = user.getMail() + " " + configType.toString();
+            String displayName = user.getMail() + " " + configType;
             payloadDisplayName = document.createTextNode(displayName);
             stringPayloadDisplayNameElement.appendChild(payloadDisplayName);
             dictElement.appendChild(stringPayloadDisplayNameElement);
@@ -164,7 +164,7 @@ public class MobileConfigFormatter extends Formatter {
             keyPayloadIdentifierElement.appendChild(payloadIdentifier);
             dictElement.appendChild(keyPayloadIdentifierElement);
             Element stringPayloadIdentifierElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-            String identifier = domain.getDomainName() + "." + configType.toString() + ".account." + emailPart;
+            String identifier = domain.getDomainName() + "." + configType + ".account." + emailPart;
             payloadIdentifier = document.createTextNode(identifier);
             stringPayloadIdentifierElement.appendChild(payloadIdentifier);
             dictElement.appendChild(stringPayloadIdentifierElement);
@@ -706,7 +706,7 @@ public class MobileConfigFormatter extends Formatter {
         keyPayloadDisplayNameElement.appendChild(payloadDisplayName);
         dictElement.appendChild(keyPayloadDisplayNameElement);
         Element stringPayloadDisplayNameElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-        String displayName = configType.toString() + " " + emailPart;
+        String displayName = configType + " " + emailPart;
         payloadDisplayName = document.createTextNode(displayName);
         stringPayloadDisplayNameElement.appendChild(payloadDisplayName);
         dictElement.appendChild(stringPayloadDisplayNameElement);
@@ -717,7 +717,7 @@ public class MobileConfigFormatter extends Formatter {
         keyPayloadIdentifierElement.appendChild(payloadIdentifier);
         dictElement.appendChild(keyPayloadIdentifierElement);
         Element stringPayloadIdentifierElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-        String identifier = domain.getDomainName() + "." + configType.toString() + ".account." + emailPart;
+        String identifier = domain.getDomainName() + "." + configType + ".account." + emailPart;
         payloadIdentifier = document.createTextNode(identifier);
         stringPayloadIdentifierElement.appendChild(payloadIdentifier);
         dictElement.appendChild(stringPayloadIdentifierElement);
@@ -756,7 +756,7 @@ public class MobileConfigFormatter extends Formatter {
         keyPayloadUUIDElement.appendChild(payloadUUID);
         dictElement.appendChild(keyPayloadUUIDElement);
         Element stringPayloadUUIDElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-        String uuid = user.getId() + "_" + configType.toString();
+        String uuid = user.getId() + "_" + configType;
         payloadUUID = document.createTextNode(uuid);
         stringPayloadUUIDElement.appendChild(payloadUUID);
         dictElement.appendChild(stringPayloadUUIDElement);
@@ -792,15 +792,15 @@ public class MobileConfigFormatter extends Formatter {
         DAV ("dav"),
         ALL ("all");
 
-        private static Map<String, ConfigType> nameToConfigType = Maps.newHashMap();
+        private static final Map<String, ConfigType> nameToConfigType = Maps.newHashMap();
         static {
             for (ConfigType v : ConfigType.values()) {
                 nameToConfigType.put(v.toString(), v);
             }
         }
 
-        private String name;
-        private ConfigType(String name) {
+        private final String name;
+        ConfigType(String name) {
             this.name = name;
         }
 
@@ -828,15 +828,15 @@ public class MobileConfigFormatter extends Formatter {
         @XmlEnumValue("string") STRING ("string"),
         @XmlEnumValue("integer") INTEGER ("integer");
 
-        private static Map<String, ConfigEnum> nameToConfig = Maps.newHashMap();
+        private static final Map<String, ConfigEnum> nameToConfig = Maps.newHashMap();
         static {
             for (ConfigEnum v : ConfigEnum.values()) {
                 nameToConfig.put(v.toString(), v);
             }
         }
 
-        private String name;
-        private ConfigEnum(String name) {
+        private final String name;
+        ConfigEnum(String name) {
             this.name = name;
         }
 
@@ -865,15 +865,15 @@ public class MobileConfigFormatter extends Formatter {
         @XmlEnumValue("PayloadUUID") UUID ("PayloadUUID"),
         @XmlEnumValue("PayloadVersion") VERSION ("PayloadVersion");
 
-        private static Map<String, PayloadEnum> nameToPayload = Maps.newHashMap();
+        private static final Map<String, PayloadEnum> nameToPayload = Maps.newHashMap();
         static {
             for (PayloadEnum v : PayloadEnum.values()) {
                 nameToPayload.put(v.toString(), v);
             }
         }
 
-        private String name;
-        private PayloadEnum(String name) {
+        private final String name;
+        PayloadEnum(String name) {
             this.name = name;
         }
 
@@ -901,7 +901,7 @@ public class MobileConfigFormatter extends Formatter {
         @XmlEnumValue("CalDAVUsername") USERNAME ("CalDAVUsername"),
         @XmlEnumValue("com.apple.caldav.account") PAYLOAD_TYPE ("com.apple.caldav.account");
 
-        private static Map<String, CaldavEnum> nameToCaldav = Maps.newHashMap();
+        private static final Map<String, CaldavEnum> nameToCaldav = Maps.newHashMap();
 
         static {
             for (CaldavEnum v : CaldavEnum.values()) {
@@ -909,8 +909,8 @@ public class MobileConfigFormatter extends Formatter {
             }
         }
 
-        private String name;
-        private CaldavEnum(String name) {
+        private final String name;
+        CaldavEnum(String name) {
             this.name = name;
         }
 
@@ -938,7 +938,7 @@ public class MobileConfigFormatter extends Formatter {
         @XmlEnumValue("CardDAVUsername") USERNAME ("CardDAVUsername"),
         @XmlEnumValue("com.apple.carddav.account") PAYLOAD_TYPE ("com.apple.carddav.account");
 
-        private static Map<String, CarddavEnum> nameToCarddav = Maps.newHashMap();
+        private static final Map<String, CarddavEnum> nameToCarddav = Maps.newHashMap();
 
         static {
             for (CarddavEnum v : CarddavEnum.values()) {
@@ -946,8 +946,8 @@ public class MobileConfigFormatter extends Formatter {
             }
         }
 
-        private String name;
-        private CarddavEnum(String name) {
+        private final String name;
+        CarddavEnum(String name) {
             this.name = name;
         }
 
@@ -972,7 +972,7 @@ public class MobileConfigFormatter extends Formatter {
         @XmlEnumValue("EmailAuthHTTPMD5") HTTPMD5 ("EmailAuthHTTPMD5"),
         @XmlEnumValue("EmailAuthNone") NONE ("EmailAuthNone");
 
-        private static Map<String, EmailAuthEnum> nameToEmailAuth = Maps.newHashMap();
+        private static final Map<String, EmailAuthEnum> nameToEmailAuth = Maps.newHashMap();
 
         static {
             for (EmailAuthEnum v : EmailAuthEnum.values()) {
@@ -980,8 +980,8 @@ public class MobileConfigFormatter extends Formatter {
             }
         }
 
-        private String name;
-        private EmailAuthEnum(String name) {
+        private final String name;
+        EmailAuthEnum(String name) {
             this.name = name;
         }
 
@@ -1030,7 +1030,7 @@ public class MobileConfigFormatter extends Formatter {
         @XmlEnumValue("disableMailRecentsSyncing") DISABLE_MAIL_RECENTS_SYNCING ("disableMailRecentsSyncing"),
         @XmlEnumValue("com.apple.mail.managed") PAYLOAD_TYPE ("com.apple.mail.managed");
 
-        private static Map<String, ImapEnum> nameToImap = Maps.newHashMap();
+        private static final Map<String, ImapEnum> nameToImap = Maps.newHashMap();
 
         static {
             for (ImapEnum v : ImapEnum.values()) {
@@ -1038,8 +1038,8 @@ public class MobileConfigFormatter extends Formatter {
             }
         }
 
-        private String name;
-        private ImapEnum(String name) {
+        private final String name;
+        ImapEnum(String name) {
             this.name = name;
         }
 
@@ -1061,7 +1061,7 @@ public class MobileConfigFormatter extends Formatter {
         @XmlEnumValue("EmailTypePOP") EMAIL_TYPE_POP ("EmailTypePOP"),
         @XmlEnumValue("EmailTypeIMAP") EMAIL_TYPE_IMAP ("EmailTypeIMAP");
 
-        private static Map<String, EmailAccountTypeEnum> nameToEmailAccountType = Maps.newHashMap();
+        private static final Map<String, EmailAccountTypeEnum> nameToEmailAccountType = Maps.newHashMap();
 
         static {
             for (EmailAccountTypeEnum v : EmailAccountTypeEnum.values()) {
@@ -1069,8 +1069,8 @@ public class MobileConfigFormatter extends Formatter {
             }
         }
 
-        private String name;
-        private EmailAccountTypeEnum(String name) {
+        private final String name;
+        EmailAccountTypeEnum(String name) {
             this.name = name;
         }
 

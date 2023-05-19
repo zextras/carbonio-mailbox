@@ -34,7 +34,7 @@ public class GetZimletRequest extends AttributeSelectorImpl {
      */
     @SuppressWarnings("unused")
     private GetZimletRequest() {
-        this((NamedElement) null);
+        this(null);
     }
 
     public GetZimletRequest(NamedElement zimlet) {

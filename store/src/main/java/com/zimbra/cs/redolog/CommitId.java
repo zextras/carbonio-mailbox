@@ -17,12 +17,12 @@ import com.zimbra.cs.redolog.op.CommitTxn;
  */
 public class CommitId {
 
-    private long mRedoSeq;  // sequence of redo log at transaction commit
-    private long mTxnTstamp;  // timestamp that goes with mTxnId
+    private final long mRedoSeq;  // sequence of redo log at transaction commit
+    private final long mTxnTstamp;  // timestamp that goes with mTxnId
                               // this is used to distinguish between multiple
                               // commit records with the same txn id, which
                               // can happen after replayed ops are logged
-    private TransactionId mTxnId;
+    private final TransactionId mTxnId;
 
     private CommitId(long seq, long txnTstamp, TransactionId txnId) {
         mRedoSeq = seq;

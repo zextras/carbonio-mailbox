@@ -75,7 +75,7 @@ public class ExchangeAuthSpec {
      */
     @SuppressWarnings("unused")
     private ExchangeAuthSpec() {
-        this((String) null, (String) null, (String) null, (AuthScheme) null, null);
+        this(null, null, null, null, null);
     }
 
     public ExchangeAuthSpec(String url, String authUserName,

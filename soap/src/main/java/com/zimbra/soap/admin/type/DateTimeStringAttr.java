@@ -29,7 +29,7 @@ implements DateTimeStringAttrInterface {
      */
     @SuppressWarnings("unused")
     private DateTimeStringAttr() {
-        this((String) null);
+        this(null);
     }
 
     public DateTimeStringAttr(String dateTime) {

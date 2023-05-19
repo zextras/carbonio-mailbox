@@ -34,7 +34,7 @@ public class AddedComment {
      */
     @SuppressWarnings("unused")
     private AddedComment() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public AddedComment(String parentId, String text) {

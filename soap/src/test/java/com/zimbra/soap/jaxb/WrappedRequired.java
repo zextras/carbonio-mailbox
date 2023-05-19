@@ -23,7 +23,7 @@ import com.zimbra.soap.type.ZmBoolean;
 public class WrappedRequired {
     @XmlElementWrapper(name="wrapper", required=true)
     @XmlElement(name="enum-entry", required=true)
-    private List<StringAttribIntValue> entries = Lists.newArrayList();
+    private final List<StringAttribIntValue> entries = Lists.newArrayList();
 
     @XmlElement(name="required-int", required=true)
     private int requiredInt;

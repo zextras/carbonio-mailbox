@@ -42,7 +42,7 @@ public class GetPermissionRequest {
      * @zm-api-field-description Specification of rights
      */
     @XmlElement(name=MailConstants.E_ACE /* ace */, required=false)
-    private List<Right> aces = Lists.newArrayList();
+    private final List<Right> aces = Lists.newArrayList();
 
     public GetPermissionRequest() {
     }

@@ -131,7 +131,7 @@ public class EphemeralBackendCheck extends AttributeCallback {
      */
     @VisibleForTesting
     public static class EphemeralBackendMigrationRules {
-        private MigrationStateHelper helper;
+        private final MigrationStateHelper helper;
 
         public EphemeralBackendMigrationRules(MigrationStateHelper helper) {
             this.helper = helper;
@@ -166,7 +166,7 @@ public class EphemeralBackendCheck extends AttributeCallback {
      */
     public static abstract class MigrationStateHelper {
 
-        public static enum Reason {NO_MIGRATION, MIGRATION_ERROR, URL_MISMATCH }
+        public enum Reason {NO_MIGRATION, MIGRATION_ERROR, URL_MISMATCH }
 
         protected String URL;
 
@@ -178,14 +178,14 @@ public class EphemeralBackendCheck extends AttributeCallback {
         public abstract void warn(Reason reason);
         public abstract void allow();
 
-        public static interface Factory {
-            public MigrationStateHelper getHelper() throws ServiceException;
+        public interface Factory {
+            MigrationStateHelper getHelper() throws ServiceException;
         }
     }
 
     public static class ZimbraMigrationStateHelper extends MigrationStateHelper {
 
-        private MigrationInfo info;
+        private final MigrationInfo info;
 
         public ZimbraMigrationStateHelper() throws ServiceException {
             this.info = AttributeMigration.getMigrationInfo();

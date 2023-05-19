@@ -20,11 +20,11 @@ import com.google.common.collect.Multimap;
 public class MapUtil {
 
     public static <K, V> TimeoutMap<K, V> newTimeoutMap(long timeoutMillis) {
-        return new TimeoutMap<K, V>(timeoutMillis);
+        return new TimeoutMap<>(timeoutMillis);
     }
     
     public static <K, V> LruMap<K, V> newLruMap(int maxSize) {
-        return new LruMap<K, V>(maxSize);
+        return new LruMap<>(maxSize);
     }
 
     /**
@@ -33,11 +33,11 @@ public class MapUtil {
      * the map implicitly creates a new key that maps to an empty {@code List}. 
      */
     public static <K, V> LoadingCache<K, List<V>> newValueListMap() {
-        Function<K, List<V>> listCreator = new Function<K, List<V>>() {
-            @Override
-            public List<V> apply(K from) {
-                return new ArrayList<V>();
-            }
+        Function<K, List<V>> listCreator = new Function<>() {
+          @Override
+          public List<V> apply(K from) {
+            return new ArrayList<>();
+          }
         };
         LoadingCache<K, List<V>> cache = CacheBuilder.newBuilder()
             .build(CacheLoader.from(listCreator));
@@ -50,11 +50,11 @@ public class MapUtil {
      * the map implicitly creates a new key that maps to an empty {@code Set}. 
      */
     public static <K, V> LoadingCache<K, Set<V>> newValueSetMap() {
-        Function<K, Set<V>> setCreator = new Function<K, Set<V>>() {
-            @Override
-            public Set<V> apply(K from) {
-                return new HashSet<V>();
-            }
+        Function<K, Set<V>> setCreator = new Function<>() {
+          @Override
+          public Set<V> apply(K from) {
+            return new HashSet<>();
+          }
         };
         LoadingCache<K, Set<V>> cache = CacheBuilder.newBuilder()
             .build(CacheLoader.from(setCreator));

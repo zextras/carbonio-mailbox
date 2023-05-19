@@ -45,7 +45,7 @@ implements ZimletContextInterface {
      */
     @SuppressWarnings("unused")
     private AccountZimletContext() {
-        this((String) null, (Integer) null, (String) null);
+        this(null, null, null);
     }
 
     public AccountZimletContext(String zimletBaseUrl, Integer zimletPriority,

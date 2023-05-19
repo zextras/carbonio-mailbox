@@ -19,8 +19,8 @@ import com.zimbra.cs.redolog.RedoLogOutput;
 
 public class ImapCopyItem extends RedoableOp {
 
-    private Map<Integer, Integer> mDestIds = new HashMap<Integer, Integer>();
-    private Map<Integer, String> mDestUuids = new HashMap<Integer, String>();
+    private final Map<Integer, Integer> mDestIds = new HashMap<>();
+    private final Map<Integer, String> mDestUuids = new HashMap<>();
     private MailItem.Type type;
     private int mDestFolderId;
 
@@ -106,7 +106,8 @@ public class ImapCopyItem extends RedoableOp {
         int mboxId = getMailboxId();
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(mboxId);
 
-        int i = 0, itemIds[] = new int[mDestIds.size()];
+        int i = 0;
+        int[] itemIds = new int[mDestIds.size()];
         for (int id : mDestIds.keySet()) {
             itemIds[i++] = id;
         }

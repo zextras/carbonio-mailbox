@@ -28,7 +28,7 @@ public class DiffDocumentResponse {
      * @zm-api-field-description Difference information in chunks
      */
     @XmlElement(name=MailConstants.E_CHUNK /* chunk */, required=false)
-    private List<DispositionAndText> chunks = Lists.newArrayList();
+    private final List<DispositionAndText> chunks = Lists.newArrayList();
 
     public DiffDocumentResponse() {
     }

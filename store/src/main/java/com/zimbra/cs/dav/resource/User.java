@@ -39,7 +39,7 @@ public class User extends Principal {
             }
         }
         addProperty(Acl.getPrincipalUrl(this));
-        ArrayList<String> addrs = new ArrayList<String>();
+        ArrayList<String> addrs = new ArrayList<>();
         for (String addr : account.getMailDeliveryAddress())
             addrs.add(addr);
         for (String alias : account.getMailAlias())
@@ -61,7 +61,7 @@ public class User extends Principal {
 
     @Override
     public java.util.Collection<DavResource> getChildren(DavContext ctxt) throws DavException {
-        ArrayList<DavResource> proxies = new ArrayList<DavResource>();
+        ArrayList<DavResource> proxies = new ArrayList<>();
         if (ctxt.useIcalDelegation()) {
             try {
                 proxies.add(new CalendarProxyRead(getOwner(), mUri));
@@ -82,7 +82,7 @@ public class User extends Principal {
         return true;
     }
 
-    private static QName[] SUPPORTED_REPORTS = {
+    private static final QName[] SUPPORTED_REPORTS = {
             DavElements.E_ACL_PRINCIPAL_PROP_SET,
             DavElements.E_PRINCIPAL_MATCH,
             DavElements.E_PRINCIPAL_PROPERTY_SEARCH,

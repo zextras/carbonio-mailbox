@@ -28,7 +28,7 @@ public class GetLoggerStatsResponse {
      * @zm-api-field-description Info by hostname
      */
     @XmlElement(name=AdminConstants.E_HOSTNAME, required=false)
-    private List<HostStats> hostNames = Lists.newArrayList();
+    private final List<HostStats> hostNames = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag note

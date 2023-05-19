@@ -11,6 +11,6 @@ package com.zimbra.cs.zimlet;
  *
  */
 public interface ZimletConf {
-	public String getGlobalConf(String key);
-	public String getSiteConf(String key);
+	String getGlobalConf(String key);
+	String getSiteConf(String key);
 }

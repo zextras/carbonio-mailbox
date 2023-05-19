@@ -101,7 +101,7 @@ public class PhoneVoiceFeaturesSpec {
         @XmlElement(name=VoiceConstants.E_SELECTIVE_CALL_ACCEPTANCE /* selectivecallacceptance */, type=SelectiveCallAcceptanceReq.class),
         @XmlElement(name=VoiceConstants.E_SELECTIVE_CALL_REJECTION /* selectivecallrejection */, type=SelectiveCallRejectionReq.class)
     })
-    private List<CallFeatureReq> callFeatures = Lists.newArrayList();
+    private final List<CallFeatureReq> callFeatures = Lists.newArrayList();
 
     public PhoneVoiceFeaturesSpec() {
     }

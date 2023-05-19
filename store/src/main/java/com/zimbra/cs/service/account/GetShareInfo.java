@@ -192,11 +192,11 @@ public class GetShareInfo  extends AccountDocumentHandler {
         return (granteeType == null) ? 0 : ACL.stringToType(granteeType);
     }
 
-    public static interface ResultFilter {
+    public interface ResultFilter {
         /*
          * return true if filtered in, false if filtered out
          */
-        public boolean check(ShareInfoData sid);
+        boolean check(ShareInfoData sid);
     }
 
     public static class ResultFilterByTarget implements ResultFilter {
@@ -213,10 +213,7 @@ public class GetShareInfo  extends AccountDocumentHandler {
             if (mGranteeId != null && !mGranteeId.equals(sid.getGranteeId()))
                 return false;
 
-            if (mGranteeName != null && !mGranteeName.equals(sid.getGranteeName()))
-                return false;
-
-            return true;
+          return mGranteeName == null || mGranteeName.equals(sid.getGranteeName());
         }
     }
 
@@ -284,7 +281,7 @@ public class GetShareInfo  extends AccountDocumentHandler {
         ShareInfo.MountedFolders mMountedFolders;
         ResultFilter mResultFilter;
         ResultFilter resultFilterForUnmounted;
-        SortedSet<ShareInfoData> mSortedShareInfo = new TreeSet<ShareInfoData>(new ShareInfoComparator());
+        SortedSet<ShareInfoData> mSortedShareInfo = new TreeSet<>(new ShareInfoComparator());
 
         private static class ShareInfoComparator implements Comparator<ShareInfoData> {
             @Override

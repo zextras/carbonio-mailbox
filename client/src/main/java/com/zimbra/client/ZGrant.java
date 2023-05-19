@@ -41,7 +41,7 @@ public class ZGrant implements ACLGrant, ToZJSONObject {
         workflow('x'),
         freebusy('f');
 
-        private char mPermChar;
+        private final char mPermChar;
 
         public char getPermissionChar() { return mPermChar; }
 
@@ -102,8 +102,8 @@ public class ZGrant implements ACLGrant, ToZJSONObject {
          */
         key(com.zimbra.soap.type.GrantGranteeType.key, com.zimbra.common.mailbox.GrantGranteeType.key);
 
-        private com.zimbra.soap.type.GrantGranteeType jaxbGranteeType;
-        private com.zimbra.common.mailbox.GrantGranteeType commonGranteeType;
+        private final com.zimbra.soap.type.GrantGranteeType jaxbGranteeType;
+        private final com.zimbra.common.mailbox.GrantGranteeType commonGranteeType;
 
         GranteeType(com.zimbra.soap.type.GrantGranteeType jaxbGT, com.zimbra.common.mailbox.GrantGranteeType commGT) {
             jaxbGranteeType = jaxbGT;

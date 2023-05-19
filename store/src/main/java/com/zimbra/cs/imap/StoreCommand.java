@@ -10,9 +10,9 @@ import java.util.List;
 import com.zimbra.cs.imap.ImapHandler.StoreAction;
 
 public class StoreCommand extends ImapCommand {
-    private String sequenceSet;
-    private List<String> flagNames;
-    private StoreAction operation;
+    private final String sequenceSet;
+    private final List<String> flagNames;
+    private final StoreAction operation;
     int modseq;
 
     public StoreCommand(String sequenceSet, List<String> flagNames, StoreAction operation, int modseq) {
@@ -64,12 +64,8 @@ public class StoreCommand extends ImapCommand {
             return false;
         }
         if (sequenceSet == null) {
-            if (other.sequenceSet != null) {
-                return false;
-            }
-        } else if (!sequenceSet.equals(other.sequenceSet)) {
-            return false;
-        }
-        return true;
+          return other.sequenceSet == null;
+        } else
+          return sequenceSet.equals(other.sequenceSet);
     }
 }

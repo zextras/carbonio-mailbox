@@ -28,7 +28,7 @@ public class GetTagResponse {
      * @zm-api-field-description Information about tags
      */
     @XmlElement(name=MailConstants.E_TAG, required=false)
-    private List<TagInfo> tags = Lists.newArrayList();
+    private final List<TagInfo> tags = Lists.newArrayList();
 
     public GetTagResponse() {
     }

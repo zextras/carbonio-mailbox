@@ -44,11 +44,11 @@ public class CreateHABGroupRequest extends CreateDistributionListRequest {
       */
      @SuppressWarnings("unused")
      public CreateHABGroupRequest() {
-         this(null, null, null, (Collection<Attr>) null, false);
+         this(null, null, null, null, false);
      }
 
     public CreateHABGroupRequest(String habOrgUnit, String name) {
-         this(null, habOrgUnit, name, (Collection<Attr>) null, false);
+         this(null, habOrgUnit, name, null, false);
      }
 
      public CreateHABGroupRequest(String habGroupName, String habOrgUnit, String name, Collection<Attr> attrs, boolean dynamic) {

@@ -37,7 +37,7 @@ implements ZimletHostConfigInfo {
      * @zm-api-field-description Host specifice zimlet configuration properties
      */
     @XmlElement(name=ZimletConstants.ZIMLET_TAG_PROPERTY /* property */, required=false)
-    private List<AccountZimletProperty> properties = Lists.newArrayList();
+    private final List<AccountZimletProperty> properties = Lists.newArrayList();
 
     public AccountZimletHostConfigInfo() {
     }

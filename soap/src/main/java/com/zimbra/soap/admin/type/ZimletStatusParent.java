@@ -24,7 +24,7 @@ public class ZimletStatusParent {
      * @zm-api-field-description Status information
      */
     @XmlElement(name=AdminConstants.E_ZIMLET /* zimlet */, required=false)
-    private List<ZimletStatus> zimlets = Lists.newArrayList();
+    private final List<ZimletStatus> zimlets = Lists.newArrayList();
 
     public ZimletStatusParent() {
     }

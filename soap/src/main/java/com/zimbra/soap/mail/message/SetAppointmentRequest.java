@@ -104,13 +104,13 @@ public class SetAppointmentRequest {
      * @zm-api-field-description Calendar item information for exceptions
      */
     @XmlElement(name=MailConstants.E_CAL_EXCEPT /* except */, required=false)
-    private List<SetCalendarItemInfo> exceptions = Lists.newArrayList();
+    private final List<SetCalendarItemInfo> exceptions = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Calendar item information for cancellations
      */
     @XmlElement(name=MailConstants.E_CAL_CANCEL /* cancel */, required=false)
-    private List<SetCalendarItemInfo> cancellations = Lists.newArrayList();
+    private final List<SetCalendarItemInfo> cancellations = Lists.newArrayList();
 
     /**
      * @zm-api-field-description List of replies received from attendees.  If SetAppointmenRequest doesn't contain
@@ -121,7 +121,7 @@ public class SetAppointmentRequest {
      */
     @XmlElementWrapper(name=MailConstants.E_CAL_REPLIES /* replies */, required=false)
     @XmlElement(name=MailConstants.E_CAL_REPLY /* reply */, required=false)
-    private List<CalReply> replies = Lists.newArrayList();
+    private final List<CalReply> replies = Lists.newArrayList();
 
     public SetAppointmentRequest() {
     }

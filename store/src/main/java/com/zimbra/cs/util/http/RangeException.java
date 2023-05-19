@@ -7,7 +7,7 @@ package com.zimbra.cs.util.http;
 
 public class RangeException extends Exception {
     private static final long serialVersionUID = 4081054215965536622L;
-    private int errorCode;
+    private final int errorCode;
 
     public RangeException(int errorCode) {
         super();

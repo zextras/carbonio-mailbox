@@ -29,9 +29,9 @@ public class InviteChanges {
     public static final String LABEL_RECURRENCE = "recurrence";
     public static final String LABEL_SUBJECT    = "subject";
 
-    private static List<Integer> sMaskList;
-    private static Map<Integer, String> sMaskToLabel;
-    private static Map<String, Integer> sLabelToMask;
+    private static final List<Integer> sMaskList;
+    private static final Map<Integer, String> sMaskToLabel;
+    private static final Map<String, Integer> sLabelToMask;
     private static void map(int mask, String label) {
         sMaskList.add(mask);
         sMaskToLabel.put(mask, label);
@@ -41,9 +41,9 @@ public class InviteChanges {
             sLabelToMask.put(labelLower, mask);
     }
     static {
-        sMaskList = new ArrayList<Integer>();
-        sMaskToLabel = new HashMap<Integer, String>();
-        sLabelToMask = new HashMap<String, Integer>();
+        sMaskList = new ArrayList<>();
+        sMaskToLabel = new HashMap<>();
+        sLabelToMask = new HashMap<>();
         map(LOCATION, LABEL_LOCATION);
         map(TIME, LABEL_TIME);
         map(RECURRENCE, LABEL_RECURRENCE);

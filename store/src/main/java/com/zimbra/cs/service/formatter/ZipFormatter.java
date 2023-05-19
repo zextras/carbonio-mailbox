@@ -22,7 +22,7 @@ import com.zimbra.cs.service.formatter.FormatterFactory.FormatType;
 public class ZipFormatter extends ArchiveFormatter {
     public class ZipArchiveInputStream implements ArchiveInputStream {
         public class ZipArchiveInputEntry implements ArchiveInputEntry {
-            private ZipEntry entry;
+            private final ZipEntry entry;
 
             public ZipArchiveInputEntry(ZipInputStream is) throws IOException {
                 entry = is.getNextEntry();
@@ -37,7 +37,7 @@ public class ZipFormatter extends ArchiveFormatter {
             }
         }
         
-        private ZipInputStream is;
+        private final ZipInputStream is;
         
         public ZipArchiveInputStream(InputStream is, String cset) {
             this.is = new ZipInputStream(is, Charset.forName(cset));
@@ -57,7 +57,7 @@ public class ZipFormatter extends ArchiveFormatter {
     
     public class ZipArchiveOutputStream implements ArchiveOutputStream {
         public class ZipArchiveOutputEntry implements ArchiveOutputEntry {
-            private com.zimbra.common.util.zip.ZipEntry entry;
+            private final com.zimbra.common.util.zip.ZipEntry entry;
 
             public ZipArchiveOutputEntry(String path, String name, int type, long
                 date) {
@@ -73,7 +73,7 @@ public class ZipFormatter extends ArchiveFormatter {
             public void setSize(long size) { entry.setSize(size); }
         }
         
-        private ZipOutputStream os;
+        private final ZipOutputStream os;
         
         public ZipArchiveOutputStream(OutputStream os, String cset, int lvl)
             throws IOException {

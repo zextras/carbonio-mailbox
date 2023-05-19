@@ -31,13 +31,13 @@ public class GetMiniCalResponse {
      * @zm-api-field-description Matching busy dates in format : <b>yyyymmdd</b>
      */
     @XmlElement(name=MailConstants.E_CAL_MINICAL_DATE /* date */, required=false)
-    private List<String> busyDates = Lists.newArrayList();
+    private final List<String> busyDates = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Error for each calendar folder that couldn't be accessed
      */
     @XmlElement(name=MailConstants.E_ERROR /* error */, required=false)
-    private List<MiniCalError> errors = Lists.newArrayList();
+    private final List<MiniCalError> errors = Lists.newArrayList();
 
     public GetMiniCalResponse() {
     }

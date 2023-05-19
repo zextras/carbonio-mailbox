@@ -77,7 +77,7 @@ public class ZmgDeviceSpec {
      */
     @SuppressWarnings("unused")
     private ZmgDeviceSpec() {
-        this((String) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public ZmgDeviceSpec(String appId, String registrationId, String pushProvider) {

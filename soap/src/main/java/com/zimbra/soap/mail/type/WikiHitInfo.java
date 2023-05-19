@@ -28,7 +28,7 @@ public class WikiHitInfo extends CommonDocumentInfo implements SearchHit {
      */
     @SuppressWarnings("unused")
     private WikiHitInfo() {
-        this((String) null);
+        this(null);
     }
 
     public WikiHitInfo(String id) {

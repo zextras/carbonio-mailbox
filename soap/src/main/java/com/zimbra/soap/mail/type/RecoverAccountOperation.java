@@ -18,16 +18,16 @@ public enum RecoverAccountOperation {
     @XmlEnumValue("sendRecoveryCode") SEND_RECOVERY_CODE("sendRecoveryCode"),
     @XmlEnumValue("sendRecoveryLink") SEND_RECOVERY_LINK("sendRecoveryLink");
 
-    private static Map<String, RecoverAccountOperation> nameToRecoverAccountOperations = Maps.newHashMap();
+    private static final Map<String, RecoverAccountOperation> nameToRecoverAccountOperations = Maps.newHashMap();
     static {
         for (RecoverAccountOperation v : RecoverAccountOperation.values()) {
             nameToRecoverAccountOperations.put(v.toString(), v);
         }
     }
 
-    private String name;
+    private final String name;
 
-    private RecoverAccountOperation(String name) {
+    RecoverAccountOperation(String name) {
         this.name = name;
     }
 

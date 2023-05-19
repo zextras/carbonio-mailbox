@@ -27,7 +27,7 @@ public class GetAdminConsoleUICompResponse {
      * @zm-api-field-description  zimbraAdminConsoleUIComponents values
      */
     @XmlElement(name=AdminConstants.E_A, required=false)
-    private List<InheritedFlaggedValue> values = Lists.newArrayList();
+    private final List<InheritedFlaggedValue> values = Lists.newArrayList();
 
     public GetAdminConsoleUICompResponse() {
     }

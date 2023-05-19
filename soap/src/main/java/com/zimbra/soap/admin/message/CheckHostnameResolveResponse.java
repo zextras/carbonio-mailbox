@@ -22,19 +22,19 @@ public class CheckHostnameResolveResponse {
      * @zm-api-field-description Code
      */
     @XmlElement(name=AdminConstants.E_CODE, required=true)
-    private String code;
+    private final String code;
     /**
      * @zm-api-field-description Message
      */
     @XmlElement(name=AdminConstants.E_MESSAGE, required=false)
-    private String message;
+    private final String message;
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private CheckHostnameResolveResponse() {
-        this((String)null, (String)null);
+        this(null, null);
     }
 
     private CheckHostnameResolveResponse(String code, String message) {

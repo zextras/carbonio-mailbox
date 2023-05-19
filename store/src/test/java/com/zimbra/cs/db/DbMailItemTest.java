@@ -173,11 +173,11 @@ public final class DbMailItemTest {
                 "VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)", mbox.getId(), 402, MailItem.Type.CONTACT.toByte(), null);
 
         Assert.assertEquals(ImmutableList.of(100, 101, 102, 300, 301, 302),
-                DbMailItem.getReIndexIds(conn, mbox, EnumSet.<MailItem.Type>of(MailItem.Type.MESSAGE)));
+                DbMailItem.getReIndexIds(conn, mbox, EnumSet.of(MailItem.Type.MESSAGE)));
         Assert.assertEquals(ImmutableList.of(200, 201, 400, 401),
-                DbMailItem.getReIndexIds(conn, mbox, EnumSet.<MailItem.Type>of(MailItem.Type.CONTACT)));
+                DbMailItem.getReIndexIds(conn, mbox, EnumSet.of(MailItem.Type.CONTACT)));
         Assert.assertEquals(ImmutableList.of(100, 101, 102, 200, 201, 300, 301, 302, 400, 401),
-                DbMailItem.getReIndexIds(conn, mbox, EnumSet.<MailItem.Type>noneOf(MailItem.Type.class)));
+                DbMailItem.getReIndexIds(conn, mbox, EnumSet.noneOf(MailItem.Type.class)));
     }
 
     @Test

@@ -38,7 +38,7 @@ public class CheckSpellingResponse {
      * @zm-api-field-description Information for misspelled words
      */
     @XmlElement(name=MailConstants.E_MISSPELLED /* misspelled */, required=false)
-    private List<Misspelling> misspelledWords = Lists.newArrayList();
+    private final List<Misspelling> misspelledWords = Lists.newArrayList();
 
     private CheckSpellingResponse() {
     }

@@ -108,7 +108,7 @@ public class PlaybackUtil {
     private static final String OPT_QUEUE_CAPACITY = "queueCapacity";
     private static final String OPT_HELP = "h";
 
-    private static Options sOptions = new Options();
+    private static final Options sOptions = new Options();
 
     static {
         sOptions.addOption(null, OPT_FROM_TIME, true, "Replay from this time (inclusive)");
@@ -148,7 +148,7 @@ public class PlaybackUtil {
         }
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         CommandLineParser parser = new GnuParser();
         CommandLine cl = null;
         try {
@@ -248,7 +248,7 @@ public class PlaybackUtil {
             params.queueCapacity = Integer.parseInt(cl.getOptionValue(OPT_QUEUE_CAPACITY));
         System.out.printf("Using %d as queue capacity for each redo player thread\n", params.queueCapacity);
 
-        List<File> logList = new ArrayList<File>();
+        List<File> logList = new ArrayList<>();
         if (cl.hasOption(OPT_LOGFILES)) {
             String[] fnames = cl.getOptionValues(OPT_LOGFILES);
             params.logfiles = new File[fnames.length];
@@ -304,8 +304,8 @@ public class PlaybackUtil {
     }
 
 
-    private Params mParams;
-    private RedoPlayer mPlayer;
+    private final Params mParams;
+    private final RedoPlayer mPlayer;
 
     public PlaybackUtil(Params params) {
         mParams = params;
@@ -326,7 +326,7 @@ public class PlaybackUtil {
                 try {
                     Map<Integer, Integer> mboxIdMap = null;
                     if (mParams.mboxId != Params.MBOX_ID_UNSET) {
-                        mboxIdMap = new HashMap<Integer, Integer>(1);
+                        mboxIdMap = new HashMap<>(1);
                         mboxIdMap.put(mParams.mboxId, mParams.mboxId);
                     }
                     mPlayer.scanLog(redolog, true, mboxIdMap, mParams.fromTime, until);

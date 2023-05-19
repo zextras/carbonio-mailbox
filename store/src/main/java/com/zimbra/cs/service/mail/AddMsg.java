@@ -38,8 +38,8 @@ import com.zimbra.soap.ZimbraSoapContext;
  * @since Sep 29, 2004
  */
 public class AddMsg extends MailDocumentHandler {
-    private static Log mLog = LogFactory.getLog(AddMsg.class);
-    private static Pattern sNumeric = Pattern.compile("\\d+");
+    private static final Log mLog = LogFactory.getLog(AddMsg.class);
+    private static final Pattern sNumeric = Pattern.compile("\\d+");
 
     private static final String[] TARGET_FOLDER_PATH = new String[] { MailConstants.E_MSG, MailConstants.A_FOLDER };
 

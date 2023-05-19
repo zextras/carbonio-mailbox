@@ -29,7 +29,7 @@ public final class MeQuery extends SubQuery {
     }
 
     public static Query create(Mailbox mbox, Analyzer analyzer, Set<AddrQuery.Address> addrs) throws ServiceException {
-        List<Query> clauses = new ArrayList<Query>();
+        List<Query> clauses = new ArrayList<>();
         Account acct = mbox.getAccount();
         if (addrs.contains(AddrQuery.Address.FROM)) {
             clauses.add(new SentQuery(true));

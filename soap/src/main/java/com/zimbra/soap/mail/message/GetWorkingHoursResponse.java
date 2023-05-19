@@ -28,7 +28,7 @@ public class GetWorkingHoursResponse {
      * @zm-api-field-description Working hours information by user
      */
     @XmlElement(name=MailConstants.E_FREEBUSY_USER /* usr */, required=false)
-    private List<FreeBusyUserInfo> freebusyUsers = Lists.newArrayList();
+    private final List<FreeBusyUserInfo> freebusyUsers = Lists.newArrayList();
 
     public GetWorkingHoursResponse() {
     }

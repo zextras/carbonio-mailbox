@@ -40,7 +40,7 @@ public final class TaskHit extends CalendarItemHit {
         return 0;
     }
 
-    static enum Status {
+    enum Status {
         // these names correspond to the iCal data values.  Don't change!
         // The number corresponds to sort-precidence when sorting by completion status
         NEED(0),
@@ -52,7 +52,7 @@ public final class TaskHit extends CalendarItemHit {
 
         Status(int sortVal) { mSortVal = sortVal; }
         public int getSortVal() { return mSortVal; }
-        private int mSortVal;
+        private final int mSortVal;
     }
 
     public Status getStatus() throws ServiceException {

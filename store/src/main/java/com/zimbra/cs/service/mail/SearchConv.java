@@ -83,7 +83,7 @@ public final class SearchConv extends Search {
                 Conversation conv = mbox.getConversationById(octxt, cid.getId());
                 if (conv.isTagged(Flag.FlagInfo.DELETED)) {
                     List<Message> raw = msgs;
-                    msgs = new ArrayList<Message>();
+                    msgs = new ArrayList<>();
                     for (Message msg : raw) {
                         if (!msg.isTagged(Flag.FlagInfo.DELETED)) {
                             msgs.add(msg);
@@ -209,13 +209,10 @@ public final class SearchConv extends Search {
         int numMatched = 0;
         boolean forceExpandFirstMsg;
         boolean[] expandMsgs = new boolean[size];
-        if (expand == ExpandResults.FIRST_MSG ||
-                expand == ExpandResults.HITS_OR_FIRST_MSG ||
-                expand == ExpandResults.U_OR_FIRST_MSG ||
-                expand == ExpandResults.U1_OR_FIRST_MSG ) {
-            forceExpandFirstMsg = true;
-        }
-        else {forceExpandFirstMsg = false;}
+        forceExpandFirstMsg = expand == ExpandResults.FIRST_MSG ||
+            expand == ExpandResults.HITS_OR_FIRST_MSG ||
+            expand == ExpandResults.U_OR_FIRST_MSG ||
+            expand == ExpandResults.U1_OR_FIRST_MSG;
 
         for (int i = offset; i < offset + size; i++) {
             boolean shouldExpand;

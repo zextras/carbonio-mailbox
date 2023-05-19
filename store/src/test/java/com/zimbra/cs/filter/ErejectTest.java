@@ -38,7 +38,7 @@ import com.zimbra.cs.service.util.ItemId;
 
 public class ErejectTest {
 
-    private static String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
+    private static final String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
             + "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
             + "Received: from localhost (localhost [127.0.0.1])\n"
@@ -48,7 +48,7 @@ public class ErejectTest {
             + "Subject: example\n"
             + "to: test@zimbra.com\n";
 
-    private String filterScript = "require [\"ereject\"];\n"
+    private final String filterScript = "require [\"ereject\"];\n"
             + "if header :contains \"from\" \"test2@zimbra.com\" {\n"
             + "  ereject text:\r\n"
             + "I am not taking mail from you, and I don’t\n"

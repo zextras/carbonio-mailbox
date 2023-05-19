@@ -44,8 +44,8 @@ public class EffectiveRightsTargetSelector {
      */
     @SuppressWarnings("unused")
     private EffectiveRightsTargetSelector() {
-        this((TargetType) null, (TargetBy) null,
-                (String) null);
+        this(null, null,
+            null);
     }
 
     public EffectiveRightsTargetSelector(TargetType type, TargetBy by, String value) {

@@ -19,7 +19,7 @@ import org.apache.http.protocol.HttpContext;
 class SecureProtocolSocketFactoryWrapper extends ProtocolSocketFactoryWrapper
 implements LayeredConnectionSocketFactory {
 
-    private SSLSocketFactory factory;
+    private final SSLSocketFactory factory;
 
     SecureProtocolSocketFactoryWrapper(SSLSocketFactory factory) {
         super(factory);
@@ -50,7 +50,7 @@ implements LayeredConnectionSocketFactory {
      */
     @Override
     public Socket createLayeredSocket(Socket socket,  String target, int port, HttpContext context)
-        throws IOException, UnknownHostException {
+        throws IOException {
         if (socket == null) {
             if (context != null) {
                 HttpClientContext clientContext = HttpClientContext.adapt(context);

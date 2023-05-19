@@ -15,7 +15,7 @@ import com.zimbra.common.util.L10nUtil;
 
 public final class KnownKey {
 
-    private static final Map<String, KnownKey> ALL = new LinkedHashMap<String, KnownKey>();
+    private static final Map<String, KnownKey> ALL = new LinkedHashMap<>();
 
     static {
         // Since all the known keys are actually defined in another class, we
@@ -231,9 +231,7 @@ public final class KnownKey {
 
     public KnownKey(String key, String defaultValue) {
         this.key = key;
-        if (ALL.containsKey(key)) {
-            assert false : "duplicate key: " + key;
-        }
+      assert !ALL.containsKey(key) : "duplicate key: " + key;
         setDefault(defaultValue);
         ALL.put(key, this);
     }

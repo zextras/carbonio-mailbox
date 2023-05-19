@@ -27,7 +27,7 @@ public class GetAppSpecificPasswordsResponse {
     @XmlElements({
         @XmlElement(name=AccountConstants.E_APP_SPECIFIC_PASSWORD_DATA, type=AppSpecificPasswordData.class)
     })
-	private List<AppSpecificPasswordData> appSpecificPasswords = new ArrayList<AppSpecificPasswordData>();
+	private final List<AppSpecificPasswordData> appSpecificPasswords = new ArrayList<>();
 
     public void setAppSpecificPasswords(Iterable<AppSpecificPasswordData> appSpecificPasswords) {
         this.appSpecificPasswords.clear();

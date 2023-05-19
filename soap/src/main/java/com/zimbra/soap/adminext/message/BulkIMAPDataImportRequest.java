@@ -62,7 +62,7 @@ public class BulkIMAPDataImportRequest {
      * @zm-api-field-description Account specification - where name attributes are email addresses
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT /* account */, required=false)
-    private List<Name> accounts = Lists.newArrayList();
+    private final List<Name> accounts = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag connection-type

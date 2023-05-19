@@ -64,11 +64,11 @@ public abstract class RightBearer {
 
         @VisibleForTesting
         public Grantee(NamedEntry grantee) throws ServiceException {
-            this(grantee, (Set<Right>) null, true);
+            this(grantee, null, true);
         }
 
         protected Grantee(NamedEntry grantee, boolean adminOnly) throws ServiceException {
-            this(grantee, (Set<Right>) null, adminOnly);
+            this(grantee, null, adminOnly);
         }
 
         protected Grantee(NamedEntry grantee, Set <Right> rights, boolean adminOnly) throws ServiceException {
@@ -116,7 +116,7 @@ public abstract class RightBearer {
             }
 
             // setup grantees ids
-            mIdAndGroupIds = new HashSet<String>();
+            mIdAndGroupIds = new HashSet<>();
             mIdAndGroupIds.add(grantee.getId());
             if (granteeGroups != null) {
                 mIdAndGroupIds.addAll(granteeGroups.groupIds());
@@ -124,11 +124,11 @@ public abstract class RightBearer {
         }
 
         protected static Grantee getGrantee(NamedEntry namedEntry) throws ServiceException {
-            return getGrantee(namedEntry, (Set<Right>) null, true);
+            return getGrantee(namedEntry, null, true);
         }
 
         protected static Grantee getGrantee(NamedEntry namedEntry, boolean adminOnly) throws ServiceException {
-            return getGrantee(namedEntry, (Set<Right>) null, adminOnly);
+            return getGrantee(namedEntry, null, adminOnly);
         }
 
         private static Grantee getGranteeFromCache(NamedEntry namedEntry, Set <Right> right, boolean adminOnly)
@@ -136,11 +136,11 @@ public abstract class RightBearer {
             Grantee grntee = null;
             final GranteeCacheKey key = new GranteeCacheKey(namedEntry, right, adminOnly);
             try {
-                grntee = GRANTEE_CACHE.get(key, new Callable<Grantee>() {
-                    @Override
-                    public Grantee call() throws ServiceException {
-                        return new Grantee(key.namedEntry, key.rights, key.adminOnly);
-                    }
+                grntee = GRANTEE_CACHE.get(key, new Callable<>() {
+                  @Override
+                  public Grantee call() throws ServiceException {
+                    return new Grantee(key.namedEntry, key.rights, key.adminOnly);
+                  }
                 });
             } catch (ExecutionException e) {
                 Throwable throwable = e.getCause();
@@ -278,11 +278,8 @@ public abstract class RightBearer {
                     grantee.getBooleanAttr(Provisioning.A_zimbraIsDelegatedAdminAccount, false));
         } else if (gt == GranteeType.GT_GROUP) {
             return grantee.getBooleanAttr(Provisioning.A_zimbraIsAdminGroup, false);
-        } else if (gt == GranteeType.GT_EXT_GROUP) {
-            return true;
-        } else {
-            return false;
-        }
+        } else
+            return gt == GranteeType.GT_EXT_GROUP;
     }
 
     static boolean matchesGrantee(Grantee grantee, ZimbraACE ace) throws ServiceException {

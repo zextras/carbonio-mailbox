@@ -39,7 +39,7 @@ import com.zimbra.cs.service.util.ItemId;
 
 public class ReplaceHeaderTest {
 
-    private static String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
+    private static final String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
             + "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
             + "Received: from localhost (localhost [127.0.0.1])\n"
@@ -57,7 +57,7 @@ public class ReplaceHeaderTest {
             + "from: test2@zimbra.com\n"
             + "Subject: example\n"
             + "to: test@zimbra.com\n";
-    private static String sampleBaseMsg2 = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
+    private static final String sampleBaseMsg2 = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
             + "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
             + "Received: from localhost (localhost [127.0.0.1])\n"
@@ -70,7 +70,7 @@ public class ReplaceHeaderTest {
             + "from: test2@zimbra.com\n"
             + "Subject: example\n"
             + "to: test@zimbra.com\n";
-    private static String sampleBaseMsg3 = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
+    private static final String sampleBaseMsg3 = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
             + "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
             + "Received: from localhost (localhost [127.0.0.1])\n"
@@ -89,7 +89,7 @@ public class ReplaceHeaderTest {
             + "from: test2@zimbra.com\n"
             + "Subject: example\n"
             + "to: test@zimbra.com\n";
-    private static String sampleBaseMsg4 = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
+    private static final String sampleBaseMsg4 = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
             + "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
             + "Received: from localhost (localhost [127.0.0.1])\n"
@@ -100,7 +100,7 @@ public class ReplaceHeaderTest {
             + "from: test2@zimbra.com\n"
             + "Subject: example\n"
             + "to: test@zimbra.com\n";
-    private static String sampleBaseMsg5 = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
+    private static final String sampleBaseMsg5 = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
             + "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
             + "Received: from localhost (localhost [127.0.0.1])\n"
@@ -118,7 +118,7 @@ public class ReplaceHeaderTest {
             + "from: test2@zimbra.com\n"
             + "Subject: example\n"
             + "to: test@zimbra.com\n";
-    private static String sampleBaseMsg6 = "Subject: =?utf-8?B?44GT44KM44Gv6KSH5pWw6KGM44Gr5rih44KL?=\n"
+    private static final String sampleBaseMsg6 = "Subject: =?utf-8?B?44GT44KM44Gv6KSH5pWw6KGM44Gr5rih44KL?=\n"
             + "\t=?utf-8?B?5Lu25ZCN44Gn44GZ44CC5Lu25ZCN44Gv44Kt?=\n"
             + "\t=?utf-8?B?44Oj44Op44Kv44K/44O844K744OD44OI44GM?=\n"
             + "\t=?utf-8?B?44Om44O844OG44Kj44O844Ko44OV44Ko44Kk?=\n"
@@ -128,7 +128,7 @@ public class ReplaceHeaderTest {
             + "\t=?utf-8?B?5oqY44KK5puy44GS44KJ44KM44G+44GZ44CC?=\n"
             + "from: test2@zimbra.com\n"
             + "to: test@zimbra.com\n";
-    private static String[] sampleBaseMsg7 = {
+    private static final String[] sampleBaseMsg7 = {
               "Received: from domain1.zimbra.com (LHLO zcs-ubuntu.local) (192.168.44.131)\r\n"
             + " by zcs-ubuntu.local with LMTP; Wed, 7 Dec 2016 15:10:58 +0900 (JST)",
               "Received: from zcs-ubuntu.local (localhost [127.0.0.1])\r\n"
@@ -152,7 +152,7 @@ public class ReplaceHeaderTest {
               "X-Dummy-Header: test",
               "X-Dummy-Header: ''",
               "X-Dummy-Header: a1b2c3"};
-    private static String sampleBaseMsg8 = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
+    private static final String sampleBaseMsg8 = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
             + "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
             + "Received: from localhost (localhost [127.0.0.1])\n"
@@ -692,7 +692,7 @@ public class ReplaceHeaderTest {
                     + " =?UTF-8?Q?AM]=E6=97=A5=E6=9C=AC=E8=AA=9E=E3=81=AE=E4=BB=B6=E5=90=8D?=";
             Assert.assertEquals(matchValue, headerValue);
 
-            String expectedTags[] = {
+            String[] expectedTags = {
                     "tag1-[SPAM]日本語の件名",
                     "tag2-ABC",
                     "tag3-123",
@@ -701,8 +701,8 @@ public class ReplaceHeaderTest {
                     "tag6-XYZ",
                     "tag7-",
                     "tag8-xyz",
-                    "tag9-\'\'"};
-            String resultTags[] = message.getTags();
+                "tag9-''"};
+            String[] resultTags = message.getTags();
             for (String resultTag : resultTags) {
                 String expectedTag = null;
                 for (String testTag : expectedTags) {

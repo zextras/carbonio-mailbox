@@ -30,19 +30,19 @@ import com.zimbra.soap.mail.type.RetentionPolicy;
 
 public class RetentionPolicyManager {
     
-    private static String FN_KEEP = "keep";
-    private static String FN_PURGE = "purge";
-    private static String FN_ID = "id";
-    private static String FN_NAME = "name";
-    private static String FN_LIFETIME = "lifetime";
+    private static final String FN_KEEP = "keep";
+    private static final String FN_PURGE = "purge";
+    private static final String FN_ID = "id";
+    private static final String FN_NAME = "name";
+    private static final String FN_LIFETIME = "lifetime";
     
     private class SystemPolicy {
         Map<String, Policy> keep = Maps.newHashMap();
         Map<String, Policy> purge = Maps.newHashMap();
     }
     
-    private static RetentionPolicyManager instance = new RetentionPolicyManager();
-    private static String SYSTEM_POLICY_KEY =
+    private static final RetentionPolicyManager instance = new RetentionPolicyManager();
+    private static final String SYSTEM_POLICY_KEY =
         RetentionPolicyManager.class.getSimpleName() + ".SYSTEM_POLICY";
 
     public static RetentionPolicyManager getInstance() {
@@ -244,10 +244,7 @@ public class RetentionPolicyManager {
             return p;
         }
         p = sp.purge.get(id);
-        if (p != null) {
-            return p;
-        }
-        return null;
+        return p;
     }
 
     /**

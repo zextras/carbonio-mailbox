@@ -35,9 +35,9 @@ import com.zimbra.cs.account.ldap.entry.LdapMimeTypeBase;
  *
  */
 public class LdapEntryLocation extends EphemeralLocation {
-    private EntryType entryType;
-    private String entryValue;
-    private Entry entry;
+    private final EntryType entryType;
+    private final String entryValue;
+    private final Entry entry;
 
     public LdapEntryLocation(Entry entry) {
         this.entry = entry;
@@ -75,7 +75,7 @@ public class LdapEntryLocation extends EphemeralLocation {
         case IDENTITY:
             return ((Identity) entry).getId();
         case MIMETYPE:
-            return ((LdapMimeTypeBase) entry).getLabel();
+            return entry.getLabel();
         case SERVER:
             return ((Server) entry).getId();
         case SIGNATURE:

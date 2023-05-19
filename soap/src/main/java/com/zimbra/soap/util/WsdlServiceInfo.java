@@ -23,10 +23,10 @@ public final class WsdlServiceInfo implements Comparable<WsdlServiceInfo> {
     public static WsdlServiceInfo zcsService = WsdlServiceInfo.createForSoap(localhostSoapHttpURL);
     public static WsdlServiceInfo zcsAdminService = WsdlServiceInfo.createForAdmin(localhostSoapAdminHttpsURL);
     
-    private String serviceName;
-    private String soapAddressURL;
-    private String portTypeName;
-    private String bindingName;
+    private final String serviceName;
+    private final String soapAddressURL;
+    private final String portTypeName;
+    private final String bindingName;
 
     private WsdlServiceInfo(String svcName, String soapAddressURL, String portTypeName, String bindingName) {
         this.serviceName = svcName;

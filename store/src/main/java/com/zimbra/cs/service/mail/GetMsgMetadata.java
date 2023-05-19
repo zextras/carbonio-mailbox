@@ -33,8 +33,8 @@ public class GetMsgMetadata extends MailDocumentHandler {
         ItemIdFormatter ifmt = new ItemIdFormatter(zsc);
 
         String ids = request.getElement(MailConstants.E_MSG).getAttribute(MailConstants.A_IDS);
-        ArrayList<Integer> local = new ArrayList<Integer>();
-        HashMap<String, StringBuilder> remote = new HashMap<String, StringBuilder>();
+        ArrayList<Integer> local = new ArrayList<>();
+        HashMap<String, StringBuilder> remote = new HashMap<>();
         ItemAction.partitionItems(zsc, ids, local, remote);
 
         Element response = zsc.createElement(MailConstants.GET_MSG_METADATA_RESPONSE);
@@ -60,7 +60,7 @@ public class GetMsgMetadata extends MailDocumentHandler {
 
     List<Element> proxyRemote(Element request, Map<String, StringBuilder> remote, Map<String,Object> context)
     throws ServiceException {
-        List<Element> responses = new ArrayList<Element>();
+        List<Element> responses = new ArrayList<>();
 
         Element eMsg = request.getElement(MailConstants.E_MSG);
         for (Map.Entry<String, StringBuilder> entry : remote.entrySet()) {

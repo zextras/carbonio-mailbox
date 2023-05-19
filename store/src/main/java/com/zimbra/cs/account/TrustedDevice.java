@@ -11,20 +11,20 @@ import com.zimbra.common.service.ServiceException;
 
 public interface TrustedDevice {
 
-    public void register() throws ServiceException;
+    void register() throws ServiceException;
 
-    public void revoke() throws ServiceException;
+    void revoke() throws ServiceException;
 
-    public boolean verify(Map<String, Object> attrs);
+    boolean verify(Map<String, Object> attrs);
 
-    public Map<String, Object> getAttrs();
+    Map<String, Object> getAttrs();
 
-    public TrustedDeviceToken getToken();
+    TrustedDeviceToken getToken();
 
-    public Integer getTokenId();
+    Integer getTokenId();
 
-    public long getExpires();
+    long getExpires();
 
-    public boolean isExpired();
+    boolean isExpired();
 
 }

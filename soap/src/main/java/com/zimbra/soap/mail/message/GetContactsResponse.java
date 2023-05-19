@@ -28,7 +28,7 @@ public class GetContactsResponse {
      * @zm-api-field-description Contact information
      */
     @XmlElement(name=MailConstants.E_CONTACT /* cn */, required=false)
-    private List<ContactInfo> contacts = Lists.newArrayList();
+    private final List<ContactInfo> contacts = Lists.newArrayList();
 
     public GetContactsResponse() {
     }

@@ -20,7 +20,7 @@ import com.zimbra.cs.mailbox.VCardParamsAndValue;
 
 public final class VCardTest {
 
-    private static String oddities =
+    private static final String oddities =
             "BEGIN:VCARD\r\n" +
             "\r\n" +
             "FN\n" +
@@ -36,7 +36,7 @@ public final class VCardTest {
         Assert.assertEquals("Number of cards", 1, cards.size());
     }
 
-    private static String encodings = "BEGIN:VCARD\r\n" +
+    private static final String encodings = "BEGIN:VCARD\r\n" +
             "\r\n" +
             "FN\n" +
             " :john doe\\, jr.\n" +
@@ -53,7 +53,7 @@ public final class VCardTest {
         Assert.assertEquals("Number of cards", 1, cards.size());
     }
 
-    private static String multicards =
+    private static final String multicards =
                 "BEGIN : VCARD\n" +
                 "FN\n" +
                 " :john doe\\, jr.\nAGENT:\\nBEGIN:VCARD\\nEND:VCARD\n" +
@@ -65,7 +65,7 @@ public final class VCardTest {
         Assert.assertEquals("Number of cards", 1, cards.size());
     }
 
-    private static String wasCommentedOutInVCardMain =
+    private static final String wasCommentedOutInVCardMain =
             "BEGIN:VCARD\r\n" +
             "\r\n" +
             "FN\n" +
@@ -85,7 +85,7 @@ public final class VCardTest {
         }
     }
 
-    private static String multiX =
+    private static final String multiX =
             "BEGIN:VCARD\r\n" +
             "FN:john doe\r\n" +
             "X-FOO:one\r\n" +
@@ -105,7 +105,7 @@ public final class VCardTest {
         Assert.assertEquals(String.format("Number of X-FOO properties in %s", xfoos), 2, xfoos.size());
     }
 
-    private static String multiX2 =
+    private static final String multiX2 =
             "BEGIN:VCARD\r\n" +
             "FN:john doe\r\n" +
             "X-FOO:one,two\r\n" +
@@ -124,7 +124,7 @@ public final class VCardTest {
         Assert.assertEquals(String.format("Number of X-FOO properties in %s", xfoos), 1, xfoos.size());
     }
 
-    private static String multiXwithParams =
+    private static final String multiXwithParams =
             "BEGIN:VCARD\r\n" +
             "FN:john doe\r\n" +
             "X-FOO;P1=A;P2=B:one\r\n" +
@@ -172,7 +172,7 @@ public final class VCardTest {
         Assert.assertEquals("non-standard Number of params ", 1, params.size());
     }
 
-    private static String groupCard =
+    private static final String groupCard =
             "BEGIN:VCARD\n" +
             "VERSION:3.0\n" +
             "X-ADDRESSBOOKSERVER-KIND:group\n" +
@@ -200,7 +200,7 @@ public final class VCardTest {
         Assert.assertEquals(String.format("Number of %s",AddressObject.XABSMEMBER), 2, members.size());
     }
 
-    private static String smallBusyMacAttach =
+    private static final String smallBusyMacAttach =
             "BEGIN:VCARD\n" +
             "VERSION:3.0\n" +
             "PRODID:-//BusyMac LLC//BusyContacts 1.0.2//EN\n" +
@@ -252,7 +252,7 @@ public final class VCardTest {
                 2, attach.getParams().size());
     }
 
-    private static String noColon =
+    private static final String noColon =
             "BEGIN:VCARD\n" +
             "VERSION:3.0\n" +
             "FN:John Smith\n" +

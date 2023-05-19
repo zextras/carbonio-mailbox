@@ -19,16 +19,16 @@ import java.util.Map;
 
 public class ZSearchPager {
 
-    private List<ZSearchResult> mResults;
-    private ZSearchParams mParams;
-    private Map<String, ZSearchHit> mHitMap;
+    private final List<ZSearchResult> mResults;
+    private final ZSearchParams mParams;
+    private final Map<String, ZSearchHit> mHitMap;
     private String mConvId;
     private boolean mDirty;
 
     ZSearchPager(ZSearchParams params) {
         mParams = new ZSearchParams(params);
-        mResults = new ArrayList<ZSearchResult>();
-        mHitMap = new HashMap<String, ZSearchHit>();
+        mResults = new ArrayList<>();
+        mHitMap = new HashMap<>();
     }
     
     ZSearchResult search(ZMailbox mailbox, int page, boolean useCursor) throws ServiceException {

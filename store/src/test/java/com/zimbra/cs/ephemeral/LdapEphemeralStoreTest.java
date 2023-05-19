@@ -166,9 +166,9 @@ public class LdapEphemeralStoreTest {
      * otherwise be used to modify LDAP values with Provisioning.modifyAttrs()
      */
     static class MockLdapHelper extends AbstractLdapHelper {
-        private InMemoryEphemeralStore store;
+        private final InMemoryEphemeralStore store;
         private EphemeralLocation location;
-        private AttributeEncoder encoder;
+        private final AttributeEncoder encoder;
 
         public MockLdapHelper() {
             store = new InMemoryEphemeralStore();

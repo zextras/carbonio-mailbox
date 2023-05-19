@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 
 
 public class QuotedStringParser {
-    private String mInput;
+    private final String mInput;
 
     //the parser flips between these two sets of delimiters
     private static final String DELIM_WHITESPACE_AND_QUOTES = " \t\r\n\"";
@@ -24,7 +24,7 @@ public class QuotedStringParser {
     }
 
     public List<String> parse() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         boolean returnTokens = true;
         String currentDelims = DELIM_WHITESPACE_AND_QUOTES;

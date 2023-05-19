@@ -46,7 +46,7 @@ public class AddMsgRequest {
      */
     @SuppressWarnings("unused")
     private AddMsgRequest() {
-        this((AddMsgSpec) null);
+        this(null);
     }
 
     public AddMsgRequest(AddMsgSpec msg) {

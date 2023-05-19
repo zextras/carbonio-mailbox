@@ -149,7 +149,7 @@ public class IndexItem extends RedoableOp {
      */
     @Override public synchronized void commit() {
         if (ZimbraLog.index.isDebugEnabled())
-            ZimbraLog.index.debug(this.toString()+" committed");
+            ZimbraLog.index.debug(this +" committed");
 
         // Don't check mCommitAllowed here.  It's the responsibility of
         // the caller.

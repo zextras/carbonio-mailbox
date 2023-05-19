@@ -40,7 +40,7 @@ public class XParam implements XParamInterface {
      */
     @SuppressWarnings("unused")
     private XParam() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public XParam(String name, String value) {

@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -66,7 +67,7 @@ public class ZimletResources extends DiskCacheServlet {
     private static final String T_JAVASCRIPT = "javascript";
     private static final String T_PLAIN = "plain";
 
-    private static final Map<String, String> TYPES = new HashMap<String, String>();
+    private static final Map<String, String> TYPES = new HashMap<>();
 
     private static final Pattern RE_REMOTE = Pattern.compile("^((https?|ftps?)://|/)");
     private static final Pattern RE_CSS_URL = Pattern.compile("(url\\(['\"]?)([^'\"\\)]*)", Pattern.CASE_INSENSITIVE);
@@ -315,7 +316,8 @@ public class ZimletResources extends DiskCacheServlet {
             // NOTE: *not* compressing the output OR if we're just writing
             // NOTE: the contents of the generated file to the stream.
             if (!compress || file != null) {
-                resp.setContentLength(file != null ? (int)file.length() : text.getBytes("UTF-8").length);
+                resp.setContentLength(file != null ? (int)file.length() : text.getBytes(
+                    StandardCharsets.UTF_8).length);
             }
         } catch (IllegalStateException e) {
             // ignore -- thrown if called from including JSP
@@ -355,7 +357,7 @@ public class ZimletResources extends DiskCacheServlet {
     // Private methods
     //
 
-    private static MimetypesFileTypeMap sFileTypeMap = new MimetypesFileTypeMap();
+    private static final MimetypesFileTypeMap sFileTypeMap = new MimetypesFileTypeMap();
 
     @SuppressWarnings("unused")
     private void printFile(HttpServletResponse resp, String zimletName,
@@ -538,7 +540,7 @@ public class ZimletResources extends DiskCacheServlet {
     //
 
     static class RequestWrapper extends HttpServletRequestWrapper {
-        private String filename;
+        private final String filename;
         private Map<String,String> parameters;
 
         public RequestWrapper(HttpServletRequest req, String filename) {
@@ -553,7 +555,7 @@ public class ZimletResources extends DiskCacheServlet {
 
         public void setParameter(String name, String value) {
             if (this.parameters == null) {
-                this.parameters = new HashMap<String,String>();
+                this.parameters = new HashMap<>();
             }
             this.parameters.put(name, value);
         }
@@ -565,7 +567,7 @@ public class ZimletResources extends DiskCacheServlet {
     }
 
     static class ResponseWrapper extends HttpServletResponseWrapper {
-        private PrintWriter out;
+        private final PrintWriter out;
 
         public ResponseWrapper(HttpServletResponse resp, PrintWriter out) {
             super(resp);
@@ -590,7 +592,7 @@ public class ZimletResources extends DiskCacheServlet {
     }
 
     static class ServletStream extends ServletOutputStream {
-        private PrintWriter out;
+        private final PrintWriter out;
 
         public ServletStream(PrintWriter out) {
             this.out = out;
@@ -603,7 +605,7 @@ public class ZimletResources extends DiskCacheServlet {
 
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
-            out.print(new String(b, off, len, "UTF-8"));
+            out.print(new String(b, off, len, StandardCharsets.UTF_8));
         }
 
         @Override

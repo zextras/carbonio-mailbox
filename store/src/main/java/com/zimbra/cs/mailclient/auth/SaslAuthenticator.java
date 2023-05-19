@@ -87,11 +87,11 @@ public final class SaslAuthenticator extends Authenticator {
         subject = loginContext.getSubject();
         debug("GSS subject = %s", subject);
         try {
-            return Subject.doAs(subject, new PrivilegedExceptionAction<SaslClient>() {
-                @Override
-                public SaslClient run() throws SaslException {
-                    return createSaslClient();
-                }
+            return Subject.doAs(subject, new PrivilegedExceptionAction<>() {
+              @Override
+              public SaslClient run() throws SaslException {
+                return createSaslClient();
+              }
             });
         } catch (PrivilegedActionException e) {
             dispose();
@@ -109,7 +109,7 @@ public final class SaslAuthenticator extends Authenticator {
     private static final String LOGIN_MODULE_NAME = "com.sun.security.auth.module.Krb5LoginModule";
 
     private LoginContext getLoginContext() throws LoginException {
-        Map<String, String> options = new HashMap<String, String>();
+        Map<String, String> options = new HashMap<>();
         options.put("debug", Boolean.toString(config.getLogger().isDebugEnabled()));
         options.put("principal", getPrincipal());
         // options.put("useTicketCache", "true");
@@ -159,11 +159,11 @@ public final class SaslAuthenticator extends Authenticator {
 
     private byte[] evaluateGssChallenge(final byte[] challenge) throws SaslException {
         try {
-            return Subject.doAs(subject, new PrivilegedExceptionAction<byte[]>() {
-                @Override
-                public byte[] run() throws SaslException {
-                    return saslClient.evaluateChallenge(challenge);
-                }
+            return Subject.doAs(subject, new PrivilegedExceptionAction<>() {
+              @Override
+              public byte[] run() throws SaslException {
+                return saslClient.evaluateChallenge(challenge);
+              }
             });
         } catch (PrivilegedActionException e) {
             dispose();

@@ -176,7 +176,7 @@ public class SmtpTransport extends Transport {
 
         if (authMechanism != null && SaslAuthenticator.XOAUTH2.equalsIgnoreCase(authMechanism)) {
             config.setMechanism(SaslAuthenticator.XOAUTH2);
-            HashMap<String, String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<>();
             JMSession.addOAuth2Properties(passwd, map, config.getProtocol());
             config.setSaslProperties(map);
         }
@@ -280,8 +280,8 @@ public class SmtpTransport extends Transport {
         Set<String> validRcpts = connection.getValidRecipients();
         Set<String> invalidRcpts = connection.getInvalidRecipients();
 
-        List<Address> validAddrs = new ArrayList<Address>(validRcpts.size());
-        List<Address> invalidAddrs = new ArrayList<Address>(invalidRcpts.size());
+        List<Address> validAddrs = new ArrayList<>(validRcpts.size());
+        List<Address> invalidAddrs = new ArrayList<>(invalidRcpts.size());
         for (Address addr : addrs) {
             if (addr instanceof InternetAddress) {
                 InternetAddress iaddr = (InternetAddress) addr;

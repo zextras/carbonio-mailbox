@@ -39,7 +39,7 @@ public class AdminDestroyWaitSetRequest {
      */
     @SuppressWarnings("unused")
     private AdminDestroyWaitSetRequest() {
-        this((String) null);
+        this(null);
     }
 
     public AdminDestroyWaitSetRequest(String waitSetId) {

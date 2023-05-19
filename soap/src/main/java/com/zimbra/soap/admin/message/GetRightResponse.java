@@ -28,7 +28,7 @@ public class GetRightResponse {
      */
     @SuppressWarnings("unused")
     private GetRightResponse() {
-        this((RightInfo) null);
+        this(null);
     }
 
     public GetRightResponse(RightInfo right) {

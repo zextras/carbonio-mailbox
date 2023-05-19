@@ -26,11 +26,11 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.auth.AuthContext;
 
 public abstract class Authenticator {
-    static interface AuthenticatorFactory {
-        public Authenticator getAuthenticator(AuthenticatorUser authUser);
+    interface AuthenticatorFactory {
+        Authenticator getAuthenticator(AuthenticatorUser authUser);
     }
 
-    private static final Map<String, AuthenticatorFactory> mRegisteredMechanisms = new LinkedHashMap<String, AuthenticatorFactory>();
+    private static final Map<String, AuthenticatorFactory> mRegisteredMechanisms = new LinkedHashMap<>();
     private static Collection<String> mMechanismList = Collections.emptyList();
 
     static {

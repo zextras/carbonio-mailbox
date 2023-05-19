@@ -180,8 +180,8 @@ public class MapiPropertyId {
     // PidLidTaskOwnership 0x8129 - values not assigned(0)/assigner copy(1)/assignee copy(2)
     // PidLidTaskAcceptanceState 0x812a - not assigned(0)/unknown(1)/assignee accepted(2)/assignee rejected(3)
 
-    private MAPIPropName mapiPropName;
-    private int id;
+    private final MAPIPropName mapiPropName;
+    private final int id;
 
     private MapiPropertyId(MSGUID msg, long lid) {
         this.mapiPropName = new MAPIPropName(msg.getJtnefGuid(), lid);

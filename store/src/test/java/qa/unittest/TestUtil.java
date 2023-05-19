@@ -244,7 +244,7 @@ public class TestUtil extends Assert {
     }
 
     public static LmcSession getSoapSession(String userName) throws ServiceException, LmcSoapClientException,
-            IOException, SoapFaultException, HttpException {
+            IOException, HttpException {
         LmcAuthRequest auth = new LmcAuthRequest();
         auth.setUsername(getAddress(userName));
         auth.setPassword(DEFAULT_PASSWORD);
@@ -1193,7 +1193,7 @@ public class TestUtil extends Assert {
 
     private static SoapTransport getAdminSoapTransport(SoapHttpTransport transport,
             String adminName, String adminPassword)
-                    throws SoapFaultException, IOException, ServiceException, HttpException {
+                    throws IOException, ServiceException, HttpException {
         // Create auth element
         Element auth = new XMLElement(AdminConstants.AUTH_REQUEST);
         auth.addNonUniqueElement(AdminConstants.E_NAME).setText(adminName);
@@ -1211,14 +1211,14 @@ public class TestUtil extends Assert {
     /** Returns an authenticated transport for the <tt>zimbra</tt> account. 
      * @throws HttpException */
     public static SoapTransport getAdminSoapTransport()
-            throws SoapFaultException, IOException, ServiceException, HttpException {
+            throws IOException, ServiceException, HttpException {
         return getAdminSoapTransport(new SoapHttpTransport(getAdminSoapUrl()),
                 LC.zimbra_ldap_user.value(), LC.zimbra_ldap_password.value());
     }
 
     /** Returns an authenticated transport for the <tt>zimbra</tt> account on the target server. */
     public static SoapTransport getAdminSoapTransport(Server targetServer)
-            throws SoapFaultException, IOException, ServiceException, HttpException {
+            throws IOException, ServiceException, HttpException {
         return getAdminSoapTransport(new SoapHttpTransport(URLUtil.getAdminURL(targetServer)),
                 LC.zimbra_ldap_user.value(), LC.zimbra_ldap_password.value());
     }
@@ -1227,7 +1227,7 @@ public class TestUtil extends Assert {
      * Returns an authenticated transport for the <tt>adminName</tt> account.
      */
     public static SoapTransport getAdminSoapTransport(String adminName, String adminPassword)
-            throws SoapFaultException, IOException, ServiceException, HttpException {
+            throws IOException, ServiceException, HttpException {
         return getAdminSoapTransport(new SoapHttpTransport(getAdminSoapUrl()), adminName, adminPassword);
     }
 

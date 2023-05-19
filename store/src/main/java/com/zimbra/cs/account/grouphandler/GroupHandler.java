@@ -34,8 +34,8 @@ public abstract class GroupHandler {
     public abstract boolean inDelegatedAdminGroup(ExternalGroup group,
             Account acct, boolean asAdmin) throws ServiceException;
 
-    private static Map<String, HandlerInfo> sHandlers =
-        new ConcurrentHashMap<String,HandlerInfo>();
+    private static final Map<String, HandlerInfo> sHandlers =
+        new ConcurrentHashMap<>();
 
     private static class HandlerInfo {
         Class<? extends GroupHandler> mClass;

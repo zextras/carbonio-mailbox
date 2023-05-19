@@ -6,10 +6,10 @@
 package com.zimbra.soap.base;
 
 public interface CertSubjectAttrs {
-    public String getC();
-    public String getSt();
-    public String getL();
-    public String getO();
-    public String getOu();
-    public String getCn();
+    String getC();
+    String getSt();
+    String getL();
+    String getO();
+    String getOu();
+    String getCn();
 }

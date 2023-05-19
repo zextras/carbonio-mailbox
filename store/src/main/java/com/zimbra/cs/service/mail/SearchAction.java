@@ -54,7 +54,7 @@ public class SearchAction extends MailDocumentHandler {
         try {
             transport.setAuthToken(octxt.getAuthToken().getEncoded());
             searchResponse = transport.invokeWithoutSession(JaxbUtil.jaxbToElement(searchRequest));
-            resp = (com.zimbra.soap.mail.message.SearchResponse) JaxbUtil
+            resp = JaxbUtil
                 .elementToJaxb(searchResponse);
             List<SearchHit> searchHits = resp.getSearchHits();
             BulkAction action = req.getBulkAction();

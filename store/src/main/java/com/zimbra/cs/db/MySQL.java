@@ -29,10 +29,10 @@ import com.zimbra.cs.db.DbPool.DbConnection;
 
 public class MySQL extends Db {
 
-    private Map<Db.Error, Integer> mErrorCodes;
+    private final Map<Db.Error, Integer> mErrorCodes;
 
     MySQL() {
-        mErrorCodes = new HashMap<Db.Error, Integer>(6);
+        mErrorCodes = new HashMap<>(6);
         //see SQLExceptionMapper or MysqlErrorNumbers from MySQL Connector-J for listing of error codes
         mErrorCodes.put(Db.Error.DEADLOCK_DETECTED,        1213); //MysqlErrorNumbers.ER_LOCK_DEADLOCK
         mErrorCodes.put(Db.Error.DUPLICATE_ROW,            1062); //MysqlErrorNumbers.ER_DUP_ENTRY
@@ -254,7 +254,7 @@ public class MySQL extends Db {
     }
 
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         // command line argument parsing
         Options options = new Options();
         CommandLine cl = Versions.parseCmdlineArgs(args, options);

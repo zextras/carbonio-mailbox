@@ -27,7 +27,7 @@ public class VoiceMailPrefName {
      */
     @SuppressWarnings("unused")
     private VoiceMailPrefName() {
-        this((String) null);
+        this(null);
     }
 
     public VoiceMailPrefName(String name) {

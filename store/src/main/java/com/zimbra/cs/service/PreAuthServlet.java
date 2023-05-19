@@ -14,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,7 +55,7 @@ public class PreAuthServlet extends ZimbraServlet {
     public static final String PARAM_TIMESTAMP = "timestamp";
     public static final String PARAM_EXPIRES = "expires";
 
-    private static final HashSet<String> sPreAuthParams = new HashSet<String>();
+    private static final HashSet<String> sPreAuthParams = new HashSet<>();
 
     static {
         sPreAuthParams.add(PARAM_PREAUTH);
@@ -169,7 +170,7 @@ public class PreAuthServlet extends ZimbraServlet {
                 Account acct = null;
                 acct = prov.get(by, account, authToken);
 
-                Map<String, Object> authCtxt = new HashMap<String, Object>();
+                Map<String, Object> authCtxt = new HashMap<>();
                 authCtxt.put(AuthContext.AC_ORIGINATING_CLIENT_IP, ZimbraServlet.getOrigIp(req));
                 authCtxt.put(AuthContext.AC_REMOTE_IP, ZimbraServlet.getClientIp(req));
                 authCtxt.put(AuthContext.AC_ACCOUNT_NAME_PASSEDIN, account);
@@ -269,7 +270,7 @@ public class PreAuthServlet extends ZimbraServlet {
             if (nonPreAuthParamsOnly && sPreAuthParams.contains(name))
                 continue;
 
-            String values[] = req.getParameterValues(name);
+            String[] values = req.getParameterValues(name);
             if (values != null) {
                 for (String value : values) {
                     if (first) {
@@ -277,12 +278,8 @@ public class PreAuthServlet extends ZimbraServlet {
                     } else {
                         sb.append('&');
                     }
-                    try {
-                        sb.append(name).append("=").append(URLEncoder.encode(value, "utf-8"));
-                    } catch (UnsupportedEncodingException e) {
-                        // this should never happen...
-                        sb.append(name).append("=").append(URLEncoder.encode(value));
-                    }
+                    sb.append(name).append("=").append(URLEncoder.encode(value,
+                        StandardCharsets.UTF_8));
                 }
             }
         }

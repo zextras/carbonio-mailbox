@@ -24,7 +24,7 @@ import com.zimbra.cs.redolog.RedoLogOutput;
  */
 public class HeaderOnlyOp extends RedoableOp {
 
-	private int mOpCode;
+	private final int mOpCode;
 	private static final String sPrintable = "(detail skipped)";
 
 	public HeaderOnlyOp(int code) {

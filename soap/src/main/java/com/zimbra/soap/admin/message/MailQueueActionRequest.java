@@ -35,7 +35,7 @@ public class MailQueueActionRequest {
      */
     @SuppressWarnings("unused")
     private MailQueueActionRequest() {
-        this((ServerWithQueueAction) null);
+        this(null);
     }
 
     public MailQueueActionRequest(ServerWithQueueAction server) {

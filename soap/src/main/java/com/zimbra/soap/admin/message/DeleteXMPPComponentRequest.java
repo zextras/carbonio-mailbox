@@ -34,7 +34,7 @@ public class DeleteXMPPComponentRequest {
      */
     @SuppressWarnings("unused")
     private DeleteXMPPComponentRequest() {
-        this((XMPPComponentSelector) null);
+        this(null);
     }
 
     public DeleteXMPPComponentRequest(XMPPComponentSelector component) {

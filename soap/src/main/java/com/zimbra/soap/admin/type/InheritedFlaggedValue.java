@@ -39,7 +39,7 @@ public class InheritedFlaggedValue {
      */
     @SuppressWarnings("unused")
     private InheritedFlaggedValue() {
-        this(false, (String) null);
+        this(false, null);
     }
 
     public InheritedFlaggedValue(boolean inherited, String value) {

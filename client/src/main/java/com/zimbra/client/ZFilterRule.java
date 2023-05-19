@@ -97,11 +97,11 @@ public final class ZFilterRule implements ToZJSONObject {
         this.allConditions = "allof".equalsIgnoreCase(rule.getFilterTests().getCondition());
 
         List<FilterTest> tests = Lists.newArrayList(rule.getFilterTests().getTests());
-        Collections.sort(tests, new Comparator<FilterTest>() {
-            @Override
-            public int compare(FilterTest test1, FilterTest test2) {
-                return test1.getIndex() - test2.getIndex();
-            }
+        Collections.sort(tests, new Comparator<>() {
+          @Override
+          public int compare(FilterTest test1, FilterTest test2) {
+            return test1.getIndex() - test2.getIndex();
+          }
         });
         this.conditions = Lists.newArrayListWithCapacity(tests.size());
         for (FilterTest test : tests) {
@@ -109,11 +109,11 @@ public final class ZFilterRule implements ToZJSONObject {
         }
 
         List<FilterAction> actions = Lists.newArrayList(rule.getFilterActions());
-        Collections.sort(actions, new Comparator<FilterAction>() {
-            @Override
-            public int compare(FilterAction action1, FilterAction action2) {
-                return action1.getIndex() - action2.getIndex();
-            }
+        Collections.sort(actions, new Comparator<>() {
+          @Override
+          public int compare(FilterAction action1, FilterAction action2) {
+            return action1.getIndex() - action2.getIndex();
+          }
         });
         this.actions = Lists.newArrayListWithCapacity(actions.size());
         for (FilterAction action : actions) {
@@ -193,8 +193,8 @@ public final class ZFilterRule implements ToZJSONObject {
         boolean all = true;
         boolean active = true;
 
-        List<ZFilterCondition> conditions = new ArrayList<ZFilterCondition>();
-        List<ZFilterAction> actions = new ArrayList<ZFilterAction>();
+        List<ZFilterCondition> conditions = new ArrayList<>();
+        List<ZFilterAction> actions = new ArrayList<>();
 
         int i = 1;
         while (i < args.length) {

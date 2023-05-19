@@ -179,7 +179,7 @@ public final class LuceneDirectory extends Directory {
 
     private static final class LuceneIndexInput extends IndexInput {
         private final IndexInput input;
-        private boolean disableCounters = LC.zimbra_index_disable_perf_counters.booleanValue();
+        private final boolean disableCounters = LC.zimbra_index_disable_perf_counters.booleanValue();
 
         LuceneIndexInput(IndexInput in) {
             input = in;
@@ -243,7 +243,7 @@ public final class LuceneDirectory extends Directory {
 
     private static final class LuceneIndexOutput extends IndexOutput {
         private final IndexOutput output;
-        private boolean disableCounters = LC.zimbra_index_disable_perf_counters.booleanValue();
+        private final boolean disableCounters = LC.zimbra_index_disable_perf_counters.booleanValue();
 
         LuceneIndexOutput(IndexOutput out) {
             output = out;

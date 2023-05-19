@@ -63,7 +63,7 @@ public class SearchVoiceResponse {
      * refresh the message count in the accordion if it is available.
      */
     @XmlElement(name=VoiceConstants.E_VOICE_FOLDER_INVENTORY /* vfi */, required=false)
-    private List<VoiceFolderSummary> voiceFolderSummaries = Lists.newArrayList();
+    private final List<VoiceFolderSummary> voiceFolderSummaries = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Matching items
@@ -72,7 +72,7 @@ public class SearchVoiceResponse {
         @XmlElement(name=VoiceConstants.E_VOICEMSG /* vm */, type=VoiceMailItem.class),
         @XmlElement(name=VoiceConstants.E_CALLLOG /* cl */, type=CallLogItem.class)
     })
-    private List<VoiceCallItem> elements = Lists.newArrayList();
+    private final List<VoiceCallItem> elements = Lists.newArrayList();
 
     public SearchVoiceResponse() {
     }

@@ -27,7 +27,7 @@ public class DeviceId {
      */
     @SuppressWarnings("unused")
     private DeviceId() {
-        this((String) null);
+        this(null);
     }
 
     public DeviceId(String id) {

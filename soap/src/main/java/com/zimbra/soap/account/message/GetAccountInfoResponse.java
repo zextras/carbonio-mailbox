@@ -49,7 +49,7 @@ public class GetAccountInfoResponse {
      */
     @ZimbraKeyValuePairs
     @XmlElement(name=AccountConstants.E_ATTR /* attr */, required=true)
-    private List<NamedValue> attrs = Lists.newArrayList();
+    private final List<NamedValue> attrs = Lists.newArrayList();
 
     /**
      * @zm-api-field-description URL to talk to for soap service for this account. e.g.:
@@ -111,7 +111,7 @@ public class GetAccountInfoResponse {
      */
     @SuppressWarnings("unused")
     private GetAccountInfoResponse() {
-        this((String) null);
+        this(null);
     }
 
     public GetAccountInfoResponse(String name) {

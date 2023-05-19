@@ -18,9 +18,9 @@ import com.zimbra.soap.type.AutoProvPrincipalBy;
 
 public class AutoProvisionManual extends AutoProvision {
 
-    private AutoProvPrincipalBy by;
-    private String principal;
-    private String password;
+    private final AutoProvPrincipalBy by;
+    private final String principal;
+    private final String password;
     
     protected AutoProvisionManual(LdapProv prov, Domain domain, 
             AutoProvPrincipalBy by, String principal, String password) {

@@ -29,7 +29,7 @@ public class GetAllCosResponse {
      * @zm-api-field-description Information on Classes of Service (COS)
      */
     @XmlElement(name=AdminConstants.E_COS)
-    private List<CosInfo> cosList = Lists.newArrayList();
+    private final List<CosInfo> cosList = Lists.newArrayList();
 
     public GetAllCosResponse() {
     }

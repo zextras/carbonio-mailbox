@@ -57,13 +57,11 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
         String attrsStr = request.getAttribute(AdminConstants.A_ATTRS, null);
         String[] returnAttrs = null;
         if (attrsStr != null) {
-            Set<String> attrs = new HashSet<String>();
+            Set<String> attrs = new HashSet<>();
             for (String attr : Splitter.on(',').trimResults().split(attrsStr)) {
                 attrs.add(attr);
             }
-            if (!attrs.contains(keyAttr)) {
-                attrs.add(keyAttr);
-            }
+            attrs.add(keyAttr);
             returnAttrs = attrs.toArray(new String[attrs.size()]);
         }
         
@@ -146,12 +144,8 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
                     if (maxResults != otherParams.maxResults) {
                         return false;
                     }
-                    
-                    if (!equals(returnAttrs, otherParams.returnAttrs)) {
-                        return false;
-                    }
-                    
-                    return true;
+
+                    return equals(returnAttrs, otherParams.returnAttrs);
                 } else {
                     return false;
                 }
@@ -184,8 +178,8 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
         }
         
         private static class CachedResult {
-            private Params params;
-            private List<Entry> result;
+            private final Params params;
+            private final List<Entry> result;
             
             private CachedResult(Params params, List<Entry> result) {
                 this.params = params;
@@ -211,9 +205,9 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
             CachedResult cachedResult = new CachedResult(params, result);
             session.setData(SEARCH_AUTO_PROV_DIRECTORY_CACHE_KEY, cachedResult);
         }
-    };
-    
-    
+    }
+
+
     private void encodeEntries(Element response, List<Entry> entryList, String keyAttr, 
             int offset, int limit) {
         int totalEntries = entryList.size();
@@ -263,8 +257,8 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
     }
     
     private static class Entry implements Comparable<Entry> {
-        private String dn;
-        private Map<String, Object> attrs;
+        private final String dn;
+        private final Map<String, Object> attrs;
         
         private Entry(String dn, Map<String, Object> attrs) {
             this.dn = dn;
@@ -284,10 +278,10 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
     }
     
     private static class Result implements DirectoryEntryVisitor {
-        private String keyAttr;
+        private final String keyAttr;
         
         // for sorting
-        private TreeMultimap<String, Entry> entries = TreeMultimap.create();
+        private final TreeMultimap<String, Entry> entries = TreeMultimap.create();
                 
         private Result(String keyAttr) {
             this.keyAttr = keyAttr;
@@ -320,8 +314,8 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
         private int size() {
             return entries.size();
         }
-    };
-    
+    }
+
     private List<Entry> search(Domain domain, String query, String name, String keyAttr, 
             String[] returnAttrs, int maxResults) throws ServiceException {
         

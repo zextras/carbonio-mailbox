@@ -40,9 +40,9 @@ public class ZimletDescription extends ZimletMeta {
 	}
 	
 	protected void initialize() {
-		mScripts = new ArrayList<String>();
-		mStyleSheets = new ArrayList<String>();
-		mTargets = new ArrayList<String>();
+		mScripts = new ArrayList<>();
+		mStyleSheets = new ArrayList<>();
+		mTargets = new ArrayList<>();
 	}
 
 	protected void validateElement(Element elem) throws ZimletException {

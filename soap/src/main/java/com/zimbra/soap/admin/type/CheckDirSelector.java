@@ -34,11 +34,11 @@ public class CheckDirSelector {
      */
     @SuppressWarnings("unused")
     private CheckDirSelector() {
-        this((String)null, (Boolean) null);
+        this(null, null);
     }
 
     public CheckDirSelector(String path) {
-        this(path, (Boolean) null);
+        this(path, null);
     }
 
     public CheckDirSelector(String path, Boolean create) {

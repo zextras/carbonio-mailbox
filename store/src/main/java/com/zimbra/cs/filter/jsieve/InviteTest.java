@@ -26,12 +26,14 @@ import com.zimbra.cs.mime.ParsedMessage.CalendarPartInfo;
 
 public class InviteTest extends AbstractTest {
 
-    private static final Set<String> ALL_METHODS = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    private static final Set<String> ALL_REQUEST_METHODS = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    private static final Set<String> ALL_REPLY_METHODS = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    private static final Set<String> ALL_METHODS = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private static final Set<String> ALL_REQUEST_METHODS = new TreeSet<>(
+        String.CASE_INSENSITIVE_ORDER);
+    private static final Set<String> ALL_REPLY_METHODS = new TreeSet<>(
+        String.CASE_INSENSITIVE_ORDER);
     private static final String ARG_SPEC;
     
-    private Set<String> mMethods = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    private final Set<String> mMethods = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     static {
         addMethod(ALL_METHODS, ICalTok.PUBLISH);
@@ -80,7 +82,7 @@ public class InviteTest extends AbstractTest {
         if (!(arg1 instanceof String)) {
             validationError(argList);
         }
-        if (!((String) arg1).equals(":method")) {
+        if (!arg1.equals(":method")) {
             validationError(argList);
         }
         if (!(arg2 instanceof List)) {
@@ -134,24 +136,16 @@ public class InviteTest extends AbstractTest {
             if (mMethods.contains("anyrequest") && isRequest(calPart.method)) {
                 return true;
             }
-            if (mMethods.contains("anyreply") && isReply(calPart.method)) {
-                return true;
-            }
+          return mMethods.contains("anyreply") && isReply(calPart.method);
         }
         return false;
     }
     
     private static boolean isRequest(ICalTok method) {
-        if (method != null && ALL_REQUEST_METHODS.contains(method.toString())) {
-            return true;
-        }
-        return false;
+      return method != null && ALL_REQUEST_METHODS.contains(method.toString());
     }
     
     private static boolean isReply(ICalTok method) {
-        if (method != null && ALL_REPLY_METHODS.contains(method.toString())) {
-            return true;
-        }
-        return false;
+      return method != null && ALL_REPLY_METHODS.contains(method.toString());
     }
 }

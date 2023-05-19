@@ -67,7 +67,7 @@ public class PendingFolderModifications {
      */
     @SuppressWarnings("unused")
     public PendingFolderModifications() {
-        this((Integer)null);
+        this(null);
     }
 
     public PendingFolderModifications(Integer folderId) {

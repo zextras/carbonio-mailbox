@@ -29,7 +29,7 @@ public class GenerateUUIDResponse {
      */
     @SuppressWarnings("unused")
     private GenerateUUIDResponse() {
-        this((String) null);
+        this(null);
     }
 
     public GenerateUUIDResponse(String uuid) {

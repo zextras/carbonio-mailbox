@@ -49,7 +49,7 @@ public class ScheduleInbox extends CalendarCollection {
         addProperty(CalDavProperty.getCalendarFreeBusySet(user, getCalendarFolders( ctxt , f.getId() ) ) );
     }
 
-    private QName supportedInboxReports[] = null;
+    private QName[] supportedInboxReports = null;
 
     @Override
     protected QName[] getSupportedReports() {
@@ -80,7 +80,7 @@ public class ScheduleInbox extends CalendarCollection {
 
     @Override
     public java.util.Collection<DavResource> getAppointmentsByUids(DavContext ctxt, List<String> hrefs) throws ServiceException, DavException {
-        List<DavResource> result = new ArrayList<DavResource>();
+        List<DavResource> result = new ArrayList<>();
         if (!DavResource.isSchedulingEnabled()) {
             return result;
         }
@@ -151,7 +151,7 @@ public class ScheduleInbox extends CalendarCollection {
         for (Element el : set) {
             if (el.getQName().equals(DavElements.E_CALENDAR_FREE_BUSY_SET)) {
                 Iterator<?> hrefs = el.elementIterator(DavElements.E_HREF);
-                ArrayList<String> urls = new ArrayList<String>();
+                ArrayList<String> urls = new ArrayList<>();
                 while (hrefs.hasNext())
                     urls.add(((Element)hrefs.next()).getText());
                 try {
@@ -162,7 +162,7 @@ public class ScheduleInbox extends CalendarCollection {
                     ctxt.getResponseProp().addPropError(DavElements.E_CALENDAR_FREE_BUSY_SET, e);
                 }
                 if (newSet == null) {
-                    newSet = new ArrayList<Element>(set);
+                    newSet = new ArrayList<>(set);
                 }
                 newSet.remove(el);
             }
@@ -175,7 +175,7 @@ public class ScheduleInbox extends CalendarCollection {
     private void updateCalendarFreeBusySet(DavContext ctxt, ArrayList<String> urls) throws ServiceException, DavException {
         String prefix = DavServlet.DAV_PATH + "/" + getOwner();
         Mailbox mbox = getMailbox(ctxt);
-        HashMap<String,Folder> folders = new HashMap<String,Folder>();
+        HashMap<String,Folder> folders = new HashMap<>();
         for (Folder f : getCalendarFolders(ctxt, -1 )) {
             folders.put(f.getPath(), f);
         }
@@ -212,7 +212,7 @@ public class ScheduleInbox extends CalendarCollection {
     //folderId has been added so that access for particular folder is only checked
     //ZBUG - 1634
     private java.util.Collection<Folder> getCalendarFolders(DavContext ctxt, final int folderId) throws ServiceException, DavException {
-        ArrayList<Folder> calendars = new ArrayList<Folder>();
+        ArrayList<Folder> calendars = new ArrayList<>();
         Mailbox mbox = getMailbox(ctxt);
         for (Folder f : mbox.getFolderList( ctxt.getOperationContext(), SortBy.NONE , folderId ) ) {
             if (!(f instanceof Mountpoint) &&

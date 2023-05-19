@@ -17,8 +17,8 @@ import com.zimbra.cs.listeners.ListenerUtil.Priority;
 
 public abstract class AccountListener {
 
-    private static Map<String, AccountListenerEntry> mListeners = Collections
-        .synchronizedMap(new HashMap<String, AccountListenerEntry>());
+    private static final Map<String, AccountListenerEntry> mListeners = Collections
+        .synchronizedMap(new HashMap<>());
 
     public static void registerListener(String listenerName, Priority priority,
         AccountListener listener) throws ServiceException {

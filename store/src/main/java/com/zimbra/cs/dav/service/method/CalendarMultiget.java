@@ -36,7 +36,7 @@ public class CalendarMultiget extends Report {
 			throw new DavException("msg "+query.getName()+" is not calendar-multiget", HttpServletResponse.SC_BAD_REQUEST, null);
 
 		DavResponse resp = ctxt.getDavResponse();
-		ArrayList<String> hrefs = new ArrayList<String>();
+		ArrayList<String> hrefs = new ArrayList<>();
 		for (Object obj : query.elements(DavElements.E_HREF))
 			if (obj instanceof Element)
 				hrefs.add(((Element)obj).getText());

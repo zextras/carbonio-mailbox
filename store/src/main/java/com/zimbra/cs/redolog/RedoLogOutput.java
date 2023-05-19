@@ -23,7 +23,7 @@ import com.zimbra.common.util.ByteUtil;
  * @author jhahm
  */
 public class RedoLogOutput {
-    private DataOutput mOUT;
+    private final DataOutput mOUT;
 
     public RedoLogOutput(OutputStream os) {
         mOUT = new DataOutputStream(os);

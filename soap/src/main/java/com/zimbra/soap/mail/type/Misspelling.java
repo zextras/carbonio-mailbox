@@ -40,7 +40,7 @@ public class Misspelling {
      */
     @SuppressWarnings("unused")
     private Misspelling() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public Misspelling(String word, String suggestions) {

@@ -32,7 +32,7 @@ import java.util.List;
 public class ContactBackupThread extends Thread {
   private static final String OPERATION = "ContactBackup";
   private static volatile ContactBackupThread backupThread = null;
-  private static Object THREAD_LOCK = new Object();
+  private static final Object THREAD_LOCK = new Object();
   private static boolean shutdownRequested = false;
   private static final String CT_TYPE = "application/x-compressed-tar";
   private static final String CONTACT_RES_URL = "?fmt=tgz&types=contact";
@@ -93,7 +93,7 @@ public class ContactBackupThread extends Thread {
    */
   @Override
   public void run() {
-    List<Integer> mailboxIds = new ArrayList<Integer>();
+    List<Integer> mailboxIds = new ArrayList<>();
     try {
       mailboxIds = CallbackUtil.getSortedMailboxIdList();
     } catch (ServiceException e) {
@@ -180,7 +180,7 @@ public class ContactBackupThread extends Thread {
               CT_TYPE,
               startTime.getTime(),
               OPERATION,
-              FILE_DESC + startTime.toString());
+              FILE_DESC + startTime);
       Document doc = mbox.createDocument(octxt, folder.getId(), pd, MailItem.Type.DOCUMENT, 0);
       ZimbraLog.contactbackup.debug("contact backup created size %d bytes", doc.getSize());
     } catch (UnsupportedOperationException | IOException | ServiceException exception) {

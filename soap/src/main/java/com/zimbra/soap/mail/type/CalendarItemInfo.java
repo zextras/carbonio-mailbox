@@ -125,7 +125,7 @@ public class CalendarItemInfo {
      * @zm-api-field-description Invites
      */
     @XmlElement(name=MailConstants.E_INVITE /* inv */, required=false)
-    private List<Invitation> invites = Lists.newArrayList();
+    private final List<Invitation> invites = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Replies
@@ -133,13 +133,13 @@ public class CalendarItemInfo {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=MailConstants.E_CAL_REPLIES /* replies */, required=false)
     @XmlElement(name=MailConstants.E_CAL_REPLY /* reply */, required=false)
-    private List<CalendarReply> calendarReplies = Lists.newArrayList();
+    private final List<CalendarReply> calendarReplies = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Metadata
      */
     @XmlElement(name=MailConstants.E_METADATA /* meta */, required=false)
-    private List<MailCustomMetadata> metadatas = Lists.newArrayList();
+    private final List<MailCustomMetadata> metadatas = Lists.newArrayList();
 
     public CalendarItemInfo() {
     }

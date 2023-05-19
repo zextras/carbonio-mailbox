@@ -21,16 +21,16 @@ import com.zimbra.cs.mailbox.calendar.Invite;
 
 public class TimeZoneFixupRules {
 
-    private static enum MatchBy { ANY, TZID, OFFSET, RULES, DATES };
+    private enum MatchBy { ANY, TZID, OFFSET, RULES, DATES }
 
-    public static class Matcher {
-        private MatchBy mMatchBy;
+  public static class Matcher {
+        private final MatchBy mMatchBy;
         private String mTZID;
         private long mStandardOffset;
         private long mDaylightOffset;
         private SimpleOnset mStandardOnset;
         private SimpleOnset mDaylightOnset;
-        private ICalTimeZone mReplacementTZ;
+        private final ICalTimeZone mReplacementTZ;
 
         // match any/all
         public Matcher(ICalTimeZone replacementTZ) {
@@ -117,23 +117,22 @@ public class TimeZoneFixupRules {
                     return false;
                 if (tz.getStandardOffset() != mStandardOffset || tz.getDaylightOffset() != mDaylightOffset)
                     return false;
-                if (!sameOnset(mStandardOnset, tz.getStandardOnset()) || !sameOnset(mDaylightOnset, tz.getDaylightOnset()))
-                    return false;
-                return true;
-            default:
+              return sameOnset(mStandardOnset, tz.getStandardOnset()) && sameOnset(mDaylightOnset,
+                  tz.getDaylightOnset());
+              default:
                 return false;
             }
         }
     }
 
-    private List<Matcher> mMatchers;
+    private final List<Matcher> mMatchers;
 
     public TimeZoneFixupRules(Element tzFixupElem) throws ServiceException {
         mMatchers = XmlFixupRules.parseTzFixup(tzFixupElem);
     }
 
     public TimeZoneFixupRules(Map<String, ICalTimeZone> replacements) {
-        mMatchers = new ArrayList<Matcher>();
+        mMatchers = new ArrayList<>();
         for (Map.Entry<String, ICalTimeZone> entry : replacements.entrySet()) {
             String oldTZID = entry.getKey();
             ICalTimeZone replacementTZ = entry.getValue();
@@ -175,7 +174,7 @@ public class TimeZoneFixupRules {
     private int fixTZMap(TimeZoneMap tzmap, Map<String, ICalTimeZone> replaced) {
         int numFixed = 0;
         if (tzmap == null) return 0;
-        List<ICalTimeZone> newTZList = new ArrayList<ICalTimeZone>();
+        List<ICalTimeZone> newTZList = new ArrayList<>();
         for (Iterator<ICalTimeZone> iter = tzmap.tzIterator(); iter.hasNext(); ) {
             ICalTimeZone tz = iter.next();
             ICalTimeZone newTZ = fixTZ(tz, replaced);

@@ -24,11 +24,11 @@ import com.zimbra.cs.account.NamedEntry;
  **/
 public class NamedEntryCache<E extends NamedEntry> implements INamedEntryCache<E> {
     
-    private Map mNameCache;
-    private Map mIdCache;
+    private final Map mNameCache;
+    private final Map mIdCache;
     
-    private long mRefreshTTL;
-    private Counter mHitRate = new HitRateCounter();
+    private final long mRefreshTTL;
+    private final Counter mHitRate = new HitRateCounter();
    
 
     static class CacheEntry<E extends NamedEntry> {
@@ -77,7 +77,7 @@ public class NamedEntryCache<E extends NamedEntry> implements INamedEntryCache<E
     @Override
     public synchronized void put(E entry) {
         if (entry != null) {
-            CacheEntry<E> cacheEntry = new CacheEntry<E>(entry, mRefreshTTL);
+            CacheEntry<E> cacheEntry = new CacheEntry<>(entry, mRefreshTTL);
             mNameCache.put(entry.getName(), cacheEntry);
             mIdCache.put(entry.getId(), cacheEntry);
         }

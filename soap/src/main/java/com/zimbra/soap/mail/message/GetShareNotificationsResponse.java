@@ -28,7 +28,7 @@ public class GetShareNotificationsResponse {
      * @zm-api-field-description Share notification information
      */
     @XmlElement(name=MailConstants.E_SHARE /* share */, required=false)
-    private List<ShareNotificationInfo> shares = Lists.newArrayList();
+    private final List<ShareNotificationInfo> shares = Lists.newArrayList();
 
     public GetShareNotificationsResponse() {
     }

@@ -49,7 +49,7 @@ public class BlobRevisionInfo {
      */
     @SuppressWarnings("unused")
     private BlobRevisionInfo() {
-        this((String) null, (Long) null, -1, false);
+        this(null, null, -1, false);
     }
 
     public BlobRevisionInfo(String path, Long fileSize, int revision, boolean external) {

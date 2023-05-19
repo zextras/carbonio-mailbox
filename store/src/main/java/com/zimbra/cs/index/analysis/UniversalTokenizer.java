@@ -25,7 +25,7 @@ import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 final class UniversalTokenizer extends Tokenizer {
 
     enum TokenType {
-        ALNUM, APOSTROPHE, ACRONYM, COMPANY, EMAIL, HOST, NUM, CJK;
+        ALNUM, APOSTROPHE, ACRONYM, COMPANY, EMAIL, HOST, NUM, CJK
     }
 
     private final UniversalLexer lexer;

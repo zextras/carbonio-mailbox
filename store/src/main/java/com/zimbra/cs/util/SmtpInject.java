@@ -38,9 +38,9 @@ import com.zimbra.common.zmime.ZSharedFileInputStream;
  */
 public class SmtpInject {
 
-    private static Log mLog = LogFactory.getLog(SmtpInject.class);
+    private static final Log mLog = LogFactory.getLog(SmtpInject.class);
 
-    private static Options mOptions = new Options();
+    private static final Options mOptions = new Options();
 
     static {
         mOptions.addOption("h", "help",      false, "show help text");
@@ -67,7 +67,7 @@ public class SmtpInject {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         StringBuffer gotCL = new StringBuffer("cmdline: ");
         for (int i = 0; i < args.length; i++) {
             gotCL.append("'").append(args[i]).append("' ");
@@ -125,17 +125,11 @@ public class SmtpInject {
             recipient = cl.getOptionValue("r");
         }
 
-        boolean trace = false;
-        if (cl.hasOption("T")) {
-            trace = true;
-        }
+        boolean trace = cl.hasOption("T");
 
-        boolean tls = false;
-        if (cl.hasOption("t")) {
-            tls = true;
-        }
+      boolean tls = cl.hasOption("t");
 
-        boolean auth = false;
+      boolean auth = false;
         String user = null;
         String password = null;
         if (cl.hasOption("A")) {

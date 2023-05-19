@@ -11,7 +11,7 @@ public class TaskData extends CalendaringData {
      */
     @SuppressWarnings("unused")
     private TaskData() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public TaskData(String xUid, String uid) {

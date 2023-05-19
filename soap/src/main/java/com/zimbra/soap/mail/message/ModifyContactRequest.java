@@ -72,7 +72,7 @@ public class ModifyContactRequest {
      */
     @SuppressWarnings("unused")
     private ModifyContactRequest() {
-        this((ModifyContactSpec) null);
+        this(null);
     }
 
     public ModifyContactRequest(ModifyContactSpec contact) {

@@ -136,7 +136,7 @@ public class ConversationSummary {
     private final List<EmailInfo> emails = Lists.newArrayList();
 
     public ConversationSummary() {
-        this((String) null);
+        this(null);
     }
 
     public ConversationSummary(String id) {

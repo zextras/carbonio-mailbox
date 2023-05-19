@@ -102,14 +102,14 @@ implements PartInfoInterface {
      * @zm-api-field-description Mime parts
      */
     @XmlElement(name=MailConstants.E_MIMEPART /* mp */, required=false)
-    private List<PartInfo> mimeParts = Lists.newArrayList();
+    private final List<PartInfo> mimeParts = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private PartInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public PartInfo(String part, String contentType) {

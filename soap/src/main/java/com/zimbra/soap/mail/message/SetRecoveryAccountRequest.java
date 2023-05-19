@@ -21,7 +21,7 @@ import com.zimbra.soap.type.Channel;
 public class SetRecoveryAccountRequest {
 
     @XmlEnum
-    public static enum Op {
+    public enum Op {
         sendCode, validateCode, resendCode, reset;
 
         public static Op fromString(String s) throws ServiceException {

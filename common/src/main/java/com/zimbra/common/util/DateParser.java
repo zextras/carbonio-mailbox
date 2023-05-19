@@ -17,8 +17,8 @@ import java.util.Date;
  */
 public class DateParser {
 
-    private ThreadLocal<SimpleDateFormat> mFormatterHolder = new ThreadLocal<SimpleDateFormat>();
-    private String mDatePattern;
+    private final ThreadLocal<SimpleDateFormat> mFormatterHolder = new ThreadLocal<>();
+    private final String mDatePattern;
     
     public DateParser(String datePattern) {
         mDatePattern = datePattern;

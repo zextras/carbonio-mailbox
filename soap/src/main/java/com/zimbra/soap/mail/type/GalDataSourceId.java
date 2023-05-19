@@ -17,7 +17,7 @@ public class GalDataSourceId extends Id {
      */
     @SuppressWarnings("unused")
     protected GalDataSourceId() {
-        this((String) null);
+        this(null);
     }
 
     GalDataSourceId(String id) {

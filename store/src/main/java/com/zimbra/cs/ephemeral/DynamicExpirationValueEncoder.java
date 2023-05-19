@@ -22,10 +22,10 @@ public class DynamicExpirationValueEncoder extends ValueEncoder {
         String encoded;
         if (expires != null && expires > 0L) {
             String dynamicPart = ephemeralKey.isDynamic() ? ephemeralKey.getDynamicComponent() : "";
-            encoded = String.format("%s|%s|%s", String.valueOf(value), dynamicPart, String.valueOf(expires));
+            encoded = String.format("%s|%s|%s", value, dynamicPart, expires);
         } else {
             if (ephemeralKey.isDynamic()) {
-                encoded = String.format("%s|%s|", String.valueOf(value), ephemeralKey.getDynamicComponent());
+                encoded = String.format("%s|%s|", value, ephemeralKey.getDynamicComponent());
             } else {
                 encoded = String.valueOf(value);
             }

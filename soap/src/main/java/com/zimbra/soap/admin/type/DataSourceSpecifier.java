@@ -34,7 +34,7 @@ public class DataSourceSpecifier extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private DataSourceSpecifier() {
-        this((DataSourceType) null, (String) null);
+        this(null, null);
     }
 
     public DataSourceSpecifier(DataSourceType type, String name) {

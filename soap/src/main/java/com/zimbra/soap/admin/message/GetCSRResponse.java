@@ -88,7 +88,7 @@ public class GetCSRResponse {
      * @zm-api-field-description SubjectAltNames
      */
     @XmlElement(name=CertMgrConstants.E_SUBJECT_ALT_NAME /* SubjectAltName */, required=false)
-    private List<String> subjectAltNames = Lists.newArrayList();
+    private final List<String> subjectAltNames = Lists.newArrayList();
 
     public GetCSRResponse() {
     }

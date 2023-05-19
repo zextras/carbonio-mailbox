@@ -33,7 +33,7 @@ public class GetWhiteBlackListResponse {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AccountConstants.E_WHITE_LIST, required=true)
     @XmlElement(name=AccountConstants.E_ADDR, required=false)
-    private List<String> whiteListEntries = Lists.newArrayList();
+    private final List<String> whiteListEntries = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Black list
@@ -41,7 +41,7 @@ public class GetWhiteBlackListResponse {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AccountConstants.E_BLACK_LIST, required=true)
     @XmlElement(name=AccountConstants.E_ADDR, required=false)
-    private List<String> blackListEntries = Lists.newArrayList();
+    private final List<String> blackListEntries = Lists.newArrayList();
 
     public GetWhiteBlackListResponse() {
     }

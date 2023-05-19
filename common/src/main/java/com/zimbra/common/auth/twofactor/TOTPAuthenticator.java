@@ -25,7 +25,7 @@ import com.zimbra.common.service.ServiceException;
  */
 public class TOTPAuthenticator {
 
-    private AuthenticatorConfig config;
+    private final AuthenticatorConfig config;
 
     public TOTPAuthenticator(AuthenticatorConfig config) {
         this.config = config;

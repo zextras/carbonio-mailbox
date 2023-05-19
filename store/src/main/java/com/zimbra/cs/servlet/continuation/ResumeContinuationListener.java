@@ -22,8 +22,8 @@ import com.zimbra.common.util.ZimbraLog;
  */
 public class ResumeContinuationListener implements ContinuationListener {
 
-    private Continuation continuation;
-    private AtomicBoolean readyToResume;
+    private final Continuation continuation;
+    private final AtomicBoolean readyToResume;
 
     public ResumeContinuationListener(Continuation continuation) {
         this.continuation = continuation;

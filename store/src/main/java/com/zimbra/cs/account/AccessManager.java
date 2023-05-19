@@ -147,8 +147,7 @@ public abstract class AccessManager {
         if (authAccount != null && targetAccount != null) {
             if (authAccount.getId().equalsIgnoreCase(targetAccount.getId()))
                 return true;
-            if (canAccessAccount(authAccount, targetAccount, asAdmin))
-                return true;
+            return canAccessAccount(authAccount, targetAccount, asAdmin);
         }
         return false;
     }
@@ -204,7 +203,7 @@ public abstract class AccessManager {
         public String getGranteeType()  { return (mImpl==null)?null:mImpl.getGranteeType(); }
         public String getGranteeName()  { return (mImpl==null)?null:mImpl.getGranteeName(); }
         public String getRight()        { return (mImpl==null)?null:mImpl.getRight(); }
-        public boolean isNegativeGrant(){ return (mImpl==null)?false:mImpl.isNegativeGrant(); }
+        public boolean isNegativeGrant(){ return mImpl != null && mImpl.isNegativeGrant(); }
 
         public boolean available() { return mImpl != null; }
 
@@ -263,7 +262,7 @@ public abstract class AccessManager {
          * @return
          * @throws ServiceException
          */
-        public boolean allowAttr(String attrName);
+        boolean allowAttr(String attrName);
     }
 
     /**
@@ -381,7 +380,7 @@ public abstract class AccessManager {
             }
         } else if (targetAccount != null) {
             // If targetAddress has an external domain, it must be a zimbraAllowFromAddress of the target account.
-            Set<String> addrs = new HashSet<String>();
+            Set<String> addrs = new HashSet<>();
             String[] allowedFromAddrs = targetAccount.getMultiAttr(Provisioning.A_zimbraAllowFromAddress);
             for (String addr : allowedFromAddrs) {
                 addrs.add(addr.toLowerCase());

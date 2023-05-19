@@ -30,7 +30,7 @@ public class AddCommentResponse {
      */
     @SuppressWarnings("unused")
     private AddCommentResponse() {
-        this((Id) null);
+        this(null);
     }
 
     public AddCommentResponse(Id comment) {

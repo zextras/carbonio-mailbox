@@ -9,7 +9,7 @@ import com.zimbra.common.localconfig.LC;
 
 public class CreateCommand extends ImapCommand {
 
-    private ImapPath path;
+    private final ImapPath path;
     private int repeats = 0;
 
     public CreateCommand(ImapPath path) {
@@ -51,12 +51,8 @@ public class CreateCommand extends ImapCommand {
         }
         CreateCommand other = (CreateCommand) obj;
         if (path == null) {
-            if (other.path != null) {
-                return false;
-            }
-        } else if (!path.equals(other.path)) {
-            return false;
-        }
-        return true;
+          return other.path == null;
+        } else
+          return path.equals(other.path);
     }
 }

@@ -19,8 +19,8 @@ public class FileBufferedWriter extends Writer {
     
     private static final String CHARSET = "utf-8";
 
-    private Writer mOut;
-    private int mBufSizeBytes;
+    private final Writer mOut;
+    private final int mBufSizeBytes;
     private char[] mMemBuffer;
     private int mMemBufferOffset;
     private File mTempFile;

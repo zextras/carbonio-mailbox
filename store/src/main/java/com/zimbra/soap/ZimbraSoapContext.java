@@ -58,7 +58,7 @@ public final class ZimbraSoapContext {
     public static final String soapRequestIdAttr = "zimbraSoapRequestId";
     /* seed randomly so that unlikely to get same ID used on different machines in network
      * at the same time. */
-    private static AtomicInteger soapIdBase = new AtomicInteger(new Random().nextInt(Integer.MAX_VALUE));
+    private static final AtomicInteger soapIdBase = new AtomicInteger(new Random().nextInt(Integer.MAX_VALUE));
 
     final class SessionInfo {
         String sessionId;
@@ -122,9 +122,9 @@ public final class ZimbraSoapContext {
     private ZAuthToken mRawAuthToken;
     private AuthToken mAuthToken;
     private String mAuthTokenAccountId;
-    private String mRequestedAccountId;
+    private final String mRequestedAccountId;
 
-    private SoapProtocol mRequestProtocol;
+    private final SoapProtocol mRequestProtocol;
     private SoapProtocol mResponseProtocol;
 
     private boolean mChangeConstraintType = OperationContext.CHECK_MODIFIED;
@@ -145,7 +145,7 @@ public final class ZimbraSoapContext {
 
     private String mOriginalUserAgent;
     private String mUserAgent;
-    private String mRequestIP;
+    private final String mRequestIP;
     private Integer mPort;
     private String mVia;
     private String soapRequestId;
@@ -561,7 +561,7 @@ public final class ZimbraSoapContext {
                     case ACL.GRANTEE_GROUP:
                         if (authAccount != null) {
                             if (groupIds == null) {
-                                groupIds = new HashSet<String>();
+                                groupIds = new HashSet<>();
                             }
                             groupIds.add(shareData.getGranteeId());
                         }

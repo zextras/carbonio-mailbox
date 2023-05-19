@@ -15,6 +15,7 @@ SPDX-License-Identifier: GPL-2.0-only
 <%@ page import="javax.crypto.SecretKey" %>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="java.io.UnsupportedEncodingException"%>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 <%--taglib prefix="z" uri="/WEB-INF/zimbra.tld" %>
 <z:zimletconfig var="config" action="list" zimlet="com_zimbra_sforce"/>
 
@@ -24,7 +25,7 @@ SPDX-License-Identifier: GPL-2.0-only
 --%>
 <%!
     public static String generateRedirect(HttpServletRequest request, String name, String domain_key) throws UnsupportedEncodingException {
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<>();
         String ts = System.currentTimeMillis() + "";
         params.put("account", name);
         params.put("by", "name"); // needs to be part of hmac
@@ -39,12 +40,14 @@ SPDX-License-Identifier: GPL-2.0-only
                 "&timestamp=" + ts +
                 "&expires=0" +
                 "&preauth=" + preAuth;
-        String redirectURL = "/service/zimlet/com_zimbra_sforce/welcome.jsp?url=" + URLEncoder.encode(URLEncoder.encode(preAuthURL,"UTF-8"),"UTF-8");
+        String redirectURL = "/service/zimlet/com_zimbra_sforce/welcome.jsp?url=" + URLEncoder.encode(URLEncoder.encode(preAuthURL,
+                        StandardCharsets.UTF_8),
+                StandardCharsets.UTF_8);
         return preAuthURL + "&redirectURL=" + redirectURL;
     }
 
     public static String computePreAuth(Map<String, String> params, String key) {
-        TreeSet<String> names = new TreeSet<String>(params.keySet());
+        TreeSet<String> names = new TreeSet<>(params.keySet());
         StringBuffer sb = new StringBuffer();
         for (Object name : names) {
             if (sb.length() > 0) sb.append('|');
@@ -67,10 +70,10 @@ SPDX-License-Identifier: GPL-2.0-only
     }
 
     static class ByteKey implements SecretKey {
-        private byte[] mKey;
+        private final byte[] mKey;
 
         ByteKey(byte[] key) {
-            mKey = (byte[]) key.clone();
+            mKey = key.clone();
         }
 
         public byte[] getEncoded() {

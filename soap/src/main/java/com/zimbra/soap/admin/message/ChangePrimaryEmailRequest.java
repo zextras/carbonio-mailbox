@@ -28,7 +28,7 @@ public class ChangePrimaryEmailRequest {
      * @zm-api-field-description Specifies the account to be changed
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT, required=true)
-    private AccountSelector account;
+    private final AccountSelector account;
 
     /**
      * @zm-api-field-tag new-account-name

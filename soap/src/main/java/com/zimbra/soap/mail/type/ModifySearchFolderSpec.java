@@ -48,7 +48,7 @@ public class ModifySearchFolderSpec {
      */
     @SuppressWarnings("unused")
     private ModifySearchFolderSpec() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public ModifySearchFolderSpec(String id, String query) {

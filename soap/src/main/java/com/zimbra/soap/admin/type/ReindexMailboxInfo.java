@@ -43,7 +43,7 @@ public class ReindexMailboxInfo {
      */
     @SuppressWarnings("unused")
     private ReindexMailboxInfo() {
-        this((String) null);
+        this(null);
     }
 
     public ReindexMailboxInfo(String accountId) {

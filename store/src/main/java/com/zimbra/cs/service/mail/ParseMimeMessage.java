@@ -549,7 +549,7 @@ public final class ParseMimeMessage {
             content = ctype.getContentType().equals(ContentType.MESSAGE_RFC822) ?
                 new ZMimeMessage(JMSession.getSession(), new SharedByteArrayInputStream(raw))
                 : text;
-            String mbpHeaders = "Content-Type: " + ctype.toString()
+            String mbpHeaders = "Content-Type: " + ctype
                 + "\r\nContent-Transfer-Encoding: " + MimeConstants.ET_QUOTED_PRINTABLE
                 + "\r\n";
             mmp.addBodyPart(new MimeBodyPart(
@@ -826,7 +826,7 @@ public final class ParseMimeMessage {
         throw MailServiceException.NO_SUCH_DOC(path);
       }
 
-      Map<String, String> params = new HashMap<String, String>(3);
+      Map<String, String> params = new HashMap<>(3);
       params.put(UserServlet.QP_NAME, match.getSecond());
       attachRemoteItem(mmp, ((Mountpoint) match.getFirst()).getTarget(), contentID, ctxt, params,
           null);
@@ -1067,14 +1067,14 @@ public final class ParseMimeMessage {
 
     void addUpload(Upload up) {
       if (uploads == null) {
-        uploads = new ArrayList<Upload>(4);
+        uploads = new ArrayList<>(4);
       }
       uploads.add(up);
     }
 
     void addFetch(Upload up) {
       if (fetches == null) {
-        fetches = new ArrayList<Upload>(4);
+        fetches = new ArrayList<>(4);
       }
       fetches.add(up);
     }

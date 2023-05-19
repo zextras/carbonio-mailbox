@@ -33,7 +33,7 @@ public class GetAccountMembershipRequest {
      */
     @SuppressWarnings("unused")
     private GetAccountMembershipRequest() {
-        this((AccountSelector) null);
+        this(null);
     }
 
     public GetAccountMembershipRequest(AccountSelector account) {

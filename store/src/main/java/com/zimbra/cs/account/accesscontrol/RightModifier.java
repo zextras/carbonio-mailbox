@@ -93,11 +93,11 @@ public enum RightModifier {
     // urg, our soap intereface is already published with with the deny attribute,
     // for backward compatibility, we map the modifier to soap instead of changing soap
     // to take a modifier attribute
-    private String mSoapAttrMapping;
-    private char mModifier;
-    private String description;
+    private final String mSoapAttrMapping;
+    private final char mModifier;
+    private final String description;
 
-    private RightModifier(char modifier, String soapAttrMapping, String desc) {
+    RightModifier(char modifier, String soapAttrMapping, String desc) {
         mModifier = modifier;
         mSoapAttrMapping = soapAttrMapping;
         description = desc;

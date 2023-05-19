@@ -35,7 +35,7 @@ public class GetDevicesCountSinceLastUsedRequest {
      */
     @SuppressWarnings("unused")
     private GetDevicesCountSinceLastUsedRequest() {
-        this((DateString) null);
+        this(null);
     }
 
     public GetDevicesCountSinceLastUsedRequest(DateString lastUsedDate) {

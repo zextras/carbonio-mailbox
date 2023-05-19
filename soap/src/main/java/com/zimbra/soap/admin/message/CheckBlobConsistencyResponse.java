@@ -28,7 +28,7 @@ public class CheckBlobConsistencyResponse {
      * @zm-api-field-description Information for mailboxes
      */
     @XmlElement(name=AdminConstants.E_MAILBOX /* mbox */, required=false)
-    private List<MailboxBlobConsistency> mailboxes = Lists.newArrayList();
+    private final List<MailboxBlobConsistency> mailboxes = Lists.newArrayList();
 
     public CheckBlobConsistencyResponse() {
     }

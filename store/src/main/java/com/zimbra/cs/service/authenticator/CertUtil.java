@@ -71,7 +71,7 @@ public class CertUtil {
      *
      *
      */
-    private static final Map<String, String> KNOWN_NON_RFC2252_ATTRS = new HashMap<String, String>();
+    private static final Map<String, String> KNOWN_NON_RFC2252_ATTRS = new HashMap<>();
 
     static {
         KNOWN_NON_RFC2252_ATTRS.put(ATTR_EMAILADDRESS, "1.2.840.113549.1.9.1");
@@ -478,14 +478,14 @@ public class CertUtil {
         }
     }
 
-    private static int EXIT_CODE_GOOD = 0;
-    private static int EXIT_CODE_BAD = 0;
+    private static final int EXIT_CODE_GOOD = 0;
+    private static final int EXIT_CODE_BAD = 0;
 
-    private static String O_CERT = "c";
-    private static String O_DUMP = "d";
-    private static String O_GET  = "g";
-    private static String O_HELP = "h";
-    private static String O_PRINT = "p";
+    private static final String O_CERT = "c";
+    private static final String O_DUMP = "d";
+    private static final String O_GET  = "g";
+    private static final String O_HELP = "h";
+    private static final String O_PRINT = "p";
 
     private static void usage(Options options, String msg) {
         System.out.println("\n");
@@ -549,7 +549,7 @@ public class CertUtil {
             certUtil.loadCert(certFilePath);
 
             if (cl.hasOption(O_DUMP)) {
-                certUtil.dumpCert((String)null);
+                certUtil.dumpCert(null);
             } else if (cl.hasOption(O_PRINT)) {
                 certUtil.printCert((String)null);
             } else if (cl.hasOption(O_GET)) {

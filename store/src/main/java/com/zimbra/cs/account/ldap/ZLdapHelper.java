@@ -82,8 +82,8 @@ public class ZLdapHelper extends LdapHelper {
                     throw ServiceException.INVALID_REQUEST("can't mix +attrName/-attrName with attrName", null);
             }
 
-            boolean containsBinaryData = attrMgr == null ? false : attrMgr.containsBinaryData(key);
-            boolean isBinaryTransfer = attrMgr == null ? false : attrMgr.isBinaryTransfer(key);
+            boolean containsBinaryData = attrMgr != null && attrMgr.containsBinaryData(key);
+            boolean isBinaryTransfer = attrMgr != null && attrMgr.isBinaryTransfer(key);
 
             // Convert array to List so it can be treated as a Collection
             if (v instanceof Object[]) {
@@ -183,7 +183,7 @@ public class ZLdapHelper extends LdapHelper {
     @TODOEXCEPTIONMAPPING
     public ZSearchResultEntry searchForEntry(String base, ZLdapFilter filter, ZLdapContext initZlc,
             boolean useMaster, String[] returnAttrs)
-    throws LdapMultipleEntriesMatchedException, ServiceException {
+    throws ServiceException {
         ZLdapContext zlc = initZlc;
         try {
             if (zlc == null) {
@@ -252,7 +252,7 @@ public class ZLdapHelper extends LdapHelper {
     public ZAttributes getAttributes(ZLdapContext initZlc,
             LdapServerType ldapServerType, LdapUsage usage,
             String dn, String[] returnAttrs)
-    throws LdapEntryNotFoundException, ServiceException {
+    throws ServiceException {
         ZLdapContext zlc = initZlc;
         try {
             if (zlc == null) {

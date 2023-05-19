@@ -113,8 +113,8 @@ public class QueueItem {
      */
     @SuppressWarnings("unused")
     private QueueItem() {
-        this((String) null, (String) null, (String) null, (String) null, (String) null, (String) null,
-                (String) null, (String) null, (String) null, (String) null, (String) null, (String) null);
+        this(null, null, null, null, null, null,
+            null, null, null, null, null, null);
     }
 
     public QueueItem(String id, String time, String fromdomain, String size, String from, String to,

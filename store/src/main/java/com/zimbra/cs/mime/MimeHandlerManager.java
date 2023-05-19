@@ -28,8 +28,8 @@ import com.zimbra.cs.mime.handler.UnknownTypeHandler;
 
 public class MimeHandlerManager {
 
-    private static Map<String, HandlerInfo> sHandlers = new ConcurrentHashMap<String,HandlerInfo>();
-    private static Log sLog = LogFactory.getLog(MimeHandlerManager.class);
+    private static final Map<String, HandlerInfo> sHandlers = new ConcurrentHashMap<>();
+    private static final Log sLog = LogFactory.getLog(MimeHandlerManager.class);
 
     private static class HandlerInfo {
         MimeTypeInfo mimeType;

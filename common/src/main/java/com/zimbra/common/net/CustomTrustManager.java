@@ -36,7 +36,7 @@ public class CustomTrustManager implements X509TrustManager {
     private final X509TrustManager defaultTrustManager;
     private X509TrustManager keyStoreTrustManager;
     private final KeyStore keyStore;
-    private final Map<String, X509Certificate> pendingCerts = new HashMap<String, X509Certificate>();
+    private final Map<String, X509Certificate> pendingCerts = new HashMap<>();
 
     protected CustomTrustManager(X509TrustManager defaultTrustManager) throws GeneralSecurityException {
         try {

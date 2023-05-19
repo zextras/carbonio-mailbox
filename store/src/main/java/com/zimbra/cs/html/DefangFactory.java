@@ -20,23 +20,23 @@ public class DefangFactory {
     /**
      * The instance of the neko html defanger 
      */
-    private static HtmlDefang htmlDefang = new HtmlDefang();
+    private static final HtmlDefang htmlDefang = new HtmlDefang();
     
     /**
      * The xml defanger, used for xhtml and svg 
      */
-    private static XHtmlDefang xhtmlDefang = new XHtmlDefang();
+    private static final XHtmlDefang xhtmlDefang = new XHtmlDefang();
 
     /**
      * This defanger does nothing. Here for
      * backwards compatibility
      */
-    private static NoopDefang noopDefang = new NoopDefang();
+    private static final NoopDefang noopDefang = new NoopDefang();
 
     /**
      * The instance of the owasp html defanger
      */
-    private static OwaspDefang owaspDefang = new OwaspDefang();
+    private static final OwaspDefang owaspDefang = new OwaspDefang();
     
     /**
      * if content type is null, returns noopDefang which does nothing

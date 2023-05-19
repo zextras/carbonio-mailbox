@@ -37,7 +37,7 @@ public class CmdRightsInfo {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_RIGHTS /* rights */, required=true)
     @XmlElement(name=AdminConstants.E_RIGHT /* right */, required=false)
-    private List <NamedElement> rights = Lists.newArrayList();
+    private final List <NamedElement> rights = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Notes
@@ -45,7 +45,7 @@ public class CmdRightsInfo {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_DESC /* desc */, required=true)
     @XmlElement(name=AdminConstants.E_NOTE /* note */, required=false)
-    private List <String> notes = Lists.newArrayList();
+    private final List <String> notes = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

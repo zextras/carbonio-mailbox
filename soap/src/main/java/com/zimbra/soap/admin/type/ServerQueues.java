@@ -32,14 +32,14 @@ public class ServerQueues {
      * @zm-api-field-description Queue information
      */
     @XmlElement(name=AdminConstants.E_QUEUE /* queue */, required=false)
-    private List<MailQueueCount> queues = Lists.newArrayList();
+    private final List<MailQueueCount> queues = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private ServerQueues() {
-        this((String) null);
+        this(null);
     }
 
     public ServerQueues(String serverName) {

@@ -22,7 +22,7 @@ import com.zimbra.cs.store.StoreManager;
 
 public class BlobDataSource implements DataSource {
 
-    private Blob mBlob;
+    private final Blob mBlob;
     private String mContentType;
 
     public BlobDataSource(Blob blob) {

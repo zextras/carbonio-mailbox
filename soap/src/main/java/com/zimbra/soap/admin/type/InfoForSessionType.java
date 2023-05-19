@@ -42,21 +42,21 @@ public class InfoForSessionType {
      * the session information will be grouped under here.
      */
     @XmlElement(name=AdminConstants.A_ZIMBRA_ID, required=false)
-    private List<AccountSessionInfo> accounts = Lists.newArrayList();
+    private final List<AccountSessionInfo> accounts = Lists.newArrayList();
 
     /**
      * @zm-api-field-description If the request selected <b>"listSessions"</b> but NOT <b>"groupByAccount"</b> then
      * the session information will be under here.
      */
     @XmlElement(name="s", required=false)
-    private List<SessionInfo> sessions = Lists.newArrayList();
+    private final List<SessionInfo> sessions = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private InfoForSessionType() {
-        this((Integer) null, -1);
+        this(null, -1);
     }
 
     public InfoForSessionType(Integer activeAccounts, int activeSessions) {

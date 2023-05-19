@@ -27,7 +27,7 @@ public class GetAllRightsResponse {
      * @zm-api-field-description Information for rights
      */
     @XmlElement(name=AdminConstants.E_RIGHT, required=false)
-    private List <RightInfo> rights = Lists.newArrayList();
+    private final List <RightInfo> rights = Lists.newArrayList();
 
     public GetAllRightsResponse() {
     }

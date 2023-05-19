@@ -38,7 +38,7 @@ import com.zimbra.soap.type.NamedValue;
 public class ModifyAdminSavedSearchesRequest {
 
     @XmlElement(name=AdminConstants.E_SEARCH, required=false)
-    private List<NamedValue> searches = Lists.newArrayList();
+    private final List<NamedValue> searches = Lists.newArrayList();
 
     public ModifyAdminSavedSearchesRequest() {
     }

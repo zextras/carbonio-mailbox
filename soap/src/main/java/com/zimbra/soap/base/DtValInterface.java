@@ -10,10 +10,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface DtValInterface {
-    public void setStartTimeInterface(DtTimeInfoInterface startTime);
-    public void setEndTimeInterface(DtTimeInfoInterface endTime);
-    public void setDurationInterface(DurationInfoInterface duration);
-    public DtTimeInfoInterface getStartTimeInterface();
-    public DtTimeInfoInterface getEndTimeInterface();
-    public DurationInfoInterface getDurationInterface();
+    void setStartTimeInterface(DtTimeInfoInterface startTime);
+    void setEndTimeInterface(DtTimeInfoInterface endTime);
+    void setDurationInterface(DurationInfoInterface duration);
+    DtTimeInfoInterface getStartTimeInterface();
+    DtTimeInfoInterface getEndTimeInterface();
+    DurationInfoInterface getDurationInterface();
 }

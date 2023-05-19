@@ -50,7 +50,7 @@ public class AddAccountLoggerRequest {
     private LoggerInfo logger;
 
     private AddAccountLoggerRequest() {
-        this((AccountSelector) null, (LoggerInfo) null);
+        this(null, null);
     }
 
     private AddAccountLoggerRequest(AccountSelector account, LoggerInfo logger) {

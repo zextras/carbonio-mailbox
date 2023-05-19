@@ -20,7 +20,7 @@ import com.zimbra.cs.store.FileDescriptorCache;
 public class ServerStatsCallback implements RealtimeStatsCallback {
 
     public Map<String, Object> getStatData() {
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         data.put(ZimbraPerf.RTS_MBOX_CACHE_SIZE, ZimbraPerf.getMailboxCacheSize());
         data.put(ZimbraPerf.RTS_MSG_CACHE_SIZE, MessageCache.getSize());
         

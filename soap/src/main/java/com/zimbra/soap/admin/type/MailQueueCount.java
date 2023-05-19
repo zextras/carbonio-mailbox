@@ -33,7 +33,7 @@ public class MailQueueCount {
      */
     @SuppressWarnings("unused")
     private MailQueueCount() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public MailQueueCount(String name, String count) {

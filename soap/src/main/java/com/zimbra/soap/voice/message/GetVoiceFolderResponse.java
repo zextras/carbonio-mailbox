@@ -28,7 +28,7 @@ public class GetVoiceFolderResponse {
      * @zm-api-field-description Information for phones
      */
     @XmlElement(name=VoiceConstants.E_PHONE /* phone */, required=false)
-    private List<VoiceFolderInfo> phones = Lists.newArrayList();
+    private final List<VoiceFolderInfo> phones = Lists.newArrayList();
 
     public GetVoiceFolderResponse() {
     }

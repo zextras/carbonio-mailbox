@@ -33,14 +33,14 @@ public class BounceMsgSpec {
      * @zm-api-field-description Email addresses
      */
     @XmlElement(name=MailConstants.E_EMAIL /* e */, required=false)
-    private List<EmailAddrInfo> emailAddresses = Lists.newArrayList();
+    private final List<EmailAddrInfo> emailAddresses = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private BounceMsgSpec() {
-        this((String) null);
+        this(null);
     }
 
     public BounceMsgSpec(String id) {

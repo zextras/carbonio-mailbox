@@ -46,7 +46,7 @@ public class MessageSummary extends MessageCommon {
      * @zm-api-field-description Email address information
      */
     @XmlElement(name=MailConstants.E_EMAIL /* e */, required=false)
-    private List<EmailInfo> emails = Lists.newArrayList();
+    private final List<EmailInfo> emails = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag subject
@@ -75,7 +75,7 @@ public class MessageSummary extends MessageCommon {
      */
     @SuppressWarnings("unused")
     private MessageSummary() {
-        this((String) null);
+        this(null);
     }
 
     public MessageSummary(String id) {

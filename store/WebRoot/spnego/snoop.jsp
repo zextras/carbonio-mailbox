@@ -124,7 +124,7 @@ SPDX-License-Identifier: GPL-2.0-only
 		while(e.hasMoreElements()) {
 			String k = (String) e.nextElement();
 			String val = request.getParameter(k);
-			String vals[] = request.getParameterValues(k);
+			String[] vals = request.getParameterValues(k);
 %>
 <TR valign=top>
 	<TD><%= k.replaceAll("<", "&lt;").replaceAll(">","&gt;") %></TD>

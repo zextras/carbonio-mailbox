@@ -42,7 +42,7 @@ public class DistributionListSubscribeReq {
     private String memberEmail;
 
     public DistributionListSubscribeReq() {
-        this((DistributionListSubscribeOp) null, (String) null);
+        this(null, null);
     }
 
     public DistributionListSubscribeReq(DistributionListSubscribeOp op, String memberEmail) {

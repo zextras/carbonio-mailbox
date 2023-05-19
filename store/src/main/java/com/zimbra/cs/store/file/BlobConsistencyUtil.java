@@ -45,9 +45,9 @@ public class BlobConsistencyUtil {
     private static final String LO_OUTPUT_USED_BLOBS = "output-used-blobs";
     private static final String LO_USED_BLOB_LIST = "used-blob-list";
 
-    private Options options;
+    private final Options options;
     private List<Integer> mailboxIds;
-    private List<Short> volumeIds = new ArrayList<Short>();
+    private final List<Short> volumeIds = new ArrayList<>();
     private boolean skipSizeCheck = false;
     private boolean verbose = false;
     private String unexpectedBlobList;
@@ -137,7 +137,7 @@ public class BlobConsistencyUtil {
 
         String mailboxList = CliUtil.getOptionValue(cl, LO_MAILBOXES);
         if (mailboxList != null) {
-            mailboxIds = new ArrayList<Integer>();
+            mailboxIds = new ArrayList<>();
             for (String id : mailboxList.split(",")) {
                 try {
                     mailboxIds.add(Integer.parseInt(id));
@@ -204,7 +204,7 @@ public class BlobConsistencyUtil {
 
     private List<Integer> getAllMailboxIds(SoapProvisioning prov)
     throws ServiceException {
-        List<Integer> ids = new ArrayList<Integer>();
+        List<Integer> ids = new ArrayList<>();
         XMLElement request = new XMLElement(AdminConstants.GET_ALL_MAILBOXES_REQUEST);
         Element response = prov.invoke(request);
         for (Element mboxEl : response.listElements(AdminConstants.E_MAILBOX)) {

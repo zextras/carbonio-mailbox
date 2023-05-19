@@ -35,7 +35,7 @@ public class MailQueueFlushRequest {
      */
     @SuppressWarnings("unused")
     private MailQueueFlushRequest() {
-        this((NamedElement) null);
+        this(null);
     }
 
     public MailQueueFlushRequest(NamedElement server) {

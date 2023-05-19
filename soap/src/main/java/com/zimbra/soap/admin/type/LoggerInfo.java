@@ -22,18 +22,18 @@ public final class LoggerInfo {
      * @zm-api-field-description name of the logger category
      */
     @XmlAttribute(name=AdminConstants.A_CATEGORY, required=true)
-    private String category;
+    private final String category;
     /**
      * @zm-api-field-description level of the logging.
      */
     @XmlAttribute(name=AdminConstants.A_LEVEL, required=false)
-    private LoggingLevel level;
+    private final LoggingLevel level;
 
     /**
      * no-argument constructor wanted by JAXB
      */
     private LoggerInfo() {
-        this((String) null, (LoggingLevel) null);
+        this(null, null);
     }
 
     private LoggerInfo(String category, LoggingLevel level) {

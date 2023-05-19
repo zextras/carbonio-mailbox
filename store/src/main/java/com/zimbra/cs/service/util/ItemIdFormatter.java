@@ -11,12 +11,12 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.soap.ZimbraSoapContext;
 
 public class ItemIdFormatter {
-    private boolean mUnqualifiedItemIds;
-    private String mAuthenticatedId;
-    private String mDefaultId;
+    private final boolean mUnqualifiedItemIds;
+    private final String mAuthenticatedId;
+    private final String mDefaultId;
 
     public ItemIdFormatter() {
-        this((String) null, (String) null, false);
+        this(null, (String) null, false);
     }
 
     public ItemIdFormatter(String authId) {
@@ -24,7 +24,7 @@ public class ItemIdFormatter {
     }
 
     public ItemIdFormatter(boolean noqualify) {
-        this((String) null, (String) null, noqualify);
+        this(null, (String) null, noqualify);
     }
 
     public ItemIdFormatter(ZimbraSoapContext zsc) {

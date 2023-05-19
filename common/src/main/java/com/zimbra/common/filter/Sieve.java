@@ -88,9 +88,9 @@ public final class Sieve {
         iasciicasemap("i;ascii-casemap"),
         iasciinumeric("i;ascii-numeric");
 
-        private String value;
+        private final String value;
 
-        private Comparator(String value) {
+        Comparator(String value) {
             this.value = value;
         }
 

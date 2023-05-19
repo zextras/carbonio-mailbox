@@ -96,7 +96,7 @@ public final class ACLUtil {
      */
     public static List<Identity> getSendOnBehalfOf(Account grantee) throws ServiceException {
         Multimap<Right, Entry> rights = getGrantedRights(grantee, Collections.singleton(Provisioning.A_displayName));
-        ImmutableList.Builder<Identity> result = ImmutableList.<Identity>builder();
+        ImmutableList.Builder<Identity> result = ImmutableList.builder();
         for (Entry entry : rights.get(UserRights.R_sendOnBehalfOf)) {
             Account grantor = (Account) entry;
             String mail = grantor.getName();
@@ -154,7 +154,7 @@ public final class ACLUtil {
     throws ServiceException {
         ZimbraACL acl = getACL(target, Boolean.TRUE);
         if (acl == null) {
-            return new ArrayList<ZimbraACE>(); // return empty list
+            return new ArrayList<>(); // return empty list
         }
         // Make a copy so we don't interfere with others that are using the acl.
         // This instance of acl will never be used in any AccessManager code path.

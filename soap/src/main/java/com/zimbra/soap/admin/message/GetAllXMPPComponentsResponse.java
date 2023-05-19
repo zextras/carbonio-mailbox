@@ -28,7 +28,7 @@ public class GetAllXMPPComponentsResponse {
      * @zm-api-field-description Information on XMPP components
      */
     @XmlElement(name=AccountConstants.E_XMPP_COMPONENT, required=false)
-    private List<XMPPComponentInfo> components = Lists.newArrayList();
+    private final List<XMPPComponentInfo> components = Lists.newArrayList();
 
     public GetAllXMPPComponentsResponse() {
     }

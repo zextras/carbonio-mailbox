@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import java.nio.charset.StandardCharsets;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -193,11 +194,7 @@ final class ImapURL {
     }
 
     private String urlDecode(String raw) {
-        try {
-            return URLDecoder.decode(raw, "utf-8");
-        } catch (UnsupportedEncodingException uee) {
-            return raw;
-        }
+      return URLDecoder.decode(raw, StandardCharsets.UTF_8);
     }
 
     public InputStreamWithSize getContentAsStream(ImapHandler handler, ImapCredentials creds, String tag)
@@ -267,14 +264,10 @@ final class ImapURL {
 
     @Override
     public String toString() {
-        try {
-            return "imap://" + URLEncoder.encode(mUsername, "utf-8") + '@' + mHostname + (mPort > 0 ? ":" + mPort : "") +
-                   '/' + URLEncoder.encode(mPath.asImapPath(), "utf-8") + "/;UID=" + mUid +
-                   (mPart != null ? "/;SECTION=" + URLEncoder.encode(mPart.getSectionSpec(), "utf-8") : "");
-        } catch (UnsupportedEncodingException e) {
-            return "imap://" + mUsername + '@' + mHostname + (mPort > 0 ? ":" + mPort : "") +
-                   '/' + mPath + "/;UID=" + mUid + (mPart != null ? "/;SECTION=" + mPart.getSectionSpec() : "");
-        }
+      return "imap://" + URLEncoder.encode(mUsername, StandardCharsets.UTF_8) + '@' + mHostname + (mPort > 0 ? ":" + mPort : "") +
+             '/' + URLEncoder.encode(mPath.asImapPath(), StandardCharsets.UTF_8) + "/;UID=" + mUid +
+             (mPart != null ? "/;SECTION=" + URLEncoder.encode(mPart.getSectionSpec(),
+                 StandardCharsets.UTF_8) : "");
     }
 
     @Override
@@ -338,13 +331,9 @@ final class ImapURL {
             return false;
         }
         if (mUsername == null) {
-            if (other.mUsername != null) {
-                return false;
-            }
-        } else if (!mUsername.equals(other.mUsername)) {
-            return false;
-        }
-        return true;
+          return other.mUsername == null;
+        } else
+          return mUsername.equals(other.mUsername);
     }
 
     public static void main(String[] args) throws ImapParseException, ServiceException, IOException {

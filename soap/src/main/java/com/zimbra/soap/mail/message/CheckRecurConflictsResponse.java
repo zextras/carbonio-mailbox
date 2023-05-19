@@ -28,7 +28,7 @@ public class CheckRecurConflictsResponse {
      * @zm-api-field-description Information on conflicting instances
      */
     @XmlElement(name=MailConstants.E_INSTANCE /* inst */, required=false)
-    private List<ConflictRecurrenceInstance> instances = Lists.newArrayList();
+    private final List<ConflictRecurrenceInstance> instances = Lists.newArrayList();
 
     public CheckRecurConflictsResponse() {
     }

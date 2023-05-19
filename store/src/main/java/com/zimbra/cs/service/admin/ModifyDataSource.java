@@ -50,7 +50,7 @@ public class ModifyDataSource extends AdminDocumentHandler {
     }
 
     @Override
-    public Element handle(Element request, Map<String, Object> context) throws ServiceException, SoapFaultException {
+    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         Provisioning prov = Provisioning.getInstance();
         ModifyDataSourceRequest req = zsc.elementToJaxb(request);

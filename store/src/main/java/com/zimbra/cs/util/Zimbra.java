@@ -360,7 +360,7 @@ public final class Zimbra {
         ZimbraPerf.initialize(ZimbraPerf.ServerID.ZIMBRA);
       }
 
-      c2hRunner.init();
+      CallToHomeRunner.init();
     }
 
     ExtensionUtil.postInitAll();

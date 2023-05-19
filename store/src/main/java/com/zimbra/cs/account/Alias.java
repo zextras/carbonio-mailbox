@@ -24,9 +24,9 @@ import com.zimbra.common.util.ZimbraLog;
 public class Alias extends MailTarget {
     
     private NamedEntry mTarget     = null;
-    private boolean mIsDangling    = false;;
+    private boolean mIsDangling    = false;
 
-    public Alias(String name, String id, Map<String, Object> attrs, Provisioning prov) {
+  public Alias(String name, String id, Map<String, Object> attrs, Provisioning prov) {
         super(name, id, attrs, null, prov);
     }
     

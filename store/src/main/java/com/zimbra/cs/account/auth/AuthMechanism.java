@@ -28,7 +28,7 @@ import javax.security.auth.login.LoginException;
 
 public abstract class AuthMechanism {
 
-  public static enum AuthMech {
+  public enum AuthMech {
     /** zimbraAuthMech type of "zimbra" means our own (use userPassword) */
     zimbra,
 
@@ -377,7 +377,7 @@ public abstract class AuthMechanism {
    * CustomAuth
    */
   static class CustomAuth extends AuthMechanism {
-    private String authMechStr; // value of the zimbraAuthMech attribute
+    private final String authMechStr; // value of the zimbraAuthMech attribute
     private String mHandlerName = "";
     private ZimbraCustomAuth mHandler;
     List<String> mArgs;

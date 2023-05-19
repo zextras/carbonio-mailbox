@@ -37,7 +37,7 @@ public class GetRightsRequest {
      * @zm-api-field-description Specify Access Control Entries to return
      */
     @XmlElement(name=AccountConstants.E_ACE /* ace */, required=false)
-    private List<Right> aces = Lists.newArrayList();
+    private final List<Right> aces = Lists.newArrayList();
 
     public GetRightsRequest() {
     }

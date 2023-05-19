@@ -64,7 +64,7 @@ import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.type.GalSearchType;
 
 public class GalSearchControl {
-    private GalSearchParams mParams;
+    private final GalSearchParams mParams;
 
     public GalSearchControl(GalSearchParams params) {
         mParams = params;
@@ -72,7 +72,7 @@ public class GalSearchControl {
 
     private void checkFeatureEnabled(String extraFeatAttr) throws ServiceException {
         AuthToken authToken = mParams.getAuthToken();
-        boolean isAdmin = authToken == null ? false : AuthToken.isAnyAdmin(authToken);
+        boolean isAdmin = authToken != null && AuthToken.isAnyAdmin(authToken);
 
         // admin is always allowed.
         if (isAdmin)
@@ -105,8 +105,8 @@ public class GalSearchControl {
 
         Account requestedAcct = mParams.getAccount();
 
-        boolean useGalSyncAcct = requestedAcct == null ? true :
-            requestedAcct.isGalSyncAccountBasedAutoCompleteEnabled();
+        boolean useGalSyncAcct =
+            requestedAcct == null || requestedAcct.isGalSyncAccountBasedAutoCompleteEnabled();
 
         if (useGalSyncAcct) {
             try {
@@ -161,10 +161,10 @@ public class GalSearchControl {
         }
     }
 
-    private static HashSet<String> SyncClients;
+    private static final HashSet<String> SyncClients;
 
     static {
-        SyncClients = new HashSet<String>();
+        SyncClients = new HashSet<>();
     }
 
     public void sync() throws ServiceException {
@@ -423,7 +423,7 @@ public class GalSearchControl {
             searchQuery.append(" AND (");
             searchQuery.append(" inid:").append(ds.getFolderId());
             searchQuery.append(")");
-            ZimbraLog.gal.debug("query: "+searchQuery.toString());
+            ZimbraLog.gal.debug("query: "+ searchQuery);
             mParams.parseSearchParams(mParams.getRequest(), searchQuery.toString());
             return true;
         }
@@ -528,7 +528,7 @@ public class GalSearchControl {
         // and zimbraGalAlwaysIncludeLocalCalendarResources is set for the domain
         boolean syncLocalResources = (galMode == GalMode.ldap && domain.isGalAlwaysIncludeLocalCalendarResources());
 
-        Set<Integer> folderIds = new HashSet<Integer>();
+        Set<Integer> folderIds = new HashSet<>();
         String syncToken = null;
         for (DataSource ds : galAcct.getAllDataSources()) {
             if (ds.getType() != DataSourceType.gal) {

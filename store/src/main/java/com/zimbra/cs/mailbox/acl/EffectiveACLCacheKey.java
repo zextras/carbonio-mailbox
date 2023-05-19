@@ -9,9 +9,9 @@ import com.zimbra.common.util.memcached.MemcachedKey;
 import com.zimbra.cs.memcached.MemcachedKeyPrefix;
 
 public class EffectiveACLCacheKey implements MemcachedKey {
-    private String mAcctId;
-    private int mFolderId;
-    private String mKeyVal;
+    private final String mAcctId;
+    private final int mFolderId;
+    private final String mKeyVal;
 
     public EffectiveACLCacheKey(String acctId, int folderId) {
         mAcctId = acctId;

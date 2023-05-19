@@ -28,7 +28,7 @@ public class GetCreateObjectAttrsResponse {
      */
     @SuppressWarnings("unused")
     private GetCreateObjectAttrsResponse() {
-        this((EffectiveAttrsInfo) null);
+        this(null);
     }
 
     public GetCreateObjectAttrsResponse(EffectiveAttrsInfo setAttrs) {

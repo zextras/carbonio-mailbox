@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ZDeleteEvent implements ToZJSONObject {
 
-    private String mIds;
+    private final String mIds;
     private List<String> mList;
 
     public ZDeleteEvent(String ids) {
@@ -27,7 +27,7 @@ public class ZDeleteEvent implements ToZJSONObject {
 
     public synchronized List<String> toList() {
         if (mList == null) {
-            mList = new ArrayList<String>();
+            mList = new ArrayList<>();
             if (mIds != null && mIds.length() > 0)
             	for (String id : mIds.split(","))
             		mList.add(id);

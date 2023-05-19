@@ -30,7 +30,7 @@ public class CreateIdentityResponse {
      */
     @SuppressWarnings("unused")
     private CreateIdentityResponse() {
-        this((Identity) null);
+        this(null);
     }
 
     public CreateIdentityResponse(Identity identity) {

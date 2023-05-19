@@ -113,7 +113,7 @@ public abstract class MimeHandler {
     }
 
     public boolean isIndexingEnabled() {
-        return mimeTypeInfo == null? false : mimeTypeInfo.isIndexingEnabled();
+        return mimeTypeInfo != null && mimeTypeInfo.isIndexingEnabled();
     }
 
     /**
@@ -194,7 +194,7 @@ public abstract class MimeHandler {
         }
     }
     private boolean mDrainedContent = false;
-    private static byte[] sDrainBuffer = new byte[4096];
+    private static final byte[] sDrainBuffer = new byte[4096];
 
     /**
      * Returns the content for this MIME part.  Length of content returned
@@ -285,7 +285,7 @@ public abstract class MimeHandler {
             if (!h.isIndexingEnabled()) {
                 continue;
             }
-            List<MatchedObject> matchedObjects = new ArrayList<MatchedObject>();
+            List<MatchedObject> matchedObjects = new ArrayList<>();
             h.parse(text, matchedObjects, true);
             if (!matchedObjects.isEmpty()) {
                 if (l_objects.length() > 0) {

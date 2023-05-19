@@ -27,7 +27,7 @@ public class GetAllSkinsResponse {
      * @zm-api-field-description Skins
      */
     @XmlElement(name=AdminConstants.E_SKIN, required=false)
-    private List<NamedElement> skins = Lists.newArrayList();
+    private final List<NamedElement> skins = Lists.newArrayList();
 
     public GetAllSkinsResponse() {
     }

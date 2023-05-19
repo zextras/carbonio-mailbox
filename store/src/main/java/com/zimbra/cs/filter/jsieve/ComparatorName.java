@@ -7,5 +7,5 @@ package com.zimbra.cs.filter.jsieve;
 
 public interface ComparatorName {
     // Other comparator are defined in the org.apache.jsieve.comparators.ComparatorNames
-    public static final String ASCII_NUMERIC_COMPARATOR = "i;ascii-numeric";
+    String ASCII_NUMERIC_COMPARATOR = "i;ascii-numeric";
 }

@@ -41,7 +41,7 @@ public class ZimbraACE {
      * all: The pseudo-GUID GUID_AUTHUSER signifying "all authenticated users"
      * pub: The pseudo-GUID GUID_PUBLIC signifying "all authenticated and unauthenticated users"
      */
-    private String mGrantee;
+    private final String mGrantee;
 
     // The type of object the grantee's ID refers to.
     private final GranteeType mGranteeType;
@@ -258,12 +258,12 @@ public class ZimbraACE {
      * @param other
      */
     private ZimbraACE(ZimbraACE other) {
-        mGrantee = new String(other.mGrantee);
+        mGrantee = other.mGrantee;
         mGranteeType = other.mGranteeType;
         mRight = other.mRight;
         mRightModifier = other.mRightModifier;
         if (other.mSecret != null)
-            mSecret = new String(other.mSecret);
+            mSecret = other.mSecret;
 
         mTargetType = other.mTargetType;
         mTargetName = other.mTargetName;

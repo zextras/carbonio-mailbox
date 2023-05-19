@@ -6,8 +6,8 @@
 package com.zimbra.cs.imap;
 
 public class SearchCommand extends ImapCommand {
-    private ImapSearch search;
-    private Integer options;
+    private final ImapSearch search;
+    private final Integer options;
 
     public SearchCommand(ImapSearch search, Integer options) {
         super();
@@ -52,12 +52,8 @@ public class SearchCommand extends ImapCommand {
             return false;
         }
         if (search == null) {
-            if (other.search != null) {
-                return false;
-            }
-        } else if (!search.equals(other.search)) {
-            return false;
-        }
-        return true;
+          return other.search == null;
+        } else
+          return search.equals(other.search);
     }
 }

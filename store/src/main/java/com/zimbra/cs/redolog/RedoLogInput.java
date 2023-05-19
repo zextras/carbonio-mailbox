@@ -23,7 +23,7 @@ import com.zimbra.common.util.ByteUtil;
  * @author jhahm
  */
 public class RedoLogInput {
-    private DataInput mIN;
+    private final DataInput mIN;
     private String mPath;
 
     public RedoLogInput(InputStream is) {

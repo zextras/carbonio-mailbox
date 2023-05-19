@@ -26,7 +26,7 @@ public class ValueAttrib {
      */
     @SuppressWarnings("unused")
     private ValueAttrib() {
-        this((String) null);
+        this(null);
     }
 
     public ValueAttrib(String value) {

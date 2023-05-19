@@ -73,7 +73,7 @@ public class FixCalendarEndTimeUtil extends SoapCLI {
     }
 
     private void doit(ZAuthToken zat, String[] accts, boolean sync)
-    throws SoapFaultException, IOException, ServiceException, HttpException {
+    throws IOException, ServiceException, HttpException {
         Element req = new Element.XMLElement(AdminConstants.FIX_CALENDAR_END_TIME_REQUEST);
         if (accts == null || accts.length == 0)
             throw ServiceException.INVALID_REQUEST("Missing -" + O_ACCOUNT + " option", null);

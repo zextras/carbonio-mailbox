@@ -32,7 +32,7 @@ public abstract class AbstractProxyProperty extends ResourceProperty {
     }
 
     protected ArrayList<Pair<Mountpoint,ZFolder>> getMountpoints(DavContext ctxt) {
-        ArrayList<Pair<Mountpoint,ZFolder>> mps = new ArrayList<Pair<Mountpoint,ZFolder>>();
+        ArrayList<Pair<Mountpoint,ZFolder>> mps = new ArrayList<>();
         try {
             Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
             for (MailItem item : mbox.getItemList(ctxt.getOperationContext(), MailItem.Type.MOUNTPOINT)) {
@@ -53,7 +53,7 @@ public abstract class AbstractProxyProperty extends ResourceProperty {
                     if (folder == null) {
                         continue;
                     }
-                    mps.add(new Pair<Mountpoint,ZFolder>(mp, folder));
+                    mps.add(new Pair<>(mp, folder));
                 } catch (ServiceException se) {
                     ZimbraLog.dav.warn("can't get remote folder", se);
                 }

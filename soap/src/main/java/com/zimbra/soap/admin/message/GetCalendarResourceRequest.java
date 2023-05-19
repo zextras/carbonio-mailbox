@@ -45,18 +45,18 @@ public class GetCalendarResourceRequest extends AttributeSelectorImpl {
     private CalendarResourceSelector calResource;
 
     public GetCalendarResourceRequest() {
-        this((CalendarResourceSelector) null, (Boolean) null);
+        this(null, null);
     }
 
     public GetCalendarResourceRequest(
             CalendarResourceSelector calResource) {
-        this(calResource, (Boolean) null, (Iterable<String>) null);
+        this(calResource, null, null);
     }
 
     public GetCalendarResourceRequest(
             CalendarResourceSelector calResource,
             Boolean applyCos) {
-        this(calResource, applyCos, (Iterable<String>) null);
+        this(calResource, applyCos, null);
     }
 
     public GetCalendarResourceRequest(

@@ -276,7 +276,7 @@ public abstract class CalendarItem extends MailItem {
     }
 
     protected List<IndexDocument> getIndexDocuments() throws TemporaryIndexingException{
-        List<IndexDocument> toRet = new ArrayList<IndexDocument>();
+        List<IndexDocument> toRet = new ArrayList<>();
 
         // Special case to prevent getDefaultInviteOrNull() from logging an error
         // when this method is called during commit of cancel operation.
@@ -299,7 +299,7 @@ public abstract class CalendarItem extends MailItem {
 
         for (Invite inv : getInvites()) {
             StringBuilder s = new StringBuilder();
-            List<String> toAddrs = new ArrayList<String>();
+            List<String> toAddrs = new ArrayList<>();
 
             // NAME (subject)
             String nameToUse = "";
@@ -377,12 +377,12 @@ public abstract class CalendarItem extends MailItem {
                     mm = inv.getMimeMessage();
                 } catch(ServiceException e) {
                     if (ZimbraLog.index.isDebugEnabled()) {
-                        ZimbraLog.index.debug("Caught MessagingException for Invite "+inv.toString()+" while fetching MM during indexing of CalendarItem "+this.getId()+" skipping Invite", e);
+                        ZimbraLog.index.debug("Caught MessagingException for Invite "+ inv +" while fetching MM during indexing of CalendarItem "+this.getId()+" skipping Invite", e);
                     }
                 }
             }
 
-            List<IndexDocument> docList = new ArrayList<IndexDocument>();
+            List<IndexDocument> docList = new ArrayList<>();
 
             if (mm == null) { // no blob!
                 IndexDocument doc = new IndexDocument();
@@ -400,7 +400,7 @@ public abstract class CalendarItem extends MailItem {
                     docList = pm.getLuceneDocuments();
                 } catch(ServiceException e) {
                     if (ZimbraLog.index.isDebugEnabled()) {
-                        ZimbraLog.index.debug("Caught MessagingException for Invite "+inv.toString()+" while indexing CalendarItem "+this.getId()+" skipping Invite", e);
+                        ZimbraLog.index.debug("Caught MessagingException for Invite "+ inv +" while indexing CalendarItem "+this.getId()+" skipping Invite", e);
                     }
                 }
             }
@@ -489,7 +489,7 @@ public abstract class CalendarItem extends MailItem {
         sender = Strings.nullToEmpty(sender);
         String subject = Strings.nullToEmpty(firstInvite.getName());
 
-        List<Invite> invites = new ArrayList<Invite>();
+        List<Invite> invites = new ArrayList<>();
         invites.add(firstInvite);
 
         Recurrence.IRecurrence recur = firstInvite.getRecurrence();
@@ -743,7 +743,7 @@ public abstract class CalendarItem extends MailItem {
                             }
                             ((Recurrence.RecurrenceRule) mRecurrence).addException(exceptRule);
                         } else {
-                            sLog.debug("Got second invite with no RecurID: " + cur.toString());
+                            sLog.debug("Got second invite with no RecurID: " + cur);
                         }
                     }
                 }
@@ -829,12 +829,12 @@ public abstract class CalendarItem extends MailItem {
         super.decodeMetadata(meta);
 
         mUid = Invite.fixupIfOutlookUid(meta.get(Metadata.FN_UID, null));
-        mInvites = new ArrayList<Invite>();
+        mInvites = new ArrayList<>();
 
         ICalTimeZone accountTZ = Util.getAccountTimeZone(getMailbox().getAccount());
         if (meta.containsKey(Metadata.FN_TZMAP)) {
             try {
-                Set<String> tzids = new HashSet<String>();
+                Set<String> tzids = new HashSet<>();
                 mTzMap = Util.decodeFromMetadata(meta.getMap(Metadata.FN_TZMAP), accountTZ);
 
                 // appointment/task start and end
@@ -969,7 +969,7 @@ public abstract class CalendarItem extends MailItem {
             }
         }
 
-        List<Instance> instances = new ArrayList<Instance>();
+        List<Instance> instances = new ArrayList<>();
         if (mRecurrence != null) {
             long startTime = System.currentTimeMillis();
             instances = Recurrence.expandInstances(mRecurrence, getId(), start, endAdjusted);
@@ -1025,8 +1025,8 @@ public abstract class CalendarItem extends MailItem {
     public static class Instance implements Comparable<Instance> {
         private final boolean mHasStart;
         private final boolean mHasEnd;
-        private long mStart;        // calculated start time of this instance
-        private long mEnd;          // calculated end time of this instance
+        private final long mStart;        // calculated start time of this instance
+        private final long mEnd;          // calculated end time of this instance
 
         private boolean mIsException; // TRUE if this instance is an exception
                                       // to a recurrence
@@ -1037,8 +1037,8 @@ public abstract class CalendarItem extends MailItem {
 
         private final int mCalItemId;
         private final boolean mAllDay;
-        private int mStartTzOffset;    // used when mAllDay == true; timezone offset in millis of mStart
-        private int mEndTzOffset;      // used when mAllDay == true; timezone offset in millis of mEnd
+        private final int mStartTzOffset;    // used when mAllDay == true; timezone offset in millis of mStart
+        private final int mEndTzOffset;      // used when mAllDay == true; timezone offset in millis of mEnd
 
         /**
          * Create an Instance object using data in an Invite that points to
@@ -1151,8 +1151,7 @@ public abstract class CalendarItem extends MailItem {
                 return false;
             if (mHasEnd) {  // implies other.mHasEnd is also true
                 // Both time and offset must be same to be considered the same time.
-                if (mEnd != other.mEnd || mEndTzOffset != other.mEndTzOffset)
-                    return false;
+                return mEnd == other.mEnd && mEndTzOffset == other.mEndTzOffset;
             }
             // Neither has end time, or both have same start time.
 
@@ -1302,7 +1301,7 @@ public abstract class CalendarItem extends MailItem {
             ret[0] = mInvites.get(0);
             return ret;
         } else {
-            ArrayList<Invite> toRet = new ArrayList<Invite>(mInvites.size());
+            ArrayList<Invite> toRet = new ArrayList<>(mInvites.size());
             // First get the series invite(s), then exceptions.  This will generate a friendlier ics file.
             for (Invite inv : mInvites)
                 if (!inv.hasRecurId())
@@ -1315,7 +1314,7 @@ public abstract class CalendarItem extends MailItem {
     }
 
     public Invite[] getInvites(int invId) {
-        ArrayList<Invite> toRet = new ArrayList<Invite>();
+        ArrayList<Invite> toRet = new ArrayList<>();
         for (Invite inv : mInvites)
             if (inv.getMailItemId() == invId)
                 toRet.add(inv);
@@ -1502,7 +1501,7 @@ public abstract class CalendarItem extends MailItem {
                              boolean preserveAlarms, boolean replaceExistingInvites,
                              boolean updatePrevFolders)
     throws ServiceException {
-        invite.setHasAttachment(pm != null ? pm.hasAttachments() : false);
+        invite.setHasAttachment(pm != null && pm.hasAttachments());
 
         String method = invite.getMethod();
         if (method.equals(ICalTok.REQUEST.toString()) ||
@@ -1596,7 +1595,7 @@ public abstract class CalendarItem extends MailItem {
 
         OperationContext octxt = getMailbox().getOperationContext();
         Account authAccount = octxt != null ? octxt.getAuthenticatedUser() : null;
-        boolean asAdmin = octxt != null ? octxt.isUsingAdminPrivileges() : false;
+        boolean asAdmin = octxt != null && octxt.isUsingAdminPrivileges();
         boolean isCancel = newInvite.isCancel();
 
         boolean requirePrivateCheck = requirePrivateCheck(newInvite);
@@ -1607,7 +1606,8 @@ public abstract class CalendarItem extends MailItem {
         // Don't allow moving a private appointment on behalf of another user,
         // unless that other user is a calendar resource.
         boolean isCalendarResource = getMailbox().getAccount() instanceof CalendarResource;
-        boolean denyPrivateAccess = requirePrivateCheck ? !allowPrivateAccess(authAccount, asAdmin) : false;
+        boolean denyPrivateAccess =
+            requirePrivateCheck && !allowPrivateAccess(authAccount, asAdmin);
         if (!newInvite.isPublic() || !isPublic()) {
             if (folderId != getFolderId()) {
                 Folder folder = getMailbox().getFolderById(folderId);
@@ -1633,7 +1633,7 @@ public abstract class CalendarItem extends MailItem {
             if (!newInvite.hasRecurId()) {
                 cancelAll = true;
                 // Canceling series.  Check the sequencing requirement to make sure the invite isn't outdated.
-                Invite series = getInvite((RecurId) null);
+                Invite series = getInvite(null);
                 // If series invite is not found, assume cancel is not outdated.
                 outdated = series != null && !newInvite.isSameOrNewerVersion(series);
             } else {
@@ -1685,7 +1685,7 @@ public abstract class CalendarItem extends MailItem {
         boolean needRecurrenceIdUpdate = false;
         ParsedDateTime oldDtStart = null;
         ParsedDuration dtStartMovedBy = null;
-        ArrayList<Invite> toUpdate = new ArrayList<Invite>();
+        ArrayList<Invite> toUpdate = new ArrayList<>();
         if (!discardExistingInvites && !isCancel && newInvite.isRecurrence()) {
             Invite defInv = getDefaultInviteOrNull();
             if (defInv != null && defInv.isRecurrence()) {
@@ -1806,7 +1806,7 @@ public abstract class CalendarItem extends MailItem {
         }
 
         // Check if exception instances are made obsolete by updated recurrence rule.  (bug 47061)
-        Set<String> obsoletedRecurIdZs = new HashSet<String>();
+        Set<String> obsoletedRecurIdZs = new HashSet<>();
         if (!isCancel && newInvite.isRecurrence()) {
             Invite seriesInv = null;
             // Find the range of existing exception instances.
@@ -1879,8 +1879,8 @@ public abstract class CalendarItem extends MailItem {
         boolean replaceExceptionBodyWithSeriesBody = false;
         boolean modifiedCalItem = false;
         Invite prev = null; // the invite which has been made obsolete by the new one coming in
-        ArrayList<Invite> toRemove = new ArrayList<Invite>(); // Invites to remove from our blob store
-        ArrayList<Integer> idxsToRemove = new ArrayList<Integer>(); // indexes to remove from mInvites
+        ArrayList<Invite> toRemove = new ArrayList<>(); // Invites to remove from our blob store
+        ArrayList<Integer> idxsToRemove = new ArrayList<>(); // indexes to remove from mInvites
         int numInvitesCurrent = mInvites.size();  // get current size because we may add to the list in the loop
         for (int i = 0; i < numInvitesCurrent; i++) {
             Invite cur = mInvites.get(i);
@@ -2278,9 +2278,9 @@ public abstract class CalendarItem extends MailItem {
 
     // YCC special
     public interface Callback {
-        public void created(CalendarItem calItem) throws ServiceException;
-        public void modified(CalendarItem calItem) throws ServiceException;
-        public void deleted(CalendarItem calItem) throws ServiceException;
+        void created(CalendarItem calItem) throws ServiceException;
+        void modified(CalendarItem calItem) throws ServiceException;
+        void deleted(CalendarItem calItem) throws ServiceException;
     }
     private static Callback sCallback = null;
     public static synchronized void registerCallback(Callback cb) {
@@ -2624,7 +2624,7 @@ public abstract class CalendarItem extends MailItem {
             else
                 throw ServiceException.FAILURE(
                         "Expected MimeMultipart, but got " + obj.getClass().getName() +
-                        ": id=" + mId + ", content=" + obj.toString(), null);
+                        ": id=" + mId + ", content=" + obj, null);
 
             boolean updated = false;
 
@@ -2866,7 +2866,7 @@ public abstract class CalendarItem extends MailItem {
         }
 
         public ReplyList() {
-            mReplies = new ArrayList<ReplyInfo>();
+            mReplies = new ArrayList<>();
         }
 
         public ReplyList(List<ReplyInfo> list) {
@@ -2891,7 +2891,7 @@ public abstract class CalendarItem extends MailItem {
         static ReplyList decodeFromMetadata(Metadata md, TimeZoneMap tzMap) throws ServiceException {
             ReplyList toRet = new ReplyList();
             int numReplies = (int) md.getLong(FN_NUM_REPLY_INFO);
-            toRet.mReplies = new ArrayList<ReplyInfo>(numReplies);
+            toRet.mReplies = new ArrayList<>(numReplies);
             for (int i = 0; i < numReplies; i++) {
                 ReplyInfo inf = ReplyInfo.decodeFromMetadata(md.getMap(FN_REPLY_INFO+i), tzMap);
                 toRet.mReplies.add(i, inf);
@@ -2917,7 +2917,7 @@ public abstract class CalendarItem extends MailItem {
         }
 
         void upgradeEntriesToNewSeq(RecurId recurId, int seqNo, long dtStamp) {
-            List<ReplyInfo> upgraded = new ArrayList<ReplyInfo>();
+            List<ReplyInfo> upgraded = new ArrayList<>();
             for (Iterator<ReplyInfo> iter = mReplies.iterator(); iter.hasNext();) {
                 ReplyInfo cur = iter.next();
                 if (recurMatches(cur.mRecurId, recurId)) {
@@ -3112,7 +3112,7 @@ public abstract class CalendarItem extends MailItem {
         }
 
         List<ReplyInfo> getAllReplies() {
-            List<ReplyInfo> toRet = new ArrayList<ReplyInfo>();
+            List<ReplyInfo> toRet = new ArrayList<>();
             toRet.addAll(mReplies);
             return toRet;
         }
@@ -3120,7 +3120,7 @@ public abstract class CalendarItem extends MailItem {
         List<ReplyInfo> getReplyInfo(Invite inv, String recurIdZ) {
             assert(inv != null);
 
-            Map<String /* attendee address */, ReplyInfo> repliesByAddr = new HashMap<String, ReplyInfo>();
+            Map<String /* attendee address */, ReplyInfo> repliesByAddr = new HashMap<>();
 
             if (recurIdZ == null && inv.hasRecurId())
                 recurIdZ = inv.getRecurId().getDtZ();
@@ -3195,7 +3195,7 @@ public abstract class CalendarItem extends MailItem {
                 }
             }
 
-            return new ArrayList<ReplyInfo>(repliesByAddr.values());
+            return new ArrayList<>(repliesByAddr.values());
         }
     } // class ReplyList
 
@@ -3345,7 +3345,7 @@ public abstract class CalendarItem extends MailItem {
         boolean requirePrivateCheck = requirePrivateCheck(reply);
         OperationContext octxt = getMailbox().getOperationContext();
         Account authAccount = octxt != null ? octxt.getAuthenticatedUser() : null;
-        boolean asAdmin = octxt != null ? octxt.isUsingAdminPrivileges() : false;
+        boolean asAdmin = octxt != null && octxt.isUsingAdminPrivileges();
         if (!canAccess(ACL.RIGHT_ACTION, authAccount, asAdmin, requirePrivateCheck))
             throw ServiceException.PERM_DENIED("you do not have sufficient permissions to change this appointment/task's state");
 
@@ -3569,7 +3569,7 @@ public abstract class CalendarItem extends MailItem {
     public MimeMessage getSubpartMessage(int subId, boolean runConverters) throws ServiceException {
         try {
             MimeBodyPart mbp = findBodyBySubId(subId, runConverters);
-            return mbp == null ? null : (MimeMessage) Mime.getMessageContent(mbp);
+            return mbp == null ? null : Mime.getMessageContent(mbp);
         } catch (IOException e) {
             throw ServiceException.FAILURE("IOException while getting MimeMessage for item " + mId, e);
         } catch (MessagingException e) {
@@ -3589,7 +3589,7 @@ public abstract class CalendarItem extends MailItem {
             MimeBodyPart mbp = findBodyBySubId(subId);
             if (mbp == null)
                 return null;
-            return new Pair<MimeMessage,Integer>(Mime.getMessageContent(mbp), mbp.getSize());
+            return new Pair<>(Mime.getMessageContent(mbp), mbp.getSize());
         } catch (IOException e) {
             throw ServiceException.FAILURE("IOException while getting MimeMessage for item " + mId, e);
         } catch (MessagingException e) {
@@ -3617,7 +3617,7 @@ public abstract class CalendarItem extends MailItem {
                 } else {
                     throw ServiceException.FAILURE(
                         "Expected MimeMultipart, but got " + obj.getClass().getName() +
-                        ": id=" + mId + ", content=" + obj.toString(), null);
+                        ": id=" + mId + ", content=" + obj, null);
                 }
             } finally {
                 if (obj instanceof InputStream) {
@@ -4087,8 +4087,8 @@ public abstract class CalendarItem extends MailItem {
         private final Map<Integer, Long> mTriggerMap;
         private final Map<Integer, Long> mInstStartMap;
         public NextAlarms() {
-            mTriggerMap = new HashMap<Integer, Long>();
-            mInstStartMap = new HashMap<Integer, Long>();
+            mTriggerMap = new HashMap<>();
+            mInstStartMap = new HashMap<>();
         }
         public void add(int pos, long triggerAt, long instStart) {
             mTriggerMap.put(pos, triggerAt);
@@ -4123,7 +4123,7 @@ public abstract class CalendarItem extends MailItem {
      */
     public NextAlarms computeNextAlarms(Invite inv, long lastAt) throws ServiceException {
         int numAlarms = inv.getAlarms().size();
-        Map<Integer, Long> lastAlarmsAt = new HashMap<Integer, Long>(numAlarms);
+        Map<Integer, Long> lastAlarmsAt = new HashMap<>(numAlarms);
         for (int i = 0; i < numAlarms; i++) {
             lastAlarmsAt.put(i, lastAt);
         }
@@ -4306,14 +4306,10 @@ public abstract class CalendarItem extends MailItem {
             Invite current = getInvite(rid);
             // If no matching recurrence-id was found, look at the current series.
             if (current == null && rid != null)
-                current = getInvite((RecurId) null);
-            if (current != null && !current.isPublic()) {
-                // updating a currently private invite to public
-                return true;
-            } else {
-                // no matching rid found, or current is public
-                return false;
-            }
+                current = getInvite(null);
+            // updating a currently private invite to public
+            // no matching rid found, or current is public
+            return current != null && !current.isPublic();
         } else {
             // Both old and new are public.
             return false;
@@ -4328,7 +4324,7 @@ public abstract class CalendarItem extends MailItem {
      */
     public static Map<Integer, MimeMessage> decomposeBlob(byte[] digestBlob)
     throws ServiceException {
-        Map<Integer, MimeMessage> map = new HashMap<Integer, MimeMessage>();
+        Map<Integer, MimeMessage> map = new HashMap<>();
         try {
             InputStream bais = new SharedByteArrayInputStream(digestBlob);
             FixedMimeMessage digestMm = new FixedMimeMessage(JMSession.getSession(), bais);
@@ -4341,7 +4337,7 @@ public abstract class CalendarItem extends MailItem {
             else
                 throw ServiceException.FAILURE(
                         "Expected MimeMultipart, but got " + obj.getClass().getName() + ": " +
-                        obj.toString(), null);
+                            obj, null);
 
             int numParts = mmp.getCount();
             for (int i = 0; i < numParts; i++) {
@@ -4357,7 +4353,7 @@ public abstract class CalendarItem extends MailItem {
                     else
                         throw ServiceException.FAILURE(
                                 "Expected MimeMessage, but got " + objMbp.getClass().getName() + ": " +
-                                objMbp.toString(), null);
+                                    objMbp, null);
                     map.put(invId, mm);
                 }
             }
@@ -4372,10 +4368,8 @@ public abstract class CalendarItem extends MailItem {
     }
 
     public static boolean isAcceptableInvite(Account acct, CalendarPartInfo cpi) {
-        if (cpi.wasForwarded &&
-            !acct.getBooleanAttr(Provisioning.A_zimbraPrefCalendarAllowForwardedInvite, true))
-            return false;
-        return true;
+        return !cpi.wasForwarded ||
+            acct.getBooleanAttr(Provisioning.A_zimbraPrefCalendarAllowForwardedInvite, true);
     }
 
     @Override

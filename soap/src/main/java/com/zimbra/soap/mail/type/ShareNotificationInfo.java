@@ -58,7 +58,7 @@ public class ShareNotificationInfo {
      */
     @SuppressWarnings("unused")
     private ShareNotificationInfo() {
-        this((String) null, (String) null, -1L, (Grantor) null, (LinkInfo) null);
+        this(null, null, -1L, null, null);
     }
 
     public ShareNotificationInfo(String status, String id, long date, Grantor grantor, LinkInfo link) {

@@ -19,8 +19,8 @@ import org.dom4j.io.XMLWriter;
 
 public abstract class ConfigWriter {
 
-    private boolean mExpandVariables;
-    private boolean mHidePasswords;
+    private final boolean mExpandVariables;
+    private final boolean mHidePasswords;
     
     public static final String FORMAT_PLAIN = "plain";
     public static final String FORMAT_SHELL = "shell";

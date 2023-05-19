@@ -30,7 +30,7 @@ public class BackupAccountQueryResponse {
      * @zm-api-field-description Account backup details
      */
     @XmlElement(name=BackupConstants.E_ACCOUNT /* account */, required=false)
-    private List<BackupAccountQueryInfo> accounts = Lists.newArrayList();
+    private final List<BackupAccountQueryInfo> accounts = Lists.newArrayList();
 
     public BackupAccountQueryResponse() {
     }

@@ -58,7 +58,7 @@ public abstract class Formatter {
     public static final String QP_CALLBACK = "callback";
     private final Pattern ALLOWED_CALLBACK_CHARS = Pattern.compile("^[a-zA-Z0-9_.-]+$");
 
-    private static String PROGRESS = "-progress";
+    private static final String PROGRESS = "-progress";
 
     public String[] getDefaultMimeTypes() {
         return new String[0];
@@ -86,14 +86,14 @@ public abstract class Formatter {
         return EnumSet.of(MailItem.Type.MESSAGE);
     }
 
-    private static Map<Class<? extends Formatter>,FormatListener> listeners = new ConcurrentHashMap<Class<? extends Formatter>, FormatListener>();
+    private static final Map<Class<? extends Formatter>,FormatListener> listeners = new ConcurrentHashMap<>();
 
     public static void registerListener(Class<? extends Formatter> clazz, FormatListener listener) {
         listeners.put(clazz, listener);
     }
 
     private Set<FormatListener> getClassListeners() {
-        Set<FormatListener> set = new HashSet<FormatListener>();
+        Set<FormatListener> set = new HashSet<>();
         for (Class<? extends Formatter> clazz : listeners.keySet()) {
             if (clazz.isAssignableFrom(this.getClass())) {
                 set.add(listeners.get(clazz));
@@ -212,7 +212,7 @@ public abstract class Formatter {
             Collection<? extends MailItem> items = getMailItemsFromFolder(context, (Folder) context.target, startTime, endTime, chunkSize);
             return items != null ? items.iterator() : null;
         } else {
-            ArrayList<MailItem> result = new ArrayList<MailItem>();
+            ArrayList<MailItem> result = new ArrayList<>();
             result.add(context.target);
             return result.iterator();
         }

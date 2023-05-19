@@ -68,20 +68,20 @@ public class MailQueueDetails {
      * data (sender addresses, recipient domain, etc).  Only the deferred queue has error summary type.
      */
     @XmlElement(name=AdminConstants.A_QUEUE_SUMMARY /* qs */, required=false)
-    private List<QueueSummary> queueSummaries = Lists.newArrayList();
+    private final List<QueueSummary> queueSummaries = Lists.newArrayList();
 
     /**
      * @zm-api-field-description The various queue items that match the requested query.
      */
     @XmlElement(name=AdminConstants.A_QUEUE_ITEM /* qi */, required=false)
-    private List<QueueItem> queueItems = Lists.newArrayList();
+    private final List<QueueItem> queueItems = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private MailQueueDetails() {
-        this((String) null, -1L, false, -1, false);
+        this(null, -1L, false, -1, false);
     }
 
     public MailQueueDetails(String name, long time, boolean stillScanning,

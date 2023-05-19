@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class ZimletClassLoader extends URLClassLoader {
 	
-	private List mZimletClassNames = new ArrayList();
+	private final List mZimletClassNames = new ArrayList();
 
 	/**
 	 * Load Zimlet server extension class.

@@ -42,7 +42,7 @@ public class GetClusterStatusResponse {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=ClusterConstants.A_CLUSTER_SERVERS /* servers */, required=false)
     @XmlElement(name=ClusterConstants.A_CLUSTER_SERVER /* server */, required=false)
-    private List<ClusterServerInfo> servers = Lists.newArrayList();
+    private final List<ClusterServerInfo> servers = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Information on cluster services
@@ -50,7 +50,7 @@ public class GetClusterStatusResponse {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=ClusterConstants.A_CLUSTER_SERVICES /* services */, required=false)
     @XmlElement(name=ClusterConstants.A_CLUSTER_SERVICE /* service */, required=false)
-    private List<ClusterServiceInfo> services = Lists.newArrayList();
+    private final List<ClusterServiceInfo> services = Lists.newArrayList();
 
     public GetClusterStatusResponse() {
     }

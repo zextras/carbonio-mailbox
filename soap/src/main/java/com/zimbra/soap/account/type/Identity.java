@@ -48,7 +48,7 @@ public class Identity extends AttrsImpl {
      */
     @SuppressWarnings("unused")
     private Identity() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public Identity(String name, String id) {

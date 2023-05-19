@@ -42,7 +42,7 @@ public class SubscribeDistributionListRequest {
     private DistributionListSelector dl;
 
     public SubscribeDistributionListRequest() {
-        this((DistributionListSelector) null, (DistributionListSubscribeOp) null);
+        this(null, null);
     }
 
     public SubscribeDistributionListRequest(DistributionListSelector dl, DistributionListSubscribeOp op) {

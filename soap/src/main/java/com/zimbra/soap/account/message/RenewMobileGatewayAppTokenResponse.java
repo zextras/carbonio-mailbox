@@ -22,7 +22,7 @@ public class RenewMobileGatewayAppTokenResponse {
      */
     @ZimbraUniqueElement
     @XmlElement(name = AccountConstants.E_AUTH_TOKEN, required = true)
-    private AuthToken authToken;
+    private final AuthToken authToken;
 
     /**
      * no-argument constructor wanted by JAXB

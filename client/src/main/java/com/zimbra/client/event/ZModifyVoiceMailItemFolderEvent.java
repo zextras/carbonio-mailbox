@@ -8,7 +8,7 @@ package com.zimbra.client.event;
 import com.zimbra.common.service.ServiceException;
 
 public class ZModifyVoiceMailItemFolderEvent implements ZModifyItemFolderEvent {
-	private String mFolderId;
+	private final String mFolderId;
 
 	public ZModifyVoiceMailItemFolderEvent(String folderId) throws ServiceException {
 		mFolderId = folderId;

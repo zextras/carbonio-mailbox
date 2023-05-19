@@ -52,8 +52,8 @@ public class MobileConfigFormatterTest {
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        prov.createDomain(DOMAIN_NAME, Maps.<String, Object>newHashMap());
-        prov.createAccount(USER_NAME, "secret", Maps.<String, Object>newHashMap());
+        prov.createDomain(DOMAIN_NAME, Maps.newHashMap());
+        prov.createAccount(USER_NAME, "secret", Maps.newHashMap());
         formatter = new MobileConfigFormatter();
         user = prov.getAccount(USER_NAME);
         user.setMail(USER_NAME);

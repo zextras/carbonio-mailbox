@@ -62,7 +62,7 @@ public class ContactBackup extends AdminDocumentHandler {
 
     protected List<ContactBackupServer> stopContactBackup(List<ServerSelector> selectors, Map<String, Object> context, ZimbraSoapContext zsc) throws ServiceException {
         List<ServerSelector> selectorsToIterate = setEffectiveSelectors(selectors);
-        List<ContactBackupServer> servers = new ArrayList<ContactBackupServer>();
+        List<ContactBackupServer> servers = new ArrayList<>();
         for (ServerSelector serverSelector : selectorsToIterate) {
             Server server = null;
             try {
@@ -82,7 +82,7 @@ public class ContactBackup extends AdminDocumentHandler {
                     servers.add(new ContactBackupServer(server.getName(), ContactBackupStatus.stopped));
                 }
             } else {
-                List<ServerSelector> list = new ArrayList<ServerSelector>();
+                List<ServerSelector> list = new ArrayList<>();
                 list.add(serverSelector);
                 ContactBackupRequest req = new ContactBackupRequest(Operation.stop, list);
                 Element request = JaxbUtil.jaxbToElement(req);
@@ -96,7 +96,7 @@ public class ContactBackup extends AdminDocumentHandler {
 
     protected List<ContactBackupServer> startContactBackup(List<ServerSelector> selectors, Map<String, Object> context, ZimbraSoapContext zsc) throws ServiceException {
         List<ServerSelector> selectorsToIterate = setEffectiveSelectors(selectors);
-        List<ContactBackupServer> servers = new ArrayList<ContactBackupServer>();
+        List<ContactBackupServer> servers = new ArrayList<>();
         for (ServerSelector serverSelector : selectorsToIterate) {
             Server server = null;
             try {
@@ -115,7 +115,7 @@ public class ContactBackup extends AdminDocumentHandler {
                     servers.add(new ContactBackupServer(server.getName(), ContactBackupStatus.error));
                 }
             } else {
-                List<ServerSelector> list = new ArrayList<ServerSelector>();
+                List<ServerSelector> list = new ArrayList<>();
                 list.add(serverSelector);
                 ContactBackupRequest req = new ContactBackupRequest(Operation.start, list);
                 Element request = JaxbUtil.jaxbToElement(req);
@@ -129,7 +129,7 @@ public class ContactBackup extends AdminDocumentHandler {
 
     private List<ServerSelector> setEffectiveSelectors(List<ServerSelector> selectors) throws ServiceException {
         if (selectors == null || selectors.isEmpty()) {
-            List<ServerSelector> retSelectors = new ArrayList<ServerSelector>();
+            List<ServerSelector> retSelectors = new ArrayList<>();
             List<Server> servers = Provisioning.getInstance().getAllServers(Provisioning.SERVICE_MAILBOX);
             for (Server server : servers) {
                 retSelectors.add(new ServerSelector(ServerBy.id, server.getId()));

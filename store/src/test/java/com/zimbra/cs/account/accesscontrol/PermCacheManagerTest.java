@@ -29,8 +29,8 @@ public class PermCacheManagerTest {
     
     private class MockAccount extends Account {
         
-        private String id = LdapUtil.generateUUID();
-        private String name;
+        private final String id = LdapUtil.generateUUID();
+        private final String name;
         
         private MockAccount(String name) {
             super(name, null, null, null, null);
@@ -329,14 +329,14 @@ public class PermCacheManagerTest {
         int numTargets = (int)(acl_cache_target_maxsize * TARGET_FACTOR);
         MockAccount[] targets = new MockAccount[numTargets];
         for (int i = 0; i < numTargets; i++) {
-            String name = "T" + String.valueOf(i+1);
+            String name = "T" + (i + 1);
             targets[i] = new MockAccount(name);
         }
         
         int numGrantees = numTargets;  // assume everyone is accessing everyone's account
         MockAccount[] grantees = new MockAccount[numGrantees];
         for (int i = 0; i < numGrantees; i++) {
-            String name = "G" + String.valueOf(i+1);
+            String name = "G" + (i + 1);
             grantees[i] = new MockAccount(name);
         }
         

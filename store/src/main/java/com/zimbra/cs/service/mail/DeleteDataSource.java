@@ -29,7 +29,7 @@ public class DeleteDataSource extends MailDocumentHandler {
 
     @Override
     public Element handle(Element request, Map<String, Object> context)
-    throws ServiceException, SoapFaultException {
+    throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         Provisioning prov = Provisioning.getInstance();
         Account account = getRequestedAccount(zsc);

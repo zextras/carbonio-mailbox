@@ -25,7 +25,7 @@ public class GetAggregateQuotaUsageOnServerResponse {
      * @zm-api-field-description Aggregate quota information reported per domain
      */
     @XmlElement(name=AdminConstants.E_DOMAIN /* domain */, required=false)
-    private List <DomainAggregateQuotaInfo> domainQuotas = Lists.newArrayList();
+    private final List <DomainAggregateQuotaInfo> domainQuotas = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

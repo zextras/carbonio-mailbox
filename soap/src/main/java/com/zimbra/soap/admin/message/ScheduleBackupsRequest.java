@@ -36,7 +36,7 @@ public class ScheduleBackupsRequest {
      */
     @SuppressWarnings("unused")
     private ScheduleBackupsRequest() {
-        this((Name) null);
+        this(null);
     }
 
     public ScheduleBackupsRequest(Name server) {

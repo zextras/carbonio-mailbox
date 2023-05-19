@@ -75,7 +75,7 @@ public class CheckRecurConflictsRequest {
      * @zm-api-field-description Timezones
      */
     @XmlElement(name=MailConstants.E_CAL_TZ /* tz */, required=false)
-    private List<CalTZInfo> timezones = Lists.newArrayList();
+    private final List<CalTZInfo> timezones = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Expanded recurrences
@@ -85,13 +85,13 @@ public class CheckRecurConflictsRequest {
         @XmlElement(name=MailConstants.E_INVITE_COMPONENT /* comp */, type=ExpandedRecurrenceInvite.class),
         @XmlElement(name=MailConstants.E_CAL_EXCEPT /* except */, type=ExpandedRecurrenceException.class)
     })
-    private List<ExpandedRecurrenceComponent> components = Lists.newArrayList();
+    private final List<ExpandedRecurrenceComponent> components = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Freebusy user specifications
      */
     @XmlElement(name=MailConstants.E_FREEBUSY_USER /* usr */, required=false)
-    private List<FreeBusyUserSpec> freebusyUsers = Lists.newArrayList();
+    private final List<FreeBusyUserSpec> freebusyUsers = Lists.newArrayList();
 
     public CheckRecurConflictsRequest() {
     }

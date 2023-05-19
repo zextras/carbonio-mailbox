@@ -198,7 +198,7 @@ public class EditheaderTest {
      */
     public void addHeaderValue(String headerValue) {
         if (this.headerValue == null) {
-            this.headerValue = new ArrayList<String>();
+            this.headerValue = new ArrayList<>();
         }
         this.headerValue.add(headerValue);
     }
@@ -208,7 +208,7 @@ public class EditheaderTest {
      */
     public void addAllHeaderValues(List<String> headerValue) {
         if (this.headerValue == null) {
-            this.headerValue = new ArrayList<String>();
+            this.headerValue = new ArrayList<>();
         }
         this.headerValue.addAll(headerValue);
     }

@@ -22,7 +22,7 @@ public class DocletApiListener {
     /**
      * Maps Class names to related documentation
      */
-    private Map<String,ApiClassDocumentation> docMap = Maps.newHashMap();
+    private final Map<String,ApiClassDocumentation> docMap = Maps.newHashMap();
 
     public DocletApiListener() {
     }

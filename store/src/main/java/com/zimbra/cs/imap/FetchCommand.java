@@ -13,17 +13,17 @@ import com.zimbra.common.util.ZimbraLog;
 
 public class FetchCommand extends ImapCommand {
 
-    private String sequence;
-    private int attributes;
-    private List<ImapPartSpecifier> parts;
-    private List<ImapPartSpecifier> originalParts;
+    private final String sequence;
+    private final int attributes;
+    private final List<ImapPartSpecifier> parts;
+    private final List<ImapPartSpecifier> originalParts;
 
     public FetchCommand(String sequence, int attributes, List<ImapPartSpecifier> parts) {
         super();
         this.sequence = sequence;
         this.attributes = attributes;
         this.parts = parts;
-        this.originalParts = (parts == null ? null : new ArrayList<ImapPartSpecifier>(parts));
+        this.originalParts = (parts == null ? null : new ArrayList<>(parts));
     }
 
     @Override

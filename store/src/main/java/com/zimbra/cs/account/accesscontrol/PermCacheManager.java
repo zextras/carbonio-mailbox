@@ -51,7 +51,7 @@ class PermCacheManager {
     private static final long ACL_CACHE_TARGET_MAXAGE = LC.acl_cache_target_maxage.intValue() * Constants.MILLIS_PER_MINUTE;
     private static final int ACL_CACHE_CREDENTIAL_MAXSIZE = LC.acl_cache_credential_maxsize.intValue();
     
-    private static PermCacheManager theInstance = new PermCacheManager();
+    private static final PermCacheManager theInstance = new PermCacheManager();
     
     private final LruMap<String, PermCache> targetCache;
     
@@ -189,8 +189,8 @@ class PermCacheManager {
         
         private long resetAt;
         
-        private final LruMap<String, byte[]> credentialToPermissionMap;;
-        
+        private final LruMap<String, byte[]> credentialToPermissionMap;
+
         private PermCache() {
             credentialToPermissionMap = MapUtil.newLruMap(ACL_CACHE_CREDENTIAL_MAXSIZE);
             reset();

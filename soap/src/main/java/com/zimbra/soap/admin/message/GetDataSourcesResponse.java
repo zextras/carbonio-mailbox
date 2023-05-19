@@ -28,7 +28,7 @@ public class GetDataSourcesResponse {
      * @zm-api-field-description Information on data sources
      */
     @XmlElement(name=AccountConstants.E_DATA_SOURCE, required=false)
-    private List<DataSourceInfo> dataSources = Lists.newArrayList();
+    private final List<DataSourceInfo> dataSources = Lists.newArrayList();
 
     public GetDataSourcesResponse() {
     }

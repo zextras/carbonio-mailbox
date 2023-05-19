@@ -25,15 +25,15 @@ import com.zimbra.cs.account.accesscontrol.RightBearer.Grantee;
 public class CheckAttrRight extends CheckRight {
     private static final Log sLog = ZimbraLog.acl;
 
-    private Grantee mGrantee;
-    private AttrRight mAttrRightNeeded;
+    private final Grantee mGrantee;
+    private final AttrRight mAttrRightNeeded;
 
-    static enum CollectAttrsResult {
+    enum CollectAttrsResult {
         SOME(false),
         ALLOW_ALL(true),
         DENY_ALL(true);
 
-        private boolean mIsAll;
+        private final boolean mIsAll;
 
         CollectAttrsResult(boolean isAll) {
             mIsAll = isAll;
@@ -68,8 +68,8 @@ public class CheckAttrRight extends CheckRight {
             return AllowedAttrs.DENY_ALL_ATTRS();
         }
 
-        Map<String, Integer> allowSome = new HashMap<String, Integer>();
-        Map<String, Integer> denySome = new HashMap<String, Integer>();
+        Map<String, Integer> allowSome = new HashMap<>();
+        Map<String, Integer> denySome = new HashMap<>();
         Integer relativity = Integer.valueOf(1);
 
         // we iterate through all the targets from which grants can be inherited
@@ -176,7 +176,7 @@ public class CheckAttrRight extends CheckRight {
             if (car == CollectAttrsResult.SOME && allowSome.isEmpty() && denySome.isEmpty()) {
                 sLog.debug("accessibleAttrs: NONE");
             } else {
-                sLog.debug("accessibleAttrs: " + car.name() + ". " + sb.toString());
+                sLog.debug("accessibleAttrs: " + car.name() + ". " + sb);
             }
         }
 
@@ -224,7 +224,7 @@ public class CheckAttrRight extends CheckRight {
             return result;
 
         // as a group member, bump up the relativity
-        granteeFlags = (short)(GranteeFlag.F_GROUP);
+        granteeFlags = GranteeFlag.F_GROUP;
         result = expandACLToAttrs(acl, granteeFlags, relativity+1, subDomain, allowSome, denySome);
 
         return result;
@@ -467,7 +467,7 @@ public class CheckAttrRight extends CheckRight {
             return AllowedAttrs.ALLOW_ALL_ATTRS();
         } else {
             // get all attrs that can appear on the target entry
-            Set<String> allowed = new HashSet<String>();
+            Set<String> allowed = new HashSet<>();
             allowed.addAll(AttributeManager.getInstance().getAllAttrsInClass(klass));
 
             // remove denied from all

@@ -91,7 +91,7 @@ public class SyncResponse {
         @XmlElement(name=MailConstants.E_MSG /* m */, type=MessageSummary.class),
         @XmlElement(name=MailConstants.E_CHAT /* chat */, type=ChatSummary.class)
     })
-    private List<Object> items = Lists.newArrayList();
+    private final List<Object> items = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

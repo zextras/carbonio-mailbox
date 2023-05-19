@@ -143,7 +143,7 @@ public class Sync extends MailDocumentHandler {
     }
 
     private static final int DEFAULT_FOLDER_ID = Mailbox.ID_FOLDER_ROOT;
-    private static enum SyncPhase { INITIAL, DELTA };
+    private enum SyncPhase { INITIAL, DELTA }
 
     /**
      * @param calendarStart start time of range, in milliseconds. {@code -1} means to leave the start time unconstrained.
@@ -272,7 +272,8 @@ public class Sync extends MailDocumentHandler {
 
         // then, put together the requested folder hierarchy in 2 different flavors
         List<Folder> hierarchy = (root == null || root.getId() == Mailbox.ID_FOLDER_USER_ROOT ? null : root.getSubfolderHierarchy());
-        Set<Integer> targetIds = (root != null && root.getId() == Mailbox.ID_FOLDER_USER_ROOT ? null : new HashSet<Integer>(hierarchy == null ? 0 : hierarchy.size()));
+        Set<Integer> targetIds = (root != null && root.getId() == Mailbox.ID_FOLDER_USER_ROOT ? null : new HashSet<>(
+            hierarchy == null ? 0 : hierarchy.size()));
         if (hierarchy != null) {
             for (Folder folder : hierarchy) {
                 targetIds.add(folder.getId());

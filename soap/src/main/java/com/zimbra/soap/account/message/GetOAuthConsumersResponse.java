@@ -19,7 +19,7 @@ import com.zimbra.common.soap.AccountConstants;
 @XmlRootElement(name=AccountConstants.E_GET_OAUTH_CONSUMERS_RESPONSE)
 public class GetOAuthConsumersResponse {
     @XmlElement(name=AccountConstants.E_OAUTH_CONSUMER, required=false)
-    private List<OAuthConsumer> consumers = new ArrayList<OAuthConsumer>();
+    private final List<OAuthConsumer> consumers = new ArrayList<>();
 
     public void addConsumer(OAuthConsumer consumer) {
         consumers.add(consumer);

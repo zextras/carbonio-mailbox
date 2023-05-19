@@ -566,7 +566,7 @@ public class Folder extends MailItem implements FolderStore {
         if (subfolders == null) {
             return Collections.emptyList();
         }
-        ArrayList<Folder> visible = new ArrayList<Folder>();
+        ArrayList<Folder> visible = new ArrayList<>();
         if (octxt == null || octxt.getAuthenticatedUser() == null) {
             visible.addAll(subfolders.values());
         } else {
@@ -584,7 +584,7 @@ public class Folder extends MailItem implements FolderStore {
      *  subfolders visible to the user in OperationContext.
      */
     public List<Folder> getSubfolderHierarchy(OperationContext octxt) throws ServiceException {
-        ArrayList<Folder> subfolders = new ArrayList<Folder>();
+        ArrayList<Folder> subfolders = new ArrayList<>();
         subfolders.add(this);
         List<Folder> visible = getSubfolders(octxt);
         for (Folder f : visible) {
@@ -599,7 +599,7 @@ public class Folder extends MailItem implements FolderStore {
      *  is the first element in the list, followed by its children, then
      *  its grandchildren, etc. */
     public List<Folder> getSubfolderHierarchy() {
-        return accumulateHierarchy(new ArrayList<Folder>());
+        return accumulateHierarchy(new ArrayList<>());
     }
 
     private List<Folder> accumulateHierarchy(List<Folder> list) {
@@ -818,10 +818,8 @@ public class Folder extends MailItem implements FolderStore {
             return false;
         } else if ((type == Type.CONVERSATION) != (mId == Mailbox.ID_FOLDER_CONVERSATIONS)) {
             return false;
-        } else if (type == Type.FOLDER && !mMailbox.isChildFolderPermitted(mId)) {
-            return false;
-        }
-        return true;
+        } else
+            return type != Type.FOLDER || mMailbox.isChildFolderPermitted(mId);
     }
 
     /** Creates a new Folder with optional attributes and persists it
@@ -1075,7 +1073,7 @@ public class Folder extends MailItem implements FolderStore {
         //   so that we don't fetch them one by one during the updateUnread()
         List<UnderlyingData> unreaddata = DbMailItem.getUnreadMessages(this);
         if (canAccess(ACL.RIGHT_WRITE)) {
-            Set<Integer> conversations = new HashSet<Integer>(unreaddata.size());
+            Set<Integer> conversations = new HashSet<>(unreaddata.size());
             for (UnderlyingData data : unreaddata) {
                 if (data.parentId > 0) {
                     conversations.add(data.parentId);
@@ -1086,7 +1084,7 @@ public class Folder extends MailItem implements FolderStore {
 
         // mark all messages in this folder as read in memory; this implicitly
         //   decrements the unread count for its conversation, folder and tags
-        List<Integer> targets = new ArrayList<Integer>();
+        List<Integer> targets = new ArrayList<>();
         for (UnderlyingData data : unreaddata) {
             Message msg = mMailbox.getMessage(data);
             if (msg.checkChangeID() || !msg.canAccess(ACL.RIGHT_WRITE)) {
@@ -1271,7 +1269,7 @@ public class Folder extends MailItem implements FolderStore {
             }
             Folder subfolder = (Folder) child;
             if (subfolders == null) {
-                subfolders = new LinkedHashMap<String, Folder>();
+                subfolders = new LinkedHashMap<>();
             } else {
                 Folder existing = findSubfolder(subfolder.getName());
                 if (existing == child) {

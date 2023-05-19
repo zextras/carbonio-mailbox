@@ -35,7 +35,7 @@ public class SuspendDeviceRequest {
      */
     @SuppressWarnings("unused")
     private SuspendDeviceRequest() {
-        this((DeviceId) null);
+        this(null);
     }
 
     public SuspendDeviceRequest(DeviceId device) {

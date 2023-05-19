@@ -284,7 +284,6 @@ public final class LC {
 
   @Supported public static final KnownKey ldap_master_url = KnownKey.newKey("");
   public static final KnownKey ldap_bind_url = KnownKey.newKey("");
-  ;
 
   @Supported public static final KnownKey ldap_is_master = KnownKey.newKey(false);
 
@@ -1302,7 +1301,7 @@ public final class LC {
     samePrimaryDomain,
     all,
     none
-  };
+  }
 
   /**
    * Added for Bug 99825 which relates to the security implications of public shares being visible

@@ -13,7 +13,7 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.service.util.ItemId;
 
 public class RemoteImapFolderStore implements ImapFolderStore {
-    private transient ZFolder folder;
+    private final transient ZFolder folder;
 
     public RemoteImapFolderStore(ZFolder folder) {
         this.folder = folder;

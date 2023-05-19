@@ -17,22 +17,22 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.Metadata;
 
 public class CalendarData {
-    private int mFolderId;
-    private int mModSeq;  // last-modified sequence of the folder
-    private long mRangeStart;
-    private long mRangeEnd;
-    private List<CalendarItemData> mCalendarItems;
-    private Map<Integer, CalendarItemData> mCalendarItemsMap;
-    private Set<Integer> mStaleItemIds;
+    private final int mFolderId;
+    private final int mModSeq;  // last-modified sequence of the folder
+    private final long mRangeStart;
+    private final long mRangeEnd;
+    private final List<CalendarItemData> mCalendarItems;
+    private final Map<Integer, CalendarItemData> mCalendarItemsMap;
+    private final Set<Integer> mStaleItemIds;
 
     CalendarData(int folderId, int modSeq, long rangeStart, long rangeEnd) {
         mFolderId = folderId;
         mModSeq = modSeq;
         mRangeStart = rangeStart;
         mRangeEnd = rangeEnd;
-        mCalendarItems = new ArrayList<CalendarItemData>();
-        mCalendarItemsMap = new HashMap<Integer, CalendarItemData>();
-        mStaleItemIds = new HashSet<Integer>();
+        mCalendarItems = new ArrayList<>();
+        mCalendarItemsMap = new HashMap<>();
+        mStaleItemIds = new HashSet<>();
     }
 
     void addCalendarItem(CalendarItemData calItemData) {
@@ -99,8 +99,8 @@ public class CalendarData {
         mRangeEnd = meta.getLong(FN_RANGE_END);
         int numCalItems = (int) meta.getLong(FN_NUM_CALITEMS);
         if (numCalItems > 0) {
-            mCalendarItems = new ArrayList<CalendarItemData>(numCalItems);
-            mCalendarItemsMap = new HashMap<Integer, CalendarItemData>(numCalItems);
+            mCalendarItems = new ArrayList<>(numCalItems);
+            mCalendarItemsMap = new HashMap<>(numCalItems);
             for (int i = 0; i < numCalItems; i++) {
                 Metadata metaCalItem = meta.getMap(FN_CALITEM + i, true);
                 if (metaCalItem != null) {
@@ -109,10 +109,10 @@ public class CalendarData {
                 }
             }
         } else {
-            mCalendarItems = new ArrayList<CalendarItemData>(0);
-            mCalendarItemsMap = new HashMap<Integer, CalendarItemData>(0);
+            mCalendarItems = new ArrayList<>(0);
+            mCalendarItemsMap = new HashMap<>(0);
         }
-        mStaleItemIds = new HashSet<Integer>();
+        mStaleItemIds = new HashSet<>();
     }
 
     Metadata encodeMetadata() {

@@ -43,7 +43,7 @@ public class Acl extends DavMethod {
 		if (!acl.getQName().equals(DavElements.E_ACL))
 			throw new DavException("request does not start with acl element", HttpServletResponse.SC_BAD_REQUEST);
 		List<Element> aceElements = acl.elements(DavElements.E_ACE);
-		ArrayList<Ace> aceList = new ArrayList<Ace>();
+		ArrayList<Ace> aceList = new ArrayList<>();
 		for (Element ace : aceElements)
 			aceList.add(new Ace(ace));
 

@@ -28,7 +28,7 @@ public class GetFreeBusyResponse {
      * @zm-api-field-description Freebusy information for users
      */
     @XmlElement(name=MailConstants.E_FREEBUSY_USER /* usr */, required=false)
-    private List<FreeBusyUserInfo> freebusyUsers = Lists.newArrayList();
+    private final List<FreeBusyUserInfo> freebusyUsers = Lists.newArrayList();
 
     public GetFreeBusyResponse() {
     }

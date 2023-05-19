@@ -46,7 +46,7 @@ public class DeleteDataSourceRequest extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private DeleteDataSourceRequest() {
-        this((String) null, (Id) null);
+        this(null, null);
     }
 
     public DeleteDataSourceRequest(String id, Id dataSource) {

@@ -32,7 +32,7 @@ public class BulkIMAPDataImportResponse {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminExtConstants.E_runningAccounts /* runningAccounts */, required=false)
     @XmlElement(name=AdminConstants.E_ACCOUNT /* account */, required=false)
-    private List<NameId> runningAccounts = Lists.newArrayList();
+    private final List<NameId> runningAccounts = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag total-count

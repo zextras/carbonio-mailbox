@@ -12,12 +12,12 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.soap.account.message.TwoFactorCredentials;
 
 public class ZTOTPCredentials {
-    private String secret;
-    private Set<String> scratchCodes;
+    private final String secret;
+    private final Set<String> scratchCodes;
 
     public ZTOTPCredentials(TwoFactorCredentials twoFactorCredentials) throws ServiceException {
         secret = twoFactorCredentials.getSharedSecret();
-        scratchCodes = new HashSet<String>();
+        scratchCodes = new HashSet<>();
         for (String code: twoFactorCredentials.getScratchCodes()) {
             scratchCodes.add(code);
         }

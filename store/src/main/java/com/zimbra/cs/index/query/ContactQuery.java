@@ -35,7 +35,7 @@ import com.zimbra.cs.mailbox.Mailbox;
  * @author ysasaki
  */
 public final class ContactQuery extends Query {
-    private final List<String> tokens = new ArrayList<String>();
+    private final List<String> tokens = new ArrayList<>();
 
     public ContactQuery(String text) {
         TokenStream stream = new ContactTokenFilter(new AddrCharTokenizer(new HalfwidthKanaVoicedMappingFilter(new StringReader(text))));

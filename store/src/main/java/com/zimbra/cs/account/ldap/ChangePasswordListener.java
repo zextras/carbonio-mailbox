@@ -24,18 +24,18 @@ public abstract class ChangePasswordListener {
     public enum InternalChangePasswordListenerId {
         CPL_SYNC,
         CPL_REVOKE_APP_PASSWORDS,
-        CPL_REMOVE_EWS_PWD_CACHE_ENTRY;
+        CPL_REMOVE_EWS_PWD_CACHE_ENTRY
     }
 
     /*
      * The collection's iterator will return the values in the order their corresponding keys appear in map,
      * which is their natural order (the order in which the enum constants are declared).
      */
-    private static Map<InternalChangePasswordListenerId, ChangePasswordListener> mInternalListeners =
-        Collections.synchronizedMap(new EnumMap<InternalChangePasswordListenerId, ChangePasswordListener>(InternalChangePasswordListenerId.class));
+    private static final Map<InternalChangePasswordListenerId, ChangePasswordListener> mInternalListeners =
+        Collections.synchronizedMap(new EnumMap<>(InternalChangePasswordListenerId.class));
 
-    private static Map<String, ChangePasswordListener> mExternalListeners =
-        Collections.synchronizedMap(new HashMap<String, ChangePasswordListener>());
+    private static final Map<String, ChangePasswordListener> mExternalListeners =
+        Collections.synchronizedMap(new HashMap<>());
 
     /**
      * Register a change password listener.
@@ -88,7 +88,7 @@ public abstract class ChangePasswordListener {
      */
     public static class ChangePasswordListenerContext {
         Map<InternalChangePasswordListenerId, Map<String, Object>> mInternalCtxts =
-            new EnumMap<InternalChangePasswordListenerId, Map<String, Object>>(InternalChangePasswordListenerId.class);
+            new EnumMap<>(InternalChangePasswordListenerId.class);
 
         ChangePasswordListener mExternalListener = null;
         Map<String, Object> mExternalCtxt = null;
@@ -102,7 +102,7 @@ public abstract class ChangePasswordListener {
         for (Map.Entry<InternalChangePasswordListenerId, ChangePasswordListener> listener : mInternalListeners.entrySet()) {
             InternalChangePasswordListenerId listenerEnum = listener.getKey();
             ChangePasswordListener listenerInstance = listener.getValue();
-            Map<String, Object> context = new HashMap<String, Object>();
+            Map<String, Object> context = new HashMap<>();
             ctxts.mInternalCtxts.put(listenerEnum, context);
             listenerInstance.preModify(acct, newPassword, context, attrsToModify);
         }
@@ -112,7 +112,7 @@ public abstract class ChangePasswordListener {
         if (cpListener != null) {
             ctxts.mExternalListener = cpListener;
 
-            Map<String, Object> context = new HashMap<String, Object>();
+            Map<String, Object> context = new HashMap<>();
             ctxts.mExternalCtxt = context;
             cpListener.preModify(acct, newPassword, context, attrsToModify);
         }

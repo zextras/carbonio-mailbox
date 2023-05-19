@@ -29,8 +29,8 @@ public class LmcConversation {
     public void setNumMessages(long n) { mNumMsgs = n; }
     public void setSubject(String s) { mSubject = s; }
     public void setFragment(String f) { mFragment = f; }
-    public void setParticipants(LmcEmailAddress e[]) { mParticipants = e; }
-    public void setMessages(LmcMessage m[]) { mMsgs = m; }
+    public void setParticipants(LmcEmailAddress[] e) { mParticipants = e; }
+    public void setMessages(LmcMessage[] m) { mMsgs = m; }
 
     public String getDate() { return mDate; }
     public String getID() { return mID; }
@@ -42,7 +42,7 @@ public class LmcConversation {
     public LmcEmailAddress[] getParticipants() { return mParticipants; }
     public LmcMessage[] getMessages() { return mMsgs; }
 
-    private static String getCount(Object o[]) {
+    private static String getCount(Object[] o) {
     	return (o == null) ? "0" : Integer.toString(o.length);
     }
     

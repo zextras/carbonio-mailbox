@@ -14,7 +14,7 @@ import org.apache.jsieve.parser.generated.Node;
 public class FolderDeleted
 extends SieveVisitor {
 
-    private String mDeletedFolderPath;
+    private final String mDeletedFolderPath;
     private Node mIfNode;
     private boolean mModified = false;
     

@@ -31,7 +31,7 @@ public class GetIMAPRecentCutoffRequest {
      */
     @SuppressWarnings("unused")
     private GetIMAPRecentCutoffRequest() {
-        this((String) null);
+        this(null);
     }
 
     public GetIMAPRecentCutoffRequest(String id) {

@@ -29,7 +29,7 @@ public class ModifyZimletPrefsResponse {
      * @zm-api-field-description Zimlets
      */
     @XmlElement(name=AccountConstants.E_ZIMLET /* zimlet */, required=false)
-    private List<String> zimlets = Lists.newArrayList();
+    private final List<String> zimlets = Lists.newArrayList();
 
     public ModifyZimletPrefsResponse() {
     }

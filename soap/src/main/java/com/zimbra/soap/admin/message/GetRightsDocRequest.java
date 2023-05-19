@@ -32,7 +32,7 @@ public class GetRightsDocRequest {
      * @zm-api-field-description Packages
      */
     @XmlElement(name=AdminConstants.E_PACKAGE, required=false)
-    private List <PackageSelector> pkgs = Lists.newArrayList();
+    private final List <PackageSelector> pkgs = Lists.newArrayList();
 
     public GetRightsDocRequest() {
     }

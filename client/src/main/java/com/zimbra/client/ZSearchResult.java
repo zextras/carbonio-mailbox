@@ -51,8 +51,8 @@ public class ZSearchResult implements ToZJSONObject {
         sortBy = resp.getAttribute(MailConstants.A_SORTBY);
         hasMore = resp.getAttributeBool(MailConstants.A_QUERY_MORE);
         offset = (int) resp.getAttributeLong(MailConstants.A_QUERY_OFFSET, -1);
-        hits = new ArrayList<ZSearchHit>();
-        imapHits = new ArrayList<ZImapSearchHit>();
+        hits = new ArrayList<>();
+        imapHits = new ArrayList<>();
         for (Element h : el.listElements()) {
             if (h.getName().equals(MailConstants.E_CONV)) {
                 hits.add(new ZConversationHit(h));
@@ -144,7 +144,7 @@ public class ZSearchResult implements ToZJSONObject {
      */
     public class ZConversationSummary implements ZSearchHit {
 
-        private String mId;
+        private final String mId;
         private String mFlags;
         private String mTags;
         private int mMessageCount;

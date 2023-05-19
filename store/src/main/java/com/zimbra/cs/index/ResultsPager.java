@@ -22,8 +22,8 @@ import com.zimbra.cs.mailbox.MailItem;
  * (see bug 2937)
  */
 public final class ResultsPager {
-    private ZimbraQueryResults results;
-    private boolean fixedOffset;
+    private final ZimbraQueryResults results;
+    private final boolean fixedOffset;
     // in cases where ReSortingQueryResults is simulating the cursor for us, we need to skip
     // the passed-in cursor AND offset....otherwise pages will be skipped b/c we will end up
     // skipping OFFSET entries into the cursor-narrowed return set.  Note that we can't just
@@ -31,8 +31,8 @@ public final class ResultsPager {
     // in <SearchResponse> to be incorrect.
     private boolean ignoreOffsetHack = false;
     private List<ZimbraHit> bufferedHits;
-    private SearchParams params;
-    private boolean forward = true;
+    private final SearchParams params;
+    private final boolean forward = true;
     private Comparator<ZimbraHit> comparator;
     private long offset = -1;
 
@@ -107,7 +107,7 @@ public final class ResultsPager {
             }
         } else {
             if (forward) {
-                bufferedHits = new ArrayList<ZimbraHit>(1);
+                bufferedHits = new ArrayList<>(1);
                 ZimbraHit current = forwardFindFirst();
                 if (current != null)
                     bufferedHits.add(current);
@@ -197,7 +197,7 @@ public final class ResultsPager {
      * Returns a list (in reverse order) of all hits between start and current-cursor position.
      */
     private List<ZimbraHit> backward() throws ServiceException {
-        List<ZimbraHit> result = new LinkedList<ZimbraHit>();
+        List<ZimbraHit> result = new LinkedList<>();
         offset = -1;
         results.resetIterator();
         ZimbraHit hit = results.getNext();

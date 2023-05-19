@@ -18,7 +18,7 @@ import com.zimbra.cs.html.owasp.OwaspThreadLocal;
 public class ActionAttributePolicy implements AttributePolicy {
 
     //enable same host post request for a form in email
-    private static boolean sameHostFormPostCheck = DebugConfig.defang_block_form_same_host_post_req;
+    private static final boolean sameHostFormPostCheck = DebugConfig.defang_block_form_same_host_post_req;
 
     @Override
     public String apply(String elementName, String attributeName, String value) {

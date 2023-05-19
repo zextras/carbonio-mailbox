@@ -17,7 +17,7 @@ import com.zimbra.cs.mailclient.imap.ListData;
 
 public class ImapUtilTest {
 
-    private List<ListData> folders = new ArrayList<ListData>();
+    private final List<ListData> folders = new ArrayList<ListData>();
 
     @Before
     public void preTest() {

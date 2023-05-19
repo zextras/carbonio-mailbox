@@ -27,10 +27,10 @@ public class GetAllDistributionListsResponse {
      * @zm-api-field-description Information on distribution lists
      */
     @XmlElement(name=AdminConstants.E_DL, required=false)
-    private List <DistributionListInfo> dls = Lists.newArrayList();
+    private final List <DistributionListInfo> dls = Lists.newArrayList();
 
     public GetAllDistributionListsResponse() {
-        this((List <DistributionListInfo>)null);
+        this(null);
     }
 
     public GetAllDistributionListsResponse(List <DistributionListInfo> dls) {

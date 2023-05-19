@@ -95,7 +95,7 @@ public class SendInviteReplyRequest {
      */
     @SuppressWarnings("unused")
     private SendInviteReplyRequest() {
-        this((String) null, -1, (String) null);
+        this(null, -1, null);
     }
 
     public SendInviteReplyRequest(String id, int componentNum, String verb) {

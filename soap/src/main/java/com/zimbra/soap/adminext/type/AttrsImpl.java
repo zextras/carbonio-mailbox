@@ -30,7 +30,7 @@ abstract public class AttrsImpl implements Attrs {
      * @zm-api-field-description Attrs
      */
     @XmlElement(name=AdminConstants.E_A /* a */, required=false)
-    private List<Attr> attrs = Lists.newArrayList();
+    private final List<Attr> attrs = Lists.newArrayList();
 
     public AttrsImpl() {
         this.setAttrs((Iterable<Attr>) null);

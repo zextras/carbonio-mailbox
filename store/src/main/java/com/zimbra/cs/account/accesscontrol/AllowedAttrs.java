@@ -24,11 +24,11 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
     public enum Result {
         ALLOW_ALL,
         DENY_ALL,
-        ALLOW_SOME;
+        ALLOW_SOME
     }
     
-    private Result mResult;
-    private Set<String> mAllowSome;
+    private final Result mResult;
+    private final Set<String> mAllowSome;
 
     public static final AllowedAttrs ALLOW_ALL_ATTRS() {
         return new AllowedAttrs(AllowedAttrs.Result.ALLOW_ALL, null);
@@ -78,7 +78,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
                 for (String a : attrsNeeded)
                     sb.append(a + " ");
             }
-            sLog.debug("canAccessAttrs attrsNeeded: " + sb.toString());
+            sLog.debug("canAccessAttrs attrsNeeded: " + sb);
         }
         
         if (mResult == AllowedAttrs.Result.ALLOW_ALL)

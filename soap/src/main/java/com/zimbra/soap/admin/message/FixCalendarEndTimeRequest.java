@@ -65,7 +65,7 @@ public class FixCalendarEndTimeRequest {
      */
     @SuppressWarnings("unused")
     private FixCalendarEndTimeRequest() {
-        this((Boolean) null);
+        this(null);
     }
 
     public FixCalendarEndTimeRequest(Boolean sync) {

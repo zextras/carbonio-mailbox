@@ -40,7 +40,7 @@ import com.zimbra.cs.service.util.ItemId;
 
 public class DeleteHeaderTest {
 
-    private static String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
+    private static final String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
             + "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
             + "Received: from localhost (localhost [127.0.0.1])\n"
@@ -764,7 +764,7 @@ public class DeleteHeaderTest {
             Integer itemId = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE).get(0);
             Message message = mbox1.getMessageById(null, itemId);
 
-            String expectedTags[] = {
+            String[] expectedTags = {
                     "tag1-ABC",
                     "tag2-123",
                     "tag3-abc",
@@ -772,9 +772,9 @@ public class DeleteHeaderTest {
                     "tag5-xyz",
                     "tag6-",
                     "tag7-tes",
-                    "tag8-\'\'",
+                "tag8-''",
                     "tag9-a1b2c3"};
-            String resultTags[] = message.getTags();
+            String[] resultTags = message.getTags();
             for (String resultTag : resultTags) {
                 String expectedTag = null;
                 for (String testTag : expectedTags) {

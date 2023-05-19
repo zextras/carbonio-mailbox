@@ -24,11 +24,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name=AccountConstants.E_GET_INFO_REQUEST)
 public class GetInfoRequest {
-    private static Joiner COMMA_JOINER = Joiner.on(",");
+    private static final Joiner COMMA_JOINER = Joiner.on(",");
 
-    private List<InfoSection> sections = new ArrayList<InfoSection>();
+    private final List<InfoSection> sections = new ArrayList<>();
 
-    private List<String> rights = new ArrayList<String>();
+    private final List<String> rights = new ArrayList<>();
 
     public GetInfoRequest() {
     }

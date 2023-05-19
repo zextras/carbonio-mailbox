@@ -17,7 +17,7 @@ import java.io.InputStream;
 public class Rfc822ValidationInputStream
 extends FilterInputStream {
     
-    private long mMaxLineLength;
+    private final long mMaxLineLength;
     private long mCurrentLineLength = 0;
     private boolean mIsValid = true;
     

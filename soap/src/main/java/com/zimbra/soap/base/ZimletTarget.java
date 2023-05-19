@@ -6,6 +6,6 @@
 package com.zimbra.soap.base;
 
 public interface ZimletTarget {
-    public void setValue(String value);
-    public String getValue();
+    void setValue(String value);
+    String getValue();
 }

@@ -26,7 +26,7 @@ public class HABGroupMember extends HABMember {
      */
     @SuppressWarnings("unused")
     public HABGroupMember() {
-        this((String) null);
+        this(null);
     }
 
     public HABGroupMember(String name) {
@@ -42,7 +42,7 @@ public class HABGroupMember extends HABMember {
      */
     @ZimbraKeyValuePairs
     @XmlElement(name=AccountConstants.E_ATTR /* attr */, required=true)
-    private List<NamedValue> attrs = Lists.newArrayList();
+    private final List<NamedValue> attrs = Lists.newArrayList();
 
     public List<NamedValue> getAttrs() {
         return attrs;

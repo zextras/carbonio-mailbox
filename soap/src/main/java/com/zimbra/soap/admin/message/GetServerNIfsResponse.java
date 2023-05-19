@@ -27,7 +27,7 @@ public class GetServerNIfsResponse {
      * @zm-api-field-description Network interface information
      */
     @XmlElement(name=AdminConstants.E_NI, required=false)
-    private List <NetworkInformation> networkInterfaces = Lists.newArrayList();
+    private final List <NetworkInformation> networkInterfaces = Lists.newArrayList();
 
     public GetServerNIfsResponse() {
     }

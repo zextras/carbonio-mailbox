@@ -12,14 +12,14 @@ public class LmcFolder {
     private String parentID;
     private String numUnread;
     private String view;
-    private LmcFolder mSubFolders[];
+    private LmcFolder[] mSubFolders;
 
     public void setFolderID(String f) { folderID = f; }
     public void setName(String n) { name = n; }
     public void setParentID(String p) { parentID = p; }
     public void setNumUnread(String n) { numUnread = n; }
     public void setView(String v) { view = v; }
-    public void setSubFolders(LmcFolder f[]) { mSubFolders = f; }
+    public void setSubFolders(LmcFolder[] f) { mSubFolders = f; }
 
     public String getFolderID() { return folderID; }
     public String getName() { return name; }

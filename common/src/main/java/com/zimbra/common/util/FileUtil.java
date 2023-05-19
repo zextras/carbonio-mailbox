@@ -294,7 +294,7 @@ public class FileUtil {
      * is empty, does not exist, or is not a directory.
      */
     public static List<File> listFilesRecursively(File dir) {
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         addFilesRecursively(dir, files);
         return files;
     }
@@ -322,7 +322,7 @@ public class FileUtil {
      * is empty, does not exist, or is not a directory.
      */
     public static List<File> listDirsRecursively(File dir) {
-        List<File> dirs = new ArrayList<File>();
+        List<File> dirs = new ArrayList<>();
         if (dir.exists()) {
             addDirsRecursively(dir, dirs);
         }
@@ -357,7 +357,7 @@ public class FileUtil {
     }
 
     private static class MTimeComparator implements Comparator<File> {
-        private boolean mReverse;
+        private final boolean mReverse;
 
         private MTimeComparator(boolean reverse) {
             mReverse = reverse;
@@ -519,7 +519,7 @@ public class FileUtil {
         if (lastDot == filename.length() - 1) {
             return "";
         }
-        return filename.substring(lastDot + 1, filename.length());
+        return filename.substring(lastDot + 1);
     }
     
     /**

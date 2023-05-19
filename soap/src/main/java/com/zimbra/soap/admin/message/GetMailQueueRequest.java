@@ -52,7 +52,7 @@ public class GetMailQueueRequest {
      */
     @SuppressWarnings("unused")
     private GetMailQueueRequest() {
-        this((ServerMailQueueQuery) null);
+        this(null);
     }
 
     public GetMailQueueRequest(ServerMailQueueQuery server) {

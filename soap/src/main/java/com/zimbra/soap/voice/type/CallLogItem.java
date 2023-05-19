@@ -26,7 +26,7 @@ public class CallLogItem extends VoiceCallItem {
      * Information for both calling and called parties is returned
      */
     @XmlElement(name=VoiceConstants.E_CALLPARTY /* cp */, required=false)
-    private List<CallLogCallParty> callParties = Lists.newArrayList();
+    private final List<CallLogCallParty> callParties = Lists.newArrayList();
 
     public CallLogItem() {
     }

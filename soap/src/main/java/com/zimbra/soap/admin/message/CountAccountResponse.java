@@ -30,7 +30,7 @@ public class CountAccountResponse {
      * @zm-api-field-description Account count information by Class Of Service (COS)
      */
     @XmlElement(name=AdminConstants.E_COS, required=false)
-    private List <CosCountInfo> cos = Lists.newArrayList();
+    private final List <CosCountInfo> cos = Lists.newArrayList();
 
     public CountAccountResponse() {
     }

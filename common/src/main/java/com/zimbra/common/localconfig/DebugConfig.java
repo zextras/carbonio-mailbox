@@ -48,11 +48,12 @@ public final class DebugConfig {
      *  that does type-specific text extraction.  Setting this key to true
      *  allows one to test the performance of JavaMail apart from performance
      *  of text extraction routines. */
-    public static final boolean disableMimePartExtraction = disableMessageAnalysis ?
-            true : value("debug_disable_mime_part_extraction", false);
+    public static final boolean disableMimePartExtraction =
+        disableMessageAnalysis || value("debug_disable_mime_part_extraction", false);
 
     /** If true, turns off object detection feature. */
-    public static final boolean disableObjects = disableMessageAnalysis ? true : value("debug_disable_objects", false);
+    public static final boolean disableObjects =
+        disableMessageAnalysis || value("debug_disable_objects", false);
 
     /** If true, turns off DHTML UI's highlighting of attachment with search
      *  hit. */
@@ -217,7 +218,7 @@ public final class DebugConfig {
         "href,action");
     public static final String defangStyleUnwantedImport = value(
             "defang_style_unwanted_import",
-            "@import(\\s)*((\'|\")?(\\s)*(http://|https://)?([^\\s;]*)(\\s)*(\'|\")?(\\s)*;?)");
+        "@import(\\s)*(('|\")?(\\s)*(http://|https://)?([^\\s;]*)(\\s)*('|\")?(\\s)*;?)");
     public static final int defangStyleValueLimit = value("defang_style_value_limit", 10000);
 
     public static final String xhtmlWhitelistedTags = value("defang_xhtml_whitelisted_tags",

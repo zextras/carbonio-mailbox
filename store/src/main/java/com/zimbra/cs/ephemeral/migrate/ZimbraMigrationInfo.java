@@ -17,7 +17,7 @@ import com.zimbra.cs.ldap.LdapDateUtil;
  */
 public class ZimbraMigrationInfo extends MigrationInfo {
 
-    private Config config;
+    private final Config config;
 
     public ZimbraMigrationInfo() throws ServiceException {
         config = Provisioning.getInstance().getConfig();

@@ -101,7 +101,7 @@ public class NewFolderSpec {
      */
     @SuppressWarnings("unused")
     private NewFolderSpec() {
-        this((String) null);
+        this(null);
     }
 
     public NewFolderSpec(String name) {

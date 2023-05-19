@@ -14,7 +14,7 @@ import com.zimbra.soap.RequestContext;
  */
 public class ZThreadLocal {
 
-    public static final ThreadLocal<RequestContext> zThreadLocal  = new ThreadLocal<RequestContext>();
+    public static final ThreadLocal<RequestContext> zThreadLocal  = new ThreadLocal<>();
 
     public static void setContext(RequestContext context) {
         zThreadLocal.set(context);

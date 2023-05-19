@@ -7,11 +7,11 @@ package com.zimbra.cs.account.auth.twofactor;
 
 public interface AppSpecificPasswordData {
 
-    public String getName();
+    String getName();
 
-    public String getPassword();
+    String getPassword();
 
-    public Long getDateCreated();
+    Long getDateCreated();
 
-    public Long getDateLastUsed();
+    Long getDateLastUsed();
 }

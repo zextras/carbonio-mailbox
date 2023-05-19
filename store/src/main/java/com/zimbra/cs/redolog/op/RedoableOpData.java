@@ -18,8 +18,8 @@ import com.zimbra.common.util.FileSegmentDataSource;
 import com.zimbra.common.mime.MimeConstants;
 
 class RedoableOpData {
-    private int mLength;
-    private DataSource mDataSource;
+    private final int mLength;
+    private final DataSource mDataSource;
     
     RedoableOpData(byte[] data) {
         mDataSource = new ByteArrayDataSource(data, MimeConstants.CT_APPLICATION_OCTET_STREAM);

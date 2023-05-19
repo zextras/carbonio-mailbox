@@ -14,9 +14,9 @@ import java.util.HashMap;
 
 public class ZVoiceFolder extends ZFolder {
 
-    private static Map<String, Integer> mSortMap;
+    private static final Map<String, Integer> mSortMap;
     static {
-        mSortMap = new HashMap<String, Integer>();
+        mSortMap = new HashMap<>();
         mSortMap.put(VoiceConstants.FNAME_PLACEDCALLS, 5);
         mSortMap.put(VoiceConstants.FNAME_ANSWEREDCALLS, 4);
         mSortMap.put(VoiceConstants.FNAME_MISSEDCALLS, 3);

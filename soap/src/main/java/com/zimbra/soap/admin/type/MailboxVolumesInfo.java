@@ -44,7 +44,7 @@ public class MailboxVolumesInfo {
      * @zm-api-field-description Volumes
      */
     @XmlElement(name=AdminConstants.E_VOLUME /* volume */, required=false)
-    private List<MailboxVolumeInfo> volumes = Lists.newArrayList();
+    private final List<MailboxVolumeInfo> volumes = Lists.newArrayList();
 
     private MailboxVolumesInfo() {
     }

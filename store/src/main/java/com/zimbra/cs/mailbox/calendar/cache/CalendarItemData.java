@@ -17,25 +17,25 @@ import com.zimbra.cs.mailbox.Metadata;
 // an appointment/task and expanded instances over a time range
 public class CalendarItemData {
     // ZCS-specific meta data
-    private MailItem.Type type;  // APPOINTMENT or TASK
-    private int mFolderId;
-    private int mCalItemId;
-    private String mFlags;
-    private String[] mTags;
+    private final MailItem.Type type;  // APPOINTMENT or TASK
+    private final int mFolderId;
+    private final int mCalItemId;
+    private final String mFlags;
+    private final String[] mTags;
     private String mTagIds;
-    private boolean mIsPublic;
-    private int mModMetadata; // mod_metadata db column; this serves the function of last-modified-time
-    private int mModContent;  // mod_content db column
-    private long mDate;       // date db column; unix time in millis
-    private long mChangeDate; // change_date db column; unix time in millis
-    private long mSize;       // size db column
+    private final boolean mIsPublic;
+    private final int mModMetadata; // mod_metadata db column; this serves the function of last-modified-time
+    private final int mModContent;  // mod_content db column
+    private final long mDate;       // date db column; unix time in millis
+    private final long mChangeDate; // change_date db column; unix time in millis
+    private final long mSize;       // size db column
 
     // change management info
-    private String mUid;
+    private final String mUid;
 
     // time/recurrence
-    private boolean mIsRecurring;
-    private boolean mHasExceptions;
+    private final boolean mIsRecurring;
+    private final boolean mHasExceptions;
 
     // alarm
     private AlarmData mAlarm;
@@ -44,7 +44,7 @@ public class CalendarItemData {
     private FullInstanceData mDefaultData;
 
     // expanded/overridden instances
-    private List<InstanceData> mInstances;
+    private final List<InstanceData> mInstances;
 
     // actual time range covered by expanded instances
     private long mActualRangeStart;
@@ -104,7 +104,7 @@ public class CalendarItemData {
         mIsPublic = isPublic;
         mAlarm = alarm;
         mDefaultData = defaultData;
-        mInstances = new ArrayList<InstanceData>();
+        mInstances = new ArrayList<>();
     }
 
     void addInstance(InstanceData instance) {
@@ -192,7 +192,7 @@ public class CalendarItemData {
             mDefaultData = new FullInstanceData(metaDefInst);
         int numInst = (int) meta.getLong(FN_NUM_INST, 0);
         if (numInst > 0) {
-            List<InstanceData> instances = new ArrayList<InstanceData>(numInst);
+            List<InstanceData> instances = new ArrayList<>(numInst);
             for (int i = 0; i < numInst; i++) {
                 Metadata metaInst = meta.getMap(FN_INST + i, true);
                 if (metaInst != null) {
@@ -206,7 +206,7 @@ public class CalendarItemData {
             }
             mInstances = instances;
         } else {
-            mInstances = new ArrayList<InstanceData>(0);
+            mInstances = new ArrayList<>(0);
         }
         mActualRangeStart = meta.getLong(FN_RANGE_START);
         mActualRangeEnd = meta.getLong(FN_RANGE_END);

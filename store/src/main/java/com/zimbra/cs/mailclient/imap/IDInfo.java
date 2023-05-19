@@ -33,7 +33,7 @@ public final class IDInfo {
     //value constant(s)
     public static String DATASOURCE_IMAP_CLIENT_NAME = "ZimbraImapDataSource";
 
-    private final Map<String, String> fields = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, String> fields = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     public static IDInfo read(ImapInputStream is) throws IOException {
         is.skipSpaces();
@@ -61,7 +61,7 @@ public final class IDInfo {
     }
 
     public List<ImapData> toRequestParam() {
-        List<ImapData> data = new ArrayList<ImapData>(fields.size());
+        List<ImapData> data = new ArrayList<>(fields.size());
         for (Map.Entry<String, String> e : fields.entrySet()) {
             data.add(ImapData.asString(e.getKey()));
             data.add(ImapData.asNString(e.getValue()));

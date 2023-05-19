@@ -25,7 +25,7 @@ import com.zimbra.cs.ldap.ZLdapFilterFactory;
  */
 public class LdapDomain extends Domain implements LdapEntry {
 
-    private String mDn;
+    private final String mDn;
     
     public LdapDomain(String dn, ZAttributes attrs, Map<String, Object> defaults, Provisioning prov) 
     throws LdapException {

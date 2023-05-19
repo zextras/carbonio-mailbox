@@ -33,7 +33,7 @@ public class MailQueueWithAction {
      */
     @SuppressWarnings("unused")
     private MailQueueWithAction() {
-        this((String) null, (MailQueueAction) null);
+        this(null, null);
     }
 
     public MailQueueWithAction(String name, MailQueueAction action) {

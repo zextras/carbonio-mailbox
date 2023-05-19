@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -51,7 +52,7 @@ public final class MetadataDump {
     public static final String METADATA_HDR = "[Metadata]";
     public static final String BLOBPATH_HDR = "[Blob Path]";
 
-    private static Options sOptions = new Options();
+    private static final Options sOptions = new Options();
 
     static {
         sOptions.addOption("m", OPT_MAILBOX_ID, true, "mailbox id or email");
@@ -71,7 +72,7 @@ public final class MetadataDump {
         System.err.println("   or: zmmetadump -s <encoded string>");
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         CommandLineParser parser = new GnuParser();
         CommandLine cl = null;
         try {
@@ -86,7 +87,7 @@ public final class MetadataDump {
     private static final String METADATA_COLUMN = "metadata";
 
     private static class Row implements Iterable<Entry<String, String>> {
-        private final Map<String, String> mMap = new LinkedHashMap<String, String>();
+        private final Map<String, String> mMap = new LinkedHashMap<>();
 
         Row()  { }
 
@@ -229,7 +230,7 @@ public final class MetadataDump {
                          " ORDER BY mailbox_id, item_id, version DESC";
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
-            List<Row> rows = new ArrayList<Row>();
+            List<Row> rows = new ArrayList<>();
             while (rs.next()) {
                 Row row = new Row();
                 ResultSetMetaData rsMeta = rs.getMetaData();
@@ -318,7 +319,7 @@ public final class MetadataDump {
             int mboxId = 0;
             int itemId = 0;
 
-            PrintStream out = new PrintStream(System.out, true, "utf-8");
+            PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
             CommandLine cl = parseArgs(args);
             if (cl.hasOption(OPT_HELP)) {

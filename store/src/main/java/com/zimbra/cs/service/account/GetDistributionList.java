@@ -69,10 +69,10 @@ public class GetDistributionList extends DistributionListDocumentHandler {
     }
 
     private static class GetDistributionListHandler extends SynchronizedGroupHandler {
-        private Element request;
-        private Element response;
-        private Provisioning prov;
-        private Account acct;
+        private final Element request;
+        private final Element response;
+        private final Provisioning prov;
+        private final Account acct;
 
         protected GetDistributionListHandler(Group group,
                 Element request, Element response,
@@ -166,7 +166,7 @@ public class GetDistributionList extends DistributionListDocumentHandler {
                 } else {
                     Object value = entry.getValue();
                     if (value instanceof String[]) {
-                        String sa[] = (String[]) value;
+                        String[] sa = (String[]) value;
                         for (int i = 0; i < sa.length; i++) {
                             eParent.addKeyValuePair(key, sa[i], AccountConstants.E_A, AccountConstants.A_N);
                         }

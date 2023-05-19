@@ -167,7 +167,7 @@ public class ParticallyDenied {
         Set<TargetType> subTargetTypes = targetTypeToGrant.subTargetTypes();
 
         // set of target types any sub-right can be granted
-        Set<TargetType> subRightsGrantableOnTargetTypes = new HashSet<TargetType>();
+        Set<TargetType> subRightsGrantableOnTargetTypes = new HashSet<>();
         getAllGrantableTargetTypes(rightToGrant, subRightsGrantableOnTargetTypes);
 
         // get the interset of the two, that would be the target types to search for

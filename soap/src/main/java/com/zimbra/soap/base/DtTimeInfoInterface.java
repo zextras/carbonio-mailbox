@@ -10,9 +10,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface DtTimeInfoInterface {
-    public void setTimezone(String timezone);
-    public void setUtcTime(Long utcTime);
-    public String getDateTime();
-    public String getTimezone();
-    public Long getUtcTime();
+    void setTimezone(String timezone);
+    void setUtcTime(Long utcTime);
+    String getDateTime();
+    String getTimezone();
+    Long getUtcTime();
 }

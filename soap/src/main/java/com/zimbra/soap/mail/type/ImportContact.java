@@ -20,7 +20,7 @@ import com.zimbra.common.soap.MailConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ImportContact {
 
-    private List <String> listOfCreatedIds = new ArrayList<String>();
+    private final List <String> listOfCreatedIds = new ArrayList<>();
 
     /**
      * @zm-api-field-tag num-imported
@@ -32,8 +32,8 @@ public class ImportContact {
     public ImportContact() {
     }
 
-    private static Splitter COMMA_SPLITTER = Splitter.on(",");
-    private static Joiner COMMA_JOINER = Joiner.on(",");
+    private static final Splitter COMMA_SPLITTER = Splitter.on(",");
+    private static final Joiner COMMA_JOINER = Joiner.on(",");
 
     /**
      * @zm-api-field-tag comma-sep-created-ids

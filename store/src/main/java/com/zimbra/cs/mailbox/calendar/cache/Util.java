@@ -109,7 +109,7 @@ public class Util {
         calEnd.add(Calendar.DAY_OF_YEAR, moreDays);
         long end = Math.max(calEnd.getTimeInMillis(), start);
 
-        return new Pair<Long, Long>(start, end);
+        return new Pair<>(start, end);
     }
 
     /**

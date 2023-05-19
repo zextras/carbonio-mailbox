@@ -34,7 +34,7 @@ public class GetYahooCookieRequest {
      */
     @SuppressWarnings("unused")
     private GetYahooCookieRequest() {
-        this((String) null);
+        this(null);
     }
 
     public GetYahooCookieRequest(String user) {

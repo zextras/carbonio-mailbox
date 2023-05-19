@@ -28,13 +28,13 @@ import com.zimbra.cs.redolog.op.RedoableOp;
  */
 public class FileLogReader {
 
-    private FileHeader mHeader;
+    private final FileHeader mHeader;
     private boolean mHeaderRead;
 
-    private File mFile;
+    private final File mFile;
     private RandomAccessFile mRAF;
     private RedoLogInput mIN;
-    private boolean mReadOnly;
+    private final boolean mReadOnly;
     private long mFileSizeAtOpen;
     private long mLastOpStartOffset;
 
@@ -163,7 +163,7 @@ public class FileLogReader {
         int viewSize = 4 * 1024;
         if (pattern.length > viewSize)
             return false;
-        byte view[] = new byte[viewSize * 2];  // double the size for pattern appearing on single view boundary
+        byte[] view = new byte[viewSize * 2];  // double the size for pattern appearing on single view boundary
         long rafPos = mRAF.getFilePointer();
         long viewBaseOffset = rafPos - (rafPos % viewSize);
         mRAF.seek(viewBaseOffset);

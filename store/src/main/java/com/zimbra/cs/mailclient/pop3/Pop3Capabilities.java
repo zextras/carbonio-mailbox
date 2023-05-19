@@ -20,7 +20,7 @@ import java.io.IOException;
  * Result of POP3 CAPA extension (see rfc2449)
  */
 public class Pop3Capabilities {
-    private Map<String, List<String>> capabilities;
+    private final Map<String, List<String>> capabilities;
     
     public static final String TOP = "TOP";
     public static final String USER = "USER";
@@ -40,7 +40,7 @@ public class Pop3Capabilities {
     }
     
     private Pop3Capabilities() {
-        capabilities = new HashMap<String, List<String>>();
+        capabilities = new HashMap<>();
     }
 
     private void readCapabilities(ContentInputStream is) throws IOException {
@@ -51,7 +51,7 @@ public class Pop3Capabilities {
                 String key = words[0];
                 List<String> params = capabilities.get(key);
                 if (params == null) {
-                    params = new ArrayList<String>();
+                    params = new ArrayList<>();
                     capabilities.put(key.toUpperCase(), params);
                 }
                 for (int i = 1; i < words.length; i++) {

@@ -38,7 +38,7 @@ import com.zimbra.common.util.ZimbraLog;
  */
 public final class ThrottlingFilter implements Filter {
     private final ConcurrentMap<String, Semaphore> sid2tracker =
-        new ConcurrentHashMap<String, Semaphore>();
+        new ConcurrentHashMap<>();
 
     @Override
     public void init(FilterConfig config) {

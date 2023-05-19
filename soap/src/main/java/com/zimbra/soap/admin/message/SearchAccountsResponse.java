@@ -60,7 +60,7 @@ public class SearchAccountsResponse {
         @XmlElement(name=AdminConstants.E_DOMAIN, type=DomainInfo.class),
         @XmlElement(name=AdminConstants.E_COS, type=CosInfo.class)
     })
-    private List<AdminObjectInterface> entries = Lists.newArrayList();
+    private final List<AdminObjectInterface> entries = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

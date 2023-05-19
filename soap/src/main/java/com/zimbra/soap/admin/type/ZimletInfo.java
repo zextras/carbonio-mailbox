@@ -28,16 +28,16 @@ public class ZimletInfo extends AdminObjectInfo {
      */
     @SuppressWarnings("unused")
     private ZimletInfo() {
-        this((String) null, (String) null, (Collection <Attr>) null,
-                (String) null);
+        this(null, null, null,
+            null);
     }
 
     public ZimletInfo(String id, String name) {
-        this(id, name, null, (String) null);
+        this(id, name, null, null);
     }
 
     public ZimletInfo(String id, String name, Collection <Attr> attrs) {
-        this(id, name, attrs, (String) null);
+        this(id, name, attrs, null);
     }
 
     public ZimletInfo(String id, String name, Collection <Attr> attrs,

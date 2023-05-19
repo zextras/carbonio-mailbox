@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * @author Andy Clark
  */
 public class Props2Js {
-    private static Pattern VARNAME = Pattern.compile("^[a-zA-Z_][a-zA-Z0-9_]*$");
+    private static final Pattern VARNAME = Pattern.compile("^[a-zA-Z_][a-zA-Z0-9_]*$");
 
     private Props2Js() {}
 
@@ -82,7 +82,7 @@ public class Props2Js {
         String classname) throws IOException {
         // print values immediately rather than store them in a hash
         class PropertyPrinter extends Properties {
-            DataOutputStream out;
+            final DataOutputStream out;
             Matcher matcher = VARNAME.matcher("");
             
             PropertyPrinter(DataOutputStream out) { this.out = out; }

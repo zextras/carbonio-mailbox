@@ -17,10 +17,10 @@ import com.zimbra.cs.mailbox.Mailbox;
  * @author ysasaki
  */
 public final class ConvCountQuery extends Query {
-    private int lowestCount;
-    private boolean lowerEq;
-    private int highestCount;
-    private boolean higherEq;
+    private final int lowestCount;
+    private final boolean lowerEq;
+    private final int highestCount;
+    private final boolean higherEq;
 
     private ConvCountQuery(int lowestCount, boolean lowerEq, int highestCount, boolean higherEq) {
         this.lowestCount = lowestCount;

@@ -12,6 +12,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,8 +41,8 @@ import com.zimbra.common.zclient.ZClientException;
 public class WaitSetValidator implements DebugListener {
 
     private long mSendStart;
-    private int mTimeout = -1;
-    private int mRetryCount = -1;
+    private final int mTimeout = -1;
+    private final int mRetryCount = -1;
     private SoapHttpTransport mTransport;
     private ZAuthToken mAuthToken;
     private long mAuthTokenLifetime;
@@ -122,7 +123,7 @@ public class WaitSetValidator implements DebugListener {
     protected List<WaitSetSession> queryWaitSet(String id) throws ServiceException {
         Element qws = invokeQueryWaitSet(id);
         
-        List<WaitSetSession> toRet = new ArrayList<WaitSetSession>();
+        List<WaitSetSession> toRet = new ArrayList<>();
         
         for (Iterator<Element> iter = qws.elementIterator("session"); iter.hasNext();) {
             Element selt = iter.next();
@@ -197,7 +198,7 @@ public class WaitSetValidator implements DebugListener {
     }
 
     void usage() {
-        System.out.println("");
+        System.out.println();
         System.out.println("testwaitset -i waitsetid [-u admin_user] [-p password] [-h host]");
         System.exit(1);
     }
@@ -205,7 +206,8 @@ public class WaitSetValidator implements DebugListener {
     private static void printError(String text) {
         PrintStream ps = System.err;
         try {
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, "UTF-8"));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps,
+                StandardCharsets.UTF_8));
             writer.write(text+"\n");
             writer.flush();
         } catch (UnsupportedEncodingException e) {

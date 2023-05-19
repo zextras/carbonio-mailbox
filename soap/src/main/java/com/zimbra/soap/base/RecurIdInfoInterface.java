@@ -10,14 +10,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface RecurIdInfoInterface {
-    public RecurIdInfoInterface createFromRangeTypeAndId(
-            int recurrenceRangeType, String recurrenceId);
-    public void setRecurrenceRangeType(int recurrenceRangeType);
-    public void setRecurrenceId(String recurrenceId);
-    public void setTimezone(String timezone);
-    public void setRecurIdZ(String recurIdZ);
-    public int getRecurrenceRangeType();
-    public String getRecurrenceId();
-    public String getTimezone();
-    public String getRecurIdZ();
+    RecurIdInfoInterface createFromRangeTypeAndId(
+        int recurrenceRangeType, String recurrenceId);
+    void setRecurrenceRangeType(int recurrenceRangeType);
+    void setRecurrenceId(String recurrenceId);
+    void setTimezone(String timezone);
+    void setRecurIdZ(String recurIdZ);
+    int getRecurrenceRangeType();
+    String getRecurrenceId();
+    String getTimezone();
+    String getRecurIdZ();
 }

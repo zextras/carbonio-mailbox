@@ -156,7 +156,7 @@ public class DbTag {
     public static List<UnderlyingData> getUnreadMessages(Tag tag) throws ServiceException {
         Mailbox mbox = tag.getMailbox();
 
-        ArrayList<UnderlyingData> result = new ArrayList<UnderlyingData>();
+        ArrayList<UnderlyingData> result = new ArrayList<>();
 
         DbConnection conn = mbox.getOperationConnection();
         PreparedStatement stmt = null;

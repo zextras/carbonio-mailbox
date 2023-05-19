@@ -43,7 +43,7 @@ public class PurgeRevisionSpec {
      */
     @SuppressWarnings("unused")
     private PurgeRevisionSpec() {
-        this((String) null, -1);
+        this(null, -1);
     }
 
     public PurgeRevisionSpec(String id, int version) {

@@ -11,7 +11,7 @@ package com.zimbra.cs.lmtpserver;
  * 		RFC 1652 - SMTP Service Extension for 8bit-MIMEtransport
  */
 public final class LmtpBodyType {
-	private String mType;
+	private final String mType;
 	
 	private LmtpBodyType(String type) {
 		mType = type;

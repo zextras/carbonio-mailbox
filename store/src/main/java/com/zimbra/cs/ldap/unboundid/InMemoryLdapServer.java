@@ -45,7 +45,7 @@ public class InMemoryLdapServer {
     private static final String SCHEMA_FILE_NAME = "zimbra_schema.ldif";
     private static final String DIT_FILE_NAME = "zimbra_dit.ldif";
     
-    private static Map<String, Server> servers = Maps.newHashMap();
+    private static final Map<String, Server> servers = Maps.newHashMap();
     
     public static boolean isOn() {
         return DebugConfig.useInMemoryLdapServer;
@@ -142,7 +142,7 @@ public class InMemoryLdapServer {
      * 
      */
     public static class Password {
-        private static String NON_SSHA_PASSWORD_PREFIX = "__non_ssha__";
+        private static final String NON_SSHA_PASSWORD_PREFIX = "__non_ssha__";
         
         public static String genNonSSHAPassword(String password) {
             return NON_SSHA_PASSWORD_PREFIX + password;
@@ -158,9 +158,9 @@ public class InMemoryLdapServer {
     }
 
     public static class ServerConfig {
-        private String schemaLDIFFile;
-        private String ditLDIFFile;
-        private List<String> extraBaseDNs;
+        private final String schemaLDIFFile;
+        private final String ditLDIFFile;
+        private final List<String> extraBaseDNs;
         
         public ServerConfig() {
             this(UNITTEST_DATA_PATH, null);
@@ -196,7 +196,7 @@ public class InMemoryLdapServer {
     
     private static class Server {
         // path to the directory where SCHEMA_FILE_NAME and DIT_FILE_NAME are 
-        private ServerConfig serverConfig;
+        private final ServerConfig serverConfig;
         
         private InMemoryDirectoryServer server;
         
@@ -324,8 +324,8 @@ public class InMemoryLdapServer {
      */
     private static class Exporter {
         
-        private PrintStream logger;
-        private String path;
+        private final PrintStream logger;
+        private final String path;
         
         private Exporter(String path) {
             this(path, System.out);

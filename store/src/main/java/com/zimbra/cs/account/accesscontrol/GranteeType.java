@@ -49,12 +49,12 @@ public enum GranteeType {
 
 
     private static class GT {
-        static Map<String, GranteeType> sCodeMap = new HashMap<String, GranteeType>();
+        static Map<String, GranteeType> sCodeMap = new HashMap<>();
     }
 
-    private String mCode;
-    private short mFlags;
-    private com.zimbra.soap.type.GranteeType jaxbGranteeType;
+    private final String mCode;
+    private final short mFlags;
+    private final com.zimbra.soap.type.GranteeType jaxbGranteeType;
 
     GranteeType(String code, com.zimbra.soap.type.GranteeType jaxbGT, short flags) {
         mCode = code;

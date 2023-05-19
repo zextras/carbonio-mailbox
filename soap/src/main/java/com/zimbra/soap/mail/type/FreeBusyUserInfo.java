@@ -40,14 +40,14 @@ public class FreeBusyUserInfo {
         @XmlElement(name=MailConstants.E_FREEBUSY_BUSY_UNAVAILABLE /* u */, type=FreeBusyBUSYUNAVAILABLEslot.class),
         @XmlElement(name=MailConstants.E_FREEBUSY_NODATA /* n */, type=FreeBusyNODATAslot.class)
     })
-    private List<FreeBusySlot> elements = Lists.newArrayList();
+    private final List<FreeBusySlot> elements = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private FreeBusyUserInfo() {
-        this((String) null);
+        this(null);
     }
 
     public FreeBusyUserInfo(String id) {

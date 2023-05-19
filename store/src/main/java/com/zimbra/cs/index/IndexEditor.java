@@ -58,7 +58,7 @@ public final class IndexEditor {
     private BufferedReader inputReader = null;
     private PrintStream outputStream = null;
 
-    private static Log mLog = LogFactory.getLog(IndexEditor.class);
+    private static final Log mLog = LogFactory.getLog(IndexEditor.class);
 
     public void deleteIndex(int mailboxId) throws ServiceException {
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(mailboxId);
@@ -77,7 +77,7 @@ public final class IndexEditor {
             ZimbraLog.index.error("could not retrieve mailbox manager; aborting reindex", e);
             return;
         }
-        int ids[] = mmgr.getMailboxIds();
+        int[] ids = mmgr.getMailboxIds();
         for (int i = 0; i < ids.length; i++) {
             mLog.info("Mailbox "+ids[i]+"\n");
             try {
@@ -100,7 +100,7 @@ public final class IndexEditor {
 
     public interface QueryRunner {
         ZimbraQueryResults runQuery(String qstr, Set<MailItem.Type> types, SortBy sortBy)
-            throws IOException, MailServiceException, ServiceException;
+            throws IOException, ServiceException;
     }
 
     public class SingleQueryRunner implements QueryRunner {
@@ -112,7 +112,7 @@ public final class IndexEditor {
 
         @Override
         public ZimbraQueryResults runQuery(String qstr, Set<MailItem.Type> types, SortBy sortBy)
-                throws IOException, MailServiceException, ServiceException {
+                throws IOException, ServiceException {
             Mailbox mbox = MailboxManager.getInstance().getMailboxById(mMailboxId);
             SearchParams params = new SearchParams();
             params.setQueryString(qstr);
@@ -128,7 +128,7 @@ public final class IndexEditor {
     }
 
     public void doQuery(QueryRunner runner, boolean dump, int groupBy)
-        throws MailServiceException, IOException, ServiceException {
+        throws IOException, ServiceException {
 
         while (true) {
             outputStream.print("Query> ");
@@ -188,10 +188,10 @@ public final class IndexEditor {
         } else {
             if (hit instanceof MessageHit) {
                 MessageHit mh = (MessageHit)hit;
-                outputStream.println(mh.toString());
+                outputStream.println(mh);
             } else if (hit instanceof MessagePartHit){
                 MessagePartHit mph = (MessagePartHit)hit;
-                outputStream.println(mph.toString());
+                outputStream.println(mph);
             } else {
                 outputStream.println(hit.toString());
             }
@@ -277,7 +277,7 @@ public final class IndexEditor {
 
         Field content = d.getField(LuceneFields.L_CONTENT);
         if (content != null) {
-            outputStream.println("\t"+content.toString());
+            outputStream.println("\t"+ content);
         }
     }
 
@@ -350,7 +350,7 @@ public final class IndexEditor {
         }
     }
 
-    public static List<Object> inputs = new ArrayList<Object>();
+    public static List<Object> inputs = new ArrayList<>();
 
     private static class IndexEditorTcpThread implements Runnable {
         @Override
@@ -388,7 +388,7 @@ public final class IndexEditor {
 //      private String mRemoteAddress;
         private IndexEditor mEditor = null;
 
-        private String logLayoutPattern = "%d %-5p [%t] [%x] %c{1} - %m%n";
+        private final String logLayoutPattern = "%d %-5p [%t] [%x] %c{1} - %m%n";
 
 
         public IndexEditorProtocolhandler(TcpServer server) {
@@ -663,7 +663,7 @@ public final class IndexEditor {
             outputStream.print("Enter logging level> ");
             logLevel = inputReader.readLine();
         } catch(Exception e) {
-            outputStream.print("Caught exception: "+e.toString());
+            outputStream.print("Caught exception: "+ e);
         }
 
         Logger root = Logger.getRootLogger();
@@ -699,7 +699,7 @@ public final class IndexEditor {
         outputStream.println("Current level is: "+cur);
     }
 
-    private IndexEditorProtocolhandler mHandler;
+    private final IndexEditorProtocolhandler mHandler;
     public IndexEditor(IndexEditorProtocolhandler handler) {
         mHandler = handler;
     }

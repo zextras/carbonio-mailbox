@@ -42,16 +42,16 @@ class MimeParser {
          *  <tt>0</tt> means that the boundary matched completely without
          *  trailing dashes, <tt>2</tt> means that the boundary has matched
          *  and there are 2 trailing dashes (i.e. an end boundary). */
-        private Map<String, Integer> boundaryCandidates;
+        private final Map<String, Integer> boundaryCandidates;
         /** The byte position of the end of the current part if this line
          *  matches an active boundary. */
-        private long partEnd;
+        private final long partEnd;
         /** If there is a blank boundary in the list, we keep a copy of the
          *  content of the line for use in matching subsequent boundaries. */
         private StringBuilder boundary;
 
         BoundaryChecker(List<String> boundaries, long lineStart, LineEnding lastEnding) {
-            boundaryCandidates = new LinkedHashMap<String, Integer>(boundaries.size());
+            boundaryCandidates = new LinkedHashMap<>(boundaries.size());
             for (String bnd : boundaries) {
                 if (bnd.isEmpty()) {
                     // "" means no "boundary" param on the Content-Type
@@ -194,7 +194,7 @@ class MimeParser {
     protected ParserState state = ParserState.HEADER_LINESTART;
 
     /** The stack of active message parts, outermost to innermost. */
-    private List<PartInfo> parts = new ArrayList<PartInfo>(5);
+    private final List<PartInfo> parts = new ArrayList<>(5);
 
     /** The parser's current position in the message (in bytes). */
     private long position;
@@ -235,11 +235,11 @@ class MimeParser {
     private int colon = -1;
 
     /** The "name" (the part preceding the colon) of the current header. */
-    private StringBuilder name = new StringBuilder(25);
+    private final StringBuilder name = new StringBuilder(25);
 
     /** The entire content of the current header.  This includes the name,
      *  the colon, the raw header value, any folding, and the trailing CRLF. */
-    private HeaderUtils.ByteBuilder content = new HeaderUtils.ByteBuilder(80);
+    private final HeaderUtils.ByteBuilder content = new HeaderUtils.ByteBuilder(80);
 
 
     /** Terminates message parsing and returns the {@code MimeMessage}
@@ -520,7 +520,7 @@ class MimeParser {
      *  enclosing parts.  Sets {@link #boundaries} appropriately, or to
      *  {@code null} if there are no valid boundaries. */
     void recalculateBoundaries() {
-        boundaries = new ArrayList<String>(parts.size());
+        boundaries = new ArrayList<>(parts.size());
         for (PartInfo pinfo : parts) {
             if (pinfo.boundary != null) {
                 boundaries.add(pinfo.boundary);

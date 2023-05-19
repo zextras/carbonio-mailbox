@@ -19,8 +19,8 @@ import com.zimbra.cs.ephemeral.DynamicResultsHelper.DeletionCallback;
 
 public class LdapEphemeralStore extends EphemeralStore {
 
-    private AbstractLdapHelper helper;
-    private DeletionCallback callback;
+    private final AbstractLdapHelper helper;
+    private final DeletionCallback callback;
 
     public LdapEphemeralStore() {
         this(new ZimbraLdapHelper());
@@ -133,7 +133,7 @@ public class LdapEphemeralStore extends EphemeralStore {
         protected Map<String, Object> attrs;
 
         public AbstractLdapHelper() {
-            attrs = new HashMap<String, Object>();
+            attrs = new HashMap<>();
         }
 
         void addChange(String attr, String value) {

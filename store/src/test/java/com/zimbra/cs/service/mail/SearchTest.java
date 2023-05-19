@@ -44,8 +44,8 @@ public class SearchTest {
     public void setUp() throws Exception {
         System.out.println(testName.getMethodName());
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", Maps.<String, Object>newHashMap());
-        prov.createAccount("testZCS3705@zimbra.com", "secret", Maps.<String, Object>newHashMap());
+        prov.createAccount("test@zimbra.com", "secret", Maps.newHashMap());
+        prov.createAccount("testZCS3705@zimbra.com", "secret", Maps.newHashMap());
     }
 
     @Test

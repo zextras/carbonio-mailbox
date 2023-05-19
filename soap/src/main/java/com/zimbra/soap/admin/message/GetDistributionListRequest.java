@@ -55,12 +55,12 @@ public class GetDistributionListRequest extends AttributeSelectorImpl {
     private DistributionListSelector dl;
 
     public GetDistributionListRequest() {
-        this((DistributionListSelector) null,
-            (Integer) null, (Integer) null, (Boolean) null);
+        this(null,
+            null, null, null);
     }
 
     public GetDistributionListRequest(DistributionListSelector dl) {
-        this(dl, (Integer) null, (Integer) null, (Boolean) null);
+        this(dl, null, null, null);
     }
 
     public GetDistributionListRequest(DistributionListSelector dl,

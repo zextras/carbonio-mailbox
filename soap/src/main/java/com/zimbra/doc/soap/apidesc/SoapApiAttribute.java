@@ -52,9 +52,6 @@ public class SoapApiAttribute {
 
     @JsonIgnore
     public boolean isSame(SoapApiAttribute other) {
-        if (other == null) {
-            return false;
-        }
-        return true;
+      return other != null;
     }
 }

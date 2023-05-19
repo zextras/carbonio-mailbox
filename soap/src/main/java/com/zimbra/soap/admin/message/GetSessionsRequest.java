@@ -63,8 +63,8 @@ public class GetSessionsRequest {
      */
     @SuppressWarnings("unused")
     private GetSessionsRequest() {
-        this((String) null, (GetSessionsSortBy) null,
-                (Long) null, (Long) null, (Boolean) null);
+        this(null, null,
+            null, null, null);
     }
 
     public GetSessionsRequest(String type, GetSessionsSortBy sortBy,

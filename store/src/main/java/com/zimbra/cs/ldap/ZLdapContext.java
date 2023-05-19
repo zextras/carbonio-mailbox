@@ -22,7 +22,7 @@ public abstract class ZLdapContext extends ZLdapElement implements ILdapContext 
     public abstract void closeContext(boolean forceCloseConnection);
 
     public abstract void createEntry(ZMutableEntry entry) throws
-    LdapEntryAlreadyExistException, ServiceException;
+        ServiceException;
 
     public abstract void createEntry(String dn, String objectClass, String[] attrs)
     throws ServiceException;

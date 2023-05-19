@@ -43,7 +43,7 @@ public class MetadataTokenStore extends TokenStore {
 
     public MetadataTokenStore(Mailbox mbox) throws ServiceException {
         this.mbox = mbox;
-        tokens = new HashMap<String, String>();
+        tokens = new HashMap<>();
         loadTokens();
     }
 

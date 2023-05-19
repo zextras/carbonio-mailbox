@@ -18,7 +18,7 @@ public class YabDataSourceId extends Id {
      */
     @SuppressWarnings("unused")
     protected YabDataSourceId() {
-        this((String) null);
+        this(null);
     }
 
     YabDataSourceId(String id) {

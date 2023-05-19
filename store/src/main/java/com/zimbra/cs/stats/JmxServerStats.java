@@ -16,22 +16,22 @@ import com.zimbra.cs.mailbox.MessageCache;
 
 public class JmxServerStats implements JmxServerStatsMBean {
 
-    private DeltaCalculator mDbConn = new DeltaCalculator(ZimbraPerf.STOPWATCH_DB_CONN);
-    private DeltaCalculator mLdapConn = new DeltaCalculator(ZimbraPerf.STOPWATCH_LDAP_DC);
-    private DeltaCalculator mItemCache = new DeltaCalculator(ZimbraPerf.COUNTER_MBOX_ITEM_CACHE);
-    private DeltaCalculator mMailboxCache = new DeltaCalculator(ZimbraPerf.COUNTER_MBOX_CACHE);
-    private DeltaCalculator mMessageCache = new DeltaCalculator(ZimbraPerf.COUNTER_MBOX_MSG_CACHE);
+    private final DeltaCalculator mDbConn = new DeltaCalculator(ZimbraPerf.STOPWATCH_DB_CONN);
+    private final DeltaCalculator mLdapConn = new DeltaCalculator(ZimbraPerf.STOPWATCH_LDAP_DC);
+    private final DeltaCalculator mItemCache = new DeltaCalculator(ZimbraPerf.COUNTER_MBOX_ITEM_CACHE);
+    private final DeltaCalculator mMailboxCache = new DeltaCalculator(ZimbraPerf.COUNTER_MBOX_CACHE);
+    private final DeltaCalculator mMessageCache = new DeltaCalculator(ZimbraPerf.COUNTER_MBOX_MSG_CACHE);
     
-    private DeltaCalculator mAddMessage = new DeltaCalculator(ZimbraPerf.STOPWATCH_MBOX_ADD_MSG);
-    private DeltaCalculator mImap = new DeltaCalculator(ZimbraPerf.STOPWATCH_IMAP);
-    private DeltaCalculator mPop = new DeltaCalculator(ZimbraPerf.STOPWATCH_POP);
-    private DeltaCalculator mSoap = new DeltaCalculator(ZimbraPerf.STOPWATCH_SOAP);
-    private DeltaCalculator mBisSeek = new DeltaCalculator(ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_SEEK_RATE); 
+    private final DeltaCalculator mAddMessage = new DeltaCalculator(ZimbraPerf.STOPWATCH_MBOX_ADD_MSG);
+    private final DeltaCalculator mImap = new DeltaCalculator(ZimbraPerf.STOPWATCH_IMAP);
+    private final DeltaCalculator mPop = new DeltaCalculator(ZimbraPerf.STOPWATCH_POP);
+    private final DeltaCalculator mSoap = new DeltaCalculator(ZimbraPerf.STOPWATCH_SOAP);
+    private final DeltaCalculator mBisSeek = new DeltaCalculator(ZimbraPerf.COUNTER_BLOB_INPUT_STREAM_SEEK_RATE);
     
     private final List<Accumulator> mAccumulators;
     
     JmxServerStats() {
-        List<Accumulator> accumulators = new ArrayList<Accumulator>();
+        List<Accumulator> accumulators = new ArrayList<>();
         
         accumulators.add(mDbConn);
         accumulators.add(mLdapConn);

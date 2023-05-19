@@ -93,14 +93,14 @@ public class ModifyWhiteBlackListRequest {
      */
     @XmlElementWrapper(name=AccountConstants.E_WHITE_LIST, required=false)
     @XmlElement(name=AccountConstants.E_ADDR, required=false)
-    private List<OpValue> whiteListEntries = Lists.newArrayList();
+    private final List<OpValue> whiteListEntries = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Modifications for BlackList
      */
     @XmlElementWrapper(name=AccountConstants.E_BLACK_LIST, required=false)
     @XmlElement(name=AccountConstants.E_ADDR, required=false)
-    private List<OpValue> blackListEntries = Lists.newArrayList();
+    private final List<OpValue> blackListEntries = Lists.newArrayList();
 
     public ModifyWhiteBlackListRequest() {
     }

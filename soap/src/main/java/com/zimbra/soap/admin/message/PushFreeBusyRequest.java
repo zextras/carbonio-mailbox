@@ -45,7 +45,7 @@ public class PushFreeBusyRequest {
      * @zm-api-field-description Account ID
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT, required=false)
-    private List<Id> accounts = Lists.newArrayList();
+    private final List<Id> accounts = Lists.newArrayList();
 
     public PushFreeBusyRequest() {
     }

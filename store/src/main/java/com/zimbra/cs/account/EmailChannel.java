@@ -78,7 +78,7 @@ public class EmailChannel extends ChannelProvider {
         ZimbraLog.passwordreset.debug("RecoverAccount: Recovery code sent in email to %s",
                 StringUtil.maskEmail(recoveryCodeMap.get(CodeConstants.EMAIL.toString())));
         // store the same in ldap attribute for user
-        HashMap<String, Object> prefs = new HashMap<String, Object>();
+        HashMap<String, Object> prefs = new HashMap<>();
         prefs.put(Provisioning.A_zimbraResetPasswordRecoveryCode, JWEUtil.getJWE(recoveryCodeMap));
         Provisioning.getInstance().modifyAttrs(account, prefs, true, null);
     }
@@ -108,7 +108,7 @@ public class EmailChannel extends ChannelProvider {
             if (expiryTime < now.getTime()) {
                 throw ForgetPasswordException.CODE_EXPIRED("The recovery email address verification code is expired.");
             }
-            HashMap<String, Object> prefs = new HashMap<String, Object>();
+            HashMap<String, Object> prefs = new HashMap<>();
             prefs.put(Provisioning.A_zimbraPrefPasswordRecoveryAddressStatus,
                     PrefPasswordRecoveryAddressStatus.verified);
             prefs.put(Provisioning.A_zimbraRecoveryAccountVerificationData, null);
@@ -157,7 +157,7 @@ public class EmailChannel extends ChannelProvider {
         }
         // store the recovery code
         if (prefs == null) {
-            prefs = new HashMap<String, Object>();
+            prefs = new HashMap<>();
         }
         String verificationDataStr = JWEUtil.getJWE(recoveryCodeMap);
         prefs.put(Provisioning.A_zimbraRecoveryAccountVerificationData, verificationDataStr);
@@ -193,7 +193,7 @@ public class EmailChannel extends ChannelProvider {
                     recoveryCodeMap.get(CodeConstants.EMAIL.toString()), mmp);
             mbox.getMailSender().sendMimeMessage(null, mbox, false, mm, null, null, null, null, false);
 
-            HashMap<String, Object> prefs = new HashMap<String, Object>();
+            HashMap<String, Object> prefs = new HashMap<>();
             prefs.put(Provisioning.A_zimbraResetPasswordRecoveryCode, JWEUtil.getJWE(recoveryCodeMap));
             Provisioning.getInstance().modifyAttrs(account, prefs, true, null);
         } catch (MessagingException e) {

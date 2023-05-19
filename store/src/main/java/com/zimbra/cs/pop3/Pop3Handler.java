@@ -35,6 +35,7 @@ import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.binary.Base64;
 
@@ -532,7 +533,7 @@ abstract class Pop3Handler {
   }
 
   private boolean continueAuthentication(String response) throws IOException {
-    byte[] b = Base64.decodeBase64(response.getBytes("us-ascii"));
+    byte[] b = Base64.decodeBase64(response.getBytes(StandardCharsets.US_ASCII));
     authenticator.handle(b);
     if (authenticator.isComplete()) {
       if (authenticator.isAuthenticated()) {

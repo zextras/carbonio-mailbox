@@ -12,7 +12,7 @@ import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 
 public class UBIDLdapFilter extends ZLdapFilter {
 
-    private Filter filter;
+    private final Filter filter;
 
     UBIDLdapFilter(FilterId filterId, Filter filter) {
         super(filterId);

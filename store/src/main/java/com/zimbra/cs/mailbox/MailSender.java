@@ -80,7 +80,7 @@ public class MailSender {
 
     public static final String MSGTYPE_REPLY = String.valueOf(Flag.toChar(Flag.ID_REPLIED));
     public static final String MSGTYPE_FORWARD = String.valueOf(Flag.toChar(Flag.ID_FORWARDED));
-    private static Map<String, PreSendMailListener> mPreSendMailListeners = new ConcurrentHashMap<String, PreSendMailListener>();
+    private static final Map<String, PreSendMailListener> mPreSendMailListeners = new ConcurrentHashMap<>();
 
     private Boolean mSaveToSent;
     private Collection<Upload> mUploads;
@@ -93,11 +93,11 @@ public class MailSender {
     private boolean mRedirectMode = false;
     private boolean mCalendarMode = false;
     private boolean mSkipHeaderUpdate = false;
-    private final List<String> mSmtpHosts = new ArrayList<String>();
+    private final List<String> mSmtpHosts = new ArrayList<>();
     private Session mSession;
     private boolean mTrackBadHosts = true;
     private int mCurrentHostIndex = 0;
-    private final List<String> mRecipients = new ArrayList<String>();
+    private final List<String> mRecipients = new ArrayList<>();
     private String mEnvelopeFrom;
     private String mDsn;
     private MimeProcessor mimeProcessor = null;
@@ -106,7 +106,7 @@ public class MailSender {
         mSession = JMSession.getSession();
     }
 
-    public static enum DsnNotifyOption {
+    public enum DsnNotifyOption {
         NEVER,
         SUCCESS,
         FAILURE,
@@ -425,7 +425,7 @@ public class MailSender {
         return mUploads;
     }
 
-    public static enum ReplyForwardType {
+    public enum ReplyForwardType {
         ORIGINAL,  // This is an original message; not a reply or forward.
         REPLY,     // Reply to another message
         FORWARD    // Forwarding another message
@@ -580,7 +580,7 @@ public class MailSender {
 
             Account acct = mbox.getAccount();
             Account authuser = octxt == null ? null : octxt.getAuthenticatedUser();
-            boolean isAdminRequest = octxt == null ? false : octxt.isUsingAdminPrivileges();
+            boolean isAdminRequest = octxt != null && octxt.isUsingAdminPrivileges();
             if (authuser == null) {
                 authuser = acct;
             }
@@ -635,7 +635,7 @@ public class MailSender {
             boolean hasRecipients = (mm.getAllRecipients() != null);
             mSaveToSent &= hasRecipients;
 
-            LinkedList<RollbackData> rollbacks = new LinkedList<RollbackData>();
+            LinkedList<RollbackData> rollbacks = new LinkedList<>();
             Object authMailbox = isDelegatedRequest ? null : mbox;
 
             // Bug: 66823
@@ -807,7 +807,7 @@ public class MailSender {
                     newAddrs.retainAll(sentAddresses);
                     // convert JavaMail Address to Zimbra InternetAddress
                     List<com.zimbra.common.mime.InternetAddress> iaddrs =
-                        new ArrayList<com.zimbra.common.mime.InternetAddress>(newAddrs.size());
+                        new ArrayList<>(newAddrs.size());
                     for (Address addr : newAddrs) {
                         if (addr instanceof InternetAddress) {
                             InternetAddress iaddr = (InternetAddress) addr;
@@ -830,7 +830,7 @@ public class MailSender {
             Address[] validUnsentAddrs = sfe.getValidUnsentAddresses();
             if (invalidAddrs != null && invalidAddrs.length > 0) {
                 StringBuilder msg = new StringBuilder("Invalid address").append(invalidAddrs.length > 1 ? "es: " : ": ");
-                msg.append(Joiner.on(",").join(invalidAddrs)).append(".  ").append(sfe.toString());
+                msg.append(Joiner.on(",").join(invalidAddrs)).append(".  ").append(sfe);
 
                 if (isSendPartial())
                     throw MailServiceException.SEND_PARTIAL_ADDRESS_FAILURE(msg.toString(), sfe, invalidAddrs, validUnsentAddrs);
@@ -1034,7 +1034,7 @@ public class MailSender {
             // Don't touch the message at all in redirect mode.
         } else {
             Pair<InternetAddress, InternetAddress> fromsender = getSenderHeaders(from, sender, acct, authuser,
-                    octxt != null ? octxt.isUsingAdminPrivileges() : false);
+                octxt != null && octxt.isUsingAdminPrivileges());
             from = fromsender.getFirst();
             sender = fromsender.getSecond();
         }
@@ -1071,10 +1071,10 @@ public class MailSender {
     public Pair<InternetAddress, InternetAddress> getSenderHeaders(InternetAddress from, InternetAddress sender,
             Account acct, Account authuser, boolean asAdmin) throws ServiceException {
         if (from != null && authuser.isAllowAnyFromAddress()) {
-            return new Pair<InternetAddress, InternetAddress>(from, sender);
+            return new Pair<>(from, sender);
         }
         if (from == null && sender == null) {
-            return new Pair<InternetAddress, InternetAddress>(AccountUtil.getFriendlyEmailAddress(authuser), null);
+            return new Pair<>(AccountUtil.getFriendlyEmailAddress(authuser), null);
         }
         if (Objects.equal(sender, from)) { // no need for matching Sender and From addresses
             sender = null;
@@ -1087,7 +1087,7 @@ public class MailSender {
         if (sender == null &&  // send-as requested
             (AccountUtil.addressMatchesAccount(authuser, from.getAddress()) ||  // either it's my address
              amgr.canSendAs(authuser, acct, from.getAddress(), asAdmin))) {           // or I've been granted permission
-            return new Pair<InternetAddress, InternetAddress>(from, null);
+            return new Pair<>(from, null);
         }
         if (sender != null) {
             // send-obo requested.
@@ -1102,16 +1102,16 @@ public class MailSender {
         }
         if (mCalendarMode) {
             // In calendar mode any user may send on behalf of any other user.
-            return new Pair<InternetAddress, InternetAddress>(from, sender);
+            return new Pair<>(from, sender);
         } else if (amgr.canSendOnBehalfOf(authuser, acct, from.getAddress(), asAdmin)) {
             // Allow based on rights granted.
-            return new Pair<InternetAddress, InternetAddress>(from, sender);
+            return new Pair<>(from, sender);
         } else if (AccountUtil.isAllowedDataSourceSendAddress(authuser, from.getAddress())) {
             // Allow send-obo if address is a pop/imap/caldav data source address. (bugs 38813/46378)
-            return new Pair<InternetAddress, InternetAddress>(from, sender);
+            return new Pair<>(from, sender);
         } else {
             // Not allowed to use the requested From value.  Send as self.
-            return new Pair<InternetAddress, InternetAddress>(sender, null);
+            return new Pair<>(sender, null);
         }
     }
 
@@ -1152,11 +1152,11 @@ public class MailSender {
             } else {
                 AuthToken authToken = octxt == null ? null : octxt.getAuthToken(false);
                 if (authToken == null) {
-                    boolean isAdminRequest = octxt == null ? false : octxt.isUsingAdminPrivileges();
+                    boolean isAdminRequest = octxt != null && octxt.isUsingAdminPrivileges();
                     authToken = AuthProvider.getAuthToken(authuser, isAdminRequest);
                 }
                 // using the sync formatter is suboptimal, but it should work
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put("fmt", "sync");  params.put("body", "0");  params.put("nohdr", "1");
                 byte[] content = UserServlet.getRemoteContent(authToken, mOriginalMessageId, params);
                 hblock = new JavaMailInternetHeaders(new ByteArrayInputStream(content));
@@ -1223,7 +1223,7 @@ public class MailSender {
     protected Collection<Address> sendMessage(Mailbox mbox, final MimeMessage mm, Collection<RollbackData> rollbacks)
     throws SafeMessagingException, IOException {
         // send the message via SMTP
-        HashSet<Address> sentAddresses = new HashSet<Address>();
+        HashSet<Address> sentAddresses = new HashSet<>();
         mCurrentHostIndex = 0;
         String hostname = getNextHost();
 

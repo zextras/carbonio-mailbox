@@ -21,7 +21,7 @@ public class ClassLoaderUtil {
             // directory rather than a JAR file.
             if (!dir.endsWith("/"))
                 dir = dir + "/";
-            URL urls[] = new URL[1];
+            URL[] urls = new URL[1];
             urls[0] = new URL("file://" + dir);
             classLoader = new URLClassLoader(urls);
         } catch (MalformedURLException e) {

@@ -42,14 +42,14 @@ public class QueueQuery {
      * @zm-api-field-description Queue query field
      */
     @XmlElement(name=AdminConstants.E_FIELD, required=false)
-    private List<QueueQueryField> fields = Lists.newArrayList();
+    private final List<QueueQueryField> fields = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private QueueQuery() {
-        this((Integer) null, (Integer) null);
+        this(null, null);
     }
 
     public QueueQuery(Integer offset, Integer limit) {

@@ -22,7 +22,7 @@ public class DbPendingAclPush {
 
     public static String TABLE_PENDING_ACL_PUSH = "pending_acl_push";
 
-    private static boolean supported;
+    private static final boolean supported;
 
     static {
          supported = ZimbraApplication.getInstance().supports(DbPendingAclPush.class);

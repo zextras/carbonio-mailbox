@@ -6,6 +6,7 @@
 package com.zimbra.cs.fb;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -108,9 +109,9 @@ public class ExchangeMessage {
     public static final QName PR_6846000B = QName.get("0x6846000B", NS_MSFT);
     public static final QName PR_684B000B = QName.get("0x684B000B", NS_MSFT);
     
-    private static Pattern SLASH = Pattern.compile("\\/");
-    private static Pattern SPACE = Pattern.compile(" ");
-    private static Pattern PLUS  = Pattern.compile("\\+");
+    private static final Pattern SLASH = Pattern.compile("\\/");
+    private static final Pattern SPACE = Pattern.compile(" ");
+    private static final Pattern PLUS  = Pattern.compile("\\+");
     
     protected String mOu;
     protected String mCn;
@@ -191,9 +192,9 @@ public class ExchangeMessage {
     }
 
     private void encodeIntervals(Iterable<Interval> fb, long startMonth, long endMonth, String type, Element months, Element events, IntervalList consolidated) {
-    	HashMap<Long,LinkedList<Byte>> fbMap = new HashMap<Long,LinkedList<Byte>>();
+    	HashMap<Long,LinkedList<Byte>> fbMap = new HashMap<>();
     	for (long i = startMonth; i <= endMonth; i++)
-    		fbMap.put(i, new LinkedList<Byte>());
+    		fbMap.put(i, new LinkedList<>());
     	for (FreeBusy.Interval interval : fb) {
     		String status = interval.getStatus();
     		if (status.equals(type)) {
@@ -210,17 +211,12 @@ public class ExchangeMessage {
     		String buf = "";
     		LinkedList<Byte> encodedList = fbMap.get(m);
     		if (encodedList.size() > 0) {
-    			try {
-    				byte[] raw = new byte[encodedList.size()];
-    				for (int i = 0; i < encodedList.size(); i++)
-    					raw[i] = encodedList.get(i).byteValue();
-    		    	byte[] encoded = Base64.encodeBase64(raw);
-    		    	buf = new String(encoded, "UTF-8");
-    			} catch (IOException e) {
-					ZimbraLog.fb.warn("error converting millis to minutes for month "+m, e);
-					continue;
-    			}
-    		}
+          byte[] raw = new byte[encodedList.size()];
+          for (int i = 0; i < encodedList.size(); i++)
+            raw[i] = encodedList.get(i).byteValue();
+          byte[] encoded = Base64.encodeBase64(raw);
+          buf = new String(encoded, StandardCharsets.UTF_8);
+        }
     		addElement(months, EL_V, Long.toString(m));
     		addElement(events, EL_V, buf);
     	}
@@ -229,7 +225,7 @@ public class ExchangeMessage {
     public HttpRequestBase createMethod(String uri, FreeBusy fb) throws IOException {
     	// PROPPATCH
     	HttpPost method = new HttpPost(uri) {
-    		private String PROPPATCH = "PROPPATCH";
+    		private final String PROPPATCH = "PROPPATCH";
     		public String getName() {
     			return PROPPATCH;
     		}
@@ -237,7 +233,7 @@ public class ExchangeMessage {
 		Document doc = createRequest(fb);
 		byte[] buf = DomUtil.getBytes(doc);
 		if (ZimbraLog.fb.isDebugEnabled())
-			ZimbraLog.fb.debug(new String(buf, "UTF-8"));
+			ZimbraLog.fb.debug(new String(buf, StandardCharsets.UTF_8));
 		ByteArrayEntity re = new ByteArrayEntity(buf, ContentType.create("text/xml"));
 		method.setEntity(re);
 		return method;
@@ -283,7 +279,7 @@ public class ExchangeMessage {
     	c.setTime(new Date(millis));
     	return c.get(Calendar.YEAR) * 16 + c.get(Calendar.MONTH) + 1;  // january is 0
     }
-    private static char[] HEX = { 
+    private static final char[] HEX = {
     	'0', '1', '2', '3', '4', '5', '6', '7',
     	'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'			
     };

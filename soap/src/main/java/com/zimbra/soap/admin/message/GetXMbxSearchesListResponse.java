@@ -30,7 +30,7 @@ public class GetXMbxSearchesListResponse {
      * @zm-api-field-description Search task information
      */
     @XmlElement(name=XMbxSearchConstants.E_SrchTask /* searchtask */, required=false)
-    private List<SearchNode> searchNodes = Lists.newArrayList();
+    private final List<SearchNode> searchNodes = Lists.newArrayList();
 
     public GetXMbxSearchesListResponse() {
     }

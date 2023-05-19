@@ -16,10 +16,10 @@ import java.util.Set;
 public final class DomainBrowseTerm extends BrowseTerm {
 
     public enum Field {
-        FROM, TO, CC;
+        FROM, TO, CC
     }
 
-    private Set<Field> fields = EnumSet.noneOf(Field.class);
+    private final Set<Field> fields = EnumSet.noneOf(Field.class);
 
     public DomainBrowseTerm(BrowseTerm term) {
         super(term.getText(), term.getFreq());

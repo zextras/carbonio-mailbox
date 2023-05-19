@@ -24,7 +24,7 @@ import com.zimbra.common.localconfig.LC;
  */
 public final class LogFactory {
 
-    private static final ConcurrentMap<String, Log> NAME2LOG = new ConcurrentHashMap<String, Log>();
+    private static final ConcurrentMap<String, Log> NAME2LOG = new ConcurrentHashMap<>();
 
     private LogFactory() {
     }
@@ -75,8 +75,8 @@ public final class LogFactory {
      * an empty <tt>List</tt>.
      */
     public static List<AccountLogger> getAllAccountLoggers() {
-        List<AccountLogger> accountLoggers = new ArrayList<AccountLogger>();
-        List<Log> allLogs = new ArrayList<Log>(NAME2LOG.values());
+        List<AccountLogger> accountLoggers = new ArrayList<>();
+        List<Log> allLogs = new ArrayList<>(NAME2LOG.values());
         for (Log log : allLogs) {
             List<AccountLogger> alForCategory = log.getAccountLoggers();
             if (alForCategory != null) {
@@ -91,6 +91,6 @@ public final class LogFactory {
      * <tt>Collection</tt> does not include account loggers.
      */
     public static Collection<Log> getAllLoggers() {
-        return new ArrayList<Log>(NAME2LOG.values());
+        return new ArrayList<>(NAME2LOG.values());
     }
 }

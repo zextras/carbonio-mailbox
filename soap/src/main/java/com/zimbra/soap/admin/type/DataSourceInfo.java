@@ -41,7 +41,7 @@ public class DataSourceInfo extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private DataSourceInfo() {
-        this((String) null, (String) null, (DataSourceType) null);
+        this(null, null, null);
     }
 
     public DataSourceInfo(String name, String id, DataSourceType type) {

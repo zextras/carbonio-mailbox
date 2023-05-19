@@ -54,13 +54,13 @@ public class CheckBlobConsistencyRequest {
      * @zm-api-field-description Volumes
      */
     @XmlElement(name=AdminConstants.E_VOLUME /* volume */, required=false)
-    private List<IntIdAttr> volumes = Lists.newArrayList();
+    private final List<IntIdAttr> volumes = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Mailboxes
      */
     @XmlElement(name=AdminConstants.E_MAILBOX /* mbox */, required=false)
-    private List<IntIdAttr> mailboxes = Lists.newArrayList();
+    private final List<IntIdAttr> mailboxes = Lists.newArrayList();
 
     public CheckBlobConsistencyRequest() {
     }

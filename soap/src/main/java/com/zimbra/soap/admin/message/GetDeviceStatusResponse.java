@@ -30,7 +30,7 @@ public class GetDeviceStatusResponse {
      * @zm-api-field-description Information about devices
      */
     @XmlElement(name = SyncConstants.E_DEVICE /* device */, required = false)
-    private List<DeviceStatusInfo> devices = Lists.newArrayList();
+    private final List<DeviceStatusInfo> devices = Lists.newArrayList();
 
     public GetDeviceStatusResponse() {
     }

@@ -47,7 +47,7 @@ public class MigrateAttributesTest {
     @Rule public TestName testName = new TestName();
     @Rule public MethodRule watchman = new ZTestWatchman();
 
-    private static Map<String, AttributeConverter> converters = new HashMap<String, AttributeConverter>();
+    private static final Map<String, AttributeConverter> converters = new HashMap<String, AttributeConverter>();
     static {
         converters.put(Provisioning.A_zimbraAuthTokens, new AuthTokenConverter());
         converters.put(Provisioning.A_zimbraCsrfTokenData, new CsrfTokenConverter());
@@ -176,10 +176,9 @@ public class MigrateAttributesTest {
         EphemeralStore destination = EphemeralStore.getFactory().getStore();
         EntrySource source = new DummyEntrySource(acct);
 
-        List<String> attrsToMigrate = Arrays.asList(new String[] {
-                Provisioning.A_zimbraAuthTokens,
-                Provisioning.A_zimbraCsrfTokenData,
-                Provisioning.A_zimbraLastLogonTimestamp});
+        List<String> attrsToMigrate = Arrays.asList(Provisioning.A_zimbraAuthTokens,
+            Provisioning.A_zimbraCsrfTokenData,
+            Provisioning.A_zimbraLastLogonTimestamp);
 
 
         //DummyMigrationCallback will store attributes in InMemoryEphemeralStore, and track deletions in deletedAttrs map
@@ -210,10 +209,9 @@ public class MigrateAttributesTest {
         List<EphemeralInput> results = new LinkedList<EphemeralInput>();
         EntrySource source = new DummyEntrySource(acct, acct, acct);
 
-        List<String> attrsToMigrate = Arrays.asList(new String[] {
-                Provisioning.A_zimbraAuthTokens,
-                Provisioning.A_zimbraCsrfTokenData,
-                Provisioning.A_zimbraLastLogonTimestamp});
+        List<String> attrsToMigrate = Arrays.asList(Provisioning.A_zimbraAuthTokens,
+            Provisioning.A_zimbraCsrfTokenData,
+            Provisioning.A_zimbraLastLogonTimestamp);
 
 
         DummyMigrationCallback callback = new DummyMigrationCallback(results);
@@ -250,10 +248,9 @@ public class MigrateAttributesTest {
         EntrySource source = new DummyEntrySource(acct);
         Multimap<String, Object> deletedAttrs = LinkedListMultimap.create();
         List<EphemeralInput> results = new LinkedList<EphemeralInput>();
-        List<String> attrsToMigrate = Arrays.asList(new String[] {
-                Provisioning.A_zimbraAuthTokens,
-                Provisioning.A_zimbraCsrfTokenData,
-                Provisioning.A_zimbraLastLogonTimestamp});
+        List<String> attrsToMigrate = Arrays.asList(Provisioning.A_zimbraAuthTokens,
+            Provisioning.A_zimbraCsrfTokenData,
+            Provisioning.A_zimbraLastLogonTimestamp);
 
         DummyMigrationCallback callback = new DummyMigrationCallback(results);
         callback.throwErrorDuringMigration = false;

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
     private File mBase;
     private InputStream mBaseStream;
     private byte[] mCopy;
-    private static Pattern BAD_FILE_NAME_PATTERN = Pattern.compile("(\\.\\.\\/)|(\\p{Cntrl})");
+    private static final Pattern BAD_FILE_NAME_PATTERN = Pattern.compile("(\\.\\.\\/)|(\\p{Cntrl})");
     public int compareTo(ZimletFile obj) {
         return getZimletName().compareTo(obj.getZimletName());
     }
@@ -66,8 +67,8 @@ public class ZimletFile implements Comparable<ZimletFile> {
     }
 
     public static class ZimletZipEntry extends ZimletEntry {
-        private ZipFile  mContainer;
-        private ZipEntry mEntry;
+        private final ZipFile  mContainer;
+        private final ZipEntry mEntry;
 
         public ZimletZipEntry(ZipFile f, ZipEntry e) throws ZimletException {
             super(e.getName());
@@ -86,7 +87,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
     }
 
     public static class ZimletDirEntry extends ZimletEntry {
-        private File mFile;
+        private final File mFile;
 
         public ZimletDirEntry(File f) throws ZimletException {
             super(f.getName());
@@ -104,7 +105,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
     }
 
     public static class ZimletRawEntry extends ZimletEntry {
-        private byte[] mData;
+        private final byte[] mData;
         
         public ZimletRawEntry(InputStream is, String name, int size) throws IOException, ZimletException {
             super(name);
@@ -176,7 +177,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
         }
         mDescFile = name + XML_SUFFIX;
         
-        mEntries = new HashMap<String,ZimletEntry>();
+        mEntries = new HashMap<>();
 
         if (mBaseStream != null) {
             mCopy = ByteUtil.getContent(mBaseStream, 0);
@@ -251,11 +252,11 @@ public class ZimletFile implements Comparable<ZimletFile> {
 
     private void initZimletDescription() throws IOException, ZimletException {
         if (mDesc == null) {
-            ZimletEntry entry = (ZimletEntry)mEntries.get(mDescFile.toLowerCase());
+            ZimletEntry entry = mEntries.get(mDescFile.toLowerCase());
             if (entry == null) {
                 throw new FileNotFoundException("zimlet description not found: " + mDescFile);
             }
-            mDescString = new String(entry.getContents(), "UTF-8");
+            mDescString = new String(entry.getContents(), StandardCharsets.UTF_8);
             mDesc = new ZimletDescription(mDescString);
         }
     }
@@ -288,7 +289,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
 
     private void initZimletConfig() throws IOException, ZimletException {
         if (mConfig == null) {
-            ZimletEntry entry = (ZimletEntry)mEntries.get(CONFIG_TMPL);
+            ZimletEntry entry = mEntries.get(CONFIG_TMPL);
             if (entry == null) {
                 throw new FileNotFoundException("zimlet config not found: " + CONFIG_TMPL);
             }

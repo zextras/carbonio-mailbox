@@ -33,7 +33,7 @@ public class ByMonthDayRule implements ByMonthDayRuleInterface {
      */
     @SuppressWarnings("unused")
     private ByMonthDayRule() {
-        this((String) null);
+        this(null);
     }
 
     public ByMonthDayRule(String list) {

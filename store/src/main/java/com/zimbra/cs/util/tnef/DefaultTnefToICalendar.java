@@ -285,11 +285,8 @@ public class DefaultTnefToICalendar implements TnefToICalendar {
 
             if (recurrenceTZinfo != null) {
                 recurTZname = recurrenceTZinfo.getTimezoneName();
-                boolean addName = true;
-                if ( (startTZname != null) && (recurTZname.equals(startTZname)) ) {
-                    addName = false;
-                }
-                if ( (endTZname != null) && (recurTZname.equals(endTZname)) ) {
+                boolean addName = (startTZname == null) || (!recurTZname.equals(startTZname));
+              if ( (endTZname != null) && (recurTZname.equals(endTZname)) ) {
                     addName = false;
                 }
                 if (addName) {
@@ -322,19 +319,19 @@ public class DefaultTnefToICalendar implements TnefToICalendar {
                 // TNEF_to_iCalendar.pdf Spec requires SUMMARY for certain method types
                 if (this.icalType == ICALENDAR_TYPE.VTODO) {
                     if (method.equals(Method.REQUEST)) {
-                        summary = new String("Task Request");
+                        summary = "Task Request";
                     } else if (method.equals(Method.REPLY)) {
-                        summary = new String("Task Response");
+                        summary = "Task Response";
                     } else {
-                        summary = new String("Task");
+                        summary = "Task";
                     }
                 } else {
                     if (method.equals(Method.REPLY)) {
-                        summary = new String("Response");
+                        summary = "Response";
                     } else if (method.equals(Method.CANCEL)) {
-                        summary = new String("Canceled");
+                        summary = "Canceled";
                     } else if (method.equals(Method.COUNTER)) {
-                        summary = new String("Counter Proposal");
+                        summary = "Counter Proposal";
                     }
                 }
             }

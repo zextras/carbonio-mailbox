@@ -31,7 +31,7 @@ public class GetAllAddressListsResponse {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AccountConstants.E_ADDRESS_LISTS /* addressLists */, required=false)
     @XmlElement(name=AccountConstants.E_ADDRESS_LIST /* addressList */, required=false)
-    private List<AddressListInfo> addressLists = Lists.newArrayList();
+    private final List<AddressListInfo> addressLists = Lists.newArrayList();
 
     public GetAllAddressListsResponse() {
     }

@@ -127,7 +127,7 @@ public class JavaMailMimeBodyPart extends MimeBodyPart implements JavaMailShim {
     }
 
     static class SharedInputStreamSource extends FilterInputStream implements com.zimbra.common.mime.MimePart.InputStreamSource {
-        private SharedInputStream stream;
+        private final SharedInputStream stream;
         private long size;
 
         SharedInputStreamSource(SharedInputStream sis) {
@@ -334,7 +334,7 @@ public class JavaMailMimeBodyPart extends MimeBodyPart implements JavaMailShim {
         }
     }
 
-    private static boolean decodeFileName = PropUtil.getBooleanSystemProperty("mail.mime.decodefilename", false);
+    private static final boolean decodeFileName = PropUtil.getBooleanSystemProperty("mail.mime.decodefilename", false);
 
     @Override
     public String getFileName() throws MessagingException {
@@ -391,7 +391,7 @@ public class JavaMailMimeBodyPart extends MimeBodyPart implements JavaMailShim {
     }
 
     public static class MimePartDataSource implements DataSource, MessageAware {
-        private JavaMailMimeBodyPart jmpart;
+        private final JavaMailMimeBodyPart jmpart;
 
         public MimePartDataSource(JavaMailMimeBodyPart part) {
             jmpart = part;
@@ -609,7 +609,7 @@ public class JavaMailMimeBodyPart extends MimeBodyPart implements JavaMailShim {
     }
 
     static void writeTo(InputStream is, OutputStream os) throws IOException {
-        byte buffer[] = new byte[8192];
+        byte[] buffer = new byte[8192];
         try {
             while (true) {
                 int numRead = is.read(buffer);

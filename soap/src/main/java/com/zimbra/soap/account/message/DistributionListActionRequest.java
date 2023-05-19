@@ -45,7 +45,7 @@ public class DistributionListActionRequest extends AttrsImpl {
     private final DistributionListAction action;
 
     public DistributionListActionRequest() {
-        this((DistributionListSelector) null, (DistributionListAction) null);
+        this(null, null);
     }
 
     public DistributionListActionRequest(DistributionListSelector dl, 

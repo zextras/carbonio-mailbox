@@ -43,7 +43,7 @@ public class SyncGalAccountRequest {
      * @zm-api-field-description Sync GalAccount specification
      */
     @XmlElement(name=AdminConstants.E_ACCOUNT /* account */, required=false)
-    private List<SyncGalAccountSpec> accounts = Lists.newArrayList();
+    private final List<SyncGalAccountSpec> accounts = Lists.newArrayList();
 
     public SyncGalAccountRequest() {
     }

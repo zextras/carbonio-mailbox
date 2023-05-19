@@ -14,11 +14,11 @@ import com.google.common.collect.Multimap;
 import com.zimbra.common.service.ServiceException;
 
 public interface Attrs {
-    public Attrs setAttrs(Iterable<Attr> attrs);
-    public Attrs setAttrs(Map<String, ? extends Object> attrs)
+    Attrs setAttrs(Iterable<Attr> attrs);
+    Attrs setAttrs(Map<String, ? extends Object> attrs)
         throws ServiceException;
-    public Attrs addAttr(Attr attr);
-    public List<Attr> getAttrs();
-    public Multimap<String, String> getAttrsMultimap();
-    public Map<String, Object> getAttrsAsOldMultimap();
+    Attrs addAttr(Attr attr);
+    List<Attr> getAttrs();
+    Multimap<String, String> getAttrsMultimap();
+    Map<String, Object> getAttrsAsOldMultimap();
 }

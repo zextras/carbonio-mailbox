@@ -116,7 +116,7 @@ public class ZPop3DataSource extends ZDataSource implements ToZJSONObject {
     
     public boolean leaveOnServer() {
         Boolean val = getData().isLeaveOnServer();
-        return (val == null ? true : val);
+        return (val == null || val);
     }
     
     public void setLeaveOnServer(boolean leaveOnServer) { getData().setLeaveOnServer(leaveOnServer); }

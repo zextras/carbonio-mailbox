@@ -56,7 +56,7 @@ public class FolderACL {
     Boolean mCanAccessOwnerAccount;
 
     private static class ShareTarget {
-        private Account mOwnerAcct;
+        private final Account mOwnerAcct;
         int mFolderId;
 
         private ShareTarget(String ownerAcctId, int folderId) throws ServiceException {

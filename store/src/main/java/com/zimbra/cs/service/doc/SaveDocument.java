@@ -44,6 +44,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimePart;
@@ -58,9 +59,9 @@ import org.apache.http.impl.client.HttpClientBuilder;
 // FIXME can we remove this class? It seems it relies on the Briefcase which is dead
 public class SaveDocument extends DocDocumentHandler {
 
-  private static String[] TARGET_DOC_ID_PATH =
+  private static final String[] TARGET_DOC_ID_PATH =
       new String[] {MailConstants.E_DOC, MailConstants.A_ID};
-  private static String[] TARGET_DOC_FOLDER_PATH =
+  private static final String[] TARGET_DOC_FOLDER_PATH =
       new String[] {MailConstants.E_DOC, MailConstants.A_FOLDER};
 
   @Override
@@ -193,7 +194,7 @@ public class SaveDocument extends DocDocumentHandler {
               "name " + doc.name + " in folder " + folderId,
               doc.name,
               item.getId(),
-              ((Document) item).getVersion());
+              item.getVersion());
         } else if (item != null) {
           // name clash with a folder
           throw MailServiceException.ALREADY_EXISTS(
@@ -447,7 +448,7 @@ public class SaveDocument extends DocDocumentHandler {
         } else if (mp != null) {
           return mp.getInputStream();
         } else if (sp != null) {
-          return new ByteArrayInputStream(sp.getBytes("utf-8"));
+          return new ByteArrayInputStream(sp.getBytes(StandardCharsets.UTF_8));
         } else if (in != null) {
           return in;
         } else {

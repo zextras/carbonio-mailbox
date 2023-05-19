@@ -23,7 +23,7 @@ import com.zimbra.soap.type.StoreLookupOpt;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class SMIMEPublicCertsStoreSpec {
-    private static Joiner COMMA_JOINER = Joiner.on(",");
+    private static final Joiner COMMA_JOINER = Joiner.on(",");
 
     /**
      * @zm-api-field-description Lookup option related to stores.
@@ -61,7 +61,7 @@ public class SMIMEPublicCertsStoreSpec {
     public StoreLookupOpt getStoreLookupOpt() { return storeLookupOpt; }
     public SourceLookupOpt getSourceLookupOpt() { return sourceLookupOpt; }
 
-    private List<String> storeTypes = Lists.newArrayList();
+    private final List<String> storeTypes = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Comma separated list of store types

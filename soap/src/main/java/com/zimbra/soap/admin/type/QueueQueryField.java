@@ -32,14 +32,14 @@ public class QueueQueryField {
      * @zm-api-field-description Match specification
      */
     @XmlElement(name=AdminConstants.E_MATCH, required=false)
-    private List<ValueAttrib> matches = Lists.newArrayList();
+    private final List<ValueAttrib> matches = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
     private QueueQueryField() {
-        this((String) null);
+        this(null);
     }
 
     public QueueQueryField(String name) {

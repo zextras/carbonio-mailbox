@@ -336,7 +336,7 @@ public final class ACL {
     }
 
     /** The <tt>List</tt> of all {@link ACL.Grant}s set on an item. */
-    private final List<Grant> mGrants = new CopyOnWriteArrayList<Grant>();
+    private final List<Grant> mGrants = new CopyOnWriteArrayList<>();
     /** Time when all grants to internal users or groups expire. Value of 0 indicates that they never expire. */
     private long mInternalGrantExpiry = 0;
     /** Time when all grants to guest/external users expire. Value of 0 indicates that they never expire. */

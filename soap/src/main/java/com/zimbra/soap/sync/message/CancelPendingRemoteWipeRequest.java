@@ -36,7 +36,7 @@ public class CancelPendingRemoteWipeRequest {
      */
     @SuppressWarnings("unused")
     private CancelPendingRemoteWipeRequest() {
-        this((DeviceId) null);
+        this(null);
     }
 
     public CancelPendingRemoteWipeRequest(DeviceId device) {

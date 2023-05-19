@@ -13,12 +13,12 @@ import java.util.List;
  */
 public class ActionNotify implements Action {
 
-    private String emailAddr;
-    private String subjectTemplate;
-    private String bodyTemplate;
+    private final String emailAddr;
+    private final String subjectTemplate;
+    private final String bodyTemplate;
     // -1 implies no limit
-    private int maxBodyBytes;
-    private List<String> origHeaders;
+    private final int maxBodyBytes;
+    private final List<String> origHeaders;
 
     public ActionNotify(
             String emailAddr, String subjectTemplate, String bodyTemplate, int maxBodyBytes, List<String> origHeaders) {

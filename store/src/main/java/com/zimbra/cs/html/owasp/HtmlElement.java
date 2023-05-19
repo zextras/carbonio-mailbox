@@ -26,9 +26,9 @@ import com.zimbra.cs.html.owasp.policies.SrcAttributePolicy;
  */
 public class HtmlElement {
 
-    private String element;
-    private Optional<ElementPolicy> elementPolicy;
-    private Map<String, AttributePolicy> attributesAndPolicies;
+    private final String element;
+    private final Optional<ElementPolicy> elementPolicy;
+    private final Map<String, AttributePolicy> attributesAndPolicies;
 
     HtmlElement(String element, ElementPolicy elementPolicy,
                 Map<String, AttributePolicy> attributesAndPolicies) {

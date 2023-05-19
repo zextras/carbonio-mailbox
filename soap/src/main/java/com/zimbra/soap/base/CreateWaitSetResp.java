@@ -10,13 +10,13 @@ import java.util.List;
 import com.zimbra.soap.type.IdAndType;
 
 public interface CreateWaitSetResp {
-    public void setErrors(Iterable <IdAndType> errors);
-    public CreateWaitSetResp addError(IdAndType error);
-    public List<IdAndType> getErrors();
-    public CreateWaitSetResp setWaitSetId(String wsid);
-    public String getWaitSetId();
-    public CreateWaitSetResp setDefaultInterests(String defInterests);
-    public String getDefaultInterests();
-    public CreateWaitSetResp setSequence(int seq);
-    public int getSequence();
+    void setErrors(Iterable<IdAndType> errors);
+    CreateWaitSetResp addError(IdAndType error);
+    List<IdAndType> getErrors();
+    CreateWaitSetResp setWaitSetId(String wsid);
+    String getWaitSetId();
+    CreateWaitSetResp setDefaultInterests(String defInterests);
+    String getDefaultInterests();
+    CreateWaitSetResp setSequence(int seq);
+    int getSequence();
 }

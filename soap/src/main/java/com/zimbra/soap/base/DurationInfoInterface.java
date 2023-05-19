@@ -12,22 +12,22 @@ import com.zimbra.common.calendar.ParsedDuration;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface DurationInfoInterface {
-    public DurationInfoInterface create(ParsedDuration parsedDuration);
-    public void setDurationNegative(Boolean durationNegative);
-    public void setWeeks(Integer weeks);
-    public void setDays(Integer days);
-    public void setHours(Integer hours);
-    public void setMinutes(Integer minutes);
-    public void setSeconds(Integer seconds);
-    public void setRelated(String related);
-    public void setRepeatCount(Integer repeatCount);
+    DurationInfoInterface create(ParsedDuration parsedDuration);
+    void setDurationNegative(Boolean durationNegative);
+    void setWeeks(Integer weeks);
+    void setDays(Integer days);
+    void setHours(Integer hours);
+    void setMinutes(Integer minutes);
+    void setSeconds(Integer seconds);
+    void setRelated(String related);
+    void setRepeatCount(Integer repeatCount);
 
-    public Boolean getDurationNegative();
-    public Integer getWeeks();
-    public Integer getDays();
-    public Integer getHours();
-    public Integer getMinutes();
-    public Integer getSeconds();
-    public String getRelated();
-    public Integer getRepeatCount();
+    Boolean getDurationNegative();
+    Integer getWeeks();
+    Integer getDays();
+    Integer getHours();
+    Integer getMinutes();
+    Integer getSeconds();
+    String getRelated();
+    Integer getRepeatCount();
 }

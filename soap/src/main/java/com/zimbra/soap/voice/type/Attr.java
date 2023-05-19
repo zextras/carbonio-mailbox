@@ -32,11 +32,11 @@ import com.zimbra.soap.base.KeyAndValue;
  */
 public class Attr implements KeyAndValue {
 
-    public static Function<Attr, Attr> COPY = new Function<Attr, Attr>() {
-        @Override
-        public Attr apply(Attr from) {
-            return new Attr(from);
-        }
+    public static Function<Attr, Attr> COPY = new Function<>() {
+      @Override
+      public Attr apply(Attr from) {
+        return new Attr(from);
+      }
     };
 
     /**
@@ -105,7 +105,7 @@ public class Attr implements KeyAndValue {
     }
 
     public static List<Attr> fromMultimap(Multimap<String, String> attrMap) {
-        List<Attr> attrs = new ArrayList<Attr>();
+        List<Attr> attrs = new ArrayList<>();
         if (attrMap != null) {
             for (Map.Entry<String, String> entry : attrMap.entries()) {
                 attrs.add(new Attr(entry.getKey(), entry.getValue()));
@@ -120,17 +120,17 @@ public class Attr implements KeyAndValue {
         if (attrs == null) return newAttrs;
 
         for (Entry<String, ? extends Object> entry : attrs.entrySet()) {
-            String key = (String) entry.getKey();
+            String key = entry.getKey();
             Object value = entry.getValue();
             if (value == null) {
-                newAttrs.add(new Attr(key, (String) null));
+                newAttrs.add(new Attr(key, null));
             } else if (value instanceof String) {
                 newAttrs.add(new Attr(key, (String) value));
             } else if (value instanceof String[]) {
                 String[] values = (String[]) value;
                 if (values.length == 0) {
                     // an empty array == removing the attr
-                    newAttrs.add(new Attr(key, (String) null));
+                    newAttrs.add(new Attr(key, null));
                 } else {
                     for (String v: values) {
                         newAttrs.add(new Attr(key, v));

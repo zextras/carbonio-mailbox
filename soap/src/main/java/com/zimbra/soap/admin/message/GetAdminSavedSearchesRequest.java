@@ -34,7 +34,7 @@ public class GetAdminSavedSearchesRequest {
      * @zm-api-field-description Search information
      */
     @XmlElement(name=AdminConstants.E_SEARCH, required=false)
-    private List<NamedElement> searches = Lists.newArrayList();
+    private final List<NamedElement> searches = Lists.newArrayList();
 
     public GetAdminSavedSearchesRequest() {
     }

@@ -48,13 +48,13 @@ public class DistributionListInfo extends AdminObjectInfo {
      */
     @SuppressWarnings("unused")
     private DistributionListInfo() {
-        this((String) null, (String) null,
-            (Collection <String>) null, (Collection <Attr>) null);
+        this(null, null,
+            null, null);
     }
 
     public DistributionListInfo(String id, String name) {
         this(id, name,
-            (Collection <String>) null, (Collection <Attr>) null);
+            null, null);
     }
 
     public DistributionListInfo(String id, String name,

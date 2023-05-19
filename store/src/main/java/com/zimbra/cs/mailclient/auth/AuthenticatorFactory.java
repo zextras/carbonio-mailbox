@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 public final class AuthenticatorFactory {
-    private Map<String, Info> authenticators;
+    private final Map<String, Info> authenticators;
 
     private static class Info {
         Class<? extends Authenticator> clazz;
@@ -28,7 +28,7 @@ public final class AuthenticatorFactory {
     }
 
     public AuthenticatorFactory() {
-        authenticators = new HashMap<String, Info>();
+        authenticators = new HashMap<>();
         register(SaslAuthenticator.PLAIN, SaslAuthenticator.class);
         register(SaslAuthenticator.GSSAPI, SaslAuthenticator.class, false);
         register(SaslAuthenticator.CRAM_MD5, SaslAuthenticator.class);

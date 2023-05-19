@@ -15,23 +15,23 @@ import java.util.Comparator;
 
 public class ZAutoCompleteMatch implements ToZJSONObject {
 	
-	private String mRanking;
-	private String mType;
-	private String mEmail;
-	private String mFolderId;
-	private String mId;
-	private String mDisplay;
-	private String mFirstName;
-	private String mMiddleName;
-	private String mLastName;
-	private String mFullName;
-	private String mNickname;
-	private String mCompany;
-	private String mFileAs;
-	private boolean isGroup;
-    private boolean exp;
+	private final String mRanking;
+	private final String mType;
+	private final String mEmail;
+	private final String mFolderId;
+	private final String mId;
+	private final String mDisplay;
+	private final String mFirstName;
+	private final String mMiddleName;
+	private final String mLastName;
+	private final String mFullName;
+	private final String mNickname;
+	private final String mCompany;
+	private final String mFileAs;
+	private final boolean isGroup;
+    private final boolean exp;
 
-	private ZMailbox mMailbox;
+	private final ZMailbox mMailbox;
 
     public ZAutoCompleteMatch(Element e, ZMailbox mailbox) throws ServiceException {
         mMailbox = mailbox;

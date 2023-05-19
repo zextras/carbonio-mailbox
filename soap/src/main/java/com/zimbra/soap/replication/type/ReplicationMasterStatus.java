@@ -36,7 +36,7 @@ public class ReplicationMasterStatus {
      */
     @SuppressWarnings("unused")
     private ReplicationMasterStatus() {
-        this((String) null);
+        this(null);
     }
 
     public ReplicationMasterStatus(String masterOperatingMode) {

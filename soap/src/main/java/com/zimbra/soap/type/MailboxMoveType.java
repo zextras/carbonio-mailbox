@@ -33,4 +33,4 @@ public enum MailboxMoveType {
         }
         return null;
     }
-};
+}

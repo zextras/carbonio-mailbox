@@ -40,7 +40,7 @@ public class GetAccountLoggersRequest {
     private AccountSelector account;
 
     public GetAccountLoggersRequest() {
-        this((AccountSelector)null);
+        this(null);
     }
 
     public GetAccountLoggersRequest(AccountSelector account) {

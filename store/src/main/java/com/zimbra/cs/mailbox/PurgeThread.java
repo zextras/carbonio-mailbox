@@ -31,7 +31,7 @@ public class PurgeThread
 extends Thread {
 
     private static volatile PurgeThread sPurgeThread = null;
-    private static Object THREAD_CONTROL_LOCK = new Object();
+    private static final Object THREAD_CONTROL_LOCK = new Object();
     private boolean mShutdownRequested = false;
 
     private PurgeThread() {
@@ -69,11 +69,7 @@ extends Thread {
      */
     public synchronized static boolean isRunning() {
         synchronized (THREAD_CONTROL_LOCK) {
-            if (sPurgeThread != null) {
-                return true;
-            } else {
-                return false;
-            }
+          return sPurgeThread != null;
         }
     }
 
@@ -110,7 +106,7 @@ extends Thread {
             return;
         }
 
-        Set<Integer> purgePendingMailboxes = new HashSet<Integer>();
+        Set<Integer> purgePendingMailboxes = new HashSet<>();
         while (true) {
             List<Integer> mailboxIds = getMailboxIds();
             boolean slept = false;
@@ -230,7 +226,7 @@ extends Thread {
      * after {@link Config#KEY_PURGE_LAST_MAILBOX_ID}.
      */
     private List<Integer> getMailboxIds() {
-        List<Integer> mailboxIds = new ArrayList<Integer>();
+        List<Integer> mailboxIds = new ArrayList<>();
 
         try {
             mailboxIds = CallbackUtil.getSortedMailboxIdList();

@@ -25,7 +25,7 @@ import com.zimbra.cs.extension.ExtensionUtil;
  */
 public class ZimbraCommandManagerImpl implements CommandManager {
 
-    private static List<String> IMPLICITLY_DECLARED = Arrays.asList("if", "else", "elsif",
+    private static final List<String> IMPLICITLY_DECLARED = Arrays.asList("if", "else", "elsif",
             "require", "stop", "keep", "discard", "redirect");
 
     private static boolean isImplicitlyDeclared(String name) {
@@ -136,7 +136,7 @@ public class ZimbraCommandManagerImpl implements CommandManager {
      */
     @Override
     public List<String> getExtensions() {
-        List<String> extensions = new ArrayList<String>(classNameMap.size());
+        List<String> extensions = new ArrayList<>(classNameMap.size());
         for (String key : classNameMap.keySet())
         {
             if (!isImplicitlyDeclared(key))

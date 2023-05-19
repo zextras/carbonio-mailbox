@@ -55,7 +55,7 @@ implements InstanceDataInterface {
      * @zm-api-field-description Categories
      */
     @XmlElement(name=MailConstants.E_CAL_CATEGORY /* category */, required=false)
-    private List<String> categories = Lists.newArrayList();
+    private final List<String> categories = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Information for iCalendar GEO property

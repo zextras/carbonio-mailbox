@@ -8,7 +8,7 @@ package com.zimbra.common.util;
 import java.security.MessageDigest;
 
 public class DigestStream extends BufferStream {
-    private MessageDigest messageDigest;
+    private final MessageDigest messageDigest;
 
     public DigestStream() { this(0); }
 
@@ -37,7 +37,7 @@ public class DigestStream extends BufferStream {
         messageDigest.update((byte)data);
     }
     
-    public void write(byte data[], int off, int len) {
+    public void write(byte[] data, int off, int len) {
         super.write(data, off, len);
         messageDigest.update(data, off, len);
     }

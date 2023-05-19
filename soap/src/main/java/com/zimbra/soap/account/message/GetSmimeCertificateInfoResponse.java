@@ -26,7 +26,7 @@ public class GetSmimeCertificateInfoResponse {
      * @zm-api-field-description list of certificates associated with the user account.
      */
     @XmlElement(name=SmimeConstants.E_CERTIFICATE, required=false)
-    private List<CertificateInfo> certificates = Lists.newArrayList();
+    private final List<CertificateInfo> certificates = Lists.newArrayList();
 
     public GetSmimeCertificateInfoResponse() {
     }

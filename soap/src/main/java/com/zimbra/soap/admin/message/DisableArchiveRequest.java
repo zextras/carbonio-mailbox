@@ -36,7 +36,7 @@ public class DisableArchiveRequest {
      */
     @SuppressWarnings("unused")
     private DisableArchiveRequest() {
-        this((AccountSelector) null);
+        this(null);
     }
 
     public DisableArchiveRequest(AccountSelector account) {

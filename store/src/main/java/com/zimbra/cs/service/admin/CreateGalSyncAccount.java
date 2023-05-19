@@ -97,7 +97,7 @@ public class CreateGalSyncAccount extends AdminDocumentHandler {
             }
             // XXX revisit
             checkDomainRightByEmail(zsc, acctValue, Admin.R_createAccount);
-            Map<String,Object> accountAttrs = new HashMap<String,Object>();
+            Map<String,Object> accountAttrs = new HashMap<>();
             StringUtil.addToMultiMap(accountAttrs, Provisioning.A_zimbraIsSystemResource, LdapConstants.LDAP_TRUE);
             StringUtil.addToMultiMap(accountAttrs, Provisioning.A_zimbraIsSystemAccount, LdapConstants.LDAP_TRUE);
             StringUtil.addToMultiMap(accountAttrs, Provisioning.A_zimbraHideInGal, LdapConstants.LDAP_TRUE);
@@ -123,7 +123,7 @@ public class CreateGalSyncAccount extends AdminDocumentHandler {
             Domain domain, String folder, String name, GalMode type)  throws ServiceException {
         String acctName = account.getName();
         String acctId = account.getId();
-        HashSet<String> galAcctIds = new HashSet<String>();
+        HashSet<String> galAcctIds = new HashSet<>();
         galAcctIds.addAll(Arrays.asList(domain.getGalAccountId()));
         if (!galAcctIds.contains(acctId)) {
             galAcctIds.add(acctId);

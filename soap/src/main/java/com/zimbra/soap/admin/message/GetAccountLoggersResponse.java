@@ -28,10 +28,10 @@ public class GetAccountLoggersResponse {
      * start.
      */
     @XmlElement(name=AdminConstants.E_LOGGER, required=false)
-    private List <LoggerInfo> loggers = Lists.newArrayList();
+    private final List <LoggerInfo> loggers = Lists.newArrayList();
 
     public GetAccountLoggersResponse() {
-        this((Collection<LoggerInfo>) null);
+        this(null);
     }
 
     public GetAccountLoggersResponse(Collection<LoggerInfo> loggers) {

@@ -105,7 +105,7 @@ implements MessageCommonInterface {
      * @zm-api-field-description Custom metadata information
      */
     @XmlElement(name=MailConstants.E_METADATA /* meta */, required=false)
-    private List<AdminCustomMetadata> metadatas = Lists.newArrayList();
+    private final List<AdminCustomMetadata> metadatas = Lists.newArrayList();
 
     public MessageCommon() {
     }

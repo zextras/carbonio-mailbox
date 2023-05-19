@@ -53,7 +53,7 @@ public class ExpandRecurRequest {
      * @zm-api-field-description Timezone definitions
      */
     @XmlElement(name=MailConstants.E_CAL_TZ /* tz */, required=false)
-    private List<CalTZInfo> timezones = Lists.newArrayList();
+    private final List<CalTZInfo> timezones = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Specifications for series, modified instances and canceled instances
@@ -63,7 +63,7 @@ public class ExpandRecurRequest {
         @XmlElement(name=MailConstants.E_CAL_EXCEPT /* except */, type=ExpandedRecurrenceException.class),
         @XmlElement(name=MailConstants.E_CAL_CANCEL /* cancel */, type=ExpandedRecurrenceCancel.class)
     })
-    private List<ExpandedRecurrenceComponent> components = Lists.newArrayList();
+    private final List<ExpandedRecurrenceComponent> components = Lists.newArrayList();
 
     /**
      * no-argument constructor wanted by JAXB

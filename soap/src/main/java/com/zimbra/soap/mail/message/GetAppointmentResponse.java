@@ -34,7 +34,7 @@ public class GetAppointmentResponse {
      */
     @SuppressWarnings("unused")
     private GetAppointmentResponse() {
-        this((CalendarItemInfo) null);
+        this(null);
     }
 
     public GetAppointmentResponse(CalendarItemInfo item) {

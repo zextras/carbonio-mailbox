@@ -25,7 +25,7 @@ public class FeatureWithCallerList extends CallFeatureInfo {
      * @zm-api-field-description Phones
      */
     @XmlElement(name=VoiceConstants.E_PHONE /* phone */, required=false)
-    private List<CallerListEntry> phones = Lists.newArrayList();
+    private final List<CallerListEntry> phones = Lists.newArrayList();
 
     public FeatureWithCallerList() {
     }

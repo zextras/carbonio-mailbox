@@ -30,7 +30,7 @@ public class SuspendDeviceResponse {
      * @zm-api-field-description Information about device status
      */
     @XmlElement(name=SyncConstants.E_DEVICE /* device */, required=false)
-    private List<DeviceStatusInfo> devices = Lists.newArrayList();
+    private final List<DeviceStatusInfo> devices = Lists.newArrayList();
 
     public SuspendDeviceResponse() {
     }

@@ -57,7 +57,7 @@ public class InviteAsMP extends MessageCommon {
      * @zm-api-field-description Email addresses
      */
     @XmlElement(name=MailConstants.E_EMAIL /* e */, required=false)
-    private List<EmailInfo> emails = Lists.newArrayList();
+    private final List<EmailInfo> emails = Lists.newArrayList();
 
     /**
      * @zm-api-field-tag subject
@@ -85,7 +85,7 @@ public class InviteAsMP extends MessageCommon {
      * @zm-api-field-description Headers
      */
     @XmlElement(name=MailConstants.A_HEADER /* header */, required=false)
-    private List<KeyValuePair> headers = Lists.newArrayList();
+    private final List<KeyValuePair> headers = Lists.newArrayList();
 
     /**
      * @zm-api-field-description Mime parts, share notifications and distribution list subscription notifications
@@ -95,7 +95,7 @@ public class InviteAsMP extends MessageCommon {
         @XmlElement(name=MailConstants.E_SHARE_NOTIFICATION /* shr */, type=ShareNotification.class),
         @XmlElement(name=MailConstants.E_DL_SUBSCRIPTION_NOTIFICATION /* dlSubs */, type=DLSubscriptionNotification.class)
     })
-    private List<Object> contentElems = Lists.newArrayList();
+    private final List<Object> contentElems = Lists.newArrayList();
 
     public InviteAsMP() {
     }

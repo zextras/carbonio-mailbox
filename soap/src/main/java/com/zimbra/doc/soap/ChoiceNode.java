@@ -14,8 +14,8 @@ public class ChoiceNode
 implements DescriptionNode {
     static final String name = "{CHOICE NODE}";
     private DescriptionNode parent;
-    private List<DescriptionNode> children = Lists.newArrayList();
-    private boolean singleChild;
+    private final List<DescriptionNode> children = Lists.newArrayList();
+    private final boolean singleChild;
     public ChoiceNode(boolean canHaveMultipleChildren) {
         this.singleChild = !canHaveMultipleChildren;
     }

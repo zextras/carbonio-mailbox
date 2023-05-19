@@ -31,7 +31,7 @@ public class RankingActionRequest {
      */
     @SuppressWarnings("unused")
     private RankingActionRequest() {
-        this((RankingActionSpec) null);
+        this(null);
     }
 
     public RankingActionRequest(RankingActionSpec action) {
