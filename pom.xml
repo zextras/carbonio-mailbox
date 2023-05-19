@@ -940,6 +940,19 @@
           <groupId>org.apache.maven.plugins</groupId>
           <version>3.1.0</version>
         </plugin>
+        <!-- Dependency Checker -->
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>8.2.1</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
         <!-- Testing -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
