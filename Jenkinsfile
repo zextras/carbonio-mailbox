@@ -68,7 +68,7 @@ pipeline {
                 }
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS -Dsonar.dependencyCheck.reportPath=target/dependency-check-report.xml sonar:sonar")
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS -Dsonar.dependencyCheck.xmlReportPath=target/dependency-check-report.xml sonar:sonar")
                 }
             }
         }
