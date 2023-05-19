@@ -946,7 +946,6 @@
           <artifactId>dependency-check-maven</artifactId>
           <version>8.2.1</version>
           <configuration>
-            <format>XML</format>
             <outputDirectory>${dependency.check.report.dir}</outputDirectory>
           </configuration>
           <executions>
