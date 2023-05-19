@@ -75,8 +75,9 @@
     <copy todir="${basedir}/build/zimbra/conf/msgs">
       <fileset dir="${basedir}/../store-conf/conf/msgs"/>
     </copy>
-    <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/log4j.properties">
-    </copy>
+    <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/log4j.properties"/>
+    <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/antisamy.xml"/>
+    <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/owasp_policy.xml"/>
   </target>
 
   <target name="generate-getters" description="generate methods for attributes in attrs.xml">
