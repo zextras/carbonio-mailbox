@@ -1514,9 +1514,7 @@ public abstract class MailItem
     public int compare(MailItem m1, MailItem m2) {
       long t1 = m1.getDate(), t2 = m2.getDate();
 
-      if (t1 < t2) return -1;
-      else if (t1 == t2) return 0;
-      else return 1;
+      return Long.compare(t1, t2);
     }
   }
 
@@ -1525,9 +1523,7 @@ public abstract class MailItem
     public int compare(MailItem m1, MailItem m2) {
       long t1 = m1.getDate(), t2 = m2.getDate();
 
-      if (t1 < t2) return 1;
-      else if (t1 == t2) return 0;
-      else return -1;
+      return Long.compare(t2, t1);
     }
   }
 
@@ -1536,9 +1532,7 @@ public abstract class MailItem
     public int compare(MailItem m1, MailItem m2) {
       long t1 = m1.getSize(), t2 = m2.getSize();
 
-      if (t1 < t2) return -1;
-      else if (t1 == t2) return 0;
-      else return 1;
+      return Long.compare(t1, t2);
     }
   }
 
@@ -1547,9 +1541,7 @@ public abstract class MailItem
     public int compare(MailItem m1, MailItem m2) {
       long t1 = m1.getSize(), t2 = m2.getSize();
 
-      if (t1 < t2) return 1;
-      else if (t1 == t2) return 0;
-      else return -1;
+      return Long.compare(t2, t1);
     }
   }
 
@@ -1938,10 +1930,9 @@ public abstract class MailItem
     } else if (desired == Type.CONVERSATION && actual == Type.VIRTUAL_CONVERSATION) {
       return true;
     } else // failure: found something, but it's not the type you were looking for
-      if (desired == Type.DOCUMENT && actual == Type.WIKI) {
+    if (desired == Type.DOCUMENT && actual == Type.WIKI) {
       return true;
-    } else
-        return desired == Type.MESSAGE && actual == Type.CHAT;
+    } else return desired == Type.MESSAGE && actual == Type.CHAT;
   }
 
   /**
@@ -3318,9 +3309,7 @@ public abstract class MailItem
         blobDigests.addAll(other.blobDigests);
 
         if (other.cascadeIds != null) {
-          (cascadeIds == null
-                  ? cascadeIds = new ArrayList<>(other.cascadeIds.size())
-                  : cascadeIds)
+          (cascadeIds == null ? cascadeIds = new ArrayList<>(other.cascadeIds.size()) : cascadeIds)
               .addAll(other.cascadeIds);
         }
         if (other.sharedIndex != null) {

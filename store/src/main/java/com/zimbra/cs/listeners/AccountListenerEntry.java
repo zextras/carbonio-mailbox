@@ -9,41 +9,35 @@ import com.zimbra.cs.listeners.ListenerUtil.Priority;
 
 public class AccountListenerEntry implements Comparable<AccountListenerEntry> {
 
-    private String listenerName;
-    private final Priority priority;
-    private AccountListener accountListener;
+  private String listenerName;
+  private final Priority priority;
+  private AccountListener accountListener;
 
-    public AccountListenerEntry(String listenerName, Priority priority, AccountListener accountListener) {
-        this.listenerName = listenerName;
-        this.priority = priority;
-        this.accountListener = accountListener;
-    }
+  public AccountListenerEntry(
+      String listenerName, Priority priority, AccountListener accountListener) {
+    this.listenerName = listenerName;
+    this.priority = priority;
+    this.accountListener = accountListener;
+  }
 
-    @Override
-    public int compareTo(AccountListenerEntry other) {
-        if (this.priority.ordinal() < other.priority.ordinal())
-            return -1;
-        else if (this.priority.ordinal() > other.priority.ordinal())
-            return 1;
-        else
-            return 0;
-    }
+  @Override
+  public int compareTo(AccountListenerEntry other) {
+    return Integer.compare(this.priority.ordinal(), other.priority.ordinal());
+  }
 
-    public AccountListener getAccountListener() {
-        return accountListener;
-    }
+  public AccountListener getAccountListener() {
+    return accountListener;
+  }
 
-    public void setAccountListener(AccountListener accountListener) {
-        this.accountListener = accountListener;
-    }
+  public void setAccountListener(AccountListener accountListener) {
+    this.accountListener = accountListener;
+  }
 
-    public String getListenerName() {
-        return listenerName;
-    }
+  public String getListenerName() {
+    return listenerName;
+  }
 
-    public void setListenerName(String listenerName) {
-        this.listenerName = listenerName;
-    }
-
+  public void setListenerName(String listenerName) {
+    this.listenerName = listenerName;
+  }
 }
-

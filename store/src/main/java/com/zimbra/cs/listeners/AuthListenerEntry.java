@@ -9,41 +9,34 @@ import com.zimbra.cs.listeners.ListenerUtil.Priority;
 
 public class AuthListenerEntry implements Comparable<AuthListenerEntry> {
 
-    private String listenerName;
-    private final Priority priority;
-    private AuthListener authListener;
+  private String listenerName;
+  private final Priority priority;
+  private AuthListener authListener;
 
-    public AuthListenerEntry(String listenerName, Priority priority, AuthListener authListener) {
-        this.listenerName = listenerName;
-        this.priority = priority;
-        this.authListener = authListener;
-    }
+  public AuthListenerEntry(String listenerName, Priority priority, AuthListener authListener) {
+    this.listenerName = listenerName;
+    this.priority = priority;
+    this.authListener = authListener;
+  }
 
-    @Override
-    public int compareTo(AuthListenerEntry other) {
-        if (this.priority.ordinal() < other.priority.ordinal())
-            return -1;
-        else if (this.priority.ordinal() > other.priority.ordinal())
-            return 1;
-        else
-            return 0;
-    }
+  @Override
+  public int compareTo(AuthListenerEntry other) {
+    return Integer.compare(this.priority.ordinal(), other.priority.ordinal());
+  }
 
-    public AuthListener getAuthListener() {
-        return authListener;
-    }
+  public AuthListener getAuthListener() {
+    return authListener;
+  }
 
-    public void setAuthListener(AuthListener authListener) {
-        this.authListener = authListener;
-    }
+  public void setAuthListener(AuthListener authListener) {
+    this.authListener = authListener;
+  }
 
-    public String getListenerName() {
-        return listenerName;
-    }
+  public String getListenerName() {
+    return listenerName;
+  }
 
-    public void setListenerName(String listenerName) {
-        this.listenerName = listenerName;
-    }
-
+  public void setListenerName(String listenerName) {
+    this.listenerName = listenerName;
+  }
 }
-
