@@ -83,9 +83,7 @@ public final class RuleManager {
       return name().toLowerCase();
     }
   }
-  // this can be "final" but one of the test class RuleManagerWithCustomActionFilterTest
-  // is using reflection to get access to this member and changing it, hence making it final
-  // makes tests fail
+
   private static final SieveFactory SIEVE_FACTORY = createSieveFactory();
 
   private RuleManager() {}
