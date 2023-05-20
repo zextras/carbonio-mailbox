@@ -139,7 +139,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     @ZAttr(id=-1)
     public void addDescription(String description) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_description, description);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_description, description);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -153,7 +153,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     @ZAttr(id=-1)
     public Map<String,Object> addDescription(String description, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_description, description);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_description, description);
         return attrs;
     }
 
@@ -166,7 +166,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     @ZAttr(id=-1)
     public void removeDescription(String description) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_description, description);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_description, description);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -180,7 +180,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     @ZAttr(id=-1)
     public Map<String,Object> removeDescription(String description, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_description, description);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_description, description);
         return attrs;
     }
 
@@ -263,7 +263,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     @ZAttr(id=659)
     public void addACE(String zimbraACE) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraACE, zimbraACE);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -279,7 +279,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     @ZAttr(id=659)
     public Map<String,Object> addACE(String zimbraACE, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraACE, zimbraACE);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         return attrs;
     }
 
@@ -294,7 +294,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     @ZAttr(id=659)
     public void removeACE(String zimbraACE) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraACE, zimbraACE);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -310,7 +310,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     @ZAttr(id=659)
     public Map<String,Object> removeACE(String zimbraACE, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraACE, zimbraACE);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         return attrs;
     }
 

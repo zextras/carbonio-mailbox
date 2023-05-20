@@ -962,7 +962,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3128)
     public void addCarbonioNotificationRecipients(String carbonioNotificationRecipients) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -979,7 +979,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3128)
     public Map<String,Object> addCarbonioNotificationRecipients(String carbonioNotificationRecipients, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
         return attrs;
     }
 
@@ -995,7 +995,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3128)
     public void removeCarbonioNotificationRecipients(String carbonioNotificationRecipients) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1012,7 +1012,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3128)
     public Map<String,Object> removeCarbonioNotificationRecipients(String carbonioNotificationRecipients, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_carbonioNotificationRecipients, carbonioNotificationRecipients);
         return attrs;
     }
 
@@ -2101,7 +2101,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=-1)
     public void addDescription(String description) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_description, description);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_description, description);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -2115,7 +2115,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=-1)
     public Map<String,Object> addDescription(String description, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_description, description);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_description, description);
         return attrs;
     }
 
@@ -2128,7 +2128,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=-1)
     public void removeDescription(String description) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_description, description);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_description, description);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -2142,7 +2142,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=-1)
     public Map<String,Object> removeDescription(String description, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_description, description);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_description, description);
         return attrs;
     }
 
@@ -2225,7 +2225,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=659)
     public void addACE(String zimbraACE) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraACE, zimbraACE);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -2241,7 +2241,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=659)
     public Map<String,Object> addACE(String zimbraACE, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraACE, zimbraACE);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         return attrs;
     }
 
@@ -2256,7 +2256,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=659)
     public void removeACE(String zimbraACE) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraACE, zimbraACE);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -2272,7 +2272,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=659)
     public Map<String,Object> removeACE(String zimbraACE, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraACE, zimbraACE);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         return attrs;
     }
 
@@ -2503,7 +2503,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=772)
     public void addAdminConsoleLoginMessage(String zimbraAdminConsoleLoginMessage) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraAdminConsoleLoginMessage, zimbraAdminConsoleLoginMessage);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraAdminConsoleLoginMessage, zimbraAdminConsoleLoginMessage);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -2519,7 +2519,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=772)
     public Map<String,Object> addAdminConsoleLoginMessage(String zimbraAdminConsoleLoginMessage, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraAdminConsoleLoginMessage, zimbraAdminConsoleLoginMessage);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraAdminConsoleLoginMessage, zimbraAdminConsoleLoginMessage);
         return attrs;
     }
 
@@ -2534,7 +2534,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=772)
     public void removeAdminConsoleLoginMessage(String zimbraAdminConsoleLoginMessage) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraAdminConsoleLoginMessage, zimbraAdminConsoleLoginMessage);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraAdminConsoleLoginMessage, zimbraAdminConsoleLoginMessage);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -2550,7 +2550,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=772)
     public Map<String,Object> removeAdminConsoleLoginMessage(String zimbraAdminConsoleLoginMessage, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraAdminConsoleLoginMessage, zimbraAdminConsoleLoginMessage);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraAdminConsoleLoginMessage, zimbraAdminConsoleLoginMessage);
         return attrs;
     }
 
@@ -3895,7 +3895,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=43)
     public void addAuthLdapURL(String zimbraAuthLdapURL) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraAuthLdapURL, zimbraAuthLdapURL);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraAuthLdapURL, zimbraAuthLdapURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -3909,7 +3909,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=43)
     public Map<String,Object> addAuthLdapURL(String zimbraAuthLdapURL, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraAuthLdapURL, zimbraAuthLdapURL);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraAuthLdapURL, zimbraAuthLdapURL);
         return attrs;
     }
 
@@ -3922,7 +3922,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=43)
     public void removeAuthLdapURL(String zimbraAuthLdapURL) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraAuthLdapURL, zimbraAuthLdapURL);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraAuthLdapURL, zimbraAuthLdapURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -3936,7 +3936,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=43)
     public Map<String,Object> removeAuthLdapURL(String zimbraAuthLdapURL, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraAuthLdapURL, zimbraAuthLdapURL);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraAuthLdapURL, zimbraAuthLdapURL);
         return attrs;
     }
 
@@ -4285,7 +4285,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1231)
     public void addAutoProvAttrMap(String zimbraAutoProvAttrMap) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraAutoProvAttrMap, zimbraAutoProvAttrMap);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraAutoProvAttrMap, zimbraAutoProvAttrMap);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -4311,7 +4311,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1231)
     public Map<String,Object> addAutoProvAttrMap(String zimbraAutoProvAttrMap, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraAutoProvAttrMap, zimbraAutoProvAttrMap);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraAutoProvAttrMap, zimbraAutoProvAttrMap);
         return attrs;
     }
 
@@ -4336,7 +4336,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1231)
     public void removeAutoProvAttrMap(String zimbraAutoProvAttrMap) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraAutoProvAttrMap, zimbraAutoProvAttrMap);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraAutoProvAttrMap, zimbraAutoProvAttrMap);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -4362,7 +4362,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1231)
     public Map<String,Object> removeAutoProvAttrMap(String zimbraAutoProvAttrMap, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraAutoProvAttrMap, zimbraAutoProvAttrMap);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraAutoProvAttrMap, zimbraAutoProvAttrMap);
         return attrs;
     }
 
@@ -6231,7 +6231,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=364)
     public void addAvailableSkin(String zimbraAvailableSkin) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraAvailableSkin, zimbraAvailableSkin);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraAvailableSkin, zimbraAvailableSkin);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -6247,7 +6247,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=364)
     public Map<String,Object> addAvailableSkin(String zimbraAvailableSkin, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraAvailableSkin, zimbraAvailableSkin);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraAvailableSkin, zimbraAvailableSkin);
         return attrs;
     }
 
@@ -6262,7 +6262,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=364)
     public void removeAvailableSkin(String zimbraAvailableSkin) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraAvailableSkin, zimbraAvailableSkin);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraAvailableSkin, zimbraAvailableSkin);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -6278,7 +6278,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=364)
     public Map<String,Object> removeAvailableSkin(String zimbraAvailableSkin, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraAvailableSkin, zimbraAvailableSkin);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraAvailableSkin, zimbraAvailableSkin);
         return attrs;
     }
 
@@ -7151,7 +7151,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1630)
     public void addCsrfAllowedRefererHosts(String zimbraCsrfAllowedRefererHosts) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraCsrfAllowedRefererHosts, zimbraCsrfAllowedRefererHosts);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraCsrfAllowedRefererHosts, zimbraCsrfAllowedRefererHosts);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -7168,7 +7168,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1630)
     public Map<String,Object> addCsrfAllowedRefererHosts(String zimbraCsrfAllowedRefererHosts, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraCsrfAllowedRefererHosts, zimbraCsrfAllowedRefererHosts);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraCsrfAllowedRefererHosts, zimbraCsrfAllowedRefererHosts);
         return attrs;
     }
 
@@ -7184,7 +7184,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1630)
     public void removeCsrfAllowedRefererHosts(String zimbraCsrfAllowedRefererHosts) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraCsrfAllowedRefererHosts, zimbraCsrfAllowedRefererHosts);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraCsrfAllowedRefererHosts, zimbraCsrfAllowedRefererHosts);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -7201,7 +7201,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1630)
     public Map<String,Object> removeCsrfAllowedRefererHosts(String zimbraCsrfAllowedRefererHosts, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraCsrfAllowedRefererHosts, zimbraCsrfAllowedRefererHosts);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraCsrfAllowedRefererHosts, zimbraCsrfAllowedRefererHosts);
         return attrs;
     }
 
@@ -7509,7 +7509,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1331)
     public void addDomainAggregateQuotaWarnEmailRecipient(String zimbraDomainAggregateQuotaWarnEmailRecipient) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraDomainAggregateQuotaWarnEmailRecipient, zimbraDomainAggregateQuotaWarnEmailRecipient);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraDomainAggregateQuotaWarnEmailRecipient, zimbraDomainAggregateQuotaWarnEmailRecipient);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -7527,7 +7527,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1331)
     public Map<String,Object> addDomainAggregateQuotaWarnEmailRecipient(String zimbraDomainAggregateQuotaWarnEmailRecipient, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraDomainAggregateQuotaWarnEmailRecipient, zimbraDomainAggregateQuotaWarnEmailRecipient);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraDomainAggregateQuotaWarnEmailRecipient, zimbraDomainAggregateQuotaWarnEmailRecipient);
         return attrs;
     }
 
@@ -7544,7 +7544,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1331)
     public void removeDomainAggregateQuotaWarnEmailRecipient(String zimbraDomainAggregateQuotaWarnEmailRecipient) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraDomainAggregateQuotaWarnEmailRecipient, zimbraDomainAggregateQuotaWarnEmailRecipient);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraDomainAggregateQuotaWarnEmailRecipient, zimbraDomainAggregateQuotaWarnEmailRecipient);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -7562,7 +7562,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1331)
     public Map<String,Object> removeDomainAggregateQuotaWarnEmailRecipient(String zimbraDomainAggregateQuotaWarnEmailRecipient, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraDomainAggregateQuotaWarnEmailRecipient, zimbraDomainAggregateQuotaWarnEmailRecipient);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraDomainAggregateQuotaWarnEmailRecipient, zimbraDomainAggregateQuotaWarnEmailRecipient);
         return attrs;
     }
 
@@ -7805,7 +7805,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1721)
     public void addDomainAllowedIPs(String zimbraDomainAllowedIPs) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraDomainAllowedIPs, zimbraDomainAllowedIPs);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraDomainAllowedIPs, zimbraDomainAllowedIPs);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -7823,7 +7823,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1721)
     public Map<String,Object> addDomainAllowedIPs(String zimbraDomainAllowedIPs, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraDomainAllowedIPs, zimbraDomainAllowedIPs);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraDomainAllowedIPs, zimbraDomainAllowedIPs);
         return attrs;
     }
 
@@ -7840,7 +7840,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1721)
     public void removeDomainAllowedIPs(String zimbraDomainAllowedIPs) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraDomainAllowedIPs, zimbraDomainAllowedIPs);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraDomainAllowedIPs, zimbraDomainAllowedIPs);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -7858,7 +7858,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1721)
     public Map<String,Object> removeDomainAllowedIPs(String zimbraDomainAllowedIPs, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraDomainAllowedIPs, zimbraDomainAllowedIPs);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraDomainAllowedIPs, zimbraDomainAllowedIPs);
         return attrs;
     }
 
@@ -7957,7 +7957,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=714)
     public void addDomainCOSMaxAccounts(String zimbraDomainCOSMaxAccounts) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraDomainCOSMaxAccounts, zimbraDomainCOSMaxAccounts);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraDomainCOSMaxAccounts, zimbraDomainCOSMaxAccounts);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -7975,7 +7975,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=714)
     public Map<String,Object> addDomainCOSMaxAccounts(String zimbraDomainCOSMaxAccounts, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraDomainCOSMaxAccounts, zimbraDomainCOSMaxAccounts);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraDomainCOSMaxAccounts, zimbraDomainCOSMaxAccounts);
         return attrs;
     }
 
@@ -7992,7 +7992,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=714)
     public void removeDomainCOSMaxAccounts(String zimbraDomainCOSMaxAccounts) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraDomainCOSMaxAccounts, zimbraDomainCOSMaxAccounts);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraDomainCOSMaxAccounts, zimbraDomainCOSMaxAccounts);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -8010,7 +8010,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=714)
     public Map<String,Object> removeDomainCOSMaxAccounts(String zimbraDomainCOSMaxAccounts, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraDomainCOSMaxAccounts, zimbraDomainCOSMaxAccounts);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraDomainCOSMaxAccounts, zimbraDomainCOSMaxAccounts);
         return attrs;
     }
 
@@ -8239,7 +8239,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=715)
     public void addDomainFeatureMaxAccounts(String zimbraDomainFeatureMaxAccounts) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraDomainFeatureMaxAccounts, zimbraDomainFeatureMaxAccounts);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraDomainFeatureMaxAccounts, zimbraDomainFeatureMaxAccounts);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -8256,7 +8256,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=715)
     public Map<String,Object> addDomainFeatureMaxAccounts(String zimbraDomainFeatureMaxAccounts, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraDomainFeatureMaxAccounts, zimbraDomainFeatureMaxAccounts);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraDomainFeatureMaxAccounts, zimbraDomainFeatureMaxAccounts);
         return attrs;
     }
 
@@ -8272,7 +8272,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=715)
     public void removeDomainFeatureMaxAccounts(String zimbraDomainFeatureMaxAccounts) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraDomainFeatureMaxAccounts, zimbraDomainFeatureMaxAccounts);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraDomainFeatureMaxAccounts, zimbraDomainFeatureMaxAccounts);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -8289,7 +8289,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=715)
     public Map<String,Object> removeDomainFeatureMaxAccounts(String zimbraDomainFeatureMaxAccounts, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraDomainFeatureMaxAccounts, zimbraDomainFeatureMaxAccounts);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraDomainFeatureMaxAccounts, zimbraDomainFeatureMaxAccounts);
         return attrs;
     }
 
@@ -10445,7 +10445,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1263)
     public void addExternalShareWhitelistDomain(String zimbraExternalShareWhitelistDomain) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraExternalShareWhitelistDomain, zimbraExternalShareWhitelistDomain);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraExternalShareWhitelistDomain, zimbraExternalShareWhitelistDomain);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -10461,7 +10461,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1263)
     public Map<String,Object> addExternalShareWhitelistDomain(String zimbraExternalShareWhitelistDomain, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraExternalShareWhitelistDomain, zimbraExternalShareWhitelistDomain);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraExternalShareWhitelistDomain, zimbraExternalShareWhitelistDomain);
         return attrs;
     }
 
@@ -10476,7 +10476,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1263)
     public void removeExternalShareWhitelistDomain(String zimbraExternalShareWhitelistDomain) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraExternalShareWhitelistDomain, zimbraExternalShareWhitelistDomain);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraExternalShareWhitelistDomain, zimbraExternalShareWhitelistDomain);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -10492,7 +10492,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1263)
     public Map<String,Object> removeExternalShareWhitelistDomain(String zimbraExternalShareWhitelistDomain, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraExternalShareWhitelistDomain, zimbraExternalShareWhitelistDomain);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraExternalShareWhitelistDomain, zimbraExternalShareWhitelistDomain);
         return attrs;
     }
 
@@ -11372,7 +11372,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1135)
     public void addForeignName(String zimbraForeignName) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraForeignName, zimbraForeignName);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraForeignName, zimbraForeignName);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -11389,7 +11389,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1135)
     public Map<String,Object> addForeignName(String zimbraForeignName, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraForeignName, zimbraForeignName);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraForeignName, zimbraForeignName);
         return attrs;
     }
 
@@ -11405,7 +11405,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1135)
     public void removeForeignName(String zimbraForeignName) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraForeignName, zimbraForeignName);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraForeignName, zimbraForeignName);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -11422,7 +11422,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1135)
     public Map<String,Object> removeForeignName(String zimbraForeignName, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraForeignName, zimbraForeignName);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraForeignName, zimbraForeignName);
         return attrs;
     }
 
@@ -11515,7 +11515,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1136)
     public void addForeignNameHandler(String zimbraForeignNameHandler) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraForeignNameHandler, zimbraForeignNameHandler);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraForeignNameHandler, zimbraForeignNameHandler);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -11532,7 +11532,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1136)
     public Map<String,Object> addForeignNameHandler(String zimbraForeignNameHandler, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraForeignNameHandler, zimbraForeignNameHandler);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraForeignNameHandler, zimbraForeignNameHandler);
         return attrs;
     }
 
@@ -11548,7 +11548,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1136)
     public void removeForeignNameHandler(String zimbraForeignNameHandler) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraForeignNameHandler, zimbraForeignNameHandler);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraForeignNameHandler, zimbraForeignNameHandler);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -11565,7 +11565,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1136)
     public Map<String,Object> removeForeignNameHandler(String zimbraForeignNameHandler, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraForeignNameHandler, zimbraForeignNameHandler);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraForeignNameHandler, zimbraForeignNameHandler);
         return attrs;
     }
 
@@ -12442,7 +12442,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=831)
     public void addGalAccountId(String zimbraGalAccountId) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraGalAccountId, zimbraGalAccountId);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraGalAccountId, zimbraGalAccountId);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -12458,7 +12458,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=831)
     public Map<String,Object> addGalAccountId(String zimbraGalAccountId, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraGalAccountId, zimbraGalAccountId);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraGalAccountId, zimbraGalAccountId);
         return attrs;
     }
 
@@ -12473,7 +12473,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=831)
     public void removeGalAccountId(String zimbraGalAccountId) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraGalAccountId, zimbraGalAccountId);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraGalAccountId, zimbraGalAccountId);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -12489,7 +12489,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=831)
     public Map<String,Object> removeGalAccountId(String zimbraGalAccountId, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraGalAccountId, zimbraGalAccountId);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraGalAccountId, zimbraGalAccountId);
         return attrs;
     }
 
@@ -12970,7 +12970,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=153)
     public void addGalLdapAttrMap(String zimbraGalLdapAttrMap) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraGalLdapAttrMap, zimbraGalLdapAttrMap);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraGalLdapAttrMap, zimbraGalLdapAttrMap);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -12984,7 +12984,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=153)
     public Map<String,Object> addGalLdapAttrMap(String zimbraGalLdapAttrMap, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraGalLdapAttrMap, zimbraGalLdapAttrMap);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraGalLdapAttrMap, zimbraGalLdapAttrMap);
         return attrs;
     }
 
@@ -12997,7 +12997,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=153)
     public void removeGalLdapAttrMap(String zimbraGalLdapAttrMap) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraGalLdapAttrMap, zimbraGalLdapAttrMap);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraGalLdapAttrMap, zimbraGalLdapAttrMap);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -13011,7 +13011,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=153)
     public Map<String,Object> removeGalLdapAttrMap(String zimbraGalLdapAttrMap, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraGalLdapAttrMap, zimbraGalLdapAttrMap);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraGalLdapAttrMap, zimbraGalLdapAttrMap);
         return attrs;
     }
 
@@ -13879,7 +13879,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=47)
     public void addGalLdapURL(String zimbraGalLdapURL) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraGalLdapURL, zimbraGalLdapURL);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraGalLdapURL, zimbraGalLdapURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -13893,7 +13893,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=47)
     public Map<String,Object> addGalLdapURL(String zimbraGalLdapURL, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraGalLdapURL, zimbraGalLdapURL);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraGalLdapURL, zimbraGalLdapURL);
         return attrs;
     }
 
@@ -13906,7 +13906,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=47)
     public void removeGalLdapURL(String zimbraGalLdapURL) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraGalLdapURL, zimbraGalLdapURL);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraGalLdapURL, zimbraGalLdapURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -13920,7 +13920,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=47)
     public Map<String,Object> removeGalLdapURL(String zimbraGalLdapURL, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraGalLdapURL, zimbraGalLdapURL);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraGalLdapURL, zimbraGalLdapURL);
         return attrs;
     }
 
@@ -14007,7 +14007,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1110)
     public void addGalLdapValueMap(String zimbraGalLdapValueMap) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraGalLdapValueMap, zimbraGalLdapValueMap);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraGalLdapValueMap, zimbraGalLdapValueMap);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -14024,7 +14024,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1110)
     public Map<String,Object> addGalLdapValueMap(String zimbraGalLdapValueMap, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraGalLdapValueMap, zimbraGalLdapValueMap);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraGalLdapValueMap, zimbraGalLdapValueMap);
         return attrs;
     }
 
@@ -14040,7 +14040,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1110)
     public void removeGalLdapValueMap(String zimbraGalLdapValueMap) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraGalLdapValueMap, zimbraGalLdapValueMap);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraGalLdapValueMap, zimbraGalLdapValueMap);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -14057,7 +14057,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1110)
     public Map<String,Object> removeGalLdapValueMap(String zimbraGalLdapValueMap, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraGalLdapValueMap, zimbraGalLdapValueMap);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraGalLdapValueMap, zimbraGalLdapValueMap);
         return attrs;
     }
 
@@ -15219,7 +15219,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=589)
     public void addGalSyncLdapURL(String zimbraGalSyncLdapURL) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraGalSyncLdapURL, zimbraGalSyncLdapURL);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraGalSyncLdapURL, zimbraGalSyncLdapURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -15236,7 +15236,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=589)
     public Map<String,Object> addGalSyncLdapURL(String zimbraGalSyncLdapURL, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraGalSyncLdapURL, zimbraGalSyncLdapURL);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraGalSyncLdapURL, zimbraGalSyncLdapURL);
         return attrs;
     }
 
@@ -15252,7 +15252,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=589)
     public void removeGalSyncLdapURL(String zimbraGalSyncLdapURL) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraGalSyncLdapURL, zimbraGalSyncLdapURL);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraGalSyncLdapURL, zimbraGalSyncLdapURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -15269,7 +15269,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=589)
     public Map<String,Object> removeGalSyncLdapURL(String zimbraGalSyncLdapURL, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraGalSyncLdapURL, zimbraGalSyncLdapURL);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraGalSyncLdapURL, zimbraGalSyncLdapURL);
         return attrs;
     }
 
@@ -16150,7 +16150,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3072)
     public void addHierarchicalAddressBookRoot(String zimbraHierarchicalAddressBookRoot) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraHierarchicalAddressBookRoot, zimbraHierarchicalAddressBookRoot);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraHierarchicalAddressBookRoot, zimbraHierarchicalAddressBookRoot);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -16166,7 +16166,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3072)
     public Map<String,Object> addHierarchicalAddressBookRoot(String zimbraHierarchicalAddressBookRoot, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraHierarchicalAddressBookRoot, zimbraHierarchicalAddressBookRoot);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraHierarchicalAddressBookRoot, zimbraHierarchicalAddressBookRoot);
         return attrs;
     }
 
@@ -16181,7 +16181,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3072)
     public void removeHierarchicalAddressBookRoot(String zimbraHierarchicalAddressBookRoot) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraHierarchicalAddressBookRoot, zimbraHierarchicalAddressBookRoot);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraHierarchicalAddressBookRoot, zimbraHierarchicalAddressBookRoot);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -16197,7 +16197,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3072)
     public Map<String,Object> removeHierarchicalAddressBookRoot(String zimbraHierarchicalAddressBookRoot, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraHierarchicalAddressBookRoot, zimbraHierarchicalAddressBookRoot);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraHierarchicalAddressBookRoot, zimbraHierarchicalAddressBookRoot);
         return attrs;
     }
 
@@ -16346,7 +16346,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1319)
     public void addInternalSendersDomain(String zimbraInternalSendersDomain) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraInternalSendersDomain, zimbraInternalSendersDomain);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraInternalSendersDomain, zimbraInternalSendersDomain);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -16362,7 +16362,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1319)
     public Map<String,Object> addInternalSendersDomain(String zimbraInternalSendersDomain, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraInternalSendersDomain, zimbraInternalSendersDomain);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraInternalSendersDomain, zimbraInternalSendersDomain);
         return attrs;
     }
 
@@ -16377,7 +16377,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1319)
     public void removeInternalSendersDomain(String zimbraInternalSendersDomain) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraInternalSendersDomain, zimbraInternalSendersDomain);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraInternalSendersDomain, zimbraInternalSendersDomain);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -16393,7 +16393,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1319)
     public Map<String,Object> removeInternalSendersDomain(String zimbraInternalSendersDomain, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraInternalSendersDomain, zimbraInternalSendersDomain);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraInternalSendersDomain, zimbraInternalSendersDomain);
         return attrs;
     }
 
@@ -16565,7 +16565,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1387)
     public void addInternalSharingDomain(String zimbraInternalSharingDomain) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraInternalSharingDomain, zimbraInternalSharingDomain);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraInternalSharingDomain, zimbraInternalSharingDomain);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -16583,7 +16583,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1387)
     public Map<String,Object> addInternalSharingDomain(String zimbraInternalSharingDomain, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraInternalSharingDomain, zimbraInternalSharingDomain);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraInternalSharingDomain, zimbraInternalSharingDomain);
         return attrs;
     }
 
@@ -16600,7 +16600,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1387)
     public void removeInternalSharingDomain(String zimbraInternalSharingDomain) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraInternalSharingDomain, zimbraInternalSharingDomain);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraInternalSharingDomain, zimbraInternalSharingDomain);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -16618,7 +16618,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1387)
     public Map<String,Object> removeInternalSharingDomain(String zimbraInternalSharingDomain, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraInternalSharingDomain, zimbraInternalSharingDomain);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraInternalSharingDomain, zimbraInternalSharingDomain);
         return attrs;
     }
 
@@ -16843,7 +16843,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1241)
     public void addMailAddressValidationRegex(String zimbraMailAddressValidationRegex) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraMailAddressValidationRegex, zimbraMailAddressValidationRegex);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraMailAddressValidationRegex, zimbraMailAddressValidationRegex);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -16859,7 +16859,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1241)
     public Map<String,Object> addMailAddressValidationRegex(String zimbraMailAddressValidationRegex, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraMailAddressValidationRegex, zimbraMailAddressValidationRegex);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraMailAddressValidationRegex, zimbraMailAddressValidationRegex);
         return attrs;
     }
 
@@ -16874,7 +16874,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1241)
     public void removeMailAddressValidationRegex(String zimbraMailAddressValidationRegex) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraMailAddressValidationRegex, zimbraMailAddressValidationRegex);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraMailAddressValidationRegex, zimbraMailAddressValidationRegex);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -16890,7 +16890,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1241)
     public Map<String,Object> removeMailAddressValidationRegex(String zimbraMailAddressValidationRegex, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraMailAddressValidationRegex, zimbraMailAddressValidationRegex);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraMailAddressValidationRegex, zimbraMailAddressValidationRegex);
         return attrs;
     }
 
@@ -17350,7 +17350,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1426)
     public void addMobileItemsToTrackPerFolderMaxSize(String zimbraMobileItemsToTrackPerFolderMaxSize) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraMobileItemsToTrackPerFolderMaxSize, zimbraMobileItemsToTrackPerFolderMaxSize);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraMobileItemsToTrackPerFolderMaxSize, zimbraMobileItemsToTrackPerFolderMaxSize);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -17369,7 +17369,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1426)
     public Map<String,Object> addMobileItemsToTrackPerFolderMaxSize(String zimbraMobileItemsToTrackPerFolderMaxSize, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraMobileItemsToTrackPerFolderMaxSize, zimbraMobileItemsToTrackPerFolderMaxSize);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraMobileItemsToTrackPerFolderMaxSize, zimbraMobileItemsToTrackPerFolderMaxSize);
         return attrs;
     }
 
@@ -17387,7 +17387,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1426)
     public void removeMobileItemsToTrackPerFolderMaxSize(String zimbraMobileItemsToTrackPerFolderMaxSize) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraMobileItemsToTrackPerFolderMaxSize, zimbraMobileItemsToTrackPerFolderMaxSize);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraMobileItemsToTrackPerFolderMaxSize, zimbraMobileItemsToTrackPerFolderMaxSize);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -17406,7 +17406,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1426)
     public Map<String,Object> removeMobileItemsToTrackPerFolderMaxSize(String zimbraMobileItemsToTrackPerFolderMaxSize, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraMobileItemsToTrackPerFolderMaxSize, zimbraMobileItemsToTrackPerFolderMaxSize);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraMobileItemsToTrackPerFolderMaxSize, zimbraMobileItemsToTrackPerFolderMaxSize);
         return attrs;
     }
 
@@ -17728,7 +17728,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3026)
     public void addOAuthConsumerAPIScope(String zimbraOAuthConsumerAPIScope) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraOAuthConsumerAPIScope, zimbraOAuthConsumerAPIScope);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraOAuthConsumerAPIScope, zimbraOAuthConsumerAPIScope);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -17746,7 +17746,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3026)
     public Map<String,Object> addOAuthConsumerAPIScope(String zimbraOAuthConsumerAPIScope, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraOAuthConsumerAPIScope, zimbraOAuthConsumerAPIScope);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraOAuthConsumerAPIScope, zimbraOAuthConsumerAPIScope);
         return attrs;
     }
 
@@ -17763,7 +17763,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3026)
     public void removeOAuthConsumerAPIScope(String zimbraOAuthConsumerAPIScope) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraOAuthConsumerAPIScope, zimbraOAuthConsumerAPIScope);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraOAuthConsumerAPIScope, zimbraOAuthConsumerAPIScope);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -17781,7 +17781,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3026)
     public Map<String,Object> removeOAuthConsumerAPIScope(String zimbraOAuthConsumerAPIScope, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraOAuthConsumerAPIScope, zimbraOAuthConsumerAPIScope);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraOAuthConsumerAPIScope, zimbraOAuthConsumerAPIScope);
         return attrs;
     }
 
@@ -17876,7 +17876,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1131)
     public void addOAuthConsumerCredentials(String zimbraOAuthConsumerCredentials) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraOAuthConsumerCredentials, zimbraOAuthConsumerCredentials);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraOAuthConsumerCredentials, zimbraOAuthConsumerCredentials);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -17893,7 +17893,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1131)
     public Map<String,Object> addOAuthConsumerCredentials(String zimbraOAuthConsumerCredentials, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraOAuthConsumerCredentials, zimbraOAuthConsumerCredentials);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraOAuthConsumerCredentials, zimbraOAuthConsumerCredentials);
         return attrs;
     }
 
@@ -17909,7 +17909,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1131)
     public void removeOAuthConsumerCredentials(String zimbraOAuthConsumerCredentials) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraOAuthConsumerCredentials, zimbraOAuthConsumerCredentials);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraOAuthConsumerCredentials, zimbraOAuthConsumerCredentials);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -17926,7 +17926,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1131)
     public Map<String,Object> removeOAuthConsumerCredentials(String zimbraOAuthConsumerCredentials, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraOAuthConsumerCredentials, zimbraOAuthConsumerCredentials);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraOAuthConsumerCredentials, zimbraOAuthConsumerCredentials);
         return attrs;
     }
 
@@ -18019,7 +18019,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3025)
     public void addOAuthConsumerRedirectUri(String zimbraOAuthConsumerRedirectUri) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraOAuthConsumerRedirectUri, zimbraOAuthConsumerRedirectUri);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraOAuthConsumerRedirectUri, zimbraOAuthConsumerRedirectUri);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -18036,7 +18036,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3025)
     public Map<String,Object> addOAuthConsumerRedirectUri(String zimbraOAuthConsumerRedirectUri, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraOAuthConsumerRedirectUri, zimbraOAuthConsumerRedirectUri);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraOAuthConsumerRedirectUri, zimbraOAuthConsumerRedirectUri);
         return attrs;
     }
 
@@ -18052,7 +18052,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3025)
     public void removeOAuthConsumerRedirectUri(String zimbraOAuthConsumerRedirectUri) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraOAuthConsumerRedirectUri, zimbraOAuthConsumerRedirectUri);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraOAuthConsumerRedirectUri, zimbraOAuthConsumerRedirectUri);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -18069,7 +18069,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=3025)
     public Map<String,Object> removeOAuthConsumerRedirectUri(String zimbraOAuthConsumerRedirectUri, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraOAuthConsumerRedirectUri, zimbraOAuthConsumerRedirectUri);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraOAuthConsumerRedirectUri, zimbraOAuthConsumerRedirectUri);
         return attrs;
     }
 
@@ -18158,7 +18158,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1191)
     public void addOpenidConsumerAllowedOPEndpointURL(String zimbraOpenidConsumerAllowedOPEndpointURL) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraOpenidConsumerAllowedOPEndpointURL, zimbraOpenidConsumerAllowedOPEndpointURL);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraOpenidConsumerAllowedOPEndpointURL, zimbraOpenidConsumerAllowedOPEndpointURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -18174,7 +18174,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1191)
     public Map<String,Object> addOpenidConsumerAllowedOPEndpointURL(String zimbraOpenidConsumerAllowedOPEndpointURL, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraOpenidConsumerAllowedOPEndpointURL, zimbraOpenidConsumerAllowedOPEndpointURL);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraOpenidConsumerAllowedOPEndpointURL, zimbraOpenidConsumerAllowedOPEndpointURL);
         return attrs;
     }
 
@@ -18189,7 +18189,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1191)
     public void removeOpenidConsumerAllowedOPEndpointURL(String zimbraOpenidConsumerAllowedOPEndpointURL) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraOpenidConsumerAllowedOPEndpointURL, zimbraOpenidConsumerAllowedOPEndpointURL);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraOpenidConsumerAllowedOPEndpointURL, zimbraOpenidConsumerAllowedOPEndpointURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -18205,7 +18205,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1191)
     public Map<String,Object> removeOpenidConsumerAllowedOPEndpointURL(String zimbraOpenidConsumerAllowedOPEndpointURL, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraOpenidConsumerAllowedOPEndpointURL, zimbraOpenidConsumerAllowedOPEndpointURL);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraOpenidConsumerAllowedOPEndpointURL, zimbraOpenidConsumerAllowedOPEndpointURL);
         return attrs;
     }
 
@@ -18502,7 +18502,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1138)
     public void addPrefMailTrustedSenderList(String zimbraPrefMailTrustedSenderList) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraPrefMailTrustedSenderList, zimbraPrefMailTrustedSenderList);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraPrefMailTrustedSenderList, zimbraPrefMailTrustedSenderList);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -18519,7 +18519,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1138)
     public Map<String,Object> addPrefMailTrustedSenderList(String zimbraPrefMailTrustedSenderList, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraPrefMailTrustedSenderList, zimbraPrefMailTrustedSenderList);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraPrefMailTrustedSenderList, zimbraPrefMailTrustedSenderList);
         return attrs;
     }
 
@@ -18535,7 +18535,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1138)
     public void removePrefMailTrustedSenderList(String zimbraPrefMailTrustedSenderList) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraPrefMailTrustedSenderList, zimbraPrefMailTrustedSenderList);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraPrefMailTrustedSenderList, zimbraPrefMailTrustedSenderList);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -18552,7 +18552,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1138)
     public Map<String,Object> removePrefMailTrustedSenderList(String zimbraPrefMailTrustedSenderList, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraPrefMailTrustedSenderList, zimbraPrefMailTrustedSenderList);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraPrefMailTrustedSenderList, zimbraPrefMailTrustedSenderList);
         return attrs;
     }
 
@@ -18779,7 +18779,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1073)
     public void addPrefSpellIgnoreWord(String zimbraPrefSpellIgnoreWord) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraPrefSpellIgnoreWord, zimbraPrefSpellIgnoreWord);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraPrefSpellIgnoreWord, zimbraPrefSpellIgnoreWord);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -18796,7 +18796,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1073)
     public Map<String,Object> addPrefSpellIgnoreWord(String zimbraPrefSpellIgnoreWord, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraPrefSpellIgnoreWord, zimbraPrefSpellIgnoreWord);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraPrefSpellIgnoreWord, zimbraPrefSpellIgnoreWord);
         return attrs;
     }
 
@@ -18812,7 +18812,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1073)
     public void removePrefSpellIgnoreWord(String zimbraPrefSpellIgnoreWord) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraPrefSpellIgnoreWord, zimbraPrefSpellIgnoreWord);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraPrefSpellIgnoreWord, zimbraPrefSpellIgnoreWord);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -18829,7 +18829,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1073)
     public Map<String,Object> removePrefSpellIgnoreWord(String zimbraPrefSpellIgnoreWord, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraPrefSpellIgnoreWord, zimbraPrefSpellIgnoreWord);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraPrefSpellIgnoreWord, zimbraPrefSpellIgnoreWord);
         return attrs;
     }
 
@@ -18910,7 +18910,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=235)
     public void addPrefTimeZoneId(String zimbraPrefTimeZoneId) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraPrefTimeZoneId, zimbraPrefTimeZoneId);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraPrefTimeZoneId, zimbraPrefTimeZoneId);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -18924,7 +18924,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=235)
     public Map<String,Object> addPrefTimeZoneId(String zimbraPrefTimeZoneId, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraPrefTimeZoneId, zimbraPrefTimeZoneId);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraPrefTimeZoneId, zimbraPrefTimeZoneId);
         return attrs;
     }
 
@@ -18937,7 +18937,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=235)
     public void removePrefTimeZoneId(String zimbraPrefTimeZoneId) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraPrefTimeZoneId, zimbraPrefTimeZoneId);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraPrefTimeZoneId, zimbraPrefTimeZoneId);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -18951,7 +18951,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=235)
     public Map<String,Object> removePrefTimeZoneId(String zimbraPrefTimeZoneId, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraPrefTimeZoneId, zimbraPrefTimeZoneId);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraPrefTimeZoneId, zimbraPrefTimeZoneId);
         return attrs;
     }
 
@@ -19367,7 +19367,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1074)
     public void addResponseHeader(String zimbraResponseHeader) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraResponseHeader, zimbraResponseHeader);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraResponseHeader, zimbraResponseHeader);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -19385,7 +19385,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1074)
     public Map<String,Object> addResponseHeader(String zimbraResponseHeader, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraResponseHeader, zimbraResponseHeader);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraResponseHeader, zimbraResponseHeader);
         return attrs;
     }
 
@@ -19402,7 +19402,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1074)
     public void removeResponseHeader(String zimbraResponseHeader) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraResponseHeader, zimbraResponseHeader);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraResponseHeader, zimbraResponseHeader);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -19420,7 +19420,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1074)
     public Map<String,Object> removeResponseHeader(String zimbraResponseHeader, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraResponseHeader, zimbraResponseHeader);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraResponseHeader, zimbraResponseHeader);
         return attrs;
     }
 
@@ -19836,7 +19836,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1973)
     public void addReverseProxyResponseHeaders(String zimbraReverseProxyResponseHeaders) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraReverseProxyResponseHeaders, zimbraReverseProxyResponseHeaders);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders, zimbraReverseProxyResponseHeaders);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -19855,7 +19855,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1973)
     public Map<String,Object> addReverseProxyResponseHeaders(String zimbraReverseProxyResponseHeaders, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraReverseProxyResponseHeaders, zimbraReverseProxyResponseHeaders);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders, zimbraReverseProxyResponseHeaders);
         return attrs;
     }
 
@@ -19873,7 +19873,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1973)
     public void removeReverseProxyResponseHeaders(String zimbraReverseProxyResponseHeaders) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraReverseProxyResponseHeaders, zimbraReverseProxyResponseHeaders);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders, zimbraReverseProxyResponseHeaders);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -19892,7 +19892,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1973)
     public Map<String,Object> removeReverseProxyResponseHeaders(String zimbraReverseProxyResponseHeaders, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraReverseProxyResponseHeaders, zimbraReverseProxyResponseHeaders);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders, zimbraReverseProxyResponseHeaders);
         return attrs;
     }
 
@@ -20203,7 +20203,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1182)
     public void addSMIMELdapAttribute(String zimbraSMIMELdapAttribute) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapAttribute, zimbraSMIMELdapAttribute);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapAttribute, zimbraSMIMELdapAttribute);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -20230,7 +20230,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1182)
     public Map<String,Object> addSMIMELdapAttribute(String zimbraSMIMELdapAttribute, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapAttribute, zimbraSMIMELdapAttribute);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapAttribute, zimbraSMIMELdapAttribute);
         return attrs;
     }
 
@@ -20256,7 +20256,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1182)
     public void removeSMIMELdapAttribute(String zimbraSMIMELdapAttribute) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapAttribute, zimbraSMIMELdapAttribute);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapAttribute, zimbraSMIMELdapAttribute);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -20283,7 +20283,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1182)
     public Map<String,Object> removeSMIMELdapAttribute(String zimbraSMIMELdapAttribute, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapAttribute, zimbraSMIMELdapAttribute);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapAttribute, zimbraSMIMELdapAttribute);
         return attrs;
     }
 
@@ -20436,7 +20436,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1178)
     public void addSMIMELdapBindDn(String zimbraSMIMELdapBindDn) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapBindDn, zimbraSMIMELdapBindDn);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapBindDn, zimbraSMIMELdapBindDn);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -20463,7 +20463,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1178)
     public Map<String,Object> addSMIMELdapBindDn(String zimbraSMIMELdapBindDn, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapBindDn, zimbraSMIMELdapBindDn);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapBindDn, zimbraSMIMELdapBindDn);
         return attrs;
     }
 
@@ -20489,7 +20489,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1178)
     public void removeSMIMELdapBindDn(String zimbraSMIMELdapBindDn) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapBindDn, zimbraSMIMELdapBindDn);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapBindDn, zimbraSMIMELdapBindDn);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -20516,7 +20516,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1178)
     public Map<String,Object> removeSMIMELdapBindDn(String zimbraSMIMELdapBindDn, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapBindDn, zimbraSMIMELdapBindDn);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapBindDn, zimbraSMIMELdapBindDn);
         return attrs;
     }
 
@@ -20669,7 +20669,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1179)
     public void addSMIMELdapBindPassword(String zimbraSMIMELdapBindPassword) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapBindPassword, zimbraSMIMELdapBindPassword);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapBindPassword, zimbraSMIMELdapBindPassword);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -20696,7 +20696,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1179)
     public Map<String,Object> addSMIMELdapBindPassword(String zimbraSMIMELdapBindPassword, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapBindPassword, zimbraSMIMELdapBindPassword);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapBindPassword, zimbraSMIMELdapBindPassword);
         return attrs;
     }
 
@@ -20722,7 +20722,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1179)
     public void removeSMIMELdapBindPassword(String zimbraSMIMELdapBindPassword) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapBindPassword, zimbraSMIMELdapBindPassword);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapBindPassword, zimbraSMIMELdapBindPassword);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -20749,7 +20749,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1179)
     public Map<String,Object> removeSMIMELdapBindPassword(String zimbraSMIMELdapBindPassword, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapBindPassword, zimbraSMIMELdapBindPassword);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapBindPassword, zimbraSMIMELdapBindPassword);
         return attrs;
     }
 
@@ -20926,7 +20926,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1209)
     public void addSMIMELdapDiscoverSearchBaseEnabled(String zimbraSMIMELdapDiscoverSearchBaseEnabled) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapDiscoverSearchBaseEnabled, zimbraSMIMELdapDiscoverSearchBaseEnabled);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapDiscoverSearchBaseEnabled, zimbraSMIMELdapDiscoverSearchBaseEnabled);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -20959,7 +20959,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1209)
     public Map<String,Object> addSMIMELdapDiscoverSearchBaseEnabled(String zimbraSMIMELdapDiscoverSearchBaseEnabled, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapDiscoverSearchBaseEnabled, zimbraSMIMELdapDiscoverSearchBaseEnabled);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapDiscoverSearchBaseEnabled, zimbraSMIMELdapDiscoverSearchBaseEnabled);
         return attrs;
     }
 
@@ -20991,7 +20991,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1209)
     public void removeSMIMELdapDiscoverSearchBaseEnabled(String zimbraSMIMELdapDiscoverSearchBaseEnabled) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapDiscoverSearchBaseEnabled, zimbraSMIMELdapDiscoverSearchBaseEnabled);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapDiscoverSearchBaseEnabled, zimbraSMIMELdapDiscoverSearchBaseEnabled);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -21024,7 +21024,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1209)
     public Map<String,Object> removeSMIMELdapDiscoverSearchBaseEnabled(String zimbraSMIMELdapDiscoverSearchBaseEnabled, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapDiscoverSearchBaseEnabled, zimbraSMIMELdapDiscoverSearchBaseEnabled);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapDiscoverSearchBaseEnabled, zimbraSMIMELdapDiscoverSearchBaseEnabled);
         return attrs;
     }
 
@@ -21197,7 +21197,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1181)
     public void addSMIMELdapFilter(String zimbraSMIMELdapFilter) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapFilter, zimbraSMIMELdapFilter);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapFilter, zimbraSMIMELdapFilter);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -21226,7 +21226,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1181)
     public Map<String,Object> addSMIMELdapFilter(String zimbraSMIMELdapFilter, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapFilter, zimbraSMIMELdapFilter);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapFilter, zimbraSMIMELdapFilter);
         return attrs;
     }
 
@@ -21254,7 +21254,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1181)
     public void removeSMIMELdapFilter(String zimbraSMIMELdapFilter) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapFilter, zimbraSMIMELdapFilter);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapFilter, zimbraSMIMELdapFilter);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -21283,7 +21283,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1181)
     public Map<String,Object> removeSMIMELdapFilter(String zimbraSMIMELdapFilter, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapFilter, zimbraSMIMELdapFilter);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapFilter, zimbraSMIMELdapFilter);
         return attrs;
     }
 
@@ -21440,7 +21440,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1180)
     public void addSMIMELdapSearchBase(String zimbraSMIMELdapSearchBase) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapSearchBase, zimbraSMIMELdapSearchBase);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapSearchBase, zimbraSMIMELdapSearchBase);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -21467,7 +21467,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1180)
     public Map<String,Object> addSMIMELdapSearchBase(String zimbraSMIMELdapSearchBase, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapSearchBase, zimbraSMIMELdapSearchBase);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapSearchBase, zimbraSMIMELdapSearchBase);
         return attrs;
     }
 
@@ -21493,7 +21493,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1180)
     public void removeSMIMELdapSearchBase(String zimbraSMIMELdapSearchBase) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapSearchBase, zimbraSMIMELdapSearchBase);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapSearchBase, zimbraSMIMELdapSearchBase);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -21520,7 +21520,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1180)
     public Map<String,Object> removeSMIMELdapSearchBase(String zimbraSMIMELdapSearchBase, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapSearchBase, zimbraSMIMELdapSearchBase);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapSearchBase, zimbraSMIMELdapSearchBase);
         return attrs;
     }
 
@@ -21673,7 +21673,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1177)
     public void addSMIMELdapStartTlsEnabled(String zimbraSMIMELdapStartTlsEnabled) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapStartTlsEnabled, zimbraSMIMELdapStartTlsEnabled);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapStartTlsEnabled, zimbraSMIMELdapStartTlsEnabled);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -21700,7 +21700,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1177)
     public Map<String,Object> addSMIMELdapStartTlsEnabled(String zimbraSMIMELdapStartTlsEnabled, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapStartTlsEnabled, zimbraSMIMELdapStartTlsEnabled);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapStartTlsEnabled, zimbraSMIMELdapStartTlsEnabled);
         return attrs;
     }
 
@@ -21726,7 +21726,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1177)
     public void removeSMIMELdapStartTlsEnabled(String zimbraSMIMELdapStartTlsEnabled) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapStartTlsEnabled, zimbraSMIMELdapStartTlsEnabled);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapStartTlsEnabled, zimbraSMIMELdapStartTlsEnabled);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -21753,7 +21753,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1177)
     public Map<String,Object> removeSMIMELdapStartTlsEnabled(String zimbraSMIMELdapStartTlsEnabled, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapStartTlsEnabled, zimbraSMIMELdapStartTlsEnabled);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapStartTlsEnabled, zimbraSMIMELdapStartTlsEnabled);
         return attrs;
     }
 
@@ -21910,7 +21910,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1176)
     public void addSMIMELdapURL(String zimbraSMIMELdapURL) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapURL, zimbraSMIMELdapURL);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapURL, zimbraSMIMELdapURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -21938,7 +21938,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1176)
     public Map<String,Object> addSMIMELdapURL(String zimbraSMIMELdapURL, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSMIMELdapURL, zimbraSMIMELdapURL);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSMIMELdapURL, zimbraSMIMELdapURL);
         return attrs;
     }
 
@@ -21965,7 +21965,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1176)
     public void removeSMIMELdapURL(String zimbraSMIMELdapURL) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapURL, zimbraSMIMELdapURL);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapURL, zimbraSMIMELdapURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -21993,7 +21993,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1176)
     public Map<String,Object> removeSMIMELdapURL(String zimbraSMIMELdapURL, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSMIMELdapURL, zimbraSMIMELdapURL);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSMIMELdapURL, zimbraSMIMELdapURL);
         return attrs;
     }
 
@@ -23313,7 +23313,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=97)
     public void addSmtpHostname(String zimbraSmtpHostname) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSmtpHostname, zimbraSmtpHostname);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSmtpHostname, zimbraSmtpHostname);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -23327,7 +23327,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=97)
     public Map<String,Object> addSmtpHostname(String zimbraSmtpHostname, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSmtpHostname, zimbraSmtpHostname);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSmtpHostname, zimbraSmtpHostname);
         return attrs;
     }
 
@@ -23340,7 +23340,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=97)
     public void removeSmtpHostname(String zimbraSmtpHostname) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSmtpHostname, zimbraSmtpHostname);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSmtpHostname, zimbraSmtpHostname);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -23354,7 +23354,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=97)
     public Map<String,Object> removeSmtpHostname(String zimbraSmtpHostname, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSmtpHostname, zimbraSmtpHostname);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSmtpHostname, zimbraSmtpHostname);
         return attrs;
     }
 
@@ -23672,7 +23672,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1167)
     public void addSpamTrashAlias(String zimbraSpamTrashAlias) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSpamTrashAlias, zimbraSpamTrashAlias);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSpamTrashAlias, zimbraSpamTrashAlias);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -23690,7 +23690,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1167)
     public Map<String,Object> addSpamTrashAlias(String zimbraSpamTrashAlias, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraSpamTrashAlias, zimbraSpamTrashAlias);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraSpamTrashAlias, zimbraSpamTrashAlias);
         return attrs;
     }
 
@@ -23707,7 +23707,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1167)
     public void removeSpamTrashAlias(String zimbraSpamTrashAlias) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSpamTrashAlias, zimbraSpamTrashAlias);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSpamTrashAlias, zimbraSpamTrashAlias);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -23725,7 +23725,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1167)
     public Map<String,Object> removeSpamTrashAlias(String zimbraSpamTrashAlias, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraSpamTrashAlias, zimbraSpamTrashAlias);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraSpamTrashAlias, zimbraSpamTrashAlias);
         return attrs;
     }
 
@@ -23820,7 +23820,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1267)
     public void addStandardClientCustomPrefTab(String zimbraStandardClientCustomPrefTab) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraStandardClientCustomPrefTab, zimbraStandardClientCustomPrefTab);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraStandardClientCustomPrefTab, zimbraStandardClientCustomPrefTab);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -23837,7 +23837,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1267)
     public Map<String,Object> addStandardClientCustomPrefTab(String zimbraStandardClientCustomPrefTab, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraStandardClientCustomPrefTab, zimbraStandardClientCustomPrefTab);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraStandardClientCustomPrefTab, zimbraStandardClientCustomPrefTab);
         return attrs;
     }
 
@@ -23853,7 +23853,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1267)
     public void removeStandardClientCustomPrefTab(String zimbraStandardClientCustomPrefTab) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraStandardClientCustomPrefTab, zimbraStandardClientCustomPrefTab);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraStandardClientCustomPrefTab, zimbraStandardClientCustomPrefTab);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -23870,7 +23870,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1267)
     public Map<String,Object> removeStandardClientCustomPrefTab(String zimbraStandardClientCustomPrefTab, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraStandardClientCustomPrefTab, zimbraStandardClientCustomPrefTab);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraStandardClientCustomPrefTab, zimbraStandardClientCustomPrefTab);
         return attrs;
     }
 
@@ -24104,7 +24104,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=352)
     public void addVirtualHostname(String zimbraVirtualHostname) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraVirtualHostname, zimbraVirtualHostname);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraVirtualHostname, zimbraVirtualHostname);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -24119,7 +24119,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=352)
     public Map<String,Object> addVirtualHostname(String zimbraVirtualHostname, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraVirtualHostname, zimbraVirtualHostname);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraVirtualHostname, zimbraVirtualHostname);
         return attrs;
     }
 
@@ -24133,7 +24133,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=352)
     public void removeVirtualHostname(String zimbraVirtualHostname) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraVirtualHostname, zimbraVirtualHostname);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraVirtualHostname, zimbraVirtualHostname);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -24148,7 +24148,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=352)
     public Map<String,Object> removeVirtualHostname(String zimbraVirtualHostname, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraVirtualHostname, zimbraVirtualHostname);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraVirtualHostname, zimbraVirtualHostname);
         return attrs;
     }
 
@@ -24245,7 +24245,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=562)
     public void addVirtualIPAddress(String zimbraVirtualIPAddress) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraVirtualIPAddress, zimbraVirtualIPAddress);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraVirtualIPAddress, zimbraVirtualIPAddress);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -24264,7 +24264,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=562)
     public Map<String,Object> addVirtualIPAddress(String zimbraVirtualIPAddress, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraVirtualIPAddress, zimbraVirtualIPAddress);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraVirtualIPAddress, zimbraVirtualIPAddress);
         return attrs;
     }
 
@@ -24282,7 +24282,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=562)
     public void removeVirtualIPAddress(String zimbraVirtualIPAddress) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraVirtualIPAddress, zimbraVirtualIPAddress);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraVirtualIPAddress, zimbraVirtualIPAddress);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -24301,7 +24301,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=562)
     public Map<String,Object> removeVirtualIPAddress(String zimbraVirtualIPAddress, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraVirtualIPAddress, zimbraVirtualIPAddress);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraVirtualIPAddress, zimbraVirtualIPAddress);
         return attrs;
     }
 
@@ -24545,7 +24545,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1352)
     public void addWebClientLoginURLAllowedIP(String zimbraWebClientLoginURLAllowedIP) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraWebClientLoginURLAllowedIP, zimbraWebClientLoginURLAllowedIP);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraWebClientLoginURLAllowedIP, zimbraWebClientLoginURLAllowedIP);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -24564,7 +24564,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1352)
     public Map<String,Object> addWebClientLoginURLAllowedIP(String zimbraWebClientLoginURLAllowedIP, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraWebClientLoginURLAllowedIP, zimbraWebClientLoginURLAllowedIP);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraWebClientLoginURLAllowedIP, zimbraWebClientLoginURLAllowedIP);
         return attrs;
     }
 
@@ -24582,7 +24582,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1352)
     public void removeWebClientLoginURLAllowedIP(String zimbraWebClientLoginURLAllowedIP) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraWebClientLoginURLAllowedIP, zimbraWebClientLoginURLAllowedIP);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraWebClientLoginURLAllowedIP, zimbraWebClientLoginURLAllowedIP);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -24601,7 +24601,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1352)
     public Map<String,Object> removeWebClientLoginURLAllowedIP(String zimbraWebClientLoginURLAllowedIP, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraWebClientLoginURLAllowedIP, zimbraWebClientLoginURLAllowedIP);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraWebClientLoginURLAllowedIP, zimbraWebClientLoginURLAllowedIP);
         return attrs;
     }
 
@@ -24714,7 +24714,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1141)
     public void addWebClientLoginURLAllowedUA(String zimbraWebClientLoginURLAllowedUA) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraWebClientLoginURLAllowedUA, zimbraWebClientLoginURLAllowedUA);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraWebClientLoginURLAllowedUA, zimbraWebClientLoginURLAllowedUA);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -24735,7 +24735,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1141)
     public Map<String,Object> addWebClientLoginURLAllowedUA(String zimbraWebClientLoginURLAllowedUA, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraWebClientLoginURLAllowedUA, zimbraWebClientLoginURLAllowedUA);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraWebClientLoginURLAllowedUA, zimbraWebClientLoginURLAllowedUA);
         return attrs;
     }
 
@@ -24755,7 +24755,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1141)
     public void removeWebClientLoginURLAllowedUA(String zimbraWebClientLoginURLAllowedUA) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraWebClientLoginURLAllowedUA, zimbraWebClientLoginURLAllowedUA);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraWebClientLoginURLAllowedUA, zimbraWebClientLoginURLAllowedUA);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -24776,7 +24776,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1141)
     public Map<String,Object> removeWebClientLoginURLAllowedUA(String zimbraWebClientLoginURLAllowedUA, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraWebClientLoginURLAllowedUA, zimbraWebClientLoginURLAllowedUA);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraWebClientLoginURLAllowedUA, zimbraWebClientLoginURLAllowedUA);
         return attrs;
     }
 
@@ -24952,7 +24952,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1353)
     public void addWebClientLogoutURLAllowedIP(String zimbraWebClientLogoutURLAllowedIP) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraWebClientLogoutURLAllowedIP, zimbraWebClientLogoutURLAllowedIP);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraWebClientLogoutURLAllowedIP, zimbraWebClientLogoutURLAllowedIP);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -24971,7 +24971,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1353)
     public Map<String,Object> addWebClientLogoutURLAllowedIP(String zimbraWebClientLogoutURLAllowedIP, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraWebClientLogoutURLAllowedIP, zimbraWebClientLogoutURLAllowedIP);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraWebClientLogoutURLAllowedIP, zimbraWebClientLogoutURLAllowedIP);
         return attrs;
     }
 
@@ -24989,7 +24989,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1353)
     public void removeWebClientLogoutURLAllowedIP(String zimbraWebClientLogoutURLAllowedIP) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraWebClientLogoutURLAllowedIP, zimbraWebClientLogoutURLAllowedIP);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraWebClientLogoutURLAllowedIP, zimbraWebClientLogoutURLAllowedIP);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -25008,7 +25008,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1353)
     public Map<String,Object> removeWebClientLogoutURLAllowedIP(String zimbraWebClientLogoutURLAllowedIP, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraWebClientLogoutURLAllowedIP, zimbraWebClientLogoutURLAllowedIP);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraWebClientLogoutURLAllowedIP, zimbraWebClientLogoutURLAllowedIP);
         return attrs;
     }
 
@@ -25121,7 +25121,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1142)
     public void addWebClientLogoutURLAllowedUA(String zimbraWebClientLogoutURLAllowedUA) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraWebClientLogoutURLAllowedUA, zimbraWebClientLogoutURLAllowedUA);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraWebClientLogoutURLAllowedUA, zimbraWebClientLogoutURLAllowedUA);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -25142,7 +25142,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1142)
     public Map<String,Object> addWebClientLogoutURLAllowedUA(String zimbraWebClientLogoutURLAllowedUA, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraWebClientLogoutURLAllowedUA, zimbraWebClientLogoutURLAllowedUA);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraWebClientLogoutURLAllowedUA, zimbraWebClientLogoutURLAllowedUA);
         return attrs;
     }
 
@@ -25162,7 +25162,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1142)
     public void removeWebClientLogoutURLAllowedUA(String zimbraWebClientLogoutURLAllowedUA) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraWebClientLogoutURLAllowedUA, zimbraWebClientLogoutURLAllowedUA);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraWebClientLogoutURLAllowedUA, zimbraWebClientLogoutURLAllowedUA);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -25183,7 +25183,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=1142)
     public Map<String,Object> removeWebClientLogoutURLAllowedUA(String zimbraWebClientLogoutURLAllowedUA, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraWebClientLogoutURLAllowedUA, zimbraWebClientLogoutURLAllowedUA);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraWebClientLogoutURLAllowedUA, zimbraWebClientLogoutURLAllowedUA);
         return attrs;
     }
 
@@ -25469,7 +25469,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=2012)
     public void addWebClientSupportedHelps(String zimbraWebClientSupportedHelps) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraWebClientSupportedHelps, zimbraWebClientSupportedHelps);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraWebClientSupportedHelps, zimbraWebClientSupportedHelps);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -25495,7 +25495,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=2012)
     public Map<String,Object> addWebClientSupportedHelps(String zimbraWebClientSupportedHelps, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraWebClientSupportedHelps, zimbraWebClientSupportedHelps);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraWebClientSupportedHelps, zimbraWebClientSupportedHelps);
         return attrs;
     }
 
@@ -25520,7 +25520,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=2012)
     public void removeWebClientSupportedHelps(String zimbraWebClientSupportedHelps) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraWebClientSupportedHelps, zimbraWebClientSupportedHelps);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraWebClientSupportedHelps, zimbraWebClientSupportedHelps);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -25546,7 +25546,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=2012)
     public Map<String,Object> removeWebClientSupportedHelps(String zimbraWebClientSupportedHelps, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraWebClientSupportedHelps, zimbraWebClientSupportedHelps);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraWebClientSupportedHelps, zimbraWebClientSupportedHelps);
         return attrs;
     }
 
@@ -25742,7 +25742,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=710)
     public void addZimletDomainAvailableZimlets(String zimbraZimletDomainAvailableZimlets) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraZimletDomainAvailableZimlets, zimbraZimletDomainAvailableZimlets);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraZimletDomainAvailableZimlets, zimbraZimletDomainAvailableZimlets);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -25761,7 +25761,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=710)
     public Map<String,Object> addZimletDomainAvailableZimlets(String zimbraZimletDomainAvailableZimlets, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraZimletDomainAvailableZimlets, zimbraZimletDomainAvailableZimlets);
+        StringUtil.addToMultiMap(attrs, "+" + ZAttrProvisioning.A_zimbraZimletDomainAvailableZimlets, zimbraZimletDomainAvailableZimlets);
         return attrs;
     }
 
@@ -25779,7 +25779,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=710)
     public void removeZimletDomainAvailableZimlets(String zimbraZimletDomainAvailableZimlets) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraZimletDomainAvailableZimlets, zimbraZimletDomainAvailableZimlets);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraZimletDomainAvailableZimlets, zimbraZimletDomainAvailableZimlets);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -25798,7 +25798,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     @ZAttr(id=710)
     public Map<String,Object> removeZimletDomainAvailableZimlets(String zimbraZimletDomainAvailableZimlets, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraZimletDomainAvailableZimlets, zimbraZimletDomainAvailableZimlets);
+        StringUtil.addToMultiMap(attrs, "-" + ZAttrProvisioning.A_zimbraZimletDomainAvailableZimlets, zimbraZimletDomainAvailableZimlets);
         return attrs;
     }
 
