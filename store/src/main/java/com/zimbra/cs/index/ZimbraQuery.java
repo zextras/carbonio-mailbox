@@ -647,8 +647,8 @@ public final class ZimbraQuery {
                 // folders
                 Set<Folder> allVisibleFolders = mailbox.getVisibleFolders(octxt);
                 if (allVisibleFolders == null) {
-                    allVisibleFolders = new HashSet<Folder>();
-                    allVisibleFolders.addAll(mailbox.getFolderList(octxt, SortBy.NONE));
+                  allVisibleFolders = new HashSet<Folder>(
+                      mailbox.getFolderList(octxt, SortBy.NONE));
                 }
                 for (Folder f : allVisibleFolders) {
                     if (f.getType() == MailItem.Type.FOLDER &&

@@ -201,8 +201,7 @@ public abstract class AutoProvision {
                 attrMap.put(externalAttr, zimbraAttr);
             }
 
-            Set<String> attrs = new HashSet<String>();
-            attrs.addAll(attrMap.keySet());
+            Set<String> attrs = new HashSet<String>(attrMap.keySet());
             attrs.add(LdapConstants.ATTR_createTimestamp);
             String nameMapAttr = domain.getAutoProvAccountNameMap();
             if (nameMapAttr != null) {

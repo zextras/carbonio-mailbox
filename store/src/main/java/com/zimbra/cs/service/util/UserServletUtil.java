@@ -385,9 +385,8 @@ public class UserServletUtil {
                 Contact c = (Contact) obj;
 
                 if (c.isContactGroup()) {
-                    HashMap<String, String> nContacts = new HashMap<String, String>();
-                    // first add all the fields and values
-                    nContacts.putAll(c.getFields());
+                  // first add all the fields and values
+                  HashMap<String, String> nContacts = new HashMap<String, String>(c.getFields());
                     // remove groupMemeber
                     nContacts.remove(ContactConstants.A_groupMember);
                     // then re-calculate the dlist as in 7.X

@@ -3112,8 +3112,7 @@ public abstract class CalendarItem extends MailItem {
         }
 
         List<ReplyInfo> getAllReplies() {
-            List<ReplyInfo> toRet = new ArrayList<ReplyInfo>();
-            toRet.addAll(mReplies);
+            List<ReplyInfo> toRet = new ArrayList<ReplyInfo>(mReplies);
             return toRet;
         }
 

@@ -3952,8 +3952,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         domainCache.remove(domain);
         // assume subdomains exist and turn into plain dc object
         Map<String, Object> attrs = new HashMap<String, Object>();
-        List<String> objClasses = new ArrayList<String>();
-        objClasses.addAll(Arrays.asList("zimbraDomain", "amavisAccount", "DKIM"));
+        List<String> objClasses = new ArrayList<String>(
+            Arrays.asList("zimbraDomain", "amavisAccount", "DKIM"));
         attrs.put("-" + A_objectClass, objClasses);
         // remove all zimbra attrs
         for (String key : domain.getAttrs(false).keySet()) {

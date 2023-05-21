@@ -1217,8 +1217,7 @@ public class DBQueryOperation extends QueryOperation {
 
     @Override
     public List<QueryInfo> getResultInfo() {
-        List<QueryInfo> toRet = new ArrayList<QueryInfo>();
-        toRet.addAll(queryInfo);
+      List<QueryInfo> toRet = new ArrayList<QueryInfo>(queryInfo);
         if (luceneOp != null) {
             toRet.addAll(luceneOp.getQueryInfo());
         }

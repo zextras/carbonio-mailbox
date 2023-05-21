@@ -415,8 +415,7 @@ public final class DbMailbox {
       }
 
       // delete from tables in reverse order
-      ArrayList<String> tables = new ArrayList<String>();
-      tables.addAll(sTables);
+      ArrayList<String> tables = new ArrayList<String>(sTables);
       for (DbTableCallback callback : callbacks) {
         tables.addAll(callback.getTableNames());
       }

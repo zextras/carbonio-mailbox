@@ -467,8 +467,8 @@ public class CheckAttrRight extends CheckRight {
             return AllowedAttrs.ALLOW_ALL_ATTRS();
         } else {
             // get all attrs that can appear on the target entry
-            Set<String> allowed = new HashSet<String>();
-            allowed.addAll(AttributeManager.getInstance().getAllAttrsInClass(klass));
+          Set<String> allowed = new HashSet<String>(
+              AttributeManager.getInstance().getAllAttrsInClass(klass));
 
             // remove denied from all
             for (String d : denySome.keySet())

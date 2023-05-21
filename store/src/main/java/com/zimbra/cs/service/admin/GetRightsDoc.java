@@ -120,8 +120,8 @@ public class GetRightsDoc extends AdminDocumentHandler {
     }
     
     private void genNotUsed(Set<AdminRight> usedRights, Element response) throws ServiceException {
-        Set<AdminRight> allRights = new HashSet<AdminRight>();
-        allRights.addAll(RightManager.getInstance().getAllAdminRights().values());
+      Set<AdminRight> allRights = new HashSet<AdminRight>(
+          RightManager.getInstance().getAllAdminRights().values());
         Set<AdminRight> notUsed = SetUtil.subtract(allRights, usedRights);
         for (AdminRight nu : notUsed)
             response.addElement("notUsed").setText(nu.getName());
