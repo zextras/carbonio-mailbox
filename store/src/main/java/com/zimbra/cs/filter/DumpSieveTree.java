@@ -51,9 +51,7 @@ public class DumpSieveTree extends SieveVisitor {
     }
 
     private void indent() {
-        for (int i = 0; i < mIndentLevel; i++) {
-            mBuf.append(" ");
-        }
+        mBuf.append(" ".repeat(Math.max(0, mIndentLevel)));
     }
     
     public String toString() {

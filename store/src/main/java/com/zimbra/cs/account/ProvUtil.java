@@ -4856,9 +4856,7 @@ public class ProvUtil implements HttpDebugListener {
 
   static String formatLine(int width) {
     StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < width; i++) {
-      sb.append("-");
-    }
+    sb.append("-".repeat(Math.max(0, width)));
     return sb.toString();
   }
 

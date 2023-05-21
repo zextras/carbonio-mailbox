@@ -65,9 +65,7 @@ extends MimeVisitor {
     }
 
     private void indent() {
-        for (int i = 0; i < mIndentLevel; i++) {
-            mBuf.append("  ");
-        }
+      mBuf.append("  ".repeat(Math.max(0, mIndentLevel)));
     }
 
     @Override public String toString() {
