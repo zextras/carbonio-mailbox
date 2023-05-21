@@ -255,7 +255,7 @@ public abstract class DistributionListDocumentHandler extends AccountDocumentHan
             Address[] rcpts = out.getRecipients(javax.mail.Message.RecipientType.TO);
             StringBuilder rcptAddr = new StringBuilder();
             for (Address a : rcpts) {
-                rcptAddr.append(a.toString() + ", ");
+                rcptAddr.append(a.toString()).append(", ");
             }
             ZimbraLog.account.info(logTTxt + ": rcpt='" + rcptAddr +
                     "' Message-ID=" + out.getMessageID());

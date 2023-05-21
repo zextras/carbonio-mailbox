@@ -84,7 +84,7 @@ public class LocalConfig {
     private String expandDeep(String key, Set<String> seenKeys) throws ConfigException {
         if (seenKeys.contains(key)) {
             StringBuilder sb = new StringBuilder();
-            sb.append("recursive expansion of key '" + key + "':");
+            sb.append("recursive expansion of key '").append(key).append("':");
             for (String seen : seenKeys)
                 sb.append(" ").append(seen);
             throw new ConfigException(sb.toString());

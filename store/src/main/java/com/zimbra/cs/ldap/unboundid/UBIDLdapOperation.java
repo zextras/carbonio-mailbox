@@ -135,7 +135,7 @@ abstract class UBIDLdapOperation {
   protected String getModListText(List<Modification> modList) {
     StringBuilder buffer = new StringBuilder();
     for (Modification mod : modList) {
-      buffer.append(mod.toString() + ", ");
+      buffer.append(mod.toString()).append(", ");
     }
     return buffer.toString();
   }
@@ -143,7 +143,7 @@ abstract class UBIDLdapOperation {
   protected String getCtlListText(List<Control> ctlList) {
     StringBuilder buffer = new StringBuilder();
     for (Control ctl : ctlList) {
-      buffer.append(ctl.toString() + ", ");
+      buffer.append(ctl.toString()).append(", ");
     }
     return buffer.toString();
   }

@@ -3994,7 +3994,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             @Override
             public void visit(String dn, Map<String, Object> attrs, IAttributes ldapAttrs) {
               if (!dn.equals(doNotReportThisDN)) {
-                sb.append("[" + dn + "] ");
+                sb.append("[").append(dn).append("] ");
               }
             }
           };
@@ -7065,7 +7065,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       lists = getAllDistributionListsForAddresses(addrs, false);
     } catch (ServiceException se) {
       StringBuilder sb = new StringBuilder();
-      for (String addr : addrs) sb.append(addr + ", ");
+      for (String addr : addrs) sb.append(addr).append(", ");
       ZimbraLog.account.warn("unable to get all DLs for addrs " + sb.toString());
       return;
     }
@@ -7076,7 +7076,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       } catch (ServiceException se) {
         // log warning and continue
         StringBuilder sb = new StringBuilder();
-        for (String addr : addrs) sb.append(addr + ", ");
+        for (String addr : addrs) sb.append(addr).append(", ");
         ZimbraLog.account.warn(
             "unable to remove " + sb.toString() + " from DL " + list.getName(), se);
       }
@@ -9886,7 +9886,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     int i = 0;
     for (String id : unresolvedIds) {
-      query.append("(" + Provisioning.A_zimbraId + "=" + id + ")");
+      query.append("(" + Provisioning.A_zimbraId + "=").append(id).append(")");
       if ((++i) % batchSize == 0) {
         query.append(queryEnd);
         searchLdapOnReplica(base, query.toString(), returnAttrs, visitor);

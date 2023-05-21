@@ -413,9 +413,9 @@ public class ProvUtil implements HttpDebugListener {
         }
         tt.append(tts[i].getCode());
         if (tts[i].needsTargetIdentity()) {
-          ttNeedsTargetIdentity.append(tts[i].getCode() + " ");
+          ttNeedsTargetIdentity.append(tts[i].getCode()).append(" ");
         } else {
-          ttNoTargetId.append(tts[i].getCode() + " ");
+          ttNoTargetId.append(tts[i].getCode()).append(" ");
         }
       }
       console.println("    {target-type} = " + tt.toString());
@@ -439,15 +439,15 @@ public class ProvUtil implements HttpDebugListener {
         }
         gt.append(gts[i].getCode());
         if (gts[i].needsGranteeIdentity()) {
-          gtNeedsGranteeIdentity.append(gts[i].getCode() + " ");
+          gtNeedsGranteeIdentity.append(gts[i].getCode()).append(" ");
         } else {
-          gtNoGranteeId.append(gts[i].getCode() + " ");
+          gtNoGranteeId.append(gts[i].getCode()).append(" ");
         }
         if (secretPossible) {
           if (gts[i].allowSecret()) {
-            gtNeedsSecret.append(gts[i].getCode() + " ");
+            gtNeedsSecret.append(gts[i].getCode()).append(" ");
           } else {
-            gtNoSecret.append(gts[i].getCode() + " ");
+            gtNoSecret.append(gts[i].getCode()).append(" ");
           }
         }
       }
@@ -3461,7 +3461,7 @@ public class ProvUtil implements HttpDebugListener {
       packages = new String[args.length - 1];
       for (int i = 1; i < args.length; i++) {
         packages[i - 1] = args[i];
-        argsDump.append(" " + args[i]);
+        argsDump.append(" ").append(args[i]);
       }
     } else {
       packages =
@@ -4384,9 +4384,9 @@ public class ProvUtil implements HttpDebugListener {
     StringBuilder sb = new StringBuilder(LC.zmprov_tmp_directory.value());
     sb.append(File.separator).append(attrName);
     if (idx != null) {
-      sb.append("_" + idx);
+      sb.append("_").append(idx);
     }
-    sb.append("_" + timestamp);
+    sb.append("_").append(timestamp);
 
     File file = new File(sb.toString());
     if (file.exists()) {
@@ -4702,10 +4702,10 @@ public class ProvUtil implements HttpDebugListener {
       static String formatDefaults(AttributeInfo ai) {
         StringBuilder sb = new StringBuilder();
         for (String d : ai.getDefaultCosValues()) {
-          sb.append(d + ",");
+          sb.append(d).append(",");
         }
         for (String d : ai.getGlobalConfigValues()) {
-          sb.append(d + ",");
+          sb.append(d).append(",");
         }
         return sb.length() == 0 ? "" : sb.substring(0, sb.length() - 1); // trim the ending ,
       }
@@ -4718,7 +4718,7 @@ public class ProvUtil implements HttpDebugListener {
         StringBuilder sb = new StringBuilder();
 
         for (AttributeClass ac : requiredIn) {
-          sb.append(ac.name() + ",");
+          sb.append(ac.name()).append(",");
         }
         return sb.substring(0, sb.length() - 1); // trim the ending ,
       }
@@ -4730,7 +4730,7 @@ public class ProvUtil implements HttpDebugListener {
         }
         StringBuilder sb = new StringBuilder();
         for (AttributeClass ac : optionalIn) {
-          sb.append(ac.name() + ",");
+          sb.append(ac.name()).append(",");
         }
         return sb.substring(0, sb.length() - 1); // trim the ending ,
       }
@@ -4739,7 +4739,7 @@ public class ProvUtil implements HttpDebugListener {
         StringBuilder sb = new StringBuilder();
         for (AttributeFlag f : AttributeFlag.values()) {
           if (ai.hasFlag(f)) {
-            sb.append(f.name() + ",");
+            sb.append(f.name()).append(",");
           }
         }
         return sb.length() == 0 ? "" : sb.substring(0, sb.length() - 1); // trim the ending ,
@@ -4750,7 +4750,7 @@ public class ProvUtil implements HttpDebugListener {
         List<AttributeServerType> requiresRetstart = ai.getRequiresRestart();
         if (requiresRetstart != null) {
           for (AttributeServerType ast : requiresRetstart) {
-            sb.append(ast.name() + ",");
+            sb.append(ast.name()).append(",");
           }
         }
         return sb.length() == 0 ? "" : sb.substring(0, sb.length() - 1); // trim the ending ,
@@ -4866,7 +4866,7 @@ public class ProvUtil implements HttpDebugListener {
     StringBuilder sb = new StringBuilder();
     for (AttributeClass ac : AttributeClass.values()) {
       if (ac.isProvisionable()) {
-        sb.append(ac.name() + ",");
+        sb.append(ac.name()).append(",");
       }
     }
     return sb.substring(0, sb.length() - 1); // trim the ending ,
@@ -5274,7 +5274,7 @@ public class ProvUtil implements HttpDebugListener {
                 && entry.getAttr(Provisioning.A_zimbraSSLCertificate) != null) {
               StringBuilder virtualHosts = new StringBuilder();
               for (String vh : entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname)) {
-                virtualHosts.append(vh + " ");
+                virtualHosts.append(vh).append(" ");
               }
               console.println(entry.getName() + " " + virtualHosts);
             }

@@ -234,11 +234,12 @@ public class LdapConnectionPool {
 
             private void dump(long now) {
                 StringBuilder sb = new StringBuilder();
-                sb.append("connId: " + connId + " (" + connPoolName + ")" + "\n");
-                sb.append("elapsed milli secs: " + (now - checkedOutTimestamp) + "\n");
+                sb.append("connId: ").append(connId).append(" (").append(connPoolName).append(")")
+                    .append("\n");
+                sb.append("elapsed milli secs: ").append(now - checkedOutTimestamp).append("\n");
                 sb.append("\n");
                 for (StackTraceElement element : stackTrace) {
-                    sb.append(element.toString() + "\n");
+                    sb.append(element.toString()).append("\n");
                 }
                 sb.append("\n");
 

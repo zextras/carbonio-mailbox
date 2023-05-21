@@ -128,7 +128,7 @@ public class ZimletUtil {
             Presence presence = availZimlets.getPresence(zimletName);
 
             if (presence == Presence.enabled && !wanted.contains(zimletName)) {
-                disabledZimletNamesForLogging.append(zimletName + ", ");
+                disabledZimletNamesForLogging.append(zimletName).append(", ");
                 StringUtil.addToMultiMap(attrs, Provisioning.A_zimbraPrefDisabledZimlets, zimletName);
             }
         }

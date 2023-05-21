@@ -67,10 +67,10 @@ public class CollectAllEffectiveRights {
         public String toString() {
             StringBuilder sb = new StringBuilder();
             for (String group : mGroups) {
-                sb.append("group " + group + "\n");
+                sb.append("group ").append(group).append("\n");
             }
             for (String member : mMembers) {
-                sb.append("    member " + member + "\n");
+                sb.append("    member ").append(member).append("\n");
             }
             return sb.toString();
         }

@@ -347,8 +347,8 @@ public class AttributeManagerUtil {
     }
 
     private void buildZimbraRootOIDs(StringBuilder ZIMBRA_ROOT_OIDS, String prefix) {
-        ZIMBRA_ROOT_OIDS.append(prefix + "ZimbraRoot 1.3.6.1.4.1.19348\n");
-        ZIMBRA_ROOT_OIDS.append(prefix + "ZimbraLDAP ZimbraRoot:2\n");
+        ZIMBRA_ROOT_OIDS.append(prefix).append("ZimbraRoot 1.3.6.1.4.1.19348\n");
+        ZIMBRA_ROOT_OIDS.append(prefix).append("ZimbraLDAP ZimbraRoot:2\n");
     }
 
     private void buildAttrDef(StringBuilder ATTRIBUTE_DEFINITIONS, AttributeInfo ai) {
@@ -503,24 +503,26 @@ public class AttributeManagerUtil {
             throw new RuntimeException("unknown type encountered!");
         }
 
-        ATTRIBUTE_DEFINITIONS.append("( " + ai.getName() + "\n");
-        ATTRIBUTE_DEFINITIONS.append(ML_CONT_PREFIX + "NAME ( '" + ai.getName() + "' )\n");
-        ATTRIBUTE_DEFINITIONS.append(ML_CONT_PREFIX + "DESC '" + rfc4512Dstring(ai.getDescription()) + "'\n");
+        ATTRIBUTE_DEFINITIONS.append("( ").append(ai.getName()).append("\n");
+        ATTRIBUTE_DEFINITIONS.append(ML_CONT_PREFIX + "NAME ( '").append(ai.getName())
+            .append("' )\n");
+        ATTRIBUTE_DEFINITIONS.append(ML_CONT_PREFIX + "DESC '")
+            .append(rfc4512Dstring(ai.getDescription())).append("'\n");
 
-        ATTRIBUTE_DEFINITIONS.append(ML_CONT_PREFIX + "SYNTAX " + syntax);
+        ATTRIBUTE_DEFINITIONS.append(ML_CONT_PREFIX + "SYNTAX ").append(syntax);
 
         if (equality != null) {
-            ATTRIBUTE_DEFINITIONS.append("\n" + ML_CONT_PREFIX + "EQUALITY " + equality);
+            ATTRIBUTE_DEFINITIONS.append("\n" + ML_CONT_PREFIX + "EQUALITY ").append(equality);
         }
 
         if (substr != null) {
-            ATTRIBUTE_DEFINITIONS.append("\n" + ML_CONT_PREFIX + "SUBSTR " + substr);
+            ATTRIBUTE_DEFINITIONS.append("\n" + ML_CONT_PREFIX + "SUBSTR ").append(substr);
         }
 
         if (ordering != null) {
-            ATTRIBUTE_DEFINITIONS.append("\n" + ML_CONT_PREFIX + "ORDERING " + ordering);
+            ATTRIBUTE_DEFINITIONS.append("\n" + ML_CONT_PREFIX + "ORDERING ").append(ordering);
         } else if (ai.getOrder() != null) {
-            ATTRIBUTE_DEFINITIONS.append("\n" + ML_CONT_PREFIX + "ORDERING " + ai.getOrder());
+            ATTRIBUTE_DEFINITIONS.append("\n" + ML_CONT_PREFIX + "ORDERING ").append(ai.getOrder());
         }
 
         if (ai.getCardinality() == AttributeCardinality.single) {
@@ -536,7 +538,8 @@ public class AttributeManagerUtil {
             int i = iter.next();
 
             // OC_GROUP_OIDS
-            OC_GROUP_OIDS.append(prefix + getOCGroupMap().get(i) + " ZimbraLDAP:" + i + "\n");
+            OC_GROUP_OIDS.append(prefix).append(getOCGroupMap().get(i)).append(" ZimbraLDAP:")
+                .append(i).append("\n");
 
             // List all ocs which we define and which belong in this group
             List<ObjectClassInfo> list = getOCList(i);
@@ -545,7 +548,8 @@ public class AttributeManagerUtil {
             sortOCsByOID(list);
 
             for (ObjectClassInfo oci : list) {
-                OC_OIDS.append(prefix + oci.getName() + " " + getOCGroupMap().get(i) + ':' + oci.getId() + "\n");
+                OC_OIDS.append(prefix).append(oci.getName()).append(" ")
+                    .append(getOCGroupMap().get(i)).append(':').append(oci.getId()).append("\n");
             }
         }
     }
@@ -570,19 +574,20 @@ public class AttributeManagerUtil {
             OC_DEFINITIONS.append("#\n");
             for (String line : comment) {
                 if (line.length() > 0)
-                    OC_DEFINITIONS.append("# " + line + "\n");
+                    OC_DEFINITIONS.append("# ").append(line).append("\n");
                 else
                     OC_DEFINITIONS.append("#\n");
             }
             OC_DEFINITIONS.append("#\n");
 
-            OC_DEFINITIONS.append(prefix + "( " + oci.getName() + "\n");
-            OC_DEFINITIONS.append(ML_CONT_PREFIX + "NAME '" + oci.getName() + "'\n");
-            OC_DEFINITIONS.append(ML_CONT_PREFIX + "DESC '" + rfc4512Dstring(oci.getDescription()) + "'\n");
+            OC_DEFINITIONS.append(prefix).append("( ").append(oci.getName()).append("\n");
+            OC_DEFINITIONS.append(ML_CONT_PREFIX + "NAME '").append(oci.getName()).append("'\n");
+            OC_DEFINITIONS.append(ML_CONT_PREFIX + "DESC '")
+                .append(rfc4512Dstring(oci.getDescription())).append("'\n");
             OC_DEFINITIONS.append(ML_CONT_PREFIX + "SUP ");
             for (String sup : oci.getSuperOCs())
                 OC_DEFINITIONS.append(sup);
-            OC_DEFINITIONS.append(" " + oci.getType() + "\n");
+            OC_DEFINITIONS.append(" ").append(oci.getType()).append("\n");
 
             StringBuilder value = new StringBuilder();
             buildObjectClassAttrs(cls, value);
@@ -660,7 +665,8 @@ public class AttributeManagerUtil {
             int i = iter.next();
 
             //GROUP_OIDS
-            GROUP_OIDS.append("objectIdentifier " + getGroupMap().get(i) + " ZimbraLDAP:" + i + "\n");
+            GROUP_OIDS.append("objectIdentifier ").append(getGroupMap().get(i))
+                .append(" ZimbraLDAP:").append(i).append("\n");
 
             // List all attrs which we define and which belong in this group
             List<AttributeInfo> list = getAttrList(i);
@@ -671,9 +677,11 @@ public class AttributeManagerUtil {
             for (AttributeInfo ai : list) {
                 String parentOid = ai.getParentOid();
                 if (parentOid == null)
-                    ATTRIBUTE_OIDS.append("objectIdentifier " + ai.getName() + " " + getGroupMap().get(i) + ':' + ai.getId() + "\n");
+                    ATTRIBUTE_OIDS.append("objectIdentifier ").append(ai.getName()).append(" ")
+                        .append(getGroupMap().get(i)).append(':').append(ai.getId()).append("\n");
                 else
-                    ATTRIBUTE_OIDS.append("objectIdentifier " + ai.getName() + " " + parentOid + "." + ai.getId() + "\n");
+                    ATTRIBUTE_OIDS.append("objectIdentifier ").append(ai.getName()).append(" ")
+                        .append(parentOid).append(".").append(ai.getId()).append("\n");
             }
 
             // ATTRIBUTE_DEFINITIONS: DESC EQUALITY NAME ORDERING SINGLE-VALUE SUBSTR SYNTAX
@@ -724,7 +732,8 @@ public class AttributeManagerUtil {
             int i = iter.next();
 
             //GROUP_OIDS
-            ATTRIBUTE_GROUP_OIDS.append("olcObjectIdentifier: " + getGroupMap().get(i) + " ZimbraLDAP:" + i + "\n");
+            ATTRIBUTE_GROUP_OIDS.append("olcObjectIdentifier: ").append(getGroupMap().get(i))
+                .append(" ZimbraLDAP:").append(i).append("\n");
 
             // List all attrs which we define and which belong in this group
             List<AttributeInfo> list = getAttrList(i);
@@ -735,9 +744,11 @@ public class AttributeManagerUtil {
             for (AttributeInfo ai : list) {
                 String parentOid = ai.getParentOid();
                 if (parentOid == null)
-                    ATTRIBUTE_OIDS.append("olcObjectIdentifier: " + ai.getName() + " " + getGroupMap().get(i) + ':' + ai.getId() + "\n");
+                    ATTRIBUTE_OIDS.append("olcObjectIdentifier: ").append(ai.getName()).append(" ")
+                        .append(getGroupMap().get(i)).append(':').append(ai.getId()).append("\n");
                 else
-                    ATTRIBUTE_OIDS.append("olcObjectIdentifier: " + ai.getName() + " " + parentOid + "." + ai.getId() + "\n");
+                    ATTRIBUTE_OIDS.append("olcObjectIdentifier: ").append(ai.getName()).append(" ")
+                        .append(parentOid).append(".").append(ai.getId()).append("\n");
             }
 
             // ATTRIBUTE_DEFINITIONS: DESC EQUALITY NAME ORDERING SINGLE-VALUE SUBSTR SYNTAX
@@ -806,7 +817,7 @@ public class AttributeManagerUtil {
             String desc = ai.getDescription();
             if (desc != null) {
                 String text = FileGenUtil.wrapComments(desc, 80, "  ", " \\").substring(2); // strip off the 2 spaces on the first line
-                result.append(ai.getName() + " = " + text + "\n");
+                result.append(ai.getName()).append(" = ").append(text).append("\n");
             }
         }
 

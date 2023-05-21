@@ -60,13 +60,13 @@ public abstract class Right extends RightConsts implements Comparable<Right> {
         if (sb == null)
             sb = new StringBuilder();
 
-        sb.append("name         = " + mName + "\n");
-        sb.append("type         = " + mRightType.name() + "\n");
-        sb.append("desc         = " + mDesc + "\n");
-        sb.append("help         = " + (mHelp==null ? "null" : mHelp.getName()  ) + "\n");
-        sb.append("ui           = " + (mUI==null ? "null" : mUI.getDesc()  ) + "\n");
-        sb.append("default      = " + mDefault + "\n");
-        sb.append("target Type  = " + mTargetType + "\n");
+        sb.append("name         = ").append(mName).append("\n");
+        sb.append("type         = ").append(mRightType.name()).append("\n");
+        sb.append("desc         = ").append(mDesc).append("\n");
+        sb.append("help         = ").append(mHelp == null ? "null" : mHelp.getName()).append("\n");
+        sb.append("ui           = ").append(mUI == null ? "null" : mUI.getDesc()).append("\n");
+        sb.append("default      = ").append(mDefault).append("\n");
+        sb.append("target Type  = ").append(mTargetType).append("\n");
 
         return sb.toString();
     }

@@ -468,7 +468,7 @@ public abstract class AutoProvision {
             // HTML part
             StringBuilder html = new StringBuilder();
             html.append("<h4>\n");
-            html.append("<p>" + body + "</p>\n");
+            html.append("<p>").append(body).append("</p>\n");
             html.append("</h4>\n");
             html.append("\n");
 

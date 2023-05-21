@@ -162,12 +162,12 @@ public class CheckAttrRight extends CheckRight {
 
             sb.append("Allowed: {");
             for (Map.Entry<String, Integer> as : allowSome.entrySet()) {
-                sb.append("(" + as.getKey() + ", " + as.getValue() + ")");
+                sb.append("(").append(as.getKey()).append(", ").append(as.getValue()).append(")");
             }
             sb.append("}");
             sb.append(" Denied: {");
             for (Map.Entry<String, Integer> ds : denySome.entrySet()) {
-                sb.append("(" + ds.getKey() + ", " + ds.getValue() + ")");
+                sb.append("(").append(ds.getKey()).append(", ").append(ds.getValue()).append(")");
             }
             sb.append("}");
 

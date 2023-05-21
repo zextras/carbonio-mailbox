@@ -765,7 +765,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
             StringBuilder sb = new StringBuilder();
 
             sb.append("<h4>\n");
-            sb.append("<p>" + textPart(locale) + "</p>\n");
+            sb.append("<p>").append(textPart(locale)).append("</p>\n");
             sb.append("</h4>\n");
             sb.append("\n");
             return sb.toString();

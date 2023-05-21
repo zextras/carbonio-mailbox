@@ -343,11 +343,11 @@ public class AttributeConstraint {
 
         String min = getMin();
         if (min != null)
-            sb.append(PARTS_DELIMITER + "min=" + min);
+            sb.append(PARTS_DELIMITER + "min=").append(min);
 
         String max = getMax();
         if (max != null)
-            sb.append(PARTS_DELIMITER + "max=" + max);
+            sb.append(PARTS_DELIMITER + "max=").append(max);
 
         Set<String> values = getValues();
         if (values != null && values.size() > 0) {
@@ -613,7 +613,7 @@ public class AttributeConstraint {
         StringBuilder sb = new StringBuilder();
         if (value instanceof String[]) {
             for (String s : (String[])value)
-                sb.append(s + " ");
+                sb.append(s).append(" ");
         } else
             sb.append(value.toString());
 

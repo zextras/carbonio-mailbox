@@ -29,7 +29,7 @@ extends MimeVisitor {
     throws MessagingException {
         if (visitPhase == VisitPhase.VISIT_BEGIN) {
             indent();
-            mBuf.append("Message: " + Mime.getSubject(mm) + "\n");
+            mBuf.append("Message: ").append(Mime.getSubject(mm)).append("\n");
             mIndentLevel++;
         } else {
             mIndentLevel--;
@@ -50,13 +50,14 @@ extends MimeVisitor {
 
     @Override public boolean visitBodyPart(MimeBodyPart bp) throws MessagingException {
         indent();
-        mBuf.append("Part: type=" + bp.getContentType() + ", filename=" + bp.getFileName() + "\n");
+        mBuf.append("Part: type=").append(bp.getContentType()).append(", filename=")
+            .append(bp.getFileName()).append("\n");
         if (bp.getContentType().startsWith("text")) {
             mBuf.append("----------\n");
             try {
                 mBuf.append(bp.getContent());
             } catch (IOException e) {
-                mBuf.append(e + "\n");
+                mBuf.append(e).append("\n");
             }
             mBuf.append("----------\n");
         }

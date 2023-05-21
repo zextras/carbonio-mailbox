@@ -296,7 +296,7 @@ public class ContactGroup {
             } else {
                 first = false;
             }
-            sb.append(member.getType().getMetaDataEncoded() + ":" + member.getValue());
+            sb.append(member.getType().getMetaDataEncoded()).append(":").append(member.getValue());
         }
         return sb.toString();
     }

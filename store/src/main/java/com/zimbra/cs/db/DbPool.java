@@ -389,7 +389,8 @@ public class DbPool {
                     if (count == 0) {
                         i.remove();
                     } else {
-                        buf.append(count + " connections allocated at " + stackTrace + "\n");
+                        buf.append(count).append(" connections allocated at ").append(stackTrace)
+                            .append("\n");
                     }
                 }
             }
