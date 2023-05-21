@@ -954,8 +954,10 @@ public class Mime {
                 String addr = inetAddr.getAddress();
                 boolean match = false;
                 for (int k = 0; k < rcpts.length; k++)
-                    if (addr.equalsIgnoreCase(rcpts[k]))
+                    if (addr.equalsIgnoreCase(rcpts[k])) {
                         match = true;
+                        break;
+                    }
                 if (!match)
                     list.add(inetAddr);
             }

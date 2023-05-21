@@ -330,6 +330,7 @@ public class ZInternetHeader {
             byte c = content[pos];
             if (c <= 0 || c >= 0x7F || (c == '=' && pos < end - 1 && content[pos + 1] == '?')) {
                 complicated = true;
+                break;
             }
         }
         if (!complicated) {

@@ -3571,6 +3571,7 @@ public class ProvUtil implements HttpDebugListener {
       String arg = args[i];
       if (arg.equals("-v")) {
         verbose = true;
+        break;
       }
       i++;
     }
