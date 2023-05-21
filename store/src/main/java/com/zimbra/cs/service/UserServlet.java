@@ -754,15 +754,18 @@ public class UserServlet extends ZimbraServlet {
             return false;
         Mountpoint mpt = (Mountpoint) item;
 
-        String uri = SERVLET_PATH + "/~/?" + QP_ID + '=' + HttpUtil.urlEscape(mpt.getOwnerId()) + "%3A" + mpt.getRemoteId();
+        StringBuilder uri = new StringBuilder(
+            SERVLET_PATH + "/~/?" + QP_ID + '=' + HttpUtil.urlEscape(mpt.getOwnerId()) + "%3A"
+                + mpt.getRemoteId());
         if (context.format != null)
-            uri += '&' + QP_FMT + '=' + HttpUtil.urlEscape(context.format.toString());
+            uri.append('&' + QP_FMT + '=').append(HttpUtil.urlEscape(context.format.toString()));
         if (context.extraPath != null)
-            uri += '&' + QP_NAME + '=' + HttpUtil.urlEscape(context.extraPath);
+            uri.append('&' + QP_NAME + '=').append(HttpUtil.urlEscape(context.extraPath));
         for (Map.Entry<String, String> entry : HttpUtil.getURIParams(req).entrySet()) {
             String qp = entry.getKey();
             if (!qp.equals(QP_ID) && !qp.equals(QP_FMT))
-                uri += '&' + HttpUtil.urlEscape(qp) + '=' + HttpUtil.urlEscape(entry.getValue());
+                uri.append('&').append(HttpUtil.urlEscape(qp)).append('=')
+                    .append(HttpUtil.urlEscape(entry.getValue()));
         }
 
         Provisioning prov = Provisioning.getInstance();
@@ -770,7 +773,7 @@ public class UserServlet extends ZimbraServlet {
         if (targetAccount == null)
             throw new UserServletException(HttpServletResponse.SC_BAD_REQUEST, L10nUtil.getMessage(MsgKey.errNoSuchAccount, req));
         try {
-            proxyServletRequest(req, resp, prov.getServer(targetAccount), uri, getProxyAuthToken(context));
+            proxyServletRequest(req, resp, prov.getServer(targetAccount), uri.toString(), getProxyAuthToken(context));
         } catch (HttpException e) {
             throw new IOException("Unknown error", e);
         }

@@ -1292,16 +1292,16 @@ public class ZimletUtil {
         if (z.isExtension()) {
             System.out.println("       Extension: true");
         }
-        String cosList = null;
+        StringBuilder cosList = null;
         for (Cos cos : prov.getAllCos()) {
             for (String zc : getAvailableZimlets(cos).getZimletNamesAsArray()) {
                 if (zc.compareTo(zimlet) != 0) {
                     continue;
                 }
                 if (cosList == null) {
-                    cosList = cos.getName();
+                    cosList = new StringBuilder(cos.getName());
                 } else {
-                    cosList = cosList + ", " + cos.getName();
+                    cosList.append(", ").append(cos.getName());
                 }
                 break;
             }
@@ -1313,24 +1313,24 @@ public class ZimletUtil {
             System.out.println("*** Zimlet file is missing on this machine");
         } else {
             ZimletDescription desc = zf.getZimletDescription();
-            String val = desc.getRegexString();
+            StringBuilder val = new StringBuilder(desc.getRegexString());
             if (val != null) {
                 System.out.println("           RegEx: "+val);
             }
-            val = desc.getContentObjectAsXML();
+            val = new StringBuilder(desc.getContentObjectAsXML());
             if (val != null) {
                 System.out.println("  Content Object: "+val);
             }
-            val = desc.getPanelItemAsXML();
+            val = new StringBuilder(desc.getPanelItemAsXML());
             if (val != null) {
                 System.out.println("      Panel Item: "+val);
             }
             val = null;
             for (String script : desc.getScripts()) {
                 if (val == null) {
-                    val = script;
+                    val = new StringBuilder(script);
                 } else {
-                    val = val + ", " + script;
+                    val.append(", ").append(script);
                 }
             }
             if (val != null) {
@@ -1339,9 +1339,9 @@ public class ZimletUtil {
             val = null;
             for (String css : desc.getStyleSheets()) {
                 if (val == null) {
-                    val = css;
+                    val = new StringBuilder(css);
                 } else {
-                    val = val + ", " + css;
+                    val.append(", ").append(css);
                 }
             }
             if (val != null) {
@@ -1350,9 +1350,9 @@ public class ZimletUtil {
             val = null;
             for (String target : desc.getTargets()) {
                 if (val == null) {
-                    val = target;
+                    val = new StringBuilder(target);
                 } else {
-                    val = val + ", " + target;
+                    val.append(", ").append(target);
                 }
             }
             if (val != null) {

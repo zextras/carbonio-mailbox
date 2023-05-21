@@ -507,7 +507,7 @@ public class ChartUtil {
                         new File(mDestDir, cs.getOutDocument()), true);
                 try {
                     List<PlotSettings> plots = cs.getPlots();
-                    String statString = "";
+                    StringBuilder statString = new StringBuilder();
                     boolean first = true;
                     for (PlotSettings ps : plots) {
                         DataColumn dc = new DataColumn(ps.getInfile(),
@@ -518,10 +518,10 @@ public class ChartUtil {
                         if (first)
                             first = false;
                         else
-                            statString += " &nbsp;&nbsp; ";
-                        statString += ps.getAggregateFunction() +
-                                "(" + ps.getLegend() + ") = " +
-                        formatDouble(mAggregates.get(dc).doubleValue());
+                            statString.append(" &nbsp;&nbsp; ");
+                        statString.append(ps.getAggregateFunction()).append("(")
+                            .append(ps.getLegend()).append(") = ")
+                            .append(formatDouble(mAggregates.get(dc).doubleValue()));
                     }
 
                     writer.write("<a name=\"" + cs.getOutfile() + "\">");
@@ -590,7 +590,7 @@ public class ChartUtil {
                     continue;
 
                 List<PlotSettings> plots = cs.getPlots();
-                String statString = "";
+                StringBuilder statString = new StringBuilder();
                 boolean first = true;
                 for (PlotSettings ps : plots) {
                     DataColumn dc = new DataColumn(ps.getInfile(), ps.getDataColumn());
@@ -600,9 +600,9 @@ public class ChartUtil {
                     if (first)
                         first = false;
                     else
-                        statString += " &nbsp;&nbsp; ";
-                    statString += ps.getAggregateFunction() + "(" + ps.getLegend() + ") = " +
-                                  formatDouble(mAggregates.get(dc).doubleValue());
+                        statString.append(" &nbsp;&nbsp; ");
+                    statString.append(ps.getAggregateFunction()).append("(").append(ps.getLegend())
+                        .append(") = ").append(formatDouble(mAggregates.get(dc).doubleValue()));
                     count++;
                 }
 
