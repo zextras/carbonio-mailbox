@@ -238,7 +238,7 @@ public class Krb5Keytab {
     public void dump(PrintStream ps) {
         ps.printf("Keytab name: %s\n", file);
         ps.printf("Keytab version: 0x%x\n", version);
-        ps.printf("KVNO Principal\n");
+        ps.print("KVNO Principal\n");
         ps.print("---- ");
         for (int i = 0; i < 75; i++) ps.print('-');
         ps.println();

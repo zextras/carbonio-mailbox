@@ -2442,7 +2442,7 @@ public class ProvUtil implements HttpDebugListener {
     SoapProvisioning sp = (SoapProvisioning) prov;
     Account account = lookupAccount(args[1]);
     long quotaUsed = sp.recalculateMailboxCounts(account);
-    console.printf("account: " + account.getName() + "\nquotaUsed: " + quotaUsed + "\n");
+    console.print("account: " + account.getName() + "\nquotaUsed: " + quotaUsed + "\n");
   }
 
   private class AccountLoggerOptions {
@@ -6223,7 +6223,7 @@ public class ProvUtil implements HttpDebugListener {
             console.printf(
                 "    -- NOTE: %s can only be used with \"zmprov -l/--ldap\"\n", c.getName());
           }
-          console.printf("\n");
+          console.print("\n");
         }
       }
 
@@ -6234,7 +6234,7 @@ public class ProvUtil implements HttpDebugListener {
 
   @Override
   public void receiveSoapMessage(HttpPost postMethod, Element envelope) {
-    console.printf("======== SOAP RECEIVE =========\n");
+    console.print("======== SOAP RECEIVE =========\n");
 
     if (debugLevel == SoapDebugLevel.high) {
       Header[] headers = postMethod.getAllHeaders();

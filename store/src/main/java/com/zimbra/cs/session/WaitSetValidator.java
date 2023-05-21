@@ -183,7 +183,7 @@ public class WaitSetValidator implements DebugListener {
     
     public void receiveSoapMessage(Element envelope) {
         long end = System.currentTimeMillis();        
-        System.out.printf("======== SOAP RECEIVE =========\n");
+        System.out.print("======== SOAP RECEIVE =========\n");
         System.out.println(envelope.prettyPrint());
         System.out.printf("=============================== (%d msecs)\n", end-mSendStart);
         
