@@ -50,10 +50,10 @@ public abstract class DocletListener {
      */
     protected static void dumpTags(Tag[] tags) {
         System.out.println("Dumping tags...");
-        System.out.println(String.format("tags.length = %d", tags.length));
+        System.out.printf("tags.length = %d%n", tags.length);
         if (tags.length > 0) {
             for (int k=0; k < tags.length; k++) {
-                System.out.println(String.format("tags[%d].name = %s", k, tags[k].name()));
+                System.out.printf("tags[%d].name = %s%n", k, tags[k].name());
             }
         }
     }

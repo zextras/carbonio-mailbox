@@ -903,9 +903,9 @@ public class ChartUtil {
                                     e.printStackTrace(System.out);
                                 }
                             } catch (NumberFormatException e) {
-                                System.out.println(String.format(
-                                        "%s: unable to parse value '%s' for %s: %s",
-                                        context, val, column, e));
+                                System.out.printf(
+                                    "%s: unable to parse value '%s' for %s: %s%n",
+                                        context, val, column, e);
                             }
                         } else { // default an entry to 0 if string is empty
                             series.AddEntry(ts, 0.0);
@@ -1138,9 +1138,8 @@ public class ChartUtil {
         List<PlotSettings> plots = cs.getPlots();
         if (cs.getTopPlots() > 0 && plots.size() > cs.getTopPlots()) {
             String aggregateFunction = cs.getTopPlotsType().name().toLowerCase();
-            System.out.println(
-                    String.format("Reducing %d to %d plots for chart '%s'",
-                            plots.size(), cs.getTopPlots(), cs.getTitle()));
+            System.out.printf("Reducing %d to %d plots for chart '%s'%n",
+                    plots.size(), cs.getTopPlots(), cs.getTitle());
             ArrayList<PlotAggregatePair> aggregates = new ArrayList<PlotAggregatePair>();
             for (PlotSettings ps : plots) {
                 DataColumn dc = new DataColumn(ps.getInfile(), ps.getDataColumn());

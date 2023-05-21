@@ -183,10 +183,10 @@ public class AttributeMigrationUtil {
         if (curStatus == Status.NONE) {
             console.println("No attribute migration info available");
         } else {
-            console.println(String.format("Status:  %s", curStatus.toString()));
-            console.println(String.format("URL:     %s", url));
+            console.printf("Status:  %s%n", curStatus.toString());
+            console.printf("URL:     %s%n", url);
             if (started != null) {
-                console.println(String.format("started: %s", started));
+                console.printf("started: %s%n", started);
             }
         }
     }

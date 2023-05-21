@@ -595,18 +595,18 @@ public class AttributeMigration {
         EphemeralInput input, EphemeralLocation location, String origName, Object origValue)
         throws ServiceException {
       EphemeralKey key = input.getEphemeralKey();
-      console.println(String.format("\n%s", origName));
-      console.println(String.format(Strings.repeat("-", origName.length())));
-      console.println(String.format("original value:     %s", origValue));
-      console.println(String.format("ephemeral value:    %s", input.getValue()));
+      console.printf("\n%s%n", origName);
+      console.println(Strings.repeat("-", origName.length()));
+      console.printf("original value:     %s%n", origValue);
+      console.printf("ephemeral value:    %s%n", input.getValue());
       if (key.getDynamicComponent() != null) {
-        console.println(String.format("dynamic component:  %s", key.getDynamicComponent()));
+        console.printf("dynamic component:  %s%n", key.getDynamicComponent());
       }
       if (input.getExpiration() != null) {
-        console.println(String.format("expiration:         %s", input.getExpiration()));
+        console.printf("expiration:         %s%n", input.getExpiration());
       }
       String locationStr = Joiner.on(" | ").join(location.getLocation());
-      console.println(String.format("ephemeral location: [%s]", locationStr));
+      console.printf("ephemeral location: [%s]%n", locationStr);
     }
 
     @Override
