@@ -44,9 +44,9 @@ public class GenerateEphemeralGettersTest {
             null);
     StringBuilder sb = new StringBuilder();
     AttributeManagerUtil.generateGetter(sb, ai, false, AttributeClass.account);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.set, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.purge, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.SET, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.UNSET, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.PURGE, true);
     ;
 
     String getter =
@@ -86,7 +86,7 @@ public class GenerateEphemeralGettersTest {
   public void testMultiStringGetters() throws Exception {
     Set<AttributeFlag> flags =
         Sets.newHashSet(AttributeFlag.ephemeral, AttributeFlag.expirable, AttributeFlag.dynamic);
-    AttributeInfo ai =
+    AttributeInfo attributeInfo =
         new AttributeInfo(
             "zimbraEphemeralAttribute",
             1,
@@ -112,15 +112,19 @@ public class GenerateEphemeralGettersTest {
             null,
             null,
             null);
-    StringBuilder sb = new StringBuilder();
-    AttributeManagerUtil.generateGetter(sb, ai, false, AttributeClass.account);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.set, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.add, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.remove, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.purge, true);
+    StringBuilder stringBuilder = new StringBuilder();
+    AttributeManagerUtil.generateGetter(
+        stringBuilder, attributeInfo, false, AttributeClass.account);
+    AttributeManagerUtil.generateSetter(stringBuilder, attributeInfo, false, SetterType.SET, true);
+    AttributeManagerUtil.generateSetter(stringBuilder, attributeInfo, false, SetterType.ADD, true);
+    AttributeManagerUtil.generateSetter(
+        stringBuilder, attributeInfo, false, SetterType.UNSET, true);
+    AttributeManagerUtil.generateSetter(
+        stringBuilder, attributeInfo, false, SetterType.REMOVE, true);
+    AttributeManagerUtil.generateSetter(
+        stringBuilder, attributeInfo, false, SetterType.PURGE, true);
     ;
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.has, true);
+    AttributeManagerUtil.generateSetter(stringBuilder, attributeInfo, false, SetterType.HAS, true);
     ;
 
     String getter =
@@ -158,11 +162,11 @@ public class GenerateEphemeralGettersTest {
             + " dynamicComponent);\n"
             + "    }";
 
-    testGeneratedMethod(sb, getter);
-    testGeneratedMethod(sb, adder);
-    testGeneratedMethod(sb, remover);
-    testGeneratedMethod(sb, purger);
-    testGeneratedMethod(sb, has);
+    testGeneratedMethod(stringBuilder, getter);
+    testGeneratedMethod(stringBuilder, adder);
+    testGeneratedMethod(stringBuilder, remover);
+    testGeneratedMethod(stringBuilder, purger);
+    testGeneratedMethod(stringBuilder, has);
   }
 
   @Test
@@ -196,8 +200,8 @@ public class GenerateEphemeralGettersTest {
             null);
     StringBuilder sb = new StringBuilder();
     AttributeManagerUtil.generateGetter(sb, ai, false, AttributeClass.account);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.set, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.SET, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.UNSET, true);
 
     String getter =
         "    public int getEphemeralAttribute() throws com.zimbra.common.service.ServiceException"
@@ -255,8 +259,8 @@ public class GenerateEphemeralGettersTest {
             null);
     StringBuilder sb = new StringBuilder();
     AttributeManagerUtil.generateGetter(sb, ai, false, AttributeClass.account);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.set, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.SET, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.UNSET, true);
 
     String getter =
         "    public long getEphemeralAttribute() throws com.zimbra.common.service.ServiceException"
@@ -314,8 +318,8 @@ public class GenerateEphemeralGettersTest {
             null);
     StringBuilder sb = new StringBuilder();
     AttributeManagerUtil.generateGetter(sb, ai, false, AttributeClass.account);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.set, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.SET, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.UNSET, true);
 
     String getter =
         "    public boolean isEphemeralAttribute() throws"
@@ -343,7 +347,7 @@ public class GenerateEphemeralGettersTest {
   }
 
   @Test
-  public void testEnumGetters() throws Exception {
+  public void testEnumGetters() {
     Set<AttributeFlag> flags = Sets.newHashSet(AttributeFlag.ephemeral);
     AttributeInfo ai =
         new AttributeInfo(
@@ -373,8 +377,8 @@ public class GenerateEphemeralGettersTest {
             null);
     StringBuilder sb = new StringBuilder();
     AttributeManagerUtil.generateGetter(sb, ai, false, AttributeClass.account);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.set, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.SET, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.UNSET, true);
 
     String getter =
         "    public ZAttrProvisioning.EphemeralAttribute getEphemeralAttribute() throws"
@@ -404,7 +408,7 @@ public class GenerateEphemeralGettersTest {
   }
 
   @Test
-  public void testPortGetters() throws Exception {
+  public void testPortGetters() {
     Set<AttributeFlag> flags = Sets.newHashSet(AttributeFlag.ephemeral);
     AttributeInfo ai =
         new AttributeInfo(
@@ -434,8 +438,8 @@ public class GenerateEphemeralGettersTest {
             null);
     StringBuilder sb = new StringBuilder();
     AttributeManagerUtil.generateGetter(sb, ai, false, AttributeClass.account);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.set, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.SET, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.UNSET, true);
 
     String getter =
         "    public int getEphemeralAttribute() throws com.zimbra.common.service.ServiceException"
@@ -463,7 +467,7 @@ public class GenerateEphemeralGettersTest {
   }
 
   @Test
-  public void testDurationGetters() throws Exception {
+  public void testDurationGetters() {
     Set<AttributeFlag> flags = Sets.newHashSet(AttributeFlag.ephemeral);
     AttributeInfo ai =
         new AttributeInfo(
@@ -493,8 +497,8 @@ public class GenerateEphemeralGettersTest {
             null);
     StringBuilder sb = new StringBuilder();
     AttributeManagerUtil.generateGetter(sb, ai, false, AttributeClass.account);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.set, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.SET, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.UNSET, true);
 
     String getter =
         "    public long getEphemeralAttribute() throws com.zimbra.common.service.ServiceException"
@@ -523,7 +527,7 @@ public class GenerateEphemeralGettersTest {
   }
 
   @Test
-  public void testTimeGetters() throws Exception {
+  public void testTimeGetters() {
     Set<AttributeFlag> flags = Sets.newHashSet(AttributeFlag.ephemeral);
     AttributeInfo ai =
         new AttributeInfo(
@@ -553,8 +557,8 @@ public class GenerateEphemeralGettersTest {
             null);
     StringBuilder sb = new StringBuilder();
     AttributeManagerUtil.generateGetter(sb, ai, false, AttributeClass.account);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.set, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.SET, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.UNSET, true);
 
     String getter =
         "    public Date getEphemeralAttribute() throws com.zimbra.common.service.ServiceException"
@@ -584,7 +588,7 @@ public class GenerateEphemeralGettersTest {
   }
 
   @Test
-  public void testBinaryGetters() throws Exception {
+  public void testBinaryGetters() {
     Set<AttributeFlag> flags = Sets.newHashSet(AttributeFlag.ephemeral);
     AttributeInfo ai =
         new AttributeInfo(
@@ -614,8 +618,8 @@ public class GenerateEphemeralGettersTest {
             null);
     StringBuilder sb = new StringBuilder();
     AttributeManagerUtil.generateGetter(sb, ai, false, AttributeClass.account);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.set, true);
-    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.unset, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.SET, true);
+    AttributeManagerUtil.generateSetter(sb, ai, false, SetterType.UNSET, true);
 
     String getter =
         "    public byte[] getEphemeralAttribute() throws"

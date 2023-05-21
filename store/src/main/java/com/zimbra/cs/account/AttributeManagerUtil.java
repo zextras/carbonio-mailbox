@@ -257,7 +257,7 @@ public class AttributeManagerUtil {
         } else {
           javaBody = String.format("return getBinaryAttr(ZAttrProvisioning.A_%s, true);", name);
         }
-        javaDocReturns = String.format(", or null if unset", defaultValue);
+        javaDocReturns = ", or null if unset";
         break;
       case TYPE_INTEGER:
         if (defaultValue == null) {
@@ -457,8 +457,10 @@ public class AttributeManagerUtil {
     result.append(
         String.format(
             "    public %s %s(%s)",
-            javaType, methodName, ai.isDynamic() ? "String dynamicComponent" : ""));
-    if (ai.isEphemeral()) {
+            javaType,
+            methodName,
+            Boolean.TRUE.equals(ai.isDynamic()) ? "String dynamicComponent" : ""));
+    if (Boolean.TRUE.equals(ai.isEphemeral())) {
       result.append(" throws com.zimbra.common.service.ServiceException");
     }
     result.append(String.format(" {%n        %s%n    }%n", javaBody));
@@ -488,15 +490,15 @@ public class AttributeManagerUtil {
   @VisibleForTesting
   public static void generateSetter(
       StringBuilder result,
-      AttributeInfo ai,
+      AttributeInfo attributeInfo,
       boolean asString,
       SetterType setterType,
       boolean noMap) {
-    if (ai.isEphemeral()) {
+    if (Boolean.TRUE.equals(attributeInfo.isEphemeral())) {
       if (!noMap) {
         return; // don't generate any epheemeral setters with the map parameter
-      } else if (ai.isDynamic()
-          && (setterType == SetterType.unset || setterType == SetterType.set)) {
+      } else if (Boolean.TRUE.equals(attributeInfo.isDynamic())
+          && (setterType == SetterType.UNSET || setterType == SetterType.SET)) {
         // don't generate ephemeral setters/unsetters for dynamic ephemeral attributes,
         // since we don't support deleting all values for a key.
         return;
@@ -505,16 +507,18 @@ public class AttributeManagerUtil {
     String javaType;
     String putParam;
 
-    String name = ai.getName();
+    String name = attributeInfo.getName();
 
-    AttributeType type = asString ? AttributeType.TYPE_STRING : ai.getType();
+    AttributeType type = asString ? AttributeType.TYPE_STRING : attributeInfo.getType();
 
-    String methodName = ai.getName();
+    String methodName = attributeInfo.getName();
     if (methodName.startsWith("zimbra")) {
       methodName = methodName.substring(6);
     }
     methodName =
-        setterType.name() + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+        setterType.name().toLowerCase()
+            + methodName.substring(0, 1).toUpperCase()
+            + methodName.substring(1);
     if (asString) {
       methodName += "AsString";
     }
@@ -544,14 +548,14 @@ public class AttributeManagerUtil {
             String.format("%s==null ? \"\" : LdapDateUtil.toGeneralizedTime(%s)", name, name);
         break;
       case TYPE_ENUM:
-        javaType = "ZAttrProvisioning." + enumName(ai);
+        javaType = "ZAttrProvisioning." + enumName(attributeInfo);
         putParam = String.format("%s.toString()", name);
         break;
       default:
-        if (ai.getCardinality() != AttributeCardinality.multi) {
+        if (attributeInfo.getCardinality() != AttributeCardinality.multi) {
           javaType = "String";
         } else {
-          if (setterType == SetterType.set) {
+          if (setterType == SetterType.SET) {
             javaType = "String[]";
           } else {
             javaType = "String";
@@ -564,28 +568,30 @@ public class AttributeManagerUtil {
     String mapType = "Map<String,Object>";
 
     result.append("\n    /**\n");
-    if (ai.getDescription() != null) {
+    if (attributeInfo.getDescription() != null) {
       result.append(
-          FileGenUtil.wrapComments(StringUtil.escapeHtml(ai.getDescription()), 70, "     * "));
+          FileGenUtil.wrapComments(
+              StringUtil.escapeHtml(attributeInfo.getDescription()), 70, "     * "));
       result.append("\n");
     }
-    if (ai.getType() == AttributeType.TYPE_ENUM) {
+    if (attributeInfo.getType() == AttributeType.TYPE_ENUM) {
       result.append("     *\n");
-      result.append(String.format("     * <p>Valid values: %s%n", ai.getEnumSet().toString()));
+      result.append(
+          String.format("     * <p>Valid values: %s%n", attributeInfo.getEnumSet().toString()));
     }
     result.append("     *\n");
 
     StringBuilder paramDoc = new StringBuilder();
     String body = "";
-    if (ai.isEphemeral()) {
+    if (Boolean.TRUE.equals(attributeInfo.isEphemeral())) {
       paramDoc.append("     * Ephemeral attribute - requests routed to EphemeralStore\n");
       paramDoc.append("     *\n");
     }
-    String expiry = ai.isExpirable() ? "expiration" : "null";
-    String dynamic = ai.isDynamic() ? "dynamicComponent" : "null";
+    String expiry = Boolean.TRUE.equals(attributeInfo.isExpirable()) ? "expiration" : "null";
+    String dynamic = Boolean.TRUE.equals(attributeInfo.isDynamic()) ? "dynamicComponent" : "null";
     switch (setterType) {
-      case set:
-        if (ai.isEphemeral()) {
+      case SET:
+        if (Boolean.TRUE.equals(attributeInfo.isEphemeral())) {
           body =
               String.format(
                   "        modifyEphemeralAttr(ZAttrProvisioning.A_%s, %s, %s, false, %s);%n",
@@ -595,8 +601,8 @@ public class AttributeManagerUtil {
         }
         paramDoc.append(String.format("     * @param %s new value%n", name));
         break;
-      case add:
-        if (ai.isEphemeral()) {
+      case ADD:
+        if (Boolean.TRUE.equals(attributeInfo.isEphemeral())) {
           body =
               String.format(
                   "        modifyEphemeralAttr(ZAttrProvisioning.A_%s, %s, %s, true, %s);%n",
@@ -609,8 +615,8 @@ public class AttributeManagerUtil {
         }
         paramDoc.append(String.format("     * @param %s new to add to existing values%n", name));
         break;
-      case remove:
-        if (ai.isEphemeral()) {
+      case REMOVE:
+        if (Boolean.TRUE.equals(attributeInfo.isEphemeral())) {
           body =
               String.format(
                   "        deleteEphemeralAttr(ZAttrProvisioning.A_%s, %s, %s);%n",
@@ -623,18 +629,18 @@ public class AttributeManagerUtil {
         }
         paramDoc.append(String.format("     * @param %s existing value to remove%n", name));
         break;
-      case unset:
-        if (ai.isEphemeral()) {
+      case UNSET:
+        if (Boolean.TRUE.equals(attributeInfo.isEphemeral())) {
           body = String.format("        deleteEphemeralAttr(ZAttrProvisioning.A_%s);%n", name);
         } else {
           body = String.format("        attrs.put(ZAttrProvisioning.A_%s, \"\");%n", name);
         }
         // paramDoc = null;
         break;
-      case purge:
+      case PURGE:
         body = String.format("        purgeEphemeralAttr(ZAttrProvisioning.A_%s);%n", name);
         break;
-      case has:
+      case HAS:
         body =
             String.format(
                 "        return hasEphemeralAttr(ZAttrProvisioning.A_%s, %s);%n", name, dynamic);
@@ -643,9 +649,7 @@ public class AttributeManagerUtil {
         break;
     }
 
-    if (paramDoc != null) {
-      result.append(paramDoc);
-    }
+    result.append(paramDoc);
     if (!noMap) {
       result.append(
           String.format(
@@ -655,28 +659,29 @@ public class AttributeManagerUtil {
       result.append(
           "     * @throws com.zimbra.common.service.ServiceException if error during update\n");
     }
-    if (ai.getSince() != null) {
+    if (attributeInfo.getSince() != null) {
       result.append("     *\n");
-      result.append(String.format("     * @since ZCS %s%n", versionListAsString(ai.getSince())));
+      result.append(
+          String.format("     * @since ZCS %s%n", versionListAsString(attributeInfo.getSince())));
     }
     result.append("     */\n");
-    result.append(String.format("    @ZAttr(id=%d)%n", ai.getId()));
+    result.append(String.format("    @ZAttr(id=%d)%n", attributeInfo.getId()));
     if (noMap) {
       String expiryParam =
-          Boolean.TRUE.equals(ai.isExpirable())
+          Boolean.TRUE.equals(attributeInfo.isExpirable())
               ? ", com.zimbra.cs.ephemeral.EphemeralInput.Expiration expiration"
               : "";
-      if (Boolean.TRUE.equals(ai.isEphemeral())) {
+      if (Boolean.TRUE.equals(attributeInfo.isEphemeral())) {
         switch (setterType) {
-          case set:
+          case SET:
             result.append(
                 String.format(
                     "    public void %s(%s %s%s) throws com.zimbra.common.service.ServiceException"
                         + " {%n",
                     methodName, javaType, name, expiryParam));
             break;
-          case add:
-            if (Boolean.TRUE.equals(ai.isDynamic())) {
+          case ADD:
+            if (Boolean.TRUE.equals(attributeInfo.isDynamic())) {
               result.append(
                   String.format(
                       "    public void %s(String dynamicComponent, %s %s%s) throws"
@@ -690,15 +695,15 @@ public class AttributeManagerUtil {
                       methodName, javaType, name, expiryParam));
             }
             break;
-          case unset:
-          case purge:
+          case UNSET:
+          case PURGE:
             result.append(
                 String.format(
                     "    public void %s() throws com.zimbra.common.service.ServiceException {%n",
                     methodName));
             break;
-          case remove:
-            if (Boolean.TRUE.equals(ai.isDynamic())) {
+          case REMOVE:
+            if (Boolean.TRUE.equals(attributeInfo.isDynamic())) {
               result.append(
                   String.format(
                       "    public void %s(String dynamicComponent, %s %s) throws"
@@ -712,8 +717,8 @@ public class AttributeManagerUtil {
                       methodName, javaType, name));
             }
             break;
-          case has:
-            if (Boolean.TRUE.equals(ai.isDynamic())) {
+          case HAS:
+            if (Boolean.TRUE.equals(attributeInfo.isDynamic())) {
               result.append(
                   String.format(
                       "    public boolean %s(String dynamicComponent) throws"
@@ -729,7 +734,7 @@ public class AttributeManagerUtil {
             break;
         }
       } else {
-        if (setterType != SetterType.unset) {
+        if (setterType != SetterType.UNSET) {
           result.append(
               String.format(
                   "    public void %s(%s %s) throws com.zimbra.common.service.ServiceException {%n",
@@ -741,15 +746,15 @@ public class AttributeManagerUtil {
                   methodName));
         }
       }
-      if (Boolean.FALSE.equals(ai.isEphemeral())) {
+      if (Boolean.FALSE.equals(attributeInfo.isEphemeral())) {
         result.append(String.format("        HashMap<String,Object> attrs = new HashMap<>();%n"));
       }
       result.append(body);
-      if (Boolean.FALSE.equals(ai.isEphemeral())) {
+      if (Boolean.FALSE.equals(attributeInfo.isEphemeral())) {
         result.append(String.format("        getProvisioning().modifyAttrs(this, attrs);%n"));
       }
     } else {
-      if (setterType != SetterType.unset) {
+      if (setterType != SetterType.UNSET) {
         result.append(
             String.format(
                 "    public %s %s(%s %s, %s attrs) {%n",
@@ -776,23 +781,23 @@ public class AttributeManagerUtil {
   }
 
   private static CommandLine parseArgs(String[] args) {
-    StringBuilder gotCL = new StringBuilder("cmdline: ");
-    for (String arg : args) {
-      gotCL.append("'").append(arg).append("' ");
-    }
+    //    StringBuilder gotCL = new StringBuilder("cmdline: ");
+    //    for (String arg : args) {
+    //      gotCL.append("'").append(arg).append("' ");
+    //    }
     // mLog.info(gotCL);
 
     CommandLineParser parser = new GnuParser();
-    CommandLine cl = null;
+    CommandLine commandLine = null;
     try {
-      cl = parser.parse(options, args);
+      commandLine = parser.parse(options, args);
     } catch (ParseException pe) {
       usage(pe.getMessage());
     }
-    if (cl != null && cl.hasOption('h')) {
+    if (commandLine != null && commandLine.hasOption('h')) {
       usage(null);
     }
-    return cl;
+    return commandLine;
   }
 
   public static void main(String[] args) throws IOException, ServiceException {
@@ -870,7 +875,6 @@ public class AttributeManagerUtil {
             break;
           case LIST_ATTRS:
             attributeManagerUtil.listAttrs(
-                printWriter,
                 commandLine.getOptionValues('c'),
                 commandLine.getOptionValues('n'),
                 commandLine.getOptionValues('f'));
@@ -1248,10 +1252,10 @@ public class AttributeManagerUtil {
   }
 
   private void buildObjectClassOIDs(
-      StringBuilder OC_GROUP_OIDS, StringBuilder OC_OIDS, String prefix) {
+      StringBuilder ocGroupOids, StringBuilder ocOids, String prefix) {
     for (int i : getOCGroupMap().keySet()) {
       // OC_GROUP_OIDS
-      OC_GROUP_OIDS
+      ocGroupOids
           .append(prefix)
           .append(getOCGroupMap().get(i))
           .append(" ZimbraLDAP:")
@@ -1265,7 +1269,7 @@ public class AttributeManagerUtil {
       sortOCsByOID(list);
 
       for (ObjectClassInfo oci : list) {
-        OC_OIDS
+        ocOids
             .append(prefix)
             .append(oci.getName())
             .append(" ")
@@ -1281,7 +1285,7 @@ public class AttributeManagerUtil {
    * @param blankLineSeperator whether to seperate each OC with a blank line
    */
   private void buildObjectClassDefs(
-      StringBuilder OC_DEFINITIONS, String prefix, boolean blankLineSeperator) {
+      StringBuilder ocDefinitions, String prefix, boolean blankLineSeperator) {
     for (AttributeClass cls : AttributeClass.values()) {
 
       String ocName = cls.getOCName();
@@ -1293,36 +1297,36 @@ public class AttributeManagerUtil {
 
       // OC_DEFINITIONS:
       List<String> comment = oci.getComment();
-      OC_DEFINITIONS.append("#\n");
+      ocDefinitions.append("#\n");
       for (String line : comment) {
         if (line.length() > 0) {
-          OC_DEFINITIONS.append("# ").append(line).append("\n");
+          ocDefinitions.append("# ").append(line).append("\n");
         } else {
-          OC_DEFINITIONS.append("#\n");
+          ocDefinitions.append("#\n");
         }
       }
-      OC_DEFINITIONS.append("#\n");
+      ocDefinitions.append("#\n");
 
-      OC_DEFINITIONS.append(prefix).append("( ").append(oci.getName()).append("\n");
-      OC_DEFINITIONS.append(ML_CONT_PREFIX + "NAME '").append(oci.getName()).append("'\n");
-      OC_DEFINITIONS
+      ocDefinitions.append(prefix).append("( ").append(oci.getName()).append("\n");
+      ocDefinitions.append(ML_CONT_PREFIX + "NAME '").append(oci.getName()).append("'\n");
+      ocDefinitions
           .append(ML_CONT_PREFIX + "DESC '")
           .append(rfc4512Dstring(oci.getDescription()))
           .append("'\n");
-      OC_DEFINITIONS.append(ML_CONT_PREFIX + "SUP ");
+      ocDefinitions.append(ML_CONT_PREFIX + "SUP ");
       for (String sup : oci.getSuperOCs()) {
-        OC_DEFINITIONS.append(sup);
+        ocDefinitions.append(sup);
       }
-      OC_DEFINITIONS.append(" ").append(oci.getType()).append("\n");
+      ocDefinitions.append(" ").append(oci.getType()).append("\n");
 
       StringBuilder value = new StringBuilder();
       buildObjectClassAttrs(cls, value);
 
-      OC_DEFINITIONS.append(value);
-      OC_DEFINITIONS.append(")\n");
+      ocDefinitions.append(value);
+      ocDefinitions.append(")\n");
 
       if (blankLineSeperator) {
-        OC_DEFINITIONS.append("\n");
+        ocDefinitions.append("\n");
       }
     }
   }
@@ -1455,21 +1459,21 @@ public class AttributeManagerUtil {
 
   private void generateSchemaLdif(PrintWriter pw) {
 
-    StringBuilder BANNER = new StringBuilder();
-    StringBuilder ZIMBRA_ROOT_OIDS = new StringBuilder();
-    StringBuilder ATTRIBUTE_GROUP_OIDS = new StringBuilder();
-    StringBuilder ATTRIBUTE_OIDS = new StringBuilder();
-    StringBuilder ATTRIBUTE_DEFINITIONS = new StringBuilder();
-    StringBuilder OC_GROUP_OIDS = new StringBuilder();
-    StringBuilder OC_OIDS = new StringBuilder();
-    StringBuilder OC_DEFINITIONS = new StringBuilder();
+    StringBuilder banner = new StringBuilder();
+    StringBuilder zimbraRootOids = new StringBuilder();
+    StringBuilder attributeGroupOids = new StringBuilder();
+    StringBuilder attributeOids = new StringBuilder();
+    StringBuilder attributeDefinitions = new StringBuilder();
+    StringBuilder ocGroupOids = new StringBuilder();
+    StringBuilder ocOids = new StringBuilder();
+    StringBuilder ocDefinitions = new StringBuilder();
 
-    buildSchemaBanner(BANNER);
-    buildZimbraRootOIDs(ZIMBRA_ROOT_OIDS, "olcObjectIdentifier: ");
+    buildSchemaBanner(banner);
+    buildZimbraRootOIDs(zimbraRootOids, "olcObjectIdentifier: ");
 
     for (int i : getGroupMap().keySet()) {
       // GROUP_OIDS
-      ATTRIBUTE_GROUP_OIDS
+      attributeGroupOids
           .append("olcObjectIdentifier: ")
           .append(getGroupMap().get(i))
           .append(" ZimbraLDAP:")
@@ -1485,7 +1489,7 @@ public class AttributeManagerUtil {
       for (AttributeInfo ai : list) {
         String parentOid = ai.getParentOid();
         if (parentOid == null) {
-          ATTRIBUTE_OIDS
+          attributeOids
               .append("olcObjectIdentifier: ")
               .append(ai.getName())
               .append(" ")
@@ -1494,7 +1498,7 @@ public class AttributeManagerUtil {
               .append(ai.getId())
               .append("\n");
         } else {
-          ATTRIBUTE_OIDS
+          attributeOids
               .append("olcObjectIdentifier: ")
               .append(ai.getName())
               .append(" ")
@@ -1523,37 +1527,37 @@ public class AttributeManagerUtil {
               SINGLE-VALUE )
       */
 
-      ATTRIBUTE_DEFINITIONS.append("olcAttributeTypes: ( 1.2.840.113556.1.2.146\n");
-      ATTRIBUTE_DEFINITIONS.append(ML_CONT_PREFIX + "NAME ( 'company' )\n");
-      ATTRIBUTE_DEFINITIONS.append(ML_CONT_PREFIX + "SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{512}\n");
-      ATTRIBUTE_DEFINITIONS.append(ML_CONT_PREFIX + "EQUALITY caseIgnoreMatch\n");
-      ATTRIBUTE_DEFINITIONS.append(ML_CONT_PREFIX + "SUBSTR caseIgnoreSubstringsMatch\n");
-      ATTRIBUTE_DEFINITIONS.append(ML_CONT_PREFIX + "SINGLE-VALUE )\n");
+      attributeDefinitions.append("olcAttributeTypes: ( 1.2.840.113556.1.2.146\n");
+      attributeDefinitions.append(ML_CONT_PREFIX + "NAME ( 'company' )\n");
+      attributeDefinitions.append(ML_CONT_PREFIX + "SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{512}\n");
+      attributeDefinitions.append(ML_CONT_PREFIX + "EQUALITY caseIgnoreMatch\n");
+      attributeDefinitions.append(ML_CONT_PREFIX + "SUBSTR caseIgnoreSubstringsMatch\n");
+      attributeDefinitions.append(ML_CONT_PREFIX + "SINGLE-VALUE )\n");
 
       for (AttributeInfo ai : list) {
-        ATTRIBUTE_DEFINITIONS.append("olcAttributeTypes: ");
-        buildAttrDef(ATTRIBUTE_DEFINITIONS, ai);
-        ATTRIBUTE_DEFINITIONS.append("\n");
+        attributeDefinitions.append("olcAttributeTypes: ");
+        buildAttrDef(attributeDefinitions, ai);
+        attributeDefinitions.append("\n");
       }
     }
 
     // objectclass OIDs
-    buildObjectClassOIDs(OC_GROUP_OIDS, OC_OIDS, "olcObjectIdentifier: ");
+    buildObjectClassOIDs(ocGroupOids, ocOids, "olcObjectIdentifier: ");
 
     // objectclass definitions
-    buildObjectClassDefs(OC_DEFINITIONS, "olcObjectClasses: ", false);
+    buildObjectClassDefs(ocDefinitions, "olcObjectClasses: ", false);
 
-    pw.println(BANNER);
+    pw.println(banner);
     pw.println("dn: cn=zimbra,cn=schema,cn=config");
     pw.println("objectClass: olcSchemaConfig");
     pw.println("cn: zimbra");
-    pw.print(ZIMBRA_ROOT_OIDS);
-    pw.print(ATTRIBUTE_GROUP_OIDS);
-    pw.print(ATTRIBUTE_OIDS);
-    pw.print(OC_GROUP_OIDS);
-    pw.print(OC_OIDS);
-    pw.print(ATTRIBUTE_DEFINITIONS);
-    pw.print(OC_DEFINITIONS);
+    pw.print(zimbraRootOids);
+    pw.print(attributeGroupOids);
+    pw.print(attributeOids);
+    pw.print(ocGroupOids);
+    pw.print(ocOids);
+    pw.print(attributeDefinitions);
+    pw.print(ocDefinitions);
   }
 
   private void generateMessageProperties(String outFile) throws IOException {
@@ -1580,8 +1584,7 @@ public class AttributeManagerUtil {
     FileGenUtil.replaceFile(outFile, result.toString());
   }
 
-  private void listAttrs(
-      PrintWriter pw, String[] inClass, String[] notInClass, String[] printFlags) {
+  private void listAttrs(String[] inClass, String[] notInClass, String[] printFlags) {
     if (inClass == null) {
       usage("no class specified");
     }
@@ -1646,44 +1649,45 @@ public class AttributeManagerUtil {
     StringBuilder result = new StringBuilder();
 
     for (String a : list) {
-      AttributeInfo ai = getAttrs().get(a.toLowerCase());
-      if (ai == null) {
+      AttributeInfo attributeInfo = getAttrs().get(a.toLowerCase());
+      if (attributeInfo == null) {
         continue;
       }
 
-      switch (ai.getType()) {
+      switch (attributeInfo.getType()) {
         case TYPE_BINARY:
         case TYPE_CERTIFICATE:
         case TYPE_DURATION:
         case TYPE_GENTIME:
         case TYPE_ENUM:
         case TYPE_PORT:
-          if (ai.getCardinality() != AttributeCardinality.multi) {
-            generateGetter(result, ai, false, ac);
+          if (attributeInfo.getCardinality() != AttributeCardinality.multi) {
+            generateGetter(result, attributeInfo, false, ac);
           }
-          generateGetter(result, ai, true, ac);
-          generateSetters(result, ai, false, SetterType.set);
-          if (ai.getType() == AttributeType.TYPE_GENTIME
-              || ai.getType() == AttributeType.TYPE_ENUM
-              || ai.getType() == AttributeType.TYPE_PORT) {
-            generateSetters(result, ai, true, SetterType.set);
+          generateGetter(result, attributeInfo, true, ac);
+          generateSetters(result, attributeInfo, false, SetterType.SET);
+          if (attributeInfo.getType() == AttributeType.TYPE_GENTIME
+              || attributeInfo.getType() == AttributeType.TYPE_ENUM
+              || attributeInfo.getType() == AttributeType.TYPE_PORT) {
+            generateSetters(result, attributeInfo, true, SetterType.SET);
           }
-          generateSetters(result, ai, false, SetterType.unset);
+          generateSetters(result, attributeInfo, false, SetterType.UNSET);
           break;
         default:
-          generateGetter(result, ai, ai.getName().equalsIgnoreCase("zimbraLocale"), ac);
-          generateSetters(result, ai, false, SetterType.set);
-          if (ai.getCardinality() == AttributeCardinality.multi) {
-            generateSetters(result, ai, false, SetterType.add);
-            generateSetters(result, ai, false, SetterType.remove);
-            if (ai.isEphemeral()) {
-              generateSetters(result, ai, false, SetterType.has);
+          generateGetter(
+              result, attributeInfo, attributeInfo.getName().equalsIgnoreCase("zimbraLocale"), ac);
+          generateSetters(result, attributeInfo, false, SetterType.SET);
+          if (attributeInfo.getCardinality() == AttributeCardinality.multi) {
+            generateSetters(result, attributeInfo, false, SetterType.ADD);
+            generateSetters(result, attributeInfo, false, SetterType.REMOVE);
+            if (Boolean.TRUE.equals(attributeInfo.isEphemeral())) {
+              generateSetters(result, attributeInfo, false, SetterType.HAS);
             }
-            if (ai.isExpirable()) {
-              generateSetters(result, ai, false, SetterType.purge);
+            if (Boolean.TRUE.equals(attributeInfo.isExpirable())) {
+              generateSetters(result, attributeInfo, false, SetterType.PURGE);
             }
           }
-          generateSetters(result, ai, false, SetterType.unset);
+          generateSetters(result, attributeInfo, false, SetterType.UNSET);
           break;
       }
     }
@@ -1757,12 +1761,12 @@ public class AttributeManagerUtil {
 
   @VisibleForTesting
   enum SetterType {
-    set,
-    add,
-    unset,
-    remove, /* these two are for ephemeral attrs */
-    purge,
-    has
+    SET,
+    ADD,
+    UNSET,
+    REMOVE, /* these two are for ephemeral attrs */
+    PURGE,
+    HAS
   }
 
   static class CLOptions {
