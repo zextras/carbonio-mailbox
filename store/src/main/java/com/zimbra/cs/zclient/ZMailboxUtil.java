@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -2739,9 +2740,7 @@ public class ZMailboxUtil implements DebugListener {
 
     private List<String> getList(String[] args, int offset) {
         List<String> attrs = new ArrayList<String>();
-        for (int i = offset; i < args.length; i++) {
-            attrs.add(args[i]);
-        }
+        attrs.addAll(Arrays.asList(args).subList(offset, args.length));
         return attrs;
     }
 
