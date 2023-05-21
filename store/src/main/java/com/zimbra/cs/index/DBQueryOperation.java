@@ -197,10 +197,7 @@ public class DBQueryOperation extends QueryOperation {
 
             if (!includeTrash) {
                 List<Folder> trashFolders = getTrashFolders(mbox);
-                for (Iterator<Folder> iter  = trashFolders.iterator(); iter.hasNext();) {
-                    Folder cur = iter.next();
-                    exclude.add(cur);
-                }
+              exclude.addAll(trashFolders);
             }
 
             constraints.ensureSpamTrashSetting(mbox, exclude);
@@ -735,9 +732,7 @@ public class DBQueryOperation extends QueryOperation {
                         for (int indexId : indexIds) {
                             List<DbSearch.Result> results = mailItemToResultsMap.get(indexId);
                             if (results != null) {
-                                for (DbSearch.Result sr : results) {
-                                    dbHits.add(sr);
-                                }
+                              dbHits.addAll(results);
                             } else {
                                 ZimbraLog.search.warn("Lucene returned item ID %d but wasn't in resultMap", indexId);
                                 throw ServiceException.FAILURE(

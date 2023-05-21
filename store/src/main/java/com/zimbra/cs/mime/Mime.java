@@ -925,8 +925,7 @@ public class Mime {
                     if (members == null)
                         expanded.add(addr);
                     else
-                        for (InternetAddress member : members)
-                            expanded.add(member);
+                      expanded.addAll(Arrays.asList(members));
                 } catch (AddressException e) {
                     expanded.add(addr);
                 }

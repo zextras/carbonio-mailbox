@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.security.KeyStore;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -346,18 +347,14 @@ public abstract class NioServer implements Server {
         for (com.zimbra.cs.account.Server server : Provisioning.getInstance().getAllServers()) {
             safeHosts.add(server.getServiceHostname());
         }
-        for (String ignoredHost : config.getThottleIgnoredHosts()) {
-            safeHosts.add(ignoredHost);
-        }
+      safeHosts.addAll(Arrays.asList(config.getThottleIgnoredHosts()));
         return safeHosts;
     }
 
     protected Set<String> getThrottleWhitelist() throws ServiceException {
 
         Set<String> safeHosts = new HashSet<String>();
-        for (String whitelistHost : config.getThrottleWhitelist()) {
-            safeHosts.add(whitelistHost);
-        }
+      safeHosts.addAll(Arrays.asList(config.getThrottleWhitelist()));
         return safeHosts;
     }
 

@@ -236,7 +236,7 @@ public class MapiPropertyId {
     public Boolean getBooleanValue(SchedulingViewOfTnef schedView, boolean defaultValue) throws IOException {
         Boolean truthValue = getBooleanValue(schedView);
         if (truthValue == null) {
-            truthValue = new Boolean(defaultValue);
+            truthValue = Boolean.valueOf(defaultValue);
         }
         return truthValue;
     }

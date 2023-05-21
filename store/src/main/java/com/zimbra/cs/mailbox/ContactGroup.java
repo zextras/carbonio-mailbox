@@ -723,9 +723,7 @@ public class ContactGroup {
                     result.add((String) value);
                 } else if (value instanceof String[]) {
                     String[] addrs = (String[]) value;
-                    for (String addr : addrs) {
-                        result.add(addr);
-                    }
+                  result.addAll(Arrays.asList(addrs));
                 }
             }
             return result;

@@ -289,9 +289,7 @@ public class MailSender {
     public MailSender setRecipients(String ... recipients) {
         mRecipients.clear();
         if (recipients != null) {
-            for (String recipient : recipients) {
-                mRecipients.add(recipient);
-            }
+          mRecipients.addAll(Arrays.asList(recipients));
         }
         return this;
     }

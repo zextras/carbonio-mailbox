@@ -626,10 +626,8 @@ public final class FilterUtil {
         }
         List<String> bccs = mailtoParams.get("bcc");
         if (bccs != null && bccs.size() > 0) {
-            for (String bcc : bccs) {
-                envelopeTos.add(bcc);
-                // No Bcc for the message header
-            }
+          // No Bcc for the message header
+          envelopeTos.addAll(bccs);
         }
         mailSender.setRecipients(envelopeTos.toArray(new String[envelopeTos.size()]));
 

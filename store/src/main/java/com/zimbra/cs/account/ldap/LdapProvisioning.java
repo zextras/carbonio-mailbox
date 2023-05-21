@@ -1658,13 +1658,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
           if (ocSchema != null) {
             List<String> optAttrs = ocSchema.getOptionalAttributes();
-            for (String attr : optAttrs) {
-              attrsInOCs.add(attr);
-            }
+            attrsInOCs.addAll(optAttrs);
             List<String> reqAttrs = ocSchema.getRequiredAttributes();
-            for (String attr : reqAttrs) {
-              attrsInOCs.add(attr);
-            }
+            attrsInOCs.addAll(reqAttrs);
           }
 
         } catch (ServiceException e) {
@@ -11359,9 +11355,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       // need to refresh, the StaticUnit instance updated by add/remove
       // dynamic group members may be the cached instance.
       refreshEntry(staticUnit, zlc);
-      for (String extAddr : staticUnit.getMembers()) {
-        members.add(extAddr);
-      }
+      members.addAll(Arrays.asList(staticUnit.getMembers()));
     } catch (ServiceException e) {
       ZimbraLog.account.warn("unable to search dynamic group members", e);
     } finally {

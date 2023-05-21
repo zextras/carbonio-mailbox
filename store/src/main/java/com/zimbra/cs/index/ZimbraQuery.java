@@ -146,9 +146,7 @@ public final class ZimbraQuery {
                             OperatorNode opnode = (OperatorNode) node;
                             if (opnode.conjunction == conjunction && opnode.bool) {
                                 simplifyAgain = true;
-                                for (Node child : opnode.nodes) {
-                                    combined.add(child);
-                                }
+                              combined.addAll(opnode.nodes);
                                 continue;
                             }
                         }

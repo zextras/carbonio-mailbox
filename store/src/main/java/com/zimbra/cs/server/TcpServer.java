@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -253,18 +254,14 @@ public abstract class TcpServer implements Runnable, Server {
         for (com.zimbra.cs.account.Server server : Provisioning.getInstance().getAllServers()) {
             safeHosts.add(server.getServiceHostname());
         }
-        for (String ignoredHost : config.getThottleIgnoredHosts()) {
-            safeHosts.add(ignoredHost);
-        }
+      safeHosts.addAll(Arrays.asList(config.getThottleIgnoredHosts()));
         return safeHosts;
     }
 
     protected Set<String> getThrottleWhitelist() throws ServiceException {
 
         Set<String> safeHosts = new HashSet<String>();
-        for (String whitelistHost : config.getThrottleWhitelist()) {
-            safeHosts.add(whitelistHost);
-        }
+      safeHosts.addAll(Arrays.asList(config.getThrottleWhitelist()));
         return safeHosts;
     }
 }

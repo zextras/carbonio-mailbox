@@ -863,9 +863,7 @@ public class ZimletUtil {
         }
         String[] domainArray = domains.toLowerCase().split(",");
         Set<String> domainsToRemove = new HashSet<String>();
-        for (String d : domainArray) {
-            domainsToRemove.add(d);
-        }
+      domainsToRemove.addAll(Arrays.asList(domainArray));
         String[] zimlets = getAvailableZimlets(c).getZimletNamesAsArray();
         for (String z : zimlets) {
             if (z.equals(zimlet)) {
@@ -1108,9 +1106,7 @@ public class ZimletUtil {
         Cos cos = prov.get(Key.CosBy.name, cosName);
         Set<String> domainSet = cos.getMultiAttrSet(Provisioning.A_zimbraProxyAllowedDomains);
         String[] domainArray = domains.toLowerCase().split(",");
-        for (int i = 0; i < domainArray.length; i++) {
-            domainSet.add(domainArray[i]);
-        }
+      domainSet.addAll(Arrays.asList(domainArray));
         Map<String, String[]> newlist = new HashMap<String, String[]>();
         newlist.put(Provisioning.A_zimbraProxyAllowedDomains, domainSet.toArray(new String[0]));
         prov.modifyAttrs(cos, newlist);

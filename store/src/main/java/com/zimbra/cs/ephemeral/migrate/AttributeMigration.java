@@ -204,9 +204,7 @@ public class AttributeMigration {
       line.add(Long.toString(now - start));
       line.add(success ? "Y" : "N");
       line.add(Integer.toString(attrNum));
-      for (String str : rest) {
-        line.add(str);
-      }
+      line.addAll(Arrays.asList(rest));
       fullReport.printRecord(line);
       if (!success) {
         errorReport.printRecord(line);

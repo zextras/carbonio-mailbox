@@ -621,9 +621,7 @@ public interface DbSearchConstraints extends Cloneable {
         @Override
         public void ensureSpamTrashSetting(Mailbox mbox, List<Folder> trashSpamFolders) {
             if (!mHasSpamTrashSetting) {
-                for (Folder f : trashSpamFolders) {
-                    excludeFolders.add(f);
-                }
+              excludeFolders.addAll(trashSpamFolders);
                 mHasSpamTrashSetting = true;
             }
         }
@@ -1149,9 +1147,7 @@ public interface DbSearchConstraints extends Cloneable {
             } else {
                 DbSearchConstraints.Union newOr = new DbSearchConstraints.Union();
                 newOr.children.add(folderLeaf);
-                for (DbSearchConstraints.Leaf otherLeaf: otherConstraints) {
-                    newOr.children.add(otherLeaf);
-                }
+              newOr.children.addAll(otherConstraints);
                 return newOr;
             }
         }

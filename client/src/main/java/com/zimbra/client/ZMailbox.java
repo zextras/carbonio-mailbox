@@ -5080,9 +5080,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         mContent = null;
         mContentType = contentType;
         mSubParts = new ArrayList<MessagePart>();
-        for (MessagePart sub : parts) {
-          mSubParts.add(sub);
-        }
+        mSubParts.addAll(Arrays.asList(parts));
       }
 
       public String getContentType() {

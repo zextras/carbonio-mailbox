@@ -236,7 +236,7 @@ public final class Metadata {
 
     public Metadata put(String key, boolean value) {
         if (key != null) {
-            map.put(key, new Boolean(value));
+            map.put(key, Boolean.valueOf(value));
         }
         return this;
     }
