@@ -2466,9 +2466,7 @@ public class ProvUtil implements HttpDebugListener {
       int numArgs = args.length - 2;
       alo.args = new String[numArgs];
       alo.args[0] = args[0];
-      for (int i = 1; i < numArgs; i++) {
-        alo.args[i] = args[i + 2];
-      }
+      System.arraycopy(args, 3, alo.args, 1, numArgs - 1);
     } else {
       alo.args = args;
     }

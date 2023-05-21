@@ -68,9 +68,7 @@ public class MSGUID {
 		
 		jtnefOrder[6] = msVisualOrder[7];
 		jtnefOrder[7] = msVisualOrder[6];
-		for (int i = 8; i < msVisualOrder.length; i++) {
-			jtnefOrder[i] = msVisualOrder[i];
-		}
+    System.arraycopy(msVisualOrder, 8, jtnefOrder, 8, msVisualOrder.length - 8);
 		setJtnefGuid(new GUID(jtnefOrder));
 	}
 
