@@ -931,7 +931,7 @@ public class Mime {
                 }
             }
         }
-        return expanded.toArray(new InternetAddress[expanded.size()]);
+        return expanded.toArray(new InternetAddress[0]);
     }
 
     static RecipientType[] sRcptTypes = new RecipientType[] { RecipientType.TO, RecipientType.CC, RecipientType.BCC };

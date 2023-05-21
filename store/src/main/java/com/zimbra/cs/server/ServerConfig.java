@@ -241,6 +241,6 @@ public abstract class ServerConfig {
               addrList.addAll(Arrays.asList(addrs));
             }
         }
-        return addrList.toArray(new String[addrList.size()]);
+        return addrList.toArray(new String[0]);
     }
 }

@@ -110,7 +110,7 @@ public class ContactGroup {
      * return members in the order they were inserted
      */
     public List<Member> getMembers() {
-        return Collections.unmodifiableList(Arrays.asList(members.toArray(new Member[members.size()])));
+        return Collections.unmodifiableList(Arrays.asList(members.toArray(new Member[0])));
     }
     
     public List<Member> getMembers(boolean preferDerefed) {

@@ -177,7 +177,7 @@ public class AttributeManagerUtil {
                }
            }
         }
-        String[] outs = out.toArray(new String[out.size()]);
+        String[] outs = out.toArray(new String[0]);
         Arrays.sort(outs);
         for (String o : outs) {
             pw.println(o);
@@ -216,7 +216,7 @@ public class AttributeManagerUtil {
                 }
             }
         }
-        String[] outs = out.toArray(new String[out.size()]);
+        String[] outs = out.toArray(new String[0]);
         Arrays.sort(outs);
         for (String o : outs) {
             pw.println(o);
@@ -244,7 +244,7 @@ public class AttributeManagerUtil {
                }
            }
         }
-        String[] outs = out.toArray(new String[out.size()]);
+        String[] outs = out.toArray(new String[0]);
         Arrays.sort(outs);
         for (String o : outs) {
             pw.println(o);

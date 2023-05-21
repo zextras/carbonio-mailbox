@@ -82,7 +82,7 @@ public class AclPushTask extends TimerTask {
                             } catch (MailServiceException.NoSuchItemException ignored) {
                             }
                         }
-                        items = itemList.toArray(new MailItem[itemList.size()]);
+                        items = itemList.toArray(new MailItem[0]);
                     }
                 }
 
@@ -118,7 +118,7 @@ public class AclPushTask extends TimerTask {
                         currentItemIdsProcessed.put(mboxId, itemsProcessed);
                     }
                 }
-                account.setSharedItem(updatedSharedItems.toArray(new String[updatedSharedItems.size()]));         
+                account.setSharedItem(updatedSharedItems.toArray(new String[0]));
             } // for
             DbPendingAclPush.deleteEntries(now);
             

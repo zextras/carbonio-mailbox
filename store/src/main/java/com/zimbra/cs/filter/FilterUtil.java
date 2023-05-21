@@ -629,7 +629,7 @@ public final class FilterUtil {
           // No Bcc for the message header
           envelopeTos.addAll(bccs);
         }
-        mailSender.setRecipients(envelopeTos.toArray(new String[envelopeTos.size()]));
+        mailSender.setRecipients(envelopeTos.toArray(new String[0]));
 
         // Auto-Submitted
         // RFC 5436 2.7. (3rd item of the 'guidelines') and 2.7.1.
@@ -828,7 +828,7 @@ public final class FilterUtil {
 
         Set<String> tags = Sets.newHashSet(tags1);
         tags.addAll(Arrays.asList(tags2));
-        return tags.toArray(new String[tags.size()]);
+        return tags.toArray(new String[0]);
     }
 
     /**

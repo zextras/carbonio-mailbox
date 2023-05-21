@@ -42,7 +42,7 @@ public class TagUtil {
                 throw ServiceException.INVALID_REQUEST("invalid tag ID string: " + tagIdString, nfe);
             }
         }
-        return tags.toArray(new String[tags.size()]);
+        return tags.toArray(new String[0]);
     }
 
     @Deprecated
@@ -91,7 +91,7 @@ public class TagUtil {
                 tags.add(mbox.getTagById(octxt, 64 + i).getName());
             }
         }
-        return tags.toArray(new String[tags.size()]);
+        return tags.toArray(new String[0]);
     }
 
     @Deprecated
@@ -122,7 +122,7 @@ public class TagUtil {
             return NO_TAGS;
         } else if (encoded.indexOf('\\') == -1) {
             List<String> tags = Lists.newArrayList(TAG_SPLITTER.split(encoded));
-            return tags.toArray(new String[tags.size()]);
+            return tags.toArray(new String[0]);
         } else {
             List<String> tags = Lists.newArrayList();
             StringBuilder sb = new StringBuilder(encoded.length());
@@ -148,7 +148,7 @@ public class TagUtil {
             if (!tag.isEmpty()) {
                 tags.add(tag);
             }
-            return tags.toArray(new String[tags.size()]);
+            return tags.toArray(new String[0]);
         }
     }
 

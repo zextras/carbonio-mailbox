@@ -6330,7 +6330,7 @@ public class ProvUtil implements HttpDebugListener {
         newArgs.add(arg);
       }
     }
-    return newArgs.toArray(new String[newArgs.size()]);
+    return newArgs.toArray(new String[0]);
   }
 
   private void doDeleteDistributionList(String[] args) throws ServiceException {

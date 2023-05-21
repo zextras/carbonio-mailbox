@@ -432,7 +432,7 @@ public final class LuceneQueryOperation extends QueryOperation {
                 if (expanded.isEmpty()) {
                     return null;
                 } else {
-                    mquery.add(expanded.toArray(new Term[expanded.size()]));
+                    mquery.add(expanded.toArray(new Term[0]));
                 }
             }
             return mquery;

@@ -7776,7 +7776,7 @@ public class Mailbox implements MailboxStore {
         ArrayUtil.toIntArray(ids),
         MailItem.Type.UNKNOWN,
         flags,
-        tags.toArray(new String[tags.size()]),
+        tags.toArray(new String[0]),
         null);
   }
 
@@ -7944,7 +7944,7 @@ public class Mailbox implements MailboxStore {
             int newId =
                 getNextItemId(
                     redoPlayer == null ? ID_AUTO_INCREMENT : redoPlayer.getDestId(conv.getId()));
-            copy = Conversation.create(this, newId, msgs.toArray(new Message[msgs.size()]));
+            copy = Conversation.create(this, newId, msgs.toArray(new Message[0]));
             redoRecorder.setDest(conv.getId(), newId, copy.getUuid());
           }
         } else {

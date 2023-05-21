@@ -199,7 +199,7 @@ public abstract class DistributionListDocumentHandler extends AccountDocumentHan
                 adminUrl = URLUtil.getAdminURL(server, AdminConstants.ADMIN_SERVICE_URI, true);
                 soapProv.soapSetURI(adminUrl);
                 soapProv.soapZimbraAdminAuthenticate();
-                soapProv.flushCache(CacheEntryType.account, accts.toArray(new CacheEntry[accts.size()]));
+                soapProv.flushCache(CacheEntryType.account, accts.toArray(new CacheEntry[0]));
 
             } catch (ServiceException e) {
                 ZimbraLog.account.warn("unable to flush account cache on remote server: " + serverName, e);

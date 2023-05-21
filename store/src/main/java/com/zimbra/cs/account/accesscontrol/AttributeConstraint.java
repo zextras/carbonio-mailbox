@@ -568,7 +568,7 @@ public class AttributeConstraint {
                 newValues.add(at.toString());
             }
 
-            newAttrValues.put(Provisioning.A_zimbraConstraint, newValues.toArray(new String[newValues.size()]));
+            newAttrValues.put(Provisioning.A_zimbraConstraint, newValues.toArray(new String[0]));
         }
         Provisioning.getInstance().modifyAttrs(constraintEntry, newAttrValues);
     }

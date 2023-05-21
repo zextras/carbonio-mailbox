@@ -175,7 +175,7 @@ public class WebClientL10nUtil {
 
         if (sortedLocales == null) {
             // cache the sorted list per display locale
-            sortedLocales = locales.toArray(new Locale[locales.size()]);
+            sortedLocales = locales.toArray(new Locale[0]);
             Arrays.sort(sortedLocales, new LocaleComparatorByDisplayName(inLocale));
             sortedLocalesMap.put(inLocale, sortedLocales);
         }

@@ -96,7 +96,7 @@ public final class ResponseText {
             cs.add(is.readAString());
             is.skipSpaces();
         }
-        return cs.toArray(new String[cs.size()]);
+        return cs.toArray(new String[0]);
     }
 
     public Atom getCode() { return code; }

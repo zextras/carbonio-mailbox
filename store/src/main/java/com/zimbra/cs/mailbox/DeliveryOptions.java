@@ -53,7 +53,7 @@ public class DeliveryOptions {
     }
 
     public DeliveryOptions setTags(Collection<String> tags) {
-        mTags = tags == null ? null : tags.toArray(new String[tags.size()]);
+        mTags = tags == null ? null : tags.toArray(new String[0]);
         return this;
     }
 

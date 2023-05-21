@@ -535,7 +535,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
     }
 
-    attrs.put(A_objectClass, needOCs.toArray(new String[needOCs.size()]));
+    attrs.put(A_objectClass, needOCs.toArray(new String[0]));
 
     modifyAttrs(acct, attrs, false, false);
   }
@@ -1931,7 +1931,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             baseList.add(mDIT.domainDNToAccountSearchDN(domainDN));
           }
 
-          bases = baseList.toArray(new String[baseList.size()]);
+          bases = baseList.toArray(new String[0]);
         }
 
       } else {
@@ -2424,7 +2424,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   static String[] addMultiValue(String values[], String value) {
     List<String> list = new ArrayList<String>(Arrays.asList(values));
     list.add(value);
-    return list.toArray(new String[list.size()]);
+    return list.toArray(new String[0]);
   }
 
   String[] addMultiValue(NamedEntry acct, String attr, String value) {
@@ -6265,7 +6265,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
     newHistory.add(currentHistory);
 
-    return newHistory.toArray(new String[newHistory.size()]);
+    return newHistory.toArray(new String[0]);
   }
 
   @Override
@@ -11070,7 +11070,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       // check non of the addrs in externalAddrs can be an email address
       // on the system
       if (!externalAddrs.isEmpty()) {
-        if (addressExists(zlc, externalAddrs.toArray(new String[externalAddrs.size()]))) {
+        if (addressExists(zlc, externalAddrs.toArray(new String[0]))) {
           throw ServiceException.INVALID_REQUEST(
               "address cannot be a group: " + Arrays.deepToString(externalAddrs.toArray()), null);
         }
@@ -11102,7 +11102,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         Map<String, String[]> attrs = new HashMap<String, String[]>();
         attrs.put(
             "+" + LdapDynamicGroup.StaticUnit.MEMBER_ATTR,
-            addrsToAdd.toArray(new String[addrsToAdd.size()]));
+            addrsToAdd.toArray(new String[0]));
         modifyLdapAttrs(staticUnit, zlc, attrs);
       }
 
@@ -11206,7 +11206,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         Map<String, String[]> attrs = new HashMap<String, String[]>();
         attrs.put(
             "-" + LdapDynamicGroup.StaticUnit.MEMBER_ATTR,
-            addrsToRemove.toArray(new String[addrsToRemove.size()]));
+            addrsToRemove.toArray(new String[0]));
         modifyLdapAttrs(staticUnit, zlc, attrs);
       }
 
@@ -11433,7 +11433,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       LdapClient.closeContext(zlc);
     }
 
-    return members.toArray(new String[members.size()]);
+    return members.toArray(new String[0]);
   }
 
   /**
@@ -11589,7 +11589,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   public String[] getDynamicGroupMembers(DynamicGroup group) throws ServiceException {
     List<String> members = searchDynamicGroupMembers(group);
-    return members.toArray(new String[members.size()]);
+    return members.toArray(new String[0]);
   }
 
   public Set<String> getDynamicGroupMembersSet(DynamicGroup group) throws ServiceException {

@@ -93,7 +93,7 @@ public class LdapGalMapRules {
     }
     
     public String[] getLdapAttrs() {
-        return mLdapAttrs.toArray(new String[mLdapAttrs.size()]);
+        return mLdapAttrs.toArray(new String[0]);
     }
     
     // attrs need to be set in JNDI "java.naming.ldap.attributes.binary" environment property

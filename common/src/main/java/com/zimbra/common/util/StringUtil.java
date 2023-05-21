@@ -564,7 +564,7 @@ public class StringUtil {
             result.add(sb.toString());
         }
 
-        return result.toArray(new String[result.size()]);
+        return result.toArray(new String[0]);
     }
 
     private static void dump(String line) {

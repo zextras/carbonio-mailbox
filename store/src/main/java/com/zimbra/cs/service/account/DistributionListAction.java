@@ -609,7 +609,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
                 memberList.add(elem.getTextTrim());
             }
 
-            String[] members = memberList.toArray(new String[memberList.size()]);
+            String[] members = memberList.toArray(new String[0]);
             addGroupMembers(prov, group, members);
 
             ZimbraLog.security.info(ZimbraLog.encodeAttrs(
@@ -637,7 +637,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
                 memberList.add(elem.getTextTrim());
             }
 
-            String[] members = memberList.toArray(new String[memberList.size()]);
+            String[] members = memberList.toArray(new String[0]);
             removeGroupMembers(prov, group, members);
 
             ZimbraLog.security.info(ZimbraLog.encodeAttrs(
@@ -694,7 +694,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
                     }
                     if (!addrs.isEmpty()) {
                         out.addRecipients(javax.mail.Message.RecipientType.BCC,
-                                addrs.toArray(new Address[addrs.size()]));
+                                addrs.toArray(new Address[0]));
                     }
                 }
 

@@ -50,7 +50,7 @@ public class SkinUtil {
         } else {
             loadSkinsByDiskScan(skins);
         }
-        String[] sortedSkins = skins.toArray(new String[skins.size()]);
+        String[] sortedSkins = skins.toArray(new String[0]);
         Arrays.sort(sortedSkins);
 		ZimbraLog.webclient.debug("Skin loading complete." );
         return sortedSkins;
@@ -91,7 +91,7 @@ public class SkinUtil {
                     skins.add(skin);
                 }
             }
-            availSkins = skins.toArray(new String[skins.size()]);
+            availSkins = skins.toArray(new String[0]);
         }
         return availSkins;
     }

@@ -154,7 +154,7 @@ public class SubscribeDistributionList extends DistributionListDocumentHandler {
                         op.name() + "request needs approval but there is no owner for list " + group.getName());
             }
 
-            sendMessage(owners.toArray(new String[owners.size()]));
+            sendMessage(owners.toArray(new String[0]));
         }
 
         private void sendMessage(String[] owners) throws ServiceException {
@@ -180,7 +180,7 @@ public class SubscribeDistributionList extends DistributionListDocumentHandler {
                 for (String ownerEmail : owners) {
                     addrs.add(new JavaMailInternetAddress(ownerEmail));
                 }
-                out.addRecipients(javax.mail.Message.RecipientType.TO, addrs.toArray(new Address[addrs.size()]));
+                out.addRecipients(javax.mail.Message.RecipientType.TO, addrs.toArray(new Address[0]));
 
                 // Date
                 out.setSentDate(new Date());
