@@ -1,5 +1,20 @@
 
 
+# [4.5.0](https://github.com/Zextras/carbonio-mailbox/compare/4.4.0...4.5.0) (2023-05-18)
+
+
+### Bug Fixes
+
+* [CO-690] delegated account sent mail always read ([#209](https://github.com/Zextras/carbonio-mailbox/issues/209)) ([3b0efc9](https://github.com/Zextras/carbonio-mailbox/commit/3b0efc9454b00d84eec48c70645b9696463996cb))
+* [CO-695] enable async support in guice servlet filter ([#211](https://github.com/Zextras/carbonio-mailbox/issues/211)) ([87c5f88](https://github.com/Zextras/carbonio-mailbox/commit/87c5f88667214e6ce2f25b47b8fed719a1edde5b))
+
+
+### Features
+
+* [CO-658] Reduce messageCacheSize ([#214](https://github.com/Zextras/carbonio-mailbox/issues/214)) ([15359a6](https://github.com/Zextras/carbonio-mailbox/commit/15359a6c8047a389c5cde3b36928bec63a66205e))
+* [CO-675] Let admin set arbitrary PublicService & Virtual hostname ([#220](https://github.com/Zextras/carbonio-mailbox/issues/220)) ([3d0d765](https://github.com/Zextras/carbonio-mailbox/commit/3d0d765574c3c9b8a219b576dd68e830fb35637e))
+* **CO-625:** briefcase removal ([#221](https://github.com/Zextras/carbonio-mailbox/issues/221)) ([e475b7a](https://github.com/Zextras/carbonio-mailbox/commit/e475b7a547a8e3b15756fba14e48a66bba6897b1)), closes [#188](https://github.com/Zextras/carbonio-mailbox/issues/188) [#219](https://github.com/Zextras/carbonio-mailbox/issues/219)
+
 # [4.4.0](https://github.com/Zextras/carbonio-mailbox/compare/4.3.0...4.4.0) (2023-04-20)
 
 
