@@ -10,6 +10,7 @@
  */
 package com.zimbra.cs.account;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,7 @@ import com.zimbra.cs.ldap.LdapDateUtil;
  */
 public abstract class ZAttrUCService extends NamedEntry {
 
-    public ZAttrUCService(String name, String id, Map<String,Object> attrs, Provisioning prov) {
+    protected ZAttrUCService(String name, String id, Map<String,Object> attrs, Provisioning prov) {
         super(name, id, attrs, null, prov);
     }
 
@@ -37,7 +38,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public String getCn() {
-        return getAttr(Provisioning.A_cn, null, true);
+        return getAttr(ZAttrProvisioning.A_cn, null, true);
     }
 
     /**
@@ -48,8 +49,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public void setCn(String cn) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, cn);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, cn);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -62,8 +63,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public Map<String,Object> setCn(String cn, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, cn);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, cn);
         return attrs;
     }
 
@@ -74,8 +75,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public void unsetCn() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -87,8 +88,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public Map<String,Object> unsetCn(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, "");
         return attrs;
     }
 
@@ -99,7 +100,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public String[] getDescription() {
-        return getMultiAttr(Provisioning.A_description, true, true);
+        return getMultiAttr(ZAttrProvisioning.A_description, true, true);
     }
 
     /**
@@ -110,8 +111,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public void setDescription(String[] description) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_description, description);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_description, description);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -124,8 +125,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public Map<String,Object> setDescription(String[] description, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_description, description);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_description, description);
         return attrs;
     }
 
@@ -137,8 +138,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public void addDescription(String description) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_description, description);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_description, description);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -151,8 +152,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public Map<String,Object> addDescription(String description, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_description, description);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_description, description);
         return attrs;
     }
 
@@ -164,8 +165,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public void removeDescription(String description) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_description, description);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_description, description);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -178,8 +179,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public Map<String,Object> removeDescription(String description, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_description, description);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_description, description);
         return attrs;
     }
 
@@ -190,8 +191,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public void unsetDescription() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_description, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_description, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -203,8 +204,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=-1)
     public Map<String,Object> unsetDescription(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_description, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_description, "");
         return attrs;
     }
 
@@ -217,7 +218,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=659)
     public String[] getACE() {
-        return getMultiAttr(Provisioning.A_zimbraACE, true, true);
+        return getMultiAttr(ZAttrProvisioning.A_zimbraACE, true, true);
     }
 
     /**
@@ -230,8 +231,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=659)
     public void setACE(String[] zimbraACE) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraACE, zimbraACE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraACE, zimbraACE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -246,8 +247,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=659)
     public Map<String,Object> setACE(String[] zimbraACE, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraACE, zimbraACE);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraACE, zimbraACE);
         return attrs;
     }
 
@@ -261,8 +262,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=659)
     public void addACE(String zimbraACE) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraACE, zimbraACE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -277,8 +278,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=659)
     public Map<String,Object> addACE(String zimbraACE, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraACE, zimbraACE);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         return attrs;
     }
 
@@ -292,8 +293,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=659)
     public void removeACE(String zimbraACE) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraACE, zimbraACE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -308,8 +309,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=659)
     public Map<String,Object> removeACE(String zimbraACE, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraACE, zimbraACE);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         return attrs;
     }
 
@@ -322,8 +323,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=659)
     public void unsetACE() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraACE, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraACE, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -337,8 +338,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=659)
     public Map<String,Object> unsetACE(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraACE, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraACE, "");
         return attrs;
     }
 
@@ -355,7 +356,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=790)
     public Date getCreateTimestamp() {
-        return getGeneralizedTimeAttr(Provisioning.A_zimbraCreateTimestamp, null, true);
+        return getGeneralizedTimeAttr(ZAttrProvisioning.A_zimbraCreateTimestamp, null, true);
     }
 
     /**
@@ -367,7 +368,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=790)
     public String getCreateTimestampAsString() {
-        return getAttr(Provisioning.A_zimbraCreateTimestamp, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCreateTimestamp, null, true);
     }
 
     /**
@@ -380,8 +381,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=790)
     public void setCreateTimestamp(Date zimbraCreateTimestamp) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -396,8 +397,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=790)
     public Map<String,Object> setCreateTimestamp(Date zimbraCreateTimestamp, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
         return attrs;
     }
 
@@ -411,8 +412,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=790)
     public void setCreateTimestampAsString(String zimbraCreateTimestamp) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -427,8 +428,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=790)
     public Map<String,Object> setCreateTimestampAsString(String zimbraCreateTimestamp, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
         return attrs;
     }
 
@@ -441,8 +442,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=790)
     public void unsetCreateTimestamp() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -456,8 +457,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=790)
     public Map<String,Object> unsetCreateTimestamp(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, "");
         return attrs;
     }
 
@@ -468,7 +469,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1)
     public String getId() {
-        return getAttr(Provisioning.A_zimbraId, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraId, null, true);
     }
 
     /**
@@ -479,8 +480,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1)
     public void setId(String zimbraId) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, zimbraId);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, zimbraId);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -493,8 +494,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1)
     public Map<String,Object> setId(String zimbraId, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, zimbraId);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, zimbraId);
         return attrs;
     }
 
@@ -505,8 +506,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1)
     public void unsetId() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -518,8 +519,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1)
     public Map<String,Object> unsetId(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, "");
         return attrs;
     }
 
@@ -532,7 +533,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1405)
     public String getUCCallControlURL() {
-        return getAttr(Provisioning.A_zimbraUCCallControlURL, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraUCCallControlURL, null, true);
     }
 
     /**
@@ -545,8 +546,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1405)
     public void setUCCallControlURL(String zimbraUCCallControlURL) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCCallControlURL, zimbraUCCallControlURL);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCCallControlURL, zimbraUCCallControlURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -561,8 +562,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1405)
     public Map<String,Object> setUCCallControlURL(String zimbraUCCallControlURL, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCCallControlURL, zimbraUCCallControlURL);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCCallControlURL, zimbraUCCallControlURL);
         return attrs;
     }
 
@@ -575,8 +576,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1405)
     public void unsetUCCallControlURL() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCCallControlURL, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCCallControlURL, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -590,8 +591,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1405)
     public Map<String,Object> unsetUCCallControlURL(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCCallControlURL, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCCallControlURL, "");
         return attrs;
     }
 
@@ -604,7 +605,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1407)
     public String getUCPresenceSessionId() {
-        return getAttr(Provisioning.A_zimbraUCPresenceSessionId, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraUCPresenceSessionId, null, true);
     }
 
     /**
@@ -617,8 +618,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1407)
     public void setUCPresenceSessionId(String zimbraUCPresenceSessionId) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCPresenceSessionId, zimbraUCPresenceSessionId);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCPresenceSessionId, zimbraUCPresenceSessionId);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -633,8 +634,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1407)
     public Map<String,Object> setUCPresenceSessionId(String zimbraUCPresenceSessionId, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCPresenceSessionId, zimbraUCPresenceSessionId);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCPresenceSessionId, zimbraUCPresenceSessionId);
         return attrs;
     }
 
@@ -647,8 +648,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1407)
     public void unsetUCPresenceSessionId() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCPresenceSessionId, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCPresenceSessionId, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -662,8 +663,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1407)
     public Map<String,Object> unsetUCPresenceSessionId(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCPresenceSessionId, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCPresenceSessionId, "");
         return attrs;
     }
 
@@ -676,7 +677,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1406)
     public String getUCPresenceURL() {
-        return getAttr(Provisioning.A_zimbraUCPresenceURL, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraUCPresenceURL, null, true);
     }
 
     /**
@@ -689,8 +690,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1406)
     public void setUCPresenceURL(String zimbraUCPresenceURL) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCPresenceURL, zimbraUCPresenceURL);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCPresenceURL, zimbraUCPresenceURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -705,8 +706,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1406)
     public Map<String,Object> setUCPresenceURL(String zimbraUCPresenceURL, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCPresenceURL, zimbraUCPresenceURL);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCPresenceURL, zimbraUCPresenceURL);
         return attrs;
     }
 
@@ -719,8 +720,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1406)
     public void unsetUCPresenceURL() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCPresenceURL, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCPresenceURL, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -734,8 +735,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1406)
     public Map<String,Object> unsetUCPresenceURL(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCPresenceURL, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCPresenceURL, "");
         return attrs;
     }
 
@@ -748,7 +749,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1402)
     public String getUCProvider() {
-        return getAttr(Provisioning.A_zimbraUCProvider, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraUCProvider, null, true);
     }
 
     /**
@@ -761,8 +762,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1402)
     public void setUCProvider(String zimbraUCProvider) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCProvider, zimbraUCProvider);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCProvider, zimbraUCProvider);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -777,8 +778,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1402)
     public Map<String,Object> setUCProvider(String zimbraUCProvider, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCProvider, zimbraUCProvider);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCProvider, zimbraUCProvider);
         return attrs;
     }
 
@@ -791,8 +792,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1402)
     public void unsetUCProvider() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCProvider, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCProvider, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -806,8 +807,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1402)
     public Map<String,Object> unsetUCProvider(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCProvider, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCProvider, "");
         return attrs;
     }
 
@@ -820,7 +821,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1403)
     public String getUCUserURL() {
-        return getAttr(Provisioning.A_zimbraUCUserURL, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraUCUserURL, null, true);
     }
 
     /**
@@ -833,8 +834,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1403)
     public void setUCUserURL(String zimbraUCUserURL) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCUserURL, zimbraUCUserURL);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCUserURL, zimbraUCUserURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -849,8 +850,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1403)
     public Map<String,Object> setUCUserURL(String zimbraUCUserURL, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCUserURL, zimbraUCUserURL);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCUserURL, zimbraUCUserURL);
         return attrs;
     }
 
@@ -863,8 +864,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1403)
     public void unsetUCUserURL() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCUserURL, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCUserURL, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -878,8 +879,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1403)
     public Map<String,Object> unsetUCUserURL(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCUserURL, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCUserURL, "");
         return attrs;
     }
 
@@ -892,7 +893,7 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1404)
     public String getUCVoicemailURL() {
-        return getAttr(Provisioning.A_zimbraUCVoicemailURL, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraUCVoicemailURL, null, true);
     }
 
     /**
@@ -905,8 +906,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1404)
     public void setUCVoicemailURL(String zimbraUCVoicemailURL) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCVoicemailURL, zimbraUCVoicemailURL);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCVoicemailURL, zimbraUCVoicemailURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -921,8 +922,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1404)
     public Map<String,Object> setUCVoicemailURL(String zimbraUCVoicemailURL, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCVoicemailURL, zimbraUCVoicemailURL);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCVoicemailURL, zimbraUCVoicemailURL);
         return attrs;
     }
 
@@ -935,8 +936,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1404)
     public void unsetUCVoicemailURL() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCVoicemailURL, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCVoicemailURL, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -950,8 +951,8 @@ public abstract class ZAttrUCService extends NamedEntry {
      */
     @ZAttr(id=1404)
     public Map<String,Object> unsetUCVoicemailURL(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraUCVoicemailURL, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraUCVoicemailURL, "");
         return attrs;
     }
 
