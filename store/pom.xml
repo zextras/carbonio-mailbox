@@ -488,6 +488,10 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+      </plugin>
       <!-- This is a hack: some code is generated from same module, so we compile, generate code,
         compile again, run tests, etc. TODO: find a way to move generator classes on another module -->
       <plugin>
