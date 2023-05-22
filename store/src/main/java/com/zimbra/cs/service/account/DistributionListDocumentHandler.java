@@ -5,30 +5,14 @@
 
 package com.zimbra.cs.service.account;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-
-import javax.activation.DataSource;
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.Transport;
-import javax.mail.internet.MimeMultipart;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.sun.mail.smtp.SMTPMessage;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.Key.CacheEntryBy;
 import com.zimbra.common.account.Key.ServerBy;
-import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.AdminConstants;
@@ -42,7 +26,6 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.Provisioning.CacheEntry;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.httpclient.URLUtil;
-import com.zimbra.soap.account.type.DistributionListSubscribeOp;
 import com.zimbra.soap.admin.type.CacheEntryType;
 
 /**

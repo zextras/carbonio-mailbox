@@ -5,36 +5,20 @@
 
 package com.zimbra.cs.service.account;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.activation.DataHandler;
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.sun.mail.smtp.SMTPMessage;
-import com.zimbra.common.mime.MimeConstants;
-import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.util.L10nUtil;
-import com.zimbra.common.util.L10nUtil.MsgKey;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.common.zmime.ZMimeBodyPart;
-import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Group;
@@ -49,10 +33,8 @@ import com.zimbra.cs.account.accesscontrol.TargetType;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE.ExternalGroupInfo;
 import com.zimbra.cs.account.names.NameUtil.EmailAddress;
-import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.type.DistributionListAction.Operation;
-import com.zimbra.soap.account.type.DistributionListSubscribeOp;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
 import com.zimbra.soap.type.TargetBy;
 
