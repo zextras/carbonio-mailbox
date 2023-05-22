@@ -4589,22 +4589,6 @@ Notes:
 <DistributionListActionResponse/>
 
 -----------------------------
-
-<SubscribeDistributionListRequest op="subscribe/unsubscribe">
-  <dl by="id|name">...</dl>
-</SubscribeDistributionListRequest>
-
-{op} = subscribe: subscribe the requested account to the list
-       unsubscribe: unsubscribe the requested account from the list
-
-<SubscribeDistributionListResponse status={status}/>
-
-{status} = subscribed | unsubscribed | awaiting_approval;
-
-
-
------------------------------
-
 <GetAccountDistributionListsRequest [ownerOf="{owner-of}"] [memberOf="{member-of}] [attrs="{attrs}"]">
 </GetAccountDistributionListsRequest>
 

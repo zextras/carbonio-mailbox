@@ -90,8 +90,8 @@ public abstract class DistributionListDocumentHandler extends AccountDocumentHan
     }
 
     /*
-     * Centralized callsite for adding/removing group members in DistributionListAction and
-     * SubscribeDistributionList.  The group object passed in is a "basic" group instance,
+     * Centralized callsite for adding/removing group members in DistributionListAction.
+     * The group object passed in is a "basic" group instance,
      * obtained from Provisioning.getGroupBasic().  Unlink "full" group instances, basic
      * instances don't contain all attributes, and basic groups are cached in LdapProvisioning.
      * For dynamic groups, there is no difference between basic and full instances of a group.
