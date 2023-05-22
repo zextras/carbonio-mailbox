@@ -25,7 +25,6 @@ import javax.mail.internet.MimeMultipart;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.sun.mail.smtp.SMTPMessage;
-import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.service.ServiceException;
@@ -38,7 +37,6 @@ import com.zimbra.common.zmime.ZMimeBodyPart;
 import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Group.GroupOwner;
 import com.zimbra.cs.account.Provisioning;
@@ -52,7 +50,6 @@ import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE.ExternalGroupInfo;
 import com.zimbra.cs.account.names.NameUtil.EmailAddress;
 import com.zimbra.cs.util.AccountUtil;
-import com.zimbra.cs.util.JMSession;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.type.DistributionListAction.Operation;
 import com.zimbra.soap.account.type.DistributionListSubscribeOp;
@@ -638,132 +635,5 @@ public class DistributionListAction extends DistributionListDocumentHandler {
                     new String[] {"cmd", "DistributionListAction", "op", getAction().name(),
                    "name", group.getName(), "members", Arrays.deepToString(members)}));
         }
-    }
-
-    private static class SubscriptionResponseSender extends NotificationSender {
-        private final Account ownerAcct;  // owner who is handling the request
-        private final boolean bccOwners;
-        private final boolean accepted;
-
-        private SubscriptionResponseSender(Provisioning prov, Group group,
-                Account ownerAcct, Account requestingAcct,
-                DistributionListSubscribeOp op, boolean bccOwners, boolean accepted) {
-            super(prov, group, requestingAcct, op);
-            this.ownerAcct = ownerAcct;
-            this.bccOwners = bccOwners;
-            this.accepted = accepted;
-        }
-
-        private void sendMessage() throws ServiceException {
-            try {
-                SMTPMessage out = AccountUtil.getSmtpMessageObj(ownerAcct);
-                Address fromAddr = AccountUtil.getFriendlyEmailAddress(ownerAcct);
-
-                Address replyToAddr = fromAddr;
-                String replyTo = ownerAcct.getAttr(Provisioning.A_zimbraPrefReplyToAddress);
-                if (replyTo != null) {
-                    replyToAddr = new JavaMailInternetAddress(replyTo);
-                }
-
-                // From
-                out.setFrom(fromAddr);
-
-                // Reply-To
-                out.setReplyTo(new Address[]{replyToAddr});
-
-                // To
-                out.setRecipient(javax.mail.Message.RecipientType.TO,
-                        new JavaMailInternetAddress(requestingAcct.getName()));
-
-                // Bcc all other owners of the list
-                if (bccOwners) {
-                    List<String> owners = new ArrayList<String>();
-                    Group.GroupOwner.getOwnerEmails(group, owners);
-
-                    List<Address> addrs = Lists.newArrayList();
-                    for (String ownerEmail : owners) {
-                        if (!ownerEmail.equals(ownerAcct.getName())) {
-                            addrs.add(new JavaMailInternetAddress(ownerEmail));
-                        }
-                    }
-                    if (!addrs.isEmpty()) {
-                        out.addRecipients(javax.mail.Message.RecipientType.BCC,
-                                addrs.toArray(new Address[addrs.size()]));
-                    }
-                }
-
-                // Date
-                out.setSentDate(new Date());
-
-                // send in the receiver's(i.e. the requesting account) locale
-                Locale locale = getLocale(requestingAcct);
-
-                // Subject
-                String subject = L10nUtil.getMessage(MsgKey.dlSubscriptionResponseSubject, locale);
-                out.setSubject(subject);
-
-                buildContentAndSend(out, locale, "group subscription response");
-
-            } catch (MessagingException e) {
-                ZimbraLog.account.warn("send share info notification failed, rcpt='" +
-                        requestingAcct.getName() +"'", e);
-            }
-
-        }
-
-        @Override
-        protected MimeMultipart buildMailContent(Locale locale)
-        throws MessagingException {
-            String text = textPart(locale);
-            String html = htmlPart(locale);
-
-            // Body
-            MimeMultipart mmp = new ZMimeMultipart("alternative");
-
-            // TEXT part (add me first!)
-            MimeBodyPart textPart = new ZMimeBodyPart();
-            textPart.setText(text, MimeConstants.P_CHARSET_UTF8);
-            mmp.addBodyPart(textPart);
-
-            // HTML part
-            MimeBodyPart htmlPart = new ZMimeBodyPart();
-            htmlPart.setDataHandler(new DataHandler(new HtmlPartDataSource(html)));
-            mmp.addBodyPart(htmlPart);
-
-            return mmp;
-        }
-
-        private String textPart(Locale locale) {
-            StringBuilder sb = new StringBuilder();
-
-
-            MsgKey msgKey;
-            if (accepted) {
-                msgKey = DistributionListSubscribeOp.subscribe == op ?
-                        MsgKey.dlSubscribeResponseAcceptedText :
-                        MsgKey.dlUnsubscribeResponseAcceptedText;
-            } else {
-                msgKey = DistributionListSubscribeOp.subscribe == op ?
-                        MsgKey.dlSubscribeResponseRejectedText :
-                        MsgKey.dlUnsubscribeResponseRejectedText;
-            }
-
-            sb.append("\n");
-            sb.append(L10nUtil.getMessage(msgKey, locale,
-                    requestingAcct.getName(), group.getName()));
-            sb.append("\n\n");
-            return sb.toString();
-        }
-
-        private String htmlPart(Locale locale) {
-            StringBuilder sb = new StringBuilder();
-
-            sb.append("<h4>\n");
-            sb.append("<p>" + textPart(locale) + "</p>\n");
-            sb.append("</h4>\n");
-            sb.append("\n");
-            return sb.toString();
-        }
-
     }
 }
