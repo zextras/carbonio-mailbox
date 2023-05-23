@@ -330,7 +330,7 @@ public final class AdminConstants {
   public static final String E_GET_DISTRIBUTION_LIST_MEMBERSHIP_RESPONSE =
       "GetDistributionListMembershipResponse";
 
-  //certbot
+  // certbot
   public static final String E_ISSUE_CERT_REQUEST = "IssueCertRequest";
   public static final String E_ISSUE_CERT_RESPONSE = "IssueCertResponse";
 
@@ -506,10 +506,6 @@ public final class AdminConstants {
   public static final String E_GET_SMIME_CONFIG_RESPONSE = "GetSMIMEConfigResponse";
   public static final String E_MODIFY_SMIME_CONFIG_REQUEST = "ModifySMIMEConfigRequest";
   public static final String E_MODIFY_SMIME_CONFIG_RESPONSE = "ModifySMIMEConfigResponse";
-
-  // Version Check
-  public static final String E_VC_REQUEST = "VersionCheckRequest";
-  public static final String E_VC_RESPONSE = "VersionCheckResponse";
 
   // Auto Provision
   public static final String E_AUTO_PROV_ACCOUNT_REQUEST = "AutoProvAccountRequest";
@@ -1257,10 +1253,6 @@ public final class AdminConstants {
   public static final QName MODIFY_SMIME_CONFIG_RESPONSE =
       QName.get(E_MODIFY_SMIME_CONFIG_RESPONSE, NAMESPACE);
 
-  // Version Check
-  public static final QName VC_REQUEST = QName.get(E_VC_REQUEST, NAMESPACE);
-  public static final QName VC_RESPONSE = QName.get(E_VC_RESPONSE, NAMESPACE);
-
   // Auto provision
   public static final QName AUTO_PROV_ACCOUNT_REQUEST =
       QName.get(E_AUTO_PROV_ACCOUNT_REQUEST, NAMESPACE);
@@ -1765,22 +1757,6 @@ public final class AdminConstants {
   public static final String A_WEEK = "week";
   public static final String A_WKDAY = "wkday";
   public static final String A_MDAY = "mday";
-
-  // Version Check
-  public static final String VERSION_CHECK_STATUS = "status";
-  public static final String VERSION_CHECK_CHECK = "check";
-  public static final String E_VERSION_CHECK = "versionCheck";
-  public static final String A_UPDATE_TYPE = "type";
-  public static final String E_UPDATES = "updates";
-  public static final String E_UPDATE = "update";
-  public static final String A_VERSION_CHECK_STATUS = "status";
-  public static final String A_CRITICAL = "critical";
-  public static final String A_UPDATE_URL = "updateURL";
-  public static final String A_SHORT_VERSION = "shortversion";
-  public static final String A_VERSION = "version";
-  public static final String A_RELEASE = "release";
-  public static final String A_PLATFORM = "platform";
-  public static final String A_BUILDTYPE = "buildtype";
 
   // ZimbraLicenseExtenstion LicenseService and LicenseAdminService
   public static final String E_CONTENT = "content";

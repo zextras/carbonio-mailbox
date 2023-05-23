@@ -706,8 +706,6 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.VerifyIndexResponse.class,
           com.zimbra.soap.admin.message.VerifyStoreManagerRequest.class,
           com.zimbra.soap.admin.message.VerifyStoreManagerResponse.class,
-          com.zimbra.soap.admin.message.VersionCheckRequest.class,
-          com.zimbra.soap.admin.message.VersionCheckResponse.class,
           com.zimbra.soap.adminext.message.BulkIMAPDataImportRequest.class,
           com.zimbra.soap.adminext.message.BulkIMAPDataImportResponse.class,
           com.zimbra.soap.adminext.message.BulkImportAccountsRequest.class,
