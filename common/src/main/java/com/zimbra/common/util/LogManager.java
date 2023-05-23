@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 /**
  * Utility class for managing {@link Log}
@@ -50,5 +53,10 @@ public class LogManager {
    */
   static Map<String, Log> getGlobalLogMapper() {
     return globalLogMapper;
+  }
+
+  public static void setThisLogAndRootToLevel(Logger logger, Level level) {
+    Configurator.setRootLevel(Level.INFO);
+    Configurator.setLevel(logger, Level.INFO);
   }
 }
