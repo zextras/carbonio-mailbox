@@ -4549,8 +4549,6 @@ Notes:
        setRights      set rights
        addMembers     add list members
        removeMembers  remove list members
-       acceptSubsReq  accept subscription/un-subscription request
-       rejectSubsReq  reject subscription/un-subscription request
 
   grantee-type:      
      usr - a Zimbra internal user
@@ -4572,7 +4570,6 @@ Notes:
             optional if op=setRight.  If not present when op=setSenders all current 
             grants for the right will be removed.            
   <dlm>     required if op=addMembers or op=removeMembers
-  <subsReq> required if op=acceptSubsReq or op=rejectSubsReq    
   
   Note: 
         For owners/rights, only grants on the group itself will be 
