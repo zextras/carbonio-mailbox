@@ -5871,12 +5871,14 @@ TODO: delete them permanently from here
   <desc>whether or not to show direction buttons in compose toolbar</desc>
 </attr>
 
-<attr id="1275" name="zimbraDistributionListSubscriptionPolicy" type="enum" value="ACCEPT,REJECT,APPROVAL" cardinality="single" optionalIn="distributionList,group" since="8.0.0">
+<attr id="1275" name="zimbraDistributionListSubscriptionPolicy" type="enum" value="ACCEPT,REJECT,APPROVAL" cardinality="single" optionalIn="distributionList,group" since="8.0.0" deprecatedSince="23.7.0">
   <desc>distribution subscription policy. ACCEPT: always accept, REJECT: always reject, APPROVAL: require owners approval.</desc>
+  <deprecateDesc>Deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
-<attr id="1276" name="zimbraDistributionListUnsubscriptionPolicy" type="enum" value="ACCEPT,REJECT,APPROVAL" cardinality="single" optionalIn="distributionList,group" since="8.0.0">
+<attr id="1276" name="zimbraDistributionListUnsubscriptionPolicy" type="enum" value="ACCEPT,REJECT,APPROVAL" cardinality="single" optionalIn="distributionList,group" since="8.0.0" deprecatedSince="23.7.0">
   <desc>distribution subscription policy. ACCEPT: always accept, REJECT: always reject, APPROVAL: require owners approval.</desc>
+  <deprecateDesc>Deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1277" name="zimbraMobilePolicyAllowStorageCard" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0">

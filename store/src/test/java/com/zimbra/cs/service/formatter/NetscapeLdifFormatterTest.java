@@ -46,8 +46,6 @@ public class NetscapeLdifFormatterTest {
                 "zimbraCalResLocationDisplayName=zimbraCalResLocationDisplayName",
                 "zimbraCalResSite=zimbraCalResSite",
                 "zimbraCalResType,msExchResourceSearchProperties=zimbraCalResType",
-                "zimbraDistributionListSubscriptionPolicy=zimbraDistributionListSubscriptionPolicy",
-                "zimbraDistributionListUnsubscriptionPolicy=zimbraDistributionListUnsubscriptionPolicy",
                 "zimbraId=zimbraId",
                 "zimbraMailDeliveryAddress,zimbraMailAlias,mail=email,email2,email3,email4,email5,email6,email7,email8,email9,email10,email11,email12,email13,email14,email15,email16",
                 "zimbraMailForwardingAddress=member",

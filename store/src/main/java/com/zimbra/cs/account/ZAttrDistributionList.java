@@ -1012,8 +1012,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1027,8 +1028,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1042,8 +1044,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1060,8 +1063,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1079,8 +1083,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1097,8 +1102,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1116,8 +1122,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1133,8 +1140,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1151,8 +1159,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1166,8 +1175,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1181,8 +1191,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1199,8 +1210,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1218,8 +1230,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1236,8 +1249,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1255,8 +1269,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
@@ -1272,8 +1287,9 @@ public abstract class ZAttrDistributionList extends Group {
     }
 
     /**
-     * distribution subscription policy. ACCEPT: always accept, REJECT:
-     * always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
+     * Orig desc: distribution subscription policy. ACCEPT: always accept,
+     * REJECT: always reject, APPROVAL: require owners approval.
      *
      * <p>Valid values: [ACCEPT, REJECT, APPROVAL]
      *
