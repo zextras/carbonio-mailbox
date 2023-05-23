@@ -413,8 +413,8 @@
     </dependency>
     <!-- Note this should be provided in container classpath -->
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -662,9 +662,9 @@
             <version>2.9.1-patch-01</version>
           </dependency>
           <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.20.0</version>
           </dependency>
 
           <!-- These dependencies come from zm-jetty in repo: https://github.com/Zextras/carbonio-zcs-lib

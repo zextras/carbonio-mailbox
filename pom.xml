@@ -350,9 +350,11 @@
         <version>20090211</version>
       </dependency>
       <dependency>
-        <groupId>log4j</groupId>
+        <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>${log4j.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.dom4j</groupId>
@@ -850,7 +852,7 @@
     <jython.version>2.7.2</jython.version>
     <cxf.version>3.3.4</cxf.version>
     <nekohtml.version>1.9.22</nekohtml.version>
-    <log4j.version>1.2.16</log4j.version>
+    <log4j.version>2.20.0</log4j.version>
     <dom4j.version>2.1.1</dom4j.version>
     <zookeeper.version>3.4.5</zookeeper.version>
     <zkclient.version>0.11</zkclient.version>
