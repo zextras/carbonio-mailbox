@@ -22,7 +22,7 @@ import com.zimbra.cs.ldap.LdapDateUtil;
  */
 public class ZAttrCalendarResource extends Account {
 
-    public ZAttrCalendarResource(String name, String id, Map<String, Object> attrs, Map<String, Object> defaults, Provisioning prov) {
+    protected ZAttrCalendarResource(String name, String id, Map<String, Object> attrs, Map<String, Object> defaults, Provisioning prov) {
         super(name, id, attrs, defaults, prov);
     }
 
@@ -35,7 +35,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=-1)
     public String getDisplayName() {
-        return getAttr(Provisioning.A_displayName, null, true);
+        return getAttr(ZAttrProvisioning.A_displayName, null, true);
     }
 
     /**
@@ -46,8 +46,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=-1)
     public void setDisplayName(String displayName) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_displayName, displayName);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_displayName, displayName);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -60,8 +60,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=-1)
     public Map<String,Object> setDisplayName(String displayName, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_displayName, displayName);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_displayName, displayName);
         return attrs;
     }
 
@@ -72,8 +72,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=-1)
     public void unsetDisplayName() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_displayName, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_displayName, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -85,8 +85,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=-1)
     public Map<String,Object> unsetDisplayName(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_displayName, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_displayName, "");
         return attrs;
     }
 
@@ -99,7 +99,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=313)
     public ZAttrProvisioning.AccountCalendarUserType getAccountCalendarUserType() {
-        try { String v = getAttr(Provisioning.A_zimbraAccountCalendarUserType, true, true); return v == null ? null : ZAttrProvisioning.AccountCalendarUserType.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
+        try { String v = getAttr(ZAttrProvisioning.A_zimbraAccountCalendarUserType, true, true); return v == null ? null : ZAttrProvisioning.AccountCalendarUserType.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
     }
 
     /**
@@ -111,7 +111,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=313)
     public String getAccountCalendarUserTypeAsString() {
-        return getAttr(Provisioning.A_zimbraAccountCalendarUserType, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraAccountCalendarUserType, null, true);
     }
 
     /**
@@ -124,8 +124,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=313)
     public void setAccountCalendarUserType(ZAttrProvisioning.AccountCalendarUserType zimbraAccountCalendarUserType) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraAccountCalendarUserType, zimbraAccountCalendarUserType.toString());
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraAccountCalendarUserType, zimbraAccountCalendarUserType.toString());
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -140,8 +140,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=313)
     public Map<String,Object> setAccountCalendarUserType(ZAttrProvisioning.AccountCalendarUserType zimbraAccountCalendarUserType, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraAccountCalendarUserType, zimbraAccountCalendarUserType.toString());
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraAccountCalendarUserType, zimbraAccountCalendarUserType.toString());
         return attrs;
     }
 
@@ -155,8 +155,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=313)
     public void setAccountCalendarUserTypeAsString(String zimbraAccountCalendarUserType) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraAccountCalendarUserType, zimbraAccountCalendarUserType);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraAccountCalendarUserType, zimbraAccountCalendarUserType);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -171,8 +171,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=313)
     public Map<String,Object> setAccountCalendarUserTypeAsString(String zimbraAccountCalendarUserType, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraAccountCalendarUserType, zimbraAccountCalendarUserType);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraAccountCalendarUserType, zimbraAccountCalendarUserType);
         return attrs;
     }
 
@@ -185,8 +185,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=313)
     public void unsetAccountCalendarUserType() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraAccountCalendarUserType, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraAccountCalendarUserType, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -200,8 +200,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=313)
     public Map<String,Object> unsetAccountCalendarUserType(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraAccountCalendarUserType, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraAccountCalendarUserType, "");
         return attrs;
     }
 
@@ -213,7 +213,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=315)
     public boolean isCalResAutoAcceptDecline() {
-        return getBooleanAttr(Provisioning.A_zimbraCalResAutoAcceptDecline, false, true);
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraCalResAutoAcceptDecline, false, true);
     }
 
     /**
@@ -225,8 +225,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=315)
     public void setCalResAutoAcceptDecline(boolean zimbraCalResAutoAcceptDecline) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoAcceptDecline, zimbraCalResAutoAcceptDecline ? TRUE : FALSE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoAcceptDecline, zimbraCalResAutoAcceptDecline ? TRUE : FALSE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -240,8 +240,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=315)
     public Map<String,Object> setCalResAutoAcceptDecline(boolean zimbraCalResAutoAcceptDecline, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoAcceptDecline, zimbraCalResAutoAcceptDecline ? TRUE : FALSE);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoAcceptDecline, zimbraCalResAutoAcceptDecline ? TRUE : FALSE);
         return attrs;
     }
 
@@ -253,8 +253,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=315)
     public void unsetCalResAutoAcceptDecline() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoAcceptDecline, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoAcceptDecline, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -267,8 +267,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=315)
     public Map<String,Object> unsetCalResAutoAcceptDecline(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoAcceptDecline, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoAcceptDecline, "");
         return attrs;
     }
 
@@ -280,7 +280,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=322)
     public boolean isCalResAutoDeclineIfBusy() {
-        return getBooleanAttr(Provisioning.A_zimbraCalResAutoDeclineIfBusy, false, true);
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraCalResAutoDeclineIfBusy, false, true);
     }
 
     /**
@@ -292,8 +292,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=322)
     public void setCalResAutoDeclineIfBusy(boolean zimbraCalResAutoDeclineIfBusy) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoDeclineIfBusy, zimbraCalResAutoDeclineIfBusy ? TRUE : FALSE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoDeclineIfBusy, zimbraCalResAutoDeclineIfBusy ? TRUE : FALSE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -307,8 +307,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=322)
     public Map<String,Object> setCalResAutoDeclineIfBusy(boolean zimbraCalResAutoDeclineIfBusy, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoDeclineIfBusy, zimbraCalResAutoDeclineIfBusy ? TRUE : FALSE);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoDeclineIfBusy, zimbraCalResAutoDeclineIfBusy ? TRUE : FALSE);
         return attrs;
     }
 
@@ -320,8 +320,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=322)
     public void unsetCalResAutoDeclineIfBusy() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoDeclineIfBusy, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoDeclineIfBusy, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -334,8 +334,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=322)
     public Map<String,Object> unsetCalResAutoDeclineIfBusy(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoDeclineIfBusy, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoDeclineIfBusy, "");
         return attrs;
     }
 
@@ -347,7 +347,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=323)
     public boolean isCalResAutoDeclineRecurring() {
-        return getBooleanAttr(Provisioning.A_zimbraCalResAutoDeclineRecurring, false, true);
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraCalResAutoDeclineRecurring, false, true);
     }
 
     /**
@@ -359,8 +359,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=323)
     public void setCalResAutoDeclineRecurring(boolean zimbraCalResAutoDeclineRecurring) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoDeclineRecurring, zimbraCalResAutoDeclineRecurring ? TRUE : FALSE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoDeclineRecurring, zimbraCalResAutoDeclineRecurring ? TRUE : FALSE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -374,8 +374,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=323)
     public Map<String,Object> setCalResAutoDeclineRecurring(boolean zimbraCalResAutoDeclineRecurring, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoDeclineRecurring, zimbraCalResAutoDeclineRecurring ? TRUE : FALSE);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoDeclineRecurring, zimbraCalResAutoDeclineRecurring ? TRUE : FALSE);
         return attrs;
     }
 
@@ -387,8 +387,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=323)
     public void unsetCalResAutoDeclineRecurring() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoDeclineRecurring, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoDeclineRecurring, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -401,8 +401,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=323)
     public Map<String,Object> unsetCalResAutoDeclineRecurring(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResAutoDeclineRecurring, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResAutoDeclineRecurring, "");
         return attrs;
     }
 
@@ -413,7 +413,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=327)
     public String getCalResBuilding() {
-        return getAttr(Provisioning.A_zimbraCalResBuilding, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCalResBuilding, null, true);
     }
 
     /**
@@ -424,8 +424,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=327)
     public void setCalResBuilding(String zimbraCalResBuilding) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResBuilding, zimbraCalResBuilding);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResBuilding, zimbraCalResBuilding);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -438,8 +438,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=327)
     public Map<String,Object> setCalResBuilding(String zimbraCalResBuilding, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResBuilding, zimbraCalResBuilding);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResBuilding, zimbraCalResBuilding);
         return attrs;
     }
 
@@ -450,8 +450,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=327)
     public void unsetCalResBuilding() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResBuilding, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResBuilding, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -463,8 +463,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=327)
     public Map<String,Object> unsetCalResBuilding(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResBuilding, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResBuilding, "");
         return attrs;
     }
 
@@ -475,7 +475,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=330)
     public int getCalResCapacity() {
-        return getIntAttr(Provisioning.A_zimbraCalResCapacity, -1, true);
+        return getIntAttr(ZAttrProvisioning.A_zimbraCalResCapacity, -1, true);
     }
 
     /**
@@ -486,8 +486,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=330)
     public void setCalResCapacity(int zimbraCalResCapacity) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResCapacity, Integer.toString(zimbraCalResCapacity));
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResCapacity, Integer.toString(zimbraCalResCapacity));
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -500,8 +500,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=330)
     public Map<String,Object> setCalResCapacity(int zimbraCalResCapacity, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResCapacity, Integer.toString(zimbraCalResCapacity));
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResCapacity, Integer.toString(zimbraCalResCapacity));
         return attrs;
     }
 
@@ -512,8 +512,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=330)
     public void unsetCalResCapacity() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResCapacity, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResCapacity, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -525,8 +525,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=330)
     public Map<String,Object> unsetCalResCapacity(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResCapacity, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResCapacity, "");
         return attrs;
     }
 
@@ -537,7 +537,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=332)
     public String getCalResContactEmail() {
-        return getAttr(Provisioning.A_zimbraCalResContactEmail, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCalResContactEmail, null, true);
     }
 
     /**
@@ -548,8 +548,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=332)
     public void setCalResContactEmail(String zimbraCalResContactEmail) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactEmail, zimbraCalResContactEmail);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactEmail, zimbraCalResContactEmail);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -562,8 +562,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=332)
     public Map<String,Object> setCalResContactEmail(String zimbraCalResContactEmail, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactEmail, zimbraCalResContactEmail);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactEmail, zimbraCalResContactEmail);
         return attrs;
     }
 
@@ -574,8 +574,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=332)
     public void unsetCalResContactEmail() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactEmail, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactEmail, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -587,8 +587,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=332)
     public Map<String,Object> unsetCalResContactEmail(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactEmail, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactEmail, "");
         return attrs;
     }
 
@@ -599,7 +599,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=331)
     public String getCalResContactName() {
-        return getAttr(Provisioning.A_zimbraCalResContactName, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCalResContactName, null, true);
     }
 
     /**
@@ -610,8 +610,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=331)
     public void setCalResContactName(String zimbraCalResContactName) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactName, zimbraCalResContactName);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactName, zimbraCalResContactName);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -624,8 +624,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=331)
     public Map<String,Object> setCalResContactName(String zimbraCalResContactName, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactName, zimbraCalResContactName);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactName, zimbraCalResContactName);
         return attrs;
     }
 
@@ -636,8 +636,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=331)
     public void unsetCalResContactName() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactName, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactName, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -649,8 +649,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=331)
     public Map<String,Object> unsetCalResContactName(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactName, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactName, "");
         return attrs;
     }
 
@@ -661,7 +661,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=333)
     public String getCalResContactPhone() {
-        return getAttr(Provisioning.A_zimbraCalResContactPhone, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCalResContactPhone, null, true);
     }
 
     /**
@@ -672,8 +672,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=333)
     public void setCalResContactPhone(String zimbraCalResContactPhone) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactPhone, zimbraCalResContactPhone);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactPhone, zimbraCalResContactPhone);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -686,8 +686,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=333)
     public Map<String,Object> setCalResContactPhone(String zimbraCalResContactPhone, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactPhone, zimbraCalResContactPhone);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactPhone, zimbraCalResContactPhone);
         return attrs;
     }
 
@@ -698,8 +698,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=333)
     public void unsetCalResContactPhone() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactPhone, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactPhone, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -711,8 +711,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=333)
     public Map<String,Object> unsetCalResContactPhone(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResContactPhone, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResContactPhone, "");
         return attrs;
     }
 
@@ -723,7 +723,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=328)
     public String getCalResFloor() {
-        return getAttr(Provisioning.A_zimbraCalResFloor, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCalResFloor, null, true);
     }
 
     /**
@@ -734,8 +734,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=328)
     public void setCalResFloor(String zimbraCalResFloor) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResFloor, zimbraCalResFloor);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResFloor, zimbraCalResFloor);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -748,8 +748,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=328)
     public Map<String,Object> setCalResFloor(String zimbraCalResFloor, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResFloor, zimbraCalResFloor);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResFloor, zimbraCalResFloor);
         return attrs;
     }
 
@@ -760,8 +760,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=328)
     public void unsetCalResFloor() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResFloor, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResFloor, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -773,8 +773,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=328)
     public Map<String,Object> unsetCalResFloor(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResFloor, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResFloor, "");
         return attrs;
     }
 
@@ -785,7 +785,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=324)
     public String getCalResLocationDisplayName() {
-        return getAttr(Provisioning.A_zimbraCalResLocationDisplayName, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCalResLocationDisplayName, null, true);
     }
 
     /**
@@ -796,8 +796,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=324)
     public void setCalResLocationDisplayName(String zimbraCalResLocationDisplayName) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResLocationDisplayName, zimbraCalResLocationDisplayName);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResLocationDisplayName, zimbraCalResLocationDisplayName);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -810,8 +810,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=324)
     public Map<String,Object> setCalResLocationDisplayName(String zimbraCalResLocationDisplayName, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResLocationDisplayName, zimbraCalResLocationDisplayName);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResLocationDisplayName, zimbraCalResLocationDisplayName);
         return attrs;
     }
 
@@ -822,8 +822,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=324)
     public void unsetCalResLocationDisplayName() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResLocationDisplayName, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResLocationDisplayName, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -835,8 +835,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=324)
     public Map<String,Object> unsetCalResLocationDisplayName(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResLocationDisplayName, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResLocationDisplayName, "");
         return attrs;
     }
 
@@ -851,7 +851,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=808)
     public int getCalResMaxNumConflictsAllowed() {
-        return getIntAttr(Provisioning.A_zimbraCalResMaxNumConflictsAllowed, -1, true);
+        return getIntAttr(ZAttrProvisioning.A_zimbraCalResMaxNumConflictsAllowed, -1, true);
     }
 
     /**
@@ -866,8 +866,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=808)
     public void setCalResMaxNumConflictsAllowed(int zimbraCalResMaxNumConflictsAllowed) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResMaxNumConflictsAllowed, Integer.toString(zimbraCalResMaxNumConflictsAllowed));
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResMaxNumConflictsAllowed, Integer.toString(zimbraCalResMaxNumConflictsAllowed));
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -884,8 +884,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=808)
     public Map<String,Object> setCalResMaxNumConflictsAllowed(int zimbraCalResMaxNumConflictsAllowed, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResMaxNumConflictsAllowed, Integer.toString(zimbraCalResMaxNumConflictsAllowed));
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResMaxNumConflictsAllowed, Integer.toString(zimbraCalResMaxNumConflictsAllowed));
         return attrs;
     }
 
@@ -900,8 +900,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=808)
     public void unsetCalResMaxNumConflictsAllowed() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResMaxNumConflictsAllowed, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResMaxNumConflictsAllowed, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -917,8 +917,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=808)
     public Map<String,Object> unsetCalResMaxNumConflictsAllowed(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResMaxNumConflictsAllowed, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResMaxNumConflictsAllowed, "");
         return attrs;
     }
 
@@ -933,7 +933,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=809)
     public int getCalResMaxPercentConflictsAllowed() {
-        return getIntAttr(Provisioning.A_zimbraCalResMaxPercentConflictsAllowed, -1, true);
+        return getIntAttr(ZAttrProvisioning.A_zimbraCalResMaxPercentConflictsAllowed, -1, true);
     }
 
     /**
@@ -948,8 +948,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=809)
     public void setCalResMaxPercentConflictsAllowed(int zimbraCalResMaxPercentConflictsAllowed) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResMaxPercentConflictsAllowed, Integer.toString(zimbraCalResMaxPercentConflictsAllowed));
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResMaxPercentConflictsAllowed, Integer.toString(zimbraCalResMaxPercentConflictsAllowed));
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -966,8 +966,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=809)
     public Map<String,Object> setCalResMaxPercentConflictsAllowed(int zimbraCalResMaxPercentConflictsAllowed, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResMaxPercentConflictsAllowed, Integer.toString(zimbraCalResMaxPercentConflictsAllowed));
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResMaxPercentConflictsAllowed, Integer.toString(zimbraCalResMaxPercentConflictsAllowed));
         return attrs;
     }
 
@@ -982,8 +982,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=809)
     public void unsetCalResMaxPercentConflictsAllowed() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResMaxPercentConflictsAllowed, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResMaxPercentConflictsAllowed, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -999,8 +999,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=809)
     public Map<String,Object> unsetCalResMaxPercentConflictsAllowed(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResMaxPercentConflictsAllowed, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResMaxPercentConflictsAllowed, "");
         return attrs;
     }
 
@@ -1011,7 +1011,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=329)
     public String getCalResRoom() {
-        return getAttr(Provisioning.A_zimbraCalResRoom, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCalResRoom, null, true);
     }
 
     /**
@@ -1022,8 +1022,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=329)
     public void setCalResRoom(String zimbraCalResRoom) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResRoom, zimbraCalResRoom);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResRoom, zimbraCalResRoom);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1036,8 +1036,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=329)
     public Map<String,Object> setCalResRoom(String zimbraCalResRoom, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResRoom, zimbraCalResRoom);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResRoom, zimbraCalResRoom);
         return attrs;
     }
 
@@ -1048,8 +1048,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=329)
     public void unsetCalResRoom() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResRoom, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResRoom, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1061,8 +1061,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=329)
     public Map<String,Object> unsetCalResRoom(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResRoom, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResRoom, "");
         return attrs;
     }
 
@@ -1073,7 +1073,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=326)
     public String getCalResSite() {
-        return getAttr(Provisioning.A_zimbraCalResSite, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCalResSite, null, true);
     }
 
     /**
@@ -1084,8 +1084,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=326)
     public void setCalResSite(String zimbraCalResSite) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResSite, zimbraCalResSite);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResSite, zimbraCalResSite);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1098,8 +1098,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=326)
     public Map<String,Object> setCalResSite(String zimbraCalResSite, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResSite, zimbraCalResSite);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResSite, zimbraCalResSite);
         return attrs;
     }
 
@@ -1110,8 +1110,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=326)
     public void unsetCalResSite() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResSite, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResSite, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1123,8 +1123,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=326)
     public Map<String,Object> unsetCalResSite(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResSite, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResSite, "");
         return attrs;
     }
 
@@ -1137,7 +1137,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=314)
     public ZAttrProvisioning.CalResType getCalResType() {
-        try { String v = getAttr(Provisioning.A_zimbraCalResType, true, true); return v == null ? null : ZAttrProvisioning.CalResType.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
+        try { String v = getAttr(ZAttrProvisioning.A_zimbraCalResType, true, true); return v == null ? null : ZAttrProvisioning.CalResType.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
     }
 
     /**
@@ -1149,7 +1149,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=314)
     public String getCalResTypeAsString() {
-        return getAttr(Provisioning.A_zimbraCalResType, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCalResType, null, true);
     }
 
     /**
@@ -1162,8 +1162,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=314)
     public void setCalResType(ZAttrProvisioning.CalResType zimbraCalResType) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResType, zimbraCalResType.toString());
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResType, zimbraCalResType.toString());
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1178,8 +1178,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=314)
     public Map<String,Object> setCalResType(ZAttrProvisioning.CalResType zimbraCalResType, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResType, zimbraCalResType.toString());
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResType, zimbraCalResType.toString());
         return attrs;
     }
 
@@ -1193,8 +1193,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=314)
     public void setCalResTypeAsString(String zimbraCalResType) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResType, zimbraCalResType);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResType, zimbraCalResType);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1209,8 +1209,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=314)
     public Map<String,Object> setCalResTypeAsString(String zimbraCalResType, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResType, zimbraCalResType);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResType, zimbraCalResType);
         return attrs;
     }
 
@@ -1223,8 +1223,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=314)
     public void unsetCalResType() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResType, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResType, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1238,8 +1238,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=314)
     public Map<String,Object> unsetCalResType(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCalResType, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCalResType, "");
         return attrs;
     }
 
@@ -1256,7 +1256,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=790)
     public Date getCreateTimestamp() {
-        return getGeneralizedTimeAttr(Provisioning.A_zimbraCreateTimestamp, null, true);
+        return getGeneralizedTimeAttr(ZAttrProvisioning.A_zimbraCreateTimestamp, null, true);
     }
 
     /**
@@ -1268,7 +1268,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=790)
     public String getCreateTimestampAsString() {
-        return getAttr(Provisioning.A_zimbraCreateTimestamp, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCreateTimestamp, null, true);
     }
 
     /**
@@ -1281,8 +1281,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=790)
     public void setCreateTimestamp(Date zimbraCreateTimestamp) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1297,8 +1297,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=790)
     public Map<String,Object> setCreateTimestamp(Date zimbraCreateTimestamp, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
         return attrs;
     }
 
@@ -1312,8 +1312,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=790)
     public void setCreateTimestampAsString(String zimbraCreateTimestamp) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1328,8 +1328,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=790)
     public Map<String,Object> setCreateTimestampAsString(String zimbraCreateTimestamp, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
         return attrs;
     }
 
@@ -1342,8 +1342,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=790)
     public void unsetCreateTimestamp() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1357,8 +1357,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=790)
     public Map<String,Object> unsetCreateTimestamp(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, "");
         return attrs;
     }
 
@@ -1369,7 +1369,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=1)
     public String getId() {
-        return getAttr(Provisioning.A_zimbraId, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraId, null, true);
     }
 
     /**
@@ -1380,8 +1380,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=1)
     public void setId(String zimbraId) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, zimbraId);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, zimbraId);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1394,8 +1394,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=1)
     public Map<String,Object> setId(String zimbraId, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, zimbraId);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, zimbraId);
         return attrs;
     }
 
@@ -1406,8 +1406,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=1)
     public void unsetId() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1419,8 +1419,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=1)
     public Map<String,Object> unsetId(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, "");
         return attrs;
     }
 
@@ -1431,7 +1431,7 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=345)
     public String getLocaleAsString() {
-        return getAttr(Provisioning.A_zimbraLocale, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraLocale, null, true);
     }
 
     /**
@@ -1442,8 +1442,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=345)
     public void setLocale(String zimbraLocale) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraLocale, zimbraLocale);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraLocale, zimbraLocale);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1456,8 +1456,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=345)
     public Map<String,Object> setLocale(String zimbraLocale, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraLocale, zimbraLocale);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraLocale, zimbraLocale);
         return attrs;
     }
 
@@ -1468,8 +1468,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=345)
     public void unsetLocale() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraLocale, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraLocale, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1481,8 +1481,8 @@ public class ZAttrCalendarResource extends Account {
      */
     @ZAttr(id=345)
     public Map<String,Object> unsetLocale(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraLocale, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraLocale, "");
         return attrs;
     }
 

@@ -496,6 +496,10 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+      </plugin>
       <!-- This is a hack: some code is generated from same module, so we compile, generate code,
         compile again, run tests, etc. TODO: find a way to move generator classes on another module -->
       <plugin>
@@ -652,7 +656,7 @@
           <dependency>
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.4</version>
           </dependency>
           <dependency>
             <groupId>org.apache.httpcomponents</groupId>
