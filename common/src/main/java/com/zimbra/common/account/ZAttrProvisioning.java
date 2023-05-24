@@ -5665,9 +5665,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDistributionListSendShareMessageToNewMembers = "zimbraDistributionListSendShareMessageToNewMembers";
 
     /**
-     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
-     * Orig desc: distribution subscription policy. ACCEPT: always accept,
-     * REJECT: always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
+     * distribution subscription policy. ACCEPT: always accept, REJECT:
+     * always reject, APPROVAL: require owners approval.
      *
      * @since ZCS 8.0.0
      */
@@ -5675,9 +5675,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDistributionListSubscriptionPolicy = "zimbraDistributionListSubscriptionPolicy";
 
     /**
-     * Deprecated since: 23.7.0. Deprecated as not being used in Carbonio.
-     * Orig desc: distribution subscription policy. ACCEPT: always accept,
-     * REJECT: always reject, APPROVAL: require owners approval.
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
+     * distribution subscription policy. ACCEPT: always accept, REJECT:
+     * always reject, APPROVAL: require owners approval.
      *
      * @since ZCS 8.0.0
      */
