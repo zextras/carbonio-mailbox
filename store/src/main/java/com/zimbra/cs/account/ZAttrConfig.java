@@ -55831,13 +55831,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [https, redirect]
      *
-     * @return zimbraReverseProxyMailMode, or null if unset and/or has invalid value
+     * @return zimbraReverseProxyMailMode, or ZAttrProvisioning.ReverseProxyMailMode.redirect if unset and/or has invalid value
      *
      * @since ZCS 5.0.7
      */
     @ZAttr(id=685)
     public ZAttrProvisioning.ReverseProxyMailMode getReverseProxyMailMode() {
-        try { String v = getAttr(ZAttrProvisioning.A_zimbraReverseProxyMailMode, true, true); return v == null ? null : ZAttrProvisioning.ReverseProxyMailMode.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
+        try { String v = getAttr(ZAttrProvisioning.A_zimbraReverseProxyMailMode, true, true); return v == null ? ZAttrProvisioning.ReverseProxyMailMode.redirect : ZAttrProvisioning.ReverseProxyMailMode.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.ReverseProxyMailMode.redirect; }
     }
 
     /**
@@ -55846,13 +55846,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [https, redirect]
      *
-     * @return zimbraReverseProxyMailMode, or null if unset
+     * @return zimbraReverseProxyMailMode, or "redirect" if unset
      *
      * @since ZCS 5.0.7
      */
     @ZAttr(id=685)
     public String getReverseProxyMailModeAsString() {
-        return getAttr(ZAttrProvisioning.A_zimbraReverseProxyMailMode, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraReverseProxyMailMode, "redirect", true);
     }
 
     /**
