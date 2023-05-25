@@ -16047,6 +16047,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersion = "zimbraVersion";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * Time interval after which Zimbra version check detects a new version.
      * Must be in valid duration format: {digits}{time-unit}. digits: 0-9,
      * time-unit: [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days,
@@ -16059,6 +16060,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckInterval = "zimbraVersionCheckInterval";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked
      *
      * @since ZCS 6.0.2
@@ -16067,6 +16069,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckLastAttempt = "zimbraVersionCheckLastAttempt";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * last response of last Zimbra version check
      *
      * @since ZCS 6.0.2
@@ -16075,6 +16078,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckLastResponse = "zimbraVersionCheckLastResponse";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked successfully
      *
      * @since ZCS 6.0.2
@@ -16083,6 +16087,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckLastSuccess = "zimbraVersionCheckLastSuccess";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the body of an Zimbra version check
      * notification message
      *
@@ -16092,6 +16097,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckNotificationBody = "zimbraVersionCheckNotificationBody";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * email address to send mail to for the Zimbra version check
      * notification message
      *
@@ -16101,6 +16107,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckNotificationEmail = "zimbraVersionCheckNotificationEmail";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * from address for the Zimbra version check notification message
      *
      * @since ZCS 6.0.2
@@ -16109,6 +16116,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckNotificationEmailFrom = "zimbraVersionCheckNotificationEmailFrom";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the subject of an Zimbra version check
      * notification message
      *
@@ -16118,6 +16126,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckNotificationSubject = "zimbraVersionCheckNotificationSubject";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * whether to send a notification message if Zimbra version check detects
      * a new version
      *
@@ -16127,6 +16136,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckSendNotifications = "zimbraVersionCheckSendNotifications";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * zimbraId of the server that should perform the Zimbra version checks
      *
      * @since ZCS 6.0.2
@@ -16135,7 +16145,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckServer = "zimbraVersionCheckServer";
 
     /**
-     * URL of the Zimbra version check script
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc: URL
+     * of the Zimbra version check script
      *
      * @since ZCS 6.0.2
      */
