@@ -4531,7 +4531,6 @@ Notes:
            <grantee type={grantee-type} by="name|id}">{name-or-id}</grantee>+
        </right>+]  
       [<dlm>{member}</dlm>+]
-      [<subsReq op="subscribe/unsubscribe" [bccOwners="1|0"]>{member-email}</subsReq>]
   </action>
 <DistributionListActionRequest>
 
@@ -4549,8 +4548,6 @@ Notes:
        setRights      set rights
        addMembers     add list members
        removeMembers  remove list members
-       acceptSubsReq  accept subscription/un-subscription request
-       rejectSubsReq  reject subscription/un-subscription request
 
   grantee-type:      
      usr - a Zimbra internal user
@@ -4572,7 +4569,6 @@ Notes:
             optional if op=setRight.  If not present when op=setSenders all current 
             grants for the right will be removed.            
   <dlm>     required if op=addMembers or op=removeMembers
-  <subsReq> required if op=acceptSubsReq or op=rejectSubsReq    
   
   Note: 
         For owners/rights, only grants on the group itself will be 
@@ -4589,22 +4585,6 @@ Notes:
 <DistributionListActionResponse/>
 
 -----------------------------
-
-<SubscribeDistributionListRequest op="subscribe/unsubscribe">
-  <dl by="id|name">...</dl>
-</SubscribeDistributionListRequest>
-
-{op} = subscribe: subscribe the requested account to the list
-       unsubscribe: unsubscribe the requested account from the list
-
-<SubscribeDistributionListResponse status={status}/>
-
-{status} = subscribed | unsubscribed | awaiting_approval;
-
-
-
------------------------------
-
 <GetAccountDistributionListsRequest [ownerOf="{owner-of}"] [memberOf="{member-of}] [attrs="{attrs}"]">
 </GetAccountDistributionListsRequest>
 

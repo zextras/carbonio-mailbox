@@ -5665,6 +5665,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDistributionListSendShareMessageToNewMembers = "zimbraDistributionListSendShareMessageToNewMembers";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -5674,6 +5675,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDistributionListSubscriptionPolicy = "zimbraDistributionListSubscriptionPolicy";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *

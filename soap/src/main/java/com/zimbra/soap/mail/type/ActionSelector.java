@@ -64,8 +64,6 @@ public class ActionSelector {
      *    setRights      set rights
      *    addMembers     add list members
      *    removeMembers  remove list members
-     *    acceptSubsReq  accept subscription/un-subscription request
-     *    rejectSubsReq  reject subscription/un-subscription request
      *    resetimapuid   reset IMAP item UIDs
      * </pre>
      */

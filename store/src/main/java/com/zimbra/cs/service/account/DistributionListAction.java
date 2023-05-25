@@ -5,40 +5,22 @@
 
 package com.zimbra.cs.service.account;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.activation.DataHandler;
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.sun.mail.smtp.SMTPMessage;
-import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.mime.MimeConstants;
-import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.util.L10nUtil;
-import com.zimbra.common.util.L10nUtil.MsgKey;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.common.zmime.ZMimeBodyPart;
-import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Group.GroupOwner;
 import com.zimbra.cs.account.Provisioning;
@@ -51,11 +33,8 @@ import com.zimbra.cs.account.accesscontrol.TargetType;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE.ExternalGroupInfo;
 import com.zimbra.cs.account.names.NameUtil.EmailAddress;
-import com.zimbra.cs.util.AccountUtil;
-import com.zimbra.cs.util.JMSession;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.type.DistributionListAction.Operation;
-import com.zimbra.soap.account.type.DistributionListSubscribeOp;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
 import com.zimbra.soap.type.TargetBy;
 
@@ -137,12 +116,6 @@ public class DistributionListAction extends DistributionListDocumentHandler {
                     break;
                 case removeMembers:
                     handler = new RemoveMembersHandler(eAction, group, prov, acct);
-                    break;
-                case acceptSubsReq:
-                    handler = new AcceptSubsReqHandler(eAction, group, prov, acct);
-                    break;
-                case rejectSubsReq:
-                    handler = new RejectSubsReqHandler(eAction, group, prov, acct);
                     break;
                 default:
                     throw ServiceException.FAILURE("unsupported op:" + op.name(), null);
@@ -643,262 +616,6 @@ public class DistributionListAction extends DistributionListDocumentHandler {
             ZimbraLog.security.info(ZimbraLog.encodeAttrs(
                     new String[] {"cmd", "DistributionListAction", "op", getAction().name(),
                    "name", group.getName(), "members", Arrays.deepToString(members)}));
-        }
-    }
-
-    private static class SubscriptionResponseSender extends NotificationSender {
-        private final Account ownerAcct;  // owner who is handling the request
-        private final boolean bccOwners;
-        private final boolean accepted;
-
-        private SubscriptionResponseSender(Provisioning prov, Group group,
-                Account ownerAcct, Account requestingAcct,
-                DistributionListSubscribeOp op, boolean bccOwners, boolean accepted) {
-            super(prov, group, requestingAcct, op);
-            this.ownerAcct = ownerAcct;
-            this.bccOwners = bccOwners;
-            this.accepted = accepted;
-        }
-
-        private void sendMessage() throws ServiceException {
-            try {
-                SMTPMessage out = AccountUtil.getSmtpMessageObj(ownerAcct);
-                Address fromAddr = AccountUtil.getFriendlyEmailAddress(ownerAcct);
-
-                Address replyToAddr = fromAddr;
-                String replyTo = ownerAcct.getAttr(Provisioning.A_zimbraPrefReplyToAddress);
-                if (replyTo != null) {
-                    replyToAddr = new JavaMailInternetAddress(replyTo);
-                }
-
-                // From
-                out.setFrom(fromAddr);
-
-                // Reply-To
-                out.setReplyTo(new Address[]{replyToAddr});
-
-                // To
-                out.setRecipient(javax.mail.Message.RecipientType.TO,
-                        new JavaMailInternetAddress(requestingAcct.getName()));
-
-                // Bcc all other owners of the list
-                if (bccOwners) {
-                    List<String> owners = new ArrayList<String>();
-                    Group.GroupOwner.getOwnerEmails(group, owners);
-
-                    List<Address> addrs = Lists.newArrayList();
-                    for (String ownerEmail : owners) {
-                        if (!ownerEmail.equals(ownerAcct.getName())) {
-                            addrs.add(new JavaMailInternetAddress(ownerEmail));
-                        }
-                    }
-                    if (!addrs.isEmpty()) {
-                        out.addRecipients(javax.mail.Message.RecipientType.BCC,
-                                addrs.toArray(new Address[addrs.size()]));
-                    }
-                }
-
-                // Date
-                out.setSentDate(new Date());
-
-                // send in the receiver's(i.e. the requesting account) locale
-                Locale locale = getLocale(requestingAcct);
-
-                // Subject
-                String subject = L10nUtil.getMessage(MsgKey.dlSubscriptionResponseSubject, locale);
-                out.setSubject(subject);
-
-                buildContentAndSend(out, locale, "group subscription response");
-
-            } catch (MessagingException e) {
-                ZimbraLog.account.warn("send share info notification failed, rcpt='" +
-                        requestingAcct.getName() +"'", e);
-            }
-
-        }
-
-        @Override
-        protected MimeMultipart buildMailContent(Locale locale)
-        throws MessagingException {
-            String text = textPart(locale);
-            String html = htmlPart(locale);
-
-            // Body
-            MimeMultipart mmp = new ZMimeMultipart("alternative");
-
-            // TEXT part (add me first!)
-            MimeBodyPart textPart = new ZMimeBodyPart();
-            textPart.setText(text, MimeConstants.P_CHARSET_UTF8);
-            mmp.addBodyPart(textPart);
-
-            // HTML part
-            MimeBodyPart htmlPart = new ZMimeBodyPart();
-            htmlPart.setDataHandler(new DataHandler(new HtmlPartDataSource(html)));
-            mmp.addBodyPart(htmlPart);
-
-            return mmp;
-        }
-
-        private String textPart(Locale locale) {
-            StringBuilder sb = new StringBuilder();
-
-
-            MsgKey msgKey;
-            if (accepted) {
-                msgKey = DistributionListSubscribeOp.subscribe == op ?
-                        MsgKey.dlSubscribeResponseAcceptedText :
-                        MsgKey.dlUnsubscribeResponseAcceptedText;
-            } else {
-                msgKey = DistributionListSubscribeOp.subscribe == op ?
-                        MsgKey.dlSubscribeResponseRejectedText :
-                        MsgKey.dlUnsubscribeResponseRejectedText;
-            }
-
-            sb.append("\n");
-            sb.append(L10nUtil.getMessage(msgKey, locale,
-                    requestingAcct.getName(), group.getName()));
-            sb.append("\n\n");
-            return sb.toString();
-        }
-
-        private String htmlPart(Locale locale) {
-            StringBuilder sb = new StringBuilder();
-
-            sb.append("<h4>\n");
-            sb.append("<p>" + textPart(locale) + "</p>\n");
-            sb.append("</h4>\n");
-            sb.append("\n");
-            return sb.toString();
-        }
-
-    }
-
-    private static class AcceptSubsReqHandler extends DLActionHandler {
-
-        protected AcceptSubsReqHandler(Element eAction, Group group,
-                Provisioning prov, Account authedAcct) {
-            super(eAction, group, prov, authedAcct);
-        }
-
-        @Override
-        Operation getAction() {
-            return Operation.acceptSubsReq;
-        }
-
-        @Override
-        void handle() throws ServiceException {
-
-            Element eSubsReq = eAction.getElement(AccountConstants.E_DL_SUBS_REQ);
-            DistributionListSubscribeOp subsOp = DistributionListSubscribeOp.fromString(
-                    eSubsReq.getAttribute(AccountConstants.A_OP));
-            boolean bccOwners = eSubsReq.getAttributeBool(AccountConstants.A_BCC_OWNERS, true);
-            String memberEmail = eSubsReq.getText();
-
-            Account memberAcct = prov.get(AccountBy.name, memberEmail);
-            if (memberAcct == null) {
-                throw ServiceException.DEFEND_ACCOUNT_HARVEST(memberEmail);
-            }
-            boolean isMember = group.isMemberOf(memberAcct);
-
-            boolean processed = false;
-            if (isMember) {
-                if (subsOp == DistributionListSubscribeOp.subscribe) {
-                    // do nothing
-                    ZimbraLog.account.debug("AcceptSubsReqHandler: " + memberEmail +
-                            " is currently a member in list " + group.getName() +
-                            ", no action taken for the subscribe request");
-                } else {
-                    removeGroupMembers(prov, group, new String[]{memberEmail});
-                    processed = true;
-                }
-            } else {
-                // not currently a member
-                if (subsOp == DistributionListSubscribeOp.subscribe) {
-                    addGroupMembers(prov, group, new String[]{memberEmail});
-                    processed = true;
-                } else {
-                    // do nothing
-                    ZimbraLog.account.debug("AcceptSubsReqHandler: " + memberEmail +
-                            " is currently not a member in list " + group.getName() +
-                            ", no action taken for the un-subscribe request");
-                }
-            }
-
-            if (processed) {
-                ZimbraLog.security.info(ZimbraLog.encodeAttrs(
-                        new String[] {"cmd", "DistributionListAction", "op", getAction().name(),
-                       "name", group.getName(), "subsOp", subsOp.name(), "member", memberEmail}));
-
-                // send notification email to the user and bcc other owners
-                SubscriptionResponseSender notifSender = new SubscriptionResponseSender(
-                        prov, group, authedAcct, memberAcct,
-                        subsOp, bccOwners, true);
-                notifSender.sendMessage();
-            }
-        }
-
-    }
-
-    private static class RejectSubsReqHandler extends DLActionHandler {
-
-        protected RejectSubsReqHandler(Element eAction, Group group,
-                Provisioning prov, Account authedAcct) {
-            super(eAction, group, prov, authedAcct);
-        }
-
-        @Override
-        Operation getAction() {
-            return Operation.rejectSubsReq;
-        }
-
-        @Override
-        void handle() throws ServiceException {
-
-            Element eSubsReq = eAction.getElement(AccountConstants.E_DL_SUBS_REQ);
-            DistributionListSubscribeOp subsOp = DistributionListSubscribeOp.fromString(
-                    eSubsReq.getAttribute(AccountConstants.A_OP));
-            boolean bccOwners = eSubsReq.getAttributeBool(AccountConstants.A_BCC_OWNERS, true);
-            String memberEmail = eSubsReq.getText();
-
-            Account memberAcct = prov.get(AccountBy.name, memberEmail);
-            if (memberAcct == null) {
-                throw ServiceException.DEFEND_ACCOUNT_HARVEST(memberEmail);
-            }
-            boolean isMember = group.isMemberOf(memberAcct);
-
-            boolean processed = false;
-            if (isMember) {
-                if (subsOp == DistributionListSubscribeOp.subscribe) {
-                    // do nothing
-                    ZimbraLog.account.debug("RejectSubsReqHandler: " + memberEmail +
-                            " is currently a member in list " + group.getName() +
-                            ", no action taken for the subscribe request");
-                } else {
-                    processed = true;
-                }
-            } else {
-                // not currently a member
-                if (subsOp == DistributionListSubscribeOp.subscribe) {
-                    processed = true;
-                } else {
-                    // do nothing
-                    ZimbraLog.account.debug("RejectSubsReqHandler: " + memberEmail +
-                            " is currently not a member in list " + group.getName() +
-                            ", no action taken for the un-subscribe request");
-                }
-            }
-
-            if (processed) {
-                ZimbraLog.security.info(ZimbraLog.encodeAttrs(
-                        new String[] {"cmd", "DistributionListAction", "op", getAction().name(),
-                       "name", group.getName(), "subsOp", subsOp.name(), "member", memberEmail}));
-
-                // send notification email to the user and bcc other owners
-                SubscriptionResponseSender notifSender = new SubscriptionResponseSender(
-                        prov, group, authedAcct, memberAcct,
-                        subsOp, bccOwners, false);
-                notifSender.sendMessage();
-            }
         }
     }
 }
