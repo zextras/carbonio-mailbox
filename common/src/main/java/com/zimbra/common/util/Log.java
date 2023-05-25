@@ -8,10 +8,7 @@ package com.zimbra.common.util;
 import static org.apache.logging.log4j.Level.*;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

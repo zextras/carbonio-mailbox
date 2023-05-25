@@ -19,6 +19,8 @@ import org.apache.logging.log4j.core.config.Configurator;
  */
 public class LogManager {
 
+  private LogManager() {}
+
   private static final Map<String, Log> globalLogMapper = new ConcurrentHashMap<>();
 
   /**
@@ -55,8 +57,15 @@ public class LogManager {
     return globalLogMapper;
   }
 
+  /**
+   * As you can imagine from this method name, it sets the log you pass and the root level {@link
+   * Logger} to the desired {@link Level}
+   *
+   * @param logger the logger you want to change the level
+   * @param level the new level the passed logger and the root logger will have
+   */
   public static void setThisLogAndRootToLevel(Logger logger, Level level) {
-    Configurator.setRootLevel(Level.INFO);
-    Configurator.setLevel(logger, Level.INFO);
+    Configurator.setRootLevel(level);
+    Configurator.setLevel(logger, level);
   }
 }

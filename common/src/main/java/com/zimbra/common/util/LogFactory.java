@@ -16,6 +16,8 @@ package com.zimbra.common.util;
  */
 public class LogFactory {
 
+  private LogFactory() {}
+
   public static Log getLog(Class<?> clazz) {
     if (clazz == null) {
       return null;
