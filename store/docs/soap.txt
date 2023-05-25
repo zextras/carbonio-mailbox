@@ -4531,7 +4531,6 @@ Notes:
            <grantee type={grantee-type} by="name|id}">{name-or-id}</grantee>+
        </right>+]  
       [<dlm>{member}</dlm>+]
-      [<subsReq op="subscribe/unsubscribe" [bccOwners="1|0"]>{member-email}</subsReq>]
   </action>
 <DistributionListActionRequest>
 
