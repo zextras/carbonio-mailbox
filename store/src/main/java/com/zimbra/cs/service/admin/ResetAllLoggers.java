@@ -41,7 +41,6 @@ public final class ResetAllLoggers extends AdminDocumentHandler {
       lock.unlock();
     }
     ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    Element response = zsc.createElement(AdminConstants.RESET_ALL_LOGGERS_RESPONSE);
-    return response;
+    return  zsc.createElement(AdminConstants.RESET_ALL_LOGGERS_RESPONSE);
   }
 }
