@@ -3337,6 +3337,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 </attr>
 
 <attr id="685" name="zimbraReverseProxyMailMode" type="enum" value="https,redirect" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="5.0.7">
+  <globalConfigValue>redirect</globalConfigValue>
   <desc>whether to run proxy in HTTPS or redirect mode. See also related attributes zimbraMailProxyPort and zimbraMailSSLProxyPort</desc>
 </attr>
 
