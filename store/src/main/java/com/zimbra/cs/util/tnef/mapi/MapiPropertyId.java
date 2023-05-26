@@ -23,89 +23,89 @@ import net.freeutils.tnef.RawInputStream;
 
 public class MapiPropertyId {
 
-    public final static MapiPropertyId PidTagImportance =
+    public static final MapiPropertyId PidTagImportance =
         new MapiPropertyId(MAPIProp.PR_IMPORTANCE);
-    public final static MapiPropertyId PidTagSensitivity =
+    public static final MapiPropertyId PidTagSensitivity =
         new MapiPropertyId(MAPIProp.PR_SENSITIVITY);
-    public final static MapiPropertyId PidTagResponseRequested =
+    public static final MapiPropertyId PidTagResponseRequested =
         new MapiPropertyId(MAPIProp.PR_RESPONSE_REQUESTED);
-    public final static MapiPropertyId PidTagReplyRequested =
+    public static final MapiPropertyId PidTagReplyRequested =
         new MapiPropertyId(MAPIProp.PR_REPLY_REQUESTED);
-    public final static MapiPropertyId PidTagOwnerAppointmentId =
+    public static final MapiPropertyId PidTagOwnerAppointmentId =
         new MapiPropertyId(MAPIProp.PR_OWNER_APPT_ID);
-    public final static MapiPropertyId PidTagEndDate =
+    public static final MapiPropertyId PidTagEndDate =
         new MapiPropertyId(MAPIProp.PR_END_DATE);
-    public final static MapiPropertyId PidTagStartDate =
+    public static final MapiPropertyId PidTagStartDate =
         new MapiPropertyId(MAPIProp.PR_START_DATE);
-    public final static MapiPropertyId PidTagCreationTime =
+    public static final MapiPropertyId PidTagCreationTime =
         new MapiPropertyId(MAPIProp.PR_CREATION_TIME);
-    public final static MapiPropertyId PidTagLastModificationTime =
+    public static final MapiPropertyId PidTagLastModificationTime =
         new MapiPropertyId(MAPIProp.PR_LAST_MODIFICATION_TIME);
-    public final static MapiPropertyId PidTagRtfCompressed =
+    public static final MapiPropertyId PidTagRtfCompressed =
         new MapiPropertyId(MAPIProp.PR_RTF_COMPRESSED);
-    public final static MapiPropertyId PidLidReminderDelta =
+    public static final MapiPropertyId PidLidReminderDelta =
         new MapiPropertyId(MSGUID.PSETID_Common, 0x8501);
-    public final static MapiPropertyId PidLidReminderSet =
+    public static final MapiPropertyId PidLidReminderSet =
         new MapiPropertyId(MSGUID.PSETID_Common, 0x8503);
-    public final static MapiPropertyId PidLidCommonStart =
+    public static final MapiPropertyId PidLidCommonStart =
         new MapiPropertyId(MSGUID.PSETID_Common, 0x8516);
-    public final static MapiPropertyId PidLidCommonEnd =
+    public static final MapiPropertyId PidLidCommonEnd =
         new MapiPropertyId(MSGUID.PSETID_Common, 0x8517);
-    public final static MapiPropertyId PidLidTaskMode =
+    public static final MapiPropertyId PidLidTaskMode =
         new MapiPropertyId(MSGUID.PSETID_Common, 0x8518);
-    public final static MapiPropertyId PidLidTaskGlobalId =
+    public static final MapiPropertyId PidLidTaskGlobalId =
         new MapiPropertyId(MSGUID.PSETID_Common, 0x8519);
-    public final static MapiPropertyId PidLidMileage =
+    public static final MapiPropertyId PidLidMileage =
         new MapiPropertyId(MSGUID.PSETID_Common, 0x8534);
-    public final static MapiPropertyId PidLidBilling =
+    public static final MapiPropertyId PidLidBilling =
         new MapiPropertyId(MSGUID.PSETID_Common, 0x8535);
-    public final static MapiPropertyId PidLidCompanies =
+    public static final MapiPropertyId PidLidCompanies =
         new MapiPropertyId(MSGUID.PSETID_Common, 0x8539);
-    public final static MapiPropertyId PidNameKeywords =
+    public static final MapiPropertyId PidNameKeywords =
         new MapiPropertyId(MSGUID.PS_PUBLIC_STRINGS, "Keywords");
-    public final static MapiPropertyId PidNameCalendarUid =
+    public static final MapiPropertyId PidNameCalendarUid =
         new MapiPropertyId(MSGUID.PS_PUBLIC_STRINGS,
                 "urn:schemas:calendar:uid");
-    public final static MapiPropertyId PidLidAppointmentSequence =
+    public static final MapiPropertyId PidLidAppointmentSequence =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8201);
-    public final static MapiPropertyId PidLidAppointmentStartWhole =
+    public static final MapiPropertyId PidLidAppointmentStartWhole =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x820D);
-    public final static MapiPropertyId PidLidAppointmentEndWhole =
+    public static final MapiPropertyId PidLidAppointmentEndWhole =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x820E);
-    public final static MapiPropertyId PidLidAppointmentSubType =
+    public static final MapiPropertyId PidLidAppointmentSubType =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8215);
-    public final static MapiPropertyId PidLidAppointmentRecur =
+    public static final MapiPropertyId PidLidAppointmentRecur =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8216);
-    public final static MapiPropertyId PidLidAppointmentStateFlags =
+    public static final MapiPropertyId PidLidAppointmentStateFlags =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8217);
-    public final static MapiPropertyId PidLidBusyStatus =
+    public static final MapiPropertyId PidLidBusyStatus =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8205);
-    public final static MapiPropertyId PidLidLocation =
+    public static final MapiPropertyId PidLidLocation =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8208);
-    public final static MapiPropertyId PidLidAppointmentReplyTime =
+    public static final MapiPropertyId PidLidAppointmentReplyTime =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8220);
-    public final static MapiPropertyId PidLidIntendedBusyStatus =
+    public static final MapiPropertyId PidLidIntendedBusyStatus =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8224);
-    public final static MapiPropertyId PidLidExceptionReplaceTime =
+    public static final MapiPropertyId PidLidExceptionReplaceTime =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8228);
-    public final static MapiPropertyId PidLidTimeZoneDescription =
+    public static final MapiPropertyId PidLidTimeZoneDescription =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8234);
-    public final static MapiPropertyId PidLidAppointmentProposedStartWhole =
+    public static final MapiPropertyId PidLidAppointmentProposedStartWhole =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8250);
-    public final static MapiPropertyId PidLidAppointmentProposedEndWhole =
+    public static final MapiPropertyId PidLidAppointmentProposedEndWhole =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8251);
-    public final static MapiPropertyId PidLidAppointmentCounterProposal =
+    public static final MapiPropertyId PidLidAppointmentCounterProposal =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8257);
-    public final static MapiPropertyId PidLidAppointmentNotAllowPropose =
+    public static final MapiPropertyId PidLidAppointmentNotAllowPropose =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x825A);
     // PidLidAppointmentTimeZoneDefinitionStartDisplay - Specifies
     // time zone information applicable to PidLidAppointmentStartWhole.
-    public final static MapiPropertyId
+    public static final MapiPropertyId
         PidLidAppointmentTimeZoneDefinitionStartDisplay =
             new MapiPropertyId(MSGUID.PSETID_Appointment, 0x825E);
     // PidLidAppointmentTimeZoneDefinitionEndDisplay - Specifies
     // time zone information applicable to PidLidAppointmentEndWhole.
-    public final static MapiPropertyId
+    public static final MapiPropertyId
         PidLidAppointmentTimeZoneDefinitionEndDisplay =
             new MapiPropertyId(MSGUID.PSETID_Appointment, 0x825F);
     // PidLidAppointmentTimeZoneDefinitionRecur - Specifies time zone information
@@ -114,63 +114,63 @@ public class MapiPropertyId {
     // MS-OXOCAL says "If this property is set, but it has data that is
     // inconsistent with the data that is represented by PidLidTimeZoneStruct,
     // then the client uses PidLidTimeZoneStruct instead of this property."
-    public final static MapiPropertyId
+    public static final MapiPropertyId
         PidLidAppointmentTimeZoneDefinitionRecur =
             new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8260);
-    public final static MapiPropertyId PidLidTimeZoneStruct =
+    public static final MapiPropertyId PidLidTimeZoneStruct =
         new MapiPropertyId(MSGUID.PSETID_Appointment, 0x8233);
-    public final static MapiPropertyId PidLidAttendeeCriticalChange =
+    public static final MapiPropertyId PidLidAttendeeCriticalChange =
         new MapiPropertyId(MSGUID.PSETID_Meeting, 0x0001);
-    public final static MapiPropertyId PidLidGlobalObjectId =
+    public static final MapiPropertyId PidLidGlobalObjectId =
         new MapiPropertyId(MSGUID.PSETID_Meeting, 0x0003);
-    public final static MapiPropertyId PidLidOwnerCriticalChange =
+    public static final MapiPropertyId PidLidOwnerCriticalChange =
         new MapiPropertyId(MSGUID.PSETID_Meeting, 0x001a);
-    public final static MapiPropertyId PidLidCleanGlobalObjectId =
+    public static final MapiPropertyId PidLidCleanGlobalObjectId =
         new MapiPropertyId(MSGUID.PSETID_Meeting, 0x0023);
-    public final static MapiPropertyId PidLidMeetingType =
+    public static final MapiPropertyId PidLidMeetingType =
         new MapiPropertyId(MSGUID.PSETID_Meeting, 0x0026);
-    public final static MapiPropertyId PidLidStartRecurrenceTime =
+    public static final MapiPropertyId PidLidStartRecurrenceTime =
         new MapiPropertyId(MSGUID.PSETID_Meeting, 0x000e);
 
     // PSETID_Task - MSGUID("{00062003-0000-0000-C000-000000000046}");
-    public final static MapiPropertyId PidLidTaskStatus =
+    public static final MapiPropertyId PidLidTaskStatus =
         new MapiPropertyId(MSGUID.PSETID_Task, 0x8101);
     /* PidLidPercentComplete - Double -value between 0 and 1! */
-    public final static MapiPropertyId PidLidPercentComplete =
+    public static final MapiPropertyId PidLidPercentComplete =
         new MapiPropertyId(MSGUID.PSETID_Task, 0x8102);
     // PidLidTaskStartDate - MS-OXOTASK this is start date in user's local timezone.
     // MS-OXOTASK also says PidLidCommonStart should be UTC equivalent of PidLidTaskStartDate
-    public final static MapiPropertyId PidLidTaskStartDate =
+    public static final MapiPropertyId PidLidTaskStartDate =
         new MapiPropertyId(MSGUID.PSETID_Task, 0x8104);
     // PidLidTaskDueDate - MS-OXOTASK this is due date in user's local timezone.
     // MS-OXOTASK also says PidLidCommonEnd should be UTC equivalent of PidLidTaskDueDate
-    public final static MapiPropertyId PidLidTaskDueDate =
+    public static final MapiPropertyId PidLidTaskDueDate =
         new MapiPropertyId(MSGUID.PSETID_Task, 0x8105);
     // PidLidTaskResetReminder 0x8107 - true if future instances need reminders
     // PidLidTaskAccepted 0x8108 - boolean
-    public final static MapiPropertyId PidLidTaskDateCompleted = /* UTC value */
+    public static final MapiPropertyId PidLidTaskDateCompleted = /* UTC value */
         new MapiPropertyId(MSGUID.PSETID_Task, 0x810f);
     /* PidLidTaskActualEffort - Number of mins.  Works on assumption 8 hrs/day 5 days/week */
-    public final static MapiPropertyId PidLidTaskActualEffort =
+    public static final MapiPropertyId PidLidTaskActualEffort =
         new MapiPropertyId(MSGUID.PSETID_Task, 0x8110);
     /* PidLidTaskEstimatedEffort - Number of mins.  Works on assumption 8 hrs/day 5 days/week */
-    public final static MapiPropertyId PidLidTaskEstimatedEffort =
+    public static final MapiPropertyId PidLidTaskEstimatedEffort =
         new MapiPropertyId(MSGUID.PSETID_Task, 0x8111);
-    public final static MapiPropertyId PidLidTaskVersion =  /* integer - suitable for iCal SEQUENCE */
+    public static final MapiPropertyId PidLidTaskVersion =  /* integer - suitable for iCal SEQUENCE */
         new MapiPropertyId(MSGUID.PSETID_Task, 0x8112);
     // PidLidTaskState 0x8113 - Current assignment state of Task Object
     // PidLidTaskLastUpdate 0x8115 -  UTC value
     // DeletedInstanceCount and ModifiedInstanceCount MUST be 0 - hence no EXDATE/RDATE
-    public final static MapiPropertyId PidLidTaskRecurrence =
+    public static final MapiPropertyId PidLidTaskRecurrence =
         new MapiPropertyId(MSGUID.PSETID_Task, 0x8116);
     // PidLidTaskAssigners 0x8117 - binary info on each of past assigners
     // PidLidTaskStatusOnComplete - true if assignee asked to RSVP on completion.
-    public final static MapiPropertyId PidLidTaskStatusOnComplete =
+    public static final MapiPropertyId PidLidTaskStatusOnComplete =
         new MapiPropertyId(MSGUID.PSETID_Task, 0x8119);
     // PidLidTaskHistory 0x811a - indicates nature of last change
     // PidLidTaskUpdates 0x811b - true if assignee asked to RSVP on changes
     //    (c.f. PidLidTaskStatusOnComplete)
-    public final static MapiPropertyId PidLidTaskComplete = /* boolean */
+    public static final MapiPropertyId PidLidTaskComplete = /* boolean */
         new MapiPropertyId(MSGUID.PSETID_Task, 0x811c);
     // PidLidTaskFCreator 0x811e - boolean - false if task assigned by another user.
     // PidLidTaskOwner 0x811f - String - name of task owner

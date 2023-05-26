@@ -42,7 +42,7 @@ public class ZipUtil {
         defaultCharsetForLocale = Collections.unmodifiableMap(map);
     }
 
-    public final static Charset cp437charset = Charset.forName("CP437");
+    public static final Charset cp437charset = Charset.forName("CP437");
 
     /**
      * Traditional java.util.zip processing either assumes archives use UTF-8 for filenames or requires that
