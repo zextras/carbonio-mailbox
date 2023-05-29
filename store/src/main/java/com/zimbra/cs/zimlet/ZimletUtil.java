@@ -364,7 +364,7 @@ public class ZimletUtil {
      * Load all the installed Zimlets.
      *
      */
-    public synchronized static Map<String,ZimletFile> loadZimlets() {
+    public static synchronized Map<String,ZimletFile> loadZimlets() {
         if (!sZimletsLoaded) {
             loadZimletsFromDir(sZimlets, LC.zimlet_directory.value());
             sZimletsLoaded = true;

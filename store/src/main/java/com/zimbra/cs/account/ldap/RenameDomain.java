@@ -43,7 +43,7 @@ import com.zimbra.soap.admin.type.CacheEntryType;
 
 public class RenameDomain {
 
-    public static abstract class RenameDomainLdapHelper {
+    public abstract static class RenameDomainLdapHelper {
         protected LdapProv mProv;
         protected ILdapContext mZlc;
 

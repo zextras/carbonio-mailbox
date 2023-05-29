@@ -65,7 +65,7 @@ public class IncomingDirectory {
 
     private static IncomingDirectorySweeper mSweeper;
 
-    public synchronized static void startSweeper() {
+    public static synchronized void startSweeper() {
         if (mSweeper != null)
             return;
 
@@ -75,7 +75,7 @@ public class IncomingDirectory {
         mSweeper = sweeper;
     }
 
-    public synchronized static void stopSweeper() {
+    public static synchronized void stopSweeper() {
         if (mSweeper == null)
             return;
 
@@ -86,12 +86,12 @@ public class IncomingDirectory {
         mSweeper = null;
     }
 
-    public synchronized static void setSweptDirectories(IncomingDirectory inc) {
+    public static synchronized void setSweptDirectories(IncomingDirectory inc) {
         IncomingDirectorySweeper.sSweptDirectories = Arrays.asList(inc);
         ZimbraLog.store.debug("Setting swept directory to %s", inc.getPath());
     }
 
-    public synchronized static void setSweptDirectories(Collection<IncomingDirectory> swept) {
+    public static synchronized void setSweptDirectories(Collection<IncomingDirectory> swept) {
         if (swept == null) {
             IncomingDirectorySweeper.sSweptDirectories = Collections.emptyList();
             ZimbraLog.store.debug("Clearing swept directories.");

@@ -29,7 +29,7 @@ public class BigByteBuffer extends OutputStream {
 	private static final int DEFAULT_MAX_MEM_BUF_SIZE = 1024 * 1024;
 	private static final int STREAM_CHUNK_SIZE = 8 * 1024;
 
-	final private int maxMemBufSize;
+	private final int maxMemBufSize;
 	private ByteArrayOutputStream bao;
 	private int bufSize;
 	

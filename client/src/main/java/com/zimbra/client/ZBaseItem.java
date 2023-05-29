@@ -18,7 +18,7 @@ import com.zimbra.common.util.ZimbraLog;
 
 public class ZBaseItem implements ZItem, ZimbraMailItem {
 
-    final protected String mId;
+    protected final String mId;
     protected String mFlags;
     protected String mTagIds;
     protected ZMailbox mMailbox;

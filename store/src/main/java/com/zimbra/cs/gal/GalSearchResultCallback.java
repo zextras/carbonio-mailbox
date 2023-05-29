@@ -244,7 +244,7 @@ public class GalSearchResultCallback implements GalContact.Visitor {
         return Provisioning.getInstance().inACLGroup(mAuthAcct, groupZimbraId);
     }
 
-    public static abstract class PassThruGalSearchResultCallback extends GalSearchResultCallback {
+    public abstract static class PassThruGalSearchResultCallback extends GalSearchResultCallback {
         protected Element mProxiedResponse;
         protected boolean mPagingSupported; // default to false
 

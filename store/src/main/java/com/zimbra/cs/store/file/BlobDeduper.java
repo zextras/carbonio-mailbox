@@ -45,7 +45,7 @@ public class BlobDeduper {
     private Map<Short, String> volumeBlobsProgress = new LinkedHashMap<Short, String>();
     private Map<Short, String> blobDigestsProgress = new LinkedHashMap<Short, String>();
     
-    private final static BlobDeduper SINGLETON = new BlobDeduper();
+    private static final BlobDeduper SINGLETON = new BlobDeduper();
 
     private BlobDeduper() {
     }

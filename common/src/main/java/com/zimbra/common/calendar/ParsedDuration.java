@@ -19,11 +19,11 @@ import com.zimbra.common.soap.Element;
 
 public final class ParsedDuration
 {
-    static public final int WEEKS = 1;
-    static public final int DAYS = 2;
-    static public final int HOURS = 3;
-    static public final int MINUTES = 4;
-    static public final int SECONDS = 5;
+    public static final int WEEKS = 1;
+    public static final int DAYS = 2;
+    public static final int HOURS = 3;
+    public static final int MINUTES = 4;
+    public static final int SECONDS = 5;
     
     private int mWeeks = 0;
     private int mDays = 0;

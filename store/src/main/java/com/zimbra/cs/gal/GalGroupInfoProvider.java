@@ -18,7 +18,7 @@ public class GalGroupInfoProvider {
 
     private static GalGroupInfoProvider instance;
     
-    public synchronized static GalGroupInfoProvider getInstance() {
+    public static synchronized GalGroupInfoProvider getInstance() {
         if (instance == null) {
             instance = makeInstance();
         }

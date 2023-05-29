@@ -161,7 +161,7 @@ public class WebClientL10nUtil {
         ZimbraLog.webclient.debug("Locale loading complete.");
     }
 
-    public synchronized static Locale[] getLocales(Locale inLocale) throws ServiceException {
+    public static synchronized Locale[] getLocales(Locale inLocale) throws ServiceException {
         if (locales == null) {
             loadBundles();
         }
@@ -182,7 +182,7 @@ public class WebClientL10nUtil {
         return sortedLocales;
     }
 
-    public synchronized static void flushCache() throws ServiceException {
+    public static synchronized void flushCache() throws ServiceException {
         ZimbraLog.misc.debug("WebClientL10nUtil: flushing locale cache");
         locales = null;
         sortedLocalesMap = null;

@@ -304,7 +304,7 @@ public class ZimbraComparatorUtils {
     /**
      * @see org.apache.jsieve.comparators.ComparatorUtils#matches(String, String)
      */
-    static public boolean matches(String string, String glob)
+    public static boolean matches(String string, String glob)
             throws SievePatternException {
         try {
             String regex = FilterUtil.sieveToJavaRegex(glob);

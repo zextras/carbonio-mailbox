@@ -16,7 +16,7 @@ public class SoapSessionFactory {
 
     private static SoapSessionFactory sSessionFactory = null;
 
-    public synchronized static SoapSessionFactory getInstance() {
+    public static synchronized SoapSessionFactory getInstance() {
         if (sSessionFactory == null) {
             String className = LC.zimbra_class_soapsessionfactory.value();
             if (className != null && !className.equals("")) {

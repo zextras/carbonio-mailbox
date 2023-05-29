@@ -306,7 +306,7 @@ public class ContactGroup {
      * Group Member classes
      *======================
      */
-    public static abstract class Member implements Comparable<Member> {
+    public abstract static class Member implements Comparable<Member> {
         
         // metadata keys for member data
         private enum MetadataKey {

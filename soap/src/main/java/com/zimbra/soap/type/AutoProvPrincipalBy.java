@@ -16,7 +16,7 @@ public enum AutoProvPrincipalBy {
     dn,    // DN in external LDAP source
     name;  // name to be applied to the auto provision search or bind DN template configured on the domain
 
-    static public AutoProvPrincipalBy fromString(String str)
+    public static AutoProvPrincipalBy fromString(String str)
     throws ServiceException {
         try {
             return AutoProvPrincipalBy.valueOf(str);
