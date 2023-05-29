@@ -17,7 +17,7 @@ import com.zimbra.common.util.ZimbraLog;
  * TODO: Make these names persistent rather than in memory.
  */
 public class DavNames {
-    public final static class DavName {
+    public static final class DavName {
         public final int mailbox_id;
         public final int folder_id;
         public final String davBaseName;
@@ -58,7 +58,7 @@ public class DavNames {
         }
     }
 
-    public final static class MboxAndId {
+    public static final class MboxAndId {
         public final int mailbox_id;
         public final int item_id;
 
