@@ -151,18 +151,6 @@ public class L10nUtil {
         shareNotifBodyActionNone,
         //////////////////////
 
-        // group subscription request
-        dlSubscriptionRequestSubject,
-        dlSubscribeRequestText,
-        dlUnsubscribeRequestText,
-
-        // group subscription response
-        dlSubscriptionResponseSubject,
-        dlSubscribeResponseAcceptedText,
-        dlSubscribeResponseRejectedText,
-        dlUnsubscribeResponseAcceptedText,
-        dlUnsubscribeResponseRejectedText,
-
         // read-receipt notification body
         readReceiptNotification,
 

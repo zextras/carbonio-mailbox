@@ -851,7 +851,7 @@
     <cxf.version>3.3.4</cxf.version>
     <nekohtml.version>1.9.22</nekohtml.version>
     <log4j.version>1.2.16</log4j.version>
-    <dom4j.version>2.1.1</dom4j.version>
+    <dom4j.version>2.1.4</dom4j.version>
     <zookeeper.version>3.4.5</zookeeper.version>
     <zkclient.version>0.11</zkclient.version>
     <hsqldb.version>2.2.9</hsqldb.version>
@@ -861,7 +861,7 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <revision>23.6.0-SNAPSHOT</revision>
+    <revision>23.7.0-SNAPSHOT</revision>
   </properties>
   <version>${revision}</version>
   <profiles>
@@ -944,6 +944,22 @@
           <artifactId>maven-antrun-plugin</artifactId>
           <groupId>org.apache.maven.plugins</groupId>
           <version>3.1.0</version>
+        </plugin>
+        <!-- Dependency Checker -->
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>8.2.1</version>
+          <configuration>
+            <outputDirectory>${dependency.check.report.dir}</outputDirectory>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>aggregate</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <!-- Testing -->
         <plugin>
@@ -1151,6 +1167,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
       </plugin>
     </plugins>
   </build>

@@ -719,6 +719,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -734,6 +735,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -749,6 +751,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -767,6 +770,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -786,6 +790,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -804,6 +809,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -823,6 +829,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -840,6 +847,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -858,6 +866,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -873,6 +882,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -888,6 +898,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -906,6 +917,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -925,6 +937,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -943,6 +956,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -962,6 +976,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -979,6 +994,7 @@ public abstract class ZAttrDynamicGroup extends Group {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *

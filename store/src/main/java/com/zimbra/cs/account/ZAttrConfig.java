@@ -55831,13 +55831,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [https, redirect]
      *
-     * @return zimbraReverseProxyMailMode, or null if unset and/or has invalid value
+     * @return zimbraReverseProxyMailMode, or ZAttrProvisioning.ReverseProxyMailMode.redirect if unset and/or has invalid value
      *
      * @since ZCS 5.0.7
      */
     @ZAttr(id=685)
     public ZAttrProvisioning.ReverseProxyMailMode getReverseProxyMailMode() {
-        try { String v = getAttr(ZAttrProvisioning.A_zimbraReverseProxyMailMode, true, true); return v == null ? null : ZAttrProvisioning.ReverseProxyMailMode.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
+        try { String v = getAttr(ZAttrProvisioning.A_zimbraReverseProxyMailMode, true, true); return v == null ? ZAttrProvisioning.ReverseProxyMailMode.redirect : ZAttrProvisioning.ReverseProxyMailMode.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.ReverseProxyMailMode.redirect; }
     }
 
     /**
@@ -55846,13 +55846,13 @@ public abstract class ZAttrConfig extends Entry {
      *
      * <p>Valid values: [https, redirect]
      *
-     * @return zimbraReverseProxyMailMode, or null if unset
+     * @return zimbraReverseProxyMailMode, or "redirect" if unset
      *
      * @since ZCS 5.0.7
      */
     @ZAttr(id=685)
     public String getReverseProxyMailModeAsString() {
-        return getAttr(ZAttrProvisioning.A_zimbraReverseProxyMailMode, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraReverseProxyMailMode, "redirect", true);
     }
 
     /**
@@ -69975,6 +69975,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * Time interval after which Zimbra version check detects a new version.
      * Must be in valid duration format: {digits}{time-unit}. digits: 0-9,
      * time-unit: [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days,
@@ -69995,6 +69996,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * Time interval after which Zimbra version check detects a new version.
      * Must be in valid duration format: {digits}{time-unit}. digits: 0-9,
      * time-unit: [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days,
@@ -70011,6 +70013,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * Time interval after which Zimbra version check detects a new version.
      * Must be in valid duration format: {digits}{time-unit}. digits: 0-9,
      * time-unit: [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days,
@@ -70030,6 +70033,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * Time interval after which Zimbra version check detects a new version.
      * Must be in valid duration format: {digits}{time-unit}. digits: 0-9,
      * time-unit: [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days,
@@ -70050,6 +70054,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * Time interval after which Zimbra version check detects a new version.
      * Must be in valid duration format: {digits}{time-unit}. digits: 0-9,
      * time-unit: [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days,
@@ -70068,6 +70073,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * Time interval after which Zimbra version check detects a new version.
      * Must be in valid duration format: {digits}{time-unit}. digits: 0-9,
      * time-unit: [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days,
@@ -70087,6 +70093,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked
      *
      * <p>Use getVersionCheckLastAttemptAsString to access value as a string.
@@ -70103,6 +70110,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked
      *
      * @return zimbraVersionCheckLastAttempt, or null if unset
@@ -70115,6 +70123,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked
      *
      * @param zimbraVersionCheckLastAttempt new value
@@ -70130,6 +70139,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked
      *
      * @param zimbraVersionCheckLastAttempt new value
@@ -70146,6 +70156,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked
      *
      * @param zimbraVersionCheckLastAttempt new value
@@ -70161,6 +70172,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked
      *
      * @param zimbraVersionCheckLastAttempt new value
@@ -70177,6 +70189,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -70191,6 +70204,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -70206,6 +70220,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * last response of last Zimbra version check
      *
      * @return zimbraVersionCheckLastResponse, or null if unset
@@ -70218,6 +70233,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * last response of last Zimbra version check
      *
      * @param zimbraVersionCheckLastResponse new value
@@ -70233,6 +70249,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * last response of last Zimbra version check
      *
      * @param zimbraVersionCheckLastResponse new value
@@ -70249,6 +70266,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * last response of last Zimbra version check
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -70263,6 +70281,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * last response of last Zimbra version check
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -70278,6 +70297,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked successfully
      *
      * <p>Use getVersionCheckLastSuccessAsString to access value as a string.
@@ -70294,6 +70314,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked successfully
      *
      * @return zimbraVersionCheckLastSuccess, or null if unset
@@ -70306,6 +70327,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked successfully
      *
      * @param zimbraVersionCheckLastSuccess new value
@@ -70321,6 +70343,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked successfully
      *
      * @param zimbraVersionCheckLastSuccess new value
@@ -70337,6 +70360,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked successfully
      *
      * @param zimbraVersionCheckLastSuccess new value
@@ -70352,6 +70376,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked successfully
      *
      * @param zimbraVersionCheckLastSuccess new value
@@ -70368,6 +70393,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked successfully
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -70382,6 +70408,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked successfully
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -70397,6 +70424,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the body of an Zimbra version check
      * notification message
      *
@@ -70410,6 +70438,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the body of an Zimbra version check
      * notification message
      *
@@ -70426,6 +70455,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the body of an Zimbra version check
      * notification message
      *
@@ -70443,6 +70473,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the body of an Zimbra version check
      * notification message
      *
@@ -70458,6 +70489,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the body of an Zimbra version check
      * notification message
      *
@@ -70474,6 +70506,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * email address to send mail to for the Zimbra version check
      * notification message
      *
@@ -70487,6 +70520,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * email address to send mail to for the Zimbra version check
      * notification message
      *
@@ -70503,6 +70537,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * email address to send mail to for the Zimbra version check
      * notification message
      *
@@ -70520,6 +70555,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * email address to send mail to for the Zimbra version check
      * notification message
      *
@@ -70535,6 +70571,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * email address to send mail to for the Zimbra version check
      * notification message
      *
@@ -70551,6 +70588,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * from address for the Zimbra version check notification message
      *
      * @return zimbraVersionCheckNotificationEmailFrom, or null if unset
@@ -70563,6 +70601,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * from address for the Zimbra version check notification message
      *
      * @param zimbraVersionCheckNotificationEmailFrom new value
@@ -70578,6 +70617,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * from address for the Zimbra version check notification message
      *
      * @param zimbraVersionCheckNotificationEmailFrom new value
@@ -70594,6 +70634,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * from address for the Zimbra version check notification message
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -70608,6 +70649,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * from address for the Zimbra version check notification message
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -70623,6 +70665,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the subject of an Zimbra version check
      * notification message
      *
@@ -70636,6 +70679,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the subject of an Zimbra version check
      * notification message
      *
@@ -70652,6 +70696,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the subject of an Zimbra version check
      * notification message
      *
@@ -70669,6 +70714,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the subject of an Zimbra version check
      * notification message
      *
@@ -70684,6 +70730,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the subject of an Zimbra version check
      * notification message
      *
@@ -70700,6 +70747,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * whether to send a notification message if Zimbra version check detects
      * a new version
      *
@@ -70713,6 +70761,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * whether to send a notification message if Zimbra version check detects
      * a new version
      *
@@ -70729,6 +70778,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * whether to send a notification message if Zimbra version check detects
      * a new version
      *
@@ -70746,6 +70796,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * whether to send a notification message if Zimbra version check detects
      * a new version
      *
@@ -70761,6 +70812,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * whether to send a notification message if Zimbra version check detects
      * a new version
      *
@@ -70777,6 +70829,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * zimbraId of the server that should perform the Zimbra version checks
      *
      * @return zimbraVersionCheckServer, or null if unset
@@ -70789,6 +70842,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * zimbraId of the server that should perform the Zimbra version checks
      *
      * @param zimbraVersionCheckServer new value
@@ -70804,6 +70858,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * zimbraId of the server that should perform the Zimbra version checks
      *
      * @param zimbraVersionCheckServer new value
@@ -70820,6 +70875,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * zimbraId of the server that should perform the Zimbra version checks
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -70834,6 +70890,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * zimbraId of the server that should perform the Zimbra version checks
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -70849,7 +70906,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * URL of the Zimbra version check script
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc: URL
+     * of the Zimbra version check script
      *
      * @return zimbraVersionCheckURL, or "updateUrl" if unset
      *
@@ -70861,7 +70919,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * URL of the Zimbra version check script
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc: URL
+     * of the Zimbra version check script
      *
      * @param zimbraVersionCheckURL new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -70876,7 +70935,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * URL of the Zimbra version check script
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc: URL
+     * of the Zimbra version check script
      *
      * @param zimbraVersionCheckURL new value
      * @param attrs existing map to populate, or null to create a new map
@@ -70892,7 +70952,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * URL of the Zimbra version check script
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc: URL
+     * of the Zimbra version check script
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -70906,7 +70967,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * URL of the Zimbra version check script
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc: URL
+     * of the Zimbra version check script
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

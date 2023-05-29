@@ -23,27 +23,27 @@ public interface SummaryConstants {
     public static final String IMAP_RESPONSE = "imap_ms_avg";
     
    //    server  MEM gc time
-    public final static String GC_IN = "gc.csv";
+    public static final String GC_IN = "gc.csv";
     
     public static final String SERVER_IN = "zimbrastats.csv";
     
-    public final static String CPU_IN = "proc.csv";
+    public static final String CPU_IN = "proc.csv";
     
     public static final String IO_IN = "io-x.csv";    
 
-    public final static String F_GC = "FULLGC%";
+    public static final String F_GC = "FULLGC%";
 
-    public final static String Y_GC = "YGC%";    
+    public static final String Y_GC = "YGC%";    
 
    // server CPU
     
-    public final static String USER = "user";
+    public static final String USER = "user";
 
-    public final static String SYS = "sys";
+    public static final String SYS = "sys";
 
-    public final static String IDLE = "idle";
+    public static final String IDLE = "idle";
 
-    public final static String IOWAIT = "iowait";
+    public static final String IOWAIT = "iowait";
 
    // Server IO     
 
