@@ -410,9 +410,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
       String reqForwardPage)
       throws ServletException, IOException {
     if (WebClientServiceUtil.isServerInSplitMode()) {
-      for (Map.Entry<String, String> entry : attrs.entrySet()) {
-        reqHeaders.put(entry.getKey(), entry.getValue());
-      }
+      reqHeaders.putAll(attrs);
       sendHtmlResponse(resp, reqHeaders, htmlResponsePage);
     } else {
       for (Map.Entry<String, String> entry : attrs.entrySet()) {

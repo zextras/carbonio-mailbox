@@ -313,11 +313,11 @@ public final class SearchGrants {
     if (onMaster) {
       LdapProv.getInst()
           .searchLdapOnMaster(
-              base, query.toString(), fetchAttrs.toArray(new String[fetchAttrs.size()]), visitor);
+              base, query.toString(), fetchAttrs.toArray(new String[0]), visitor);
     } else {
       LdapProv.getInst()
           .searchLdapOnReplica(
-              base, query.toString(), fetchAttrs.toArray(new String[fetchAttrs.size()]), visitor);
+              base, query.toString(), fetchAttrs.toArray(new String[0]), visitor);
     }
   }
 }

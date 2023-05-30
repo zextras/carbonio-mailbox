@@ -7,6 +7,7 @@ package com.zimbra.common.util;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -566,8 +567,7 @@ public final class ZimbraLog {
     private static final Set<String> CONTEXT_FILTER = new HashSet<String>();
 
     public static void addContextFilters(String filters) {
-        for (String item : filters.split(","))
-            CONTEXT_FILTER.add(item);
+      CONTEXT_FILTER.addAll(Arrays.asList(filters.split(",")));
     }
 
     /**

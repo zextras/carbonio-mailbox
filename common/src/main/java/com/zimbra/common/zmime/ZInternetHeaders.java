@@ -86,7 +86,7 @@ public class ZInternetHeaders extends InternetHeaders {
                     matches.add(header.getEncodedValue(charset));
                 }
             }
-            return matches.isEmpty() ? null : matches.toArray(new String[matches.size()]);
+            return matches.isEmpty() ? null : matches.toArray(new String[0]);
         } else {
             return super.getHeader(name);
         }

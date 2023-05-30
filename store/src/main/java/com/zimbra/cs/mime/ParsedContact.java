@@ -561,7 +561,7 @@ public final class ParsedContact {
 
             if (curValuesList.size() > 0) {
                 // convert updated list to a new json array value
-                String[] newValues = curValuesList.toArray(new String[curValuesList.size()]);
+                String[] newValues = curValuesList.toArray(new String[0]);
                 String newMultiValues = null;
                 try {
                     newMultiValues = Contact.encodeMultiValueAttr(newValues);

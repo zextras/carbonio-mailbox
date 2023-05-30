@@ -110,7 +110,7 @@ public class ContactGroup {
      * return members in the order they were inserted
      */
     public List<Member> getMembers() {
-        return Collections.unmodifiableList(Arrays.asList(members.toArray(new Member[members.size()])));
+        return Collections.unmodifiableList(Arrays.asList(members.toArray(new Member[0])));
     }
     
     public List<Member> getMembers(boolean preferDerefed) {
@@ -296,7 +296,7 @@ public class ContactGroup {
             } else {
                 first = false;
             }
-            sb.append(member.getType().getMetaDataEncoded() + ":" + member.getValue());
+            sb.append(member.getType().getMetaDataEncoded()).append(":").append(member.getValue());
         }
         return sb.toString();
     }
@@ -723,9 +723,7 @@ public class ContactGroup {
                     result.add((String) value);
                 } else if (value instanceof String[]) {
                     String[] addrs = (String[]) value;
-                    for (String addr : addrs) {
-                        result.add(addr);
-                    }
+                  result.addAll(Arrays.asList(addrs));
                 }
             }
             return result;

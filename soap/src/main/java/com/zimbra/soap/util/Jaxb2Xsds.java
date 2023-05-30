@@ -91,7 +91,7 @@ public class Jaxb2Xsds {
         classList.add(HeaderContext.class);
         JAXBContext jaxbContext;
         try {
-            jaxbContext = JAXBContext.newInstance(classList.toArray(new Class[classList.size()]));
+            jaxbContext = JAXBContext.newInstance(classList.toArray(new Class[0]));
         } catch (JAXBException e) {
             throw new RuntimeException(String.format("Problem creating JAXBContext", ARG_DIR), e);
         }

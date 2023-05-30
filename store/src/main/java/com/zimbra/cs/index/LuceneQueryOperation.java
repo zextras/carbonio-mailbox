@@ -432,7 +432,7 @@ public final class LuceneQueryOperation extends QueryOperation {
                 if (expanded.isEmpty()) {
                     return null;
                 } else {
-                    mquery.add(expanded.toArray(new Term[expanded.size()]));
+                    mquery.add(expanded.toArray(new Term[0]));
                 }
             }
             return mquery;
@@ -691,8 +691,7 @@ public final class LuceneQueryOperation extends QueryOperation {
 
     @Override
     public List<QueryInfo> getResultInfo() {
-        List<QueryInfo> toRet = new ArrayList<QueryInfo>();
-        toRet.addAll(queryInfo);
+      List<QueryInfo> toRet = new ArrayList<QueryInfo>(queryInfo);
         if (dbOp != null) {
             toRet.addAll(dbOp.getQueryInfo());
         }

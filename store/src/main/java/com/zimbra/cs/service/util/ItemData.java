@@ -190,7 +190,7 @@ public class ItemData {
                 tag.append(c);
             }
         }
-        return tags.toArray(new String[tags.size()]);
+        return tags.toArray(new String[0]);
     }
 
     private boolean isOldTags() {

@@ -236,7 +236,7 @@ public final class Metadata {
 
     public Metadata put(String key, boolean value) {
         if (key != null) {
-            map.put(key, new Boolean(value));
+            map.put(key, Boolean.valueOf(value));
         }
         return this;
     }
@@ -384,9 +384,7 @@ public final class Metadata {
 
     private static void appendIndent(StringBuilder sb, int indentLevel) {
         int num = indentLevel * 2;
-        for (int i = 0; i < num; i++) {
-            sb.append(' ');
-        }
+        sb.append(" ".repeat(Math.max(0, num)));
     }
 
     public static void main(String[] args) throws MailServiceException {

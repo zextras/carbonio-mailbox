@@ -551,7 +551,8 @@ public class RemoteMailQueue {
             while (done < total) {
                 int last = Math.min(total, done + MAX_REMOTE_EXECUTION_QUEUEIDS);
                 StringBuilder sb = new StringBuilder(128 + (last * MAX_LENGTH_OF_QUEUEIDS));
-                sb.append("zmqaction " + action.toString() + " " + mQueueName + " ");
+                sb.append("zmqaction ").append(action.toString()).append(" ").append(mQueueName)
+                    .append(" ");
                 int i;
                 boolean first = true;
                 for (i = done; i < last; i++) {

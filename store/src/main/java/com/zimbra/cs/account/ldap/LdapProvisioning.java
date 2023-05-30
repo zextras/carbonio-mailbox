@@ -535,7 +535,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
     }
 
-    attrs.put(A_objectClass, needOCs.toArray(new String[needOCs.size()]));
+    attrs.put(A_objectClass, needOCs.toArray(new String[0]));
 
     modifyAttrs(acct, attrs, false, false);
   }
@@ -1658,13 +1658,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
           if (ocSchema != null) {
             List<String> optAttrs = ocSchema.getOptionalAttributes();
-            for (String attr : optAttrs) {
-              attrsInOCs.add(attr);
-            }
+            attrsInOCs.addAll(optAttrs);
             List<String> reqAttrs = ocSchema.getRequiredAttributes();
-            for (String attr : reqAttrs) {
-              attrsInOCs.add(attr);
-            }
+            attrsInOCs.addAll(reqAttrs);
           }
 
         } catch (ServiceException e) {
@@ -1935,7 +1931,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             baseList.add(mDIT.domainDNToAccountSearchDN(domainDN));
           }
 
-          bases = baseList.toArray(new String[baseList.size()]);
+          bases = baseList.toArray(new String[0]);
         }
 
       } else {
@@ -2428,7 +2424,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   static String[] addMultiValue(String values[], String value) {
     List<String> list = new ArrayList<String>(Arrays.asList(values));
     list.add(value);
-    return list.toArray(new String[list.size()]);
+    return list.toArray(new String[0]);
   }
 
   String[] addMultiValue(NamedEntry acct, String attr, String value) {
@@ -3956,8 +3952,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         domainCache.remove(domain);
         // assume subdomains exist and turn into plain dc object
         Map<String, Object> attrs = new HashMap<String, Object>();
-        List<String> objClasses = new ArrayList<String>();
-        objClasses.addAll(Arrays.asList("zimbraDomain", "amavisAccount", "DKIM"));
+        List<String> objClasses = new ArrayList<String>(
+            Arrays.asList("zimbraDomain", "amavisAccount", "DKIM"));
         attrs.put("-" + A_objectClass, objClasses);
         // remove all zimbra attrs
         for (String key : domain.getAttrs(false).keySet()) {
@@ -3998,7 +3994,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             @Override
             public void visit(String dn, Map<String, Object> attrs, IAttributes ldapAttrs) {
               if (!dn.equals(doNotReportThisDN)) {
-                sb.append("[" + dn + "] ");
+                sb.append("[").append(dn).append("] ");
               }
             }
           };
@@ -6269,7 +6265,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
     newHistory.add(currentHistory);
 
-    return newHistory.toArray(new String[newHistory.size()]);
+    return newHistory.toArray(new String[0]);
   }
 
   @Override
@@ -7069,7 +7065,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       lists = getAllDistributionListsForAddresses(addrs, false);
     } catch (ServiceException se) {
       StringBuilder sb = new StringBuilder();
-      for (String addr : addrs) sb.append(addr + ", ");
+      for (String addr : addrs) sb.append(addr).append(", ");
       ZimbraLog.account.warn("unable to get all DLs for addrs " + sb.toString());
       return;
     }
@@ -7080,7 +7076,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       } catch (ServiceException se) {
         // log warning and continue
         StringBuilder sb = new StringBuilder();
-        for (String addr : addrs) sb.append(addr + ", ");
+        for (String addr : addrs) sb.append(addr).append(", ");
         ZimbraLog.account.warn(
             "unable to remove " + sb.toString() + " from DL " + list.getName(), se);
       }
@@ -9890,7 +9886,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     int i = 0;
     for (String id : unresolvedIds) {
-      query.append("(" + Provisioning.A_zimbraId + "=" + id + ")");
+      query.append("(" + Provisioning.A_zimbraId + "=").append(id).append(")");
       if ((++i) % batchSize == 0) {
         query.append(queryEnd);
         searchLdapOnReplica(base, query.toString(), returnAttrs, visitor);
@@ -11074,7 +11070,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       // check non of the addrs in externalAddrs can be an email address
       // on the system
       if (!externalAddrs.isEmpty()) {
-        if (addressExists(zlc, externalAddrs.toArray(new String[externalAddrs.size()]))) {
+        if (addressExists(zlc, externalAddrs.toArray(new String[0]))) {
           throw ServiceException.INVALID_REQUEST(
               "address cannot be a group: " + Arrays.deepToString(externalAddrs.toArray()), null);
         }
@@ -11106,7 +11102,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         Map<String, String[]> attrs = new HashMap<String, String[]>();
         attrs.put(
             "+" + LdapDynamicGroup.StaticUnit.MEMBER_ATTR,
-            addrsToAdd.toArray(new String[addrsToAdd.size()]));
+            addrsToAdd.toArray(new String[0]));
         modifyLdapAttrs(staticUnit, zlc, attrs);
       }
 
@@ -11210,7 +11206,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         Map<String, String[]> attrs = new HashMap<String, String[]>();
         attrs.put(
             "-" + LdapDynamicGroup.StaticUnit.MEMBER_ATTR,
-            addrsToRemove.toArray(new String[addrsToRemove.size()]));
+            addrsToRemove.toArray(new String[0]));
         modifyLdapAttrs(staticUnit, zlc, attrs);
       }
 
@@ -11359,9 +11355,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       // need to refresh, the StaticUnit instance updated by add/remove
       // dynamic group members may be the cached instance.
       refreshEntry(staticUnit, zlc);
-      for (String extAddr : staticUnit.getMembers()) {
-        members.add(extAddr);
-      }
+      members.addAll(Arrays.asList(staticUnit.getMembers()));
     } catch (ServiceException e) {
       ZimbraLog.account.warn("unable to search dynamic group members", e);
     } finally {
@@ -11439,7 +11433,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       LdapClient.closeContext(zlc);
     }
 
-    return members.toArray(new String[members.size()]);
+    return members.toArray(new String[0]);
   }
 
   /**
@@ -11595,7 +11589,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   public String[] getDynamicGroupMembers(DynamicGroup group) throws ServiceException {
     List<String> members = searchDynamicGroupMembers(group);
-    return members.toArray(new String[members.size()]);
+    return members.toArray(new String[0]);
   }
 
   public Set<String> getDynamicGroupMembersSet(DynamicGroup group) throws ServiceException {

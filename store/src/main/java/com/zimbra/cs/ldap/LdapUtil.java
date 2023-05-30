@@ -23,10 +23,10 @@ public class LdapUtil {
             ZSearchResultEntry first, ZSearchResultEnumeration rest)
     throws LdapException {
         StringBuffer dups = new StringBuffer();
-        dups.append("[" + first.getDN() + "] ");
+        dups.append("[").append(first.getDN()).append("] ");
         while (rest.hasMore()) {
             ZSearchResultEntry dup = rest.next();
-            dups.append("[" + dup.getDN() + "] ");
+            dups.append("[").append(dup.getDN()).append("] ");
         }
 
         return new String(dups);

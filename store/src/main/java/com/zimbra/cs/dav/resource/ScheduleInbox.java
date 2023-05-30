@@ -61,7 +61,7 @@ public class ScheduleInbox extends CalendarCollection {
              *  to the scheduling outbox
              */
             reportList.remove(DavElements.E_FREE_BUSY_QUERY);
-            supportedInboxReports = reportList.toArray(new QName[reportList.size()]);
+            supportedInboxReports = reportList.toArray(new QName[0]);
         }
         return supportedInboxReports;
     }

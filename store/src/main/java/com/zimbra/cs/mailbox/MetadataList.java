@@ -93,7 +93,7 @@ public class MetadataList {
     }
 
     public MetadataList add(boolean value) {
-        list.add(new Boolean(value));
+        list.add(Boolean.valueOf(value));
         return this;
     }
 

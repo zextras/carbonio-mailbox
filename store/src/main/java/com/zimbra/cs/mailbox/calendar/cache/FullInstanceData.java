@@ -235,7 +235,7 @@ public class FullInstanceData extends InstanceData {
             org = new ZOrganizer(metaOrg);
         Boolean isOrg = null;
         if (meta.containsKey(FN_IS_ORGANIZER))
-            isOrg = new Boolean(meta.getBool(FN_IS_ORGANIZER));
+            isOrg = Boolean.valueOf(meta.getBool(FN_IS_ORGANIZER));
 
         List<ZAttendee> attendees = null;
         if (meta.containsKey(FN_NUM_ATTENDEES)) {
@@ -252,29 +252,29 @@ public class FullInstanceData extends InstanceData {
 
         Boolean hasAlarm = null;
         if (meta.containsKey(FN_HAS_ALARM))
-        	hasAlarm = new Boolean(meta.getBool(FN_HAS_ALARM));
+        	hasAlarm = Boolean.valueOf(meta.getBool(FN_HAS_ALARM));
         Boolean hasAttachment = null;
         if (meta.containsKey(FN_HAS_ATTACHMENT))
-            hasAttachment = new Boolean(meta.getBool(FN_HAS_ATTACHMENT));
+            hasAttachment = Boolean.valueOf(meta.getBool(FN_HAS_ATTACHMENT));
         Boolean draft = null;
         if (meta.containsKey(FN_DRAFT))
-            draft = new Boolean(meta.getBool(FN_DRAFT));
+            draft = Boolean.valueOf(meta.getBool(FN_DRAFT));
         Boolean neverSent = null;
         if (meta.containsKey(FN_NEVER_SENT))
-            neverSent = new Boolean(meta.getBool(FN_NEVER_SENT));
+            neverSent = Boolean.valueOf(meta.getBool(FN_NEVER_SENT));
 
         String summary = meta.get(FN_SUMMARY, null);
         String location = meta.get(FN_LOCATION, null);
         String fragment = meta.get(FN_FRAGMENT, null);
         Boolean descInMeta = null;
         if (meta.containsKey(FN_DESC_IN_META))
-            descInMeta = new Boolean(meta.getBool(FN_DESC_IN_META));
+            descInMeta = Boolean.valueOf(meta.getBool(FN_DESC_IN_META));
         String desc = meta.get(FN_DESC, null);
         String descHtml = meta.get(FN_DESC_HTML, null);
 
         Boolean isAllDay = null;
         if (meta.containsKey(FN_IS_ALLDAY))
-            isAllDay = new Boolean(meta.getBool(FN_IS_ALLDAY));
+            isAllDay = Boolean.valueOf(meta.getBool(FN_IS_ALLDAY));
 
         String status = meta.get(FN_STATUS, null);
         String priority = meta.get(FN_PRIORITY, null);

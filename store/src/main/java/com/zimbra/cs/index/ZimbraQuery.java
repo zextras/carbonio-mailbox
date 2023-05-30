@@ -146,9 +146,7 @@ public final class ZimbraQuery {
                             OperatorNode opnode = (OperatorNode) node;
                             if (opnode.conjunction == conjunction && opnode.bool) {
                                 simplifyAgain = true;
-                                for (Node child : opnode.nodes) {
-                                    combined.add(child);
-                                }
+                              combined.addAll(opnode.nodes);
                                 continue;
                             }
                         }
@@ -649,8 +647,8 @@ public final class ZimbraQuery {
                 // folders
                 Set<Folder> allVisibleFolders = mailbox.getVisibleFolders(octxt);
                 if (allVisibleFolders == null) {
-                    allVisibleFolders = new HashSet<Folder>();
-                    allVisibleFolders.addAll(mailbox.getFolderList(octxt, SortBy.NONE));
+                  allVisibleFolders = new HashSet<Folder>(
+                      mailbox.getFolderList(octxt, SortBy.NONE));
                 }
                 for (Folder f : allVisibleFolders) {
                     if (f.getType() == MailItem.Type.FOLDER &&

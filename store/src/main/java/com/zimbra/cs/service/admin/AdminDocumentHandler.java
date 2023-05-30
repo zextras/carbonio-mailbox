@@ -961,7 +961,7 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
         }
         Domain domain = prov.get(domainSelector);
         if(domain == null) {
-            ServiceException se = ServiceException.FAILURE(String.format("failed to get domain"), null);
+            ServiceException se = ServiceException.FAILURE("failed to get domain", null);
             ZimbraLog.filter.debug("DomainSelector failed to get domain - %s:%s", domainSelector.getBy().toString(), domainSelector.getKey(), se);
             throw se;
         }
@@ -982,12 +982,12 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
         } else if(cosSelector.getBy().toString().equals(CosBy.name.toString())) {
             cos = prov.getCosByName(cosSelector.getKey());
         } else {
-            ServiceException se = ServiceException.INVALID_REQUEST(String.format("invalid cosby"), null);
+            ServiceException se = ServiceException.INVALID_REQUEST("invalid cosby", null);
             ZimbraLog.filter.debug("CosSelector not valid - %s:%s", cosSelector.getBy().toString(), cosSelector.getKey(), se);
             throw se;
         }
         if(cos == null) {
-            ServiceException se = ServiceException.FAILURE(String.format("failed to get cos"), null);
+            ServiceException se = ServiceException.FAILURE("failed to get cos", null);
             ZimbraLog.filter.debug("CosSelector failed to get cos - %s:%s", cosSelector.getBy().toString(), cosSelector.getKey(), se);
             throw se;
         }
@@ -1010,12 +1010,12 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
         } else if(serverSelector.getBy().toString().equals(com.zimbra.soap.admin.type.ServerSelector.ServerBy.serviceHostname.toString())) {
             server = prov.getServerByServiceHostname(serverSelector.getKey());
         } else {
-            ServiceException se = ServiceException.INVALID_REQUEST(String.format("invalid serverby"), null);
+            ServiceException se = ServiceException.INVALID_REQUEST("invalid serverby", null);
             ZimbraLog.filter.debug("ServerSelector not valid - %s:%s", serverSelector.getBy().toString(), serverSelector.getKey(), se);
             throw se;
         }
         if(server == null) {
-            ServiceException se = ServiceException.FAILURE(String.format("failed to get server"), null);
+            ServiceException se = ServiceException.FAILURE("failed to get server", null);
             ZimbraLog.filter.debug("ServerSelector failed to get server - %s:%s", serverSelector.getBy().toString(), serverSelector.getKey(), se);
             throw se;
         }

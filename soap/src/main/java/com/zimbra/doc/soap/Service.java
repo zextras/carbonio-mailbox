@@ -60,13 +60,9 @@ public class Service implements java.io.Serializable {
     public List<Command> getCommands() {
         List<Command> allCommands = Lists.newLinkedList();
 
-        Iterator<Command> cit = this.commands.iterator();
-        while (cit.hasNext()) {
-            Command    c = cit.next();
-            allCommands.add(c);
-        }
+      allCommands.addAll(this.commands);
 
-        Collections.sort(allCommands, new Command.CommandComparator());
+      Collections.sort(allCommands, new Command.CommandComparator());
 
         return allCommands;
     }

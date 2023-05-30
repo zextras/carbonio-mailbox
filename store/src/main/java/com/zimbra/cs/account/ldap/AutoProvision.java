@@ -201,8 +201,7 @@ public abstract class AutoProvision {
                 attrMap.put(externalAttr, zimbraAttr);
             }
 
-            Set<String> attrs = new HashSet<String>();
-            attrs.addAll(attrMap.keySet());
+            Set<String> attrs = new HashSet<String>(attrMap.keySet());
             attrs.add(LdapConstants.ATTR_createTimestamp);
             String nameMapAttr = domain.getAutoProvAccountNameMap();
             if (nameMapAttr != null) {
@@ -469,7 +468,7 @@ public abstract class AutoProvision {
             // HTML part
             StringBuilder html = new StringBuilder();
             html.append("<h4>\n");
-            html.append("<p>" + body + "</p>\n");
+            html.append("<p>").append(body).append("</p>\n");
             html.append("</h4>\n");
             html.append("\n");
 

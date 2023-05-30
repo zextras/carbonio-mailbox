@@ -131,11 +131,11 @@ public class DebugZLock extends ZLock {
         }
         int readCount = getReadLockCount();
         if (readCount > 0) {
-            out.append("Reader Count - " + readCount + "\n");
+            out.append("Reader Count - ").append(readCount).append("\n");
         }
         if (getReadOwners() != null) {
             for(MailboxLockOwner lockOwner : getReadOwners().values()) {
-                out.append("Read Lock Owner (Holds: " + lockOwner.getCount() + ") - ");
+                out.append("Read Lock Owner (Holds: ").append(lockOwner.getCount()).append(") - ");
                 printStackTrace(lockOwner.getOwnerThread(), out);
             }
         }

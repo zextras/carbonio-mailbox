@@ -342,8 +342,7 @@ public class BlobDeduper {
             try {
                 conn = DbPool.getConnection();
                 Set<Integer> groupIds = DbMailbox.getMboxGroupIds(conn);
-                List<Integer> groupList = new ArrayList<Integer>();
-                groupList.addAll(groupIds);
+                List<Integer> groupList = new ArrayList<Integer>(groupIds);
                 Collections.sort(groupList);
                 return groupList;
             } finally {

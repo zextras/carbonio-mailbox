@@ -8,6 +8,7 @@ package com.zimbra.cs.account.oauth.utils;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,11 +50,11 @@ public class OAuthRevAValidator implements OAuthValidator {
 
     private static Set<String> constructSingleParameters() {
         Set<String> s = new HashSet<String>();
-        for (String p : new String[] { OAuth.OAUTH_CONSUMER_KEY, OAuth.OAUTH_TOKEN, OAuth.OAUTH_TOKEN_SECRET,
-                OAuth.OAUTH_CALLBACK, OAuth.OAUTH_SIGNATURE_METHOD, OAuth.OAUTH_SIGNATURE, OAuth.OAUTH_TIMESTAMP,
-                OAuth.OAUTH_NONCE, OAuth.OAUTH_VERSION }) {
-            s.add(p);
-        }
+      s.addAll(Arrays.asList(
+          new String[]{OAuth.OAUTH_CONSUMER_KEY, OAuth.OAUTH_TOKEN, OAuth.OAUTH_TOKEN_SECRET,
+              OAuth.OAUTH_CALLBACK, OAuth.OAUTH_SIGNATURE_METHOD, OAuth.OAUTH_SIGNATURE,
+              OAuth.OAUTH_TIMESTAMP,
+              OAuth.OAUTH_NONCE, OAuth.OAUTH_VERSION}));
         return Collections.unmodifiableSet(s);
     }
 

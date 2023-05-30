@@ -2264,8 +2264,7 @@ public abstract class ImapHandler {
                 // send owners list first
                 Iterable<List<ImapPath>> ownerLists = Iterables.partition(ownerSelected, paginationSize);
                 for (List<ImapPath> listChunk: ownerLists) {
-                    Set<ImapPath> ownerSelectedChunk = new HashSet<ImapPath>();
-                    ownerSelectedChunk.addAll(listChunk);
+                  Set<ImapPath> ownerSelectedChunk = new HashSet<ImapPath>(listChunk);
                     populateFoldersList(ownerPaths, ownerSelectedChunk, ownerMatches, returnOptions, remoteSubscriptions, patterns, command, status, selectRecursive, false);
 
                     if (!ownerMatches.isEmpty()) {
@@ -2289,8 +2288,7 @@ public abstract class ImapHandler {
                 // send shared(mounted) folders list
                 Iterable<List<ImapPath>> sharedLists = Iterables.partition(mountSelected, paginationSize);
                 for (List<ImapPath> listChunk: sharedLists) {
-                    Set<ImapPath> mountSelectedChunk = new HashSet<ImapPath>();
-                    mountSelectedChunk.addAll(listChunk);
+                  Set<ImapPath> mountSelectedChunk = new HashSet<ImapPath>(listChunk);
                     populateFoldersList(mountPaths, mountSelectedChunk, mountMatches, returnOptions, remoteSubscriptions, patterns, command, status, selectRecursive, true);
 
                     if (!mountMatches.isEmpty()) {

@@ -7,6 +7,7 @@ package com.zimbra.cs.dav.resource;
 
 import java.util.ArrayList;
 
+import java.util.Arrays;
 import javax.servlet.http.HttpServletResponse;
 
 import org.dom4j.QName;
@@ -40,10 +41,8 @@ public class User extends Principal {
         }
         addProperty(Acl.getPrincipalUrl(this));
         ArrayList<String> addrs = new ArrayList<String>();
-        for (String addr : account.getMailDeliveryAddress())
-            addrs.add(addr);
-        for (String alias : account.getMailAlias())
-            addrs.add(alias);
+      addrs.addAll(Arrays.asList(account.getMailDeliveryAddress()));
+      addrs.addAll(Arrays.asList(account.getMailAlias()));
         String principalAddr = UrlNamespace.getPrincipalUrl(account);
         if (principalAddr.endsWith("/")) {
             principalAddr = principalAddr.substring(0, principalAddr.length() - 1);

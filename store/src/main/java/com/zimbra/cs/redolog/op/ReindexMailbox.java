@@ -61,7 +61,7 @@ public class ReindexMailbox extends RedoableOp {
     @Override
     protected String getPrintableData() {
         StringBuilder sb = new StringBuilder("Completion="+mCompletionId);
-        sb.append(" SkipDelete="+(mSkipDelete?"TRUE":"FALSE"));
+        sb.append(" SkipDelete=").append(mSkipDelete ? "TRUE" : "FALSE");
         if (mItemIds != null) {
             sb.append(" ITEMIDS[");
             boolean atStart = true;

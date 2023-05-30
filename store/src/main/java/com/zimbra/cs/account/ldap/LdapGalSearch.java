@@ -364,7 +364,7 @@ public class LdapGalSearch {
         if (ZimbraLog.gal.isDebugEnabled()) {
             StringBuffer returnAttrs = new StringBuffer();
             for (String a: reqAttrs) {
-                returnAttrs.append(a + ",");
+                returnAttrs.append(a).append(",");
             }
 
             zlc.debug();
@@ -447,7 +447,7 @@ public class LdapGalSearch {
         if (ZimbraLog.gal.isDebugEnabled()) {
             StringBuffer returnAttrs = new StringBuffer();
             for (String a: reqAttrs) {
-                returnAttrs.append(a + ",");
+                returnAttrs.append(a).append(",");
             }
 
             zlc.debug();

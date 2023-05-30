@@ -612,9 +612,7 @@ public class Contact extends MailItem {
                 try {
                     ContactGroup contactGroup = ContactGroup.init(encodedGroupMembers, ownerAcctId);
                     List<String> emailAddrs = contactGroup.getInlineEmailAddresses();
-                    for (String addr : emailAddrs) {
-                        result.add(addr);
-                    }
+                  result.addAll(emailAddrs);
                 } catch (ServiceException e) {
                     ZimbraLog.contact.warn("unable to decode contact group", e);
                 }

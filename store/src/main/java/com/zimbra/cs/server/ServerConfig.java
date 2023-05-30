@@ -15,6 +15,7 @@ import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.NetUtil;
 import com.zimbra.cs.account.Provisioning;
+import java.util.Arrays;
 
 public abstract class ServerConfig {
     private String protocol;
@@ -237,11 +238,9 @@ public abstract class ServerConfig {
         for (String addrCsv : addrCsvs) {
             if (addrCsv != null && addrCsv.length() > 0) {
                 String[] addrs = addrCsv.split(",");
-                for (String addr : addrs) {
-                    addrList.add(addr);
-                }
+              addrList.addAll(Arrays.asList(addrs));
             }
         }
-        return addrList.toArray(new String[addrList.size()]);
+        return addrList.toArray(new String[0]);
     }
 }

@@ -18,9 +18,7 @@ public class ZTOTPCredentials {
     public ZTOTPCredentials(TwoFactorCredentials twoFactorCredentials) throws ServiceException {
         secret = twoFactorCredentials.getSharedSecret();
         scratchCodes = new HashSet<String>();
-        for (String code: twoFactorCredentials.getScratchCodes()) {
-            scratchCodes.add(code);
-        }
+      scratchCodes.addAll(twoFactorCredentials.getScratchCodes());
     }
 
     public String getSecret() {
