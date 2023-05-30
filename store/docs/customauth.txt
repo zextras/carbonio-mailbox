@@ -69,7 +69,7 @@ Class:
     com.zimbra.cs.account.auth.ZimbraCustomAuth
     
 Method:
-	public synchronized static void register(String handlerName, ZimbraCustomAuth handler);
+	public static synchronized void register(String handlerName, ZimbraCustomAuth handler);
 	
 	    handlerName: 
 	        Name under which this custom auth handler is registered to 
@@ -149,7 +149,7 @@ public abstract class ZimbraCustomAuth {
      * Register a custom auth handler.
      * It should be invoked from the init() method of ZimbraExtension.
      */
-    public synchronized static void register(String handlerName, ZimbraCustomAuth handler);
+    public static synchronized void register(String handlerName, ZimbraCustomAuth handler);
     
     /*
      * Method invoked by the framework to handle authentication requests.

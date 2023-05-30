@@ -61,7 +61,7 @@ public final class EhcacheManager {
         return getInstance(Service.MAILBOX);
     }
 
-    public synchronized static EhcacheManager getInstance(Service service) {
+    public static synchronized EhcacheManager getInstance(Service service) {
         if(SINGLETON == null) {
             SINGLETON = new EhcacheManager(service);
         }

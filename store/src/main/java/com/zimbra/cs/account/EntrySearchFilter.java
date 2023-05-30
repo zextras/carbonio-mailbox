@@ -34,7 +34,7 @@ public class EntrySearchFilter {
         public void leaveMulti(Multi term);
     }
 
-    public static abstract class Term {
+    public abstract static class Term {
         private boolean mNegation;
         public boolean isNegation() { return mNegation; }
         public void setNegation(boolean negation) { mNegation = negation; }

@@ -175,7 +175,7 @@ public class MailboxManager {
     protected MailboxManager(boolean extend) {
     }
 
-    public synchronized static MailboxManager getInstance() throws ServiceException {
+    public static synchronized MailboxManager getInstance() throws ServiceException {
         if (sInstance == null) {
             String className = LC.zimbra_class_mboxmanager.value();
             if (className != null && !className.equals("")) {

@@ -118,7 +118,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
         return addrs.toArray(new String[0]);
     }
 
-    private final static class BasicInfo {
+    private static final class BasicInfo {
         final String id;
         final String name;
         final String[] aliases;

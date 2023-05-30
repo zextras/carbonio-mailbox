@@ -65,7 +65,7 @@ public abstract class Db {
 
     private static String ESCAPE_SEQUENCE = "\\";
 
-    public synchronized static Db getInstance() {
+    public static synchronized Db getInstance() {
         if (sDatabase == null) {
             String className = LC.zimbra_class_database.value();
             if (className != null && !className.equals("")) {

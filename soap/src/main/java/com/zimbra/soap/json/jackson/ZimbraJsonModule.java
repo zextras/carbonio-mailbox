@@ -17,7 +17,7 @@ public class ZimbraJsonModule extends SimpleModule {
      * 
      */
     private static final long serialVersionUID = -4809416138833975969L;
-    private final static Version VERSION = new Version(0, 1, 0, null);
+    private static final Version VERSION = new Version(0, 1, 0, null);
 
     public ZimbraJsonModule() {
         super("ZimbraJsonModule", VERSION);

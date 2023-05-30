@@ -870,7 +870,7 @@ public class Recurrence
      *  an ExceptionRule (ie component with a RECURRENCE-ID property)
      *
      */
-    public static abstract class CompoundRuleBase implements IRecurrence {
+    public abstract static class CompoundRuleBase implements IRecurrence {
         protected CompoundRuleBase(ParsedDateTime dtstart, ParsedDuration duration, InviteInfo invId,
                 List<IRecurrence> addRules,
                 List<IRecurrence> subtractRules)

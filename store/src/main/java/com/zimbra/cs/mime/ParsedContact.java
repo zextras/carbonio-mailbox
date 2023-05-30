@@ -294,7 +294,7 @@ public final class ParsedContact {
         return digest;
     }
 
-    public static abstract class FieldDelta {
+    public abstract static class FieldDelta {
         private final Op op;
 
         public static enum Op {

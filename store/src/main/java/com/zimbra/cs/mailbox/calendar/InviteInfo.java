@@ -86,7 +86,7 @@ public class InviteInfo implements Comparable<InviteInfo>, Cloneable {
         return new InviteInfo(mMsgId, mComponentId, rid, mMethod);
     }
 
-    static public InviteInfo fromMetadata(Metadata md, TimeZoneMap tzmap) throws ServiceException {
+    public static InviteInfo fromMetadata(Metadata md, TimeZoneMap tzmap) throws ServiceException {
         int msgId;
         int compNum;
         RecurId recurrenceId = null;

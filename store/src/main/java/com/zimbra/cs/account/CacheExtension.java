@@ -21,7 +21,7 @@ public abstract class CacheExtension {
      * 
      * It should be invoked from the init() method of ZimbraExtension.
      */
-    public synchronized static void register(String cacheType, CacheExtension handler) {
+    public static synchronized void register(String cacheType, CacheExtension handler) {
         
         if (mHandlers == null)
             mHandlers = new HashMap<String, CacheExtension>();
@@ -50,7 +50,7 @@ public abstract class CacheExtension {
         mHandlers.put(cacheType, handler);
     }
     
-    public synchronized static CacheExtension getHandler(String cacheType) {
+    public static synchronized CacheExtension getHandler(String cacheType) {
         if (mHandlers == null)
             return null;
         else    

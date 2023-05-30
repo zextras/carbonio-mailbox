@@ -487,7 +487,7 @@ public abstract class RedoableOp {
      * Register a class loader for instantiating redo op objects.
      * @param ldr
      */
-    public synchronized static void registerClassLoader(ClassLoader ldr) {
+    public static synchronized void registerClassLoader(ClassLoader ldr) {
         mLog.debug("Registering class loader " + ldr);
         for (ClassLoader loader : sOpClassLoaders) {
             if (loader.equals(ldr)) return;
@@ -495,7 +495,7 @@ public abstract class RedoableOp {
         sOpClassLoaders.add(ldr);
     }
 
-    public synchronized static void deregisterClassLoader(ClassLoader ldr) {
+    public static synchronized void deregisterClassLoader(ClassLoader ldr) {
         mLog.debug("Deregistering class loader " + ldr);
         List<String> toRemove = new ArrayList<String>();
         for (Map.Entry<String, Class> entry : sOpClassMap.entrySet()) {
@@ -514,7 +514,7 @@ public abstract class RedoableOp {
         }
     }
 
-    private synchronized static Class loadOpClass(String className)
+    private static synchronized Class loadOpClass(String className)
     throws ClassNotFoundException {
         Class clz = sOpClassMap.get(className);
         if (clz == null) {

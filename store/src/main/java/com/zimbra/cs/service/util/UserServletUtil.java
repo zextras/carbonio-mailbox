@@ -202,7 +202,7 @@ public class UserServletUtil {
         return context.target;
     }
 
-    // public synchronized static void addFormatter(Formatter f) {
+    // public static synchronized void addFormatter(Formatter f) {
     // mFormatters.put(f.getType(), f);
     // for (String mimeType : f.getDefaultMimeTypes())
     // mDefaultFormatters.put(mimeType, f);
@@ -226,7 +226,7 @@ public class UserServletUtil {
         return mbox;
     }
 
-//    public synchronized static void addFormatter(Formatter f) {
+//    public static synchronized void addFormatter(Formatter f) {
 //        mFormatters.put(f.getType(), f);
 //        for (String mimeType : f.getDefaultMimeTypes())
 //            mDefaultFormatters.put(mimeType, f);

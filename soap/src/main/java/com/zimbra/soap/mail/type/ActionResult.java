@@ -19,7 +19,7 @@ import com.zimbra.common.soap.MailConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ActionResult {
 
-    private final static Splitter COMMA_SPLITTER = Splitter.on(",");
+    private static final Splitter COMMA_SPLITTER = Splitter.on(",");
 
     /**
      * @zm-api-field-tag success-ids

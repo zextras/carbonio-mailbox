@@ -29,7 +29,7 @@ public class SearchLdapOptions {
     public static class StopIteratingException extends Exception {
     }
 
-    public static abstract class SearchLdapVisitor {
+    public abstract static class SearchLdapVisitor {
         // whether IAttributes (native data from SDK) should be mapped
         // to Map<String, Object> when the visit method is called.
         //

@@ -68,8 +68,8 @@ public class ChartUtil {
     private static final String OPT_AGGREGATE_END_AT = "aggregate-end-at";
     private static final String OPT_NO_SUMMARY = "no-summary";
 
-    private final static String GROUP_PLOT_SYNTHETIC = "group-plot-synthetic$";
-    private final static String RATIO_PLOT_SYNTHETIC = "ratio-plot-synthetic$";
+    private static final String GROUP_PLOT_SYNTHETIC = "group-plot-synthetic$";
+    private static final String RATIO_PLOT_SYNTHETIC = "ratio-plot-synthetic$";
 
     private static final SimpleDateFormat[] sDateFormats = {
             new SimpleDateFormat("MM/dd/yyyy HH:mm:ss"),
