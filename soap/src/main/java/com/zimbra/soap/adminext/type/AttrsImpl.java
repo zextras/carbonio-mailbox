@@ -24,7 +24,7 @@ import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.util.StringUtil;
 
 @XmlAccessorType(XmlAccessType.NONE)
-abstract public class AttrsImpl implements Attrs {
+public abstract class AttrsImpl implements Attrs {
 
     /**
      * @zm-api-field-description Attrs

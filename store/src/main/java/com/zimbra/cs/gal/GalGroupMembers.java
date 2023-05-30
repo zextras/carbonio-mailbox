@@ -48,9 +48,9 @@ public class GalGroupMembers {
 
     public abstract static class DLMembers extends DLMembersResult {
 
-        abstract public int getTotal();
+        public abstract int getTotal();
 
-        abstract public String getDLZimbraId();
+        public abstract String getDLZimbraId();
 
         /**
          *
@@ -58,7 +58,7 @@ public class GalGroupMembers {
          * @param endIndex   the ending index, exclusive.
          * @param resp
          */
-        abstract public void encodeMembers(int beginIndex, int endIndex, Element resp);
+        public abstract void encodeMembers(int beginIndex, int endIndex, Element resp);
 
         protected Element encodeMember(Element parent, String member) {
             return parent.addElement(AccountConstants.E_DLM).setText(member);

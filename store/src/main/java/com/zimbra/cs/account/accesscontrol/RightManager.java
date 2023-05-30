@@ -91,7 +91,7 @@ public class RightManager {
     private final Map<String, Help> sHelp = new TreeMap<String, Help>();
     private final Map<String, UI> sUI = new TreeMap<String, UI>();
 
-    static private class CoreRightDefFiles {
+    private static class CoreRightDefFiles {
         private static final HashSet<String> sCoreRightDefFiles = new HashSet<String>();
 
         static void init(boolean unittest) {

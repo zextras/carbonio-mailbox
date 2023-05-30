@@ -180,7 +180,7 @@ public abstract class Db {
 
 
     /** Returns <tt>true</tt> if the database with the given name exists. */
-    abstract public boolean databaseExists(DbConnection conn, String dbname)
+    public abstract boolean databaseExists(DbConnection conn, String dbname)
     throws ServiceException;
 
     /** Callback executed immediately before creating a user database. */

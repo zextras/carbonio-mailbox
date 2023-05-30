@@ -405,7 +405,7 @@ public class ZInternetHeader {
         return text.toString();
     }
 
-    static private void setupNewNeedDecode(StringBuilder needDecode, FieldElement current) {
+    private static void setupNewNeedDecode(StringBuilder needDecode, FieldElement current) {
         needDecode.setLength(0);
         needDecode.append("=?")
                   .append(current.getCharset())
@@ -415,7 +415,7 @@ public class ZInternetHeader {
                   .append(current.getText());
     }
 
-    static private void decodeAndAppend(StringBuilder needDecode, StringBuilder text) {
+    private static void decodeAndAppend(StringBuilder needDecode, StringBuilder text) {
         needDecode.append("?=");
         ZByteString decoded = ZMimeUtility.decodeWordBytes(needDecode.toString().getBytes());
         if (null != decoded) {
@@ -490,7 +490,7 @@ public class ZInternetHeader {
      * @param length length
      * @return a list of parsed FieldElement.  If the content text is mal-formatted, return null.
      */
-    static private List<FieldElement> parse(final byte[] content, final int start, final int length) {
+    private static List<FieldElement> parse(final byte[] content, final int start, final int length) {
         Fields fields = new Fields();
         final int end = start + length;
 
