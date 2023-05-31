@@ -9,7 +9,7 @@ package com.zimbra.cs.index.query.parser;
 final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstants {/*@bgen(jjtree)*/
   protected JJTParserState jjtree = new JJTParserState();
 
-  final public SimpleNode parse() throws ParseException {
+  public final SimpleNode parse() throws ParseException {
                             /*@bgen(jjtree) Root */
   SimpleNode jjtn000 = new SimpleNode(JJTROOT);
   boolean jjtc000 = true;
@@ -1033,9 +1033,9 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
   private int jj_ntk;
   private int jj_gen;
   private final int[] jj_la1 = new int[33];
-  static private int[] jj_la1_0;
-  static private int[] jj_la1_1;
-  static private int[] jj_la1_2;
+  private static int[] jj_la1_0;
+  private static int[] jj_la1_1;
+  private static int[] jj_la1_2;
   static {
       jj_la1_init_0();
       jj_la1_init_1();
@@ -1136,7 +1136,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
 
 
 /** Get the next Token. */
-  final public Token getNextToken() {
+  public final Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
     jj_ntk = -1;
@@ -1145,7 +1145,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
   }
 
 /** Get the specific Token. */
-  final public Token getToken(int index) {
+  public final Token getToken(int index) {
     Token t = token;
     for (int i = 0; i < index; i++) {
       if (t.next != null) t = t.next;
@@ -1203,11 +1203,11 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
   }
 
   /** Enable tracing. */
-  final public void enable_tracing() {
+  public final void enable_tracing() {
   }
 
   /** Disable tracing. */
-  final public void disable_tracing() {
+  public final void disable_tracing() {
   }
 
 }

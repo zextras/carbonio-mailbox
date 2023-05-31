@@ -35,7 +35,7 @@ public final class AuthTokenRegistry {
      * adds a token to the queue of deregistered tokens
      * @param token
      */
-    final public static void addTokenToQueue(AuthToken token) {
+    public final static void addTokenToQueue(AuthToken token) {
         while(deregisteredOutAuthTokens.size() > LC.zimbra_deregistered_authtoken_queue_size.intValue() && !deregisteredOutAuthTokens.isEmpty()) {
             //throw out oldest tokens to make space
             deregisteredOutAuthTokens.remove();

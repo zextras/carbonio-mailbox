@@ -73,7 +73,7 @@ public abstract class ConfigWriter {
         }
     }
     
-    abstract public void write(Writer writer) throws IOException;
+    public abstract void write(Writer writer) throws IOException;
     
     private static class PlainConfigWriter extends ConfigWriter {
         

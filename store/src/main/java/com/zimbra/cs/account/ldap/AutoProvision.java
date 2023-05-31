@@ -493,7 +493,7 @@ public abstract class AutoProvision {
         }
     }
 
-    private static abstract class MimePartDataSource implements DataSource {
+    private abstract static class MimePartDataSource implements DataSource {
 
         private final String mText;
         private byte[] mBuf = null;
