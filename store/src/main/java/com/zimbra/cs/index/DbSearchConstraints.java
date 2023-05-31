@@ -1336,7 +1336,7 @@ public interface DbSearchConstraints extends Cloneable {
         }
     }
 
-    static abstract class Range implements Cloneable {
+    abstract static class Range implements Cloneable {
         public final boolean bool;
         public final boolean minInclusive;
         public final boolean maxInclusive;

@@ -49,9 +49,9 @@ import junit.framework.Assert;
 
 public class ResetPasswordTest {
 
-    final static String USER_NAME = "test4802@zimbra.com";
-    final static String PASSWORD = "old_secret";
-    final static String NEW_PASSWORD = "new_secret";
+    static final String USER_NAME = "test4802@zimbra.com";
+    static final String PASSWORD = "old_secret";
+    static final String NEW_PASSWORD = "new_secret";
 
     @Rule
     public TestName testName = new TestName();

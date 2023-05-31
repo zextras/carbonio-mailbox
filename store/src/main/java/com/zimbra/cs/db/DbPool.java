@@ -192,7 +192,7 @@ public class DbPool {
         }
     }
 
-    static abstract class PoolConfig {
+    abstract static class PoolConfig {
         String mDriverClassName;
         int mPoolSize;
         String mRootUrl;

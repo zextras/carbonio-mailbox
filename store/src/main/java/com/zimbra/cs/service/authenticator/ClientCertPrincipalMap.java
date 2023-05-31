@@ -33,7 +33,7 @@ public class ClientCertPrincipalMap {
     private static final char LDAP_FILTER_LEADING_CHAR = '('; 
     private static final String MAP_DELIMITER = "=";   // seperate cert filed and zimbra key
         
-    static abstract class CertField {
+    abstract static class CertField {
         abstract String getName();
     }
     
@@ -143,7 +143,7 @@ public class ClientCertPrincipalMap {
         zimbraForeignPrincipal;
     }
     
-    static abstract class Rule {
+    abstract static class Rule {
         abstract String getName();
         abstract ZimbraPrincipal apply(X509Certificate cert) throws ServiceException;
     }

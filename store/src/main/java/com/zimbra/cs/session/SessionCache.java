@@ -203,7 +203,7 @@ public final class SessionCache {
         return sSessionMaps[type.getIndex()];
     }
 
-    protected synchronized static String getNextSessionId(Session.Type type) {
+    protected static synchronized String getNextSessionId(Session.Type type) {
         return Integer.toString(type.getIndex()) + Long.toString(sContextSeqNo++);
     }
 
