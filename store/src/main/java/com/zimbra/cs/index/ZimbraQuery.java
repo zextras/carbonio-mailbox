@@ -79,7 +79,7 @@ public final class ZimbraQuery {
             AND, OR;
         }
 
-        static abstract class Node {
+        abstract static class Node {
             boolean bool = true;
 
             Node() {

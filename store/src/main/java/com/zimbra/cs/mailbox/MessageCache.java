@@ -49,7 +49,7 @@ public class MessageCache {
     private static int sMaxCacheSize;
     /** Number of bytes of message data stored in the cache.  This value includes only
      * messages that are read into memory, not streamed from disk. */
-    private volatile static long sDataSize = 0;
+    private static volatile long sDataSize = 0;
 
     static {
         try {
