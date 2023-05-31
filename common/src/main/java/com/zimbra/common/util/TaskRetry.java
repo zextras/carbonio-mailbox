@@ -63,7 +63,7 @@ public class TaskRetry {
     }
 
 
-    private static abstract class Delay {
+    private abstract static class Delay {
         abstract long getDelayMillis();
     }
 

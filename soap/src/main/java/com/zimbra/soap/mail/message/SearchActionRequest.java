@@ -20,7 +20,7 @@ import com.zimbra.soap.mail.type.BulkAction;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = MailConstants.E_SEARCH_ACTION_REQUEST)
-final public class SearchActionRequest {
+public final class SearchActionRequest {
 
     /**
      * @zm-api-field-tag search-request
