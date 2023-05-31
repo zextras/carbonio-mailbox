@@ -43,7 +43,7 @@ import com.zimbra.soap.admin.type.CacheEntryType;
 
 public class RenameDomain {
 
-    public static abstract class RenameDomainLdapHelper {
+    public abstract static class RenameDomainLdapHelper {
         protected LdapProv mProv;
         protected ILdapContext mZlc;
 
@@ -729,7 +729,7 @@ public class RenameDomain {
                     // if there is any address format error and the address cannot be converted,
                     // whatever the current value will be carried to the new entry.
                     if (newValues.size() > 0) {
-                        attrs.put(attr, newValues.toArray(new String[newValues.size()]));
+                        attrs.put(attr, newValues.toArray(new String[0]));
                     }
                 }
             }

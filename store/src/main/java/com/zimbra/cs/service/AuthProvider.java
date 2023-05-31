@@ -48,7 +48,7 @@ public abstract class AuthProvider {
         refresh();
     }
 
-    public synchronized static void register(AuthProvider ap) {
+    public static synchronized void register(AuthProvider ap) {
         String name = ap.getName();
         logger().info("Adding auth provider: " + name + " " + ap.getClass().getName());
 

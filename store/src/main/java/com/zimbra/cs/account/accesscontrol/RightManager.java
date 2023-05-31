@@ -672,7 +672,8 @@ public class RightManager {
             sb.append("\n");
         }
         sb.append("     */\n");
-        sb.append("    public static final String RT_" + r.getName() + " = \"" + r.getName() + "\";" + "\n");
+        sb.append("    public static final String RT_").append(r.getName()).append(" = \"")
+            .append(r.getName()).append("\";").append("\n");
     }
 
     private String genRightConsts() {
@@ -706,7 +707,8 @@ public class RightManager {
 
         sb.append("\n\n");
         for (AdminRight r : getAllAdminRights().values()) {
-            sb.append("    public static AdminRight R_" + r.getName() + ";" + "\n");
+            sb.append("    public static AdminRight R_").append(r.getName()).append(";")
+                .append("\n");
         }
 
         sb.append("\n\n");
@@ -725,7 +727,8 @@ public class RightManager {
 
         sb.append("\n\n");
         for (UserRight r : getAllUserRights().values()) {
-            sb.append("    public static UserRight R_" + r.getName() + ";" + "\n");
+            sb.append("    public static UserRight R_").append(r.getName()).append(";")
+                .append("\n");
         }
 
         sb.append("\n\n");
@@ -762,7 +765,7 @@ public class RightManager {
             Right r = getRight(right);
             // strip off the 2 spaces on the first line
             String text = FileGenUtil.wrapComments(r.getDesc(), 80, "  ", " \\").substring(2);
-            result.append(r.getName() + " = " + text + "\n");
+            result.append(r.getName()).append(" = ").append(text).append("\n");
         }
     }
 
@@ -977,7 +980,7 @@ public class RightManager {
 
             StringBuilder sb = new StringBuilder();
             for (String attr : sortedAttrs) {
-                sb.append("    <a n=\"" + attr + "\"/>\n");
+                sb.append("    <a n=\"").append(attr).append("\"/>\n");
             }
             return sb.toString();
         }

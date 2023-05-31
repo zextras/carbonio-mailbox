@@ -40,7 +40,7 @@ public class SetActiveSyncDisabled extends RedoableOp {
     @Override
     protected String getPrintableData() {
         StringBuffer sb = new StringBuffer("id=").append(folderId);
-        sb.append(", disableActiveSync="+(disableActiveSync?"TRUE":"FALSE"));
+        sb.append(", disableActiveSync=").append(disableActiveSync ? "TRUE" : "FALSE");
         return sb.toString();
     }
 

@@ -325,9 +325,7 @@ public class XmlElementDescription implements DescriptionNode, XmlUnit {
   }
 
   private static void writeNbsp(StringBuilder desc, int cnt) {
-    for (int c = 1; c <= cnt; c++) {
-      desc.append("&nbsp;");
-    }
+    desc.append("&nbsp;".repeat(Math.max(0, cnt)));
   }
 
   private void writeStartOptionalInfo(StringBuilder desc) {

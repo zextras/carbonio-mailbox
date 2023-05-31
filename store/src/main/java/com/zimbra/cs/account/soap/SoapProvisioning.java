@@ -3051,8 +3051,7 @@ public class SoapProvisioning extends Provisioning {
     DomainSelector domSel = new DomainSelector(toJaxb(DomainBy.name), domain.getName());
     HABOrgUnitResponse resp =
         invokeJaxb(new HABOrgUnitRequest(domSel, habOrgUnitName, HabOp.create));
-    Set<String> habOrgList = new HashSet<String>();
-    habOrgList.addAll(resp.getHabOrgList());
+    Set<String> habOrgList = new HashSet<String>(resp.getHabOrgList());
     return habOrgList;
   }
 
@@ -3060,8 +3059,7 @@ public class SoapProvisioning extends Provisioning {
   public Set<String> listHabOrgUnit(Domain domain) throws ServiceException {
     DomainSelector domSel = new DomainSelector(toJaxb(DomainBy.name), domain.getName());
     HABOrgUnitResponse resp = invokeJaxb(new HABOrgUnitRequest(domSel, HabOp.list));
-    Set<String> habOrgList = new HashSet<String>();
-    habOrgList.addAll(resp.getHabOrgList());
+    Set<String> habOrgList = new HashSet<String>(resp.getHabOrgList());
     return habOrgList;
   }
 
@@ -3071,8 +3069,7 @@ public class SoapProvisioning extends Provisioning {
     DomainSelector domSel = new DomainSelector(toJaxb(DomainBy.name), domain.getName());
     HABOrgUnitResponse resp =
         invokeJaxb(new HABOrgUnitRequest(domSel, habOrgUnitName, newHabOrgUnitName, HabOp.rename));
-    Set<String> habOrgList = new HashSet<String>();
-    habOrgList.addAll(resp.getHabOrgList());
+    Set<String> habOrgList = new HashSet<String>(resp.getHabOrgList());
     return habOrgList;
   }
 

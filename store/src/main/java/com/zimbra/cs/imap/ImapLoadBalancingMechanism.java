@@ -165,7 +165,7 @@ public abstract class ImapLoadBalancingMechanism {
      * in order for the "custom:{LB mech} [args ...]" value of zimbraImapLoadBalancingAlgorithm to be
      * recognized. Argument lists
      */
-    public static abstract class CustomLBMech extends ImapLoadBalancingMechanism {
+    public abstract static class CustomLBMech extends ImapLoadBalancingMechanism {
         protected List<String> args;
         private static Map<String, Class<? extends CustomLBMech>> customLBMechs;
 
@@ -196,7 +196,7 @@ public abstract class ImapLoadBalancingMechanism {
             customLBMechs.put(customMechName, customMech);
         }
 
-        public synchronized static CustomLBMech getCustomMech(String customMechName, List<String> args) {
+        public static synchronized CustomLBMech getCustomMech(String customMechName, List<String> args) {
             if (customLBMechs == null || customLBMechs.get(customMechName) == null) {
                 ZimbraLog.imap.debug(
                     "no CustomLBMech class registered for key %s; falling back to default",

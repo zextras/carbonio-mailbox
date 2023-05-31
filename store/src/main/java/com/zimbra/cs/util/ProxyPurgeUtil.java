@@ -337,9 +337,7 @@ public class ProxyPurgeUtil
 
         /* Start off with any account specified with `-a' */
         if (values != null) {
-            for (String u: commandLine.getOptionValues ("a")) {
-                accounts.add (u);
-            }
+          accounts.addAll(Arrays.asList(commandLine.getOptionValues("a")));
         }
 
         /* Other accounts may be read from a list file specified with -L 
@@ -390,9 +388,7 @@ public class ProxyPurgeUtil
         String[]            values = commandLine.getArgs ();
 
         if (values != null) {
-            for (String s: commandLine.getArgs ()) {
-                servers.add (s);
-            }
+          servers.addAll(Arrays.asList(commandLine.getArgs()));
         }
 
         return servers;

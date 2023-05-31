@@ -128,7 +128,7 @@ public class ZimletUtil {
             Presence presence = availZimlets.getPresence(zimletName);
 
             if (presence == Presence.enabled && !wanted.contains(zimletName)) {
-                disabledZimletNamesForLogging.append(zimletName + ", ");
+                disabledZimletNamesForLogging.append(zimletName).append(", ");
                 StringUtil.addToMultiMap(attrs, Provisioning.A_zimbraPrefDisabledZimlets, zimletName);
             }
         }
@@ -364,7 +364,7 @@ public class ZimletUtil {
      * Load all the installed Zimlets.
      *
      */
-    public synchronized static Map<String,ZimletFile> loadZimlets() {
+    public static synchronized Map<String,ZimletFile> loadZimlets() {
         if (!sZimletsLoaded) {
             loadZimletsFromDir(sZimlets, LC.zimlet_directory.value());
             sZimletsLoaded = true;
@@ -863,9 +863,7 @@ public class ZimletUtil {
         }
         String[] domainArray = domains.toLowerCase().split(",");
         Set<String> domainsToRemove = new HashSet<String>();
-        for (String d : domainArray) {
-            domainsToRemove.add(d);
-        }
+      domainsToRemove.addAll(Arrays.asList(domainArray));
         String[] zimlets = getAvailableZimlets(c).getZimletNamesAsArray();
         for (String z : zimlets) {
             if (z.equals(zimlet)) {
@@ -1108,9 +1106,7 @@ public class ZimletUtil {
         Cos cos = prov.get(Key.CosBy.name, cosName);
         Set<String> domainSet = cos.getMultiAttrSet(Provisioning.A_zimbraProxyAllowedDomains);
         String[] domainArray = domains.toLowerCase().split(",");
-        for (int i = 0; i < domainArray.length; i++) {
-            domainSet.add(domainArray[i]);
-        }
+      domainSet.addAll(Arrays.asList(domainArray));
         Map<String, String[]> newlist = new HashMap<String, String[]>();
         newlist.put(Provisioning.A_zimbraProxyAllowedDomains, domainSet.toArray(new String[0]));
         prov.modifyAttrs(cos, newlist);
@@ -1296,16 +1292,16 @@ public class ZimletUtil {
         if (z.isExtension()) {
             System.out.println("       Extension: true");
         }
-        String cosList = null;
+        StringBuilder cosList = null;
         for (Cos cos : prov.getAllCos()) {
             for (String zc : getAvailableZimlets(cos).getZimletNamesAsArray()) {
                 if (zc.compareTo(zimlet) != 0) {
                     continue;
                 }
                 if (cosList == null) {
-                    cosList = cos.getName();
+                    cosList = new StringBuilder(cos.getName());
                 } else {
-                    cosList = cosList + ", " + cos.getName();
+                    cosList.append(", ").append(cos.getName());
                 }
                 break;
             }
@@ -1317,24 +1313,24 @@ public class ZimletUtil {
             System.out.println("*** Zimlet file is missing on this machine");
         } else {
             ZimletDescription desc = zf.getZimletDescription();
-            String val = desc.getRegexString();
+            StringBuilder val = new StringBuilder(desc.getRegexString());
             if (val != null) {
                 System.out.println("           RegEx: "+val);
             }
-            val = desc.getContentObjectAsXML();
+            val = new StringBuilder(desc.getContentObjectAsXML());
             if (val != null) {
                 System.out.println("  Content Object: "+val);
             }
-            val = desc.getPanelItemAsXML();
+            val = new StringBuilder(desc.getPanelItemAsXML());
             if (val != null) {
                 System.out.println("      Panel Item: "+val);
             }
             val = null;
             for (String script : desc.getScripts()) {
                 if (val == null) {
-                    val = script;
+                    val = new StringBuilder(script);
                 } else {
-                    val = val + ", " + script;
+                    val.append(", ").append(script);
                 }
             }
             if (val != null) {
@@ -1343,9 +1339,9 @@ public class ZimletUtil {
             val = null;
             for (String css : desc.getStyleSheets()) {
                 if (val == null) {
-                    val = css;
+                    val = new StringBuilder(css);
                 } else {
-                    val = val + ", " + css;
+                    val.append(", ").append(css);
                 }
             }
             if (val != null) {
@@ -1354,9 +1350,9 @@ public class ZimletUtil {
             val = null;
             for (String target : desc.getTargets()) {
                 if (val == null) {
-                    val = target;
+                    val = new StringBuilder(target);
                 } else {
-                    val = val + ", " + target;
+                    val.append(", ").append(target);
                 }
             }
             if (val != null) {

@@ -42,7 +42,7 @@ public class AuthUtil {
 
     public static final String WWW_AUTHENTICATE_HEADER = "WWW-Authenticate";
     public static final String HTTP_AUTH_HEADER = "Authorization";
-    public final static String IGNORE_LOGIN_URL = "?ignoreLoginURL=1";
+    public static final String IGNORE_LOGIN_URL = "?ignoreLoginURL=1";
 
     /**
      * Checks to see if this is an admin request

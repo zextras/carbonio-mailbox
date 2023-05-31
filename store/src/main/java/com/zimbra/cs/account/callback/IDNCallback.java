@@ -50,7 +50,7 @@ public class IDNCallback extends AttributeCallback {
             
             String aName = (mod.adding()?"+":"") + attrName;
             attrsToModify.remove(aName);
-            attrsToModify.put(aName, asciiValues.toArray(new String[asciiValues.size()]));
+            attrsToModify.put(aName, asciiValues.toArray(new String[0]));
         }
     }
 

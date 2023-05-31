@@ -33,11 +33,11 @@ import org.junit.rules.ExpectedException;
 
 public class CreateDistributionListTest {
 
-  private final static String DOMAIN_NAME = "test.com";
-  private final static String ADMIN_USER_NAME = "admin";
-  private final static String DOMAIN_ADMIN_EMAIL = ADMIN_USER_NAME + "@" + DOMAIN_NAME;
-  private final static  String DISTRIBUTION_LIST_NAME = "developers" + "@" + DOMAIN_NAME;
-  private final static String DOMAIN_ADMIN_PASSWORD = "assext";
+  private static final String DOMAIN_NAME = "test.com";
+  private static final String ADMIN_USER_NAME = "admin";
+  private static final String DOMAIN_ADMIN_EMAIL = ADMIN_USER_NAME + "@" + DOMAIN_NAME;
+  private static final  String DISTRIBUTION_LIST_NAME = "developers" + "@" + DOMAIN_NAME;
+  private static final String DOMAIN_ADMIN_PASSWORD = "assext";
 
   private static Provisioning provisioningSpy;
 

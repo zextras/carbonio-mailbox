@@ -115,7 +115,7 @@ public class AttributeManagerUtil {
     String enumName = enumName(ai);
 
     result.append(String.format("%n"));
-    result.append(String.format("    public static enum %s {%n", enumName));
+    result.append(String.format("    public enum %s {%n", enumName));
     Set<Map.Entry<String, String>> set = values.entrySet();
     int i = 1;
     for (Map.Entry<String, String> entry : set) {
@@ -126,9 +126,9 @@ public class AttributeManagerUtil {
       i++;
     }
 
-    result.append(String.format("        private String mValue;%n"));
-    result.append(
-        String.format("        private %s(String value) { mValue = value; }%n", enumName));
+    result.append(String.format("        private final String mValue;%n"));
+    result.append(String.format("        %s(String value) { mValue = value; }%n", enumName));
+    result.append(String.format("        @Override%n"));
     result.append(String.format("        public String toString() { return mValue; }%n"));
     result.append(
         String.format(
@@ -781,12 +781,6 @@ public class AttributeManagerUtil {
   }
 
   private static CommandLine parseArgs(String[] args) {
-    //    StringBuilder gotCL = new StringBuilder("cmdline: ");
-    //    for (String arg : args) {
-    //      gotCL.append("'").append(arg).append("' ");
-    //    }
-    // mLog.info(gotCL);
-
     CommandLineParser parser = new GnuParser();
     CommandLine commandLine = null;
     try {
@@ -1710,27 +1704,36 @@ public class AttributeManagerUtil {
     }
 
     for (String a : list) {
-      AttributeInfo ai = getAttrs().get(a.toLowerCase());
-      if (ai == null) {
+      AttributeInfo attributeInfo = getAttrs().get(a.toLowerCase());
+      if (attributeInfo == null) {
         continue;
       }
 
       result.append("\n    /**\n");
-      if (ai.getDescription() != null) {
+      if (attributeInfo.getDescription() != null) {
         result.append(
-            FileGenUtil.wrapComments(StringUtil.escapeHtml(ai.getDescription()), 70, "     * "));
+            FileGenUtil.wrapComments(
+                StringUtil.escapeHtml(attributeInfo.getDescription()), 70, "     * "));
         result.append("\n");
       }
-      if (ai.getSince() != null) {
+      if (attributeInfo.getSince() != null) {
         result.append("     *\n");
-        result.append(String.format("     * @since ZCS %s%n", versionListAsString(ai.getSince())));
+        result.append(
+            String.format("     * @since ZCS %s%n", versionListAsString(attributeInfo.getSince())));
       }
       result.append("     */\n");
-      result.append(String.format("    @ZAttr(id=%d)%n", ai.getId()));
+
+      // avoid setting id if its default one. i,e -1
+      if (attributeInfo.getId() == -1) {
+        result.append(String.format("    @ZAttr()%n"));
+      } else {
+        result.append(String.format("    @ZAttr(id=%d)%n", attributeInfo.getId()));
+      }
 
       result.append(
           String.format(
-              "    public static final String A_%s = \"%s\";%n", ai.getName(), ai.getName()));
+              "    public static final String A_%s = \"%s\";%n",
+              attributeInfo.getName(), attributeInfo.getName()));
     }
 
     FileGenUtil.replaceJavaFile(javaFile, result.toString());

@@ -264,9 +264,7 @@ public class JdbcClient {
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < colWidths.length; i++) {
             b.append('+');
-            for (int j = 0; j < colWidths[i] + 2; j++) {
-                b.append('-');
-            }
+            b.append("-".repeat(Math.max(0, colWidths[i] + 2)));
         }
         b.append('+');
         System.out.println(b);
@@ -298,9 +296,7 @@ public class JdbcClient {
             b.append(s);
             if (!mBatch) {
                 if (s.length() < colWidths[i]) {
-                    for (int j = 0; j < colWidths[i] - s.length(); j++) {
-                        b.append(" ");
-                    }
+                    b.append(" ".repeat(Math.max(0, colWidths[i] - s.length())));
                 }
             }
         }

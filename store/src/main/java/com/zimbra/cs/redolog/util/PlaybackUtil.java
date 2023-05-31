@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -274,9 +275,7 @@ public class PlaybackUtil {
             File archiveDir = new File(archiveDirPath);
             if (archiveDir.exists()) {
                 File[] archiveLogs = RolloverManager.getArchiveLogs(archiveDir, params.fromSeq, params.toSeq);
-                for (File f : archiveLogs) {
-                    logList.add(f);
-                }
+              logList.addAll(Arrays.asList(archiveLogs));
             }
             File redoLog = new File(redoLogPath);
             if (redoLog.exists()) {

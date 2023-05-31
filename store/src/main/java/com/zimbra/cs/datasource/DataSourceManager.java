@@ -143,7 +143,7 @@ public class DataSourceManager {
         return true;
     }
 
-    public synchronized static DataSourceManager getInstance() {
+    public static synchronized DataSourceManager getInstance() {
         if (sInstance == null) {
             String className = LC.zimbra_class_datasourcemanager.value();
             if (!StringUtil.isNullOrEmpty(className)) {

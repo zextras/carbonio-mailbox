@@ -608,7 +608,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
             for (Action action : getTagActions()) {
                 taglist.add(((ActionTag) action).getTagName());
             }
-            tags = taglist.toArray(new String[taglist.size()]);
+            tags = taglist.toArray(new String[0]);
         }
         return tags;
     }
@@ -786,7 +786,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
                     retVal.add(new FilterAddress(emailAddr));
             }
         }
-        return retVal.toArray(new Address[retVal.size()]);
+        return retVal.toArray(new Address[0]);
     }
 
     // jSieve 0.4

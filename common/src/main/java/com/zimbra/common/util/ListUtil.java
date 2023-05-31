@@ -56,8 +56,7 @@ public class ListUtil {
         if (lhs.size() != rhs.size())
             return false;
 
-        HashSet<T> set = new HashSet<T>();
-        set.addAll(lhs);
+      HashSet<T> set = new HashSet<T>(lhs);
         for (T t: rhs) {
             if (!set.remove(t))
                 return false;

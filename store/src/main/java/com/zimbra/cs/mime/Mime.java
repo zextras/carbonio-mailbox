@@ -925,14 +925,13 @@ public class Mime {
                     if (members == null)
                         expanded.add(addr);
                     else
-                        for (InternetAddress member : members)
-                            expanded.add(member);
+                      expanded.addAll(Arrays.asList(members));
                 } catch (AddressException e) {
                     expanded.add(addr);
                 }
             }
         }
-        return expanded.toArray(new InternetAddress[expanded.size()]);
+        return expanded.toArray(new InternetAddress[0]);
     }
 
     static RecipientType[] sRcptTypes = new RecipientType[] { RecipientType.TO, RecipientType.CC, RecipientType.BCC };
@@ -955,8 +954,10 @@ public class Mime {
                 String addr = inetAddr.getAddress();
                 boolean match = false;
                 for (int k = 0; k < rcpts.length; k++)
-                    if (addr.equalsIgnoreCase(rcpts[k]))
+                    if (addr.equalsIgnoreCase(rcpts[k])) {
                         match = true;
+                        break;
+                    }
                 if (!match)
                     list.add(inetAddr);
             }

@@ -207,7 +207,7 @@ public class DbPool {
      * Initializes the connection pool.  Applications that access the
      * database must call this method before calling {@link DbPool#getConnection}.
      */
-    public synchronized static void startup() {
+    public static synchronized void startup() {
         if (isInitialized()) {
             return;
         }
@@ -389,7 +389,8 @@ public class DbPool {
                     if (count == 0) {
                         i.remove();
                     } else {
-                        buf.append(count + " connections allocated at " + stackTrace + "\n");
+                        buf.append(count).append(" connections allocated at ").append(stackTrace)
+                            .append("\n");
                     }
                 }
             }

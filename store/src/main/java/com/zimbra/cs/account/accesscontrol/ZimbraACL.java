@@ -287,7 +287,7 @@ public class ZimbraACL {
     private static String dump(Collection<ZimbraACE> aces) {
         StringBuffer sb = new StringBuffer();
         for (ZimbraACE ace : aces)
-            sb.append(ace.dump(false) + " ");
+            sb.append(ace.dump(false)).append(" ");
         
         return sb.toString();
     }

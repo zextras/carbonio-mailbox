@@ -37,7 +37,7 @@ public class AttrRight extends AdminRight {
         sb.append("===== attrs right properties: =====\n");
         sb.append("target types: ");
         for (TargetType tt : mTargetTypes)
-            sb.append(tt.name() + " ");
+            sb.append(tt.name()).append(" ");
         sb.append("\n");
 
         if (mAttrs == null)
@@ -45,7 +45,7 @@ public class AttrRight extends AdminRight {
         else {
             sb.append("attrs:\n");
             for (String a : mAttrs) {
-                sb.append("    " + a + "\n");
+                sb.append("    ").append(a).append("\n");
             }
         }
 

@@ -62,7 +62,7 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
     private static final int MAX_PARSABLE_LIMIT = 1000; // 1K
     private static final int MAX_LIMIT = 10000000; // 10M
 
-    private final static Pattern LOCALE_PATTERN = Pattern.compile("([a-zA-Z]{2})(?:[-_]([a-zA-Z]{2})([-_](.+))?)?");
+    private static final Pattern LOCALE_PATTERN = Pattern.compile("([a-zA-Z]{2})(?:[-_]([a-zA-Z]{2})([-_](.+))?)?");
 
     private ZimbraSoapContext requestContext;
 

@@ -55,7 +55,7 @@ public final class ZFilterRules implements ToZJSONObject {
 
     @Override
     public String toString() {
-        return String.format("[ZFilterRules]");
+        return "[ZFilterRules]";
     }
 
     public String dump() {

@@ -230,7 +230,7 @@ public class InMemoryLdapServer {
                 
                 // add list of known DNs 
                 InMemoryDirectoryServerConfig config = 
-                    new InMemoryDirectoryServerConfig(baseDNs.toArray(new String[baseDNs.size()]));
+                    new InMemoryDirectoryServerConfig(baseDNs.toArray(new String[0]));
 
                 config.addAdditionalBindCredentials("cn=config", LC.ldap_root_password.value());
                 config.setSchema(schema);

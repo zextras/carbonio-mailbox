@@ -376,9 +376,7 @@ public class SearchDirectoryOptions {
 
     protected void setTypesInternal(SearchDirectoryOptions.ObjectType... objTypes) {
         types = Sets.newHashSet();
-        for (SearchDirectoryOptions.ObjectType type : objTypes) {
-            types.add(type);
-        }
+      types.addAll(Arrays.asList(objTypes));
     }
 
     public void addType(SearchDirectoryOptions.ObjectType objType) {

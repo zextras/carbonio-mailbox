@@ -134,7 +134,7 @@ public class WikiDigestFixup {
     private static void fixupItems(DbConnection conn, int mboxId, List<WikiDigest> digests)
     throws SQLException, ServiceException {
         StringBuilder sql = new StringBuilder("UPDATE ");
-        sql.append("mailbox" + mboxId + ".mail_item");
+        sql.append("mailbox").append(mboxId).append(".mail_item");
         sql.append(" SET blob_digest = ? WHERE id = ? AND type in (");
         sql.append(MailItem.Type.WIKI.toByte());
         sql.append(", ");

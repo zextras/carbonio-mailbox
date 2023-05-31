@@ -256,7 +256,7 @@ public abstract class LocalConfigUpgrade {
 	}
     }
     
-    private final static HashMap<String,LocalConfigUpgrade> sUpgrades;
+    private static final HashMap<String,LocalConfigUpgrade> sUpgrades;
     
     static {
 	sUpgrades = new HashMap<String,LocalConfigUpgrade>();

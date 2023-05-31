@@ -1049,7 +1049,7 @@ public abstract class AdminAccessControl {
      *  Note: this is the only place where permission is computed from an
      *  AllEffectiveRights object - because of bug 39514.
      */
-    public static abstract class BulkRightChecker implements NamedEntry.CheckRight {
+    public abstract static class BulkRightChecker implements NamedEntry.CheckRight {
         protected AdminAccessControl mAC;
         protected Provisioning mProv;
         RightCommand.AllEffectiveRights mAllEffRights;
@@ -1397,7 +1397,7 @@ public abstract class AdminAccessControl {
             return sar;
         }
      */
-    public static abstract class DynamicAttrsRight {
+    public abstract static class DynamicAttrsRight {
         abstract boolean checkRight(AccessManager am, Account authedAcct, Entry target)
         throws ServiceException;
     }

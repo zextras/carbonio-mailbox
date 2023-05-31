@@ -266,9 +266,7 @@ public class GetMiniCal extends CalendarRequest {
             ZGetMiniCalResult result = zmbx.getMiniCal(rangeStart, rangeEnd, remoteIds);
             Set<String> dates = result.getDates();
             if (dates != null) {
-                for (String datestamp : dates) {
-                    busyDates.add(datestamp);
-                }
+              busyDates.addAll(dates);
             }
             List<ZMiniCalError> errors = result.getErrors();
             if (errors != null) {

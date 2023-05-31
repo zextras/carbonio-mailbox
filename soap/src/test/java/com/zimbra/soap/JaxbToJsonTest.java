@@ -503,8 +503,6 @@ public class JaxbToJsonTest {
       <a n="zimbraMailAlias">grendl@coco.local</a>
       <a n="description">Wonder at that</a>
       <a n="displayName">Gren DLfun</a>
-      <a n="zimbraDistributionListSubscriptionPolicy">ACCEPT</a>
-      <a n="zimbraDistributionListUnsubscriptionPolicy">ACCEPT</a>
     </dl>
   </GetDistributionListResponse>
   # zmsoap --json -z -t account -m user1 GetDistributionListRequest/dl=grendl@coco.local @by=name
@@ -520,9 +518,7 @@ public class JaxbToJsonTest {
           "zimbraMailStatus": "enabled",
           "zimbraMailAlias": "grendl@coco.local",
           "description": "Wonder at that",
-          "displayName": "Gren DLfun",
-          "zimbraDistributionListSubscriptionPolicy": "ACCEPT",
-          "zimbraDistributionListUnsubscriptionPolicy": "ACCEPT"
+        "displayName": "Gren DLfun"
         }
       }],
     "_jsns": "urn:zimbraAccount"

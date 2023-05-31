@@ -19,11 +19,11 @@ import com.zimbra.common.soap.Element;
 
 public final class ParsedDuration
 {
-    static public final int WEEKS = 1;
-    static public final int DAYS = 2;
-    static public final int HOURS = 3;
-    static public final int MINUTES = 4;
-    static public final int SECONDS = 5;
+    public static final int WEEKS = 1;
+    public static final int DAYS = 2;
+    public static final int HOURS = 3;
+    public static final int MINUTES = 4;
+    public static final int SECONDS = 5;
     
     private int mWeeks = 0;
     private int mDays = 0;
@@ -129,24 +129,24 @@ public final class ParsedDuration
         StringBuffer toRet = new StringBuffer(start);
         if (mWeeks != 0) {
             assert(mDays == 0 && mHours == 0 && mMins == 0 && mSecs == 0);
-            toRet.append(mWeeks+"W");
+            toRet.append(mWeeks).append("W");
             return toRet.toString();
         }
         if (mDays != 0) {
-            toRet.append(mDays+"D");
+            toRet.append(mDays).append("D");
             if (mHours == 0 && mMins == 0 && mSecs == 0) {
                 return toRet.toString();
             }
         }
         toRet.append("T");
         if (mHours!= 0) {
-            toRet.append(mHours+"H");
+            toRet.append(mHours).append("H");
         }
         if (mMins!= 0) {
-            toRet.append(mMins+"M");
+            toRet.append(mMins).append("M");
         }
         if (mSecs!= 0) {
-            toRet.append(mSecs+"S");
+            toRet.append(mSecs).append("S");
         }
         if (mSecs == 0 && mMins == 0 && mHours == 0 && mDays == 0) {
             toRet.append("0S"); //alarm at the time of event.

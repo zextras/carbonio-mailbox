@@ -72,7 +72,7 @@ public class SoapDynamicGroup extends DynamicGroup implements SoapEntry {
         if (membersList == null) {
             return new String[0];
         } else {
-            return membersList.toArray(new String[membersList.size()]);
+            return membersList.toArray(new String[0]);
         }
     }
     

@@ -15,12 +15,12 @@ public class JettyMonitor {
 
     private static ThreadPool threadPool = null;
     
-    public synchronized static void setThreadPool(ThreadPool pool) {
+    public static synchronized void setThreadPool(ThreadPool pool) {
         System.out.println(JettyMonitor.class.getSimpleName() + " monitoring thread pool " + pool);
         threadPool = pool;
     }
     
-    public synchronized static ThreadPool getThreadPool() {
+    public static synchronized ThreadPool getThreadPool() {
         return threadPool;
     }
 }

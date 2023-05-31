@@ -138,9 +138,7 @@ public class ArrayUtil {
         }
 
         byte[] toRet = new byte[tmpOff];
-        for (int i = 0; i < tmpOff; i++) {
-            toRet[i] = tmp[i];
-        }
+      System.arraycopy(tmp, 0, toRet, 0, tmpOff);
         
         // FIXME testing code only!
         for (int i = toRet.length-1; i>=0; i--) {

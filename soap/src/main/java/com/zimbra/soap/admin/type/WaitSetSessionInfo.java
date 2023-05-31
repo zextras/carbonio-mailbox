@@ -5,6 +5,7 @@
 
 package com.zimbra.soap.admin.type;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -120,9 +121,7 @@ public class WaitSetSessionInfo {
     public void setFolderInterests(Integer... folderIds) {
         this.folderInterests.clear();
         if (folderIds != null) {
-            for (Integer folderId : folderIds) {
-                this.folderInterests.add(folderId);
-            }
+          this.folderInterests.addAll(Arrays.asList(folderIds));
         }
     }
 
@@ -158,9 +157,7 @@ public class WaitSetSessionInfo {
     public void setChangedFolders(Integer... folderIds) {
         this.changedFolders.clear();
         if (folderIds != null) {
-            for (Integer folderId : folderIds) {
-                this.changedFolders.add(folderId);
-            }
+          this.changedFolders.addAll(Arrays.asList(folderIds));
         }
     }
 

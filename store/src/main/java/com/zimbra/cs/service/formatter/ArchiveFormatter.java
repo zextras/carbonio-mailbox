@@ -567,7 +567,7 @@ public abstract class ArchiveFormatter extends Formatter {
       throws ServiceException {
 
     String ext = null, name = null;
-    String extra = null;
+    StringBuilder extra = null;
     Integer fid = mi.getFolderId();
     String fldr;
     InputStream is = null;
@@ -640,9 +640,9 @@ public abstract class ArchiveFormatter extends Formatter {
           }
           for (ItemId i : calItems) {
             if (extra == null) {
-              extra = "calendar=" + i.toString();
+              extra = new StringBuilder("calendar=" + i.toString());
             } else {
-              extra += ',' + i.toString();
+              extra.append(',').append(i.toString());
             }
           }
         }
@@ -752,7 +752,7 @@ public abstract class ArchiveFormatter extends Formatter {
         aoe.setUnread();
       }
       if (meta) {
-        ItemData itemData = new ItemData(mi, extra);
+        ItemData itemData = new ItemData(mi, extra.toString());
         if (context.noHierarchy()) {
           // Parent hierarchy is not needed, so change the path in the metadata to start from
           // target.

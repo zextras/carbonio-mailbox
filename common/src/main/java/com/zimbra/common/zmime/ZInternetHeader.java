@@ -330,6 +330,7 @@ public class ZInternetHeader {
             byte c = content[pos];
             if (c <= 0 || c >= 0x7F || (c == '=' && pos < end - 1 && content[pos + 1] == '?')) {
                 complicated = true;
+                break;
             }
         }
         if (!complicated) {
@@ -426,7 +427,7 @@ public class ZInternetHeader {
 
     public enum SequenceType {UNDEFINED, ERROR, COMMENT /* comment */, EW /* encoded-word */, LWS /* linear-white-space */};
     public enum EncodeSequenceState {CHARSET, ENCODEMETHOD, TEXT, UNDEFINED};
-    static public class FieldElement {
+    public static class FieldElement {
         private SequenceType seqType;
         private ByteArrayOutputStream bytes;
         private ByteArrayOutputStream charset;

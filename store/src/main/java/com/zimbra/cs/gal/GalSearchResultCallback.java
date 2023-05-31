@@ -179,8 +179,7 @@ public class GalSearchResultCallback implements GalContact.Visitor {
     				str[1] = value;
     				map.put(key, str);
     			} else if (obj instanceof String[]) {
-    				ArrayList<String> arr = new ArrayList<String>();
-    				arr.addAll(Arrays.asList((String[])obj));
+            ArrayList<String> arr = new ArrayList<String>(Arrays.asList((String[]) obj));
     				arr.add(value);
     				map.put(key, arr.toArray(new String[0]));
     			}
@@ -244,7 +243,7 @@ public class GalSearchResultCallback implements GalContact.Visitor {
         return Provisioning.getInstance().inACLGroup(mAuthAcct, groupZimbraId);
     }
 
-    public static abstract class PassThruGalSearchResultCallback extends GalSearchResultCallback {
+    public abstract static class PassThruGalSearchResultCallback extends GalSearchResultCallback {
         protected Element mProxiedResponse;
         protected boolean mPagingSupported; // default to false
 

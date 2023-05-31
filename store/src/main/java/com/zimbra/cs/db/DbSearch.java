@@ -1166,7 +1166,7 @@ public final class DbSearch {
         }
     }
 
-    public static abstract class Result {
+    public abstract static class Result {
         private final Object sortValue;
 
         protected Result(Object sortValue) {

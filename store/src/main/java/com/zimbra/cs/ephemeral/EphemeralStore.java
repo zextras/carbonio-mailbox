@@ -437,7 +437,7 @@ public abstract class EphemeralStore {
         }
     }
 
-    public static abstract class Factory {
+    public abstract static class Factory {
 
         private static String getBackendURL(BackendType type) throws ServiceException {
             Config config = Provisioning.getInstance().getConfig();

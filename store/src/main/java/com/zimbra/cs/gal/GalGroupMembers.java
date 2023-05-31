@@ -36,7 +36,7 @@ import com.zimbra.soap.type.NamedValue;
 public class GalGroupMembers {
 
     // common super interface for all the DLMembers classes
-    public static abstract class DLMembersResult {
+    public abstract static class DLMembersResult {
         protected Set<String> mMembersSet;
 
         protected abstract Set<String> getAllMembers() throws ServiceException;
@@ -46,7 +46,7 @@ public class GalGroupMembers {
         }
     }
 
-    public static abstract class DLMembers extends DLMembersResult {
+    public abstract static class DLMembers extends DLMembersResult {
 
         abstract public int getTotal();
 

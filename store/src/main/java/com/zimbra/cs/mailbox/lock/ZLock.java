@@ -27,7 +27,7 @@ public class ZLock extends ReentrantReadWriteLock {
         }
         int readCount = getReadLockCount();
         if (readCount > 0) {
-            out.append("Reader Count - " + readCount + "\n");
+            out.append("Reader Count - ").append(readCount).append("\n");
         }
         for (Thread waiter : getQueuedThreads()) {
             out.append("Lock Waiter - ");

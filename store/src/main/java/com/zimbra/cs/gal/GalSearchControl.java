@@ -341,7 +341,7 @@ public class GalSearchControl {
         StringBuilder searchQuery = new StringBuilder();
 
         if (searchByDn != null) {
-            searchQuery.append("#dn:(" + searchByDn + ")");
+            searchQuery.append("#dn:(").append(searchByDn).append(")");
         } else if (!Strings.isNullOrEmpty(galSearchQuery)) {
             searchQuery.append(galSearchQuery.replace("\"", "\\\"")); // escape quotes
         } else if (!Strings.isNullOrEmpty(query)) {

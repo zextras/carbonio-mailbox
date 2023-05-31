@@ -359,9 +359,7 @@ public class ItemAction extends MailDocumentHandler {
                 }
             }
             List<String> reconstructedIds = new ArrayList<String>();
-            for (String id: reconstructedConvIds) {
-                reconstructedConvIds.add(id);
-            }
+          reconstructedConvIds.addAll(reconstructedConvIds);
             trashResults.setSuccessIds(reconstructedIds);
         }
         return trashResults;

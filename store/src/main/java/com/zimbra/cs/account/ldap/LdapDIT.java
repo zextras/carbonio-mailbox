@@ -793,6 +793,6 @@ public class LdapDIT {
       addBase(bases, ucServiceBaseDN());
     }
 
-    return bases.toArray(new String[bases.size()]);
+    return bases.toArray(new String[0]);
   }
 }
