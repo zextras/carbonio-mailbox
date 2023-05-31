@@ -43,7 +43,7 @@ import com.zimbra.soap.admin.type.CacheEntryType;
 
 public class RenameDomain {
 
-    public static abstract class RenameDomainLdapHelper {
+    public abstract static class RenameDomainLdapHelper {
         protected LdapProv mProv;
         protected ILdapContext mZlc;
 
@@ -420,14 +420,6 @@ public class RenameDomain {
         domainAttrs.remove("DKIMSelector");
         domainAttrs.remove("DKIMPublicKey");
 
-        // domain level system accounts should be updated to use the new domain name
-        String curNotebookAcctName = (String)domainAttrs.get(Provisioning.A_zimbraNotebookAccount);
-        String newNotebookAcctName = getNewAddress(curNotebookAcctName);
-        if (curNotebookAcctName != null && newNotebookAcctName != null) {
-            domainAttrs.remove(Provisioning.A_zimbraNotebookAccount);
-            domainAttrs.put(Provisioning.A_zimbraNotebookAccount, newNotebookAcctName);
-        }
-
         // the new domain is created shutdown and rejecting mails
         domainAttrs.put(Provisioning.A_zimbraDomainStatus, Provisioning.DOMAIN_STATUS_SHUTDOWN);
         domainAttrs.put(Provisioning.A_zimbraMailStatus, Provisioning.MAIL_STATUS_DISABLED);
@@ -737,7 +729,7 @@ public class RenameDomain {
                     // if there is any address format error and the address cannot be converted,
                     // whatever the current value will be carried to the new entry.
                     if (newValues.size() > 0) {
-                        attrs.put(attr, newValues.toArray(new String[newValues.size()]));
+                        attrs.put(attr, newValues.toArray(new String[0]));
                     }
                 }
             }
@@ -1009,7 +1001,6 @@ public class RenameDomain {
             Config config = mProv.getConfig();
 
             HashMap<String, Object> attrMap = new HashMap<String, Object>();
-            updateSystemAccount(config, Provisioning.A_zimbraNotebookAccount, attrMap);
             updateSystemAccount(config, Provisioning.A_zimbraSpamIsSpamAccount, attrMap);
             updateSystemAccount(config, Provisioning.A_zimbraSpamIsNotSpamAccount, attrMap);
             updateSystemAccount(config, Provisioning.A_zimbraAmavisQuarantineAccount, attrMap);

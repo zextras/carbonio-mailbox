@@ -109,7 +109,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testHtmlWithStyleValueContainingMultiLineUrl() throws Exception {
     defangHtmlString(String.format(htmlTemplateForUrlWithInlinePNG, urlWithInlinePNG),
         String.format(htmlTemplateForUrlWithInlinePNG, defangedUrlWithInlinePNG));
@@ -121,7 +120,6 @@ public class OwaspHtmlSanitizerTest {
 
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug98215() throws Exception {
     String html = "<a href=\"vbscript:alert(parent.csrfToken)\">CLICK</a>";
     String result = new OwaspHtmlSanitizer(html, true, null).sanitize();
@@ -161,7 +159,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   /*
    * Verify that a new line in a html based signature is maintained after
    * passing through the defanger.
@@ -204,7 +201,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug82303() throws Exception {
     String html = "<a href=\"http://ebobby.org/2013/05/18/"
         + "Fun-with-Javascript-and-function-tracing.html\" "
@@ -283,7 +279,6 @@ public class OwaspHtmlSanitizerTest {
    * @throws Exception
    */
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug67537() throws Exception {
     String html = "<html><body><span style=\"color: rgb(255, 0, 0);\">This is RED</span></body></html>";
     String result = new OwaspHtmlSanitizer(html, true, null).sanitize();
@@ -291,7 +286,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug76500() throws Exception {
     String html = "<blockquote style=\"border-left:2px solid rgb(16, 16, 255);\">";
     String result = new OwaspHtmlSanitizer(html, true, null).sanitize();
@@ -299,7 +293,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug97443() throws Exception {
     String html = "<html><head></head><body><table><tr><td><B>javascript-blocked test </B></td>"
         + "</tr><tr><td><a href=\"javascript:alert('Hello!');\">alert</a>"
@@ -320,7 +313,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug78902() throws Exception {
 
     String html = "<html><head></head><body><a target=\"_blank\" href=\"Neptune.gif\"></a></body></html>";
@@ -361,7 +353,6 @@ public class OwaspHtmlSanitizerTest {
    * @throws Exception
    */
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug64903() throws Exception {
     String fileName = "bug_60769.txt";
     InputStream htmlStream = getHtmlBody(fileName);
@@ -376,7 +367,6 @@ public class OwaspHtmlSanitizerTest {
    * @throws Exception
    */
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug64726() throws Exception {
     String fileName = "bug_64726.txt";
     InputStream htmlStream = getHtmlBody(fileName);
@@ -396,7 +386,6 @@ public class OwaspHtmlSanitizerTest {
    * @throws Exception
    */
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug58889() throws Exception {
     String fileName = "bug_58889.txt";
     InputStream htmlStream = getHtmlBody(fileName);
@@ -419,7 +408,6 @@ public class OwaspHtmlSanitizerTest {
    * @throws Exception
    */
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug64974() throws Exception {
     String html = "<html><body><![CDATA[--><a href=\"data:text/html;base64,PHNjcmlwdD4KYWxlcnQoZG9jdW1lbnQuY29va2llKQo8L3NjcmlwdD4=\">click</a]]></body></html>";
     String result = new OwaspHtmlSanitizer(html, true, null).sanitize();
@@ -427,7 +415,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   /**
    * Verify that a new line in a html based signature is maintained after passing through the defanger.
    * @throws Exception
@@ -447,7 +434,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   /**
    * Verify that data-mce-src attributes of img tag are maintained after passing through the defanger.
    * @throws Exception
@@ -462,7 +448,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug85478() throws Exception {
     String html = "<a href=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgiSGVsbG8hIik7PC9zY3JpcHQ+\" "
         + "data-mce-href=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgiSGVsbG8hIik7PC9zY3JpcHQ+\">Bug</a>";
@@ -518,7 +503,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug83999() throws IOException {
 
     String html = "<FORM NAME=\"buy\" ENCTYPE=\"text/plain\" " +
@@ -551,7 +535,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug102637() throws Exception {
     String html =
         "<html><body><div style=\"font-family: arial, helvetica, sans-serif; font-size: 12pt; color: #000000\">"
@@ -568,7 +551,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug73037() throws Exception {
     String html = "<html><head></head><body><a target=\"_blank\"" +
         " href=\"smb://Aurora._smb._tcp.local/untitled/folder/03 DANDIYA MIX.mp3\"></a></body></html>";
@@ -596,7 +578,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug73874() throws Exception {
     String fileName = "bug_73874.txt";
     InputStream htmlStream = getHtmlBody(fileName);
@@ -667,7 +648,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testBug102910() throws Exception {
     String html = "<div><img pnsrc=\"cid:1040f05975d4d4b8fcf8747be3eb9ae3c08e5cd4@zimbra\" "
         + "data-mce-src=\"cid:1040f05975d4d4b8fcf8747be3eb9ae3c08e5cd4@zimbra\" "
@@ -678,7 +658,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testZCS7621() throws Exception {
     String html = "<div class=\"gmail\" style=\"display:none; width:0; overflow:hidden; float:left; max-height:0;\" align=\"center\">";
     String result = new OwaspHtmlSanitizer(html, true, null).sanitize();
@@ -687,7 +666,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testZCS7784() throws Exception {
     String html = "<img class=\"gmail\" style=\"display:none; width:0; overflow:hidden;\" src=\"https://localhost:8443/service/home/~/?auth=co&loc=en_US&id=285&part=2.2\" >";
     String result = new OwaspHtmlSanitizer(html, true, null).sanitize();
@@ -695,7 +673,6 @@ public class OwaspHtmlSanitizerTest {
   }
 
   @Test
-  @Ignore("Please add missing owasp xml files")
   public void testZBUG1215() throws Exception {
     String html = "<div id=\"noticias\"><div class=\"bloque\">BLOQUESSS</div></div>";
     String result = new OwaspHtmlSanitizer(html, true, null).sanitize();

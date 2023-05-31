@@ -390,10 +390,6 @@
   <desc>create sub domain</desc>
 </right>
 
-<right name="checkDomainMXRecord" type="preset" targetType="domain">
-  <desc>check domain MX record</desc>
-</right>
-
 <right name="countAccount" type="preset" targetType="domain">
   <desc>count accounts in a domain</desc>
 </right>
@@ -452,13 +448,6 @@
 
 <right name="checkExchangeAuthConfig" type="preset" targetType="domain">
   <desc>check exchange auth config</desc>
-</right>
-
-<right name="configureWikiAccount" type="setAttrs" targetType="domain,config">
-  <desc>configure attributes for wiki account</desc>
-   <attrs>
-    <a n="zimbraNotebookAccount"/>
-  </attrs>
 </right>
 
 

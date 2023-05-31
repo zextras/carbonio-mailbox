@@ -39,17 +39,13 @@ public class GetDistributionList extends DistributionListDocumentHandler {
             Provisioning.A_zimbraNotes,
             Provisioning.A_zimbraPrefReplyToAddress,
             Provisioning.A_zimbraPrefReplyToDisplay,
-            Provisioning.A_zimbraPrefReplyToEnabled,
-            Provisioning.A_zimbraDistributionListSubscriptionPolicy,
-            Provisioning.A_zimbraDistributionListUnsubscriptionPolicy);
+            Provisioning.A_zimbraPrefReplyToEnabled);
 
     private static final Set<String> NON_OWNER_ATTRS = Sets.newHashSet(
             Provisioning.A_description,
             Provisioning.A_displayName,
             Provisioning.A_zimbraHideInGal,
-            Provisioning.A_zimbraNotes,
-            Provisioning.A_zimbraDistributionListSubscriptionPolicy,
-            Provisioning.A_zimbraDistributionListUnsubscriptionPolicy);
+            Provisioning.A_zimbraNotes);
 
     public Element handle(Element request, Map<String, Object> context)
     throws ServiceException {
@@ -159,36 +155,17 @@ public class GetDistributionList extends DistributionListDocumentHandler {
                     continue;
                 }
 
-                if (key.equals(Provisioning.A_zimbraDistributionListSubscriptionPolicy) ||
-                    key.equals(Provisioning.A_zimbraDistributionListUnsubscriptionPolicy)) {
-                    // subscription policies are encoded differently, using Group API that returns
-                    // default policy if the policy attrs are not set.
-                } else {
-                    Object value = entry.getValue();
-                    if (value instanceof String[]) {
-                        String sa[] = (String[]) value;
-                        for (int i = 0; i < sa.length; i++) {
-                            eParent.addKeyValuePair(key, sa[i], AccountConstants.E_A, AccountConstants.A_N);
-                        }
-                    } else {
-                        eParent.addKeyValuePair(key, (String) value, AccountConstants.E_A, AccountConstants.A_N);
+                Object value = entry.getValue();
+                if (value instanceof String[]) {
+                    String sa[] = (String[]) value;
+                    for (int i = 0; i < sa.length; i++) {
+                        eParent.addKeyValuePair(key, sa[i], AccountConstants.E_A, AccountConstants.A_N);
                     }
+                } else {
+                    eParent.addKeyValuePair(key, (String) value, AccountConstants.E_A, AccountConstants.A_N);
                 }
             }
         }
-
-        if (specificAttrs == null || specificAttrs.contains(Provisioning.A_zimbraDistributionListSubscriptionPolicy)) {
-            eParent.addKeyValuePair(Provisioning.A_zimbraDistributionListSubscriptionPolicy,
-                    group.getSubscriptionPolicy().name(),
-                    AccountConstants.E_A, AccountConstants.A_N);
-        }
-
-        if (specificAttrs == null || specificAttrs.contains(Provisioning.A_zimbraDistributionListUnsubscriptionPolicy)) {
-            eParent.addKeyValuePair(Provisioning.A_zimbraDistributionListUnsubscriptionPolicy,
-                    group.getUnsubscriptionPolicy().name(),
-                    AccountConstants.E_A, AccountConstants.A_N);
-        }
-
     }
 
     public static Set<String> visibleAttrs(Iterable<String> needAttrs, boolean isOwner) {

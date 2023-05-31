@@ -14,7 +14,7 @@ package com.zimbra.common.util;
      */
 class AccessBoundedCharSequence implements CharSequence {
     final CharSequence sequence;
-    final public int maxAccesses;
+    public final int maxAccesses;
     public Integer accessCount;
 
     /**

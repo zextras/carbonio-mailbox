@@ -90,7 +90,7 @@ import com.zimbra.soap.ZimbraSoapContext;
  */
 public class GetLoggerStats extends AdminDocumentHandler {
     
-    private final static String ZMRRDFETCH = LC.zimbra_home.value() + "/libexec/zmrrdfetch";
+    private static final String ZMRRDFETCH = LC.zimbra_home.value() + "/libexec/zmrrdfetch";
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\\\"?\\s*,\\s*\\\"?");
 
     @Override

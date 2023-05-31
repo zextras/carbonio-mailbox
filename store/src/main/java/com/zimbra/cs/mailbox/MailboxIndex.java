@@ -1089,7 +1089,7 @@ public final class MailboxIndex {
      * Leaving hard coded.  This is the number of accesses allowed to the underlying CharSequence before
      * deciding that too much resource has been used.
      */
-    final private static int MAX_REGEX_ACCESSES = 100000;
+    private static final int MAX_REGEX_ACCESSES = 100000;
     /**
      * Returns all domain names from the index.
      *
@@ -1387,7 +1387,7 @@ public final class MailboxIndex {
         }
     }
 
-    public static abstract class IndexTask implements Runnable {
+    public abstract static class IndexTask implements Runnable {
         private final Mailbox mailbox;
 
         public IndexTask(Mailbox mbox) {

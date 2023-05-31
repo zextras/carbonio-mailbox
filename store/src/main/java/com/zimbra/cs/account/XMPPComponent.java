@@ -6,6 +6,7 @@
 package com.zimbra.cs.account;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -66,8 +67,7 @@ public class XMPPComponent extends NamedEntry implements Comparable {
         String[] features = this.getMultiAttr(Provisioning.A_zimbraXMPPComponentFeatures);
         if (features != null && features.length > 0) {
             toRet = new ArrayList<String>(features.length);
-            for (String s : features)
-                toRet.add(s);
+          toRet.addAll(Arrays.asList(features));
         } else {
             toRet = new ArrayList<String>();
         }

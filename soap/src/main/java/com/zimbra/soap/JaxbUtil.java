@@ -22,8 +22,6 @@ import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.soap.admin.message.IssueCertRequest;
-import com.zimbra.soap.admin.message.IssueCertResponse;
 import com.zimbra.soap.json.JacksonUtil;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
@@ -188,8 +186,6 @@ public final class JaxbUtil {
           com.zimbra.soap.account.message.SearchCalendarResourcesResponse.class,
           com.zimbra.soap.account.message.SearchGalRequest.class,
           com.zimbra.soap.account.message.SearchGalResponse.class,
-          com.zimbra.soap.account.message.SubscribeDistributionListRequest.class,
-          com.zimbra.soap.account.message.SubscribeDistributionListResponse.class,
           com.zimbra.soap.account.message.SyncGalRequest.class,
           com.zimbra.soap.account.message.SyncGalResponse.class,
           com.zimbra.soap.account.message.GetAllAddressListsRequest.class,
@@ -240,8 +236,6 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.CheckBlobConsistencyResponse.class,
           com.zimbra.soap.admin.message.CheckDirectoryRequest.class,
           com.zimbra.soap.admin.message.CheckDirectoryResponse.class,
-          com.zimbra.soap.admin.message.CheckDomainMXRecordRequest.class,
-          com.zimbra.soap.admin.message.CheckDomainMXRecordResponse.class,
           com.zimbra.soap.admin.message.CheckExchangeAuthRequest.class,
           com.zimbra.soap.admin.message.CheckExchangeAuthResponse.class,
           com.zimbra.soap.admin.message.CheckGalConfigRequest.class,
@@ -710,8 +704,6 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.VerifyIndexResponse.class,
           com.zimbra.soap.admin.message.VerifyStoreManagerRequest.class,
           com.zimbra.soap.admin.message.VerifyStoreManagerResponse.class,
-          com.zimbra.soap.admin.message.VersionCheckRequest.class,
-          com.zimbra.soap.admin.message.VersionCheckResponse.class,
           com.zimbra.soap.adminext.message.BulkIMAPDataImportRequest.class,
           com.zimbra.soap.adminext.message.BulkIMAPDataImportResponse.class,
           com.zimbra.soap.adminext.message.BulkImportAccountsRequest.class,
@@ -820,8 +812,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.GetCalendarItemSummariesResponse.class,
           com.zimbra.soap.mail.message.GetCommentsRequest.class,
           com.zimbra.soap.mail.message.GetCommentsResponse.class,
-          com.zimbra.soap.mail.message.GetContactBackupListRequest.class,
-          com.zimbra.soap.mail.message.GetContactBackupListResponse.class,
           com.zimbra.soap.mail.message.GetContactsRequest.class,
           com.zimbra.soap.mail.message.GetContactsResponse.class,
           com.zimbra.soap.mail.message.GetConvRequest.class,
@@ -948,8 +938,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.RemoveAttachmentsResponse.class,
           com.zimbra.soap.mail.message.ResetRecentMessageCountRequest.class,
           com.zimbra.soap.mail.message.ResetRecentMessageCountResponse.class,
-          com.zimbra.soap.mail.message.RestoreContactsRequest.class,
-          com.zimbra.soap.mail.message.RestoreContactsResponse.class,
           com.zimbra.soap.mail.message.RevokePermissionRequest.class,
           com.zimbra.soap.mail.message.RevokePermissionResponse.class,
           com.zimbra.soap.mail.message.SaveDocumentRequest.class,

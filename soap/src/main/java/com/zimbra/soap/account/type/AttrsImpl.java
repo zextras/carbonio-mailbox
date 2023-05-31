@@ -25,7 +25,7 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.soap.json.jackson.annotate.ZimbraKeyValuePairs;
 
 @XmlAccessorType(XmlAccessType.NONE)
-abstract public class AttrsImpl implements Attrs {
+public abstract class AttrsImpl implements Attrs {
 
     /**
      * @zm-api-field-description Attributes

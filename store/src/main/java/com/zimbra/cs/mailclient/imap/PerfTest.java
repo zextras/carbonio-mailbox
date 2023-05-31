@@ -45,7 +45,7 @@ public class PerfTest {
     }
 
     private static void p(String fmt, Object... args) {
-        System.out.println(String.format(fmt, args));
+        System.out.printf((fmt) + "%n", args);
     }
 
     public static void main(String[] args) throws Throwable {

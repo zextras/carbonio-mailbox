@@ -249,12 +249,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   /** return coses from searchDirectory */
   public static final int SD_DYNAMIC_GROUP_FLAG = 0x100;
 
-  /** do not fixup objectclass in query for searchObject, only used from LdapUpgrade */
-  public static final int SO_NO_FIXUP_OBJECTCLASS = 0x200;
-
-  /** do not fixup return attrs for searchObject, onlt used from LdapUpgrade */
-  public static final int SO_NO_FIXUP_RETURNATTRS = 0x400;
-
   /** return distribution lists from searchAccounts/searchDirectory */
   public static final int SD_HAB_FLAG = 0x12;
 
@@ -294,7 +288,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
    * cached. For LdapProvisionig, each LDAP related method will cost one or more LDAP trips. The
    * only usage for useCache=false is zmconfigd. (bug 70975 and 71267)
    *
-   * @param useCache
    * @return
    */
   public static Provisioning getInstance(CacheMode origCacheMode) {
@@ -380,7 +373,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
    *       attr is updated
    * </ul>
    *
-   * Calls {@link #modifyAttrs(Map, boolean)} with <code>checkImmutable=false</code>.
+   * Calls {@link #modifyAttrs(com.zimbra.cs.account.Entry, java.util.Map, boolean)} with <code>checkImmutable=false</code>.
    */
   public void modifyAttrs(Entry e, Map<String, ? extends Object> attrs) throws ServiceException {
     modifyAttrs(e, attrs, false);
@@ -1054,7 +1047,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   /**
    * Auto provisioning account in EAGER mode.
    *
-   * @param domain
    * @return
    * @throws ServiceException
    */
@@ -1603,51 +1595,21 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public List<Server> getAllWebClientServers() throws ServiceException {
     List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
     List<Server> webclientservers = getAllServers(Provisioning.SERVICE_WEBCLIENT);
-
-    for (Server server : mailboxservers) {
-      String version = server.getAttr(Provisioning.A_zimbraServerVersion, null);
-      // We get all pre 8.5 servers first (ones which don't have the zimbraServerVersion set)
-      if (version != null) {
-        continue;
-      }
-      // Add it to the list of 8.5+ webclient servers and return this list
-      webclientservers.add(server);
-    }
-
+    webclientservers.addAll(mailboxservers);
     return webclientservers;
   }
 
   public List<Server> getAllAdminClientServers() throws ServiceException {
     List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
     List<Server> adminclientservers = getAllServers(Provisioning.SERVICE_ADMINCLIENT);
-
-    for (Server server : mailboxservers) {
-      String version = server.getAttr(Provisioning.A_zimbraServerVersion, null);
-      // We get all pre 8.5 servers first (ones which don't have the zimbraServerVersion set)
-      if (version != null) {
-        continue;
-      }
-      // Add it to the list of 8.5+ adminclient servers and return this list
-      adminclientservers.add(server);
-    }
-
+    adminclientservers.addAll(mailboxservers);
     return adminclientservers;
   }
 
   public List<Server> getAllZimletServers() throws ServiceException {
     List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
     List<Server> zimletservers = getAllServers(Provisioning.SERVICE_ZIMLET);
-
-    for (Server server : mailboxservers) {
-      String version = server.getAttr(Provisioning.A_zimbraServerVersion, null);
-      // We get all pre 8.5 servers first (ones which don't have the zimbraServerVersion set)
-      if (version != null) {
-        continue;
-      }
-      // Add it to the list of 8.5+ zimlet servers and return this list
-      zimletservers.add(server);
-    }
-
+    zimletservers.addAll(mailboxservers);
     return zimletservers;
   }
 
@@ -1666,17 +1628,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public List<Server> getAllMailClientServers() throws ServiceException {
     List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
     List<Server> mailclientservers = getAllServers(Provisioning.SERVICE_MAILCLIENT);
-
-    for (Server server : mailboxservers) {
-      String version = server.getAttr(Provisioning.A_zimbraServerVersion, null);
-      // We get all pre 8.5 servers first (ones which don't have the zimbraServerVersion set)
-      if (version != null) {
-        continue;
-      }
-      // Add it to the list of 8.5+ mailclient servers and return this list
-      mailclientservers.add(server);
-    }
-
+    mailclientservers.addAll(mailboxservers);
     return mailclientservers;
   }
 
@@ -2057,7 +2009,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
    *
    * @param server
    * @param opts
-   * @param visitor
    * @throws ServiceException
    */
   public List<NamedEntry> searchAccountsOnServer(Server server, SearchAccountsOptions opts)

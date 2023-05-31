@@ -16,7 +16,7 @@ The primary localization class is:
 
     com.zimbra.cs.util.L10nUtil
 
-This class has a static public method called getMessage():
+This class has a public static method called getMessage():
 
     public static String getMessage(MsgKey key,
                                     Locale lc,

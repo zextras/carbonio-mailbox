@@ -222,7 +222,7 @@ public abstract class RightBearer {
             }
         }
 
-        private final static class GranteeCacheKey {
+        private static final class GranteeCacheKey {
             private final NamedEntry namedEntry;
             private final Set <Right> rights;
             private final boolean adminOnly;

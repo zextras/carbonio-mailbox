@@ -49,7 +49,7 @@ public class EphemeralResult {
     }
 
     public EphemeralResult(EphemeralKey key, List<String> values) {
-        this(key, values.toArray(new String[values.size()]));
+        this(key, values.toArray(new String[0]));
     }
 
     public String getValue() {

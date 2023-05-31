@@ -175,7 +175,7 @@ public class MailboxManager {
     protected MailboxManager(boolean extend) {
     }
 
-    public synchronized static MailboxManager getInstance() throws ServiceException {
+    public static synchronized MailboxManager getInstance() throws ServiceException {
         if (sInstance == null) {
             String className = LC.zimbra_class_mboxmanager.value();
             if (className != null && !className.equals("")) {
@@ -953,9 +953,14 @@ public class MailboxManager {
         sb.append("----------------------------------------------------------------------\n");
         synchronized (this) {
             for (Map.Entry<String, Integer> entry : mailboxIds.entrySet())
-                sb.append("1) key=" + entry.getKey() + " (hash=" + entry.getKey().hashCode() + "); val=" + entry.getValue() + "\n");
+                sb.append("1) key=").append(entry.getKey()).append(" (hash=")
+                    .append(entry.getKey().hashCode()).append("); val=").append(entry.getValue())
+                    .append("\n");
             for (Map.Entry<Integer, Object> entry : cache.entrySet())
-                sb.append("2) key=" + entry.getKey() + "; val=" + entry.getValue() + "(class= " + entry.getValue().getClass().getName() + ",hash=" + entry.getValue().hashCode() + ")");
+                sb.append("2) key=").append(entry.getKey()).append("; val=")
+                    .append(entry.getValue()).append("(class= ")
+                    .append(entry.getValue().getClass().getName()).append(",hash=")
+                    .append(entry.getValue().hashCode()).append(")");
         }
         sb.append("----------------------------------------------------------------------\n");
         ZimbraLog.mailbox.debug(sb.toString());

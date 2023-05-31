@@ -76,7 +76,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
                 sb.append("<all attributes>");
             else {
                 for (String a : attrsNeeded)
-                    sb.append(a + " ");
+                    sb.append(a).append(" ");
             }
             sLog.debug("canAccessAttrs attrsNeeded: " + sb.toString());
         }
@@ -189,12 +189,12 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
     
     public String dump() {
         StringBuilder sb = new StringBuilder();
-        sb.append("result = " + mResult + " ");
+        sb.append("result = ").append(mResult).append(" ");
         
         if (mResult == Result.ALLOW_SOME) {
             sb.append("allowed = (");
             for (String a : mAllowSome)
-                sb.append(a + " ");
+                sb.append(a).append(" ");
             sb.append(")");
         }
         

@@ -27,14 +27,14 @@ public class SkinUtil {
     private static String[] sSkins = null;
 
     // returns all installed skins
-    private synchronized static String[] getAllInstalledSkinsSorted() throws ServiceException {
+    private static synchronized String[] getAllInstalledSkinsSorted() throws ServiceException {
         if (sSkins == null) {
             sSkins = loadSkins();
         }
         return sSkins;
     }
 
-    public synchronized static void flushCache() throws ServiceException {
+    public static synchronized void flushCache() throws ServiceException {
         sSkins = null;
         if (WebClientServiceUtil.isServerInSplitMode()) {
             WebClientServiceUtil.sendServiceRequestToEveryUiNode(FLUSH_SKINS_ON_UI_NODE);
@@ -50,7 +50,7 @@ public class SkinUtil {
         } else {
             loadSkinsByDiskScan(skins);
         }
-        String[] sortedSkins = skins.toArray(new String[skins.size()]);
+        String[] sortedSkins = skins.toArray(new String[0]);
         Arrays.sort(sortedSkins);
 		ZimbraLog.webclient.debug("Skin loading complete." );
         return sortedSkins;
@@ -91,7 +91,7 @@ public class SkinUtil {
                     skins.add(skin);
                 }
             }
-            availSkins = skins.toArray(new String[skins.size()]);
+            availSkins = skins.toArray(new String[0]);
         }
         return availSkins;
     }

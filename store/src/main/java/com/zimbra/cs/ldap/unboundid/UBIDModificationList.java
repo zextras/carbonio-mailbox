@@ -78,7 +78,7 @@ public class UBIDModificationList extends ZModificationList {
         if (valuesToAdd != null) {
             String transferAttrName = LdapUtil.attrNameToBinaryTransferAttrName(isBinaryTransfer, name);
             Modification mod = new Modification(ModificationType.ADD, transferAttrName,
-                    valuesToAdd.toArray(new ASN1OctetString[valuesToAdd.size()]));
+                    valuesToAdd.toArray(new ASN1OctetString[0]));
 
             modList.add(mod);
         }
@@ -114,7 +114,7 @@ public class UBIDModificationList extends ZModificationList {
 
         String transferAttrName = LdapUtil.attrNameToBinaryTransferAttrName(isBinaryTransfer, name);
         Modification mod = new Modification(ModificationType.REPLACE, transferAttrName,
-                valuesToMod.toArray(new ASN1OctetString[valuesToMod.size()]));
+                valuesToMod.toArray(new ASN1OctetString[0]));
 
         modList.add(mod);
 
@@ -148,7 +148,7 @@ public class UBIDModificationList extends ZModificationList {
         if (valuesToRemove != null) {
             String transferAttrName = LdapUtil.attrNameToBinaryTransferAttrName(isBinaryTransfer, name);
             Modification mod = new Modification(ModificationType.DELETE, transferAttrName,
-                    valuesToRemove.toArray(new ASN1OctetString[valuesToRemove.size()]));
+                    valuesToRemove.toArray(new ASN1OctetString[0]));
             modList.add(mod);
         }
 

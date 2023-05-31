@@ -50,11 +50,7 @@ public class Root {
         Iterator<Service> sit = this.getServices().iterator();
         while (sit.hasNext()) {
             Service    s = sit.next();
-            Iterator<Command> cit = s.getCommands().iterator();
-            while (cit.hasNext()) {
-                Command    c = cit.next();
-                allCommands.add(c);
-            }
+          allCommands.addAll(s.getCommands());
         }
 
         Collections.sort(allCommands, new Command.CommandComparator());

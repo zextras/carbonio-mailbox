@@ -593,14 +593,12 @@ public class ZoneInfo2iCalendar {
         Observances obs2 = toObservances(hintYear, zline2);
         if ((null != obs2.std) && (null != obs2.daylight)) {
           if (obs2.inDaylightTimeOnDate(referenceDate)) {
-            System.err.println(
-                String.format(
-                    "1st zoneLine '%s' for '%s' only has STANDARD time.",
-                    zline1.toString(), zline1.getName()));
-            System.err.println(
-                String.format(
-                    "Reference date %s would be in DAYLIGHT time by rules of 2nd zoneLine '%s'",
-                    fmtRefDate, zline2.toString()));
+            System.err.printf(
+                "1st zoneLine '%s' for '%s' only has STANDARD time.%n",
+                zline1.toString(), zline1.getName());
+            System.err.printf(
+                "Reference date %s would be in DAYLIGHT time by rules of 2nd zoneLine '%s'%n",
+                fmtRefDate, zline2.toString());
             System.err.println("Therefore, Ignoring 2nd zoneLine.");
             suppressWarning = true;
           } else {
@@ -613,19 +611,16 @@ public class ZoneInfo2iCalendar {
               // forward
               return toVTimeZoneComp(hintYear, toObservances(hintYear, zline2), vtzProps);
             }
-            System.err.println(
-                String.format(
-                    "1st zoneLine '%s' for '%s' only has STANDARD time.",
-                    zline1.toString(), zline1.getName()));
-            System.err.println(
-                String.format(
-                    "Reference date %s would also be in STANDARD time by rules of 2nd zoneLine"
-                        + " '%s'",
-                    fmtRefDate, zline2.toString()));
-            System.err.println(
-                String.format(
-                    "BUT OLD STANDARD has TZOFFSETTO=%s which differs from new TZOFFSETTO=%s.",
-                    oldOffsetTo.toString(), newOffsetTo.toString()));
+            System.err.printf(
+                "1st zoneLine '%s' for '%s' only has STANDARD time.%n",
+                zline1.toString(), zline1.getName());
+            System.err.printf(
+                "Reference date %s would also be in STANDARD time by rules of 2nd zoneLine"
+                    + " '%s'%n",
+                fmtRefDate, zline2.toString());
+            System.err.printf(
+                "BUT OLD STANDARD has TZOFFSETTO=%s which differs from new TZOFFSETTO=%s.%n",
+                oldOffsetTo.toString(), newOffsetTo.toString());
             System.err.println("Therefore, Ignoring 2nd zoneLine.");
             suppressWarning = true;
           }
@@ -633,11 +628,10 @@ public class ZoneInfo2iCalendar {
       }
     }
     if (!suppressWarning) {
-      System.err.println(
-          String.format(
-              "More than 1 zoneLine for zone '%s' but unknown scenario.  Using only zoneLine:\n"
-                  + "    %s",
-              zline1.getName(), zline1.toString()));
+      System.err.printf(
+          "More than 1 zoneLine for zone '%s' but unknown scenario.  Using only zoneLine:\n"
+              + "    %s%n",
+          zline1.getName(), zline1.toString());
     }
     return toVTimeZoneComp(hintYear, toObservances(hintYear, zline1), vtzProps);
   }
@@ -790,10 +784,9 @@ public class ZoneInfo2iCalendar {
     try {
       newRule = new RuleLine(tokens);
     } catch (TZDataParseException e) {
-      System.err.println(
-          String.format(
-              "Exception [%s] thrown constructing pseudo rule from zoneLine:\n    %s",
-              e.getMessage(), zoneLineBasedOn.toString()));
+      System.err.printf(
+          "Exception [%s] thrown constructing pseudo rule from zoneLine:\n    %s%n",
+          e.getMessage(), zoneLineBasedOn.toString());
     }
     return newRule;
   }

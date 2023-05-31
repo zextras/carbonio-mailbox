@@ -145,7 +145,7 @@ public final class MessageData {
     
     public Body[] getBodySections() {
         return bodySections != null ?
-            bodySections.toArray(new Body[bodySections.size()]) : null;
+            bodySections.toArray(new Body[0]) : null;
     }
 
     public void addFields(MessageData md) {

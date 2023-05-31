@@ -337,7 +337,7 @@ public class RightCommand {
             StringBuilder rights = new StringBuilder();
 
             // preset rights
-            rights.append("preset:" + mPresetRights.hashCode() + ";");
+            rights.append("preset:").append(mPresetRights.hashCode()).append(";");
 
             // setAttrs rights
             rights.append("setAttrs:");
@@ -345,7 +345,7 @@ public class RightCommand {
                 rights.append("all;");
             else {
                 List<String> attrs = new ArrayList<String>(mCanSetAttrs.keySet());
-                rights.append(attrs.hashCode() + ";");
+                rights.append(attrs.hashCode()).append(";");
             }
 
             // getAttrs rights
@@ -354,7 +354,7 @@ public class RightCommand {
                 rights.append("all;");
             else {
                 List<String> attrs = new ArrayList<String>(mCanGetAttrs.keySet());
-                rights.append(attrs.hashCode() + ";");
+                rights.append(attrs.hashCode()).append(";");
             }
 
             mDigest = rights.toString();

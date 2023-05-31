@@ -54,9 +54,7 @@ public class Pop3Capabilities {
                     params = new ArrayList<String>();
                     capabilities.put(key.toUpperCase(), params);
                 }
-                for (int i = 1; i < words.length; i++) {
-                    params.add(words[i]);
-                }
+                params.addAll(Arrays.asList(words).subList(1, words.length));
             }
         }
     }

@@ -141,7 +141,7 @@ public class NetUtil {
                 enabledCSList.remove(cipher);
         }
 
-        return enabledCSList.toArray(new String[enabledCSList.size()]);
+        return enabledCSList.toArray(new String[0]);
     }
 
     private static void setSSLEnabledCipherSuites(SSLServerSocket socket, String[] excludeCiphers, String[] includeCiphers) {

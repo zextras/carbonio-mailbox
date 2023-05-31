@@ -222,7 +222,7 @@ public abstract class TwoFactorAuth implements SecondFactor {
         }
     }
 
-    public static abstract class TwoFactorChangeListener {
+    public abstract static class TwoFactorChangeListener {
         private static Map<String, TwoFactorChangeListener> listeners = new HashMap<String, TwoFactorChangeListener>();
 
         public abstract void twoFactorAuthEnabled(Account acct);

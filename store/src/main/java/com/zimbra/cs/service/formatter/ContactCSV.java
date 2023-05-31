@@ -542,8 +542,7 @@ public final class ContactCSV {
              * Zimbra contact fields.
              */
             Map <CsvColumn, Map <String, String>> pendMV = new HashMap <CsvColumn, Map <String, String>>();
-            List<CsvColumn> unseenColumns = new ArrayList<CsvColumn>();
-            unseenColumns.addAll(format.columns);
+          List<CsvColumn> unseenColumns = new ArrayList<CsvColumn>(format.columns);
             for (int ndx = 0; ndx < fieldNames.size(); ndx++) {
                 String csvFieldName = fieldNames.get(ndx);
                 String fieldValue = (ndx >= csv.size()) ? null : csv.get(ndx );
@@ -1039,8 +1038,7 @@ public final class ContactCSV {
             ArrayList<Map <String, String>> allContacts = new ArrayList<Map <String, String>>();
             HashSet<String> fields = new HashSet<String>();
             UserServletUtil.populateContactFields(contacts, mbox, octxt, allContacts, fields);
-            ArrayList<String> allFields = new ArrayList<String>();
-            allFields.addAll(fields);
+          ArrayList<String> allFields = new ArrayList<String>(fields);
             Collections.sort(allFields);
             addFieldDef(allFields, sb);
             for (Map <String, String> contactMap : allContacts) {

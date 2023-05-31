@@ -430,7 +430,7 @@ public class TestMain {
                 int indentChars = mIndentLevel * 2;
                 for (int i = 0; i < indentChars; ++i)
                     System.out.print(' ');
-                System.out.println(String.format(format, objects));
+                System.out.printf((format) + "%n", objects);
             }
         }
 

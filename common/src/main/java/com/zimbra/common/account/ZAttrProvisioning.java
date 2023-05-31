@@ -17,11 +17,12 @@ public class ZAttrProvisioning {
 
   ///// BEGIN-AUTO-GEN-REPLACE
 
-    public static enum AccountCalendarUserType {
+    public enum AccountCalendarUserType {
         USER("USER"),
         RESOURCE("RESOURCE");
-        private String mValue;
-        private AccountCalendarUserType(String value) { mValue = value; }
+        private final String mValue;
+        AccountCalendarUserType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static AccountCalendarUserType fromString(String s) throws ServiceException {
             for (AccountCalendarUserType value : values()) {
@@ -33,15 +34,16 @@ public class ZAttrProvisioning {
         public boolean isRESOURCE() { return this == RESOURCE;}
     }
 
-    public static enum AccountStatus {
+    public enum AccountStatus {
         active("active"),
         maintenance("maintenance"),
         locked("locked"),
         closed("closed"),
         lockout("lockout"),
         pending("pending");
-        private String mValue;
-        private AccountStatus(String value) { mValue = value; }
+        private final String mValue;
+        AccountStatus(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static AccountStatus fromString(String s) throws ServiceException {
             for (AccountStatus value : values()) {
@@ -57,11 +59,12 @@ public class ZAttrProvisioning {
         public boolean isPending() { return this == pending;}
     }
 
-    public static enum AdminAccessControlMech {
+    public enum AdminAccessControlMech {
         acl("acl"),
         global("global");
-        private String mValue;
-        private AdminAccessControlMech(String value) { mValue = value; }
+        private final String mValue;
+        AdminAccessControlMech(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static AdminAccessControlMech fromString(String s) throws ServiceException {
             for (AdminAccessControlMech value : values()) {
@@ -73,13 +76,14 @@ public class ZAttrProvisioning {
         public boolean isGlobal() { return this == global;}
     }
 
-    public static enum AmavisFinalSpamDestiny {
+    public enum AmavisFinalSpamDestiny {
         D_PASS("D_PASS"),
         D_BOUNCE("D_BOUNCE"),
         D_REJECT("D_REJECT"),
         D_DISCARD("D_DISCARD");
-        private String mValue;
-        private AmavisFinalSpamDestiny(String value) { mValue = value; }
+        private final String mValue;
+        AmavisFinalSpamDestiny(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static AmavisFinalSpamDestiny fromString(String s) throws ServiceException {
             for (AmavisFinalSpamDestiny value : values()) {
@@ -93,13 +97,14 @@ public class ZAttrProvisioning {
         public boolean isD_DISCARD() { return this == D_DISCARD;}
     }
 
-    public static enum AutoProvAuthMech {
+    public enum AutoProvAuthMech {
         LDAP("LDAP"),
         PREAUTH("PREAUTH"),
         KRB5("KRB5"),
         SPNEGO("SPNEGO");
-        private String mValue;
-        private AutoProvAuthMech(String value) { mValue = value; }
+        private final String mValue;
+        AutoProvAuthMech(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static AutoProvAuthMech fromString(String s) throws ServiceException {
             for (AutoProvAuthMech value : values()) {
@@ -113,12 +118,13 @@ public class ZAttrProvisioning {
         public boolean isSPNEGO() { return this == SPNEGO;}
     }
 
-    public static enum AutoProvMode {
+    public enum AutoProvMode {
         EAGER("EAGER"),
         LAZY("LAZY"),
         MANUAL("MANUAL");
-        private String mValue;
-        private AutoProvMode(String value) { mValue = value; }
+        private final String mValue;
+        AutoProvMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static AutoProvMode fromString(String s) throws ServiceException {
             for (AutoProvMode value : values()) {
@@ -131,11 +137,12 @@ public class ZAttrProvisioning {
         public boolean isMANUAL() { return this == MANUAL;}
     }
 
-    public static enum BackupMode {
+    public enum BackupMode {
         Standard("Standard"),
         Auto_Grouped("Auto-Grouped");
-        private String mValue;
-        private BackupMode(String value) { mValue = value; }
+        private final String mValue;
+        BackupMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static BackupMode fromString(String s) throws ServiceException {
             for (BackupMode value : values()) {
@@ -147,11 +154,12 @@ public class ZAttrProvisioning {
         public boolean isAuto_Grouped() { return this == Auto_Grouped;}
     }
 
-    public static enum CalendarCompatibilityMode {
+    public enum CalendarCompatibilityMode {
         standard("standard"),
         exchange("exchange");
-        private String mValue;
-        private CalendarCompatibilityMode(String value) { mValue = value; }
+        private final String mValue;
+        CalendarCompatibilityMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static CalendarCompatibilityMode fromString(String s) throws ServiceException {
             for (CalendarCompatibilityMode value : values()) {
@@ -163,11 +171,12 @@ public class ZAttrProvisioning {
         public boolean isExchange() { return this == exchange;}
     }
 
-    public static enum CalResType {
+    public enum CalResType {
         Location("Location"),
         Equipment("Equipment");
-        private String mValue;
-        private CalResType(String value) { mValue = value; }
+        private final String mValue;
+        CalResType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static CalResType fromString(String s) throws ServiceException {
             for (CalResType value : values()) {
@@ -179,11 +188,12 @@ public class ZAttrProvisioning {
         public boolean isEquipment() { return this == Equipment;}
     }
 
-    public static enum CBPolicydBypassMode {
+    public enum CBPolicydBypassMode {
         tempfail("tempfail"),
         pass("pass");
-        private String mValue;
-        private CBPolicydBypassMode(String value) { mValue = value; }
+        private final String mValue;
+        CBPolicydBypassMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static CBPolicydBypassMode fromString(String s) throws ServiceException {
             for (CBPolicydBypassMode value : values()) {
@@ -195,12 +205,13 @@ public class ZAttrProvisioning {
         public boolean isPass() { return this == pass;}
     }
 
-    public static enum ClusterType {
+    public enum ClusterType {
         none("none"),
         RedHat("RedHat"),
         Veritas("Veritas");
-        private String mValue;
-        private ClusterType(String value) { mValue = value; }
+        private final String mValue;
+        ClusterType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static ClusterType fromString(String s) throws ServiceException {
             for (ClusterType value : values()) {
@@ -213,13 +224,14 @@ public class ZAttrProvisioning {
         public boolean isVeritas() { return this == Veritas;}
     }
 
-    public static enum DataSourceAuthMechanism {
+    public enum DataSourceAuthMechanism {
         PLAIN("PLAIN"),
         GSSAPI("GSSAPI"),
         CRAM_MD5("CRAM-MD5"),
         XOAUTH2("XOAUTH2");
-        private String mValue;
-        private DataSourceAuthMechanism(String value) { mValue = value; }
+        private final String mValue;
+        DataSourceAuthMechanism(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static DataSourceAuthMechanism fromString(String s) throws ServiceException {
             for (DataSourceAuthMechanism value : values()) {
@@ -233,13 +245,14 @@ public class ZAttrProvisioning {
         public boolean isXOAUTH2() { return this == XOAUTH2;}
     }
 
-    public static enum DataSourceConnectionType {
+    public enum DataSourceConnectionType {
         cleartext("cleartext"),
         ssl("ssl"),
         tls("tls"),
         tls_if_available("tls_if_available");
-        private String mValue;
-        private DataSourceConnectionType(String value) { mValue = value; }
+        private final String mValue;
+        DataSourceConnectionType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static DataSourceConnectionType fromString(String s) throws ServiceException {
             for (DataSourceConnectionType value : values()) {
@@ -253,11 +266,12 @@ public class ZAttrProvisioning {
         public boolean isTls_if_available() { return this == tls_if_available;}
     }
 
-    public static enum DataSourceSmtpConnectionType {
+    public enum DataSourceSmtpConnectionType {
         cleartext("cleartext"),
         ssl("ssl");
-        private String mValue;
-        private DataSourceSmtpConnectionType(String value) { mValue = value; }
+        private final String mValue;
+        DataSourceSmtpConnectionType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static DataSourceSmtpConnectionType fromString(String s) throws ServiceException {
             for (DataSourceSmtpConnectionType value : values()) {
@@ -269,12 +283,13 @@ public class ZAttrProvisioning {
         public boolean isSsl() { return this == ssl;}
     }
 
-    public static enum DistributionListSubscriptionPolicy {
+    public enum DistributionListSubscriptionPolicy {
         ACCEPT("ACCEPT"),
         REJECT("REJECT"),
         APPROVAL("APPROVAL");
-        private String mValue;
-        private DistributionListSubscriptionPolicy(String value) { mValue = value; }
+        private final String mValue;
+        DistributionListSubscriptionPolicy(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static DistributionListSubscriptionPolicy fromString(String s) throws ServiceException {
             for (DistributionListSubscriptionPolicy value : values()) {
@@ -287,12 +302,13 @@ public class ZAttrProvisioning {
         public boolean isAPPROVAL() { return this == APPROVAL;}
     }
 
-    public static enum DistributionListUnsubscriptionPolicy {
+    public enum DistributionListUnsubscriptionPolicy {
         ACCEPT("ACCEPT"),
         REJECT("REJECT"),
         APPROVAL("APPROVAL");
-        private String mValue;
-        private DistributionListUnsubscriptionPolicy(String value) { mValue = value; }
+        private final String mValue;
+        DistributionListUnsubscriptionPolicy(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static DistributionListUnsubscriptionPolicy fromString(String s) throws ServiceException {
             for (DistributionListUnsubscriptionPolicy value : values()) {
@@ -305,60 +321,13 @@ public class ZAttrProvisioning {
         public boolean isAPPROVAL() { return this == APPROVAL;}
     }
 
-    public static enum DNSTCPUpstream {
-        yes("yes"),
-        no("no");
-        private String mValue;
-        private DNSTCPUpstream(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static DNSTCPUpstream fromString(String s) throws ServiceException {
-            for (DNSTCPUpstream value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isYes() { return this == yes;}
-        public boolean isNo() { return this == no;}
-    }
-
-    public static enum DNSUseTCP {
-        yes("yes"),
-        no("no");
-        private String mValue;
-        private DNSUseTCP(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static DNSUseTCP fromString(String s) throws ServiceException {
-            for (DNSUseTCP value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isYes() { return this == yes;}
-        public boolean isNo() { return this == no;}
-    }
-
-    public static enum DNSUseUDP {
-        yes("yes"),
-        no("no");
-        private String mValue;
-        private DNSUseUDP(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static DNSUseUDP fromString(String s) throws ServiceException {
-            for (DNSUseUDP value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isYes() { return this == yes;}
-        public boolean isNo() { return this == no;}
-    }
-
-    public static enum DomainAggregateQuotaPolicy {
+    public enum DomainAggregateQuotaPolicy {
         ALLOWSENDRECEIVE("ALLOWSENDRECEIVE"),
         BLOCKSEND("BLOCKSEND"),
         BLOCKSENDRECEIVE("BLOCKSENDRECEIVE");
-        private String mValue;
-        private DomainAggregateQuotaPolicy(String value) { mValue = value; }
+        private final String mValue;
+        DomainAggregateQuotaPolicy(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static DomainAggregateQuotaPolicy fromString(String s) throws ServiceException {
             for (DomainAggregateQuotaPolicy value : values()) {
@@ -371,15 +340,16 @@ public class ZAttrProvisioning {
         public boolean isBLOCKSENDRECEIVE() { return this == BLOCKSENDRECEIVE;}
     }
 
-    public static enum DomainStatus {
+    public enum DomainStatus {
         active("active"),
         maintenance("maintenance"),
         locked("locked"),
         closed("closed"),
         suspended("suspended"),
         shutdown("shutdown");
-        private String mValue;
-        private DomainStatus(String value) { mValue = value; }
+        private final String mValue;
+        DomainStatus(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static DomainStatus fromString(String s) throws ServiceException {
             for (DomainStatus value : values()) {
@@ -395,11 +365,12 @@ public class ZAttrProvisioning {
         public boolean isShutdown() { return this == shutdown;}
     }
 
-    public static enum DomainType {
+    public enum DomainType {
         local("local"),
         alias("alias");
-        private String mValue;
-        private DomainType(String value) { mValue = value; }
+        private final String mValue;
+        DomainType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static DomainType fromString(String s) throws ServiceException {
             for (DomainType value : values()) {
@@ -411,13 +382,14 @@ public class ZAttrProvisioning {
         public boolean isAlias() { return this == alias;}
     }
 
-    public static enum FeatureAddressVerificationStatus {
+    public enum FeatureAddressVerificationStatus {
         verified("verified"),
         pending("pending"),
         failed("failed"),
         expired("expired");
-        private String mValue;
-        private FeatureAddressVerificationStatus(String value) { mValue = value; }
+        private final String mValue;
+        FeatureAddressVerificationStatus(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static FeatureAddressVerificationStatus fromString(String s) throws ServiceException {
             for (FeatureAddressVerificationStatus value : values()) {
@@ -431,12 +403,13 @@ public class ZAttrProvisioning {
         public boolean isExpired() { return this == expired;}
     }
 
-    public static enum FeatureResetPasswordStatus {
+    public enum FeatureResetPasswordStatus {
         enabled("enabled"),
         suspended("suspended"),
         disabled("disabled");
-        private String mValue;
-        private FeatureResetPasswordStatus(String value) { mValue = value; }
+        private final String mValue;
+        FeatureResetPasswordStatus(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static FeatureResetPasswordStatus fromString(String s) throws ServiceException {
             for (FeatureResetPasswordStatus value : values()) {
@@ -449,13 +422,14 @@ public class ZAttrProvisioning {
         public boolean isDisabled() { return this == disabled;}
     }
 
-    public static enum FeatureSocialFiltersEnabled {
+    public enum FeatureSocialFiltersEnabled {
         SocialCast("SocialCast"),
         LinkedIn("LinkedIn"),
         Twitter("Twitter"),
         Facebook("Facebook");
-        private String mValue;
-        private FeatureSocialFiltersEnabled(String value) { mValue = value; }
+        private final String mValue;
+        FeatureSocialFiltersEnabled(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static FeatureSocialFiltersEnabled fromString(String s) throws ServiceException {
             for (FeatureSocialFiltersEnabled value : values()) {
@@ -469,11 +443,12 @@ public class ZAttrProvisioning {
         public boolean isFacebook() { return this == Facebook;}
     }
 
-    public static enum FreebusyExchangeAuthScheme {
+    public enum FreebusyExchangeAuthScheme {
         basic("basic"),
         form("form");
-        private String mValue;
-        private FreebusyExchangeAuthScheme(String value) { mValue = value; }
+        private final String mValue;
+        FreebusyExchangeAuthScheme(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static FreebusyExchangeAuthScheme fromString(String s) throws ServiceException {
             for (FreebusyExchangeAuthScheme value : values()) {
@@ -485,11 +460,12 @@ public class ZAttrProvisioning {
         public boolean isForm() { return this == form;}
     }
 
-    public static enum FreebusyExchangeServerType {
+    public enum FreebusyExchangeServerType {
         webdav("webdav"),
         ews("ews");
-        private String mValue;
-        private FreebusyExchangeServerType(String value) { mValue = value; }
+        private final String mValue;
+        FreebusyExchangeServerType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static FreebusyExchangeServerType fromString(String s) throws ServiceException {
             for (FreebusyExchangeServerType value : values()) {
@@ -501,12 +477,13 @@ public class ZAttrProvisioning {
         public boolean isEws() { return this == ews;}
     }
 
-    public static enum GalLdapAuthMech {
+    public enum GalLdapAuthMech {
         none("none"),
         simple("simple"),
         kerberos5("kerberos5");
-        private String mValue;
-        private GalLdapAuthMech(String value) { mValue = value; }
+        private final String mValue;
+        GalLdapAuthMech(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static GalLdapAuthMech fromString(String s) throws ServiceException {
             for (GalLdapAuthMech value : values()) {
@@ -519,12 +496,13 @@ public class ZAttrProvisioning {
         public boolean isKerberos5() { return this == kerberos5;}
     }
 
-    public static enum GalMode {
+    public enum GalMode {
         zimbra("zimbra"),
         both("both"),
         ldap("ldap");
-        private String mValue;
-        private GalMode(String value) { mValue = value; }
+        private final String mValue;
+        GalMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static GalMode fromString(String s) throws ServiceException {
             for (GalMode value : values()) {
@@ -537,11 +515,12 @@ public class ZAttrProvisioning {
         public boolean isLdap() { return this == ldap;}
     }
 
-    public static enum GalStatus {
+    public enum GalStatus {
         enabled("enabled"),
         disabled("disabled");
-        private String mValue;
-        private GalStatus(String value) { mValue = value; }
+        private final String mValue;
+        GalStatus(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static GalStatus fromString(String s) throws ServiceException {
             for (GalStatus value : values()) {
@@ -553,12 +532,13 @@ public class ZAttrProvisioning {
         public boolean isDisabled() { return this == disabled;}
     }
 
-    public static enum GalSyncLdapAuthMech {
+    public enum GalSyncLdapAuthMech {
         none("none"),
         simple("simple"),
         kerberos5("kerberos5");
-        private String mValue;
-        private GalSyncLdapAuthMech(String value) { mValue = value; }
+        private final String mValue;
+        GalSyncLdapAuthMech(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static GalSyncLdapAuthMech fromString(String s) throws ServiceException {
             for (GalSyncLdapAuthMech value : values()) {
@@ -571,11 +551,12 @@ public class ZAttrProvisioning {
         public boolean isKerberos5() { return this == kerberos5;}
     }
 
-    public static enum GalTokenizeAutoCompleteKey {
+    public enum GalTokenizeAutoCompleteKey {
         and("and"),
         or("or");
-        private String mValue;
-        private GalTokenizeAutoCompleteKey(String value) { mValue = value; }
+        private final String mValue;
+        GalTokenizeAutoCompleteKey(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static GalTokenizeAutoCompleteKey fromString(String s) throws ServiceException {
             for (GalTokenizeAutoCompleteKey value : values()) {
@@ -587,11 +568,12 @@ public class ZAttrProvisioning {
         public boolean isOr() { return this == or;}
     }
 
-    public static enum GalTokenizeSearchKey {
+    public enum GalTokenizeSearchKey {
         and("and"),
         or("or");
-        private String mValue;
-        private GalTokenizeSearchKey(String value) { mValue = value; }
+        private final String mValue;
+        GalTokenizeSearchKey(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static GalTokenizeSearchKey fromString(String s) throws ServiceException {
             for (GalTokenizeSearchKey value : values()) {
@@ -603,11 +585,12 @@ public class ZAttrProvisioning {
         public boolean isOr() { return this == or;}
     }
 
-    public static enum GalType {
+    public enum GalType {
         zimbra("zimbra"),
         ldap("ldap");
-        private String mValue;
-        private GalType(String value) { mValue = value; }
+        private final String mValue;
+        GalType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static GalType fromString(String s) throws ServiceException {
             for (GalType value : values()) {
@@ -619,28 +602,13 @@ public class ZAttrProvisioning {
         public boolean isLdap() { return this == ldap;}
     }
 
-    public static enum IMService {
-        zimbra("zimbra"),
-        yahoo("yahoo");
-        private String mValue;
-        private IMService(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static IMService fromString(String s) throws ServiceException {
-            for (IMService value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isZimbra() { return this == zimbra;}
-        public boolean isYahoo() { return this == yahoo;}
-    }
-
-    public static enum IPMode {
+    public enum IPMode {
         ipv4("ipv4"),
         ipv6("ipv6"),
         both("both");
-        private String mValue;
-        private IPMode(String value) { mValue = value; }
+        private final String mValue;
+        IPMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static IPMode fromString(String s) throws ServiceException {
             for (IPMode value : values()) {
@@ -653,14 +621,15 @@ public class ZAttrProvisioning {
         public boolean isBoth() { return this == both;}
     }
 
-    public static enum MailMode {
+    public enum MailMode {
         http("http"),
         https("https"),
         both("both"),
         mixed("mixed"),
         redirect("redirect");
-        private String mValue;
-        private MailMode(String value) { mValue = value; }
+        private final String mValue;
+        MailMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MailMode fromString(String s) throws ServiceException {
             for (MailMode value : values()) {
@@ -675,12 +644,13 @@ public class ZAttrProvisioning {
         public boolean isRedirect() { return this == redirect;}
     }
 
-    public static enum MailReferMode {
+    public enum MailReferMode {
         always("always"),
         wronghost("wronghost"),
         reverse_proxied("reverse-proxied");
-        private String mValue;
-        private MailReferMode(String value) { mValue = value; }
+        private final String mValue;
+        MailReferMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MailReferMode fromString(String s) throws ServiceException {
             for (MailReferMode value : values()) {
@@ -693,12 +663,13 @@ public class ZAttrProvisioning {
         public boolean isReverse_proxied() { return this == reverse_proxied;}
     }
 
-    public static enum MailSSLClientCertMode {
+    public enum MailSSLClientCertMode {
         Disabled("Disabled"),
         NeedClientAuth("NeedClientAuth"),
         WantClientAuth("WantClientAuth");
-        private String mValue;
-        private MailSSLClientCertMode(String value) { mValue = value; }
+        private final String mValue;
+        MailSSLClientCertMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MailSSLClientCertMode fromString(String s) throws ServiceException {
             for (MailSSLClientCertMode value : values()) {
@@ -711,11 +682,12 @@ public class ZAttrProvisioning {
         public boolean isWantClientAuth() { return this == WantClientAuth;}
     }
 
-    public static enum MailStatus {
+    public enum MailStatus {
         enabled("enabled"),
         disabled("disabled");
-        private String mValue;
-        private MailStatus(String value) { mValue = value; }
+        private final String mValue;
+        MailStatus(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MailStatus fromString(String s) throws ServiceException {
             for (MailStatus value : values()) {
@@ -727,14 +699,15 @@ public class ZAttrProvisioning {
         public boolean isDisabled() { return this == disabled;}
     }
 
-    public static enum MailThreadingAlgorithm {
+    public enum MailThreadingAlgorithm {
         subject("subject"),
         subjrefs("subjrefs"),
         references("references"),
         strict("strict"),
         none("none");
-        private String mValue;
-        private MailThreadingAlgorithm(String value) { mValue = value; }
+        private final String mValue;
+        MailThreadingAlgorithm(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MailThreadingAlgorithm fromString(String s) throws ServiceException {
             for (MailThreadingAlgorithm value : values()) {
@@ -749,13 +722,14 @@ public class ZAttrProvisioning {
         public boolean isNone() { return this == none;}
     }
 
-    public static enum MobileGatewayProxyImapConnectionType {
+    public enum MobileGatewayProxyImapConnectionType {
         cleartext("cleartext"),
         ssl("ssl"),
         tls("tls"),
         tls_if_available("tls_if_available");
-        private String mValue;
-        private MobileGatewayProxyImapConnectionType(String value) { mValue = value; }
+        private final String mValue;
+        MobileGatewayProxyImapConnectionType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MobileGatewayProxyImapConnectionType fromString(String s) throws ServiceException {
             for (MobileGatewayProxyImapConnectionType value : values()) {
@@ -769,11 +743,12 @@ public class ZAttrProvisioning {
         public boolean isTls_if_available() { return this == tls_if_available;}
     }
 
-    public static enum MobileGatewayProxySmtpConnectionType {
+    public enum MobileGatewayProxySmtpConnectionType {
         cleartext("cleartext"),
         ssl("ssl");
-        private String mValue;
-        private MobileGatewayProxySmtpConnectionType(String value) { mValue = value; }
+        private final String mValue;
+        MobileGatewayProxySmtpConnectionType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MobileGatewayProxySmtpConnectionType fromString(String s) throws ServiceException {
             for (MobileGatewayProxySmtpConnectionType value : values()) {
@@ -785,11 +760,12 @@ public class ZAttrProvisioning {
         public boolean isSsl() { return this == ssl;}
     }
 
-    public static enum MtaAlwaysAddMissingHeaders {
+    public enum MtaAlwaysAddMissingHeaders {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaAlwaysAddMissingHeaders(String value) { mValue = value; }
+        private final String mValue;
+        MtaAlwaysAddMissingHeaders(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaAlwaysAddMissingHeaders fromString(String s) throws ServiceException {
             for (MtaAlwaysAddMissingHeaders value : values()) {
@@ -801,11 +777,12 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaBrokenSaslAuthClients {
+    public enum MtaBrokenSaslAuthClients {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaBrokenSaslAuthClients(String value) { mValue = value; }
+        private final String mValue;
+        MtaBrokenSaslAuthClients(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaBrokenSaslAuthClients fromString(String s) throws ServiceException {
             for (MtaBrokenSaslAuthClients value : values()) {
@@ -817,11 +794,12 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaLmtpHostLookup {
+    public enum MtaLmtpHostLookup {
         dns("dns"),
         native_("native");
-        private String mValue;
-        private MtaLmtpHostLookup(String value) { mValue = value; }
+        private final String mValue;
+        MtaLmtpHostLookup(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaLmtpHostLookup fromString(String s) throws ServiceException {
             for (MtaLmtpHostLookup value : values()) {
@@ -833,14 +811,15 @@ public class ZAttrProvisioning {
         public boolean isNative_() { return this == native_;}
     }
 
-    public static enum MtaLmtpTlsCiphers {
+    public enum MtaLmtpTlsCiphers {
         export("export"),
         low("low"),
         medium("medium"),
         high("high"),
         null_("null");
-        private String mValue;
-        private MtaLmtpTlsCiphers(String value) { mValue = value; }
+        private final String mValue;
+        MtaLmtpTlsCiphers(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaLmtpTlsCiphers fromString(String s) throws ServiceException {
             for (MtaLmtpTlsCiphers value : values()) {
@@ -855,14 +834,15 @@ public class ZAttrProvisioning {
         public boolean isNull_() { return this == null_;}
     }
 
-    public static enum MtaLmtpTlsMandatoryCiphers {
+    public enum MtaLmtpTlsMandatoryCiphers {
         export("export"),
         low("low"),
         medium("medium"),
         high("high"),
         null_("null");
-        private String mValue;
-        private MtaLmtpTlsMandatoryCiphers(String value) { mValue = value; }
+        private final String mValue;
+        MtaLmtpTlsMandatoryCiphers(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaLmtpTlsMandatoryCiphers fromString(String s) throws ServiceException {
             for (MtaLmtpTlsMandatoryCiphers value : values()) {
@@ -877,7 +857,7 @@ public class ZAttrProvisioning {
         public boolean isNull_() { return this == null_;}
     }
 
-    public static enum MtaLmtpTlsSecurityLevel {
+    public enum MtaLmtpTlsSecurityLevel {
         none("none"),
         may("may"),
         encrypt("encrypt"),
@@ -886,8 +866,9 @@ public class ZAttrProvisioning {
         fingerprint("fingerprint"),
         verify("verify"),
         secure("secure");
-        private String mValue;
-        private MtaLmtpTlsSecurityLevel(String value) { mValue = value; }
+        private final String mValue;
+        MtaLmtpTlsSecurityLevel(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaLmtpTlsSecurityLevel fromString(String s) throws ServiceException {
             for (MtaLmtpTlsSecurityLevel value : values()) {
@@ -905,13 +886,14 @@ public class ZAttrProvisioning {
         public boolean isSecure() { return this == secure;}
     }
 
-    public static enum MtaMilterDefaultAction {
+    public enum MtaMilterDefaultAction {
         accept("accept"),
         reject("reject"),
         tempfail("tempfail"),
         quarantine("quarantine");
-        private String mValue;
-        private MtaMilterDefaultAction(String value) { mValue = value; }
+        private final String mValue;
+        MtaMilterDefaultAction(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaMilterDefaultAction fromString(String s) throws ServiceException {
             for (MtaMilterDefaultAction value : values()) {
@@ -925,7 +907,7 @@ public class ZAttrProvisioning {
         public boolean isQuarantine() { return this == quarantine;}
     }
 
-    public static enum MtaNotifyClasses {
+    public enum MtaNotifyClasses {
         bounce("bounce"),
         _bounce("2bounce"),
         data("data"),
@@ -934,8 +916,9 @@ public class ZAttrProvisioning {
         protocol("protocol"),
         resource("resource"),
         software("software");
-        private String mValue;
-        private MtaNotifyClasses(String value) { mValue = value; }
+        private final String mValue;
+        MtaNotifyClasses(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaNotifyClasses fromString(String s) throws ServiceException {
             for (MtaNotifyClasses value : values()) {
@@ -953,12 +936,13 @@ public class ZAttrProvisioning {
         public boolean isSoftware() { return this == software;}
     }
 
-    public static enum MtaPostscreenBareNewlineAction {
+    public enum MtaPostscreenBareNewlineAction {
         ignore("ignore"),
         enforce("enforce"),
         drop("drop");
-        private String mValue;
-        private MtaPostscreenBareNewlineAction(String value) { mValue = value; }
+        private final String mValue;
+        MtaPostscreenBareNewlineAction(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaPostscreenBareNewlineAction fromString(String s) throws ServiceException {
             for (MtaPostscreenBareNewlineAction value : values()) {
@@ -971,11 +955,12 @@ public class ZAttrProvisioning {
         public boolean isDrop() { return this == drop;}
     }
 
-    public static enum MtaPostscreenBareNewlineEnable {
+    public enum MtaPostscreenBareNewlineEnable {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaPostscreenBareNewlineEnable(String value) { mValue = value; }
+        private final String mValue;
+        MtaPostscreenBareNewlineEnable(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaPostscreenBareNewlineEnable fromString(String s) throws ServiceException {
             for (MtaPostscreenBareNewlineEnable value : values()) {
@@ -987,12 +972,13 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaPostscreenBlacklistAction {
+    public enum MtaPostscreenBlacklistAction {
         ignore("ignore"),
         enforce("enforce"),
         drop("drop");
-        private String mValue;
-        private MtaPostscreenBlacklistAction(String value) { mValue = value; }
+        private final String mValue;
+        MtaPostscreenBlacklistAction(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaPostscreenBlacklistAction fromString(String s) throws ServiceException {
             for (MtaPostscreenBlacklistAction value : values()) {
@@ -1005,12 +991,13 @@ public class ZAttrProvisioning {
         public boolean isDrop() { return this == drop;}
     }
 
-    public static enum MtaPostscreenDnsblAction {
+    public enum MtaPostscreenDnsblAction {
         ignore("ignore"),
         enforce("enforce"),
         drop("drop");
-        private String mValue;
-        private MtaPostscreenDnsblAction(String value) { mValue = value; }
+        private final String mValue;
+        MtaPostscreenDnsblAction(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaPostscreenDnsblAction fromString(String s) throws ServiceException {
             for (MtaPostscreenDnsblAction value : values()) {
@@ -1023,12 +1010,13 @@ public class ZAttrProvisioning {
         public boolean isDrop() { return this == drop;}
     }
 
-    public static enum MtaPostscreenGreetAction {
+    public enum MtaPostscreenGreetAction {
         ignore("ignore"),
         enforce("enforce"),
         drop("drop");
-        private String mValue;
-        private MtaPostscreenGreetAction(String value) { mValue = value; }
+        private final String mValue;
+        MtaPostscreenGreetAction(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaPostscreenGreetAction fromString(String s) throws ServiceException {
             for (MtaPostscreenGreetAction value : values()) {
@@ -1041,12 +1029,13 @@ public class ZAttrProvisioning {
         public boolean isDrop() { return this == drop;}
     }
 
-    public static enum MtaPostscreenNonSmtpCommandAction {
+    public enum MtaPostscreenNonSmtpCommandAction {
         ignore("ignore"),
         enforce("enforce"),
         drop("drop");
-        private String mValue;
-        private MtaPostscreenNonSmtpCommandAction(String value) { mValue = value; }
+        private final String mValue;
+        MtaPostscreenNonSmtpCommandAction(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaPostscreenNonSmtpCommandAction fromString(String s) throws ServiceException {
             for (MtaPostscreenNonSmtpCommandAction value : values()) {
@@ -1059,11 +1048,12 @@ public class ZAttrProvisioning {
         public boolean isDrop() { return this == drop;}
     }
 
-    public static enum MtaPostscreenNonSmtpCommandEnable {
+    public enum MtaPostscreenNonSmtpCommandEnable {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaPostscreenNonSmtpCommandEnable(String value) { mValue = value; }
+        private final String mValue;
+        MtaPostscreenNonSmtpCommandEnable(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaPostscreenNonSmtpCommandEnable fromString(String s) throws ServiceException {
             for (MtaPostscreenNonSmtpCommandEnable value : values()) {
@@ -1075,12 +1065,13 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaPostscreenPipeliningAction {
+    public enum MtaPostscreenPipeliningAction {
         ignore("ignore"),
         enforce("enforce"),
         drop("drop");
-        private String mValue;
-        private MtaPostscreenPipeliningAction(String value) { mValue = value; }
+        private final String mValue;
+        MtaPostscreenPipeliningAction(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaPostscreenPipeliningAction fromString(String s) throws ServiceException {
             for (MtaPostscreenPipeliningAction value : values()) {
@@ -1093,11 +1084,12 @@ public class ZAttrProvisioning {
         public boolean isDrop() { return this == drop;}
     }
 
-    public static enum MtaPostscreenPipeliningEnable {
+    public enum MtaPostscreenPipeliningEnable {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaPostscreenPipeliningEnable(String value) { mValue = value; }
+        private final String mValue;
+        MtaPostscreenPipeliningEnable(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaPostscreenPipeliningEnable fromString(String s) throws ServiceException {
             for (MtaPostscreenPipeliningEnable value : values()) {
@@ -1109,10 +1101,11 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaPostscreenUpstreamProxyProtocol {
+    public enum MtaPostscreenUpstreamProxyProtocol {
         haproxy("haproxy");
-        private String mValue;
-        private MtaPostscreenUpstreamProxyProtocol(String value) { mValue = value; }
+        private final String mValue;
+        MtaPostscreenUpstreamProxyProtocol(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaPostscreenUpstreamProxyProtocol fromString(String s) throws ServiceException {
             for (MtaPostscreenUpstreamProxyProtocol value : values()) {
@@ -1123,15 +1116,16 @@ public class ZAttrProvisioning {
         public boolean isHaproxy() { return this == haproxy;}
     }
 
-    public static enum MtaPropagateUnmatchedExtensions {
+    public enum MtaPropagateUnmatchedExtensions {
         canonical("canonical"),
         virtual("virtual"),
         alias("alias"),
         forward("forward"),
         include("include"),
         generic("generic");
-        private String mValue;
-        private MtaPropagateUnmatchedExtensions(String value) { mValue = value; }
+        private final String mValue;
+        MtaPropagateUnmatchedExtensions(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaPropagateUnmatchedExtensions fromString(String s) throws ServiceException {
             for (MtaPropagateUnmatchedExtensions value : values()) {
@@ -1147,11 +1141,12 @@ public class ZAttrProvisioning {
         public boolean isGeneric() { return this == generic;}
     }
 
-    public static enum MtaSaslAuthEnable {
+    public enum MtaSaslAuthEnable {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaSaslAuthEnable(String value) { mValue = value; }
+        private final String mValue;
+        MtaSaslAuthEnable(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSaslAuthEnable fromString(String s) throws ServiceException {
             for (MtaSaslAuthEnable value : values()) {
@@ -1163,11 +1158,12 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaSmtpCnameOverridesServername {
+    public enum MtaSmtpCnameOverridesServername {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaSmtpCnameOverridesServername(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpCnameOverridesServername(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpCnameOverridesServername fromString(String s) throws ServiceException {
             for (MtaSmtpCnameOverridesServername value : values()) {
@@ -1179,11 +1175,12 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaSmtpdClientPortLogging {
+    public enum MtaSmtpdClientPortLogging {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaSmtpdClientPortLogging(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpdClientPortLogging(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpdClientPortLogging fromString(String s) throws ServiceException {
             for (MtaSmtpdClientPortLogging value : values()) {
@@ -1195,11 +1192,12 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaSmtpdHeloRequired {
+    public enum MtaSmtpdHeloRequired {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaSmtpdHeloRequired(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpdHeloRequired(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpdHeloRequired fromString(String s) throws ServiceException {
             for (MtaSmtpdHeloRequired value : values()) {
@@ -1211,12 +1209,13 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaSmtpDnsSupportLevel {
+    public enum MtaSmtpDnsSupportLevel {
         disabled("disabled"),
         enabled("enabled"),
         dnssec("dnssec");
-        private String mValue;
-        private MtaSmtpDnsSupportLevel(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpDnsSupportLevel(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpDnsSupportLevel fromString(String s) throws ServiceException {
             for (MtaSmtpDnsSupportLevel value : values()) {
@@ -1229,11 +1228,12 @@ public class ZAttrProvisioning {
         public boolean isDnssec() { return this == dnssec;}
     }
 
-    public static enum MtaSmtpdRejectUnlistedRecipient {
+    public enum MtaSmtpdRejectUnlistedRecipient {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaSmtpdRejectUnlistedRecipient(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpdRejectUnlistedRecipient(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpdRejectUnlistedRecipient fromString(String s) throws ServiceException {
             for (MtaSmtpdRejectUnlistedRecipient value : values()) {
@@ -1245,11 +1245,12 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaSmtpdRejectUnlistedSender {
+    public enum MtaSmtpdRejectUnlistedSender {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaSmtpdRejectUnlistedSender(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpdRejectUnlistedSender(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpdRejectUnlistedSender fromString(String s) throws ServiceException {
             for (MtaSmtpdRejectUnlistedSender value : values()) {
@@ -1261,11 +1262,12 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaSmtpdSaslAuthenticatedHeader {
+    public enum MtaSmtpdSaslAuthenticatedHeader {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaSmtpdSaslAuthenticatedHeader(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpdSaslAuthenticatedHeader(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpdSaslAuthenticatedHeader fromString(String s) throws ServiceException {
             for (MtaSmtpdSaslAuthenticatedHeader value : values()) {
@@ -1277,14 +1279,15 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaSmtpdSaslSecurityOptions {
+    public enum MtaSmtpdSaslSecurityOptions {
         noplaintext("noplaintext"),
         noactive("noactive"),
         nodictionary("nodictionary"),
         noanonymous("noanonymous"),
         mutual_auth("mutual_auth");
-        private String mValue;
-        private MtaSmtpdSaslSecurityOptions(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpdSaslSecurityOptions(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpdSaslSecurityOptions fromString(String s) throws ServiceException {
             for (MtaSmtpdSaslSecurityOptions value : values()) {
@@ -1299,11 +1302,12 @@ public class ZAttrProvisioning {
         public boolean isMutual_auth() { return this == mutual_auth;}
     }
 
-    public static enum MtaSmtpdTlsAskCcert {
+    public enum MtaSmtpdTlsAskCcert {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaSmtpdTlsAskCcert(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpdTlsAskCcert(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpdTlsAskCcert fromString(String s) throws ServiceException {
             for (MtaSmtpdTlsAskCcert value : values()) {
@@ -1315,14 +1319,15 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaSmtpdTlsCiphers {
+    public enum MtaSmtpdTlsCiphers {
         export("export"),
         low("low"),
         medium("medium"),
         high("high"),
         null_("null");
-        private String mValue;
-        private MtaSmtpdTlsCiphers(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpdTlsCiphers(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpdTlsCiphers fromString(String s) throws ServiceException {
             for (MtaSmtpdTlsCiphers value : values()) {
@@ -1337,14 +1342,15 @@ public class ZAttrProvisioning {
         public boolean isNull_() { return this == null_;}
     }
 
-    public static enum MtaSmtpdTlsMandatoryCiphers {
+    public enum MtaSmtpdTlsMandatoryCiphers {
         export("export"),
         low("low"),
         medium("medium"),
         high("high"),
         null_("null");
-        private String mValue;
-        private MtaSmtpdTlsMandatoryCiphers(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpdTlsMandatoryCiphers(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpdTlsMandatoryCiphers fromString(String s) throws ServiceException {
             for (MtaSmtpdTlsMandatoryCiphers value : values()) {
@@ -1359,11 +1365,12 @@ public class ZAttrProvisioning {
         public boolean isNull_() { return this == null_;}
     }
 
-    public static enum MtaSmtpdTlsReceivedHeader {
+    public enum MtaSmtpdTlsReceivedHeader {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaSmtpdTlsReceivedHeader(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpdTlsReceivedHeader(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpdTlsReceivedHeader fromString(String s) throws ServiceException {
             for (MtaSmtpdTlsReceivedHeader value : values()) {
@@ -1375,11 +1382,12 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaSmtpSaslAuthEnable {
+    public enum MtaSmtpSaslAuthEnable {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaSmtpSaslAuthEnable(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpSaslAuthEnable(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpSaslAuthEnable fromString(String s) throws ServiceException {
             for (MtaSmtpSaslAuthEnable value : values()) {
@@ -1391,14 +1399,15 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaSmtpSaslSecurityOptions {
+    public enum MtaSmtpSaslSecurityOptions {
         noplaintext("noplaintext"),
         noactive("noactive"),
         nodictionary("nodictionary"),
         noanonymous("noanonymous"),
         mutual_auth("mutual_auth");
-        private String mValue;
-        private MtaSmtpSaslSecurityOptions(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpSaslSecurityOptions(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpSaslSecurityOptions fromString(String s) throws ServiceException {
             for (MtaSmtpSaslSecurityOptions value : values()) {
@@ -1413,14 +1422,15 @@ public class ZAttrProvisioning {
         public boolean isMutual_auth() { return this == mutual_auth;}
     }
 
-    public static enum MtaSmtpTlsCiphers {
+    public enum MtaSmtpTlsCiphers {
         export("export"),
         low("low"),
         medium("medium"),
         high("high"),
         null_("null");
-        private String mValue;
-        private MtaSmtpTlsCiphers(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpTlsCiphers(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpTlsCiphers fromString(String s) throws ServiceException {
             for (MtaSmtpTlsCiphers value : values()) {
@@ -1435,12 +1445,13 @@ public class ZAttrProvisioning {
         public boolean isNull_() { return this == null_;}
     }
 
-    public static enum MtaSmtpTlsDaneInsecureMXPolicy {
+    public enum MtaSmtpTlsDaneInsecureMXPolicy {
         may("may"),
         encrypt("encrypt"),
         dane("dane");
-        private String mValue;
-        private MtaSmtpTlsDaneInsecureMXPolicy(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpTlsDaneInsecureMXPolicy(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpTlsDaneInsecureMXPolicy fromString(String s) throws ServiceException {
             for (MtaSmtpTlsDaneInsecureMXPolicy value : values()) {
@@ -1453,14 +1464,15 @@ public class ZAttrProvisioning {
         public boolean isDane() { return this == dane;}
     }
 
-    public static enum MtaSmtpTlsMandatoryCiphers {
+    public enum MtaSmtpTlsMandatoryCiphers {
         export("export"),
         low("low"),
         medium("medium"),
         high("high"),
         null_("null");
-        private String mValue;
-        private MtaSmtpTlsMandatoryCiphers(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpTlsMandatoryCiphers(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpTlsMandatoryCiphers fromString(String s) throws ServiceException {
             for (MtaSmtpTlsMandatoryCiphers value : values()) {
@@ -1475,7 +1487,7 @@ public class ZAttrProvisioning {
         public boolean isNull_() { return this == null_;}
     }
 
-    public static enum MtaSmtpTlsSecurityLevel {
+    public enum MtaSmtpTlsSecurityLevel {
         none("none"),
         may("may"),
         encrypt("encrypt"),
@@ -1484,8 +1496,9 @@ public class ZAttrProvisioning {
         fingerprint("fingerprint"),
         verify("verify"),
         secure("secure");
-        private String mValue;
-        private MtaSmtpTlsSecurityLevel(String value) { mValue = value; }
+        private final String mValue;
+        MtaSmtpTlsSecurityLevel(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaSmtpTlsSecurityLevel fromString(String s) throws ServiceException {
             for (MtaSmtpTlsSecurityLevel value : values()) {
@@ -1503,11 +1516,12 @@ public class ZAttrProvisioning {
         public boolean isSecure() { return this == secure;}
     }
 
-    public static enum MtaTlsAppendDefaultCA {
+    public enum MtaTlsAppendDefaultCA {
         yes("yes"),
         no("no");
-        private String mValue;
-        private MtaTlsAppendDefaultCA(String value) { mValue = value; }
+        private final String mValue;
+        MtaTlsAppendDefaultCA(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaTlsAppendDefaultCA fromString(String s) throws ServiceException {
             for (MtaTlsAppendDefaultCA value : values()) {
@@ -1519,11 +1533,12 @@ public class ZAttrProvisioning {
         public boolean isNo() { return this == no;}
     }
 
-    public static enum MtaTlsSecurityLevel {
+    public enum MtaTlsSecurityLevel {
         may("may"),
         none("none");
-        private String mValue;
-        private MtaTlsSecurityLevel(String value) { mValue = value; }
+        private final String mValue;
+        MtaTlsSecurityLevel(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static MtaTlsSecurityLevel fromString(String s) throws ServiceException {
             for (MtaTlsSecurityLevel value : values()) {
@@ -1535,15 +1550,16 @@ public class ZAttrProvisioning {
         public boolean isNone() { return this == none;}
     }
 
-    public static enum PasswordLockoutSuppressionProtocols {
+    public enum PasswordLockoutSuppressionProtocols {
         zsync("zsync"),
         imap("imap"),
         pop3("pop3"),
         http_basic("http_basic"),
         http_dav("http_dav"),
         soap("soap");
-        private String mValue;
-        private PasswordLockoutSuppressionProtocols(String value) { mValue = value; }
+        private final String mValue;
+        PasswordLockoutSuppressionProtocols(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PasswordLockoutSuppressionProtocols fromString(String s) throws ServiceException {
             for (PasswordLockoutSuppressionProtocols value : values()) {
@@ -1559,30 +1575,13 @@ public class ZAttrProvisioning {
         public boolean isSoap() { return this == soap;}
     }
 
-    public static enum PrefBriefcaseReadingPaneLocation {
-        bottom("bottom"),
-        right("right"),
-        off("off");
-        private String mValue;
-        private PrefBriefcaseReadingPaneLocation(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static PrefBriefcaseReadingPaneLocation fromString(String s) throws ServiceException {
-            for (PrefBriefcaseReadingPaneLocation value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isBottom() { return this == bottom;}
-        public boolean isRight() { return this == right;}
-        public boolean isOff() { return this == off;}
-    }
-
-    public static enum PrefCalendarAllowedTargetsForInviteDeniedAutoReply {
+    public enum PrefCalendarAllowedTargetsForInviteDeniedAutoReply {
         internal("internal"),
         sameDomain("sameDomain"),
         all("all");
-        private String mValue;
-        private PrefCalendarAllowedTargetsForInviteDeniedAutoReply(String value) { mValue = value; }
+        private final String mValue;
+        PrefCalendarAllowedTargetsForInviteDeniedAutoReply(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefCalendarAllowedTargetsForInviteDeniedAutoReply fromString(String s) throws ServiceException {
             for (PrefCalendarAllowedTargetsForInviteDeniedAutoReply value : values()) {
@@ -1595,11 +1594,12 @@ public class ZAttrProvisioning {
         public boolean isAll() { return this == all;}
     }
 
-    public static enum PrefCalendarApptVisibility {
+    public enum PrefCalendarApptVisibility {
         public_("public"),
         private_("private");
-        private String mValue;
-        private PrefCalendarApptVisibility(String value) { mValue = value; }
+        private final String mValue;
+        PrefCalendarApptVisibility(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefCalendarApptVisibility fromString(String s) throws ServiceException {
             for (PrefCalendarApptVisibility value : values()) {
@@ -1611,15 +1611,16 @@ public class ZAttrProvisioning {
         public boolean isPrivate_() { return this == private_;}
     }
 
-    public static enum PrefCalendarInitialView {
+    public enum PrefCalendarInitialView {
         day("day"),
         week("week"),
         workWeek("workWeek"),
         month("month"),
         list("list"),
         year("year");
-        private String mValue;
-        private PrefCalendarInitialView(String value) { mValue = value; }
+        private final String mValue;
+        PrefCalendarInitialView(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefCalendarInitialView fromString(String s) throws ServiceException {
             for (PrefCalendarInitialView value : values()) {
@@ -1635,12 +1636,13 @@ public class ZAttrProvisioning {
         public boolean isYear() { return this == year;}
     }
 
-    public static enum PrefClientType {
+    public enum PrefClientType {
         standard("standard"),
         advanced("advanced"),
         modern("modern");
-        private String mValue;
-        private PrefClientType(String value) { mValue = value; }
+        private final String mValue;
+        PrefClientType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefClientType fromString(String s) throws ServiceException {
             for (PrefClientType value : values()) {
@@ -1653,11 +1655,12 @@ public class ZAttrProvisioning {
         public boolean isModern() { return this == modern;}
     }
 
-    public static enum PrefComposeDirection {
+    public enum PrefComposeDirection {
         LTR("LTR"),
         RTL("RTL");
-        private String mValue;
-        private PrefComposeDirection(String value) { mValue = value; }
+        private final String mValue;
+        PrefComposeDirection(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefComposeDirection fromString(String s) throws ServiceException {
             for (PrefComposeDirection value : values()) {
@@ -1669,11 +1672,12 @@ public class ZAttrProvisioning {
         public boolean isRTL() { return this == RTL;}
     }
 
-    public static enum PrefComposeFormat {
+    public enum PrefComposeFormat {
         text("text"),
         html("html");
-        private String mValue;
-        private PrefComposeFormat(String value) { mValue = value; }
+        private final String mValue;
+        PrefComposeFormat(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefComposeFormat fromString(String s) throws ServiceException {
             for (PrefComposeFormat value : values()) {
@@ -1685,27 +1689,12 @@ public class ZAttrProvisioning {
         public boolean isHtml() { return this == html;}
     }
 
-    public static enum PrefContactsInitialView {
-        cards("cards"),
-        list("list");
-        private String mValue;
-        private PrefContactsInitialView(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static PrefContactsInitialView fromString(String s) throws ServiceException {
-            for (PrefContactsInitialView value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isCards() { return this == cards;}
-        public boolean isList() { return this == list;}
-    }
-
-    public static enum PrefConversationOrder {
+    public enum PrefConversationOrder {
         dateDesc("dateDesc"),
         dateAsc("dateAsc");
-        private String mValue;
-        private PrefConversationOrder(String value) { mValue = value; }
+        private final String mValue;
+        PrefConversationOrder(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefConversationOrder fromString(String s) throws ServiceException {
             for (PrefConversationOrder value : values()) {
@@ -1717,12 +1706,13 @@ public class ZAttrProvisioning {
         public boolean isDateAsc() { return this == dateAsc;}
     }
 
-    public static enum PrefConvReadingPaneLocation {
+    public enum PrefConvReadingPaneLocation {
         bottom("bottom"),
         right("right"),
         off("off");
-        private String mValue;
-        private PrefConvReadingPaneLocation(String value) { mValue = value; }
+        private final String mValue;
+        PrefConvReadingPaneLocation(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefConvReadingPaneLocation fromString(String s) throws ServiceException {
             for (PrefConvReadingPaneLocation value : values()) {
@@ -1735,12 +1725,13 @@ public class ZAttrProvisioning {
         public boolean isOff() { return this == off;}
     }
 
-    public static enum PrefDedupeMessagesSentToSelf {
+    public enum PrefDedupeMessagesSentToSelf {
         dedupeNone("dedupeNone"),
         secondCopyifOnToOrCC("secondCopyifOnToOrCC"),
         dedupeAll("dedupeAll");
-        private String mValue;
-        private PrefDedupeMessagesSentToSelf(String value) { mValue = value; }
+        private final String mValue;
+        PrefDedupeMessagesSentToSelf(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefDedupeMessagesSentToSelf fromString(String s) throws ServiceException {
             for (PrefDedupeMessagesSentToSelf value : values()) {
@@ -1753,13 +1744,14 @@ public class ZAttrProvisioning {
         public boolean isDedupeAll() { return this == dedupeAll;}
     }
 
-    public static enum PrefDelegatedSendSaveTarget {
+    public enum PrefDelegatedSendSaveTarget {
         owner("owner"),
         sender("sender"),
         both("both"),
         none("none");
-        private String mValue;
-        private PrefDelegatedSendSaveTarget(String value) { mValue = value; }
+        private final String mValue;
+        PrefDelegatedSendSaveTarget(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefDelegatedSendSaveTarget fromString(String s) throws ServiceException {
             for (PrefDelegatedSendSaveTarget value : values()) {
@@ -1773,13 +1765,14 @@ public class ZAttrProvisioning {
         public boolean isNone() { return this == none;}
     }
 
-    public static enum PrefExternalSendersType {
+    public enum PrefExternalSendersType {
         ALL("ALL"),
         ALLNOTINAB("ALLNOTINAB"),
         INAB("INAB"),
         INSD("INSD");
-        private String mValue;
-        private PrefExternalSendersType(String value) { mValue = value; }
+        private final String mValue;
+        PrefExternalSendersType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefExternalSendersType fromString(String s) throws ServiceException {
             for (PrefExternalSendersType value : values()) {
@@ -1793,29 +1786,16 @@ public class ZAttrProvisioning {
         public boolean isINSD() { return this == INSD;}
     }
 
-    public static enum PrefFileSharingApplication {
-        briefcase("briefcase");
-        private String mValue;
-        private PrefFileSharingApplication(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static PrefFileSharingApplication fromString(String s) throws ServiceException {
-            for (PrefFileSharingApplication value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isBriefcase() { return this == briefcase;}
-    }
-
-    public static enum PrefForwardIncludeOriginalText {
+    public enum PrefForwardIncludeOriginalText {
         includeAsAttachment("includeAsAttachment"),
         includeBody("includeBody"),
         includeBodyWithPrefix("includeBodyWithPrefix"),
         includeBodyAndHeadersWithPrefix("includeBodyAndHeadersWithPrefix"),
         includeBodyAndHeaders("includeBodyAndHeaders"),
         includeBodyOnly("includeBodyOnly");
-        private String mValue;
-        private PrefForwardIncludeOriginalText(String value) { mValue = value; }
+        private final String mValue;
+        PrefForwardIncludeOriginalText(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefForwardIncludeOriginalText fromString(String s) throws ServiceException {
             for (PrefForwardIncludeOriginalText value : values()) {
@@ -1831,12 +1811,13 @@ public class ZAttrProvisioning {
         public boolean isIncludeBodyOnly() { return this == includeBodyOnly;}
     }
 
-    public static enum PrefForwardReplyFormat {
+    public enum PrefForwardReplyFormat {
         text("text"),
         html("html"),
         same("same");
-        private String mValue;
-        private PrefForwardReplyFormat(String value) { mValue = value; }
+        private final String mValue;
+        PrefForwardReplyFormat(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefForwardReplyFormat fromString(String s) throws ServiceException {
             for (PrefForwardReplyFormat value : values()) {
@@ -1849,11 +1830,12 @@ public class ZAttrProvisioning {
         public boolean isSame() { return this == same;}
     }
 
-    public static enum PrefFromAddressType {
+    public enum PrefFromAddressType {
         sendAs("sendAs"),
         sendOnBehalfOf("sendOnBehalfOf");
-        private String mValue;
-        private PrefFromAddressType(String value) { mValue = value; }
+        private final String mValue;
+        PrefFromAddressType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefFromAddressType fromString(String s) throws ServiceException {
             for (PrefFromAddressType value : values()) {
@@ -1865,11 +1847,12 @@ public class ZAttrProvisioning {
         public boolean isSendOnBehalfOf() { return this == sendOnBehalfOf;}
     }
 
-    public static enum PrefGetMailAction {
+    public enum PrefGetMailAction {
         default_("default"),
         update("update");
-        private String mValue;
-        private PrefGetMailAction(String value) { mValue = value; }
+        private final String mValue;
+        PrefGetMailAction(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefGetMailAction fromString(String s) throws ServiceException {
             for (PrefGetMailAction value : values()) {
@@ -1881,11 +1864,12 @@ public class ZAttrProvisioning {
         public boolean isUpdate() { return this == update;}
     }
 
-    public static enum PrefGroupMailBy {
+    public enum PrefGroupMailBy {
         conversation("conversation"),
         message("message");
-        private String mValue;
-        private PrefGroupMailBy(String value) { mValue = value; }
+        private final String mValue;
+        PrefGroupMailBy(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefGroupMailBy fromString(String s) throws ServiceException {
             for (PrefGroupMailBy value : values()) {
@@ -1897,32 +1881,13 @@ public class ZAttrProvisioning {
         public boolean isMessage() { return this == message;}
     }
 
-    public static enum PrefIMIdleStatus {
-        away("away"),
-        xa("xa"),
-        invisible("invisible"),
-        offline("offline");
-        private String mValue;
-        private PrefIMIdleStatus(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static PrefIMIdleStatus fromString(String s) throws ServiceException {
-            for (PrefIMIdleStatus value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isAway() { return this == away;}
-        public boolean isXa() { return this == xa;}
-        public boolean isInvisible() { return this == invisible;}
-        public boolean isOffline() { return this == offline;}
-    }
-
-    public static enum PrefMailSelectAfterDelete {
+    public enum PrefMailSelectAfterDelete {
         next("next"),
         previous("previous"),
         adaptive("adaptive");
-        private String mValue;
-        private PrefMailSelectAfterDelete(String value) { mValue = value; }
+        private final String mValue;
+        PrefMailSelectAfterDelete(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefMailSelectAfterDelete fromString(String s) throws ServiceException {
             for (PrefMailSelectAfterDelete value : values()) {
@@ -1935,12 +1900,13 @@ public class ZAttrProvisioning {
         public boolean isAdaptive() { return this == adaptive;}
     }
 
-    public static enum PrefMailSendReadReceipts {
+    public enum PrefMailSendReadReceipts {
         always("always"),
         never("never"),
         prompt("prompt");
-        private String mValue;
-        private PrefMailSendReadReceipts(String value) { mValue = value; }
+        private final String mValue;
+        PrefMailSendReadReceipts(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefMailSendReadReceipts fromString(String s) throws ServiceException {
             for (PrefMailSendReadReceipts value : values()) {
@@ -1953,11 +1919,12 @@ public class ZAttrProvisioning {
         public boolean isPrompt() { return this == prompt;}
     }
 
-    public static enum PrefMailSignatureStyle {
+    public enum PrefMailSignatureStyle {
         outlook("outlook"),
         internet("internet");
-        private String mValue;
-        private PrefMailSignatureStyle(String value) { mValue = value; }
+        private final String mValue;
+        PrefMailSignatureStyle(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefMailSignatureStyle fromString(String s) throws ServiceException {
             for (PrefMailSignatureStyle value : values()) {
@@ -1969,11 +1936,12 @@ public class ZAttrProvisioning {
         public boolean isInternet() { return this == internet;}
     }
 
-    public static enum PrefOutOfOfficeFreeBusyStatus {
+    public enum PrefOutOfOfficeFreeBusyStatus {
         BUSY("BUSY"),
         OUTOFOFFICE("OUTOFOFFICE");
-        private String mValue;
-        private PrefOutOfOfficeFreeBusyStatus(String value) { mValue = value; }
+        private final String mValue;
+        PrefOutOfOfficeFreeBusyStatus(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefOutOfOfficeFreeBusyStatus fromString(String s) throws ServiceException {
             for (PrefOutOfOfficeFreeBusyStatus value : values()) {
@@ -1985,11 +1953,12 @@ public class ZAttrProvisioning {
         public boolean isOUTOFOFFICE() { return this == OUTOFOFFICE;}
     }
 
-    public static enum PrefPasswordRecoveryAddressStatus {
+    public enum PrefPasswordRecoveryAddressStatus {
         verified("verified"),
         pending("pending");
-        private String mValue;
-        private PrefPasswordRecoveryAddressStatus(String value) { mValue = value; }
+        private final String mValue;
+        PrefPasswordRecoveryAddressStatus(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefPasswordRecoveryAddressStatus fromString(String s) throws ServiceException {
             for (PrefPasswordRecoveryAddressStatus value : values()) {
@@ -2001,13 +1970,14 @@ public class ZAttrProvisioning {
         public boolean isPending() { return this == pending;}
     }
 
-    public static enum PrefPop3DeleteOption {
+    public enum PrefPop3DeleteOption {
         keep("keep"),
         read("read"),
         trash("trash"),
         delete("delete");
-        private String mValue;
-        private PrefPop3DeleteOption(String value) { mValue = value; }
+        private final String mValue;
+        PrefPop3DeleteOption(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefPop3DeleteOption fromString(String s) throws ServiceException {
             for (PrefPop3DeleteOption value : values()) {
@@ -2021,12 +1991,13 @@ public class ZAttrProvisioning {
         public boolean isDelete() { return this == delete;}
     }
 
-    public static enum PrefReadingPaneLocation {
+    public enum PrefReadingPaneLocation {
         bottom("bottom"),
         right("right"),
         off("off");
-        private String mValue;
-        private PrefReadingPaneLocation(String value) { mValue = value; }
+        private final String mValue;
+        PrefReadingPaneLocation(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefReadingPaneLocation fromString(String s) throws ServiceException {
             for (PrefReadingPaneLocation value : values()) {
@@ -2039,7 +2010,7 @@ public class ZAttrProvisioning {
         public boolean isOff() { return this == off;}
     }
 
-    public static enum PrefReplyIncludeOriginalText {
+    public enum PrefReplyIncludeOriginalText {
         includeAsAttachment("includeAsAttachment"),
         includeBody("includeBody"),
         includeBodyWithPrefix("includeBodyWithPrefix"),
@@ -2051,8 +2022,9 @@ public class ZAttrProvisioning {
         includeSmartAndHeaders("includeSmartAndHeaders"),
         includeSmartAndHeadersWithPrefix("includeSmartAndHeadersWithPrefix"),
         includeBodyOnly("includeBodyOnly");
-        private String mValue;
-        private PrefReplyIncludeOriginalText(String value) { mValue = value; }
+        private final String mValue;
+        PrefReplyIncludeOriginalText(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefReplyIncludeOriginalText fromString(String s) throws ServiceException {
             for (PrefReplyIncludeOriginalText value : values()) {
@@ -2073,15 +2045,16 @@ public class ZAttrProvisioning {
         public boolean isIncludeBodyOnly() { return this == includeBodyOnly;}
     }
 
-    public static enum PrefTasksFilterBy {
+    public enum PrefTasksFilterBy {
         NOTSTARTED("NOTSTARTED"),
         COMPLETED("COMPLETED"),
         INPROGRESS("INPROGRESS"),
         WAITING("WAITING"),
         DEFERRED("DEFERRED"),
         TODO("TODO");
-        private String mValue;
-        private PrefTasksFilterBy(String value) { mValue = value; }
+        private final String mValue;
+        PrefTasksFilterBy(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefTasksFilterBy fromString(String s) throws ServiceException {
             for (PrefTasksFilterBy value : values()) {
@@ -2097,12 +2070,13 @@ public class ZAttrProvisioning {
         public boolean isTODO() { return this == TODO;}
     }
 
-    public static enum PrefTasksReadingPaneLocation {
+    public enum PrefTasksReadingPaneLocation {
         bottom("bottom"),
         right("right"),
         off("off");
-        private String mValue;
-        private PrefTasksReadingPaneLocation(String value) { mValue = value; }
+        private final String mValue;
+        PrefTasksReadingPaneLocation(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static PrefTasksReadingPaneLocation fromString(String s) throws ServiceException {
             for (PrefTasksReadingPaneLocation value : values()) {
@@ -2115,10 +2089,11 @@ public class ZAttrProvisioning {
         public boolean isOff() { return this == off;}
     }
 
-    public static enum Product {
+    public enum Product {
         ZCS("ZCS");
-        private String mValue;
-        private Product(String value) { mValue = value; }
+        private final String mValue;
+        Product(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static Product fromString(String s) throws ServiceException {
             for (Product value : values()) {
@@ -2129,11 +2104,12 @@ public class ZAttrProvisioning {
         public boolean isZCS() { return this == ZCS;}
     }
 
-    public static enum ReverseProxyAcceptMutex {
+    public enum ReverseProxyAcceptMutex {
         on("on"),
         off("off");
-        private String mValue;
-        private ReverseProxyAcceptMutex(String value) { mValue = value; }
+        private final String mValue;
+        ReverseProxyAcceptMutex(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static ReverseProxyAcceptMutex fromString(String s) throws ServiceException {
             for (ReverseProxyAcceptMutex value : values()) {
@@ -2145,12 +2121,13 @@ public class ZAttrProvisioning {
         public boolean isOff() { return this == off;}
     }
 
-    public static enum ReverseProxyClientCertMode {
+    public enum ReverseProxyClientCertMode {
         on("on"),
         off("off"),
         optional("optional");
-        private String mValue;
-        private ReverseProxyClientCertMode(String value) { mValue = value; }
+        private final String mValue;
+        ReverseProxyClientCertMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static ReverseProxyClientCertMode fromString(String s) throws ServiceException {
             for (ReverseProxyClientCertMode value : values()) {
@@ -2163,11 +2140,12 @@ public class ZAttrProvisioning {
         public boolean isOptional() { return this == optional;}
     }
 
-    public static enum ReverseProxyExactServerVersionCheck {
+    public enum ReverseProxyExactServerVersionCheck {
         on("on"),
         off("off");
-        private String mValue;
-        private ReverseProxyExactServerVersionCheck(String value) { mValue = value; }
+        private final String mValue;
+        ReverseProxyExactServerVersionCheck(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static ReverseProxyExactServerVersionCheck fromString(String s) throws ServiceException {
             for (ReverseProxyExactServerVersionCheck value : values()) {
@@ -2179,12 +2157,13 @@ public class ZAttrProvisioning {
         public boolean isOff() { return this == off;}
     }
 
-    public static enum ReverseProxyImapStartTlsMode {
+    public enum ReverseProxyImapStartTlsMode {
         on("on"),
         off("off"),
         only("only");
-        private String mValue;
-        private ReverseProxyImapStartTlsMode(String value) { mValue = value; }
+        private final String mValue;
+        ReverseProxyImapStartTlsMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static ReverseProxyImapStartTlsMode fromString(String s) throws ServiceException {
             for (ReverseProxyImapStartTlsMode value : values()) {
@@ -2197,7 +2176,7 @@ public class ZAttrProvisioning {
         public boolean isOnly() { return this == only;}
     }
 
-    public static enum ReverseProxyLogLevel {
+    public enum ReverseProxyLogLevel {
         debug("debug"),
         info("info"),
         notice("notice"),
@@ -2208,8 +2187,9 @@ public class ZAttrProvisioning {
         debug_mail("debug_mail"),
         debug_core("debug_core"),
         debug_zimbra("debug_zimbra");
-        private String mValue;
-        private ReverseProxyLogLevel(String value) { mValue = value; }
+        private final String mValue;
+        ReverseProxyLogLevel(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static ReverseProxyLogLevel fromString(String s) throws ServiceException {
             for (ReverseProxyLogLevel value : values()) {
@@ -2229,11 +2209,12 @@ public class ZAttrProvisioning {
         public boolean isDebug_zimbra() { return this == debug_zimbra;}
     }
 
-    public static enum ReverseProxyMailMode {
+    public enum ReverseProxyMailMode {
         https("https"),
         redirect("redirect");
-        private String mValue;
-        private ReverseProxyMailMode(String value) { mValue = value; }
+        private final String mValue;
+        ReverseProxyMailMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static ReverseProxyMailMode fromString(String s) throws ServiceException {
             for (ReverseProxyMailMode value : values()) {
@@ -2245,12 +2226,13 @@ public class ZAttrProvisioning {
         public boolean isRedirect() { return this == redirect;}
     }
 
-    public static enum ReverseProxyPop3StartTlsMode {
+    public enum ReverseProxyPop3StartTlsMode {
         on("on"),
         off("off"),
         only("only");
-        private String mValue;
-        private ReverseProxyPop3StartTlsMode(String value) { mValue = value; }
+        private final String mValue;
+        ReverseProxyPop3StartTlsMode(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static ReverseProxyPop3StartTlsMode fromString(String s) throws ServiceException {
             for (ReverseProxyPop3StartTlsMode value : values()) {
@@ -2263,12 +2245,13 @@ public class ZAttrProvisioning {
         public boolean isOnly() { return this == only;}
     }
 
-    public static enum ScheduledTaskRetryPolicy {
+    public enum ScheduledTaskRetryPolicy {
         constant("constant"),
         linear("linear"),
         exponential("exponential");
-        private String mValue;
-        private ScheduledTaskRetryPolicy(String value) { mValue = value; }
+        private final String mValue;
+        ScheduledTaskRetryPolicy(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static ScheduledTaskRetryPolicy fromString(String s) throws ServiceException {
             for (ScheduledTaskRetryPolicy value : values()) {
@@ -2281,12 +2264,13 @@ public class ZAttrProvisioning {
         public boolean isExponential() { return this == exponential;}
     }
 
-    public static enum ShareNotificationMtaConnectionType {
+    public enum ShareNotificationMtaConnectionType {
         CLEARTEXT("CLEARTEXT"),
         SSL("SSL"),
         STARTTLS("STARTTLS");
-        private String mValue;
-        private ShareNotificationMtaConnectionType(String value) { mValue = value; }
+        private final String mValue;
+        ShareNotificationMtaConnectionType(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static ShareNotificationMtaConnectionType fromString(String s) throws ServiceException {
             for (ShareNotificationMtaConnectionType value : values()) {
@@ -2299,28 +2283,13 @@ public class ZAttrProvisioning {
         public boolean isSTARTTLS() { return this == STARTTLS;}
     }
 
-    public static enum TableMaintenanceOperation {
-        ANALYZE("ANALYZE"),
-        OPTIMIZE("OPTIMIZE");
-        private String mValue;
-        private TableMaintenanceOperation(String value) { mValue = value; }
-        public String toString() { return mValue; }
-        public static TableMaintenanceOperation fromString(String s) throws ServiceException {
-            for (TableMaintenanceOperation value : values()) {
-                if (value.mValue.equals(s)) return value;
-             }
-             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
-        }
-        public boolean isANALYZE() { return this == ANALYZE;}
-        public boolean isOPTIMIZE() { return this == OPTIMIZE;}
-    }
-
-    public static enum TwoFactorAuthHashAlgorithm {
+    public enum TwoFactorAuthHashAlgorithm {
         SHA1("SHA1"),
         SHA256("SHA256"),
         SHA512("SHA512");
-        private String mValue;
-        private TwoFactorAuthHashAlgorithm(String value) { mValue = value; }
+        private final String mValue;
+        TwoFactorAuthHashAlgorithm(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static TwoFactorAuthHashAlgorithm fromString(String s) throws ServiceException {
             for (TwoFactorAuthHashAlgorithm value : values()) {
@@ -2333,11 +2302,12 @@ public class ZAttrProvisioning {
         public boolean isSHA512() { return this == SHA512;}
     }
 
-    public static enum TwoFactorAuthScratchCodeEncoding {
+    public enum TwoFactorAuthScratchCodeEncoding {
         BASE32("BASE32"),
         BASE64("BASE64");
-        private String mValue;
-        private TwoFactorAuthScratchCodeEncoding(String value) { mValue = value; }
+        private final String mValue;
+        TwoFactorAuthScratchCodeEncoding(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static TwoFactorAuthScratchCodeEncoding fromString(String s) throws ServiceException {
             for (TwoFactorAuthScratchCodeEncoding value : values()) {
@@ -2349,11 +2319,12 @@ public class ZAttrProvisioning {
         public boolean isBASE64() { return this == BASE64;}
     }
 
-    public static enum TwoFactorAuthSecretEncoding {
+    public enum TwoFactorAuthSecretEncoding {
         BASE32("BASE32"),
         BASE64("BASE64");
-        private String mValue;
-        private TwoFactorAuthSecretEncoding(String value) { mValue = value; }
+        private final String mValue;
+        TwoFactorAuthSecretEncoding(String value) { mValue = value; }
+        @Override
         public String toString() { return mValue; }
         public static TwoFactorAuthSecretEncoding fromString(String s) throws ServiceException {
             for (TwoFactorAuthSecretEncoding value : values()) {
@@ -2367,243 +2338,243 @@ public class ZAttrProvisioning {
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisAddrExtensionBadHeader = "amavisAddrExtensionBadHeader";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisAddrExtensionBanned = "amavisAddrExtensionBanned";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisAddrExtensionSpam = "amavisAddrExtensionSpam";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisAddrExtensionVirus = "amavisAddrExtensionVirus";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisArchiveQuarantineTo = "amavisArchiveQuarantineTo";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBadHeaderAdmin = "amavisBadHeaderAdmin";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBadHeaderLover = "amavisBadHeaderLover";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBadHeaderQuarantineTo = "amavisBadHeaderQuarantineTo";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBannedAdmin = "amavisBannedAdmin";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBannedFilesLover = "amavisBannedFilesLover";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBannedQuarantineTo = "amavisBannedQuarantineTo";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBannedRuleNames = "amavisBannedRuleNames";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBlacklistSender = "amavisBlacklistSender";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBypassBannedChecks = "amavisBypassBannedChecks";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBypassHeaderChecks = "amavisBypassHeaderChecks";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBypassSpamChecks = "amavisBypassSpamChecks";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisBypassVirusChecks = "amavisBypassVirusChecks";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisCleanQuarantineTo = "amavisCleanQuarantineTo";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisDisclaimerOptions = "amavisDisclaimerOptions";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisForwardMethod = "amavisForwardMethod";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisLocal = "amavisLocal";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisMessageSizeLimit = "amavisMessageSizeLimit";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisNewVirusAdmin = "amavisNewVirusAdmin";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSaUserConf = "amavisSaUserConf";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSaUserName = "amavisSaUserName";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamAdmin = "amavisSpamAdmin";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamDsnCutoffLevel = "amavisSpamDsnCutoffLevel";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamKillLevel = "amavisSpamKillLevel";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamLover = "amavisSpamLover";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamModifiesSubj = "amavisSpamModifiesSubj";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamQuarantineCutoffLevel = "amavisSpamQuarantineCutoffLevel";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamQuarantineTo = "amavisSpamQuarantineTo";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamSubjectTag = "amavisSpamSubjectTag";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamSubjectTag2 = "amavisSpamSubjectTag2";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamSubjectTag3 = "amavisSpamSubjectTag3";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamTag2Level = "amavisSpamTag2Level";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamTag3Level = "amavisSpamTag3Level";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisSpamTagLevel = "amavisSpamTagLevel";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisUncheckedLover = "amavisUncheckedLover";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisUncheckedQuarantineTo = "amavisUncheckedQuarantineTo";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisVirusAdmin = "amavisVirusAdmin";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisVirusLover = "amavisVirusLover";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisVirusQuarantineTo = "amavisVirusQuarantineTo";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisWarnBadHeaderRecip = "amavisWarnBadHeaderRecip";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisWarnBannedRecip = "amavisWarnBannedRecip";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisWarnVirusRecip = "amavisWarnVirusRecip";
 
     /**
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_amavisWhitelistSender = "amavisWhitelistSender";
 
     /**
      * RFC2256: ISO-3166 country 2-letter code
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_c = "c";
 
     /**
@@ -2947,199 +2918,199 @@ public class ZAttrProvisioning {
     /**
      * RFC2256: common name(s) for which the entity is known by
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_cn = "cn";
 
     /**
      * RFC1274: friendly country name
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_co = "co";
 
     /**
      * From Microsoft Schema
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_company = "company";
 
     /**
      * RFC2256: descriptive information
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_description = "description";
 
     /**
      * RFC2256: destination indicator
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_destinationIndicator = "destinationIndicator";
 
     /**
      * RFC2798: preferred name to be used when displaying entries
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_displayName = "displayName";
 
     /**
      * RFC2256: Facsimile (Fax) Telephone Number
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_facsimileTelephoneNumber = "facsimileTelephoneNumber";
 
     /**
      * RFC2256: first name(s) for which the entity is known by
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_givenName = "givenName";
 
     /**
      * RFC2256: first name(s) for which the entity is known by
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_gn = "gn";
 
     /**
      * RFC1274: home telephone number
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_homePhone = "homePhone";
 
     /**
      * RFC2256: initials of some or all of names, but not the surname(s).
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_initials = "initials";
 
     /**
      * RFC2256: international ISDN number
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_internationaliSDNNumber = "internationaliSDNNumber";
 
     /**
      * RFC2256: locality which this object resides in
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_l = "l";
 
     /**
      * RFC1274: RFC822 Mailbox
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_mail = "mail";
 
     /**
      * Identifies an URL associated with each member of a group
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_memberURL = "memberURL";
 
     /**
      * RFC1274: mobile telephone number
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_mobile = "mobile";
 
     /**
      * RFC2256: organization this object belongs to
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_o = "o";
 
     /**
      * RFC2256: object classes of the entity
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_objectClass = "objectClass";
 
     /**
      * RFC2256: organizational unit this object belongs to
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_ou = "ou";
 
     /**
      * RFC1274: pager telephone number
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_pager = "pager";
 
     /**
      * &#039;RFC2256: Physical Delivery Office Name
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_physicalDeliveryOfficeName = "physicalDeliveryOfficeName";
 
     /**
      * RFC2256: postal address
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_postalAddress = "postalAddress";
 
     /**
      * RFC2256: postal code
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_postalCode = "postalCode";
 
     /**
      * RFC2256: Post Office Box
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_postOfficeBox = "postOfficeBox";
 
     /**
      * RFC2256: preferred delivery method
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_preferredDeliveryMethod = "preferredDeliveryMethod";
 
     /**
      * RFC2256: registered postal address
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_registeredAddress = "registeredAddress";
 
     /**
      * RFC2256: last (family) name(s) for which the entity is known by
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_sn = "sn";
 
     /**
      * RFC2256: state or province which this object resides in
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_st = "st";
 
     /**
      * RFC2256: street address of this object
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_street = "street";
 
     /**
      * RFC2256: street address of this object
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_streetAddress = "streetAddress";
 
     /**
      * RFC2256: Telephone Number
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_telephoneNumber = "telephoneNumber";
 
     /**
      * RFC2256: Teletex Terminal Identifier
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_teletexTerminalIdentifier = "teletexTerminalIdentifier";
 
     /**
      * RFC2256: Telex Number
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_telexNumber = "telexNumber";
 
     /**
@@ -3153,37 +3124,37 @@ public class ZAttrProvisioning {
     /**
      * RFC2256: title associated with the entity
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_title = "title";
 
     /**
      * RFC1274: user identifier
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_uid = "uid";
 
     /**
      * RFC2256: X.509 user certificate
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_userCertificate = "userCertificate";
 
     /**
      * RFC2256/2307: password of user. Stored encoded as SSHA (salted-SHA1)
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_userPassword = "userPassword";
 
     /**
      * RFC2798: PKCS#7 SignedData used to support S/MIME
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_userSMIMECertificate = "userSMIMECertificate";
 
     /**
      * RFC2256: X.121 Address
      */
-    @ZAttr(id=-1)
+    @ZAttr()
     public static final String A_x121Address = "x121Address";
 
     /**
@@ -3191,13 +3162,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=313)
     public static final String A_zimbraAccountCalendarUserType = "zimbraAccountCalendarUserType";
-
-    /**
-     * Deprecated since: 5.0. deprecated in favor of the accountInfo flag.
-     * Orig desc: additional account attrs that get returned to a client
-     */
-    @ZAttr(id=112)
-    public static final String A_zimbraAccountClientAttr = "zimbraAccountClientAttr";
 
     /**
      * Object classes to add when creating a zimbra account object. Useful if
@@ -3317,14 +3281,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraAdminConsoleCatchAllAddressEnabled = "zimbraAdminConsoleCatchAllAddressEnabled";
 
     /**
-     * enable MX check feature for domain
-     *
-     * @since ZCS 5.0.10
-     */
-    @ZAttr(id=743)
-    public static final String A_zimbraAdminConsoleDNSCheckEnabled = "zimbraAdminConsoleDNSCheckEnabled";
-
-    /**
      * whether configuring external LDAP auth is enabled in admin console
      *
      * @since ZCS 5.0.12
@@ -3440,17 +3396,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraAdminSavedSearches = "zimbraAdminSavedSearches";
 
     /**
-     * Deprecated since: 8.7.8. Variable feature is always enabled, hence
-     * this attribute has been deprecated. Orig desc: Whether to enable the
-     * Sieve &quot;Variables&quot; extension defined in RFC 5229 in the
-     * admin-defined sieve rules.
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2098)
-    public static final String A_zimbraAdminSieveFeatureVariablesEnabled = "zimbraAdminSieveFeatureVariablesEnabled";
-
-    /**
      * sieve script defined by admin (not able to edit and view from the end
      * user) applied after the end user filter rule
      *
@@ -3511,16 +3456,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1052)
     public static final String A_zimbraAllowNonLDHCharsInDomain = "zimbraAllowNonLDHCharsInDomain";
-
-    /**
-     * Deprecated since: 22.9.0. dropping always on cluster feature in whole.
-     * Orig desc: AlwaysOn cluster-id to which this server belongs to. If
-     * empty, it&#039;s not part of AlwaysOn and is a stand-alone server.
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1446)
-    public static final String A_zimbraAlwaysOnClusterId = "zimbraAlwaysOnClusterId";
 
     /**
      * domain mandatory mail html signature
@@ -4428,18 +4363,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraCalendarCalDavSyncStart = "zimbraCalendarCalDavSyncStart";
 
     /**
-     * Deprecated since: 8.0.0. Deprecated per bug 69886.. Orig desc: When
-     * set to TRUE, Calendar folders and Todo folders in Zimbra will be
-     * advertised as Calendar only and Todo only via CalDAV. When set to
-     * FALSE, Calendar folders will be able to store both appointments and
-     * tasks, and Todo folders will not be advertised as CalDAV enabled.
-     *
-     * @since ZCS 5.0.12
-     */
-    @ZAttr(id=794)
-    public static final String A_zimbraCalendarCalDavUseDistinctAppointmentAndToDoCollection = "zimbraCalendarCalDavUseDistinctAppointmentAndToDoCollection";
-
-    /**
      * compatibility mode for calendar server
      */
     @ZAttr(id=243)
@@ -4934,21 +4857,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraChatXmppSslPortEnabled = "zimbraChatXmppSslPortEnabled";
 
     /**
-     * Deprecated since: 8.5.0. family mailbox feature is deprecated. Orig
-     * desc: zimbraId of child accounts
-     */
-    @ZAttr(id=449)
-    public static final String A_zimbraChildAccount = "zimbraChildAccount";
-
-    /**
-     * Deprecated since: 5.0.0. deprecated in favor of user-settable
-     * attribute zimbraPrefChildVisibleAccount . Orig desc: zimbraId of
-     * visible child accounts
-     */
-    @ZAttr(id=450)
-    public static final String A_zimbraChildVisibleAccount = "zimbraChildVisibleAccount";
-
-    /**
      * IP Address/hostname for ClamAV to bind to for attachment scanning.
      * Default is localhost
      *
@@ -5075,19 +4983,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraConstraint = "zimbraConstraint";
 
     /**
-     * Deprecated since: 6.0.7. deprecated in favor of
-     * zimbraContactEmailFields, for bug 45475. Orig desc: Comma separates
-     * list of attributes in contact object to search for email addresses
-     * when generating auto-complete contact list. The same set of fields are
-     * used for GAL contacts as well because LDAP attributes for GAL objects
-     * are mapped to Contact compatible attributes via zimbraGalLdapAttrMap.
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=760)
-    public static final String A_zimbraContactAutoCompleteEmailFields = "zimbraContactAutoCompleteEmailFields";
-
-    /**
      * maximum number of contact entries to return from an auto complete
      *
      * @since ZCS 6.0.0_BETA1
@@ -5121,20 +5016,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=107)
     public static final String A_zimbraContactMaxNumEntries = "zimbraContactMaxNumEntries";
-
-    /**
-     * Deprecated since: 6.0.6. Deprecated per bug 40081. Orig desc: How
-     * often do we refresh contact ranking table from address book and GAL to
-     * get friendly name for the email address. Use 0 to disable the
-     * refresh.. Must be in valid duration format: {digits}{time-unit}.
-     * digits: 0-9, time-unit: [hmsd]|ms. h - hours, m - minutes, s -
-     * seconds, d - days, ms - milliseconds. If time unit is not specified,
-     * the default is s(seconds).
-     *
-     * @since ZCS 6.0.0_BETA2
-     */
-    @ZAttr(id=1023)
-    public static final String A_zimbraContactRankingTableRefreshInterval = "zimbraContactRankingTableRefreshInterval";
 
     /**
      * Size of the contact ranking table. Ranking table is used to keep track
@@ -5203,13 +5084,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=14)
     public static final String A_zimbraCOSId = "zimbraCOSId";
-
-    /**
-     * Deprecated since: 5.0. deprecated in favor of the accountInherited
-     * flag. Orig desc: zimbraCOS attrs that get inherited in a zimbraAccount
-     */
-    @ZAttr(id=21)
-    public static final String A_zimbraCOSInheritedAttr = "zimbraCOSInheritedAttr";
 
     /**
      * time object was created
@@ -5910,6 +5784,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDistributionListSendShareMessageToNewMembers = "zimbraDistributionListSendShareMessageToNewMembers";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -5919,6 +5794,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDistributionListSubscriptionPolicy = "zimbraDistributionListSubscriptionPolicy";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -5928,61 +5804,10 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDistributionListUnsubscriptionPolicy = "zimbraDistributionListUnsubscriptionPolicy";
 
     /**
-     * This attribute is used for DNS check by customers that configure their
-     * MX to point at spam relays or other non-zimbra inbox smtp servers
-     *
-     * @since ZCS 5.0.10
-     */
-    @ZAttr(id=744)
-    public static final String A_zimbraDNSCheckHostname = "zimbraDNSCheckHostname";
-
-    /**
-     * IP Address(es) of the root DNS servers to be used by the DNS cache
-     * service
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1569)
-    public static final String A_zimbraDNSMasterIP = "zimbraDNSMasterIP";
-
-    /**
-     * For zimbra dnscache, whether or not to only use TCP when talking to
-     * the upstream Master DNS servers. Defaults to no
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1597)
-    public static final String A_zimbraDNSTCPUpstream = "zimbraDNSTCPUpstream";
-
-    /**
-     * For zimbra dnscache, whether or not to use TCP. Defaults to yes
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1584)
-    public static final String A_zimbraDNSUseTCP = "zimbraDNSUseTCP";
-
-    /**
-     * For zimbra dnscache, whether or not to use UDP. Defaults to yes
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1586)
-    public static final String A_zimbraDNSUseUDP = "zimbraDNSUseUDP";
-
-    /**
      * maximum amount of mail quota a domain admin can set on a user
      */
     @ZAttr(id=398)
     public static final String A_zimbraDomainAdminMaxMailQuota = "zimbraDomainAdminMaxMailQuota";
-
-    /**
-     * Deprecated since: 5.0. deprecated in favor of the
-     * domainAdminAdminModifiable flag. Orig desc: account attributes that a
-     * domain administrator is allowed to modify
-     */
-    @ZAttr(id=300)
-    public static final String A_zimbraDomainAdminModifiableAttr = "zimbraDomainAdminModifiableAttr";
 
     /**
      * maximum aggregate quota for the domain in bytes
@@ -6087,40 +5912,12 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDomainId = "zimbraDomainId";
 
     /**
-     * Deprecated since: 5.0. deprecated in favor of the domainInherited
-     * flag. Orig desc: zimbraDomain attrs that get inherited from global
-     * config
-     */
-    @ZAttr(id=63)
-    public static final String A_zimbraDomainInheritedAttr = "zimbraDomainInheritedAttr";
-
-    /**
      * enable domain mandatory mail signature
      *
      * @since ZCS 6.0.4
      */
     @ZAttr(id=1069)
     public static final String A_zimbraDomainMandatoryMailSignatureEnabled = "zimbraDomainMandatoryMailSignatureEnabled";
-
-    /**
-     * Deprecated since: 8.5.0. deprecated in favor of
-     * zimbraAmavisDomainDisclaimerHTML. Orig desc: domain mandatory mail
-     * html signature
-     *
-     * @since ZCS 6.0.4
-     */
-    @ZAttr(id=1071)
-    public static final String A_zimbraDomainMandatoryMailSignatureHTML = "zimbraDomainMandatoryMailSignatureHTML";
-
-    /**
-     * Deprecated since: 8.5.0. deprecated in favor of
-     * zimbraAmavisDomainDisclaimerText. Orig desc: domain mandatory mail
-     * plain text signature
-     *
-     * @since ZCS 6.0.4
-     */
-    @ZAttr(id=1070)
-    public static final String A_zimbraDomainMandatoryMailSignatureText = "zimbraDomainMandatoryMailSignatureText";
 
     /**
      * maximum number of accounts allowed in a domain
@@ -6525,13 +6322,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureAdminPreferencesEnabled = "zimbraFeatureAdminPreferencesEnabled";
 
     /**
-     * Deprecated since: 8.0.0. Deprecated as of bug 56924. Orig desc:
-     * advanced search button enabled
-     */
-    @ZAttr(id=138)
-    public static final String A_zimbraFeatureAdvancedSearchEnabled = "zimbraFeatureAdvancedSearchEnabled";
-
-    /**
      * whether or not to enable rerouting spam messages to Junk folder in
      * ZCS, exposing Junk folder and actions in the web UI, and exposing Junk
      * folder to IMAP clients.
@@ -6550,36 +6340,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1907)
     public static final String A_zimbraFeatureAppSpecificPasswordsEnabled = "zimbraFeatureAppSpecificPasswordsEnabled";
-
-    /**
-     * Docs features enabled in briefcase
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1055)
-    public static final String A_zimbraFeatureBriefcaseDocsEnabled = "zimbraFeatureBriefcaseDocsEnabled";
-
-    /**
-     * whether to allow use of briefcase feature
-     */
-    @ZAttr(id=498)
-    public static final String A_zimbraFeatureBriefcasesEnabled = "zimbraFeatureBriefcasesEnabled";
-
-    /**
-     * Slides features enabled in briefcase
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1054)
-    public static final String A_zimbraFeatureBriefcaseSlidesEnabled = "zimbraFeatureBriefcaseSlidesEnabled";
-
-    /**
-     * Spreadsheet features enabled in briefcase
-     *
-     * @since ZCS 6.0.2
-     */
-    @ZAttr(id=1053)
-    public static final String A_zimbraFeatureBriefcaseSpreadsheetEnabled = "zimbraFeatureBriefcaseSpreadsheetEnabled";
 
     /**
      * calendar features
@@ -6650,19 +6410,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=2131)
     public static final String A_zimbraFeatureContactBackupEnabled = "zimbraFeatureContactBackupEnabled";
-
-    /**
-     * Deprecated since: 8.8.6. No longer used by ContactBackupRequest SOAP
-     * handler. Orig desc: Sleep time between subsequent contact backups. 0
-     * means that contact backup is disabled. . Must be in valid duration
-     * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
-     * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
-     * unit is not specified, the default is s(seconds).
-     *
-     * @since ZCS 8.8.5
-     */
-    @ZAttr(id=2124)
-    public static final String A_zimbraFeatureContactBackupFrequency = "zimbraFeatureContactBackupFrequency";
 
     /**
      * Duration for which the backups should be preserved. . Must be in valid
@@ -6854,24 +6601,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureImapDataSourceEnabled = "zimbraFeatureImapDataSourceEnabled";
 
     /**
-     * Deprecated since: 8.7.0. deprecated in favor of
-     * zimbraFeatureChatEnabled. Orig desc: IM features
-     */
-    @ZAttr(id=305)
-    public static final String A_zimbraFeatureIMEnabled = "zimbraFeatureIMEnabled";
-
-    /**
-     * Deprecated since: 7.1.0. deprecated in favor of
-     * zimbraFeatureImportFolderEnabled and zimbraFeatureExportFolderEnabled
-     * for bug 53745. Orig desc: whether import export folder feature is
-     * enabled
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=750)
-    public static final String A_zimbraFeatureImportExportFolderEnabled = "zimbraFeatureImportExportFolderEnabled";
-
-    /**
      * whether import folder feature is enabled
      *
      * @since ZCS 7.1.0
@@ -6910,13 +6639,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=704)
     public static final String A_zimbraFeatureMailForwardingInFiltersEnabled = "zimbraFeatureMailForwardingInFiltersEnabled";
-
-    /**
-     * Deprecated since: 5.0. done via skin template overrides. Orig desc:
-     * whether user is allowed to set mail polling interval
-     */
-    @ZAttr(id=441)
-    public static final String A_zimbraFeatureMailPollingIntervalPreferenceEnabled = "zimbraFeatureMailPollingIntervalPreferenceEnabled";
 
     /**
      * mail priority feature
@@ -7037,14 +6759,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureNewMailNotificationEnabled = "zimbraFeatureNewMailNotificationEnabled";
 
     /**
-     * Deprecated since: 7.0.0. Deprecated per bugs 50465, 56201. Orig desc:
-     * Whether notebook feature should be allowed for this account or in this
-     * cos
-     */
-    @ZAttr(id=356)
-    public static final String A_zimbraFeatureNotebookEnabled = "zimbraFeatureNotebookEnabled";
-
-    /**
      * whether or not open a new msg/conv in a new windows is allowed
      *
      * @since ZCS 5.0.1
@@ -7064,15 +6778,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=366)
     public static final String A_zimbraFeatureOutOfOfficeReplyEnabled = "zimbraFeatureOutOfOfficeReplyEnabled";
-
-    /**
-     * Deprecated since: 8.0.0. Deprecated per bug 56924. Orig desc: whether
-     * people search feature is enabled
-     *
-     * @since ZCS 7.0.0
-     */
-    @ZAttr(id=1109)
-    public static final String A_zimbraFeaturePeopleSearchEnabled = "zimbraFeaturePeopleSearchEnabled";
 
     /**
      * whether user is allowed to retrieve mail from an external POP3 data
@@ -7134,13 +6839,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=335)
     public static final String A_zimbraFeatureSharingEnabled = "zimbraFeatureSharingEnabled";
-
-    /**
-     * Deprecated since: 6.0.0_GA. deprecated. Orig desc: keyboard shortcuts
-     * aliases features
-     */
-    @ZAttr(id=452)
-    public static final String A_zimbraFeatureShortcutAliasesEnabled = "zimbraFeatureShortcutAliasesEnabled";
 
     /**
      * whether to allow use of signature feature
@@ -7224,17 +6922,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureTasksEnabled = "zimbraFeatureTasksEnabled";
 
     /**
-     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
-     * Orig desc: Whether to allow a user to access touch client. Note: touch
-     * client is a Network feature, this attribute is effective only if touch
-     * client is permitted by license.
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1636)
-    public static final String A_zimbraFeatureTouchClientEnabled = "zimbraFeatureTouchClientEnabled";
-
-    /**
      * Whether the option of specifying trusted devices when using two-factor
      * authentication is available on the account
      *
@@ -7313,31 +7000,12 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureWebClientOfflineAccessEnabled = "zimbraFeatureWebClientOfflineAccessEnabled";
 
     /**
-     * Deprecated since: 6.0.0_GA. deprecated per bug 40170. Orig desc:
-     * whether web search feature is enabled
-     *
-     * @since ZCS 5.0.2
-     */
-    @ZAttr(id=602)
-    public static final String A_zimbraFeatureWebSearchEnabled = "zimbraFeatureWebSearchEnabled";
-
-    /**
      * Zimbra Assistant enabled
      *
      * @since ZCS 5.0.0
      */
     @ZAttr(id=544)
     public static final String A_zimbraFeatureZimbraAssistantEnabled = "zimbraFeatureZimbraAssistantEnabled";
-
-    /**
-     * Deprecated since: 8.9.0. deprecated with attribute
-     * zimbraFeatureModernDesktopEnabled. Orig desc: Whether to allow a user
-     * to access Zimbra X desktop
-     *
-     * @since ZCS 8.9.0
-     */
-    @ZAttr(id=3080)
-    public static final String A_zimbraFeatureZXDesktopEnabled = "zimbraFeatureZXDesktopEnabled";
 
     /**
      * Whether to allow a user to access Zimbra X web client
@@ -8145,17 +7813,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraHierarchicalAddressBookRoot = "zimbraHierarchicalAddressBookRoot";
 
     /**
-     * Deprecated since: 6.0.0_BETA2. deprecated in favor for
-     * zimbraHsmPolicy. Orig desc: Minimum age of mail items whose filesystem
-     * data will be moved to secondary storage.. Must be in valid duration
-     * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
-     * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
-     * unit is not specified, the default is s(seconds).
-     */
-    @ZAttr(id=8)
-    public static final String A_zimbraHsmAge = "zimbraHsmAge";
-
-    /**
      * Maximum number of items to move during a single HSM operation. If the
      * limit is exceeded, the HSM operation is repeated until all qualifying
      * items are moved.
@@ -8298,13 +7955,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1581)
     public static final String A_zimbraHttpResponseHeaderSize = "zimbraHttpResponseHeaderSize";
-
-    /**
-     * Deprecated since: 5.0. not applicable for jetty. Orig desc: number of
-     * https handler threads
-     */
-    @ZAttr(id=519)
-    public static final String A_zimbraHttpSSLNumThreads = "zimbraHttpSSLNumThreads";
 
     /**
      * The maximum thread idle time in milli seconds. Threads that are idle
@@ -8542,45 +8192,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=184)
     public static final String A_zimbraImapSSLServerEnabled = "zimbraImapSSLServerEnabled";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * available IM interop gateways
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=571)
-    public static final String A_zimbraIMAvailableInteropGateways = "zimbraIMAvailableInteropGateways";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * interface address on which IM server should listen; if empty, binds to
-     * all interfaces
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=567)
-    public static final String A_zimbraIMBindAddress = "zimbraIMBindAddress";
-
-    /**
-     * Deprecated since: 6.0.0_GA. deprecated per bug 40069. Orig desc: IM
-     * service
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=762)
-    public static final String A_zimbraIMService = "zimbraIMService";
-
-    /**
-     * Deprecated since: 5.0. Installed skin list is a per server property,
-     * the list is now generated by directory scan of skin files. Orig desc:
-     * Skins installed and available on all servers (this is global config
-     * only)
-     */
-    @ZAttr(id=368)
-    public static final String A_zimbraInstalledSkin = "zimbraInstalledSkin";
 
     /**
      * The address to which legal intercept messages will be sent.
@@ -9034,50 +8645,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMailAddressValidationRegex = "zimbraMailAddressValidationRegex";
 
     /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraAdminOutgoingSieveScriptAfter. Orig desc: outgoing sieve script
-     * defined by admin (not able to edit and view from the end user) applied
-     * after the end user filter rule
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2093)
-    public static final String A_zimbraMailAdminOutgoingSieveScriptAfter = "zimbraMailAdminOutgoingSieveScriptAfter";
-
-    /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraAdminOutgoingSieveScriptBefore. Orig desc: outgoing sieve script
-     * defined by admin (not able to edit and view from the end user) applied
-     * before the end user filter rule
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2092)
-    public static final String A_zimbraMailAdminOutgoingSieveScriptBefore = "zimbraMailAdminOutgoingSieveScriptBefore";
-
-    /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraAdminSieveScriptAfter. Orig desc: sieve script defined by admin
-     * (not able to edit and view from the end user) applied after the end
-     * user filter rule
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2091)
-    public static final String A_zimbraMailAdminSieveScriptAfter = "zimbraMailAdminSieveScriptAfter";
-
-    /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraAdminSieveScriptBefore. Orig desc: sieve script defined by admin
-     * (not able to edit and view from the end user) applied before the end
-     * user filter rule
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2090)
-    public static final String A_zimbraMailAdminSieveScriptBefore = "zimbraMailAdminSieveScriptBefore";
-
-    /**
      * RFC822 email address of this recipient for accepting mail
      */
     @ZAttr(id=20)
@@ -9288,17 +8855,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMailEmptyFolderBatchSize = "zimbraMailEmptyFolderBatchSize";
 
     /**
-     * Deprecated since: 8.0.0. Empty folder operation now always deletes
-     * items in batches, hence a threshold is no longer applicable.. Orig
-     * desc: Folders that contain more than this many messages will be
-     * emptied in batches of size zimbraMailEmptyFolderBatchSize.
-     *
-     * @since ZCS 6.0.13
-     */
-    @ZAttr(id=1208)
-    public static final String A_zimbraMailEmptyFolderBatchThreshold = "zimbraMailEmptyFolderBatchThreshold";
-
-    /**
      * Number of bytes to buffer in memory per file descriptor in the cache.
      * Larger values result in fewer disk reads, but increase memory
      * consumption.
@@ -9377,15 +8933,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1161)
     public static final String A_zimbraMailKeepOutWebCrawlers = "zimbraMailKeepOutWebCrawlers";
-
-    /**
-     * Deprecated since: 5.0.7. deprecated per bug 28842. Orig desc: The id
-     * of the last purged mailbox.
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=543)
-    public static final String A_zimbraMailLastPurgedMailboxId = "zimbraMailLastPurgedMailboxId";
 
     /**
      * Specifies whether the http server should bound to localhost or not.
@@ -9547,20 +9094,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=613)
     public static final String A_zimbraMailReferMode = "zimbraMailReferMode";
-
-    /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraSieveNotifyActionRFCCompliant, which can be used at account
-     * level. Orig desc: Whether the RFC compliant &#039;notify&#039; is
-     * used. If TRUE, ZCS parses the &#039;notify&#039; action parameters
-     * based on the syntax defined by the RFC 5435 and 5436. If FALSE, ZCS
-     * treats the &#039;notify&#039; action parameters with Zimbra specific
-     * format
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2095)
-    public static final String A_zimbraMailSieveNotifyActionRFCCompliant = "zimbraMailSieveNotifyActionRFCCompliant";
 
     /**
      * sieve script generated from user filter rules
@@ -9774,28 +9307,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1139)
     public static final String A_zimbraMailTrustedSenderListMaxNumEntries = "zimbraMailTrustedSenderListMaxNumEntries";
-
-    /**
-     * Deprecated since: 6.0.7. Deprecated per bug 43497. The number of
-     * uncompressed files on disk will never exceed
-     * zimbraMailFileDescriptorCacheSize.. Orig desc: max number of bytes
-     * stored in the uncompressed blob cache on disk
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=825)
-    public static final String A_zimbraMailUncompressedCacheMaxBytes = "zimbraMailUncompressedCacheMaxBytes";
-
-    /**
-     * Deprecated since: 6.0.7. Deprecated per bug 43497. The number of
-     * uncompressed files on disk will never exceed
-     * zimbraMailFileDescriptorCacheSize.. Orig desc: max number of files in
-     * the uncompressed blob cache on disk
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=824)
-    public static final String A_zimbraMailUncompressedCacheMaxFiles = "zimbraMailUncompressedCacheMaxFiles";
 
     /**
      * URL prefix for where the zimbra app resides on this server
@@ -10453,17 +9964,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMobilePolicyApprovedApplicationList = "zimbraMobilePolicyApprovedApplicationList";
 
     /**
-     * Deprecated since: 8.5.0. Use
-     * zimbraMobilePolicyRequireStorageCardEncryption. Orig desc: require
-     * data encryption on device; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=847)
-    public static final String A_zimbraMobilePolicyDeviceEncryptionEnabled = "zimbraMobilePolicyDeviceEncryptionEnabled";
-
-    /**
      * whether to force pin on device; ignored if
      * zimbraFeatureMobilePolicyEnabled=FALSE
      *
@@ -10814,24 +10314,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMtaAuthBindAddress = "zimbraMtaAuthBindAddress";
 
     /**
-     * Deprecated since: 6.0.0_BETA1. deprecated in favor of
-     * zimbraMtaTlsSecurityLevel and zimbraMtaSaslAuthEnable. Orig desc:
-     * Value for postconf smtpd_tls_security_level
-     */
-    @ZAttr(id=194)
-    public static final String A_zimbraMtaAuthEnabled = "zimbraMtaAuthEnabled";
-
-    /**
-     * Deprecated since: 8.6. Formally deprecated in 8.6 but has been unused
-     * since at least 7.0. MTA now uses all servers which have
-     * zimbraMtaAuthTarget set to TRUE. Orig desc: Host running SOAP service
-     * for use by MTA auth. Setting this sets zimbraMtaAuthURL via attr
-     * callback mechanism.
-     */
-    @ZAttr(id=309)
-    public static final String A_zimbraMtaAuthHost = "zimbraMtaAuthHost";
-
-    /**
      * Internal port used by saslauthd to authenticate over SOAP
      *
      * @since ZCS 8.7,9.0.0
@@ -10844,16 +10326,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=505)
     public static final String A_zimbraMtaAuthTarget = "zimbraMtaAuthTarget";
-
-    /**
-     * Deprecated since: 8.6. Formally deprecated in 8.6 but has been unused
-     * since at least 7.0. MTA now uses all servers which have
-     * zimbraMtaAuthTarget set to TRUE. Orig desc: URL at which this MTA (via
-     * zimbra saslauthd) should authenticate. Set by setting
-     * zimbraMtaAuthHost.
-     */
-    @ZAttr(id=310)
-    public static final String A_zimbraMtaAuthURL = "zimbraMtaAuthURL";
 
     /**
      * Attachment file extensions that are blocked
@@ -10948,14 +10420,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1500)
     public static final String A_zimbraMtaDelayWarningTime = "zimbraMtaDelayWarningTime";
-
-    /**
-     * Deprecated since: 8.7.0_BETA2. deprecated in favor
-     * zimbraMtaSmtpDnsSupportLevel. Orig desc: Value for postconf
-     * disable_dns_lookups (note enable v. disable)
-     */
-    @ZAttr(id=197)
-    public static final String A_zimbraMtaDnsLookupsEnabled = "zimbraMtaDnsLookupsEnabled";
 
     /**
      * Whether or not to enable zmpostfixpolicyd with MTA. Defaults to FALSE
@@ -11947,15 +11411,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMtaSmtpTransportRateDelay = "zimbraMtaSmtpTransportRateDelay";
 
     /**
-     * Deprecated since: 8.7.0_BETA2. use zimbraMtaSmtpdSoftErrorLimit
-     * instead. Orig desc: Value for postconf smtpd_soft_error_limit
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1538)
-    public static final String A_zimbraMtaStpdSoftErrorLimit = "zimbraMtaStpdSoftErrorLimit";
-
-    /**
      * Value for postconf tls_append_default_CA
      *
      * @since ZCS 8.5.0
@@ -12049,16 +11504,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraNetworkActivation = "zimbraNetworkActivation";
 
     /**
-     * Deprecated since: 8.8.5. This attribute has been renamed to
-     * zimbraNetworkAdminNGEnabled. Orig desc: Whether to enable old zimbra
-     * network admin module.
-     *
-     * @since ZCS 8.8.2
-     */
-    @ZAttr(id=2119)
-    public static final String A_zimbraNetworkAdminEnabled = "zimbraNetworkAdminEnabled";
-
-    /**
      * Whether to enable zimbra network new generation admin module.
      *
      * @since ZCS 8.8.5
@@ -12132,27 +11577,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraNewMailNotificationSubject = "zimbraNewMailNotificationSubject";
 
     /**
-     * Deprecated since: 7.0.0. See bug 39647. Orig desc: Account for storing
-     * templates and providing space for public wiki
-     */
-    @ZAttr(id=363)
-    public static final String A_zimbraNotebookAccount = "zimbraNotebookAccount";
-
-    /**
-     * Deprecated since: 6.0.0_BETA1. deprecated. Orig desc: The size of Wiki
-     * / Notebook folder cache on the server.
-     */
-    @ZAttr(id=370)
-    public static final String A_zimbraNotebookFolderCacheSize = "zimbraNotebookFolderCacheSize";
-
-    /**
-     * Deprecated since: 6.0.0_BETA1. deprecated. Orig desc: The maximum
-     * number of cached templates in each Wiki / Notebook folder cache.
-     */
-    @ZAttr(id=371)
-    public static final String A_zimbraNotebookMaxCachedTemplatesPerFolder = "zimbraNotebookMaxCachedTemplatesPerFolder";
-
-    /**
      * maximum number of revisions to keep for wiki pages and documents. 0
      * means unlimited.
      */
@@ -12179,52 +11603,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=9)
     public static final String A_zimbraNotes = "zimbraNotes";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Network interface on which notification server
-     * should listen; if empty, binds to all interfaces.
-     */
-    @ZAttr(id=317)
-    public static final String A_zimbraNotifyBindAddress = "zimbraNotifyBindAddress";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Port number on which notification server should
-     * listen.
-     */
-    @ZAttr(id=318)
-    public static final String A_zimbraNotifyBindPort = "zimbraNotifyBindPort";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Whether notification server should be enabled.
-     */
-    @ZAttr(id=316)
-    public static final String A_zimbraNotifyServerEnabled = "zimbraNotifyServerEnabled";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Network interface on which SSL notification server
-     * should listen; if empty, binds to all interfaces
-     */
-    @ZAttr(id=320)
-    public static final String A_zimbraNotifySSLBindAddress = "zimbraNotifySSLBindAddress";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Port number on which notification server should
-     * listen.
-     */
-    @ZAttr(id=321)
-    public static final String A_zimbraNotifySSLBindPort = "zimbraNotifySSLBindPort";
-
-    /**
-     * Deprecated since: 4.0. was experimental and never part of any shipping
-     * feature. Orig desc: Whether SSL notification server should be enabled.
-     */
-    @ZAttr(id=319)
-    public static final String A_zimbraNotifySSLServerEnabled = "zimbraNotifySSLServerEnabled";
 
     /**
      * Credentials associated with a successfully authorized OAuth Consumer
@@ -12763,16 +12141,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefAutoAddAddressEnabled = "zimbraPrefAutoAddAddressEnabled";
 
     /**
-     * Deprecated since: 8.5.0. address bubbles always enabled since 8.5.0.
-     * Orig desc: whether actionable address objects result from autocomplete
-     * is enabled
-     *
-     * @since ZCS 7.0.0
-     */
-    @ZAttr(id=1146)
-    public static final String A_zimbraPrefAutocompleteAddressBubblesEnabled = "zimbraPrefAutocompleteAddressBubblesEnabled";
-
-    /**
      * whether to end auto-complete on comma
      *
      * @since ZCS 6.0.7
@@ -12797,14 +12165,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=411)
     public static final String A_zimbraPrefBccAddress = "zimbraPrefBccAddress";
-
-    /**
-     * where the reading pane is displayed for briefcase
-     *
-     * @since ZCS 7.0.0
-     */
-    @ZAttr(id=1152)
-    public static final String A_zimbraPrefBriefcaseReadingPaneLocation = "zimbraPrefBriefcaseReadingPaneLocation";
 
     /**
      * calendar manual accept reply signature for account/identity/dataSource
@@ -13000,24 +12360,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefCalendarReminderDeviceInfo = "zimbraPrefCalendarReminderDeviceInfo";
 
     /**
-     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
-     * used. Orig desc: When to send the first reminder for an event.
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=573)
-    public static final String A_zimbraPrefCalendarReminderDuration1 = "zimbraPrefCalendarReminderDuration1";
-
-    /**
-     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
-     * used. Orig desc: When to send the second reminder for an event.
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=574)
-    public static final String A_zimbraPrefCalendarReminderDuration2 = "zimbraPrefCalendarReminderDuration2";
-
-    /**
      * RFC822 email address for receiving reminders for appointments and
      * tasks
      *
@@ -13035,25 +12377,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefCalendarReminderFlashTitle = "zimbraPrefCalendarReminderFlashTitle";
 
     /**
-     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
-     * used. Orig desc: The mobile device (phone) the reminder goes to.
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=577)
-    public static final String A_zimbraPrefCalendarReminderMobile = "zimbraPrefCalendarReminderMobile";
-
-    /**
-     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
-     * used. Orig desc: whether or not email reminders for appointments and
-     * tasks are enabled
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=576)
-    public static final String A_zimbraPrefCalendarReminderSendEmail = "zimbraPrefCalendarReminderSendEmail";
-
-    /**
      * whether audible alert is enabled when appointment notification is
      * played
      *
@@ -13061,15 +12384,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=667)
     public static final String A_zimbraPrefCalendarReminderSoundsEnabled = "zimbraPrefCalendarReminderSoundsEnabled";
-
-    /**
-     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
-     * used. Orig desc: Send a reminder via YIM
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=578)
-    public static final String A_zimbraPrefCalendarReminderYMessenger = "zimbraPrefCalendarReminderYMessenger";
 
     /**
      * If an invite is received from an organizer who does not have
@@ -13159,15 +12473,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefChatPlaySound = "zimbraPrefChatPlaySound";
 
     /**
-     * Deprecated since: 8.5.0. family mailbox feature is deprecated. Orig
-     * desc: zimbraId of visible child accounts
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=553)
-    public static final String A_zimbraPrefChildVisibleAccount = "zimbraPrefChildVisibleAccount";
-
-    /**
      * user preference of client type
      */
     @ZAttr(id=453)
@@ -13200,34 +12505,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=209)
     public static final String A_zimbraPrefComposeInNewWindow = "zimbraPrefComposeInNewWindow";
-
-    /**
-     * Deprecated since: 8.0.0. Since 8.0.0, the contact group can contain
-     * member references, but member references are not searchable.. Orig
-     * desc: Disables autocomplete matching against the members email
-     * address.
-     *
-     * @since ZCS 6.0.7
-     */
-    @ZAttr(id=1090)
-    public static final String A_zimbraPrefContactsDisableAutocompleteOnContactGroupMembers = "zimbraPrefContactsDisableAutocompleteOnContactGroupMembers";
-
-    /**
-     * Deprecated since: 8.0.0. deprecated now that Zimbra supports keeping
-     * member references in a contact group. Orig desc: Expand the contact
-     * groups in Apple Address Book format to Zimbra format over CardDAV.
-     *
-     * @since ZCS 7.0.0
-     */
-    @ZAttr(id=1102)
-    public static final String A_zimbraPrefContactsExpandAppleContactGroups = "zimbraPrefContactsExpandAppleContactGroups";
-
-    /**
-     * Deprecated since: 6.0.5. We do not support cards view any more. See
-     * bug 47439. Orig desc: initial contact view to use
-     */
-    @ZAttr(id=167)
-    public static final String A_zimbraPrefContactsInitialView = "zimbraPrefContactsInitialView";
 
     /**
      * number of contacts per page
@@ -13343,14 +12620,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1320)
     public static final String A_zimbraPrefExternalSendersType = "zimbraPrefExternalSendersType";
-
-    /**
-     * indicates which application to use for file sharing
-     *
-     * @since ZCS 8.0.0
-     */
-    @ZAttr(id=1197)
-    public static final String A_zimbraPrefFileSharingApplication = "zimbraPrefFileSharingApplication";
 
     /**
      * whether folder color is enabled
@@ -13517,172 +12786,12 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefImapSearchFoldersEnabled = "zimbraPrefImapSearchFoldersEnabled";
 
     /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether to login to the IM client automatically
-     */
-    @ZAttr(id=488)
-    public static final String A_zimbraPrefIMAutoLogin = "zimbraPrefIMAutoLogin";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: IM
-     * buddy list sort order
-     *
-     * @since ZCS 5.0.10
-     */
-    @ZAttr(id=705)
-    public static final String A_zimbraPrefIMBuddyListSort = "zimbraPrefIMBuddyListSort";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Custom
-     * IM status messages
-     *
-     * @since ZCS 5.0.6
-     */
-    @ZAttr(id=645)
-    public static final String A_zimbraPrefIMCustomStatusMessage = "zimbraPrefIMCustomStatusMessage";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Flash
-     * IM icon on new messages
-     */
-    @ZAttr(id=462)
-    public static final String A_zimbraPrefIMFlashIcon = "zimbraPrefIMFlashIcon";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Flash
-     * title bar when a new IM arrives
-     *
-     * @since ZCS 5.0.7
-     */
-    @ZAttr(id=679)
-    public static final String A_zimbraPrefIMFlashTitle = "zimbraPrefIMFlashTitle";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether to hide IM blocked buddies
-     *
-     * @since ZCS 5.0.10
-     */
-    @ZAttr(id=707)
-    public static final String A_zimbraPrefIMHideBlockedBuddies = "zimbraPrefIMHideBlockedBuddies";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether to hide IM offline buddies
-     *
-     * @since ZCS 5.0.10
-     */
-    @ZAttr(id=706)
-    public static final String A_zimbraPrefIMHideOfflineBuddies = "zimbraPrefIMHideOfflineBuddies";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: IM
-     * idle status
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=560)
-    public static final String A_zimbraPrefIMIdleStatus = "zimbraPrefIMIdleStatus";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: IM
-     * session idle timeout in minutes
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=559)
-    public static final String A_zimbraPrefIMIdleTimeout = "zimbraPrefIMIdleTimeout";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Enable
-     * instant notifications
-     */
-    @ZAttr(id=517)
-    public static final String A_zimbraPrefIMInstantNotify = "zimbraPrefIMInstantNotify";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether to log IM chats to the Chats folder
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=556)
-    public static final String A_zimbraPrefIMLogChats = "zimbraPrefIMLogChats";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether IM log chats is enabled
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=552)
-    public static final String A_zimbraPrefIMLogChatsEnabled = "zimbraPrefIMLogChatsEnabled";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Notify
-     * for presence modifications
-     */
-    @ZAttr(id=463)
-    public static final String A_zimbraPrefIMNotifyPresence = "zimbraPrefIMNotifyPresence";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: Notify
-     * for status change
-     */
-    @ZAttr(id=464)
-    public static final String A_zimbraPrefIMNotifyStatus = "zimbraPrefIMNotifyStatus";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether to report IM idle status
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=558)
-    public static final String A_zimbraPrefIMReportIdle = "zimbraPrefIMReportIdle";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc:
-     * whether sounds is enabled in IM
-     *
-     * @since ZCS 5.0.0
-     */
-    @ZAttr(id=570)
-    public static final String A_zimbraPrefIMSoundsEnabled = "zimbraPrefIMSoundsEnabled";
-
-    /**
      * whether to enable toaster notification for IM
      *
      * @since ZCS 6.0.0_BETA1
      */
     @ZAttr(id=814)
     public static final String A_zimbraPrefIMToasterEnabled = "zimbraPrefIMToasterEnabled";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
-     * feature uses a new set of configuration attributes.. Orig desc: last
-     * used yahoo id
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=757)
-    public static final String A_zimbraPrefIMYahooId = "zimbraPrefIMYahooId";
 
     /**
      * Retention period of read messages in the Inbox folder. 0 means that
@@ -13900,16 +13009,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=156)
     public static final String A_zimbraPrefMailSignatureStyle = "zimbraPrefMailSignatureStyle";
-
-    /**
-     * Deprecated since: 7.1.1. deprecated in favor of userCertificate and
-     * userSMIMECertificate. Orig desc: user&#039;s S/MIME public keys
-     * (certificates)
-     *
-     * @since ZCS 7.1.0
-     */
-    @ZAttr(id=1172)
-    public static final String A_zimbraPrefMailSMIMECertificate = "zimbraPrefMailSMIMECertificate";
 
     /**
      * whether audible alert is enabled when a new email arrives
@@ -14152,31 +13251,12 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefQuickCommand = "zimbraPrefQuickCommand";
 
     /**
-     * Deprecated since: 6.0.0_BETA2. deprecated in favor of
-     * zimbraPrefReadingPaneLocation and zimbraPrefConvReadingPaneLocation.
-     * Orig desc: whether reading pane is shown by default
-     */
-    @ZAttr(id=394)
-    public static final String A_zimbraPrefReadingPaneEnabled = "zimbraPrefReadingPaneEnabled";
-
-    /**
      * where the message reading pane is displayed in list views
      *
      * @since ZCS 6.0.0_BETA1
      */
     @ZAttr(id=804)
     public static final String A_zimbraPrefReadingPaneLocation = "zimbraPrefReadingPaneLocation";
-
-    /**
-     * Deprecated since: 6.0.8. Deprecated per bug 46988. This feature was
-     * never fully implemented.. Orig desc: address to put in reply-to header
-     * of read receipt messages, if it is not set, then the compose
-     * identities primary email address is used.
-     *
-     * @since ZCS 6.0.0_BETA1
-     */
-    @ZAttr(id=823)
-    public static final String A_zimbraPrefReadReceiptsToAddress = "zimbraPrefReadReceiptsToAddress";
 
     /**
      * what part of the original message to include during replies
@@ -14423,14 +13503,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefTrashLifetime = "zimbraPrefTrashLifetime";
 
     /**
-     * Deprecated since: 5.0. no longer used in account or identity. Orig
-     * desc: TRUE if we this identity should get settings from the default
-     * identity
-     */
-    @ZAttr(id=410)
-    public static final String A_zimbraPrefUseDefaultIdentitySettings = "zimbraPrefUseDefaultIdentitySettings";
-
-    /**
      * whether or not keyboard shortcuts are enabled
      */
     @ZAttr(id=61)
@@ -14572,13 +13644,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=294)
     public static final String A_zimbraProxyAllowedDomains = "zimbraProxyAllowedDomains";
-
-    /**
-     * Deprecated since: 7.2.1. Deprecated per bug 74769. Orig desc: Content
-     * types that can be cached by proxy servlet
-     */
-    @ZAttr(id=303)
-    public static final String A_zimbraProxyCacheableContentTypes = "zimbraProxyCacheableContentTypes";
 
     /**
      * Name to be used in public API such as REST or SOAP proxy.
@@ -14761,47 +13826,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1643)
     public static final String A_zimbraRegexMaxAccessesWhenMatching = "zimbraRegexMaxAccessesWhenMatching";
-
-    /**
-     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
-     * Orig desc: port number on which the remote IMAP server should listen
-     *
-     * @since ZCS 8.8.1
-     */
-    @ZAttr(id=3015)
-    public static final String A_zimbraRemoteImapBindPort = "zimbraRemoteImapBindPort";
-
-    /**
-     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
-     * Orig desc: Controls if the remote IMAP (non-SSL) service is enabled
-     * for a given server. See also zimbraRemoteImapSSLServerEnabled and
-     * zimbraReverseProxyUpstreamImapServers.
-     *
-     * @since ZCS 8.8.1
-     */
-    @ZAttr(id=3013)
-    public static final String A_zimbraRemoteImapServerEnabled = "zimbraRemoteImapServerEnabled";
-
-    /**
-     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
-     * Orig desc: port number on which the remote IMAP SSL server should
-     * listen
-     *
-     * @since ZCS 8.8.1
-     */
-    @ZAttr(id=3016)
-    public static final String A_zimbraRemoteImapSSLBindPort = "zimbraRemoteImapSSLBindPort";
-
-    /**
-     * Deprecated since: 22.9.0. Deprecated because IMAPD has been removed.
-     * Orig desc: Controls if the remote IMAP SSL server is enabled for a
-     * given server. See also zimbraRemoteImapServerEnabled and
-     * zimbraReverseProxyUpstreamImapServers.
-     *
-     * @since ZCS 8.8.1
-     */
-    @ZAttr(id=3014)
-    public static final String A_zimbraRemoteImapSSLServerEnabled = "zimbraRemoteImapSSLServerEnabled";
 
     /**
      * Path to remote management command to execute on this server
@@ -14994,17 +14018,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyDefaultRealm = "zimbraReverseProxyDefaultRealm";
 
     /**
-     * Control whether force the server side do the DNS lookup and send the
-     * result IP back to proxy. If false, the raw address configured (e.g.
-     * zimbraMailHost) is directly sent to proxy, else the translated IP will
-     * be sent back to the client.
-     *
-     * @since ZCS 8.0.0
-     */
-    @ZAttr(id=1384)
-    public static final String A_zimbraReverseProxyDnsLookupInServerEnabled = "zimbraReverseProxyDnsLookupInServerEnabled";
-
-    /**
      * LDAP attribute that contains domain name for the domain
      *
      * @since ZCS 5.0.0
@@ -15152,21 +14165,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=641)
     public static final String A_zimbraReverseProxyImapStartTlsMode = "zimbraReverseProxyImapStartTlsMode";
-
-    /**
-     * Deprecated since: 8.0.0. deprecated in favor of local config
-     * &quot;imap_max_idle_time&quot;, &quot;pop3_max_idle_time&quot;,
-     * &quot;imap_authenticated_max_idle_time&quot; in bug 59685. Orig desc:
-     * Time interval after which NGINX mail proxy will disconnect an inactive
-     * IMAP/POP connection. Must be in valid duration format:
-     * {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h - hours, m -
-     * minutes, s - seconds, d - days, ms - milliseconds. If time unit is not
-     * specified, the default is s(seconds).
-     *
-     * @since ZCS 5.0.10
-     */
-    @ZAttr(id=735)
-    public static final String A_zimbraReverseProxyInactivityTimeout = "zimbraReverseProxyInactivityTimeout";
 
     /**
      * Sets the upper limit on logins from a remote IP via IMAP to this proxy
@@ -15683,21 +14681,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyUpstreamSendTimeout = "zimbraReverseProxyUpstreamSendTimeout";
 
     /**
-     * Deprecated since: 8.5.0. Configuration for pre-login upstream is now
-     * handled via zimbraReverseProxyUpstreamLoginServers. Post-login
-     * upstreams are now automatically configured per-webapp based on what is
-     * present in zimbraServiceEnabled.. Orig desc: The servers to be
-     * included in the &quot;upstream&quot; block in the nginx web proxy
-     * config file. The servers configured here will only affect the proxy of
-     * pre-login requests. Leaving empty means using all the servers whose
-     * zimbraReverseProxyLookupTarget is TRUE.
-     *
-     * @since ZCS 8.0.0
-     */
-    @ZAttr(id=1378)
-    public static final String A_zimbraReverseProxyUpstreamServers = "zimbraReverseProxyUpstreamServers";
-
-    /**
      * There is a deployment scenario for migrations where all of the
      * customers users are pointed at the zimbra POP IMAP reverse proxy. We
      * then want their connections proxied back to the legacy system for
@@ -15939,62 +14922,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraServerId = "zimbraServerId";
 
     /**
-     * Deprecated since: 5.0. deprecated in favor of the serverInherited
-     * flag. Orig desc: zimbraServer attrs that get inherited from global
-     * config
-     */
-    @ZAttr(id=62)
-    public static final String A_zimbraServerInheritedAttr = "zimbraServerInheritedAttr";
-
-    /**
-     * Current version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1598)
-    public static final String A_zimbraServerVersion = "zimbraServerVersion";
-
-    /**
-     * Current build number of ZCS installed on this server for this version
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1602)
-    public static final String A_zimbraServerVersionBuild = "zimbraServerVersionBuild";
-
-    /**
-     * Current major version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1599)
-    public static final String A_zimbraServerVersionMajor = "zimbraServerVersionMajor";
-
-    /**
-     * Current micro level version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1601)
-    public static final String A_zimbraServerVersionMicro = "zimbraServerVersionMicro";
-
-    /**
-     * Current minor version of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1600)
-    public static final String A_zimbraServerVersionMinor = "zimbraServerVersionMinor";
-
-    /**
-     * Current version type of ZCS installed on this server
-     *
-     * @since ZCS 8.5.0
-     */
-    @ZAttr(id=1605)
-    public static final String A_zimbraServerVersionType = "zimbraServerVersionType";
-
-    /**
      * services that are enabled on this server
      */
     @ZAttr(id=220)
@@ -16019,14 +14946,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1219)
     public static final String A_zimbraSharedItem = "zimbraSharedItem";
-
-    /**
-     * Deprecated since: 8.0.0. Manual publishing of shares by admin is no
-     * longer required since now automated publishing of sharing info updates
-     * to LDAP is supported. Orig desc: items an account or group has shared
-     */
-    @ZAttr(id=357)
-    public static final String A_zimbraShareInfo = "zimbraShareInfo";
 
     /**
      * Maximum allowed lifetime of shares to internal users or groups. A
@@ -16201,17 +15120,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSieveEditHeaderEnabled = "zimbraSieveEditHeaderEnabled";
 
     /**
-     * Deprecated since: 8.7.8. Variable feature is always enabled, hence
-     * this attribute has been deprecated. Orig desc: Whether to enable the
-     * Sieve &quot;Variables&quot; extension defined in RFC 5229 in the
-     * user-defined sieve rule.
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2096)
-    public static final String A_zimbraSieveFeatureVariablesEnabled = "zimbraSieveFeatureVariablesEnabled";
-
-    /**
      * Comma separated list of sieve immutable headers
      *
      * @since ZCS 8.8.4
@@ -16229,17 +15137,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=2112)
     public static final String A_zimbraSieveNotifyActionRFCCompliant = "zimbraSieveNotifyActionRFCCompliant";
-
-    /**
-     * Deprecated since: 8.7.8. deprecated in favor of
-     * zimbraSieveRejectMailEnabled, which can be used at account level. Orig
-     * desc: Whether to enable the Sieve &quot;reject&quot; action defined in
-     * RFC 5429.
-     *
-     * @since ZCS 8.7.6
-     */
-    @ZAttr(id=2094)
-    public static final String A_zimbraSieveRejectEnabled = "zimbraSieveRejectEnabled";
 
     /**
      * Whether to enable the Sieve &quot;reject&quot; action defined in RFC
@@ -16641,13 +15538,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpamApplyUserFilters = "zimbraSpamApplyUserFilters";
 
     /**
-     * Deprecated since: 4.5. Deprecated in favor of zimbraServiceEnabled.
-     * Orig desc: Whether to enable spam checking
-     */
-    @ZAttr(id=201)
-    public static final String A_zimbraSpamCheckEnabled = "zimbraSpamCheckEnabled";
-
-    /**
      * mail header name for flagging spam
      */
     @ZAttr(id=210)
@@ -16942,38 +15832,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSyncWindowSize = "zimbraSyncWindowSize";
 
     /**
-     * Deprecated since: 4.5.7. We now maintain all tables unconditionally.
-     * See bug 19145. Orig desc: table maintenance will be performed if the
-     * number of rows grows by this factor
-     */
-    @ZAttr(id=171)
-    public static final String A_zimbraTableMaintenanceGrowthFactor = "zimbraTableMaintenanceGrowthFactor";
-
-    /**
-     * Deprecated since: 4.5.7. We now maintain all tables unconditionally.
-     * See bug 19145. Orig desc: maximum number of rows required for database
-     * table maintenance
-     */
-    @ZAttr(id=169)
-    public static final String A_zimbraTableMaintenanceMaxRows = "zimbraTableMaintenanceMaxRows";
-
-    /**
-     * Deprecated since: 4.5.7. We now maintain all tables unconditionally.
-     * See bug 19145. Orig desc: minimum number of rows required for database
-     * table maintenance
-     */
-    @ZAttr(id=168)
-    public static final String A_zimbraTableMaintenanceMinRows = "zimbraTableMaintenanceMinRows";
-
-    /**
-     * Deprecated since: 4.5.7. We now maintain all tables unconditionally.
-     * See bug 19145. Orig desc: table maintenance operation that will be
-     * performed. Valid options: &quot;ANALYZE&quot;, &quot;OPTIMIZE&quot;
-     */
-    @ZAttr(id=170)
-    public static final String A_zimbraTableMaintenanceOperation = "zimbraTableMaintenanceOperation";
-
-    /**
      * The registered name of the Zimbra Analyzer Extension for this account
      * to use
      */
@@ -17010,48 +15868,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=1449)
     public static final String A_zimbraThrottleWhitelist = "zimbraThrottleWhitelist";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc: Start
-     * date for daylight time
-     */
-    @ZAttr(id=232)
-    public static final String A_zimbraTimeZoneDaylightDtStart = "zimbraTimeZoneDaylightDtStart";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc: Offset
-     * in daylight time
-     */
-    @ZAttr(id=233)
-    public static final String A_zimbraTimeZoneDaylightOffset = "zimbraTimeZoneDaylightOffset";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc:
-     * iCalendar recurrence rule for onset of daylight time
-     */
-    @ZAttr(id=234)
-    public static final String A_zimbraTimeZoneDaylightRRule = "zimbraTimeZoneDaylightRRule";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc: Start
-     * date for standard time
-     */
-    @ZAttr(id=229)
-    public static final String A_zimbraTimeZoneStandardDtStart = "zimbraTimeZoneStandardDtStart";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc: Offset
-     * in standard time
-     */
-    @ZAttr(id=230)
-    public static final String A_zimbraTimeZoneStandardOffset = "zimbraTimeZoneStandardOffset";
-
-    /**
-     * Deprecated since: 5.0. Deprecated as of bug 12416. Orig desc:
-     * iCalendar recurrence rule for onset of standard time
-     */
-    @ZAttr(id=231)
-    public static final String A_zimbraTimeZoneStandardRRule = "zimbraTimeZoneStandardRRule";
 
     /**
      * whether JavaScript error tracking via third party service is enabled
@@ -17352,6 +16168,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersion = "zimbraVersion";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * Time interval after which Zimbra version check detects a new version.
      * Must be in valid duration format: {digits}{time-unit}. digits: 0-9,
      * time-unit: [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days,
@@ -17364,6 +16181,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckInterval = "zimbraVersionCheckInterval";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked
      *
      * @since ZCS 6.0.2
@@ -17372,6 +16190,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckLastAttempt = "zimbraVersionCheckLastAttempt";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * last response of last Zimbra version check
      *
      * @since ZCS 6.0.2
@@ -17380,6 +16199,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckLastResponse = "zimbraVersionCheckLastResponse";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * time Zimbra version was last checked successfully
      *
      * @since ZCS 6.0.2
@@ -17388,6 +16208,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckLastSuccess = "zimbraVersionCheckLastSuccess";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the body of an Zimbra version check
      * notification message
      *
@@ -17397,6 +16218,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckNotificationBody = "zimbraVersionCheckNotificationBody";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * email address to send mail to for the Zimbra version check
      * notification message
      *
@@ -17406,6 +16228,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckNotificationEmail = "zimbraVersionCheckNotificationEmail";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * from address for the Zimbra version check notification message
      *
      * @since ZCS 6.0.2
@@ -17414,6 +16237,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckNotificationEmailFrom = "zimbraVersionCheckNotificationEmailFrom";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * template used to construct the subject of an Zimbra version check
      * notification message
      *
@@ -17423,6 +16247,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckNotificationSubject = "zimbraVersionCheckNotificationSubject";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * whether to send a notification message if Zimbra version check detects
      * a new version
      *
@@ -17432,6 +16257,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckSendNotifications = "zimbraVersionCheckSendNotifications";
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * zimbraId of the server that should perform the Zimbra version checks
      *
      * @since ZCS 6.0.2
@@ -17440,7 +16266,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraVersionCheckServer = "zimbraVersionCheckServer";
 
     /**
-     * URL of the Zimbra version check script
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc: URL
+     * of the Zimbra version check script
      *
      * @since ZCS 6.0.2
      */
@@ -17481,13 +16308,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=205)
     public static final String A_zimbraVirusBlockEncryptedArchive = "zimbraVirusBlockEncryptedArchive";
-
-    /**
-     * Deprecated since: 4.5. Deprecated in favor of zimbraServiceEnabled.
-     * Orig desc: Whether to enable virus checking
-     */
-    @ZAttr(id=206)
-    public static final String A_zimbraVirusCheckEnabled = "zimbraVirusCheckEnabled";
 
     /**
      * how often the virus definitions are updated. Must be in valid duration
@@ -17688,13 +16508,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=738)
     public static final String A_zimbraXMPPComponentType = "zimbraXMPPComponentType";
-
-    /**
-     * Deprecated since: 8.7.0. Zimbra no longer includes an XMPP server.
-     * Orig desc: Enable XMPP support for IM
-     */
-    @ZAttr(id=397)
-    public static final String A_zimbraXMPPEnabled = "zimbraXMPPEnabled";
 
     /**
      * Shared Secret for XMPP Server Dialback Protocol

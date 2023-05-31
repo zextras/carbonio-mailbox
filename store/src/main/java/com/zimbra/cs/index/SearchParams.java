@@ -62,7 +62,7 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
     private static final int MAX_PARSABLE_LIMIT = 1000; // 1K
     private static final int MAX_LIMIT = 10000000; // 10M
 
-    private final static Pattern LOCALE_PATTERN = Pattern.compile("([a-zA-Z]{2})(?:[-_]([a-zA-Z]{2})([-_](.+))?)?");
+    private static final Pattern LOCALE_PATTERN = Pattern.compile("([a-zA-Z]{2})(?:[-_]([a-zA-Z]{2})([-_](.+))?)?");
 
     private ZimbraSoapContext requestContext;
 
@@ -987,9 +987,9 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
             }
             try {
                 String[] split = value.split(",");
-                ArrayList<ItemId> itemIds = new ArrayList<ItemId>();
-                for (int i = 0; i < split.length; i++) {
-                    itemIds.add(new ItemId(split[i],zsc));
+                ArrayList<ItemId> itemIds = new ArrayList<>();
+                for (String s : split) {
+                    itemIds.add(new ItemId(s, zsc));
                 }
                 return new ExpandResults(value,itemIds);
             } catch (Exception e) {
@@ -1009,24 +1009,17 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
                 .build();
 
         public ExpandResults toLegacyExpandResults(Server server) {
-            if (server != null && server.getServerVersion() == null) {
-                if (LEGACY_MAP.containsKey(this.name)) {
-                    return this;
-                } else {
-                    //pre 8.5; no way to know which version
-                    //assume HELIX as lowest common - fetch="1|hits|all|{item-id}"
-                    ExpandResults mapped = ALL;
-                    if (this == FIRST_MSG || this == U_OR_FIRST_MSG || this == U1_OR_FIRST_MSG) {
-                        mapped = FIRST;
-                    } else if (this == HITS_OR_FIRST_MSG) {
-                        mapped = HITS;
-                    }
-                    ZimbraLog.search.debug("mapped current ExpandResults %s to %s for legacy server %s", this, mapped, server.getName());
-                    return mapped;
-                }
-            } else {
-                //for now 8.5+ supports the same set of expands; would add code here if 8.6 or 9.0 changes it
+            if (server == null || LEGACY_MAP.containsKey(this.name)) {
                 return this;
+            } else {
+                ExpandResults mapped = ALL;
+                if (this == FIRST_MSG || this == U_OR_FIRST_MSG || this == U1_OR_FIRST_MSG) {
+                    mapped = FIRST;
+                } else if (this == HITS_OR_FIRST_MSG) {
+                    mapped = HITS;
+                }
+                ZimbraLog.search.debug("mapped current ExpandResults %s to %s for legacy server %s", this, mapped, server.getName());
+                return mapped;
             }
         }
     }

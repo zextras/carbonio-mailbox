@@ -29,7 +29,7 @@ public abstract class ZimbraCustomAuth {
      * Register a custom auth handler.
      * It should be invoked from the init() method of ZimbraExtension.
      */
-    public synchronized static void register(String handlerName, ZimbraCustomAuth handler) {
+    public static synchronized void register(String handlerName, ZimbraCustomAuth handler) {
         
         if (mHandlers == null)
             mHandlers = new HashMap<String, ZimbraCustomAuth>();
@@ -56,7 +56,7 @@ public abstract class ZimbraCustomAuth {
         return !Objects.isNull(handlerName) && mHandlers.containsKey(handlerName);
     }
 
-    public synchronized static ZimbraCustomAuth getHandler(String handlerName) {
+    public static synchronized ZimbraCustomAuth getHandler(String handlerName) {
         if (mHandlers == null)
             return null;
         else    

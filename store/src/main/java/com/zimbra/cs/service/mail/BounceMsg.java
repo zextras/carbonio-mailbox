@@ -134,7 +134,7 @@ public final class BounceMsg extends MailDocumentHandler {
 
         // now that we've updated the MimeMessage's headers, we can update the MailSender's envelope
         msender.setEnvelopeFrom(from.getAddress());
-        msender.setRecipients(recipients.toArray(new String[recipients.size()]));
+        msender.setRecipients(recipients.toArray(new String[0]));
         return msender;
     }
 

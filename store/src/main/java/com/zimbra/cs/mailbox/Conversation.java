@@ -132,9 +132,7 @@ public class Conversation extends MailItem {
         for (Message msg : msgs) {
             mData.unreadCount += msg.getUnreadCount();
             mData.setFlags(mData.getFlags() | msg.getInternalFlagBitmask());
-            for (String tag : msg.mData.getTags()) {
-                tags.add(tag);
-            }
+          tags.addAll(Arrays.asList(msg.mData.getTags()));
         }
         mData.setTags(new Tag.NormalizedTags(tags));
     }
@@ -163,9 +161,7 @@ public class Conversation extends MailItem {
             super.addChild(msg);
             mData.unreadCount += (msg.isUnread() ? 1 : 0);
             mData.setFlags(mData.getFlags() | msg.getInternalFlagBitmask());
-            for (String tag : msg.mData.getTags()) {
-                tags.add(tag);
-            }
+          tags.addAll(Arrays.asList(msg.mData.getTags()));
             mExtendedData = MetadataCallback.duringConversationAdd(mExtendedData, msg);
         }
         mData.setTags(new Tag.NormalizedTags(tags));
@@ -263,9 +259,7 @@ public class Conversation extends MailItem {
             date = Math.max(date, msg.mData.date);
             unread += msg.mData.unreadCount;
             flags  |= msg.mData.getFlags();
-            for (String tag : msg.mData.getTags()) {
-                tags.add(tag);
-            }
+          tags.addAll(Arrays.asList(msg.mData.getTags()));
             extended = MetadataCallback.duringConversationAdd(extended, msg);
         }
 
@@ -625,9 +619,7 @@ public class Conversation extends MailItem {
         if (msgTags.length > 0) {
             Set<String> tags = Sets.newHashSet(mData.getTags());
             int oldCount = tags.size();
-            for (String msgTag : msgTags) {
-                tags.add(msgTag);
-            }
+          tags.addAll(Arrays.asList(msgTags));
             if (tags.size() != oldCount) {
                 markItemModified(Change.TAGS);
                 mData.setTags(new Tag.NormalizedTags(tags));

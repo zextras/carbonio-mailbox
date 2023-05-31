@@ -411,11 +411,11 @@ public class LuceneViewer {
             return options;
         }
 
-        static private String termFilterFieldOption(int i) {
+        private static String termFilterFieldOption(int i) {
             return O_TERM_FILTER_FIELD_PREFIX+i;
         }
 
-        static private String termFilterTextOption(int i) {
+        private static String termFilterTextOption(int i) {
             return O_TERM_FILTER_TEXT_PREFIX+i;
         }
 

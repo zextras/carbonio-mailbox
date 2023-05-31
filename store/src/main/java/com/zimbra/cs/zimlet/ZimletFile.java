@@ -44,7 +44,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
         return getZimletName().compareTo(obj.getZimletName());
     }
 
-    public static abstract class ZimletEntry {
+    public abstract static class ZimletEntry {
         protected String mName;
 
         protected ZimletEntry(String name) throws ZimletException {

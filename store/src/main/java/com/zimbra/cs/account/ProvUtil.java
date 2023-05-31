@@ -413,9 +413,9 @@ public class ProvUtil implements HttpDebugListener {
         }
         tt.append(tts[i].getCode());
         if (tts[i].needsTargetIdentity()) {
-          ttNeedsTargetIdentity.append(tts[i].getCode() + " ");
+          ttNeedsTargetIdentity.append(tts[i].getCode()).append(" ");
         } else {
-          ttNoTargetId.append(tts[i].getCode() + " ");
+          ttNoTargetId.append(tts[i].getCode()).append(" ");
         }
       }
       console.println("    {target-type} = " + tt.toString());
@@ -439,15 +439,15 @@ public class ProvUtil implements HttpDebugListener {
         }
         gt.append(gts[i].getCode());
         if (gts[i].needsGranteeIdentity()) {
-          gtNeedsGranteeIdentity.append(gts[i].getCode() + " ");
+          gtNeedsGranteeIdentity.append(gts[i].getCode()).append(" ");
         } else {
-          gtNoGranteeId.append(gts[i].getCode() + " ");
+          gtNoGranteeId.append(gts[i].getCode()).append(" ");
         }
         if (secretPossible) {
           if (gts[i].allowSecret()) {
-            gtNeedsSecret.append(gts[i].getCode() + " ");
+            gtNeedsSecret.append(gts[i].getCode()).append(" ");
           } else {
-            gtNoSecret.append(gts[i].getCode() + " ");
+            gtNoSecret.append(gts[i].getCode()).append(" ");
           }
         }
       }
@@ -517,7 +517,6 @@ public class ProvUtil implements HttpDebugListener {
       console.println();
       console.println("Valid types:");
       console.println("    appointment");
-      // console.println("    briefcase");
       // console.println("    chat");
       console.println("    contact");
       console.println("    conversation");
@@ -2443,7 +2442,7 @@ public class ProvUtil implements HttpDebugListener {
     SoapProvisioning sp = (SoapProvisioning) prov;
     Account account = lookupAccount(args[1]);
     long quotaUsed = sp.recalculateMailboxCounts(account);
-    console.printf("account: " + account.getName() + "\nquotaUsed: " + quotaUsed + "\n");
+    console.print("account: " + account.getName() + "\nquotaUsed: " + quotaUsed + "\n");
   }
 
   private class AccountLoggerOptions {
@@ -2467,9 +2466,7 @@ public class ProvUtil implements HttpDebugListener {
       int numArgs = args.length - 2;
       alo.args = new String[numArgs];
       alo.args[0] = args[0];
-      for (int i = 1; i < numArgs; i++) {
-        alo.args[i] = args[i + 2];
-      }
+      System.arraycopy(args, 3, alo.args, 1, numArgs - 1);
     } else {
       alo.args = args;
     }
@@ -2582,8 +2579,8 @@ public class ProvUtil implements HttpDebugListener {
 
     if (args[1].equals("-e")) {
       if (args.length > 1) {
-      applyDefault = false;
-      acctPos = 2;
+        applyDefault = false;
+        acctPos = 2;
       } else {
         usage();
         return;
@@ -3464,7 +3461,7 @@ public class ProvUtil implements HttpDebugListener {
       packages = new String[args.length - 1];
       for (int i = 1; i < args.length; i++) {
         packages[i - 1] = args[i];
-        argsDump.append(" " + args[i]);
+        argsDump.append(" ").append(args[i]);
       }
     } else {
       packages =
@@ -3572,6 +3569,7 @@ public class ProvUtil implements HttpDebugListener {
       String arg = args[i];
       if (arg.equals("-v")) {
         verbose = true;
+        break;
       }
       i++;
     }
@@ -4386,9 +4384,9 @@ public class ProvUtil implements HttpDebugListener {
     StringBuilder sb = new StringBuilder(LC.zmprov_tmp_directory.value());
     sb.append(File.separator).append(attrName);
     if (idx != null) {
-      sb.append("_" + idx);
+      sb.append("_").append(idx);
     }
-    sb.append("_" + timestamp);
+    sb.append("_").append(timestamp);
 
     File file = new File(sb.toString());
     if (file.exists()) {
@@ -4704,10 +4702,10 @@ public class ProvUtil implements HttpDebugListener {
       static String formatDefaults(AttributeInfo ai) {
         StringBuilder sb = new StringBuilder();
         for (String d : ai.getDefaultCosValues()) {
-          sb.append(d + ",");
+          sb.append(d).append(",");
         }
         for (String d : ai.getGlobalConfigValues()) {
-          sb.append(d + ",");
+          sb.append(d).append(",");
         }
         return sb.length() == 0 ? "" : sb.substring(0, sb.length() - 1); // trim the ending ,
       }
@@ -4720,7 +4718,7 @@ public class ProvUtil implements HttpDebugListener {
         StringBuilder sb = new StringBuilder();
 
         for (AttributeClass ac : requiredIn) {
-          sb.append(ac.name() + ",");
+          sb.append(ac.name()).append(",");
         }
         return sb.substring(0, sb.length() - 1); // trim the ending ,
       }
@@ -4732,7 +4730,7 @@ public class ProvUtil implements HttpDebugListener {
         }
         StringBuilder sb = new StringBuilder();
         for (AttributeClass ac : optionalIn) {
-          sb.append(ac.name() + ",");
+          sb.append(ac.name()).append(",");
         }
         return sb.substring(0, sb.length() - 1); // trim the ending ,
       }
@@ -4741,7 +4739,7 @@ public class ProvUtil implements HttpDebugListener {
         StringBuilder sb = new StringBuilder();
         for (AttributeFlag f : AttributeFlag.values()) {
           if (ai.hasFlag(f)) {
-            sb.append(f.name() + ",");
+            sb.append(f.name()).append(",");
           }
         }
         return sb.length() == 0 ? "" : sb.substring(0, sb.length() - 1); // trim the ending ,
@@ -4752,7 +4750,7 @@ public class ProvUtil implements HttpDebugListener {
         List<AttributeServerType> requiresRetstart = ai.getRequiresRestart();
         if (requiresRetstart != null) {
           for (AttributeServerType ast : requiresRetstart) {
-            sb.append(ast.name() + ",");
+            sb.append(ast.name()).append(",");
           }
         }
         return sb.length() == 0 ? "" : sb.substring(0, sb.length() - 1); // trim the ending ,
@@ -4858,9 +4856,7 @@ public class ProvUtil implements HttpDebugListener {
 
   static String formatLine(int width) {
     StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < width; i++) {
-      sb.append("-");
-    }
+    sb.append("-".repeat(Math.max(0, width)));
     return sb.toString();
   }
 
@@ -4868,7 +4864,7 @@ public class ProvUtil implements HttpDebugListener {
     StringBuilder sb = new StringBuilder();
     for (AttributeClass ac : AttributeClass.values()) {
       if (ac.isProvisionable()) {
-        sb.append(ac.name() + ",");
+        sb.append(ac.name()).append(",");
       }
     }
     return sb.substring(0, sb.length() - 1); // trim the ending ,
@@ -5276,7 +5272,7 @@ public class ProvUtil implements HttpDebugListener {
                 && entry.getAttr(Provisioning.A_zimbraSSLCertificate) != null) {
               StringBuilder virtualHosts = new StringBuilder();
               for (String vh : entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname)) {
-                virtualHosts.append(vh + " ");
+                virtualHosts.append(vh).append(" ");
               }
               console.println(entry.getName() + " " + virtualHosts);
             }
@@ -6225,7 +6221,7 @@ public class ProvUtil implements HttpDebugListener {
             console.printf(
                 "    -- NOTE: %s can only be used with \"zmprov -l/--ldap\"\n", c.getName());
           }
-          console.printf("\n");
+          console.print("\n");
         }
       }
 
@@ -6236,7 +6232,7 @@ public class ProvUtil implements HttpDebugListener {
 
   @Override
   public void receiveSoapMessage(HttpPost postMethod, Element envelope) {
-    console.printf("======== SOAP RECEIVE =========\n");
+    console.print("======== SOAP RECEIVE =========\n");
 
     if (debugLevel == SoapDebugLevel.high) {
       Header[] headers = postMethod.getAllHeaders();
@@ -6331,7 +6327,7 @@ public class ProvUtil implements HttpDebugListener {
         newArgs.add(arg);
       }
     }
-    return newArgs.toArray(new String[newArgs.size()]);
+    return newArgs.toArray(new String[0]);
   }
 
   private void doDeleteDistributionList(String[] args) throws ServiceException {

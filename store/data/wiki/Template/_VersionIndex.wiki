@@ -1,3 +1,0 @@
-<wiklet class='HISTORY' format="template" bodyTemplate="_TocVersionBodyTemplate" itemTemplate="_TocVersionItemTemplate" />
-
-

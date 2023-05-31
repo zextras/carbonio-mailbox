@@ -131,10 +131,6 @@ public class AccountConstants {
       "GetDistributionListMembersRequest";
   public static final String E_GET_DISTRIBUTION_LIST_MEMBERS_RESPONSE =
       "GetDistributionListMembersResponse";
-  public static final String E_SUBSCRIBE_DISTRIBUTION_LIST_REQUEST =
-      "SubscribeDistributionListRequest";
-  public static final String E_SUBSCRIBE_DISTRIBUTION_LIST_RESPONSE =
-      "SubscribeDistributionListResponse";
 
   // rights
   public static final String E_CHECK_RIGHTS_REQUEST = "CheckRightsRequest";
@@ -363,10 +359,6 @@ public class AccountConstants {
       QName.get(E_GET_DISTRIBUTION_LIST_MEMBERS_REQUEST, NAMESPACE);
   public static final QName GET_DISTRIBUTION_LIST_MEMBERS_RESPONSE =
       QName.get(E_GET_DISTRIBUTION_LIST_MEMBERS_RESPONSE, NAMESPACE);
-  public static final QName SUBSCRIBE_DISTRIBUTION_LIST_REQUEST =
-      QName.get(E_SUBSCRIBE_DISTRIBUTION_LIST_REQUEST, NAMESPACE);
-  public static final QName SUBSCRIBE_DISTRIBUTION_LIST_RESPONSE =
-      QName.get(E_SUBSCRIBE_DISTRIBUTION_LIST_RESPONSE, NAMESPACE);
 
   // rights
   public static final QName CHECK_RIGHTS_REQUEST = QName.get(E_CHECK_RIGHTS_REQUEST, NAMESPACE);
@@ -451,7 +443,6 @@ public class AccountConstants {
   public static final String E_DL_OWNER = "owner";
   public static final String E_DL_OWNERS = "owners";
   public static final String E_DLM = "dlm";
-  public static final String E_DL_SUBS_REQ = "subsReq";
   public static final String E_EMAIL = "email";
   public static final String E_EMAIL2 = "email2";
   public static final String E_EMAIL3 = "email3";

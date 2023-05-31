@@ -11,7 +11,7 @@ import com.zimbra.cs.ldap.ZSearchScope;
 
 public class UBIDSearchScope extends ZSearchScope {
 
-    final private SearchScope searchScope;
+    private final SearchScope searchScope;
     
     private UBIDSearchScope(SearchScope searchScope) {
         this.searchScope = searchScope;

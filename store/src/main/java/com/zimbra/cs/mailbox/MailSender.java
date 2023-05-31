@@ -289,9 +289,7 @@ public class MailSender {
     public MailSender setRecipients(String ... recipients) {
         mRecipients.clear();
         if (recipients != null) {
-            for (String recipient : recipients) {
-                mRecipients.add(recipient);
-            }
+          mRecipients.addAll(Arrays.asList(recipients));
         }
         return this;
     }
@@ -935,24 +933,24 @@ public class MailSender {
 
     private static void appendMsgMessageID(StringBuilder msg, MimeMessage mm, String origMsgId) {
         try {
-            msg.append(": Message-ID=" + mm.getMessageID());
+            msg.append(": Message-ID=").append(mm.getMessageID());
         } catch (MessagingException e) {
             msg.append(e);
         }
         if (null != origMsgId) {
-            msg.append(", origMsgId=" + origMsgId);
+            msg.append(", origMsgId=").append(origMsgId);
         }
     }
 
     private static void appendReplyType(StringBuilder msg, String replyType) {
         if (null != replyType) {
-            msg.append(", replyType=" + replyType);
+            msg.append(", replyType=").append(replyType);
         }
     }
 
     private static void appendUploads(StringBuilder msg, Collection<Upload> uploads) {
         if (null != uploads && uploads.size() > 0) {
-            msg.append(", uploads=" + uploads);
+            msg.append(", uploads=").append(uploads);
         }
     }
 
@@ -964,25 +962,25 @@ public class MailSender {
             return;
         }
         if (size > 0) {
-            msg.append(", size=" + size);
+            msg.append(", size=").append(size);
         }
     }
 
     private static void appendEnvelopeFrom(StringBuilder msg, String envelope) {
         if (null != envelope) {
-            msg.append(", sender=" + envelope);
+            msg.append(", sender=").append(envelope);
         }
     }
 
     private static void appendEnvelopeTo(StringBuilder msg, Address[] rcptAddresses) {
-        msg.append(", nrcpts=" + rcptAddresses.length);
+        msg.append(", nrcpts=").append(rcptAddresses.length);
         for (int i = 0; i < rcptAddresses.length; i++) {
             String addr = null;
             if (rcptAddresses[i] instanceof InternetAddress) {
                 addr = ((InternetAddress) rcptAddresses[i]).getAddress();
             }
             if (null != addr) {
-                msg.append(", to=" + addr);
+                msg.append(", to=").append(addr);
             }
         }
     }

@@ -71,7 +71,7 @@ public class CuratorManager {
         return instance;
     }
 
-    private synchronized static CuratorManager createInstance() throws ServiceException {
+    private static synchronized CuratorManager createInstance() throws ServiceException {
         if (initialized == false) {
             String[] servers = Provisioning.getInstance().getLocalServer().getZookeeperClientServerList();
             if (servers.length > 0) {

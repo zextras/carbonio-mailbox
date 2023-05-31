@@ -3610,10 +3610,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return getFolderById(ZFolder.ID_TASKS);
   }
 
-  public ZFolder getBriefcase() throws ServiceException {
-    return getFolderById(ZFolder.ID_BRIEFCASE);
-  }
-
   /**
    * find the folder with the specified id.
    *
@@ -5084,9 +5080,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         mContent = null;
         mContentType = contentType;
         mSubParts = new ArrayList<MessagePart>();
-        for (MessagePart sub : parts) {
-          mSubParts.add(sub);
-        }
+        mSubParts.addAll(Arrays.asList(parts));
       }
 
       public String getContentType() {
@@ -6193,7 +6187,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
           if (searchQuery.length() > 1) {
             searchQuery.append(" or ");
           }
-          searchQuery.append("inid:").append("\"" + folderId + "\"");
+          searchQuery.append("inid:").append("\"").append(folderId).append("\"");
           // folder2List.
           List<ZAppointmentHit> appts = new ArrayList<ZAppointmentHit>();
           ZApptSummaryResult result =
@@ -6952,29 +6946,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     } catch (ServiceException e) {
       /* ignore */
     }
-  }
-
-  public List<String> saveAttachmentsToBriefcase(String mid, String[] partIds, String folderId)
-      throws ServiceException {
-    if (partIds == null || partIds.length <= 0) {
-      return null;
-    }
-    List<String> docIds = new ArrayList<String>();
-    for (String pid : partIds) { // !TODO We should do batch request for performance
-      Element req = newRequestElement(MailConstants.SAVE_DOCUMENT_REQUEST);
-      Element doc =
-          req.addNonUniqueElement(MailConstants.E_DOC)
-              .addAttribute(MailConstants.A_FOLDER, folderId);
-      Element m =
-          doc.addNonUniqueElement(MailConstants.E_MSG).addAttribute(MailConstants.A_ID, mid);
-      m.addAttribute(MailConstants.A_PART, pid);
-      Element rDoc = invoke(req).getElement(MailConstants.E_DOC);
-      if (rDoc == null) {
-        continue;
-      }
-      docIds.add(rDoc.getAttribute(MailConstants.A_ID));
-    }
-    return docIds;
   }
 
   public String createSignature(ZSignature signature) throws ServiceException {

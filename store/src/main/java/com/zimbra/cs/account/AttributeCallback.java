@@ -228,9 +228,7 @@ public abstract class AttributeCallback {
         if (value instanceof String) {
             values.add((String)value);
         } else if (value instanceof String[]) {
-            for (String s : (String[])value) {
-                values.add(s);
-            }
+            values.addAll(Arrays.asList((String[]) value));
         } else if (value instanceof Collection) {
             for (Object o : (Collection)value) {
                 values.add(o.toString());

@@ -2740,10 +2740,10 @@ public class DbMailItem {
             String typeConstraint = type == MailItem.Type.UNKNOWN ? "type NOT IN " + NON_SYNCABLE_TYPES : typeIn(type);
             String dateConstraint = sinceDate > 0 ? "date > ? AND " : "";
             StringBuilder buf = new StringBuilder();
-            buf.append("SELECT id, type, folder_id, uuid, mod_metadata, prev_folders" +
-                " FROM " + getMailItemTableName(mbox) +
-                " WHERE " + IN_THIS_MAILBOX_AND + "mod_metadata > ? AND " + dateConstraint + typeConstraint +
-                " ORDER BY mod_metadata, id");
+            buf.append("SELECT id, type, folder_id, uuid, mod_metadata, prev_folders" + " FROM ")
+                .append(getMailItemTableName(mbox)).append(" WHERE ").append(IN_THIS_MAILBOX_AND)
+                .append("mod_metadata > ? AND ").append(dateConstraint).append(typeConstraint)
+                .append(" ORDER BY mod_metadata, id");
             if (limit > 0 && Db.supports(Db.Capability.LIMIT_CLAUSE)) {
                 buf.append(" ").append(Db.getInstance().limit(limit));
             }
@@ -3022,8 +3022,9 @@ public class DbMailItem {
         ResultSet rs = null;
         try {
             StringBuilder buf = new StringBuilder();
-            buf.append("SELECT " + LEAF_NODE_FIELDS + " FROM " + getMailItemTableName(mbox) +
-                    " WHERE " + IN_THIS_MAILBOX_AND + "type NOT IN " + FOLDER_TYPES);
+            buf.append("SELECT " + LEAF_NODE_FIELDS + " FROM ").append(getMailItemTableName(mbox))
+                .append(" WHERE ").append(IN_THIS_MAILBOX_AND).append("type NOT IN ")
+                .append(FOLDER_TYPES);
             String whereClause = params.getWhereClause();
             if (!StringUtil.isNullOrEmpty(whereClause)) {
                 buf.append(" AND ").append(whereClause);
@@ -4601,7 +4602,8 @@ public class DbMailItem {
         try {
             // Prepare the statement based on query parameters.
             StringBuilder buf = new StringBuilder();
-            buf.append("SELECT id FROM " + getMailItemTableName(mbox, fromDumpster) + " WHERE " + IN_THIS_MAILBOX_AND);
+            buf.append("SELECT id FROM ").append(getMailItemTableName(mbox, fromDumpster))
+                .append(" WHERE ").append(IN_THIS_MAILBOX_AND);
             String whereClause = params.getWhereClause();
             if (!StringUtil.isNullOrEmpty(whereClause)) {
                 buf.append(whereClause);
@@ -4645,7 +4647,8 @@ public class DbMailItem {
         try {
             // Prepare the statement based on query parameters.
             StringBuilder buf = new StringBuilder();
-            buf.append("SELECT id FROM " + getMailItemTableName(mbox, fromDumpster) + " WHERE " + IN_THIS_MAILBOX_AND);
+            buf.append("SELECT id FROM ").append(getMailItemTableName(mbox, fromDumpster))
+                .append(" WHERE ").append(IN_THIS_MAILBOX_AND);
             String whereClause = params.getWhereClause();
             if (!StringUtil.isNullOrEmpty(whereClause)) {
                 buf.append(whereClause);
@@ -4694,7 +4697,8 @@ public class DbMailItem {
         try {
             // Prepare the statement based on query parameters.
             StringBuilder buf = new StringBuilder();
-            buf.append("SELECT date,id FROM " + getMailItemTableName(mbox, fromDumpster) + " WHERE " + IN_THIS_MAILBOX_AND);
+            buf.append("SELECT date,id FROM ").append(getMailItemTableName(mbox, fromDumpster))
+                .append(" WHERE ").append(IN_THIS_MAILBOX_AND);
             String whereClause = params.getWhereClause();
             if (!StringUtil.isNullOrEmpty(whereClause)) {
                 buf.append(whereClause);

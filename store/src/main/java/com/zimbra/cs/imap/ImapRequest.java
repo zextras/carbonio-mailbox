@@ -584,16 +584,16 @@ public abstract class ImapRequest {
             return null;
         }
 
-        String encoded = readContent(BASE64_CHARS, true);
+        StringBuilder encoded = new StringBuilder(readContent(BASE64_CHARS, true));
         int padding = (4 - (encoded.length() % 4)) % 4;
         if (padding == 3) {
             throw new ImapParseException(tag, "invalid base64-encoded content");
         }
         while (padding-- > 0) {
             skipChar('=');
-            encoded += "=";
+            encoded.append("=");
         }
-        return new Base64().decode(encoded.getBytes(Charsets.US_ASCII));
+        return new Base64().decode(encoded.toString().getBytes(Charsets.US_ASCII));
     }
 
     protected String readSequence(boolean specialsOK) throws ImapParseException {
@@ -942,19 +942,19 @@ public abstract class ImapRequest {
                 attributes |= ImapHandler.FETCH_MARK_READ;
                 parts.add(new ImapPartSpecifier(item, "", "TEXT"));
             } else if (item.equals("BINARY.SIZE") && extensionEnabled("BINARY")) {
-                String sectionPart = "";
+                StringBuilder sectionPart = new StringBuilder();
                 skipChar('[');
                 while (peekChar() != ']') {
-                    if (!sectionPart.equals("")) {
-                        sectionPart += ".";  skipChar('.');
+                    if (!sectionPart.toString().equals("")) {
+                        sectionPart.append(".");  skipChar('.');
                     }
-                    sectionPart += readNumber(NONZERO);
+                    sectionPart.append(readNumber(NONZERO));
                 }
                 skipChar(']');
-                if (sectionPart.isEmpty()) {
+                if (sectionPart.length() == 0) {
                     attributes |= ImapHandler.FETCH_BINARY_SIZE;
                 } else {
-                    parts.add(new ImapPartSpecifier(item, sectionPart, ""));
+                    parts.add(new ImapPartSpecifier(item, sectionPart.toString(), ""));
                 }
             } else if (item.equals("BODY") || item.equals("BODY.PEEK") ||
                     ((item.equals("BINARY") || item.equals("BINARY.PEEK")) && extensionEnabled("BINARY"))) {
@@ -993,13 +993,14 @@ public abstract class ImapRequest {
 
     protected ImapPartSpecifier readPartSpecifier(boolean binary, boolean literals)
             throws ImapParseException, IOException {
-        String sectionPart = "";
+        StringBuilder sectionPart = new StringBuilder();
         String sectionText = "";
         List<String> headers = null;
         boolean done = false;
 
         while (Character.isDigit((char) peekChar())) {
-            sectionPart += (sectionPart.equals("") ? "" : ".") + readNumber(NONZERO);
+            sectionPart.append(sectionPart.toString().equals("") ? "" : ".")
+                .append(readNumber(NONZERO));
             if (!(done = (peekChar() != '.'))) {
                 skipChar('.');
             }
@@ -1023,14 +1024,15 @@ public abstract class ImapRequest {
                 }
                 skipChar(')');
             } else if (sectionText.equals("MIME")) {
-                if (sectionPart.isEmpty()) {
+                if (sectionPart.length() == 0) {
                     throw new ImapParseException(tag, "\"MIME\" is not a valid section-spec");
                 }
             } else if (!sectionText.equals("HEADER") && !sectionText.equals("TEXT")) {
                 throw new ImapParseException(tag, "unknown section-text \"" + sectionText + '"');
             }
         }
-        ImapPartSpecifier pspec = new ImapPartSpecifier(binary ? "BINARY" : "BODY", sectionPart, sectionText);
+        ImapPartSpecifier pspec = new ImapPartSpecifier(binary ? "BINARY" : "BODY",
+            sectionPart.toString(), sectionText);
         pspec.setHeaders(headers);
         return pspec;
     }

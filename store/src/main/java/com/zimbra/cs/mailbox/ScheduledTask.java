@@ -22,7 +22,7 @@ implements Callable<V> {
     /**
      * Returns the task name.
      */
-    abstract public String getName();
+    public abstract String getName();
     
     /**
      * Returns the mailbox id, or <tt>0</tt> if this task is not

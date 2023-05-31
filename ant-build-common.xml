@@ -59,11 +59,11 @@
   <target name="require-version" depends="carbonio-version" >
     <!-- For retro-compatibility -->
     <property name="zimbra.buildinfo.version" value="${carbonio.buildinfo.version}"/>
-    <echo message="Using version ${zimbra.buildinfo.version}"/>
+    <echo level="info" message="Using version ${zimbra.buildinfo.version}"/>
   </target>
 
   <target name="carbonio-version">
-    <property name="carbonio.buildinfo.version" value="23.6.0_ZEXTRAS_202306"/>
+    <property name="carbonio.buildinfo.version" value="23.7.0_ZEXTRAS_202307"/>
     <fail
       message="Missing build version. Define proper ZCS version like -Dcarbonio.buildinfo.version">
       <condition>

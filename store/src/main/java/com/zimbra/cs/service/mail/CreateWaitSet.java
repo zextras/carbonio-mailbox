@@ -57,7 +57,7 @@ public class CreateWaitSet extends MailDocumentHandler {
         return zsc.jaxbToElement(resp);  /* MUST use zsc variant NOT JaxbUtil */
     }
 
-    static public void staticHandle(DocumentHandler handler, CreateWaitSetReq request, Map<String, Object> context,
+    public static void staticHandle(DocumentHandler handler, CreateWaitSetReq request, Map<String, Object> context,
             CreateWaitSetResp response) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
 

@@ -5,6 +5,7 @@
 
 package com.zimbra.soap.type;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -110,9 +111,7 @@ public class WaitSetAddSpec {
     public WaitSetAddSpec setFolderInterests(Integer... folderIds) {
         this.folderInterests.clear();
         if (folderIds != null) {
-            for (Integer folderId : folderIds) {
-                this.folderInterests.add(folderId);
-            }
+          this.folderInterests.addAll(Arrays.asList(folderIds));
         }
         return this;
     }

@@ -28,7 +28,7 @@ import com.zimbra.cs.ldap.ZLdapFilter;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.soap.admin.type.CountObjectsType;
 
-final public class Validators {
+public final class Validators {
 
     private Validators() {
     }
