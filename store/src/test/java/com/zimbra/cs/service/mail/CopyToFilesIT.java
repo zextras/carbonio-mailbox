@@ -57,6 +57,7 @@ public class CopyToFilesIT {
   public void setUp() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
+    prov.createAccount("shared@zimbra.com", "secret", new HashMap<String, Object>());
     prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     prov.createAccount("test1@zimbra.com", "secret", new HashMap<String, Object>());
     prov.createAccount("test2@zimbra.com", "secret", new HashMap<String, Object>());
@@ -307,5 +308,37 @@ public class CopyToFilesIT {
     exceptionRule.expect(ServiceException.class);
     exceptionRule.expectMessage("system failure: internal error.");
     new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context);
+  }
+
+  /**
+   * When passing messageId as UUID:id it should use the UUID as mailbox account search scope This
+   * tests CO-727 with a shared mailbox in particular.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void shouldUseProvidedUUIDasMailboxAccount() throws Exception {
+    // prepare request
+    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+    String uuid = Provisioning.getInstance().get(Key.AccountBy.name, "shared@zimbra.com").getId();
+    AuthToken authToken = AuthProvider.getAuthToken(acct);
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put(
+        SoapEngine.ZIMBRA_CONTEXT,
+        new ZimbraSoapContext(authToken, acct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
+    ZimbraSoapContext zsc = mock(ZimbraSoapContext.class);
+    context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+    when(zsc.getAuthToken()).thenReturn(authToken);
+    CopyToFilesRequest up = new CopyToFilesRequest();
+    up.setMessageId(uuid + ":123");
+    up.setPart("2");
+    up.setDestinationFolderId("FOLDER_1");
+    Element element = JaxbUtil.jaxbToElement(up);
+    try {
+      new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context);
+    } catch (Exception ignored) {
+      // ignored, we care only it calls attachment service in desired manner
+    }
+    verify(mockAttachmentService, times(1)).getAttachment(uuid, authToken, 123, "2");
   }
 }

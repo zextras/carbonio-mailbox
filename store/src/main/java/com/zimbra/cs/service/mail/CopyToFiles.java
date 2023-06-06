@@ -138,9 +138,19 @@ public class CopyToFiles extends MailDocumentHandler {
    * @return try of a {@link MimePart}
    */
   private Try<MimePart> getAttachmentToCopy(CopyToFilesRequest request, ZimbraSoapContext context) {
-    // get mail message
+    // get messageId with UUID if available
+    final String[] uuidMsgId = request.getMessageId().split(":");
+    String accountUUID;
+    String msgId;
+    if (Objects.equals(2, uuidMsgId.length)) {
+      accountUUID = uuidMsgId[0];
+      msgId = uuidMsgId[1];
+    } else {
+      accountUUID = context.getAuthtokenAccountId();
+      msgId = request.getMessageId();
+    }
     final Try<Integer> messageIdTry =
-        Try.of(() -> Integer.parseInt(request.getMessageId()))
+        Try.of(() -> Integer.parseInt(msgId))
             .onFailure(ex -> mLog.debug(ex.getMessage()))
             .mapFailure(
                 Case(
@@ -148,16 +158,11 @@ public class CopyToFiles extends MailDocumentHandler {
                     ex ->
                         ServiceException.PARSE_ERROR(
                             MailConstants.A_MESSAGE_ID + " must be an integer.", ex)));
-    // get mail attachment
     return For(Try.of(() -> request), messageIdTry)
         .yield(
             (req, messageId) ->
                 attachmentService
-                    .getAttachment(
-                        context.getAuthtokenAccountId(),
-                        context.getAuthToken(),
-                        messageId,
-                        req.getPart())
+                    .getAttachment(accountUUID, context.getAuthToken(), messageId, req.getPart())
                     .onFailure(ex -> mLog.debug(ex.getMessage()))
                     .mapFailure(
                         Case(
