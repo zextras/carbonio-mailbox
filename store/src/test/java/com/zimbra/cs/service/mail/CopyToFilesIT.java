@@ -1,6 +1,6 @@
 package com.zimbra.cs.service.mail;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
 import com.zimbra.common.account.Key;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
@@ -57,7 +58,14 @@ public class CopyToFilesIT {
   public void setUp() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("shared@zimbra.com", "secret", new HashMap<String, Object>());
+    prov.createAccount(
+        "shared@zimbra.com",
+        "secret",
+        new HashMap<String, Object>() {
+          {
+            put(ZAttrProvisioning.A_zimbraId, UUID.randomUUID().toString());
+          }
+        });
     prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     prov.createAccount("test1@zimbra.com", "secret", new HashMap<String, Object>());
     prov.createAccount("test2@zimbra.com", "secret", new HashMap<String, Object>());
@@ -320,7 +328,8 @@ public class CopyToFilesIT {
   public void shouldUseProvidedUUIDasMailboxAccount() throws Exception {
     // prepare request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
-    String uuid = Provisioning.getInstance().get(Key.AccountBy.name, "shared@zimbra.com").getId();
+    String sharedAcctUUID =
+        Provisioning.getInstance().get(Key.AccountBy.name, "shared@zimbra.com").getId();
     AuthToken authToken = AuthProvider.getAuthToken(acct);
     Map<String, Object> context = new HashMap<String, Object>();
     context.put(
@@ -330,15 +339,16 @@ public class CopyToFilesIT {
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
     when(zsc.getAuthToken()).thenReturn(authToken);
     CopyToFilesRequest up = new CopyToFilesRequest();
-    up.setMessageId(uuid + ":123");
+    up.setMessageId(sharedAcctUUID + ":123");
     up.setPart("2");
     up.setDestinationFolderId("FOLDER_1");
     Element element = JaxbUtil.jaxbToElement(up);
     try {
       new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context);
     } catch (Exception ignored) {
-      // ignored, we care only it calls attachment service in desired manner
+      // ignored, we care only it calls attachment service in desired manner so not to mock
+      // everything
     }
-    verify(mockAttachmentService, times(1)).getAttachment(uuid, authToken, 123, "2");
+    verify(mockAttachmentService, times(1)).getAttachment(sharedAcctUUID, authToken, 123, "2");
   }
 }
