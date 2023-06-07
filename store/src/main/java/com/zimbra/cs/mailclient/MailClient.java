@@ -30,9 +30,10 @@ import java.util.NoSuchElementException;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 
 public abstract class MailClient {
     private final MailConfig config;
@@ -46,7 +47,7 @@ public abstract class MailClient {
     }
 
     public void run(String[] args) throws LoginException, IOException {
-        BasicConfigurator.configure();
+        Configurator.initialize(new DefaultConfiguration());
         Logger.getRootLogger().setLevel(Level.INFO);
         config.getLogger().setLevel(Log.Level.trace);
         parseArguments(args, config);
