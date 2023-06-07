@@ -6,8 +6,6 @@
 package com.zimbra.cs.util.yauth;
 
 import junit.framework.TestCase;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -21,7 +19,7 @@ public class AuthTest extends TestCase {
 
     static {
          Configurator.initialize(new DefaultConfiguration());
-        LogManager.getRootLogger().setLevel(Level.DEBUG);
+         Configurator.setRootLevel(Level.DEBUG);
     }
     
     private static String getToken() throws Exception {
