@@ -21,6 +21,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.zimbra.common.httpclient.HttpClientUtil;
@@ -38,7 +39,7 @@ public class RawAuth implements Auth {
     private String wssId;
     private long expiration;
 
-    private static final Logger LOG = Logger.getLogger(RawAuth.class);
+    private static final Logger LOG = LogManager.getLogger(RawAuth.class);
 
     private static final boolean DEBUG = false;
 

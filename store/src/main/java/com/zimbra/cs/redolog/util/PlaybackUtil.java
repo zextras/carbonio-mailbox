@@ -13,12 +13,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -26,9 +26,10 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.Logger;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -365,17 +366,17 @@ public class PlaybackUtil {
         // set up log4j
         ZimbraLog.toolSetupLog4j("INFO", LC.zimbra_log4j_properties.value());
         // remove the console appender if any
-        Logger rootLogger = Logger.getRootLogger();
-        Appender consoleAppender = null;
-        Enumeration appenders = rootLogger.getAllAppenders();
-        while (appenders.hasMoreElements()) {
-            Appender appender = (Appender) appenders.nextElement();
-            if (appender instanceof ConsoleAppender) {
-                consoleAppender = appender;
+        Logger rootLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
+        AtomicReference<Appender> consoleAppender = null;
+        Map<String, Appender> appenderMap = rootLogger.getAppenders();
+        appenderMap.forEach((key, appender) -> {
+                if (appender instanceof ConsoleAppender) {
+                    consoleAppender.set(appender);
+                }
             }
-        }
-        if (consoleAppender != null)
-            rootLogger.removeAppender(consoleAppender);
+            );
+        if (consoleAppender.get() != null)
+            rootLogger.removeAppender(consoleAppender.get());
 
         DbPool.startup();
         Zimbra.startupCLI();

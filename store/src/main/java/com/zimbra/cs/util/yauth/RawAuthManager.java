@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.util.yauth;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ public final class RawAuthManager {
     private final TokenStore store;
     private final HashMap<String, RawAuth> cookies;
 
-    private static final Logger LOG = Logger.getLogger(RawAuthManager.class);
+    private static final Logger LOG = LogManager.getLogger(RawAuthManager.class);
 
     public RawAuthManager(TokenStore store) {
         this.store = store;
