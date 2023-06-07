@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.util.yauth;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;

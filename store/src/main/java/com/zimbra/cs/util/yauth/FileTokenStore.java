@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.util.yauth;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
 
 import java.io.File;
 import java.io.IOException;
