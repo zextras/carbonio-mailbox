@@ -2363,8 +2363,8 @@ public class ProxyConfGen {
   }
 
   /**
-   * Deletes existing Let's Encrypt domain configuration (fullchain certificate private key pair and
-   * renewal configuration) for deleted domains.
+   * Deletes existing Let's Encrypt domain configuration (certificate/key pair,
+   * renewal configuration and related links) for deleted domains.
    *
    * @param mDomainReverseProxyAttrs List<{@link DomainAttrItem}> domain attribute items collected
    *     from domains

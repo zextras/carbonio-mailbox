@@ -95,7 +95,7 @@ public final class Utils {
    * Get subdirectories names from the given directory path.
    *
    * @param directoryPath path to get subdirectories names
-   * @return String List of directories names
+   * @return list of directories names
    * @author Yuliya Aheeva
    * @since 23.7.0
    */
