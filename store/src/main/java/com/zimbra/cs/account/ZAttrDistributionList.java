@@ -8,26 +8,23 @@ package com.zimbra.cs.account;
 import static com.zimbra.common.account.ProvisioningConstants.FALSE;
 import static com.zimbra.common.account.ProvisioningConstants.TRUE;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.zimbra.common.account.ZAttr;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.ldap.LdapDateUtil;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * AUTO-GENERATED. DO NOT EDIT.
- *
- */
+/** AUTO-GENERATED. DO NOT EDIT. */
 public abstract class ZAttrDistributionList extends Group {
 
-    protected ZAttrDistributionList(String name, String id, Map<String, Object> attrs, Provisioning prov) {
-        super(name, id, attrs, prov);
-    }
+  protected ZAttrDistributionList(
+      String name, String id, Map<String, Object> attrs, Provisioning prov) {
+    super(name, id, attrs, prov);
+  }
 
-    ///// BEGIN-AUTO-GEN-REPLACE
+  ///// BEGIN-AUTO-GEN-REPLACE
 
     /**
      * RFC2256: common name(s) for which the entity is known by
@@ -1938,7 +1935,140 @@ public abstract class ZAttrDistributionList extends Group {
         return attrs;
     }
 
-    ///// END-AUTO-GEN-REPLACE
+    /**
+     * Deprecated since: 8.0.0. Manual publishing of shares by admin is no
+     * longer required since now automated publishing of sharing info updates
+     * to LDAP is supported. Orig desc: items an account or group has shared
+     *
+     * @return zimbraShareInfo, or empty array if unset
+     */
+    @ZAttr(id=357)
+    public String[] getShareInfo() {
+        return getMultiAttr(Provisioning.A_zimbraShareInfo, true, true);
+    }
 
+    /**
+     * Deprecated since: 8.0.0. Manual publishing of shares by admin is no
+     * longer required since now automated publishing of sharing info updates
+     * to LDAP is supported. Orig desc: items an account or group has shared
+     *
+     * @param zimbraShareInfo new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=357)
+    public void setShareInfo(String[] zimbraShareInfo) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Manual publishing of shares by admin is no
+     * longer required since now automated publishing of sharing info updates
+     * to LDAP is supported. Orig desc: items an account or group has shared
+     *
+     * @param zimbraShareInfo new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=357)
+    public Map<String,Object> setShareInfo(String[] zimbraShareInfo, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Manual publishing of shares by admin is no
+     * longer required since now automated publishing of sharing info updates
+     * to LDAP is supported. Orig desc: items an account or group has shared
+     *
+     * @param zimbraShareInfo new to add to existing values
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=357)
+    public void addShareInfo(String zimbraShareInfo) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Manual publishing of shares by admin is no
+     * longer required since now automated publishing of sharing info updates
+     * to LDAP is supported. Orig desc: items an account or group has shared
+     *
+     * @param zimbraShareInfo new to add to existing values
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=357)
+    public Map<String,Object> addShareInfo(String zimbraShareInfo, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Manual publishing of shares by admin is no
+     * longer required since now automated publishing of sharing info updates
+     * to LDAP is supported. Orig desc: items an account or group has shared
+     *
+     * @param zimbraShareInfo existing value to remove
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=357)
+    public void removeShareInfo(String zimbraShareInfo) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Manual publishing of shares by admin is no
+     * longer required since now automated publishing of sharing info updates
+     * to LDAP is supported. Orig desc: items an account or group has shared
+     *
+     * @param zimbraShareInfo existing value to remove
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=357)
+    public Map<String,Object> removeShareInfo(String zimbraShareInfo, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Manual publishing of shares by admin is no
+     * longer required since now automated publishing of sharing info updates
+     * to LDAP is supported. Orig desc: items an account or group has shared
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=357)
+    public void unsetShareInfo() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraShareInfo, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Manual publishing of shares by admin is no
+     * longer required since now automated publishing of sharing info updates
+     * to LDAP is supported. Orig desc: items an account or group has shared
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=357)
+    public Map<String,Object> unsetShareInfo(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<String,Object>();
+        attrs.put(Provisioning.A_zimbraShareInfo, "");
+        return attrs;
+    }
+
+  ///// END-AUTO-GEN-REPLACE
 
 }

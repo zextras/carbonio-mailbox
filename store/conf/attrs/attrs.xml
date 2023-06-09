@@ -380,7 +380,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
     In and prior to 5.0.*, zimbraHsmAge is special. We set parentOid to keep the same OID it had before: 1.3.6.1.4.1.19348.2.4.20
     Since 5.5, we use an oid in the normal range, see bug 8945.
  -->
-
+<attr id="8" name="zimbraHsmAge" type="duration" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="6.0.0_BETA2">
+  <globalConfigValue>30d</globalConfigValue>
+  <desc>Minimum age of mail items whose filesystem data will be moved to secondary storage.</desc>
+  <deprecateDesc>deprecated in favor for zimbraHsmPolicy</deprecateDesc>
+</attr>
 
 <attr id="9" name="zimbraNotes" type="string" max="1024" cardinality="single" optionalIn="account,distributionList,group,cos,domain,server" flags="domainAdminModifiable">
   <desc>administrative notes</desc>
@@ -425,6 +429,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 
 <attr id="20" name="zimbraMailAlias" type="email" max="256" immutable="1" cardinality="multi" optionalIn="mailRecipient,group,groupDynamicUnit" flags="accountInfo">
   <desc>RFC822 email address of this recipient for accepting mail</desc>
+</attr>
+
+<attr id="21" name="zimbraCOSInheritedAttr" type="string" max="1024" cardinality="multi" optionalIn="globalConfig" deprecatedSince="5.0">
+  <desc>zimbraCOS attrs that get inherited in a zimbraAccount</desc>
+  <deprecateDesc>deprecated in favor of the accountInherited flag</deprecateDesc>
 </attr>
 
 <attr id="22" name="zimbraPrefSaveToSent" type="boolean" cardinality="single" optionalIn="account,cos,identity" flags="accountInherited,domainAdminModifiable">
@@ -631,6 +640,16 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether or not keyboard shortcuts are enabled</desc>
 </attr>
 
+<attr id="62" name="zimbraServerInheritedAttr" type="string" max="1024" cardinality="multi" optionalIn="globalConfig" deprecatedSince="5.0">
+  <desc>zimbraServer attrs that get inherited from global config</desc>
+  <deprecateDesc>deprecated in favor of the serverInherited flag</deprecateDesc>
+</attr>
+
+<attr id="63" name="zimbraDomainInheritedAttr" type="string" max="1024" cardinality="multi" optionalIn="globalConfig" deprecatedSince="5.0">
+  <desc>zimbraDomain attrs that get inherited from global config</desc>
+  <deprecateDesc>deprecated in favor of the domainInherited flag</deprecateDesc>
+</attr>
+
 <attr id="65" name="zimbraServiceHostname" type="string" max="256" cardinality="single" optionalIn="server">
   <desc>public hostname of the host</desc>
 </attr>
@@ -757,6 +776,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>interval at which the web client polls the server for new messages</desc>
 </attr>
 
+<attr id="112" name="zimbraAccountClientAttr" type="string" max="1024" cardinality="multi" optionalIn="globalConfig" deprecatedSince="5.0">
+  <desc>additional account attrs that get returned to a client</desc>
+  <deprecateDesc>deprecated in favor of the accountInfo flag</deprecateDesc>
+</attr>
+
 <attr id="113" name="zimbraLastLogonTimestamp" type="gentime" immutable="1" cardinality="single" optionalIn="account" flags="ephemeral">
   <desc>rough estimate of when the user last logged in</desc>
 </attr>
@@ -838,6 +862,12 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <defaultCOSValue>TRUE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>tagging feature</desc>
+</attr>
+
+<attr id="138" name="zimbraFeatureAdvancedSearchEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" deprecatedSince="8.0.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>advanced search button enabled</desc>
+  <deprecateDesc>Deprecated as of bug 56924</deprecateDesc>
 </attr>
 
 <attr id="139" name="zimbraFeatureSavedSearchesEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited">
@@ -1013,6 +1043,36 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>SSL port for end-user UI</desc>
 </attr>
 
+<attr id="167" name="zimbraPrefContactsInitialView" type="enum" value="cards,list" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" deprecatedSince="6.0.5">
+  <defaultCOSValue>list</defaultCOSValue>
+  <desc>initial contact view to use</desc>
+  <deprecateDesc>We do not support cards view any more.  See bug 47439</deprecateDesc>
+</attr>
+
+<attr id="168" name="zimbraTableMaintenanceMinRows" type="integer" min="0" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="4.5.7">
+  <globalConfigValue>10000</globalConfigValue>
+  <desc>minimum number of rows required for database table maintenance</desc>
+  <deprecateDesc>We now maintain all tables unconditionally.  See bug 19145</deprecateDesc>
+</attr>
+
+<attr id="169" name="zimbraTableMaintenanceMaxRows" type="integer" min="0" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="4.5.7">
+  <globalConfigValue>1000000</globalConfigValue>
+  <desc>maximum number of rows required for database table maintenance</desc>
+  <deprecateDesc>We now maintain all tables unconditionally.  See bug 19145</deprecateDesc>
+</attr>
+
+<attr id="170" name="zimbraTableMaintenanceOperation" type="enum" value="ANALYZE,OPTIMIZE" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="4.5.7">
+  <globalConfigValue>ANALYZE</globalConfigValue>
+  <desc>table maintenance operation that will be performed.  Valid options: "ANALYZE", "OPTIMIZE"</desc>
+  <deprecateDesc>We now maintain all tables unconditionally.  See bug 19145</deprecateDesc>
+</attr>
+
+<attr id="171" name="zimbraTableMaintenanceGrowthFactor" type="integer" min="0" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="4.5.7">
+  <globalConfigValue>10</globalConfigValue>
+  <desc>table maintenance will be performed if the number of rows grows by this factor</desc>
+  <deprecateDesc>We now maintain all tables unconditionally.  See bug 19145</deprecateDesc>
+</attr>
+
 <attr id="172" name="zimbraDefaultDomainName" type="string" max="256" cardinality="single" optionalIn="globalConfig" flags="idn" requiresRestart="mailbox">
   <desc>name of the default domain for accounts when authenticating without a domain</desc>
 </attr>
@@ -1110,6 +1170,12 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>show fragments in conversation and message lists</desc>
 </attr>
 
+<attr id="194" name="zimbraMtaAuthEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="6.0.0_BETA1">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Value for postconf smtpd_tls_security_level</desc>
+  <deprecateDesc>deprecated in favor of zimbraMtaTlsSecurityLevel and zimbraMtaSaslAuthEnable</deprecateDesc>
+</attr>
+
 <attr id="195" name="zimbraMtaBlockedExtension" type="string" max="64" cardinality="multi" optionalIn="globalConfig" requiresRestart="antispam">
   <desc>Attachment file extensions that are blocked</desc>
 </attr>
@@ -1145,6 +1211,12 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>Commonly blocked attachment file extensions</desc>
 </attr>
 
+<attr id="197" name="zimbraMtaDnsLookupsEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mta" deprecatedSince="8.7.0_BETA2">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Value for postconf disable_dns_lookups (note enable v. disable)</desc>
+  <deprecateDesc>deprecated in favor zimbraMtaSmtpDnsSupportLevel</deprecateDesc>
+</attr>
+
 <attr id="198" name="zimbraMtaMaxMessageSize" type="long" min="0" cardinality="single" optionalIn="globalConfig" flags="accountInfo" requiresRestart="mta">
   <globalConfigValue>10240000</globalConfigValue>
   <desc>Maximum total size of a mail message. Enforced in mailbox server and also used as value for postconf message_size_limit.  0 means "no limit"</desc>
@@ -1157,6 +1229,12 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 <attr id="200" name="zimbraMtaTlsAuthOnly" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mta">
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>Value for postconf smtpd_tls_auth_only</desc>
+</attr>
+
+<attr id="201" name="zimbraSpamCheckEnabled" type="boolean" cardinality="single" optionalIn="globalConfig" deprecatedSince="4.5">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Whether to enable spam checking</desc>
+  <deprecateDesc>Deprecated in favor of zimbraServiceEnabled</deprecateDesc>
 </attr>
 
 <attr id="202" name="zimbraSpamKillPercent" type="integer" min="0" cardinality="single" optionalIn="globalConfig" requiresRestart="antispam">
@@ -1176,6 +1254,12 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 <attr id="205" name="zimbraVirusBlockEncryptedArchive" type="boolean" cardinality="single" optionalIn="globalConfig" requiresRestart="mta">
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>Whether to block archive files that are password protected or encrypted</desc>
+</attr>
+
+<attr id="206" name="zimbraVirusCheckEnabled" type="boolean" cardinality="single" optionalIn="globalConfig" deprecatedSince="4.5">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Whether to enable virus checking</desc>
+  <deprecateDesc>Deprecated in favor of zimbraServiceEnabled</deprecateDesc>
 </attr>
 
 <attr id="207" name="zimbraVirusWarnAdmin" type="boolean" cardinality="single" optionalIn="globalConfig" requiresRestart="mta">
@@ -1265,6 +1349,36 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 <attr id="227" name="zimbraFileUploadMaxSize" type="long" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited,accountInfo">
   <globalConfigValue>10485760</globalConfigValue>
   <desc>Maximum size in bytes for file uploads</desc>
+</attr>
+
+<attr id="229" name="zimbraTimeZoneStandardDtStart" type="string" max="256" cardinality="multi" requiredIn="timeZone" deprecatedSince="5.0">
+  <desc>Start date for standard time</desc>
+  <deprecateDesc>Deprecated as of bug 12416</deprecateDesc>
+</attr>
+
+<attr id="230" name="zimbraTimeZoneStandardOffset" type="string" max="5" cardinality="multi" requiredIn="timeZone" deprecatedSince="5.0">
+  <desc>Offset in standard time</desc>
+  <deprecateDesc>Deprecated as of bug 12416</deprecateDesc>
+</attr>
+
+<attr id="231" name="zimbraTimeZoneStandardRRule" type="string" max="256" cardinality="multi" optionalIn="timeZone" deprecatedSince="5.0">
+  <desc>iCalendar recurrence rule for onset of standard time</desc>
+  <deprecateDesc>Deprecated as of bug 12416</deprecateDesc>
+</attr>
+
+<attr id="232" name="zimbraTimeZoneDaylightDtStart" type="string" max="256" cardinality="multi" optionalIn="timeZone" deprecatedSince="5.0">
+  <desc>Start date for daylight time</desc>
+  <deprecateDesc>Deprecated as of bug 12416</deprecateDesc>
+</attr>
+
+<attr id="233" name="zimbraTimeZoneDaylightOffset" type="string" max="5" cardinality="multi" optionalIn="timeZone" deprecatedSince="5.0">
+  <desc>Offset in daylight time</desc>
+  <deprecateDesc>Deprecated as of bug 12416</deprecateDesc>
+</attr>
+
+<attr id="234" name="zimbraTimeZoneDaylightRRule" type="string" max="256" cardinality="multi" optionalIn="timeZone" deprecatedSince="5.0">
+  <desc>iCalendar recurrence rule for onset of daylight time</desc>
+  <deprecateDesc>Deprecated as of bug 12416</deprecateDesc>
 </attr>
 
 <attr id="235" name="zimbraPrefTimeZoneId" type="string" max="256" cardinality="multi" optionalIn="account,cos,domain" flags="accountCosDomainInherited,domainAdminModifiable">
@@ -1542,6 +1656,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>COS zimbraID</desc>
 </attr>
 
+<attr id="300" name="zimbraDomainAdminModifiableAttr" max="1024" type="string" cardinality="multi" optionalIn="globalConfig" deprecatedSince="5.0">
+  <desc>account attributes that a domain administrator is allowed to modify</desc>
+  <deprecateDesc>deprecated in favor of the domainAdminAdminModifiable flag</deprecateDesc>
+</attr>
+
 <attr id="301" name="zimbraZimletEnabled" type="boolean" cardinality="single" requiredIn="zimletEntry">
   <desc>whether this Zimlet is enabled</desc>
 </attr>
@@ -1550,8 +1669,21 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>Object match priority</desc>
 </attr>
 
+<attr id="303" name="zimbraProxyCacheableContentTypes" type="string" max="256" cardinality="multi" optionalIn="cos" deprecatedSince="7.2.1">
+  <defaultCOSValue>text/javascript</defaultCOSValue>
+  <defaultCOSValue>application/x-javascript</defaultCOSValue>
+  <desc>Content types that can be cached by proxy servlet</desc>
+  <deprecateDesc>Deprecated per bug 74769</deprecateDesc>
+</attr>
+
 <attr id="304" name="zimbraZimletIsExtension" type="boolean" cardinality="single" optionalIn="zimletEntry">
   <desc>Whether this zimlet is an extension</desc>
+</attr>
+
+<attr id="305" name="zimbraFeatureIMEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" deprecatedSince="8.7.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>IM features</desc>
+    <deprecateDesc>deprecated in favor of zimbraFeatureChatEnabled</deprecateDesc>
 </attr>
 
 <attr id="306" name="zimbraMtaRecipientDelimiter" type="astring" max="256" cardinality="multi" optionalIn="globalConfig" requiresRestart="mta">
@@ -1567,9 +1699,15 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether to run HTTP or HTTPS or both/mixed mode or redirect mode.  See also related attributes zimbraMailPort and zimbraMailSSLPort</desc>
 </attr>
 
+<attr id="309" name="zimbraMtaAuthHost" type="astring" max="256" callback="MtaAuthHost" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mta" deprecatedSince="8.6">
+  <desc>Host running SOAP service for use by MTA auth.  Setting this sets zimbraMtaAuthURL via attr callback mechanism.</desc>
+  <deprecateDesc>Formally deprecated in 8.6 but has been unused since at least 7.0. MTA now uses all servers which have zimbraMtaAuthTarget set to TRUE</deprecateDesc>
+</attr>
 
-
-
+<attr id="310" name="zimbraMtaAuthURL" type="astring" max="256" immutable="1" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mta" deprecatedSince="8.6">
+  <desc>URL at which this MTA (via zimbra saslauthd) should authenticate.  Set by setting zimbraMtaAuthHost.</desc>
+  <deprecateDesc>Formally deprecated in 8.6 but has been unused since at least 7.0. MTA now uses all servers which have zimbraMtaAuthTarget set to TRUE</deprecateDesc>
+</attr>
 
 <attr id="311" name="zimbraMtaMyNetworks" type="astring" max="10240" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mta">
   <desc>value of postfix mynetworks</desc>
@@ -1592,17 +1730,39 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>Whether this calendar resource accepts/declines meeting invites automatically; default TRUE</desc>
 </attr>
 
+<attr id="316" name="zimbraNotifyServerEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="4.0">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Whether notification server should be enabled.</desc>
+  <deprecateDesc>was experimental and never part of any shipping feature</deprecateDesc>
+</attr>
 
+<attr id="317" name="zimbraNotifyBindAddress" type="string" max="128" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="4.0">
+  <desc>Network interface on which notification server should listen; if empty, binds to all interfaces.</desc>
+  <deprecateDesc>was experimental and never part of any shipping feature</deprecateDesc>
+</attr>
 
+<attr id="318" name="zimbraNotifyBindPort" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="4.0">
+  <globalConfigValue>7035</globalConfigValue>
+  <desc>Port number on which notification server should listen.</desc>
+  <deprecateDesc>was experimental and never part of any shipping feature</deprecateDesc>
+</attr>
 
+<attr id="319" name="zimbraNotifySSLServerEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="4.0">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Whether SSL notification server should be enabled.</desc>
+  <deprecateDesc>was experimental and never part of any shipping feature</deprecateDesc>
+</attr>
 
+<attr id="320" name="zimbraNotifySSLBindAddress" type="string" max="128" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="4.0">
+  <desc>Network interface on which SSL notification server should listen; if empty, binds to all interfaces</desc>
+  <deprecateDesc>was experimental and never part of any shipping feature</deprecateDesc>
+</attr>
 
-
-
-
-
-
-
+<attr id="321" name="zimbraNotifySSLBindPort" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="4.0">
+  <globalConfigValue>7036</globalConfigValue>
+  <desc>Port number on which notification server should listen.</desc>
+  <deprecateDesc>was experimental and never part of any shipping feature</deprecateDesc>
+</attr>
 
 <attr id="322" name="zimbraCalResAutoDeclineIfBusy" type="boolean" cardinality="single" optionalIn="calendarResource" flags="domainAdminModifiable">
   <desc>Whether this calendar resource declines invite if already busy; default TRUE</desc>
@@ -1765,9 +1925,16 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>Skin to use for this account</desc>
 </attr>
 
+<attr id="356" name="zimbraFeatureNotebookEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" deprecatedSince="7.0.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>Whether notebook feature should be allowed for this account or in this cos</desc>
+  <deprecateDesc>Deprecated per bugs 50465, 56201</deprecateDesc>
+</attr>
 
-
-
+<attr id="357" name="zimbraShareInfo" type="string" max="1024" cardinality="multi" optionalIn="account,distributionList" deprecatedSince="8.0.0">
+  <desc>items an account or group has shared</desc>
+  <deprecateDesc>Manual publishing of shares by admin is no longer required since now automated publishing of sharing info updates to LDAP is supported</deprecateDesc>
+</attr>
 
 <attr id="358" name="zimbraGalInternalSearchBase"  type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited">
   <globalConfigValue>DOMAIN</globalConfigValue>
@@ -1785,7 +1952,10 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>LDAP search filter for external GAL auto-complete queries</desc>
 </attr>
 
-
+<attr id="363" name="zimbraNotebookAccount" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" deprecatedSince="7.0.0">
+  <desc>Account for storing templates and providing space for public wiki</desc>
+  <deprecateDesc>See bug 39647</deprecateDesc>
+</attr>
 
 <attr id="364" name="zimbraAvailableSkin" type="string" max="80" cardinality="multi" optionalIn="account,cos,domain" flags="domainInfo,accountInfo,accountCosDomainInherited,domainAdminModifiable">
   <desc>Skins available for this account.  
@@ -1809,16 +1979,27 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>Whether new mail notification feature should be allowed for this account or in this cos</desc>
 </attr>
 
-
+<attr id="368" name="zimbraInstalledSkin" type="string" max="80" cardinality="multi" optionalIn="globalConfig" deprecatedSince="5.0">
+  <desc>Skins installed and available on all servers (this is global config only)</desc>
+  <deprecateDesc>Installed skin list is a per server property, the list is now generated by directory scan of skin files</deprecateDesc>
+</attr>
 
 <attr id="369" name="zimbraNotebookPageCacheSize" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited">
   <globalConfigValue>10240</globalConfigValue>
   <desc>The size of composed Wiki / Notebook page cache on the server.</desc>
 </attr>
 
+<attr id="370" name="zimbraNotebookFolderCacheSize" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="6.0.0_BETA1">
+  <globalConfigValue>1024</globalConfigValue>
+  <desc>The size of Wiki / Notebook folder cache on the server.</desc>
+  <deprecateDesc>deprecated</deprecateDesc>
+</attr>
 
-
-
+<attr id="371" name="zimbraNotebookMaxCachedTemplatesPerFolder" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="6.0.0_BETA1">
+  <globalConfigValue>256</globalConfigValue>
+  <desc>The maximum number of cached templates in each Wiki / Notebook folder cache.</desc>
+  <deprecateDesc>deprecated</deprecateDesc>
+</attr>
 
 <attr id="372" name="zimbraPrefGalAutoCompleteEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable">
   <defaultCOSValue>TRUE</defaultCOSValue>
@@ -1915,7 +2096,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>The registered name of the Zimbra Analyzer Extension for this account to use</desc>
 </attr>
 
-
+<attr id="394" name="zimbraPrefReadingPaneEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" deprecatedSince="6.0.0_BETA2">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>whether reading pane is shown by default</desc>
+  <deprecateDesc>deprecated in favor of zimbraPrefReadingPaneLocation and zimbraPrefConvReadingPaneLocation</deprecateDesc>
+</attr>
 
 <attr id="395" name="zimbraPrefUseRfc2231" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable">
   <defaultCOSValue>FALSE</defaultCOSValue>
@@ -1926,7 +2111,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>keyboard shortcuts</desc>
 </attr>
 
-
+<attr id="397" name="zimbraXMPPEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" deprecatedSince="8.7.0">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Enable XMPP support for IM</desc>
+  <deprecateDesc>Zimbra no longer includes an XMPP server</deprecateDesc>
+</attr>
 
 <attr id="398" name="zimbraDomainAdminMaxMailQuota" type="long" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited">
   <desc>
@@ -1974,7 +2163,10 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>if replying/forwarding a message in this folder, use this identity (deprecatedSince 5.0 in account)</desc>
 </attr>
 
-
+<attr id="410" name="zimbraPrefUseDefaultIdentitySettings" type="boolean" cardinality="single" optionalIn="account,identity" flags="domainAdminModifiable" deprecatedSince="5.0">
+  <desc>TRUE if we this identity should get settings from the default identity</desc>
+  <deprecateDesc>no longer used in account or identity</deprecateDesc>
+</attr>
 
 <attr id="411" name="zimbraPrefBccAddress" type="string" max="2048" cardinality="single" optionalIn="account,identity" flags="domainAdminModifiable">
   <desc>address that we will bcc when using sending mail with this identity (deprecatedSince 5.0 in identity)</desc>
@@ -2136,7 +2328,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>hour of day that the day view should end at, non-inclusive (16=4pm, 24 = midnight, etc)</desc>
 </attr>
 
-
+<attr id="441" name="zimbraFeatureMailPollingIntervalPreferenceEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" deprecatedSince="5.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>whether user is allowed to set mail polling interval</desc>
+  <deprecateDesc>done via skin template overrides</deprecateDesc>
+</attr>
 
 <attr id="442" name="zimbraPrefLocale" type="string" max="64" cardinality="single" optionalIn="account,cos," flags="accountInherited,domainAdminModifiable">
   <desc>
@@ -2175,9 +2371,15 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>portal name</desc>
 </attr>
 
+<attr id="449" name="zimbraChildAccount" type="id" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" callback="ChildAccount" deprecatedSince="8.5.0">
+  <desc>zimbraId of child accounts</desc>
+  <deprecateDesc>family mailbox feature is deprecated</deprecateDesc>
+</attr>
 
-
-
+<attr id="450" name="zimbraChildVisibleAccount" type="id" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" deprecatedSince="5.0.0">
+  <desc>zimbraId of visible child accounts</desc>
+  <deprecateDesc> deprecated in favor of user-settable attribute zimbraPrefChildVisibleAccount </deprecateDesc>
+</attr>
 
 <attr id="451" name="zimbraFeatureOptionsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited">
   <defaultCOSValue>TRUE</defaultCOSValue>
@@ -2185,7 +2387,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether an account can modify its zimbraPref* attributes</desc>
 </attr>
 
-
+<attr id="452" name="zimbraFeatureShortcutAliasesEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited"  deprecatedSince="6.0.0_GA">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>keyboard shortcuts aliases features</desc>
+  <deprecateDesc>deprecated</deprecateDesc>
+</attr>
 
 <attr id="453" name="zimbraPrefClientType" type="enum" value="standard,advanced,modern" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable">
   <defaultCOSValue>modern</defaultCOSValue>
@@ -2234,11 +2440,23 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>Backup report email subject prefix</desc>
 </attr>
 
+<attr id="462" name="zimbraPrefIMFlashIcon" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" deprecatedSince="8.7.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>Flash IM icon on new messages</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
+<attr id="463" name="zimbraPrefIMNotifyPresence" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" deprecatedSince="8.7.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>Notify for presence modifications</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
-
-
-
+<attr id="464" name="zimbraPrefIMNotifyStatus" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" deprecatedSince="8.7.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>Notify for status change</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
 <attr id="465" name="zimbraSpamReportSenderHeader" type="string" cardinality="single" optionalIn="globalConfig">
   <globalConfigValue>X-Zimbra-Spam-Report-Sender</globalConfigValue>
@@ -2351,7 +2569,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>Locales available for this account</desc>
 </attr>
 
-
+<attr id="488" name="zimbraPrefIMAutoLogin" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" deprecatedSince="8.7.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>whether to login to the IM client automatically</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
 <attr id="489" name="zimbraFeatureMailEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited">
   <defaultCOSValue>TRUE</defaultCOSValue>
@@ -2394,6 +2616,13 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 <attr id="497" name="zimbraAdminURL" type="string" max="1024" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited">
   <globalConfigValue>/carbonioAdmin</globalConfigValue>
   <desc>URL prefix for where the zimbraAdmin app resides on this server</desc>
+</attr>
+
+<attr id="498" name="zimbraFeatureBriefcasesEnabled" type="boolean" cardinality="single" deprecatedSince="23.6.0" optionalIn="account,cos" flags="accountInfo,accountInherited">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>whether to allow use of briefcase feature</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
 <attr id="499" name="zimbraFeatureFlaggingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited">
@@ -2486,14 +2715,22 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>mail html signature</desc>
 </attr>
 
-
+<attr id="517" name="zimbraPrefIMInstantNotify" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" deprecatedSince="8.7.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>Enable instant notifications</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
 <attr id="518" name="zimbraHttpNumThreads" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox">
   <globalConfigValue>250</globalConfigValue>
   <desc>number of http handler threads</desc>
 </attr>
 
-
+<attr id="519" name="zimbraHttpSSLNumThreads" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" deprecatedSince="5.0">
+  <globalConfigValue>50</globalConfigValue>
+  <desc>number of https handler threads</desc>
+  <deprecateDesc>not applicable for jetty</deprecateDesc>
+</attr>
 
 <attr id="520" name="zimbraLogToSyslog" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox">
   <globalConfigValue>FALSE</globalConfigValue>
@@ -2654,7 +2891,10 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   </desc>
 </attr>
 
-
+<attr id="543" name="zimbraMailLastPurgedMailboxId" type="integer" cardinality="single" optionalIn="server" since="5.0.0" deprecatedSince="5.0.7">
+  <desc>The id of the last purged mailbox.</desc>
+  <deprecateDesc>deprecated per bug 28842</deprecateDesc>>
+</attr>
 
 <attr id="544" name="zimbraFeatureZimbraAssistantEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="5.0.0">
   <defaultCOSValue>TRUE</defaultCOSValue>
@@ -2695,9 +2935,16 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>kerberos5 keytab file path for external GAL queries</desc>
 </attr>
 
+<attr id="552" name="zimbraPrefIMLogChatsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="8.7.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>whether IM log chats is enabled</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
-
-
+<attr id="553" name="zimbraPrefChildVisibleAccount" type="id" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" callback="ChildAccount" since="5.0.0" deprecatedSince="8.5.0">
+  <desc>zimbraId of visible child accounts</desc>
+  <deprecateDesc>family mailbox feature is deprecated</deprecateDesc>
+</attr>
 
 <attr id="554" name="zimbraPop3SaslGssapiEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="5.0.0">
   <globalConfigValue>FALSE</globalConfigValue>
@@ -2709,18 +2956,34 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether IMAP SASL GSSAPI is enabled for a given server</desc>
 </attr>
 
-
+<attr id="556" name="zimbraPrefIMLogChats" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="8.7.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>whether to log IM chats to the Chats folder</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
 <attr id="557" name="zimbraSoapRequestMaxSize" type="integer" min="0" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="5.0.0">
   <globalConfigValue>15360000</globalConfigValue>
   <desc>Maximum size in bytes for incoming SOAP requests.  0 means no limit.</desc>
 </attr>
 
+<attr id="558" name="zimbraPrefIMReportIdle" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="8.7.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>whether to report IM idle status</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
+<attr id="559" name="zimbraPrefIMIdleTimeout" type="integer" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="8.7.0">
+  <defaultCOSValue>10</defaultCOSValue>
+  <desc>IM session idle timeout in minutes</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
-
-
-
+<attr id="560" name="zimbraPrefIMIdleStatus" type="enum" value="away,xa,invisible,offline" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="8.7.0">
+  <defaultCOSValue>away</defaultCOSValue>
+  <desc>IM idle status</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
 <attr id="561" name="zimbraPrefAutoSaveDraftInterval" type="duration" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0">
   <defaultCOSValue>30s</defaultCOSValue>
@@ -2749,7 +3012,10 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>mail priority feature</desc>
 </attr>
 
-
+<attr id="567" name="zimbraIMBindAddress" type="string" max="128" cardinality="multi" optionalIn="server" requiresRestart="mailbox" since="5.0.0" deprecatedSince="8.7.0">
+  <desc>interface address on which IM server should listen; if empty, binds to all interfaces</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
 <attr id="568" name="zimbraFeatureImapDataSourceEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="5.0.0">
   <defaultCOSValue>TRUE</defaultCOSValue>
@@ -2762,27 +3028,53 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>wait duration before nginx sending back the NO response for failed imap/pop3 reverse proxy lookups</desc>
 </attr>
 
+<attr id="570" name="zimbraPrefIMSoundsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="8.7.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>whether sounds is enabled in IM</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
-
-
+<attr id="571" name="zimbraIMAvailableInteropGateways" type="string" cardinality="multi" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="8.7.0">
+  <desc>available IM interop gateways</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
 <attr id="572" name="zimbraReverseProxyUserNameAttribute" type="string" cardinality="single" optionalIn="globalConfig" since="5.0.0">
   <desc>LDAP attribute that contains user name for the principal</desc>
 </attr>
 
+<attr id="573" name="zimbraPrefCalendarReminderDuration1" type="string" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="6.0.0_BETA1">
+  <defaultCOSValue>-PT15M</defaultCOSValue>
+  <desc>When to send the first reminder for an event.</desc>
+  <deprecateDesc>was added for Yahoo calendar, no longer used</deprecateDesc>
+</attr>
 
-
-
+<attr id="574" name="zimbraPrefCalendarReminderDuration2" type="string" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="6.0.0_BETA1">
+  <desc>When to send the second reminder for an event.</desc>
+  <deprecateDesc>was added for Yahoo calendar, no longer used</deprecateDesc>
+</attr>
 
 <attr id="575" name="zimbraPrefCalendarReminderEmail" type="email" max="256" cardinality="single" optionalIn="account" flags="domainAdminModifiable" since="7.0.0">
   <desc>RFC822 email address for receiving reminders for appointments and tasks</desc>
 </attr>
 
+<attr id="576" name="zimbraPrefCalendarReminderSendEmail" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="6.0.0_BETA1">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>whether or not email reminders for appointments and tasks are enabled</desc>
+  <deprecateDesc>was added for Yahoo calendar, no longer used</deprecateDesc>
+</attr>
 
+<attr id="577" name="zimbraPrefCalendarReminderMobile" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="6.0.0_BETA1">
+  <defaultCOSValue>FALSE</defaultCOSValue>  
+  <desc>The mobile device (phone) the reminder goes to.</desc>
+  <deprecateDesc>was added for Yahoo calendar, no longer used</deprecateDesc>
+</attr>
 
-
-
-
+<attr id="578" name="zimbraPrefCalendarReminderYMessenger" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="6.0.0_BETA1">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>Send a reminder via YIM</desc>
+  <deprecateDesc>was added for Yahoo calendar, no longer used</deprecateDesc>
+</attr>
 
 <attr id="579" name="zimbraJunkMessagesIndexingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0">
   <defaultCOSValue>TRUE</defaultCOSValue>
@@ -2902,7 +3194,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>set to true for customer care accounts</desc>
 </attr>
 
-
+<attr id="602" name="zimbraFeatureWebSearchEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="5.0.2" deprecatedSince="6.0.0_GA">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>whether web search feature is enabled</desc>
+  <deprecateDesc>deprecated per bug 40170</deprecateDesc>
+</attr>
 
 <attr id="603" name="zimbraPrefLabel" type="string" max="256" cardinality="single" optionalIn="account" flags="domainAdminModifiable" since="5.0.2">
   <desc>optional account descriptive label</desc>
@@ -3158,7 +3454,10 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether POP3 SASL GSSAPI is enabled for reverse proxy</desc>
 </attr>
 
-
+<attr id="645" name="zimbraPrefIMCustomStatusMessage" type="string" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" since="5.0.6" deprecatedSince="8.7.0">
+  <desc>Custom IM status messages</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
 <attr id="646" name="zimbraNotebookSanitizeHtml" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="5.0.6">
   <defaultCOSValue>TRUE</defaultCOSValue>
@@ -3311,7 +3610,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>After login, whether the advanced client should enforce minimum display resolution</desc>
 </attr>
 
-
+<attr id="679" name="zimbraPrefIMFlashTitle" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.7" deprecatedSince="8.7.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>Flash title bar when a new IM arrives</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
 <attr id="680" name="zimbraPrefMailFlashTitle" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.7">
   <defaultCOSValue>FALSE</defaultCOSValue>
@@ -3422,11 +3725,22 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>enable end-user mail forwarding defined in mail filters features</desc>
 </attr>
 
+<attr id="705" name="zimbraPrefIMBuddyListSort" type="string" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.10" deprecatedSince="8.7.0">
+  <desc>IM buddy list sort order</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
+<attr id="706" name="zimbraPrefIMHideOfflineBuddies" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.10" deprecatedSince="8.7.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>whether to hide IM offline buddies</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
-
-
-
+<attr id="707" name="zimbraPrefIMHideBlockedBuddies" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.10" deprecatedSince="8.7.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>whether to hide IM blocked buddies</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
 <attr id="708" name="zimbraSoapExposeVersion" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="5.0.10">
   <globalConfigValue>FALSE</globalConfigValue>
@@ -3573,7 +3887,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>time interval that an entry cached by NGINX will remain in the cache</desc>
 </attr>
 
-
+<attr id="735" name="zimbraReverseProxyInactivityTimeout" type="duration" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="5.0.10" deprecatedSince="8.0.0">
+  <globalConfigValue>1h</globalConfigValue>
+  <desc>Time interval after which NGINX mail proxy will disconnect an inactive IMAP/POP connection</desc>
+  <deprecateDesc>deprecated in favor of local config "imap_max_idle_time", "pop3_max_idle_time", "imap_authenticated_max_idle_time" in bug 59685</deprecateDesc>
+</attr>
 
 <attr id="736" name="zimbraReverseProxyPassErrors" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="5.0.10">
   <globalConfigValue>TRUE</globalConfigValue>
@@ -3602,6 +3920,17 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 
 <attr id="742" name="zimbraServerId" type="id" cardinality="single" requiredIn="xmppComponent" since="6.0.0_BETA1">
   <desc>ZimbraID of the server that this component is running on</desc>
+</attr>  
+
+<attr id="743" name="zimbraAdminConsoleDNSCheckEnabled" type="boolean" deprecatedSince="23.6.0" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" since="5.0.10">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>enable MX check feature for domain</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
+</attr>
+
+<attr id="744" name="zimbraDNSCheckHostname"  type="string" max="256" cardinality="single" deprecatedSince="23.6.0" optionalIn="globalConfig,domain" flags="domainInherited,domainAdminModifiable" since="5.0.10">
+  <desc>This attribute is used for DNS check by customers that configure their MX to point at spam relays or other non-zimbra inbox smtp servers</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
 <attr id="745" name="zimbraReverseProxyRouteLookupTimeout" type="duration" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="5.0.10">
@@ -3633,7 +3962,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether mandatory spell check is enabled</desc>
 </attr>
 
-
+<attr id="750" name="zimbraFeatureImportExportFolderEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" deprecatedSince="7.1.0" since="6.0.0_BETA1">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>whether import export folder feature is enabled</desc>
+  <deprecateDesc>deprecated in favor of zimbraFeatureImportFolderEnabled and zimbraFeatureExportFolderEnabled for bug 53745</deprecateDesc>
+</attr>
 
 <attr id="751" name="zimbraAdminConsoleSkinEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" since="5.0.11">
   <globalConfigValue>FALSE</globalConfigValue>
@@ -3667,7 +4000,10 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   </desc>
 </attr>
 
-
+<attr id="757" name="zimbraPrefIMYahooId" type="string" cardinality="single" optionalIn="account" flags="domainAdminModifiable" since="6.0.0_BETA1" deprecatedSince="8.7.0">
+  <desc>last used yahoo id</desc>
+  <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
+</attr>
 
 <attr id="758" name="zimbraContactRankingTableSize" type="integer" min="0" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="6.0.0_BETA1">
   <defaultCOSValue>200</defaultCOSValue>
@@ -3683,13 +4019,27 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether end-user wants auto-complete from shared address books.</desc>
 </attr>
 
-
+<attr id="760" name="zimbraContactAutoCompleteEmailFields" type="string" max="64" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" deprecatedSince="6.0.7" since="6.0.0_BETA1">
+  <defaultCOSValue>email,email2,email3,workEmail1,workEmail2,workEmail3</defaultCOSValue>
+  <desc>
+    Comma separates list of attributes in contact object to search for
+    email addresses when generating auto-complete contact list.  The
+    same set of fields are used for GAL contacts as well because
+    LDAP attributes for GAL objects are mapped to Contact compatible
+    attributes via zimbraGalLdapAttrMap.
+  </desc>
+  <deprecateDesc>deprecated in favor of zimbraContactEmailFields, for bug 45475</deprecateDesc>
+</attr>
 
 <attr id="761" name="zimbraAdminConsoleUIComponents" type="string" cardinality="multi" optionalIn="account,distributionList,group" flags="accountInfo" since="6.0.0_BETA1">
   <desc>UI components available for the authed admin in admin console</desc>
 </attr>
 
-
+<attr id="762" name="zimbraIMService" type="enum" value="zimbra,yahoo" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="6.0.0_BETA1" deprecatedSince="6.0.0_GA">
+  <defaultCOSValue>zimbra</defaultCOSValue>
+  <desc>IM service</desc>
+  <deprecateDesc>deprecated per bug 40069</deprecateDesc>
+</attr>
 
 <attr id="763" name="zimbraXMPPComponentClassName" type="string" cardinality="single" requiredIn="xmppComponent" since="6.0.0_BETA1">
   <desc>class name of the XMPP component</desc>
@@ -3874,7 +4224,14 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>Whether to enable smtp debug trace</desc>
 </attr>
 
-
+<attr id="794" name="zimbraCalendarCalDavUseDistinctAppointmentAndToDoCollection" type="boolean" cardinality="single" optionalIn="globalConfig" since="5.0.12" deprecatedSince="8.0.0">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>
+    When set to TRUE, Calendar folders and Todo folders in Zimbra will be advertised as Calendar only and Todo only via CalDAV.  
+    When set to FALSE, Calendar folders will be able to store both appointments and tasks, and Todo folders will not be advertised as CalDAV enabled.
+  </desc>
+  <deprecateDesc>Deprecated per bug 69886.</deprecateDesc>
+</attr>
 
 <attr id="795" name="zimbraMtaTlsSecurityLevel" type="enum" value="may,none" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mta" since="6.0.0_BETA1">
   <globalConfigValue>may</globalConfigValue>
@@ -4026,11 +4383,25 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether to send read receipt</desc>
 </attr>
 
+<attr id="823" name="zimbraPrefReadReceiptsToAddress" type="string" max="256" cardinality="single" optionalIn="account,identity,dataSource" flags="domainAdminModifiable" since="6.0.0_BETA1" deprecatedSince="6.0.8">
+  <desc>
+    address to put in reply-to header of read receipt messages, 
+    if it is not set, then the compose identities primary email address is used.
+  </desc>
+  <deprecateDesc>Deprecated per bug 46988.  This feature was never fully implemented.</deprecateDesc>
+</attr>
 
+<attr id="824" name="zimbraMailUncompressedCacheMaxFiles" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" callback="ServerConfig" since="6.0.0_BETA1" deprecatedSince="6.0.7">
+  <globalConfigValue>5000</globalConfigValue>
+  <desc>max number of files in the uncompressed blob cache on disk</desc>
+  <deprecateDesc>Deprecated per bug 43497.  The number of uncompressed files on disk will never exceed zimbraMailFileDescriptorCacheSize.</deprecateDesc>
+</attr>
 
-
-
-
+<attr id="825" name="zimbraMailUncompressedCacheMaxBytes" type="long" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" callback="ServerConfig" since="6.0.0_BETA1" deprecatedSince="6.0.7">
+  <globalConfigValue>1073741824</globalConfigValue>
+  <desc>max number of bytes stored in the uncompressed blob cache on disk</desc>
+  <deprecateDesc>Deprecated per bug 43497.  The number of uncompressed files on disk will never exceed zimbraMailFileDescriptorCacheSize.</deprecateDesc>
+</attr>
 
 <attr id="826" name="zimbraDataSourceGalPollingInterval" type="duration" min="0" cardinality="single" optionalIn="account,cos" callback="DataSourceCallback" flags="accountInfo,accountInherited,domainAdminModifiable" since="6.0.0_BETA1">
   <desc>
@@ -4175,7 +4546,14 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   </desc>
 </attr>
 
-
+<attr id="847" name="zimbraMobilePolicyDeviceEncryptionEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="6.0.0_BETA1" deprecatedSince="8.5.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>
+    require data encryption on device;
+    ignored if zimbraFeatureMobilePolicyEnabled=FALSE
+  </desc>
+  <deprecateDesc>Use zimbraMobilePolicyRequireStorageCardEncryption</deprecateDesc>
+</attr>
 
 <attr id="848" name="zimbraPrefCalendarAutoAddInvites" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="6.0.0_BETA1">
   <defaultCOSValue>TRUE</defaultCOSValue>
@@ -4326,7 +4704,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether to pop-up reminder for past due appointments in the UI</desc>
 </attr>
 
-
+<attr id="1023" name="zimbraContactRankingTableRefreshInterval" type="duration" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="6.0.0_BETA2" deprecatedSince="6.0.6">
+  <globalConfigValue>7d</globalConfigValue>
+  <desc>How often do we refresh contact ranking table from address book and GAL to get friendly name for the email address.  Use 0 to disable the refresh.</desc>
+  <deprecateDesc>Deprecated per bug 40081</deprecateDesc>
+</attr>
 
 <attr id="1024" name="zimbraHsmPolicy" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" since="6.0.0_BETA2">
   <globalConfigValue>message,document:before:-30days</globalConfigValue>
@@ -4493,6 +4875,24 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether creating domains, and renaming domains to a name, containing non-LDH (letter, digit, hyphen) characters is allowed</desc>
 </attr>
 
+<attr id="1053" name="zimbraFeatureBriefcaseSpreadsheetEnabled" type="boolean" cardinality="single" deprecatedSince="23.6.0" optionalIn="account,cos" flags="accountInfo,accountInherited" since="6.0.2">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>Spreadsheet features enabled in briefcase</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
+</attr>
+
+<attr id="1054" name="zimbraFeatureBriefcaseSlidesEnabled" type="boolean" cardinality="single" deprecatedSince="23.6.0" optionalIn="account,cos" flags="accountInfo,accountInherited" since="6.0.2">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>Slides features enabled in briefcase</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
+</attr>
+
+<attr id="1055" name="zimbraFeatureBriefcaseDocsEnabled" type="boolean" cardinality="single" deprecatedSince="23.6.0" optionalIn="account,cos" flags="accountInfo,accountInherited" since="6.0.2">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>Docs features enabled in briefcase</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
+</attr>
+
 <attr id="1056" name="zimbraVersionCheckLastAttempt" type="gentime" cardinality="single" optionalIn="globalConfig" since="6.0.2">
   <desc>time Zimbra version was last checked</desc>
 </attr>
@@ -4557,9 +4957,15 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>enable domain mandatory mail signature</desc>
 </attr>
 
+<attr id="1070" name="zimbraDomainMandatoryMailSignatureText" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" since="6.0.4" deprecatedSince="8.5.0">
+  <desc>domain mandatory mail plain text signature</desc>
+  <deprecateDesc>deprecated in favor of zimbraAmavisDomainDisclaimerText</deprecateDesc>
+</attr>
 
-
-
+<attr id="1071" name="zimbraDomainMandatoryMailSignatureHTML" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" since="6.0.4" deprecatedSince="8.5.0">
+  <desc>domain mandatory mail html signature</desc>
+  <deprecateDesc>deprecated in favor of zimbraAmavisDomainDisclaimerHTML</deprecateDesc>
+</attr>
 
 <attr id="1072" name="zimbraPrefMailFoldersCheckedForNewMsgIndicator" type="string" max="1024" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="6.0.5">
   <desc>
@@ -4668,7 +5074,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   </desc>
 </attr>
 
-
+<attr id="1090" name="zimbraPrefContactsDisableAutocompleteOnContactGroupMembers" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="6.0.7" deprecatedSince="8.0.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>Disables autocomplete matching against the members email address.</desc>
+  <deprecateDesc>Since 8.0.0, the contact group can contain member references, but member references are not searchable.</deprecateDesc>
+</attr>
 
 <attr id="1091" name="zimbraPrefAutoCompleteQuickCompletionOnComma" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="6.0.7">
   <defaultCOSValue>TRUE</defaultCOSValue>
@@ -4736,7 +5146,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   </desc>
 </attr>
 
-
+<attr id="1102" name="zimbraPrefContactsExpandAppleContactGroups" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable"  since="7.0.0" deprecatedSince="8.0.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>Expand the contact groups in Apple Address Book format to Zimbra format over CardDAV.</desc>
+  <deprecateDesc>deprecated now that Zimbra supports keeping member references in a contact group</deprecateDesc>
+</attr>
 
 <attr id="1103" name="zimbraPrefCalendarWorkingHours" type="string" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" callback="WorkingHours" since="7.0.0">
   <defaultCOSValue>1:N:0800:1700,2:Y:0800:1700,3:Y:0800:1700,4:Y:0800:1700,5:Y:0800:1700,6:Y:0800:1700,7:N:0800:1700</defaultCOSValue>
@@ -4755,7 +5169,12 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>authorizationId for SASL authentication</desc>
 </attr>
 
-
+<attr id="1109" name="zimbraFeaturePeopleSearchEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="7.0.0" deprecatedSince="8.0.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>whether people search feature is enabled</desc>
+  <deprecateDesc>Deprecated per bug 56924</deprecateDesc>>
+</attr>
 
 <attr id="1110" name="zimbraGalLdapValueMap" type="string" max="4096" cardinality="multi" optionalIn="globalConfig,domain,galDataSource" flags="domainInherited" since="7.0.0">
   <globalConfigValue>zimbraCalResType: Room Location</globalConfigValue>
@@ -4954,7 +5373,11 @@ TODO: delete them permanently from here
   </desc>
 </attr>
 
-
+<attr id="1146" name="zimbraPrefAutocompleteAddressBubblesEnabled" type="boolean" min="0" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="7.0.0" deprecatedSince="8.5.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <desc>whether actionable address objects result from autocomplete is enabled</desc>
+  <deprecateDesc>address bubbles always enabled since 8.5.0</deprecateDesc>
+</attr>
 
 <attr id="1147" name="zimbraPhoneticFirstName" type="string" max="256" cardinality="single" optionalIn="account" flags="domainAdminModifiable" since="7.0.0">
   <desc>phonetic first name</desc>
@@ -4976,6 +5399,12 @@ TODO: delete them permanently from here
 <attr id="1151" name="zimbraPrefTasksReadingPaneLocation" type="enum" value="bottom,right,off" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="7.0.0">
   <defaultCOSValue>right</defaultCOSValue>
   <desc>where the reading pane is displayed for tasks</desc>
+</attr>
+
+<attr id="1152" name="zimbraPrefBriefcaseReadingPaneLocation" type="enum" deprecatedSince="23.6.0" value="bottom,right,off" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="7.0.0">
+  <defaultCOSValue>right</defaultCOSValue>
+  <desc>where the reading pane is displayed for briefcase</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
 <attr id="1153" name="zimbraGalGroupIndicatorEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" since="7.0.0">
@@ -5104,7 +5533,10 @@ TODO: delete them permanently from here
   <desc>supported IP mode</desc>
 </attr>
 
-
+<attr id="1172" name="zimbraPrefMailSMIMECertificate" type="binary" cardinality="multi" optionalIn="account" since="7.1.0" deprecatedSince="7.1.1">
+  <desc>user's S/MIME public keys (certificates)</desc>
+  <deprecateDesc>deprecated in favor of userCertificate and userSMIMECertificate</deprecateDesc>
+</attr>
 
 <attr id="1173" name="zimbraPrefShortEmailAddress" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since ="7.0.1">
   <defaultCOSValue>FALSE</defaultCOSValue>
@@ -5283,6 +5715,12 @@ TODO: delete them permanently from here
   <desc>whether to show declined meetings in calendar</desc>
 </attr>
 
+<attr id="1197" name="zimbraPrefFileSharingApplication" type="enum" deprecatedSince="23.6.0" value="briefcase" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="8.0.0">
+  <defaultCOSValue>briefcase</defaultCOSValue>
+  <desc>indicates which application to use for file sharing</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
+</attr>
+
 <attr id="1198" name="zimbraPrefMessageIdDedupingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0">
   <defaultCOSValue>TRUE</defaultCOSValue>
   <desc>
@@ -5335,7 +5773,13 @@ TODO: delete them permanently from here
   <desc>If TRUE, the spell checker ignores words that contain only upper-case letters.</desc>
 </attr>
 
-
+<attr id="1208" name="zimbraMailEmptyFolderBatchThreshold" type="integer" cardinality="single" min="0" optionalIn="globalConfig,server" flags="serverInherited,domainAdminModifiable" since="6.0.13" deprecatedSince="8.0.0">
+  <globalConfigValue>100000</globalConfigValue>
+  <desc>
+    Folders that contain more than this many messages will be emptied in batches of size zimbraMailEmptyFolderBatchSize.
+  </desc>
+  <deprecateDesc>Empty folder operation now always deletes items in batches, hence a threshold is no longer applicable.</deprecateDesc>
+</attr>
 
 <attr id="1209" name="zimbraSMIMELdapDiscoverSearchBaseEnabled"  type="string" max="32" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.1">
   <desc>
@@ -6519,7 +6963,10 @@ TODO: delete them permanently from here
   <desc>Specifies whether the admin server should bound to localhost or not. This is an immutable property and is generated based on zimbraAdminBindAddress.</desc>
 </attr>
 
-
+<attr id="1378" name="zimbraReverseProxyUpstreamServers" type="string" cardinality="multi" optionalIn="server,globalConfig" flags="serverInherited" since="8.0.0" deprecatedSince="8.5.0">
+  <deprecateDesc>Configuration for pre-login upstream is now handled via zimbraReverseProxyUpstreamLoginServers. Post-login upstreams are now automatically configured per-webapp based on what is present in zimbraServiceEnabled.</deprecateDesc>
+  <desc>The servers to be included in the "upstream" block in the nginx web proxy config file. The servers configured here will only affect the proxy of pre-login requests. Leaving empty means using all the servers whose zimbraReverseProxyLookupTarget is TRUE.</desc>
+</attr>
 
 <attr id="1379" name="zimbraReverseProxyAvailableLookupTargets" type="string" cardinality="multi" optionalIn="server,globalConfig" flags="serverInherited" since="8.0.0">
   <desc>The servers to be included in the proxy lookup handlers list. Proxy will only use the servers specified here to do the lookup. Leaving empty means using all the servers whose zimbraReverseProxyLookupTarget is TRUE.</desc>
@@ -6541,6 +6988,13 @@ TODO: delete them permanently from here
 
 <attr id="1383" name="zimbraThrottleSafeHosts" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.0.0">
   <desc>Hosts to ignore during IP based throttling. Account and command rate limits will still be applied. Typically should list nginx hostname and any other mailbox servers which can proxy to this server</desc>
+</attr>
+
+<attr id="1384" name="zimbraReverseProxyDnsLookupInServerEnabled" type="boolean" cardinality="single" deprecatedSince="23.6.0" optionalIn="server,globalConfig" flags="serverInherited" since="8.0.0">
+  <desc>Control whether force the server side do the DNS lookup and send the result IP back to proxy. If false, the raw address configured (e.g. zimbraMailHost) is directly sent to proxy,
+    else the translated IP will be sent back to the client.</desc>
+  <globalConfigValue>FALSE</globalConfigValue>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
 <attr id="1385" name="zimbraFileAndroidCrashReportingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited"  since="8.0.0">
@@ -6834,7 +7288,10 @@ TODO: delete them permanently from here
   <desc>weclient URL to directly connect when making service to JS calls from mail server in split mode</desc>
 </attr>
 
-
+<attr id="1446" name="zimbraAlwaysOnClusterId" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.5.0" deprecatedSince="22.9.0">
+  <desc>AlwaysOn cluster-id to which this server belongs to. If empty, it's not part of AlwaysOn and is a stand-alone server.</desc>
+  <deprecateDesc>dropping always on cluster feature in whole</deprecateDesc>
+</attr>
 
 <attr id="1447" name="zimbraZookeeperClientServerList" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
   <desc>list of host:port for zookeeper servers; set to empty value to disable the use of zookeeper</desc>
@@ -7292,7 +7749,11 @@ TODO: delete them permanently from here
   <desc>Value for postconf smtpd_hard_error_limit</desc>
 </attr>
 
-
+<attr id="1538" name="zimbraMtaStpdSoftErrorLimit" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0" deprecatedSince="8.7.0_BETA2">
+  <globalConfigValue>10</globalConfigValue>
+  <desc>Value for postconf smtpd_soft_error_limit</desc>
+  <deprecateDesc>use zimbraMtaSmtpdSoftErrorLimit instead</deprecateDesc>
+</attr>
 
 <attr id="1539" name="zimbraMtaSmtpdErrorSleepTime" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
   <globalConfigValue>1s</globalConfigValue>
@@ -7441,6 +7902,11 @@ TODO: delete them permanently from here
   <desc>Value for postconf smtp_tls_loglevel. Defaults to 0. Valid range is 0-4</desc>
 </attr>
 
+<attr id="1569" name="zimbraDNSMasterIP" type="string" max="256" cardinality="multi" deprecatedSince="23.6.0" optionalIn="globalConfig,server" since="8.5.0">
+  <desc>IP Address(es) of the root DNS servers to be used by the DNS cache service</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
+</attr>
+
 <attr id="1570" name="zimbraMobileShareContactEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="8.5.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>Whether to permit syncing shared contact folders</desc>
@@ -7509,8 +7975,20 @@ TODO: delete them permanently from here
   <desc>Whether or not Jetty thread monitor is enabled. Used for debugging Jetty, not recommended for extended use in production environment. Defaults to FALSE</desc>
 </attr>
 
+<attr id="1584" name="zimbraDNSUseTCP" type="enum" value="yes,no" cardinality="single" deprecatedSince="23.6.0" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
+  <globalConfigValue>yes</globalConfigValue>
+  <desc>For zimbra dnscache, whether or not to use TCP. Defaults to yes</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
+</attr>
+
 <attr id="1585" name="zimbraAuthTokens" type="string" cardinality="multi" optionalIn="account" since="8.5.0" flags="ephemeral,dynamic,expirable">
   <desc>list of currently active auth tokens</desc>
+</attr>
+
+<attr id="1586" name="zimbraDNSUseUDP" type="enum" value="yes,no" cardinality="single" deprecatedSince="23.6.0" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
+  <globalConfigValue>yes</globalConfigValue>
+  <desc>For zimbra dnscache, whether or not to use UDP. Defaults to yes</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
 <attr id="1587" name="zimbraDefaultAnalyzerStopWords" type="string" cardinality="multi" optionalIn="globalConfig" since="8.5.0">
@@ -7599,6 +8077,36 @@ TODO: delete them permanently from here
   <desc>Maximum total size of a mail message that can be synced to device without truncation. 0 means no limit</desc>
 </attr>
 
+<attr id="1597" name="zimbraDNSTCPUpstream" type="enum" value="yes,no" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
+  <globalConfigValue>no</globalConfigValue>
+  <desc>For zimbra dnscache, whether or not to only use TCP when talking to the upstream Master DNS servers. Defaults to no</desc>
+</attr>
+
+<attr id="1598" name="zimbraServerVersion" deprecatedSince="23.6.0" type="string" cardinality="single" optionalIn="server" since="8.5.0">
+  <desc>Current version of ZCS installed on this server</desc>
+  <deprecateDesc>Unused</deprecateDesc>
+</attr>
+
+<attr id="1599" name="zimbraServerVersionMajor" deprecatedSince="23.6.0" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
+  <desc>Current major version of ZCS installed on this server</desc>
+  <deprecateDesc>Unused</deprecateDesc>
+</attr>
+
+<attr id="1600" name="zimbraServerVersionMinor" deprecatedSince="23.6.0" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
+  <desc>Current minor version of ZCS installed on this server</desc>
+  <deprecateDesc>Unused</deprecateDesc>
+</attr>
+
+<attr id="1601" name="zimbraServerVersionMicro" deprecatedSince="23.6.0" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
+  <desc>Current micro level version of ZCS installed on this server</desc>
+  <deprecateDesc>Unused</deprecateDesc>
+</attr>
+
+<attr id="1602" name="zimbraServerVersionBuild" deprecatedSince="23.6.0" type="integer" min="0" cardinality="single" optionalIn="server" since="8.5.0">
+  <desc>Current build number of ZCS installed on this server for this version</desc>
+  <deprecateDesc>Unused</deprecateDesc>
+</attr>
+
 <attr id="1603" name="zimbraReverseProxyUpstreamLoginServers" type="string" cardinality="multi" optionalIn="server,globalConfig" flags="serverInherited" since="8.5.0">
   <desc>The servers to be included in the login block in the nginx web proxy config file.
   The servers configured here will only affect the proxy of login URL requests.</desc>
@@ -7606,6 +8114,11 @@ TODO: delete them permanently from here
 
 <attr id="1604" name="zimbraSSLIncludeCipherSuites" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.5.0">
   <desc>List of included cipher suites for Jetty. If any value is set only these ciphers will be used, in effect superseding zimbraSSLExcludeCipherSuites. Order of selection is based on client preference and default Java order since Java SSLEngine does not allow changing the preference order.</desc>
+</attr>
+
+<attr id="1605" name="zimbraServerVersionType" type="string" deprecatedSince="23.6.0" cardinality="single" optionalIn="server" since="8.5.0">
+  <desc>Current version type of ZCS installed on this server</desc>
+  <deprecateDesc>Unused</deprecateDesc>
 </attr>
 
 <attr id="1606" name="zimbraMtaUnverifiedRecipientDeferCode" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
@@ -7785,7 +8298,11 @@ TODO: delete them permanently from here
   Set to higher value to reduce network chatter. Set to lower value to decrease the window during which a stolen cookie may be reused to access an account.</desc>
 </attr>
 
-
+<attr id="1636" name="zimbraFeatureTouchClientEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="8.5.0" deprecatedSince="22.8.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>Whether to allow a user to access touch client. Note: touch client is a Network feature, this attribute is effective only if touch client is permitted by license.</desc>
+  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
+</attr>
 
 <attr id="1637" name="zimbraCommunityAPIClientID" type="string" cardinality="single" optionalIn="globalConfig,domain,cos,account" flags="domainInherited,accountCosDomainInherited" since="8.5.0">
   <desc>API Client ID for accessing with Zimbra Community API</desc>
@@ -8742,26 +9259,54 @@ TODO: delete them permanently from here
   <desc>Value for postconf postscreen_upstream_proxy_protocol.</desc>
 </attr>
 
+<attr id="2090" name="zimbraMailAdminSieveScriptBefore" type="string" cardinality="single" optionalIn="account,cos,domain,server" since="8.7.6" deprecatedSince="8.7.8">
+  <desc>sieve script defined by admin (not able to edit and view from the end user) applied before the end user filter rule</desc>
+  <deprecateDesc>deprecated in favor of zimbraAdminSieveScriptBefore</deprecateDesc>
+</attr>
 
+<attr id="2091" name="zimbraMailAdminSieveScriptAfter" type="string" cardinality="single" optionalIn="account,cos,domain,server" since="8.7.6" deprecatedSince="8.7.8">
+  <desc>sieve script defined by admin (not able to edit and view from the end user) applied after the end user filter rule</desc>
+  <deprecateDesc>deprecated in favor of zimbraAdminSieveScriptAfter</deprecateDesc>
+</attr>
 
+<attr id="2092" name="zimbraMailAdminOutgoingSieveScriptBefore" type="string" cardinality="single" optionalIn="account,cos,domain,server" since="8.7.6" deprecatedSince="8.7.8">
+  <desc>outgoing sieve script defined by admin (not able to edit and view from the end user) applied before the end user filter rule</desc>
+  <deprecateDesc>deprecated in favor of zimbraAdminOutgoingSieveScriptBefore</deprecateDesc>
+</attr>
 
+<attr id="2093" name="zimbraMailAdminOutgoingSieveScriptAfter" type="string" cardinality="single" optionalIn="account,cos,domain,server" since="8.7.6" deprecatedSince="8.7.8">
+  <desc>outgoing sieve script defined by admin (not able to edit and view from the end user) applied after the end user filter rule</desc>
+  <deprecateDesc>deprecated in favor of zimbraAdminOutgoingSieveScriptAfter</deprecateDesc>
+</attr>
 
+<attr id="2094" name="zimbraSieveRejectEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.6" deprecatedSince="8.7.8">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Whether to enable the Sieve "reject" action defined in RFC 5429.</desc>
+  <deprecateDesc>deprecated in favor of zimbraSieveRejectMailEnabled, which can be used at account level</deprecateDesc>
+</attr>
 
+<attr id="2095" name="zimbraMailSieveNotifyActionRFCCompliant" type="boolean" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="8.7.6" deprecatedSince="8.7.8">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Whether the RFC compliant 'notify' is used.  If TRUE, ZCS parses the 'notify' action parameters based on the syntax defined by the RFC 5435 and 5436. If FALSE, ZCS treats the 'notify' action parameters with Zimbra specific format</desc>
+  <deprecateDesc>deprecated in favor of zimbraSieveNotifyActionRFCCompliant, which can be used at account level</deprecateDesc>
+</attr>
 
-
-
-
-
-
-
-
+<attr id="2096" name="zimbraSieveFeatureVariablesEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.6" deprecatedSince="8.7.8">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Whether to enable the Sieve "Variables" extension defined in RFC 5229 in the user-defined sieve rule.</desc>
+  <deprecateDesc>Variable feature is always enabled, hence this attribute has been deprecated</deprecateDesc>
+</attr>
 
 <attr id="2097" name="zimbraGalSyncSizeLimit" type="integer" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" since="8.7.2">
   <globalConfigValue>30000</globalConfigValue>
   <desc>Page size control for SyncGalRequest. By default not more than 30000 entries will be returned for every SyncGalRequest</desc>
 </attr>
 
-
+<attr id="2098" name="zimbraAdminSieveFeatureVariablesEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.7.6" deprecatedSince="8.7.8">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Whether to enable the Sieve "Variables" extension defined in RFC 5229 in the admin-defined sieve rules.</desc>
+  <deprecateDesc>Variable feature is always enabled, hence this attribute has been deprecated</deprecateDesc>
+</attr>
 
 <attr id="2099" name="zimbraSmimeUserCertificateExtensions" type="string" cardinality="multi" optionalIn="globalConfig" flags="accountInfo" since="8.7.5">
   <globalConfigValue>p12</globalConfigValue>
@@ -8866,7 +9411,11 @@ TODO: delete them permanently from here
   <desc>Whether to enable zimbra network new generation mobile sync module.</desc>
 </attr>
 
-
+<attr id="2119" name="zimbraNetworkAdminEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="8.8.2" deprecatedSince="8.8.5">
+  <globalConfigValue>TRUE</globalConfigValue>
+  <desc>Whether to enable old zimbra network admin module.</desc>
+   <deprecateDesc>This attribute has been renamed to zimbraNetworkAdminNGEnabled</deprecateDesc>
+</attr>
 
 <attr id="2120" name="zimbraSieveRequireControlEnabled" type="boolean" cardinality="single" optionalIn="account,cos,domain" flags="accountCosDomainInherited" since="8.8.4">
   <defaultCOSValue>TRUE</defaultCOSValue>
@@ -8888,7 +9437,14 @@ TODO: delete them permanently from here
   <desc>Mark messages sent to a forwarding address as read</desc>
 </attr>
 
-
+<attr id="2124" name="zimbraFeatureContactBackupFrequency" type="duration" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.5" deprecatedSince="8.8.6">
+  <globalConfigValue>0</globalConfigValue>
+  <deprecateDesc>No longer used by ContactBackupRequest SOAP handler</deprecateDesc>
+  <desc>
+    Sleep time between subsequent contact backups. 0 means that contact
+    backup is disabled.
+  </desc>
+</attr>
 
 <attr id="2125" name="zimbraFeatureContactBackupLifeTime" type="duration" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.5">
   <globalConfigValue>15d</globalConfigValue>
@@ -9119,13 +9675,29 @@ TODO: delete them permanently from here
   <desc>The max number of IMAP messages returned by OpenImapFolderRequest before pagination begins</desc>
 </attr>
 
+<attr id="3013" name="zimbraRemoteImapServerEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" deprecatedSince="22.9.0">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Controls if the remote IMAP (non-SSL) service is enabled for a given server. See also zimbraRemoteImapSSLServerEnabled and zimbraReverseProxyUpstreamImapServers.</desc>
+  <deprecateDesc>Deprecated because IMAPD has been removed</deprecateDesc>
+</attr>
 
+<attr id="3014" name="zimbraRemoteImapSSLServerEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" deprecatedSince="22.9.0">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Controls if the remote IMAP SSL server is enabled for a given server. See also zimbraRemoteImapServerEnabled and zimbraReverseProxyUpstreamImapServers.</desc>
+  <deprecateDesc>Deprecated because IMAPD has been removed</deprecateDesc>
+</attr>
 
+<attr id="3015" name="zimbraRemoteImapBindPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" callback="CheckPortConflict" deprecatedSince="22.9.0">
+  <globalConfigValue>8143</globalConfigValue>
+  <desc>port number on which the remote IMAP server should listen</desc>
+  <deprecateDesc>Deprecated because IMAPD has been removed</deprecateDesc>
+</attr>
 
-
-
-
-
+<attr id="3016" name="zimbraRemoteImapSSLBindPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" callback="CheckPortConflict" deprecatedSince="22.9.0">
+  <globalConfigValue>8993</globalConfigValue>
+  <desc>port number on which the remote IMAP SSL server should listen</desc>
+  <deprecateDesc>Deprecated because IMAPD has been removed</deprecateDesc>
+</attr>
 
 <attr id="3017" name="zimbraReverseProxyUpstreamFairShmSize" type="integer" min="32" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.8.1" requiresRestart="nginxproxy">
   <globalConfigValue>32</globalConfigValue>
@@ -9225,7 +9797,11 @@ TODO: delete them permanently from here
   <desc>Whether to allow a user to access Zimbra X web client</desc>
 </attr>
 
-
+<attr id="3080" name="zimbraFeatureZXDesktopEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.9.0" deprecatedSince="8.9.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <desc>Whether to allow a user to access Zimbra X desktop</desc>
+  <deprecateDesc>deprecated with attribute zimbraFeatureModernDesktopEnabled</deprecateDesc>
+</attr>
 
 <attr id="3082" name="zimbraFeatureModernDesktopEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.9.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
