@@ -16,7 +16,11 @@ import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.common.account.Key.AccountBy;
- 
+
+/**
+ * @deprecated This class is no longer used as Child feature has been removed.
+ */
+@Deprecated(since = "23.6.0", forRemoval = true)
 public class ChildAccount extends AttributeCallback {
     
     @Override
