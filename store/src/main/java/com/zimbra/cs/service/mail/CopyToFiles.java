@@ -100,7 +100,7 @@ public class CopyToFiles extends MailDocumentHandler {
                                 contentType,
                                 attachmentStream,
                                 attachmentSize))
-                    .flatMap(x -> x)
+                    .map(x -> x.get())
                     .onFailure(ex -> mLog.debug(ex.getMessage()))
                     .mapFailure(
                         Case(

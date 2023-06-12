@@ -5,12 +5,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
 import com.zimbra.common.account.Key;
@@ -41,22 +43,26 @@ import java.util.Map;
 import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimePart;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockserver.integration.ClientAndServer;
 
 /** Integration tests for CopyToFiles */
 public class CopyToFilesIT {
 
   private FilesClient mockFilesClient;
   private AttachmentService mockAttachmentService;
+  private ClientAndServer mockServer;
 
   @Rule public ExpectedException exceptionRule = ExpectedException.none();
 
   @Before
   public void setUp() throws Exception {
     MailboxTestUtil.initServer();
+    mockServer = ClientAndServer.startClientAndServer(20002);
     Provisioning prov = Provisioning.getInstance();
     prov.createAccount(
         "shared@zimbra.com",
@@ -73,6 +79,11 @@ public class CopyToFilesIT {
     mockAttachmentService = mock(AttachmentService.class);
   }
 
+  @After
+  public void tearDown() {
+    mockServer.stop();
+  }
+
   /**
    * Test: copy to files API handles return response with nodeId
    *
@@ -80,7 +91,7 @@ public class CopyToFilesIT {
    */
   @Test
   public void shouldHandleCopyToFilesCall()
-      throws ServiceException, IOException, MessagingException {
+      throws Exception {
     // get account that will do the SOAP request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
 
@@ -94,21 +105,14 @@ public class CopyToFilesIT {
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
     // mock get upload
-    MimePart mockUpload = mock(MimePart.class);
-    InputStream attachmentContent =
-        new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
-    when(mockUpload.getFileName()).thenReturn("My_file.csv");
-    when(mockUpload.getContentType()).thenReturn("text/csv");
-    when(mockUpload.getInputStream()).thenReturn(attachmentContent);
+    MimePart mockUpload = this.createMockUpload();
     when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
         .thenReturn(Try.success(mockUpload));
-    when(mockUpload.getInputStream()).thenReturn(attachmentContent);
     CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
     // mock files api
     String nodeId = UUID.randomUUID().toString();
-    doReturn(Try.of(() -> new NodeId(nodeId)))
-        .when(mockFilesClient)
-        .uploadFile(anyString(), anyString(), anyString(), anyString(), any(), anyLong());
+    when(mockFilesClient.uploadFile(anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
+        .thenReturn(Try.of(() -> new NodeId(nodeId)));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -182,9 +186,8 @@ public class CopyToFilesIT {
     when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
         .thenReturn(Try.success(mockAttachment));
     CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
-    doReturn(Try.failure(new RuntimeException("Oops, something went wrong.")))
-        .when(mockFilesClient)
-        .uploadFile(anyString(), anyString(), anyString(), anyString(), any(), anyLong());
+    when(mockFilesClient.uploadFile(anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
+        .thenThrow(new RuntimeException("Oops, something went wrong."));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -201,7 +204,7 @@ public class CopyToFilesIT {
    * @throws IOException
    */
   @Test
-  public void shouldThrowServiceExceptionIfFileServiceReturnsNull()
+  public void shouldThrowServiceExceptionWhenFilesServiceReturnsNullNodeId()
       throws ServiceException, IOException, MessagingException {
     // get account that will do the SOAP request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
@@ -225,9 +228,8 @@ public class CopyToFilesIT {
     when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
         .thenReturn(Try.success(mockUpload));
     CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
-    doReturn(Try.of(() -> null))
-        .when(mockFilesClient)
-        .uploadFile(anyString(), anyString(), anyString(), anyString(), any(), anyLong());
+    when(mockFilesClient.uploadFile(anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
+        .thenReturn(Try.of(() -> null));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("123");
     up.setPart("Whatever you want");
@@ -271,9 +273,8 @@ public class CopyToFilesIT {
         .thenReturn(Try.success(mockUpload));
     when(mockUpload.getInputStream()).thenReturn(uploadContent);
     // mock Files client
-    doReturn(Try.of(() -> null))
-        .when(mockFilesClient)
-        .uploadFile(anyString(), anyString(), anyString(), anyString(), any(), anyLong());
+    when(mockFilesClient.uploadFile(anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
+        .thenReturn(null);
     // build request
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("123");
@@ -318,6 +319,16 @@ public class CopyToFilesIT {
     new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context);
   }
 
+  private MimePart createMockUpload() throws Exception{
+    MimePart mockUpload = mock(MimePart.class);
+    InputStream attachmentContent =
+        new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
+    when(mockUpload.getFileName()).thenReturn("My_file.csv");
+    when(mockUpload.getContentType()).thenReturn("text/csv");
+    when(mockUpload.getInputStream()).thenReturn(attachmentContent);
+    return mockUpload;
+  }
+
   /**
    * When passing messageId as UUID:id it should use the UUID as mailbox account search scope This
    * tests CO-727 with a shared mailbox in particular.
@@ -326,6 +337,17 @@ public class CopyToFilesIT {
    */
   @Test
   public void shouldUseProvidedUUIDasMailboxAccount() throws Exception {
+    MimePart mockUpload = this.createMockUpload();
+    final NodeId nodeId = new NodeId();
+    nodeId.setNodeId("1000");
+    final String jsonResponse = new ObjectMapper().writeValueAsString(nodeId);
+    mockServer.when(
+            request()
+                .withMethod("POST").withPath("/upload/")).respond(
+                response()
+            .withBody(jsonResponse)
+            .withStatusCode(200));
+    when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString())).thenReturn(Try.success(mockUpload));
     // prepare request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
     String sharedAcctUUID =
@@ -343,12 +365,11 @@ public class CopyToFilesIT {
     up.setPart("2");
     up.setDestinationFolderId("FOLDER_1");
     Element element = JaxbUtil.jaxbToElement(up);
-    try {
-      new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context);
-    } catch (Exception ignored) {
-      // ignored, we care only it calls attachment service in desired manner so not to mock
-      // everything
-    }
+    when(mockFilesClient.uploadFile(anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
+        .thenReturn(Try.of(() -> new NodeId("1000")));
+    final FilesClient filesClient = FilesClient.atURL("http://127.0.0.1:20002");
+    filesClient.uploadFile("ZM_AUTH_TOKEN=" + zsc.getAuthToken(), up.getDestinationFolderId(), mockUpload.getFileName(), mockUpload.getContentType(),  mockUpload.getInputStream(), 19);
+    new CopyToFiles(mockAttachmentService, filesClient).handle(element, context);
     verify(mockAttachmentService, times(1)).getAttachment(sharedAcctUUID, authToken, 123, "2");
   }
 }

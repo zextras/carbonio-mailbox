@@ -65,6 +65,19 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-netty</artifactId>
+      <scope>test</scope>
+      <version>5.13.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-client-java</artifactId>
+      <version>5.13.0</version>
+      <scope>test</scope>
+    </dependency>
+
 
     <dependency>
       <artifactId>zm-ews-stub</artifactId>
