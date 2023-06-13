@@ -13,6 +13,7 @@ import com.zimbra.common.account.ZAttrProvisioning.MailThreadingAlgorithm;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.mime.InternetAddress;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
@@ -24,6 +25,8 @@ import com.zimbra.cs.session.PendingModifications;
 import com.zimbra.cs.session.PendingModifications.ModificationKey;
 import com.zimbra.cs.store.MockStoreManager;
 import com.zimbra.cs.store.StoreManager;
+import com.zimbra.soap.mail.type.Policy;
+import com.zimbra.soap.mail.type.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -730,6 +733,48 @@ public final class MailboxTest {
     }
 
     Assert.assertEquals(10L, mbox.getSize());
+  }
+
+  @Test
+  public void setRetentionPolicy_shouldFail_whenBothPoliciesAreProvided() throws ServiceException {
+    Mailbox mbox = MailboxManager.getInstance()
+        .getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+
+    Folder folder = mbox.createFolder(null, "/bothPolicies",
+        new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
+
+    List<Policy> keep = List.of(
+        Policy.newUserPolicy("1m"));
+
+    List<Policy> purge = List.of(
+        Policy.newUserPolicy("1m"));
+
+    RetentionPolicy retentionPolicy = new RetentionPolicy(keep, purge);
+
+    try {
+      mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, retentionPolicy);
+    }catch (Exception e) {
+      String expectedErrorMessage = "invalid request: Cannot specify both keep and purge policy.";
+      Assert.assertEquals(expectedErrorMessage, e.getMessage());
+    }
+  }
+
+  @Test
+  public void setRetentionPolicy_shouldFail_whenNoPoliciesAreProvided() throws ServiceException {
+    Mailbox mbox = MailboxManager.getInstance()
+        .getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+
+    Folder folder = mbox.createFolder(null, "/nullPolicies",
+        new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
+
+    RetentionPolicy retentionPolicy = new RetentionPolicy(null, null);
+
+    try {
+      mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, retentionPolicy);
+    }catch (Exception e) {
+      String expectedErrorMessage = "invalid request: No keep or purge policy specified.";
+      Assert.assertEquals(expectedErrorMessage, e.getMessage());
+    }
   }
 
   /**
