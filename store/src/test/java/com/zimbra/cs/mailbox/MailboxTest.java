@@ -747,7 +747,6 @@ public final class MailboxTest {
             new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
 
     List<Policy> keep = List.of(Policy.newUserPolicy("1m"));
-
     List<Policy> purge = List.of(Policy.newUserPolicy("1m"));
 
     RetentionPolicy retentionPolicy = new RetentionPolicy(keep, purge);
@@ -778,6 +777,41 @@ public final class MailboxTest {
     } catch (Exception e) {
       String expectedErrorMessage = "invalid request: No keep or purge policy specified.";
       Assert.assertEquals(expectedErrorMessage, e.getMessage());
+    }
+  }
+
+  @Test
+  public void validateIndividualRetentionPolicy_shouldFail_whenMultipleUserPoliciesArePassed()
+      throws ServiceException {
+    Mailbox mbox =
+        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+
+    List<Policy> policies = new ArrayList<>();
+    policies.add(Policy.newUserPolicy("1m"));
+    policies.add(Policy.newUserPolicy("1m"));
+
+    try {
+      mbox.validateIndividualRetentionPolicy(policies);
+    } catch (ServiceException e) {
+      String expectedErrorMessage =
+          "invalid request: Cannot set more than one user retention policy per folder.";
+      Assert.assertEquals(expectedErrorMessage, e.getMessage());
+    }
+  }
+
+  @Test
+  public void validateIndividualRetentionPolicy_shouldNotFail_whenSingleUserPoliciesArePassed()
+      throws ServiceException {
+    Mailbox mbox =
+        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+
+    List<Policy> policies = new ArrayList<>();
+    policies.add(Policy.newUserPolicy("1m"));
+
+    try {
+      mbox.validateIndividualRetentionPolicy(policies);
+    } catch (ServiceException e) {
+      Assert.fail("Should not fail due to service exception " + e.getMessage());
     }
   }
 

@@ -9335,35 +9335,33 @@ public class Mailbox implements MailboxStore {
     }
   }
 
+  /**
+   * Sets the retention policy for a specific item.
+   *
+   * @param operationContext The operation context.
+   * @param itemId The ID of the item.
+   * @param type The type of the item.
+   * @param rp The retention policy to be set.
+   * @throws ServiceException If an error occurs during the operation.
+   */
   public void setRetentionPolicy(
-      OperationContext octxt, int itemId, MailItem.Type type, RetentionPolicy rp)
+      OperationContext operationContext, int itemId, MailItem.Type type, RetentionPolicy rp)
       throws ServiceException {
     if (type != MailItem.Type.FOLDER && type != MailItem.Type.TAG) {
       throw ServiceException.FAILURE("Cannot set retention policy for " + type, null);
     }
+
     if (rp == null) {
       rp = new RetentionPolicy();
     } else {
-      final List<Policy> keepPolicy = rp.getKeepPolicy();
-      final List<Policy> purgePolicy = rp.getPurgePolicy();
-
-      // general checks
-      if (keepPolicy.isEmpty() && purgePolicy.isEmpty()) {
-        throw ServiceException.INVALID_REQUEST("No keep or purge policy specified.", null);
-      }
-      if (!keepPolicy.isEmpty() && !purgePolicy.isEmpty()) {
-        throw ServiceException.INVALID_REQUEST("Cannot specify both keep and purge policy.", null);
-      }
-
-      validateIndividualRetentionPolicy(keepPolicy);
-      validateIndividualRetentionPolicy(purgePolicy);
+      validateRetentionPolicy(rp);
     }
 
     SetRetentionPolicy redoPlayer = new SetRetentionPolicy(mId, type, itemId, rp);
 
     boolean success = false;
     try {
-      beginTransaction("setRetentionPolicy", octxt, redoPlayer);
+      beginTransaction("setRetentionPolicy", operationContext, redoPlayer);
 
       if (type == MailItem.Type.FOLDER) {
         Folder folder = getFolderById(itemId);
@@ -9380,14 +9378,44 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  private void validateIndividualRetentionPolicy(List<Policy> list) throws ServiceException {
+  /**
+   * Validates the overall retention policy, including the keep and purge policies.
+   *
+   * @param rp The retention policy to be validated.
+   * @throws ServiceException If the retention policy is invalid.
+   *     <p>
+   * @author Keshav Bhatt
+   * @since 23.7.0
+   */
+  private void validateRetentionPolicy(RetentionPolicy rp) throws ServiceException {
+    final List<Policy> keepPolicy = rp.getKeepPolicy();
+    final List<Policy> purgePolicy = rp.getPurgePolicy();
+
+    if (keepPolicy.isEmpty() && purgePolicy.isEmpty()) {
+      throw ServiceException.INVALID_REQUEST("No keep or purge policy specified.", null);
+    }
+
+    if (!keepPolicy.isEmpty() && !purgePolicy.isEmpty()) {
+      throw ServiceException.INVALID_REQUEST("Cannot specify both keep and purge policy.", null);
+    }
+
+    validateIndividualRetentionPolicy(keepPolicy);
+    validateIndividualRetentionPolicy(purgePolicy);
+  }
+
+  /**
+   * Validates individual policies within the retention policy.
+   *
+   * @param list The list of policies to be validated.
+   * @throws ServiceException If the policies are invalid.
+   */
+  void validateIndividualRetentionPolicy(List<Policy> list) throws ServiceException {
     int numUser = 0;
 
     for (Policy p : list) {
       String lifetime = p.getLifetime();
       if (!StringUtil.isNullOrEmpty(lifetime)) {
-        // Validate lifetime string.
-        DateUtil.getTimeInterval(lifetime);
+        DateUtil.getTimeInterval(lifetime); // Validate lifetime string.
       }
       if (p.getType() == Policy.Type.USER) {
         numUser++;
