@@ -737,23 +737,24 @@ public final class MailboxTest {
 
   @Test
   public void setRetentionPolicy_shouldFail_whenBothPoliciesAreProvided() throws ServiceException {
-    Mailbox mbox = MailboxManager.getInstance()
-        .getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    Mailbox mbox =
+        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-    Folder folder = mbox.createFolder(null, "/bothPolicies",
-        new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
+    Folder folder =
+        mbox.createFolder(
+            null,
+            "/bothPolicies",
+            new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
 
-    List<Policy> keep = List.of(
-        Policy.newUserPolicy("1m"));
+    List<Policy> keep = List.of(Policy.newUserPolicy("1m"));
 
-    List<Policy> purge = List.of(
-        Policy.newUserPolicy("1m"));
+    List<Policy> purge = List.of(Policy.newUserPolicy("1m"));
 
     RetentionPolicy retentionPolicy = new RetentionPolicy(keep, purge);
 
     try {
       mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, retentionPolicy);
-    }catch (Exception e) {
+    } catch (Exception e) {
       String expectedErrorMessage = "invalid request: Cannot specify both keep and purge policy.";
       Assert.assertEquals(expectedErrorMessage, e.getMessage());
     }
@@ -761,17 +762,20 @@ public final class MailboxTest {
 
   @Test
   public void setRetentionPolicy_shouldFail_whenNoPoliciesAreProvided() throws ServiceException {
-    Mailbox mbox = MailboxManager.getInstance()
-        .getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    Mailbox mbox =
+        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-    Folder folder = mbox.createFolder(null, "/nullPolicies",
-        new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
+    Folder folder =
+        mbox.createFolder(
+            null,
+            "/nullPolicies",
+            new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
 
     RetentionPolicy retentionPolicy = new RetentionPolicy(null, null);
 
     try {
       mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, retentionPolicy);
-    }catch (Exception e) {
+    } catch (Exception e) {
       String expectedErrorMessage = "invalid request: No keep or purge policy specified.";
       Assert.assertEquals(expectedErrorMessage, e.getMessage());
     }

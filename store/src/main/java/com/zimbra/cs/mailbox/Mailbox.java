@@ -9351,7 +9351,7 @@ public class Mailbox implements MailboxStore {
       if (keepPolicy.isEmpty() && purgePolicy.isEmpty()) {
         throw ServiceException.INVALID_REQUEST("No keep or purge policy specified.", null);
       }
-      if (!keepPolicy.isEmpty() && !purgePolicy.isEmpty() ) {
+      if (!keepPolicy.isEmpty() && !purgePolicy.isEmpty()) {
         throw ServiceException.INVALID_REQUEST("Cannot specify both keep and purge policy.", null);
       }
 
