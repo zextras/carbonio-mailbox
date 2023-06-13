@@ -9344,8 +9344,19 @@ public class Mailbox implements MailboxStore {
     if (rp == null) {
       rp = new RetentionPolicy();
     } else {
-      validateRetentionPolicy(rp.getKeepPolicy());
-      validateRetentionPolicy(rp.getPurgePolicy());
+      final List<Policy> keepPolicy = rp.getKeepPolicy();
+      final List<Policy> purgePolicy = rp.getPurgePolicy();
+
+      // general checks
+      if (keepPolicy.isEmpty() && purgePolicy.isEmpty()) {
+        throw ServiceException.INVALID_REQUEST("No keep or purge policy specified.", null);
+      }
+      if (!keepPolicy.isEmpty() && !purgePolicy.isEmpty() ) {
+        throw ServiceException.INVALID_REQUEST("Cannot specify both keep and purge policy.", null);
+      }
+
+      validateIndividualRetentionPolicy(keepPolicy);
+      validateIndividualRetentionPolicy(purgePolicy);
     }
 
     SetRetentionPolicy redoPlayer = new SetRetentionPolicy(mId, type, itemId, rp);
@@ -9369,7 +9380,7 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  private void validateRetentionPolicy(List<Policy> list) throws ServiceException {
+  private void validateIndividualRetentionPolicy(List<Policy> list) throws ServiceException {
     int numUser = 0;
 
     for (Policy p : list) {
