@@ -64,9 +64,6 @@ public class CopyToFiles extends MailDocumentHandler {
     final Try<MimePart> attachmentTry =
         copyToFilesRequestTry.flatMap(
             copyToFilesRequest -> getAttachmentToCopy(copyToFilesRequest, zsc));
-    // get attachment size
-    final Try<Long> attachmentSizeTry =
-        attachmentTry.mapTry(Part::getInputStream).flatMap(this::getAttachmentSize);
     // get attachment content-type
     final Try<String> contentTypeTry = attachmentTry.flatMap(this::getAttachmentContentType);
     // get attachment name
@@ -84,22 +81,20 @@ public class CopyToFiles extends MailDocumentHandler {
                         destFolderIdTry,
                         fileNameTry,
                         contentTypeTry,
-                        attachmentStreamTry,
-                        attachmentSizeTry)
+                        attachmentStreamTry)
                     .yield(
                         (authCookie,
                             destFolderId,
                             fileName,
                             contentType,
-                            attachmentStream,
-                            attachmentSize) ->
+                            attachmentStream) ->
                             filesClient.uploadFile(
                                 authCookie,
                                 destFolderId,
                                 fileName,
                                 contentType,
                                 attachmentStream,
-                                attachmentSize))
+                                -1))
                     .map(x -> x.get())
                     .onFailure(ex -> mLog.debug(ex.getMessage()))
                     .mapFailure(
@@ -186,6 +181,7 @@ public class CopyToFiles extends MailDocumentHandler {
           for (int read = inputStream.read(buffer); read != -1; read = inputStream.read(buffer)) {
             fileSize += read;
           }
+          inputStream.reset();
           return fileSize;
         });
   }

@@ -9,8 +9,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
@@ -48,21 +48,22 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockserver.integration.ClientAndServer;
+import org.mockserver.client.server.MockServerClient;
+import org.mockserver.model.HttpResponse;
 
 /** Integration tests for CopyToFiles */
 public class CopyToFilesIT {
 
   private FilesClient mockFilesClient;
   private AttachmentService mockAttachmentService;
-  private ClientAndServer mockServer;
+  private MockServerClient mockFilesServer;
 
   @Rule public ExpectedException exceptionRule = ExpectedException.none();
 
   @Before
   public void setUp() throws Exception {
     MailboxTestUtil.initServer();
-    mockServer = ClientAndServer.startClientAndServer(20002);
+    mockFilesServer = startClientAndServer(20002);
     Provisioning prov = Provisioning.getInstance();
     prov.createAccount(
         "shared@zimbra.com",
@@ -80,8 +81,8 @@ public class CopyToFilesIT {
   }
 
   @After
-  public void tearDown() {
-    mockServer.stop();
+  public void tearDown() throws IOException{
+    mockFilesServer.stop();
   }
 
   /**
@@ -260,13 +261,11 @@ public class CopyToFilesIT {
     byte[] mimeBytes = body.getBytes(StandardCharsets.UTF_8);
     InputStream uploadContent = new ByteArrayInputStream(mimeBytes);
     String fileName = "My_file.csv";
-    int fileSize = mimeBytes.length;
     String contentType = "text/csv";
     // mock attachment
     when(mockUpload.getFileName()).thenReturn(fileName);
     when(mockUpload.getContentType()).thenReturn(contentType);
     when(mockUpload.getInputStream()).thenReturn(uploadContent);
-    when(mockUpload.getSize()).thenReturn(fileSize);
     // mock attachment service
     when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
         .thenReturn(Try.success(mockUpload))
@@ -294,7 +293,7 @@ public class CopyToFilesIT {
             fileName,
             contentType,
             uploadContent,
-            fileSize);
+            -1L);
   }
 
   /**
@@ -321,11 +320,9 @@ public class CopyToFilesIT {
 
   private MimePart createMockUpload() throws Exception{
     MimePart mockUpload = mock(MimePart.class);
-    InputStream attachmentContent =
-        new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
     when(mockUpload.getFileName()).thenReturn("My_file.csv");
     when(mockUpload.getContentType()).thenReturn("text/csv");
-    when(mockUpload.getInputStream()).thenReturn(attachmentContent);
+    when(mockUpload.getInputStream()).thenReturn(new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8)));
     return mockUpload;
   }
 
@@ -340,13 +337,10 @@ public class CopyToFilesIT {
     MimePart mockUpload = this.createMockUpload();
     final NodeId nodeId = new NodeId();
     nodeId.setNodeId("1000");
-    final String jsonResponse = new ObjectMapper().writeValueAsString(nodeId);
-    mockServer.when(
-            request()
-                .withMethod("POST").withPath("/upload/")).respond(
-                response()
-            .withBody(jsonResponse)
-            .withStatusCode(200));
+    mockFilesServer.when(
+        request().withPath("/upload/")).respond(
+            HttpResponse.response(new ObjectMapper().writeValueAsString(nodeId)).withStatusCode(200)
+    );
     when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString())).thenReturn(Try.success(mockUpload));
     // prepare request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
@@ -365,11 +359,9 @@ public class CopyToFilesIT {
     up.setPart("2");
     up.setDestinationFolderId("FOLDER_1");
     Element element = JaxbUtil.jaxbToElement(up);
-    when(mockFilesClient.uploadFile(anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
-        .thenReturn(Try.of(() -> new NodeId("1000")));
-    final FilesClient filesClient = FilesClient.atURL("http://127.0.0.1:20002");
-    filesClient.uploadFile("ZM_AUTH_TOKEN=" + zsc.getAuthToken(), up.getDestinationFolderId(), mockUpload.getFileName(), mockUpload.getContentType(),  mockUpload.getInputStream(), 19);
-    new CopyToFiles(mockAttachmentService, filesClient).handle(element, context);
+    final FilesClient filesClient = FilesClient.atURL( "http://127.0.0.1:20002");
+    new CopyToFiles(mockAttachmentService, filesClient).handle(element,
+        context);
     verify(mockAttachmentService, times(1)).getAttachment(sharedAcctUUID, authToken, 123, "2");
   }
 }
