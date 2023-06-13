@@ -24,6 +24,14 @@ import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.accesscontrol.ACLUtil;
+import com.zimbra.cs.account.accesscontrol.GranteeType;
+import com.zimbra.cs.account.accesscontrol.Right;
+import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.account.accesscontrol.RightModifier;
+import com.zimbra.cs.account.accesscontrol.ZimbraACE;
+import com.zimbra.cs.mailbox.ACL;
+import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
@@ -45,8 +53,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
 import javax.mail.Address;
 import javax.mail.MessagingException;
@@ -59,6 +69,7 @@ import javax.mail.internet.MimeMessage.RecipientType;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimePart;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -80,7 +91,7 @@ public class CopyToFilesIT {
     MailboxTestUtil.initServer();
     filesServer = startClientAndServer(20002);
     Provisioning prov = Provisioning.getInstance();
-    prov.createAccount(
+    final Account sharedAcct = prov.createAccount(
         "shared@zimbra.com",
         "secret",
         new HashMap<String, Object>() {
@@ -88,9 +99,21 @@ public class CopyToFilesIT {
             put(ZAttrProvisioning.A_zimbraId, UUID.randomUUID().toString());
           }
         });
+    final Account delegated = prov.createAccount("delegated@zimbra.com", "secret",
+        new HashMap<String, Object>());
+    // Grant sendAs to delegated@
+    final Set<ZimbraACE> aces = new HashSet<ZimbraACE>(){{
+      add(new ZimbraACE(delegated.getId(), GranteeType.GT_USER, RightManager.getInstance().getRight(Right.RT_sendAs), RightModifier.RM_CAN_DELEGATE, null));
+    }};
+    ACLUtil.grantRight(Provisioning.getInstance(), sharedAcct, aces);
+    // Grant shared@ root folder access to delegated@
+    final short rwidx = ACL.stringToRights("rwidx");
+    final Mailbox sharedAcctMailbox = MailboxManager.getInstance().getMailboxByAccount(sharedAcct);
+    final Folder rootSharedAcctFolder = sharedAcctMailbox.getFolderByPath(null, "/");
+    sharedAcctMailbox.grantAccess(null, rootSharedAcctFolder.getFolderId(), delegated.getId(), ACL.GRANTEE_AUTHUSER,
+        rwidx, null);
     prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     prov.createAccount("test1@zimbra.com", "secret", new HashMap<String, Object>());
-    prov.createAccount("test2@zimbra.com", "secret", new HashMap<String, Object>());
     mockFilesClient = mock(FilesClient.class);
     mockAttachmentService = mock(AttachmentService.class);
   }
@@ -365,13 +388,12 @@ public class CopyToFilesIT {
   }
 
   /**
-   * When passing messageId as UUID:id it should use the UUID as mailbox account search scope This
-   * tests CO-727 with a shared mailbox in particular.
+   * Test passing messageId as UUID:id. This happens in case of delegation.
    *
    * @throws Exception
    */
   @Test
-  public void shouldUseProvidedUUIDasMailboxAccount() throws Exception {
+  public void shouldHandleCopyToFilesCallForDelegatedAccount() throws Exception {
     final NodeId nodeId = new NodeId();
     nodeId.setNodeId("1000");
     filesServer.when(
@@ -379,27 +401,27 @@ public class CopyToFilesIT {
             HttpResponse.response(new ObjectMapper().writeValueAsString(nodeId)).withStatusCode(200)
     );
     final String sharedEmail = "shared@zimbra.com";
-    final Account delegatedAcct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+    final Account delegatedAcct = Provisioning.getInstance().get(Key.AccountBy.name, "delegated@zimbra.com");
     final Message draftWithFileAttachment = this.createDraftWithFileAttachment(sharedEmail);
     // prepare request
     String sharedAcctUUID =
         Provisioning.getInstance().get(Key.AccountBy.name, sharedEmail).getId();
-    AuthToken authToken = AuthProvider.getAuthToken(delegatedAcct);
     Map<String, Object> context = new HashMap<String, Object>();
-    context.put(
-        SoapEngine.ZIMBRA_CONTEXT,
-        new ZimbraSoapContext(authToken, delegatedAcct.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12));
-    ZimbraSoapContext zsc = mock(ZimbraSoapContext.class);
+    ZimbraSoapContext zsc =
+        new ZimbraSoapContext(
+            AuthProvider.getAuthToken(delegatedAcct),
+            delegatedAcct.getId(),
+            SoapProtocol.Soap12,
+            SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    when(zsc.getAuthToken()).thenReturn(authToken);
+    CopyToFiles copyToFiles = new CopyToFiles(new MailboxAttachmentService(), FilesClient.atURL("http://127.0.0.1:20002"));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId(sharedAcctUUID + ":" + draftWithFileAttachment.getId());
     up.setPart("1");
     up.setDestinationFolderId("FOLDER_1");
     Element element = JaxbUtil.jaxbToElement(up);
-    final FilesClient filesClient = FilesClient.atURL( "http://127.0.0.1:20002");
-    new CopyToFiles(new MailboxAttachmentService(), filesClient).handle(element,
-        context);
-    verify(mockAttachmentService, times(1)).getAttachment(sharedAcctUUID, authToken, 123, "2");
+    Element el = copyToFiles.handle(element, context);
+    final CopyToFilesResponse response = zsc.elementToJaxb(el);
+    Assert.assertEquals(nodeId.getNodeId(), response.getNodeId());
   }
 }
