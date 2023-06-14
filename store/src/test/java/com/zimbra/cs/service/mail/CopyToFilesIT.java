@@ -141,7 +141,7 @@ public class CopyToFilesIT {
    * @throws ServiceException
    */
   @Test
-  public void shouldHandleCopyToFilesCall() throws Exception {
+  public void shouldReturnNodeIdWhenUploadingAttachment() throws Exception {
     final String email = "test@zimbra.com";
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, email);
     final Message message = this.createDraftWithFileAttachment(email);
@@ -177,12 +177,53 @@ public class CopyToFilesIT {
   }
 
   /**
+   * Test passing messageId as UUID:id. This happens in case of delegation/shared mailbox.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void shouldReturnNodeIdWhenUploadingSharedMailboxAttachment() throws Exception {
+    final NodeId nodeId = new NodeId();
+    nodeId.setNodeId("1000");
+    filesServer
+        .when(request().withPath("/upload/"))
+        .respond(
+            HttpResponse.response(new ObjectMapper().writeValueAsString(nodeId))
+                .withStatusCode(200));
+    final String sharedEmail = "shared@zimbra.com";
+    final Account delegatedAcct =
+        Provisioning.getInstance().get(Key.AccountBy.name, "delegated@zimbra.com");
+    final Message draftWithFileAttachment = this.createDraftWithFileAttachment(sharedEmail);
+    // prepare request
+    String sharedAcctUUID = Provisioning.getInstance().get(Key.AccountBy.name, sharedEmail).getId();
+    Map<String, Object> context = new HashMap<String, Object>();
+    ZimbraSoapContext zsc =
+        new ZimbraSoapContext(
+            AuthProvider.getAuthToken(delegatedAcct),
+            delegatedAcct.getId(),
+            SoapProtocol.Soap12,
+            SoapProtocol.Soap12);
+    context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+    CopyToFiles copyToFiles =
+        new CopyToFiles(
+            new MailboxAttachmentService(), FilesClient.atURL("http://127.0.0.1:20002"));
+    CopyToFilesRequest up = new CopyToFilesRequest();
+    up.setMessageId(sharedAcctUUID + ":" + draftWithFileAttachment.getId());
+    up.setPart("1");
+    up.setDestinationFolderId("FOLDER_1");
+    Element element = JaxbUtil.jaxbToElement(up);
+    Element el = copyToFiles.handle(element, context);
+    final CopyToFilesResponse response = zsc.elementToJaxb(el);
+    Assert.assertEquals(nodeId.getNodeId(), response.getNodeId());
+  }
+
+  /**
    * Test: file not found on mailbox -> file not found error.
    *
    * @throws ServiceException
    */
   @Test
-  public void shouldThrowServiceExceptionIfFileNotFound() throws ServiceException {
+  public void shouldThrowServiceExceptionWhenFileNotFound() throws ServiceException {
     // get account that will do the SOAP request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
 
@@ -213,7 +254,7 @@ public class CopyToFilesIT {
    * @throws IOException
    */
   @Test
-  public void shouldThrowServiceExceptionIfFileServiceReturnsFailure()
+  public void shouldThrowServiceExceptionWhenFileServiceReturnsFailure()
       throws ServiceException, IOException, MessagingException {
     // get account that will do the SOAP request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
@@ -256,7 +297,7 @@ public class CopyToFilesIT {
    * @throws IOException
    */
   @Test
-  public void shouldThrowServiceExceptionWhenFilesServiceReturnsNullNodeId()
+  public void shouldThrowServiceExceptionWhenFilesReturnsNullNodeId()
       throws ServiceException, IOException, MessagingException {
     // get account that will do the SOAP request
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
@@ -298,7 +339,7 @@ public class CopyToFilesIT {
    * @throws Exception
    */
   @Test
-  public void shouldThrowServiceExceptionWithInternalFailureIfGetAuthTokenFails() throws Exception {
+  public void shouldThrowWithInternalErrorWhenGetAuthTokenFails() throws Exception {
     // prepare request
     ZimbraSoapContext zsc = mock(ZimbraSoapContext.class);
     Map<String, Object> context = new HashMap<String, Object>();
@@ -339,46 +380,5 @@ public class CopyToFilesIT {
     final ParsedMessage parsedMessage =
         new ParsedMessage(mimeMessage, mailbox.attachmentsIndexingEnabled());
     return mailbox.saveDraft(operationContext, parsedMessage, Mailbox.ID_AUTO_INCREMENT);
-  }
-
-  /**
-   * Test passing messageId as UUID:id. This happens in case of delegation.
-   *
-   * @throws Exception
-   */
-  @Test
-  public void shouldHandleCopyToFilesCallForDelegatedAccount() throws Exception {
-    final NodeId nodeId = new NodeId();
-    nodeId.setNodeId("1000");
-    filesServer
-        .when(request().withPath("/upload/"))
-        .respond(
-            HttpResponse.response(new ObjectMapper().writeValueAsString(nodeId))
-                .withStatusCode(200));
-    final String sharedEmail = "shared@zimbra.com";
-    final Account delegatedAcct =
-        Provisioning.getInstance().get(Key.AccountBy.name, "delegated@zimbra.com");
-    final Message draftWithFileAttachment = this.createDraftWithFileAttachment(sharedEmail);
-    // prepare request
-    String sharedAcctUUID = Provisioning.getInstance().get(Key.AccountBy.name, sharedEmail).getId();
-    Map<String, Object> context = new HashMap<String, Object>();
-    ZimbraSoapContext zsc =
-        new ZimbraSoapContext(
-            AuthProvider.getAuthToken(delegatedAcct),
-            delegatedAcct.getId(),
-            SoapProtocol.Soap12,
-            SoapProtocol.Soap12);
-    context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    CopyToFiles copyToFiles =
-        new CopyToFiles(
-            new MailboxAttachmentService(), FilesClient.atURL("http://127.0.0.1:20002"));
-    CopyToFilesRequest up = new CopyToFilesRequest();
-    up.setMessageId(sharedAcctUUID + ":" + draftWithFileAttachment.getId());
-    up.setPart("1");
-    up.setDestinationFolderId("FOLDER_1");
-    Element element = JaxbUtil.jaxbToElement(up);
-    Element el = copyToFiles.handle(element, context);
-    final CopyToFilesResponse response = zsc.elementToJaxb(el);
-    Assert.assertEquals(nodeId.getNodeId(), response.getNodeId());
   }
 }
