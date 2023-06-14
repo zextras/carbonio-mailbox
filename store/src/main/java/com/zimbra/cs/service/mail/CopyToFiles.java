@@ -6,6 +6,7 @@ import static io.vavr.API.Case;
 import static io.vavr.API.For;
 
 import com.zextras.carbonio.files.FilesClient;
+import com.zextras.carbonio.files.entities.NodeId;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -18,11 +19,10 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.control.Try;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import javax.mail.Part;
+import java.util.function.Function;
 import javax.mail.internet.MimePart;
 
 /**
@@ -53,60 +53,54 @@ public class CopyToFiles extends MailDocumentHandler {
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     final ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    // get auth token
-    final Try<String> authCookieTry =
-        Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded());
-    // map element to copy-to-files request object
-    final Try<CopyToFilesRequest> copyToFilesRequestTry = getRequestObject(request);
-    // get Files destination folder
-    final Try<String> destFolderIdTry = copyToFilesRequestTry.flatMap(this::getDestinationFolderId);
-    // get attachment
-    final Try<MimePart> attachmentTry =
-        copyToFilesRequestTry.flatMap(
-            copyToFilesRequest -> getAttachmentToCopy(copyToFilesRequest, zsc));
-    // get attachment content-type
-    final Try<String> contentTypeTry = attachmentTry.flatMap(this::getAttachmentContentType);
-    // get attachment name
-    final Try<String> fileNameTry = attachmentTry.flatMapTry(this::getAttachmentName);
-    // get attachment content stream
-    final Try<InputStream> attachmentStreamTry =
-        attachmentTry.mapTry(Part::getInputStream).onFailure(ex -> mLog.debug(ex.getMessage()));
-
-    // execute Files api call and flatten yield result
-    // maps every non-ServiceException to internal error
-    String nodeId =
+    final NodeId nodeId =
         Optional.ofNullable(
-                For(
-                        authCookieTry,
-                        destFolderIdTry,
-                        fileNameTry,
-                        contentTypeTry,
-                        attachmentStreamTry)
-                    .yield(
-                        (authCookie,
-                            destFolderId,
-                            fileName,
-                            contentType,
-                            attachmentStream) ->
-                            filesClient.uploadFile(
-                                authCookie,
-                                destFolderId,
-                                fileName,
-                                contentType,
-                                attachmentStream,
-                                -1))
-                    .map(x -> x.get())
-                    .onFailure(ex -> mLog.debug(ex.getMessage()))
+                getRequestObject(request)
+                    .flatMap(
+                        copyToFilesRequest ->
+                            this.getAttachmentToCopy(copyToFilesRequest, zsc)
+                                .flatMap(
+                                    attachment ->
+                                        Try.withResources(attachment::getInputStream)
+                                            .of(
+                                                inputStream ->
+                                                    For(
+                                                            Try.of(
+                                                                () ->
+                                                                    ZimbraCookie
+                                                                            .COOKIE_ZM_AUTH_TOKEN
+                                                                        + "="
+                                                                        + zsc.getAuthToken()
+                                                                            .getEncoded()),
+                                                            this.getDestinationFolderId(
+                                                                copyToFilesRequest),
+                                                            this.getAttachmentName(attachment),
+                                                            this.getAttachmentContentType(
+                                                                attachment),
+                                                            Try.of(attachment::getSize))
+                                                        .yield(
+                                                            (cookie,
+                                                                folderId,
+                                                                fileName,
+                                                                contentType,
+                                                                fileSize) ->
+                                                                filesClient.uploadFile(
+                                                                    cookie,
+                                                                    folderId,
+                                                                    fileName,
+                                                                    contentType,
+                                                                    inputStream,
+                                                                    fileSize)))))
+                    .flatMap(Function.identity())
+                    .flatMap(Function.identity())
                     .mapFailure(
                         Case(
                             $(ex -> !(ex instanceof ServiceException)),
                             ex -> ServiceException.FAILURE("internal error.", ex)))
                     .get())
-            .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."))
-            .getNodeId();
-
+            .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."));
     CopyToFilesResponse copyToFilesResponse = new CopyToFilesResponse();
-    copyToFilesResponse.setNodeId(nodeId);
+    copyToFilesResponse.setNodeId(nodeId.getNodeId());
     return zsc.jaxbToElement(copyToFilesResponse);
   }
 
@@ -164,26 +158,6 @@ public class CopyToFiles extends MailDocumentHandler {
                             $(instanceOf(Exception.class)),
                             ex -> ServiceException.NOT_FOUND("File not found.", ex))))
         .flatMap(result -> result);
-  }
-
-  /**
-   * Calculates size of input stream by reading it. The operation is done by reading chunks of 8kb.
-   *
-   * @param inputStream input stream to calculate size of
-   * @return size of given input stream
-   */
-  private Try<Long> getAttachmentSize(InputStream inputStream) {
-
-    return Try.of(
-        () -> {
-          long fileSize = 0;
-          byte[] buffer = new byte[8192];
-          for (int read = inputStream.read(buffer); read != -1; read = inputStream.read(buffer)) {
-            fileSize += read;
-          }
-          inputStream.reset();
-          return fileSize;
-        });
   }
 
   /**
