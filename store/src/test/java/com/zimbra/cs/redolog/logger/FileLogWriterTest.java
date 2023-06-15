@@ -10,14 +10,14 @@ import com.zimbra.cs.mailbox.MailboxOperation;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.redolog.RedoLogManager;
 import com.zimbra.cs.redolog.op.RedoableOp;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 
 public class  FileLogWriterTest {
  @TempDir
@@ -36,7 +36,7 @@ public class  FileLogWriterTest {
         mockRedoLogManager = EasyMock.createNiceMock(RedoLogManager.class);
 
         logWriter =
-            new FileLogWriter(mockRedoLogManager, File.createTempFile("logfile", null, folder),
+            new FileLogWriter(mockRedoLogManager, new File(folder.getAbsolutePath(), "logfile"),
                               10 /* fsync interval in ms */);
     }
 
@@ -59,13 +59,13 @@ public class  FileLogWriterTest {
   final long createTime = logWriter.getCreateTime();
   final long sequence = logWriter.getSequence();
 
-  // reset the FileLogWriter
-  logWriter =
-    new FileLogWriter(mockRedoLogManager, File.createTempFile("logfile", null, folder),
+   // reset the FileLogWriter
+   logWriter =
+    new FileLogWriter(mockRedoLogManager, new File(folder.getAbsolutePath(), "logfile"),
       10 /* fsync interval in ms */);
-  assertEquals(FileHeader.HEADER_LEN + 10, logWriter.getSize(), "file size incorrect.");
+   assertEquals(FileHeader.HEADER_LEN + 10, logWriter.getSize(), "file size incorrect.");
+   logWriter.open();
 
-  logWriter.open();
   assertEquals(createTime, logWriter.getCreateTime());
   assertEquals(sequence, logWriter.getSequence());
  }
