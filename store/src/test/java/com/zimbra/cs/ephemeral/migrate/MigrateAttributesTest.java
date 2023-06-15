@@ -35,9 +35,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class MigrateAttributesTest {
      public String testName;
 
@@ -204,8 +207,15 @@ public class MigrateAttributesTest {
   assertEquals(info.getStatus(), Status.COMPLETED);
  }
 
+  /**
+   * This test breaks all the others when run before for some reason, that's why it has a Z.
+   * So I chose to run test in alphabetical order.
+   * It is an issue and probably masking a bigger issue of the underlying code.
+   *
+   * @throws Exception
+   */
  @Test
- void testErrorDuringMigration() throws Exception {
+ void testZErrorDuringMigration() throws Exception {
   List<EphemeralInput> results = new LinkedList<EphemeralInput>();
   EntrySource source = new DummyEntrySource(acct, acct, acct);
 
