@@ -4,7 +4,7 @@
 
 package com.zimbra.cs.redolog.op;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
@@ -82,7 +82,7 @@ public class CreateMessageTest {
   assertEquals("rcpt@example.com", op.getRcptEmail());
   assertEquals(6, op.getFolderId());
   assertEquals(0, op.getFlags());
-  assertEquals(new String[]{"tag"}, op.getTags());
+  assertArrayEquals(new String[]{"tag"}, op.getTags());
   assertEquals(":streamed:", op.getPath());
   assertEquals("",
     CharStreams.toString(new InputStreamReader(
