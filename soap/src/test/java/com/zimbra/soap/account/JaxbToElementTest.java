@@ -25,9 +25,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
-import org.custommonkey.xmlunit.DetailedDiff;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.dom4j.QName;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -89,6 +86,9 @@ import com.zimbra.soap.type.WantRecipsSetting;
 import com.zimbra.soap.util.JaxbElementInfo;
 import com.zimbra.soap.util.JaxbInfo;
 import com.zimbra.soap.util.JaxbNodeInfo;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.diff.Diff;
+import org.xmlunit.diff.Difference;
 
 /**
  * Unit test for {@link GetInfoResponse} which exercises
@@ -201,17 +201,11 @@ public class JaxbToElementTest {
       Element el = JaxbUtil.jaxbToElement(getInfoRespJaxb);
       String actual = el.prettyPrint();
       String expected = getInfoResponseXml;
-      DetailedDiff myDiff = new DetailedDiff(XMLUnit.compareXML(expected, actual));
-      List allDifferences = myDiff.getAllDifferences();
-      if (allDifferences.size() > 0) {
-        ZimbraLog.test.debug("Iteration:%s - %s differences found.  Compare below with '%s'\n%s\n",
-            cnt, allDifferences.size(), getInfoResponseXMLfileName, actual);
-        int diffnum = 0;
-        for (Object obj : allDifferences) {
-          ZimbraLog.test.info("Difference:%s [%s]", diffnum++, obj);
-        }
-        XMLAssert.assertXMLEqual(expected, actual);
-      }
+      Diff myDiff = DiffBuilder.compare(expected).withTest(actual).build();
+      Iterable<Difference> allDifferences = myDiff.getDifferences();
+      allDifferences.forEach(
+          difference -> ZimbraLog.test.info("Difference:%s [%s]", difference));
+      assertFalse(myDiff.hasDifferences());
     }
   }
 
@@ -760,7 +754,7 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
     Element elem2 = JaxbUtil.jaxbToElement(rp, XMLElement.mFactory);
     String eXml2 = elem2.toString();
     ZimbraLog.test.debug("Round tripped retentionPolicy.xml from Element:\n%s", eXml2);
-    XMLAssert.assertXMLEqual(eXml, eXml2);
+    assertFalse(DiffBuilder.compare(eXml).withTest(eXml2).build().hasDifferences());
   }
 
   @Test

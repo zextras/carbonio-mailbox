@@ -82,10 +82,15 @@
     </dependency>
 
     <dependency>
-      <artifactId>xmlunit</artifactId>
-      <groupId>xmlunit</groupId>
-      <version>1.6</version>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-core</artifactId>
+      <version>2.9.1</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-matchers</artifactId>
+      <version>2.9.1</version>
     </dependency>
 
     <!-- Sun dependencies needed and removed from jdk 11, consider switching to Jakarta -->

@@ -529,6 +529,12 @@
         <groupId>jline</groupId>
         <artifactId>jline</artifactId>
         <version>0.9.93</version>
+        <exclusions>
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>javax.annotation</groupId>
