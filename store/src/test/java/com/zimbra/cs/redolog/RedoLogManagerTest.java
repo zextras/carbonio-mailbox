@@ -4,90 +4,88 @@
 
 package com.zimbra.cs.redolog;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.cs.mailbox.MailboxOperation;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.redolog.op.RedoableOp;
-import junit.framework.Assert;
 import org.easymock.EasyMock;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import java.io.File;
 
 public class RedoLogManagerTest {
     private RedoLogManager redoLogManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         redoLogManager = RedoLogProvider.getInstance().getRedoLogManager();
         redoLogManager.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         redoLogManager.stop();
     }
 
-    @Test
-    public void internalState() throws Exception {
-        Assert.assertEquals("path != build/test/redo/redo.log",
-                            "build/test/redo/redo.log",
-                            redoLogManager.getLogFile().getPath());
-        Assert.assertEquals("archiveDir != build/test/redo", "build/test/redo",
-                            redoLogManager.getArchiveDir().getPath());
-        Assert.assertEquals("rolloverDestDir != build/test/redo",
-                            "build/test/redo",
-                            redoLogManager.getRolloverDestDir().getPath());
-        Assert.assertFalse("crashRecovery == true",
-                           redoLogManager.getInCrashRecovery());
-    }
+ @Test
+ void internalState() throws Exception {
+  assertEquals("build/test/redo/redo.log",
+    redoLogManager.getLogFile().getPath(),
+    "path != build/test/redo/redo.log");
+  assertEquals("build/test/redo",
+    redoLogManager.getArchiveDir().getPath(),
+    "archiveDir != build/test/redo");
+  assertEquals("build/test/redo",
+    redoLogManager.getRolloverDestDir().getPath(),
+    "rolloverDestDir != build/test/redo");
+  assertFalse(redoLogManager.getInCrashRecovery(),
+    "crashRecovery == true");
+ }
 
-    @Test
-    public void transactionIdIncrements() throws Exception {
-        TransactionId id = redoLogManager.getNewTxnId();
+ @Test
+ void transactionIdIncrements() throws Exception {
+  TransactionId id = redoLogManager.getNewTxnId();
 
-        // Get the next transaction ID
-        TransactionId nextId = redoLogManager.getNewTxnId();
-        Assert.assertEquals(
-            "nextId.getCounter() should be one more than id.getCounter()",
-            id.getCounter() + 1, nextId.getCounter());
-    }
+  // Get the next transaction ID
+  TransactionId nextId = redoLogManager.getNewTxnId();
+  assertEquals(
+    id.getCounter() + 1, nextId.getCounter(), "nextId.getCounter() should be one more than id.getCounter()");
+ }
 
-    @Test
-    public void rolloverIncrementsLogSequence() throws Exception {
-        long currentSequence = redoLogManager.getCurrentLogSequence();
-        File previousFile = redoLogManager.forceRollover();
-        // No change, since no ops have been logged
-        Assert.assertEquals(
-            "Log sequence should not change. Nothing logged before rollover.",
-            currentSequence, redoLogManager.getCurrentLogSequence());
-        Assert.assertNull(
-            "No rollover occured, so previous log file should be NULL.",
-            previousFile);
+ @Test
+ void rolloverIncrementsLogSequence() throws Exception {
+  long currentSequence = redoLogManager.getCurrentLogSequence();
+  File previousFile = redoLogManager.forceRollover();
+  // No change, since no ops have been logged
+  assertEquals(
+    currentSequence, redoLogManager.getCurrentLogSequence(), "Log sequence should not change. Nothing logged before rollover.");
+  assertNull(
+    previousFile,
+    "No rollover occured, so previous log file should be NULL.");
 
-        RedoableOp op = EasyMock.createMockBuilder(RedoableOp.class)
-                            .withConstructor(MailboxOperation.Preview)
-                            .createMock();
+  RedoableOp op = EasyMock.createMockBuilder(RedoableOp.class)
+    .withConstructor(MailboxOperation.Preview)
+    .createMock();
 
-        // Run the operation and log.
-        op.start(7 /* timestamp */);
-        op.log();
-        Assert.assertEquals("sequence number should be the same as before.",
-                            currentSequence,
-                            redoLogManager.getCurrentLogSequence());
-        previousFile = redoLogManager.forceRollover();
+  // Run the operation and log.
+  op.start(7 /* timestamp */);
+  op.log();
+  assertEquals(currentSequence,
+    redoLogManager.getCurrentLogSequence(),
+    "sequence number should be the same as before.");
+  previousFile = redoLogManager.forceRollover();
 
-        Assert.assertEquals(
-            "Forced rollover after a log should increment sequence number",
-            currentSequence + 1, redoLogManager.getCurrentLogSequence());
-        Assert.assertTrue(
-            previousFile.getName().contains("seq" + currentSequence + ".log"));
-    }
+  assertEquals(
+    currentSequence + 1, redoLogManager.getCurrentLogSequence(), "Forced rollover after a log should increment sequence number");
+  assertTrue(
+    previousFile.getName().contains("seq" + currentSequence + ".log"));
+ }
 }

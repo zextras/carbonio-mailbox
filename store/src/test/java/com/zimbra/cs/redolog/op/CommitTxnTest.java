@@ -4,6 +4,9 @@
 
 package com.zimbra.cs.redolog.op;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import com.zimbra.cs.mailbox.MailboxOperation;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.redolog.RedoCommitCallback;
@@ -13,22 +16,21 @@ import com.zimbra.cs.redolog.TransactionId;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import org.easymock.EasyMock;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CommitTxnTest {
     private CommitTxn op;
     private RedoCommitCallback callback;
     private RedoableOp changeEntry;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         callback = EasyMock.createStrictMock(RedoCommitCallback.class);
         changeEntry = EasyMock.createMockBuilder(CopyItem.class)
@@ -46,32 +48,31 @@ public class CommitTxnTest {
         EasyMock.replay(changeEntry);
     }
 
-    @Test
-    public void testDefaultConstructor() {
-        op = new CommitTxn();
-        Assert.assertNull(op.getTransactionId());
-    }
+ @Test
+ void testDefaultConstructor() {
+  op = new CommitTxn();
+  assertNull(op.getTransactionId());
+ }
 
-    @Test
-    public void testOpConstructor() {
-        op = new CommitTxn(changeEntry);
-        Assert.assertEquals(5, op.getMailboxId());
-        Assert.assertEquals(new TransactionId(1, 2), op.getTransactionId());
-        Assert.assertEquals(MailboxOperation.CopyItem, op.getTxnOpCode());
-        Assert.assertEquals(callback, op.getCallback());
-    }
+ @Test
+ void testOpConstructor() {
+  op = new CommitTxn(changeEntry);
+  assertEquals(5, op.getMailboxId());
+  assertEquals(new TransactionId(1, 2), op.getTransactionId());
+  assertEquals(MailboxOperation.CopyItem, op.getTxnOpCode());
+  assertEquals(callback, op.getCallback());
+ }
 
-    @Test
-    public void serializeDeserialize() throws Exception {
-        op = new CommitTxn(changeEntry);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        op.serializeData(new RedoLogOutput(out));
+ @Test
+ void serializeDeserialize() throws Exception {
+  op = new CommitTxn(changeEntry);
+  ByteArrayOutputStream out = new ByteArrayOutputStream();
+  op.serializeData(new RedoLogOutput(out));
 
-        // reset op
-        op = new CommitTxn();
-        op.deserializeData(
-            new RedoLogInput(new ByteArrayInputStream(out.toByteArray())));
-        Assert.assertEquals("opcode should be CopyItem after deserialize.",
-                            MailboxOperation.CopyItem, op.getTxnOpCode());
-    }
+  // reset op
+  op = new CommitTxn();
+  op.deserializeData(
+    new RedoLogInput(new ByteArrayInputStream(out.toByteArray())));
+  assertEquals(MailboxOperation.CopyItem, op.getTxnOpCode(), "opcode should be CopyItem after deserialize.");
+ }
 }

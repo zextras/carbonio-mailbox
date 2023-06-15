@@ -12,13 +12,16 @@ import java.sql.SQLException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.io.Files;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.FileUtil;
@@ -71,7 +74,7 @@ public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
 
     File tmpDir;
 
-    @Before
+    @BeforeEach
     public void setUpHttp() throws Exception {
         MockHttpStore.startup();
         tmpDir = Files.createTempDir();
@@ -79,7 +82,7 @@ public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
         MailboxTestUtil.clearData();
     }
 
-    @After
+    @AfterEach
     public void tearDownHttp() throws Exception {
         MockHttpStore.shutdown();
         if (tmpDir != null) {
@@ -87,49 +90,49 @@ public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
         }
     }
 
-    @Test
-    public void mailboxDelete() throws Exception {
-    	Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        Assert.assertEquals("start with no blobs in the store", 0, MockHttpStore.size());
+ @Test
+ void mailboxDelete() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  assertEquals(0, MockHttpStore.size(), "start with no blobs in the store");
 
-        mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
-        Assert.assertEquals("1 blob in the store", 1, MockHttpStore.size());
+  mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
+  assertEquals(1, MockHttpStore.size(), "1 blob in the store");
 
-        mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
-        Assert.assertEquals("2 blobs in the store", 2, MockHttpStore.size());
+  mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
+  assertEquals(2, MockHttpStore.size(), "2 blobs in the store");
 
-        mbox.deleteMailbox();
-        Assert.assertEquals("end with no blobs in the store", 0, MockHttpStore.size());
-    }
+  mbox.deleteMailbox();
+  assertEquals(0, MockHttpStore.size(), "end with no blobs in the store");
+ }
 
-    @Test
-    public void fail() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        int count = countMailItems(mbox);
-        MockHttpStore.setFail();
-        try {
-            mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
-            Assert.fail("expected exception not thrown");
-        } catch (ServiceException expected) {
+ @Test
+ void fail() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  int count = countMailItems(mbox);
+  MockHttpStore.setFail();
+  try {
+   mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
+   fail("expected exception not thrown");
+  } catch (ServiceException expected) {
 
-        }
-        Assert.assertEquals(count, countMailItems(mbox));
-    }
+  }
+  assertEquals(count, countMailItems(mbox));
+ }
 
-    @Ignore("long running test")
-    @Test
-    public void timeout() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        int count = countMailItems(mbox);
-        MockHttpStore.setDelay();
-        try {
-            mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
-            Assert.fail("expected exception not thrown");
-        } catch (ServiceException expected) {
+ @Disabled("long running test")
+ @Test
+ void timeout() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  int count = countMailItems(mbox);
+  MockHttpStore.setDelay();
+  try {
+   mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
+   fail("expected exception not thrown");
+  } catch (ServiceException expected) {
 
-        }
-        Assert.assertEquals(count, countMailItems(mbox));
-    }
+  }
+  assertEquals(count, countMailItems(mbox));
+ }
 
 
     private int countMailItems(Mailbox mbox) throws ServiceException, SQLException {

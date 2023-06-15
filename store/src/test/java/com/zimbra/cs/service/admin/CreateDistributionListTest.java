@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 
 public class CreateDistributionListTest {
@@ -44,69 +44,79 @@ public class CreateDistributionListTest {
   @Rule
   public final ExpectedException exceptionRule = ExpectedException.none();
 
-  @BeforeClass
+  @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     provisioningSpy = spy(Provisioning.getInstance());
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() throws Exception {
     MailboxTestUtil.clearData();
   }
 
-  /**
-   * Delegated Admins are not allowed to create Dynamic Distribution Lists see issue CO-526
-   *
-   * @throws ServiceException if any
-   */
-  @Test
-  public void shouldThrowServiceExceptionWhenDelegatedAdminRequestToCreateDynamicDistributionList()
-      throws ServiceException {
+ /**
+  * Delegated Admins are not allowed to create Dynamic Distribution Lists see issue CO-526
+  *
+  * @throws ServiceException if any
+  */
+ /*~~(Recipe failed with an exception.
+java.lang.NullPointerException: null
+  java.base/java.util.Objects.requireNonNull(Objects.java:221)
+  org.openrewrite.Parser$Input.fromResource(Parser.java:176)
+  org.openrewrite.Parser$Input.fromResource(Parser.java:171)
+  org.openrewrite.java.testing.junit5.ExpectedExceptionToAssertThrows$ExpectedExceptionToAssertThrowsVisitor.lambda$static$0(ExpectedExceptionToAssertThrows.java:78)
+  org.openrewrite.java.internal.template.JavaTemplateParser.compileTemplate(JavaTemplateParser.java:247)
+  org.openrewrite.java.internal.template.JavaTemplateParser.parseBlockStatements(JavaTemplateParser.java:166)
+  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:330)
+  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:102)
+  ...)~~>*/@Test
+ void shouldThrowServiceExceptionWhenDelegatedAdminRequestToCreateDynamicDistributionList()
+   throws ServiceException {
 
-    final HashMap<String, Object> attrs = new HashMap<>();
+  final HashMap<String, Object> attrs = new HashMap<>();
 
-    //create domain
-    provisioningSpy.createDomain(DOMAIN_NAME, attrs);
+  //create domain
+  provisioningSpy.createDomain(DOMAIN_NAME, attrs);
 
-    //create domain admin user
-    attrs.put(Provisioning.A_zimbraIsDelegatedAdminAccount,
-        ProvisioningConstants.TRUE);
-    final Account domainAdminAccount = provisioningSpy.createAccount(DOMAIN_ADMIN_EMAIL,
-        DOMAIN_ADMIN_PASSWORD,
-        attrs);
+  //create domain admin user
+  attrs.put(Provisioning.A_zimbraIsDelegatedAdminAccount,
+    ProvisioningConstants.TRUE);
+  final Account domainAdminAccount = provisioningSpy.createAccount(DOMAIN_ADMIN_EMAIL,
+    DOMAIN_ADMIN_PASSWORD,
+    attrs);
 
-    //AuthToken mock, set auth account as delegatedAdmin
-    final AuthToken authTokenMock = mock(AuthToken.class);
-    when(authTokenMock.isDelegatedAdmin()).thenReturn(true);
+  //AuthToken mock, set auth account as delegatedAdmin
+  final AuthToken authTokenMock = mock(AuthToken.class);
+  when(authTokenMock.isDelegatedAdmin()).thenReturn(true);
 
-    //create soap context with delegated admin auth
-    final Map<String, Object> context = new HashMap<>();
-    final ZimbraSoapContext zsc = new ZimbraSoapContext(authTokenMock, domainAdminAccount.getId(),
-        SoapProtocol.Soap12, SoapProtocol.Soap12);
-    context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+  //create soap context with delegated admin auth
+  final Map<String, Object> context = new HashMap<>();
+  final ZimbraSoapContext zsc = new ZimbraSoapContext(authTokenMock, domainAdminAccount.getId(),
+    SoapProtocol.Soap12, SoapProtocol.Soap12);
+  context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
 
-    //create CreateDistributionListRequest
-    List<Attr> attributes = new ArrayList<>();
-    attributes.add(new Attr(Provisioning.A_memberURL,
-        "ldap:///??sub?(&amp;(objectClass=zimbraAccount)(ZimbraAccountStatus=active))"));
-    attributes.add(new Attr(Provisioning.A_zimbraIsACLGroup, ProvisioningConstants.TRUE));
-    final CreateDistributionListRequest createDistributionListRequest = new CreateDistributionListRequest(
-        DISTRIBUTION_LIST_NAME, attributes, true);
+  //create CreateDistributionListRequest
+  List<Attr> attributes = new ArrayList<>();
+  attributes.add(new Attr(Provisioning.A_memberURL,
+    "ldap:///??sub?(&amp;(objectClass=zimbraAccount)(ZimbraAccountStatus=active))"));
+  attributes.add(new Attr(Provisioning.A_zimbraIsACLGroup, ProvisioningConstants.TRUE));
+  final CreateDistributionListRequest createDistributionListRequest = new CreateDistributionListRequest(
+    DISTRIBUTION_LIST_NAME, attributes, true);
 
-    //create CreateDistributionList
-    final CreateDistributionList createDistributions = new CreateDistributionList();
+  //create CreateDistributionList
+  final CreateDistributionList createDistributions = new CreateDistributionList();
 
-    //stub createGroup method of provisioning since it is not supported without real provisioning backend
-    final DynamicGroup mockDGroup = mock(DynamicGroup.class);
-    doReturn(mockDGroup).when(provisioningSpy).createGroup(anyString(), anyMap(), anyBoolean());
+  //stub createGroup method of provisioning since it is not supported without real provisioning backend
+  final DynamicGroup mockDGroup = mock(DynamicGroup.class);
+  doReturn(mockDGroup).when(provisioningSpy).createGroup(anyString(), anyMap(), anyBoolean());
 
-    //setup tests cases
-    exceptionRule.expect(ServiceException.class);
-    exceptionRule.expectMessage(
-        "Delegated Admins are not allowed to create Dynamic Distribution Lists");
+  //setup tests cases
+  exceptionRule.expect(ServiceException.class);
+  exceptionRule.expectMessage(
+    "Delegated Admins are not allowed to create Dynamic Distribution Lists");
 
-    //execute request
-    createDistributions.handle(JaxbUtil.jaxbToElement(createDistributionListRequest), context);
-  }
+  //execute request
+  createDistributions.handle(JaxbUtil.jaxbToElement(createDistributionListRequest), context);
+ }
 }

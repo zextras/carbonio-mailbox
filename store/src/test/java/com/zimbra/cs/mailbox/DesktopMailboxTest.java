@@ -9,14 +9,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.zimbra.common.service.ServiceException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.Db;
@@ -29,7 +27,7 @@ import com.zimbra.cs.redolog.op.RedoableOp;
 
 public class DesktopMailboxTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer(); //TODO: allow paths to be specified so we can run tests outside of ZimbraServer
         MailboxManager.setInstance(new MailboxManager() {
@@ -56,7 +54,7 @@ public class DesktopMailboxTest {
         prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
     }
@@ -83,44 +81,44 @@ public class DesktopMailboxTest {
         }
     }
 
-    @Test
-    public void nestedTxn() throws Exception {
-        Account acct = Provisioning.getInstance().getAccount("test@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
-        HSQLDB db = (HSQLDB) Db.getInstance();
-        db.useMVCC(mbox);
+ @Test
+ void nestedTxn() throws Exception {
+  Account acct = Provisioning.getInstance().getAccount("test@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  HSQLDB db = (HSQLDB) Db.getInstance();
+  db.useMVCC(mbox);
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-        mbox.lock.lock();
-        try {
-            OperationContext octx = new OperationContext(acct);
-            mbox.beginTransaction("outer", octx);
-            mbox.beginTransaction("inner1", octx);
-            mbox.addMessage(octx, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+  mbox.lock.lock();
+  try {
+   OperationContext octx = new OperationContext(acct);
+   mbox.beginTransaction("outer", octx);
+   mbox.beginTransaction("inner1", octx);
+   mbox.addMessage(octx, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
 
-            //nothing committed yet
-            Assert.assertEquals(0, countInboxMessages(mbox));
-            mbox.endTransaction(true); //inner 1
+   //nothing committed yet
+   assertEquals(0, countInboxMessages(mbox));
+   mbox.endTransaction(true); //inner 1
 
-            //nothing committed yet
-            Assert.assertEquals(0, countInboxMessages(mbox));
+   //nothing committed yet
+   assertEquals(0, countInboxMessages(mbox));
 
-            mbox.beginTransaction("inner2", null);
-            mbox.addMessage(null, new ParsedMessage("From: test1-2@sub1.zimbra.com".getBytes(), false), dopt, null);
+   mbox.beginTransaction("inner2", null);
+   mbox.addMessage(null, new ParsedMessage("From: test1-2@sub1.zimbra.com".getBytes(), false), dopt, null);
 
-            //nothing committed yet
-            Assert.assertEquals(0, countInboxMessages(mbox));
-            mbox.endTransaction(true); //inner 2
+   //nothing committed yet
+   assertEquals(0, countInboxMessages(mbox));
+   mbox.endTransaction(true); //inner 2
 
-            //nothing committed yet
-            Assert.assertEquals(0, countInboxMessages(mbox));
+   //nothing committed yet
+   assertEquals(0, countInboxMessages(mbox));
 
-            mbox.endTransaction(true); //outer
+   mbox.endTransaction(true); //outer
 
-            //committed
-            Assert.assertEquals(2, countInboxMessages(mbox));
-        } finally {
-            mbox.lock.release();
-        }
-    }
+   //committed
+   assertEquals(2, countInboxMessages(mbox));
+  } finally {
+   mbox.lock.release();
+  }
+ }
 }

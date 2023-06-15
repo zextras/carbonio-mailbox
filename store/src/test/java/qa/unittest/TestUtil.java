@@ -6,6 +6,8 @@
 package qa.unittest;
 
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.zimbra.client.ZAuthResult;
@@ -146,9 +148,9 @@ import java.util.TreeSet;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.SharedByteArrayInputStream;
-import junit.framework.Assert;
 import org.apache.http.HttpException;
 import org.dom4j.DocumentException;
+import org.junit.Assert;
 import org.junit.internal.AssumptionViolatedException;
 
 
@@ -672,10 +674,10 @@ public class TestUtil extends Assert {
             SoapTransport transport = getAdminSoapTransport(server);
             resp = JaxbUtil.elementToJaxb(transport.invoke(JaxbUtil.jaxbToElement(req)));
             List<WaitSetInfo> wsInfoList = resp.getWaitsets();
-            assertFalse("Expecting to find a waitset", wsInfoList.isEmpty());
-            assertEquals("Expecting to find only one waitset", 1, wsInfoList.size());
+            assertFalse(wsInfoList.isEmpty(), "Expecting to find a waitset");
+            assertEquals(1, wsInfoList.size(), "Expecting to find only one waitset");
             WaitSetInfo wsInfo = wsInfoList.get(0);
-            assertEquals("Found wrong waitset", wsID, wsInfo.getWaitSetId());
+            assertEquals(wsID, wsInfo.getWaitSetId(), "Found wrong waitset");
             List<SessionForWaitSet> sessions = wsInfo.getSessions();
             if(sessions != null && numExpectedSessions > 0) {
                 if(sessions.size() == numExpectedSessions) {
@@ -1064,7 +1066,7 @@ public class TestUtil extends Assert {
     public static ZMessage getMessage(ZMailbox mbox, String query) throws Exception {
         List<ZMessage> results = search(mbox, query);
         String errorMsg = String.format("Unexpected number of messages returned by query '%s'", query);
-        assertEquals(errorMsg, 1, results.size());
+        assertEquals(1, results.size(), errorMsg);
         return results.get(0);
     }
 
@@ -1074,7 +1076,7 @@ public class TestUtil extends Assert {
     public static void verifyFlag(ZMailbox mbox, ZMessage msg, ZMessage.Flag flag) {
         String flags = msg.getFlags();
         String errorMsg = String.format("Flag %s not found in %s", flag.getFlagChar(), msg.getFlags());
-        assertTrue(errorMsg, flags.indexOf(flag.getFlagChar()) >= 0);
+        assertTrue(flags.indexOf(flag.getFlagChar()) >= 0, errorMsg);
     }
 
     public static ZFolder createFolder(ZMailbox mbox, String path) throws ServiceException {
@@ -1173,15 +1175,15 @@ public class TestUtil extends Assert {
                     status = iter;
                 }
             }
-            assertNotNull("No import status returned for data source " + dataSource.getName(), status);
-            assertEquals("Unexpected data source type", type, status.getType());
+            assertNotNull(status, "No import status returned for data source " + dataSource.getName());
+            assertEquals(type, status.getType(), "Unexpected data source type");
             if (!status.isRunning()) {
                 break;
             }
         }
-        assertEquals("importDataSource status success value", expectedSuccess, status.getSuccess());
+        assertEquals(expectedSuccess, status.getSuccess(), "importDataSource status success value");
         if (!expectedSuccess) {
-            assertNotNull("importDataSource status error value", status.getError());
+            assertNotNull(status.getError(), "importDataSource status error value");
         }
 
         // Get any state changes from the server
@@ -1250,7 +1252,7 @@ public class TestUtil extends Assert {
         }
 
         String context = String.format("Could not find '%s' in message:\n%s", firstLine, message);
-        assertTrue(context, foundFirstLine);
+        assertTrue(foundFirstLine, context);
 
         while (true) {
             line = msgReader.readLine();
@@ -1276,7 +1278,7 @@ public class TestUtil extends Assert {
         List<Element> actualChildren = actual.listElements();
         String context = String.format("Element %s, expected:\n%s\nactual:\n%s", expected.getName(), expectedDump,
                 actualDump);
-        assertEquals(context + " children", getElementNames(expectedChildren), getElementNames(actualChildren));
+        assertEquals(getElementNames(expectedChildren), getElementNames(actualChildren), context + " children");
 
         // Compare child elements
         for (int i = 0; i < expectedChildren.size(); i++) {
@@ -1289,7 +1291,7 @@ public class TestUtil extends Assert {
         // Compare attributes
         Set<Attribute> expectedAttrs = expected.listAttributes();
         Set<Attribute> actualAttrs = actual.listAttributes();
-        assertEquals(context + " attributes", getAttributesAsString(expectedAttrs), getAttributesAsString(actualAttrs));
+        assertEquals(getAttributesAsString(expectedAttrs), getAttributesAsString(actualAttrs), context + " attributes");
     }
 
     /**
@@ -1307,9 +1309,9 @@ public class TestUtil extends Assert {
             fail("expected was not null but actual was.");
             return; // shuts up warnings in Eclipse
         }
-        assertEquals("Arrays have different length.", expected.length, actual.length);
+        assertEquals(expected.length, actual.length, "Arrays have different length.");
         for (int i = 0; i < expected.length; i++) {
-            assertEquals("Data mismatch at byte " + i, expected[i], actual[i]);
+            assertEquals(expected[i], actual[i], "Data mismatch at byte " + i);
         }
     }
 
@@ -1337,7 +1339,7 @@ public class TestUtil extends Assert {
         if (content == null) {
             content = getContent(mbox, msg.getId());
         }
-        assertNotNull("Content was not fetched from the server", content);
+        assertNotNull(content, "Content was not fetched from the server");
         MimeMessage mimeMsg = new ZMimeMessage(JMSession.getSession(), new SharedByteArrayInputStream(
                 content.getBytes()));
         return mimeMsg.getHeader(headerName, null);
@@ -1503,7 +1505,7 @@ public class TestUtil extends Assert {
         SoapProvisioning prov = TestUtil.newSoapProvisioning();
         ReloadLocalConfigRequest req = new ReloadLocalConfigRequest();
         ReloadLocalConfigResponse resp = prov.invokeJaxb(req);
-        assertNotNull("ReloadLocalConfigResponse", resp);
+        assertNotNull(resp, "ReloadLocalConfigResponse");
     }
 
     public static class UserInfo {
@@ -1575,7 +1577,7 @@ public class TestUtil extends Assert {
     /** This a hacky way to get a more useful description when an assumption fails */
     public static void assumeTrue(String missive, Boolean testVal) {
         try {
-            org.junit.Assume.assumeTrue(testVal);
+            org.junit.jupiter.api.Assumptions.assumeTrue(testVal);
         } catch (AssumptionViolatedException ave) {
             throw new AssumptionViolatedException(missive, null);
         }

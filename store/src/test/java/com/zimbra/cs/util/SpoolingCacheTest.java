@@ -8,23 +8,24 @@ package com.zimbra.cs.util;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.common.localconfig.LC;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.cs.util.SpoolingCache;
 
 public class SpoolingCacheTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         new File("build/test").mkdirs();
         LC.zimbra_tmp_directory.setDefault("build/test");
     }
 
-    @AfterClass
+    @AfterAll
     public static void destroy() throws Exception {
         new File("build/test").delete();
     }
@@ -36,35 +37,35 @@ public class SpoolingCacheTest {
             scache.add(v);
         }
 
-        Assert.assertEquals("spooled", shouldSpool, scache.isSpooled());
-        Assert.assertEquals("entry count matches", STRINGS.length, scache.size());
+        assertEquals(shouldSpool, scache.isSpooled(), "spooled");
+        assertEquals(STRINGS.length, scache.size(), "entry count matches");
         int i = 0;
         for (String v : scache) {
-            Assert.assertEquals("entry matched: #" + i, STRINGS[i++], v);
+            assertEquals(STRINGS[i++], v, "entry matched: #" + i);
         }
-        Assert.assertEquals("correct number of items iterated", STRINGS.length, i);
+        assertEquals(STRINGS.length, i, "correct number of items iterated");
 
     }
 
-    @Test
-    public void memory() throws Exception {
-        SpoolingCache<String> scache = new SpoolingCache<String>(STRINGS.length + 3);
-        test(scache, false);
-        scache.cleanup();
-    }
+ @Test
+ void memory() throws Exception {
+  SpoolingCache<String> scache = new SpoolingCache<String>(STRINGS.length + 3);
+  test(scache, false);
+  scache.cleanup();
+ }
 
-    @Test
-    public void disk() throws Exception {
-        SpoolingCache<String> scache = new SpoolingCache<String>(0);
-        test(scache, true);
-        scache.cleanup();
-    }
+ @Test
+ void disk() throws Exception {
+  SpoolingCache<String> scache = new SpoolingCache<String>(0);
+  test(scache, true);
+  scache.cleanup();
+ }
 
-    @Test
-    public void both() throws Exception {
-        SpoolingCache<String> scache = new SpoolingCache<String>(1);
-        test(scache, true);
-        scache.cleanup();
-    }
+ @Test
+ void both() throws Exception {
+  SpoolingCache<String> scache = new SpoolingCache<String>(1);
+  test(scache, true);
+  scache.cleanup();
+ }
 
 }

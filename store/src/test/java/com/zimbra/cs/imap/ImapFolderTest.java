@@ -7,14 +7,14 @@ package com.zimbra.cs.imap;
 import java.util.HashMap;
 import java.util.Set;
 
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.zimbra.cs.account.Account;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -26,12 +26,12 @@ public class ImapFolderTest {
     private Account acct = null;
     private Mailbox mbox = null;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
         Provisioning prov = Provisioning.getInstance();
@@ -41,28 +41,28 @@ public class ImapFolderTest {
         mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void testGetSubsequence() throws Exception {
-        ImapCredentials creds = new ImapCredentials(acct, ImapCredentials.EnabledHack.NONE);
-        ImapPath path = new ImapPath("trash", creds);
-        byte params = 0;
-        
-        ImapFolder i4folder = new ImapFolder(path, params, null);
-        i4folder.cache(new ImapMessage(1, Type.of((byte) 5), 11, 0, null), true);
-        i4folder.cache(new ImapMessage(2, Type.of((byte) 5), 12, 0, null), true);
-        i4folder.cache(new ImapMessage(3, Type.of((byte) 5), 13, 0, null), true);
-        LocalImapMailboxStore localStore = new LocalImapMailboxStore(mbox);
-        Set<ImapMessage> i4set = i4folder.getSubsequence(null, "1,2", false);
-        Assert.assertNotNull(i4set);
-        Assert.assertEquals(2, i4set.size());
-        
-        i4set = i4folder.getSubsequence(null, "1:3", false);
-        Assert.assertNotNull(i4set);
-        Assert.assertEquals(3, i4set.size());
-    }
+ @Test
+ void testGetSubsequence() throws Exception {
+  ImapCredentials creds = new ImapCredentials(acct, ImapCredentials.EnabledHack.NONE);
+  ImapPath path = new ImapPath("trash", creds);
+  byte params = 0;
+
+  ImapFolder i4folder = new ImapFolder(path, params, null);
+  i4folder.cache(new ImapMessage(1, Type.of((byte) 5), 11, 0, null), true);
+  i4folder.cache(new ImapMessage(2, Type.of((byte) 5), 12, 0, null), true);
+  i4folder.cache(new ImapMessage(3, Type.of((byte) 5), 13, 0, null), true);
+  LocalImapMailboxStore localStore = new LocalImapMailboxStore(mbox);
+  Set<ImapMessage> i4set = i4folder.getSubsequence(null, "1,2", false);
+  assertNotNull(i4set);
+  assertEquals(2, i4set.size());
+
+  i4set = i4folder.getSubsequence(null, "1:3", false);
+  assertNotNull(i4set);
+  assertEquals(3, i4set.size());
+ }
 }

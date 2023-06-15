@@ -4,7 +4,7 @@
 
 package com.zimbra.cs.dav;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
@@ -17,9 +17,9 @@ import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Mountpoint;
 import java.util.HashMap;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 public class UrlNamespaceTest {
@@ -30,7 +30,7 @@ public class UrlNamespaceTest {
   /**
    * @throws java.lang.Exception
    */
-  @BeforeClass
+  @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
@@ -40,30 +40,30 @@ public class UrlNamespaceTest {
   /**
    * @throws java.lang.Exception
    */
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     ctxt = mock(DavContext.class);
     item = mock(Mountpoint.class);
     rcc = mock(RemoteCalendarCollection.class);
   }
 
-  /**
-   * @throws java.lang.Exception
+ /**
+  * @throws java.lang.Exception
    */
-  @Test
-  public void testGetResourceFromMailItem() throws Exception {
-    when(ctxt.useIcalDelegation()).thenReturn(Boolean.FALSE);
-    when(item.getType()).thenReturn(MailItem.Type.MOUNTPOINT);
-    when(item.getDefaultView()).thenReturn(MailItem.Type.TASK);
-    try (MockedStatic<UrlNamespace> urlNamespaceMockedStatic = mockStatic(UrlNamespace.class)) {
-      urlNamespaceMockedStatic
-          .when(() -> UrlNamespace.getRemoteCalendarCollection(ctxt, item))
-          .thenReturn(rcc);
-      urlNamespaceMockedStatic
-          .when(() -> UrlNamespace.getResourceFromMailItem(ctxt, item))
-          .thenCallRealMethod();
-      DavResource resource = UrlNamespace.getResourceFromMailItem(ctxt, item);
-      assertTrue(resource instanceof RemoteCalendarCollection);
-    }
+ @Test
+ void testGetResourceFromMailItem() throws Exception {
+  when(ctxt.useIcalDelegation()).thenReturn(Boolean.FALSE);
+  when(item.getType()).thenReturn(MailItem.Type.MOUNTPOINT);
+  when(item.getDefaultView()).thenReturn(MailItem.Type.TASK);
+  try (MockedStatic<UrlNamespace> urlNamespaceMockedStatic = mockStatic(UrlNamespace.class)) {
+   urlNamespaceMockedStatic
+     .when(() -> UrlNamespace.getRemoteCalendarCollection(ctxt, item))
+     .thenReturn(rcc);
+   urlNamespaceMockedStatic
+     .when(() -> UrlNamespace.getResourceFromMailItem(ctxt, item))
+     .thenCallRealMethod();
+   DavResource resource = UrlNamespace.getResourceFromMailItem(ctxt, item);
+   assertTrue(resource instanceof RemoteCalendarCollection);
   }
+ }
 }

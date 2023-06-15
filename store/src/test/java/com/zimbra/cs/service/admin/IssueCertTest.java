@@ -4,7 +4,7 @@ import static com.zimbra.common.soap.AdminConstants.A_DOMAIN;
 import static com.zimbra.common.soap.AdminConstants.E_MESSAGE;
 import static com.zimbra.common.soap.AdminConstants.ISSUE_CERT_REQUEST;
 import static com.zimbra.soap.DocumentHandler.getRequestedMailbox;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
@@ -31,11 +31,11 @@ import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.MockedStatic;
 
@@ -69,7 +69,7 @@ public class IssueCertTest {
 
   @Rule public ExpectedException expectedEx = ExpectedException.none();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     MailboxTestUtil.initServer();
 
@@ -105,7 +105,7 @@ public class IssueCertTest {
     this.request.addNonUniqueElement(A_DOMAIN).addText(domainId);
   }
 
-  @After
+  @AfterEach
   public void clearData() {
     try {
       MailboxTestUtil.clearData();
@@ -114,104 +114,114 @@ public class IssueCertTest {
     }
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     staticRemoteManager.close();
     staticRemoteCertbot.close();
     staticNotificationManager.close();
   }
 
-  @Test
-  public void shouldSupplyAsyncAndReturnResponse() throws Exception {
-    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
-    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
+ @Test
+ void shouldSupplyAsyncAndReturnResponse() throws Exception {
+  domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
+  domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
 
-    Domain expectedDomain = provisioning.createDomain(domainName, domainAttributes);
+  Domain expectedDomain = provisioning.createDomain(domainName, domainAttributes);
 
-    final String serverName = "serverName";
-    final Server server =
-        provisioning.createServer(
-            serverName,
-            new HashMap<>() {
-              {
-                put(ZAttrProvisioning.A_cn, serverName);
-                put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
-              }
-            });
+  final String serverName = "serverName";
+  final Server server =
+    provisioning.createServer(
+      serverName,
+      new HashMap<>() {
+       {
+        put(ZAttrProvisioning.A_cn, serverName);
+        put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
+       }
+      });
 
-    staticRemoteManager.when(() -> RemoteManager.getRemoteManager(server))
-        .thenReturn(remoteManager);
-    staticRemoteCertbot.when(() -> RemoteCertbot.getRemoteCertbot(remoteManager))
-        .thenReturn(remoteCertbot);
+  staticRemoteManager.when(() -> RemoteManager.getRemoteManager(server))
+    .thenReturn(remoteManager);
+  staticRemoteCertbot.when(() -> RemoteCertbot.getRemoteCertbot(remoteManager))
+    .thenReturn(remoteCertbot);
 
-    Mailbox expectMailbox = getRequestedMailbox(zsc);
-    staticNotificationManager.when(() -> CertificateNotificationManager
-        .getCertificateNotificationManager(expectMailbox, expectedDomain))
-          .thenReturn(notificationManager);
+  Mailbox expectMailbox = getRequestedMailbox(zsc);
+  staticNotificationManager.when(() -> CertificateNotificationManager
+    .getCertificateNotificationManager(expectMailbox, expectedDomain))
+    .thenReturn(notificationManager);
 
-    String expectedCommand = "certbot certonly --agree-tos --email admin@example.com"
-        + " -n --keep --webroot -w /opt/zextras "
-        + "--cert-name example.com "
-        + "-d public.example.com -d virtual.example.com";
+  String expectedCommand = "certbot certonly --agree-tos --email admin@example.com"
+    + " -n --keep --webroot -w /opt/zextras "
+    + "--cert-name example.com "
+    + "-d public.example.com -d virtual.example.com";
 
-    when(remoteCertbot.createCommand(
-        RemoteCommands.CERTBOT_CERTONLY,
-        mail,
-        AdminConstants.DEFAULT_CHAIN,
-        domainName,
-        publicServiceHostName,
-        expectedDomain.getVirtualHostname())).thenReturn(expectedCommand);
+  when(remoteCertbot.createCommand(
+    RemoteCommands.CERTBOT_CERTONLY,
+    mail,
+    AdminConstants.DEFAULT_CHAIN,
+    domainName,
+    publicServiceHostName,
+    expectedDomain.getVirtualHostname())).thenReturn(expectedCommand);
 
-    final Element response = handler.handle(request, context);
-    final Element message = response.getElement(E_MESSAGE);
+  final Element response = handler.handle(request, context);
+  final Element message = response.getElement(E_MESSAGE);
 
-    assertEquals(domainName, message.getAttribute(A_DOMAIN));
-    assertEquals(IssueCert.RESPONSE, message.getText());
+  assertEquals(domainName, message.getAttribute(A_DOMAIN));
+  assertEquals(IssueCert.RESPONSE, message.getText());
 
-    verify(remoteCertbot).supplyAsync(notificationManager, expectedCommand);
-  }
+  verify(remoteCertbot).supplyAsync(notificationManager, expectedCommand);
+ }
 
-  @Test
-  public void shouldReturnInvalidIfNoSuchDomain() throws Exception {
-    expectedEx.expect(ServiceException.class);
-    expectedEx.expectMessage("Domain with id domainId could not be found.");
+ /*~~(Recipe failed with an exception.
+java.lang.NullPointerException: null
+  java.base/java.util.Objects.requireNonNull(Objects.java:221)
+  org.openrewrite.Parser$Input.fromResource(Parser.java:176)
+  org.openrewrite.Parser$Input.fromResource(Parser.java:171)
+  org.openrewrite.java.testing.junit5.ExpectedExceptionToAssertThrows$ExpectedExceptionToAssertThrowsVisitor.lambda$static$0(ExpectedExceptionToAssertThrows.java:78)
+  org.openrewrite.java.internal.template.JavaTemplateParser.compileTemplate(JavaTemplateParser.java:247)
+  org.openrewrite.java.internal.template.JavaTemplateParser.parseBlockStatements(JavaTemplateParser.java:166)
+  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:330)
+  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:102)
+  ...)~~>*/@Test
+ void shouldReturnInvalidIfNoSuchDomain() throws Exception {
+  expectedEx.expect(ServiceException.class);
+  expectedEx.expectMessage("Domain with id domainId could not be found.");
 
-    handler.handle(request, context);
-  }
+  handler.handle(request, context);
+ }
 
-  @Test
-  public void shouldReturnInvalidIfNoPublicServiceHostName() throws Exception {
-    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
-    provisioning.createDomain(domainName, domainAttributes);
+ @Test
+ void shouldReturnInvalidIfNoPublicServiceHostName() throws Exception {
+  domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
+  provisioning.createDomain(domainName, domainAttributes);
 
-    expectedEx.expect(ServiceException.class);
-    expectedEx.expectMessage("must have PublicServiceHostname");
+  expectedEx.expect(ServiceException.class);
+  expectedEx.expectMessage("must have PublicServiceHostname");
 
-    handler.handle(request, context);
-  }
+  handler.handle(request, context);
+ }
 
-  @Test
-  public void shouldReturnInvalidIfNoVirtualHostName() throws Exception {
-    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
+ @Test
+ void shouldReturnInvalidIfNoVirtualHostName() throws Exception {
+  domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
 
-    provisioning.createDomain(domainName, domainAttributes);
+  provisioning.createDomain(domainName, domainAttributes);
 
-    expectedEx.expect(ServiceException.class);
-    expectedEx.expectMessage("must have at least one VirtualHostName.");
+  expectedEx.expect(ServiceException.class);
+  expectedEx.expectMessage("must have at least one VirtualHostName.");
 
-    handler.handle(request, context);
-  }
+  handler.handle(request, context);
+ }
 
-  @Test
-  public void shouldReturnFailureIfNoServerWithProxy() throws Exception {
-    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
-    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
+ @Test
+ void shouldReturnFailureIfNoServerWithProxy() throws Exception {
+  domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
+  domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
 
-    provisioning.createDomain(domainName, domainAttributes);
+  provisioning.createDomain(domainName, domainAttributes);
 
-    expectedEx.expect(ServiceException.class);
-    expectedEx.expectMessage("Issuing LetsEncrypt certificate command requires carbonio-proxy.");
+  expectedEx.expect(ServiceException.class);
+  expectedEx.expectMessage("Issuing LetsEncrypt certificate command requires carbonio-proxy.");
 
-    handler.handle(request, context);
-  }
+  handler.handle(request, context);
+ }
 }

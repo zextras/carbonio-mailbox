@@ -5,8 +5,8 @@
 
 package com.zimbra.cs.imap;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
@@ -16,53 +16,60 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.memcached.MemcachedConnector;
 import com.zimbra.cs.util.ZTestWatchman;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
+import java.util.Optional;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.rules.MethodRule;
-import org.junit.rules.TestName;
 
 /**
  * @author zimbra
  */
 public class MemcachedImapCacheTest {
 
-  @Rule public TestName testName = new TestName();
+   public String testName;
   @Rule public MethodRule watchman = new ZTestWatchman();
-  /**
-   * @throws java.lang.Exception
+
+ /**
+  * @throws java.lang.Exception
    */
-  @Before
-  public void setUp() throws Exception {
-    MailboxTestUtil.initProvisioning("./");
+ @BeforeEach
+ public void setUp(TestInfo testInfo) throws Exception {
+  Optional<Method> testMethod = testInfo.getTestMethod();
+  if (testMethod.isPresent()) {
+   this.testName = testMethod.get().getName();
   }
+  MailboxTestUtil.initProvisioning("./");
+ }
 
   /**
    * @throws java.lang.Exception
    */
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
-  @Test
-  @Ignore("add missing test-timezones-ics file in java-test")
-  public void testInvalidObject() {
-    try {
+ @Test
+ @Disabled("add missing test-timezones-ics file in java-test")
+ void testInvalidObject() {
+  try {
 
-      mockStatic(MemcachedConnector.class);
-      ZimbraMemcachedClient memcachedClient = new MockZimbraMemcachedClient();
-      when(MemcachedConnector.getClient()).thenReturn(memcachedClient);
-      ImapFolder folder = mock(ImapFolder.class);
-      MemcachedImapCache imapCache = new MemcachedImapCache();
-      imapCache.put("trash", folder);
-      ImapFolder folderDeserz = imapCache.get("trash");
-      assertNull(folderDeserz);
-    } catch (Exception e) {
-      fail("Exception should not be thrown");
-    }
+   mockStatic(MemcachedConnector.class);
+   ZimbraMemcachedClient memcachedClient = new MockZimbraMemcachedClient();
+   when(MemcachedConnector.getClient()).thenReturn(memcachedClient);
+   ImapFolder folder = mock(ImapFolder.class);
+   MemcachedImapCache imapCache = new MemcachedImapCache();
+   imapCache.put("trash", folder);
+   ImapFolder folderDeserz = imapCache.get("trash");
+   assertNull(folderDeserz);
+  } catch (Exception e) {
+   fail("Exception should not be thrown");
   }
+ }
 
   public class MockZimbraMemcachedClient extends ZimbraMemcachedClient {
 
