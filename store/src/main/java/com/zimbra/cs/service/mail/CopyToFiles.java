@@ -4,6 +4,7 @@ import static com.google.common.base.Predicates.instanceOf;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.For;
+import static java.util.function.Function.identity;
 
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
@@ -19,10 +20,10 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.control.Try;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import javax.mail.internet.MimePart;
 
 /**
@@ -57,8 +58,8 @@ public class CopyToFiles extends MailDocumentHandler {
         Optional.ofNullable(
                 getRequestObject(request)
                     .flatMap(
-                        copyToFilesRequest ->
-                            this.getAttachmentToCopy(copyToFilesRequest, zsc)
+                copyToFilesRequest ->
+    this.getAttachmentToCopy(copyToFilesRequest, zsc)
                                 .flatMap(
                                     attachment ->
                                         Try.withResources(attachment::getInputStream)
@@ -77,7 +78,7 @@ public class CopyToFiles extends MailDocumentHandler {
                                                             this.getAttachmentName(attachment),
                                                             this.getAttachmentContentType(
                                                                 attachment),
-                                                            Try.of(attachment::getSize))
+                                                        Try.withResources(attachment::getInputStream).of(this::getAttachmentSize).flatMap(identity()))
                                                         .yield(
                                                             (cookie,
                                                                 folderId,
@@ -91,8 +92,8 @@ public class CopyToFiles extends MailDocumentHandler {
                                                                     contentType,
                                                                     inputStream,
                                                                     fileSize)))))
-                    .flatMap(Function.identity())
-                    .flatMap(Function.identity())
+                    .flatMap(identity())
+                    .flatMap(identity())
                     .mapFailure(
                         Case(
                             $(ex -> !(ex instanceof ServiceException)),
@@ -158,6 +159,27 @@ public class CopyToFiles extends MailDocumentHandler {
                             $(instanceOf(Exception.class)),
                             ex -> ServiceException.NOT_FOUND("File not found.", ex))))
         .flatMap(result -> result);
+  }
+
+  /**
+   * Calculates real size of input stream by reading it.
+   * The operation is done by reading chunks of 8kb.
+   * This method exists because for images the size returned by {@link MimePart#getSize()} is not equal to the real one.
+   *
+   * @param inputStream input stream to calculate size of
+   * @return size of given input stream
+   */
+  private Try<Long> getAttachmentSize(InputStream inputStream) {
+
+    return Try.of(
+        () -> {
+          long fileSize = 0;
+          byte[] buffer = new byte[8192];
+          for (int read = inputStream.read(buffer); read != -1; read = inputStream.read(buffer)) {
+            fileSize += read;
+          }
+          return fileSize;
+        });
   }
 
   /**

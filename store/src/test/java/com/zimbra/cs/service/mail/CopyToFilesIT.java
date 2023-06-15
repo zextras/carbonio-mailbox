@@ -1,6 +1,5 @@
 package com.zimbra.cs.service.mail;
 
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -48,6 +47,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -69,15 +70,27 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.model.HttpResponse;
 
 /** Integration tests for CopyToFiles */
+@RunWith(Enclosed.class)
 public class CopyToFilesIT {
 
+  private final String attachment;
+
+  public CopyToFilesIT(String attachment) {
+    this.attachment = attachment;
+  }
+
   private FilesClient mockFilesClient;
+  private final FilesClient realFilesClient = FilesClient.atURL("http://127.0.0.1:20002");
   private AttachmentService mockAttachmentService;
+  private final AttachmentService realAttachmentService = new MailboxAttachmentService();
   private MockServerClient filesServer;
 
   @Rule public ExpectedException exceptionRule = ExpectedException.none();
@@ -134,47 +147,18 @@ public class CopyToFilesIT {
     filesServer.stop();
   }
 
-  /**
-   * Test: copy to files API handles return response with nodeId Creates a Draft with attachment,
-   * calls Files with attachment
-   *
-   * @throws ServiceException
-   */
-  @Test
-  public void shouldReturnNodeIdWhenUploadingAttachment() throws Exception {
-    final String email = "test@zimbra.com";
-    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, email);
-    final Message message = this.createDraftWithFileAttachment(email);
-    final NodeId nodeId = new NodeId();
-    nodeId.setNodeId("1000");
-    filesServer
-        .when(request().withPath("/upload/"))
-        .respond(
-            HttpResponse.response(new ObjectMapper().writeValueAsString(nodeId))
-                .withStatusCode(200));
-    // prepare request
-    Map<String, Object> context = new HashMap<String, Object>();
-    ZimbraSoapContext zsc =
-        new ZimbraSoapContext(
-            AuthProvider.getAuthToken(acct),
-            acct.getId(),
-            SoapProtocol.Soap12,
-            SoapProtocol.Soap12);
-    context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    CopyToFiles copyToFiles =
-        new CopyToFiles(
-            new MailboxAttachmentService(), FilesClient.atURL("http://127.0.0.1:20002"));
-    CopyToFilesRequest up = new CopyToFilesRequest();
-    up.setMessageId(String.valueOf(message.getId()));
-    up.setPart("1");
-    up.setDestinationFolderId("My folder");
-    Element element = JaxbUtil.jaxbToElement(up);
-    // call SOAP API
-    Element el = copyToFiles.handle(element, context);
-    CopyToFilesResponse response = zsc.elementToJaxb(el);
-    // return should be equal to Files response
-    assertEquals(nodeId.getNodeId(), response.getNodeId());
+
+  @RunWith(Parameterized.class)
+  public static class WithParameters {
+    @Parameterized.Parameters
+    public static Collection<String[]> attachments() {
+      return Arrays.asList(new String[][] {{"test-save-to-files.txt"},
+          {"test-save-to-files.jpg"}});
+    }
+
+
   }
+
 
   /**
    * Test passing messageId as UUID:id. This happens in case of delegation/shared mailbox.
@@ -193,7 +177,7 @@ public class CopyToFilesIT {
     final String sharedEmail = "shared@zimbra.com";
     final Account delegatedAcct =
         Provisioning.getInstance().get(Key.AccountBy.name, "delegated@zimbra.com");
-    final Message draftWithFileAttachment = this.createDraftWithFileAttachment(sharedEmail);
+    final Message draftWithFileAttachment = this.createDraftWithFileAttachment(sharedEmail, attachment);
     // prepare request
     String sharedAcctUUID = Provisioning.getInstance().get(Key.AccountBy.name, sharedEmail).getId();
     Map<String, Object> context = new HashMap<String, Object>();
@@ -205,8 +189,7 @@ public class CopyToFilesIT {
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
     CopyToFiles copyToFiles =
-        new CopyToFiles(
-            new MailboxAttachmentService(), FilesClient.atURL("http://127.0.0.1:20002"));
+        new CopyToFiles(realAttachmentService, realFilesClient);
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId(sharedAcctUUID + ":" + draftWithFileAttachment.getId());
     up.setPart("1");
@@ -237,7 +220,7 @@ public class CopyToFilesIT {
             SoapProtocol.Soap12,
             SoapProtocol.Soap12));
     // request unknown file -> SoapFault
-    CopyToFiles copyToFiles = new CopyToFiles(new MailboxAttachmentService(), mockFilesClient);
+    CopyToFiles copyToFiles = new CopyToFiles(realAttachmentService, mockFilesClient);
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -358,10 +341,11 @@ public class CopyToFilesIT {
   /**
    * Creates a draft for Save to Files
    *
-   * @param sender
+   * @param sender who will send the email
+   * @param attachment attachment resource location
    * @throws Exception
    */
-  private Message createDraftWithFileAttachment(String sender) throws Exception {
+  private Message createDraftWithFileAttachment(String sender, String attachment) throws Exception {
     final MimeMessage mimeMessage = new MimeMessage(Session.getInstance(new Properties()));
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, sender);
     final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(acct);
@@ -371,9 +355,12 @@ public class CopyToFilesIT {
     mimeMessage.setRecipients(RecipientType.TO, recipients);
     mimeMessage.setSubject("Test email");
     Multipart multipart = new MimeMultipart();
+    MimeBodyPart text = new MimeBodyPart();
+    text.setText("Hello there");
     MimeBodyPart attachmentPart = new MimeBodyPart();
     attachmentPart.attachFile(
-        new File(this.getClass().getResource("/test-save-to-files.txt").getFile()));
+        new File(this.getClass().getResource("/" + attachment).getFile()));
+    multipart.addBodyPart(attachmentPart);
     multipart.addBodyPart(attachmentPart);
     mimeMessage.setContent(multipart);
     mimeMessage.setSender(new InternetAddress(acct.getName()));
