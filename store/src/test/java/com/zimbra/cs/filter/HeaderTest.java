@@ -5,21 +5,9 @@
 
 package com.zimbra.cs.filter;
 
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import javax.mail.internet.MimeMessage;
-
-import org.junit.Rule;
-import org.junit.jupiter.api.*;
-import org.junit.rules.MethodRule;
-
-import com.zimbra.common.util.ArrayUtil;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.zmime.ZMimeMessage;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -35,11 +23,21 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.JMSession;
-import com.zimbra.cs.util.ZTestWatchman;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import javax.mail.internet.MimeMessage;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 public class HeaderTest {
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
     
     private static String sampleMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"

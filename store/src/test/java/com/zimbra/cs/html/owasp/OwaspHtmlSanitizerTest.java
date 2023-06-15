@@ -16,7 +16,6 @@ import com.zimbra.cs.mime.MPartInfo;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.servlet.ZThreadLocal;
-import com.zimbra.cs.util.ZTestWatchman;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,9 +24,11 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.Set;
-import org.junit.Rule;
-import org.junit.jupiter.api.*;
-import org.junit.rules.MethodRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 
 public class OwaspHtmlSanitizerTest {
@@ -56,8 +57,6 @@ public class OwaspHtmlSanitizerTest {
       + "            )";
   
   public String testName;
-  @Rule
-  public MethodRule watchman = new ZTestWatchman();
 
   @BeforeAll
   public static void init() throws Exception {

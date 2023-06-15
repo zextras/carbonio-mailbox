@@ -4,38 +4,32 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.service.admin;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.google.common.collect.Maps;
+import com.zimbra.common.soap.AdminConstants;
+import com.zimbra.common.soap.Element;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Domain;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.service.mail.ServiceTestUtil;
+import com.zimbra.soap.SoapEngine;
+import com.zimbra.soap.ZimbraSoapContext;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-import org.junit.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
-
-import com.google.common.collect.Maps;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.soap.Element;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Domain;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.cs.service.mail.ServiceTestUtil;
-import com.zimbra.cs.util.ZTestWatchman;
-import com.zimbra.soap.SoapEngine;
-import com.zimbra.soap.ZimbraSoapContext;
 
 public class GetDomainEncodingTest {
 
     
     public String testName;
-    @Rule
-    public MethodRule watchman = new ZTestWatchman();
 
  @BeforeEach
  public void setUp(TestInfo testInfo) throws Exception {

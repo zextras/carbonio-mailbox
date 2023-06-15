@@ -4,7 +4,7 @@ import static com.zimbra.common.soap.AdminConstants.A_DOMAIN;
 import static com.zimbra.common.soap.AdminConstants.E_MESSAGE;
 import static com.zimbra.common.soap.AdminConstants.ISSUE_CERT_REQUEST;
 import static com.zimbra.soap.DocumentHandler.getRequestedMailbox;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
@@ -31,12 +31,10 @@ import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.MockedStatic;
 
 public class IssueCertTest {
@@ -66,8 +64,6 @@ public class IssueCertTest {
 
   private Provisioning provisioning;
   private ZimbraSoapContext zsc;
-
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -171,57 +167,30 @@ public class IssueCertTest {
   verify(remoteCertbot).supplyAsync(notificationManager, expectedCommand);
  }
 
- /*~~(Recipe failed with an exception.
-java.lang.NullPointerException: null
-  java.base/java.util.Objects.requireNonNull(Objects.java:221)
-  org.openrewrite.Parser$Input.fromResource(Parser.java:176)
-  org.openrewrite.Parser$Input.fromResource(Parser.java:171)
-  org.openrewrite.java.testing.junit5.ExpectedExceptionToAssertThrows$ExpectedExceptionToAssertThrowsVisitor.lambda$static$0(ExpectedExceptionToAssertThrows.java:78)
-  org.openrewrite.java.internal.template.JavaTemplateParser.compileTemplate(JavaTemplateParser.java:247)
-  org.openrewrite.java.internal.template.JavaTemplateParser.parseBlockStatements(JavaTemplateParser.java:166)
-  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:330)
-  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:102)
-  ...)~~>*/@Test
- void shouldReturnInvalidIfNoSuchDomain() throws Exception {
-  expectedEx.expect(ServiceException.class);
-  expectedEx.expectMessage("Domain with id domainId could not be found.");
-
-  handler.handle(request, context);
+ @Test
+ void shouldReturnInvalidIfNoSuchDomain() {
+   assertThrows(ServiceException.class, () -> handler.handle(request, context), "Domain with id domainId could not be found.");
  }
 
  @Test
  void shouldReturnInvalidIfNoPublicServiceHostName() throws Exception {
   domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
   provisioning.createDomain(domainName, domainAttributes);
-
-  expectedEx.expect(ServiceException.class);
-  expectedEx.expectMessage("must have PublicServiceHostname");
-
-  handler.handle(request, context);
+  assertThrows(ServiceException.class, () -> handler.handle(request, context),"must have PublicServiceHostname");
  }
 
  @Test
  void shouldReturnInvalidIfNoVirtualHostName() throws Exception {
   domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
-
   provisioning.createDomain(domainName, domainAttributes);
-
-  expectedEx.expect(ServiceException.class);
-  expectedEx.expectMessage("must have at least one VirtualHostName.");
-
-  handler.handle(request, context);
+  assertThrows(ServiceException.class, () -> handler.handle(request, context),"must have at least one VirtualHostName.");
  }
 
  @Test
  void shouldReturnFailureIfNoServerWithProxy() throws Exception {
   domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
   domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
-
   provisioning.createDomain(domainName, domainAttributes);
-
-  expectedEx.expect(ServiceException.class);
-  expectedEx.expectMessage("Issuing LetsEncrypt certificate command requires carbonio-proxy.");
-
-  handler.handle(request, context);
+  assertThrows(ServiceException.class, () -> handler.handle(request, context),"Issuing LetsEncrypt certificate command requires carbonio-proxy.");
  }
 }

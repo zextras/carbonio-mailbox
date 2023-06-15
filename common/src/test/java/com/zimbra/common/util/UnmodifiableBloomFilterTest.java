@@ -5,23 +5,19 @@
 
 package com.zimbra.common.util;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
-
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
 
 
 public class UnmodifiableBloomFilterTest {
 
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
   protected static UnmodifiableBloomFilter<String> bloomFilter =
       UnmodifiableBloomFilter.createFilterFromFile("src/test/resources/common-passwords.txt");
 

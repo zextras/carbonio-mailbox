@@ -4,34 +4,28 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.service;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 
-import org.junit.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureAddressVerificationStatus;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.cs.util.ZTestWatchman;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 public class ExternalUserProvServletTest {
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
 
     @BeforeAll
     public static void init() throws Exception {

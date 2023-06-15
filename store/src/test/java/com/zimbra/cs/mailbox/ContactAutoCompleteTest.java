@@ -4,21 +4,10 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.mailbox;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import javax.mail.internet.InternetAddress;
 
-import org.junit.Rule;
-import org.junit.jupiter.api.*;
-import org.junit.rules.MethodRule;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.ImmutableMap;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.zimbra.common.account.Key;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
@@ -26,7 +15,19 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.ContactAutoComplete.AutoCompleteResult;
 import com.zimbra.cs.mailbox.ContactAutoComplete.ContactEntry;
 import com.zimbra.cs.mime.ParsedContact;
-import com.zimbra.cs.util.ZTestWatchman;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import javax.mail.internet.InternetAddress;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
 
 /**
  * Unit test for {@link ContactAutoComplete}.
@@ -36,7 +37,7 @@ import com.zimbra.cs.util.ZTestWatchman;
 public final class ContactAutoCompleteTest {
 
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
 
     @BeforeAll
     public static void init() throws Exception {

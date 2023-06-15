@@ -26,18 +26,18 @@ import com.zimbra.soap.account.message.ModifyPrefsRequest;
 import com.zimbra.soap.account.type.Pref;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
-import org.junit.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
-import org.junit.rules.TestWatchman;
-import org.junit.runners.model.FrameworkMethod;
 
 public class ModifyPrefsTest {
 
@@ -45,13 +45,6 @@ public class ModifyPrefsTest {
 
     
     public String testName;
-    @Rule
-    public MethodRule watchman = new TestWatchman() {
-        @Override
-        public void failed(Throwable e, FrameworkMethod method) {
-            System.out.println(method.getName() + " " + e.getClass().getSimpleName());
-        }
-    };
 
     @BeforeAll
     public static void init() throws Exception {

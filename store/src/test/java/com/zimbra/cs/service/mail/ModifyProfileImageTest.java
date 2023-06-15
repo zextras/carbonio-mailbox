@@ -4,8 +4,7 @@
 
 package com.zimbra.cs.service.mail;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -19,7 +18,6 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.service.account.GetInfo;
-import com.zimbra.cs.util.ZTestWatchman;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.GetInfoRequest;
 import com.zimbra.soap.account.message.GetInfoResponse;
@@ -27,21 +25,24 @@ import com.zimbra.soap.mail.message.ModifyProfileImageRequest;
 import com.zimbra.soap.mail.message.ModifyProfileImageResponse;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.io.IOUtils;
-import org.junit.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
 
 public class ModifyProfileImageTest {
 
    public String testName;
-  @Rule public MethodRule watchman = new ZTestWatchman();
+  
 
  @BeforeEach
  public void setUp(TestInfo testInfo) throws Exception {

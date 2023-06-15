@@ -4,19 +4,10 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.filter;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import org.junit.Rule;
-import org.junit.jupiter.api.*;
-import org.junit.rules.MethodRule;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.filter.Sieve.Flag;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
@@ -29,7 +20,16 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
-import com.zimbra.cs.util.ZTestWatchman;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
 
 /**
  * Unit test for {@link Flag}.
@@ -39,7 +39,7 @@ import com.zimbra.cs.util.ZTestWatchman;
 public final class FlagTest {
 
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
     
     @BeforeAll
     public static void init() throws Exception {

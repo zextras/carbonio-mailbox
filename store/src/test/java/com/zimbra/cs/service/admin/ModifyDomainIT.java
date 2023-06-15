@@ -1,7 +1,6 @@
 package com.zimbra.cs.service.admin;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
@@ -22,11 +21,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.junit.Rule;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
+
 
 public class ModifyDomainIT {
 
@@ -46,8 +45,6 @@ public class ModifyDomainIT {
       e.printStackTrace();
     }
   }
-
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
 
   private Account createDelegatedAdminAccount(Domain domain, Boolean hasRight) throws ServiceException {
     return provisioning.createAccount(
@@ -86,25 +83,11 @@ public class ModifyDomainIT {
     };
   }
 
- /*~~(Recipe failed with an exception.
-java.lang.NullPointerException: null
-  java.base/java.util.Objects.requireNonNull(Objects.java:221)
-  org.openrewrite.Parser$Input.fromResource(Parser.java:176)
-  org.openrewrite.Parser$Input.fromResource(Parser.java:171)
-  org.openrewrite.java.testing.junit5.ExpectedExceptionToAssertThrows$ExpectedExceptionToAssertThrowsVisitor.lambda$static$0(ExpectedExceptionToAssertThrows.java:78)
-  org.openrewrite.java.internal.template.JavaTemplateParser.compileTemplate(JavaTemplateParser.java:247)
-  org.openrewrite.java.internal.template.JavaTemplateParser.parseBlockStatements(JavaTemplateParser.java:166)
-  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:330)
-  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:102)
-  ...)~~>*/@Test
+ @Test
  void shouldThrowExceptionForDelegatedAdminIfPublicServiceHostnameNotCompliantWithDomain()
    throws ServiceException {
   final String domainName = "demo.zextras.io";
   final String newPubServiceHostname = "newdemo.zextras.io";
-  expectedEx.expect(ServiceException.class);
-  expectedEx.expectMessage(
-    "Public service hostname must be a valid FQDN and compatible with current domain (or its"
-      + " aliases).");
   final Domain domain =
     provisioning.createDomain(
       domainName,
@@ -123,7 +106,9 @@ java.lang.NullPointerException: null
      }
     };
   modifyDomainRequest.setAttrs(attrsToUpdate);
-  new MockedModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
+  assertThrows(ServiceException.class, () ->
+  new MockedModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx), "Public service hostname must be a valid FQDN and compatible with current domain (or its"
+      + " aliases).");
  }
 
  @Test
@@ -314,10 +299,6 @@ java.lang.NullPointerException: null
    throws ServiceException {
   final String domainName = UUID.randomUUID() + ".zextras.io";
   final String virtualHostname = "virtual.whatever.not.compliant";
-  expectedEx.expect(ServiceException.class);
-  expectedEx.expectMessage(
-    "Virtual hostnames must be valid FQDNs and compatible with current domain (or its"
-      + " aliases).");
   final Domain domain =
     provisioning.createDomain(
       domainName,
@@ -336,7 +317,9 @@ java.lang.NullPointerException: null
      }
     };
   modifyDomainRequest.setAttrs(attrsToUpdate);
-  new MockedModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
+  assertThrows(ServiceException.class, () -> new MockedModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx),
+      "Virtual hostnames must be valid FQDNs and compatible with current domain (or its"
+          + " aliases).");
   assertEquals(0, provisioning.getDomainByName(domainName).getVirtualHostname().length);
  }
 
@@ -402,8 +385,6 @@ java.lang.NullPointerException: null
 
  @Test
  void shouldThrowDomainNameImmutableWhenModifyingDomainName() throws ServiceException {
-  expectedEx.expect(ServiceException.class);
-  expectedEx.expectMessage(ZAttrProvisioning.A_zimbraDomainName + " cannot be changed.");
   final String domainName = "demo4.zextras.io";
   final String newDomainName = "newDemo4.zextras.io";
   final Domain domain =
@@ -424,7 +405,8 @@ java.lang.NullPointerException: null
      }
     };
   modifyDomainRequest.setAttrs(attrsToUpdate);
-  new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx);
+  assertThrows(ServiceException.class, () -> new ModifyDomain().handle(JaxbUtil.jaxbToElement(modifyDomainRequest), ctx),
+   ZAttrProvisioning.A_zimbraDomainName + " cannot be changed.");
  }
 
  /**

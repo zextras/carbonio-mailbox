@@ -7,13 +7,13 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
-import org.junit.Rule;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
+
 
 import com.zimbra.cs.account.Account;
 
@@ -23,14 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.server.ServerThrottle;
-import com.zimbra.cs.util.ZTestWatchman;
+
 
 
 public class Pop3HandlerTest {
     private static final String LOCAL_USER = "localpoptest@zimbra.com";
 
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
 
     @BeforeAll
     public static void init() throws Exception {

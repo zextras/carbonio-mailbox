@@ -5,11 +5,6 @@
 package com.zimbra.cs.ephemeral.migrate;
 
 import static org.junit.jupiter.api.Assertions.*;
-import java.lang.reflect.Method;
-import java.util.*;
-import org.junit.Rule;
-import org.junit.jupiter.api.*;
-import org.junit.rules.MethodRule;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -28,11 +23,23 @@ import com.zimbra.cs.ephemeral.migrate.AttributeMigration.MigrationCallback;
 import com.zimbra.cs.ephemeral.migrate.AttributeMigration.MigrationTask;
 import com.zimbra.cs.ephemeral.migrate.MigrationInfo.Status;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.cs.util.ZTestWatchman;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 public class MigrateAttributesTest {
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
 
     private static Map<String, AttributeConverter> converters = new HashMap<String, AttributeConverter>();
     static {

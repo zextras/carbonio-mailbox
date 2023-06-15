@@ -4,27 +4,10 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.service;
-import java.lang.reflect.Method;
-import java.util.*;
-import javax.mail.Address;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
-import org.junit.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
-import org.junit.rules.TestWatchman;
-import org.junit.runners.model.FrameworkMethod;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import com.zimbra.common.account.ZAttrProvisioning.FeatureResetPasswordStatus;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -43,6 +26,21 @@ import com.zimbra.cs.service.account.ResetPassword;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.ResetPasswordRequest;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import javax.mail.Address;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 public class ResetPasswordTest {
 
@@ -52,14 +50,6 @@ public class ResetPasswordTest {
 
     
     public String testName;
-    @Rule
-    public MethodRule watchman = new TestWatchman() {
-
-        @Override
-        public void failed(Throwable e, FrameworkMethod method) {
-            System.out.println(method.getName() + " " + e.getClass().getSimpleName());
-        }
-    };
 
     @BeforeAll
     public static void init() throws Exception {

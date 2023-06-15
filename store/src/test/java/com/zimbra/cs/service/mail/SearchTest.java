@@ -4,17 +4,10 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.service.mail;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Optional;
-import org.junit.Rule;
-import org.junit.jupiter.api.*;
-import org.junit.rules.MethodRule;
-
-import com.google.common.collect.Maps;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.Maps;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
@@ -25,13 +18,19 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
-import com.zimbra.cs.util.ZTestWatchman;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 public class SearchTest {
     
     public String testName;
-    @Rule
-    public MethodRule watchman = new ZTestWatchman();
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();

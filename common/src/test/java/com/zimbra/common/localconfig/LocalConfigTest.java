@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ public class LocalConfigTest {
     private void assertEquals(String expected, KnownKey key) {
         try {
             String actual = get(key);
-            assertEquals(expected, actual);
+          Assertions.assertEquals(expected, actual);
         } catch (ConfigException e) {
             e.printStackTrace();
             fail();

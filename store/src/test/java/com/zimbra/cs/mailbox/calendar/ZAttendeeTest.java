@@ -5,24 +5,10 @@
 
 package com.zimbra.cs.mailbox.calendar;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import org.junit.Rule;
-import org.junit.internal.matchers.StringContains;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
-
-import com.google.common.collect.Lists;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.zimbra.common.calendar.TimeZoneMap;
 import com.zimbra.common.calendar.WellKnownTimeZones;
@@ -37,12 +23,20 @@ import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.mime.ParsedMessage.CalendarPartInfo;
-import com.zimbra.cs.util.ZTestWatchman;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import org.hamcrest.core.StringContains;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 public class ZAttendeeTest {
 
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
 
  @BeforeEach
  public void setUp(TestInfo testInfo) throws Exception {

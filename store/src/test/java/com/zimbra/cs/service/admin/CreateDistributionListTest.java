@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.service.ServiceException;
@@ -25,11 +26,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Rule;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
+
 
 public class CreateDistributionListTest {
 
@@ -40,9 +41,6 @@ public class CreateDistributionListTest {
   private static final String DOMAIN_ADMIN_PASSWORD = "assext";
 
   private static Provisioning provisioningSpy;
-
-  @Rule
-  public final ExpectedException exceptionRule = ExpectedException.none();
 
   @BeforeAll
   public static void init() throws Exception {
@@ -60,17 +58,7 @@ public class CreateDistributionListTest {
   *
   * @throws ServiceException if any
   */
- /*~~(Recipe failed with an exception.
-java.lang.NullPointerException: null
-  java.base/java.util.Objects.requireNonNull(Objects.java:221)
-  org.openrewrite.Parser$Input.fromResource(Parser.java:176)
-  org.openrewrite.Parser$Input.fromResource(Parser.java:171)
-  org.openrewrite.java.testing.junit5.ExpectedExceptionToAssertThrows$ExpectedExceptionToAssertThrowsVisitor.lambda$static$0(ExpectedExceptionToAssertThrows.java:78)
-  org.openrewrite.java.internal.template.JavaTemplateParser.compileTemplate(JavaTemplateParser.java:247)
-  org.openrewrite.java.internal.template.JavaTemplateParser.parseBlockStatements(JavaTemplateParser.java:166)
-  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:330)
-  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:102)
-  ...)~~>*/@Test
+ @Test
  void shouldThrowServiceExceptionWhenDelegatedAdminRequestToCreateDynamicDistributionList()
    throws ServiceException {
 
@@ -111,12 +99,8 @@ java.lang.NullPointerException: null
   final DynamicGroup mockDGroup = mock(DynamicGroup.class);
   doReturn(mockDGroup).when(provisioningSpy).createGroup(anyString(), anyMap(), anyBoolean());
 
-  //setup tests cases
-  exceptionRule.expect(ServiceException.class);
-  exceptionRule.expectMessage(
-    "Delegated Admins are not allowed to create Dynamic Distribution Lists");
-
   //execute request
-  createDistributions.handle(JaxbUtil.jaxbToElement(createDistributionListRequest), context);
+  assertThrows(ServiceException.class, () -> createDistributions.handle(JaxbUtil.jaxbToElement(createDistributionListRequest), context),
+      "Delegated Admins are not allowed to create Dynamic Distribution Lists");
  }
 }

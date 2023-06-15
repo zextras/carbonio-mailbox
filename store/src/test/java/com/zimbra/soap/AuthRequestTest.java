@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Optional;
-import org.junit.Rule;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
+
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -29,7 +29,7 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.account.Auth;
 import com.zimbra.cs.service.mail.SendMsgTest.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
-import com.zimbra.cs.util.ZTestWatchman;
+
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.account.type.PreAuth;
 import com.zimbra.soap.type.AccountSelector;
@@ -49,7 +49,7 @@ public class AuthRequestTest {
     private static final String defaultPwd = "test123";
     private static final String accountAlias = "alias@zimbra.com";
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
 
     @BeforeAll
     public static void init() throws Exception {

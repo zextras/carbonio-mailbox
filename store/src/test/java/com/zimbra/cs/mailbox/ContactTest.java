@@ -43,7 +43,7 @@ import com.zimbra.cs.service.formatter.VCard;
 import com.zimbra.cs.service.mail.ToXML;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.util.JMSession;
-import com.zimbra.cs.util.ZTestWatchman;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -59,12 +59,12 @@ import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimePart;
-import org.junit.Rule;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
+
 import org.mockito.MockedStatic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +78,7 @@ public final class ContactTest {
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
    public String testName;
-  @Rule public MethodRule watchman = new ZTestWatchman();
+  
 
  @BeforeEach
  public void setUp(TestInfo testInfo) throws Exception {

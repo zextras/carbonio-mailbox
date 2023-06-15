@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.Rule;
+
 import org.junit.jupiter.api.*;
-import org.junit.rules.MethodRule;
+
 
 import com.google.common.collect.Maps;
 
@@ -33,12 +33,12 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.SendMsgTest.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.util.ItemId;
-import com.zimbra.cs.util.ZTestWatchman;
+
 
 public class RejectTest {
 
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
     
     private static String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
             + "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"

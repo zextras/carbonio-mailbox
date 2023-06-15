@@ -7,9 +7,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Rule;
+
 import org.junit.jupiter.api.*;
-import org.junit.rules.MethodRule;
+
 
 import com.zimbra.common.service.ServiceException;
 
@@ -29,7 +29,7 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.service.mail.Search;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
-import com.zimbra.cs.util.ZTestWatchman;
+
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SearchRequest;
 import com.zimbra.soap.mail.message.SearchResponse;
@@ -42,7 +42,7 @@ import com.zimbra.soap.type.SearchHit;
  */
 public class ItemQueryTest {
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
 
     @BeforeAll
     public static void init() throws Exception {

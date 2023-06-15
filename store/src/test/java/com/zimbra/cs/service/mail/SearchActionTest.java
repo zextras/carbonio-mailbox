@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -25,7 +25,6 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.util.TypedIdList;
-import com.zimbra.cs.util.ZTestWatchman;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.ConvActionRequest;
@@ -37,18 +36,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
 import org.mockito.MockedStatic;
 
 public class SearchActionTest {
 
    public String testName;
-  @Rule public MethodRule watchman = new ZTestWatchman();
 
  @BeforeEach
  public void setUp(TestInfo testInfo) throws Exception {

@@ -14,18 +14,18 @@ import static org.mockito.Mockito.when;
 import com.zimbra.common.util.memcached.ZimbraMemcachedClient;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.memcached.MemcachedConnector;
-import com.zimbra.cs.util.ZTestWatchman;
+
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.Optional;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.junit.Rule;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
+
 
 /**
  * @author zimbra
@@ -33,7 +33,7 @@ import org.junit.rules.MethodRule;
 public class MemcachedImapCacheTest {
 
    public String testName;
-  @Rule public MethodRule watchman = new ZTestWatchman();
+  
 
  /**
   * @throws java.lang.Exception

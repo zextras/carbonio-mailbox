@@ -4,21 +4,10 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.service.mail;
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
-import org.junit.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -26,14 +15,20 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.cs.util.ZTestWatchman;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
 
 public class AutoCompleteTest {
 
     
     public String testName;
-    @Rule
-    public MethodRule watchman = new ZTestWatchman();
 
  @BeforeEach
  public void setUp(TestInfo testInfo) throws Exception {

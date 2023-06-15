@@ -1,6 +1,6 @@
 package com.zimbra.cs.mailbox.calendar;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.calendar.ZCalendar.ZCalendarBuilder;
@@ -8,28 +8,18 @@ import com.zimbra.common.calendar.ZCalendar.ZVCalendar;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class InviteTest {
 
-  public InviteTest(String scheduleAgentParam, ScheduleAgent scheduleAgentExpected) {
-    this.scheduleAgentParam = scheduleAgentParam;
-    this.scheduleAgentExpected = scheduleAgentExpected;
-  }
-
   private Provisioning prov;
-  private ScheduleAgent scheduleAgentExpected;
-  private String scheduleAgentParam;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -37,19 +27,15 @@ public class InviteTest {
     prov = Provisioning.getInstance();
   }
 
-  @Parameters
-  public static Collection<Object[]> scheduleAgentParamData() {
-    // The ";" is added to avoid error in building the iCalendar request
-    return Arrays.asList(
-        new Object[][] {
-          {";SCHEDULE-AGENT=SERVER", ScheduleAgent.SERVER},
-          {";SCHEDULE-AGENT=CLIENT", ScheduleAgent.CLIENT},
-          {";SCHEDULE-AGENT=serVeR", ScheduleAgent.SERVER},
-          {";SCHEDULE-AGENT=client", ScheduleAgent.CLIENT},
-          {"", ScheduleAgent.SERVER},
-          {";SCHEDULE-AGENT=NONE", ScheduleAgent.NONE},
-          {";SCHEDULE-AGENT=None", ScheduleAgent.NONE},
-        });
+  private static Stream<Arguments> getScheduleAgentParams() {
+    return Stream.of(
+      Arguments.of(";SCHEDULE-AGENT=SERVER", ScheduleAgent.SERVER),
+      Arguments.of(";SCHEDULE-AGENT=CLIENT", ScheduleAgent.CLIENT),
+      Arguments.of(";SCHEDULE-AGENT=serVeR", ScheduleAgent.SERVER),
+      Arguments.of(";SCHEDULE-AGENT=client", ScheduleAgent.CLIENT),
+      Arguments.of("", ScheduleAgent.SERVER),
+      Arguments.of(";SCHEDULE-AGENT=NONE", ScheduleAgent.NONE),
+      Arguments.of(";SCHEDULE-AGENT=None", ScheduleAgent.NONE));
   }
 
  /**
@@ -57,18 +43,9 @@ public class InviteTest {
   *
   * @throws Exception
    */
- /*~~(Recipe failed with an exception.
-java.lang.NullPointerException: null
-  java.base/java.util.Objects.requireNonNull(Objects.java:221)
-  org.openrewrite.Parser$Input.fromResource(Parser.java:176)
-  org.openrewrite.Parser$Input.fromResource(Parser.java:171)
-  org.openrewrite.java.testing.junit5.ParameterizedRunnerToParameterized$ParameterizedRunnerToParameterizedTestsVisitor.lambda$static$0(ParameterizedRunnerToParameterized.java:154)
-  org.openrewrite.java.internal.template.JavaTemplateParser.compileTemplate(JavaTemplateParser.java:247)
-  org.openrewrite.java.internal.template.JavaTemplateParser.lambda$parseAnnotations$7(JavaTemplateParser.java:207)
-  org.openrewrite.java.internal.template.JavaTemplateParser.cache(JavaTemplateParser.java:256)
-  org.openrewrite.java.internal.template.JavaTemplateParser.parseAnnotations(JavaTemplateParser.java:204)
-  ...)~~>*/@Test
- void shouldReturnInviteWithCorrectScheduleAgent() throws Exception {
+ @ParameterizedTest
+ @MethodSource("getScheduleAgentParams")
+ void shouldReturnInviteWithCorrectScheduleAgent(String scheduleAgentParam, ScheduleAgent scheduleAgentExpected) throws Exception {
 
   final String organizerUuid = UUID.randomUUID().toString();
   Account organizer =

@@ -5,23 +5,9 @@
 
 package com.zimbra.cs.store.http;
 
-import java.io.File;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.io.Files;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.FileUtil;
@@ -35,6 +21,17 @@ import com.zimbra.cs.mailbox.MailboxTest;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.external.AbstractExternalStoreManagerTest;
+import java.io.File;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
 
@@ -112,7 +109,7 @@ public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
   MockHttpStore.setFail();
   try {
    mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
-   fail("expected exception not thrown");
+   Assertions.fail("expected exception not thrown");
   } catch (ServiceException expected) {
 
   }
@@ -127,7 +124,7 @@ public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
   MockHttpStore.setDelay();
   try {
    mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
-   fail("expected exception not thrown");
+   Assertions.fail("expected exception not thrown");
   } catch (ServiceException expected) {
 
   }

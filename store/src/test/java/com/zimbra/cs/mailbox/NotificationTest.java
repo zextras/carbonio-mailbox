@@ -4,32 +4,29 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.mailbox;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.google.common.collect.Maps;
+import com.zimbra.common.account.Key;
+import com.zimbra.common.account.ZAttrProvisioning.PrefExternalSendersType;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-import org.junit.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
 
-import com.google.common.collect.Maps;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.zimbra.common.account.Key;
-import com.zimbra.common.account.ZAttrProvisioning.PrefExternalSendersType;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.util.ZTestWatchman;
 
 public class NotificationTest {
     
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
 
     @BeforeAll
     public static void init() throws Exception {

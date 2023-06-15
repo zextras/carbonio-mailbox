@@ -18,19 +18,19 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.SearchFolder;
 import com.zimbra.cs.server.ServerThrottle;
-import com.zimbra.cs.util.ZTestWatchman;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.junit.Rule;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.rules.MethodRule;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import qa.unittest.TestUtil;
@@ -41,7 +41,7 @@ public class ImapHandlerTest {
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
 
  @BeforeEach
  public void setUp(TestInfo testInfo) throws Exception {

@@ -5,21 +5,9 @@
 
 package com.zimbra.cs.filter;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import org.apache.jsieve.SieveFactory;
-import org.apache.jsieve.commands.AbstractActionCommand;
-import org.junit.Rule;
-import org.junit.jupiter.api.*;
-import org.junit.rules.MethodRule;
-
-import com.zimbra.cs.account.Account;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.extension.ExtensionTestUtil;
@@ -32,7 +20,20 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
-import com.zimbra.cs.util.ZTestWatchman;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import org.apache.jsieve.SieveFactory;
+import org.apache.jsieve.commands.AbstractActionCommand;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
 
 /**
  * Unit test for {@link com.zimbra.cs.filter.RuleManager}
@@ -41,7 +42,7 @@ import com.zimbra.cs.util.ZTestWatchman;
 public final class RuleManagerWithCustomActionFilterTest {
 
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
     
     private static SieveFactory original_sf;
     

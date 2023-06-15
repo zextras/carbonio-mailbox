@@ -5,6 +5,21 @@
 
 package com.zimbra.cs.html;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.mime.MimeConstants;
+import com.zimbra.common.util.ByteUtil;
+import com.zimbra.common.util.StringUtil;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.html.owasp.OwaspDefang;
+import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.mime.MPartInfo;
+import com.zimbra.cs.mime.Mime;
+import com.zimbra.cs.mime.ParsedMessage;
+import com.zimbra.cs.servlet.ZThreadLocal;
+import com.zimbra.soap.RequestContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,28 +32,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
-
-import org.junit.Rule;
-import org.junit.jupiter.api.*;
-import org.junit.rules.MethodRule;
-
-import com.zimbra.common.localconfig.LC;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import com.zimbra.common.mime.MimeConstants;
-import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.StringUtil;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.html.owasp.OwaspDefang;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.cs.mime.MPartInfo;
-import com.zimbra.cs.mime.Mime;
-import com.zimbra.cs.mime.ParsedMessage;
-import com.zimbra.cs.servlet.ZThreadLocal;
-import com.zimbra.cs.util.ZTestWatchman;
-import com.zimbra.soap.RequestContext;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tired of regressions in the defang filter. Unit test based on fixes I found in bugzilla over the years for different
@@ -49,7 +47,7 @@ import com.zimbra.soap.RequestContext;
 public class DefangFilterTest {
     private static String EMAIL_BASE_DIR = "data/unittest/email/";
      public String testName;
-    @Rule public MethodRule watchman = new ZTestWatchman();
+    
 
     @BeforeAll
     public static void init() throws Exception {

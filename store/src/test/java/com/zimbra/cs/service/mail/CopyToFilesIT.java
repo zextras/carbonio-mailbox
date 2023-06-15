@@ -1,6 +1,6 @@
 package com.zimbra.cs.service.mail;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -40,18 +40,16 @@ import java.util.Map;
 import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimePart;
-import org.junit.Rule;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
+
 
 /** Integration tests for CopyToFiles */
 public class CopyToFilesIT {
 
   private FilesClient mockFilesClient;
   private AttachmentService mockAttachmentService;
-
-  @Rule public ExpectedException exceptionRule = ExpectedException.none();
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -117,17 +115,7 @@ public class CopyToFilesIT {
   *
   * @throws ServiceException
    */
- /*~~(Recipe failed with an exception.
-java.lang.NullPointerException: null
-  java.base/java.util.Objects.requireNonNull(Objects.java:221)
-  org.openrewrite.Parser$Input.fromResource(Parser.java:176)
-  org.openrewrite.Parser$Input.fromResource(Parser.java:171)
-  org.openrewrite.java.testing.junit5.ExpectedExceptionToAssertThrows$ExpectedExceptionToAssertThrowsVisitor.lambda$static$0(ExpectedExceptionToAssertThrows.java:78)
-  org.openrewrite.java.internal.template.JavaTemplateParser.compileTemplate(JavaTemplateParser.java:247)
-  org.openrewrite.java.internal.template.JavaTemplateParser.parseBlockStatements(JavaTemplateParser.java:166)
-  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:330)
-  org.openrewrite.java.JavaTemplate$2.visitMethodDeclaration(JavaTemplate.java:102)
-  ...)~~>*/@Test
+ @Test
  void shouldThrowServiceExceptionIfFileNotFound() throws ServiceException {
   // get account that will do the SOAP request
   Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
@@ -147,9 +135,7 @@ java.lang.NullPointerException: null
   up.setMessageId("1");
   up.setPart("2");
   Element element = JaxbUtil.jaxbToElement(up);
-  exceptionRule.expect(ServiceException.class);
-  exceptionRule.expectMessage("File not found.");
-  copyToFiles.handle(element, context);
+  assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context), "File not found.");
  }
 
  /**
@@ -190,9 +176,7 @@ java.lang.NullPointerException: null
   up.setMessageId("1");
   up.setPart("2");
   Element element = JaxbUtil.jaxbToElement(up);
-  exceptionRule.expect(ServiceException.class);
-  exceptionRule.expectMessage("system failure: internal error.");
-  copyToFiles.handle(element, context);
+  assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context), "system failure: internal error.");
  }
 
  /**
@@ -233,9 +217,7 @@ java.lang.NullPointerException: null
   up.setMessageId("123");
   up.setPart("Whatever you want");
   Element element = JaxbUtil.jaxbToElement(up);
-  exceptionRule.expect(ServiceException.class);
-  exceptionRule.expectMessage("system failure: got null response from Files server.");
-  copyToFiles.handle(element, context);
+  assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context), "system failure: got null response from Files server.");
  }
 
  /**
@@ -314,8 +296,7 @@ java.lang.NullPointerException: null
   up.setPart("Whatever you want");
   up.setDestinationFolderId("FOLDER_1");
   Element element = JaxbUtil.jaxbToElement(up);
-  exceptionRule.expect(ServiceException.class);
-  exceptionRule.expectMessage("system failure: internal error.");
-  new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context);
+  assertThrows(ServiceException.class, () -> new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context),
+      "system failure: internal error.");
  }
 }
