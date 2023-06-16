@@ -8,12 +8,13 @@ package com.zimbra.cs.filter;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.common.util.ArrayUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
@@ -34,131 +35,131 @@ import com.zimbra.cs.service.util.ItemId;
  */
 public final class MeTestTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
         prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void meInTo() throws Exception {
-        Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        RuleManager.clearCachedRules(account);
+ @Test
+ void meInTo() throws Exception {
+  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  RuleManager.clearCachedRules(account);
 
-        account.setMailSieveScript("if me :in \"To\" { tag \"Priority\"; }");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-        List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-                new ParsedMessage("To: test@zimbra.com".getBytes(), false), 0, account.getName(),
-                new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-        Assert.assertEquals(1, ids.size());
-        Message msg = mbox.getMessageById(null, ids.get(0).getId());
-        Assert.assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
-    }
+  account.setMailSieveScript("if me :in \"To\" { tag \"Priority\"; }");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+  List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+    new ParsedMessage("To: test@zimbra.com".getBytes(), false), 0, account.getName(),
+    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+  assertEquals(1, ids.size());
+  Message msg = mbox.getMessageById(null, ids.get(0).getId());
+  assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
+ }
 
-    @Test
-    public void meInToMultiRecipient() throws Exception {
-        Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        RuleManager.clearCachedRules(account);
+ @Test
+ void meInToMultiRecipient() throws Exception {
+  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  RuleManager.clearCachedRules(account);
 
-        account.setMailSieveScript("if me :in \"To\" { tag \"Priority\"; }");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-        List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-                new ParsedMessage("To: foo@zimbra.com, test@zimbra.com, bar@zimbra.com".getBytes(), false), 0, account.getName(),
-                new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-        Assert.assertEquals(1, ids.size());
-        Message msg = mbox.getMessageById(null, ids.get(0).getId());
-        Assert.assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
-    }
+  account.setMailSieveScript("if me :in \"To\" { tag \"Priority\"; }");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+  List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+    new ParsedMessage("To: foo@zimbra.com, test@zimbra.com, bar@zimbra.com".getBytes(), false), 0, account.getName(),
+    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+  assertEquals(1, ids.size());
+  Message msg = mbox.getMessageById(null, ids.get(0).getId());
+  assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
+ }
 
-    @Test
-    public void quotedMultiRecipientTo() throws Exception {
-        Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        RuleManager.clearCachedRules(account);
+ @Test
+ void quotedMultiRecipientTo() throws Exception {
+  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  RuleManager.clearCachedRules(account);
 
-        account.setMailSieveScript("if me :in \"To\" { tag \"Priority\"; }");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-        List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-                new ParsedMessage("To: \"bar, foo\" <foo@zimbra.com>, \"user, test\" <test@zimbra.com>, \"aaa bbb\" <aaabbb@test.com>".getBytes(), false), 0, account.getName(),
-                new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-        Assert.assertEquals(1, ids.size());
-        Message msg = mbox.getMessageById(null, ids.get(0).getId());
-        Assert.assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
-    }
+  account.setMailSieveScript("if me :in \"To\" { tag \"Priority\"; }");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+  List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+    new ParsedMessage("To: \"bar, foo\" <foo@zimbra.com>, \"user, test\" <test@zimbra.com>, \"aaa bbb\" <aaabbb@test.com>".getBytes(), false), 0, account.getName(),
+    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+  assertEquals(1, ids.size());
+  Message msg = mbox.getMessageById(null, ids.get(0).getId());
+  assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
+ }
 
 
-    @Test
-    public void meInToOrCc() throws Exception {
-        Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        RuleManager.clearCachedRules(account);
+ @Test
+ void meInToOrCc() throws Exception {
+  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  RuleManager.clearCachedRules(account);
 
-        account.setMailSieveScript("if me :in \"To,Cc\" { tag \"Priority\"; }");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+  account.setMailSieveScript("if me :in \"To,Cc\" { tag \"Priority\"; }");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-        List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-                new ParsedMessage("To: test@zimbra.com".getBytes(), false), 0, account.getName(),
-                new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-        Assert.assertEquals(1, ids.size());
-        Message msg = mbox.getMessageById(null, ids.get(0).getId());
-        Assert.assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
+  List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+    new ParsedMessage("To: test@zimbra.com".getBytes(), false), 0, account.getName(),
+    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+  assertEquals(1, ids.size());
+  Message msg = mbox.getMessageById(null, ids.get(0).getId());
+  assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
 
-        ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-                new ParsedMessage("Cc: test@zimbra.com".getBytes(), false), 0, account.getName(),
-                new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-        Assert.assertEquals(1, ids.size());
-        msg = mbox.getMessageById(null, ids.get(0).getId());
-        Assert.assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
-    }
+  ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+    new ParsedMessage("Cc: test@zimbra.com".getBytes(), false), 0, account.getName(),
+    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+  assertEquals(1, ids.size());
+  msg = mbox.getMessageById(null, ids.get(0).getId());
+  assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
+ }
 
-    @Test
-    public void meInToOrCcMultiRecipient() throws Exception {
-        Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        RuleManager.clearCachedRules(account);
+ @Test
+ void meInToOrCcMultiRecipient() throws Exception {
+  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  RuleManager.clearCachedRules(account);
 
-        account.setMailSieveScript("if me :in \"To,Cc\" { tag \"Priority\"; }");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+  account.setMailSieveScript("if me :in \"To,Cc\" { tag \"Priority\"; }");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-        List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-                new ParsedMessage("To: foo@zimbra.com, test@zimbra.com".getBytes(), false), 0, account.getName(),
-                new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-        Assert.assertEquals(1, ids.size());
-        Message msg = mbox.getMessageById(null, ids.get(0).getId());
-        Assert.assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
+  List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+    new ParsedMessage("To: foo@zimbra.com, test@zimbra.com".getBytes(), false), 0, account.getName(),
+    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+  assertEquals(1, ids.size());
+  Message msg = mbox.getMessageById(null, ids.get(0).getId());
+  assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
 
-        ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-                new ParsedMessage("Cc: foo@zimbra.com, test@zimbra.com".getBytes(), false), 0, account.getName(),
-                new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-        Assert.assertEquals(1, ids.size());
-        msg = mbox.getMessageById(null, ids.get(0).getId());
-        Assert.assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
-    }
+  ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+    new ParsedMessage("Cc: foo@zimbra.com, test@zimbra.com".getBytes(), false), 0, account.getName(),
+    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+  assertEquals(1, ids.size());
+  msg = mbox.getMessageById(null, ids.get(0).getId());
+  assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
+ }
 
-    @Test
-    public void quotedMultiRecipientToOrCc() throws Exception {
-        Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        RuleManager.clearCachedRules(account);
+ @Test
+ void quotedMultiRecipientToOrCc() throws Exception {
+  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  RuleManager.clearCachedRules(account);
 
-        account.setMailSieveScript("if me :in \"To,Cc\" { tag \"Priority\"; }");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+  account.setMailSieveScript("if me :in \"To,Cc\" { tag \"Priority\"; }");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-        List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-                new ParsedMessage("To: \"bar, foo\" <foo@zimbra.com>, \"test user\" <test@zimbra.com>".getBytes(), false), 0, account.getName(),
-                new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-        Assert.assertEquals(1, ids.size());
-        Message msg = mbox.getMessageById(null, ids.get(0).getId());
-        Assert.assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
+  List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+    new ParsedMessage("To: \"bar, foo\" <foo@zimbra.com>, \"test user\" <test@zimbra.com>".getBytes(), false), 0, account.getName(),
+    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+  assertEquals(1, ids.size());
+  Message msg = mbox.getMessageById(null, ids.get(0).getId());
+  assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
 
-        ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-                new ParsedMessage("Cc: \"foo bar\" <foo@zimbra.com>, \"user, test\" <test@zimbra.com>".getBytes(), false), 0, account.getName(),
-                new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-        Assert.assertEquals(1, ids.size());
-        msg = mbox.getMessageById(null, ids.get(0).getId());
-        Assert.assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
-    }
+  ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+    new ParsedMessage("Cc: \"foo bar\" <foo@zimbra.com>, \"user, test\" <test@zimbra.com>".getBytes(), false), 0, account.getName(),
+    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+  assertEquals(1, ids.size());
+  msg = mbox.getMessageById(null, ids.get(0).getId());
+  assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
+ }
 
 }

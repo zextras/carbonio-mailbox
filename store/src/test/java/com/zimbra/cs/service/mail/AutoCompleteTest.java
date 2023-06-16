@@ -5,15 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
-import java.util.Map;
-import java.util.UUID;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.MethodRule;
-import org.junit.rules.TestName;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.Key;
@@ -23,48 +15,56 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.cs.util.ZTestWatchman;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-import junit.framework.Assert;
 
 public class AutoCompleteTest {
 
-    @Rule
-    public TestName testName = new TestName();
-    @Rule
-    public MethodRule watchman = new ZTestWatchman();
+    
+    public String testName;
 
-    @Before
-    public void setUp() throws Exception {
-        System.out.println(testName.getMethodName());
-        MailboxTestUtil.initServer();
-        MailboxTestUtil.clearData();
-        Provisioning prov = Provisioning.getInstance();
-        Map<String, Object> attrs = Maps.newHashMap();
-        prov.createDomain("zimbra.com", attrs);
+ @BeforeEach
+ public void setUp(TestInfo testInfo) throws Exception {
+  Optional<Method> testMethod = testInfo.getTestMethod();
+  if (testMethod.isPresent()) {
+   this.testName = testMethod.get().getName();
+  }
+  System.out.println( testName);
+  MailboxTestUtil.initServer();
+  MailboxTestUtil.clearData();
+  Provisioning prov = Provisioning.getInstance();
+  Map<String, Object> attrs = Maps.newHashMap();
+  prov.createDomain("zimbra.com", attrs);
 
-        attrs = Maps.newHashMap();
-        attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-        prov.createAccount("test3951@zimbra.com", "secret", attrs);
-    }
+  attrs = Maps.newHashMap();
+  attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+  prov.createAccount("test3951@zimbra.com", "secret", attrs);
+ }
 
-    @Test
-    public void test3951() throws Exception {
-        Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test3951@zimbra.com");
-        Element request = new Element.XMLElement(MailConstants.AUTO_COMPLETE_REQUEST);
-        request.addAttribute("name", " ");
-        boolean exceptionThrown;
-        try {
-            new AutoComplete().handle(request, ServiceTestUtil.getRequestContext(acct));
-            exceptionThrown = false;
-        } catch (ServiceException e) {
-            exceptionThrown = true;
-            Assert.assertEquals("invalid request: name parameter is empty", e.getMessage());
-        }
-        Assert.assertEquals(true, exceptionThrown);
-    }
+ @Test
+ void test3951() throws Exception {
+  Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test3951@zimbra.com");
+  Element request = new Element.XMLElement(MailConstants.AUTO_COMPLETE_REQUEST);
+  request.addAttribute("name", " ");
+  boolean exceptionThrown;
+  try {
+   new AutoComplete().handle(request, ServiceTestUtil.getRequestContext(acct));
+   exceptionThrown = false;
+  } catch (ServiceException e) {
+   exceptionThrown = true;
+   assertEquals("invalid request: name parameter is empty", e.getMessage());
+  }
+  assertEquals(true, exceptionThrown);
+ }
 
-    @After
+    @AfterEach
     public void tearDown() {
         try {
             MailboxTestUtil.clearData();

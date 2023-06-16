@@ -8,11 +8,14 @@ package com.zimbra.cs.index.query;
 import java.text.ParseException;
 import java.util.HashMap;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.cs.account.MockProvisioning;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 
@@ -23,7 +26,7 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
  */
 public final class SizeQueryTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         MockProvisioning prov = new MockProvisioning();
@@ -31,31 +34,31 @@ public final class SizeQueryTest {
         Provisioning.setInstance(prov);
     }
 
-    @Test
-    public void parseSize() throws Exception {
-        SizeQuery query = new SizeQuery(SizeQuery.Type.EQ, "1KB");
-        Assert.assertEquals("Q(SIZE:=1024)", query.toString());
+ @Test
+ void parseSize() throws Exception {
+  SizeQuery query = new SizeQuery(SizeQuery.Type.EQ, "1KB");
+  assertEquals("Q(SIZE:=1024)", query.toString());
 
-        query = new SizeQuery(SizeQuery.Type.EQ, ">1KB");
-        Assert.assertEquals("Q(SIZE:>1024)", query.toString());
+  query = new SizeQuery(SizeQuery.Type.EQ, ">1KB");
+  assertEquals("Q(SIZE:>1024)", query.toString());
 
-        query = new SizeQuery(SizeQuery.Type.EQ, "<1KB");
-        Assert.assertEquals("Q(SIZE:<1024)", query.toString());
+  query = new SizeQuery(SizeQuery.Type.EQ, "<1KB");
+  assertEquals("Q(SIZE:<1024)", query.toString());
 
-        query = new SizeQuery(SizeQuery.Type.EQ, ">=1KB");
-        Assert.assertEquals("Q(SIZE:>1023)", query.toString());
+  query = new SizeQuery(SizeQuery.Type.EQ, ">=1KB");
+  assertEquals("Q(SIZE:>1023)", query.toString());
 
-        query = new SizeQuery(SizeQuery.Type.EQ, "<=1KB");
-        Assert.assertEquals("Q(SIZE:<1025)", query.toString());
+  query = new SizeQuery(SizeQuery.Type.EQ, "<=1KB");
+  assertEquals("Q(SIZE:<1025)", query.toString());
 
-        query = new SizeQuery(SizeQuery.Type.EQ, "1 KB");
-        Assert.assertEquals("Q(SIZE:=1024)", query.toString());
+  query = new SizeQuery(SizeQuery.Type.EQ, "1 KB");
+  assertEquals("Q(SIZE:=1024)", query.toString());
 
-        try {
-            query = new SizeQuery(SizeQuery.Type.EQ, "x KB");
-            Assert.fail();
-        } catch (ParseException expected) {
-        }
-    }
+  try {
+   query = new SizeQuery(SizeQuery.Type.EQ, "x KB");
+   fail();
+  } catch (ParseException expected) {
+  }
+ }
 
 }

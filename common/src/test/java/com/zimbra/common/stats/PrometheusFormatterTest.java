@@ -1,14 +1,14 @@
 package com.zimbra.common.stats;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.stream.IntStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PrometheusFormatterTest {
 
   @Test
-  public void shouldFormatCorrectlyWhenCalledProcessComplexStat() {
+  void shouldFormatCorrectlyWhenCalledProcessComplexStat() {
 
     StringBuilder buf = new StringBuilder();
     String[] header = {"command", "exec_count", "exec_ms_avg"};
@@ -24,7 +24,7 @@ public class PrometheusFormatterTest {
   }
 
   @Test
-  public void shouldCleanHeaderWhenCalledSanitizeHeader() {
+  void shouldCleanHeaderWhenCalledSanitizeHeader() {
     String[] headers = {"command", "exec-count", "exec_ms-avg", "exec's_duration"};
     StringBuilder buf = new StringBuilder();
     IntStream.range(1, headers.length)
@@ -34,22 +34,22 @@ public class PrometheusFormatterTest {
   }
 
   @Test
-  public void shouldFormatCorrectlyWhenCalledProcessNormalStats() {
+  void shouldFormatCorrectlyWhenCalledProcessNormalStats() {
     String[] headers = {
-      "AnonymousIoService",
-      "CloudRoutingReaderThread",
-      "GC",
-      "ImapSSLServer",
-      "ImapServer",
-      "LmtpServer",
-      "Pop3SSLServer",
-      "Pop3Server",
-      "ScheduledTask",
-      "SocketAcceptor",
-      "Thread",
-      "Timer",
-      "btpool",
-      "pool"
+        "AnonymousIoService",
+        "CloudRoutingReaderThread",
+        "GC",
+        "ImapSSLServer",
+        "ImapServer",
+        "LmtpServer",
+        "Pop3SSLServer",
+        "Pop3Server",
+        "ScheduledTask",
+        "SocketAcceptor",
+        "Thread",
+        "Timer",
+        "btpool",
+        "pool"
     };
 
     String[] stats = {"0", "0", "0", "0", "0", "2", "0", "0", "10", "0", "2", "5", "0", "0"};
@@ -75,7 +75,7 @@ public class PrometheusFormatterTest {
   }
 
   @Test
-  public void shouldAddTimestampWhenCalledAddTimeStamp() {
+  void shouldAddTimestampWhenCalledAddTimeStamp() {
     final long timestamp = 1651670178388L;
     var logBuffer = new StringBuilder();
     PrometheusFormatter.addTimeStamp("sql", logBuffer, timestamp);

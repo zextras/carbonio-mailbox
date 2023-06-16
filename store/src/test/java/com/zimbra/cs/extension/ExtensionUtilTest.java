@@ -8,11 +8,12 @@ package com.zimbra.cs.extension;
 import java.io.File;
 import java.net.URL;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.common.localconfig.LC;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test for {@link ExtensionUtil}.
@@ -22,32 +23,32 @@ import com.zimbra.common.localconfig.LC;
 public class ExtensionUtilTest {
     private static URL classpath;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         classpath = new File("build/test-classes").toURI().toURL();
         LC.zimbra_extension_common_directory.setDefault(null);
         LC.zimbra_extension_directory.setDefault(null);
     }
 
-    @Test
-    public void simple() throws Exception {
-        ExtensionUtil.addClassLoader(new ZimbraExtensionClassLoader(classpath,
-                SimpleExtension.class.getName()));
-        ExtensionUtil.initAll();
-        SimpleExtension ext =
-            (SimpleExtension) ExtensionUtil.getExtension("simple");
-        Assert.assertNotNull(ext);
-        Assert.assertTrue(ext.isInitialized());
-        Assert.assertFalse(ext.isDestroyed());
-    }
+ @Test
+ void simple() throws Exception {
+  ExtensionUtil.addClassLoader(new ZimbraExtensionClassLoader(classpath,
+    SimpleExtension.class.getName()));
+  ExtensionUtil.initAll();
+  SimpleExtension ext =
+    (SimpleExtension) ExtensionUtil.getExtension("simple");
+  assertNotNull(ext);
+  assertTrue(ext.isInitialized());
+  assertFalse(ext.isDestroyed());
+ }
 
-    @Test
-    public void resign() throws Exception {
-        ExtensionUtil.addClassLoader(new ZimbraExtensionClassLoader(classpath,
-                ResignExtension.class.getName()));
-        ExtensionUtil.initAll();
-        Assert.assertNull(ExtensionUtil.getExtension("resign"));
-        Assert.assertTrue(ResignExtension.isDestroyed());
-    }
+ @Test
+ void resign() throws Exception {
+  ExtensionUtil.addClassLoader(new ZimbraExtensionClassLoader(classpath,
+    ResignExtension.class.getName()));
+  ExtensionUtil.initAll();
+  assertNull(ExtensionUtil.getExtension("resign"));
+  assertTrue(ResignExtension.isDestroyed());
+ }
 
 }

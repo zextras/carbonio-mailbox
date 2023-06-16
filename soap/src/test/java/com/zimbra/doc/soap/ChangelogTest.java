@@ -5,6 +5,8 @@
 
 package com.zimbra.doc.soap;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
@@ -14,9 +16,8 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -45,7 +46,7 @@ public class ChangelogTest {
         LOG.setLevel(Level.INFO);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
     }
 
@@ -109,69 +110,69 @@ public class ChangelogTest {
         public void setIntAttribute(int intAttribute) { this.intAttribute = intAttribute; }
     }
 
-    @Test
-    public void makeChangelogTest()
-    throws Exception {
-        Map<String, ApiClassDocumentation> javadocInfo = Maps.newTreeMap();
-        List<Class<?>> classes = Lists.newArrayList();
-        classes.add(aRequest.class);
-        classes.add(aResponse.class);
-        classes.add(bRequest.class);
-        classes.add(bResponse.class);
-        classes.add(cRequest.class);
-        classes.add(cResponse.class);
-        Root soapApiDataModelRoot = WsdlDocGenerator.processJaxbClasses(javadocInfo, classes);
-        SoapApiDescription jsonDescCurrent = new SoapApiDescription("7.99.99", "20000131-2359");
-        jsonDescCurrent.build(soapApiDataModelRoot);
-        // File json = new File("/tmp/test1.json");
-        // jsonDescCurrent.serializeToJson(json);
-        InputStream is = getClass().getResourceAsStream("baseline1.json");
-        SoapApiDescription jsonDescBaseline = SoapApiDescription.deserializeFromJson(is);
-        SoapApiChangeLog clog = new SoapApiChangeLog();
-        clog.setBaselineDesc(jsonDescBaseline);
-        clog.setCurrentDesc(jsonDescCurrent);
-        clog.makeChangeLogDataModel();
-        List<SoapApiCommand> newCmds = clog.getNewCommands();
-        LOG.info("    New Command:" + newCmds.get(0).getName());
-        List<SoapApiCommand> delCmds = clog.getDeletedCommands();
-        LOG.info("    Deleted Command:" + delCmds.get(0).getName());
-        List<CommandChanges> modCmds = clog.getModifiedCommands();
-        CommandChanges modCmd = modCmds.get(0);
-        LOG.info("    Modified Command:" + modCmd.getName());
-        List<NamedAttr> delAttrs = modCmd.getDeletedAttrs();
-        for (NamedAttr attr : delAttrs) {
-            LOG.info("    Deleted Attribute:" + attr.getXpath());
-        }
-        List<NamedAttr> addAttrs = modCmd.getNewAttrs();
-        for (NamedAttr attr : addAttrs) {
-            LOG.info("    Added Attribute:" + attr.getXpath());
-        }
-        List<AttributeChanges> modAttrs = modCmd.getModifiedAttrs();
-        for (AttributeChanges modAttr : modAttrs) {
-            LOG.info("    Modified Attribute " + modAttr.getXpath() +":\nbase=" + modAttr.getBaselineRepresentation() +
-                    "\ncurr=" + modAttr.getCurrentRepresentation());
-        }
-        List<NamedElem> delEs = modCmd.getDeletedElems();
-        for (NamedElem el : delEs) {
-            LOG.info("    Deleted Element :" + el.getXpath());
-        }
-        List<NamedElem> newEs = modCmd.getNewElems();
-        for (NamedElem el : newEs) {
-            LOG.info("    New Element :" + el.getXpath());
-        }
-        List<ElementChanges> modEs = modCmd.getModifiedElements();
-        for (ElementChanges el : modEs) {
-            LOG.info("    Modified Element " + el.getXpath() +":\nbase=" + el.getBaselineRepresentation() +
-                    "\ncurr=" + el.getCurrentRepresentation());
-        }
-        Assert.assertEquals("Number of new commands", 1, newCmds.size());
-        Assert.assertEquals("Number of deleted commands", 1, delCmds.size());
-        Assert.assertEquals("Number of modified commands", 1, modCmds.size());
-        Assert.assertEquals("Number of deleted attributes", 1, delAttrs.size());
-        Assert.assertEquals("Number of new attributes", 1, addAttrs.size());
-        Assert.assertEquals("Number of modified attributes", 1, modAttrs.size());
-        Assert.assertEquals("Number of deleted elements", 1, delEs.size());
-        Assert.assertEquals("Number of new elements", 1, newEs.size());
-        Assert.assertEquals("Number of modified elements", 1, modEs.size());
+  @Test
+  void makeChangelogTest()
+      throws Exception {
+    Map<String, ApiClassDocumentation> javadocInfo = Maps.newTreeMap();
+    List<Class<?>> classes = Lists.newArrayList();
+    classes.add(aRequest.class);
+    classes.add(aResponse.class);
+    classes.add(bRequest.class);
+    classes.add(bResponse.class);
+    classes.add(cRequest.class);
+    classes.add(cResponse.class);
+    Root soapApiDataModelRoot = WsdlDocGenerator.processJaxbClasses(javadocInfo, classes);
+    SoapApiDescription jsonDescCurrent = new SoapApiDescription("7.99.99", "20000131-2359");
+    jsonDescCurrent.build(soapApiDataModelRoot);
+    // File json = new File("/tmp/test1.json");
+    // jsonDescCurrent.serializeToJson(json);
+    InputStream is = getClass().getResourceAsStream("baseline1.json");
+    SoapApiDescription jsonDescBaseline = SoapApiDescription.deserializeFromJson(is);
+    SoapApiChangeLog clog = new SoapApiChangeLog();
+    clog.setBaselineDesc(jsonDescBaseline);
+    clog.setCurrentDesc(jsonDescCurrent);
+    clog.makeChangeLogDataModel();
+    List<SoapApiCommand> newCmds = clog.getNewCommands();
+    LOG.info("    New Command:" + newCmds.get(0).getName());
+    List<SoapApiCommand> delCmds = clog.getDeletedCommands();
+    LOG.info("    Deleted Command:" + delCmds.get(0).getName());
+    List<CommandChanges> modCmds = clog.getModifiedCommands();
+    CommandChanges modCmd = modCmds.get(0);
+    LOG.info("    Modified Command:" + modCmd.getName());
+    List<NamedAttr> delAttrs = modCmd.getDeletedAttrs();
+    for (NamedAttr attr : delAttrs) {
+      LOG.info("    Deleted Attribute:" + attr.getXpath());
     }
+    List<NamedAttr> addAttrs = modCmd.getNewAttrs();
+    for (NamedAttr attr : addAttrs) {
+      LOG.info("    Added Attribute:" + attr.getXpath());
+    }
+    List<AttributeChanges> modAttrs = modCmd.getModifiedAttrs();
+    for (AttributeChanges modAttr : modAttrs) {
+      LOG.info("    Modified Attribute " + modAttr.getXpath() + ":\nbase=" + modAttr.getBaselineRepresentation() +
+          "\ncurr=" + modAttr.getCurrentRepresentation());
+    }
+    List<NamedElem> delEs = modCmd.getDeletedElems();
+    for (NamedElem el : delEs) {
+      LOG.info("    Deleted Element :" + el.getXpath());
+    }
+    List<NamedElem> newEs = modCmd.getNewElems();
+    for (NamedElem el : newEs) {
+      LOG.info("    New Element :" + el.getXpath());
+    }
+    List<ElementChanges> modEs = modCmd.getModifiedElements();
+    for (ElementChanges el : modEs) {
+      LOG.info("    Modified Element " + el.getXpath() + ":\nbase=" + el.getBaselineRepresentation() +
+          "\ncurr=" + el.getCurrentRepresentation());
+    }
+    assertEquals(1, newCmds.size(), "Number of new commands");
+    assertEquals(1, delCmds.size(), "Number of deleted commands");
+    assertEquals(1, modCmds.size(), "Number of modified commands");
+    assertEquals(1, delAttrs.size(), "Number of deleted attributes");
+    assertEquals(1, addAttrs.size(), "Number of new attributes");
+    assertEquals(1, modAttrs.size(), "Number of modified attributes");
+    assertEquals(1, delEs.size(), "Number of deleted elements");
+    assertEquals(1, newEs.size(), "Number of new elements");
+    assertEquals(1, modEs.size(), "Number of modified elements");
+  }
 }

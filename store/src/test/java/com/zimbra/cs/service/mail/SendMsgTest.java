@@ -26,12 +26,14 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Maps;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -58,7 +60,7 @@ import com.zimbra.cs.util.JMSession;
 
 public class SendMsgTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
@@ -151,97 +153,97 @@ public class SendMsgTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void deleteDraft() throws Exception {
-        Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+ @Test
+ void deleteDraft() throws Exception {
+  Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
-        // first, add draft message
-        MimeMessage mm = new MimeMessage(JMSession.getSmtpSession(acct));
-        mm.setText("foo");
-        ParsedMessage pm = new ParsedMessage(mm, false);
-        int draftId = mbox.saveDraft(null, pm, Mailbox.ID_AUTO_INCREMENT).getId();
+  // first, add draft message
+  MimeMessage mm = new MimeMessage(JMSession.getSmtpSession(acct));
+  mm.setText("foo");
+  ParsedMessage pm = new ParsedMessage(mm, false);
+  int draftId = mbox.saveDraft(null, pm, Mailbox.ID_AUTO_INCREMENT).getId();
 
-        // then send a message referencing the draft
-        Element request = new Element.JSONElement(MailConstants.SEND_MSG_REQUEST);
-        Element m = request.addElement(MailConstants.E_MSG).addAttribute(MailConstants.A_DRAFT_ID, draftId).addAttribute(MailConstants.E_SUBJECT, "dinner appt");
-        m.addUniqueElement(MailConstants.E_MIMEPART).addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain").addAttribute(MailConstants.E_CONTENT, "foo bar");
-        m.addElement(MailConstants.E_EMAIL).addAttribute(MailConstants.A_ADDRESS_TYPE, ToXML.EmailType.TO.toString()).addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
-        new SendMsg().handle(request, ServiceTestUtil.getRequestContext(acct));
+  // then send a message referencing the draft
+  Element request = new Element.JSONElement(MailConstants.SEND_MSG_REQUEST);
+  Element m = request.addElement(MailConstants.E_MSG).addAttribute(MailConstants.A_DRAFT_ID, draftId).addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+  m.addUniqueElement(MailConstants.E_MIMEPART).addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain").addAttribute(MailConstants.E_CONTENT, "foo bar");
+  m.addElement(MailConstants.E_EMAIL).addAttribute(MailConstants.A_ADDRESS_TYPE, ToXML.EmailType.TO.toString()).addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+  new SendMsg().handle(request, ServiceTestUtil.getRequestContext(acct));
 
-        // finally, verify that the draft is gone
-        try {
-            mbox.getMessageById(null, draftId);
-            Assert.fail("draft message not deleted");
-        } catch (NoSuchItemException nsie) {
-        }
-    }
+  // finally, verify that the draft is gone
+  try {
+   mbox.getMessageById(null, draftId);
+   fail("draft message not deleted");
+  } catch (NoSuchItemException nsie) {
+  }
+ }
 
-    @Test
-    public void testSendFromDraft() throws Exception {
-        Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+ @Test
+ void testSendFromDraft() throws Exception {
+  Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
-        // first, add draft message
-        MimeMessage mm = new MimeMessage(Session.getInstance(new Properties()));
-        mm.setRecipients(RecipientType.TO, "rcpt@zimbra.com");
-        mm.saveChanges();
-        ParsedMessage pm = new ParsedMessage(mm, false);
-        int draftId = mbox.saveDraft(null, pm, Mailbox.ID_AUTO_INCREMENT).getId();
+  // first, add draft message
+  MimeMessage mm = new MimeMessage(Session.getInstance(new Properties()));
+  mm.setRecipients(RecipientType.TO, "rcpt@zimbra.com");
+  mm.saveChanges();
+  ParsedMessage pm = new ParsedMessage(mm, false);
+  int draftId = mbox.saveDraft(null, pm, Mailbox.ID_AUTO_INCREMENT).getId();
 
-        // then send a message referencing the draft
-        Element request = new Element.JSONElement(MailConstants.SEND_MSG_REQUEST);
-        request.addElement(MailConstants.E_MSG).addAttribute(MailConstants.A_DRAFT_ID, draftId).addAttribute(MailConstants.A_SEND_FROM_DRAFT, true);
-        Element response = new SendMsg().handle(request, ServiceTestUtil.getRequestContext(acct));
+  // then send a message referencing the draft
+  Element request = new Element.JSONElement(MailConstants.SEND_MSG_REQUEST);
+  request.addElement(MailConstants.E_MSG).addAttribute(MailConstants.A_DRAFT_ID, draftId).addAttribute(MailConstants.A_SEND_FROM_DRAFT, true);
+  Element response = new SendMsg().handle(request, ServiceTestUtil.getRequestContext(acct));
 
-        // make sure sent message exists
-        int sentId = (int) response.getElement(MailConstants.E_MSG).getAttributeLong(MailConstants.A_ID);
-        Message sent = mbox.getMessageById(null, sentId);
-        Assert.assertEquals(pm.getRecipients(), sent.getRecipients());
+  // make sure sent message exists
+  int sentId = (int) response.getElement(MailConstants.E_MSG).getAttributeLong(MailConstants.A_ID);
+  Message sent = mbox.getMessageById(null, sentId);
+  assertEquals(pm.getRecipients(), sent.getRecipients());
 
-        // finally, verify that the draft is gone
-        try {
-            mbox.getMessageById(null, draftId);
-            Assert.fail("draft message not deleted");
-        } catch (NoSuchItemException nsie) {
-        }
-    }
+  // finally, verify that the draft is gone
+  try {
+   mbox.getMessageById(null, draftId);
+   fail("draft message not deleted");
+  } catch (NoSuchItemException nsie) {
+  }
+ }
 
-    @Test
-    public void sendUpload() throws Exception {
-        Assert.assertTrue("using Zimbra MIME parser", ZMimeMessage.usingZimbraParser());
+ @Test
+ void sendUpload() throws Exception {
+  assertTrue(ZMimeMessage.usingZimbraParser(), "using Zimbra MIME parser");
 
-        Account rcpt = Provisioning.getInstance().getAccountByName("rcpt@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(rcpt);
-        
-        // Configure test timezones.ics file.
-        File tzFile = File.createTempFile("timezones-", ".ics");
-        BufferedWriter writer= new BufferedWriter(new FileWriter(tzFile));
-        writer.write("BEGIN:VCALENDAR\r\nEND:VCALENDAR");
-        writer.close();
-        LC.timezone_file.setDefault(tzFile.getAbsolutePath());
+  Account rcpt = Provisioning.getInstance().getAccountByName("rcpt@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(rcpt);
 
-        InputStream is = getClass().getResourceAsStream("bug-69862-invite.txt");
-        ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);
-        mbox.addMessage(null, pm, MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
+  // Configure test timezones.ics file.
+  File tzFile = File.createTempFile("timezones-", ".ics");
+  BufferedWriter writer = new BufferedWriter(new FileWriter(tzFile));
+  writer.write("BEGIN:VCALENDAR\r\nEND:VCALENDAR");
+  writer.close();
+  LC.timezone_file.setDefault(tzFile.getAbsolutePath());
 
-        is = getClass().getResourceAsStream("bug-69862-reply.txt");
-        FileUploadServlet.Upload up = FileUploadServlet.saveUpload(is, "lslib32.bin", "message/rfc822", rcpt.getId());
+  InputStream is = getClass().getResourceAsStream("bug-69862-invite.txt");
+  ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);
+  mbox.addMessage(null, pm, MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
 
-        Element request = new Element.JSONElement(MailConstants.SEND_MSG_REQUEST);
-        request.addAttribute(MailConstants.A_NEED_CALENDAR_SENTBY_FIXUP, true).addAttribute(MailConstants.A_NO_SAVE_TO_SENT, true);
-        request.addUniqueElement(MailConstants.E_MSG).addAttribute(MailConstants.A_ATTACHMENT_ID, up.getId());
-        new SendMsg().handle(request, ServiceTestUtil.getRequestContext(rcpt));
+  is = getClass().getResourceAsStream("bug-69862-reply.txt");
+  FileUploadServlet.Upload up = FileUploadServlet.saveUpload(is, "lslib32.bin", "message/rfc822", rcpt.getId());
 
-        Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
-        mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
-        Message msg = (Message) mbox.getItemList(null, MailItem.Type.MESSAGE).get(0);
-        MimeMessage mm = msg.getMimeMessage();
-        Assert.assertEquals("correct top-level MIME type", "multipart/alternative", new ZContentType(mm.getContentType()).getBaseType());
-    }
+  Element request = new Element.JSONElement(MailConstants.SEND_MSG_REQUEST);
+  request.addAttribute(MailConstants.A_NEED_CALENDAR_SENTBY_FIXUP, true).addAttribute(MailConstants.A_NO_SAVE_TO_SENT, true);
+  request.addUniqueElement(MailConstants.E_MSG).addAttribute(MailConstants.A_ATTACHMENT_ID, up.getId());
+  new SendMsg().handle(request, ServiceTestUtil.getRequestContext(rcpt));
+
+  Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
+  mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Message msg = (Message) mbox.getItemList(null, MailItem.Type.MESSAGE).get(0);
+  MimeMessage mm = msg.getMimeMessage();
+  assertEquals("multipart/alternative", new ZContentType(mm.getContentType()).getBaseType(), "correct top-level MIME type");
+ }
 }

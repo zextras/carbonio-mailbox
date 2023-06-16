@@ -6,14 +6,14 @@
 package com.zimbra.cs.redolog.op;
 
 import java.util.HashMap;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.zimbra.cs.account.MockProvisioning;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
@@ -23,53 +23,53 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 
 public class SetActiveSyncDisabledTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
         prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    /**
-     * Verifies serializing, de-serializing, and replaying for folder.
-     */
-    @Test
-    public void setDisableActiveSyncUserFolder() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+ /**
+  * Verifies serializing, de-serializing, and replaying for folder.
+  */
+ @Test
+ void setDisableActiveSyncUserFolder() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-        // Create folder.
-        Folder folder = mbox.createFolder(null, "/test", new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
-        Assert.assertFalse(folder.isActiveSyncDisabled());
+  // Create folder.
+  Folder folder = mbox.createFolder(null, "/test", new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
+  assertFalse(folder.isActiveSyncDisabled());
 
-        // Create RedoableOp.
-        SetActiveSyncDisabled redoPlayer = new SetActiveSyncDisabled(mbox.getId(), folder.getId(), true);
+  // Create RedoableOp.
+  SetActiveSyncDisabled redoPlayer = new SetActiveSyncDisabled(mbox.getId(), folder.getId(), true);
 
-        // Serialize, deserialize, and redo.
-        byte[] data = redoPlayer.testSerialize();
-        redoPlayer = new SetActiveSyncDisabled();
-        redoPlayer.setMailboxId(mbox.getId());
-        redoPlayer.testDeserialize(data);
-        redoPlayer.redo();
-        folder = mbox.getFolderById(null, folder.getId());
-        Assert.assertTrue(folder.isActiveSyncDisabled());
-    }
+  // Serialize, deserialize, and redo.
+  byte[] data = redoPlayer.testSerialize();
+  redoPlayer = new SetActiveSyncDisabled();
+  redoPlayer.setMailboxId(mbox.getId());
+  redoPlayer.testDeserialize(data);
+  redoPlayer.redo();
+  folder = mbox.getFolderById(null, folder.getId());
+  assertTrue(folder.isActiveSyncDisabled());
+ }
 
-    @Test
-    public void setDisableActiveSyncSystemFolder() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        Folder folder = mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
-        Assert.assertFalse(folder.isActiveSyncDisabled());
+ @Test
+ void setDisableActiveSyncSystemFolder() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Folder folder = mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
+  assertFalse(folder.isActiveSyncDisabled());
 
-        //try setting disableActiveSync to true!!
-        folder.setActiveSyncDisabled(true);
+  //try setting disableActiveSync to true!!
+  folder.setActiveSyncDisabled(true);
 
-        //cannot disable activesync for system folders!!
-        Assert.assertFalse(folder.isActiveSyncDisabled());
-    }
+  //cannot disable activesync for system folders!!
+  assertFalse(folder.isActiveSyncDisabled());
+ }
 
 }

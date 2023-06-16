@@ -5,17 +5,17 @@
 
 package com.zimbra.common.zmime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.commons.codec.binary.Base64;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.common.util.CharsetUtil;
-
-import junit.framework.Assert;
 
 public class ZInternetHeaderTest {
 
@@ -68,100 +68,100 @@ public class ZInternetHeaderTest {
      */
     private static final InputStream HEADER_TEST_DATA = ZInternetHeaderTest.class.getResourceAsStream("ZInternetHeaderTest.dat");
 
-    @Test
-    public void testMultilineUtf8Subject() {
-        String decodedHeader = ZInternetHeader.decode(RAW_HEADER);
-        Assert.assertEquals(DECODED_HEADER, decodedHeader);
-    }
+  @Test
+  void testMultilineUtf8Subject() {
+    String decodedHeader = ZInternetHeader.decode(RAW_HEADER);
+    assertEquals(DECODED_HEADER, decodedHeader);
+  }
 
-    @Test
-    public void testCombinedUtf8Subject() {
-        String decodedHeader = ZInternetHeader.decode(RAW_HEADER_COMBINED);
-        Assert.assertEquals(DECODED_HEADER.length(), decodedHeader.length());
-        Assert.assertEquals(DECODED_HEADER, decodedHeader);
-    }
+  @Test
+  void testCombinedUtf8Subject() {
+    String decodedHeader = ZInternetHeader.decode(RAW_HEADER_COMBINED);
+    assertEquals(DECODED_HEADER.length(), decodedHeader.length());
+    assertEquals(DECODED_HEADER, decodedHeader);
+  }
 
-    @Test
-    public void testDecodeFromResource ()
-            throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(HEADER_TEST_DATA));
-        try {
-            String line = reader.readLine();
-            String[] parts;
-            String encoded, decoded, decodedHeader;
-            while (line != null) {
-                parts = line.split("\t");
-                decoded = new String(Base64.decodeBase64(parts[1]), CharsetUtil.normalizeCharset("utf-8"));
-                encoded = new String(Base64.decodeBase64(parts[2]), CharsetUtil.normalizeCharset("utf-8"));
-                decodedHeader = ZInternetHeader.decode(encoded);
-                Assert.assertEquals(
-                        String.format("Decoding failed, messageId=%s, expected=\"%s\", actual=\"%s\"",
-                                parts[0],
-                                decoded,
-                                decodedHeader),
-                        decoded,
-                        decodedHeader);
-                line = reader.readLine();
-            }
-        }
-        finally {
-            reader.close();
-        }
+  @Test
+  void testDecodeFromResource()
+      throws IOException {
+    BufferedReader reader = new BufferedReader(new InputStreamReader(HEADER_TEST_DATA));
+    try {
+      String line = reader.readLine();
+      String[] parts;
+      String encoded, decoded, decodedHeader;
+      while (line != null) {
+        parts = line.split("\t");
+        decoded = new String(Base64.decodeBase64(parts[1]), CharsetUtil.normalizeCharset("utf-8"));
+        encoded = new String(Base64.decodeBase64(parts[2]), CharsetUtil.normalizeCharset("utf-8"));
+        decodedHeader = ZInternetHeader.decode(encoded);
+        assertEquals(
+            decoded,
+            decodedHeader,
+            String.format("Decoding failed, messageId=%s, expected=\"%s\", actual=\"%s\"",
+                parts[0],
+                decoded,
+                decodedHeader));
+        line = reader.readLine();
+      }
     }
+    finally {
+      reader.close();
+    }
+  }
 
-    @Test
-    public void testFrench() {
-        String decodedHeader;
-        decodedHeader = ZInternetHeader.decode(RAW_HEADER_FRENCH1);
-        Assert.assertEquals(DECODED_FRENCH1, decodedHeader);
-        decodedHeader = ZInternetHeader.decode(RAW_HEADER_FRENCH2);
-        Assert.assertEquals(DECODED_FRENCH2, decodedHeader);
-    }
+  @Test
+  void testFrench() {
+    String decodedHeader;
+    decodedHeader = ZInternetHeader.decode(RAW_HEADER_FRENCH1);
+    assertEquals(DECODED_FRENCH1, decodedHeader);
+    decodedHeader = ZInternetHeader.decode(RAW_HEADER_FRENCH2);
+    assertEquals(DECODED_FRENCH2, decodedHeader);
+  }
 
-    @Test
-    public void testRFC2047Sec8Ex() {
-        String decodedHeader = null;
-        decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex2);
-        Assert.assertEquals(DECODED_Sec8_Ex2, decodedHeader);
-        decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex3);
-        Assert.assertEquals(DECODED_Sec8_Ex3, decodedHeader);
-        decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex4);
-        Assert.assertEquals(DECODED_Sec8_Ex4, decodedHeader);
-        decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex5);
-        Assert.assertEquals(DECODED_Sec8_Ex5, decodedHeader);
-        decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex6);
-        Assert.assertEquals(DECODED_Sec8_Ex6, decodedHeader);
-        decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex7);
-        Assert.assertEquals(DECODED_Sec8_Ex7, decodedHeader);
-    }
+  @Test
+  void testRFC2047Sec8Ex() {
+    String decodedHeader = null;
+    decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex2);
+    assertEquals(DECODED_Sec8_Ex2, decodedHeader);
+    decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex3);
+    assertEquals(DECODED_Sec8_Ex3, decodedHeader);
+    decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex4);
+    assertEquals(DECODED_Sec8_Ex4, decodedHeader);
+    decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex5);
+    assertEquals(DECODED_Sec8_Ex5, decodedHeader);
+    decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex6);
+    assertEquals(DECODED_Sec8_Ex6, decodedHeader);
+    decodedHeader = ZInternetHeader.decode(RAW_Sec8_Ex7);
+    assertEquals(DECODED_Sec8_Ex7, decodedHeader);
+  }
 
-    @Test
-    public void testInvalidFormat() {
-        String decodedHeader = null;
-        decodedHeader = ZInternetHeader.decode(RAW_INVALID1);
-        Assert.assertEquals(EXP_INVALID1, decodedHeader);
-        decodedHeader = ZInternetHeader.decode(RAW_INVALID2);
-        Assert.assertEquals(EXP_INVALID2, decodedHeader);
-        decodedHeader = ZInternetHeader.decode(RAW_INVALID3);
-        Assert.assertEquals(EXP_INVALID3, decodedHeader);
-    }
+  @Test
+  void testInvalidFormat() {
+    String decodedHeader = null;
+    decodedHeader = ZInternetHeader.decode(RAW_INVALID1);
+    assertEquals(EXP_INVALID1, decodedHeader);
+    decodedHeader = ZInternetHeader.decode(RAW_INVALID2);
+    assertEquals(EXP_INVALID2, decodedHeader);
+    decodedHeader = ZInternetHeader.decode(RAW_INVALID3);
+    assertEquals(EXP_INVALID3, decodedHeader);
+  }
 
-    @Test
-    public void testAscii() {
-        String decodedHeader;
-        decodedHeader = ZInternetHeader.decode("=?us-ascii?Q?a b c?=");
-        Assert.assertEquals("a b c", decodedHeader);
-    }
+  @Test
+  void testAscii() {
+    String decodedHeader;
+    decodedHeader = ZInternetHeader.decode("=?us-ascii?Q?a b c?=");
+    assertEquals("a b c", decodedHeader);
+  }
 
-    @Test
-    public void testMultilineZBUG536Subject() {
-        String decodedHeader = ZInternetHeader.decode(ZBUG536);
-        Assert.assertEquals("APAD - Stats APAD - Début et fin décision entre pour le mois de Juin 2018", decodedHeader);
-    }
+  @Test
+  void testMultilineZBUG536Subject() {
+    String decodedHeader = ZInternetHeader.decode(ZBUG536);
+    assertEquals("APAD - Stats APAD - Début et fin décision entre pour le mois de Juin 2018", decodedHeader);
+  }
 
-    @Test
-    public void testMultilineUTF8ZBUG1022Subject() {
-        String decodedHeader = ZInternetHeader.decode(ZBUG1022);
-        Assert.assertEquals("Memo Manager Data Import ATA.SDOA.AMMP512.D042419.T0943.xml APR 24-2019 08:10 AM (GMT - 5:00).", decodedHeader);
-    }
+  @Test
+  void testMultilineUTF8ZBUG1022Subject() {
+    String decodedHeader = ZInternetHeader.decode(ZBUG1022);
+    assertEquals("Memo Manager Data Import ATA.SDOA.AMMP512.D042419.T0943.xml APR 24-2019 08:10 AM (GMT - 5:00).", decodedHeader);
+  }
 }

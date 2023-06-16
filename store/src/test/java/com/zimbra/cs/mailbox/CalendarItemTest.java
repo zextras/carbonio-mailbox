@@ -4,7 +4,7 @@
 
 package com.zimbra.cs.mailbox;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -13,9 +13,9 @@ import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
 import java.util.HashMap;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CalendarItemTest {
   private OperationContext octxt;
@@ -25,7 +25,7 @@ public class CalendarItemTest {
   /**
    * @throws java.lang.Exception
    */
-  @BeforeClass
+  @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
@@ -35,7 +35,7 @@ public class CalendarItemTest {
   /**
    * @throws java.lang.Exception
    */
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     octxt = mock(OperationContext.class);
     Mailbox mbox =
@@ -46,18 +46,18 @@ public class CalendarItemTest {
     calItem.mMailbox = mbox;
   }
 
-  /**
-   * @throws java.lang.Exception
+ /**
+  * @throws java.lang.Exception
    */
-  @Test
-  public void testPerformSetPrevFoldersOperation() throws Exception {
-    when(calItem.getModifiedSequence()).thenReturn(SEQ);
+ @Test
+ void testPerformSetPrevFoldersOperation() throws Exception {
+  when(calItem.getModifiedSequence()).thenReturn(SEQ);
 
-    calItem.performSetPrevFoldersOperation(octxt);
-    // above method adds 2 in mod sequence, so verify SEQ+2 and Mailbox.ID_FOLDER_TRASH
+  calItem.performSetPrevFoldersOperation(octxt);
+  // above method adds 2 in mod sequence, so verify SEQ+2 and Mailbox.ID_FOLDER_TRASH
 
-    assertEquals(calItem.mData.getPrevFolders(), (SEQ + 2) + ":" + Mailbox.ID_FOLDER_TRASH);
-    assertEquals(calItem.getPrevFolders(), (SEQ + 2) + ":" + Mailbox.ID_FOLDER_TRASH);
-    assertEquals(calItem.mData.getPrevFolders(), calItem.getPrevFolders());
-  }
+  assertEquals(calItem.mData.getPrevFolders(), (SEQ + 2) + ":" + Mailbox.ID_FOLDER_TRASH);
+  assertEquals(calItem.getPrevFolders(), (SEQ + 2) + ":" + Mailbox.ID_FOLDER_TRASH);
+  assertEquals(calItem.mData.getPrevFolders(), calItem.getPrevFolders());
+ }
 }

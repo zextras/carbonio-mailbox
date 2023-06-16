@@ -22,9 +22,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Assert;
-
 import com.google.common.base.Charsets;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.google.common.base.Preconditions;
 
 /**
@@ -209,7 +209,7 @@ public final class MockTcpServer {
         public void exec(InputStream in, OutputStream out) throws IOException {
             String prev = record.peekLast();
             Matcher matcher = regex.matcher(prev);
-            Assert.assertTrue(matcher.find());
+            assertTrue(matcher.find());
             int count = matcher.groupCount();
             Object[] args = new Object[count];
             for (int i = 0; i < count; i++) {

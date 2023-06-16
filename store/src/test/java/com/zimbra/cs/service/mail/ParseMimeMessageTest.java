@@ -5,8 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
@@ -36,11 +35,10 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimePart;
 import org.dom4j.QName;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link ParseMimeMessage}.
@@ -49,7 +47,7 @@ import org.junit.Test;
  */
 public final class ParseMimeMessageTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
@@ -67,130 +65,130 @@ public final class ParseMimeMessageTest {
     return new ZimbraSoapContext(parent, MockProvisioning.DEFAULT_ACCOUNT_ID, null);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     MailboxTestUtil.clearData();
   }
 
-  @Test
-  @Ignore("Fix me. Null pointer exception.")
-  public void parseMimeMsgSoap() throws Exception {
-    Element el = new Element.JSONElement(MailConstants.E_MSG);
-    el.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+ @Test
+ @Disabled("Fix me. Null pointer exception.")
+ void parseMimeMsgSoap() throws Exception {
+  Element el = new Element.JSONElement(MailConstants.E_MSG);
+  el.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+  el.addUniqueElement(MailConstants.E_MIMEPART)
+    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+    .addAttribute(MailConstants.E_CONTENT, "foo bar");
+  el.addElement(MailConstants.E_EMAIL)
+    .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
+    .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+
+  Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  OperationContext octxt = new OperationContext(acct);
+  ZimbraSoapContext zsc = getMockSoapContext();
+
+  MimeMessage mm =
+    ParseMimeMessage.parseMimeMsgSoap(
+      zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+  assertEquals("text/plain; charset=utf-8", mm.getContentType());
+  assertEquals("dinner appt", mm.getSubject());
+  assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
+  assertEquals("7bit", mm.getHeader("Content-Transfer-Encoding", ","));
+  assertEquals("foo bar", mm.getContent());
+ }
+
+ @Test
+ @Disabled("Fix me. Null pointer exception.")
+ void customMimeHeader() throws Exception {
+  Element el = new Element.JSONElement(MailConstants.E_MSG);
+  el.addAttribute(MailConstants.E_SUBJECT, "subject");
+  el.addUniqueElement(MailConstants.E_MIMEPART)
+    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+    .addAttribute(MailConstants.E_CONTENT, "body");
+  el.addElement(MailConstants.E_EMAIL)
+    .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
+    .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+  el.addElement(MailConstants.E_HEADER)
+    .addAttribute(MailConstants.A_NAME, "X-Zimbra-Test")
+    .setText("custom");
+  el.addElement(MailConstants.E_HEADER)
+    .addAttribute(MailConstants.A_NAME, "X-Zimbra-Test")
+    .setText("\u30ab\u30b9\u30bf\u30e0");
+
+  Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  OperationContext octxt = new OperationContext(acct);
+  ZimbraSoapContext zsc = getMockSoapContext();
+
+  MimeMessage mm;
+  try {
+   mm =
+     ParseMimeMessage.parseMimeMsgSoap(
+       zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+   fail();
+  } catch (ServiceException expected) {
+   assertEquals("invalid request: header 'X-Zimbra-Test' not allowed", expected.getMessage());
+  }
+
+  Provisioning.getInstance()
+    .getConfig()
+    .setCustomMimeHeaderNameAllowed(new String[]{"X-Zimbra-Test"});
+  mm =
+    ParseMimeMessage.parseMimeMsgSoap(
+      zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+  assertEquals("custom, =?utf-8?B?44Kr44K544K/44Og?=", mm.getHeader("X-Zimbra-Test", ", "));
+ }
+
+ @Test
+ @Disabled("Fix me. Null pointer exception.")
+ void attachedMessage() throws Exception {
+  Element el = new Element.JSONElement(MailConstants.E_MSG);
+  el.addAttribute(MailConstants.E_SUBJECT, "attach message");
+  el.addElement(MailConstants.E_EMAIL)
+    .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
+    .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+  Element mp =
     el.addUniqueElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-        .addAttribute(MailConstants.E_CONTENT, "foo bar");
-    el.addElement(MailConstants.E_EMAIL)
-        .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
-        .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+      .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/mixed;");
+  mp.addElement(MailConstants.E_MIMEPART)
+    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+    .addAttribute(MailConstants.E_CONTENT, "This is the outer message.");
+  mp.addElement(MailConstants.E_MIMEPART)
+    .addAttribute(MailConstants.A_CONTENT_TYPE, "message/rfc822")
+    .addAttribute(
+      MailConstants.E_CONTENT,
+      "From: inner-sender@zimbra.com\r\n"
+        + "To: inner-rcpt@zimbra.com\r\n"
+        + "Subject: inner-message\r\n"
+        + "Content-Type: text/plain\r\n"
+        + "Content-Transfer-Encoding: 7bit\r\n"
+        + "MIME-Version: 1.0\r\n\r\n"
+        + "This is the inner message.");
 
-    Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-    OperationContext octxt = new OperationContext(acct);
-    ZimbraSoapContext zsc = getMockSoapContext();
+  Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  OperationContext octxt = new OperationContext(acct);
+  ZimbraSoapContext zsc = getMockSoapContext();
 
-    MimeMessage mm =
-        ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
-    assertEquals("text/plain; charset=utf-8", mm.getContentType());
-    assertEquals("dinner appt", mm.getSubject());
-    assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
-    assertEquals("7bit", mm.getHeader("Content-Transfer-Encoding", ","));
-    assertEquals("foo bar", mm.getContent());
-  }
+  MimeMessage mm =
+    ParseMimeMessage.parseMimeMsgSoap(
+      zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+  assertTrue(mm.getContentType().startsWith("multipart/mixed;"));
+  assertEquals("attach message", mm.getSubject());
+  assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
+  MimeMultipart mmp = (MimeMultipart) mm.getContent();
+  assertEquals(2, mmp.getCount());
+  assertTrue(mmp.getContentType().startsWith("multipart/mixed;"));
 
-  @Test
-  @Ignore("Fix me. Null pointer exception.")
-  public void customMimeHeader() throws Exception {
-    Element el = new Element.JSONElement(MailConstants.E_MSG);
-    el.addAttribute(MailConstants.E_SUBJECT, "subject");
-    el.addUniqueElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-        .addAttribute(MailConstants.E_CONTENT, "body");
-    el.addElement(MailConstants.E_EMAIL)
-        .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
-        .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
-    el.addElement(MailConstants.E_HEADER)
-        .addAttribute(MailConstants.A_NAME, "X-Zimbra-Test")
-        .setText("custom");
-    el.addElement(MailConstants.E_HEADER)
-        .addAttribute(MailConstants.A_NAME, "X-Zimbra-Test")
-        .setText("\u30ab\u30b9\u30bf\u30e0");
+  MimeBodyPart part = (MimeBodyPart) mmp.getBodyPart(0);
+  assertEquals("text/plain; charset=utf-8", part.getContentType());
+  assertEquals("7bit", part.getHeader("Content-Transfer-Encoding", ","));
+  assertEquals("This is the outer message.", part.getContent());
 
-    Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-    OperationContext octxt = new OperationContext(acct);
-    ZimbraSoapContext zsc = getMockSoapContext();
-
-    MimeMessage mm;
-    try {
-      mm =
-          ParseMimeMessage.parseMimeMsgSoap(
-              zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
-      Assert.fail();
-    } catch (ServiceException expected) {
-      assertEquals("invalid request: header 'X-Zimbra-Test' not allowed", expected.getMessage());
-    }
-
-    Provisioning.getInstance()
-        .getConfig()
-        .setCustomMimeHeaderNameAllowed(new String[] {"X-Zimbra-Test"});
-    mm =
-        ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
-    assertEquals("custom, =?utf-8?B?44Kr44K544K/44Og?=", mm.getHeader("X-Zimbra-Test", ", "));
-  }
-
-  @Test
-  @Ignore("Fix me. Null pointer exception.")
-  public void attachedMessage() throws Exception {
-    Element el = new Element.JSONElement(MailConstants.E_MSG);
-    el.addAttribute(MailConstants.E_SUBJECT, "attach message");
-    el.addElement(MailConstants.E_EMAIL)
-        .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
-        .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
-    Element mp =
-        el.addUniqueElement(MailConstants.E_MIMEPART)
-            .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/mixed;");
-    mp.addElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-        .addAttribute(MailConstants.E_CONTENT, "This is the outer message.");
-    mp.addElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_TYPE, "message/rfc822")
-        .addAttribute(
-            MailConstants.E_CONTENT,
-            "From: inner-sender@zimbra.com\r\n"
-                + "To: inner-rcpt@zimbra.com\r\n"
-                + "Subject: inner-message\r\n"
-                + "Content-Type: text/plain\r\n"
-                + "Content-Transfer-Encoding: 7bit\r\n"
-                + "MIME-Version: 1.0\r\n\r\n"
-                + "This is the inner message.");
-
-    Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-    OperationContext octxt = new OperationContext(acct);
-    ZimbraSoapContext zsc = getMockSoapContext();
-
-    MimeMessage mm =
-        ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
-    Assert.assertTrue(mm.getContentType().startsWith("multipart/mixed;"));
-    assertEquals("attach message", mm.getSubject());
-    assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
-    MimeMultipart mmp = (MimeMultipart) mm.getContent();
-    assertEquals(2, mmp.getCount());
-    Assert.assertTrue(mmp.getContentType().startsWith("multipart/mixed;"));
-
-    MimeBodyPart part = (MimeBodyPart) mmp.getBodyPart(0);
-    assertEquals("text/plain; charset=utf-8", part.getContentType());
-    assertEquals("7bit", part.getHeader("Content-Transfer-Encoding", ","));
-    assertEquals("This is the outer message.", part.getContent());
-
-    part = (MimeBodyPart) mmp.getBodyPart(1);
-    assertEquals("message/rfc822; charset=utf-8", part.getContentType());
-    MimeMessage msg = (MimeMessage) part.getContent();
-    assertEquals("text/plain", msg.getContentType());
-    assertEquals("inner-message", msg.getSubject());
-    assertEquals("This is the inner message.", msg.getContent());
-  }
+  part = (MimeBodyPart) mmp.getBodyPart(1);
+  assertEquals("message/rfc822; charset=utf-8", part.getContentType());
+  MimeMessage msg = (MimeMessage) part.getContent();
+  assertEquals("text/plain", msg.getContentType());
+  assertEquals("inner-message", msg.getSubject());
+  assertEquals("This is the inner message.", msg.getContent());
+ }
 
   private ByteArrayInputStream randomContent(String prefix, int length) {
     ZMimeUtility.ByteBuilder bb = new ZMimeUtility.ByteBuilder();
@@ -213,56 +211,56 @@ public final class ParseMimeMessageTest {
     return new BufferedReader(new InputStreamReader(part.getInputStream())).readLine();
   }
 
-  @Test
-  public void shouldReturnElementWithGivenContentTypeWhenCalledGetFirstElementFromMimePartByType()
-      throws ServiceException {
-    // Setup
-    final Element jsonElement = new Element.JSONElement(MailConstants.E_MSG);
-    jsonElement.addAttribute(MailConstants.E_SUBJECT, "subject");
+ @Test
+ void shouldReturnElementWithGivenContentTypeWhenCalledGetFirstElementFromMimePartByType()
+   throws ServiceException {
+  // Setup
+  final Element jsonElement = new Element.JSONElement(MailConstants.E_MSG);
+  jsonElement.addAttribute(MailConstants.E_SUBJECT, "subject");
 
-    final Element multiMimePart =
-        jsonElement
-            .addUniqueElement(MailConstants.E_MIMEPART)
-            .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/alternative");
+  final Element multiMimePart =
+    jsonElement
+      .addUniqueElement(MailConstants.E_MIMEPART)
+      .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/alternative");
 
+  multiMimePart
+    .addNonUniqueElement(MailConstants.E_MIMEPART)
+    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/html")
+    .addAttribute(MailConstants.E_CONTENT, "foo");
+
+  multiMimePart
+    .addNonUniqueElement(MailConstants.E_MIMEPART)
+    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+    .addAttribute(MailConstants.E_CONTENT, "loo");
+
+  multiMimePart
+    .addNonUniqueElement(MailConstants.E_MIMEPART)
+    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/svg+xml")
+    .addAttribute(MailConstants.E_CONTENT, "too");
+
+  // Execute, first element with MimeConstants.CT_TEXT_PLAIN ContentType
+  final Optional<Element> expectedFirstTextMimePart =
+    ParseMimeMessage.getFirstElementFromMimePartByType(
+      jsonElement, MimeConstants.CT_TEXT_PLAIN);
+
+  // Verify, MimeConstants.CT_TEXT_PLAIN
+  assertTrue(expectedFirstTextMimePart.isPresent());
+  assertTrue(
     multiMimePart
-        .addNonUniqueElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/html")
-        .addAttribute(MailConstants.E_CONTENT, "foo");
+      .listElements(MailConstants.E_MIMEPART)
+      .contains(expectedFirstTextMimePart.get()));
+  assertEquals("loo", expectedFirstTextMimePart.get().getAttribute(MailConstants.E_CONTENT));
 
+  // Execute, first element with MimeConstants.CT_TEXT_HTML ContentType
+  final Optional<Element> expectedFirstTextHtmlMimePart =
+    ParseMimeMessage.getFirstElementFromMimePartByType(jsonElement, MimeConstants.CT_TEXT_HTML);
+
+  // Verify, MimeConstants.CT_TEXT_HTML
+  assertTrue(expectedFirstTextHtmlMimePart.isPresent());
+  assertTrue(
     multiMimePart
-        .addNonUniqueElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-        .addAttribute(MailConstants.E_CONTENT, "loo");
-
-    multiMimePart
-        .addNonUniqueElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/svg+xml")
-        .addAttribute(MailConstants.E_CONTENT, "too");
-
-    // Execute, first element with MimeConstants.CT_TEXT_PLAIN ContentType
-    final Optional<Element> expectedFirstTextMimePart =
-        ParseMimeMessage.getFirstElementFromMimePartByType(
-            jsonElement, MimeConstants.CT_TEXT_PLAIN);
-
-    // Verify, MimeConstants.CT_TEXT_PLAIN
-    assertTrue(expectedFirstTextMimePart.isPresent());
-    assertTrue(
-        multiMimePart
-            .listElements(MailConstants.E_MIMEPART)
-            .contains(expectedFirstTextMimePart.get()));
-    assertEquals("loo", expectedFirstTextMimePart.get().getAttribute(MailConstants.E_CONTENT));
-
-    // Execute, first element with MimeConstants.CT_TEXT_HTML ContentType
-    final Optional<Element> expectedFirstTextHtmlMimePart =
-        ParseMimeMessage.getFirstElementFromMimePartByType(jsonElement, MimeConstants.CT_TEXT_HTML);
-
-    // Verify, MimeConstants.CT_TEXT_HTML
-    assertTrue(expectedFirstTextHtmlMimePart.isPresent());
-    assertTrue(
-        multiMimePart
-            .listElements(MailConstants.E_MIMEPART)
-            .contains(expectedFirstTextHtmlMimePart.get()));
-    assertEquals("foo", expectedFirstTextHtmlMimePart.get().getAttribute(MailConstants.E_CONTENT));
-  }
+      .listElements(MailConstants.E_MIMEPART)
+      .contains(expectedFirstTextHtmlMimePart.get()));
+  assertEquals("foo", expectedFirstTextHtmlMimePart.get().getAttribute(MailConstants.E_CONTENT));
+ }
 }

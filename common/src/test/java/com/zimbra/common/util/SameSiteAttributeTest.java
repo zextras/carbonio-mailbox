@@ -1,13 +1,14 @@
 package com.zimbra.common.util;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 public class SameSiteAttributeTest {
 
   @Test
-  public void addSameSiteAttributeToSetCookieHeaderWhenCalledAddSameSiteAttribute() {
+  void addSameSiteAttributeToSetCookieHeaderWhenCalledAddSameSiteAttribute() {
     MockHttpServletResponse response = new MockHttpServletResponse();
     response.setHeader("Set-Cookie", "id=a3fWa; Max-Age=2592000");
     SameSiteAttribute.addSameSiteAttribute(response, "Lax");

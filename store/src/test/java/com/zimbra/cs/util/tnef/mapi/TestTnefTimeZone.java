@@ -5,64 +5,65 @@
 
 package com.zimbra.cs.util.tnef.mapi;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.util.TimeZone;
 
 import net.freeutils.tnef.RawInputStream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestTnefTimeZone {
 
-    @Test
-    public void testTnefTimeZoneFromIntIndex() throws IOException {
-        TimeZone tz = null;
-        
-        tz = TnefTimeZone.getTimeZone(13, true, null);
-        Assert.assertFalse(tz == null);
-        Assert.assertTrue(tz.getRawOffset() == -28800000);
-        Assert.assertTrue(tz.getDSTSavings() == 3600000);
-        
-        tz = TnefTimeZone.getTimeZone(31, true, null);
-        Assert.assertFalse(tz == null);
-        Assert.assertTrue(tz.getRawOffset() == 0);
-        Assert.assertTrue(tz.getDSTSavings() == 0);
-        
-        tz = TnefTimeZone.getTimeZone(60, true, null); //invalid index
-        Assert.assertTrue(tz == null);
-        
-        tz = TnefTimeZone.getTimeZone(24, false, null);
-        Assert.assertFalse(tz == null);
-        Assert.assertTrue(tz.getID().equals("Asia/Dubai"));
-    }
-    
+ @Test
+ void testTnefTimeZoneFromIntIndex() throws IOException {
+  TimeZone tz = null;
 
-    @Test
-    public void testLittleEndianByteArrayToIntConversions() {
-        int value = 40067898;
-        byte[] leByteArray = intToleByteArray(value);
-        Assert.assertTrue(leByteArrayToInt(leByteArray) == value);
-    }
-    
-    @Test
-    public void testTnefTimeZoneFromInputStream() throws IOException {
-        TimeZone tz = null;
-        RawInputStream ris = null;
-        
-        ris = new RawInputStream(intToleByteArray(13), 0, 4);
-        tz = TnefTimeZone.getTimeZone(ris);
-        Assert.assertFalse(tz == null);
-        Assert.assertTrue(tz.getRawOffset() == -28800000);
-        Assert.assertTrue(tz.getDSTSavings() == 3600000);
-        
-        // don't observe daylight saving bit is set!!
-        ris = new RawInputStream(new byte[]{13, 0, 0, (byte)128}, 0, 4);
-        tz = TnefTimeZone.getTimeZone(ris);
-        Assert.assertFalse(tz == null);
-        Assert.assertTrue(tz.getRawOffset() == -28800000);
-        Assert.assertTrue(tz.getID().equals("Etc/GMT+8"));
-    }
+  tz = TnefTimeZone.getTimeZone(13, true, null);
+  assertNotNull(tz);
+  assertEquals(tz.getRawOffset(), -28800000);
+  assertEquals(tz.getDSTSavings(), 3600000);
+
+  tz = TnefTimeZone.getTimeZone(31, true, null);
+  assertNotNull(tz);
+  assertEquals(tz.getRawOffset(), 0);
+  assertEquals(tz.getDSTSavings(), 0);
+
+  tz = TnefTimeZone.getTimeZone(60, true, null); //invalid index
+  assertNull(tz);
+
+  tz = TnefTimeZone.getTimeZone(24, false, null);
+  assertNotNull(tz);
+  assertEquals(tz.getID(), "Asia/Dubai");
+ }
+
+
+ @Test
+ void testLittleEndianByteArrayToIntConversions() {
+  int value = 40067898;
+  byte[] leByteArray = intToleByteArray(value);
+  assertEquals(leByteArrayToInt(leByteArray), value);
+ }
+
+ @Test
+ void testTnefTimeZoneFromInputStream() throws IOException {
+  TimeZone tz = null;
+  RawInputStream ris = null;
+
+  ris = new RawInputStream(intToleByteArray(13), 0, 4);
+  tz = TnefTimeZone.getTimeZone(ris);
+  assertNotNull(tz);
+  assertEquals(tz.getRawOffset(), -28800000);
+  assertEquals(tz.getDSTSavings(), 3600000);
+
+  // don't observe daylight saving bit is set!!
+  ris = new RawInputStream(new byte[]{13, 0, 0, (byte) 128}, 0, 4);
+  tz = TnefTimeZone.getTimeZone(ris);
+  assertNotNull(tz);
+  assertEquals(tz.getRawOffset(), -28800000);
+  assertEquals(tz.getID(), "Etc/GMT+8");
+ }
     
     private static final byte[] intToleByteArray(int value) {
         return new byte[] {

@@ -9,11 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import com.google.common.collect.Maps;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
@@ -31,8 +33,6 @@ import com.zimbra.soap.admin.type.ContactBackupServer.ContactBackupStatus;
 import com.zimbra.soap.admin.type.ServerSelector;
 import com.zimbra.soap.admin.type.ServerSelector.ServerBy;
 
-import junit.framework.Assert;
-
 public class ContactBackupApiTest {
     private static Provisioning prov = null;
     private static final String DOMAIN_NAME = "zimbra.com";
@@ -40,7 +40,7 @@ public class ContactBackupApiTest {
     private static final String ADMIN = "admin_" + BUG_NUMBER + "@" + DOMAIN_NAME;
     private static Account admin = null;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         prov = Provisioning.getInstance();
@@ -53,62 +53,62 @@ public class ContactBackupApiTest {
         MailboxManager.getInstance().getMailboxByAccount(admin);
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void testContactBackupApiWithStart() throws Exception {
-        ContactBackupRequest cbReq = new ContactBackupRequest();
-        cbReq.setOp(Operation.start);
-        cbReq.addServer(new ServerSelector(ServerBy.name, "test1.com"));
-        cbReq.addServer(new ServerSelector(ServerBy.name, "test2.com"));
-        cbReq.addServer(new ServerSelector(ServerBy.name, "test3.com"));
-        Element request = JaxbUtil.jaxbToElement(cbReq);
-        Element response  = null;
+ @Test
+ void testContactBackupApiWithStart() throws Exception {
+  ContactBackupRequest cbReq = new ContactBackupRequest();
+  cbReq.setOp(Operation.start);
+  cbReq.addServer(new ServerSelector(ServerBy.name, "test1.com"));
+  cbReq.addServer(new ServerSelector(ServerBy.name, "test2.com"));
+  cbReq.addServer(new ServerSelector(ServerBy.name, "test3.com"));
+  Element request = JaxbUtil.jaxbToElement(cbReq);
+  Element response  = null;
 
-        try {
-            response = new MockContactBackup().handle(request, ServiceTestUtil.getRequestContext(admin));
-        } catch (ServiceException se) {
-            Assert.fail("ServiceException must not be thrown.");
-        }
-        if (response == null) {
-            Assert.fail("Response must be received.");
-        }
-        ContactBackupResponse cbResp = JaxbUtil.elementToJaxb(response);
-        Assert.assertNotNull(cbResp.getServers());
-        List<ContactBackupServer> servers = cbResp.getServers();
-        for (ContactBackupServer server : servers) {
-            Assert.assertEquals(server.getStatus(), ContactBackupStatus.started);
-        }
-    }
+  try {
+   response = new MockContactBackup().handle(request, ServiceTestUtil.getRequestContext(admin));
+  } catch (ServiceException se) {
+   fail("ServiceException must not be thrown.");
+  }
+  if (response == null) {
+   fail("Response must be received.");
+  }
+  ContactBackupResponse cbResp = JaxbUtil.elementToJaxb(response);
+  assertNotNull(cbResp.getServers());
+  List<ContactBackupServer> servers = cbResp.getServers();
+  for (ContactBackupServer server : servers) {
+   assertEquals(server.getStatus(), ContactBackupStatus.started);
+  }
+ }
 
-    @Test
-    public void testContactBackupApiWithStop() throws Exception {
-        ContactBackupRequest cbReq = new ContactBackupRequest();
-        cbReq.setOp(Operation.stop);
-        cbReq.addServer(new ServerSelector(ServerBy.name, "test1.com"));
-        cbReq.addServer(new ServerSelector(ServerBy.name, "test2.com"));
-        cbReq.addServer(new ServerSelector(ServerBy.name, "test3.com"));
-        Element request = JaxbUtil.jaxbToElement(cbReq);
-        Element response  = null;
+ @Test
+ void testContactBackupApiWithStop() throws Exception {
+  ContactBackupRequest cbReq = new ContactBackupRequest();
+  cbReq.setOp(Operation.stop);
+  cbReq.addServer(new ServerSelector(ServerBy.name, "test1.com"));
+  cbReq.addServer(new ServerSelector(ServerBy.name, "test2.com"));
+  cbReq.addServer(new ServerSelector(ServerBy.name, "test3.com"));
+  Element request = JaxbUtil.jaxbToElement(cbReq);
+  Element response  = null;
 
-        try {
-            response = new MockContactBackup().handle(request, ServiceTestUtil.getRequestContext(admin));
-        } catch (ServiceException se) {
-            Assert.fail("ServiceException must not be thrown.");
-        }
-        if (response == null) {
-            Assert.fail("Response must be received.");
-        }
-        ContactBackupResponse cbResp = JaxbUtil.elementToJaxb(response);
-        Assert.assertNotNull(cbResp.getServers());
-        List<ContactBackupServer> servers = cbResp.getServers();
-        for (ContactBackupServer server : servers) {
-            Assert.assertEquals(server.getStatus(), ContactBackupStatus.stopped);
-        }
-    }
+  try {
+   response = new MockContactBackup().handle(request, ServiceTestUtil.getRequestContext(admin));
+  } catch (ServiceException se) {
+   fail("ServiceException must not be thrown.");
+  }
+  if (response == null) {
+   fail("Response must be received.");
+  }
+  ContactBackupResponse cbResp = JaxbUtil.elementToJaxb(response);
+  assertNotNull(cbResp.getServers());
+  List<ContactBackupServer> servers = cbResp.getServers();
+  for (ContactBackupServer server : servers) {
+   assertEquals(server.getStatus(), ContactBackupStatus.stopped);
+  }
+ }
 
     public class MockContactBackup extends ContactBackup {
         @Override

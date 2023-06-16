@@ -4,7 +4,7 @@
 
 package com.zimbra.cs.service.mail;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.mail.Address;
 import javax.mail.internet.InternetAddress;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 public class CalendarRequestTest {
@@ -51,7 +51,7 @@ public class CalendarRequestTest {
   /**
    * @throws java.lang.Exception
    */
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     Field lock = Mailbox.class.getDeclaredField("lock");
     lock.setAccessible(true);
@@ -65,63 +65,63 @@ public class CalendarRequestTest {
     sendQueue = new CalendarRequest.MailSendQueue();
   }
 
-  /**
-   * Test method for {@link
+ /**
+  * Test method for {@link
    * com.zimbra.cs.service.mail.CalendarRequest#notifyCalendarItem(com.zimbra.soap.ZimbraSoapContext,
    * com.zimbra.cs.mailbox.OperationContext, com.zimbra.cs.account.Account,
    * com.zimbra.cs.mailbox.Mailbox, com.zimbra.cs.mailbox.CalendarItem, boolean, java.util.List,
    * boolean, com.zimbra.cs.service.mail.CalendarRequest.MailSendQueue)}.
-   *
-   * @throws Exception
+  *
+  * @throws Exception
    */
-  @Test
-  public void testNotifyCalendarItem() throws Exception {
+ @Test
+ void testNotifyCalendarItem() throws Exception {
 
-    JavaMailInternetAddress emailAddress =
-        new JavaMailInternetAddress("test@zimbra.com", "test", MimeConstants.P_CHARSET_UTF8);
-    MockedStatic<AccountUtil> mockAccountUtil = mockStatic(AccountUtil.class);
-    mockAccountUtil
-        .when(() -> AccountUtil.getFriendlyEmailAddress(account))
-        .thenReturn(emailAddress);
+  JavaMailInternetAddress emailAddress =
+    new JavaMailInternetAddress("test@zimbra.com", "test", MimeConstants.P_CHARSET_UTF8);
+  MockedStatic<AccountUtil> mockAccountUtil = mockStatic(AccountUtil.class);
+  mockAccountUtil
+    .when(() -> AccountUtil.getFriendlyEmailAddress(account))
+    .thenReturn(emailAddress);
 
-    List<Address> addressList = new ArrayList<Address>();
-    addressList.add((Address) new InternetAddress("test1@zimbra.com", "Test 1"));
-    addressList.add((Address) new InternetAddress("test2@zimbra.com", "Test 2"));
-    List<ZAttendee> attendeeList = new ArrayList<ZAttendee>();
-    attendeeList.add(addedAttendee1);
-    attendeeList.add(addedAttendee2);
+  List<Address> addressList = new ArrayList<Address>();
+  addressList.add((Address) new InternetAddress("test1@zimbra.com", "Test 1"));
+  addressList.add((Address) new InternetAddress("test2@zimbra.com", "Test 2"));
+  List<ZAttendee> attendeeList = new ArrayList<ZAttendee>();
+  attendeeList.add(addedAttendee1);
+  attendeeList.add(addedAttendee2);
 
-    doReturn(System.currentTimeMillis()).when(octxt.getTimestamp());
+  doReturn(System.currentTimeMillis()).when(octxt.getTimestamp());
 
-    doReturn(1).when(invite1).getMailItemId();
-    doReturn(2).when(invite2).getMailItemId();
-    doReturn(attendeeList).when(invite1).getAttendees();
-    doReturn(attendeeList).when(invite2).getAttendees();
-    doReturn(true).when(invite2).hasRecurId();
+  doReturn(1).when(invite1).getMailItemId();
+  doReturn(2).when(invite2).getMailItemId();
+  doReturn(attendeeList).when(invite1).getAttendees();
+  doReturn(attendeeList).when(invite2).getAttendees();
+  doReturn(true).when(invite2).hasRecurId();
 
-    when(calItem.isPublic()).thenReturn(true);
-    when(calItem.allowPrivateAccess(account, true)).thenReturn(true);
-    when(calItem.getId()).thenReturn(1);
-    when(calItem.getInvites()).thenReturn(new Invite[] {invite1, invite2});
-    when(calItem.getSubpartMessage(1)).thenReturn(mm);
-    when(calItem.getSubpartMessage(2)).thenReturn(mm2);
+  when(calItem.isPublic()).thenReturn(true);
+  when(calItem.allowPrivateAccess(account, true)).thenReturn(true);
+  when(calItem.getId()).thenReturn(1);
+  when(calItem.getInvites()).thenReturn(new Invite[]{invite1, invite2});
+  when(calItem.getSubpartMessage(1)).thenReturn(mm);
+  when(calItem.getSubpartMessage(2)).thenReturn(mm2);
 
-    when(mbox.getCalendarItemById(octxt, calItem.getId())).thenReturn(calItem);
-    MockedStatic<CalendarMailSender> calendarMailSenderMockedStatic =
-        mockStatic(CalendarMailSender.class);
-    calendarMailSenderMockedStatic
-        .when(() -> CalendarMailSender.toListFromAttendees(attendeeList))
-        .thenReturn(addressList);
-    MockedStatic<CalendarRequest> calendarRequestMockedStatic = mockStatic(CalendarRequest.class);
-    calendarRequestMockedStatic
-        .when(() -> CalendarRequest.isOnBehalfOfRequest(any(ZimbraSoapContext.class)))
-        .thenReturn(false);
-    calendarRequestMockedStatic
-        .when(() -> CalendarRequest.getAuthenticatedAccount(any(ZimbraSoapContext.class)))
-        .thenReturn(account);
+  when(mbox.getCalendarItemById(octxt, calItem.getId())).thenReturn(calItem);
+  MockedStatic<CalendarMailSender> calendarMailSenderMockedStatic =
+    mockStatic(CalendarMailSender.class);
+  calendarMailSenderMockedStatic
+    .when(() -> CalendarMailSender.toListFromAttendees(attendeeList))
+    .thenReturn(addressList);
+  MockedStatic<CalendarRequest> calendarRequestMockedStatic = mockStatic(CalendarRequest.class);
+  calendarRequestMockedStatic
+    .when(() -> CalendarRequest.isOnBehalfOfRequest(any(ZimbraSoapContext.class)))
+    .thenReturn(false);
+  calendarRequestMockedStatic
+    .when(() -> CalendarRequest.getAuthenticatedAccount(any(ZimbraSoapContext.class)))
+    .thenReturn(account);
 
-    CalendarRequest.notifyCalendarItem(
-        zsc, octxt, account, mbox, calItem, true, attendeeList, true, sendQueue);
-    assertEquals(1, sendQueue.queue.size());
-  }
+  CalendarRequest.notifyCalendarItem(
+    zsc, octxt, account, mbox, calItem, true, attendeeList, true, sendQueue);
+  assertEquals(1, sendQueue.queue.size());
+ }
 }
