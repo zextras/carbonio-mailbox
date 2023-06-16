@@ -5,11 +5,12 @@
 
 package com.zimbra.cs.mime;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.cs.account.MockProvisioning;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mime.handler.TextEnrichedHandler;
@@ -23,7 +24,7 @@ import com.zimbra.cs.mime.handler.UnknownTypeHandler;
  */
 public class MimeHandlerManagerTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         MockProvisioning prov = new MockProvisioning();
@@ -54,127 +55,127 @@ public class MimeHandlerManagerTest {
         Provisioning.setInstance(prov);
     }
 
-    @Test
-    public void html() throws Exception {
-        MimeHandler handler = MimeHandlerManager.getMimeHandler(
-                "text/html", "filename.html");
-        Assert.assertEquals(TextHtmlHandler.class, handler.getClass());
+ @Test
+ void html() throws Exception {
+  MimeHandler handler = MimeHandlerManager.getMimeHandler(
+    "text/html", "filename.html");
+  assertEquals(TextHtmlHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "text/html", null);
-        Assert.assertEquals(TextHtmlHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    "text/html", null);
+  assertEquals(TextHtmlHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "text/html", "filename.bogus");
-        Assert.assertEquals(TextHtmlHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    "text/html", "filename.bogus");
+  assertEquals(TextHtmlHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                null, "filename.html");
-        Assert.assertEquals(TextHtmlHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    null, "filename.html");
+  assertEquals(TextHtmlHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "bogus/type", "filename.html");
-        Assert.assertEquals(TextHtmlHandler.class, handler.getClass());
-    }
+  handler = MimeHandlerManager.getMimeHandler(
+    "bogus/type", "filename.html");
+  assertEquals(TextHtmlHandler.class, handler.getClass());
+ }
 
-    @Test
-    public void htm() throws Exception {
-        MimeHandler handler = MimeHandlerManager.getMimeHandler(
-                "text/html", "filename.htm");
-        Assert.assertEquals(TextHtmlHandler.class, handler.getClass());
+ @Test
+ void htm() throws Exception {
+  MimeHandler handler = MimeHandlerManager.getMimeHandler(
+    "text/html", "filename.htm");
+  assertEquals(TextHtmlHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "text/html", null);
-        Assert.assertEquals(TextHtmlHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    "text/html", null);
+  assertEquals(TextHtmlHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "text/html", "filename.bogus");
-        Assert.assertEquals(TextHtmlHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    "text/html", "filename.bogus");
+  assertEquals(TextHtmlHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                null, "filename.htm");
-        Assert.assertEquals(TextHtmlHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    null, "filename.htm");
+  assertEquals(TextHtmlHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "bogus/type", "filename.htm");
-        Assert.assertEquals(TextHtmlHandler.class, handler.getClass());
-    }
+  handler = MimeHandlerManager.getMimeHandler(
+    "bogus/type", "filename.htm");
+  assertEquals(TextHtmlHandler.class, handler.getClass());
+ }
 
-    @Test
-    public void textEnriched() throws Exception {
-        MimeHandler handler = MimeHandlerManager.getMimeHandler(
-                "text/enriched", "filename.txe");
-        Assert.assertEquals(TextEnrichedHandler.class, handler.getClass());
+ @Test
+ void textEnriched() throws Exception {
+  MimeHandler handler = MimeHandlerManager.getMimeHandler(
+    "text/enriched", "filename.txe");
+  assertEquals(TextEnrichedHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "text/enriched", null);
-        Assert.assertEquals(TextEnrichedHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    "text/enriched", null);
+  assertEquals(TextEnrichedHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "text/enriched", "filename.bogus");
-        Assert.assertEquals(TextEnrichedHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    "text/enriched", "filename.bogus");
+  assertEquals(TextEnrichedHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                null, "filename.txe");
-        Assert.assertEquals(TextEnrichedHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    null, "filename.txe");
+  assertEquals(TextEnrichedHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "bogus/type", "filename.txe");
-        Assert.assertEquals(TextEnrichedHandler.class, handler.getClass());
-    }
+  handler = MimeHandlerManager.getMimeHandler(
+    "bogus/type", "filename.txe");
+  assertEquals(TextEnrichedHandler.class, handler.getClass());
+ }
 
-    @Test
-    public void applicationOctetStream() throws Exception {
-        MimeHandler handler = MimeHandlerManager.getMimeHandler(
-                "application/octet-stream", "filename.exe");
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
+ @Test
+ void applicationOctetStream() throws Exception {
+  MimeHandler handler = MimeHandlerManager.getMimeHandler(
+    "application/octet-stream", "filename.exe");
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "application/octet-stream", null);
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    "application/octet-stream", null);
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "application/octet-stream", "filename.bogus");
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    "application/octet-stream", "filename.bogus");
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                null, "filename.exe");
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(
+    null, "filename.exe");
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(
-                "bogus/type", "filename.exe");
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
-    }
+  handler = MimeHandlerManager.getMimeHandler(
+    "bogus/type", "filename.exe");
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
+ }
 
-    @Test
-    public void nil() throws Exception {
-        MimeHandler handler = MimeHandlerManager.getMimeHandler(null, null);
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
+ @Test
+ void nil() throws Exception {
+  MimeHandler handler = MimeHandlerManager.getMimeHandler(null, null);
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler(null, "filename.bogus");
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler(null, "filename.bogus");
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler("bogus/type", null);
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
-    }
+  handler = MimeHandlerManager.getMimeHandler("bogus/type", null);
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
+ }
 
-    @Test
-    public void empty() throws Exception {
-        MimeHandler handler = MimeHandlerManager.getMimeHandler("", "");
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
+ @Test
+ void empty() throws Exception {
+  MimeHandler handler = MimeHandlerManager.getMimeHandler("", "");
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler("", "filename.bogus");
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
+  handler = MimeHandlerManager.getMimeHandler("", "filename.bogus");
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
 
-        handler = MimeHandlerManager.getMimeHandler("bogus/type", "");
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
-    }
+  handler = MimeHandlerManager.getMimeHandler("bogus/type", "");
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
+ }
 
-    @Test
-    public void classNotFound() throws Exception {
-        MimeHandler handler = MimeHandlerManager.getMimeHandler(
-                "not/exist", null);
-        Assert.assertEquals(UnknownTypeHandler.class, handler.getClass());
-    }
+ @Test
+ void classNotFound() throws Exception {
+  MimeHandler handler = MimeHandlerManager.getMimeHandler(
+    "not/exist", null);
+  assertEquals(UnknownTypeHandler.class, handler.getClass());
+ }
 
 }

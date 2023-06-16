@@ -11,11 +11,12 @@ import java.io.IOException;
 
 import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.common.localconfig.LC;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.cs.stats.ZimbraPerf;
 
 /**
@@ -26,7 +27,7 @@ import com.zimbra.cs.stats.ZimbraPerf;
 public final class LuceneDirectoryTest {
     private static File tmpDir;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         tmpDir = new File("build/test/" + LuceneDirectoryTest.class.getSimpleName());
         if (!tmpDir.isDirectory()) {
@@ -36,33 +37,33 @@ public final class LuceneDirectoryTest {
         LC.zimbra_index_disable_perf_counters.setDefault(false);
     }
 
-    @Test
-    public void read() throws IOException {
-        FileOutputStream out = new FileOutputStream(new File(tmpDir, "read"));
-        out.write(new byte[] { 0, 1, 2, 3, 4 });
-        out.close();
+ @Test
+ void read() throws IOException {
+  FileOutputStream out = new FileOutputStream(new File(tmpDir, "read"));
+  out.write(new byte[]{0, 1, 2, 3, 4});
+  out.close();
 
-        long count = ZimbraPerf.COUNTER_IDX_BYTES_READ.getCount();
-        long total = ZimbraPerf.COUNTER_IDX_BYTES_READ.getTotal();
-        LuceneDirectory dir = LuceneDirectory.open(tmpDir);
-        IndexInput in = dir.openInput("read");
-        in.readBytes(new byte[5], 0, 5);
-        in.close();
-        Assert.assertEquals(1, ZimbraPerf.COUNTER_IDX_BYTES_READ.getCount() - count);
-        Assert.assertEquals(5, ZimbraPerf.COUNTER_IDX_BYTES_READ.getTotal() - total);
-    }
+  long count = ZimbraPerf.COUNTER_IDX_BYTES_READ.getCount();
+  long total = ZimbraPerf.COUNTER_IDX_BYTES_READ.getTotal();
+  LuceneDirectory dir = LuceneDirectory.open(tmpDir);
+  IndexInput in = dir.openInput("read");
+  in.readBytes(new byte[5], 0, 5);
+  in.close();
+  assertEquals(1, ZimbraPerf.COUNTER_IDX_BYTES_READ.getCount() - count);
+  assertEquals(5, ZimbraPerf.COUNTER_IDX_BYTES_READ.getTotal() - total);
+ }
 
-    @Test
-    public void write() throws IOException {
-        long count = ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getCount();
-        long total = ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getTotal();
-        LuceneDirectory dir = LuceneDirectory.open(new File("/tmp"));
-        IndexOutput out = dir.createOutput("write");
-        out.writeBytes(new byte[] { 0, 1, 2 }, 3);
-        out.close();
+ @Test
+ void write() throws IOException {
+  long count = ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getCount();
+  long total = ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getTotal();
+  LuceneDirectory dir = LuceneDirectory.open(new File("/tmp"));
+  IndexOutput out = dir.createOutput("write");
+  out.writeBytes(new byte[]{0, 1, 2}, 3);
+  out.close();
 
-        Assert.assertEquals(1, ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getCount() - count);
-        Assert.assertEquals(3, ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getTotal() - total);
-    }
+  assertEquals(1, ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getCount() - count);
+  assertEquals(3, ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getTotal() - total);
+ }
 
 }

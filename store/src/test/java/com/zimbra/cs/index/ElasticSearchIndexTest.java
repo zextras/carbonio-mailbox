@@ -12,8 +12,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.junit.Ignore;
-
+import org.junit.jupiter.api.Disabled;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.index.IndexStore.Factory;
@@ -24,7 +23,7 @@ import com.zimbra.cs.index.elasticsearch.ElasticSearchIndex;
  * Unit test for {@link ElasticSearchIndex}.
  */
 
-@Ignore("Disabled as generally ElasticSearch will not be running.")
+@Disabled("Disabled as generally ElasticSearch will not be running.")
 public final class ElasticSearchIndexTest extends AbstractIndexStoreTest {
 
     @Override

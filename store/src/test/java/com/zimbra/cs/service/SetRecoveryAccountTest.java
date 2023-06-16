@@ -5,25 +5,7 @@
 
 package com.zimbra.cs.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.mail.Address;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.MethodRule;
-import org.junit.rules.TestName;
-import org.junit.rules.TestWatchman;
-import org.junit.runners.model.FrameworkMethod;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.Key;
@@ -49,25 +31,30 @@ import com.zimbra.cs.service.mail.SetRecoveryAccount;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SetRecoveryAccountRequest;
 import com.zimbra.soap.type.Channel;
-
-import junit.framework.Assert;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import javax.mail.Address;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 public class SetRecoveryAccountTest {
 
     public static String zimbraServerDir = "";
 
-    @Rule
-    public TestName testName = new TestName();
-    @Rule
-    public MethodRule watchman = new TestWatchman() {
+    
+    public String testName;
 
-        @Override
-        public void failed(Throwable e, FrameworkMethod method) {
-            System.out.println(method.getName() + " " + e.getClass().getSimpleName());
-        }
-    };
-
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
@@ -151,83 +138,87 @@ public class SetRecoveryAccountTest {
         }
     }
 
-    @Before
-    public void setUp() throws Exception {
-        System.out.println(testName.getMethodName());
-        MailboxTestUtil.clearData();
-    }
+ @BeforeEach
+ public void setUp(TestInfo testInfo) throws Exception {
+  Optional<Method> testMethod = testInfo.getTestMethod();
+  if (testMethod.isPresent()) {
+   this.testName = testMethod.get().getName();
+  }
+  System.out.println( testName);
+  MailboxTestUtil.clearData();
+ }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void testMissingChannel() throws Exception {
-        Account acct1 = Provisioning.getInstance().get(Key.AccountBy.name, "test5035@zimbra.com");
-        acct1.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
-        SetRecoveryAccountRequest request = new SetRecoveryAccountRequest();
-        request.setOp(SetRecoveryAccountRequest.Op.sendCode);
-        request.setRecoveryAccount("testRecovery@zimbra.com");
-        Element req = JaxbUtil.jaxbToElement(request);
-        try {
-            new SetRecoveryAccount().handle(req, ServiceTestUtil.getRequestContext(acct1));
-        } catch (ServiceException e) {
-            Assert.fail("Exception should not be thrown\n" + e.getMessage());
-        }
-    }
+ @Test
+ void testMissingChannel() throws Exception {
+  Account acct1 = Provisioning.getInstance().get(Key.AccountBy.name, "test5035@zimbra.com");
+  acct1.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
+  SetRecoveryAccountRequest request = new SetRecoveryAccountRequest();
+  request.setOp(SetRecoveryAccountRequest.Op.sendCode);
+  request.setRecoveryAccount("testRecovery@zimbra.com");
+  Element req = JaxbUtil.jaxbToElement(request);
+  try {
+   new SetRecoveryAccount().handle(req, ServiceTestUtil.getRequestContext(acct1));
+  } catch (ServiceException e) {
+   fail("Exception should not be thrown\n" + e.getMessage());
+  }
+ }
 
-    @Test
-    public void test4797() throws Exception {
-        Account acct1 = Provisioning.getInstance().get(Key.AccountBy.name, "test4797@zimbra.com");
-        Account recoveryAcct = Provisioning.getInstance().get(Key.AccountBy.name,
-            "testRecovery@zimbra.com");
-        Mailbox recoveryMailbox = MailboxManager.getInstance().getMailboxByAccount(recoveryAcct);
-        acct1.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
-        Assert.assertNull(acct1.getPrefPasswordRecoveryAddress());
-        Assert.assertNull(acct1.getPrefPasswordRecoveryAddressStatus());
-        SetRecoveryAccountRequest request = new SetRecoveryAccountRequest();
-        request.setOp(SetRecoveryAccountRequest.Op.sendCode);
-        request.setRecoveryAccount("testRecovery@zimbra.com");
-        request.setChannel(Channel.EMAIL);
-        Element req = JaxbUtil.jaxbToElement(request);
-        new SetRecoveryAccount().handle(req, ServiceTestUtil.getRequestContext(acct1));
-        // Verify that the recovery email address is updated into ldap and
-        // status is set to pending
-        Assert.assertEquals("testRecovery@zimbra.com", acct1.getPrefPasswordRecoveryAddress());
-        Assert.assertEquals(PrefPasswordRecoveryAddressStatus.pending,
-            acct1.getAttrs().get(Provisioning.A_zimbraPrefPasswordRecoveryAddressStatus));
-        // Verify that recovery email address recieved the verification email
-        Message msg = (Message) recoveryMailbox.getItemList(null, MailItem.Type.MESSAGE).get(0);
-        Assert.assertEquals(
-            "Request for recovery email address verification by test4797@zimbra.com",
-            msg.getSubject());
-        try {
-            new SetRecoveryAccount().handle(req, ServiceTestUtil.getRequestContext(acct1));
-            Assert.fail("Exception should have been thrown");
-        } catch (ServiceException e) {
-            Assert.assertEquals(
-                "service exception: Verification code already sent to this recovery email.",
-                e.getMessage());
-        }
-    }
+ @Test
+ void test4797() throws Exception {
+  Account acct1 = Provisioning.getInstance().get(Key.AccountBy.name, "test4797@zimbra.com");
+  Account recoveryAcct = Provisioning.getInstance().get(Key.AccountBy.name,
+    "testRecovery@zimbra.com");
+  Mailbox recoveryMailbox = MailboxManager.getInstance().getMailboxByAccount(recoveryAcct);
+  acct1.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
+  assertNull(acct1.getPrefPasswordRecoveryAddress());
+  assertNull(acct1.getPrefPasswordRecoveryAddressStatus());
+  SetRecoveryAccountRequest request = new SetRecoveryAccountRequest();
+  request.setOp(SetRecoveryAccountRequest.Op.sendCode);
+  request.setRecoveryAccount("testRecovery@zimbra.com");
+  request.setChannel(Channel.EMAIL);
+  Element req = JaxbUtil.jaxbToElement(request);
+  new SetRecoveryAccount().handle(req, ServiceTestUtil.getRequestContext(acct1));
+  // Verify that the recovery email address is updated into ldap and
+  // status is set to pending
+  assertEquals("testRecovery@zimbra.com", acct1.getPrefPasswordRecoveryAddress());
+  assertEquals(PrefPasswordRecoveryAddressStatus.pending,
+    acct1.getAttrs().get(Provisioning.A_zimbraPrefPasswordRecoveryAddressStatus));
+  // Verify that recovery email address recieved the verification email
+  Message msg = (Message) recoveryMailbox.getItemList(null, MailItem.Type.MESSAGE).get(0);
+  assertEquals(
+    "Request for recovery email address verification by test4797@zimbra.com",
+    msg.getSubject());
+  try {
+   new SetRecoveryAccount().handle(req, ServiceTestUtil.getRequestContext(acct1));
+   fail("Exception should have been thrown");
+  } catch (ServiceException e) {
+   assertEquals(
+     "service exception: Verification code already sent to this recovery email.",
+     e.getMessage());
+  }
+ }
 
-    @Test
-    public void test5035() throws Exception {
-        Account acct1 = Provisioning.getInstance().get(Key.AccountBy.name, "test5035@zimbra.com");
-        acct1.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
-        SetRecoveryAccountRequest request = new SetRecoveryAccountRequest();
-        request.setOp(SetRecoveryAccountRequest.Op.sendCode);
-        request.setRecoveryAccount("test5035@zimbra.com");
-        request.setChannel(Channel.EMAIL);
-        Element req = JaxbUtil.jaxbToElement(request);
-        try {
-            new SetRecoveryAccount().handle(req, ServiceTestUtil.getRequestContext(acct1));
-            Assert.fail("Exception should have been thrown");
-        } catch (ServiceException e) {
-            Assert.assertEquals(
-                "service exception: Recovery address should not be same as primary/alias email address.",
-                e.getMessage());
-        }
-    }
+ @Test
+ void test5035() throws Exception {
+  Account acct1 = Provisioning.getInstance().get(Key.AccountBy.name, "test5035@zimbra.com");
+  acct1.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
+  SetRecoveryAccountRequest request = new SetRecoveryAccountRequest();
+  request.setOp(SetRecoveryAccountRequest.Op.sendCode);
+  request.setRecoveryAccount("test5035@zimbra.com");
+  request.setChannel(Channel.EMAIL);
+  Element req = JaxbUtil.jaxbToElement(request);
+  try {
+   new SetRecoveryAccount().handle(req, ServiceTestUtil.getRequestContext(acct1));
+   fail("Exception should have been thrown");
+  } catch (ServiceException e) {
+   assertEquals(
+     "service exception: Recovery address should not be same as primary/alias email address.",
+     e.getMessage());
+  }
+ }
 }

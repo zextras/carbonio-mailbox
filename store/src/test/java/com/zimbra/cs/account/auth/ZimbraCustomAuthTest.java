@@ -1,13 +1,14 @@
 package com.zimbra.cs.account.auth;
 
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.zimbra.cs.account.Account;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ZimbraCustomAuthTest {
 
@@ -23,16 +24,16 @@ public class ZimbraCustomAuthTest {
     }
   }
 
-  @Test
-  public void shouldVerifyCustomAuthHandlerIsRegistered() {
-    String testHandler = "testHandler";
-    ZimbraCustomAuth.register(testHandler, new TestCustomAuth());
-    assertTrue(ZimbraCustomAuth.handlerIsRegistered(testHandler));
-  }
+ @Test
+ void shouldVerifyCustomAuthHandlerIsRegistered() {
+  String testHandler = "testHandler";
+  ZimbraCustomAuth.register(testHandler, new TestCustomAuth());
+  assertTrue(ZimbraCustomAuth.handlerIsRegistered(testHandler));
+ }
 
-  @Test
-  public void shouldVerifyCustomAuthHandlerNotRegisered() {
-    String testHandler = UUID.randomUUID().toString();
-    assertFalse(ZimbraCustomAuth.handlerIsRegistered(testHandler));
-  }
+ @Test
+ void shouldVerifyCustomAuthHandlerNotRegisered() {
+  String testHandler = UUID.randomUUID().toString();
+  assertFalse(ZimbraCustomAuth.handlerIsRegistered(testHandler));
+ }
 }

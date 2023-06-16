@@ -5,18 +5,17 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.Assert.fail;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.google.common.collect.Maps;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.DeliveryServiceException;
 import com.zimbra.common.service.ServiceException;
@@ -57,7 +56,7 @@ public class ErejectTest {
             + "  ;\n"
             + "}";
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         MailboxTestUtil.clearData();
@@ -79,111 +78,111 @@ public class ErejectTest {
 
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    /*
-     * applyRulesToIncomingMessage() should throw an exception to cancel the message delivery.
-     * No message is delivered.
-     *
-     * The following error will be logged:
-     * ERROR - Evaluation failed. Reason: 'ereject' action refuses delivery of a message. Sieve rule evaluation is cancelled
-     */
-    @Test
-    public void test() {
-        Account acct1 = null;
-        Mailbox mbox1 = null;
-        boolean isPassed = false;
-        try {
-            acct1 = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
-            mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
-            RuleManager.clearCachedRules(acct1);
+ /*
+  * applyRulesToIncomingMessage() should throw an exception to cancel the message delivery.
+  * No message is delivered.
+  *
+  * The following error will be logged:
+  * ERROR - Evaluation failed. Reason: 'ereject' action refuses delivery of a message. Sieve rule evaluation is cancelled
+  */
+ @Test
+ void test() {
+  Account acct1 = null;
+  Mailbox mbox1 = null;
+  boolean isPassed = false;
+  try {
+   acct1 = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+   mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
+   RuleManager.clearCachedRules(acct1);
 
-            LmtpEnvelope env = new LmtpEnvelope();
-            LmtpAddress sender = new LmtpAddress("<test2@zimbra.com>", new String[] { "BODY", "SIZE" }, null);
-            LmtpAddress recipient = new LmtpAddress("<test@zimbra.com>", null, null);
-            env.setSender(sender);
-            env.addLocalRecipient(recipient);
+   LmtpEnvelope env = new LmtpEnvelope();
+   LmtpAddress sender = new LmtpAddress("<test2@zimbra.com>", new String[]{"BODY", "SIZE"}, null);
+   LmtpAddress recipient = new LmtpAddress("<test@zimbra.com>", null, null);
+   env.setSender(sender);
+   env.addLocalRecipient(recipient);
 
-            acct1.setMailSieveScript(filterScript);
-            RuleManager.applyRulesToIncomingMessage(
-                    new OperationContext(mbox1), mbox1, new ParsedMessage(
-                    sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
-                    env, new DeliveryContext(),
-                    Mailbox.ID_FOLDER_INBOX, true);
-        } catch (DeliveryServiceException e) {
-            if (e.getCause() instanceof ErejectException){
-                try {
-                    List<Integer> items = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX)
-                            .getIds(MailItem.Type.MESSAGE);
-                    Assert.assertEquals(null, items);
-                    isPassed = true;
-                } catch (Exception ex) {
-                    fail("No exception should be thrown: " + ex.getMessage());
-                }
-            } else {
-                fail("No exception other than DeliveryServiceException/ErejectException should be thrown: " + e.getMessage());
-            }
-        } catch (Exception e) {
-             fail("No exception should be thrown: " + e.getMessage());
-        }
-        if (!isPassed) {
-            fail("DeliveryServiceException/ErejectException should have been thrown, but no exception is thrown");
-        }
+   acct1.setMailSieveScript(filterScript);
+   RuleManager.applyRulesToIncomingMessage(
+     new OperationContext(mbox1), mbox1, new ParsedMessage(
+       sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
+     env, new DeliveryContext(),
+     Mailbox.ID_FOLDER_INBOX, true);
+  } catch (DeliveryServiceException e) {
+   if (e.getCause() instanceof ErejectException) {
+    try {
+     List<Integer> items = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX)
+       .getIds(MailItem.Type.MESSAGE);
+     assertNull(items);
+     isPassed = true;
+    } catch (Exception ex) {
+     fail("No exception should be thrown: " + ex.getMessage());
     }
-    
-    /*
-     * applyRulesToIncomingMessage() should throw an exception to cancel the message delivery.
-     * No message is delivered.
-     *
-     * The following error will be logged:
-     * ERROR - Evaluation failed. Reason: 'ereject' action refuses delivery of a message. Sieve rule evaluation is cancelled
-     */
-    @Test
-    public void testThatSenderRcdUnDeliveredEmail() {
-        Account acct1 = null;
-        Mailbox mbox1 = null;
-        
-        Account acct2 = null;
-        Mailbox mbox2 = null;
+   } else {
+    fail("No exception other than DeliveryServiceException/ErejectException should be thrown: " + e.getMessage());
+   }
+  } catch (Exception e) {
+   fail("No exception should be thrown: " + e.getMessage());
+  }
+  if (!isPassed) {
+   fail("DeliveryServiceException/ErejectException should have been thrown, but no exception is thrown");
+  }
+ }
 
-        try {
-            acct1 = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
-            mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
-            RuleManager.clearCachedRules(acct1);
-            
-            acct2 = Provisioning.getInstance().get(Key.AccountBy.name, "test2@zimbra.com");
-            mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
+ /*
+  * applyRulesToIncomingMessage() should throw an exception to cancel the message delivery.
+  * No message is delivered.
+  *
+  * The following error will be logged:
+  * ERROR - Evaluation failed. Reason: 'ereject' action refuses delivery of a message. Sieve rule evaluation is cancelled
+  */
+ @Test
+ void testThatSenderRcdUnDeliveredEmail() {
+  Account acct1 = null;
+  Mailbox mbox1 = null;
 
-            LmtpEnvelope env = new LmtpEnvelope();
-            LmtpAddress sender = new LmtpAddress("<test2@zimbra.com>", new String[] { "BODY", "SIZE" }, null);
-            LmtpAddress recipient = new LmtpAddress("<test@zimbra.com>", null, null);
-            env.setSender(sender);
-            env.addLocalRecipient(recipient);
+  Account acct2 = null;
+  Mailbox mbox2 = null;
 
-            acct1.setMailSieveScript(filterScript);
-            RuleManager.applyRulesToIncomingMessage(
-                    new OperationContext(mbox1), mbox1, new ParsedMessage(
-                    sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
-                    env, new DeliveryContext(),
-                    Mailbox.ID_FOLDER_INBOX, true);
-        } catch (DeliveryServiceException e) {
-            if (e.getCause() instanceof ErejectException){
-                try {
-                    List<Integer> items = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX)
-                            .getIds(MailItem.Type.MESSAGE);
-                    Assert.assertEquals(null, items);
-                } catch (Exception ex) {
-                	ex.printStackTrace();
-                    fail("No exception should be thrown: " + ex.getMessage());
-                }
-            } else {
-                fail("No exception other than DeliveryServiceException/ErejectException should be thrown: " + e.getMessage());
-            }
-        } catch (Exception e) {
-             fail("No exception should be thrown: " + e.getMessage());
-        }
+  try {
+   acct1 = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+   mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
+   RuleManager.clearCachedRules(acct1);
+
+   acct2 = Provisioning.getInstance().get(Key.AccountBy.name, "test2@zimbra.com");
+   mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
+
+   LmtpEnvelope env = new LmtpEnvelope();
+   LmtpAddress sender = new LmtpAddress("<test2@zimbra.com>", new String[]{"BODY", "SIZE"}, null);
+   LmtpAddress recipient = new LmtpAddress("<test@zimbra.com>", null, null);
+   env.setSender(sender);
+   env.addLocalRecipient(recipient);
+
+   acct1.setMailSieveScript(filterScript);
+   RuleManager.applyRulesToIncomingMessage(
+     new OperationContext(mbox1), mbox1, new ParsedMessage(
+       sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
+     env, new DeliveryContext(),
+     Mailbox.ID_FOLDER_INBOX, true);
+  } catch (DeliveryServiceException e) {
+   if (e.getCause() instanceof ErejectException) {
+    try {
+     List<Integer> items = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX)
+       .getIds(MailItem.Type.MESSAGE);
+     assertNull(items);
+    } catch (Exception ex) {
+     ex.printStackTrace();
+     fail("No exception should be thrown: " + ex.getMessage());
     }
+   } else {
+    fail("No exception other than DeliveryServiceException/ErejectException should be thrown: " + e.getMessage());
+   }
+  } catch (Exception e) {
+   fail("No exception should be thrown: " + e.getMessage());
+  }
+ }
 }

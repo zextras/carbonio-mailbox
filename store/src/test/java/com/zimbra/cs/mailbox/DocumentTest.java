@@ -7,20 +7,20 @@ package com.zimbra.cs.mailbox;
 
 import com.zimbra.cs.account.Provisioning;
 import java.util.HashMap;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 /** Unit test for {@link Document}. */
 public final class DocumentTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
     prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     MailboxTestUtil.clearData();
   }

@@ -5,12 +5,15 @@
 
 package com.zimbra.cs.util.yauth;
 
-import junit.framework.TestCase;
 import org.apache.log4j.Logger;
+import org.junit.jupiter.api.Test;
+
 import org.apache.log4j.BasicConfigurator;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.apache.log4j.Level;
 
-public class AuthTest extends TestCase {
+public class AuthTest {
     private static final String APPID = "D2hTUBHAkY0IEL5MA7ibTS_1K86E8RErSSaTGn4-";
     private static final String USER = "dacztest";
     private static final String PASS = "test1234";
@@ -28,19 +31,22 @@ public class AuthTest extends TestCase {
         }
         return token;
     }
-    
-    public void testToken() throws Exception {
+
+ @Test
+ public void testToken() throws Exception {
         token = getToken();
         assertNotNull(token);
     }
 
-    public void testAuthenticate() throws Exception {
+ @Test
+ public void testAuthenticate() throws Exception {
         RawAuth auth = RawAuth.authenticate(APPID, getToken());
         assertNotNull(auth.getWSSID());
         assertNotNull(auth.getCookie());
     }
 
-    public void testInvalidPassword() throws Exception {
+ @Test
+ public void testInvalidPassword() throws Exception {
         Exception error = null;
         try {
             RawAuth.getToken(APPID, USER, "invalid");

@@ -4,15 +4,10 @@
 
 package com.zimbra.cs.ephemeral;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.callback.EphemeralBackendCheck.EphemeralBackendMigrationRules;
 import com.zimbra.cs.account.callback.EphemeralBackendCheck.MigrationStateHelper;
@@ -28,7 +23,7 @@ public class ChangeEphemeralBackendTest {
     private EphemeralBackendMigrationRules rules;
     private DummyMigrationStateHelper helper;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.initServer();
         AttributeMigration.getMigrationInfo().clearData();
@@ -42,48 +37,48 @@ public class ChangeEphemeralBackendTest {
         info.setURL(MIGRATION_URL);
     }
 
-    @Test
-    public void testMigrationInProgress() throws Exception {
-        setMigrationInfo(Status.IN_PROGRESS);
-        try {
-            rules.checkCanChangeURL(MIGRATION_URL);
-            fail("should throw an exception when trying to change URL during a migration");
-        } catch (ServiceException e) {
-            assertTrue(e.getMessage().contains("DummyMigrationStateHelper"));
-            assertFalse(helper.allowed);
-        }
-    }
+ @Test
+ void testMigrationInProgress() throws Exception {
+  setMigrationInfo(Status.IN_PROGRESS);
+  try {
+   rules.checkCanChangeURL(MIGRATION_URL);
+   fail("should throw an exception when trying to change URL during a migration");
+  } catch (ServiceException e) {
+   assertTrue(e.getMessage().contains("DummyMigrationStateHelper"));
+   assertFalse(helper.allowed);
+  }
+ }
 
-    @Test
-    public void testNoMigration() throws Exception {
-        rules.checkCanChangeURL(MIGRATION_URL);
-        assertTrue(helper.allowed);
-        assertEquals(Reason.NO_MIGRATION, helper.reason);
-    }
+ @Test
+ void testNoMigration() throws Exception {
+  rules.checkCanChangeURL(MIGRATION_URL);
+  assertTrue(helper.allowed);
+  assertEquals(Reason.NO_MIGRATION, helper.reason);
+ }
 
-    @Test
-    public void testMigrationFailed() throws Exception {
-        setMigrationInfo(Status.FAILED);
-        rules.checkCanChangeURL(MIGRATION_URL);
-        assertTrue(helper.allowed);
-        assertEquals(Reason.MIGRATION_ERROR, helper.reason);
-    }
+ @Test
+ void testMigrationFailed() throws Exception {
+  setMigrationInfo(Status.FAILED);
+  rules.checkCanChangeURL(MIGRATION_URL);
+  assertTrue(helper.allowed);
+  assertEquals(Reason.MIGRATION_ERROR, helper.reason);
+ }
 
-    @Test
-    public void testUrlMismatch() throws Exception {
-        setMigrationInfo(Status.COMPLETED);
-        rules.checkCanChangeURL(DIFFERENT_URL);
-        assertTrue(helper.allowed);
-        assertEquals(Reason.URL_MISMATCH, helper.reason);
-    }
+ @Test
+ void testUrlMismatch() throws Exception {
+  setMigrationInfo(Status.COMPLETED);
+  rules.checkCanChangeURL(DIFFERENT_URL);
+  assertTrue(helper.allowed);
+  assertEquals(Reason.URL_MISMATCH, helper.reason);
+ }
 
-    @Test
-    public void testMigrationComplete() throws Exception {
-        setMigrationInfo(Status.COMPLETED);
-        rules.checkCanChangeURL(MIGRATION_URL);
-        assertTrue(helper.allowed);
-        assertNull("reason should be null; was " + helper.reason, helper.reason);
-    }
+ @Test
+ void testMigrationComplete() throws Exception {
+  setMigrationInfo(Status.COMPLETED);
+  rules.checkCanChangeURL(MIGRATION_URL);
+  assertTrue(helper.allowed);
+  assertNull(helper.reason, "reason should be null; was " + helper.reason);
+ }
 
     private static class DummyMigrationStateHelper extends MigrationStateHelper {
 

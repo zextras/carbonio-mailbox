@@ -4,12 +4,12 @@
 
 package com.zimbra.cs.imap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author zimbra
@@ -24,25 +24,25 @@ public class NioImapRequestTest {
   /**
    * @throws java.lang.Exception
    */
-  @After
+  @AfterEach
   public void tearDown() throws Exception {}
 
-  /** Test method for {@link com.zimbra.cs.imap.NioImapRequest#checkSize(long)}. */
-  @Test
-  public void testCheckSize() {
-    try {
-      ImapHandler handler = new MockImapHandler();
-      NioImapRequest req = new NioImapRequest(handler);
-      req.parse(COPY_TO_TRASH);
-      ImapConfig imapConfig = mock(ImapConfig.class);
-      when(imapConfig.getMaxRequestSize()).thenReturn(2 * 1024);
-      handler.config = imapConfig;
-      System.out.println(req.parts.get(0).getString().length());
-      req.checkSize(req.parts.get(0).getString().length());
-      fail("Exception should be thrown");
-    } catch (Exception e) {
-      assertNotNull(e);
-      assertTrue(e.getMessage().equalsIgnoreCase("maximum request size exceeded"));
-    }
+ /** Test method for {@link com.zimbra.cs.imap.NioImapRequest#checkSize(long)}. */
+ @Test
+ void testCheckSize() {
+  try {
+   ImapHandler handler = new MockImapHandler();
+   NioImapRequest req = new NioImapRequest(handler);
+   req.parse(COPY_TO_TRASH);
+   ImapConfig imapConfig = mock(ImapConfig.class);
+   when(imapConfig.getMaxRequestSize()).thenReturn(2 * 1024);
+   handler.config = imapConfig;
+   System.out.println(req.parts.get(0).getString().length());
+   req.checkSize(req.parts.get(0).getString().length());
+   fail("Exception should be thrown");
+  } catch (Exception e) {
+   assertNotNull(e);
+   assertTrue(e.getMessage().equalsIgnoreCase("maximum request size exceeded"));
   }
+ }
 }

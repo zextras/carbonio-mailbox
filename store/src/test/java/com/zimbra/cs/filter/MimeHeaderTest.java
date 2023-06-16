@@ -5,17 +5,16 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.Assert.fail;
-
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.zimbra.common.util.ArrayUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
@@ -69,45 +68,45 @@ public class MimeHeaderTest {
             + "\n"
             + "------=_Part_64_1822363563.1505482033554--\n";
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
         prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void test() throws Exception {
-        // Default match type :is is used.
-        String filterScript = "require [\"tag\", \"comparator-i;ascii-numeric\"];"
-                + "if mime_header :comparator \"i;ascii-numeric\" \"Subject\" \"Hello\" {\n"
-                + "  tag \"is\";\n"
-                + "} else {\n"
-                + "  tag \"not is\";\n"
-                + "}";
-        doTest(filterScript, "is");
-    }
+ @Test
+ void test() throws Exception {
+  // Default match type :is is used.
+  String filterScript = "require [\"tag\", \"comparator-i;ascii-numeric\"];"
+    + "if mime_header :comparator \"i;ascii-numeric\" \"Subject\" \"Hello\" {\n"
+    + "  tag \"is\";\n"
+    + "} else {\n"
+    + "  tag \"not is\";\n"
+    + "}";
+  doTest(filterScript, "is");
+ }
 
-    /*
-     * The ascii-numeric comparator should be looked up in the list of the "require".
-     */
-    @Test
-    public void testMissingComparatorNumericDeclaration() throws Exception {
-        // Default match type :is is used.
-        // No "comparator-i;ascii-numeric" capability text in the require command
-        String filterScript = "require [\"tag\"];"
-                + "if mime_header :comparator \"i;ascii-numeric\" \"Subject\" \"Hello\" {\n"
-                + "  tag \"is\";\n"
-                + "} else {\n"
-                + "  tag \"not is\";\n"
-                + "}";
-        doTest(filterScript, null);
-    }
+ /*
+  * The ascii-numeric comparator should be looked up in the list of the "require".
+  */
+ @Test
+ void testMissingComparatorNumericDeclaration() throws Exception {
+  // Default match type :is is used.
+  // No "comparator-i;ascii-numeric" capability text in the require command
+  String filterScript = "require [\"tag\"];"
+    + "if mime_header :comparator \"i;ascii-numeric\" \"Subject\" \"Hello\" {\n"
+    + "  tag \"is\";\n"
+    + "} else {\n"
+    + "  tag \"not is\";\n"
+    + "}";
+  doTest(filterScript, null);
+ }
 
     private void doTest(String filterScript, String expected) throws Exception {
         try {
@@ -126,9 +125,9 @@ public class MimeHeaderTest {
                     account.getName(),
                     new DeliveryContext(),
                     Mailbox.ID_FOLDER_INBOX, true);
-            Assert.assertEquals(1, ids.size());
+            assertEquals(1, ids.size());
             Message msg = mbox.getMessageById(null, ids.get(0).getId());
-            Assert.assertEquals(expected, ArrayUtil.getFirstElement(msg.getTags()));
+            assertEquals(expected, ArrayUtil.getFirstElement(msg.getTags()));
         } catch (Exception e) {
             fail("No exception should be thrown" + e);
         }

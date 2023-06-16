@@ -7,10 +7,11 @@ package com.zimbra.cs.mime;
 
 import java.io.File;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.cs.store.Blob;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ParsedDocumentTest {
 
@@ -20,21 +21,21 @@ public class ParsedDocumentTest {
         }
     }
 
-    @Test
-    public void test2GBFileSize() throws Exception {
-        long size2GBMinus = 0x7fffffffL;
-        long size2GB = 0x80000000L;
+ @Test
+ void test2GBFileSize() throws Exception {
+  long size2GBMinus = 0x7fffffffL;
+  long size2GB = 0x80000000L;
 
-        // No truncation when converting <2GB long to int
-        int int2GBMinus = (int) size2GBMinus;
-        Assert.assertEquals(size2GBMinus, int2GBMinus);
-        Assert.assertEquals("2147483647", Integer.toString(int2GBMinus));
+  // No truncation when converting <2GB long to int
+  int int2GBMinus = (int) size2GBMinus;
+  assertEquals(size2GBMinus, int2GBMinus);
+  assertEquals("2147483647", Integer.toString(int2GBMinus));
 
-        // Truncation when converting 2GB long to int (simulates error responsible for HS-5126)
-        int int2GB = (int) size2GB;
-        long negative2GB = -2147483648;
-        Assert.assertEquals(negative2GB, int2GB);
-        Assert.assertEquals("-2147483648", Integer.toString(int2GB));
+  // Truncation when converting 2GB long to int (simulates error responsible for HS-5126)
+  int int2GB = (int) size2GB;
+  long negative2GB = -2147483648;
+  assertEquals(negative2GB, int2GB);
+  assertEquals("-2147483648", Integer.toString(int2GB));
 
 //        // No size truncation on ParsedDocument of <2GB file
 //        FakeBlob blob2GBMinus = new FakeBlob(new File("/dev/null"), size2GBMinus);
@@ -45,5 +46,5 @@ public class ParsedDocumentTest {
 //        FakeBlob blob2GB = new FakeBlob(new File("/dev/null"), size2GB);
 //        ParsedDocument pd2GB = new ParsedDocument(blob2GB, "blob-2gb.txt", "text/plain", System.currentTimeMillis(), "creator", "desc", false);
 //        Assert.assertEquals(size2GB, pd2GB.getSize());
-    }
+ }
 }

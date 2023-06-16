@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: 2014 Zimbra, Inc.
 package com.zimbra.cs.service;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
@@ -20,8 +21,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author zimbra
@@ -31,7 +32,7 @@ public class UserServletTest {
   /**
    * @throws java.lang.Exception
    */
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     MailboxTestUtil.initServer("");
     Provisioning prov = Provisioning.getInstance();
@@ -40,39 +41,39 @@ public class UserServletTest {
     prov.createAccount("testbug39481@zimbra.com", "secret", attrs);
   }
 
-  /**
-   * Test method for {@link
+ /**
+  * Test method for {@link
    * com.zimbra.cs.service.UserServlet#doGet(javax.servlet.http.HttpServletRequest,
    * javax.servlet.http.HttpServletResponse)}.
-   */
-  @Test
-  public void testDoGet() {
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    MockHttpServletResponse response = new MockHttpServletResponse();
-    UserServlet userServlet = new UserServlet();
-    try {
+  */
+ @Test
+ void testDoGet() {
+  HttpServletRequest request = mock(HttpServletRequest.class);
+  MockHttpServletResponse response = new MockHttpServletResponse();
+  UserServlet userServlet = new UserServlet();
+  try {
 
-      spy(ZimbraServlet.class);
-      spy(UserServlet.class);
+   spy(ZimbraServlet.class);
+   spy(UserServlet.class);
 
-      mockStatic(L10nUtil.class);
+   mockStatic(L10nUtil.class);
 
-      when(request.getPathInfo()).thenReturn("/testbug3948@zimbra.com");
-      when(request.getRequestURI()).thenReturn("service/home/");
-      when(request.getParameter("auth")).thenReturn("basic");
-      when(request.getParameter("loc")).thenReturn("en_US");
-      when(request.getHeader("Authorization")).thenReturn("Basic dGVzdDM0ODg6dGVzdDEyMw==");
-      when(request.getQueryString()).thenReturn("auth=basic&view=text&id=261");
+   when(request.getPathInfo()).thenReturn("/testbug3948@zimbra.com");
+   when(request.getRequestURI()).thenReturn("service/home/");
+   when(request.getParameter("auth")).thenReturn("basic");
+   when(request.getParameter("loc")).thenReturn("en_US");
+   when(request.getHeader("Authorization")).thenReturn("Basic dGVzdDM0ODg6dGVzdDEyMw==");
+   when(request.getQueryString()).thenReturn("auth=basic&view=text&id=261");
 
-      userServlet.doGet(request, response);
-      assertEquals(401, response.getStatus());
-      //            Commenting until we can figure out why this fails in CI env.
-      //            Assert.assertEquals("must authenticate", response.getMsg());
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail("No exception should be thrown.");
-    }
+   userServlet.doGet(request, response);
+   assertEquals(401, response.getStatus());
+   //            Commenting until we can figure out why this fails in CI env.
+   //            Assert.assertEquals("must authenticate", response.getMsg());
+  } catch (Exception e) {
+   e.printStackTrace();
+   fail("No exception should be thrown.");
   }
+ }
 
   public void tearDown() {
     try {
