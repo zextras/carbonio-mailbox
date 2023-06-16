@@ -1,5 +1,7 @@
 package com.zimbra.cs.service.mail;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -47,14 +49,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -65,27 +66,18 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimePart;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.model.HttpResponse;
 
 /** Integration tests for CopyToFiles */
-@RunWith(Enclosed.class)
 public class CopyToFilesIT {
-
-  private final String attachment;
-
-  public CopyToFilesIT(String attachment) {
-    this.attachment = attachment;
-  }
 
   private FilesClient mockFilesClient;
   private final FilesClient realFilesClient = FilesClient.atURL("http://127.0.0.1:20002");
@@ -93,9 +85,19 @@ public class CopyToFilesIT {
   private final AttachmentService realAttachmentService = new MailboxAttachmentService();
   private MockServerClient filesServer;
 
-  @Rule public ExpectedException exceptionRule = ExpectedException.none();
 
-  @Before
+  @AfterEach
+  public void tearDown() throws IOException {
+    filesServer.stop();
+  }
+
+  private static Stream<Arguments> getAttachmentToUpload() {
+    return Stream.of(
+        Arguments.of("test-save-to-files.txt"),
+        Arguments.of("test-save-to-files.jpg"));
+  }
+
+  @BeforeEach
   public void setUp() throws Exception {
     MailboxTestUtil.initServer();
     filesServer = startClientAndServer(20002);
@@ -142,31 +144,57 @@ public class CopyToFilesIT {
     mockAttachmentService = mock(AttachmentService.class);
   }
 
-  @After
-  public void tearDown() throws IOException {
-    filesServer.stop();
+  /**
+   * Test: copy to files API handles return response with nodeId Creates a Draft with attachment,
+   * calls Files with attachment
+   *
+   * @throws ServiceException
+   */
+  @ParameterizedTest
+  @MethodSource("getAttachmentToUpload")
+  public void shouldReturnNodeIdWhenUploadingAttachment(String attachment) throws Exception {
+    final String email = "test@zimbra.com";
+    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, email);
+    final Message message = this.createDraftWithFileAttachment(email, attachment);
+    final NodeId nodeId = new NodeId();
+    nodeId.setNodeId("1000");
+    filesServer
+        .when(request().withPath("/upload/"))
+        .respond(
+            HttpResponse.response(new ObjectMapper().writeValueAsString(nodeId))
+                .withStatusCode(200));
+    // prepare request
+    Map<String, Object> context = new HashMap<String, Object>();
+    ZimbraSoapContext zsc =
+        new ZimbraSoapContext(
+            AuthProvider.getAuthToken(acct),
+            acct.getId(),
+            SoapProtocol.Soap12,
+            SoapProtocol.Soap12);
+    context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+    CopyToFiles copyToFiles =
+        new CopyToFiles(
+            new MailboxAttachmentService(), FilesClient.atURL("http://127.0.0.1:20002"));
+    CopyToFilesRequest up = new CopyToFilesRequest();
+    up.setMessageId(String.valueOf(message.getId()));
+    up.setPart("1");
+    up.setDestinationFolderId("My folder");
+    Element element = JaxbUtil.jaxbToElement(up);
+    // call SOAP API
+    Element el = copyToFiles.handle(element, context);
+    CopyToFilesResponse response = zsc.elementToJaxb(el);
+    // return should be equal to Files response
+    assertEquals(nodeId.getNodeId(), response.getNodeId());
   }
-
-
-  @RunWith(Parameterized.class)
-  public static class WithParameters {
-    @Parameterized.Parameters
-    public static Collection<String[]> attachments() {
-      return Arrays.asList(new String[][] {{"test-save-to-files.txt"},
-          {"test-save-to-files.jpg"}});
-    }
-
-
-  }
-
 
   /**
    * Test passing messageId as UUID:id. This happens in case of delegation/shared mailbox.
    *
    * @throws Exception
    */
-  @Test
-  public void shouldReturnNodeIdWhenUploadingSharedMailboxAttachment() throws Exception {
+  @ParameterizedTest
+  @MethodSource("getAttachmentToUpload")
+  public void shouldReturnNodeIdWhenUploadingSharedMailboxAttachment(String attachment) throws Exception {
     final NodeId nodeId = new NodeId();
     nodeId.setNodeId("1000");
     filesServer
@@ -197,7 +225,7 @@ public class CopyToFilesIT {
     Element element = JaxbUtil.jaxbToElement(up);
     Element el = copyToFiles.handle(element, context);
     final CopyToFilesResponse response = zsc.elementToJaxb(el);
-    Assert.assertEquals(nodeId.getNodeId(), response.getNodeId());
+    Assertions.assertEquals(nodeId.getNodeId(), response.getNodeId());
   }
 
   /**
@@ -225,9 +253,7 @@ public class CopyToFilesIT {
     up.setMessageId("1");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
-    exceptionRule.expect(ServiceException.class);
-    exceptionRule.expectMessage("File not found.");
-    copyToFiles.handle(element, context);
+    assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context),"File not found.");
   }
 
   /**
@@ -268,9 +294,7 @@ public class CopyToFilesIT {
     up.setMessageId("1");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
-    exceptionRule.expect(ServiceException.class);
-    exceptionRule.expectMessage("system failure: internal error.");
-    copyToFiles.handle(element, context);
+    assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context),"system failure: internal error.");
   }
 
   /**
@@ -311,9 +335,7 @@ public class CopyToFilesIT {
     up.setMessageId("123");
     up.setPart("Whatever you want");
     Element element = JaxbUtil.jaxbToElement(up);
-    exceptionRule.expect(ServiceException.class);
-    exceptionRule.expectMessage("system failure: got null response from Files server.");
-    copyToFiles.handle(element, context);
+    assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context),"system failure: got null response from Files server.");
   }
 
   /**
@@ -333,9 +355,7 @@ public class CopyToFilesIT {
     up.setPart("Whatever you want");
     up.setDestinationFolderId("FOLDER_1");
     Element element = JaxbUtil.jaxbToElement(up);
-    exceptionRule.expect(ServiceException.class);
-    exceptionRule.expectMessage("system failure: internal error.");
-    new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context);
+    assertThrows(ServiceException.class, () -> new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context),"system failure: internal error.");
   }
 
   /**
