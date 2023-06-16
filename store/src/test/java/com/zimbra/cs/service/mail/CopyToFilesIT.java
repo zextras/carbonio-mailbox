@@ -72,7 +72,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockserver.client.server.MockServerClient;
+import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
 
 /** Integration tests for CopyToFiles */
@@ -82,7 +82,7 @@ public class CopyToFilesIT {
   private final FilesClient realFilesClient = FilesClient.atURL("http://127.0.0.1:20002");
   private AttachmentService mockAttachmentService;
   private final AttachmentService realAttachmentService = new MailboxAttachmentService();
-  private MockServerClient filesServer;
+  private ClientAndServer filesServer;
 
 
   @AfterEach
