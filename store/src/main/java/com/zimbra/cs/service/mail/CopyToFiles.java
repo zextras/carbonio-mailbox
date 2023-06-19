@@ -58,8 +58,8 @@ public class CopyToFiles extends MailDocumentHandler {
         Optional.ofNullable(
                 getRequestObject(request)
                     .flatMap(
-                copyToFilesRequest ->
-    this.getAttachmentToCopy(copyToFilesRequest, zsc)
+                        copyToFilesRequest ->
+                            this.getAttachmentToCopy(copyToFilesRequest, zsc)
                                 .flatMap(
                                     attachment ->
                                         Try.withResources(attachment::getInputStream)
@@ -78,7 +78,10 @@ public class CopyToFiles extends MailDocumentHandler {
                                                             this.getAttachmentName(attachment),
                                                             this.getAttachmentContentType(
                                                                 attachment),
-                                                        Try.withResources(attachment::getInputStream).of(this::getAttachmentSize).flatMap(identity()))
+                                                            Try.withResources(
+                                                                    attachment::getInputStream)
+                                                                .of(this::getAttachmentSize)
+                                                                .flatMap(identity()))
                                                         .yield(
                                                             (cookie,
                                                                 folderId,
@@ -97,7 +100,7 @@ public class CopyToFiles extends MailDocumentHandler {
                     .mapFailure(
                         Case(
                             $(ex -> !(ex instanceof ServiceException)),
-                            ex -> ServiceException.FAILURE("internal error.", ex)))
+                            ServiceException::INTERNAL_ERROR))
                     .get())
             .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."));
     CopyToFilesResponse copyToFilesResponse = new CopyToFilesResponse();
@@ -114,10 +117,7 @@ public class CopyToFiles extends MailDocumentHandler {
   private Try<CopyToFilesRequest> getRequestObject(Element request) {
     return Try.<CopyToFilesRequest>of(() -> JaxbUtil.elementToJaxb(request))
         .onFailure(ex -> mLog.debug(ex.getMessage()))
-        .mapFailure(
-            Case(
-                $(instanceOf(Exception.class)),
-                ex -> ServiceException.PARSE_ERROR("Malformed request.", ex)));
+        .recoverWith(ex -> Try.failure(ServiceException.PARSE_ERROR("Malformed request.", ex)));
   }
 
   /**
@@ -144,27 +144,26 @@ public class CopyToFiles extends MailDocumentHandler {
             .onFailure(ex -> mLog.debug(ex.getMessage()))
             .mapFailure(
                 Case(
-                    $(instanceOf(Exception.class)),
+                    $(instanceOf(NumberFormatException.class)),
                     ex ->
                         ServiceException.PARSE_ERROR(
-                            MailConstants.A_MESSAGE_ID + " must be an integer.", ex)));
+                            MailConstants.A_MESSAGE_ID + " must be an integer.", ex)),
+                Case($(instanceOf(Exception.class)), ServiceException::INTERNAL_ERROR));
     return For(Try.of(() -> request), messageIdTry)
         .yield(
             (req, messageId) ->
                 attachmentService
                     .getAttachment(accountUUID, context.getAuthToken(), messageId, req.getPart())
                     .onFailure(ex -> mLog.debug(ex.getMessage()))
-                    .mapFailure(
-                        Case(
-                            $(instanceOf(Exception.class)),
-                            ex -> ServiceException.NOT_FOUND("File not found.", ex))))
+                    .recoverWith(
+                        ex -> Try.failure(ServiceException.NOT_FOUND("File not found.", ex))))
         .flatMap(result -> result);
   }
 
   /**
-   * Calculates real size of input stream by reading it.
-   * The operation is done by reading chunks of 8kb.
-   * This method exists because for images the size returned by {@link MimePart#getSize()} is not equal to the real one.
+   * Calculates real size of input stream by reading it. The operation is done by reading chunks of
+   * 8kb. This method exists because for images the size returned by {@link MimePart#getSize()} is
+   * not equal to the real one.
    *
    * @param inputStream input stream to calculate size of
    * @return size of given input stream
@@ -207,12 +206,9 @@ public class CopyToFiles extends MailDocumentHandler {
    * @return attachment file name
    */
   private Try<String> getAttachmentName(MimePart attachment) {
-    return Try.of(() -> attachment.getFileName())
+    return Try.of(attachment::getFileName)
         .onFailure(ex -> mLog.debug(ex.getMessage()))
-        .mapFailure(
-            Case(
-                $(instanceOf(Exception.class)),
-                ex -> ServiceException.FAILURE("Cannot get file name.", ex)));
+        .recoverWith(ex -> Try.failure(ServiceException.FAILURE("Cannot get file name.", ex)));
   }
 
   /**
@@ -223,11 +219,9 @@ public class CopyToFiles extends MailDocumentHandler {
    * @return try of attachment content type
    */
   private Try<String> getAttachmentContentType(MimePart attachment) {
-    return Try.of(() -> attachment.getContentType())
+    return Try.of(attachment::getContentType)
         .onFailure(ex -> mLog.debug(ex.getMessage()))
-        .mapFailure(
-            Case(
-                $(instanceOf(Exception.class)),
-                ex -> ServiceException.FAILURE("Cannot get file content-type.", ex)));
+        .recoverWith(
+            ex -> Try.failure(ServiceException.FAILURE("Cannot get file content-type.", ex)));
   }
 }
