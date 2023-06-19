@@ -106,7 +106,7 @@ class CopyToFilesIT {
         prov.createAccount(
             "shared@zimbra.com",
             "secret",
-            new HashMap<String, Object>() {
+            new HashMap<>() {
               {
                 put(ZAttrProvisioning.A_zimbraId, UUID.randomUUID().toString());
               }
@@ -115,7 +115,7 @@ class CopyToFilesIT {
         prov.createAccount("delegated@zimbra.com", "secret", new HashMap<String, Object>());
     // Grant sendAs to delegated@
     final Set<ZimbraACE> aces =
-        new HashSet<ZimbraACE>() {
+        new HashSet<>() {
           {
             add(
                 new ZimbraACE(
