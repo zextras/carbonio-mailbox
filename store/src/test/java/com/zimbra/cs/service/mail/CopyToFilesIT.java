@@ -268,7 +268,7 @@ class CopyToFilesIT {
     CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
     when(mockFilesClient.uploadFile(
             anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
-        .thenReturn(Try.failure(new RuntimeException("ooops")));
+        .thenReturn(Try.failure(new RuntimeException("Ooops, Files failed")));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -303,10 +303,10 @@ class CopyToFilesIT {
     up.setMessageId("123");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
-    assertThrows(
+    final ServiceException receivedException = assertThrows(
         ServiceException.class,
-        () -> copyToFiles.handle(element, context),
-        "system failure: got null response from Files server.");
+        () -> copyToFiles.handle(element, context));
+    assertEquals("system failure: got null response from Files server.", receivedException.getMessage());
   }
 
   @ParameterizedTest
@@ -334,7 +334,7 @@ class CopyToFilesIT {
     ZimbraSoapContext zsc = mock(ZimbraSoapContext.class);
     Map<String, Object> context = new HashMap<String, Object>();
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    when(zsc.getAuthToken()).thenThrow(RuntimeException.class);
+    when(zsc.getAuthToken()).thenThrow(new RuntimeException("Ooops, cannot get token."));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("123");
     up.setPart("Whatever you want");
