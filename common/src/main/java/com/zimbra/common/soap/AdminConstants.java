@@ -539,15 +539,6 @@ public final class AdminConstants {
   public static final String E_VERIFY_STORE_MANAGER_REQUEST = "VerifyStoreManagerRequest";
   public static final String E_VERIFY_STORE_MANAGER_RESPONSE = "VerifyStoreManagerResponse";
 
-  // Two-Factor Authentication
-  public static final String E_CLEAR_TWO_FACTOR_AUTH_DATA_REQUEST = "ClearTwoFactorAuthDataRequest";
-  public static final String E_CLEAR_TWO_FACTOR_AUTH_DATA_RESPONSE =
-      "ClearTwoFactorAuthDataResponse";
-  public static final String E_GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_REQUEST =
-      "GetClearTwoFactorAuthDataStatusRequest";
-  public static final String E_GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_RESPONSE =
-      "GetClearTwoFactorAuthDataStatusResponse";
-
   // Skins
   // Skins
   public static final String E_GET_ALL_SKINS_REQUEST = "GetAllSkinsRequest";
@@ -1286,16 +1277,6 @@ public final class AdminConstants {
   // Skins
   public static final QName GET_ALL_SKINS_REQUEST = QName.get(E_GET_ALL_SKINS_REQUEST, NAMESPACE);
   public static final QName GET_ALL_SKINS_RESPONSE = QName.get(E_GET_ALL_SKINS_RESPONSE, NAMESPACE);
-
-  // Two-Factor Authentication
-  public static final QName CLEAR_TWO_FACTOR_AUTH_DATA_REQUEST =
-      QName.get(E_CLEAR_TWO_FACTOR_AUTH_DATA_REQUEST, NAMESPACE);
-  public static final QName CLEAR_TWO_FACTOR_AUTH_DATA_RESPONSE =
-      QName.get(E_CLEAR_TWO_FACTOR_AUTH_DATA_RESPONSE, NAMESPACE);
-  public static final QName GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_REQUEST =
-      QName.get(E_GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_REQUEST, NAMESPACE);
-  public static final QName GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_RESPONSE =
-      QName.get(E_GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_RESPONSE, NAMESPACE);
 
   public static final String E_FILTER_RULES = "filterRules";
   public static final String E_FILTER_RULE = "filterRule";

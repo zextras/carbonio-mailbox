@@ -148,20 +148,6 @@ public class AuthRequest {
     private String requestedSkin;
 
     /**
-     *@zm-api-field-description the TOTP code used for two-factor authentication
-     *
-     */
-    @XmlElement(name=AccountConstants.E_TWO_FACTOR_CODE /* twoFactorCode */, required=false)
-    private String twoFactorCode;
-
-    /**
-     *@zm-api-field-description whether the client represents a trusted device
-     *
-     */
-    @XmlAttribute(name=AccountConstants.A_TRUSTED_DEVICE /* deviceTrusted */, required=false)
-    private ZmBoolean deviceTrusted;
-
-    /**
      *@zm-api-field-description whether the client represents a trusted device
      *
      */
@@ -305,24 +291,6 @@ public class AuthRequest {
      */
     public void setCsrfSupported(Boolean csrfSupported) {
         this.csrfSupported = ZmBoolean.fromBool(csrfSupported);
-    }
-
-    public AuthRequest setTwoFactorCode(String totp) {
-        this.twoFactorCode = totp;
-        return this;
-    }
-
-    public String getTwoFactorCode() {
-        return twoFactorCode;
-    }
-
-    public AuthRequest setDeviceTrusted(Boolean deviceTrusted) {
-        this.deviceTrusted = ZmBoolean.fromBool(deviceTrusted);
-        return this;
-    }
-
-    public ZmBoolean getDeviceTrusted() {
-        return deviceTrusted;
     }
 
     public AuthRequest setTrustedDeviceToken(String token) {

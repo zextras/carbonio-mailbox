@@ -46,8 +46,6 @@ import com.zimbra.client.event.ZRefreshEvent;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.auth.ZAuthToken;
-import com.zimbra.common.auth.twofactor.TOTPAuthenticator;
-import com.zimbra.common.auth.twofactor.TwoFactorOptions.Encoding;
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.httpclient.InputStreamRequestHttpRetryHandler;
 import com.zimbra.common.localconfig.LC;
@@ -92,10 +90,6 @@ import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.account.message.AuthResponse;
 import com.zimbra.soap.account.message.ChangePasswordRequest;
 import com.zimbra.soap.account.message.ChangePasswordResponse;
-import com.zimbra.soap.account.message.DisableTwoFactorAuthRequest;
-import com.zimbra.soap.account.message.DisableTwoFactorAuthResponse;
-import com.zimbra.soap.account.message.EnableTwoFactorAuthRequest;
-import com.zimbra.soap.account.message.EnableTwoFactorAuthResponse;
 import com.zimbra.soap.account.message.EndSessionRequest;
 import com.zimbra.soap.account.message.GetIdentitiesRequest;
 import com.zimbra.soap.account.message.GetIdentitiesResponse;
@@ -424,7 +418,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     private String mRequestedSkin;
     private boolean mCsrfSupported; // Used by AuthRequest
     private Map<String, String> mCustomHeaders;
-    private String mTwoFactorCode;
     private boolean mAppSpecificPasswordsSupported;
     private boolean mTrustedDevice;
     private String mTrustedDeviceToken;
@@ -705,15 +698,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
     public Options setCsrfSupported(boolean csrfSupported) {
       mCsrfSupported = csrfSupported;
-      return this;
-    }
-
-    public String getTwoFactorCode() {
-      return mTwoFactorCode;
-    }
-
-    public Options setTwoFactorCode(String code) {
-      mTwoFactorCode = code;
       return this;
     }
 
@@ -1038,14 +1022,9 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         new AccountSelector(com.zimbra.soap.type.AccountBy.name, options.getAccount());
     AuthRequest auth = new AuthRequest(account, password);
     auth.setPassword(password);
-    auth.setTwoFactorCode(options.getTwoFactorCode());
     auth.setVirtualHost(options.getVirtualHost());
     auth.setRequestedSkin(options.getRequestedSkin());
     auth.setCsrfSupported(options.getCsrfSupported());
-    auth.setDeviceTrusted(options.getTrustedDevice());
-    if (options.getTrustedDevice()) {
-      auth.setDeviceTrusted(true);
-    }
     if (options.getAuthToken() != null) {
       auth.setAuthToken(new AuthToken(options.getAuthToken().getValue(), false));
     }
@@ -1072,10 +1051,8 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     AuthRequest req = new AuthRequest();
     ZAuthToken zat = options.getAuthToken(); // cannot be null here
     req.setAuthToken(new AuthToken(zat.getValue(), false));
-    req.setTwoFactorCode(options.getTwoFactorCode());
     req.setRequestedSkin(options.getRequestedSkin());
     req.setCsrfSupported(options.getCsrfSupported());
-    req.setDeviceTrusted(options.getTrustedDevice());
     addAttrsAndPrefs(req, options);
 
     invokeJaxb(req, (r) -> handleAuthResponse((AuthResponse) r, options));
@@ -7201,29 +7178,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     } catch (ServiceException e) {
     }
     return new ExistingParentFolderStoreAndUnmatchedPart(getFolderById(ZFolder.ID_USER_ROOT), path);
-  }
-
-  public EnableTwoFactorAuthResponse enableTwoFactorAuth(String password, TOTPAuthenticator auth)
-      throws ServiceException {
-    EnableTwoFactorAuthRequest req = new EnableTwoFactorAuthRequest();
-    req.setName(getName());
-    req.setPassword(password);
-    EnableTwoFactorAuthResponse resp = invokeJaxb(req);
-    String secret = resp.getSecret();
-    long timestamp = System.currentTimeMillis() / 1000;
-    String totp = auth.generateCode(secret, timestamp, Encoding.BASE32);
-    req.setTwoFactorCode(totp);
-    req.setAuthToken(resp.getAuthToken());
-    resp = invokeJaxb(req);
-    resp.setSecret(secret);
-    initAuthToken(new ZAuthToken(resp.getAuthToken().getValue()));
-    return resp;
-  }
-
-  public DisableTwoFactorAuthResponse disableTwoFactorAuth(String password)
-      throws ServiceException {
-    DisableTwoFactorAuthRequest req = new DisableTwoFactorAuthRequest();
-    return invokeJaxb(req);
   }
 
   public SoapHttpTransport getTransport() {
