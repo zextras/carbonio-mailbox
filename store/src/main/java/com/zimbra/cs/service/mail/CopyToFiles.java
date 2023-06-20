@@ -97,6 +97,7 @@ public class CopyToFiles extends MailDocumentHandler {
                                                                     fileSize)))))
                     .flatMap(identity())
                     .flatMap(identity())
+                    .onFailure(ex -> mLog.error(ex.getMessage()))
                     .mapFailure(
                         Case(
                             $(ex -> !(ex instanceof ServiceException)),
@@ -116,7 +117,7 @@ public class CopyToFiles extends MailDocumentHandler {
    */
   private Try<CopyToFilesRequest> getRequestObject(Element request) {
     return Try.<CopyToFilesRequest>of(() -> JaxbUtil.elementToJaxb(request))
-        .onFailure(ex -> mLog.debug(ex.getMessage()))
+        .onFailure(ex -> mLog.error(ex.getMessage()))
         .recoverWith(ex -> Try.failure(ServiceException.PARSE_ERROR("Malformed request.", ex)));
   }
 
@@ -141,7 +142,7 @@ public class CopyToFiles extends MailDocumentHandler {
     }
     final Try<Integer> messageIdTry =
         Try.of(() -> Integer.parseInt(msgId))
-            .onFailure(ex -> mLog.debug(ex.getMessage()))
+            .onFailure(ex -> mLog.error(ex.getMessage()))
             .mapFailure(
                 Case(
                     $(instanceOf(NumberFormatException.class)),
@@ -154,7 +155,7 @@ public class CopyToFiles extends MailDocumentHandler {
             (req, messageId) ->
                 attachmentService
                     .getAttachment(accountUUID, context.getAuthToken(), messageId, req.getPart())
-                    .onFailure(ex -> mLog.debug(ex.getMessage()))
+                    .onFailure(ex -> mLog.error(ex.getMessage()))
                     .recoverWith(
                         ex -> Try.failure(ServiceException.NOT_FOUND("File not found.", ex))))
         .flatMap(result -> result);
@@ -196,7 +197,7 @@ public class CopyToFiles extends MailDocumentHandler {
               String destId = optional.orElse("LOCAL_ROOT");
               return Objects.equals("", destId) ? "LOCAL_ROOT" : destId;
             })
-        .onFailure(ex -> mLog.debug(ex.getMessage()));
+        .onFailure(ex -> mLog.error(ex.getMessage()));
   }
 
   /**
@@ -207,7 +208,7 @@ public class CopyToFiles extends MailDocumentHandler {
    */
   private Try<String> getAttachmentName(MimePart attachment) {
     return Try.of(attachment::getFileName)
-        .onFailure(ex -> mLog.debug(ex.getMessage()))
+        .onFailure(ex -> mLog.error(ex.getMessage()))
         .recoverWith(ex -> Try.failure(ServiceException.FAILURE("Cannot get file name.", ex)));
   }
 
@@ -220,7 +221,7 @@ public class CopyToFiles extends MailDocumentHandler {
    */
   private Try<String> getAttachmentContentType(MimePart attachment) {
     return Try.of(attachment::getContentType)
-        .onFailure(ex -> mLog.debug(ex.getMessage()))
+        .onFailure(ex -> mLog.error(ex.getMessage()))
         .recoverWith(
             ex -> Try.failure(ServiceException.FAILURE("Cannot get file content-type.", ex)));
   }
