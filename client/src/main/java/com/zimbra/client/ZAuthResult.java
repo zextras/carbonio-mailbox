@@ -15,15 +15,11 @@ import java.util.Map;
 public class ZAuthResult {
 
     private long expires;
-    private long trustExpires;
     private AuthResponse data;
 
     public ZAuthResult(AuthResponse res) {
         data = res;
         expires = data.getLifetime() + System.currentTimeMillis();
-        if (data.getTrustedToken() != null) {
-            trustExpires = data.getTrustLifetime() + System.currentTimeMillis();
-        }
     }
 
     public ZAuthToken getAuthToken() {
@@ -74,17 +70,4 @@ public class ZAuthResult {
     public String getCsrfToken() {
         return data.getCsrfToken();
     }
-
-    public String getTrustedToken() {
-        return data.getTrustedToken();
-    }
-
-    public long getTrustLifetime() {
-        return trustExpires;
-    }
-
-    public String getDeviceId() {
-        return data.getDeviceId();
-    }
-
 }

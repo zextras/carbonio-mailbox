@@ -148,23 +148,6 @@ public class AuthRequest {
     private String requestedSkin;
 
     /**
-     *@zm-api-field-description whether the client represents a trusted device
-     *
-     */
-    @XmlElement(name=AccountConstants.E_TRUSTED_TOKEN /* trustedToken */, required=false)
-    private String trustedDeviceToken;
-
-    /**
-     *@zm-api-field-description unique device identifier; used to verify trusted mobile devices
-     *
-     */
-    @XmlElement(name=AccountConstants.E_DEVICE_ID /* deviceId */, required=false)
-    private String deviceId;
-
-    @XmlAttribute(name=AccountConstants.A_GENERATE_DEVICE_ID /* generateDeviceId */, required=false)
-    private ZmBoolean generateDeviceId;
-
-    /**
      * @zm-api-field-description type of token to be returned, it can be auth or jwt
      * 
      */
@@ -293,30 +276,4 @@ public class AuthRequest {
         this.csrfSupported = ZmBoolean.fromBool(csrfSupported);
     }
 
-    public AuthRequest setTrustedDeviceToken(String token) {
-        this.trustedDeviceToken = token;
-        return this;
-    }
-
-    public String getTrustedDeviceToken() {
-        return trustedDeviceToken;
-    }
-
-    public AuthRequest setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-        return this;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public AuthRequest setGenerateDeviceId(Boolean generateId) {
-        this.generateDeviceId = ZmBoolean.fromBool(generateId);
-        return this;
-    }
-
-    public ZmBoolean getGenerateDeviceId() {
-        return generateDeviceId;
-    }
 }

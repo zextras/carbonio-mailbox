@@ -138,12 +138,6 @@ public class Auth extends AccountDocumentHandler {
                 if (!checkPasswordSecurity(context))
                     throw ServiceException.INVALID_REQUEST("clear text password is not allowed", null);
                 AuthToken.Usage usage = at.getUsage();
-                if (usage != Usage.AUTH && usage != Usage.TWO_FACTOR_AUTH) {
-                    AuthFailedServiceException e = AuthFailedServiceException
-                        .AUTH_FAILED("invalid auth token");
-                    AuthListener.invokeOnException(e);
-                    throw e;
-                }
                 Account authTokenAcct = AuthProvider.validateAuthToken(prov, at, false, usage);
                 if (verifyAccount) {
                     // Verify the named account matches the account in the auth token.  Client can easily decode
@@ -175,7 +169,6 @@ public class Auth extends AccountDocumentHandler {
         }
 
         Element preAuthEl = request.getOptionalElement(AccountConstants.E_PREAUTH);
-        String deviceId = request.getAttribute(AccountConstants.E_DEVICE_ID, null);
         long expires = 0;
 
         Map<String, Object> authCtxt = new HashMap<String, Object>();

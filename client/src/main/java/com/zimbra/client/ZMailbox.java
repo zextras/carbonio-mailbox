@@ -418,11 +418,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     private String mRequestedSkin;
     private boolean mCsrfSupported; // Used by AuthRequest
     private Map<String, String> mCustomHeaders;
-    private boolean mAppSpecificPasswordsSupported;
-    private boolean mTrustedDevice;
-    private String mTrustedDeviceToken;
-    private String mDeviceId;
-    private boolean mGenerateDeviceId;
     private SoapTransport.NotificationFormat notificationFormat =
         SoapTransport.NotificationFormat.DEFAULT;
     private boolean alwaysRefreshFolders;
@@ -698,51 +693,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
     public Options setCsrfSupported(boolean csrfSupported) {
       mCsrfSupported = csrfSupported;
-      return this;
-    }
-
-    public boolean getAppSpecificPasswordsSupported() {
-      return mAppSpecificPasswordsSupported;
-    }
-
-    public Options setAppSpecificPasswordsSupported(boolean bool) {
-      mAppSpecificPasswordsSupported = bool;
-      return this;
-    }
-
-    public boolean getTrustedDevice() {
-      return mTrustedDevice;
-    }
-
-    public Options setTrustedDevice(boolean bool) {
-      mTrustedDevice = bool;
-      return this;
-    }
-
-    public String getTrustedDeviceToken() {
-      return mTrustedDeviceToken;
-    }
-
-    public Options setTrustedDeviceToken(String token) {
-      mTrustedDeviceToken = token;
-      return this;
-    }
-
-    public String getDeviceId() {
-      return mDeviceId;
-    }
-
-    public Options setDeviceId(String deviceId) {
-      mDeviceId = deviceId;
-      return this;
-    }
-
-    public boolean getGenerateDeviceId() {
-      return mGenerateDeviceId;
-    }
-
-    public Options setGenerateDeviceId(boolean bool) {
-      mGenerateDeviceId = bool;
       return this;
     }
 
@@ -1028,15 +978,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     if (options.getAuthToken() != null) {
       auth.setAuthToken(new AuthToken(options.getAuthToken().getValue(), false));
     }
-    if (options.getDeviceId() != null) {
-      auth.setDeviceId(options.getDeviceId());
-    }
-    if (options.getTrustedDeviceToken() != null) {
-      auth.setTrustedDeviceToken(options.getTrustedDeviceToken());
-    }
-    if (options.getGenerateDeviceId()) {
-      auth.setGenerateDeviceId(true);
-    }
     addAttrsAndPrefs(auth, options);
 
     invokeJaxb(auth, (r) -> handleAuthResponse((AuthResponse) r, options));
@@ -1068,7 +1009,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     mAuthResult = authResult;
     initCsrfToken(mAuthResult.getCsrfToken());
     initAuthToken(mAuthResult.getAuthToken());
-    initTrustedToken(mAuthResult.getTrustedToken());
   }
 
   public ZAuthResult getAuthResult() {
