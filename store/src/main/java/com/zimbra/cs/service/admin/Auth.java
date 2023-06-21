@@ -24,6 +24,7 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Provisioning.AuthMode;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
@@ -41,6 +42,7 @@ import java.util.Map;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.StringUtils;
 
 public class Auth extends AdminDocumentHandler {
 
@@ -157,7 +159,23 @@ public class Auth extends AdminDocumentHandler {
                 authCtxt.put(AuthContext.AC_USER_AGENT, zsc.getUserAgent());
                 authCtxt.put(AuthContext.AC_AS_ADMIN, Boolean.TRUE);          
 
-					      prov.authAccount(acct, password, AuthContext.Protocol.soap, authCtxt);
+				// Only perform 2fa authentication on admin account not on the resource accounts
+				if (!acct.isIsSystemResource() && !acct.isIsSystemAccount()) {
+          String recoveryCode = request.getAttribute(AccountConstants.E_RECOVERY_CODE, null);
+          AuthMode mode = AuthMode.PASSWORD;
+          String code = password;
+          if (StringUtils.isEmpty(password) && StringUtils.isNotEmpty(recoveryCode)) {
+            mode = AuthMode.RECOVERY_CODE;
+            code = recoveryCode;
+          }
+          authCtxt.put(Provisioning.AUTH_MODE_KEY, mode);
+          if (password != null || recoveryCode != null) {
+            prov.authAccount(acct, code, AuthContext.Protocol.soap, authCtxt);
+          }
+				} else {
+					// perform authAccount for the zmprov account directly as it can't have 2fa
+					prov.authAccount(acct, password, AuthContext.Protocol.soap, authCtxt);
+				}
                 AuthMech authedByMech = (AuthMech) authCtxt.get(AuthContext.AC_AUTHED_BY_MECH);
                 at = AuthProvider.getAuthToken(acct, true, authedByMech);
             } catch (ServiceException se) {
