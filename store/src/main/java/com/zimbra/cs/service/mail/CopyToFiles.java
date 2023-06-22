@@ -20,7 +20,6 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.control.Try;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -66,35 +65,15 @@ public class CopyToFiles extends MailDocumentHandler {
                                             .of(
                                                 inputStream ->
                                                     For(
-                                                            Try.of(
-                                                                () ->
-                                                                    ZimbraCookie
-                                                                            .COOKIE_ZM_AUTH_TOKEN
-                                                                        + "="
-                                                                        + zsc.getAuthToken()
-                                                                            .getEncoded()),
+                                                            this.getCookie(zsc),
                                                             this.getDestinationFolderId(
                                                                 copyToFilesRequest),
                                                             this.getAttachmentName(attachment),
                                                             this.getAttachmentContentType(
                                                                 attachment),
-                                                            Try.withResources(
-                                                                    attachment::getInputStream)
-                                                                .of(this::getAttachmentSize)
-                                                                .flatMap(identity()))
-                                                        .yield(
-                                                            (cookie,
-                                                                folderId,
-                                                                fileName,
-                                                                contentType,
-                                                                fileSize) ->
-                                                                filesClient.uploadFile(
-                                                                    cookie,
-                                                                    folderId,
-                                                                    fileName,
-                                                                    contentType,
-                                                                    inputStream,
-                                                                    fileSize)))))
+                                                            Try.of(() -> inputStream),
+                                                            this.getAttachmentSize(attachment))
+                                                        .yield(filesClient::uploadFile))))
                     .flatMap(identity())
                     .flatMap(identity())
                     .onFailure(ex -> mLog.error(ex.getMessage()))
@@ -119,6 +98,10 @@ public class CopyToFiles extends MailDocumentHandler {
     return Try.<CopyToFilesRequest>of(() -> JaxbUtil.elementToJaxb(request))
         .onFailure(ex -> mLog.error(ex.getMessage()))
         .recoverWith(ex -> Try.failure(ServiceException.PARSE_ERROR("Malformed request.", ex)));
+  }
+
+  private Try<String> getCookie(ZimbraSoapContext zsc) {
+    return Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded());
   }
 
   /**
@@ -162,24 +145,27 @@ public class CopyToFiles extends MailDocumentHandler {
   }
 
   /**
-   * Calculates real size of input stream by reading it. The operation is done by reading chunks of
-   * 8kb. This method exists because for images the size returned by {@link MimePart#getSize()} is
-   * not equal to the real one.
+   * Calculates real size of a {@link com.zimbra.cs.mime.Mime} by reading its input stream with
+   * auto-closable. The operation is done by reading chunks of 8kb. This method exists because for
+   * images the size returned by {@link MimePart#getSize()} is not equal to the real one.
    *
-   * @param inputStream input stream to calculate size of
-   * @return size of given input stream
+   * @param attachment mimepart to calculate size of
+   * @return size of mime part
    */
-  private Try<Long> getAttachmentSize(InputStream inputStream) {
+  private Try<Long> getAttachmentSize(MimePart attachment) {
 
-    return Try.of(
-        () -> {
-          long fileSize = 0;
-          byte[] buffer = new byte[8192];
-          for (int read = inputStream.read(buffer); read != -1; read = inputStream.read(buffer)) {
-            fileSize += read;
-          }
-          return fileSize;
-        });
+    return Try.withResources(attachment::getInputStream)
+        .of(
+            inputStream -> {
+              long fileSize = 0;
+              byte[] buffer = new byte[8192];
+              for (int read = inputStream.read(buffer);
+                  read != -1;
+                  read = inputStream.read(buffer)) {
+                fileSize += read;
+              }
+              return fileSize;
+            });
   }
 
   /**
