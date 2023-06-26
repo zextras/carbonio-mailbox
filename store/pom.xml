@@ -492,6 +492,23 @@
       <groupId>io.prometheus</groupId>
       <artifactId>simpleclient_hotspot</artifactId>
     </dependency>
+
+    <!-- Mockserver -->
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-netty</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-client-java</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>

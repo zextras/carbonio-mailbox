@@ -115,12 +115,12 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpmime</artifactId>
-        <version>4.5.13</version>
+        <version>4.5.14</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.4.13</version>
+        <version>4.4.16</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -831,6 +831,21 @@
         <artifactId>micrometer-core</artifactId>
         <version>1.10.5</version>
       </dependency>
+      <dependency>
+        <groupId>org.mock-server</groupId>
+        <artifactId>mockserver-core</artifactId>
+        <version>${mockserver.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mock-server</groupId>
+        <artifactId>mockserver-netty</artifactId>
+        <version>${mockserver.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mock-server</groupId>
+        <artifactId>mockserver-client-java</artifactId>
+        <version>${mockserver.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -875,6 +890,7 @@
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <revision>23.7.0-SNAPSHOT</revision>
+    <mockserver.version>5.13.0</mockserver.version>
   </properties>
   <version>${revision}</version>
   <profiles>
