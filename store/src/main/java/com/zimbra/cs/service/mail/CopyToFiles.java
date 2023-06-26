@@ -5,6 +5,7 @@ import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.For;
 import static java.util.function.Function.identity;
+import static java.util.function.Predicate.not;
 
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
@@ -79,7 +80,7 @@ public class CopyToFiles extends MailDocumentHandler {
                     .onFailure(ex -> mLog.error(ex.getMessage()))
                     .mapFailure(
                         Case(
-                            $(ex -> !(ex instanceof ServiceException)),
+                            $(not(instanceOf(ServiceException.class))),
                             ServiceException::INTERNAL_ERROR))
                     .get())
             .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."));
