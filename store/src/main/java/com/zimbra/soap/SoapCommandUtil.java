@@ -487,6 +487,12 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
             return;
         }
 
+        if (mAdminAccountName != null) {
+            adminAuth();
+        } else {
+            mailboxAuth();
+        }
+
         // Send request and print response.
         if (!mType.equals(TYPE_ADMIN) && !StringUtil.isNullOrEmpty(mTargetAccountName) &&
             !StringUtil.equalIgnoreCase(mAuthAccountName, mTargetAccountName)) {
