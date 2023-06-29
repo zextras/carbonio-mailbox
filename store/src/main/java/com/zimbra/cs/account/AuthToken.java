@@ -255,7 +255,7 @@ public abstract class AuthToken {
 
     public abstract Usage getUsage();
 
-    public static enum Usage {
+    public enum Usage {
         AUTH("a"), RESET_PASSWORD("rp");
 
         private String code;
@@ -278,7 +278,7 @@ public abstract class AuthToken {
         }
     }
 
-    public static enum TokenType {
+    public enum TokenType {
         AUTH("auth"), JWT("jwt");
         private String code;
 
