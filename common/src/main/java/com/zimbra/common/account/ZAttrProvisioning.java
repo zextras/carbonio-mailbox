@@ -2945,6 +2945,19 @@ public class ZAttrProvisioning {
     public static final String A_carbonioPrefWebUiDarkMode = "carbonioPrefWebUiDarkMode";
 
     /**
+     * Content Security Policy headers to be added by the proxy. This is used
+     * along with the zimbraReverseProxyResponseHeaders by the ProxyConfGen
+     * to produce a complete set of Response Headers returned by the by the
+     * proxy. Usage: can be used to add a Content-Security-Policy header that
+     * will enforce CSP rule on the client side. Note: the value MUST be the
+     * entire header line (e.g. X-Foo: Bar, X-Zoo: &quot;Bar1; Bar2&quot;).
+     *
+     * @since ZCS 23.7.0
+     */
+    @ZAttr(id=3133)
+    public static final String A_carbonioReverseProxyResponseCSPHeader = "carbonioReverseProxyResponseCSPHeader";
+
+    /**
      * Whether Carbonio can send analytics reports
      *
      * @since ZCS 9.0.0
@@ -15604,10 +15617,12 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyPortSearchBase = "zimbraReverseProxyPortSearchBase";
 
     /**
-     * Custom response headers to be added by the proxy. For example, can be
-     * used to add a HSTS header that will enforce SSL usage on the client
-     * side. Note: the value MUST be the entire header line (e.g. X-Foo: Bar,
-     * X-Zoo: &quot;Bar1; Bar2&quot;).
+     * Custom response headers to be added by the proxy. The
+     * carbonioReverseProxyResponseCSPHeader should be used along with this
+     * to produce complete Proxy Response header. Usage: can be used to add a
+     * HSTS header that will enforce SSL usage on the client side. Note: the
+     * value MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo:
+     * &quot;Bar1; Bar2&quot;).
      *
      * @since ZCS 8.7.0,9.0.0
      */

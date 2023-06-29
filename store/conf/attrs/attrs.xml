@@ -10050,7 +10050,7 @@ TODO: delete them permanently from here
 </attr>
 
 <attr id="3133" name="carbonioReverseProxyResponseCSPHeader" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainInherited" requiresRestart="nginxproxy" since="23.7.0">
-  <globalConfigValue>Content-Security-Policy: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' *.zextras.tools; connect-src 'self' *.zextras.tools; img-src  * blob: data:; font-src 'self' fonts.gstatic.com; object-src 'self'; media-src  * blob: data:; child-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; form-action 'self'; frame-ancestors 'self';"</globalConfigValue>
+  <globalConfigValue>Content-Security-Policy: "default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';"</globalConfigValue>
   <desc>
     Content Security Policy headers to be added by the proxy. This is used along with the zimbraReverseProxyResponseHeaders by the ProxyConfGen
     to produce a complete set of Response Headers returned by the by the proxy.
