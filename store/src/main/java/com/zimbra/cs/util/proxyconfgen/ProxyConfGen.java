@@ -94,7 +94,8 @@ public class ProxyConfGen {
   private static boolean mGenConfPerVhn = false;
   private static boolean hasCustomTemplateLocationArg = false;
   private static final String CERTBOT = mWorkingDir + "/libexec/certbot";
-  private static final String CERTBOT_WORKING_DIR = mWorkingDir + "/common/certbot/etc/letsencrypt/live/";
+  private static final String CERTBOT_WORKING_DIR =
+      mWorkingDir + "/common/certbot/etc/letsencrypt/live/";
   private static final String CERT = "/fullchain.pem";
   private static final String KEY = "/privkey.pem";
 
@@ -230,6 +231,7 @@ public class ProxyConfGen {
     attrsNeeded.add(ZAttrProvisioning.A_zimbraReverseProxyClientCertCA);
     attrsNeeded.add(ZAttrProvisioning.A_zimbraWebClientLoginURL);
     attrsNeeded.add(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
+    attrsNeeded.add(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader);
 
     final List<DomainAttrItem> result = new ArrayList<>();
 
@@ -247,6 +249,8 @@ public class ProxyConfGen {
           String clientCertCA = entry.getAttr(ZAttrProvisioning.A_zimbraReverseProxyClientCertCA);
           String[] rspHeaders =
               entry.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
+          String cspRspHeader =
+              entry.getAttr(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "");
 
           if (virtualHostnames.length == 0
               || (certificate == null
@@ -286,7 +290,8 @@ public class ProxyConfGen {
                     privateKey,
                     clientCertMode,
                     clientCertCA,
-                    rspHeaders));
+                    rspHeaders,
+                    cspRspHeader));
           }
         };
     mProv.getAllDomains(visitor, attrsNeeded.toArray(new String[0]));
@@ -660,6 +665,9 @@ public class ProxyConfGen {
     ArrayList<String> responseHeadersList = new ArrayList<>();
     for (i = 0; i < item.rspHeaders.length; i++) {
       responseHeadersList.add(item.rspHeaders[i]);
+    }
+    if (!item.cspHeader.isBlank()) {
+      responseHeadersList.add(item.cspHeader);
     }
     mDomainConfVars.put(
         "web.add.headers.vhost",
@@ -1932,8 +1940,14 @@ public class ProxyConfGen {
     String[] rspHeaders =
         ProxyConfVar.configSource.getMultiAttr(
             ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
+    String cspHeader =
+        ProxyConfVar.configSource.getAttr(
+            ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "");
     ArrayList<String> responseHeadersList = new ArrayList<>();
     Collections.addAll(responseHeadersList, rspHeaders);
+    if (!cspHeader.isBlank()) {
+      responseHeadersList.add(cspHeader);
+    }
     mConfVars.put(
         "web.add.headers.default",
         new AddHeadersVar(
@@ -2363,8 +2377,8 @@ public class ProxyConfGen {
   }
 
   /**
-   * Deletes existing Let's Encrypt domain configuration (certificate/key pair,
-   * renewal configuration and related links) for deleted domains.
+   * Deletes existing Let's Encrypt domain configuration (certificate/key pair, renewal
+   * configuration and related links) for deleted domains.
    *
    * @param mDomainReverseProxyAttrs List<{@link DomainAttrItem}> domain attribute items collected
    *     from domains
@@ -2400,12 +2414,12 @@ public class ProxyConfGen {
    */
   private static void executeCertbotDelete(final List<String> args) throws ProxyConfException {
     args.forEach(domainName -> LOG.info("Deleting Let's Encrypt configuration for " + domainName));
-
-    args.add(0, CERTBOT);
-    args.add(1, "delete");
+    List<String> mutableArgs = new ArrayList<>(args);
+    mutableArgs.add(0, CERTBOT);
+    mutableArgs.add(1, "delete");
 
     try {
-      new ProcessBuilder(args).start();
+      new ProcessBuilder(mutableArgs).start();
     } catch (IOException e) {
       throw new ProxyConfException("Unable to delete Let's Encrypt configurations", e);
     }

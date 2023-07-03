@@ -8919,9 +8919,9 @@ TODO: delete them permanently from here
   <globalConfigValue>X-XSS-Protection: "1; mode=block"</globalConfigValue>
   <globalConfigValue>X-Frame-Options: "sameorigin"</globalConfigValue>
   <globalConfigValue>Expect-CT: max-age=86400</globalConfigValue>
-  <globalConfigValue>Content-Security-Policy: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' *.zextras.tools; connect-src 'self' *.zextras.tools; img-src  * blob: data:; font-src 'self' fonts.gstatic.com; object-src 'self'; media-src  * blob: data:; child-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; form-action 'self'; frame-ancestors 'self';"</globalConfigValue>
   <desc>
-     Custom response headers to be added by the proxy. For example, can be used to add a HSTS header
+     Custom response headers to be added by the proxy. The carbonioReverseProxyResponseCSPHeader should be used along with this to
+     produce complete Proxy Response header. Usage: can be used to add a HSTS header
      that will enforce SSL usage on the client side. Note: the value
      MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo: "Bar1; Bar2").
   </desc>
@@ -10047,5 +10047,16 @@ TODO: delete them permanently from here
   <defaultCOSValue>FALSE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>Whether the Team feature enabled for account or COS</desc>
+</attr>
+
+<attr id="3133" name="carbonioReverseProxyResponseCSPHeader" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainInherited" requiresRestart="nginxproxy" since="23.7.0">
+  <globalConfigValue>Content-Security-Policy: "default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';"</globalConfigValue>
+  <desc>
+    Content Security Policy headers to be added by the proxy. This is used along with the zimbraReverseProxyResponseHeaders by the ProxyConfGen
+    to produce a complete set of Response Headers returned by the by the proxy.
+    Usage: can be used to add a Content-Security-Policy header
+    that will enforce CSP rule on the client side. Note: the value
+    MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo: "Bar1; Bar2").
+  </desc>
 </attr>
 </attrs>
