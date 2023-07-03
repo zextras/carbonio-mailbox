@@ -1018,8 +1018,6 @@ public final class JaxbUtil {
           com.zimbra.soap.sync.message.SuspendDeviceResponse.class,
           com.zimbra.soap.voice.message.ChangeUCPasswordRequest.class,
           com.zimbra.soap.voice.message.ChangeUCPasswordResponse.class,
-          com.zimbra.soap.voice.message.GetUCInfoRequest.class,
-          com.zimbra.soap.voice.message.GetUCInfoResponse.class,
           com.zimbra.soap.voice.message.GetVoiceFeaturesRequest.class,
           com.zimbra.soap.voice.message.GetVoiceFeaturesResponse.class,
           com.zimbra.soap.voice.message.GetVoiceFolderRequest.class,
