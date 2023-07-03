@@ -5,12 +5,19 @@
 
 package com.zimbra.common.util;
 
-import static org.apache.logging.log4j.Level.*;
+import static org.apache.logging.log4j.Level.DEBUG;
+import static org.apache.logging.log4j.Level.ERROR;
+import static org.apache.logging.log4j.Level.FATAL;
+import static org.apache.logging.log4j.Level.INFO;
+import static org.apache.logging.log4j.Level.TRACE;
+import static org.apache.logging.log4j.Level.WARN;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -22,7 +29,6 @@ import org.apache.logging.log4j.core.config.Configurator;
  * @since 15.8
  * @see com.zimbra.common.util.LogManager for managing this class
  * @see LogFactory in order to create this class with a particular configuration
- * @see Log4J2ConfigFactory for configuration details
  */
 public class Log {
 
