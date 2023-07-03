@@ -5,8 +5,6 @@
 
 package com.zimbra.cs.service;
 
-import static org.junit.Assert.assertTrue;
-
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -16,13 +14,14 @@ import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.google.common.collect.Maps;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.common.account.Key;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.HeaderUtils.ByteBuilder;
@@ -45,7 +44,7 @@ public class FileUploadServletTest {
     private static FileUploadServlet servlet;
     private static Account testAccount;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
 
         LC.zimbra_tmp_directory.setDefault("build/test");
@@ -64,7 +63,7 @@ public class FileUploadServletTest {
         prov.createAccount("test2@zimbra.com", "secret", attrs);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
     }
@@ -72,7 +71,7 @@ public class FileUploadServletTest {
     /**
      * @throws java.lang.Exception
      */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         MailboxTestUtil.clearData();
     }
@@ -115,252 +114,252 @@ public class FileUploadServletTest {
     }
 
     private void compareUploads(Upload up, String expectedFilename, byte[] expectedContent) throws Exception {
-        Assert.assertEquals(expectedFilename, up.getName());
-        Assert.assertArrayEquals(expectedContent, ByteUtil.getContent(up.getInputStream(), -1));
+        assertEquals(expectedFilename, up.getName());
+        assertArrayEquals(expectedContent, ByteUtil.getContent(up.getInputStream(), -1));
     }
 
-    @Test
-    public void testFilenames() throws Exception {
-        ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
-        addFormField(bb, "_charset_", "");
-        addFormField(bb, "filename1", filename1);
-        addFormFile(bb, filename1, "text/plain", content1);
-        addFormField(bb, "filename2", filename2);
-        addFormFile(bb, filename2, "text/plain", content2);
-        addFormField(bb, "filename3", "");
-        addFormFile(bb, "", null, null);
-        endForm(bb);
+ @Test
+ void testFilenames() throws Exception {
+  ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+  addFormField(bb, "_charset_", "");
+  addFormField(bb, "filename1", filename1);
+  addFormFile(bb, filename1, "text/plain", content1);
+  addFormField(bb, "filename2", filename2);
+  addFormFile(bb, filename2, "text/plain", content2);
+  addFormField(bb, "filename3", "");
+  addFormFile(bb, "", null, null);
+  endForm(bb);
 
-        List<Upload> uploads = uploadForm(bb.toByteArray());
-        Assert.assertEquals(2, uploads == null ? 0 : uploads.size());
-        compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
-        compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
-    }
+  List<Upload> uploads = uploadForm(bb.toByteArray());
+  assertEquals(2, uploads == null ? 0 : uploads.size());
+  compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
+  compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
+ }
 
-    @Test
-    public void testConsecutiveFilenames() throws Exception {
-        ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
-        addFormField(bb, "_charset_", "");
-        addFormField(bb, "filename1", filename1 + "\r\n" + filename2);
-        addFormFile(bb, filename1, "text/plain", content1);
-        addFormFile(bb, filename2, "text/plain", content2);
-        addFormField(bb, "filename2", "");
-        addFormFile(bb, "", null, null);
-        addFormField(bb, "filename3", "");
-        addFormFile(bb, "", null, null);
-        endForm(bb);
+ @Test
+ void testConsecutiveFilenames() throws Exception {
+  ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+  addFormField(bb, "_charset_", "");
+  addFormField(bb, "filename1", filename1 + "\r\n" + filename2);
+  addFormFile(bb, filename1, "text/plain", content1);
+  addFormFile(bb, filename2, "text/plain", content2);
+  addFormField(bb, "filename2", "");
+  addFormFile(bb, "", null, null);
+  addFormField(bb, "filename3", "");
+  addFormFile(bb, "", null, null);
+  endForm(bb);
 
-        List<Upload> uploads = uploadForm(bb.toByteArray());
-        Assert.assertEquals(2, uploads == null ? 0 : uploads.size());
-        compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
-        compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
-    }
+  List<Upload> uploads = uploadForm(bb.toByteArray());
+  assertEquals(2, uploads == null ? 0 : uploads.size());
+  compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
+  compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
+ }
 
-    @Test
-    public void testExtraFilenames() throws Exception {
-        ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
-        addFormField(bb, "_charset_", "");
-        addFormField(bb, "filename1", filename1 + "\r\nextra\r\ndata.txt");
-        addFormFile(bb, filename1, "text/plain", content1);
-        addFormField(bb, "filename2", filename2);
-        addFormFile(bb, filename2, "text/plain", content2);
-        addFormField(bb, "filename3", "bar.gif");
-        addFormFile(bb, "", null, null);
-        endForm(bb);
+ @Test
+ void testExtraFilenames() throws Exception {
+  ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+  addFormField(bb, "_charset_", "");
+  addFormField(bb, "filename1", filename1 + "\r\nextra\r\ndata.txt");
+  addFormFile(bb, filename1, "text/plain", content1);
+  addFormField(bb, "filename2", filename2);
+  addFormFile(bb, filename2, "text/plain", content2);
+  addFormField(bb, "filename3", "bar.gif");
+  addFormFile(bb, "", null, null);
+  endForm(bb);
 
-        List<Upload> uploads = uploadForm(bb.toByteArray());
-        Assert.assertEquals(2, uploads == null ? 0 : uploads.size());
-        compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
-        compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
-    }
+  List<Upload> uploads = uploadForm(bb.toByteArray());
+  assertEquals(2, uploads == null ? 0 : uploads.size());
+  compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
+  compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
+ }
 
-    @Test
-    public void testMissingFilenames() throws Exception {
-        ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
-        addFormField(bb, "_charset_", "");
-        addFormField(bb, "filename1", "");
-        addFormFile(bb, "x", "text/plain", content1);
-        addFormFile(bb, "y", "text/plain", content2);
-        addFormField(bb, "filename2", "");
-        addFormFile(bb, "", null, null);
-        addFormField(bb, "filename3", "");
-        addFormFile(bb, "", null, null);
-        endForm(bb);
+ @Test
+ void testMissingFilenames() throws Exception {
+  ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+  addFormField(bb, "_charset_", "");
+  addFormField(bb, "filename1", "");
+  addFormFile(bb, "x", "text/plain", content1);
+  addFormFile(bb, "y", "text/plain", content2);
+  addFormField(bb, "filename2", "");
+  addFormFile(bb, "", null, null);
+  addFormField(bb, "filename3", "");
+  addFormFile(bb, "", null, null);
+  endForm(bb);
 
-        List<Upload> uploads = uploadForm(bb.toByteArray());
-        Assert.assertEquals(2, uploads == null ? 0 : uploads.size());
-        compareUploads(uploads.get(0), "x", content1.getBytes(CharsetUtil.UTF_8));
-        compareUploads(uploads.get(1), "y", content2.getBytes(CharsetUtil.UTF_8));
-    }
-
-
-    @Test
-    public void testFileUploadAuthTokenNotCsrfEnabled() throws Exception {
-        URL url = new URL("http://localhost:7070/service/upload?lbfums=");
-        ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
-        addFormField(bb, "_charset_", "");
-        addFormField(bb, "filename1", filename1);
-        addFormFile(bb, filename1, "text/plain", content1);
-
-        endForm(bb);
-
-        byte [] form = bb.toByteArray();
-        HashMap<String, String> headers = new HashMap<String, String>();
-        Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
-        XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
-        com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
-        a.addAttribute(AccountConstants.A_BY, "name");
-        a.setText(acct.getName());
-        req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
-        Element response = new Auth().handle(req, ServiceTestUtil.getRequestContext(acct));
-        String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
-
-        MockHttpServletRequest mockreq = new MockHttpServletRequest(form, url, "multipart/form-data; boundary=" + boundary,
-            7070, "test", headers);
-        mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.FALSE);
-
-        Cookie cookie = new Cookie( "ZM_AUTH_TOKEN", authToken);
-        mockreq.setCookies(cookie);
-
-        MockHttpServletResponse resp = new MockHttpServletResponse();
-        servlet.doPost(mockreq, resp);
-        String respStrg = resp.output.toString();
-        System.out.println(respStrg);
-        assertTrue(respStrg.contains("200"));
-    }
+  List<Upload> uploads = uploadForm(bb.toByteArray());
+  assertEquals(2, uploads == null ? 0 : uploads.size());
+  compareUploads(uploads.get(0), "x", content1.getBytes(CharsetUtil.UTF_8));
+  compareUploads(uploads.get(1), "y", content2.getBytes(CharsetUtil.UTF_8));
+ }
 
 
-    @Test
-    public void testFileUploadAuthTokenCsrfEnabled() throws Exception {
-        URL url = new URL("http://localhost:7070/service/upload?lbfums=");
-        ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
-        addFormField(bb, "_charset_", "");
-        addFormField(bb, "filename1", filename1);
-        addFormFile(bb, filename1, "text/plain", content1);
+ @Test
+ void testFileUploadAuthTokenNotCsrfEnabled() throws Exception {
+  URL url = new URL("http://localhost:7070/service/upload?lbfums=");
+  ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+  addFormField(bb, "_charset_", "");
+  addFormField(bb, "filename1", filename1);
+  addFormFile(bb, filename1, "text/plain", content1);
 
-        endForm(bb);
+  endForm(bb);
 
-        byte [] form = bb.toByteArray();
-        HashMap<String, String> headers = new HashMap<String, String>();
-        Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+  byte [] form = bb.toByteArray();
+  HashMap<String, String> headers = new HashMap<String, String>();
+  Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+  XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
+  com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
+  a.addAttribute(AccountConstants.A_BY, "name");
+  a.setText(acct.getName());
+  req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
+  Element response = new Auth().handle(req, ServiceTestUtil.getRequestContext(acct));
+  String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
 
-        XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
-        req.addAttribute(AccountConstants.A_CSRF_SUPPORT, "1");
-        com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
-        a.addAttribute(AccountConstants.A_BY, "name");
-        a.setText(acct.getName());
-        req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
-        Map<String, Object>context = ServiceTestUtil.getRequestContext(acct);
-        MockHttpServletRequest authReq = (MockHttpServletRequest)context.get(SoapServlet.SERVLET_REQUEST);
-        authReq.setAttribute(Provisioning.A_zimbraCsrfTokenCheckEnabled, Boolean.TRUE);
-        Random nonceGen = new Random();
-        authReq.setAttribute(CsrfFilter.CSRF_SALT,nonceGen.nextInt() + 1);
-        Element response = new Auth().handle(req, context);
-        String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
-        String csrfToken = response.getElement("csrfToken").getText();
-        headers.put(Constants.CSRF_TOKEN, csrfToken);
+  MockHttpServletRequest mockreq = new MockHttpServletRequest(form, url, "multipart/form-data; boundary=" + boundary,
+    7070, "test", headers);
+  mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.FALSE);
 
-        MockHttpServletRequest mockreq = new MockHttpServletRequest(form, url, "multipart/form-data; boundary=" + boundary,
-            7070, "test", headers);
-        mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.TRUE);
+  Cookie cookie = new Cookie( "ZM_AUTH_TOKEN", authToken);
+  mockreq.setCookies(cookie);
 
-        Cookie cookie = new Cookie( "ZM_AUTH_TOKEN", authToken);
-        mockreq.setCookies(cookie);
+  MockHttpServletResponse resp = new MockHttpServletResponse();
+  servlet.doPost(mockreq, resp);
+  String respStrg = resp.output.toString();
+  System.out.println(respStrg);
+  assertTrue(respStrg.contains("200"));
+ }
 
-        MockHttpServletResponse resp = new MockHttpServletResponse();
 
-        servlet.doPost(mockreq, resp);
-        String respStrg = resp.output.toString();
-        System.out.println(respStrg);
-        assertTrue(respStrg.contains("200"));
-    }
+ @Test
+ void testFileUploadAuthTokenCsrfEnabled() throws Exception {
+  URL url = new URL("http://localhost:7070/service/upload?lbfums=");
+  ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+  addFormField(bb, "_charset_", "");
+  addFormField(bb, "filename1", filename1);
+  addFormFile(bb, filename1, "text/plain", content1);
 
-    @Test
-    public void testFileUploadAuthTokenCsrfEnabledButNoCsrfToken() throws Exception {
-        URL url = new URL("http://localhost:7070/service/upload?lbfums=");
-        ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
-        addFormField(bb, "_charset_", "");
-        addFormField(bb, "filename1", filename1);
-        addFormFile(bb, filename1, "text/plain", content1);
+  endForm(bb);
 
-        endForm(bb);
+  byte [] form = bb.toByteArray();
+  HashMap<String, String> headers = new HashMap<String, String>();
+  Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
 
-        byte [] form = bb.toByteArray();
-        HashMap<String, String> headers = new HashMap<String, String>();
-        Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
-        XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
-        req.addAttribute(AccountConstants.A_CSRF_SUPPORT, "1");
-        com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
-        a.addAttribute(AccountConstants.A_BY, "name");
-        a.setText(acct.getName());
-        req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
-        Map<String, Object>context = ServiceTestUtil.getRequestContext(acct);
-        MockHttpServletRequest authReq = (MockHttpServletRequest)context.get(SoapServlet.SERVLET_REQUEST);
-        authReq.setAttribute(Provisioning.A_zimbraCsrfTokenCheckEnabled, Boolean.TRUE);
-        Random nonceGen = new Random();
-        authReq.setAttribute(CsrfFilter.CSRF_SALT,nonceGen.nextInt() + 1);
-        Element response = new Auth().handle(req, context);
-        String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
+  XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
+  req.addAttribute(AccountConstants.A_CSRF_SUPPORT, "1");
+  com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
+  a.addAttribute(AccountConstants.A_BY, "name");
+  a.setText(acct.getName());
+  req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
+  Map<String, Object> context = ServiceTestUtil.getRequestContext(acct);
+  MockHttpServletRequest authReq = (MockHttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
+  authReq.setAttribute(Provisioning.A_zimbraCsrfTokenCheckEnabled, Boolean.TRUE);
+  Random nonceGen = new Random();
+  authReq.setAttribute(CsrfFilter.CSRF_SALT, nonceGen.nextInt() + 1);
+  Element response = new Auth().handle(req, context);
+  String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
+  String csrfToken = response.getElement("csrfToken").getText();
+  headers.put(Constants.CSRF_TOKEN, csrfToken);
 
-        MockHttpServletRequest mockreq = new MockHttpServletRequest(form, url, "multipart/form-data; boundary=" + boundary,
-            7070, "test", headers);
-        mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.TRUE);
+  MockHttpServletRequest mockreq = new MockHttpServletRequest(form, url, "multipart/form-data; boundary=" + boundary,
+    7070, "test", headers);
+  mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.TRUE);
 
-        Cookie cookie = new Cookie( "ZM_AUTH_TOKEN", authToken);
-        mockreq.setCookies(cookie);
+  Cookie cookie = new Cookie( "ZM_AUTH_TOKEN", authToken);
+  mockreq.setCookies(cookie);
 
-        MockHttpServletResponse resp = new MockHttpServletResponse();
+  MockHttpServletResponse resp = new MockHttpServletResponse();
 
-        servlet.doPost(mockreq, resp);
-        //<html><head><script language='javascript'>function doit() { window.parent._uploadManager.loaded(401,'null'); }
-        //</script></head><body onload='doit()'></body></html>
-        String respStrg = resp.output.toString();
-        assertTrue(respStrg.contains("401"));
-    }
+  servlet.doPost(mockreq, resp);
+  String respStrg = resp.output.toString();
+  System.out.println(respStrg);
+  assertTrue(respStrg.contains("200"));
+ }
 
-    @Test
-    public void testFileUploadAuthTokenCsrfEnabled2() throws Exception {
+ @Test
+ void testFileUploadAuthTokenCsrfEnabledButNoCsrfToken() throws Exception {
+  URL url = new URL("http://localhost:7070/service/upload?lbfums=");
+  ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+  addFormField(bb, "_charset_", "");
+  addFormField(bb, "filename1", filename1);
+  addFormFile(bb, filename1, "text/plain", content1);
 
-        HashMap<String, String> headers = new HashMap<String, String>();
-        Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test2@zimbra.com");
+  endForm(bb);
 
-        XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
-        req.addAttribute(AccountConstants.A_CSRF_SUPPORT, "1");
-        com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
-        a.addAttribute(AccountConstants.A_BY, "name");
-        a.setText(acct.getName());
-        req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
-        Map<String, Object>context = ServiceTestUtil.getRequestContext(acct);
-        MockHttpServletRequest authReq = (MockHttpServletRequest)context.get(SoapServlet.SERVLET_REQUEST);
-        authReq.setAttribute(Provisioning.A_zimbraCsrfTokenCheckEnabled, Boolean.TRUE);
-        Random nonceGen = new Random();
-        authReq.setAttribute(CsrfFilter.CSRF_SALT,nonceGen.nextInt() + 1);
-        Element response = new Auth().handle(req, context);
-        String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
-        String csrfToken = response.getElement("csrfToken").getText();
+  byte [] form = bb.toByteArray();
+  HashMap<String, String> headers = new HashMap<String, String>();
+  Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+  XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
+  req.addAttribute(AccountConstants.A_CSRF_SUPPORT, "1");
+  com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
+  a.addAttribute(AccountConstants.A_BY, "name");
+  a.setText(acct.getName());
+  req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
+  Map<String, Object> context = ServiceTestUtil.getRequestContext(acct);
+  MockHttpServletRequest authReq = (MockHttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
+  authReq.setAttribute(Provisioning.A_zimbraCsrfTokenCheckEnabled, Boolean.TRUE);
+  Random nonceGen = new Random();
+  authReq.setAttribute(CsrfFilter.CSRF_SALT, nonceGen.nextInt() + 1);
+  Element response = new Auth().handle(req, context);
+  String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
 
-        URL url = new URL("http://localhost:7070/service/upload?lbfums=");
-        ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
-        addFormField(bb, "_charset_", "");
-        addFormField(bb, "filename1", filename1);
-        addFormField(bb, "csrfToken", csrfToken);
-        addFormFile(bb, filename1, "text/plain", content1);
+  MockHttpServletRequest mockreq = new MockHttpServletRequest(form, url, "multipart/form-data; boundary=" + boundary,
+    7070, "test", headers);
+  mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.TRUE);
 
-        endForm(bb);
+  Cookie cookie = new Cookie( "ZM_AUTH_TOKEN", authToken);
+  mockreq.setCookies(cookie);
 
-        byte [] form = bb.toByteArray();
+  MockHttpServletResponse resp = new MockHttpServletResponse();
 
-        MockHttpServletRequest mockreq = new MockHttpServletRequest(form, url, "multipart/form-data; boundary=" + boundary,
-            7070, "test", headers);
-        mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.TRUE);
+  servlet.doPost(mockreq, resp);
+  //<html><head><script language='javascript'>function doit() { window.parent._uploadManager.loaded(401,'null'); }
+  //</script></head><body onload='doit()'></body></html>
+  String respStrg = resp.output.toString();
+  assertTrue(respStrg.contains("401"));
+ }
 
-        Cookie cookie = new Cookie( "ZM_AUTH_TOKEN", authToken);
-        mockreq.setCookies(cookie);
+ @Test
+ void testFileUploadAuthTokenCsrfEnabled2() throws Exception {
 
-        MockHttpServletResponse resp = new MockHttpServletResponse();
+  HashMap<String, String> headers = new HashMap<String, String>();
+  Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test2@zimbra.com");
 
-        servlet.doPost(mockreq, resp);
-        String respStrg = resp.output.toString();
-        assertTrue(respStrg.contains("200"));
-    }
+  XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
+  req.addAttribute(AccountConstants.A_CSRF_SUPPORT, "1");
+  com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
+  a.addAttribute(AccountConstants.A_BY, "name");
+  a.setText(acct.getName());
+  req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
+  Map<String, Object> context = ServiceTestUtil.getRequestContext(acct);
+  MockHttpServletRequest authReq = (MockHttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
+  authReq.setAttribute(Provisioning.A_zimbraCsrfTokenCheckEnabled, Boolean.TRUE);
+  Random nonceGen = new Random();
+  authReq.setAttribute(CsrfFilter.CSRF_SALT, nonceGen.nextInt() + 1);
+  Element response = new Auth().handle(req, context);
+  String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
+  String csrfToken = response.getElement("csrfToken").getText();
+
+  URL url = new URL("http://localhost:7070/service/upload?lbfums=");
+  ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+  addFormField(bb, "_charset_", "");
+  addFormField(bb, "filename1", filename1);
+  addFormField(bb, "csrfToken", csrfToken);
+  addFormFile(bb, filename1, "text/plain", content1);
+
+  endForm(bb);
+
+  byte [] form = bb.toByteArray();
+
+  MockHttpServletRequest mockreq = new MockHttpServletRequest(form, url, "multipart/form-data; boundary=" + boundary,
+    7070, "test", headers);
+  mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.TRUE);
+
+  Cookie cookie = new Cookie( "ZM_AUTH_TOKEN", authToken);
+  mockreq.setCookies(cookie);
+
+  MockHttpServletResponse resp = new MockHttpServletResponse();
+
+  servlet.doPost(mockreq, resp);
+  String respStrg = resp.output.toString();
+  assertTrue(respStrg.contains("200"));
+ }
 }

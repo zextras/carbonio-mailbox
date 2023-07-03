@@ -5,12 +5,14 @@
 
 package com.zimbra.common.calendar;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Charsets;
 import com.zimbra.common.calendar.ZCalendar.ICalTok;
@@ -87,67 +89,67 @@ public class Ical4JTest {
             "END:VEVENT\r\n" +
             "END:VCALENDAR\r\n";
 
+  /**
+   * Uri-encoding was causing problems with java.net.URL building (specifically we would end up
+   * with URL's where the SchemeSpecificPart was "MAILTO%3Afoo%40bar.com")
+   */
+  @Test
+  void testUrisEncodeDecode() {
+    String mailtourl = "mailto:foobar@example.net";
+    String decoded = Uris.decode(mailtourl);
+    assertEquals(mailtourl, decoded, "Result of Decode");
+    String encoded = Uris.encode(mailtourl);
     /**
-     * Uri-encoding was causing problems with java.net.URL building (specifically we would end up
-     * with URL's where the SchemeSpecificPart was "MAILTO%3Afoo%40bar.com")
+     * This was failing on baseline ical4j-0.9.16 with:
+     * junit.framework.ComparisonFailure: Result of Encode expected:<mailto[:foobar@]example.net>
+     *                                                      but was:<mailto[%3Afoobar%40]example.net>
      */
-    @Test
-    public void testUrisEncodeDecode() {
-        String mailtourl = "mailto:foobar@example.net";
-        String decoded = Uris.decode(mailtourl);
-        Assert.assertEquals("Result of Decode", mailtourl, decoded);
-        String encoded = Uris.encode(mailtourl);
-        /**
-         * This was failing on baseline ical4j-0.9.16 with:
-         * junit.framework.ComparisonFailure: Result of Encode expected:<mailto[:foobar@]example.net>
-         *                                                      but was:<mailto[%3Afoobar%40]example.net>
-         */
-        Assert.assertEquals("Result of Encode", mailtourl, encoded);
-        mailtourl = "rubbishfoobar@example.net";
-        decoded = Uris.decode(mailtourl);
-        Assert.assertEquals("Result of Decode", mailtourl, decoded);
-        encoded = Uris.encode(mailtourl);
-        Assert.assertEquals("Result of Encode", mailtourl, encoded);
-    }
+    assertEquals(mailtourl, encoded, "Result of Encode");
+    mailtourl = "rubbishfoobar@example.net";
+    decoded = Uris.decode(mailtourl);
+    assertEquals(mailtourl, decoded, "Result of Decode");
+    encoded = Uris.encode(mailtourl);
+    assertEquals(mailtourl, encoded, "Result of Encode");
+  }
 
-    @Test
-    public void testMultiVCALENDAR() throws IOException, ParserException, ServiceException {
-        List<ZVCalendar> zvcals = doParse(multiVcalendar);
-        Assert.assertNotNull("List of ZVCalendar", zvcals);
-        Assert.assertEquals("Number of cals", 2,  zvcals.size());
-    }
+  @Test
+  void testMultiVCALENDAR() throws IOException, ParserException, ServiceException {
+    List<ZVCalendar> zvcals = doParse(multiVcalendar);
+    assertNotNull(zvcals, "List of ZVCalendar");
+    assertEquals(2,  zvcals.size(),  "Number of cals");
+  }
 
-    @Test
-    public void testTabWrappedLine() throws IOException, ParserException, ServiceException {
-        List<ZVCalendar> zvcals = doParse(wrappedWithTab);
-        Assert.assertNotNull("List of ZVCalendar", zvcals);
-        Assert.assertEquals("Number of cals", 1,  zvcals.size());
-    }
+  @Test
+  void testTabWrappedLine() throws IOException, ParserException, ServiceException {
+    List<ZVCalendar> zvcals = doParse(wrappedWithTab);
+    assertNotNull(zvcals, "List of ZVCalendar");
+    assertEquals(1,  zvcals.size(),  "Number of cals");
+  }
 
-    /**
-     * Bug 50398 - handling of empty CN parameter
-     * An empty CN parameter should not affect the value of a property. With unpatched ical4j-0.9.16 it did.
-     * It is acceptable to either drop the CN parameter or leave it as the empty string
-     */
-    @Test
-    public void testEmptyCN() throws IOException, ParserException, ServiceException {
-        List<ZVCalendar> zvcals = doParse(emptyCN);
-        Assert.assertNotNull("List of ZVCalendar", zvcals);
-        Assert.assertEquals("Number of cals", 1,  zvcals.size());
-        ZVCalendar zvcal = zvcals.get(0);
-        ZComponent vevent = zvcal.getComponent(ICalTok.VEVENT);
-        Assert.assertNotNull("VEVENT", vevent);
-        ZProperty orgProp = vevent.getProperty(ICalTok.ORGANIZER);
-        // With unpatched ical4j-0.9.16 value is ":test1@invalid.dom"
-        Assert.assertEquals("ORGANIZER value", "MAILTO:test1@invalid.dom", orgProp.getValue());
-        ZParameter orgCNparam = orgProp.getParameter(ICalTok.CN);
-        Assert.assertNotNull("ORGANIZER CN parameter", orgCNparam);
-        String cnValue = orgCNparam.getValue();
-        if (cnValue != null) {
-            // Note that with ical4j-0.9.16-patched, the value is null
-            Assert.assertEquals("ORGANIZER CN param value", "", cnValue);
-        }
+  /**
+   * Bug 50398 - handling of empty CN parameter
+   * An empty CN parameter should not affect the value of a property. With unpatched ical4j-0.9.16 it did.
+   * It is acceptable to either drop the CN parameter or leave it as the empty string
+   */
+  @Test
+  void testEmptyCN() throws IOException, ParserException, ServiceException {
+    List<ZVCalendar> zvcals = doParse(emptyCN);
+    assertNotNull(zvcals, "List of ZVCalendar");
+    assertEquals(1,  zvcals.size(),  "Number of cals");
+    ZVCalendar zvcal = zvcals.get(0);
+    ZComponent vevent = zvcal.getComponent(ICalTok.VEVENT);
+    assertNotNull(vevent, "VEVENT");
+    ZProperty orgProp = vevent.getProperty(ICalTok.ORGANIZER);
+    // With unpatched ical4j-0.9.16 value is ":test1@invalid.dom"
+    assertEquals("MAILTO:test1@invalid.dom", orgProp.getValue(), "ORGANIZER value");
+    ZParameter orgCNparam = orgProp.getParameter(ICalTok.CN);
+    assertNotNull(orgCNparam, "ORGANIZER CN parameter");
+    String cnValue = orgCNparam.getValue();
+    if (cnValue != null) {
+      // Note that with ical4j-0.9.16-patched, the value is null
+      assertEquals("", cnValue, "ORGANIZER CN param value");
     }
+  }
 
     public static List<ZVCalendar> doParse(String ical)
             throws IOException, ParserException, ServiceException {

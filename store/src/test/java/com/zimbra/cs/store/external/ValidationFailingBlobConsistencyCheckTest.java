@@ -5,10 +5,9 @@
 
 package com.zimbra.cs.store.external;
 
-import org.junit.After;
-
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.file.BlobConsistencyChecker;
+import org.junit.jupiter.api.AfterEach;
 
 public class ValidationFailingBlobConsistencyCheckTest extends ExternalBlobConsistencyCheckTest {
 
@@ -28,7 +27,7 @@ public class ValidationFailingBlobConsistencyCheckTest extends ExternalBlobConsi
         return super.getChecker();
     }
 
-    @After
+    @AfterEach
     @Override
     public void tearDown() throws Exception {
         storeManager.setFailOnValidate(false);

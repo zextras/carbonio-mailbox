@@ -162,13 +162,13 @@ public abstract class MimeVisitor {
      *  methods in for each visited node.
      * 
      * @param mp the root MIME part at which to start the traversal */
-    public synchronized final boolean accept(MimeMessage mm) throws MessagingException {
+    public final synchronized boolean accept(MimeMessage mm) throws MessagingException {
         return accept(mm, 0);
     }
 
     private static final int MAX_VISITOR_DEPTH = LC.zimbra_converter_depth_max.intValue();
 
-    private synchronized final boolean accept(MimePart mp, int depth) throws MessagingException {
+    private final synchronized boolean accept(MimePart mp, int depth) throws MessagingException {
         // do not recurse beyond a fixed depth
         if (depth >= MAX_VISITOR_DEPTH)
             return false;

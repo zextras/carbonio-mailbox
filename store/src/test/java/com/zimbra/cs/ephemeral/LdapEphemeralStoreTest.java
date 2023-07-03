@@ -4,15 +4,14 @@
 
 package com.zimbra.cs.ephemeral;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Provisioning;
@@ -32,87 +31,87 @@ public class LdapEphemeralStoreTest {
     private EphemeralStore store;
     private MockLdapHelper helper;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         helper = new MockLdapHelper();
         store = new LdapEphemeralStore(helper);
     }
 
-    @Test
-    public void testGet() throws Exception {
-        EphemeralKey key = new EphemeralKey("foo");
-        store.set(new EphemeralInput(key, "bar"), new TestLocation());
-        EphemeralResult result = store.get(key, new TestLocation());
-        assertEquals("bar", result.getValue());
-    }
+ @Test
+ void testGet() throws Exception {
+  EphemeralKey key = new EphemeralKey("foo");
+  store.set(new EphemeralInput(key, "bar"), new TestLocation());
+  EphemeralResult result = store.get(key, new TestLocation());
+  assertEquals("bar", result.getValue());
+ }
 
-    @Test
-    public void testSet() throws Exception {
-        EphemeralKey key = new EphemeralKey("foo");
-        store.set(new EphemeralInput(new EphemeralKey("foo"), "bar"), new TestLocation());
-        Map<String, Object> expected = makeMap("foo", "bar");
-        verifyAttrMap(expected);
-    }
+ @Test
+ void testSet() throws Exception {
+  EphemeralKey key = new EphemeralKey("foo");
+  store.set(new EphemeralInput(new EphemeralKey("foo"), "bar"), new TestLocation());
+  Map<String, Object> expected = makeMap("foo", "bar");
+  verifyAttrMap(expected);
+ }
 
-    @Test
-    public void testUpdate() throws Exception {
-        store.update(new EphemeralInput(new EphemeralKey("foo"), "bar"), new TestLocation());
-        Map<String, Object> expected = makeMap("+foo", "bar");
-        verifyAttrMap(expected);
-    }
+ @Test
+ void testUpdate() throws Exception {
+  store.update(new EphemeralInput(new EphemeralKey("foo"), "bar"), new TestLocation());
+  Map<String, Object> expected = makeMap("+foo", "bar");
+  verifyAttrMap(expected);
+ }
 
-    @Test
-    public void testDelete() throws Exception {
-        //delete one value
-        EphemeralLocation location = new TestLocation();
-        store.set(new EphemeralInput(new EphemeralKey("foo"), "bar"), location);
-        helper.reset();
-        store.delete(new EphemeralKey("foo"), "bar", location);
-        Map<String, Object> expected = makeMap("-foo", "bar");
-        verifyAttrMap(expected);
-        helper.reset();
+ @Test
+ void testDelete() throws Exception {
+  //delete one value
+  EphemeralLocation location = new TestLocation();
+  store.set(new EphemeralInput(new EphemeralKey("foo"), "bar"), location);
+  helper.reset();
+  store.delete(new EphemeralKey("foo"), "bar", location);
+  Map<String, Object> expected = makeMap("-foo", "bar");
+  verifyAttrMap(expected);
+  helper.reset();
 
-        //delete one value from several
-        store.set(new EphemeralInput(new EphemeralKey("foo"), "bar"), location);
-        store.update(new EphemeralInput(new EphemeralKey("foo"), "baz"), location);
-        helper.reset();
-        store.delete(new EphemeralKey("foo"), "bar", location);
-        expected = makeMap("-foo", "bar");
-        verifyAttrMap(expected);
-    }
+  //delete one value from several
+  store.set(new EphemeralInput(new EphemeralKey("foo"), "bar"), location);
+  store.update(new EphemeralInput(new EphemeralKey("foo"), "baz"), location);
+  helper.reset();
+  store.delete(new EphemeralKey("foo"), "bar", location);
+  expected = makeMap("-foo", "bar");
+  verifyAttrMap(expected);
+ }
 
-    @Test
-    public void testExpiry() throws Exception {
-        EphemeralLocation location = new TestLocation();
-        EphemeralInput input = new EphemeralInput(new EphemeralKey("foo"), "bar");
-        input.setExpiration(new AbsoluteExpiration(1000L));
-        store.set(input, location);
-        input = new EphemeralInput(new EphemeralKey("foo", "1"), "bar");
-        input.setExpiration(new AbsoluteExpiration(1000L));
-        store.set(input, location);
-        input = new EphemeralInput(new EphemeralKey("foo", "2"), "bar");
-        input.setExpiration(new AbsoluteExpiration(1000L));
-        store.set(input, location);
-        helper.reset();
-        Thread.sleep(1500);
-        store.purgeExpired(new EphemeralKey("foo"), location);
-        Map<String, Object> expected = makeMap("-foo", "bar||1000", "bar|1|1000", "bar|2|1000");
-        verifyAttrMap(expected);
-    }
+ @Test
+ void testExpiry() throws Exception {
+  EphemeralLocation location = new TestLocation();
+  EphemeralInput input = new EphemeralInput(new EphemeralKey("foo"), "bar");
+  input.setExpiration(new AbsoluteExpiration(1000L));
+  store.set(input, location);
+  input = new EphemeralInput(new EphemeralKey("foo", "1"), "bar");
+  input.setExpiration(new AbsoluteExpiration(1000L));
+  store.set(input, location);
+  input = new EphemeralInput(new EphemeralKey("foo", "2"), "bar");
+  input.setExpiration(new AbsoluteExpiration(1000L));
+  store.set(input, location);
+  helper.reset();
+  Thread.sleep(1500);
+  store.purgeExpired(new EphemeralKey("foo"), location);
+  Map<String, Object> expected = makeMap("-foo", "bar||1000", "bar|1|1000", "bar|2|1000");
+  verifyAttrMap(expected);
+ }
 
-    @Test
-    public void testHasKey() throws Exception {
-        EphemeralLocation target = new TestLocation();
-        store.set(new EphemeralInput(new EphemeralKey("foo"), "bar"), target);
-        assertTrue(store.has(new EphemeralKey("foo"), target));
-    }
+ @Test
+ void testHasKey() throws Exception {
+  EphemeralLocation target = new TestLocation();
+  store.set(new EphemeralInput(new EphemeralKey("foo"), "bar"), target);
+  assertTrue(store.has(new EphemeralKey("foo"), target));
+ }
 
 
-    @Test
-    public void testInvalidTokens() throws Exception {
-        testInvalidToken(Provisioning.A_zimbraAuthTokens, "dynamicPart|null|value");
-        testInvalidToken(Provisioning.A_zimbraCsrfTokenData, "value:dynamicPart:null");
-    }
+ @Test
+ void testInvalidTokens() throws Exception {
+  testInvalidToken(Provisioning.A_zimbraAuthTokens, "dynamicPart|null|value");
+  testInvalidToken(Provisioning.A_zimbraCsrfTokenData, "value:dynamicPart:null");
+ }
 
     private void testInvalidToken(String attrName, String expected) throws Exception {
         EphemeralLocation target = new TestLocation();

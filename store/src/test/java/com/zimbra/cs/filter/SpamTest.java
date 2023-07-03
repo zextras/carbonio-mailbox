@@ -7,13 +7,12 @@ package com.zimbra.cs.filter;
 
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.SharedByteArrayInputStream;
-
-import junit.framework.Assert;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import com.zimbra.common.service.ServiceException;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
@@ -27,7 +26,7 @@ import com.zimbra.cs.util.JMSession;
  */
 public class SpamTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         MockProvisioning prov = new MockProvisioning();
@@ -37,29 +36,29 @@ public class SpamTest {
         config.setSpamWhitelistHeaderValue("YES");
     }
 
-    /**
-     * Tests whitelisting takes precedence over marking spam.
-     */
-    @Test
-    public void whitelist() throws Exception {
-        String raw = "From: sender@zimbra.com\n" +
-                "To: recipient@zimbra.com\n" +
-                "X-Spam-Flag: YES\n" +
-                "Subject: test\n" +
-                "\n" +
-                "Hello World.";
-        MimeMessage msg = new Mime.FixedMimeMessage(JMSession.getSession(), new SharedByteArrayInputStream(raw.getBytes()));
-        Assert.assertTrue(SpamHandler.isSpam(msg));
+ /**
+  * Tests whitelisting takes precedence over marking spam.
+  */
+ @Test
+ void whitelist() throws Exception {
+  String raw = "From: sender@zimbra.com\n" +
+    "To: recipient@zimbra.com\n" +
+    "X-Spam-Flag: YES\n" +
+    "Subject: test\n" +
+    "\n" +
+    "Hello World.";
+  MimeMessage msg = new Mime.FixedMimeMessage(JMSession.getSession(), new SharedByteArrayInputStream(raw.getBytes()));
+  assertTrue(SpamHandler.isSpam(msg));
 
-        // add a whitelist header to the previous message
-        raw = "From: sender@zimbra.com\n" +
-                "To: recipient@zimbra.com\n" +
-                "X-Whitelist-Flag: YES\n" +
-                "X-Spam-Flag: YES\n" +
-                "Subject: test\n" +
-                "\n" +
-                "Hello World.";
-        msg = new Mime.FixedMimeMessage(JMSession.getSession(), new SharedByteArrayInputStream(raw.getBytes()));
-        Assert.assertFalse(SpamHandler.isSpam(msg));
-    }
+  // add a whitelist header to the previous message
+  raw = "From: sender@zimbra.com\n" +
+    "To: recipient@zimbra.com\n" +
+    "X-Whitelist-Flag: YES\n" +
+    "X-Spam-Flag: YES\n" +
+    "Subject: test\n" +
+    "\n" +
+    "Hello World.";
+  msg = new Mime.FixedMimeMessage(JMSession.getSession(), new SharedByteArrayInputStream(raw.getBytes()));
+  assertFalse(SpamHandler.isSpam(msg));
+ }
 }

@@ -9,13 +9,14 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import com.google.common.io.ByteStreams;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
@@ -44,7 +45,7 @@ import qa.unittest.TestUtil;
  */
 public final class MessageTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
 
@@ -52,132 +53,132 @@ public final class MessageTest {
         prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void indexRawMimeMessage() throws Exception {
-        Account account = Provisioning.getInstance().getAccountById(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        account.setPrefMailDefaultCharset("ISO-2022-JP");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+ @Test
+ void indexRawMimeMessage() throws Exception {
+  Account account = Provisioning.getInstance().getAccountById(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  account.setPrefMailDefaultCharset("ISO-2022-JP");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-        byte[] raw = ByteStreams.toByteArray(getClass().getResourceAsStream("raw-jis-msg.txt"));
-        ParsedMessage pm = new ParsedMessage(raw, false);
-        Message message = mbox.addMessage(null, pm, dopt, null);
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+  byte[] raw = ByteStreams.toByteArray(getClass().getResourceAsStream("raw-jis-msg.txt"));
+  ParsedMessage pm = new ParsedMessage(raw, false);
+  Message message = mbox.addMessage(null, pm, dopt, null);
 
-        Assert.assertEquals("\u65e5\u672c\u8a9e", pm.getFragment(null));
-        List<IndexDocument> docs = message.generateIndexData();
-        Assert.assertEquals(2, docs.size());
-        String subject = docs.get(0).toDocument().get(LuceneFields.L_H_SUBJECT);
-        String body = docs.get(0).toDocument().get(LuceneFields.L_CONTENT);
-        Assert.assertEquals("\u65e5\u672c\u8a9e", subject);
-        Assert.assertEquals("\u65e5\u672c\u8a9e", body.trim());
-    }
+  assertEquals("\u65e5\u672c\u8a9e", pm.getFragment(null));
+  List<IndexDocument> docs = message.generateIndexData();
+  assertEquals(2, docs.size());
+  String subject = docs.get(0).toDocument().get(LuceneFields.L_H_SUBJECT);
+  String body = docs.get(0).toDocument().get(LuceneFields.L_CONTENT);
+  assertEquals("\u65e5\u672c\u8a9e", subject);
+  assertEquals("\u65e5\u672c\u8a9e", body.trim());
+ }
 
-    @Test
-    public void getSortRecipients() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        DeliveryOptions opt = new DeliveryOptions();
-        opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
-        Message msg1 = mbox.addMessage(null, new ParsedMessage(
-                "From: from1@zimbra.com\r\nTo: to1@zimbra.com".getBytes(), false), opt, null);
-        Message msg2 = mbox.addMessage(null, new ParsedMessage(
-                "From: from2@zimbra.com\r\nTo: to2 <to2@zimbra.com>".getBytes(), false), opt, null);
-        Message msg3 = mbox.addMessage(null, new ParsedMessage(
-                "From: from3@zimbra.com\r\nTo: to3-1 <to3-1@zimbra.com>, to3-2 <to3-2@zimbra.com>".getBytes(),
-                false), opt, null);
+ @Test
+ void getSortRecipients() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  DeliveryOptions opt = new DeliveryOptions();
+  opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
+  Message msg1 = mbox.addMessage(null, new ParsedMessage(
+    "From: from1@zimbra.com\r\nTo: to1@zimbra.com".getBytes(), false), opt, null);
+  Message msg2 = mbox.addMessage(null, new ParsedMessage(
+    "From: from2@zimbra.com\r\nTo: to2 <to2@zimbra.com>".getBytes(), false), opt, null);
+  Message msg3 = mbox.addMessage(null, new ParsedMessage(
+    "From: from3@zimbra.com\r\nTo: to3-1 <to3-1@zimbra.com>, to3-2 <to3-2@zimbra.com>".getBytes(),
+    false), opt, null);
 
-        Assert.assertEquals("to1@zimbra.com", msg1.getSortRecipients());
-        Assert.assertEquals("to2", msg2.getSortRecipients());
-        Assert.assertEquals("to3-1, to3-2", msg3.getSortRecipients());
+  assertEquals("to1@zimbra.com", msg1.getSortRecipients());
+  assertEquals("to2", msg2.getSortRecipients());
+  assertEquals("to3-1, to3-2", msg3.getSortRecipients());
 
-        DbConnection conn = DbPool.getConnection(mbox);
-        Assert.assertEquals("to1@zimbra.com", DbUtil.executeQuery(conn,
-                "SELECT recipients FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
-                mbox.getId(), msg1.getId()).getString(1));
-        Assert.assertEquals("to2", DbUtil.executeQuery(conn,
-                "SELECT recipients FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
-                mbox.getId(), msg2.getId()).getString(1));
-        Assert.assertEquals("to3-1, to3-2", DbUtil.executeQuery(conn,
-                "SELECT recipients FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
-                mbox.getId(), msg3.getId()).getString(1));
-        conn.closeQuietly();
-    }
+  DbConnection conn = DbPool.getConnection(mbox);
+  assertEquals("to1@zimbra.com", DbUtil.executeQuery(conn,
+    "SELECT recipients FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
+    mbox.getId(), msg1.getId()).getString(1));
+  assertEquals("to2", DbUtil.executeQuery(conn,
+    "SELECT recipients FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
+    mbox.getId(), msg2.getId()).getString(1));
+  assertEquals("to3-1, to3-2", DbUtil.executeQuery(conn,
+    "SELECT recipients FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
+    mbox.getId(), msg3.getId()).getString(1));
+  conn.closeQuietly();
+ }
 
-    @Test
-    @Ignore("Fix me. Assertions fails. Standard error: missing .platform")
-    public void moveOutOfSpam() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        mbox.getAccount().setJunkMessagesIndexingEnabled(false);
-        DeliveryOptions opt = new DeliveryOptions();
-        opt.setFolderId(Mailbox.ID_FOLDER_SPAM);
-        Message msg = mbox.addMessage(null, new ParsedMessage(
-                "From: spammer@zimbra.com\r\nTo: test@zimbra.com".getBytes(), false), opt, null);
-        MailboxTestUtil.index(mbox);
+ @Test
+ @Disabled("Fix me. Assertions fails. Standard error: missing .platform")
+ void moveOutOfSpam() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  mbox.getAccount().setJunkMessagesIndexingEnabled(false);
+  DeliveryOptions opt = new DeliveryOptions();
+  opt.setFolderId(Mailbox.ID_FOLDER_SPAM);
+  Message msg = mbox.addMessage(null, new ParsedMessage(
+    "From: spammer@zimbra.com\r\nTo: test@zimbra.com".getBytes(), false), opt, null);
+  MailboxTestUtil.index(mbox);
 
-        SearchParams params = new SearchParams();
-        params.setSortBy(SortBy.NONE);
-        params.setTypes(EnumSet.of(MailItem.Type.MESSAGE));
-        params.setQueryString("from:spammer");
-        ZimbraQueryResults result = mbox.index.search(SoapProtocol.Soap12, new OperationContext(mbox), params);
-        Assert.assertFalse(result.hasNext());
+  SearchParams params = new SearchParams();
+  params.setSortBy(SortBy.NONE);
+  params.setTypes(EnumSet.of(MailItem.Type.MESSAGE));
+  params.setQueryString("from:spammer");
+  ZimbraQueryResults result = mbox.index.search(SoapProtocol.Soap12, new OperationContext(mbox), params);
+  assertFalse(result.hasNext());
 
-        mbox.move(new OperationContext(mbox), msg.getId(), MailItem.Type.MESSAGE, Mailbox.ID_FOLDER_INBOX);
-        MailboxTestUtil.index(mbox);
+  mbox.move(new OperationContext(mbox), msg.getId(), MailItem.Type.MESSAGE, Mailbox.ID_FOLDER_INBOX);
+  MailboxTestUtil.index(mbox);
 
-        result = mbox.index.search(SoapProtocol.Soap12, new OperationContext(mbox), params);
-        Assert.assertTrue(result.hasNext());
-        Assert.assertEquals(msg.getId(), result.getNext().getItemId());
-    }
+  result = mbox.index.search(SoapProtocol.Soap12, new OperationContext(mbox), params);
+  assertTrue(result.hasNext());
+  assertEquals(msg.getId(), result.getNext().getItemId());
+ }
 
-    @Test
-    public void post() throws Exception {
-        // Create post.
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        DeliveryOptions opt = new DeliveryOptions();
-        opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
-        opt.setFlags(FlagInfo.POST.toBitmask());
-        Message msg = mbox.addMessage(null, new ParsedMessage(
-                "From: test@zimbra.com\r\nTo: test@zimbra.com".getBytes(), false), opt, null);
+ @Test
+ void post() throws Exception {
+  // Create post.
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  DeliveryOptions opt = new DeliveryOptions();
+  opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
+  opt.setFlags(FlagInfo.POST.toBitmask());
+  Message msg = mbox.addMessage(null, new ParsedMessage(
+    "From: test@zimbra.com\r\nTo: test@zimbra.com".getBytes(), false), opt, null);
 
-        // Validate flag.
-        Assert.assertTrue((msg.getFlagBitmask() & Flag.FlagInfo.POST.toBitmask()) != 0);
+  // Validate flag.
+  assertTrue((msg.getFlagBitmask() & Flag.FlagInfo.POST.toBitmask()) != 0);
 
-        // Search by flag.
-        List<Integer> ids = TestUtil.search(mbox, "tag:\\post", MailItem.Type.MESSAGE);
-        Assert.assertEquals(1, ids.size());
-        Assert.assertEquals(msg.getId(), ids.get(0).intValue());
+  // Search by flag.
+  List<Integer> ids = TestUtil.search(mbox, "tag:\\post", MailItem.Type.MESSAGE);
+  assertEquals(1, ids.size());
+  assertEquals(msg.getId(), ids.get(0).intValue());
 
-        // Make sure that the post flag is serialized to XML.
-        Element eMsg = ToXML.encodeMessageAsMIME(new XMLElement("test"), new ItemIdFormatter(), (OperationContext)null,
-                msg, (String)null /* part */, false /* mustInline */, false /* mustNotInline */,
-                false /* serializeType */, ToXML.NOTIFY_FIELDS);
+  // Make sure that the post flag is serialized to XML.
+  Element eMsg = ToXML.encodeMessageAsMIME(new XMLElement("test"), new ItemIdFormatter(), (OperationContext) null,
+    msg, (String) null /* part */, false /* mustInline */, false /* mustNotInline */,
+    false /* serializeType */, ToXML.NOTIFY_FIELDS);
 
-        Assert.assertEquals("^", eMsg.getAttribute(MailConstants.A_FLAGS));
+  assertEquals("^", eMsg.getAttribute(MailConstants.A_FLAGS));
 
-        // Try unsetting the post flag.
-        mbox.setTags(null, msg.getId(), MailItem.Type.MESSAGE, 0, null);
-        msg = mbox.getMessageById(null, msg.getId());
-        // make sure post flag is still set
-        Assert.assertTrue("POST flag set", (msg.getFlagBitmask() & Flag.FlagInfo.POST.toBitmask()) != 0);
-        Assert.assertEquals("IMAP UID should be same as ID", msg.getIdInMailbox(), msg.getImapUid());
-    }
+  // Try unsetting the post flag.
+  mbox.setTags(null, msg.getId(), MailItem.Type.MESSAGE, 0, null);
+  msg = mbox.getMessageById(null, msg.getId());
+  // make sure post flag is still set
+  assertTrue((msg.getFlagBitmask() & Flag.FlagInfo.POST.toBitmask()) != 0, "POST flag set");
+  assertEquals(msg.getIdInMailbox(), msg.getImapUid(), "IMAP UID should be same as ID");
+ }
 
-    @Test
-    public void msgToPost() throws Exception {
-        // Create msg.
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        DeliveryOptions opt = new DeliveryOptions();
-        opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
-        Message msg = mbox.addMessage(null, new ParsedMessage(
-                "From: test@zimbra.com\r\nTo: test@zimbra.com".getBytes(), false), opt, null);
-        // try setting the post flag
-        mbox.setTags(null, msg.getId(), MailItem.Type.MESSAGE, FlagInfo.POST.toBitmask(), null);
-        msg = mbox.getMessageById(null, msg.getId());
-        // make sure post flag is not set
-        Assert.assertTrue((msg.getFlagBitmask() & Flag.FlagInfo.POST.toBitmask()) == 0);
-    }
+ @Test
+ void msgToPost() throws Exception {
+  // Create msg.
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  DeliveryOptions opt = new DeliveryOptions();
+  opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
+  Message msg = mbox.addMessage(null, new ParsedMessage(
+    "From: test@zimbra.com\r\nTo: test@zimbra.com".getBytes(), false), opt, null);
+  // try setting the post flag
+  mbox.setTags(null, msg.getId(), MailItem.Type.MESSAGE, FlagInfo.POST.toBitmask(), null);
+  msg = mbox.getMessageById(null, msg.getId());
+  // make sure post flag is not set
+  assertEquals((msg.getFlagBitmask() & Flag.FlagInfo.POST.toBitmask()), 0);
+ }
 }

@@ -5,18 +5,15 @@
 
 package com.zimbra.cs.datasource;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.DataSource;
@@ -45,78 +42,78 @@ public class DataSourceManagerTest {
     private String CAL_DS_NAME = "TestCalDataSource";
     private String GAL_DS_NAME = "TestGALDataSource";
     
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
         Provisioning prov = Provisioning.getInstance();
         testAccount = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void testGetDataImportWithDefaultClass() throws ServiceException {
-        Map<String, Object> testAttrs = new HashMap<String, Object>();
-        testAttrs.put(Provisioning.A_zimbraDataSourceDomain, "zimbra.com");
-        testAttrs.put(Provisioning.A_zimbraDataSourcePort, "1234");
-        testAttrs.put(Provisioning.A_zimbraDataSourceHost, "localhost");
-        testAttrs.put(Provisioning.A_zimbraDataSourceUsername, "test");
-        testAttrs.put(Provisioning.A_zimbraDataSourcePassword, "test");
-        
-        DataSource ds = new DataSource(testAccount, DataSourceType.pop3, POP3_DS_NAME, POP3_DS_ID, testAttrs, null);
-        DataImport di = DataSourceManager.getInstance().getDataImport(ds);
-        assertNotNull("DataImport should not be NULL", di);
-        assertTrue("DataImport for 'pop3' should be Pop3Sync", di instanceof Pop3Sync);
+ @Test
+ void testGetDataImportWithDefaultClass() throws ServiceException {
+  Map<String, Object> testAttrs = new HashMap<String, Object>();
+  testAttrs.put(Provisioning.A_zimbraDataSourceDomain, "zimbra.com");
+  testAttrs.put(Provisioning.A_zimbraDataSourcePort, "1234");
+  testAttrs.put(Provisioning.A_zimbraDataSourceHost, "localhost");
+  testAttrs.put(Provisioning.A_zimbraDataSourceUsername, "test");
+  testAttrs.put(Provisioning.A_zimbraDataSourcePassword, "test");
 
-        ds = new DataSource(testAccount, DataSourceType.imap, IMAP_DS_NAME, IMAP_DS_ID, testAttrs, null);
-        di = DataSourceManager.getInstance().getDataImport(ds);
-        assertNotNull("DataImport should not be NULL", di);
-        assertTrue("DataImport for 'imap' should be ImapSync", di instanceof ImapSync);
+  DataSource ds = new DataSource(testAccount, DataSourceType.pop3, POP3_DS_NAME, POP3_DS_ID, testAttrs, null);
+  DataImport di = DataSourceManager.getInstance().getDataImport(ds);
+  assertNotNull(di, "DataImport should not be NULL");
+  assertTrue(di instanceof Pop3Sync, "DataImport for 'pop3' should be Pop3Sync");
 
-        ds = new DataSource(testAccount, DataSourceType.caldav, CALDAV_DS_NAME, CALDAV_DS_ID, testAttrs, null);
-        di = DataSourceManager.getInstance().getDataImport(ds);
-        assertNotNull("DataImport should not be NULL", di);
-        assertTrue("DataImport for 'caldav' should be CalDavDataImport", di instanceof CalDavDataImport);
+  ds = new DataSource(testAccount, DataSourceType.imap, IMAP_DS_NAME, IMAP_DS_ID, testAttrs, null);
+  di = DataSourceManager.getInstance().getDataImport(ds);
+  assertNotNull(di, "DataImport should not be NULL");
+  assertTrue(di instanceof ImapSync, "DataImport for 'imap' should be ImapSync");
 
-        ds = new DataSource(testAccount, DataSourceType.rss, RSS_DS_NAME, RSS_DS_ID, testAttrs, null);
-        di = DataSourceManager.getInstance().getDataImport(ds);
-        assertNotNull("DataImport should not be NULL", di);
-        assertTrue("DataImport for 'rss' should be RssImport", di instanceof RssImport);
+  ds = new DataSource(testAccount, DataSourceType.caldav, CALDAV_DS_NAME, CALDAV_DS_ID, testAttrs, null);
+  di = DataSourceManager.getInstance().getDataImport(ds);
+  assertNotNull(di, "DataImport should not be NULL");
+  assertTrue(di instanceof CalDavDataImport, "DataImport for 'caldav' should be CalDavDataImport");
 
-        ds = new DataSource(testAccount, DataSourceType.cal, CAL_DS_NAME, CAL_DS_ID, testAttrs, null);
-        di = DataSourceManager.getInstance().getDataImport(ds);
-        assertNotNull("DataImport should not be NULL", di);
-        assertTrue("DataImport for 'cal' should be RssImport", di instanceof RssImport);
+  ds = new DataSource(testAccount, DataSourceType.rss, RSS_DS_NAME, RSS_DS_ID, testAttrs, null);
+  di = DataSourceManager.getInstance().getDataImport(ds);
+  assertNotNull(di, "DataImport should not be NULL");
+  assertTrue(di instanceof RssImport, "DataImport for 'rss' should be RssImport");
 
-        ds = new DataSource(testAccount, DataSourceType.gal, GAL_DS_NAME, GAL_DS_ID, testAttrs, null);
-        di = DataSourceManager.getInstance().getDataImport(ds);
-        assertNotNull("DataImport should not be NULL", di);
-        assertTrue("DataImport for 'gal' should be GalImport", di instanceof GalImport);
-    }
+  ds = new DataSource(testAccount, DataSourceType.cal, CAL_DS_NAME, CAL_DS_ID, testAttrs, null);
+  di = DataSourceManager.getInstance().getDataImport(ds);
+  assertNotNull(di, "DataImport should not be NULL");
+  assertTrue(di instanceof RssImport, "DataImport for 'cal' should be RssImport");
 
-    @Test
-    public void testGetDataImportClass() throws ServiceException {
-        Map<String, Object> testAttrs = new HashMap<String, Object>();
-        testAttrs.put(Provisioning.A_zimbraDataSourceDomain, "zimbra.com");
-        testAttrs.put(Provisioning.A_zimbraDataSourceImportClassName, "com.zimbra.cs.datasource.DataSourceManagerTest.TestDSImport");
-        DataSource ds = new DataSource(testAccount, DataSourceType.unknown, OAUTH_DS_NAME, OAUTH_DS_ID, testAttrs, null);
-        assertNotNull("DataSource should not be NULL", ds);
-        DataImport di = DataSourceManager.getInstance().getDataImport(ds);
-        assertNull("should not be able to instantiate non existent DataImport class", di);
+  ds = new DataSource(testAccount, DataSourceType.gal, GAL_DS_NAME, GAL_DS_ID, testAttrs, null);
+  di = DataSourceManager.getInstance().getDataImport(ds);
+  assertNotNull(di, "DataImport should not be NULL");
+  assertTrue(di instanceof GalImport, "DataImport for 'gal' should be GalImport");
+ }
 
-        testAttrs.put(Provisioning.A_zimbraDataSourceImportClassName, "com.zimbra.cs.gal.GalImport");
-        ds = new DataSource(testAccount, DataSourceType.unknown, OAUTH_DS_NAME, OAUTH_DS_ID, testAttrs, null);
-        assertNotNull("DataSource should not be NULL", ds);
-        di = DataSourceManager.getInstance().getDataImport(ds);
-        assertNotNull("DataImport should not be NULL", di);
-        assertTrue("DataImport for 'unknown' should be GalImport", di instanceof GalImport);
-    }
+ @Test
+ void testGetDataImportClass() throws ServiceException {
+  Map<String, Object> testAttrs = new HashMap<String, Object>();
+  testAttrs.put(Provisioning.A_zimbraDataSourceDomain, "zimbra.com");
+  testAttrs.put(Provisioning.A_zimbraDataSourceImportClassName, "com.zimbra.cs.datasource.DataSourceManagerTest.TestDSImport");
+  DataSource ds = new DataSource(testAccount, DataSourceType.unknown, OAUTH_DS_NAME, OAUTH_DS_ID, testAttrs, null);
+  assertNotNull(ds, "DataSource should not be NULL");
+  DataImport di = DataSourceManager.getInstance().getDataImport(ds);
+  assertNull(di, "should not be able to instantiate non existent DataImport class");
+
+  testAttrs.put(Provisioning.A_zimbraDataSourceImportClassName, "com.zimbra.cs.gal.GalImport");
+  ds = new DataSource(testAccount, DataSourceType.unknown, OAUTH_DS_NAME, OAUTH_DS_ID, testAttrs, null);
+  assertNotNull(ds, "DataSource should not be NULL");
+  di = DataSourceManager.getInstance().getDataImport(ds);
+  assertNotNull(di, "DataImport should not be NULL");
+  assertTrue(di instanceof GalImport, "DataImport for 'unknown' should be GalImport");
+ }
  }

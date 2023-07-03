@@ -5,117 +5,120 @@
 
 package com.zimbra.common.util;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.MethodRule;
-import org.junit.rules.TestName;
+import java.lang.reflect.Method;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 
 public class UnmodifiableBloomFilterTest {
 
-    @Rule public TestName testName = new TestName();
-    @Rule public MethodRule watchman = new ZTestWatchman();
+     public String testName;
+    
   protected static UnmodifiableBloomFilter<String> bloomFilter =
       UnmodifiableBloomFilter.createFilterFromFile("src/test/resources/common-passwords.txt");
 
-    @Before
-    public void setUp() {
-        assertTrue(bloomFilter.isInitialized());
-        assertFalse(bloomFilter.isDisabled());
+  @BeforeEach
+  public void setUp(TestInfo testInfo) {
+    Optional<Method> testMethod = testInfo.getTestMethod();
+    if (testMethod.isPresent()) {
+      this.testName = testMethod.get().getName();
     }
+    assertTrue(bloomFilter.isInitialized());
+    assertFalse(bloomFilter.isDisabled());
+  }
 
-    @Test
-    public void testMightContain() {
-        assertTrue(bloomFilter.isInitialized());
-        assertTrue(bloomFilter.mightContain("test123"));
-        assertTrue(bloomFilter.mightContain("hunter2"));
-    }
+  @Test
+  void testMightContain() {
+    assertTrue(bloomFilter.isInitialized());
+    assertTrue(bloomFilter.mightContain("test123"));
+    assertTrue(bloomFilter.mightContain("hunter2"));
+  }
 
-    @Test
-    public void testMightContainFalse() {
-        assertTrue(bloomFilter.isInitialized());
-        assertFalse(bloomFilter.mightContain("not-in-the-test-file"));
-    }
+  @Test
+  void testMightContainFalse() {
+    assertTrue(bloomFilter.isInitialized());
+    assertFalse(bloomFilter.mightContain("not-in-the-test-file"));
+  }
 
-    @Test
-    public void testCreateFilterFromMissingFile() {
+  @Test
+  void testCreateFilterFromMissingFile() {
     UnmodifiableBloomFilter<String> missingFileFilter =
         UnmodifiableBloomFilter.createFilterFromFile("src/test/resources/fake-file-not-found");
-        // expect to immediately initialize
-        assertTrue(missingFileFilter.isInitialized());
-        assertTrue(missingFileFilter.isDisabled());
-        assertFalse(missingFileFilter.mightContain("test123"));
-    }
+    // expect to immediately initialize
+    assertTrue(missingFileFilter.isInitialized());
+    assertTrue(missingFileFilter.isDisabled());
+    assertFalse(missingFileFilter.mightContain("test123"));
+  }
 
-    @Test
-    public void testCreateFilterFromEmptySpecifiedFile() {
-        UnmodifiableBloomFilter<String> noFileFilter = UnmodifiableBloomFilter
-            .createFilterFromFile("");
-        // expect to immediately consider empty file as initialized
-        assertTrue(noFileFilter.isInitialized());
-        assertTrue(noFileFilter.isDisabled());
-        assertFalse(noFileFilter.mightContain("test123"));
-    }
+  @Test
+  void testCreateFilterFromEmptySpecifiedFile() {
+    UnmodifiableBloomFilter<String> noFileFilter = UnmodifiableBloomFilter
+        .createFilterFromFile("");
+    // expect to immediately consider empty file as initialized
+    assertTrue(noFileFilter.isInitialized());
+    assertTrue(noFileFilter.isDisabled());
+    assertFalse(noFileFilter.mightContain("test123"));
+  }
 
-    @Test
-    public void testCreateFilterFromNullSpecifiedFile() {
-        UnmodifiableBloomFilter<String> noFileFilter = UnmodifiableBloomFilter
-            .createFilterFromFile(null);
-        // expect to immediately consider null file as initialized
-        assertTrue(noFileFilter.isInitialized());
-        assertTrue(noFileFilter.isDisabled());
-        assertFalse(noFileFilter.mightContain("test123"));
-    }
+  @Test
+  void testCreateFilterFromNullSpecifiedFile() {
+    UnmodifiableBloomFilter<String> noFileFilter = UnmodifiableBloomFilter
+        .createFilterFromFile(null);
+    // expect to immediately consider null file as initialized
+    assertTrue(noFileFilter.isInitialized());
+    assertTrue(noFileFilter.isDisabled());
+    assertFalse(noFileFilter.mightContain("test123"));
+  }
 
-    @Test
-    public void testMightContainLazyLoad() {
+  @Test
+  void testMightContainLazyLoad() {
     UnmodifiableBloomFilter<String> lazyFilter =
         UnmodifiableBloomFilter.createLazyFilterFromFile(
             "src/test/resources/common-passwords.txt");
-        // expect to initialize on demand
-        assertFalse(lazyFilter.isInitialized());
-        assertFalse(lazyFilter.isDisabled());
-        assertTrue(lazyFilter.mightContain("test123"));
-        assertTrue(lazyFilter.mightContain("hunter2"));
-        assertTrue(lazyFilter.isInitialized());
-        assertFalse(lazyFilter.isDisabled());
-    }
+    // expect to initialize on demand
+    assertFalse(lazyFilter.isInitialized());
+    assertFalse(lazyFilter.isDisabled());
+    assertTrue(lazyFilter.mightContain("test123"));
+    assertTrue(lazyFilter.mightContain("hunter2"));
+    assertTrue(lazyFilter.isInitialized());
+    assertFalse(lazyFilter.isDisabled());
+  }
 
-    @Test
-    public void testCreateLazyFilterFromMissingFile() {
+  @Test
+  void testCreateLazyFilterFromMissingFile() {
     UnmodifiableBloomFilter<String> missingFileFilter =
         UnmodifiableBloomFilter.createLazyFilterFromFile("src/test/resources/fake-file-not-found");
-        // expect to initialize on demand
-        assertFalse(missingFileFilter.isInitialized());
-        assertFalse(missingFileFilter.mightContain("test123"));
-        assertTrue(missingFileFilter.isInitialized());
-        // file not found results in disabled instance
-        assertTrue(missingFileFilter.isDisabled());
-    }
+    // expect to initialize on demand
+    assertFalse(missingFileFilter.isInitialized());
+    assertFalse(missingFileFilter.mightContain("test123"));
+    assertTrue(missingFileFilter.isInitialized());
+    // file not found results in disabled instance
+    assertTrue(missingFileFilter.isDisabled());
+  }
 
-    @Test
-    public void testCreateLazyFilterFromEmptySpecifiedFile() {
-        UnmodifiableBloomFilter<String> noFileFilter = UnmodifiableBloomFilter
-            .createLazyFilterFromFile("");
-        // expect to immediately consider empty file as initialized
-        assertTrue(noFileFilter.isInitialized());
-        assertTrue(noFileFilter.isDisabled());
-        assertFalse(noFileFilter.mightContain("test123"));
-    }
+  @Test
+  void testCreateLazyFilterFromEmptySpecifiedFile() {
+    UnmodifiableBloomFilter<String> noFileFilter = UnmodifiableBloomFilter
+        .createLazyFilterFromFile("");
+    // expect to immediately consider empty file as initialized
+    assertTrue(noFileFilter.isInitialized());
+    assertTrue(noFileFilter.isDisabled());
+    assertFalse(noFileFilter.mightContain("test123"));
+  }
 
-    @Test
-    public void testCreateLazyFilterFromNullSpecifiedFile() {
-        UnmodifiableBloomFilter<String> noFileFilter = UnmodifiableBloomFilter
-            .createLazyFilterFromFile(null);
-        // expect to immediately consider null file as initialized
-        assertTrue(noFileFilter.isInitialized());
-        assertTrue(noFileFilter.isDisabled());
-        assertFalse(noFileFilter.mightContain("test123"));
-    }
+  @Test
+  void testCreateLazyFilterFromNullSpecifiedFile() {
+    UnmodifiableBloomFilter<String> noFileFilter = UnmodifiableBloomFilter
+        .createLazyFilterFromFile(null);
+    // expect to immediately consider null file as initialized
+    assertTrue(noFileFilter.isInitialized());
+    assertTrue(noFileFilter.isDisabled());
+    assertFalse(noFileFilter.mightContain("test123"));
+  }
 
 }
 

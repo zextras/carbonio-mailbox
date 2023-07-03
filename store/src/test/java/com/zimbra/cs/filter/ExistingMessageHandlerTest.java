@@ -8,12 +8,13 @@ package com.zimbra.cs.filter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.cs.account.Account;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.jsieve.ActionFlag;
@@ -35,33 +36,33 @@ import com.zimbra.cs.service.util.ItemId;
  */
 public final class ExistingMessageHandlerTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
         prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void existing() throws Exception {
-        Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        RuleManager.clearCachedRules(account);
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-        OperationContext octx = new OperationContext(mbox);
-        Message msg = mbox.addMessage(octx,
-                new ParsedMessage("From: sender@zimbra.com\nTo: test@zimbra.com\nSubject: test".getBytes(), false),
-                new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_PRIORITY),
-                new DeliveryContext());
+ @Test
+ void existing() throws Exception {
+  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  RuleManager.clearCachedRules(account);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+  OperationContext octx = new OperationContext(mbox);
+  Message msg = mbox.addMessage(octx,
+    new ParsedMessage("From: sender@zimbra.com\nTo: test@zimbra.com\nSubject: test".getBytes(), false),
+    new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_PRIORITY),
+    new DeliveryContext());
 
-        Folder f = mbox.createFolder(null, "test", new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
-        ExistingMessageHandler handler = new ExistingMessageHandler(octx, mbox, msg.getId(), (int) msg.getSize());
-        ItemId newMsgItemId = handler.fileInto("test", new ArrayList<ActionFlag>(), new String[0]);
-        Message newMsg = mbox.getMessageById(octx, newMsgItemId.getId());
-        Assert.assertEquals(msg.getFolderId(), Integer.parseInt(newMsg.getUnderlyingData().getPrevFolders().split(":")[1]));
-    }
+  Folder f = mbox.createFolder(null, "test", new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
+  ExistingMessageHandler handler = new ExistingMessageHandler(octx, mbox, msg.getId(), (int) msg.getSize());
+  ItemId newMsgItemId = handler.fileInto("test", new ArrayList<ActionFlag>(), new String[0]);
+  Message newMsg = mbox.getMessageById(octx, newMsgItemId.getId());
+  assertEquals(msg.getFolderId(), Integer.parseInt(newMsg.getUnderlyingData().getPrevFolders().split(":")[1]));
+ }
 }

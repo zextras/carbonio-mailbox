@@ -6,13 +6,12 @@
 package com.zimbra.cs.util;
 
 import java.util.HashMap;
-
-import junit.framework.Assert;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import com.zimbra.common.localconfig.LC;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
@@ -26,7 +25,7 @@ import com.zimbra.cs.service.util.ParseMailboxID;
  */
 public class ParseMailboxIDTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         LC.zimbra_attrs_directory.setDefault(MailboxTestUtil.getZimbraServerDir("") + "conf/attrs");
@@ -35,76 +34,76 @@ public class ParseMailboxIDTest {
         Provisioning.setInstance(prov);
     }
 
-    @Test
-    public void parseLocalMailboxId() throws Exception {
-        ParseMailboxID id = ParseMailboxID.parse("1");
-        Assert.assertTrue(id.isLocal());
-        Assert.assertNull(id.getServer());
-        Assert.assertEquals(1, id.getMailboxId());
-        Assert.assertFalse(id.isAllMailboxIds());
-        Assert.assertFalse(id.isAllServers());
-        Assert.assertNull(id.getAccount());
-    }
+ @Test
+ void parseLocalMailboxId() throws Exception {
+  ParseMailboxID id = ParseMailboxID.parse("1");
+  assertTrue(id.isLocal());
+  assertNull(id.getServer());
+  assertEquals(1, id.getMailboxId());
+  assertFalse(id.isAllMailboxIds());
+  assertFalse(id.isAllServers());
+  assertNull(id.getAccount());
+ }
 
-    @Test
-    public void parseEmail() throws Exception {
-        ParseMailboxID id = ParseMailboxID.parse("test@zimbra.com");
-        Assert.assertTrue(id.isLocal());
-        Assert.assertEquals("localhost", id.getServer());
-        Assert.assertEquals(0, id.getMailboxId());
-        Assert.assertFalse(id.isAllMailboxIds());
-        Assert.assertFalse(id.isAllServers());
-        Assert.assertEquals(Provisioning.getInstance().getAccountByName("test@zimbra.com"), id.getAccount());
-    }
+ @Test
+ void parseEmail() throws Exception {
+  ParseMailboxID id = ParseMailboxID.parse("test@zimbra.com");
+  assertTrue(id.isLocal());
+  assertEquals("localhost", id.getServer());
+  assertEquals(0, id.getMailboxId());
+  assertFalse(id.isAllMailboxIds());
+  assertFalse(id.isAllServers());
+  assertEquals(Provisioning.getInstance().getAccountByName("test@zimbra.com"), id.getAccount());
+ }
 
-    @Test
-    public void parseAccountId() throws Exception {
-        ParseMailboxID id = ParseMailboxID.parse(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        Assert.assertTrue(id.isLocal());
-        Assert.assertEquals("localhost", id.getServer());
-        Assert.assertEquals(0, id.getMailboxId());
-        Assert.assertFalse(id.isAllMailboxIds());
-        Assert.assertFalse(id.isAllServers());
-        Assert.assertEquals(Provisioning.getInstance().getAccountByName("test@zimbra.com"), id.getAccount());
-    }
+ @Test
+ void parseAccountId() throws Exception {
+  ParseMailboxID id = ParseMailboxID.parse(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  assertTrue(id.isLocal());
+  assertEquals("localhost", id.getServer());
+  assertEquals(0, id.getMailboxId());
+  assertFalse(id.isAllMailboxIds());
+  assertFalse(id.isAllServers());
+  assertEquals(Provisioning.getInstance().getAccountByName("test@zimbra.com"), id.getAccount());
+ }
 
-    @Test
-    public void parseMailboxId() throws Exception {
-        ParseMailboxID id = ParseMailboxID.parse("/localhost/1");
-        Assert.assertTrue(id.isLocal());
-        Assert.assertEquals("localhost", id.getServer());
-        Assert.assertEquals(1, id.getMailboxId());
-        Assert.assertFalse(id.isAllMailboxIds());
-        Assert.assertFalse(id.isAllServers());
-        Assert.assertNull(id.getAccount());
+ @Test
+ void parseMailboxId() throws Exception {
+  ParseMailboxID id = ParseMailboxID.parse("/localhost/1");
+  assertTrue(id.isLocal());
+  assertEquals("localhost", id.getServer());
+  assertEquals(1, id.getMailboxId());
+  assertFalse(id.isAllMailboxIds());
+  assertFalse(id.isAllServers());
+  assertNull(id.getAccount());
 
-        try {
-            ParseMailboxID.parse("localhost*/3");
-            Assert.fail();
-        } catch (ServiceException expected) {
-        }
-    }
+  try {
+   ParseMailboxID.parse("localhost*/3");
+   fail();
+  } catch (ServiceException expected) {
+  }
+ }
 
-    @Test
-    public void parseAllServers() throws Exception {
-        ParseMailboxID id = ParseMailboxID.parse("*");
-        Assert.assertFalse(id.isLocal());
-        Assert.assertEquals("*", id.getServer());
-        Assert.assertEquals(0, id.getMailboxId());
-        Assert.assertTrue(id.isAllMailboxIds());
-        Assert.assertTrue(id.isAllServers());
-        Assert.assertNull(id.getAccount());
-    }
+ @Test
+ void parseAllServers() throws Exception {
+  ParseMailboxID id = ParseMailboxID.parse("*");
+  assertFalse(id.isLocal());
+  assertEquals("*", id.getServer());
+  assertEquals(0, id.getMailboxId());
+  assertTrue(id.isAllMailboxIds());
+  assertTrue(id.isAllServers());
+  assertNull(id.getAccount());
+ }
 
-    @Test
-    public void parseAllMailboxes() throws Exception {
-        ParseMailboxID id = ParseMailboxID.parse("/localhost/*");
-        Assert.assertTrue(id.isLocal());
-        Assert.assertEquals("localhost", id.getServer());
-        Assert.assertEquals(0, id.getMailboxId());
-        Assert.assertTrue(id.isAllMailboxIds());
-        Assert.assertFalse(id.isAllServers());
-        Assert.assertNull(id.getAccount());
-    }
+ @Test
+ void parseAllMailboxes() throws Exception {
+  ParseMailboxID id = ParseMailboxID.parse("/localhost/*");
+  assertTrue(id.isLocal());
+  assertEquals("localhost", id.getServer());
+  assertEquals(0, id.getMailboxId());
+  assertTrue(id.isAllMailboxIds());
+  assertFalse(id.isAllServers());
+  assertNull(id.getAccount());
+ }
 
 }

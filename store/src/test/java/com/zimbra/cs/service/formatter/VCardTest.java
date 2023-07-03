@@ -8,10 +8,12 @@ package com.zimbra.cs.service.formatter;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ListMultimap;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.dav.resource.AddressObject;
@@ -29,12 +31,12 @@ public final class VCardTest {
             "EMAIL:foo@bar.con\n" +
             "EMAIL:bar@goo.com\nN:doe;john;\\;\\\\;dr.;;;;\nEND:VCARD\n";
 
-    @Test
-    public void oddVCard1() throws Exception {
-        List<VCard> cards = VCard.parseVCard(oddities);
-        Assert.assertNotNull("List of cards", cards);
-        Assert.assertEquals("Number of cards", 1, cards.size());
-    }
+ @Test
+ void oddVCard1() throws Exception {
+  List<VCard> cards = VCard.parseVCard(oddities);
+  assertNotNull(cards, "List of cards");
+  assertEquals(1, cards.size(), "Number of cards");
+ }
 
     private static String encodings = "BEGIN:VCARD\r\n" +
             "\r\n" +
@@ -46,24 +48,26 @@ public final class VCardTest {
             "NOTE;QUOTED-PRINTABLE:foo=3Dbar\n" +
             "c.D.e.NOTE;ENCODING=B;charset=iso-8859-1:SWYgeW91IGNhbiByZWFkIHRoaXMgeW8=\n" +
             "END:VCARD\n";
-    @Test
-    public void oddVCard2() throws ServiceException {
-        List<VCard> cards = VCard.parseVCard(encodings);
-        Assert.assertNotNull("List of cards", cards);
-        Assert.assertEquals("Number of cards", 1, cards.size());
-    }
+
+ @Test
+ void oddVCard2() throws ServiceException {
+  List<VCard> cards = VCard.parseVCard(encodings);
+  assertNotNull(cards, "List of cards");
+  assertEquals(1, cards.size(), "Number of cards");
+ }
 
     private static String multicards =
                 "BEGIN : VCARD\n" +
                 "FN\n" +
                 " :john doe\\, jr.\nAGENT:\\nBEGIN:VCARD\\nEND:VCARD\n" +
                 "END:VCARD";
-    @Test
-    public void oddVCard3() throws ServiceException {
-        List<VCard> cards = VCard.parseVCard(multicards);
-        Assert.assertNotNull("List of cards", cards);
-        Assert.assertEquals("Number of cards", 1, cards.size());
-    }
+
+ @Test
+ void oddVCard3() throws ServiceException {
+  List<VCard> cards = VCard.parseVCard(multicards);
+  assertNotNull(cards, "List of cards");
+  assertEquals(1, cards.size(), "Number of cards");
+ }
 
     private static String wasCommentedOutInVCardMain =
             "BEGIN:VCARD\r\n" +
@@ -74,16 +78,17 @@ public final class VCardTest {
             ".:?\n" +
             ":\n" +
             "END:VCARD\n";
-    @Test
-    public void invalidVCard1() {
-        try {
-            VCard.parseVCard(wasCommentedOutInVCardMain);
-            Assert.fail("Expected PARSE_ERROR");
-        } catch (ServiceException e) {
-            Assert.assertTrue(String.format("Should start with parse error: [%s]", e.getMessage()),
-                    e.getMessage().startsWith("parse error:"));
-        }
-    }
+
+ @Test
+ void invalidVCard1() {
+  try {
+   VCard.parseVCard(wasCommentedOutInVCardMain);
+   fail("Expected PARSE_ERROR");
+  } catch (ServiceException e) {
+   assertTrue(e.getMessage().startsWith("parse error:"),
+     String.format("Should start with parse error: [%s]", e.getMessage()));
+  }
+ }
 
     private static String multiX =
             "BEGIN:VCARD\r\n" +
@@ -92,18 +97,18 @@ public final class VCardTest {
             "X-FOO:two\r\n" +
             "END:VCARD\r\n";
 
-    @Test
-    public void multiX() throws ServiceException {
-        List<VCard> cards = VCard.parseVCard(multiX);
-        Assert.assertNotNull("List of cards", cards);
-        Assert.assertEquals("Number of cards", 1, cards.size());
-        VCard vcard = cards.get(0);
-        String xprops = vcard.fields.get(ContactConstants.A_vCardXProps);
-        ListMultimap<String, VCardParamsAndValue> unknowns = Contact.decodeUnknownVCardProps(xprops);
-        Assert.assertEquals(String.format("Number of unknown properties in %s", unknowns), 2, unknowns.size());
-        List<VCardParamsAndValue> xfoos = unknowns.get("X-FOO");
-        Assert.assertEquals(String.format("Number of X-FOO properties in %s", xfoos), 2, xfoos.size());
-    }
+ @Test
+ void multiX() throws ServiceException {
+  List<VCard> cards = VCard.parseVCard(multiX);
+  assertNotNull(cards, "List of cards");
+  assertEquals(1, cards.size(), "Number of cards");
+  VCard vcard = cards.get(0);
+  String xprops = vcard.fields.get(ContactConstants.A_vCardXProps);
+  ListMultimap<String, VCardParamsAndValue> unknowns = Contact.decodeUnknownVCardProps(xprops);
+  assertEquals(2, unknowns.size(), String.format("Number of unknown properties in %s", unknowns));
+  List<VCardParamsAndValue> xfoos = unknowns.get("X-FOO");
+  assertEquals(2, xfoos.size(), String.format("Number of X-FOO properties in %s", xfoos));
+ }
 
     private static String multiX2 =
             "BEGIN:VCARD\r\n" +
@@ -111,18 +116,18 @@ public final class VCardTest {
             "X-FOO:one,two\r\n" +
             "END:VCARD\r\n";
 
-    @Test
-    public void multiX2() throws ServiceException {
-        List<VCard> cards = VCard.parseVCard(multiX2);
-        Assert.assertNotNull("List of cards", cards);
-        Assert.assertEquals("Number of cards", 1, cards.size());
-        VCard vcard = cards.get(0);
-        String xprops = vcard.fields.get(ContactConstants.A_vCardXProps);
-        ListMultimap<String, VCardParamsAndValue> unknowns = Contact.decodeUnknownVCardProps(xprops);
-        Assert.assertEquals(String.format("Number of unknown properties in %s", unknowns), 1, unknowns.size());
-        List<VCardParamsAndValue> xfoos = unknowns.get("X-FOO");
-        Assert.assertEquals(String.format("Number of X-FOO properties in %s", xfoos), 1, xfoos.size());
-    }
+ @Test
+ void multiX2() throws ServiceException {
+  List<VCard> cards = VCard.parseVCard(multiX2);
+  assertNotNull(cards, "List of cards");
+  assertEquals(1, cards.size(), "Number of cards");
+  VCard vcard = cards.get(0);
+  String xprops = vcard.fields.get(ContactConstants.A_vCardXProps);
+  ListMultimap<String, VCardParamsAndValue> unknowns = Contact.decodeUnknownVCardProps(xprops);
+  assertEquals(1, unknowns.size(), String.format("Number of unknown properties in %s", unknowns));
+  List<VCardParamsAndValue> xfoos = unknowns.get("X-FOO");
+  assertEquals(1, xfoos.size(), String.format("Number of X-FOO properties in %s", xfoos));
+ }
 
     private static String multiXwithParams =
             "BEGIN:VCARD\r\n" +
@@ -133,44 +138,44 @@ public final class VCardTest {
             "NON-STANDARD;PARAMETER=pValue:this is fun\r\n" +
             "END:VCARD\r\n";
 
-    @Test
-    public void multiXwithParams() throws ServiceException {
-        List<VCard> cards = VCard.parseVCard(multiXwithParams);
-        Assert.assertNotNull("List of cards", cards);
-        Assert.assertEquals("Number of cards", 1, cards.size());
-        VCard vcard = cards.get(0);
-        String outCard = vcard.getFormatted();
-        Assert.assertEquals("Round tripped card", multiXwithParams, outCard);
-        String xprops = vcard.fields.get(ContactConstants.A_vCardXProps);
-        ListMultimap<String, VCardParamsAndValue> xp = Contact.decodeUnknownVCardProps(xprops);
-        Assert.assertEquals(String.format("Number of unknown properties in %s", xp), 4, xp.size());
-        List<VCardParamsAndValue> xfoos = xp.get("X-FOO");
-        Assert.assertEquals("Number of xfoos ", 3, xfoos.size());
-        VCardParamsAndValue pandv = xfoos.get(0);
-        Assert.assertEquals("first x-foo value", "one", pandv.getValue());
-        Set<String> params = pandv.getParams();
-        Assert.assertEquals("first x-foo Number of params ", 2, params.size());
-        Assert.assertTrue("first x-foo params contains P1=A", params.contains("P1=A"));
-        Assert.assertTrue("first x-foo params contains P2=B", params.contains("P2=B"));
-        pandv = xfoos.get(1);
-        Assert.assertEquals("2nd x-foo value", "two", pandv.getValue());
-        params = pandv.getParams();
-        Assert.assertEquals("2nd x-foo Number of params ", 1, params.size());
-        Assert.assertTrue("2nd x-foo params contains P3=C", params.contains("P3=C"));
-        pandv = xfoos.get(2);
-        Assert.assertEquals("3rd x-foo value", "three", pandv.getValue());
-        params = pandv.getParams();
-        Assert.assertEquals("3rd x-foo Number of params ", 0, params.size());
+ @Test
+ void multiXwithParams() throws ServiceException {
+  List<VCard> cards = VCard.parseVCard(multiXwithParams);
+  assertNotNull(cards, "List of cards");
+  assertEquals(1, cards.size(), "Number of cards");
+  VCard vcard = cards.get(0);
+  String outCard = vcard.getFormatted();
+  assertEquals(multiXwithParams, outCard, "Round tripped card");
+  String xprops = vcard.fields.get(ContactConstants.A_vCardXProps);
+  ListMultimap<String, VCardParamsAndValue> xp = Contact.decodeUnknownVCardProps(xprops);
+  assertEquals(4, xp.size(), String.format("Number of unknown properties in %s", xp));
+  List<VCardParamsAndValue> xfoos = xp.get("X-FOO");
+  assertEquals(3, xfoos.size(), "Number of xfoos ");
+  VCardParamsAndValue pandv = xfoos.get(0);
+  assertEquals("one", pandv.getValue(), "first x-foo value");
+  Set<String> params = pandv.getParams();
+  assertEquals(2, params.size(), "first x-foo Number of params ");
+  assertTrue(params.contains("P1=A"), "first x-foo params contains P1=A");
+  assertTrue(params.contains("P2=B"), "first x-foo params contains P2=B");
+  pandv = xfoos.get(1);
+  assertEquals("two", pandv.getValue(), "2nd x-foo value");
+  params = pandv.getParams();
+  assertEquals(1, params.size(), "2nd x-foo Number of params ");
+  assertTrue(params.contains("P3=C"), "2nd x-foo params contains P3=C");
+  pandv = xfoos.get(2);
+  assertEquals("three", pandv.getValue(), "3rd x-foo value");
+  params = pandv.getParams();
+  assertEquals(0, params.size(), "3rd x-foo Number of params ");
 
-        List<VCardParamsAndValue> nonstandards = xp.get("NON-STANDARD");
-        Assert.assertEquals("Number of NON-STANDARD ", 1, nonstandards.size());
-        pandv = nonstandards.get(0);
-        Assert.assertEquals("non-standard value", "this is fun", pandv.getValue());
-        params = pandv.getParams();
-        Assert.assertTrue(String.format("non-standard params '%s' contains PARAMETER=pValue", params),
-                params.contains("PARAMETER=pValue"));
-        Assert.assertEquals("non-standard Number of params ", 1, params.size());
-    }
+  List<VCardParamsAndValue> nonstandards = xp.get("NON-STANDARD");
+  assertEquals(1, nonstandards.size(), "Number of NON-STANDARD ");
+  pandv = nonstandards.get(0);
+  assertEquals("this is fun", pandv.getValue(), "non-standard value");
+  params = pandv.getParams();
+  assertTrue(params.contains("PARAMETER=pValue"),
+    String.format("non-standard params '%s' contains PARAMETER=pValue", params));
+  assertEquals(1, params.size(), "non-standard Number of params ");
+ }
 
     private static String groupCard =
             "BEGIN:VCARD\n" +
@@ -185,20 +190,20 @@ public final class VCardTest {
             "REV:20120503T194243Z\n" +
             "END:VCARD\n";
 
-    @Test
-    public void groupCard() throws ServiceException {
-        List<VCard> cards = VCard.parseVCard(groupCard);
-        Assert.assertNotNull("List of cards", cards);
-        Assert.assertEquals("Number of cards", 1, cards.size());
-        VCard vcard = cards.get(0);
-        String xprops = vcard.fields.get(ContactConstants.A_vCardXProps);
-        ListMultimap<String, VCardParamsAndValue> xp = Contact.decodeUnknownVCardProps(xprops);
-        Assert.assertEquals(String.format("Number of unknown properties in %s", xp), 3, xp.size());
-        List<VCardParamsAndValue> kinds = xp.get(AddressObject.XABSKIND);
-        Assert.assertEquals(String.format("Number of %s",AddressObject.XABSKIND), 1, kinds.size());
-        List<VCardParamsAndValue> members = xp.get(AddressObject.XABSMEMBER);
-        Assert.assertEquals(String.format("Number of %s",AddressObject.XABSMEMBER), 2, members.size());
-    }
+ @Test
+ void groupCard() throws ServiceException {
+  List<VCard> cards = VCard.parseVCard(groupCard);
+  assertNotNull(cards, "List of cards");
+  assertEquals(1, cards.size(), "Number of cards");
+  VCard vcard = cards.get(0);
+  String xprops = vcard.fields.get(ContactConstants.A_vCardXProps);
+  ListMultimap<String, VCardParamsAndValue> xp = Contact.decodeUnknownVCardProps(xprops);
+  assertEquals(3, xp.size(), String.format("Number of unknown properties in %s", xp));
+  List<VCardParamsAndValue> kinds = xp.get(AddressObject.XABSKIND);
+  assertEquals(1, kinds.size(), String.format("Number of %s", AddressObject.XABSKIND));
+  List<VCardParamsAndValue> members = xp.get(AddressObject.XABSMEMBER);
+  assertEquals(2, members.size(), String.format("Number of %s", AddressObject.XABSMEMBER));
+ }
 
     private static String smallBusyMacAttach =
             "BEGIN:VCARD\n" +
@@ -234,23 +239,22 @@ public final class VCardTest {
             "X-CREATED:2015-04-05T09:50:44Z\n" +
             "END:VCARD\n";
 
-    @Test
-    public void smallBusyMacAttach() throws ServiceException {
-        List<VCard> cards = VCard.parseVCard(smallBusyMacAttach);
-        Assert.assertNotNull("List of cards", cards);
-        Assert.assertEquals("Number of cards", 1, cards.size());
-        VCard vcard = cards.get(0);
-        String xprops = vcard.fields.get(ContactConstants.A_vCardXProps);
-        ListMultimap<String, VCardParamsAndValue> xp = Contact.decodeUnknownVCardProps(xprops);
-        Assert.assertEquals(String.format("Number of unknown properties in %s", xp), 3, xp.size());
-        List<VCardParamsAndValue> busymacAttaches = xp.get("X-BUSYMAC-ATTACH");
-        Assert.assertEquals(String.format("Number of %s","X-BUSYMAC-ATTACH"), 1, busymacAttaches.size());
-        VCardParamsAndValue attach = busymacAttaches.get(0);
-        Assert.assertTrue(String.format("Value fo X-BUSYMAC-ATTACH property %s starts as expected", attach.getValue()),
-                attach.getValue().startsWith("AAABAAEAEBAAAAEAIABoBAAAF"));
-        Assert.assertEquals(String.format("X-BUSYMAC-ATTACH params=%s number", attach.getParams()),
-                2, attach.getParams().size());
-    }
+ @Test
+ void smallBusyMacAttach() throws ServiceException {
+  List<VCard> cards = VCard.parseVCard(smallBusyMacAttach);
+  assertNotNull(cards, "List of cards");
+  assertEquals(1, cards.size(), "Number of cards");
+  VCard vcard = cards.get(0);
+  String xprops = vcard.fields.get(ContactConstants.A_vCardXProps);
+  ListMultimap<String, VCardParamsAndValue> xp = Contact.decodeUnknownVCardProps(xprops);
+  assertEquals(3, xp.size(), String.format("Number of unknown properties in %s", xp));
+  List<VCardParamsAndValue> busymacAttaches = xp.get("X-BUSYMAC-ATTACH");
+  assertEquals(1, busymacAttaches.size(), String.format("Number of %s", "X-BUSYMAC-ATTACH"));
+  VCardParamsAndValue attach = busymacAttaches.get(0);
+  assertTrue(attach.getValue().startsWith("AAABAAEAEBAAAAEAIABoBAAAF"),
+    String.format("Value fo X-BUSYMAC-ATTACH property %s starts as expected", attach.getValue()));
+  assertEquals(2, attach.getParams().size(), String.format("X-BUSYMAC-ATTACH params=%s number", attach.getParams()));
+ }
 
     private static String noColon =
             "BEGIN:VCARD\n" +
@@ -261,14 +265,14 @@ public final class VCardTest {
             "X-BUSYMAC-MODIFIED-BY:Gren Elliot\n" +
             "END:VCARD\n";
 
-    @Test
-    public void noColon() throws ServiceException {
-        try {
-            VCard.parseVCard(noColon);
-            Assert.fail("Should detect problem with property which doesn't contain a colon");
-        } catch (ServiceException se) {
-            Assert.assertTrue(String.format("Exception msg [%s] contains 'parse error: missing ':']", se.getMessage()),
-                    se.getMessage().contains("parse error: missing ':'"));
-        }
-    }
+ @Test
+ void noColon() throws ServiceException {
+  try {
+   VCard.parseVCard(noColon);
+   fail("Should detect problem with property which doesn't contain a colon");
+  } catch (ServiceException se) {
+   assertTrue(se.getMessage().contains("parse error: missing ':'"),
+     String.format("Exception msg [%s] contains 'parse error: missing ':']", se.getMessage()));
+  }
+ }
 }

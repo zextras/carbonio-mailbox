@@ -46,7 +46,7 @@ import com.zimbra.cs.service.util.ItemId;
  * @author kchen
  */
 public class RuleRewriter {
-    final static Set<String> MATCH_TYPES = new HashSet<String>();
+    static final Set<String> MATCH_TYPES = new HashSet<String>();
     static {
         MATCH_TYPES.add(":is");
         MATCH_TYPES.add(":contains");

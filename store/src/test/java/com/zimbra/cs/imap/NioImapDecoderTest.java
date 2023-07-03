@@ -12,11 +12,13 @@ import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.service.DefaultTransportMetadata;
 import org.apache.mina.core.session.IoSessionConfig;
 import org.apache.mina.filter.codec.ProtocolCodecSession;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Charsets;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.imap.NioImapDecoder.TooBigLiteralException;
 import com.zimbra.cs.imap.NioImapDecoder.TooLongLineException;
@@ -61,7 +63,7 @@ public final class NioImapDecoderTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws ServiceException {
         imapConfig = new TestImapConfig(false);
         decoder = new NioImapDecoder(imapConfig);
@@ -70,123 +72,123 @@ public final class NioImapDecoderTest {
                 SocketAddress.class, IoSessionConfig.class, Object.class));
     }
 
-    @Test
-    public void decodeLine() throws Exception {
-        IN.clear().putString("CRLF\r\n", CHARSET).flip();
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals("CRLF", session.getDecoderOutputQueue().poll());
+ @Test
+ void decodeLine() throws Exception {
+  IN.clear().putString("CRLF\r\n", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("CRLF", session.getDecoderOutputQueue().poll());
 
-        IN.clear().putString("ABC\r\nDEF\r\nHIJ\r\n", CHARSET).flip();
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals("ABC", session.getDecoderOutputQueue().poll());
-        Assert.assertEquals("DEF", session.getDecoderOutputQueue().poll());
-        Assert.assertEquals("HIJ", session.getDecoderOutputQueue().poll());
+  IN.clear().putString("ABC\r\nDEF\r\nHIJ\r\n", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("ABC", session.getDecoderOutputQueue().poll());
+  assertEquals("DEF", session.getDecoderOutputQueue().poll());
+  assertEquals("HIJ", session.getDecoderOutputQueue().poll());
 
-        IN.clear().putString("CR\r and LF\n", CHARSET).flip();
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals("CR\r and LF", session.getDecoderOutputQueue().poll());
+  IN.clear().putString("CR\r and LF\n", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("CR\r and LF", session.getDecoderOutputQueue().poll());
 
-        IN.clear().putString("A\r\r\n", CHARSET).flip();
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals("A\r", session.getDecoderOutputQueue().poll());
+  IN.clear().putString("A\r\r\n", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("A\r", session.getDecoderOutputQueue().poll());
 
-        IN.clear().putString("A\r\n\r\nB\r\n", CHARSET).flip();
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals("A", session.getDecoderOutputQueue().poll());
-        Assert.assertEquals("", session.getDecoderOutputQueue().poll());
-        Assert.assertEquals("B", session.getDecoderOutputQueue().poll());
+  IN.clear().putString("A\r\n\r\nB\r\n", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("A", session.getDecoderOutputQueue().poll());
+  assertEquals("", session.getDecoderOutputQueue().poll());
+  assertEquals("B", session.getDecoderOutputQueue().poll());
 
-        IN.clear().putString("not EOL yet...", CHARSET).flip();
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals(0, session.getDecoderOutputQueue().size());
+  IN.clear().putString("not EOL yet...", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals(0, session.getDecoderOutputQueue().size());
 
-        IN.clear().putString("CRLF\r\n", CHARSET).flip();
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals("not EOL yet...CRLF", session.getDecoderOutputQueue().poll());
+  IN.clear().putString("CRLF\r\n", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("not EOL yet...CRLF", session.getDecoderOutputQueue().poll());
 
-        Assert.assertEquals(0, session.getDecoderOutputQueue().size());
-    }
+  assertEquals(0, session.getDecoderOutputQueue().size());
+ }
 
-    @Test
-    public void decodeLiteral() throws Exception {
-        IN.clear().putString("A003 APPEND Drafts (\\Seen \\Draft $MDNSent) CATENATE (TEXT {10}\r\n", CHARSET).flip();
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals("A003 APPEND Drafts (\\Seen \\Draft $MDNSent) CATENATE (TEXT {10}",
-                session.getDecoderOutputQueue().poll());
+ @Test
+ void decodeLiteral() throws Exception {
+  IN.clear().putString("A003 APPEND Drafts (\\Seen \\Draft $MDNSent) CATENATE (TEXT {10}\r\n", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("A003 APPEND Drafts (\\Seen \\Draft $MDNSent) CATENATE (TEXT {10}",
+    session.getDecoderOutputQueue().poll());
 
-        byte[] literal = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        IN.clear().put(literal).flip();
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertArrayEquals(literal, (byte[]) session.getDecoderOutputQueue().poll());
+  byte[] literal = new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  IN.clear().put(literal).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertArrayEquals(literal, (byte[]) session.getDecoderOutputQueue().poll());
 
-        Assert.assertEquals(0, session.getDecoderOutputQueue().size());
-    }
+  assertEquals(0, session.getDecoderOutputQueue().size());
+ }
 
-    @Test
-    public void maxLineLength() throws Exception {
-        IN.clear().fill(1024).putString("\r\nrecover\r\n", CHARSET).flip();
-        try {
-            decoder.decode(session, IN, session.getDecoderOutput());
-            Assert.fail("decoder.decode did NOT throw TooLongLineException as expected");
-        } catch (TooLongLineException expected) {
-        }
-        Assert.assertEquals(0, session.getDecoderOutputQueue().size());
+ @Test
+ void maxLineLength() throws Exception {
+  IN.clear().fill(1024).putString("\r\nrecover\r\n", CHARSET).flip();
+  try {
+   decoder.decode(session, IN, session.getDecoderOutput());
+   fail("decoder.decode did NOT throw TooLongLineException as expected");
+  } catch (TooLongLineException expected) {
+  }
+  assertEquals(0, session.getDecoderOutputQueue().size());
 
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals("recover", session.getDecoderOutputQueue().poll());
-    }
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("recover", session.getDecoderOutputQueue().poll());
+ }
 
-    @Test
-    public void badLiteral() throws Exception {
-        IN.clear().putString("XXX {-1}\r\n", CHARSET).flip();
-        try {
-            decoder.decode(session, IN, session.getDecoderOutput());
-            Assert.fail();
-        } catch (TooBigLiteralException expected) {
-        }
-        Assert.assertEquals(0, session.getDecoderOutputQueue().size());
+ @Test
+ void badLiteral() throws Exception {
+  IN.clear().putString("XXX {-1}\r\n", CHARSET).flip();
+  try {
+   decoder.decode(session, IN, session.getDecoderOutput());
+   fail();
+  } catch (TooBigLiteralException expected) {
+  }
+  assertEquals(0, session.getDecoderOutputQueue().size());
 
-        IN.clear().putString("XXX {2147483648}\r\n", CHARSET).flip();
-        try {
-            decoder.decode(session, IN, session.getDecoderOutput());
-            Assert.fail();
-        } catch (TooBigLiteralException expected) {
-        }
-        Assert.assertEquals(0, session.getDecoderOutputQueue().size());
-    }
+  IN.clear().putString("XXX {2147483648}\r\n", CHARSET).flip();
+  try {
+   decoder.decode(session, IN, session.getDecoderOutput());
+   fail();
+  } catch (TooBigLiteralException expected) {
+  }
+  assertEquals(0, session.getDecoderOutputQueue().size());
+ }
 
-    @Test
-    public void maxLiteralSize() throws Exception {
-        imapConfig.setMaxMessageSize(1024L);
-        IN.clear().putString("XXX {1025}\r\nrecover\r\n", CHARSET).flip();
-        try {
-            decoder.decode(session, IN, session.getDecoderOutput());
-            Assert.fail();
-        } catch (TooBigLiteralException expected) {
-            Assert.assertEquals("XXX {1025}", expected.getRequest());
-        }
-        Assert.assertEquals(0, session.getDecoderOutputQueue().size());
+ @Test
+ void maxLiteralSize() throws Exception {
+  imapConfig.setMaxMessageSize(1024L);
+  IN.clear().putString("XXX {1025}\r\nrecover\r\n", CHARSET).flip();
+  try {
+   decoder.decode(session, IN, session.getDecoderOutput());
+   fail();
+  } catch (TooBigLiteralException expected) {
+   assertEquals("XXX {1025}", expected.getRequest());
+  }
+  assertEquals(0, session.getDecoderOutputQueue().size());
 
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals("recover", session.getDecoderOutputQueue().poll());
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("recover", session.getDecoderOutputQueue().poll());
 
-        IN.clear().putString("XXX {1025+}\r\n", CHARSET).fill(1025).putString("recover\r\n", CHARSET).flip();
-        try {
-            decoder.decode(session, IN, session.getDecoderOutput());
-            Assert.fail();
-        } catch (TooBigLiteralException expected) {
-        }
-        Assert.assertEquals(0, session.getDecoderOutputQueue().size());
+  IN.clear().putString("XXX {1025+}\r\n", CHARSET).fill(1025).putString("recover\r\n", CHARSET).flip();
+  try {
+   decoder.decode(session, IN, session.getDecoderOutput());
+   fail();
+  } catch (TooBigLiteralException expected) {
+  }
+  assertEquals(0, session.getDecoderOutputQueue().size());
 
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals("recover", session.getDecoderOutputQueue().poll());
-    }
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("recover", session.getDecoderOutputQueue().poll());
+ }
 
-    @Test
-    public void emptyLiteral() throws Exception {
-        IN.clear().putString("A003 APPEND Drafts {0}\r\n", CHARSET).flip();
-        decoder.decode(session, IN, session.getDecoderOutput());
-        Assert.assertEquals("A003 APPEND Drafts {0}", session.getDecoderOutputQueue().poll());
-        Assert.assertEquals(0, session.getDecoderOutputQueue().size());
-    }
+ @Test
+ void emptyLiteral() throws Exception {
+  IN.clear().putString("A003 APPEND Drafts {0}\r\n", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("A003 APPEND Drafts {0}", session.getDecoderOutputQueue().poll());
+  assertEquals(0, session.getDecoderOutputQueue().size());
+ }
 }
