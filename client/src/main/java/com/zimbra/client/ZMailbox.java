@@ -40,8 +40,6 @@ import com.zimbra.client.event.ZModifyMountpointEvent;
 import com.zimbra.client.event.ZModifySearchFolderEvent;
 import com.zimbra.client.event.ZModifyTagEvent;
 import com.zimbra.client.event.ZModifyTaskEvent;
-import com.zimbra.client.event.ZModifyVoiceMailItemEvent;
-import com.zimbra.client.event.ZModifyVoiceMailItemFolderEvent;
 import com.zimbra.client.event.ZRefreshEvent;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -75,7 +73,6 @@ import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.soap.SoapTransport;
 import com.zimbra.common.soap.SoapTransport.NotificationFormat;
-import com.zimbra.common.soap.VoiceConstants;
 import com.zimbra.common.soap.ZimbraNamespace;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Constants;
@@ -284,8 +281,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   private ZFilterRules outgoingRules;
   private ZAuthResult mAuthResult;
   private String mClientIp;
-  private List<ZPhoneAccount> mPhoneAccounts;
-  private Map<String, ZPhoneAccount> mPhoneAccountMap;
   private Element mVoiceStorePrincipal;
   private long mSize;
   private boolean mNoTagCache;
@@ -4591,9 +4586,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     QName name;
     if (convId != null) {
       name = MailConstants.SEARCH_CONV_REQUEST;
-    } else if (params.getTypes().equals(ZSearchParams.TYPE_VOICE_MAIL)
-        || params.getTypes().equals(ZSearchParams.TYPE_CALL)) {
-      name = VoiceConstants.SEARCH_VOICE_REQUEST;
     } else if (params.getTypes().equals(ZSearchParams.TYPE_GAL)) {
       name = AccountConstants.SEARCH_GAL_REQUEST;
     } else {
@@ -4675,11 +4667,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       }
     }
 
-    if (params.getTypes().equals(ZSearchParams.TYPE_VOICE_MAIL)
-        || params.getTypes().equals(ZSearchParams.TYPE_CALL)) {
-      getAllPhoneAccounts();
-      setVoiceStorePrincipal(req);
-    }
     Element resp = invoke(req);
     if (params.getTypes().equals(ZSearchParams.TYPE_GAL)) {
       try {
@@ -6748,181 +6735,8 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     invoke(req);
   }
 
-  public List<ZPhoneAccount> getAllPhoneAccounts() throws ServiceException {
-    lock();
-    try {
-      if (mPhoneAccounts == null) {
-        ArrayList<ZPhoneAccount> accounts = new ArrayList<ZPhoneAccount>();
-        mPhoneAccountMap = new HashMap<String, ZPhoneAccount>();
-        Element req = newRequestElement(VoiceConstants.GET_VOICE_INFO_REQUEST);
-        Element response = invoke(req);
-        Element storePrincipalEl = response.getElement(VoiceConstants.E_STOREPRINCIPAL);
-        mVoiceStorePrincipal = storePrincipalEl.clone();
-        List<Element> phoneElements = response.listElements(VoiceConstants.E_PHONE);
-        for (Element element : phoneElements) {
-          ZPhoneAccount account = new ZPhoneAccount(element, this);
-          accounts.add(account);
-          mPhoneAccountMap.put(account.getPhone().getName(), account);
-        }
-        mPhoneAccounts = Collections.unmodifiableList(accounts);
-      }
-      return mPhoneAccounts;
-    } finally {
-      unlock();
-    }
-  }
-
   private void setVoiceStorePrincipal(Element req) {
     req.addNonUniqueElement(mVoiceStorePrincipal.clone());
-  }
-
-  public ZPhoneAccount getPhoneAccount(String name) throws ServiceException {
-    getAllPhoneAccounts(); // Make sure they're loaded.
-    return mPhoneAccountMap.get(name);
-  }
-
-  public String uploadVoiceMail(String phone, String id) throws ServiceException {
-    Element req = newRequestElement(VoiceConstants.UPLOAD_VOICE_MAIL_REQUEST);
-    setVoiceStorePrincipal(req);
-    Element actionEl = req.addNonUniqueElement(VoiceConstants.E_VOICEMSG);
-    actionEl.addAttribute(MailConstants.A_ID, id);
-    actionEl.addAttribute(VoiceConstants.A_PHONE, phone);
-    Element response = invoke(req);
-    return response.getElement(VoiceConstants.E_UPLOAD).getAttribute(MailConstants.A_ID);
-  }
-
-  public void loadCallFeatures(ZCallFeatures features) throws ServiceException {
-    Element req = newRequestElement(VoiceConstants.GET_VOICE_FEATURES_REQUEST);
-    setVoiceStorePrincipal(req);
-    Element phoneEl = req.addNonUniqueElement(VoiceConstants.E_PHONE);
-    phoneEl.addAttribute(MailConstants.A_NAME, features.getPhone().getName());
-    Collection<ZCallFeature> featureList = features.getSubscribedFeatures();
-    for (ZCallFeature feature : featureList) {
-      phoneEl.addNonUniqueElement(feature.getName());
-    }
-    Element response = invoke(req);
-
-    phoneEl = response.getElement(VoiceConstants.E_PHONE);
-    for (ZCallFeature feature : featureList) {
-      String name = feature.getName();
-      Element element = phoneEl.getOptionalElement(name);
-      if (element != null) {
-        feature.fromElement(element);
-      }
-    }
-  }
-
-  public void saveCallFeatures(ZCallFeatures newFeatures) throws ServiceException {
-    // Build up the soap request.
-    Element req = newRequestElement(VoiceConstants.MODIFY_VOICE_FEATURES_REQUEST);
-    setVoiceStorePrincipal(req);
-    Element phoneEl = req.addNonUniqueElement(VoiceConstants.E_PHONE);
-    phoneEl.addAttribute(MailConstants.A_NAME, newFeatures.getPhone().getName());
-    Collection<ZCallFeature> list = newFeatures.getAllFeatures();
-    for (ZCallFeature newFeature : list) {
-      Element element = phoneEl.addNonUniqueElement(newFeature.getName());
-      newFeature.toElement(element);
-    }
-    invoke(req);
-
-    // Copy new data into cache.
-    ZPhoneAccount account = getPhoneAccount(newFeatures.getPhone().getName());
-    ZCallFeatures oldFeatures = account.getCallFeatures();
-    for (ZCallFeature newFeature : list) {
-      ZCallFeature oldFeature = oldFeatures.getFeature(newFeature.getName());
-      oldFeature.assignFrom(newFeature);
-    }
-  }
-
-  public ZActionResult trashVoiceMail(String phone, String id) throws ServiceException {
-    return moveVoiceMail(phone, id, VoiceConstants.FID_TRASH);
-  }
-
-  public ZActionResult moveVoiceMail(String phone, String id, int folderId)
-      throws ServiceException {
-    ZActionResult result = doAction(voiceAction("move", phone, id, folderId));
-    ZModifyEvent event = new ZModifyVoiceMailItemFolderEvent(Integer.toString(folderId));
-    handleEvent(event);
-    refreshVoiceMailInbox(phone);
-    return result;
-  }
-
-  public ZActionResult emptyVoiceMailTrash(String phone, String folderId) throws ServiceException {
-    ZActionResult result = doAction(voiceAction("empty", phone, folderId, 0));
-
-    // Don't use a delete event, since it deals with the ids of the deleted items and we don't have
-    // those.
-    // Instead just clear the cache that we know know of that might need to be rebuilt.
-    mSearchPagerCache.clear(null);
-    return result;
-  }
-
-  /** Makes a server call to get updated message/unheard counts for the folders */
-  private void refreshVoiceMailInbox(String phone) throws ServiceException {
-    ZPhoneAccount account = getPhoneAccount(phone);
-    if (account == null) {
-      return;
-    }
-
-    Element req = newRequestElement(VoiceConstants.GET_VOICE_FOLDER_REQUEST);
-    setVoiceStorePrincipal(req);
-    Element phoneEl = req.addNonUniqueElement(VoiceConstants.E_PHONE);
-    phoneEl.addAttribute(MailConstants.A_NAME, phone);
-    Element response = invoke(req);
-
-    Element phoneResponse = response.getElement(VoiceConstants.E_PHONE);
-    if (phoneResponse != null) {
-      ZFolder rootFolder = account.getRootFolder();
-      Element rootEl = phoneResponse.getElement(MailConstants.E_FOLDER);
-      for (Element childEl : rootEl.listElements(MailConstants.E_FOLDER)) {
-        String name = childEl.getAttribute(MailConstants.A_NAME);
-        ZFolder childFolder = rootFolder.getSubFolderByPath(name);
-        if (childFolder != null) {
-          childFolder.setUnreadCount((int) childEl.getAttributeLong(MailConstants.A_UNREAD, 0));
-          childFolder.setMessageCount((int) childEl.getAttributeLong(MailConstants.A_NUM, 0));
-        }
-      }
-    }
-  }
-
-  public ZActionResult markVoiceMailHeard(String phone, String idList, boolean heard)
-      throws ServiceException {
-    String op = heard ? "read" : "!read";
-    ZActionResult result = doAction(voiceAction(op, phone, idList, 0));
-    int changeCount = 0;
-    boolean needRefresh = false;
-    for (String id : sCOMMA.split(idList)) {
-      ZModifyVoiceMailItemEvent event = new ZModifyVoiceMailItemEvent(id, heard);
-      handleEvent(event);
-      if (event.getMadeChange()) {
-        changeCount++;
-      } else {
-        needRefresh = true;
-      }
-    }
-    if (needRefresh) {
-      refreshVoiceMailInbox(phone);
-    } else if (changeCount > 0) {
-      ZPhoneAccount account = getPhoneAccount(phone);
-      ZFolder inbox =
-          account.getRootFolder().getSubFolderByPath(VoiceConstants.FNAME_VOICEMAILINBOX);
-      int diff = heard ? -changeCount : changeCount;
-      inbox.setUnreadCount(inbox.getUnreadCount() + diff);
-    }
-    return result;
-  }
-
-  private Element voiceAction(String op, String phone, String id, int folderId) {
-    Element req = newRequestElement(VoiceConstants.VOICE_MSG_ACTION_REQUEST);
-    setVoiceStorePrincipal(req);
-    Element actionEl = req.addNonUniqueElement(MailConstants.E_ACTION);
-    actionEl.addAttribute(MailConstants.A_ID, id);
-    actionEl.addAttribute(MailConstants.A_OPERATION, op);
-    actionEl.addAttribute(VoiceConstants.A_PHONE, phone);
-    if (folderId != 0) {
-      actionEl.addAttribute(MailConstants.A_FOLDER, Integer.toString(folderId) + '-' + phone);
-    }
-    return actionEl;
   }
 
   public ZContactByPhoneCache.ContactPhone getContactByPhone(String phone) throws ServiceException {
