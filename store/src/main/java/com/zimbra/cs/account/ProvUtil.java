@@ -79,7 +79,6 @@ import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.admin.message.LockoutMailboxRequest;
 import com.zimbra.soap.admin.message.UnregisterMailboxMoveOutRequest;
 import com.zimbra.soap.admin.type.CacheEntryType;
-import com.zimbra.soap.admin.type.CountObjectsType;
 import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
 import com.zimbra.soap.admin.type.MailboxMoveSpec;
@@ -565,13 +564,6 @@ public class ProvUtil implements HttpDebugListener {
         new RightCommandHelp(false, false, true)),
     COPY_COS("copyCos", "cpc", "{src-cos-name|id} {dest-cos-name}", Category.COS, 2, 2),
     COUNT_ACCOUNT("countAccount", "cta", "{domain|id}", Category.DOMAIN, 1, 1),
-    COUNT_OBJECTS(
-        "countObjects",
-        "cto",
-        "{" + CountObjectsType.names("|") + "} [-d {domain|id}] [-u {UCService|id}]",
-        Category.MISC,
-        1,
-        4),
     CREATE_ACCOUNT(
         "createAccount",
         "ca",
@@ -639,13 +631,6 @@ public class ProvUtil implements HttpDebugListener {
         Category.SERVER,
         1,
         Integer.MAX_VALUE),
-    CREATE_UC_SERVICE(
-        "createUCService",
-        "cucs",
-        "{name} [attr1 value1 [attr2 value2...]]",
-        Category.UCSERVICE,
-        1,
-        Integer.MAX_VALUE),
     CREATE_IDENTITY(
         "createIdentity",
         "cid",
@@ -682,7 +667,6 @@ public class ProvUtil implements HttpDebugListener {
     DELETE_SIGNATURE(
         "deleteSignature", "dsig", "{name@domain|id} {signature-name}", Category.ACCOUNT, 2, 2),
     DELETE_SERVER("deleteServer", "ds", "{name|id}", Category.SERVER, 1, 1),
-    DELETE_UC_SERVICE("deleteUCService", "ducs", "{name|id}", Category.UCSERVICE, 1, 1),
     DELETE_XMPP_COMPONENT(
         "deleteXMPPComponent", "dxc", "{xmpp-component-name}", Category.CONFIG, 1, 1),
     DESCRIBE(
@@ -797,7 +781,6 @@ public class ProvUtil implements HttpDebugListener {
         0,
         5),
     GET_ALL_SERVERS("getAllServers", "gas", "[-v] [-e] [service]", Category.SERVER, 0, 3),
-    GET_ALL_UC_SERVICES("getAllUCServices", "gaucs", "[-v]", Category.UCSERVICE, 0, 3),
     GET_ALL_XMPP_COMPONENTS("getAllXMPPComponents", "gaxcs", "", Category.CONFIG, 0, 0),
     GET_AUTH_TOKEN_INFO("getAuthTokenInfo", "gati", "{auth-token}", Category.MISC, 1, 1),
     GET_CALENDAR_RESOURCE(
@@ -882,13 +865,6 @@ public class ProvUtil implements HttpDebugListener {
         "gs",
         "[-e] {name|id} [attr1 [attr2...]]",
         Category.SERVER,
-        1,
-        Integer.MAX_VALUE),
-    GET_UC_SERVICES(
-        "getUCService",
-        "gucs",
-        "[-e] {name|id} [attr1 [attr2...]]",
-        Category.UCSERVICE,
         1,
         Integer.MAX_VALUE),
     GET_SHARE_INFO("getShareInfo", "gsi", "{owner-name|owner-id}", Category.SHARE, 1, 1),
@@ -996,13 +972,6 @@ public class ProvUtil implements HttpDebugListener {
         Category.SERVER,
         3,
         Integer.MAX_VALUE),
-    MODIFY_UC_SERVICE(
-        "modifyUCService",
-        "mucs",
-        "{name|id} [attr1 value1 [attr2 value2...]]",
-        Category.UCSERVICE,
-        3,
-        Integer.MAX_VALUE),
     MODIFY_XMPP_COMPONENT(
         "modifyXMPPComponent",
         "mxc",
@@ -1066,7 +1035,6 @@ public class ProvUtil implements HttpDebugListener {
     RENAME_DISTRIBUTION_LIST(
         "renameDistributionList", "rdl", "{list@domain|id} {newName@domain}", Category.LIST, 2, 2),
     RENAME_DOMAIN("renameDomain", "rd", "{domain|id} {newDomain}", Category.DOMAIN, 2, 2, Via.ldap),
-    RENAME_UCSERVICE("renameUCService", "rucs", "{name|id} {newName}", Category.UCSERVICE, 2, 2),
     REINDEX_MAILBOX(
         "reIndexMailbox",
         "rim",
@@ -1155,14 +1123,6 @@ public class ProvUtil implements HttpDebugListener {
         Via.soap),
     SOAP(".soap", ".s"),
     SYNC_GAL("syncGal", "syg", "{domain} [{token}]", Category.MISC, 1, 2),
-    UPDATE_PRESENCE_SESSION_ID(
-        "updatePresenceSessionId",
-        "upsid",
-        "{UC service name or id} {app-username} {app-password}",
-        Category.MISC,
-        3,
-        3,
-        Via.soap),
     RESET_ALL_LOGGERS("resetAllLoggers", "rlog", "[-s/--server hostname]", Category.LOG, 0, 2),
     UNLOCK_MAILBOX(
         "unlockMailbox",
@@ -1475,9 +1435,6 @@ public class ProvUtil implements HttpDebugListener {
       case COUNT_ACCOUNT:
         doCountAccount(args);
         break;
-      case COUNT_OBJECTS:
-        doCountObjects(args);
-        break;
       case CREATE_ACCOUNT:
         console.println(
             prov.createAccount(
@@ -1513,9 +1470,6 @@ public class ProvUtil implements HttpDebugListener {
         break;
       case CREATE_SERVER:
         console.println(prov.createServer(args[1], getMapAndCheck(args, 2, true)).getId());
-        break;
-      case CREATE_UC_SERVICE:
-        console.println(prov.createUCService(args[1], getMapAndCheck(args, 2, true)).getId());
         break;
       case CREATE_XMPP_COMPONENT:
         doCreateXMPPComponent(args);
@@ -1593,9 +1547,6 @@ public class ProvUtil implements HttpDebugListener {
       case GET_ALL_SERVERS:
         doGetAllServers(args);
         break;
-      case GET_ALL_UC_SERVICES:
-        doGetAllUCServices(args);
-        break;
       case GET_CONFIG:
         doGetConfig(args);
         break;
@@ -1628,9 +1579,6 @@ public class ProvUtil implements HttpDebugListener {
         break;
       case GET_SERVER:
         doGetServer(args);
-        break;
-      case GET_UC_SERVICES:
-        dumpUCService(lookupUCService(args[1]), getArgNameSet(args, 2));
         break;
       case GET_XMPP_COMPONENT:
         doGetXMPPComponent(args);
@@ -1694,9 +1642,6 @@ public class ProvUtil implements HttpDebugListener {
       case MODIFY_SERVER:
         prov.modifyAttrs(lookupServer(args[1]), getMapAndCheck(args, 2, false), true);
         break;
-      case MODIFY_UC_SERVICE:
-        prov.modifyAttrs(lookupUCService(args[1]), getMapAndCheck(args, 2, false), true);
-        break;
       case DELETE_ACCOUNT:
         doDeleteAccount(args);
         break;
@@ -1719,9 +1664,6 @@ public class ProvUtil implements HttpDebugListener {
         break;
       case DELETE_SERVER:
         prov.deleteServer(lookupServer(args[1]).getId());
-        break;
-      case DELETE_UC_SERVICE:
-        prov.deleteUCService(lookupUCService(args[1]).getId());
         break;
       case DELETE_XMPP_COMPONENT:
         prov.deleteXMPPComponent(lookupXMPPComponent(args[1]));
@@ -1770,9 +1712,6 @@ public class ProvUtil implements HttpDebugListener {
         break;
       case RENAME_DOMAIN:
         doRenameDomain(args);
-        break;
-      case RENAME_UCSERVICE:
-        prov.renameUCService(lookupUCService(args[1]).getId(), args[2]);
         break;
       case SET_ACCOUNT_COS:
         prov.setCOS(lookupAccount(args[1]), lookupCos(args[2]));
@@ -1957,9 +1896,6 @@ public class ProvUtil implements HttpDebugListener {
         break;
       case GET_AUTH_TOKEN_INFO:
         doGetAuthTokenInfo(args);
-        break;
-      case UPDATE_PRESENCE_SESSION_ID:
-        doUpdatePresenceSessionId(args);
         break;
       case SOAP:
         // HACK FOR NOW
@@ -3129,49 +3065,6 @@ public class ProvUtil implements HttpDebugListener {
     console.println();
   }
 
-  private void doCountObjects(String[] args) throws ServiceException {
-
-    CountObjectsType type = CountObjectsType.fromString(args[1]);
-
-    Domain domain = null;
-    UCService ucService = null;
-    int idx = 2;
-    while (args.length > idx) {
-      String arg = args[idx];
-
-      if (arg.equals("-d")) {
-        if (domain != null) {
-          throw ServiceException.INVALID_REQUEST(
-              "domain is already specified as:" + domain.getName(), null);
-        }
-        idx++;
-        if (args.length <= idx) {
-          usage();
-          throw ServiceException.INVALID_REQUEST("expecting domain, not enough args", null);
-        }
-        domain = lookupDomain(args[idx]);
-      } else if (arg.equals("-u")) {
-        if (ucService != null) {
-          throw ServiceException.INVALID_REQUEST(
-              "UCService is already specified as:" + ucService.getName(), null);
-        }
-        idx++;
-        if (args.length <= idx) {
-          usage();
-          throw ServiceException.INVALID_REQUEST("expecting UCService, not enough args", null);
-        }
-        ucService = lookupUCService(args[idx]);
-      } else {
-        usage();
-        return;
-      }
-
-      idx++;
-    }
-    long result = prov.countObjects(type, domain, ucService);
-    console.println(result);
-  }
-
   private void doGetAllAdminAccounts(String[] args) throws ServiceException {
     boolean verbose = false;
     boolean applyDefault = true;
@@ -3588,30 +3481,10 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  private void doGetAllUCServices(String[] args) throws ServiceException {
-    boolean verbose = args.length > 1 && args[1].equals("-v");
-    Set<String> attrNames = getArgNameSet(args, verbose ? 2 : 1);
-    List<UCService> allUCServices = prov.getAllUCServices();
-    for (UCService ucService : allUCServices) {
-      if (verbose) {
-        dumpUCService(ucService, attrNames);
-      } else {
-        console.println(ucService.getName());
-      }
-    }
-  }
-
   private void dumpServer(Server server, boolean expandConfig, Set<String> attrNames)
       throws ServiceException {
     console.println("# name " + server.getName());
     Map<String, Object> attrs = server.getAttrs(expandConfig);
-    dumpAttrs(attrs, attrNames);
-    console.println();
-  }
-
-  private void dumpUCService(UCService ucService, Set<String> attrNames) throws ServiceException {
-    console.println("# name " + ucService.getName());
-    Map<String, Object> attrs = ucService.getAttrs();
     dumpAttrs(attrs, attrNames);
     console.println();
   }
@@ -4067,15 +3940,6 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  private UCService lookupUCService(String key) throws ServiceException {
-    UCService ucService = prov.get(guessUCServiceBy(key), key);
-    if (ucService == null) {
-      throw AccountServiceException.NO_SUCH_UC_SERVICE(key);
-    } else {
-      return ucService;
-    }
-  }
-
   private String lookupDataSourceId(Account account, String key) throws ServiceException {
     if (Provisioning.isUUID(key)) {
       return key;
@@ -4158,13 +4022,6 @@ public class ProvUtil implements HttpDebugListener {
       return Key.ServerBy.id;
     }
     return Key.ServerBy.name;
-  }
-
-  public static Key.UCServiceBy guessUCServiceBy(String value) {
-    if (Provisioning.isUUID(value)) {
-      return Key.UCServiceBy.id;
-    }
-    return Key.UCServiceBy.name;
   }
 
   public static Key.CalendarResourceBy guessCalendarResourceBy(String value) {
@@ -6034,21 +5891,6 @@ public class ProvUtil implements HttpDebugListener {
     }
 
     console.println();
-  }
-
-  private void doUpdatePresenceSessionId(String[] args) throws ServiceException {
-
-    String idOrName = args[1];
-    String username = args[2];
-    String password = args[3];
-
-    UCService ucService = lookupUCService(idOrName);
-
-    /*
-     * soap only
-     */
-    String newSessionId = prov.updatePresenceSessionId(ucService.getId(), username, password);
-    console.println(newSessionId);
   }
 
   private void doGetAllFreeBusyProviders() throws ServiceException, IOException, HttpException {

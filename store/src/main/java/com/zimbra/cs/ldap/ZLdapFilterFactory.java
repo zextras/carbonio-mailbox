@@ -65,7 +65,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     ALL_NON_SYSTEM_ARCHIVING_ACCOUNTS(SINGLETON.allNonSystemArchivingAccounts()),
     ALL_NON_SYSTEM_INTERNAL_ACCOUNTS(SINGLETON.allNonSystemInternalAccounts()),
     ALL_SERVERS(SINGLETON.allServers()),
-    ALL_UC_SERVICES(SINGLETON.allUCServices()),
     ALL_SIGNATURES(SINGLETON.allSignatures()),
     ALL_XMPP_COMPONENTS(SINGLETON.allXMPPComponents()),
     ALL_ZIMLETS(SINGLETON.allZimlets()),
@@ -130,7 +129,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
 
     SERVER_BY_ID(SINGLETON.serverById("{SERVER-ID}")),
     SERVER_BY_SERVICE(SINGLETON.serverByService("{SERVICE}")),
-    UC_SERVICE_BY_ID(SINGLETON.ucServiceById("{SERVER-ID}")),
     SHARE_LOCATOR_BY_ID(SINGLETON.shareLocatorById("{SHARE-LOCATOR-ID}")),
     SIGNATURE_BY_ID(SINGLETON.signatureById("{SIGNATURE-ID}")),
     XMPP_COMPONENT_BY_ID(SINGLETON.xmppComponentById("{XMPP-COMPOMENT-ID}")),
@@ -525,13 +523,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
   public abstract ZLdapFilter serverById(String id);
 
   public abstract ZLdapFilter serverByService(String service);
-
-  /*
-   * UC service
-   */
-  public abstract ZLdapFilter allUCServices();
-
-  public abstract ZLdapFilter ucServiceById(String id);
 
   /*
    * share locator

@@ -87,7 +87,6 @@ public enum LdapUsage {
   MODIFY_IDENTITY,
   MODIFY_MIMETYPE,
   MODIFY_SERVER,
-  MODIFY_UCSERVICE,
   MODIFY_SHARELOCATOR,
   MODIFY_SIGNATURE,
   MODIFY_XMPPCOMPONENT,
@@ -152,8 +151,6 @@ public enum LdapUsage {
         return MODIFY_MIMETYPE;
       case SERVER:
         return MODIFY_SERVER;
-      case UCSERVICE:
-        return MODIFY_UCSERVICE;
       case SIGNATURE:
         return MODIFY_SIGNATURE;
       case XMPPCOMPONENT:

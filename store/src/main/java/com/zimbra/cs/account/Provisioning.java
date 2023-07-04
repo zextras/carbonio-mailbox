@@ -10,7 +10,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.account.Key.UCServiceBy;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
@@ -42,7 +41,6 @@ import com.zimbra.soap.admin.type.DistributionListSelector;
 import com.zimbra.soap.admin.type.DomainSelector;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
 import com.zimbra.soap.admin.type.ServerSelector;
-import com.zimbra.soap.admin.type.UCServiceSelector;
 import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.AutoProvPrincipalBy;
 import com.zimbra.soap.type.GalSearchType;
@@ -244,8 +242,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
   public static final int SD_SERVER_FLAG = 0x40;
 
-  public static final int SD_UC_SERVICE_FLAG = 0x80;
-
   /** return coses from searchDirectory */
   public static final int SD_DYNAMIC_GROUP_FLAG = 0x100;
 
@@ -373,7 +369,8 @@ public abstract class Provisioning extends ZAttrProvisioning {
    *       attr is updated
    * </ul>
    *
-   * Calls {@link #modifyAttrs(com.zimbra.cs.account.Entry, java.util.Map, boolean)} with <code>checkImmutable=false</code>.
+   * Calls {@link #modifyAttrs(com.zimbra.cs.account.Entry, java.util.Map, boolean)} with <code>
+   * checkImmutable=false</code>.
    */
   public void modifyAttrs(Entry e, Map<String, ? extends Object> attrs) throws ServiceException {
     modifyAttrs(e, attrs, false);
@@ -1385,15 +1382,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   }
 
   /**
-   * @param ucService
-   * @return may return null
-   */
-  public static UCServiceSelector getSelector(UCService ucService) {
-    if (ucService == null) return null;
-    return UCServiceSelector.fromId(ucService.getId());
-  }
-
-  /**
    * @param acct
    * @return may return null
    */
@@ -1633,25 +1621,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   }
 
   public abstract void deleteServer(String zimbraId) throws ServiceException;
-
-  /*
-   * UC service
-   */
-  public abstract UCService createUCService(String name, Map<String, Object> attrs)
-      throws ServiceException;
-
-  public abstract void deleteUCService(String zimbraId) throws ServiceException;
-
-  public abstract UCService get(UCServiceBy keyName, String key) throws ServiceException;
-
-  public abstract List<UCService> getAllUCServices() throws ServiceException;
-
-  public abstract void renameUCService(String zimbraId, String newName) throws ServiceException;
-
-  public String updatePresenceSessionId(String zimbraId, String username, String password)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
 
   /*
    * ==============================
@@ -2567,8 +2536,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     throw ServiceException.UNSUPPORTED();
   }
 
-  public long countObjects(CountObjectsType type, Domain domain, UCService ucService)
-      throws ServiceException {
+  public long countObjects(CountObjectsType type, Domain domain) throws ServiceException {
     throw ServiceException.UNSUPPORTED();
   }
 

@@ -578,23 +578,6 @@ public class LdapDIT {
 
   /*
    * ==========
-   *   UC service
-   * ==========
-   */
-  public String ucServiceBaseDN() {
-    return BASE_DN_UCSERVICE;
-  }
-
-  public String ucServiceNameToDN(String name) {
-    return NAMING_RDN_ATTR_UCSERVICE
-        + "="
-        + LdapUtil.escapeRDNValue(name)
-        + ","
-        + BASE_DN_UCSERVICE;
-  }
-
-  /*
-   * ==========
    *   share locator
    * ==========
    */
@@ -766,7 +749,6 @@ public class LdapDIT {
     boolean domains = (flags & Provisioning.SD_DOMAIN_FLAG) != 0;
     boolean coses = (flags & Provisioning.SD_COS_FLAG) != 0;
     boolean servers = (flags & Provisioning.SD_SERVER_FLAG) != 0;
-    boolean ucservices = (flags & Provisioning.SD_UC_SERVICE_FLAG) != 0;
     boolean habgroups = (flags & Provisioning.SD_HAB_FLAG) != 0;
 
     if (accounts || aliases || lists || dynamicgroups || calendarResources) {
@@ -787,10 +769,6 @@ public class LdapDIT {
 
     if (servers) {
       addBase(bases, serverBaseDN());
-    }
-
-    if (ucservices) {
-      addBase(bases, ucServiceBaseDN());
     }
 
     return bases.toArray(new String[0]);

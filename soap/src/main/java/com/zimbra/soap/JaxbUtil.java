@@ -516,8 +516,6 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.GetSyncStateResponse.class,
           com.zimbra.soap.admin.message.GetSystemRetentionPolicyRequest.class,
           com.zimbra.soap.admin.message.GetSystemRetentionPolicyResponse.class,
-          com.zimbra.soap.admin.message.GetUCServiceRequest.class,
-          com.zimbra.soap.admin.message.GetUCServiceResponse.class,
           com.zimbra.soap.admin.message.GetVersionInfoRequest.class,
           com.zimbra.soap.admin.message.GetVersionInfoResponse.class,
           com.zimbra.soap.admin.message.GetVolumeRequest.class,

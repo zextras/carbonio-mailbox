@@ -50,7 +50,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
   private static Filter FILTER_ALL_NON_SYSTEM_ARCHIVING_ACCOUNTS;
   private static Filter FILTER_ALL_NON_SYSTEM_INTERNAL_ACCOUNTS;
   private static Filter FILTER_ALL_SERVERS;
-  private static Filter FILTER_ALL_UC_SERVICES;
   private static Filter FILTER_ALL_SHARE_LOCATORS;
   private static Filter FILTER_ALL_SIGNATURES;
   private static Filter FILTER_ALL_XMPP_COMPONENTS;
@@ -141,10 +140,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
 
     FILTER_ALL_SERVERS =
         Filter.createEqualityFilter(LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraServer);
-
-    FILTER_ALL_UC_SERVICES =
-        Filter.createEqualityFilter(
-            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraUCService);
 
     FILTER_ALL_SHARE_LOCATORS =
         Filter.createEqualityFilter(
@@ -931,22 +926,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
         Filter.createANDFilter(
             FILTER_ALL_SERVERS,
             Filter.createEqualityFilter(Provisioning.A_zimbraServiceEnabled, service)));
-  }
-
-  /*
-   * UC service
-   */
-  @Override
-  public ZLdapFilter allUCServices() {
-    return new UBIDLdapFilter(FilterId.ALL_UC_SERVICES, FILTER_ALL_UC_SERVICES);
-  }
-
-  @Override
-  public ZLdapFilter ucServiceById(String id) {
-    return new UBIDLdapFilter(
-        FilterId.UC_SERVICE_BY_ID,
-        Filter.createANDFilter(
-            Filter.createEqualityFilter(Provisioning.A_zimbraId, id), FILTER_ALL_UC_SERVICES));
   }
 
   /*

@@ -525,6 +525,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * call control service URL for the UC service
      *
      * @return zimbraUCCallControlURL, or null if unset
@@ -537,6 +538,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * call control service URL for the UC service
      *
      * @param zimbraUCCallControlURL new value
@@ -552,6 +554,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * call control service URL for the UC service
      *
      * @param zimbraUCCallControlURL new value
@@ -568,6 +571,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * call control service URL for the UC service
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -582,6 +586,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * call control service URL for the UC service
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -597,6 +602,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * presence session id for Cisco presence service
      *
      * @return zimbraUCPresenceSessionId, or null if unset
@@ -609,6 +615,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * presence session id for Cisco presence service
      *
      * @param zimbraUCPresenceSessionId new value
@@ -624,6 +631,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * presence session id for Cisco presence service
      *
      * @param zimbraUCPresenceSessionId new value
@@ -640,6 +648,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * presence session id for Cisco presence service
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -654,6 +663,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * presence session id for Cisco presence service
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -669,6 +679,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * presence service URL for the UC service
      *
      * @return zimbraUCPresenceURL, or null if unset
@@ -681,6 +692,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * presence service URL for the UC service
      *
      * @param zimbraUCPresenceURL new value
@@ -696,6 +708,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * presence service URL for the UC service
      *
      * @param zimbraUCPresenceURL new value
@@ -712,6 +725,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * presence service URL for the UC service
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -726,6 +740,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * presence service URL for the UC service
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -741,6 +756,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * provider for the UC service
      *
      * @return zimbraUCProvider, or null if unset
@@ -753,6 +769,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * provider for the UC service
      *
      * @param zimbraUCProvider new value
@@ -768,6 +785,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * provider for the UC service
      *
      * @param zimbraUCProvider new value
@@ -784,6 +802,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * provider for the UC service
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -798,6 +817,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * provider for the UC service
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -813,6 +833,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * user info service URL for the UC service
      *
      * @return zimbraUCUserURL, or null if unset
@@ -825,6 +846,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * user info service URL for the UC service
      *
      * @param zimbraUCUserURL new value
@@ -840,6 +862,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * user info service URL for the UC service
      *
      * @param zimbraUCUserURL new value
@@ -856,6 +879,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * user info service URL for the UC service
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -870,6 +894,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * user info service URL for the UC service
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -885,6 +910,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * voicemail service URL for the UC service
      *
      * @return zimbraUCVoicemailURL, or null if unset
@@ -897,6 +923,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * voicemail service URL for the UC service
      *
      * @param zimbraUCVoicemailURL new value
@@ -912,6 +939,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * voicemail service URL for the UC service
      *
      * @param zimbraUCVoicemailURL new value
@@ -928,6 +956,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * voicemail service URL for the UC service
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -942,6 +971,7 @@ public abstract class ZAttrUCService extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
      * voicemail service URL for the UC service
      *
      * @param attrs existing map to populate, or null to create a new map
