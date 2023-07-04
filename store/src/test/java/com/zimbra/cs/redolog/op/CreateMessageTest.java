@@ -4,6 +4,8 @@
 
 package com.zimbra.cs.redolog.op;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import com.zimbra.cs.account.Account;
@@ -22,22 +24,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CreateMessageTest {
     private CreateMessage op;
     private Mailbox mbox;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Account account = Provisioning.getInstance().createAccount(
             "test@zimbra.com", "secret", new HashMap<String, Object>());
@@ -56,49 +57,48 @@ public class CreateMessageTest {
         op.setConvId(-1);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void startSetsTimestamp() {
-        Assert.assertEquals("receivedDate != -1 before start",
-                            -1, op.mReceivedDate);
-        op.start(7);
-        Assert.assertEquals("receivedDate != 7", 7, op.mReceivedDate);
-        Assert.assertEquals("timestamp != 7", 7, op.getTimestamp());
-    }
+ @Test
+ void startSetsTimestamp() {
+  assertEquals(-1, op.mReceivedDate, "receivedDate != -1 before start");
+  op.start(7);
+  assertEquals(7, op.mReceivedDate, "receivedDate != 7");
+  assertEquals(7, op.getTimestamp(), "timestamp != 7");
+ }
 
-    @Test
-    public void serializeDeserialize() throws Exception {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        op.serializeData(new RedoLogOutput(out));
+ @Test
+ void serializeDeserialize() throws Exception {
+  ByteArrayOutputStream out = new ByteArrayOutputStream();
+  op.serializeData(new RedoLogOutput(out));
 
-        // reset op
-        op = new CreateMessage();
-        op.deserializeData(
-            new RedoLogInput(new ByteArrayInputStream(out.toByteArray())));
-        Assert.assertEquals("rcpt@example.com", op.getRcptEmail());
-        Assert.assertEquals(6, op.getFolderId());
-        Assert.assertEquals(0, op.getFlags());
-        Assert.assertEquals(new String[] {"tag"}, op.getTags());
-        Assert.assertEquals(":streamed:", op.getPath());
-        Assert.assertEquals("Input stream is not empty", "",
-                            CharStreams.toString(new InputStreamReader(
-                                op.getAdditionalDataStream(), Charsets.UTF_8)));
-    }
+  // reset op
+  op = new CreateMessage();
+  op.deserializeData(
+    new RedoLogInput(new ByteArrayInputStream(out.toByteArray())));
+  assertEquals("rcpt@example.com", op.getRcptEmail());
+  assertEquals(6, op.getFolderId());
+  assertEquals(0, op.getFlags());
+  assertArrayEquals(new String[]{"tag"}, op.getTags());
+  assertEquals(":streamed:", op.getPath());
+  assertEquals("",
+    CharStreams.toString(new InputStreamReader(
+      op.getAdditionalDataStream(), Charsets.UTF_8)),
+    "Input stream is not empty");
+ }
 
-    @Test
-    public void redo() throws Exception {
-        op.redo();
+ @Test
+ void redo() throws Exception {
+  op.redo();
 
-        // Look in the mailbox and see if the message is there.
-        Message msg =
-            mbox.getMessageById(op.getOperationContext(), mbox.getLastItemId());
-        Assert.assertEquals("subject != test", "test", msg.getSubject());
-        Assert.assertEquals("sender != bob@example.com",
-                            "Bob Evans <bob@example.com>", msg.getSender());
-        Assert.assertEquals("folderId != 6", 6, msg.getFolderId());
-    }
+  // Look in the mailbox and see if the message is there.
+  Message msg =
+    mbox.getMessageById(op.getOperationContext(), mbox.getLastItemId());
+  assertEquals("test", msg.getSubject(), "subject != test");
+  assertEquals("Bob Evans <bob@example.com>", msg.getSender(), "sender != bob@example.com");
+  assertEquals(6, msg.getFolderId(), "folderId != 6");
+ }
 }

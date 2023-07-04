@@ -32,9 +32,9 @@ import com.zimbra.common.util.ZimbraLog;
  * /service, /soap, /zimbra, or /zimbraAdmin from monopolizing all threads in the current pool.
  */
 public class ContextPathBasedThreadPoolBalancerFilter implements Filter {
-    final static String RULES_INIT_PARAM = "Rules";
-    final static String SUSPEND_INIT_PARAM = "suspendMs";
-    final static long DEFAULT_SUSPEND_MS = 1000;
+    static final String RULES_INIT_PARAM = "Rules";
+    static final String SUSPEND_INIT_PARAM = "suspendMs";
+    static final long DEFAULT_SUSPEND_MS = 1000;
     ConcurrentHashMap<String, AtomicInteger> activeRequestsByContextPath = new ConcurrentHashMap<String, AtomicInteger>();
     ConcurrentHashMap<String, Rules> rulesByContextPath = new ConcurrentHashMap<String, Rules>();
     QueuedThreadPool queuedThreadPool = null;

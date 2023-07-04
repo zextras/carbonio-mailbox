@@ -116,8 +116,25 @@
     </dependency>
 
     <dependency>
-      <artifactId>junit</artifactId>
-      <groupId>junit</groupId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <version>2.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>2.2</version>
       <scope>test</scope>
     </dependency>
 
@@ -400,6 +417,17 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
     </dependency>
+    <!-- Note this should be provided in container classpath -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <!-- Needed to bridge log4j -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -407,16 +435,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <!-- Note this should be provided in container classpath -->
-    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
+      <artifactId>log4j-slf4j-impl</artifactId>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
@@ -441,12 +464,6 @@
     <dependency>
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>zextras</groupId>
-      <artifactId>store-extra-runtime-dependencies</artifactId>
-      <type>pom</type>
-      <scope>runtime</scope>
     </dependency>
     <!-- DI -->
     <dependency>
@@ -476,13 +493,22 @@
       <artifactId>simpleclient_hotspot</artifactId>
     </dependency>
 
-    <!-- Old deprecated dependencies -->
+    <!-- Mockserver -->
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-netty</artifactId>
+      <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-client-java</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>

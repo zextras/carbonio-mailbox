@@ -14,14 +14,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.zimbra.common.localconfig.LC;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.imap.AppendMessage.Part;
@@ -38,12 +39,12 @@ public class ImapCommandThrottleTest {
     ImapCredentials creds = null;
     private static final String LOCAL_USER = "localimaptest@zimbra.com";
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
         Provisioning prov = Provisioning.getInstance();
@@ -54,38 +55,38 @@ public class ImapCommandThrottleTest {
         creds = new ImapCredentials(acct, ImapCredentials.EnabledHack.NONE);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void repeatCommand() {
-        int limit = 25;
-        ImapCommandThrottle throttle = new ImapCommandThrottle(limit);
+ @Test
+ void repeatCommand() {
+  int limit = 25;
+  ImapCommandThrottle throttle = new ImapCommandThrottle(limit);
 
-        for (int i = 0; i < limit; i++) {
-            MockImapCommand command = new MockImapCommand("p1", "p3", 123);
-            Assert.assertFalse(throttle.isCommandThrottled(command));
-        }
-        MockImapCommand command = new MockImapCommand("p1", "p3", 123);
-        Assert.assertTrue(throttle.isCommandThrottled(command));
-    }
+  for (int i = 0; i < limit; i++) {
+   MockImapCommand command = new MockImapCommand("p1", "p3", 123);
+   assertFalse(throttle.isCommandThrottled(command));
+  }
+  MockImapCommand command = new MockImapCommand("p1", "p3", 123);
+  assertTrue(throttle.isCommandThrottled(command));
+ }
 
-    @Test
-    public void repeatUnderLimit() {
-        int limit = 55;
-        ImapCommandThrottle throttle = new ImapCommandThrottle(limit);
+ @Test
+ void repeatUnderLimit() {
+  int limit = 55;
+  ImapCommandThrottle throttle = new ImapCommandThrottle(limit);
 
-        for (int i = 0; i < limit; i++) {
-            MockImapCommand command = new MockImapCommand("p1", "p3", 123);
-            Assert.assertFalse(throttle.isCommandThrottled(command));
-        }
-        MockImapCommand command = new MockImapCommand("p2", "p3", 1234);
-        Assert.assertFalse(throttle.isCommandThrottled(command));
-        command = new MockImapCommand("p1", "p3", 123);
-        Assert.assertFalse(throttle.isCommandThrottled(command));
-    }
+  for (int i = 0; i < limit; i++) {
+   MockImapCommand command = new MockImapCommand("p1", "p3", 123);
+   assertFalse(throttle.isCommandThrottled(command));
+  }
+  MockImapCommand command = new MockImapCommand("p2", "p3", 1234);
+  assertFalse(throttle.isCommandThrottled(command));
+  command = new MockImapCommand("p1", "p3", 123);
+  assertFalse(throttle.isCommandThrottled(command));
+ }
 
     private QResyncInfo makeQri() {
         QResyncInfo qri = new QResyncInfo();
@@ -97,54 +98,54 @@ public class ImapCommandThrottleTest {
         return qri;
     }
 
-    @Test
-    public void select() {
-        String pathName = "testfolder";
+ @Test
+ void select() {
+  String pathName = "testfolder";
 
-        SelectCommand select = new SelectCommand(new ImapPath(pathName, creds), (byte) 123, makeQri());
+  SelectCommand select = new SelectCommand(new ImapPath(pathName, creds), (byte) 123, makeQri());
 
-        Assert.assertTrue("same obj", select.isDuplicate(select));
+  assertTrue(select.isDuplicate(select), "same obj");
 
-        SelectCommand select2 = new SelectCommand(new ImapPath(pathName, creds), (byte) 123, makeQri());
-        Assert.assertTrue("diff obj same fields", select.isDuplicate(select2));
+  SelectCommand select2 = new SelectCommand(new ImapPath(pathName, creds), (byte) 123, makeQri());
+  assertTrue(select.isDuplicate(select2), "diff obj same fields");
 
-        SelectCommand select3 = new SelectCommand(new ImapPath(pathName + "foo", creds), (byte) 123, makeQri());
-        Assert.assertFalse("different path", select.isDuplicate(select3));
+  SelectCommand select3 = new SelectCommand(new ImapPath(pathName + "foo", creds), (byte) 123, makeQri());
+  assertFalse(select.isDuplicate(select3), "different path");
 
-        SelectCommand select4 = new SelectCommand(new ImapPath(pathName, creds), (byte) 101, makeQri());
-        Assert.assertFalse("different params", select.isDuplicate(select4));
+  SelectCommand select4 = new SelectCommand(new ImapPath(pathName, creds), (byte) 101, makeQri());
+  assertFalse(select.isDuplicate(select4), "different params");
 
-        QResyncInfo qri = makeQri();
-        qri.setKnownUIDs("foo");
-        SelectCommand select5 = new SelectCommand(new ImapPath(pathName, creds), (byte) 123, qri);
-        Assert.assertFalse("different qri", select.isDuplicate(select5));
-    }
+  QResyncInfo qri = makeQri();
+  qri.setKnownUIDs("foo");
+  SelectCommand select5 = new SelectCommand(new ImapPath(pathName, creds), (byte) 123, qri);
+  assertFalse(select.isDuplicate(select5), "different qri");
+ }
 
-    @Test
-    public void examine() {
-        String pathName = "testfolder";
+ @Test
+ void examine() {
+  String pathName = "testfolder";
 
-        ExamineCommand examine = new ExamineCommand(new ImapPath(pathName, creds), (byte) 123, makeQri());
+  ExamineCommand examine = new ExamineCommand(new ImapPath(pathName, creds), (byte) 123, makeQri());
 
-        Assert.assertTrue("same obj", examine.isDuplicate(examine));
+  assertTrue(examine.isDuplicate(examine), "same obj");
 
-        SelectCommand select = new SelectCommand(new ImapPath(pathName, creds), (byte) 123, makeQri());
-        Assert.assertFalse("select vs examine", examine.isDuplicate(select));
+  SelectCommand select = new SelectCommand(new ImapPath(pathName, creds), (byte) 123, makeQri());
+  assertFalse(examine.isDuplicate(select), "select vs examine");
 
-        ExamineCommand examine2 = new ExamineCommand(new ImapPath(pathName, creds), (byte) 123, makeQri());
-        Assert.assertTrue("diff obj same fields", examine.isDuplicate(examine2));
+  ExamineCommand examine2 = new ExamineCommand(new ImapPath(pathName, creds), (byte) 123, makeQri());
+  assertTrue(examine.isDuplicate(examine2), "diff obj same fields");
 
-        ExamineCommand examine3 = new ExamineCommand(new ImapPath(pathName + "foo", creds), (byte) 123, makeQri());
-        Assert.assertFalse("different path", examine.isDuplicate(examine3));
+  ExamineCommand examine3 = new ExamineCommand(new ImapPath(pathName + "foo", creds), (byte) 123, makeQri());
+  assertFalse(examine.isDuplicate(examine3), "different path");
 
-        ExamineCommand examine4 = new ExamineCommand(new ImapPath(pathName, creds), (byte) 101, makeQri());
-        Assert.assertFalse("different params", examine.isDuplicate(examine4));
+  ExamineCommand examine4 = new ExamineCommand(new ImapPath(pathName, creds), (byte) 101, makeQri());
+  assertFalse(examine.isDuplicate(examine4), "different params");
 
-        QResyncInfo qri = makeQri();
-        qri.setKnownUIDs("foo");
-        ExamineCommand examine5 = new ExamineCommand(new ImapPath(pathName, creds), (byte) 123, qri);
-        Assert.assertFalse("different qri", examine.isDuplicate(examine5));
-    }
+  QResyncInfo qri = makeQri();
+  qri.setKnownUIDs("foo");
+  ExamineCommand examine5 = new ExamineCommand(new ImapPath(pathName, creds), (byte) 123, qri);
+  assertFalse(examine.isDuplicate(examine5), "different qri");
+ }
 
     private List<ImapPartSpecifier> makeParts() {
         List<ImapPartSpecifier> parts = new ArrayList<ImapPartSpecifier>();
@@ -158,104 +159,104 @@ public class ImapCommandThrottleTest {
         return parts;
     }
 
-    @Test
-    public void fetch() {
-        String sequence = "1:*";
-        int attributes = 123;
-        List<ImapPartSpecifier> parts = makeParts();
-        FetchCommand fetch = new FetchCommand(sequence, attributes, parts);
+ @Test
+ void fetch() {
+  String sequence = "1:*";
+  int attributes = 123;
+  List<ImapPartSpecifier> parts = makeParts();
+  FetchCommand fetch = new FetchCommand(sequence, attributes, parts);
 
-        Assert.assertTrue("same obj", fetch.isDuplicate(fetch));
+  assertTrue(fetch.isDuplicate(fetch), "same obj");
 
-        FetchCommand fetch2 = new FetchCommand(sequence, attributes, parts);
-        Assert.assertTrue("same args, different obj", fetch.isDuplicate(fetch2));
+  FetchCommand fetch2 = new FetchCommand(sequence, attributes, parts);
+  assertTrue(fetch.isDuplicate(fetch2), "same args, different obj");
 
-        FetchCommand fetch3 = new FetchCommand(sequence + "foo", attributes, parts);
-        Assert.assertFalse("different sequence", fetch.isDuplicate(fetch3));
+  FetchCommand fetch3 = new FetchCommand(sequence + "foo", attributes, parts);
+  assertFalse(fetch.isDuplicate(fetch3), "different sequence");
 
-        FetchCommand fetch4 = new FetchCommand(sequence, attributes + 1, parts);
-        Assert.assertFalse("different attributes", fetch.isDuplicate(fetch4));
+  FetchCommand fetch4 = new FetchCommand(sequence, attributes + 1, parts);
+  assertFalse(fetch.isDuplicate(fetch4), "different attributes");
 
-        FetchCommand fetch5 = new FetchCommand(sequence, attributes, null);
-        Assert.assertFalse("null parts", fetch.isDuplicate(fetch5));
+  FetchCommand fetch5 = new FetchCommand(sequence, attributes, null);
+  assertFalse(fetch.isDuplicate(fetch5), "null parts");
 
-        List<ImapPartSpecifier> p2 = makeParts();
-        p2.add(new ImapPartSpecifier("cmd3", "part1", "modifier1"));
-        FetchCommand fetch6 = new FetchCommand(sequence, attributes, p2);
-        Assert.assertFalse("different length parts", fetch.isDuplicate(fetch6));
+  List<ImapPartSpecifier> p2 = makeParts();
+  p2.add(new ImapPartSpecifier("cmd3", "part1", "modifier1"));
+  FetchCommand fetch6 = new FetchCommand(sequence, attributes, p2);
+  assertFalse(fetch.isDuplicate(fetch6), "different length parts");
 
-        List<ImapPartSpecifier> p3 = makeParts();
-        p3.add(p3.remove(0));
-        FetchCommand fetch7 = new FetchCommand(sequence, attributes, p3);
-        Assert.assertTrue("same parts; different order - should be a duplicate", fetch.isDuplicate(fetch7));
+  List<ImapPartSpecifier> p3 = makeParts();
+  p3.add(p3.remove(0));
+  FetchCommand fetch7 = new FetchCommand(sequence, attributes, p3);
+  assertTrue(fetch.isDuplicate(fetch7), "same parts; different order - should be a duplicate");
 
-        List<ImapPartSpecifier> p4 = makeParts();
-        ImapPartSpecifier headerPart = p4.get(1);
-        List<String> headers = new ArrayList<String>();
-        headers.add("h1");
-        headers.add("h3");
-        headerPart.setHeaders(headers);
-        FetchCommand fetch8 = new FetchCommand(sequence, attributes, p4);
-        Assert.assertFalse("same lengths, different headers", fetch.isDuplicate(fetch8));
+  List<ImapPartSpecifier> p4 = makeParts();
+  ImapPartSpecifier headerPart = p4.get(1);
+  List<String> headers = new ArrayList<String>();
+  headers.add("h1");
+  headers.add("h3");
+  headerPart.setHeaders(headers);
+  FetchCommand fetch8 = new FetchCommand(sequence, attributes, p4);
+  assertFalse(fetch.isDuplicate(fetch8), "same lengths, different headers");
 
-        List<ImapPartSpecifier> p5 = makeParts();
-        p5.remove(0);
-        ImapPartSpecifier newPart = new ImapPartSpecifier("cmd2", "part1", "modifier1");
-        p5.add(newPart);
-        FetchCommand fetch9 = new FetchCommand(sequence, attributes, p5);
-        Assert.assertFalse("different part.command, same length", fetch.isDuplicate(fetch9));
+  List<ImapPartSpecifier> p5 = makeParts();
+  p5.remove(0);
+  ImapPartSpecifier newPart = new ImapPartSpecifier("cmd2", "part1", "modifier1");
+  p5.add(newPart);
+  FetchCommand fetch9 = new FetchCommand(sequence, attributes, p5);
+  assertFalse(fetch.isDuplicate(fetch9), "different part.command, same length");
 
-        List<ImapPartSpecifier> p6 = makeParts();
-        p6.remove(0);
-        newPart = new ImapPartSpecifier("cmd1", "part2", "modifier1");
-        p6.add(newPart);
-        FetchCommand fetch10 = new FetchCommand(sequence, attributes, p6);
-        Assert.assertFalse("different part.part, same length", fetch.isDuplicate(fetch10));
+  List<ImapPartSpecifier> p6 = makeParts();
+  p6.remove(0);
+  newPart = new ImapPartSpecifier("cmd1", "part2", "modifier1");
+  p6.add(newPart);
+  FetchCommand fetch10 = new FetchCommand(sequence, attributes, p6);
+  assertFalse(fetch.isDuplicate(fetch10), "different part.part, same length");
 
-        List<ImapPartSpecifier> p7 = makeParts();
-        p7.remove(0);
-        newPart = new ImapPartSpecifier("cmd1", "part1", "modifier2");
-        p7.add(newPart);
-        FetchCommand fetch11 = new FetchCommand(sequence, attributes, p7);
-        Assert.assertFalse("different part.modifier, same length", fetch.isDuplicate(fetch11));
-    }
+  List<ImapPartSpecifier> p7 = makeParts();
+  p7.remove(0);
+  newPart = new ImapPartSpecifier("cmd1", "part1", "modifier2");
+  p7.add(newPart);
+  FetchCommand fetch11 = new FetchCommand(sequence, attributes, p7);
+  assertFalse(fetch.isDuplicate(fetch11), "different part.modifier, same length");
+ }
 
-    @Test
-    public void fetchBug68556() {
-        ImapPartSpecifier part = new ImapPartSpecifier("BODY", "", "HEADER.FIELDS");
-        List<String> headers = new ArrayList<String>();
-        headers.add("CONTENT-CLASS");
-        part.setHeaders(headers);
-        Assert.assertTrue("Exchange header detected", part.isIgnoredExchangeHeader());
+ @Test
+ void fetchBug68556() {
+  ImapPartSpecifier part = new ImapPartSpecifier("BODY", "", "HEADER.FIELDS");
+  List<String> headers = new ArrayList<String>();
+  headers.add("CONTENT-CLASS");
+  part.setHeaders(headers);
+  assertTrue(part.isIgnoredExchangeHeader(), "Exchange header detected");
 
-        List<ImapPartSpecifier> parts = new ArrayList<ImapPartSpecifier>();
-        parts.add(part);
+  List<ImapPartSpecifier> parts = new ArrayList<ImapPartSpecifier>();
+  parts.add(part);
 
-        ImapCommand command = new FetchCommand("1:123", ImapHandler.FETCH_FROM_CACHE, parts);
+  ImapCommand command = new FetchCommand("1:123", ImapHandler.FETCH_FROM_CACHE, parts);
 
-        Assert.assertFalse("Fetch not throttled, just truncated parts", command.throttle(null));
+  assertFalse(command.throttle(null), "Fetch not throttled, just truncated parts");
 
-        Assert.assertTrue("CONTENT-CLASS removed", parts.isEmpty());
-    }
+  assertTrue(parts.isEmpty(), "CONTENT-CLASS removed");
+ }
 
-    @Test
-    public void copy() {
-        String destFolder = "destFolder";
-        String sequenceSet = "10:20";
+ @Test
+ void copy() {
+  String destFolder = "destFolder";
+  String sequenceSet = "10:20";
 
-        CopyCommand copy = new CopyCommand(sequenceSet, new ImapPath(destFolder, creds));
+  CopyCommand copy = new CopyCommand(sequenceSet, new ImapPath(destFolder, creds));
 
-        Assert.assertTrue("same obj", copy.isDuplicate(copy));
+  assertTrue(copy.isDuplicate(copy), "same obj");
 
-        CopyCommand copy2 = new CopyCommand(sequenceSet, new ImapPath(destFolder, creds));
-        Assert.assertTrue("diff obj same fields", copy.isDuplicate(copy2));
+  CopyCommand copy2 = new CopyCommand(sequenceSet, new ImapPath(destFolder, creds));
+  assertTrue(copy.isDuplicate(copy2), "diff obj same fields");
 
-        CopyCommand copy3 = new CopyCommand(sequenceSet, new ImapPath(destFolder + "foo", creds));
-        Assert.assertFalse("diff dest path", copy.isDuplicate(copy3));
+  CopyCommand copy3 = new CopyCommand(sequenceSet, new ImapPath(destFolder + "foo", creds));
+  assertFalse(copy.isDuplicate(copy3), "diff dest path");
 
-        CopyCommand copy4 = new CopyCommand("20:30", new ImapPath(destFolder + "foo", creds));
-        Assert.assertFalse("diff dest path", copy.isDuplicate(copy4));
-    }
+  CopyCommand copy4 = new CopyCommand("20:30", new ImapPath(destFolder + "foo", creds));
+  assertFalse(copy.isDuplicate(copy4), "diff dest path");
+ }
 
     private Part makeAppendPart(AppendMessage append, int size, byte fillByte) throws IOException {
         Literal literal = Literal.newInstance(size);
@@ -290,84 +291,84 @@ public class ImapCommandThrottleTest {
         return list;
     }
 
-    @Test
-    public void append() throws Exception {
-        String path = "testPath";
-        AppendCommand append = new AppendCommand(new ImapPath(path, creds), makeAppends());
+ @Test
+ void append() throws Exception {
+  String path = "testPath";
+  AppendCommand append = new AppendCommand(new ImapPath(path, creds), makeAppends());
 
-        Assert.assertTrue("same obj", append.isDuplicate(append));
+  assertTrue(append.isDuplicate(append), "same obj");
 
-        AppendCommand append2 = new AppendCommand(new ImapPath(path, creds), makeAppends());
-        Assert.assertTrue("diff obj same params", append.isDuplicate(append2));
+  AppendCommand append2 = new AppendCommand(new ImapPath(path, creds), makeAppends());
+  assertTrue(append.isDuplicate(append2), "diff obj same params");
 
-        AppendCommand append3 = new AppendCommand(new ImapPath(path + "foo", creds), makeAppends());
-        Assert.assertFalse("different path", append.isDuplicate(append3));
+  AppendCommand append3 = new AppendCommand(new ImapPath(path + "foo", creds), makeAppends());
+  assertFalse(append.isDuplicate(append3), "different path");
 
-        List<AppendMessage> appends = makeAppends();
-        appends.remove(0);
-        AppendCommand append4 = new AppendCommand(new ImapPath(path, creds), appends);
-        Assert.assertFalse("different length appends", append.isDuplicate(append4));
+  List<AppendMessage> appends = makeAppends();
+  appends.remove(0);
+  AppendCommand append4 = new AppendCommand(new ImapPath(path, creds), appends);
+  assertFalse(append.isDuplicate(append4), "different length appends");
 
-        appends = makeAppends();
-        AppendMessage appendMsg = appends.remove(0);
-        List<Part> parts = new ArrayList<Part>();
-        AppendMessage appendMsg2 = new AppendMessage(appendMsg.getPersistentFlagNames(), appendMsg.getDate(), parts);
-        parts.add(makeAppendPart(appendMsg2, 215, (byte) 215));
+  appends = makeAppends();
+  AppendMessage appendMsg = appends.remove(0);
+  List<Part> parts = new ArrayList<Part>();
+  AppendMessage appendMsg2 = new AppendMessage(appendMsg.getPersistentFlagNames(), appendMsg.getDate(), parts);
+  parts.add(makeAppendPart(appendMsg2, 215, (byte) 215));
 
-        appends.add(0, appendMsg2);
-        AppendCommand append5 = new AppendCommand(new ImapPath(path, creds), appends);
-        Assert.assertFalse("different append parts", append.isDuplicate(append5));
+  appends.add(0, appendMsg2);
+  AppendCommand append5 = new AppendCommand(new ImapPath(path, creds), appends);
+  assertFalse(append.isDuplicate(append5), "different append parts");
 
-        parts = new ArrayList<Part>();
-        appendMsg2 = new AppendMessage(appendMsg.getPersistentFlagNames(), new Date(), parts);
-        parts.add(makeAppendPart(appendMsg2, 123, (byte) 99));
-        appends.remove(0);
-        appends.add(0, appendMsg2);
-        AppendCommand append6 = new AppendCommand(new ImapPath(path, creds), appends);
-        Assert.assertFalse("different date", append.isDuplicate(append6));
+  parts = new ArrayList<Part>();
+  appendMsg2 = new AppendMessage(appendMsg.getPersistentFlagNames(), new Date(), parts);
+  parts.add(makeAppendPart(appendMsg2, 123, (byte) 99));
+  appends.remove(0);
+  appends.add(0, appendMsg2);
+  AppendCommand append6 = new AppendCommand(new ImapPath(path, creds), appends);
+  assertFalse(append.isDuplicate(append6), "different date");
 
-        parts = new ArrayList<Part>();
-        List<String> flagNames = new ArrayList<String>();
-        flagNames.add("F1");
-        flagNames.add("F3");
-        appendMsg2 = new AppendMessage(flagNames, appendMsg.getDate(), parts);
-        parts.add(makeAppendPart(appendMsg2, 123, (byte) 99));
-        appends.remove(0);
-        appends.add(0, appendMsg2);
-        AppendCommand append7 = new AppendCommand(new ImapPath(path, creds), appends);
-        Assert.assertFalse("different flag names", append.isDuplicate(append7));
-    }
+  parts = new ArrayList<Part>();
+  List<String> flagNames = new ArrayList<String>();
+  flagNames.add("F1");
+  flagNames.add("F3");
+  appendMsg2 = new AppendMessage(flagNames, appendMsg.getDate(), parts);
+  parts.add(makeAppendPart(appendMsg2, 123, (byte) 99));
+  appends.remove(0);
+  appends.add(0, appendMsg2);
+  AppendCommand append7 = new AppendCommand(new ImapPath(path, creds), appends);
+  assertFalse(append.isDuplicate(append7), "different flag names");
+ }
 
-    @Test
-    public void list() {
-        String refName = "refName";
-        Set<String> mailboxNames = new HashSet<String>(Arrays.asList(new String[] { "mbox1", "mbox2", "mbox3" }));
-        byte selectOptions = (byte) 24;
-        byte returnOptions = (byte) 38;
-        byte status = (byte) 67;
-        AbstractListCommand list = new ListCommand(refName, mailboxNames, selectOptions, returnOptions, status);
+ @Test
+ void list() {
+  String refName = "refName";
+  Set<String> mailboxNames = new HashSet<String>(Arrays.asList(new String[]{"mbox1", "mbox2", "mbox3"}));
+  byte selectOptions = (byte) 24;
+  byte returnOptions = (byte) 38;
+  byte status = (byte) 67;
+  AbstractListCommand list = new ListCommand(refName, mailboxNames, selectOptions, returnOptions, status);
 
-        Assert.assertTrue("same obj", list.isDuplicate(list));
+  assertTrue(list.isDuplicate(list), "same obj");
 
-        AbstractListCommand list2 = new ListCommand(refName, mailboxNames, selectOptions, returnOptions, status);
-        Assert.assertTrue("same fields", list.isDuplicate(list2));
+  AbstractListCommand list2 = new ListCommand(refName, mailboxNames, selectOptions, returnOptions, status);
+  assertTrue(list.isDuplicate(list2), "same fields");
 
-        list2 = new ListCommand(refName + "foo", mailboxNames, selectOptions, returnOptions, status);
-        Assert.assertFalse("different ref name", list.isDuplicate(list2));
+  list2 = new ListCommand(refName + "foo", mailboxNames, selectOptions, returnOptions, status);
+  assertFalse(list.isDuplicate(list2), "different ref name");
 
-        list2 = new ListCommand(refName, new HashSet<String>(Arrays.asList(new String[] { "mbox1", "mbox2" })),
-                selectOptions, returnOptions, status);
-        Assert.assertFalse("different mailbox names", list.isDuplicate(list2));
+  list2 = new ListCommand(refName, new HashSet<String>(Arrays.asList(new String[]{"mbox1", "mbox2"})),
+    selectOptions, returnOptions, status);
+  assertFalse(list.isDuplicate(list2), "different mailbox names");
 
-        list2 = new ListCommand(refName, mailboxNames, (byte) 99, returnOptions, status);
-        Assert.assertFalse("different selectOptions", list.isDuplicate(list2));
+  list2 = new ListCommand(refName, mailboxNames, (byte) 99, returnOptions, status);
+  assertFalse(list.isDuplicate(list2), "different selectOptions");
 
-        list2 = new ListCommand(refName, mailboxNames, selectOptions, (byte) 99, status);
-        Assert.assertFalse("different returnOptions", list.isDuplicate(list2));
+  list2 = new ListCommand(refName, mailboxNames, selectOptions, (byte) 99, status);
+  assertFalse(list.isDuplicate(list2), "different returnOptions");
 
-        list2 = new ListCommand(refName, mailboxNames, selectOptions, returnOptions, (byte) 99);
-        Assert.assertFalse("different status", list.isDuplicate(list2));
-    }
+  list2 = new ListCommand(refName, mailboxNames, selectOptions, returnOptions, (byte) 99);
+  assertFalse(list.isDuplicate(list2), "different status");
+ }
 
     private ImapSearch makeSearch(String flagName) {
         ImapSearch sequenceSearch = new SequenceSearch("tag", "subseq", true);
@@ -379,65 +380,65 @@ public class ImapCommandThrottleTest {
         return orSearch;
     }
 
-    @Test
-    public void search() {
-        String flagName = "flagName";
+ @Test
+ void search() {
+  String flagName = "flagName";
 
-        SearchCommand search = new SearchCommand(makeSearch(flagName), 123);
+  SearchCommand search = new SearchCommand(makeSearch(flagName), 123);
 
-        Assert.assertTrue("same obj", search.isDuplicate(search));
+  assertTrue(search.isDuplicate(search), "same obj");
 
-        SearchCommand search2 = new SearchCommand(makeSearch(flagName), 123);
-        Assert.assertTrue("same fields", search.isDuplicate(search2));
+  SearchCommand search2 = new SearchCommand(makeSearch(flagName), 123);
+  assertTrue(search.isDuplicate(search2), "same fields");
 
-        search2 = new SearchCommand(makeSearch(flagName), 456);
-        Assert.assertFalse("different options", search.isDuplicate(search2));
+  search2 = new SearchCommand(makeSearch(flagName), 456);
+  assertFalse(search.isDuplicate(search2), "different options");
 
-        search2 = new SearchCommand(makeSearch(flagName + "foo"), 456);
-        Assert.assertFalse("different search params", search.isDuplicate(search2));
-    }
+  search2 = new SearchCommand(makeSearch(flagName + "foo"), 456);
+  assertFalse(search.isDuplicate(search2), "different search params");
+ }
 
-    @Test
-    public void sort() {
-        String flagName = "flagName";
+ @Test
+ void sort() {
+  String flagName = "flagName";
 
-        SortCommand sort = new SortCommand(makeSearch(flagName), 123);
+  SortCommand sort = new SortCommand(makeSearch(flagName), 123);
 
-        Assert.assertTrue("same obj", sort.isDuplicate(sort));
+  assertTrue(sort.isDuplicate(sort), "same obj");
 
-        SortCommand sort2 = new SortCommand(makeSearch(flagName), 123);
-        Assert.assertTrue("same fields", sort.isDuplicate(sort2));
+  SortCommand sort2 = new SortCommand(makeSearch(flagName), 123);
+  assertTrue(sort.isDuplicate(sort2), "same fields");
 
-        sort2 = new SortCommand(makeSearch(flagName), 456);
-        Assert.assertFalse("different options", sort.isDuplicate(sort2));
+  sort2 = new SortCommand(makeSearch(flagName), 456);
+  assertFalse(sort.isDuplicate(sort2), "different options");
 
-        sort2 = new SortCommand(makeSearch(flagName + "foo"), 456);
-        Assert.assertFalse("different search params", sort.isDuplicate(sort2));
+  sort2 = new SortCommand(makeSearch(flagName + "foo"), 456);
+  assertFalse(sort.isDuplicate(sort2), "different search params");
 
-        SearchCommand search = new SearchCommand(makeSearch(flagName), 123);
-        Assert.assertFalse("different class (search vs sort)", sort.isDuplicate(search));
-    }
+  SearchCommand search = new SearchCommand(makeSearch(flagName), 123);
+  assertFalse(sort.isDuplicate(search), "different class (search vs sort)");
+ }
 
-    @Test
-    public void create() {
-        String pathName = "folder123";
-        CreateCommand create = new CreateCommand(new ImapPath(pathName, creds));
+ @Test
+ void create() {
+  String pathName = "folder123";
+  CreateCommand create = new CreateCommand(new ImapPath(pathName, creds));
 
-        Assert.assertTrue("same obj", create.isDuplicate(create));
+  assertTrue(create.isDuplicate(create), "same obj");
 
-        CreateCommand create2 = new CreateCommand(new ImapPath(pathName, creds));
-        Assert.assertTrue("same fields", create.isDuplicate(create2));
+  CreateCommand create2 = new CreateCommand(new ImapPath(pathName, creds));
+  assertTrue(create.isDuplicate(create2), "same fields");
 
-        create2 = new CreateCommand(new ImapPath("foo", creds));
-        Assert.assertFalse("different path", create.isDuplicate(create2));
+  create2 = new CreateCommand(new ImapPath("foo", creds));
+  assertFalse(create.isDuplicate(create2), "different path");
 
-        for (int repeats = 0; repeats < LC.imap_throttle_command_limit.intValue(); repeats++) {
-            create2 = new CreateCommand(new ImapPath("foo"+repeats, creds));
-            Assert.assertFalse(create2.throttle(create));
-            create = create2;
-        }
-        Assert.assertTrue(create2.throttle(create));
-    }
+  for (int repeats = 0; repeats < LC.imap_throttle_command_limit.intValue(); repeats++) {
+   create2 = new CreateCommand(new ImapPath("foo" + repeats, creds));
+   assertFalse(create2.throttle(create));
+   create = create2;
+  }
+  assertTrue(create2.throttle(create));
+ }
 
     private List<String> makeFlagNames() {
         List<String> list = new ArrayList<String>();
@@ -447,28 +448,28 @@ public class ImapCommandThrottleTest {
         return list;
     }
 
-    @Test
-    public void store() {
-        String seqSet = "1:200";
-        StoreCommand store = new StoreCommand(seqSet, makeFlagNames(), StoreAction.ADD, 0);
+ @Test
+ void store() {
+  String seqSet = "1:200";
+  StoreCommand store = new StoreCommand(seqSet, makeFlagNames(), StoreAction.ADD, 0);
 
-        Assert.assertTrue("same obj", store.isDuplicate(store));
+  assertTrue(store.isDuplicate(store), "same obj");
 
-        StoreCommand store2 = new StoreCommand(seqSet, makeFlagNames(), StoreAction.ADD, 0);
-        Assert.assertTrue("same fields", store.isDuplicate(store2));
+  StoreCommand store2 = new StoreCommand(seqSet, makeFlagNames(), StoreAction.ADD, 0);
+  assertTrue(store.isDuplicate(store2), "same fields");
 
-        store2 = new StoreCommand("1:400", makeFlagNames(), StoreAction.ADD, 0);
-        Assert.assertFalse("different sequence", store.isDuplicate(store2));
+  store2 = new StoreCommand("1:400", makeFlagNames(), StoreAction.ADD, 0);
+  assertFalse(store.isDuplicate(store2), "different sequence");
 
-        List<String> flagNames = makeFlagNames();
-        flagNames.remove(0);
-        store2 = new StoreCommand(seqSet, flagNames, StoreAction.ADD, 0);
-        Assert.assertFalse("different flag names", store.isDuplicate(store2));
+  List<String> flagNames = makeFlagNames();
+  flagNames.remove(0);
+  store2 = new StoreCommand(seqSet, flagNames, StoreAction.ADD, 0);
+  assertFalse(store.isDuplicate(store2), "different flag names");
 
-        store2 = new StoreCommand(seqSet, makeFlagNames(), StoreAction.REMOVE, 0);
-        Assert.assertFalse("different action", store.isDuplicate(store2));
+  store2 = new StoreCommand(seqSet, makeFlagNames(), StoreAction.REMOVE, 0);
+  assertFalse(store.isDuplicate(store2), "different action");
 
-        store2 = new StoreCommand(seqSet, makeFlagNames(), StoreAction.ADD, 999);
-        Assert.assertFalse("different mod seq", store.isDuplicate(store2));
-    }
+  store2 = new StoreCommand(seqSet, makeFlagNames(), StoreAction.ADD, 999);
+  assertFalse(store.isDuplicate(store2), "different mod seq");
+ }
 }

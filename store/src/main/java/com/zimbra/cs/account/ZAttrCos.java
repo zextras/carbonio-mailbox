@@ -3822,6 +3822,103 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 6.0.7. deprecated in favor of
+     * zimbraContactEmailFields, for bug 45475. Orig desc: Comma separates
+     * list of attributes in contact object to search for email addresses
+     * when generating auto-complete contact list. The same set of fields are
+     * used for GAL contacts as well because LDAP attributes for GAL objects
+     * are mapped to Contact compatible attributes via zimbraGalLdapAttrMap.
+     *
+     * @return zimbraContactAutoCompleteEmailFields, or "email,email2,email3,workEmail1,workEmail2,workEmail3" if unset
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=760)
+    public String getContactAutoCompleteEmailFields() {
+        return getAttr(ZAttrProvisioning.A_zimbraContactAutoCompleteEmailFields, "email,email2,email3,workEmail1,workEmail2,workEmail3", true);
+    }
+
+    /**
+     * Deprecated since: 6.0.7. deprecated in favor of
+     * zimbraContactEmailFields, for bug 45475. Orig desc: Comma separates
+     * list of attributes in contact object to search for email addresses
+     * when generating auto-complete contact list. The same set of fields are
+     * used for GAL contacts as well because LDAP attributes for GAL objects
+     * are mapped to Contact compatible attributes via zimbraGalLdapAttrMap.
+     *
+     * @param zimbraContactAutoCompleteEmailFields new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=760)
+    public void setContactAutoCompleteEmailFields(String zimbraContactAutoCompleteEmailFields) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraContactAutoCompleteEmailFields, zimbraContactAutoCompleteEmailFields);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.7. deprecated in favor of
+     * zimbraContactEmailFields, for bug 45475. Orig desc: Comma separates
+     * list of attributes in contact object to search for email addresses
+     * when generating auto-complete contact list. The same set of fields are
+     * used for GAL contacts as well because LDAP attributes for GAL objects
+     * are mapped to Contact compatible attributes via zimbraGalLdapAttrMap.
+     *
+     * @param zimbraContactAutoCompleteEmailFields new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=760)
+    public Map<String,Object> setContactAutoCompleteEmailFields(String zimbraContactAutoCompleteEmailFields, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraContactAutoCompleteEmailFields, zimbraContactAutoCompleteEmailFields);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.7. deprecated in favor of
+     * zimbraContactEmailFields, for bug 45475. Orig desc: Comma separates
+     * list of attributes in contact object to search for email addresses
+     * when generating auto-complete contact list. The same set of fields are
+     * used for GAL contacts as well because LDAP attributes for GAL objects
+     * are mapped to Contact compatible attributes via zimbraGalLdapAttrMap.
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=760)
+    public void unsetContactAutoCompleteEmailFields() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraContactAutoCompleteEmailFields, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.7. deprecated in favor of
+     * zimbraContactEmailFields, for bug 45475. Orig desc: Comma separates
+     * list of attributes in contact object to search for email addresses
+     * when generating auto-complete contact list. The same set of fields are
+     * used for GAL contacts as well because LDAP attributes for GAL objects
+     * are mapped to Contact compatible attributes via zimbraGalLdapAttrMap.
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=760)
+    public Map<String,Object> unsetContactAutoCompleteEmailFields(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraContactAutoCompleteEmailFields, "");
+        return attrs;
+    }
+
+    /**
      * maximum number of contact entries to return from an auto complete
      *
      * @return zimbraContactAutoCompleteMaxResults, or 20 if unset
@@ -7928,6 +8025,73 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 8.0.0. Deprecated as of bug 56924. Orig desc:
+     * advanced search button enabled
+     *
+     * @return zimbraFeatureAdvancedSearchEnabled, or true if unset
+     */
+    @ZAttr(id=138)
+    public boolean isFeatureAdvancedSearchEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureAdvancedSearchEnabled, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Deprecated as of bug 56924. Orig desc:
+     * advanced search button enabled
+     *
+     * @param zimbraFeatureAdvancedSearchEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=138)
+    public void setFeatureAdvancedSearchEnabled(boolean zimbraFeatureAdvancedSearchEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureAdvancedSearchEnabled, zimbraFeatureAdvancedSearchEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Deprecated as of bug 56924. Orig desc:
+     * advanced search button enabled
+     *
+     * @param zimbraFeatureAdvancedSearchEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=138)
+    public Map<String,Object> setFeatureAdvancedSearchEnabled(boolean zimbraFeatureAdvancedSearchEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureAdvancedSearchEnabled, zimbraFeatureAdvancedSearchEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Deprecated as of bug 56924. Orig desc:
+     * advanced search button enabled
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=138)
+    public void unsetFeatureAdvancedSearchEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureAdvancedSearchEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Deprecated as of bug 56924. Orig desc:
+     * advanced search button enabled
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=138)
+    public Map<String,Object> unsetFeatureAdvancedSearchEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureAdvancedSearchEnabled, "");
+        return attrs;
+    }
+
+    /**
      * whether or not to enable rerouting spam messages to Junk folder in
      * ZCS, exposing Junk folder and actions in the web UI, and exposing Junk
      * folder to IMAP clients.
@@ -8088,6 +8252,304 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetFeatureAppSpecificPasswordsEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraFeatureAppSpecificPasswordsEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Docs features
+     * enabled in briefcase
+     *
+     * @return zimbraFeatureBriefcaseDocsEnabled, or false if unset
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1055)
+    public boolean isFeatureBriefcaseDocsEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureBriefcaseDocsEnabled, false, true);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Docs features
+     * enabled in briefcase
+     *
+     * @param zimbraFeatureBriefcaseDocsEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1055)
+    public void setFeatureBriefcaseDocsEnabled(boolean zimbraFeatureBriefcaseDocsEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseDocsEnabled, zimbraFeatureBriefcaseDocsEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Docs features
+     * enabled in briefcase
+     *
+     * @param zimbraFeatureBriefcaseDocsEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1055)
+    public Map<String,Object> setFeatureBriefcaseDocsEnabled(boolean zimbraFeatureBriefcaseDocsEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseDocsEnabled, zimbraFeatureBriefcaseDocsEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Docs features
+     * enabled in briefcase
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1055)
+    public void unsetFeatureBriefcaseDocsEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseDocsEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Docs features
+     * enabled in briefcase
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1055)
+    public Map<String,Object> unsetFeatureBriefcaseDocsEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseDocsEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Slides features
+     * enabled in briefcase
+     *
+     * @return zimbraFeatureBriefcaseSlidesEnabled, or false if unset
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1054)
+    public boolean isFeatureBriefcaseSlidesEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureBriefcaseSlidesEnabled, false, true);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Slides features
+     * enabled in briefcase
+     *
+     * @param zimbraFeatureBriefcaseSlidesEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1054)
+    public void setFeatureBriefcaseSlidesEnabled(boolean zimbraFeatureBriefcaseSlidesEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseSlidesEnabled, zimbraFeatureBriefcaseSlidesEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Slides features
+     * enabled in briefcase
+     *
+     * @param zimbraFeatureBriefcaseSlidesEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1054)
+    public Map<String,Object> setFeatureBriefcaseSlidesEnabled(boolean zimbraFeatureBriefcaseSlidesEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseSlidesEnabled, zimbraFeatureBriefcaseSlidesEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Slides features
+     * enabled in briefcase
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1054)
+    public void unsetFeatureBriefcaseSlidesEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseSlidesEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Slides features
+     * enabled in briefcase
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1054)
+    public Map<String,Object> unsetFeatureBriefcaseSlidesEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseSlidesEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Spreadsheet
+     * features enabled in briefcase
+     *
+     * @return zimbraFeatureBriefcaseSpreadsheetEnabled, or false if unset
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1053)
+    public boolean isFeatureBriefcaseSpreadsheetEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureBriefcaseSpreadsheetEnabled, false, true);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Spreadsheet
+     * features enabled in briefcase
+     *
+     * @param zimbraFeatureBriefcaseSpreadsheetEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1053)
+    public void setFeatureBriefcaseSpreadsheetEnabled(boolean zimbraFeatureBriefcaseSpreadsheetEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseSpreadsheetEnabled, zimbraFeatureBriefcaseSpreadsheetEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Spreadsheet
+     * features enabled in briefcase
+     *
+     * @param zimbraFeatureBriefcaseSpreadsheetEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1053)
+    public Map<String,Object> setFeatureBriefcaseSpreadsheetEnabled(boolean zimbraFeatureBriefcaseSpreadsheetEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseSpreadsheetEnabled, zimbraFeatureBriefcaseSpreadsheetEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Spreadsheet
+     * features enabled in briefcase
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1053)
+    public void unsetFeatureBriefcaseSpreadsheetEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseSpreadsheetEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: Spreadsheet
+     * features enabled in briefcase
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.2
+     */
+    @ZAttr(id=1053)
+    public Map<String,Object> unsetFeatureBriefcaseSpreadsheetEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcaseSpreadsheetEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: whether to allow
+     * use of briefcase feature
+     *
+     * @return zimbraFeatureBriefcasesEnabled, or false if unset
+     */
+    @ZAttr(id=498)
+    public boolean isFeatureBriefcasesEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureBriefcasesEnabled, false, true);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: whether to allow
+     * use of briefcase feature
+     *
+     * @param zimbraFeatureBriefcasesEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=498)
+    public void setFeatureBriefcasesEnabled(boolean zimbraFeatureBriefcasesEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcasesEnabled, zimbraFeatureBriefcasesEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: whether to allow
+     * use of briefcase feature
+     *
+     * @param zimbraFeatureBriefcasesEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=498)
+    public Map<String,Object> setFeatureBriefcasesEnabled(boolean zimbraFeatureBriefcasesEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcasesEnabled, zimbraFeatureBriefcasesEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: whether to allow
+     * use of briefcase feature
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=498)
+    public void unsetFeatureBriefcasesEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcasesEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: whether to allow
+     * use of briefcase feature
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=498)
+    public Map<String,Object> unsetFeatureBriefcasesEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureBriefcasesEnabled, "");
         return attrs;
     }
 
@@ -10244,6 +10706,73 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 8.7.0. deprecated in favor of
+     * zimbraFeatureChatEnabled. Orig desc: IM features
+     *
+     * @return zimbraFeatureIMEnabled, or false if unset
+     */
+    @ZAttr(id=305)
+    public boolean isFeatureIMEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureIMEnabled, false, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. deprecated in favor of
+     * zimbraFeatureChatEnabled. Orig desc: IM features
+     *
+     * @param zimbraFeatureIMEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=305)
+    public void setFeatureIMEnabled(boolean zimbraFeatureIMEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureIMEnabled, zimbraFeatureIMEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. deprecated in favor of
+     * zimbraFeatureChatEnabled. Orig desc: IM features
+     *
+     * @param zimbraFeatureIMEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=305)
+    public Map<String,Object> setFeatureIMEnabled(boolean zimbraFeatureIMEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureIMEnabled, zimbraFeatureIMEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. deprecated in favor of
+     * zimbraFeatureChatEnabled. Orig desc: IM features
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=305)
+    public void unsetFeatureIMEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureIMEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. deprecated in favor of
+     * zimbraFeatureChatEnabled. Orig desc: IM features
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=305)
+    public Map<String,Object> unsetFeatureIMEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureIMEnabled, "");
+        return attrs;
+    }
+
+    /**
      * whether to allow use of identities feature
      *
      * @return zimbraFeatureIdentitiesEnabled, or true if unset
@@ -10379,6 +10908,93 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetFeatureImapDataSourceEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraFeatureImapDataSourceEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 7.1.0. deprecated in favor of
+     * zimbraFeatureImportFolderEnabled and zimbraFeatureExportFolderEnabled
+     * for bug 53745. Orig desc: whether import export folder feature is
+     * enabled
+     *
+     * @return zimbraFeatureImportExportFolderEnabled, or true if unset
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=750)
+    public boolean isFeatureImportExportFolderEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureImportExportFolderEnabled, true, true);
+    }
+
+    /**
+     * Deprecated since: 7.1.0. deprecated in favor of
+     * zimbraFeatureImportFolderEnabled and zimbraFeatureExportFolderEnabled
+     * for bug 53745. Orig desc: whether import export folder feature is
+     * enabled
+     *
+     * @param zimbraFeatureImportExportFolderEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=750)
+    public void setFeatureImportExportFolderEnabled(boolean zimbraFeatureImportExportFolderEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureImportExportFolderEnabled, zimbraFeatureImportExportFolderEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 7.1.0. deprecated in favor of
+     * zimbraFeatureImportFolderEnabled and zimbraFeatureExportFolderEnabled
+     * for bug 53745. Orig desc: whether import export folder feature is
+     * enabled
+     *
+     * @param zimbraFeatureImportExportFolderEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=750)
+    public Map<String,Object> setFeatureImportExportFolderEnabled(boolean zimbraFeatureImportExportFolderEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureImportExportFolderEnabled, zimbraFeatureImportExportFolderEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 7.1.0. deprecated in favor of
+     * zimbraFeatureImportFolderEnabled and zimbraFeatureExportFolderEnabled
+     * for bug 53745. Orig desc: whether import export folder feature is
+     * enabled
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=750)
+    public void unsetFeatureImportExportFolderEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureImportExportFolderEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 7.1.0. deprecated in favor of
+     * zimbraFeatureImportFolderEnabled and zimbraFeatureExportFolderEnabled
+     * for bug 53745. Orig desc: whether import export folder feature is
+     * enabled
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=750)
+    public Map<String,Object> unsetFeatureImportExportFolderEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureImportExportFolderEnabled, "");
         return attrs;
     }
 
@@ -10843,6 +11459,73 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetFeatureMailForwardingInFiltersEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraFeatureMailForwardingInFiltersEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 5.0. done via skin template overrides. Orig desc:
+     * whether user is allowed to set mail polling interval
+     *
+     * @return zimbraFeatureMailPollingIntervalPreferenceEnabled, or true if unset
+     */
+    @ZAttr(id=441)
+    public boolean isFeatureMailPollingIntervalPreferenceEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureMailPollingIntervalPreferenceEnabled, true, true);
+    }
+
+    /**
+     * Deprecated since: 5.0. done via skin template overrides. Orig desc:
+     * whether user is allowed to set mail polling interval
+     *
+     * @param zimbraFeatureMailPollingIntervalPreferenceEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=441)
+    public void setFeatureMailPollingIntervalPreferenceEnabled(boolean zimbraFeatureMailPollingIntervalPreferenceEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureMailPollingIntervalPreferenceEnabled, zimbraFeatureMailPollingIntervalPreferenceEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 5.0. done via skin template overrides. Orig desc:
+     * whether user is allowed to set mail polling interval
+     *
+     * @param zimbraFeatureMailPollingIntervalPreferenceEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=441)
+    public Map<String,Object> setFeatureMailPollingIntervalPreferenceEnabled(boolean zimbraFeatureMailPollingIntervalPreferenceEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureMailPollingIntervalPreferenceEnabled, zimbraFeatureMailPollingIntervalPreferenceEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 5.0. done via skin template overrides. Orig desc:
+     * whether user is allowed to set mail polling interval
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=441)
+    public void unsetFeatureMailPollingIntervalPreferenceEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureMailPollingIntervalPreferenceEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 5.0. done via skin template overrides. Orig desc:
+     * whether user is allowed to set mail polling interval
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=441)
+    public Map<String,Object> unsetFeatureMailPollingIntervalPreferenceEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureMailPollingIntervalPreferenceEnabled, "");
         return attrs;
     }
 
@@ -11845,6 +12528,78 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 7.0.0. Deprecated per bugs 50465, 56201. Orig desc:
+     * Whether notebook feature should be allowed for this account or in this
+     * cos
+     *
+     * @return zimbraFeatureNotebookEnabled, or false if unset
+     */
+    @ZAttr(id=356)
+    public boolean isFeatureNotebookEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureNotebookEnabled, false, true);
+    }
+
+    /**
+     * Deprecated since: 7.0.0. Deprecated per bugs 50465, 56201. Orig desc:
+     * Whether notebook feature should be allowed for this account or in this
+     * cos
+     *
+     * @param zimbraFeatureNotebookEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=356)
+    public void setFeatureNotebookEnabled(boolean zimbraFeatureNotebookEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureNotebookEnabled, zimbraFeatureNotebookEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 7.0.0. Deprecated per bugs 50465, 56201. Orig desc:
+     * Whether notebook feature should be allowed for this account or in this
+     * cos
+     *
+     * @param zimbraFeatureNotebookEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=356)
+    public Map<String,Object> setFeatureNotebookEnabled(boolean zimbraFeatureNotebookEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureNotebookEnabled, zimbraFeatureNotebookEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 7.0.0. Deprecated per bugs 50465, 56201. Orig desc:
+     * Whether notebook feature should be allowed for this account or in this
+     * cos
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=356)
+    public void unsetFeatureNotebookEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureNotebookEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 7.0.0. Deprecated per bugs 50465, 56201. Orig desc:
+     * Whether notebook feature should be allowed for this account or in this
+     * cos
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=356)
+    public Map<String,Object> unsetFeatureNotebookEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureNotebookEnabled, "");
+        return attrs;
+    }
+
+    /**
      * whether or not open a new msg/conv in a new windows is allowed
      *
      * @return zimbraFeatureOpenMailInNewWindowEnabled, or true if unset
@@ -12042,6 +12797,83 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetFeatureOutOfOfficeReplyEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraFeatureOutOfOfficeReplyEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Deprecated per bug 56924. Orig desc: whether
+     * people search feature is enabled
+     *
+     * @return zimbraFeaturePeopleSearchEnabled, or true if unset
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1109)
+    public boolean isFeaturePeopleSearchEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeaturePeopleSearchEnabled, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Deprecated per bug 56924. Orig desc: whether
+     * people search feature is enabled
+     *
+     * @param zimbraFeaturePeopleSearchEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1109)
+    public void setFeaturePeopleSearchEnabled(boolean zimbraFeaturePeopleSearchEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeaturePeopleSearchEnabled, zimbraFeaturePeopleSearchEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Deprecated per bug 56924. Orig desc: whether
+     * people search feature is enabled
+     *
+     * @param zimbraFeaturePeopleSearchEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1109)
+    public Map<String,Object> setFeaturePeopleSearchEnabled(boolean zimbraFeaturePeopleSearchEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeaturePeopleSearchEnabled, zimbraFeaturePeopleSearchEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Deprecated per bug 56924. Orig desc: whether
+     * people search feature is enabled
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1109)
+    public void unsetFeaturePeopleSearchEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeaturePeopleSearchEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Deprecated per bug 56924. Orig desc: whether
+     * people search feature is enabled
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1109)
+    public Map<String,Object> unsetFeaturePeopleSearchEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeaturePeopleSearchEnabled, "");
         return attrs;
     }
 
@@ -12759,6 +13591,73 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetFeatureSharingEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraFeatureSharingEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated. Orig desc: keyboard shortcuts
+     * aliases features
+     *
+     * @return zimbraFeatureShortcutAliasesEnabled, or true if unset
+     */
+    @ZAttr(id=452)
+    public boolean isFeatureShortcutAliasesEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureShortcutAliasesEnabled, true, true);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated. Orig desc: keyboard shortcuts
+     * aliases features
+     *
+     * @param zimbraFeatureShortcutAliasesEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=452)
+    public void setFeatureShortcutAliasesEnabled(boolean zimbraFeatureShortcutAliasesEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureShortcutAliasesEnabled, zimbraFeatureShortcutAliasesEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated. Orig desc: keyboard shortcuts
+     * aliases features
+     *
+     * @param zimbraFeatureShortcutAliasesEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=452)
+    public Map<String,Object> setFeatureShortcutAliasesEnabled(boolean zimbraFeatureShortcutAliasesEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureShortcutAliasesEnabled, zimbraFeatureShortcutAliasesEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated. Orig desc: keyboard shortcuts
+     * aliases features
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=452)
+    public void unsetFeatureShortcutAliasesEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureShortcutAliasesEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated. Orig desc: keyboard shortcuts
+     * aliases features
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=452)
+    public Map<String,Object> unsetFeatureShortcutAliasesEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureShortcutAliasesEnabled, "");
         return attrs;
     }
 
@@ -13488,6 +14387,93 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
+     * Orig desc: Whether to allow a user to access touch client. Note: touch
+     * client is a Network feature, this attribute is effective only if touch
+     * client is permitted by license.
+     *
+     * @return zimbraFeatureTouchClientEnabled, or false if unset
+     *
+     * @since ZCS 8.5.0
+     */
+    @ZAttr(id=1636)
+    public boolean isFeatureTouchClientEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureTouchClientEnabled, false, true);
+    }
+
+    /**
+     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
+     * Orig desc: Whether to allow a user to access touch client. Note: touch
+     * client is a Network feature, this attribute is effective only if touch
+     * client is permitted by license.
+     *
+     * @param zimbraFeatureTouchClientEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.5.0
+     */
+    @ZAttr(id=1636)
+    public void setFeatureTouchClientEnabled(boolean zimbraFeatureTouchClientEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureTouchClientEnabled, zimbraFeatureTouchClientEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
+     * Orig desc: Whether to allow a user to access touch client. Note: touch
+     * client is a Network feature, this attribute is effective only if touch
+     * client is permitted by license.
+     *
+     * @param zimbraFeatureTouchClientEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.5.0
+     */
+    @ZAttr(id=1636)
+    public Map<String,Object> setFeatureTouchClientEnabled(boolean zimbraFeatureTouchClientEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureTouchClientEnabled, zimbraFeatureTouchClientEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
+     * Orig desc: Whether to allow a user to access touch client. Note: touch
+     * client is a Network feature, this attribute is effective only if touch
+     * client is permitted by license.
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.5.0
+     */
+    @ZAttr(id=1636)
+    public void unsetFeatureTouchClientEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureTouchClientEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 22.8.0. deprecated as not being used in Carbonio.
+     * Orig desc: Whether to allow a user to access touch client. Note: touch
+     * client is a Network feature, this attribute is effective only if touch
+     * client is permitted by license.
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.5.0
+     */
+    @ZAttr(id=1636)
+    public Map<String,Object> unsetFeatureTouchClientEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureTouchClientEnabled, "");
+        return attrs;
+    }
+
+    /**
      * Whether the option of specifying trusted devices when using two-factor
      * authentication is available on the account
      *
@@ -14194,6 +15180,165 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetFeatureWebClientOfflineAccessEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraFeatureWebClientOfflineAccessEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40170. Orig desc:
+     * whether web search feature is enabled
+     *
+     * @return zimbraFeatureWebSearchEnabled, or true if unset
+     *
+     * @since ZCS 5.0.2
+     */
+    @ZAttr(id=602)
+    public boolean isFeatureWebSearchEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureWebSearchEnabled, true, true);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40170. Orig desc:
+     * whether web search feature is enabled
+     *
+     * @param zimbraFeatureWebSearchEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.2
+     */
+    @ZAttr(id=602)
+    public void setFeatureWebSearchEnabled(boolean zimbraFeatureWebSearchEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureWebSearchEnabled, zimbraFeatureWebSearchEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40170. Orig desc:
+     * whether web search feature is enabled
+     *
+     * @param zimbraFeatureWebSearchEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.2
+     */
+    @ZAttr(id=602)
+    public Map<String,Object> setFeatureWebSearchEnabled(boolean zimbraFeatureWebSearchEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureWebSearchEnabled, zimbraFeatureWebSearchEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40170. Orig desc:
+     * whether web search feature is enabled
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.2
+     */
+    @ZAttr(id=602)
+    public void unsetFeatureWebSearchEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureWebSearchEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40170. Orig desc:
+     * whether web search feature is enabled
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.2
+     */
+    @ZAttr(id=602)
+    public Map<String,Object> unsetFeatureWebSearchEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureWebSearchEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.9.0. deprecated with attribute
+     * zimbraFeatureModernDesktopEnabled. Orig desc: Whether to allow a user
+     * to access Zimbra X desktop
+     *
+     * @return zimbraFeatureZXDesktopEnabled, or false if unset
+     *
+     * @since ZCS 8.9.0
+     */
+    @ZAttr(id=3080)
+    public boolean isFeatureZXDesktopEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureZXDesktopEnabled, false, true);
+    }
+
+    /**
+     * Deprecated since: 8.9.0. deprecated with attribute
+     * zimbraFeatureModernDesktopEnabled. Orig desc: Whether to allow a user
+     * to access Zimbra X desktop
+     *
+     * @param zimbraFeatureZXDesktopEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.9.0
+     */
+    @ZAttr(id=3080)
+    public void setFeatureZXDesktopEnabled(boolean zimbraFeatureZXDesktopEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureZXDesktopEnabled, zimbraFeatureZXDesktopEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.9.0. deprecated with attribute
+     * zimbraFeatureModernDesktopEnabled. Orig desc: Whether to allow a user
+     * to access Zimbra X desktop
+     *
+     * @param zimbraFeatureZXDesktopEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.9.0
+     */
+    @ZAttr(id=3080)
+    public Map<String,Object> setFeatureZXDesktopEnabled(boolean zimbraFeatureZXDesktopEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureZXDesktopEnabled, zimbraFeatureZXDesktopEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.9.0. deprecated with attribute
+     * zimbraFeatureModernDesktopEnabled. Orig desc: Whether to allow a user
+     * to access Zimbra X desktop
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.9.0
+     */
+    @ZAttr(id=3080)
+    public void unsetFeatureZXDesktopEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureZXDesktopEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.9.0. deprecated with attribute
+     * zimbraFeatureModernDesktopEnabled. Orig desc: Whether to allow a user
+     * to access Zimbra X desktop
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.9.0
+     */
+    @ZAttr(id=3080)
+    public Map<String,Object> unsetFeatureZXDesktopEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraFeatureZXDesktopEnabled, "");
         return attrs;
     }
 
@@ -16759,6 +17904,297 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * available IM interop gateways
+     *
+     * @return zimbraIMAvailableInteropGateways, or empty array if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=571)
+    public String[] getIMAvailableInteropGateways() {
+        return getMultiAttr(ZAttrProvisioning.A_zimbraIMAvailableInteropGateways, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * available IM interop gateways
+     *
+     * @param zimbraIMAvailableInteropGateways new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=571)
+    public void setIMAvailableInteropGateways(String[] zimbraIMAvailableInteropGateways) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIMAvailableInteropGateways, zimbraIMAvailableInteropGateways);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * available IM interop gateways
+     *
+     * @param zimbraIMAvailableInteropGateways new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=571)
+    public Map<String,Object> setIMAvailableInteropGateways(String[] zimbraIMAvailableInteropGateways, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIMAvailableInteropGateways, zimbraIMAvailableInteropGateways);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * available IM interop gateways
+     *
+     * @param zimbraIMAvailableInteropGateways new to add to existing values
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=571)
+    public void addIMAvailableInteropGateways(String zimbraIMAvailableInteropGateways) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraIMAvailableInteropGateways, zimbraIMAvailableInteropGateways);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * available IM interop gateways
+     *
+     * @param zimbraIMAvailableInteropGateways new to add to existing values
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=571)
+    public Map<String,Object> addIMAvailableInteropGateways(String zimbraIMAvailableInteropGateways, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraIMAvailableInteropGateways, zimbraIMAvailableInteropGateways);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * available IM interop gateways
+     *
+     * @param zimbraIMAvailableInteropGateways existing value to remove
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=571)
+    public void removeIMAvailableInteropGateways(String zimbraIMAvailableInteropGateways) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraIMAvailableInteropGateways, zimbraIMAvailableInteropGateways);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * available IM interop gateways
+     *
+     * @param zimbraIMAvailableInteropGateways existing value to remove
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=571)
+    public Map<String,Object> removeIMAvailableInteropGateways(String zimbraIMAvailableInteropGateways, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraIMAvailableInteropGateways, zimbraIMAvailableInteropGateways);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * available IM interop gateways
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=571)
+    public void unsetIMAvailableInteropGateways() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIMAvailableInteropGateways, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * available IM interop gateways
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=571)
+    public Map<String,Object> unsetIMAvailableInteropGateways(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIMAvailableInteropGateways, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40069. Orig desc: IM
+     * service
+     *
+     * <p>Valid values: [zimbra, yahoo]
+     *
+     * @return zimbraIMService, or ZAttrProvisioning.IMService.zimbra if unset and/or has invalid value
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=762)
+    public ZAttrProvisioning.IMService getIMService() {
+        try { String v = getAttr(ZAttrProvisioning.A_zimbraIMService, true, true); return v == null ? ZAttrProvisioning.IMService.zimbra : ZAttrProvisioning.IMService.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.IMService.zimbra; }
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40069. Orig desc: IM
+     * service
+     *
+     * <p>Valid values: [zimbra, yahoo]
+     *
+     * @return zimbraIMService, or "zimbra" if unset
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=762)
+    public String getIMServiceAsString() {
+        return getAttr(ZAttrProvisioning.A_zimbraIMService, "zimbra", true);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40069. Orig desc: IM
+     * service
+     *
+     * <p>Valid values: [zimbra, yahoo]
+     *
+     * @param zimbraIMService new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=762)
+    public void setIMService(ZAttrProvisioning.IMService zimbraIMService) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIMService, zimbraIMService.toString());
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40069. Orig desc: IM
+     * service
+     *
+     * <p>Valid values: [zimbra, yahoo]
+     *
+     * @param zimbraIMService new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=762)
+    public Map<String,Object> setIMService(ZAttrProvisioning.IMService zimbraIMService, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIMService, zimbraIMService.toString());
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40069. Orig desc: IM
+     * service
+     *
+     * <p>Valid values: [zimbra, yahoo]
+     *
+     * @param zimbraIMService new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=762)
+    public void setIMServiceAsString(String zimbraIMService) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIMService, zimbraIMService);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40069. Orig desc: IM
+     * service
+     *
+     * <p>Valid values: [zimbra, yahoo]
+     *
+     * @param zimbraIMService new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=762)
+    public Map<String,Object> setIMServiceAsString(String zimbraIMService, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIMService, zimbraIMService);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40069. Orig desc: IM
+     * service
+     *
+     * <p>Valid values: [zimbra, yahoo]
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=762)
+    public void unsetIMService() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIMService, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_GA. deprecated per bug 40069. Orig desc: IM
+     * service
+     *
+     * <p>Valid values: [zimbra, yahoo]
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=762)
+    public Map<String,Object> unsetIMService(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIMService, "");
+        return attrs;
+    }
+
+    /**
      * Zimbra Systems Unique ID
      *
      * @return zimbraId, or null if unset
@@ -17743,6 +19179,354 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetLogOutFromAllServers(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraLogOutFromAllServers, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminOutgoingSieveScriptAfter. Orig desc: outgoing sieve script
+     * defined by admin (not able to edit and view from the end user) applied
+     * after the end user filter rule
+     *
+     * @return zimbraMailAdminOutgoingSieveScriptAfter, or null if unset
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2093)
+    public String getMailAdminOutgoingSieveScriptAfter() {
+        return getAttr(ZAttrProvisioning.A_zimbraMailAdminOutgoingSieveScriptAfter, null, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminOutgoingSieveScriptAfter. Orig desc: outgoing sieve script
+     * defined by admin (not able to edit and view from the end user) applied
+     * after the end user filter rule
+     *
+     * @param zimbraMailAdminOutgoingSieveScriptAfter new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2093)
+    public void setMailAdminOutgoingSieveScriptAfter(String zimbraMailAdminOutgoingSieveScriptAfter) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminOutgoingSieveScriptAfter, zimbraMailAdminOutgoingSieveScriptAfter);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminOutgoingSieveScriptAfter. Orig desc: outgoing sieve script
+     * defined by admin (not able to edit and view from the end user) applied
+     * after the end user filter rule
+     *
+     * @param zimbraMailAdminOutgoingSieveScriptAfter new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2093)
+    public Map<String,Object> setMailAdminOutgoingSieveScriptAfter(String zimbraMailAdminOutgoingSieveScriptAfter, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminOutgoingSieveScriptAfter, zimbraMailAdminOutgoingSieveScriptAfter);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminOutgoingSieveScriptAfter. Orig desc: outgoing sieve script
+     * defined by admin (not able to edit and view from the end user) applied
+     * after the end user filter rule
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2093)
+    public void unsetMailAdminOutgoingSieveScriptAfter() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminOutgoingSieveScriptAfter, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminOutgoingSieveScriptAfter. Orig desc: outgoing sieve script
+     * defined by admin (not able to edit and view from the end user) applied
+     * after the end user filter rule
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2093)
+    public Map<String,Object> unsetMailAdminOutgoingSieveScriptAfter(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminOutgoingSieveScriptAfter, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminOutgoingSieveScriptBefore. Orig desc: outgoing sieve script
+     * defined by admin (not able to edit and view from the end user) applied
+     * before the end user filter rule
+     *
+     * @return zimbraMailAdminOutgoingSieveScriptBefore, or null if unset
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2092)
+    public String getMailAdminOutgoingSieveScriptBefore() {
+        return getAttr(ZAttrProvisioning.A_zimbraMailAdminOutgoingSieveScriptBefore, null, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminOutgoingSieveScriptBefore. Orig desc: outgoing sieve script
+     * defined by admin (not able to edit and view from the end user) applied
+     * before the end user filter rule
+     *
+     * @param zimbraMailAdminOutgoingSieveScriptBefore new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2092)
+    public void setMailAdminOutgoingSieveScriptBefore(String zimbraMailAdminOutgoingSieveScriptBefore) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminOutgoingSieveScriptBefore, zimbraMailAdminOutgoingSieveScriptBefore);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminOutgoingSieveScriptBefore. Orig desc: outgoing sieve script
+     * defined by admin (not able to edit and view from the end user) applied
+     * before the end user filter rule
+     *
+     * @param zimbraMailAdminOutgoingSieveScriptBefore new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2092)
+    public Map<String,Object> setMailAdminOutgoingSieveScriptBefore(String zimbraMailAdminOutgoingSieveScriptBefore, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminOutgoingSieveScriptBefore, zimbraMailAdminOutgoingSieveScriptBefore);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminOutgoingSieveScriptBefore. Orig desc: outgoing sieve script
+     * defined by admin (not able to edit and view from the end user) applied
+     * before the end user filter rule
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2092)
+    public void unsetMailAdminOutgoingSieveScriptBefore() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminOutgoingSieveScriptBefore, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminOutgoingSieveScriptBefore. Orig desc: outgoing sieve script
+     * defined by admin (not able to edit and view from the end user) applied
+     * before the end user filter rule
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2092)
+    public Map<String,Object> unsetMailAdminOutgoingSieveScriptBefore(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminOutgoingSieveScriptBefore, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminSieveScriptAfter. Orig desc: sieve script defined by admin
+     * (not able to edit and view from the end user) applied after the end
+     * user filter rule
+     *
+     * @return zimbraMailAdminSieveScriptAfter, or null if unset
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2091)
+    public String getMailAdminSieveScriptAfter() {
+        return getAttr(ZAttrProvisioning.A_zimbraMailAdminSieveScriptAfter, null, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminSieveScriptAfter. Orig desc: sieve script defined by admin
+     * (not able to edit and view from the end user) applied after the end
+     * user filter rule
+     *
+     * @param zimbraMailAdminSieveScriptAfter new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2091)
+    public void setMailAdminSieveScriptAfter(String zimbraMailAdminSieveScriptAfter) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminSieveScriptAfter, zimbraMailAdminSieveScriptAfter);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminSieveScriptAfter. Orig desc: sieve script defined by admin
+     * (not able to edit and view from the end user) applied after the end
+     * user filter rule
+     *
+     * @param zimbraMailAdminSieveScriptAfter new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2091)
+    public Map<String,Object> setMailAdminSieveScriptAfter(String zimbraMailAdminSieveScriptAfter, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminSieveScriptAfter, zimbraMailAdminSieveScriptAfter);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminSieveScriptAfter. Orig desc: sieve script defined by admin
+     * (not able to edit and view from the end user) applied after the end
+     * user filter rule
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2091)
+    public void unsetMailAdminSieveScriptAfter() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminSieveScriptAfter, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminSieveScriptAfter. Orig desc: sieve script defined by admin
+     * (not able to edit and view from the end user) applied after the end
+     * user filter rule
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2091)
+    public Map<String,Object> unsetMailAdminSieveScriptAfter(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminSieveScriptAfter, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminSieveScriptBefore. Orig desc: sieve script defined by admin
+     * (not able to edit and view from the end user) applied before the end
+     * user filter rule
+     *
+     * @return zimbraMailAdminSieveScriptBefore, or null if unset
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2090)
+    public String getMailAdminSieveScriptBefore() {
+        return getAttr(ZAttrProvisioning.A_zimbraMailAdminSieveScriptBefore, null, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminSieveScriptBefore. Orig desc: sieve script defined by admin
+     * (not able to edit and view from the end user) applied before the end
+     * user filter rule
+     *
+     * @param zimbraMailAdminSieveScriptBefore new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2090)
+    public void setMailAdminSieveScriptBefore(String zimbraMailAdminSieveScriptBefore) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminSieveScriptBefore, zimbraMailAdminSieveScriptBefore);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminSieveScriptBefore. Orig desc: sieve script defined by admin
+     * (not able to edit and view from the end user) applied before the end
+     * user filter rule
+     *
+     * @param zimbraMailAdminSieveScriptBefore new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2090)
+    public Map<String,Object> setMailAdminSieveScriptBefore(String zimbraMailAdminSieveScriptBefore, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminSieveScriptBefore, zimbraMailAdminSieveScriptBefore);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminSieveScriptBefore. Orig desc: sieve script defined by admin
+     * (not able to edit and view from the end user) applied before the end
+     * user filter rule
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2090)
+    public void unsetMailAdminSieveScriptBefore() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminSieveScriptBefore, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.8. deprecated in favor of
+     * zimbraAdminSieveScriptBefore. Orig desc: sieve script defined by admin
+     * (not able to edit and view from the end user) applied before the end
+     * user filter rule
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.7.6
+     */
+    @ZAttr(id=2090)
+    public Map<String,Object> unsetMailAdminSieveScriptBefore(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMailAdminSieveScriptBefore, "");
         return attrs;
     }
 
@@ -22720,6 +24504,93 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetMobilePolicyApprovedApplicationList(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraMobilePolicyApprovedApplicationList, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.5.0. Use
+     * zimbraMobilePolicyRequireStorageCardEncryption. Orig desc: require
+     * data encryption on device; ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE
+     *
+     * @return zimbraMobilePolicyDeviceEncryptionEnabled, or true if unset
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=847)
+    public boolean isMobilePolicyDeviceEncryptionEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraMobilePolicyDeviceEncryptionEnabled, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.5.0. Use
+     * zimbraMobilePolicyRequireStorageCardEncryption. Orig desc: require
+     * data encryption on device; ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE
+     *
+     * @param zimbraMobilePolicyDeviceEncryptionEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=847)
+    public void setMobilePolicyDeviceEncryptionEnabled(boolean zimbraMobilePolicyDeviceEncryptionEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMobilePolicyDeviceEncryptionEnabled, zimbraMobilePolicyDeviceEncryptionEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.5.0. Use
+     * zimbraMobilePolicyRequireStorageCardEncryption. Orig desc: require
+     * data encryption on device; ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE
+     *
+     * @param zimbraMobilePolicyDeviceEncryptionEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=847)
+    public Map<String,Object> setMobilePolicyDeviceEncryptionEnabled(boolean zimbraMobilePolicyDeviceEncryptionEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMobilePolicyDeviceEncryptionEnabled, zimbraMobilePolicyDeviceEncryptionEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.5.0. Use
+     * zimbraMobilePolicyRequireStorageCardEncryption. Orig desc: require
+     * data encryption on device; ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=847)
+    public void unsetMobilePolicyDeviceEncryptionEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMobilePolicyDeviceEncryptionEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.5.0. Use
+     * zimbraMobilePolicyRequireStorageCardEncryption. Orig desc: require
+     * data encryption on device; ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.0_BETA1
+     */
+    @ZAttr(id=847)
+    public Map<String,Object> unsetMobilePolicyDeviceEncryptionEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraMobilePolicyDeviceEncryptionEnabled, "");
         return attrs;
     }
 
@@ -28187,6 +30058,227 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 8.5.0. address bubbles always enabled since 8.5.0.
+     * Orig desc: whether actionable address objects result from autocomplete
+     * is enabled
+     *
+     * @return zimbraPrefAutocompleteAddressBubblesEnabled, or true if unset
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1146)
+    public boolean isPrefAutocompleteAddressBubblesEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefAutocompleteAddressBubblesEnabled, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.5.0. address bubbles always enabled since 8.5.0.
+     * Orig desc: whether actionable address objects result from autocomplete
+     * is enabled
+     *
+     * @param zimbraPrefAutocompleteAddressBubblesEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1146)
+    public void setPrefAutocompleteAddressBubblesEnabled(boolean zimbraPrefAutocompleteAddressBubblesEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefAutocompleteAddressBubblesEnabled, zimbraPrefAutocompleteAddressBubblesEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.5.0. address bubbles always enabled since 8.5.0.
+     * Orig desc: whether actionable address objects result from autocomplete
+     * is enabled
+     *
+     * @param zimbraPrefAutocompleteAddressBubblesEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1146)
+    public Map<String,Object> setPrefAutocompleteAddressBubblesEnabled(boolean zimbraPrefAutocompleteAddressBubblesEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefAutocompleteAddressBubblesEnabled, zimbraPrefAutocompleteAddressBubblesEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.5.0. address bubbles always enabled since 8.5.0.
+     * Orig desc: whether actionable address objects result from autocomplete
+     * is enabled
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1146)
+    public void unsetPrefAutocompleteAddressBubblesEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefAutocompleteAddressBubblesEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.5.0. address bubbles always enabled since 8.5.0.
+     * Orig desc: whether actionable address objects result from autocomplete
+     * is enabled
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1146)
+    public Map<String,Object> unsetPrefAutocompleteAddressBubblesEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefAutocompleteAddressBubblesEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: where the
+     * reading pane is displayed for briefcase
+     *
+     * <p>Valid values: [bottom, right, off]
+     *
+     * @return zimbraPrefBriefcaseReadingPaneLocation, or ZAttrProvisioning.PrefBriefcaseReadingPaneLocation.right if unset and/or has invalid value
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1152)
+    public ZAttrProvisioning.PrefBriefcaseReadingPaneLocation getPrefBriefcaseReadingPaneLocation() {
+        try { String v = getAttr(ZAttrProvisioning.A_zimbraPrefBriefcaseReadingPaneLocation, true, true); return v == null ? ZAttrProvisioning.PrefBriefcaseReadingPaneLocation.right : ZAttrProvisioning.PrefBriefcaseReadingPaneLocation.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.PrefBriefcaseReadingPaneLocation.right; }
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: where the
+     * reading pane is displayed for briefcase
+     *
+     * <p>Valid values: [bottom, right, off]
+     *
+     * @return zimbraPrefBriefcaseReadingPaneLocation, or "right" if unset
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1152)
+    public String getPrefBriefcaseReadingPaneLocationAsString() {
+        return getAttr(ZAttrProvisioning.A_zimbraPrefBriefcaseReadingPaneLocation, "right", true);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: where the
+     * reading pane is displayed for briefcase
+     *
+     * <p>Valid values: [bottom, right, off]
+     *
+     * @param zimbraPrefBriefcaseReadingPaneLocation new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1152)
+    public void setPrefBriefcaseReadingPaneLocation(ZAttrProvisioning.PrefBriefcaseReadingPaneLocation zimbraPrefBriefcaseReadingPaneLocation) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefBriefcaseReadingPaneLocation, zimbraPrefBriefcaseReadingPaneLocation.toString());
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: where the
+     * reading pane is displayed for briefcase
+     *
+     * <p>Valid values: [bottom, right, off]
+     *
+     * @param zimbraPrefBriefcaseReadingPaneLocation new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1152)
+    public Map<String,Object> setPrefBriefcaseReadingPaneLocation(ZAttrProvisioning.PrefBriefcaseReadingPaneLocation zimbraPrefBriefcaseReadingPaneLocation, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefBriefcaseReadingPaneLocation, zimbraPrefBriefcaseReadingPaneLocation.toString());
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: where the
+     * reading pane is displayed for briefcase
+     *
+     * <p>Valid values: [bottom, right, off]
+     *
+     * @param zimbraPrefBriefcaseReadingPaneLocation new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1152)
+    public void setPrefBriefcaseReadingPaneLocationAsString(String zimbraPrefBriefcaseReadingPaneLocation) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefBriefcaseReadingPaneLocation, zimbraPrefBriefcaseReadingPaneLocation);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: where the
+     * reading pane is displayed for briefcase
+     *
+     * <p>Valid values: [bottom, right, off]
+     *
+     * @param zimbraPrefBriefcaseReadingPaneLocation new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1152)
+    public Map<String,Object> setPrefBriefcaseReadingPaneLocationAsString(String zimbraPrefBriefcaseReadingPaneLocation, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefBriefcaseReadingPaneLocation, zimbraPrefBriefcaseReadingPaneLocation);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: where the
+     * reading pane is displayed for briefcase
+     *
+     * <p>Valid values: [bottom, right, off]
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1152)
+    public void unsetPrefBriefcaseReadingPaneLocation() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefBriefcaseReadingPaneLocation, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: where the
+     * reading pane is displayed for briefcase
+     *
+     * <p>Valid values: [bottom, right, off]
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1152)
+    public Map<String,Object> unsetPrefBriefcaseReadingPaneLocation(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefBriefcaseReadingPaneLocation, "");
+        return attrs;
+    }
+
+    /**
      * whether to allow a cancel email sent to organizer of appointment
      *
      * @return zimbraPrefCalendarAllowCancelEmailToSelf, or false if unset
@@ -29521,6 +31613,160 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: When to send the first reminder for an event.
+     *
+     * @return zimbraPrefCalendarReminderDuration1, or "-PT15M" if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=573)
+    public String getPrefCalendarReminderDuration1() {
+        return getAttr(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration1, "-PT15M", true);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: When to send the first reminder for an event.
+     *
+     * @param zimbraPrefCalendarReminderDuration1 new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=573)
+    public void setPrefCalendarReminderDuration1(String zimbraPrefCalendarReminderDuration1) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration1, zimbraPrefCalendarReminderDuration1);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: When to send the first reminder for an event.
+     *
+     * @param zimbraPrefCalendarReminderDuration1 new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=573)
+    public Map<String,Object> setPrefCalendarReminderDuration1(String zimbraPrefCalendarReminderDuration1, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration1, zimbraPrefCalendarReminderDuration1);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: When to send the first reminder for an event.
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=573)
+    public void unsetPrefCalendarReminderDuration1() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration1, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: When to send the first reminder for an event.
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=573)
+    public Map<String,Object> unsetPrefCalendarReminderDuration1(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration1, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: When to send the second reminder for an event.
+     *
+     * @return zimbraPrefCalendarReminderDuration2, or null if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=574)
+    public String getPrefCalendarReminderDuration2() {
+        return getAttr(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration2, null, true);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: When to send the second reminder for an event.
+     *
+     * @param zimbraPrefCalendarReminderDuration2 new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=574)
+    public void setPrefCalendarReminderDuration2(String zimbraPrefCalendarReminderDuration2) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration2, zimbraPrefCalendarReminderDuration2);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: When to send the second reminder for an event.
+     *
+     * @param zimbraPrefCalendarReminderDuration2 new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=574)
+    public Map<String,Object> setPrefCalendarReminderDuration2(String zimbraPrefCalendarReminderDuration2, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration2, zimbraPrefCalendarReminderDuration2);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: When to send the second reminder for an event.
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=574)
+    public void unsetPrefCalendarReminderDuration2() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration2, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: When to send the second reminder for an event.
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=574)
+    public Map<String,Object> unsetPrefCalendarReminderDuration2(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderDuration2, "");
+        return attrs;
+    }
+
+    /**
      * Flash title when on appointment reminder notification
      *
      * @return zimbraPrefCalendarReminderFlashTitle, or true if unset
@@ -29589,6 +31835,165 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetPrefCalendarReminderFlashTitle(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderFlashTitle, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: The mobile device (phone) the reminder goes to.
+     *
+     * @return zimbraPrefCalendarReminderMobile, or false if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=577)
+    public boolean isPrefCalendarReminderMobile() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefCalendarReminderMobile, false, true);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: The mobile device (phone) the reminder goes to.
+     *
+     * @param zimbraPrefCalendarReminderMobile new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=577)
+    public void setPrefCalendarReminderMobile(boolean zimbraPrefCalendarReminderMobile) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderMobile, zimbraPrefCalendarReminderMobile ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: The mobile device (phone) the reminder goes to.
+     *
+     * @param zimbraPrefCalendarReminderMobile new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=577)
+    public Map<String,Object> setPrefCalendarReminderMobile(boolean zimbraPrefCalendarReminderMobile, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderMobile, zimbraPrefCalendarReminderMobile ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: The mobile device (phone) the reminder goes to.
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=577)
+    public void unsetPrefCalendarReminderMobile() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderMobile, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: The mobile device (phone) the reminder goes to.
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=577)
+    public Map<String,Object> unsetPrefCalendarReminderMobile(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderMobile, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: whether or not email reminders for appointments and
+     * tasks are enabled
+     *
+     * @return zimbraPrefCalendarReminderSendEmail, or false if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=576)
+    public boolean isPrefCalendarReminderSendEmail() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefCalendarReminderSendEmail, false, true);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: whether or not email reminders for appointments and
+     * tasks are enabled
+     *
+     * @param zimbraPrefCalendarReminderSendEmail new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=576)
+    public void setPrefCalendarReminderSendEmail(boolean zimbraPrefCalendarReminderSendEmail) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderSendEmail, zimbraPrefCalendarReminderSendEmail ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: whether or not email reminders for appointments and
+     * tasks are enabled
+     *
+     * @param zimbraPrefCalendarReminderSendEmail new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=576)
+    public Map<String,Object> setPrefCalendarReminderSendEmail(boolean zimbraPrefCalendarReminderSendEmail, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderSendEmail, zimbraPrefCalendarReminderSendEmail ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: whether or not email reminders for appointments and
+     * tasks are enabled
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=576)
+    public void unsetPrefCalendarReminderSendEmail() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderSendEmail, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: whether or not email reminders for appointments and
+     * tasks are enabled
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=576)
+    public Map<String,Object> unsetPrefCalendarReminderSendEmail(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderSendEmail, "");
         return attrs;
     }
 
@@ -29666,6 +32071,83 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetPrefCalendarReminderSoundsEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderSoundsEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: Send a reminder via YIM
+     *
+     * @return zimbraPrefCalendarReminderYMessenger, or false if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=578)
+    public boolean isPrefCalendarReminderYMessenger() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefCalendarReminderYMessenger, false, true);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: Send a reminder via YIM
+     *
+     * @param zimbraPrefCalendarReminderYMessenger new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=578)
+    public void setPrefCalendarReminderYMessenger(boolean zimbraPrefCalendarReminderYMessenger) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderYMessenger, zimbraPrefCalendarReminderYMessenger ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: Send a reminder via YIM
+     *
+     * @param zimbraPrefCalendarReminderYMessenger new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=578)
+    public Map<String,Object> setPrefCalendarReminderYMessenger(boolean zimbraPrefCalendarReminderYMessenger, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderYMessenger, zimbraPrefCalendarReminderYMessenger ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: Send a reminder via YIM
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=578)
+    public void unsetPrefCalendarReminderYMessenger() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderYMessenger, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA1. was added for Yahoo calendar, no longer
+     * used. Orig desc: Send a reminder via YIM
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=578)
+    public Map<String,Object> unsetPrefCalendarReminderYMessenger(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefCalendarReminderYMessenger, "");
         return attrs;
     }
 
@@ -30858,6 +33340,298 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetPrefComposeInNewWindow(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraPrefComposeInNewWindow, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Since 8.0.0, the contact group can contain
+     * member references, but member references are not searchable.. Orig
+     * desc: Disables autocomplete matching against the members email
+     * address.
+     *
+     * @return zimbraPrefContactsDisableAutocompleteOnContactGroupMembers, or false if unset
+     *
+     * @since ZCS 6.0.7
+     */
+    @ZAttr(id=1090)
+    public boolean isPrefContactsDisableAutocompleteOnContactGroupMembers() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefContactsDisableAutocompleteOnContactGroupMembers, false, true);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Since 8.0.0, the contact group can contain
+     * member references, but member references are not searchable.. Orig
+     * desc: Disables autocomplete matching against the members email
+     * address.
+     *
+     * @param zimbraPrefContactsDisableAutocompleteOnContactGroupMembers new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.7
+     */
+    @ZAttr(id=1090)
+    public void setPrefContactsDisableAutocompleteOnContactGroupMembers(boolean zimbraPrefContactsDisableAutocompleteOnContactGroupMembers) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsDisableAutocompleteOnContactGroupMembers, zimbraPrefContactsDisableAutocompleteOnContactGroupMembers ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Since 8.0.0, the contact group can contain
+     * member references, but member references are not searchable.. Orig
+     * desc: Disables autocomplete matching against the members email
+     * address.
+     *
+     * @param zimbraPrefContactsDisableAutocompleteOnContactGroupMembers new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.7
+     */
+    @ZAttr(id=1090)
+    public Map<String,Object> setPrefContactsDisableAutocompleteOnContactGroupMembers(boolean zimbraPrefContactsDisableAutocompleteOnContactGroupMembers, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsDisableAutocompleteOnContactGroupMembers, zimbraPrefContactsDisableAutocompleteOnContactGroupMembers ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Since 8.0.0, the contact group can contain
+     * member references, but member references are not searchable.. Orig
+     * desc: Disables autocomplete matching against the members email
+     * address.
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 6.0.7
+     */
+    @ZAttr(id=1090)
+    public void unsetPrefContactsDisableAutocompleteOnContactGroupMembers() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsDisableAutocompleteOnContactGroupMembers, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. Since 8.0.0, the contact group can contain
+     * member references, but member references are not searchable.. Orig
+     * desc: Disables autocomplete matching against the members email
+     * address.
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 6.0.7
+     */
+    @ZAttr(id=1090)
+    public Map<String,Object> unsetPrefContactsDisableAutocompleteOnContactGroupMembers(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsDisableAutocompleteOnContactGroupMembers, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.0.0. deprecated now that Zimbra supports keeping
+     * member references in a contact group. Orig desc: Expand the contact
+     * groups in Apple Address Book format to Zimbra format over CardDAV.
+     *
+     * @return zimbraPrefContactsExpandAppleContactGroups, or false if unset
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1102)
+    public boolean isPrefContactsExpandAppleContactGroups() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefContactsExpandAppleContactGroups, false, true);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. deprecated now that Zimbra supports keeping
+     * member references in a contact group. Orig desc: Expand the contact
+     * groups in Apple Address Book format to Zimbra format over CardDAV.
+     *
+     * @param zimbraPrefContactsExpandAppleContactGroups new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1102)
+    public void setPrefContactsExpandAppleContactGroups(boolean zimbraPrefContactsExpandAppleContactGroups) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsExpandAppleContactGroups, zimbraPrefContactsExpandAppleContactGroups ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. deprecated now that Zimbra supports keeping
+     * member references in a contact group. Orig desc: Expand the contact
+     * groups in Apple Address Book format to Zimbra format over CardDAV.
+     *
+     * @param zimbraPrefContactsExpandAppleContactGroups new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1102)
+    public Map<String,Object> setPrefContactsExpandAppleContactGroups(boolean zimbraPrefContactsExpandAppleContactGroups, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsExpandAppleContactGroups, zimbraPrefContactsExpandAppleContactGroups ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.0.0. deprecated now that Zimbra supports keeping
+     * member references in a contact group. Orig desc: Expand the contact
+     * groups in Apple Address Book format to Zimbra format over CardDAV.
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1102)
+    public void unsetPrefContactsExpandAppleContactGroups() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsExpandAppleContactGroups, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.0.0. deprecated now that Zimbra supports keeping
+     * member references in a contact group. Orig desc: Expand the contact
+     * groups in Apple Address Book format to Zimbra format over CardDAV.
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 7.0.0
+     */
+    @ZAttr(id=1102)
+    public Map<String,Object> unsetPrefContactsExpandAppleContactGroups(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsExpandAppleContactGroups, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.5. We do not support cards view any more. See
+     * bug 47439. Orig desc: initial contact view to use
+     *
+     * <p>Valid values: [cards, list]
+     *
+     * @return zimbraPrefContactsInitialView, or ZAttrProvisioning.PrefContactsInitialView.list if unset and/or has invalid value
+     */
+    @ZAttr(id=167)
+    public ZAttrProvisioning.PrefContactsInitialView getPrefContactsInitialView() {
+        try { String v = getAttr(ZAttrProvisioning.A_zimbraPrefContactsInitialView, true, true); return v == null ? ZAttrProvisioning.PrefContactsInitialView.list : ZAttrProvisioning.PrefContactsInitialView.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.PrefContactsInitialView.list; }
+    }
+
+    /**
+     * Deprecated since: 6.0.5. We do not support cards view any more. See
+     * bug 47439. Orig desc: initial contact view to use
+     *
+     * <p>Valid values: [cards, list]
+     *
+     * @return zimbraPrefContactsInitialView, or "list" if unset
+     */
+    @ZAttr(id=167)
+    public String getPrefContactsInitialViewAsString() {
+        return getAttr(ZAttrProvisioning.A_zimbraPrefContactsInitialView, "list", true);
+    }
+
+    /**
+     * Deprecated since: 6.0.5. We do not support cards view any more. See
+     * bug 47439. Orig desc: initial contact view to use
+     *
+     * <p>Valid values: [cards, list]
+     *
+     * @param zimbraPrefContactsInitialView new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=167)
+    public void setPrefContactsInitialView(ZAttrProvisioning.PrefContactsInitialView zimbraPrefContactsInitialView) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsInitialView, zimbraPrefContactsInitialView.toString());
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.5. We do not support cards view any more. See
+     * bug 47439. Orig desc: initial contact view to use
+     *
+     * <p>Valid values: [cards, list]
+     *
+     * @param zimbraPrefContactsInitialView new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=167)
+    public Map<String,Object> setPrefContactsInitialView(ZAttrProvisioning.PrefContactsInitialView zimbraPrefContactsInitialView, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsInitialView, zimbraPrefContactsInitialView.toString());
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.5. We do not support cards view any more. See
+     * bug 47439. Orig desc: initial contact view to use
+     *
+     * <p>Valid values: [cards, list]
+     *
+     * @param zimbraPrefContactsInitialView new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=167)
+    public void setPrefContactsInitialViewAsString(String zimbraPrefContactsInitialView) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsInitialView, zimbraPrefContactsInitialView);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.5. We do not support cards view any more. See
+     * bug 47439. Orig desc: initial contact view to use
+     *
+     * <p>Valid values: [cards, list]
+     *
+     * @param zimbraPrefContactsInitialView new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=167)
+    public Map<String,Object> setPrefContactsInitialViewAsString(String zimbraPrefContactsInitialView, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsInitialView, zimbraPrefContactsInitialView);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.5. We do not support cards view any more. See
+     * bug 47439. Orig desc: initial contact view to use
+     *
+     * <p>Valid values: [cards, list]
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=167)
+    public void unsetPrefContactsInitialView() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsInitialView, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.5. We do not support cards view any more. See
+     * bug 47439. Orig desc: initial contact view to use
+     *
+     * <p>Valid values: [cards, list]
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=167)
+    public Map<String,Object> unsetPrefContactsInitialView(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefContactsInitialView, "");
         return attrs;
     }
 
@@ -32198,6 +34972,145 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: indicates which
+     * application to use for file sharing
+     *
+     * <p>Valid values: [briefcase]
+     *
+     * @return zimbraPrefFileSharingApplication, or ZAttrProvisioning.PrefFileSharingApplication.briefcase if unset and/or has invalid value
+     *
+     * @since ZCS 8.0.0
+     */
+    @ZAttr(id=1197)
+    public ZAttrProvisioning.PrefFileSharingApplication getPrefFileSharingApplication() {
+        try { String v = getAttr(ZAttrProvisioning.A_zimbraPrefFileSharingApplication, true, true); return v == null ? ZAttrProvisioning.PrefFileSharingApplication.briefcase : ZAttrProvisioning.PrefFileSharingApplication.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.PrefFileSharingApplication.briefcase; }
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: indicates which
+     * application to use for file sharing
+     *
+     * <p>Valid values: [briefcase]
+     *
+     * @return zimbraPrefFileSharingApplication, or "briefcase" if unset
+     *
+     * @since ZCS 8.0.0
+     */
+    @ZAttr(id=1197)
+    public String getPrefFileSharingApplicationAsString() {
+        return getAttr(ZAttrProvisioning.A_zimbraPrefFileSharingApplication, "briefcase", true);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: indicates which
+     * application to use for file sharing
+     *
+     * <p>Valid values: [briefcase]
+     *
+     * @param zimbraPrefFileSharingApplication new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.0.0
+     */
+    @ZAttr(id=1197)
+    public void setPrefFileSharingApplication(ZAttrProvisioning.PrefFileSharingApplication zimbraPrefFileSharingApplication) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefFileSharingApplication, zimbraPrefFileSharingApplication.toString());
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: indicates which
+     * application to use for file sharing
+     *
+     * <p>Valid values: [briefcase]
+     *
+     * @param zimbraPrefFileSharingApplication new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.0.0
+     */
+    @ZAttr(id=1197)
+    public Map<String,Object> setPrefFileSharingApplication(ZAttrProvisioning.PrefFileSharingApplication zimbraPrefFileSharingApplication, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefFileSharingApplication, zimbraPrefFileSharingApplication.toString());
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: indicates which
+     * application to use for file sharing
+     *
+     * <p>Valid values: [briefcase]
+     *
+     * @param zimbraPrefFileSharingApplication new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.0.0
+     */
+    @ZAttr(id=1197)
+    public void setPrefFileSharingApplicationAsString(String zimbraPrefFileSharingApplication) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefFileSharingApplication, zimbraPrefFileSharingApplication);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: indicates which
+     * application to use for file sharing
+     *
+     * <p>Valid values: [briefcase]
+     *
+     * @param zimbraPrefFileSharingApplication new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.0.0
+     */
+    @ZAttr(id=1197)
+    public Map<String,Object> setPrefFileSharingApplicationAsString(String zimbraPrefFileSharingApplication, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefFileSharingApplication, zimbraPrefFileSharingApplication);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: indicates which
+     * application to use for file sharing
+     *
+     * <p>Valid values: [briefcase]
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 8.0.0
+     */
+    @ZAttr(id=1197)
+    public void unsetPrefFileSharingApplication() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefFileSharingApplication, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 23.6.0. Feature removed. Orig desc: indicates which
+     * application to use for file sharing
+     *
+     * <p>Valid values: [briefcase]
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 8.0.0
+     */
+    @ZAttr(id=1197)
+    public Map<String,Object> unsetPrefFileSharingApplication(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefFileSharingApplication, "");
+        return attrs;
+    }
+
+    /**
      * whether folder color is enabled
      *
      * @return zimbraPrefFolderColorEnabled, or true if unset
@@ -33441,6 +36354,1251 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetPrefHtmlEditorDefaultFontSize(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraPrefHtmlEditorDefaultFontSize, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to login to the IM client automatically
+     *
+     * @return zimbraPrefIMAutoLogin, or false if unset
+     */
+    @ZAttr(id=488)
+    public boolean isPrefIMAutoLogin() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMAutoLogin, false, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to login to the IM client automatically
+     *
+     * @param zimbraPrefIMAutoLogin new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=488)
+    public void setPrefIMAutoLogin(boolean zimbraPrefIMAutoLogin) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMAutoLogin, zimbraPrefIMAutoLogin ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to login to the IM client automatically
+     *
+     * @param zimbraPrefIMAutoLogin new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=488)
+    public Map<String,Object> setPrefIMAutoLogin(boolean zimbraPrefIMAutoLogin, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMAutoLogin, zimbraPrefIMAutoLogin ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to login to the IM client automatically
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=488)
+    public void unsetPrefIMAutoLogin() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMAutoLogin, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to login to the IM client automatically
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=488)
+    public Map<String,Object> unsetPrefIMAutoLogin(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMAutoLogin, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * buddy list sort order
+     *
+     * @return zimbraPrefIMBuddyListSort, or null if unset
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=705)
+    public String getPrefIMBuddyListSort() {
+        return getAttr(ZAttrProvisioning.A_zimbraPrefIMBuddyListSort, null, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * buddy list sort order
+     *
+     * @param zimbraPrefIMBuddyListSort new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=705)
+    public void setPrefIMBuddyListSort(String zimbraPrefIMBuddyListSort) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMBuddyListSort, zimbraPrefIMBuddyListSort);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * buddy list sort order
+     *
+     * @param zimbraPrefIMBuddyListSort new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=705)
+    public Map<String,Object> setPrefIMBuddyListSort(String zimbraPrefIMBuddyListSort, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMBuddyListSort, zimbraPrefIMBuddyListSort);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * buddy list sort order
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=705)
+    public void unsetPrefIMBuddyListSort() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMBuddyListSort, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * buddy list sort order
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=705)
+    public Map<String,Object> unsetPrefIMBuddyListSort(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMBuddyListSort, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Flash
+     * IM icon on new messages
+     *
+     * @return zimbraPrefIMFlashIcon, or true if unset
+     */
+    @ZAttr(id=462)
+    public boolean isPrefIMFlashIcon() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMFlashIcon, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Flash
+     * IM icon on new messages
+     *
+     * @param zimbraPrefIMFlashIcon new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=462)
+    public void setPrefIMFlashIcon(boolean zimbraPrefIMFlashIcon) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMFlashIcon, zimbraPrefIMFlashIcon ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Flash
+     * IM icon on new messages
+     *
+     * @param zimbraPrefIMFlashIcon new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=462)
+    public Map<String,Object> setPrefIMFlashIcon(boolean zimbraPrefIMFlashIcon, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMFlashIcon, zimbraPrefIMFlashIcon ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Flash
+     * IM icon on new messages
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=462)
+    public void unsetPrefIMFlashIcon() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMFlashIcon, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Flash
+     * IM icon on new messages
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=462)
+    public Map<String,Object> unsetPrefIMFlashIcon(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMFlashIcon, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Flash
+     * title bar when a new IM arrives
+     *
+     * @return zimbraPrefIMFlashTitle, or true if unset
+     *
+     * @since ZCS 5.0.7
+     */
+    @ZAttr(id=679)
+    public boolean isPrefIMFlashTitle() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMFlashTitle, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Flash
+     * title bar when a new IM arrives
+     *
+     * @param zimbraPrefIMFlashTitle new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.7
+     */
+    @ZAttr(id=679)
+    public void setPrefIMFlashTitle(boolean zimbraPrefIMFlashTitle) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMFlashTitle, zimbraPrefIMFlashTitle ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Flash
+     * title bar when a new IM arrives
+     *
+     * @param zimbraPrefIMFlashTitle new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.7
+     */
+    @ZAttr(id=679)
+    public Map<String,Object> setPrefIMFlashTitle(boolean zimbraPrefIMFlashTitle, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMFlashTitle, zimbraPrefIMFlashTitle ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Flash
+     * title bar when a new IM arrives
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.7
+     */
+    @ZAttr(id=679)
+    public void unsetPrefIMFlashTitle() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMFlashTitle, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Flash
+     * title bar when a new IM arrives
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.7
+     */
+    @ZAttr(id=679)
+    public Map<String,Object> unsetPrefIMFlashTitle(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMFlashTitle, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to hide IM blocked buddies
+     *
+     * @return zimbraPrefIMHideBlockedBuddies, or false if unset
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=707)
+    public boolean isPrefIMHideBlockedBuddies() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMHideBlockedBuddies, false, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to hide IM blocked buddies
+     *
+     * @param zimbraPrefIMHideBlockedBuddies new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=707)
+    public void setPrefIMHideBlockedBuddies(boolean zimbraPrefIMHideBlockedBuddies) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMHideBlockedBuddies, zimbraPrefIMHideBlockedBuddies ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to hide IM blocked buddies
+     *
+     * @param zimbraPrefIMHideBlockedBuddies new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=707)
+    public Map<String,Object> setPrefIMHideBlockedBuddies(boolean zimbraPrefIMHideBlockedBuddies, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMHideBlockedBuddies, zimbraPrefIMHideBlockedBuddies ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to hide IM blocked buddies
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=707)
+    public void unsetPrefIMHideBlockedBuddies() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMHideBlockedBuddies, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to hide IM blocked buddies
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=707)
+    public Map<String,Object> unsetPrefIMHideBlockedBuddies(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMHideBlockedBuddies, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to hide IM offline buddies
+     *
+     * @return zimbraPrefIMHideOfflineBuddies, or false if unset
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=706)
+    public boolean isPrefIMHideOfflineBuddies() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMHideOfflineBuddies, false, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to hide IM offline buddies
+     *
+     * @param zimbraPrefIMHideOfflineBuddies new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=706)
+    public void setPrefIMHideOfflineBuddies(boolean zimbraPrefIMHideOfflineBuddies) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMHideOfflineBuddies, zimbraPrefIMHideOfflineBuddies ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to hide IM offline buddies
+     *
+     * @param zimbraPrefIMHideOfflineBuddies new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=706)
+    public Map<String,Object> setPrefIMHideOfflineBuddies(boolean zimbraPrefIMHideOfflineBuddies, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMHideOfflineBuddies, zimbraPrefIMHideOfflineBuddies ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to hide IM offline buddies
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=706)
+    public void unsetPrefIMHideOfflineBuddies() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMHideOfflineBuddies, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to hide IM offline buddies
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.10
+     */
+    @ZAttr(id=706)
+    public Map<String,Object> unsetPrefIMHideOfflineBuddies(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMHideOfflineBuddies, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * idle status
+     *
+     * <p>Valid values: [away, xa, invisible, offline]
+     *
+     * @return zimbraPrefIMIdleStatus, or ZAttrProvisioning.PrefIMIdleStatus.away if unset and/or has invalid value
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=560)
+    public ZAttrProvisioning.PrefIMIdleStatus getPrefIMIdleStatus() {
+        try { String v = getAttr(ZAttrProvisioning.A_zimbraPrefIMIdleStatus, true, true); return v == null ? ZAttrProvisioning.PrefIMIdleStatus.away : ZAttrProvisioning.PrefIMIdleStatus.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.PrefIMIdleStatus.away; }
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * idle status
+     *
+     * <p>Valid values: [away, xa, invisible, offline]
+     *
+     * @return zimbraPrefIMIdleStatus, or "away" if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=560)
+    public String getPrefIMIdleStatusAsString() {
+        return getAttr(ZAttrProvisioning.A_zimbraPrefIMIdleStatus, "away", true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * idle status
+     *
+     * <p>Valid values: [away, xa, invisible, offline]
+     *
+     * @param zimbraPrefIMIdleStatus new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=560)
+    public void setPrefIMIdleStatus(ZAttrProvisioning.PrefIMIdleStatus zimbraPrefIMIdleStatus) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMIdleStatus, zimbraPrefIMIdleStatus.toString());
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * idle status
+     *
+     * <p>Valid values: [away, xa, invisible, offline]
+     *
+     * @param zimbraPrefIMIdleStatus new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=560)
+    public Map<String,Object> setPrefIMIdleStatus(ZAttrProvisioning.PrefIMIdleStatus zimbraPrefIMIdleStatus, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMIdleStatus, zimbraPrefIMIdleStatus.toString());
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * idle status
+     *
+     * <p>Valid values: [away, xa, invisible, offline]
+     *
+     * @param zimbraPrefIMIdleStatus new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=560)
+    public void setPrefIMIdleStatusAsString(String zimbraPrefIMIdleStatus) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMIdleStatus, zimbraPrefIMIdleStatus);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * idle status
+     *
+     * <p>Valid values: [away, xa, invisible, offline]
+     *
+     * @param zimbraPrefIMIdleStatus new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=560)
+    public Map<String,Object> setPrefIMIdleStatusAsString(String zimbraPrefIMIdleStatus, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMIdleStatus, zimbraPrefIMIdleStatus);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * idle status
+     *
+     * <p>Valid values: [away, xa, invisible, offline]
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=560)
+    public void unsetPrefIMIdleStatus() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMIdleStatus, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * idle status
+     *
+     * <p>Valid values: [away, xa, invisible, offline]
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=560)
+    public Map<String,Object> unsetPrefIMIdleStatus(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMIdleStatus, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * session idle timeout in minutes
+     *
+     * @return zimbraPrefIMIdleTimeout, or 10 if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=559)
+    public int getPrefIMIdleTimeout() {
+        return getIntAttr(ZAttrProvisioning.A_zimbraPrefIMIdleTimeout, 10, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * session idle timeout in minutes
+     *
+     * @param zimbraPrefIMIdleTimeout new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=559)
+    public void setPrefIMIdleTimeout(int zimbraPrefIMIdleTimeout) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMIdleTimeout, Integer.toString(zimbraPrefIMIdleTimeout));
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * session idle timeout in minutes
+     *
+     * @param zimbraPrefIMIdleTimeout new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=559)
+    public Map<String,Object> setPrefIMIdleTimeout(int zimbraPrefIMIdleTimeout, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMIdleTimeout, Integer.toString(zimbraPrefIMIdleTimeout));
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * session idle timeout in minutes
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=559)
+    public void unsetPrefIMIdleTimeout() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMIdleTimeout, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: IM
+     * session idle timeout in minutes
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=559)
+    public Map<String,Object> unsetPrefIMIdleTimeout(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMIdleTimeout, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Enable
+     * instant notifications
+     *
+     * @return zimbraPrefIMInstantNotify, or true if unset
+     */
+    @ZAttr(id=517)
+    public boolean isPrefIMInstantNotify() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMInstantNotify, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Enable
+     * instant notifications
+     *
+     * @param zimbraPrefIMInstantNotify new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=517)
+    public void setPrefIMInstantNotify(boolean zimbraPrefIMInstantNotify) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMInstantNotify, zimbraPrefIMInstantNotify ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Enable
+     * instant notifications
+     *
+     * @param zimbraPrefIMInstantNotify new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=517)
+    public Map<String,Object> setPrefIMInstantNotify(boolean zimbraPrefIMInstantNotify, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMInstantNotify, zimbraPrefIMInstantNotify ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Enable
+     * instant notifications
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=517)
+    public void unsetPrefIMInstantNotify() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMInstantNotify, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Enable
+     * instant notifications
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=517)
+    public Map<String,Object> unsetPrefIMInstantNotify(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMInstantNotify, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to log IM chats to the Chats folder
+     *
+     * @return zimbraPrefIMLogChats, or true if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=556)
+    public boolean isPrefIMLogChats() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMLogChats, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to log IM chats to the Chats folder
+     *
+     * @param zimbraPrefIMLogChats new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=556)
+    public void setPrefIMLogChats(boolean zimbraPrefIMLogChats) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMLogChats, zimbraPrefIMLogChats ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to log IM chats to the Chats folder
+     *
+     * @param zimbraPrefIMLogChats new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=556)
+    public Map<String,Object> setPrefIMLogChats(boolean zimbraPrefIMLogChats, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMLogChats, zimbraPrefIMLogChats ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to log IM chats to the Chats folder
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=556)
+    public void unsetPrefIMLogChats() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMLogChats, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to log IM chats to the Chats folder
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=556)
+    public Map<String,Object> unsetPrefIMLogChats(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMLogChats, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether IM log chats is enabled
+     *
+     * @return zimbraPrefIMLogChatsEnabled, or true if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=552)
+    public boolean isPrefIMLogChatsEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMLogChatsEnabled, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether IM log chats is enabled
+     *
+     * @param zimbraPrefIMLogChatsEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=552)
+    public void setPrefIMLogChatsEnabled(boolean zimbraPrefIMLogChatsEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMLogChatsEnabled, zimbraPrefIMLogChatsEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether IM log chats is enabled
+     *
+     * @param zimbraPrefIMLogChatsEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=552)
+    public Map<String,Object> setPrefIMLogChatsEnabled(boolean zimbraPrefIMLogChatsEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMLogChatsEnabled, zimbraPrefIMLogChatsEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether IM log chats is enabled
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=552)
+    public void unsetPrefIMLogChatsEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMLogChatsEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether IM log chats is enabled
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=552)
+    public Map<String,Object> unsetPrefIMLogChatsEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMLogChatsEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Notify
+     * for presence modifications
+     *
+     * @return zimbraPrefIMNotifyPresence, or true if unset
+     */
+    @ZAttr(id=463)
+    public boolean isPrefIMNotifyPresence() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMNotifyPresence, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Notify
+     * for presence modifications
+     *
+     * @param zimbraPrefIMNotifyPresence new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=463)
+    public void setPrefIMNotifyPresence(boolean zimbraPrefIMNotifyPresence) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMNotifyPresence, zimbraPrefIMNotifyPresence ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Notify
+     * for presence modifications
+     *
+     * @param zimbraPrefIMNotifyPresence new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=463)
+    public Map<String,Object> setPrefIMNotifyPresence(boolean zimbraPrefIMNotifyPresence, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMNotifyPresence, zimbraPrefIMNotifyPresence ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Notify
+     * for presence modifications
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=463)
+    public void unsetPrefIMNotifyPresence() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMNotifyPresence, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Notify
+     * for presence modifications
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=463)
+    public Map<String,Object> unsetPrefIMNotifyPresence(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMNotifyPresence, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Notify
+     * for status change
+     *
+     * @return zimbraPrefIMNotifyStatus, or true if unset
+     */
+    @ZAttr(id=464)
+    public boolean isPrefIMNotifyStatus() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMNotifyStatus, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Notify
+     * for status change
+     *
+     * @param zimbraPrefIMNotifyStatus new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=464)
+    public void setPrefIMNotifyStatus(boolean zimbraPrefIMNotifyStatus) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMNotifyStatus, zimbraPrefIMNotifyStatus ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Notify
+     * for status change
+     *
+     * @param zimbraPrefIMNotifyStatus new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=464)
+    public Map<String,Object> setPrefIMNotifyStatus(boolean zimbraPrefIMNotifyStatus, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMNotifyStatus, zimbraPrefIMNotifyStatus ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Notify
+     * for status change
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=464)
+    public void unsetPrefIMNotifyStatus() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMNotifyStatus, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc: Notify
+     * for status change
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=464)
+    public Map<String,Object> unsetPrefIMNotifyStatus(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMNotifyStatus, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to report IM idle status
+     *
+     * @return zimbraPrefIMReportIdle, or true if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=558)
+    public boolean isPrefIMReportIdle() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMReportIdle, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to report IM idle status
+     *
+     * @param zimbraPrefIMReportIdle new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=558)
+    public void setPrefIMReportIdle(boolean zimbraPrefIMReportIdle) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMReportIdle, zimbraPrefIMReportIdle ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to report IM idle status
+     *
+     * @param zimbraPrefIMReportIdle new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=558)
+    public Map<String,Object> setPrefIMReportIdle(boolean zimbraPrefIMReportIdle, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMReportIdle, zimbraPrefIMReportIdle ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to report IM idle status
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=558)
+    public void unsetPrefIMReportIdle() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMReportIdle, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether to report IM idle status
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=558)
+    public Map<String,Object> unsetPrefIMReportIdle(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMReportIdle, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether sounds is enabled in IM
+     *
+     * @return zimbraPrefIMSoundsEnabled, or true if unset
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=570)
+    public boolean isPrefIMSoundsEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefIMSoundsEnabled, true, true);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether sounds is enabled in IM
+     *
+     * @param zimbraPrefIMSoundsEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=570)
+    public void setPrefIMSoundsEnabled(boolean zimbraPrefIMSoundsEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMSoundsEnabled, zimbraPrefIMSoundsEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether sounds is enabled in IM
+     *
+     * @param zimbraPrefIMSoundsEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=570)
+    public Map<String,Object> setPrefIMSoundsEnabled(boolean zimbraPrefIMSoundsEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMSoundsEnabled, zimbraPrefIMSoundsEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether sounds is enabled in IM
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=570)
+    public void unsetPrefIMSoundsEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMSoundsEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 8.7.0. Zimbra IM has been discontinued. Zimbra Chat
+     * feature uses a new set of configuration attributes.. Orig desc:
+     * whether sounds is enabled in IM
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 5.0.0
+     */
+    @ZAttr(id=570)
+    public Map<String,Object> unsetPrefIMSoundsEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefIMSoundsEnabled, "");
         return attrs;
     }
 
@@ -36808,6 +40966,78 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 6.0.0_BETA2. deprecated in favor of
+     * zimbraPrefReadingPaneLocation and zimbraPrefConvReadingPaneLocation.
+     * Orig desc: whether reading pane is shown by default
+     *
+     * @return zimbraPrefReadingPaneEnabled, or true if unset
+     */
+    @ZAttr(id=394)
+    public boolean isPrefReadingPaneEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefReadingPaneEnabled, true, true);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA2. deprecated in favor of
+     * zimbraPrefReadingPaneLocation and zimbraPrefConvReadingPaneLocation.
+     * Orig desc: whether reading pane is shown by default
+     *
+     * @param zimbraPrefReadingPaneEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=394)
+    public void setPrefReadingPaneEnabled(boolean zimbraPrefReadingPaneEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReadingPaneEnabled, zimbraPrefReadingPaneEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA2. deprecated in favor of
+     * zimbraPrefReadingPaneLocation and zimbraPrefConvReadingPaneLocation.
+     * Orig desc: whether reading pane is shown by default
+     *
+     * @param zimbraPrefReadingPaneEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=394)
+    public Map<String,Object> setPrefReadingPaneEnabled(boolean zimbraPrefReadingPaneEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReadingPaneEnabled, zimbraPrefReadingPaneEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA2. deprecated in favor of
+     * zimbraPrefReadingPaneLocation and zimbraPrefConvReadingPaneLocation.
+     * Orig desc: whether reading pane is shown by default
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=394)
+    public void unsetPrefReadingPaneEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReadingPaneEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 6.0.0_BETA2. deprecated in favor of
+     * zimbraPrefReadingPaneLocation and zimbraPrefConvReadingPaneLocation.
+     * Orig desc: whether reading pane is shown by default
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=394)
+    public Map<String,Object> unsetPrefReadingPaneEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReadingPaneEnabled, "");
+        return attrs;
+    }
+
+    /**
      * where the message reading pane is displayed in list views
      *
      * <p>Valid values: [bottom, right, off]
@@ -40101,6 +44331,131 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetProxyAllowedDomains(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraProxyAllowedDomains, "");
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 7.2.1. Deprecated per bug 74769. Orig desc: Content
+     * types that can be cached by proxy servlet
+     *
+     * @return zimbraProxyCacheableContentTypes, or empty array if unset
+     */
+    @ZAttr(id=303)
+    public String[] getProxyCacheableContentTypes() {
+        String[] value = getMultiAttr(ZAttrProvisioning.A_zimbraProxyCacheableContentTypes, true, true); return value.length > 0 ? value : new String[] {"text/javascript","application/x-javascript"};
+    }
+
+    /**
+     * Deprecated since: 7.2.1. Deprecated per bug 74769. Orig desc: Content
+     * types that can be cached by proxy servlet
+     *
+     * @param zimbraProxyCacheableContentTypes new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=303)
+    public void setProxyCacheableContentTypes(String[] zimbraProxyCacheableContentTypes) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraProxyCacheableContentTypes, zimbraProxyCacheableContentTypes);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 7.2.1. Deprecated per bug 74769. Orig desc: Content
+     * types that can be cached by proxy servlet
+     *
+     * @param zimbraProxyCacheableContentTypes new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=303)
+    public Map<String,Object> setProxyCacheableContentTypes(String[] zimbraProxyCacheableContentTypes, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraProxyCacheableContentTypes, zimbraProxyCacheableContentTypes);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 7.2.1. Deprecated per bug 74769. Orig desc: Content
+     * types that can be cached by proxy servlet
+     *
+     * @param zimbraProxyCacheableContentTypes new to add to existing values
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=303)
+    public void addProxyCacheableContentTypes(String zimbraProxyCacheableContentTypes) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraProxyCacheableContentTypes, zimbraProxyCacheableContentTypes);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 7.2.1. Deprecated per bug 74769. Orig desc: Content
+     * types that can be cached by proxy servlet
+     *
+     * @param zimbraProxyCacheableContentTypes new to add to existing values
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=303)
+    public Map<String,Object> addProxyCacheableContentTypes(String zimbraProxyCacheableContentTypes, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraProxyCacheableContentTypes, zimbraProxyCacheableContentTypes);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 7.2.1. Deprecated per bug 74769. Orig desc: Content
+     * types that can be cached by proxy servlet
+     *
+     * @param zimbraProxyCacheableContentTypes existing value to remove
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=303)
+    public void removeProxyCacheableContentTypes(String zimbraProxyCacheableContentTypes) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraProxyCacheableContentTypes, zimbraProxyCacheableContentTypes);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 7.2.1. Deprecated per bug 74769. Orig desc: Content
+     * types that can be cached by proxy servlet
+     *
+     * @param zimbraProxyCacheableContentTypes existing value to remove
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=303)
+    public Map<String,Object> removeProxyCacheableContentTypes(String zimbraProxyCacheableContentTypes, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraProxyCacheableContentTypes, zimbraProxyCacheableContentTypes);
+        return attrs;
+    }
+
+    /**
+     * Deprecated since: 7.2.1. Deprecated per bug 74769. Orig desc: Content
+     * types that can be cached by proxy servlet
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     */
+    @ZAttr(id=303)
+    public void unsetProxyCacheableContentTypes() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraProxyCacheableContentTypes, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Deprecated since: 7.2.1. Deprecated per bug 74769. Orig desc: Content
+     * types that can be cached by proxy servlet
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     */
+    @ZAttr(id=303)
+    public Map<String,Object> unsetProxyCacheableContentTypes(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraProxyCacheableContentTypes, "");
         return attrs;
     }
 

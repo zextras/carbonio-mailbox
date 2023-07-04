@@ -5,35 +5,36 @@
 
 package com.zimbra.cs.mailbox;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.common.mailbox.BaseItemInfo;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import java.util.HashMap;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 public final class MailboxListenerTest {
 
   private static boolean listenerWasCalled;
 
-  @BeforeClass
+  @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
     prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     MailboxTestUtil.clearData();
     listenerWasCalled = false;
   }
 
-  @After
+  @AfterEach
   public void cleanup() throws Exception {
-    Assert.assertTrue(listenerWasCalled);
+    assertTrue(listenerWasCalled);
     MailboxListener.reset();
   }
 
@@ -43,11 +44,11 @@ public final class MailboxListenerTest {
     public void notify(ChangeNotification notification) {
       listenerWasCalled = true;
 
-      Assert.assertNotNull(notification);
-      Assert.assertNotNull(notification.mailboxAccount);
-      Assert.assertEquals(notification.mailboxAccount.getId(), MockProvisioning.DEFAULT_ACCOUNT_ID);
+      assertNotNull(notification);
+      assertNotNull(notification.mailboxAccount);
+      assertEquals(notification.mailboxAccount.getId(), MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-      Assert.assertNotNull(notification.mods.created);
+      assertNotNull(notification.mods.created);
       boolean newDocFound = false;
       for (BaseItemInfo item : notification.mods.created.values()) {
         if (item instanceof Document) {
@@ -55,9 +56,9 @@ public final class MailboxListenerTest {
           if ("test".equals(doc.getName())) newDocFound = true;
         }
       }
-      Assert.assertTrue(newDocFound);
+      assertTrue(newDocFound);
 
-      Assert.assertNotNull(notification.mods);
+      assertNotNull(notification.mods);
     }
   }
 }

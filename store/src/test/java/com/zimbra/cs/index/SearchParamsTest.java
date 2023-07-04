@@ -5,10 +5,11 @@
 
 package com.zimbra.cs.index;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Locale;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link SearchParams}.
@@ -17,20 +18,20 @@ import org.junit.Test;
  */
 public final class SearchParamsTest {
 
-    @Test
-    public void parseLocale() {
-        Assert.assertEquals(new Locale("da"), SearchParams.parseLocale("da"));
-        Assert.assertEquals(new Locale("da", "DK"), SearchParams.parseLocale("da_DK"));
-        Assert.assertEquals(new Locale("en"), SearchParams.parseLocale("en"));
-        Assert.assertEquals(new Locale("en", "US", "MAC"), SearchParams.parseLocale("en_US-MAC"));
-    }
+ @Test
+ void parseLocale() {
+  assertEquals(new Locale("da"), SearchParams.parseLocale("da"));
+  assertEquals(new Locale("da", "DK"), SearchParams.parseLocale("da_DK"));
+  assertEquals(new Locale("en"), SearchParams.parseLocale("en"));
+  assertEquals(new Locale("en", "US", "MAC"), SearchParams.parseLocale("en_US-MAC"));
+ }
     
     
     public void testIsSortByReadFlag() {
-        Assert.assertFalse(SearchParams.isSortByReadFlag(SortBy.DATE_ASC));
-        Assert.assertFalse(SearchParams.isSortByReadFlag(SortBy.DATE_DESC));
-        Assert.assertTrue(SearchParams.isSortByReadFlag(SortBy.READ_ASC));
-        Assert.assertTrue(SearchParams.isSortByReadFlag(SortBy.READ_DESC));
+        assertFalse(SearchParams.isSortByReadFlag(SortBy.DATE_ASC));
+        assertFalse(SearchParams.isSortByReadFlag(SortBy.DATE_DESC));
+        assertTrue(SearchParams.isSortByReadFlag(SortBy.READ_ASC));
+        assertTrue(SearchParams.isSortByReadFlag(SortBy.READ_DESC));
     }
 
 }

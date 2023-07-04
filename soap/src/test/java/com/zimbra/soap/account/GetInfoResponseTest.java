@@ -9,14 +9,17 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.type.Identity;
+
 import java.util.Collection;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link GetInfoResponse}.
@@ -27,7 +30,7 @@ public class GetInfoResponseTest {
 
   private static Unmarshaller unmarshaller;
 
-  @BeforeClass
+  @BeforeAll
   public static void init() throws Exception {
     JAXBContext jaxb = JAXBContext.newInstance(GetInfoResponse.class);
     unmarshaller = jaxb.createUnmarshaller();
@@ -35,8 +38,8 @@ public class GetInfoResponseTest {
 
   private void checkAsserts(GetInfoResponse result) {
     List<Identity> identities = result.getIdentities();
-    Assert.assertEquals(1, identities.size());
-    Assert.assertEquals(
+    assertEquals(1, identities.size());
+    assertEquals(
         "Identity{a=[Attr{name=zimbraPrefIdentityId, value=91e6d036-5d5e-4788-9bc2-5b65e8c2480c},"
             + " Attr{name=zimbraPrefSaveToSent, value=TRUE},"
             + " Attr{name=zimbraPrefForwardReplyPrefixChar, value=>},"
@@ -52,28 +55,28 @@ public class GetInfoResponseTest {
             + " id=91e6d036-5d5e-4788-9bc2-5b65e8c2480c}",
         identities.get(0).toString());
     Collection<String> sigHtml = result.getPrefsMultimap().get("zimbraPrefMailSignatureHTML");
-    Assert.assertNotNull(sigHtml);
+    assertNotNull(sigHtml);
     String sig = sigHtml.iterator().next();
     // Full comparison failing on Jenkins system due to environmental charset issues
     // Re-enabled stricter test.  Assuming use of Unicode escapes \u00F3 (twice) gets around this
     // issue:
     //     Assert.assertTrue("Signature", sig.endsWith("signature test"));
-    Assert.assertEquals(
+    assertEquals(
         "\u003Cstrong\u003Ef\u00F3\u00F3 utf8\u003C/strong\u003E signature test", sig);
-    Assert.assertTrue("isTrackingIMAP should be 'TRUE'", result.getIsTrackingIMAP());
+    assertTrue(result.getIsTrackingIMAP(), "isTrackingIMAP should be 'TRUE'");
   }
 
   @Test
-  @Ignore("add the required xml")
-  public void unmarshall() throws Exception {
+  @Disabled("add the required xml")
+  void unmarshall() throws Exception {
     checkAsserts(
         (GetInfoResponse)
             unmarshaller.unmarshal(getClass().getResourceAsStream("GetInfoResponse.xml")));
   }
 
   @Test
-  @Ignore("add the required xml")
-  public void jaxbUtilUnmarshall() throws Exception {
+  @Disabled("add the required xml")
+  void jaxbUtilUnmarshall() throws Exception {
     // same as unmarshall but use JaxbUtil; this provokes/tests issues with utf8 conversion
     checkAsserts(
         (GetInfoResponse)

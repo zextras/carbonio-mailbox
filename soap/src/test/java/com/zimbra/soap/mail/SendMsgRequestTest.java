@@ -5,6 +5,21 @@
 
 package com.zimbra.soap.mail;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
 import com.google.common.collect.ImmutableList;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -12,15 +27,6 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SendMsgRequest;
 import com.zimbra.soap.mail.type.Msg;
 import com.zimbra.soap.mail.type.MsgToSend;
-import java.util.List;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
 
 /**
  * Unit test for {@link SendMsgRequest}.
@@ -28,7 +34,7 @@ import org.junit.rules.TestName;
  * @author ysasaki
  */
 public final class SendMsgRequestTest {
-  @Rule public TestName testName = new TestName();
+     public String testName;
 
   private static final Logger LOG = LogManager.getLogger(SendMsgRequestTest.class);
 
@@ -36,35 +42,39 @@ public final class SendMsgRequestTest {
     com.zimbra.common.util.LogManager.setThisLogAndRootToLevel(LOG, Level.INFO);
   }
 
-  private void logInfo(String format, Object... objects) {
-    if (LOG.isInfoEnabled()) {
-      LOG.info(testName.getMethodName() + ":" + String.format(format, objects));
+    private void logInfo(String format, Object ... objects) {
+        if (LOG.isInfoEnabled()) {
+            LOG.info( testName + ":" + String.format(format, objects));
+        }
     }
-  }
 
-  @BeforeClass
-  public static void init() throws Exception {}
+    @BeforeAll
+    public static void init() throws Exception {
+    }
 
   @Test
-  public void marshal() throws Exception {
+  void marshal() throws Exception {
     SendMsgRequest req = new SendMsgRequest();
     MsgToSend msg = new MsgToSend();
-    msg.setHeaders(
-        ImmutableList.of(new Msg.Header("name1", "value1"), new Msg.Header("name2", "value2")));
+    msg.setHeaders(ImmutableList.of(new Msg.Header("name1", "value1"), new Msg.Header("name2", "value2")));
     req.setMsg(msg);
     Element jaxbElem = JaxbUtil.jaxbToElement(req);
     logInfo("XML Element from JAXB:" + jaxbElem.toString());
-    Assert.assertEquals(
-        "SendMsgRequest elem name", MailConstants.E_SEND_MSG_REQUEST, jaxbElem.getName());
-    Assert.assertEquals(
-        "SendMsgRequest elem ns",
-        MailConstants.NAMESPACE_STR,
-        jaxbElem.getQName().getNamespaceURI());
-    List<Element> hdrs =
-        jaxbElem.getElement(MailConstants.E_MSG).listElements(MailConstants.E_HEADER);
-    Assert.assertEquals("SendMsgRequest header 1 name", "name1", hdrs.get(0).getAttribute("name"));
-    Assert.assertEquals("SendMsgRequest header 2 name", "name2", hdrs.get(1).getAttribute("name"));
-    Assert.assertEquals("SendMsgRequest header 1 value", "value1", hdrs.get(0).getText());
-    Assert.assertEquals("SendMsgRequest header 2 value", "value2", hdrs.get(1).getText());
+    assertEquals(MailConstants.E_SEND_MSG_REQUEST, jaxbElem.getName(), "SendMsgRequest elem name");
+    assertEquals(MailConstants.NAMESPACE_STR, jaxbElem.getQName().getNamespaceURI(), "SendMsgRequest elem ns");
+    List<Element> hdrs = jaxbElem.getElement(MailConstants.E_MSG).listElements(MailConstants.E_HEADER);
+    assertEquals("name1", hdrs.get(0).getAttribute("name"), "SendMsgRequest header 1 name");
+    assertEquals("name2", hdrs.get(1).getAttribute("name"), "SendMsgRequest header 2 name");
+    assertEquals("value1", hdrs.get(0).getText(), "SendMsgRequest header 1 value");
+    assertEquals("value2", hdrs.get(1).getText(), "SendMsgRequest header 2 value");
   }
+
+  @BeforeEach
+  public void setup(TestInfo testInfo) {
+    Optional<Method> testMethod = testInfo.getTestMethod();
+    if (testMethod.isPresent()) {
+      this.testName = testMethod.get().getName();
+    }
+  }
+
 }

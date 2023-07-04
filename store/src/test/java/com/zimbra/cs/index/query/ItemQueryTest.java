@@ -3,20 +3,19 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package com.zimbra.cs.index.query;
-
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.MethodRule;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.*;
+
 
 import com.zimbra.common.service.ServiceException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
@@ -30,211 +29,216 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.service.mail.Search;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
-import com.zimbra.cs.util.ZTestWatchman;
+
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SearchRequest;
 import com.zimbra.soap.mail.message.SearchResponse;
 import com.zimbra.soap.type.SearchHit;
+
 /**
  * Unit test for {@link ItemQuery}
  * @author Greg Solovyev
  *
  */
 public class ItemQueryTest {
-    @Rule public TestName testName = new TestName();
-    @Rule public MethodRule watchman = new ZTestWatchman();
+     public String testName;
+    
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
     }
 
-    @Before
-    public void setUp() throws Exception {
-        System.out.println(testName.getMethodName());
-        MockProvisioning prov = new MockProvisioning();
-        prov.createAccount("zero@zimbra.com", "secret", new HashMap<String, Object>());
-        Provisioning.setInstance(prov);
-    }
+ @BeforeEach
+ public void setUp(TestInfo testInfo) throws Exception {
+  Optional<Method> testMethod = testInfo.getTestMethod();
+  if (testMethod.isPresent()) {
+   this.testName = testMethod.get().getName();
+  }
+  System.out.println( testName);
+  MockProvisioning prov = new MockProvisioning();
+  prov.createAccount("zero@zimbra.com", "secret", new HashMap<String, Object>());
+  Provisioning.setInstance(prov);
+ }
 
-    @Test
-    public void testSyntax() throws ServiceException {
-        Account account = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-        Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
+ @Test
+ void testSyntax() throws ServiceException {
+  Account account = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
+  Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-        ItemQuery q = (ItemQuery) ItemQuery.create(mailbox, "1,2");
-        Assert.assertEquals(String.format("Q(ITEMID,%s:1,%s:2)", MockProvisioning.DEFAULT_ACCOUNT_ID, MockProvisioning.DEFAULT_ACCOUNT_ID), q.toString());
+  ItemQuery q = (ItemQuery) ItemQuery.create(mailbox, "1,2");
+  assertEquals(String.format("Q(ITEMID,%s:1,%s:2)", MockProvisioning.DEFAULT_ACCOUNT_ID, MockProvisioning.DEFAULT_ACCOUNT_ID), q.toString());
 
-        q = (ItemQuery) ItemQuery.create(mailbox, "1");
-        Assert.assertEquals(String.format("Q(ITEMID,%s:1)", MockProvisioning.DEFAULT_ACCOUNT_ID), q.toString());
+  q = (ItemQuery) ItemQuery.create(mailbox, "1");
+  assertEquals(String.format("Q(ITEMID,%s:1)", MockProvisioning.DEFAULT_ACCOUNT_ID), q.toString());
 
-        q = (ItemQuery) ItemQuery.create(mailbox, "all");
-        Assert.assertEquals("Q(ITEMID,all)", q.toString());
+  q = (ItemQuery) ItemQuery.create(mailbox, "all");
+  assertEquals("Q(ITEMID,all)", q.toString());
 
-        q = (ItemQuery) ItemQuery.create(mailbox, "none");
-        Assert.assertEquals("Q(ITEMID,none)", q.toString());
+  q = (ItemQuery) ItemQuery.create(mailbox, "none");
+  assertEquals("Q(ITEMID,none)", q.toString());
 
-        q = (ItemQuery) ItemQuery.create(mailbox, "1--10");
-        Assert.assertEquals(String.format("Q(ITEMID,%s:1--%s:10)", MockProvisioning.DEFAULT_ACCOUNT_ID, MockProvisioning.DEFAULT_ACCOUNT_ID), q.toString());
-    }
+  q = (ItemQuery) ItemQuery.create(mailbox, "1--10");
+  assertEquals(String.format("Q(ITEMID,%s:1--%s:10)", MockProvisioning.DEFAULT_ACCOUNT_ID, MockProvisioning.DEFAULT_ACCOUNT_ID), q.toString());
+ }
 
-    @Test
-    public void testAllItemsQuery() throws Exception {
-        Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+ @Test
+ void testAllItemsQuery() throws Exception {
+  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
-        mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
-        mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject2"), dopt, null);
-        
-        SearchResponse resp;
-        List<SearchHit> hits;
-        SearchRequest sr = new SearchRequest();
-        sr.setSearchTypes("message");
-        sr.setQuery("item:{all}");
-        sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
-        resp = doSearch(sr, acct);
-        hits = resp.getSearchHits();
-        Assert.assertEquals("Number of hits", 2, hits.size());
-    }
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
+  mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
+  mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject2"), dopt, null);
 
-    @Test
-    public void testNoneItemsQuery() throws Exception {
-        Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  SearchResponse resp;
+  List<SearchHit> hits;
+  SearchRequest sr = new SearchRequest();
+  sr.setSearchTypes("message");
+  sr.setQuery("item:{all}");
+  sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
+  resp = doSearch(sr, acct);
+  hits = resp.getSearchHits();
+  assertEquals(2, hits.size(), "Number of hits");
+ }
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
-        mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
+ @Test
+ void testNoneItemsQuery() throws Exception {
+  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
-        SearchResponse resp;
-        List<SearchHit> hits;
-        SearchRequest sr = new SearchRequest();
-        sr.setSearchTypes("message");
-        sr.setQuery("item:{none}");
-        sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
-        resp = doSearch(sr, acct);
-        hits = resp.getSearchHits();
-        Assert.assertEquals("Number of hits", 0, hits.size());
-    }
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
+  mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
 
-    @Test
-    public void testOneItemQuery() throws Exception {
-        Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  SearchResponse resp;
+  List<SearchHit> hits;
+  SearchRequest sr = new SearchRequest();
+  sr.setSearchTypes("message");
+  sr.setQuery("item:{none}");
+  sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
+  resp = doSearch(sr, acct);
+  hits = resp.getSearchHits();
+  assertEquals(0, hits.size(), "Number of hits");
+ }
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
-        mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
-        Message msg2 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject2"), dopt, null);
-        mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject3"), dopt, null);
-        
-        SearchResponse resp;
-        List<SearchHit> hits;
-        SearchRequest sr = new SearchRequest();
-        sr.setSearchTypes("message");
-        sr.setQuery(String.format("item:{%d}", msg2.getId()));
-        sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
-        resp = doSearch(sr, acct);
-        hits = resp.getSearchHits();
-        Assert.assertEquals("Number of hits", 1, hits.size());
-        int msgId = Integer.parseInt(hits.get(0).getId());
-        Assert.assertEquals("correct hit 1", msg2.getId(), msgId);
-    }
+ @Test
+ void testOneItemQuery() throws Exception {
+  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
-    @Test
-    public void testListOfItemsQuery() throws Exception {
-        Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
+  mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
+  Message msg2 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject2"), dopt, null);
+  mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject3"), dopt, null);
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
-        Message msg1 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
-        mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject2"), dopt, null);
-        Message msg3 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject3"), dopt, null);
-        
-        SearchResponse resp;
-        List<SearchHit> hits;
-        SearchRequest sr = new SearchRequest();
-        sr.setSearchTypes("message");
-        sr.setQuery(String.format("item:{%d,%d}", msg1.getId(), msg3.getId()));
-        sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
-        resp = doSearch(sr, acct);
-        hits = resp.getSearchHits();
-        Assert.assertEquals("Number of hits", 2, hits.size());
-        int msgId = Integer.parseInt(hits.get(0).getId());
-        Assert.assertEquals("correct hit 1", msg1.getId(), msgId);
-        msgId = Integer.parseInt(hits.get(1).getId());
-        Assert.assertEquals("correct hit 2", msg3.getId(), msgId);
-    }
+  SearchResponse resp;
+  List<SearchHit> hits;
+  SearchRequest sr = new SearchRequest();
+  sr.setSearchTypes("message");
+  sr.setQuery(String.format("item:{%d}", msg2.getId()));
+  sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
+  resp = doSearch(sr, acct);
+  hits = resp.getSearchHits();
+  assertEquals(1, hits.size(), "Number of hits");
+  int msgId = Integer.parseInt(hits.get(0).getId());
+  assertEquals(msg2.getId(), msgId, "correct hit 1");
+ }
 
-    @Test
-    public void testRangeOfItemsQuery() throws Exception {
-        Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+ @Test
+ void testListOfItemsQuery() throws Exception {
+  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
-        Message msg1 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
-        Message msg2 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject2"), dopt, null);
-        Message msg3 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject3"), dopt, null);
-        mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject4"), dopt, null);
-        
-        SearchResponse resp;
-        List<SearchHit> hits;
-        SearchRequest sr = new SearchRequest();
-        sr.setSearchTypes("message");
-        sr.setQuery(String.format("item:{%d--%d}", msg1.getId(), msg3.getId()));
-        sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
-        resp = doSearch(sr, acct);
-        hits = resp.getSearchHits();
-        Assert.assertEquals("Number of hits", 3, hits.size());
-        int msgId = Integer.parseInt(hits.get(0).getId());
-        Assert.assertEquals("correct hit 1", msg1.getId(), msgId);
-        msgId = Integer.parseInt(hits.get(1).getId());
-        Assert.assertEquals("correct hit 2", msg2.getId(), msgId);
-        msgId = Integer.parseInt(hits.get(2).getId());
-        Assert.assertEquals("correct hit 3", msg3.getId(), msgId);
-    }
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
+  Message msg1 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
+  mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject2"), dopt, null);
+  Message msg3 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject3"), dopt, null);
 
-    @Test
-    public void testInvalidRangeQuery() throws Exception {
-        Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  SearchResponse resp;
+  List<SearchHit> hits;
+  SearchRequest sr = new SearchRequest();
+  sr.setSearchTypes("message");
+  sr.setQuery(String.format("item:{%d,%d}", msg1.getId(), msg3.getId()));
+  sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
+  resp = doSearch(sr, acct);
+  hits = resp.getSearchHits();
+  assertEquals(2, hits.size(), "Number of hits");
+  int msgId = Integer.parseInt(hits.get(0).getId());
+  assertEquals(msg1.getId(), msgId, "correct hit 1");
+  msgId = Integer.parseInt(hits.get(1).getId());
+  assertEquals(msg3.getId(), msgId, "correct hit 2");
+ }
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
-        Message msg1 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
-        Message msg2 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject2"), dopt, null);
-        Message msg3 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject3"), dopt, null);
-        mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject4"), dopt, null);
+ @Test
+ void testRangeOfItemsQuery() throws Exception {
+  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
-        SearchRequest sr = new SearchRequest();
-        sr.setSearchTypes("message");
-        String q = String.format("item:{%d--%d--%d}", msg1.getId(), msg2.getId(), msg3.getId());
-        sr.setQuery(q);
-        try {
-            doSearch(sr, acct);
-            Assert.fail("Should have thrown a PARSE_ERROR exception for " + q);
-        } catch (ServiceException e) {
-            Assert.assertEquals(e.getCode(), ServiceException.PARSE_ERROR);
-        }
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
+  Message msg1 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
+  Message msg2 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject2"), dopt, null);
+  Message msg3 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject3"), dopt, null);
+  mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject4"), dopt, null);
 
-        sr.setSearchTypes("message");
-        q = String.format("item:{%d--%d,%d}", msg1.getId(), msg2.getId(), msg3.getId());
-        sr.setQuery(q);
-        try {
-            doSearch(sr, acct);
-            Assert.fail("Should have thrown an INVALID_REQUEST exception for " + q);
-        } catch (ServiceException e) {
-            Assert.assertEquals(e.getCode(), ServiceException.INVALID_REQUEST);
-        }
+  SearchResponse resp;
+  List<SearchHit> hits;
+  SearchRequest sr = new SearchRequest();
+  sr.setSearchTypes("message");
+  sr.setQuery(String.format("item:{%d--%d}", msg1.getId(), msg3.getId()));
+  sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
+  resp = doSearch(sr, acct);
+  hits = resp.getSearchHits();
+  assertEquals(3, hits.size(), "Number of hits");
+  int msgId = Integer.parseInt(hits.get(0).getId());
+  assertEquals(msg1.getId(), msgId, "correct hit 1");
+  msgId = Integer.parseInt(hits.get(1).getId());
+  assertEquals(msg2.getId(), msgId, "correct hit 2");
+  msgId = Integer.parseInt(hits.get(2).getId());
+  assertEquals(msg3.getId(), msgId, "correct hit 3");
+ }
 
-        sr.setSearchTypes("message");
-        q = String.format("item:{%d,%d--%d}", msg1.getId(), msg2.getId(), msg3.getId());
-        sr.setQuery(q);
-        try {
-            doSearch(sr, acct);
-            Assert.fail("Should have thrown an INVALID_REQUEST exception for " + q);
-        } catch (ServiceException e) {
-            Assert.assertEquals(e.getCode(), ServiceException.INVALID_REQUEST);
-        }
-    }
+ @Test
+ void testInvalidRangeQuery() throws Exception {
+  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
+  Message msg1 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
+  Message msg2 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject2"), dopt, null);
+  Message msg3 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject3"), dopt, null);
+  mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject4"), dopt, null);
+
+  SearchRequest sr = new SearchRequest();
+  sr.setSearchTypes("message");
+  String q = String.format("item:{%d--%d--%d}", msg1.getId(), msg2.getId(), msg3.getId());
+  sr.setQuery(q);
+  try {
+   doSearch(sr, acct);
+   fail("Should have thrown a PARSE_ERROR exception for " + q);
+  } catch (ServiceException e) {
+   assertEquals(e.getCode(), ServiceException.PARSE_ERROR);
+  }
+
+  sr.setSearchTypes("message");
+  q = String.format("item:{%d--%d,%d}", msg1.getId(), msg2.getId(), msg3.getId());
+  sr.setQuery(q);
+  try {
+   doSearch(sr, acct);
+   fail("Should have thrown an INVALID_REQUEST exception for " + q);
+  } catch (ServiceException e) {
+   assertEquals(e.getCode(), ServiceException.INVALID_REQUEST);
+  }
+
+  sr.setSearchTypes("message");
+  q = String.format("item:{%d,%d--%d}", msg1.getId(), msg2.getId(), msg3.getId());
+  sr.setQuery(q);
+  try {
+   doSearch(sr, acct);
+   fail("Should have thrown an INVALID_REQUEST exception for " + q);
+  } catch (ServiceException e) {
+   assertEquals(e.getCode(), ServiceException.INVALID_REQUEST);
+  }
+ }
 
     private static SearchResponse doSearch(SearchRequest request, Account acct) throws Exception {
         Element response = new Search().handle(JaxbUtil.jaxbToElement(request, Element.XMLElement.mFactory),
@@ -243,7 +247,7 @@ public class ItemQueryTest {
         return resp;
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         try {
             MailboxTestUtil.clearData();

@@ -44,11 +44,11 @@ import com.zimbra.soap.SoapServlet;
 
 public class ZimbraQoSFilter implements Filter {
 
-    final static int DEFAULT_WAIT_MS=50;
-    final static long DEFAULT_SUSPEND_MS = 1000;
+    static final int DEFAULT_WAIT_MS=50;
+    static final long DEFAULT_SUSPEND_MS = 1000;
     
-    final static String MAX_WAIT_INIT_PARAM="waitMs";
-    final static String SUSPEND_INIT_PARAM="suspendMs";
+    static final String MAX_WAIT_INIT_PARAM="waitMs";
+    static final String SUSPEND_INIT_PARAM="suspendMs";
 
     private long waitMs;
     private long suspendMs;

@@ -90,4 +90,25 @@ public final class Utils {
     }
     return List.of();
   }
+
+  /**
+   * Get subdirectories names from the given directory path.
+   *
+   * @param directoryPath path to get subdirectories names
+   * @return list of directories names
+   * @author Yuliya Aheeva
+   * @since 23.7.0
+   */
+  public static List<String> getSubdirectoriesNames(final String directoryPath) {
+    try (Stream<Path> paths = Files.list(Path.of(directoryPath))) {
+      return paths
+          .filter(Files::isDirectory)
+          .map(Path::getFileName)
+          .map(Path::toString)
+          .collect(Collectors.toList());
+    } catch (IOException ignored) {
+      // ignore
+    }
+    return List.of();
+  }
 }

@@ -7,11 +7,12 @@ package com.zimbra.cs.account;
 
 import java.util.HashMap;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.common.account.Key.AccountBy;
+
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 
 /**
@@ -21,37 +22,37 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
  */
 public class ZimbraAuthTokenTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initProvisioning();
         Provisioning.getInstance().createAccount("user1@example.zimbra.com", "secret", new HashMap<String, Object>());
     }
 
-    @Test
-    public void test() throws Exception {
-        Account a = Provisioning.getInstance().get(AccountBy.name, "user1@example.zimbra.com");
-        ZimbraAuthToken at = new ZimbraAuthToken(a);
-        long start = System.currentTimeMillis();
-        String encoded = at.getEncoded();
-        for (int i = 0; i < 1000; i++) {
-            new ZimbraAuthToken(encoded);
-        }
-        System.out.println("Encoded 1000 auth-tokens elapsed=" + (System.currentTimeMillis() - start));
+ @Test
+ void test() throws Exception {
+  Account a = Provisioning.getInstance().get(AccountBy.name, "user1@example.zimbra.com");
+  ZimbraAuthToken at = new ZimbraAuthToken(a);
+  long start = System.currentTimeMillis();
+  String encoded = at.getEncoded();
+  for (int i = 0; i < 1000; i++) {
+   new ZimbraAuthToken(encoded);
+  }
+  System.out.println("Encoded 1000 auth-tokens elapsed=" + (System.currentTimeMillis() - start));
 
-        start = System.currentTimeMillis();
-        for (int i = 0; i < 1000; i++) {
-            ZimbraAuthToken.getAuthToken(encoded);
-        }
-        System.out.println("Decoded 1000 auth-tokens elapsed=" + (System.currentTimeMillis() - start));
-    }
-    
-    @Test
-    public void testEncodedDifferentOnTokenIDReset() throws Exception {
-        Account a = Provisioning.getInstance().get(AccountBy.name, "user1@example.zimbra.com");
-        ZimbraAuthToken at = new ZimbraAuthToken(a);
-        ZimbraAuthToken clonedAuthToken = at.clone();
-        clonedAuthToken.resetTokenId();
-        Assert.assertFalse(at.getEncoded().equals(clonedAuthToken.getEncoded()));
-    }
+  start = System.currentTimeMillis();
+  for (int i = 0; i < 1000; i++) {
+   ZimbraAuthToken.getAuthToken(encoded);
+  }
+  System.out.println("Decoded 1000 auth-tokens elapsed=" + (System.currentTimeMillis() - start));
+ }
+
+ @Test
+ void testEncodedDifferentOnTokenIDReset() throws Exception {
+  Account a = Provisioning.getInstance().get(AccountBy.name, "user1@example.zimbra.com");
+  ZimbraAuthToken at = new ZimbraAuthToken(a);
+  ZimbraAuthToken clonedAuthToken = at.clone();
+  clonedAuthToken.resetTokenId();
+  assertNotEquals(at.getEncoded(), clonedAuthToken.getEncoded());
+ }
 
 }

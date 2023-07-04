@@ -5,6 +5,8 @@
 
 package com.zimbra.soap.account;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,13 +25,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
-import org.custommonkey.xmlunit.DetailedDiff;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.dom4j.QName;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Predicates;
@@ -87,8 +86,9 @@ import com.zimbra.soap.type.WantRecipsSetting;
 import com.zimbra.soap.util.JaxbElementInfo;
 import com.zimbra.soap.util.JaxbInfo;
 import com.zimbra.soap.util.JaxbNodeInfo;
-
-import junit.framework.Assert;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.diff.Diff;
+import org.xmlunit.diff.Difference;
 
 /**
  * Unit test for {@link GetInfoResponse} which exercises
@@ -96,7 +96,7 @@ import junit.framework.Assert;
  *
  * @author Gren Elliot
  */
-@Ignore("add required xml files to run")
+@Disabled("add required xml files to run")
 public class JaxbToElementTest {
     private static String getInfoResponseXMLfileName = "GetInfoResponse.xml";
     private static Unmarshaller unmarshaller;
@@ -184,7 +184,7 @@ public class JaxbToElementTest {
         return getInfoResponseJSON;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         getInfoResponsefromXml();
         getTestInfoResponseXml();
@@ -195,25 +195,19 @@ public class JaxbToElementTest {
         getInfoRespElem = JaxbUtil.jaxbToElement(getInfoRespJaxb);
     }
 
-    @Test
-    public void jaxBToElementTest() throws Exception {
-        for (int cnt = 1; cnt <= iterationNum;cnt++) {
-            Element el = JaxbUtil.jaxbToElement(getInfoRespJaxb);
-            String actual = el.prettyPrint();
-            String expected = getInfoResponseXml;
-            DetailedDiff myDiff = new DetailedDiff(XMLUnit.compareXML(expected, actual));
-            List allDifferences = myDiff.getAllDifferences();
-            if (allDifferences.size() > 0) {
-                ZimbraLog.test.debug("Iteration:%s - %s differences found.  Compare below with '%s'\n%s\n",
-                        cnt, allDifferences.size(), getInfoResponseXMLfileName, actual);
-                int diffnum = 0;
-                for (Object obj : allDifferences) {
-                    ZimbraLog.test.info("Difference:%s [%s]", diffnum++, obj);
-                }
-                XMLAssert.assertXMLEqual(expected, actual);
-            }
-        }
+  @Test
+  void jaxBToElementTest() throws Exception {
+    for (int cnt = 1;cnt <= iterationNum;cnt++) {
+      Element el = JaxbUtil.jaxbToElement(getInfoRespJaxb);
+      String actual = el.prettyPrint();
+      String expected = getInfoResponseXml;
+      Diff myDiff = DiffBuilder.compare(expected).withTest(actual).build();
+      Iterable<Difference> allDifferences = myDiff.getDifferences();
+      allDifferences.forEach(
+          difference -> ZimbraLog.test.info("Difference:%s [%s]", difference));
+      assertFalse(myDiff.hasDifferences());
     }
+  }
 
     private void validateLongString(String message,
                 String expected, String actual,
@@ -226,32 +220,32 @@ public class JaxbToElementTest {
             }catch (Exception e){//Catch exception if any
               ZimbraLog.test.error("validateLongString:Error writing to %s", actualFile, e);
             }
-            Assert.fail(message + "\nexpected=" + expectedFile + "\nactual=" + actualFile);
+            fail(message + "\nexpected=" + expectedFile + "\nactual=" + actualFile);
         }
     }
 
-    @Test
-    public void jaxBToJSONElementTest() throws Exception {
-            Element el = JaxbUtil.jaxbToElement(getInfoRespJaxb, JSONElement.mFactory);
-            // el.toString() and el.prettyPrint() don't provide the
-            // name of the element - that only happens when it is a
-            // child of other elements (the "soap" envelop)
-            String actual = el.prettyPrint();
-            Assert.assertEquals("Top level Element name", "GetInfoResponse", el.getName());
-            validateLongString("JSON response differs from expected\n", getInfoResponseJSON, actual,
-                        "GetInfoResponse.json", "/tmp/GetInfoResponse.json");
-    }
+  @Test
+  void jaxBToJSONElementTest() throws Exception {
+    Element el = JaxbUtil.jaxbToElement(getInfoRespJaxb, JSONElement.mFactory);
+    // el.toString() and el.prettyPrint() don't provide the
+    // name of the element - that only happens when it is a
+    // child of other elements (the "soap" envelop)
+    String actual = el.prettyPrint();
+    assertEquals("GetInfoResponse", el.getName(), "Top level Element name");
+    validateLongString("JSON response differs from expected\n", getInfoResponseJSON, actual,
+        "GetInfoResponse.json", "/tmp/GetInfoResponse.json");
+  }
 
-    @Test
-    public void elementToJaxbTest() throws Exception {
-        Element el = JaxbUtil.jaxbToElement(getInfoRespJaxb);
-        org.w3c.dom.Document doc = el.toW3cDom();
-        ZimbraLog.test.debug("(XML)elementToJaxbTest toW3cDom() Xml:\n%s", W3cDomUtil.asXML(doc));
-        for (int cnt = 1; cnt <= iterationNum;cnt++) {
-            GetInfoResponse getInfoResp = JaxbUtil.elementToJaxb(getInfoRespElem);
-            Assert.assertEquals("Account name", "user1@tarka.local", getInfoResp.getAccountName());
-        }
+  @Test
+  void elementToJaxbTest() throws Exception {
+    Element el = JaxbUtil.jaxbToElement(getInfoRespJaxb);
+    org.w3c.dom.Document doc = el.toW3cDom();
+    ZimbraLog.test.debug("(XML)elementToJaxbTest toW3cDom() Xml:\n%s", W3cDomUtil.asXML(doc));
+    for (int cnt = 1;cnt <= iterationNum;cnt++) {
+      GetInfoResponse getInfoResp = JaxbUtil.elementToJaxb(getInfoRespElem);
+      assertEquals("user1@tarka.local", getInfoResp.getAccountName(), "Account name");
     }
+  }
 
     private static String searchConvJson =
         "{\n" +
@@ -316,19 +310,18 @@ public class JaxbToElementTest {
         try {
             envelope = Element.parseJSON(json);
         } catch (SoapParseException e) {
-            Assert.fail(String.format("Parse from JSON to Element failed - %s", e.getMessage()));
+            fail(String.format("Parse from JSON to Element failed - %s", e.getMessage()));
         }
-        Assert.assertNotNull("Envelope element from parse from JSON", envelope);
+        assertNotNull(envelope, "Envelope element from parse from JSON");
         Element inner =  envelope.listElements().get(0);
-        Assert.assertNotNull("element inside envelope element from parse from JSON", inner);
+        assertNotNull(inner, "element inside envelope element from parse from JSON");
         return inner;
     }
 
     private void doJsonSearchConvRecipCheck(String recipValue, WantRecipsSetting expected) throws ServiceException {
         Element elem = getElementForEnvelopedJSON(searchConvJson.replace("%%VALUE%%", recipValue));
         SearchConvRequest req = JaxbUtil.elementToJaxb(elem);
-        Assert.assertEquals(String.format("recips:%s should map to %s", recipValue, expected),
-                expected, req.getWantRecipients());
+        assertEquals(expected, req.getWantRecipients(), String.format("recips:%s should map to %s", recipValue, expected));
     }
 
     private void doXmlSearchConvRecipCheck(String recipValue, WantRecipsSetting expected) throws ServiceException {
@@ -336,8 +329,7 @@ public class JaxbToElementTest {
         String xmlStr = searchConvXml.replace("%%VALUE%%", recipValue);
         elem = Element.parseXML(xmlStr);
         SearchConvRequest req = JaxbUtil.elementToJaxb(elem);
-        Assert.assertEquals(String.format("recips=%s should map to %s", recipValue, expected),
-                expected, req.getWantRecipients());
+        assertEquals(expected, req.getWantRecipients(), String.format("recips=%s should map to %s", recipValue, expected));
     }
 
     private String jsonRecipWithValue(String value) {
@@ -348,32 +340,32 @@ public class JaxbToElementTest {
         return String.format("recip=\"%s\"\n", value);
     }
 
-    @Test
-    public void searchConvJsonToJaxbRecipHandling() throws Exception {
-        doJsonSearchConvRecipCheck(jsonRecipWithValue("false"), WantRecipsSetting.PUT_SENDERS);
-        doJsonSearchConvRecipCheck(jsonRecipWithValue("true"), WantRecipsSetting.PUT_RECIPIENTS);
-        doJsonSearchConvRecipCheck(jsonRecipWithValue("0"), WantRecipsSetting.PUT_SENDERS);
-        doJsonSearchConvRecipCheck(jsonRecipWithValue("1"), WantRecipsSetting.PUT_RECIPIENTS);
-        doJsonSearchConvRecipCheck(jsonRecipWithValue("2"), WantRecipsSetting.PUT_BOTH);
-        doJsonSearchConvRecipCheck(jsonRecipWithValue("\"0\""), WantRecipsSetting.PUT_SENDERS);
-        doJsonSearchConvRecipCheck(jsonRecipWithValue("\"1\""), WantRecipsSetting.PUT_RECIPIENTS);
-        doJsonSearchConvRecipCheck(jsonRecipWithValue("\"2\""), WantRecipsSetting.PUT_BOTH);
-        doJsonSearchConvRecipCheck(jsonRecipWithValue("invalid"), WantRecipsSetting.PUT_SENDERS);
-        doJsonSearchConvRecipCheck(jsonRecipWithValue("3"), WantRecipsSetting.PUT_SENDERS);
-        doJsonSearchConvRecipCheck("", WantRecipsSetting.PUT_SENDERS);
-    }
+  @Test
+  void searchConvJsonToJaxbRecipHandling() throws Exception {
+    doJsonSearchConvRecipCheck(jsonRecipWithValue("false"), WantRecipsSetting.PUT_SENDERS);
+    doJsonSearchConvRecipCheck(jsonRecipWithValue("true"), WantRecipsSetting.PUT_RECIPIENTS);
+    doJsonSearchConvRecipCheck(jsonRecipWithValue("0"), WantRecipsSetting.PUT_SENDERS);
+    doJsonSearchConvRecipCheck(jsonRecipWithValue("1"), WantRecipsSetting.PUT_RECIPIENTS);
+    doJsonSearchConvRecipCheck(jsonRecipWithValue("2"), WantRecipsSetting.PUT_BOTH);
+    doJsonSearchConvRecipCheck(jsonRecipWithValue("\"0\""), WantRecipsSetting.PUT_SENDERS);
+    doJsonSearchConvRecipCheck(jsonRecipWithValue("\"1\""), WantRecipsSetting.PUT_RECIPIENTS);
+    doJsonSearchConvRecipCheck(jsonRecipWithValue("\"2\""), WantRecipsSetting.PUT_BOTH);
+    doJsonSearchConvRecipCheck(jsonRecipWithValue("invalid"), WantRecipsSetting.PUT_SENDERS);
+    doJsonSearchConvRecipCheck(jsonRecipWithValue("3"), WantRecipsSetting.PUT_SENDERS);
+    doJsonSearchConvRecipCheck("", WantRecipsSetting.PUT_SENDERS);
+  }
 
-    @Test
-    public void searchConvXmlToJaxbRecipHandling() throws Exception {
-        doXmlSearchConvRecipCheck(xmlRecipWithValue("false"), WantRecipsSetting.PUT_SENDERS);
-        doXmlSearchConvRecipCheck(xmlRecipWithValue("true"), WantRecipsSetting.PUT_RECIPIENTS);
-        doXmlSearchConvRecipCheck(xmlRecipWithValue("0"), WantRecipsSetting.PUT_SENDERS);
-        doXmlSearchConvRecipCheck(xmlRecipWithValue("1"), WantRecipsSetting.PUT_RECIPIENTS);
-        doXmlSearchConvRecipCheck(xmlRecipWithValue("2"), WantRecipsSetting.PUT_BOTH);
-        doXmlSearchConvRecipCheck(xmlRecipWithValue("invalid"), WantRecipsSetting.PUT_SENDERS);
-        doXmlSearchConvRecipCheck(xmlRecipWithValue("3"), WantRecipsSetting.PUT_SENDERS);
-        doXmlSearchConvRecipCheck("", WantRecipsSetting.PUT_SENDERS);
-    }
+  @Test
+  void searchConvXmlToJaxbRecipHandling() throws Exception {
+    doXmlSearchConvRecipCheck(xmlRecipWithValue("false"), WantRecipsSetting.PUT_SENDERS);
+    doXmlSearchConvRecipCheck(xmlRecipWithValue("true"), WantRecipsSetting.PUT_RECIPIENTS);
+    doXmlSearchConvRecipCheck(xmlRecipWithValue("0"), WantRecipsSetting.PUT_SENDERS);
+    doXmlSearchConvRecipCheck(xmlRecipWithValue("1"), WantRecipsSetting.PUT_RECIPIENTS);
+    doXmlSearchConvRecipCheck(xmlRecipWithValue("2"), WantRecipsSetting.PUT_BOTH);
+    doXmlSearchConvRecipCheck(xmlRecipWithValue("invalid"), WantRecipsSetting.PUT_SENDERS);
+    doXmlSearchConvRecipCheck(xmlRecipWithValue("3"), WantRecipsSetting.PUT_SENDERS);
+    doXmlSearchConvRecipCheck("", WantRecipsSetting.PUT_SENDERS);
+  }
 
     /**
      * Using Dom4j seems problematic - hence why elementToJaxbUsingDom4j is deprecated.  e.g. Seen this from
@@ -411,7 +403,7 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
     public void elementToJaxbUsingDom4jTest() throws Exception {
         for (int cnt = 1; cnt <= iterationNum;cnt++) {
             GetInfoResponse getInfoResp = JaxbUtil.elementToJaxbUsingDom4j(getInfoRespElem);
-            Assert.assertEquals("Account name", "user1@tarka.local", getInfoResp.getAccountName());
+            assertEquals("user1@tarka.local", getInfoResp.getAccountName(), "Account name");
         }
     }
 
@@ -421,19 +413,19 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
     public void elementToJaxbUsingByteArrayTest() throws Exception {
         for (int cnt = 1; cnt <= iterationNum;cnt++) {
             GetInfoResponse getInfoResp = JaxbUtil.elementToJaxbUsingByteArray(getInfoRespElem);
-            Assert.assertEquals("Account name", "user1@tarka.local", getInfoResp.getAccountName());
+            assertEquals("user1@tarka.local", getInfoResp.getAccountName(), "Account name");
         }
     }
 
-    @Test
-    public void JSONelementToJaxbTest() throws Exception {
-        Element env = Element.parseJSON(getInfoResponseJSONwithEnv);
-        Element el = env.listElements().get(0);
-        org.w3c.dom.Document doc = el.toW3cDom();
-        ZimbraLog.test.debug("JSONelementToJaxbTest toW3cDom Xml:\n%s", W3cDomUtil.asXML(doc));
-        GetInfoResponse getInfoResp = JaxbUtil.elementToJaxb(el);
-        Assert.assertEquals("Account name", "user1@tarka.local", getInfoResp.getAccountName());
-    }
+  @Test
+  void JSONelementToJaxbTest() throws Exception {
+    Element env = Element.parseJSON(getInfoResponseJSONwithEnv);
+    Element el = env.listElements().get(0);
+    org.w3c.dom.Document doc = el.toW3cDom();
+    ZimbraLog.test.debug("JSONelementToJaxbTest toW3cDom Xml:\n%s", W3cDomUtil.asXML(doc));
+    GetInfoResponse getInfoResp = JaxbUtil.elementToJaxb(el);
+    assertEquals("user1@tarka.local", getInfoResp.getAccountName(), "Account name");
+  }
 
     /*
      * This seems to work fine, although similar code in JAXB enabled ExportContacts server-side does not - get:
@@ -446,256 +438,252 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
             Element env = Element.parseJSON(getInfoResponseJSONwithEnv);
             Element el = env.listElements().get(0);
             GetInfoResponse getInfoResp = JaxbUtil.elementToJaxbUsingDom4j(el);
-            Assert.assertEquals("Account name", "user1@tarka.local", getInfoResp.getAccountName());
+            assertEquals("user1@tarka.local", getInfoResp.getAccountName(), "Account name");
         }
     }
 
-    /**
-     * Check that @{link JaxbUtil.elementToJaxb} will accept XML where
-     * JAXB expects content type as an attribute but it is specified as
-     * an element.
-     * @throws Exception
+  /**
+   * Check that @{link JaxbUtil.elementToJaxb} will accept XML where
+   * JAXB expects content type as an attribute but it is specified as
+   * an element.
+   * @throws Exception
      */
-    @Test
-    public void importContactsWithContentTypeAsElementTest () throws Exception {
-        Element icrElem = Element.XMLElement.mFactory.createElement(
-                MailConstants.IMPORT_CONTACTS_REQUEST);
-        icrElem.addAttribute(MailConstants.A_CSVLOCALE, "fr");
-        icrElem.addNonUniqueElement(MailConstants.A_CONTENT_TYPE).setText("csv");
-        icrElem.addNonUniqueElement(MailConstants.E_CONTENT).setText("CONTENT");
-        ImportContactsRequest icr = JaxbUtil.elementToJaxb(icrElem);
-        Assert.assertEquals("ImportContactsRequest content type:",
-                "csv", icr.getContentType());
-        Assert.assertEquals("ImportContactsRequest csvlocale:",
-                "fr", icr.getCsvLocale());
-        Assert.assertEquals("ImportContactsRequest contents:",
-                "CONTENT", icr.getContent().getValue());
-    }
+  @Test
+  void importContactsWithContentTypeAsElementTest() throws Exception {
+    Element icrElem = Element.XMLElement.mFactory.createElement(
+        MailConstants.IMPORT_CONTACTS_REQUEST);
+    icrElem.addAttribute(MailConstants.A_CSVLOCALE, "fr");
+    icrElem.addNonUniqueElement(MailConstants.A_CONTENT_TYPE).setText("csv");
+    icrElem.addNonUniqueElement(MailConstants.E_CONTENT).setText("CONTENT");
+    ImportContactsRequest icr = JaxbUtil.elementToJaxb(icrElem);
+    assertEquals("csv", icr.getContentType(), "ImportContactsRequest content type:");
+    assertEquals("fr", icr.getCsvLocale(), "ImportContactsRequest csvlocale:");
+    assertEquals("CONTENT", icr.getContent().getValue(), "ImportContactsRequest contents:");
+  }
 
-    /**
-     * Check that @{link JaxbUtil.elementToJaxb} will accept XML where
-     * JAXB expects various attributes that have been specified as elements
-     * in a fairly deep structure.  Ensure that @XmlElementRef is handled
-     * @throws Exception
+  /**
+   * Check that @{link JaxbUtil.elementToJaxb} will accept XML where
+   * JAXB expects various attributes that have been specified as elements
+   * in a fairly deep structure.  Ensure that @XmlElementRef is handled
+   * @throws Exception
      */
-    @Test
-    public void jaxbElementRefsFixupTest () throws Exception {
-        Element rootElem = Element.XMLElement.mFactory.createElement(
-                AdminConstants.MAIL_QUEUE_ACTION_REQUEST);
-        // JAXB Element E_SERVER --> ServerWithQueueAction
-        Element svrE = rootElem.addNonUniqueElement(AdminConstants.E_SERVER);
-        // JAXB attribute A_NAME
-        svrE.addNonUniqueElement(AdminConstants.A_NAME).setText("SERVER-NAME");
-        // JAXB Element E_QUEUE --> MailQueueWithAction
-        Element qE = svrE.addNonUniqueElement(AdminConstants.E_QUEUE);
-        // JAXB attribute A_NAME
-        qE.addNonUniqueElement(AdminConstants.A_NAME).setText("queueName");
-        // JAXB Element E_ACTION --> MailQueueAction
-        Element actE = qE.addNonUniqueElement(AdminConstants.E_ACTION);
-        // JAXB attribute A_OP
-        actE.addNonUniqueElement(AdminConstants.A_OP).setText("requeue");
-        // JAXB attribute A_BY
-        actE.addNonUniqueElement(AdminConstants.A_BY).setText("query");
-        // MailQueueAction XmlElementRef E_QUERY --> QueueQuery
-        // actually, part of XmlMixed, so JAXB class deals in
-        // an array of Object
-        Element queryE = actE.addNonUniqueElement(AdminConstants.E_QUERY);
-        // JAXB attribute A_OFFSET
-        queryE.addAttribute(AdminConstants.A_OFFSET, "20");
-        // JAXB attribute A_LIMIT
-        queryE.addNonUniqueElement(AdminConstants.A_LIMIT).setText("99");
-        for (int sfx = 1; sfx <= 3; sfx++) {
-            // List<QueueQueryField> fields
-            Element fE = queryE.addNonUniqueElement(AdminConstants.E_FIELD);
-            fE.addAttribute(AdminConstants.A_NAME, "name" + sfx);
-            // List<ValueAttrib> matches
-            Element mE = fE.addNonUniqueElement(AdminConstants.E_MATCH);
-            // JAXB attribute A_VALUE
-            mE.addNonUniqueElement(AdminConstants.A_VALUE).setText("value " + sfx);
-            mE = fE.addNonUniqueElement(AdminConstants.E_MATCH);
-            // JAXB attribute A_VALUE
-            mE.addNonUniqueElement(AdminConstants.A_VALUE).setText("2nd value " + sfx);
-        }
-        MailQueueActionRequest req = JaxbUtil.elementToJaxb(rootElem);
-        ServerWithQueueAction svrWithQ = req.getServer();
-        Assert.assertEquals("Server name", "SERVER-NAME", svrWithQ.getName());
-        MailQueueWithAction q = svrWithQ.getQueue();
-        Assert.assertEquals("Queue name", "queueName", q.getName());
-        MailQueueAction a = q.getAction();
-        Assert.assertEquals("Action BY",
-                MailQueueAction.QueueActionBy.query, a.getBy());
-        Assert.assertEquals("Action OP",
-                MailQueueAction.QueueAction.requeue, a.getOp());
-        QueueQuery query = a.getQuery();
-        Assert.assertEquals("Query offset", 20, query.getOffset().intValue());
-        Assert.assertEquals("Query limit", 99, query.getLimit().intValue());
-        List<QueueQueryField> qFields = query.getFields();
-        Assert.assertEquals("Number of query fields", 3, qFields.size());
-        Assert.assertEquals("Query field 2 name", "name2",
-                qFields.get(1).getName());
-        List<ValueAttrib> matches = qFields.get(1).getMatches();
-        Assert.assertEquals("Number of matches", 2, matches.size());
-        Assert.assertEquals("Match 2 value", "2nd value 2",
-                matches.get(1).getValue());
+  @Test
+  void jaxbElementRefsFixupTest() throws Exception {
+    Element rootElem = Element.XMLElement.mFactory.createElement(
+        AdminConstants.MAIL_QUEUE_ACTION_REQUEST);
+    // JAXB Element E_SERVER --> ServerWithQueueAction
+    Element svrE = rootElem.addNonUniqueElement(AdminConstants.E_SERVER);
+    // JAXB attribute A_NAME
+    svrE.addNonUniqueElement(AdminConstants.A_NAME).setText("SERVER-NAME");
+    // JAXB Element E_QUEUE --> MailQueueWithAction
+    Element qE = svrE.addNonUniqueElement(AdminConstants.E_QUEUE);
+    // JAXB attribute A_NAME
+    qE.addNonUniqueElement(AdminConstants.A_NAME).setText("queueName");
+    // JAXB Element E_ACTION --> MailQueueAction
+    Element actE = qE.addNonUniqueElement(AdminConstants.E_ACTION);
+    // JAXB attribute A_OP
+    actE.addNonUniqueElement(AdminConstants.A_OP).setText("requeue");
+    // JAXB attribute A_BY
+    actE.addNonUniqueElement(AdminConstants.A_BY).setText("query");
+    // MailQueueAction XmlElementRef E_QUERY --> QueueQuery
+    // actually, part of XmlMixed, so JAXB class deals in
+    // an array of Object
+    Element queryE = actE.addNonUniqueElement(AdminConstants.E_QUERY);
+    // JAXB attribute A_OFFSET
+    queryE.addAttribute(AdminConstants.A_OFFSET, "20");
+    // JAXB attribute A_LIMIT
+    queryE.addNonUniqueElement(AdminConstants.A_LIMIT).setText("99");
+    for (int sfx = 1;sfx <= 3;sfx++) {
+      // List<QueueQueryField> fields
+      Element fE = queryE.addNonUniqueElement(AdminConstants.E_FIELD);
+      fE.addAttribute(AdminConstants.A_NAME, "name" + sfx);
+      // List<ValueAttrib> matches
+      Element mE = fE.addNonUniqueElement(AdminConstants.E_MATCH);
+      // JAXB attribute A_VALUE
+      mE.addNonUniqueElement(AdminConstants.A_VALUE).setText("value " + sfx);
+      mE = fE.addNonUniqueElement(AdminConstants.E_MATCH);
+      // JAXB attribute A_VALUE
+      mE.addNonUniqueElement(AdminConstants.A_VALUE).setText("2nd value " + sfx);
     }
+    MailQueueActionRequest req = JaxbUtil.elementToJaxb(rootElem);
+    ServerWithQueueAction svrWithQ = req.getServer();
+    assertEquals("SERVER-NAME", svrWithQ.getName(), "Server name");
+    MailQueueWithAction q = svrWithQ.getQueue();
+    assertEquals("queueName", q.getName(), "Queue name");
+    MailQueueAction a = q.getAction();
+    assertEquals(MailQueueAction.QueueActionBy.query, a.getBy(), "Action BY");
+    assertEquals(MailQueueAction.QueueAction.requeue, a.getOp(), "Action OP");
+    QueueQuery query = a.getQuery();
+    assertEquals(20, query.getOffset().intValue(), "Query offset");
+    assertEquals(99, query.getLimit().intValue(), "Query limit");
+    List<QueueQueryField> qFields = query.getFields();
+    assertEquals(3, qFields.size(), "Number of query fields");
+    assertEquals("name2",
+        qFields.get(1).getName(),
+        "Query field 2 name");
+    List<ValueAttrib> matches = qFields.get(1).getMatches();
+    assertEquals(2, matches.size(), "Number of matches");
+    assertEquals("2nd value 2",
+        matches.get(1).getValue(),
+        "Match 2 value");
+  }
 
-    /**
-     * Check that @{link JaxbUtil.elementToJaxb} will accept XML where
-     * JAXB expects various attributes that have been specified as elements.
-     * Ensure that @XmlElements is handled
-     * @throws Exception
+  /**
+   * Check that @{link JaxbUtil.elementToJaxb} will accept XML where
+   * JAXB expects various attributes that have been specified as elements.
+   * Ensure that @XmlElements is handled
+   * @throws Exception
      */
-    @Test
-    public void jaxbElementsFixupTest() throws Exception {
-        Element rootElem = Element.XMLElement.mFactory.createElement(
-                MailConstants.GET_CONTACTS_REQUEST);
-        // JAXB Attribute A_SYNC
-        rootElem.addNonUniqueElement(MailConstants.A_SYNC).addText("true");
-        // JAXB Attribute A_FOLDER
-        rootElem.addAttribute(MailConstants.A_FOLDER, "folderId");
-        // JAXB Attribute A_SORTBY
-        rootElem.addNonUniqueElement(MailConstants.A_SORTBY).addText("sortBy");
-        // JAXB Elements:
-        //    Element E_ATTRIBUTE --> AttributeName
-        //    Element E_CONTACT --> Id
-        Element attrName1 = rootElem.addNonUniqueElement(MailConstants.E_ATTRIBUTE);
-        attrName1.addAttribute(MailConstants.A_ATTRIBUTE_NAME, "aName1");
-        Element contact1 = rootElem.addNonUniqueElement(MailConstants.E_CONTACT);
-        contact1.addNonUniqueElement(MailConstants.A_ID).addText("ctctId1");
-        Element contact2 = rootElem.addNonUniqueElement(MailConstants.E_CONTACT);
-        contact2.addAttribute(MailConstants.A_ID, "ctctId2");
-        Element attrName2 = rootElem.addNonUniqueElement(MailConstants.E_ATTRIBUTE);
-        attrName2.addNonUniqueElement(MailConstants.A_ATTRIBUTE_NAME).addText("aName2");
-        Element memAttr1 = rootElem.addNonUniqueElement(MailConstants.E_CONTACT_GROUP_MEMBER_ATTRIBUTE);
-        memAttr1.addNonUniqueElement(MailConstants.A_ATTRIBUTE_NAME).addText("grpAttrName1");
+  @Test
+  void jaxbElementsFixupTest() throws Exception {
+    Element rootElem = Element.XMLElement.mFactory.createElement(
+        MailConstants.GET_CONTACTS_REQUEST);
+    // JAXB Attribute A_SYNC
+    rootElem.addNonUniqueElement(MailConstants.A_SYNC).addText("true");
+    // JAXB Attribute A_FOLDER
+    rootElem.addAttribute(MailConstants.A_FOLDER, "folderId");
+    // JAXB Attribute A_SORTBY
+    rootElem.addNonUniqueElement(MailConstants.A_SORTBY).addText("sortBy");
+    // JAXB Elements:
+    //    Element E_ATTRIBUTE --> AttributeName
+    //    Element E_CONTACT --> Id
+    Element attrName1 = rootElem.addNonUniqueElement(MailConstants.E_ATTRIBUTE);
+    attrName1.addAttribute(MailConstants.A_ATTRIBUTE_NAME, "aName1");
+    Element contact1 = rootElem.addNonUniqueElement(MailConstants.E_CONTACT);
+    contact1.addNonUniqueElement(MailConstants.A_ID).addText("ctctId1");
+    Element contact2 = rootElem.addNonUniqueElement(MailConstants.E_CONTACT);
+    contact2.addAttribute(MailConstants.A_ID, "ctctId2");
+    Element attrName2 = rootElem.addNonUniqueElement(MailConstants.E_ATTRIBUTE);
+    attrName2.addNonUniqueElement(MailConstants.A_ATTRIBUTE_NAME).addText("aName2");
+    Element memAttr1 = rootElem.addNonUniqueElement(MailConstants.E_CONTACT_GROUP_MEMBER_ATTRIBUTE);
+    memAttr1.addNonUniqueElement(MailConstants.A_ATTRIBUTE_NAME).addText("grpAttrName1");
 
-        GetContactsRequest req = JaxbUtil.elementToJaxb(rootElem);
+    GetContactsRequest req = JaxbUtil.elementToJaxb(rootElem);
 
-        Assert.assertEquals("Sync", true, req.getSync().booleanValue());
-        Assert.assertEquals("FolderID", "folderId", req.getFolderId());
-        Assert.assertEquals("SortBy", "sortBy", req.getSortBy());
-    }
+    assertEquals(true, req.getSync().booleanValue(), "Sync");
+    assertEquals("folderId", req.getFolderId(), "FolderID");
+    assertEquals("sortBy", req.getSortBy(), "SortBy");
+  }
 
-    /**
-     * Check that @{link JaxbUtil.elementToJaxb} will accept XML where
-     * JAXB expects various attributes that have been specified as elements.
-     * Ensure that attributes in elements of superclasses are handled
-     * In this case:
-     *                  <a><n>attrName1</n></a>
-     * should be recognised as meaning:
-     *                  <a n="attrName1"></a>
-     * @throws Exception
+  /**
+   * Check that @{link JaxbUtil.elementToJaxb} will accept XML where
+   * JAXB expects various attributes that have been specified as elements.
+   * Ensure that attributes in elements of superclasses are handled
+   * In this case:
+   *                  <a><n>attrName1</n></a>
+   * should be recognised as meaning:
+   *                  <a n="attrName1"></a>
+   * @throws Exception
      */
-    @Test
-    public void jaxbSubclassFixupTest() throws Exception {
-        Element rootElem = Element.XMLElement.mFactory.createElement(AdminConstants.CREATE_ACCOUNT_REQUEST);
-        // JAXB Attribute E_NAME
-        rootElem.addNonUniqueElement(AdminConstants.E_NAME).addText("acctName");
-        // JAXB Attribute E_PASSWORD
-        rootElem.addNonUniqueElement(AdminConstants.E_PASSWORD).addText("AcctPassword");
-        // JAXB Element E_A ---> Attr (actually a List)
-        Element a1 = rootElem.addNonUniqueElement(AdminConstants.E_A);
-        // JAXB Attribute A_N
-        a1.addNonUniqueElement(AdminConstants.A_N).addText("attrName1");
-        // value can't be set when we've specified an attribute as an element
+  @Test
+  void jaxbSubclassFixupTest() throws Exception {
+    Element rootElem = Element.XMLElement.mFactory.createElement(AdminConstants.CREATE_ACCOUNT_REQUEST);
+    // JAXB Attribute E_NAME
+    rootElem.addNonUniqueElement(AdminConstants.E_NAME).addText("acctName");
+    // JAXB Attribute E_PASSWORD
+    rootElem.addNonUniqueElement(AdminConstants.E_PASSWORD).addText("AcctPassword");
+    // JAXB Element E_A ---> Attr (actually a List)
+    Element a1 = rootElem.addNonUniqueElement(AdminConstants.E_A);
+    // JAXB Attribute A_N
+    a1.addNonUniqueElement(AdminConstants.A_N).addText("attrName1");
+    // value can't be set when we've specified an attribute as an element
 
-        CreateAccountRequest req = JaxbUtil.elementToJaxb(rootElem);
-        Assert.assertEquals("Account name", "acctName", req.getName());
-        Assert.assertEquals("Account Password", "AcctPassword", req.getPassword());
-        List<Attr> attrs = req.getAttrs();
-        Assert.assertEquals("Number of attrs", 1, attrs.size());
-        Assert.assertEquals("attr 1 name", "attrName1", attrs.get(0).getKey());
-        Assert.assertEquals("attr 1 value", "", attrs.get(0).getValue());
+    CreateAccountRequest req = JaxbUtil.elementToJaxb(rootElem);
+    assertEquals("acctName", req.getName(), "Account name");
+    assertEquals("AcctPassword", req.getPassword(), "Account Password");
+    List<Attr> attrs = req.getAttrs();
+    assertEquals(1, attrs.size(), "Number of attrs");
+    assertEquals("attrName1", attrs.get(0).getKey(), "attr 1 name");
+    assertEquals("", attrs.get(0).getValue(), "attr 1 value");
+  }
+
+  @Test
+  void jaxbInfoSuperclassElems() throws Exception {
+    JaxbInfo jaxbInfo = JaxbInfo.getFromCache(CreateAccountRequest.class);
+    Iterable<String> attrNames = jaxbInfo.getAttributeNames();
+    assertEquals(2, Iterables.size(attrNames), "Number of attributes for CreateAccountRequest");
+    Iterable<String> elemNames = jaxbInfo.getElementNames();
+    assertEquals(1, Iterables.size(elemNames), "Number of elements for CreateAccountRequest");
+    assertTrue(-1 != Iterables.indexOf(elemNames, Predicates.equalTo(MailConstants.E_A)), "Has <a>");
+    Iterable<JaxbNodeInfo> nodeInfos = jaxbInfo.getJaxbNodeInfos();
+    assertEquals(1, Iterables.size(nodeInfos), "Number of nodeInfos for CreateAccountRequest");
+    JaxbNodeInfo nodeInfo = Iterables.get(nodeInfos, 0);
+    assertEquals(MailConstants.E_A, nodeInfo.getName(), "NodeInfo name ");
+    if (!(nodeInfo instanceof JaxbElementInfo)) {
+      fail("Expecting JaxbElementInfo but got " + nodeInfo.getClass().getName());
+    } else {
+      JaxbElementInfo elemInfo = (JaxbElementInfo) nodeInfo;
+      assertEquals(Attr.class, elemInfo.getAtomClass(), "Class associated with <a>");
     }
+    JaxbNodeInfo node = jaxbInfo.getElemNodeInfo(MailConstants.E_A);
+    assertNotNull(node, "has NodeInfo for Element <a>");
+    assertTrue(jaxbInfo.hasElement(MailConstants.E_A), "hasElement <a>");
+  }
 
-    @Test
-    public void jaxbInfoSuperclassElems() throws Exception {
-        JaxbInfo jaxbInfo = JaxbInfo.getFromCache(CreateAccountRequest.class);
-        Iterable<String> attrNames = jaxbInfo.getAttributeNames();
-        Assert.assertEquals("Number of attributes for CreateAccountRequest", 2, Iterables.size(attrNames));
-        Iterable<String> elemNames = jaxbInfo.getElementNames();
-        Assert.assertEquals("Number of elements for CreateAccountRequest", 1, Iterables.size(elemNames));
-        Assert.assertTrue("Has <a>", -1 != Iterables.indexOf(elemNames, Predicates.equalTo(MailConstants.E_A)));
-        Iterable<JaxbNodeInfo> nodeInfos = jaxbInfo.getJaxbNodeInfos();
-        Assert.assertEquals("Number of nodeInfos for CreateAccountRequest", 1, Iterables.size(nodeInfos));
-        JaxbNodeInfo nodeInfo = Iterables.get(nodeInfos, 0);
-        Assert.assertEquals("NodeInfo name ", MailConstants.E_A, nodeInfo.getName());
-        if (! (nodeInfo instanceof JaxbElementInfo)) {
-            Assert.fail("Expecting JaxbElementInfo but got " + nodeInfo.getClass().getName());
-        } else {
-            JaxbElementInfo elemInfo = (JaxbElementInfo) nodeInfo;
-            Assert.assertEquals("Class associated with <a>", Attr.class, elemInfo.getAtomClass());
-        }
-        JaxbNodeInfo node = jaxbInfo.getElemNodeInfo(MailConstants.E_A);
-        Assert.assertNotNull("has NodeInfo for Element <a>", node);
-        Assert.assertTrue("hasElement <a>", jaxbInfo.hasElement(MailConstants.E_A));
+  @Test
+  void jaxbInfoWrapperHandling() throws Exception {
+    JaxbInfo jaxbInfo = JaxbInfo.getFromCache(WaitSetRequest.class);
+    Class<?> klass;
+    klass = jaxbInfo.getClassForWrappedElement("notWrapperName", "nonexistent");
+    if (klass != null) {
+      fail("Class " + klass.getName() + " should be null for non-existent wrapper/wrapped");
     }
-
-    @Test
-    public void jaxbInfoWrapperHandling() throws Exception {
-        JaxbInfo jaxbInfo = JaxbInfo.getFromCache(WaitSetRequest.class);
-        Class<?> klass;
-        klass = jaxbInfo.getClassForWrappedElement("notWrapperName", "nonexistent");
-        if (klass != null) {
-            Assert.fail("Class " + klass.getName() + " should be null for non-existent wrapper/wrapped");
-        }
-        klass = jaxbInfo.getClassForWrappedElement(MailConstants.E_WAITSET_ADD /* add */, "nonexistent");
-        if (klass != null) {
-            Assert.fail("Class " + klass.getName() + " should be null for existing wrapper/non-existent wrapped");
-        }
-        klass = jaxbInfo.getClassForWrappedElement(MailConstants.E_WAITSET_ADD /* add */, MailConstants.E_A);
-        Assert.assertNotNull("Class should NOT be null for existing wrapper/non-existent wrapped", klass);
-        Assert.assertEquals("WaitSetAddSpec class", WaitSetAddSpec.class,klass);
+    klass = jaxbInfo.getClassForWrappedElement(MailConstants.E_WAITSET_ADD /* add */, "nonexistent");
+    if (klass != null) {
+      fail("Class " + klass.getName() + " should be null for existing wrapper/non-existent wrapped");
     }
+    klass = jaxbInfo.getClassForWrappedElement(MailConstants.E_WAITSET_ADD /* add */, MailConstants.E_A);
+    assertNotNull(klass, "Class should NOT be null for existing wrapper/non-existent wrapped");
+    assertEquals(WaitSetAddSpec.class, klass, "WaitSetAddSpec class");
+  }
 
-    /**
-     * Ensure that we still find attributes encoded as elements below a wrapped element in the hierarchy
-     * @throws Exception
+  /**
+   * Ensure that we still find attributes encoded as elements below a wrapped element in the hierarchy
+   * @throws Exception
      */
-    @Test
-    public void jaxbBelowWrapperFixupTest() throws Exception {
-        Element rootElem = Element.XMLElement.mFactory.createElement(MailConstants.WAIT_SET_REQUEST);
-        // JAXB Attribute - not Element
-        rootElem.addNonUniqueElement(MailConstants.A_WAITSET_ID /* waitSet */).addText("myWaitSet");
-        // JAXB Attribute - not Element
-        rootElem.addNonUniqueElement(MailConstants.A_SEQ /* seq */).addText("lastKnownSeq");
-        // JAXB XmlElementWrapper
-        Element addElem = rootElem.addNonUniqueElement(MailConstants.E_WAITSET_ADD /* add */);
-        Element aElem = addElem.addNonUniqueElement(MailConstants.E_A /* a */);
-        // JAXB Attribute - not Element
-        aElem.addNonUniqueElement(MailConstants.A_NAME).addText("waitsetName");
-        // JAXB Attribute - not Element
-        aElem.addNonUniqueElement(MailConstants.A_ID).addText("waitsetId");
-        WaitSetRequest req = JaxbUtil.elementToJaxb(rootElem);
-        List<WaitSetAddSpec> adds = req.getAddAccounts();
-        Assert.assertEquals("Waitset add number", 1, adds.size());
-        WaitSetAddSpec wsAdd = adds.get(0);
-        Assert.assertEquals("Waitset name", "waitsetName", wsAdd.getName());
-        Assert.assertEquals("Waitset id", "waitsetId", wsAdd.getId());
-    }
+  @Test
+  void jaxbBelowWrapperFixupTest() throws Exception {
+    Element rootElem = Element.XMLElement.mFactory.createElement(MailConstants.WAIT_SET_REQUEST);
+    // JAXB Attribute - not Element
+    rootElem.addNonUniqueElement(MailConstants.A_WAITSET_ID /* waitSet */).addText("myWaitSet");
+    // JAXB Attribute - not Element
+    rootElem.addNonUniqueElement(MailConstants.A_SEQ /* seq */).addText("lastKnownSeq");
+    // JAXB XmlElementWrapper
+    Element addElem = rootElem.addNonUniqueElement(MailConstants.E_WAITSET_ADD /* add */);
+    Element aElem = addElem.addNonUniqueElement(MailConstants.E_A /* a */);
+    // JAXB Attribute - not Element
+    aElem.addNonUniqueElement(MailConstants.A_NAME).addText("waitsetName");
+    // JAXB Attribute - not Element
+    aElem.addNonUniqueElement(MailConstants.A_ID).addText("waitsetId");
+    WaitSetRequest req = JaxbUtil.elementToJaxb(rootElem);
+    List<WaitSetAddSpec> adds = req.getAddAccounts();
+    assertEquals(1, adds.size(), "Waitset add number");
+    WaitSetAddSpec wsAdd = adds.get(0);
+    assertEquals("waitsetName", wsAdd.getName(), "Waitset name");
+    assertEquals("waitsetId", wsAdd.getId(), "Waitset id");
+  }
 
-    /**
-     * Check that @{link JaxbUtil.elementToJaxb} will accept XML where
-     * JAXB expects various attributes that have been specified as elements.
-     * Ensure that attributes in wrapped elements are handled
-     * @throws Exception
+  /**
+   * Check that @{link JaxbUtil.elementToJaxb} will accept XML where
+   * JAXB expects various attributes that have been specified as elements.
+   * Ensure that attributes in wrapped elements are handled
+   * @throws Exception
      */
-    @Test
-    public void jaxbWrapperFixupTest() throws Exception {
-        Element rootElem = Element.XMLElement.mFactory.createElement(
-                AccountConstants.AUTH_REQUEST);
-        // JAXB wrapper element name E_PREFS
-        Element prefsE = rootElem.addNonUniqueElement(AccountConstants.E_PREFS);
-        // JAXB element E_PREF with attribute "name"
-        Element prefE = prefsE.addNonUniqueElement(AccountConstants.E_PREF);
-        prefE.addNonUniqueElement("name").addText("pref name");
+  @Test
+  void jaxbWrapperFixupTest() throws Exception {
+    Element rootElem = Element.XMLElement.mFactory.createElement(
+        AccountConstants.AUTH_REQUEST);
+    // JAXB wrapper element name E_PREFS
+    Element prefsE = rootElem.addNonUniqueElement(AccountConstants.E_PREFS);
+    // JAXB element E_PREF with attribute "name"
+    Element prefE = prefsE.addNonUniqueElement(AccountConstants.E_PREF);
+    prefE.addNonUniqueElement("name").addText("pref name");
 
-        AuthRequest req = JaxbUtil.elementToJaxb(rootElem);
-        List<Pref> prefs = req.getPrefs();
-        Assert.assertEquals("Number of prefs", 1, prefs.size());
-        Assert.assertEquals("Pref name",
-                "pref name", prefs.get(0).getName());
-    }
+    AuthRequest req = JaxbUtil.elementToJaxb(rootElem);
+    List<Pref> prefs = req.getPrefs();
+    assertEquals(1, prefs.size(), "Number of prefs");
+    assertEquals("pref name", prefs.get(0).getName(), "Pref name");
+  }
 
     /**
      * Explore handling of Jaxb classes which specify an @XmlElement with
@@ -716,7 +704,7 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
         Element carE = JaxbUtil.jaxbToElement(car);
         String eXml = carE.toString();
         ZimbraLog.test.debug("ConvActionRequestJaxbSubclassHandling: marshalled XML=%s", eXml);
-        Assert.assertTrue("Xml should contain acctRelPath attribute", eXml.contains("acctRelPath=\"folder\""));
+        assertTrue(eXml.contains("acctRelPath=\"folder\""), "Xml should contain acctRelPath attribute");
 
         carE = Element.XMLElement.mFactory.createElement(MailConstants.CONV_ACTION_REQUEST);
         Element actionE = carE.addNonUniqueElement(MailConstants.E_ACTION);
@@ -729,130 +717,130 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
         eXml = carE.toString();
         ZimbraLog.test.debug("ConvActionRequestJaxbSubclassHandling: round tripped XML=%s", eXml);
         ConvActionSelector as = car.getAction();
-        Assert.assertEquals("acctRelPath attr value", "folder", as.getAcctRelativePath());
+        assertEquals("folder", as.getAcctRelativePath(), "acctRelPath attr value");
     }
 
-    /**
-     * The Session JAXB object shares the same field for both the value and the id attribute.  Check that nothing is
-     * lost in a round trip.
-     */
-    @Test
-    public void accountSessionJaxbTest() throws Exception {
-        final String myId = "my-id";
-        final String myType = "admin";
-        Session sess = new Session();
-        sess.setId(myId);
-        sess.setType(myType);
-        Element sessE = JaxbUtil.jaxbToNamedElement(HeaderConstants.E_SESSION, AccountConstants.NAMESPACE_STR, sess,
-                Element.XMLElement.mFactory);
-        Assert.assertNotNull("jaxbToNamedElement Session Element", sessE);
-        Assert.assertEquals("from jaxb id attr", myId, sessE.getAttribute(HeaderConstants.A_ID));
-        Assert.assertEquals("from jaxb type attr", myType, sessE.getAttribute(HeaderConstants.A_TYPE));
-        Assert.assertEquals("from jaxb value", myId, sessE.getText());
-        sess = JaxbUtil.elementToJaxb(sessE, Session.class);
-        Assert.assertEquals("jaxb from element - value", myId, sess.getSessionId());
-        Assert.assertEquals("jaxb from element - id", myId, sess.getId());
-        Assert.assertEquals("jaxb from element - type", myType, sess.getType());
-    }
+  /**
+   * The Session JAXB object shares the same field for both the value and the id attribute.  Check that nothing is
+   * lost in a round trip.
+   */
+  @Test
+  void accountSessionJaxbTest() throws Exception {
+    final String myId = "my-id";
+    final String myType = "admin";
+    Session sess = new Session();
+    sess.setId(myId);
+    sess.setType(myType);
+    Element sessE = JaxbUtil.jaxbToNamedElement(HeaderConstants.E_SESSION, AccountConstants.NAMESPACE_STR, sess,
+        Element.XMLElement.mFactory);
+    assertNotNull(sessE, "jaxbToNamedElement Session Element");
+    assertEquals(myId, sessE.getAttribute(HeaderConstants.A_ID), "from jaxb id attr");
+    assertEquals(myType, sessE.getAttribute(HeaderConstants.A_TYPE), "from jaxb type attr");
+    assertEquals(myId, sessE.getText(), "from jaxb value");
+    sess = JaxbUtil.elementToJaxb(sessE, Session.class);
+    assertEquals(myId, sess.getSessionId(), "jaxb from element - value");
+    assertEquals(myId, sess.getId(), "jaxb from element - id");
+    assertEquals(myType, sess.getType(), "jaxb from element - type");
+  }
 
-    @Test
-    public void standalonElementToJaxbTest() throws Exception {
-        InputStream is = getClass().getResourceAsStream("retentionPolicy.xml");
-        Element elem = Element.parseXML(is);
-        String eXml = elem.toString();
-        ZimbraLog.test.debug("retentionPolicy.xml from Element:\n%s", eXml);
-        RetentionPolicy rp = JaxbUtil.elementToJaxb(elem, RetentionPolicy.class);
-        Assert.assertNotNull("elementToJaxb RetentionPolicy returned object", rp);
-        Element elem2 = JaxbUtil.jaxbToElement(rp, XMLElement.mFactory);
-        String eXml2 = elem2.toString();
-        ZimbraLog.test.debug("Round tripped retentionPolicy.xml from Element:\n%s", eXml2);
-        XMLAssert.assertXMLEqual(eXml, eXml2);
-    }
+  @Test
+  void standalonElementToJaxbTest() throws Exception {
+    InputStream is = getClass().getResourceAsStream("retentionPolicy.xml");
+    Element elem = Element.parseXML(is);
+    String eXml = elem.toString();
+    ZimbraLog.test.debug("retentionPolicy.xml from Element:\n%s", eXml);
+    RetentionPolicy rp = JaxbUtil.elementToJaxb(elem, RetentionPolicy.class);
+    assertNotNull(rp, "elementToJaxb RetentionPolicy returned object");
+    Element elem2 = JaxbUtil.jaxbToElement(rp, XMLElement.mFactory);
+    String eXml2 = elem2.toString();
+    ZimbraLog.test.debug("Round tripped retentionPolicy.xml from Element:\n%s", eXml2);
+    assertFalse(DiffBuilder.compare(eXml).withTest(eXml2).build().hasDifferences());
+  }
 
-    @Test
-    public void IdentityToStringTest () throws Exception {
-        com.zimbra.soap.account.type.Identity id =
-                new com.zimbra.soap.account.type.Identity("hello", null);
-        Map<String, String> attrs = Maps.newHashMap();
-        attrs.put("key1", "value1");
-        attrs.put("key2", "value2 wonderful");
-        id.setAttrs(attrs);
-        CreateIdentityRequest request = new CreateIdentityRequest(id);
-        String toString = request.toString();
-        Assert.assertTrue("toString start chars", toString.startsWith("CreateIdentityRequest{identity=Identity{a="));
-        Assert.assertTrue("toString key1", toString.contains("Attr{name=key1, value=value1}"));
-        Assert.assertTrue("toString key2", toString.contains("Attr{name=key2, value=value2 wonderful}"));
-        Assert.assertTrue("toString name", toString.contains("name=hello"));
-        Assert.assertTrue("toString id", toString.contains("id=null"));
-    }
+  @Test
+  void IdentityToStringTest() throws Exception {
+    com.zimbra.soap.account.type.Identity id =
+        new com.zimbra.soap.account.type.Identity("hello", null);
+    Map<String, String> attrs = Maps.newHashMap();
+    attrs.put("key1", "value1");
+    attrs.put("key2", "value2 wonderful");
+    id.setAttrs(attrs);
+    CreateIdentityRequest request = new CreateIdentityRequest(id);
+    String toString = request.toString();
+    assertTrue(toString.startsWith("CreateIdentityRequest{identity=Identity{a="), "toString start chars");
+    assertTrue(toString.contains("Attr{name=key1, value=value1}"), "toString key1");
+    assertTrue(toString.contains("Attr{name=key2, value=value2 wonderful}"), "toString key2");
+    assertTrue(toString.contains("name=hello"), "toString name");
+    assertTrue(toString.contains("id=null"), "toString id");
+  }
 
-    /*
-     * Currently, DeleteDataSourceRequest does not have a setter for all datasource children.  Making sure that
-     * it works.  Actually believe that JAXB ignores setters for lists and adds by using the getter to get the
-     * list and adding to that.
-     */
-    @Test
-    public void DeleteDataSourceRequestTest () throws Exception {
-        DeleteDataSourceRequest req = new DeleteDataSourceRequest();
-        Pop3DataSourceNameOrId pop = new Pop3DataSourceNameOrId();
-        pop.setName("pop3name");
-        ImapDataSourceNameOrId imap = new ImapDataSourceNameOrId();
-        imap.setName("imap4name");
-        req.addDataSource(pop);
-        req.addDataSource(imap);
-        Element elem = JaxbUtil.jaxbToElement(req, XMLElement.mFactory);
-        Assert.assertNotNull("DataSourceRequest elem", elem);
-        Element imapE = elem.getElement(MailConstants.E_DS_IMAP);
-        Assert.assertNotNull("imap elem", imapE);
-        Element popE = elem.getElement(MailConstants.E_DS_POP3);
-        Assert.assertNotNull("imap elem", popE);
-        req = JaxbUtil.elementToJaxb(elem, DeleteDataSourceRequest.class);
-        Assert.assertNotNull("JAXB DeleteDataSourceRequest", req);
-        Assert.assertEquals("Number of datasources in JAXB", 2, req.getDataSources().size());
-    }
+  /*
+   * Currently, DeleteDataSourceRequest does not have a setter for all datasource children.  Making sure that
+   * it works.  Actually believe that JAXB ignores setters for lists and adds by using the getter to get the
+   * list and adding to that.
+   */
+  @Test
+  void DeleteDataSourceRequestTest() throws Exception {
+    DeleteDataSourceRequest req = new DeleteDataSourceRequest();
+    Pop3DataSourceNameOrId pop = new Pop3DataSourceNameOrId();
+    pop.setName("pop3name");
+    ImapDataSourceNameOrId imap = new ImapDataSourceNameOrId();
+    imap.setName("imap4name");
+    req.addDataSource(pop);
+    req.addDataSource(imap);
+    Element elem = JaxbUtil.jaxbToElement(req, XMLElement.mFactory);
+    assertNotNull(elem, "DataSourceRequest elem");
+    Element imapE = elem.getElement(MailConstants.E_DS_IMAP);
+    assertNotNull(imapE, "imap elem");
+    Element popE = elem.getElement(MailConstants.E_DS_POP3);
+    assertNotNull(popE, "imap elem");
+    req = JaxbUtil.elementToJaxb(elem, DeleteDataSourceRequest.class);
+    assertNotNull(req, "JAXB DeleteDataSourceRequest");
+    assertEquals(2, req.getDataSources().size(), "Number of datasources in JAXB");
+  }
 
-    @Test
-    public void KeyValuePairs() throws Exception {
-        try (InputStream is = JaxbToElementTest.class.getResourceAsStream("CreateXMbxSearchRequest.xml")) {
-            // String soapXml = streamToString(is, Charsets.UTF_8);
-            JAXBContext jaxb = JAXBContext.newInstance(CreateXMbxSearchRequest.class);
-            Unmarshaller kvpunmarshaller = jaxb.createUnmarshaller();
-            JAXBElement<CreateXMbxSearchRequest> jaxbElem =
-                    kvpunmarshaller.unmarshal(new StreamSource(is), CreateXMbxSearchRequest.class);
-            Assert.assertNotNull("JAXBElement resulting from unmarshal", jaxbElem);
-            CreateXMbxSearchRequest soapObj = jaxbElem.getValue();
-            Assert.assertNotNull("Unmarshal soap object", soapObj);
-            Assert.assertEquals("Number of attributes", 10, soapObj.getKeyValuePairs().size());
-        }
+  @Test
+  void KeyValuePairs() throws Exception {
+    try (InputStream is = JaxbToElementTest.class.getResourceAsStream("CreateXMbxSearchRequest.xml")) {
+      // String soapXml = streamToString(is, Charsets.UTF_8);
+      JAXBContext jaxb = JAXBContext.newInstance(CreateXMbxSearchRequest.class);
+      Unmarshaller kvpunmarshaller = jaxb.createUnmarshaller();
+      JAXBElement<CreateXMbxSearchRequest> jaxbElem =
+          kvpunmarshaller.unmarshal(new StreamSource(is), CreateXMbxSearchRequest.class);
+      assertNotNull(jaxbElem, "JAXBElement resulting from unmarshal");
+      CreateXMbxSearchRequest soapObj = jaxbElem.getValue();
+      assertNotNull(soapObj, "Unmarshal soap object");
+      assertEquals(10, soapObj.getKeyValuePairs().size(), "Number of attributes");
     }
+  }
 
-    // AutoProvDirectoryEntry contains 2 lists - one via extending AdminKeyValuePairs
-    // No order is specified for elements via XmlType propOrder.  Checking how well this works.
-    @Test
-    public void searchAutoProvDirectoryResponse() throws Exception {
-        Element resp = Element.XMLElement.mFactory.createElement(
-                AdminConstants.SEARCH_AUTO_PROV_DIRECTORY_RESPONSE);
-        resp.addAttribute(AdminConstants.A_MORE, false);
-        resp.addAttribute(AdminConstants.A_SEARCH_TOTAL, 1);
-        Element entryE = resp.addNonUniqueElement(AdminConstants.E_ENTRY);
-        entryE.addAttribute(AdminConstants.A_DN, "displayNam");
-        entryE.addNonUniqueElement(AdminConstants.E_KEY).setText("keyValue1");
-        entryE.addNonUniqueElement(AdminConstants.E_KEY).setText("keyValue2");
-        entryE.addNonUniqueElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, "nVal1").setText("attr1Txt");
-        entryE.addNonUniqueElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, "nVal2").setText("attr2Txt");
-        SearchAutoProvDirectoryResponse jaxb = JaxbUtil.elementToJaxb(resp);
-        Assert.assertNotNull("Unmarshal soap object", jaxb);
-        List<AutoProvDirectoryEntry> entries = jaxb.getEntries();
-        Assert.assertNotNull("entries list", entries);
-        Assert.assertEquals("Number of entries", 1, entries.size());
-        AutoProvDirectoryEntry entry = entries.get(0);
-        List<KeyValuePair> kvps = entry.getKeyValuePairs();
-        Assert.assertNotNull("entry - attrs list", kvps);
-        Assert.assertEquals("entry - Number of attrs", 2, kvps.size());
-        List<String> keys = entry.getKeys();
-        Assert.assertNotNull("entry - keys list", keys);
-        Assert.assertEquals("entry - Number of keys", 2, keys.size());
-    }
+  // AutoProvDirectoryEntry contains 2 lists - one via extending AdminKeyValuePairs
+  // No order is specified for elements via XmlType propOrder.  Checking how well this works.
+  @Test
+  void searchAutoProvDirectoryResponse() throws Exception {
+    Element resp = Element.XMLElement.mFactory.createElement(
+        AdminConstants.SEARCH_AUTO_PROV_DIRECTORY_RESPONSE);
+    resp.addAttribute(AdminConstants.A_MORE, false);
+    resp.addAttribute(AdminConstants.A_SEARCH_TOTAL, 1);
+    Element entryE = resp.addNonUniqueElement(AdminConstants.E_ENTRY);
+    entryE.addAttribute(AdminConstants.A_DN, "displayNam");
+    entryE.addNonUniqueElement(AdminConstants.E_KEY).setText("keyValue1");
+    entryE.addNonUniqueElement(AdminConstants.E_KEY).setText("keyValue2");
+    entryE.addNonUniqueElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, "nVal1").setText("attr1Txt");
+    entryE.addNonUniqueElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, "nVal2").setText("attr2Txt");
+    SearchAutoProvDirectoryResponse jaxb = JaxbUtil.elementToJaxb(resp);
+    assertNotNull(jaxb, "Unmarshal soap object");
+    List<AutoProvDirectoryEntry> entries = jaxb.getEntries();
+    assertNotNull(entries, "entries list");
+    assertEquals(1, entries.size(), "Number of entries");
+    AutoProvDirectoryEntry entry = entries.get(0);
+    List<KeyValuePair> kvps = entry.getKeyValuePairs();
+    assertNotNull(kvps, "entry - attrs list");
+    assertEquals(2, kvps.size(), "entry - Number of attrs");
+    List<String> keys = entry.getKeys();
+    assertNotNull(keys, "entry - keys list");
+    assertEquals(2, keys.size(), "entry - Number of keys");
+  }
 
     // TODO - enable when/if bug fixed.  Note that handler currently uses "Element".  This issue is with
     //        zmsoap producing non-KeyValuePairs compatible JSON.  Although JAXB object originated JSON
@@ -880,13 +868,13 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
             String name = kvp.getKey(), value = kvp.getValue();
             StringUtil.addToMultiMap(prefs, name, value);
         }
-        Assert.assertEquals("Ideal request - number of prefs found", 2, prefs.size());
+        assertEquals(2, prefs.size(), "Ideal request - number of prefs found");
         prefs = Maps.newHashMap();
         for (Element.KeyValuePair kvp : zmsoapElem.listKeyValuePairs(AccountConstants.E_PREF, AccountConstants.A_NAME)) {
             String name = kvp.getKey(), value = kvp.getValue();
             StringUtil.addToMultiMap(prefs, name, value);
         }
-        Assert.assertEquals("zmsoap request - number of prefs found", 2, prefs.size());
+        assertEquals(2, prefs.size(), "zmsoap request - number of prefs found");
     }
 
     // Simplified version of what appears in mail.ToXML
@@ -902,130 +890,122 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
         }
     }
 
-    // GetInfo encoding of identities calls similar code
-    @Test
-    public void encodeAttrsWithDenied() throws Exception {
-        Element identExml = Element.XMLElement.mFactory.createElement(AccountConstants.E_IDENTITY);
-        encodeAttr(identExml, "keyAllowed", "valueAllowed", AccountConstants.E_A, AccountConstants.A_NAME, true);
-        encodeAttr(identExml, "keyDenied", "valueDenied", AccountConstants.E_A, AccountConstants.A_NAME, false);
-        Element identEjson = Element.JSONElement.mFactory.createElement(AccountConstants.E_IDENTITY);
-        encodeAttr(identEjson, "keyAllowed", "valueAllowed", AccountConstants.E_A, AccountConstants.A_NAME, true);
-        encodeAttr(identEjson, "keyDenied", "valueDenied", AccountConstants.E_A, AccountConstants.A_NAME, false);
-        // <identity><a name="keyAllowed">valueAllowed</a><a pd="1" name="keyDenied"/></identity>
-        ZimbraLog.test.debug("encodeAttrsWithDenied xml\n%s", identExml.toString());
-        // {"_attrs":{"keyAllowed":"valueAllowed","keyDenied":{"_content":"","pd":true}}}
-        ZimbraLog.test.debug("encodeAttrsWithDenied json\n%s", identEjson.toString());
-        com.zimbra.soap.account.type.Attr deniedAttr = com.zimbra.soap.account.type.Attr.forNameWithPermDenied("keyDenied");
-        Element elem2 = JaxbUtil.jaxbToNamedElement(AccountConstants.E_A, AccountConstants.NAMESPACE_STR,
-                deniedAttr, XMLElement.mFactory);
-        String eXml2 = elem2.toString();
-        ZimbraLog.test.debug("XML from JAXB denied attr\n%s", eXml2);
-        Assert.assertEquals("XML from JAXB Attr top name", AccountConstants.E_A, elem2.getName());
-        Assert.assertEquals("XML from JAXB Attr pd", "1", elem2.getAttribute("pd"));
-        Assert.assertEquals("XML from JAXB Attr name", "keyDenied", elem2.getAttribute("name"));
-    }
+  // GetInfo encoding of identities calls similar code
+  @Test
+  void encodeAttrsWithDenied() throws Exception {
+    Element identExml = Element.XMLElement.mFactory.createElement(AccountConstants.E_IDENTITY);
+    encodeAttr(identExml, "keyAllowed", "valueAllowed", AccountConstants.E_A, AccountConstants.A_NAME, true);
+    encodeAttr(identExml, "keyDenied", "valueDenied", AccountConstants.E_A, AccountConstants.A_NAME, false);
+    Element identEjson = Element.JSONElement.mFactory.createElement(AccountConstants.E_IDENTITY);
+    encodeAttr(identEjson, "keyAllowed", "valueAllowed", AccountConstants.E_A, AccountConstants.A_NAME, true);
+    encodeAttr(identEjson, "keyDenied", "valueDenied", AccountConstants.E_A, AccountConstants.A_NAME, false);
+    // <identity><a name="keyAllowed">valueAllowed</a><a pd="1" name="keyDenied"/></identity>
+    ZimbraLog.test.debug("encodeAttrsWithDenied xml\n%s", identExml.toString());
+    // {"_attrs":{"keyAllowed":"valueAllowed","keyDenied":{"_content":"","pd":true}}}
+    ZimbraLog.test.debug("encodeAttrsWithDenied json\n%s", identEjson.toString());
+    com.zimbra.soap.account.type.Attr deniedAttr = com.zimbra.soap.account.type.Attr.forNameWithPermDenied("keyDenied");
+    Element elem2 = JaxbUtil.jaxbToNamedElement(AccountConstants.E_A, AccountConstants.NAMESPACE_STR,
+        deniedAttr, XMLElement.mFactory);
+    String eXml2 = elem2.toString();
+    ZimbraLog.test.debug("XML from JAXB denied attr\n%s", eXml2);
+    assertEquals(AccountConstants.E_A, elem2.getName(), "XML from JAXB Attr top name");
+    assertEquals("1", elem2.getAttribute("pd"), "XML from JAXB Attr pd");
+    assertEquals("keyDenied", elem2.getAttribute("name"), "XML from JAXB Attr name");
+  }
 
-    // Verify that fromString will throw an exception for a duff value rather than return null
-    @Test
-    public void modGroupMemberOpWithBadValue() {
-        try {
-            ModifyGroupMemberOperation.fromString("duff");
-            Assert.fail("ServiceException NOT thrown");
-        } catch (ServiceException e) {
-        }
-        try {
-            ModifyGroupMemberOperation.fromString(null);
-            Assert.fail("ServiceException NOT thrown for null");
-        } catch (ServiceException e) {
-        }
+  // Verify that fromString will throw an exception for a duff value rather than return null
+  @Test
+  void modGroupMemberOpWithBadValue() {
+    try {
+      ModifyGroupMemberOperation.fromString("duff");
+      fail("ServiceException NOT thrown");
+    } catch (ServiceException e) {
     }
-
-    @Test
-    public void jaxbElementNameOrderXmlElementWrapperTest() throws Exception {
-        JaxbInfo jaxbInfo = JaxbInfo.getFromCache(GetWhiteBlackListResponse.class);
-        List<List <org.dom4j.QName>> expectedOrder = Lists.newArrayList();
-        expectedOrder.add(Lists.newArrayList(new org.dom4j.QName(AccountConstants.E_WHITE_LIST, AccountConstants.NAMESPACE)));
-        expectedOrder.add(Lists.newArrayList(new org.dom4j.QName(AccountConstants.E_BLACK_LIST, AccountConstants.NAMESPACE)));
-
-        List<List <org.dom4j.QName>> nameOrder = jaxbInfo.getElementNameOrder();
-        Assert.assertTrue(String.format(
-                "Number of entries in order expected=%d actual=%d", expectedOrder.size(), nameOrder.size()),
-                expectedOrder.size() == nameOrder.size());
-        for (int ndx = 0;ndx <nameOrder.size();ndx++) {
-            List<QName> expected = expectedOrder.get(ndx);
-            List<QName> actual = nameOrder.get(ndx);
-            Assert.assertTrue(String.format(
-                    "Number of entries at pos %d expected=%d actual=%d", ndx, expected.size(), actual.size()),
-                    expected.size() == actual.size());
-            for (int cnt = 0;cnt <actual.size();cnt++) {
-                QName qExpected = expected.get(cnt);
-                QName qActual = actual.get(cnt);
-                Assert.assertEquals(String.format("Element name at pos %d/%d", ndx, cnt),
-                        qExpected.getName(), qActual.getName());
-                Assert.assertEquals(String.format("Element namespaceURI at pos %d/%d", ndx, cnt),
-                        qExpected.getNamespaceURI(), qActual.getNamespaceURI());
-            }
-        }
+    try {
+      ModifyGroupMemberOperation.fromString(null);
+      fail("ServiceException NOT thrown for null");
+    } catch (ServiceException e) {
     }
+  }
+
+  @Test
+  void jaxbElementNameOrderXmlElementWrapperTest() throws Exception {
+    JaxbInfo jaxbInfo = JaxbInfo.getFromCache(GetWhiteBlackListResponse.class);
+    List<List<org.dom4j.QName>> expectedOrder = Lists.newArrayList();
+    expectedOrder.add(Lists.newArrayList(new org.dom4j.QName(AccountConstants.E_WHITE_LIST, AccountConstants.NAMESPACE)));
+    expectedOrder.add(Lists.newArrayList(new org.dom4j.QName(AccountConstants.E_BLACK_LIST, AccountConstants.NAMESPACE)));
+
+    List<List<org.dom4j.QName>> nameOrder = jaxbInfo.getElementNameOrder();
+    assertEquals(expectedOrder.size(), nameOrder.size(), String.format(
+        "Number of entries in order expected=%d actual=%d", expectedOrder.size(), nameOrder.size()));
+    for (int ndx = 0;ndx < nameOrder.size();ndx++) {
+      List<QName> expected = expectedOrder.get(ndx);
+      List<QName> actual = nameOrder.get(ndx);
+      assertEquals(expected.size(), actual.size(), String.format(
+          "Number of entries at pos %d expected=%d actual=%d", ndx, expected.size(), actual.size()));
+      for (int cnt = 0;cnt < actual.size();cnt++) {
+        QName qExpected = expected.get(cnt);
+        QName qActual = actual.get(cnt);
+        assertEquals(qExpected.getName(), qActual.getName(), String.format("Element name at pos %d/%d", ndx, cnt));
+        assertEquals(qExpected.getNamespaceURI(), qActual.getNamespaceURI(), String.format("Element namespaceURI at pos %d/%d", ndx, cnt));
+      }
+    }
+  }
 
     private static String modifyPrefsAsJson = "{\"_attrs\":{\"zimbraPrefGroupMailBy\":\"message\","
             + "\"zimbraPrefMailItemsPerPage\":\"200\",\"+zimbraPrefTimeZoneId\":\"Africa/Harare\","
             + "\"zimbraPrefSpellIgnoreWord\":[\"zimbra\",\"jaxb\"]},\"_jsns\":\"urn:zimbraAccount\"}";
 
-    @Test
-    public void modifyPrefs() throws Exception {
-        ModifyPrefsRequest req = new ModifyPrefsRequest();
-        req.addPref(new Pref("zimbraPrefGroupMailBy", "message"));
-        req.addPref(new Pref("zimbraPrefMailItemsPerPage", "200"));
-        req.addPref(new Pref("+zimbraPrefTimeZoneId", "Africa/Harare"));  // method of adding to multivalue
-        // method of setting multivalue
-        req.addPref(new Pref("zimbraPrefSpellIgnoreWord", "zimbra"));
-        req.addPref(new Pref("zimbraPrefSpellIgnoreWord", "jaxb"));
-        Element jsonElem = JacksonUtil.jaxbToJSONElement(req);
-        Assert.assertNotNull("JSON Element", jsonElem);
-        Assert.assertEquals("JSON", modifyPrefsAsJson, jsonElem.toString());
-        req = JaxbUtil.elementToJaxb(jsonElem);
-        List<Pref> prefs = req.getPrefs();
-        Assert.assertEquals("Number of round tripped prefs", 5, prefs.size());
-    }
+  @Test
+  void modifyPrefs() throws Exception {
+    ModifyPrefsRequest req = new ModifyPrefsRequest();
+    req.addPref(new Pref("zimbraPrefGroupMailBy", "message"));
+    req.addPref(new Pref("zimbraPrefMailItemsPerPage", "200"));
+    req.addPref(new Pref("+zimbraPrefTimeZoneId", "Africa/Harare"));  // method of adding to multivalue
+    // method of setting multivalue
+    req.addPref(new Pref("zimbraPrefSpellIgnoreWord", "zimbra"));
+    req.addPref(new Pref("zimbraPrefSpellIgnoreWord", "jaxb"));
+    Element jsonElem = JacksonUtil.jaxbToJSONElement(req);
+    assertNotNull(jsonElem, "JSON Element");
+    assertEquals(modifyPrefsAsJson, jsonElem.toString(), "JSON");
+    req = JaxbUtil.elementToJaxb(jsonElem);
+    List<Pref> prefs = req.getPrefs();
+    assertEquals(5, prefs.size(), "Number of round tripped prefs");
+  }
 
-    @Test
-    public void jaxbMessageHitInfoElementNameOrder() throws Exception {
-        JaxbInfo jaxbInfo = JaxbInfo.getFromCache(MessageHitInfo.class);
-        List<List <org.dom4j.QName>> expectedOrder = Lists.newArrayList();
-        expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("meta", MailConstants.NAMESPACE)));
-        expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("fr", MailConstants.NAMESPACE)));
-        expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("e", MailConstants.NAMESPACE)));
-        expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("su", MailConstants.NAMESPACE)));
-        expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("mid", MailConstants.NAMESPACE)));
-        expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("irt", MailConstants.NAMESPACE)));
-        expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("inv", MailConstants.NAMESPACE)));
-        expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("header", MailConstants.NAMESPACE)));
-        List <org.dom4j.QName> sameOrder = Lists.newArrayList();
-        sameOrder.add(new org.dom4j.QName("mp", MailConstants.NAMESPACE));
-        sameOrder.add(new org.dom4j.QName("shr", MailConstants.NAMESPACE));
-        sameOrder.add(new org.dom4j.QName("dlSubs", MailConstants.NAMESPACE));
-        expectedOrder.add(sameOrder);
-        expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("hp", MailConstants.NAMESPACE)));
+  @Test
+  void jaxbMessageHitInfoElementNameOrder() throws Exception {
+    JaxbInfo jaxbInfo = JaxbInfo.getFromCache(MessageHitInfo.class);
+    List<List<org.dom4j.QName>> expectedOrder = Lists.newArrayList();
+    expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("meta", MailConstants.NAMESPACE)));
+    expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("fr", MailConstants.NAMESPACE)));
+    expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("e", MailConstants.NAMESPACE)));
+    expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("su", MailConstants.NAMESPACE)));
+    expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("mid", MailConstants.NAMESPACE)));
+    expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("irt", MailConstants.NAMESPACE)));
+    expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("inv", MailConstants.NAMESPACE)));
+    expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("header", MailConstants.NAMESPACE)));
+    List<org.dom4j.QName> sameOrder = Lists.newArrayList();
+    sameOrder.add(new org.dom4j.QName("mp", MailConstants.NAMESPACE));
+    sameOrder.add(new org.dom4j.QName("shr", MailConstants.NAMESPACE));
+    sameOrder.add(new org.dom4j.QName("dlSubs", MailConstants.NAMESPACE));
+    expectedOrder.add(sameOrder);
+    expectedOrder.add(Lists.newArrayList(new org.dom4j.QName("hp", MailConstants.NAMESPACE)));
 
-        List<List <org.dom4j.QName>> nameOrder = jaxbInfo.getElementNameOrder();
-        Assert.assertTrue(String.format(
-                "Number of entries in order expected=%d actual=%d", expectedOrder.size(), nameOrder.size()),
-                expectedOrder.size() == nameOrder.size());
-        for (int ndx = 0;ndx <nameOrder.size();ndx++) {
-            List<QName> expected = expectedOrder.get(ndx);
-            List<QName> actual = nameOrder.get(ndx);
-            Assert.assertTrue(String.format(
-                    "Number of entries at pos %d expected=%d actual=%d", ndx, expected.size(), actual.size()),
-                    expected.size() == actual.size());
-            for (int cnt = 0;cnt <actual.size();cnt++) {
-                QName qExpected = expected.get(cnt);
-                QName qActual = actual.get(cnt);
-                Assert.assertEquals(String.format("Element name at pos %d/%d", ndx, cnt),
-                        qExpected.getName(), qActual.getName());
-                Assert.assertEquals(String.format("Element namespaceURI at pos %d/%d", ndx, cnt),
-                        qExpected.getNamespaceURI(), qActual.getNamespaceURI());
-            }
-        }
+    List<List<org.dom4j.QName>> nameOrder = jaxbInfo.getElementNameOrder();
+    assertEquals(expectedOrder.size(), nameOrder.size(), String.format(
+        "Number of entries in order expected=%d actual=%d", expectedOrder.size(), nameOrder.size()));
+    for (int ndx = 0;ndx < nameOrder.size();ndx++) {
+      List<QName> expected = expectedOrder.get(ndx);
+      List<QName> actual = nameOrder.get(ndx);
+      assertEquals(expected.size(), actual.size(), String.format(
+          "Number of entries at pos %d expected=%d actual=%d", ndx, expected.size(), actual.size()));
+      for (int cnt = 0;cnt < actual.size();cnt++) {
+        QName qExpected = expected.get(cnt);
+        QName qActual = actual.get(cnt);
+        assertEquals(qExpected.getName(), qActual.getName(), String.format("Element name at pos %d/%d", ndx, cnt));
+        assertEquals(qExpected.getNamespaceURI(), qActual.getNamespaceURI(), String.format("Element namespaceURI at pos %d/%d", ndx, cnt));
+      }
     }
+  }
 }

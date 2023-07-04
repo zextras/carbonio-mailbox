@@ -5,6 +5,8 @@
 
 package com.zimbra.doc.soap;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.zimbra.doc.soap.apidesc.SoapApiCommand;
@@ -26,9 +28,8 @@ import javax.xml.bind.annotation.XmlValue;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ChangelogTest {
 
@@ -38,8 +39,9 @@ public class ChangelogTest {
     com.zimbra.common.util.LogManager.setThisLogAndRootToLevel(LOG, Level.INFO);
   }
 
-  @BeforeClass
-  public static void init() throws Exception {}
+    @BeforeAll
+    public static void init() throws Exception {
+    }
 
   @XmlRootElement(name = "aRequest")
   public class aRequest {
@@ -132,7 +134,8 @@ public class ChangelogTest {
   }
 
   @Test
-  public void makeChangelogTest() throws Exception {
+  void makeChangelogTest()
+      throws Exception {
     Map<String, ApiClassDocumentation> javadocInfo = Maps.newTreeMap();
     List<Class<?>> classes = Lists.newArrayList();
     classes.add(aRequest.class);
@@ -195,14 +198,14 @@ public class ChangelogTest {
               + "\ncurr="
               + el.getCurrentRepresentation());
     }
-    Assert.assertEquals("Number of new commands", 1, newCmds.size());
-    Assert.assertEquals("Number of deleted commands", 1, delCmds.size());
-    Assert.assertEquals("Number of modified commands", 1, modCmds.size());
-    Assert.assertEquals("Number of deleted attributes", 1, delAttrs.size());
-    Assert.assertEquals("Number of new attributes", 1, addAttrs.size());
-    Assert.assertEquals("Number of modified attributes", 1, modAttrs.size());
-    Assert.assertEquals("Number of deleted elements", 1, delEs.size());
-    Assert.assertEquals("Number of new elements", 1, newEs.size());
-    Assert.assertEquals("Number of modified elements", 1, modEs.size());
+    assertEquals(1, newCmds.size(), "Number of new commands");
+    assertEquals(1, delCmds.size(), "Number of deleted commands");
+    assertEquals(1, modCmds.size(), "Number of modified commands");
+    assertEquals(1, delAttrs.size(), "Number of deleted attributes");
+    assertEquals(1, addAttrs.size(), "Number of new attributes");
+    assertEquals(1, modAttrs.size(), "Number of modified attributes");
+    assertEquals(1, delEs.size(), "Number of deleted elements");
+    assertEquals(1, newEs.size(), "Number of new elements");
+    assertEquals(1, modEs.size(), "Number of modified elements");
   }
 }

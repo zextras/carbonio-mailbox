@@ -5,11 +5,12 @@
 
 package com.zimbra.cs.index.query;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.cs.index.ZimbraAnalyzer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 
 /**
@@ -20,16 +21,16 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 public final class SubjectQueryTest {
 
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
     }
 
-    @Test
-    public void emptySubject() throws Exception {
-        Query query = SubjectQuery.create(ZimbraAnalyzer.getInstance(), "");
-        Assert.assertEquals(TextQuery.class, query.getClass());
-        Assert.assertEquals("Q(subject:)", query.toString());
-    }
+ @Test
+ void emptySubject() throws Exception {
+  Query query = SubjectQuery.create(ZimbraAnalyzer.getInstance(), "");
+  assertEquals(TextQuery.class, query.getClass());
+  assertEquals("Q(subject:)", query.toString());
+ }
 
 }
