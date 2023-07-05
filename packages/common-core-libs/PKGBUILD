@@ -1,4 +1,4 @@
-carbonio-jetty-libs/targets=(
+targets=(
   "centos"
   "ubuntu"
 )
