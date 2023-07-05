@@ -44,8 +44,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
         SINGLETON.accountsHomedOnServerAccountsOnly("{SERVER-SERVICE-HOSTNAME}")),
     ACCOUNTS_ON_SERVER_AND_COS_HAS_SUBORDINATES(
         SINGLETON.accountsOnServerAndCosHasSubordinates("{SERVER-SERVICE-HOSTNAME}", "{COS-ID}")),
-    ACCOUNTS_ON_UCSERVICE(SINGLETON.accountsOnUCService("{UCSERVICE-ID}")),
-
     ADDRS_EXIST(SINGLETON.addrsExist(new String[] {"{ADDR-1}", "{ADDR-2}", "..."})),
     ADMIN_ACCOUNT_BY_RDN(SINGLETON.adminAccountByRDN("{NAMING-RDN-ATTR}", "{NAME}")),
     ALL_ACCOUNTS(SINGLETON.allAccounts()),
@@ -83,8 +81,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
 
     COS_BY_ID(SINGLETON.cosById("{COS-ID}")),
     COSES_BY_MAILHOST_POOL(SINGLETON.cosesByMailHostPool("{SERVER-ID}")),
-    COSES_ON_UCSERVICE(SINGLETON.cosesOnUCService("{UCSERVICE-ID}")),
-
     CREATED_LATEROREQUAL(SINGLETON.createdLaterOrEqual("{GENERALIZED_TIME}")),
     DATA_SOURCE_BY_ID(SINGLETON.dataSourceById("{DATA-SOURCE-ID}")),
     DATA_SOURCE_BY_NAME(SINGLETON.dataSourceByName("{DATA-SOURCE-NAME}")),
@@ -105,8 +101,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     DOMAIN_BY_FOREIGN_NAME(SINGLETON.domainByForeignName("{DOMAIN-FOREIGN-NAME}")),
     DOMAIN_LABEL(SINGLETON.domainLabel()),
     DOMAIN_LOCKED_FOR_AUTO_PROVISION(SINGLETON.domainLockedForEagerAutoProvision()),
-    DOMAINS_ON_UCSERVICE(SINGLETON.domainsOnUCService("{UCSERVICE-ID}")),
-
     ALL_DYNAMIC_GROUPS(SINGLETON.allDynamicGroups()),
     DYNAMIC_GROUP_BY_ID(SINGLETON.dynamicGroupById("{DYNAMIC-GROUP-ID}")),
     DYNAMIC_GROUP_BY_IDS(
@@ -383,8 +377,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
   public abstract ZLdapFilter accountsOnServerAndCosHasSubordinates(
       String serverServiceHostname, String cosId);
 
-  public abstract ZLdapFilter accountsOnUCService(String ucServiceId);
-
   public abstract ZLdapFilter externalAccountsHomedOnServer(String serverServiceHostname);
 
   public abstract ZLdapFilter accountsByGrants(
@@ -422,8 +414,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
   public abstract ZLdapFilter cosById(String id);
 
   public abstract ZLdapFilter cosesByMailHostPool(String serverId);
-
-  public abstract ZLdapFilter cosesOnUCService(String ucServiceId);
 
   /*
    * data source
@@ -493,8 +483,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
   public abstract ZLdapFilter domainLabel();
 
   public abstract ZLdapFilter domainLockedForEagerAutoProvision();
-
-  public abstract ZLdapFilter domainsOnUCService(String ucServiceId);
 
   /*
    * global config

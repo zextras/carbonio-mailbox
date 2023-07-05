@@ -311,7 +311,6 @@ public class ProvUtil implements HttpDebugListener {
     RIGHT("help on right-related commands"),
     SEARCH("help on search-related commands"),
     SERVER("help on server-related commands"),
-    UCSERVICE("help on ucservice-related commands"),
     SHARE("help on share related commands"),
     HAB("help on HAB commands");
 

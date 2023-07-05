@@ -102,8 +102,6 @@ public class CustomLdapDIT extends LdapDIT {
     NAMING_RDN_ATTR_MIME = getLC(LC.ldap_dit_naming_rdn_attr_mime, DEFAULT_NAMING_RDN_ATTR_MIME);
     NAMING_RDN_ATTR_SERVER =
         getLC(LC.ldap_dit_naming_rdn_attr_server, DEFAULT_NAMING_RDN_ATTR_SERVER);
-    NAMING_RDN_ATTR_UCSERVICE =
-        getLC(LC.ldap_dit_naming_rdn_attr_ucservice, DEFAULT_NAMING_RDN_ATTR_UCSERVICE);
     NAMING_RDN_ATTR_SHARE_LOCATOR =
         getLC(LC.ldap_dit_naming_rdn_attr_share_locator, DEFAULT_NAMING_RDN_ATTR_SHARE_LOCATOR);
     NAMING_RDN_ATTR_XMPPCOMPONENT =
@@ -133,10 +131,6 @@ public class CustomLdapDIT extends LdapDIT {
     BASE_DN_SERVER =
         getLCAndValidateUnderConfigBranchDN(
             LC.ldap_dit_base_dn_server, DEFAULT_BASE_RDN_SERVER + "," + BASE_DN_CONFIG_BRANCH);
-    BASE_DN_UCSERVICE =
-        getLCAndValidateUnderConfigBranchDN(
-            LC.ldap_dit_base_dn_ucservice,
-            DEFAULT_BASE_RDN_UCSERVICE + "," + BASE_DN_CONFIG_BRANCH);
     BASE_DN_SHARE_LOCATOR =
         getLCAndValidateUnderConfigBranchDN(
             LC.ldap_dit_base_dn_share_locator,
