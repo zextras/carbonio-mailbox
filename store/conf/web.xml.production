@@ -429,7 +429,7 @@
 
   <servlet>
     <servlet-name>FileUploadServlet</servlet-name>
-    <servlet-class>com.zimbra.cs.service.FileUploadServlet</servlet-class>
+    <servlet-class>com.zimbra.cs.service.servlets.fileupload.FileUploadServlet</servlet-class>
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
