@@ -406,15 +406,9 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
-        <artifactId>store-extra-runtime-dependencies</artifactId>
+        <artifactId>carbonio-jetty</artifactId>
         <type>pom</type>
         <version>${revision}</version>
-      </dependency>
-      <dependency>
-        <groupId>zimbra</groupId>
-        <artifactId>zm-jetty</artifactId>
-        <version>22.11.0</version>
-        <type>pom</type>
         <exclusions>
           <exclusion>
             <artifactId>*</artifactId>
@@ -860,7 +854,7 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
-    <module>store-extra-runtime-dependencies</module>
+    <module>carbonio-jetty-libs</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -890,7 +884,7 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <revision>23.7.0-SNAPSHOT</revision>
+    <revision>23.8.0-SNAPSHOT</revision>
     <mockserver.version>5.13.0</mockserver.version>
   </properties>
   <version>${revision}</version>
@@ -1193,6 +1187,10 @@
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
