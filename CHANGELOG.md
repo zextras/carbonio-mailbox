@@ -1,13 +1,26 @@
 
+# [4.6.0](https://github.com/Zextras/carbonio-mailbox/compare/4.5.0...4.6.0) (2023-07-05)
+
+### Bug Fixes
+
+* log4j.properties: remove undefined references to EWS logger ([#256](https://github.com/Zextras/carbonio-mailbox/issues/256)) ([62b89d4](https://github.com/Zextras/carbonio-mailbox/commit/62b89d44567b2bcf5661a27fafe36723116645a4))
+* use commons-io 2.11.0 ([#246](https://github.com/Zextras/carbonio-mailbox/issues/246)) ([c59f263](https://github.com/Zextras/carbonio-mailbox/commit/c59f26316834647c3769bf50e4183c5306818383))
+
+### Features
+
+* [CO-563] Deprecate versionCheck related attributes & clean  related code ([#236](https://github.com/Zextras/carbonio-mailbox/issues/236)) ([6991b0b](https://github.com/Zextras/carbonio-mailbox/commit/6991b0b7b7f0856a08a6c9e08a97302bc426190e))
+* [CO-721] delete Certbot domain config ([#249](https://github.com/Zextras/carbonio-mailbox/issues/249)) ([1e9c6b2](https://github.com/Zextras/carbonio-mailbox/commit/1e9c6b232fa7de0481e07baed1a83f32c2c88611))
+* [CO-729] Redirect as default globalConf value for reverseProxyMailMode ([#238](https://github.com/Zextras/carbonio-mailbox/issues/238)) ([b9aa30d](https://github.com/Zextras/carbonio-mailbox/commit/b9aa30d0bf9068595fec7bab054c498fd2a73a66))
+* [CO-756] Update defaults for proxy CSP header ([#259](https://github.com/Zextras/carbonio-mailbox/issues/259)) ([4b654c8](https://github.com/Zextras/carbonio-mailbox/commit/4b654c8e31e529f418ab7e2b1719dc9dc7168393))
+* [CO-762] Add carbonio-clamav upstream ([#257](https://github.com/Zextras/carbonio-mailbox/issues/257)) ([387ea3d](https://github.com/Zextras/carbonio-mailbox/commit/387ea3d167b1341cf6d17f688c3cac44e67696bc))
+* **CO-727:** allow Save To Files from a shared mailbox ([#255](https://github.com/Zextras/carbonio-mailbox/issues/255)) ([052d460](https://github.com/Zextras/carbonio-mailbox/commit/052d4609e5f56fcf772f12c465f24642fb18b8aa))
 
 # [4.5.0](https://github.com/Zextras/carbonio-mailbox/compare/4.4.0...4.5.0) (2023-05-18)
-
 
 ### Bug Fixes
 
 * [CO-690] delegated account sent mail always read ([#209](https://github.com/Zextras/carbonio-mailbox/issues/209)) ([3b0efc9](https://github.com/Zextras/carbonio-mailbox/commit/3b0efc9454b00d84eec48c70645b9696463996cb))
 * [CO-695] enable async support in guice servlet filter ([#211](https://github.com/Zextras/carbonio-mailbox/issues/211)) ([87c5f88](https://github.com/Zextras/carbonio-mailbox/commit/87c5f88667214e6ce2f25b47b8fed719a1edde5b))
-
 
 ### Features
 
@@ -16,7 +29,6 @@
 * **CO-625:** briefcase removal ([#221](https://github.com/Zextras/carbonio-mailbox/issues/221)) ([e475b7a](https://github.com/Zextras/carbonio-mailbox/commit/e475b7a547a8e3b15756fba14e48a66bba6897b1)), closes [#188](https://github.com/Zextras/carbonio-mailbox/issues/188) [#219](https://github.com/Zextras/carbonio-mailbox/issues/219)
 
 # [4.4.0](https://github.com/Zextras/carbonio-mailbox/compare/4.3.0...4.4.0) (2023-04-20)
-
 
 ### Features
 
