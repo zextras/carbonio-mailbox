@@ -1,4 +1,4 @@
-targets=(
+carbonio-jetty-libs/targets=(
   "centos"
   "ubuntu"
 )
@@ -17,148 +17,148 @@ priority="optional"
 
 package() {
   cd "${srcdir}"/../../staging
-  install -D target/dependencies/jcharset-2.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/jcharset-2.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/endorsed/jcharset-2.0.jar"
-  install -D target/dependencies/zm-charset*.jar \
+  install -D carbonio-jetty-libs/target/dependencies/zm-charset*.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/endorsed/charset.jar"
-  install -D target/dependencies/UserAgentUtils-1.21.jar \
+  install -D carbonio-jetty-libs/target/dependencies/UserAgentUtils-1.21.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/UserAgentUtils-1.21.jar"
-  install -D target/dependencies/activation-1.1.1.jar \
+  install -D carbonio-jetty-libs/target/dependencies/activation-1.1.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/activation-1.1.1.jar"
-  install -D target/dependencies/ant-1.7.0-ziputil-patched-1.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/ant-1.7.0-ziputil-patched-1.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/ant-1.7.0-ziputil-patched-1.0.jar"
-  install -D target/dependencies/apache-log4j-extras-1.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/apache-log4j-extras-1.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/apache-log4j-extras-1.0.jar"
-  install -D target/dependencies/bcpkix-jdk15on-1.60.jar \
+  install -D carbonio-jetty-libs/target/dependencies/bcpkix-jdk15on-1.60.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/bcpkix-jdk15on-1.60.jar"
-  install -D target/dependencies/bcprov-jdk15on-1.60.jar \
+  install -D carbonio-jetty-libs/target/dependencies/bcprov-jdk15on-1.60.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/bcprov-jdk15on-1.60.jar"
-  install -D target/dependencies/closure-compiler-v20180204.jar \
+  install -D carbonio-jetty-libs/target/dependencies/closure-compiler-v20180204.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/closure-compiler-v20180204.jar"
-  install -D target/dependencies/commons-cli-1.2.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-cli-1.2.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-cli-1.2.jar"
-  install -D target/dependencies/commons-codec-1.11.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-codec-1.11.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-codec-1.11.jar"
-  install -D target/dependencies/commons-collections-3.2.2.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-collections-3.2.2.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-collections-3.2.2.jar"
-  install -D target/dependencies/commons-compress-1.20.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-compress-1.20.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-compress-1.20.jar"
-  install -D target/dependencies/commons-dbcp-1.4.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-dbcp-1.4.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-dbcp-1.4.jar"
-  install -D target/dependencies/commons-fileupload-1.4.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-fileupload-1.4.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-fileupload-1.4.jar"
-  install -D target/dependencies/commons-io-2.11.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-io-2.11.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-io-2.11.0.jar"
-  install -D target/dependencies/commons-lang-2.6.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-lang-2.6.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-lang-2.6.jar"
-  install -D target/dependencies/commons-lang3-3.7.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-lang3-3.7.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-lang3-3.7.jar"
-  install -D target/dependencies/commons-logging-1.2.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-logging-1.2.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-logging-1.2.jar"
-  install -D target/dependencies/commons-net-3.3.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-net-3.3.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-net-3.3.jar"
-  install -D target/dependencies/commons-pool-1.5.4.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-pool-1.5.4.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-pool-1.5.4.jar"
-  install -D target/dependencies/commons-rng-client-api-1.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-rng-client-api-1.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-rng-client-api-1.0.jar"
-  install -D target/dependencies/commons-rng-core-1.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-rng-core-1.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-rng-core-1.0.jar"
-  install -D target/dependencies/commons-rng-simple-1.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-rng-simple-1.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-rng-simple-1.0.jar"
-  install -D target/dependencies/commons-text-1.1.jar \
+  install -D carbonio-jetty-libs/target/dependencies/commons-text-1.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/commons-text-1.1.jar"
-  install -D target/dependencies/concurrentlinkedhashmap-lru-1.3.1.jar \
+  install -D carbonio-jetty-libs/target/dependencies/concurrentlinkedhashmap-lru-1.3.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/concurrentlinkedhashmap-lru-1.3.1.jar"
-  install -D target/dependencies/dom4j-2.1.4.jar \
+  install -D carbonio-jetty-libs/target/dependencies/dom4j-2.1.4.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/dom4j-2.1.4.jar"
-  install -D target/dependencies/eddsa-0.3.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/eddsa-0.3.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/eddsa-0.3.0.jar"
-  install -D target/dependencies/guava-28.1-jre.jar \
+  install -D carbonio-jetty-libs/target/dependencies/guava-28.1-jre.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/guava-28.1-jre.jar"
-  install -D target/dependencies/httpasyncclient-4.1.4.jar \
+  install -D carbonio-jetty-libs/target/dependencies/httpasyncclient-4.1.4.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/httpasyncclient-4.1.4.jar"
-  install -D target/dependencies/httpclient-4.5.13.jar \
+  install -D carbonio-jetty-libs/target/dependencies/httpclient-4.5.13.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/httpclient-4.5.13.jar"
-  install -D target/dependencies/httpcore-4.4.16.jar \
+  install -D carbonio-jetty-libs/target/dependencies/httpcore-4.4.16.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/httpcore-4.4.16.jar"
-  install -D target/dependencies/httpcore-nio-4.4.11.jar \
+  install -D carbonio-jetty-libs/target/dependencies/httpcore-nio-4.4.11.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/httpcore-nio-4.4.11.jar"
-  install -D target/dependencies/httpmime-4.5.14.jar \
+  install -D carbonio-jetty-libs/target/dependencies/httpmime-4.5.14.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/httpmime-4.5.14.jar"
-  install -D target/dependencies/ical4j-0.9.16-patched.jar \
+  install -D carbonio-jetty-libs/target/dependencies/ical4j-0.9.16-patched.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/ical4j-0.9.16-patched.jar"
-  install -D target/dependencies/icu4j-4.8.1.1.jar \
+  install -D carbonio-jetty-libs/target/dependencies/icu4j-4.8.1.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/icu4j-4.8.1.1.jar"
-  install -D target/dependencies/java-semver-0.9.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/java-semver-0.9.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/java-semver-0.9.0.jar"
-  install -D target/dependencies/javax.xml.soap-api-1.4.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/javax.xml.soap-api-1.4.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/javax.xml.soap-api-1.4.0.jar"
-  install -D target/dependencies/jaxb-api-2.3.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/jaxb-api-2.3.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jaxb-api-2.3.0.jar"
-  install -D target/dependencies/jaxb-core-2.3.0.1.jar \
+  install -D carbonio-jetty-libs/target/dependencies/jaxb-core-2.3.0.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jaxb-core-2.3.0.1.jar"
-  install -D target/dependencies/jaxb-impl-2.3.1.jar \
+  install -D carbonio-jetty-libs/target/dependencies/jaxb-impl-2.3.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jaxb-impl-2.3.1.jar"
-  install -D target/dependencies/jaxen-1.1.3.jar \
+  install -D carbonio-jetty-libs/target/dependencies/jaxen-1.1.3.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jaxen-1.1.3.jar"
-  install -D target/dependencies/jaxws-api-2.3.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/jaxws-api-2.3.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jaxws-api-2.3.0.jar"
-  install -D target/dependencies/jcommon-1.0.21.jar \
+  install -D carbonio-jetty-libs/target/dependencies/jcommon-1.0.21.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jcommon-1.0.21.jar"
-  install -D target/dependencies/jdom-1.1.3.jar \
+  install -D carbonio-jetty-libs/target/dependencies/jdom-1.1.3.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jdom-1.1.3.jar"
-  install -D target/dependencies/jfreechart-1.0.19.jar \
+  install -D carbonio-jetty-libs/target/dependencies/jfreechart-1.0.19.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jfreechart-1.0.19.jar"
-  install -D target/dependencies/json-20090211.jar \
+  install -D carbonio-jetty-libs/target/dependencies/json-20090211.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/json-20090211.jar"
-  install -D target/dependencies/jtnef-1.9.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/jtnef-1.9.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jtnef-1.9.0.jar"
-  install -D target/dependencies/junixsocket-common-2.4.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/junixsocket-common-2.4.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-common-2.4.0.jar"
-  install -D target/dependencies/junixsocket-demo-2.4.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/junixsocket-demo-2.4.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-demo-2.4.0.jar"
-  install -D target/dependencies/junixsocket-mysql-2.4.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/junixsocket-mysql-2.4.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-mysql-2.4.0.jar"
-  install -D target/dependencies/junixsocket-rmi-2.4.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/junixsocket-rmi-2.4.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/junixsocket-rmi-2.4.0.jar"
-  install -D target/dependencies/jzlib-1.0.7.jar \
+  install -D carbonio-jetty-libs/target/dependencies/jzlib-1.0.7.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jzlib-1.0.7.jar"
-  install -D target/dependencies/libidn-1.24.jar \
+  install -D carbonio-jetty-libs/target/dependencies/libidn-1.24.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/libidn-1.24.jar"
-  install -D target/dependencies/log4j-api-2.20.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/log4j-api-2.20.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/log4j-api-2.20.0.jar"
-  install -D target/dependencies/log4j-core-2.20.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/log4j-core-2.20.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/log4j-core-2.20.0.jar"
-  install -D target/dependencies/log4j-slf4j-impl-2.20.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/log4j-slf4j-impl-2.20.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/log4j-slf4j-impl-2.20.0.jar"
-  install -D target/dependencies/mail-1.4.5.jar \
+  install -D carbonio-jetty-libs/target/dependencies/mail-1.4.5.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/mail-1.4.5.jar"
-  install -D target/dependencies/mariadb-java-client-2.7.3.jar \
+  install -D carbonio-jetty-libs/target/dependencies/mariadb-java-client-2.7.3.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/mariadb-java-client-2.7.3.jar"
-  install -D target/dependencies/nekohtml-1.9.22.jar \
+  install -D carbonio-jetty-libs/target/dependencies/nekohtml-1.9.22.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/nekohtml-1.9.22.jar"
-  install -D target/dependencies/oauth-20100527.jar \
+  install -D carbonio-jetty-libs/target/dependencies/oauth-20100527.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/oauth-20100527.jar"
-  install -D target/dependencies/oauth-provider-20100527.jar \
+  install -D carbonio-jetty-libs/target/dependencies/oauth-provider-20100527.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/oauth-provider-20100527.jar"
-  install -D target/dependencies/owasp-java-html-sanitizer-20191001.1.jar \
+  install -D carbonio-jetty-libs/target/dependencies/owasp-java-html-sanitizer-20191001.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/owasp-java-html-sanitizer-20191001.1.jar"
-  install -D target/dependencies/slf4j-api-1.7.30.jar \
+  install -D carbonio-jetty-libs/target/dependencies/slf4j-api-1.7.30.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/slf4j-api-1.7.30.jar"
-  install -D target/dependencies/spymemcached-2.12.1.jar \
+  install -D carbonio-jetty-libs/target/dependencies/spymemcached-2.12.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/spymemcached-2.12.1.jar"
-  install -D target/dependencies/sshd-common-2.7.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/sshd-common-2.7.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/sshd-common-2.7.0.jar"
-  install -D target/dependencies/sshd-core-2.7.0.jar \
+  install -D carbonio-jetty-libs/target/dependencies/sshd-core-2.7.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/sshd-core-2.7.0.jar"
-  install -D target/dependencies/unboundid-ldapsdk-2.3.5.jar \
+  install -D carbonio-jetty-libs/target/dependencies/unboundid-ldapsdk-2.3.5.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/unboundid-ldapsdk-2.3.5.jar"
-  install -D target/dependencies/xercesImpl-2.9.1-patch-01.jar \
+  install -D carbonio-jetty-libs/target/dependencies/xercesImpl-2.9.1-patch-01.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/xercesImpl-2.9.1-patch-01.jar"
-  install -D target/dependencies/yuicompressor-2.4.8.jar \
+  install -D carbonio-jetty-libs/target/dependencies/yuicompressor-2.4.8.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/yuicompressor-2.4.8.jar"
-  install -D target/dependencies/bcmail-jdk15on-1.60.jar \
+  install -D carbonio-jetty-libs/target/dependencies/bcmail-jdk15on-1.60.jar \
     "${pkgdir}/opt/zextras/lib/ext-common/bcmail-jdk15on-1.60.jar"
-  install -D target/dependencies/saaj-impl-1.5.1.jar \
+  install -D carbonio-jetty-libs/target/dependencies/saaj-impl-1.5.1.jar \
     "${pkgdir}/opt/zextras/lib/ext-common/saaj-impl-1.5.1.jar"
 }
