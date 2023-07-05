@@ -16,6 +16,7 @@ class DomainAttrItem {
   String clientCertMode;
   String clientCertCa;
   String[] rspHeaders;
+  String cspHeader;
 
   public DomainAttrItem(
       String dn,
@@ -25,7 +26,8 @@ class DomainAttrItem {
       String spk,
       String ccm,
       String cca,
-      String[] rhdr) {
+      String[] rhdr,
+      String csp) {
     this.domainName = dn;
     this.virtualHostname = vhn;
     this.virtualIPAddress = vip;
@@ -34,5 +36,6 @@ class DomainAttrItem {
     this.clientCertMode = ccm;
     this.clientCertCa = cca;
     this.rspHeaders = rhdr;
+    this.cspHeader = csp;
   }
 }

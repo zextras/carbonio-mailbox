@@ -1513,6 +1513,103 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Content Security Policy headers to be added by the proxy. This is used
+     * along with the zimbraReverseProxyResponseHeaders by the ProxyConfGen
+     * to produce a complete set of Response Headers returned by the by the
+     * proxy. Usage: can be used to add a Content-Security-Policy header that
+     * will enforce CSP rule on the client side. Note: the value MUST be the
+     * entire header line (e.g. X-Foo: Bar, X-Zoo: &quot;Bar1; Bar2&quot;).
+     *
+     * @return carbonioReverseProxyResponseCSPHeader, or "Content-Security-Policy: \"default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';\"" if unset
+     *
+     * @since ZCS 23.7.0
+     */
+    @ZAttr(id=3133)
+    public String getCarbonioReverseProxyResponseCSPHeader() {
+        return getAttr(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "Content-Security-Policy: \"default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';\"", true);
+    }
+
+    /**
+     * Content Security Policy headers to be added by the proxy. This is used
+     * along with the zimbraReverseProxyResponseHeaders by the ProxyConfGen
+     * to produce a complete set of Response Headers returned by the by the
+     * proxy. Usage: can be used to add a Content-Security-Policy header that
+     * will enforce CSP rule on the client side. Note: the value MUST be the
+     * entire header line (e.g. X-Foo: Bar, X-Zoo: &quot;Bar1; Bar2&quot;).
+     *
+     * @param carbonioReverseProxyResponseCSPHeader new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.7.0
+     */
+    @ZAttr(id=3133)
+    public void setCarbonioReverseProxyResponseCSPHeader(String carbonioReverseProxyResponseCSPHeader) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, carbonioReverseProxyResponseCSPHeader);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Content Security Policy headers to be added by the proxy. This is used
+     * along with the zimbraReverseProxyResponseHeaders by the ProxyConfGen
+     * to produce a complete set of Response Headers returned by the by the
+     * proxy. Usage: can be used to add a Content-Security-Policy header that
+     * will enforce CSP rule on the client side. Note: the value MUST be the
+     * entire header line (e.g. X-Foo: Bar, X-Zoo: &quot;Bar1; Bar2&quot;).
+     *
+     * @param carbonioReverseProxyResponseCSPHeader new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.7.0
+     */
+    @ZAttr(id=3133)
+    public Map<String,Object> setCarbonioReverseProxyResponseCSPHeader(String carbonioReverseProxyResponseCSPHeader, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, carbonioReverseProxyResponseCSPHeader);
+        return attrs;
+    }
+
+    /**
+     * Content Security Policy headers to be added by the proxy. This is used
+     * along with the zimbraReverseProxyResponseHeaders by the ProxyConfGen
+     * to produce a complete set of Response Headers returned by the by the
+     * proxy. Usage: can be used to add a Content-Security-Policy header that
+     * will enforce CSP rule on the client side. Note: the value MUST be the
+     * entire header line (e.g. X-Foo: Bar, X-Zoo: &quot;Bar1; Bar2&quot;).
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.7.0
+     */
+    @ZAttr(id=3133)
+    public void unsetCarbonioReverseProxyResponseCSPHeader() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Content Security Policy headers to be added by the proxy. This is used
+     * along with the zimbraReverseProxyResponseHeaders by the ProxyConfGen
+     * to produce a complete set of Response Headers returned by the by the
+     * proxy. Usage: can be used to add a Content-Security-Policy header that
+     * will enforce CSP rule on the client side. Note: the value MUST be the
+     * entire header line (e.g. X-Foo: Bar, X-Zoo: &quot;Bar1; Bar2&quot;).
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.7.0
+     */
+    @ZAttr(id=3133)
+    public Map<String,Object> unsetCarbonioReverseProxyResponseCSPHeader(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "");
+        return attrs;
+    }
+
+    /**
      * Whether Carbonio can send analytics reports
      *
      * @return carbonioSendAnalytics, or true if unset
@@ -61526,10 +61623,12 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Custom response headers to be added by the proxy. For example, can be
-     * used to add a HSTS header that will enforce SSL usage on the client
-     * side. Note: the value MUST be the entire header line (e.g. X-Foo: Bar,
-     * X-Zoo: &quot;Bar1; Bar2&quot;).
+     * Custom response headers to be added by the proxy. The
+     * carbonioReverseProxyResponseCSPHeader should be used along with this
+     * to produce complete Proxy Response header. Usage: can be used to add a
+     * HSTS header that will enforce SSL usage on the client side. Note: the
+     * value MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo:
+     * &quot;Bar1; Bar2&quot;).
      *
      * @return zimbraReverseProxyResponseHeaders, or empty array if unset
      *
@@ -61537,14 +61636,16 @@ public abstract class ZAttrConfig extends Entry {
      */
     @ZAttr(id=1973)
     public String[] getReverseProxyResponseHeaders() {
-        String[] value = getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders, true, true); return value.length > 0 ? value : new String[] {"Strict-Transport-Security: \"max-age=31536000; includeSubDomains; preload\"","Permissions-Policy: \"geolocation=(self), microphone=(self)\"","Referrer-Policy: \"same-origin\"","X-Content-Type-Options: \"nosniff\"","X-Robots-Tag: \"noindex, nofollow\"","X-XSS-Protection: \"1; mode=block\"","X-Frame-Options: \"sameorigin\"","Expect-CT: max-age=86400","Content-Security-Policy: \"default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' *.zextras.tools; connect-src 'self' *.zextras.tools; img-src  * blob: data:; font-src 'self' fonts.gstatic.com; object-src 'self'; media-src  * blob: data:; child-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; form-action 'self'; frame-ancestors 'self';\""};
+        String[] value = getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders, true, true); return value.length > 0 ? value : new String[] {"Strict-Transport-Security: \"max-age=31536000; includeSubDomains; preload\"","Permissions-Policy: \"geolocation=(self), microphone=(self)\"","Referrer-Policy: \"same-origin\"","X-Content-Type-Options: \"nosniff\"","X-Robots-Tag: \"noindex, nofollow\"","X-XSS-Protection: \"1; mode=block\"","X-Frame-Options: \"sameorigin\"","Expect-CT: max-age=86400"};
     }
 
     /**
-     * Custom response headers to be added by the proxy. For example, can be
-     * used to add a HSTS header that will enforce SSL usage on the client
-     * side. Note: the value MUST be the entire header line (e.g. X-Foo: Bar,
-     * X-Zoo: &quot;Bar1; Bar2&quot;).
+     * Custom response headers to be added by the proxy. The
+     * carbonioReverseProxyResponseCSPHeader should be used along with this
+     * to produce complete Proxy Response header. Usage: can be used to add a
+     * HSTS header that will enforce SSL usage on the client side. Note: the
+     * value MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo:
+     * &quot;Bar1; Bar2&quot;).
      *
      * @param zimbraReverseProxyResponseHeaders new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -61559,10 +61660,12 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Custom response headers to be added by the proxy. For example, can be
-     * used to add a HSTS header that will enforce SSL usage on the client
-     * side. Note: the value MUST be the entire header line (e.g. X-Foo: Bar,
-     * X-Zoo: &quot;Bar1; Bar2&quot;).
+     * Custom response headers to be added by the proxy. The
+     * carbonioReverseProxyResponseCSPHeader should be used along with this
+     * to produce complete Proxy Response header. Usage: can be used to add a
+     * HSTS header that will enforce SSL usage on the client side. Note: the
+     * value MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo:
+     * &quot;Bar1; Bar2&quot;).
      *
      * @param zimbraReverseProxyResponseHeaders new value
      * @param attrs existing map to populate, or null to create a new map
@@ -61578,10 +61681,12 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Custom response headers to be added by the proxy. For example, can be
-     * used to add a HSTS header that will enforce SSL usage on the client
-     * side. Note: the value MUST be the entire header line (e.g. X-Foo: Bar,
-     * X-Zoo: &quot;Bar1; Bar2&quot;).
+     * Custom response headers to be added by the proxy. The
+     * carbonioReverseProxyResponseCSPHeader should be used along with this
+     * to produce complete Proxy Response header. Usage: can be used to add a
+     * HSTS header that will enforce SSL usage on the client side. Note: the
+     * value MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo:
+     * &quot;Bar1; Bar2&quot;).
      *
      * @param zimbraReverseProxyResponseHeaders new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -61596,10 +61701,12 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Custom response headers to be added by the proxy. For example, can be
-     * used to add a HSTS header that will enforce SSL usage on the client
-     * side. Note: the value MUST be the entire header line (e.g. X-Foo: Bar,
-     * X-Zoo: &quot;Bar1; Bar2&quot;).
+     * Custom response headers to be added by the proxy. The
+     * carbonioReverseProxyResponseCSPHeader should be used along with this
+     * to produce complete Proxy Response header. Usage: can be used to add a
+     * HSTS header that will enforce SSL usage on the client side. Note: the
+     * value MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo:
+     * &quot;Bar1; Bar2&quot;).
      *
      * @param zimbraReverseProxyResponseHeaders new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -61615,10 +61722,12 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Custom response headers to be added by the proxy. For example, can be
-     * used to add a HSTS header that will enforce SSL usage on the client
-     * side. Note: the value MUST be the entire header line (e.g. X-Foo: Bar,
-     * X-Zoo: &quot;Bar1; Bar2&quot;).
+     * Custom response headers to be added by the proxy. The
+     * carbonioReverseProxyResponseCSPHeader should be used along with this
+     * to produce complete Proxy Response header. Usage: can be used to add a
+     * HSTS header that will enforce SSL usage on the client side. Note: the
+     * value MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo:
+     * &quot;Bar1; Bar2&quot;).
      *
      * @param zimbraReverseProxyResponseHeaders existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -61633,10 +61742,12 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Custom response headers to be added by the proxy. For example, can be
-     * used to add a HSTS header that will enforce SSL usage on the client
-     * side. Note: the value MUST be the entire header line (e.g. X-Foo: Bar,
-     * X-Zoo: &quot;Bar1; Bar2&quot;).
+     * Custom response headers to be added by the proxy. The
+     * carbonioReverseProxyResponseCSPHeader should be used along with this
+     * to produce complete Proxy Response header. Usage: can be used to add a
+     * HSTS header that will enforce SSL usage on the client side. Note: the
+     * value MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo:
+     * &quot;Bar1; Bar2&quot;).
      *
      * @param zimbraReverseProxyResponseHeaders existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -61652,10 +61763,12 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Custom response headers to be added by the proxy. For example, can be
-     * used to add a HSTS header that will enforce SSL usage on the client
-     * side. Note: the value MUST be the entire header line (e.g. X-Foo: Bar,
-     * X-Zoo: &quot;Bar1; Bar2&quot;).
+     * Custom response headers to be added by the proxy. The
+     * carbonioReverseProxyResponseCSPHeader should be used along with this
+     * to produce complete Proxy Response header. Usage: can be used to add a
+     * HSTS header that will enforce SSL usage on the client side. Note: the
+     * value MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo:
+     * &quot;Bar1; Bar2&quot;).
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -61669,10 +61782,12 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Custom response headers to be added by the proxy. For example, can be
-     * used to add a HSTS header that will enforce SSL usage on the client
-     * side. Note: the value MUST be the entire header line (e.g. X-Foo: Bar,
-     * X-Zoo: &quot;Bar1; Bar2&quot;).
+     * Custom response headers to be added by the proxy. The
+     * carbonioReverseProxyResponseCSPHeader should be used along with this
+     * to produce complete Proxy Response header. Usage: can be used to add a
+     * HSTS header that will enforce SSL usage on the client side. Note: the
+     * value MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo:
+     * &quot;Bar1; Bar2&quot;).
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
