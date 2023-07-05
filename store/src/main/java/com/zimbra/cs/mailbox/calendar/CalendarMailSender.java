@@ -46,7 +46,7 @@ import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.MimeVisitor;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.redolog.op.RedoableOp;
-import com.zimbra.cs.service.FileUploadServlet.Upload;
+import com.zimbra.cs.service.servlets.fileupload.Upload;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.JMSession;

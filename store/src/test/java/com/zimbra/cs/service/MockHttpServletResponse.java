@@ -20,6 +20,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 public class MockHttpServletResponse implements HttpServletResponse {
+
+  public ByteArrayOutputStream getOutput() {
+    return output;
+  }
+
   ByteArrayOutputStream output = new ByteArrayOutputStream();
   private List<Cookie> cookies = new ArrayList<Cookie>();
   private final Map<String, String> headers = new HashMap<>();
