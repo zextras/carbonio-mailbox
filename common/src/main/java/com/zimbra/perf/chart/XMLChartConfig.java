@@ -25,7 +25,7 @@ public class XMLChartConfig {
     public static final String E_CHARTS = "charts";
     public static final String E_CHART = "chart";
     public static final String E_PLOT = "plot";
-    public final static String E_GROUP_PLOT = "groupplot";
+    public static final String E_GROUP_PLOT = "groupplot";
 
     // <chart> attributes
     public static final String A_CHART_TITLE = "title";
@@ -37,9 +37,9 @@ public class XMLChartConfig {
     public static final String A_CHART_PLOT_ZERO = "plotZero";
     public static final String A_CHART_WIDTH = "width";
     public static final String A_CHART_HEIGHT = "height";
-    public final static String A_CHART_DOCUMENT = "outDocument";
-    public final static String A_CHART_TOP_PLOTS = "topPlots";
-    public final static String A_CHART_TOP_PLOTS_TYPE = "topPlotsType";
+    public static final String A_CHART_DOCUMENT = "outDocument";
+    public static final String A_CHART_TOP_PLOTS = "topPlots";
+    public static final String A_CHART_TOP_PLOTS_TYPE = "topPlotsType";
 
     // <plot> attributes
     public static final String A_PLOT_LEGEND = "legend";

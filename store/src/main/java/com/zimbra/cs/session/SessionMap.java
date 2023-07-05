@@ -216,7 +216,7 @@ final class SessionMap {
         return oldValue;
     }
 
-    synchronized private void updateAccessTime(Session session) {
+    private synchronized void updateAccessTime(Session session) {
         Set<Session> set = getSessionAccessSet(session.getSessionIdleLifetime());
         set.remove(session);
         session.sessionCacheSetLastAccessTime();
@@ -270,7 +270,7 @@ final class SessionMap {
         return pruneSessionsInternal(false, -1);
     }
 
-    synchronized private List<Session> pruneSessionsInternal(boolean all, long cutoffIn) {
+    private synchronized List<Session> pruneSessionsInternal(boolean all, long cutoffIn) {
         List<Session> toRet = new ArrayList<Session>();
         long now = System.currentTimeMillis();
 
@@ -313,7 +313,7 @@ final class SessionMap {
      *
      * @param timeout This session's timeout
      */
-    synchronized private Set<Session> getSessionAccessSet(Long timeout) {
+    private synchronized Set<Session> getSessionAccessSet(Long timeout) {
         Set<Session> toRet = sessionAccessSet.get(timeout);
         if (toRet == null) {
             toRet = new LinkedHashSet<Session>();

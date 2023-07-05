@@ -46,7 +46,7 @@ public class ZModifyMailboxEvent implements ZModifyEvent, ToZJSONObject {
     }
 
     public String toString() {
-        return String.format("[ZModifyMailboxEvent]"); // TODO
+        return "[ZModifyMailboxEvent]"; // TODO
     }
 
     public String dump() {

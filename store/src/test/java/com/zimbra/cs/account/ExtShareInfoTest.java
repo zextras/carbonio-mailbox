@@ -5,8 +5,7 @@
 
 package com.zimbra.cs.account;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -16,10 +15,8 @@ import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.google.common.collect.Maps;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.L10nUtil;
@@ -41,7 +38,7 @@ public class ExtShareInfoTest {
     /**
      * @throws java.lang.Exception
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
          MailboxTestUtil.initServer();
          Provisioning prov = Provisioning.getInstance();
@@ -59,56 +56,56 @@ public class ExtShareInfoTest {
          L10nUtil.setMsgClassLoader("../store-conf/conf/msgs");
     }
 
-    @Test
-    public void testGenNotifyBody() {
+ @Test
+ void testGenNotifyBody() {
 
-        Locale locale = new Locale("en", "US");
-        String notes = "none";
+  Locale locale = new Locale("en", "US");
+  String notes = "none";
 
-        ShareInfoData sid = new ShareInfoData();
-        sid.setGranteeDisplayName("Demo User Three");
-        sid.setGranteeId(testAcct.getId());
-        sid.setGranteeName(testAcct.getName());
-        sid.setGranteeType(ACL.GRANTEE_GUEST);
+  ShareInfoData sid = new ShareInfoData();
+  sid.setGranteeDisplayName("Demo User Three");
+  sid.setGranteeId(testAcct.getId());
+  sid.setGranteeName(testAcct.getName());
+  sid.setGranteeType(ACL.GRANTEE_GUEST);
 
-        sid.setPath("/Inbox/Test");
-        sid.setFolderDefaultView(MailItem.Type.MESSAGE);
-        sid.setItemUuid("9badf685-3420-458b-9ce5-826b0bec638f");
-        sid.setItemId(257);
+  sid.setPath("/Inbox/Test");
+  sid.setFolderDefaultView(MailItem.Type.MESSAGE);
+  sid.setItemUuid("9badf685-3420-458b-9ce5-826b0bec638f");
+  sid.setItemId(257);
 
-        sid.setOwnerAcctId(ownerAcct.getId());
-        sid.setOwnerAcctEmail(ownerAcct.getName());
-        sid.setOwnerAcctDisplayName("Demo User Two");
+  sid.setOwnerAcctId(ownerAcct.getId());
+  sid.setOwnerAcctEmail(ownerAcct.getName());
+  sid.setOwnerAcctDisplayName("Demo User Two");
 
-        try {
-            sid.setRights(ACL.stringToRights("rwidxap"));
-            MimeMultipart mmp = ShareInfo.NotificationSender.genNotifBody(sid,
-                    notes, locale, null, null);
-            Assert.assertNotNull(mmp);
-            String body = (String) mmp.getBodyPart(0).getDataHandler()
-                    .getContent();
-            int index = body.indexOf("http");
-            int endIndex = body.indexOf(".", index);
-            String authUrl = body.substring(index, endIndex);
-            index = authUrl.indexOf("p=");
-            String authToken = authUrl.substring(index + 2);
-            try {
-                ZimbraAuthToken.getAuthToken(authToken);
-                fail("Authtoken should fail");
-            } catch (AuthTokenException e) {
-                assertTrue(e.getMessage().contains("hmac failure"));
-            }
+  try {
+   sid.setRights(ACL.stringToRights("rwidxap"));
+   MimeMultipart mmp = ShareInfo.NotificationSender.genNotifBody(sid,
+     notes, locale, null, null);
+   assertNotNull(mmp);
+   String body = (String) mmp.getBodyPart(0).getDataHandler()
+     .getContent();
+   int index = body.indexOf("http");
+   int endIndex = body.indexOf(".", index);
+   String authUrl = body.substring(index, endIndex);
+   index = authUrl.indexOf("p=");
+   String authToken = authUrl.substring(index + 2);
+   try {
+    ZimbraAuthToken.getAuthToken(authToken);
+    fail("Authtoken should fail");
+   } catch (AuthTokenException e) {
+    assertTrue(e.getMessage().contains("hmac failure"));
+   }
 
-            // Commenting for now, need to figure out why it fails on hudson
+   // Commenting for now, need to figure out why it fails on hudson
 //           try {
 //               ExternalUserProvServlet.validatePrelimToken(authToken);
 //           } catch (Exception e) {
 //               fail("Should not throw Exception" + e.getMessage());
 //           }
 
-        } catch (ServiceException | MessagingException | IOException e) {
-            fail("Exception should not be thrown: " + e.getMessage());
-        }
-    }
+  } catch (ServiceException | MessagingException | IOException e) {
+   fail("Exception should not be thrown: " + e.getMessage());
+  }
+ }
 
 }

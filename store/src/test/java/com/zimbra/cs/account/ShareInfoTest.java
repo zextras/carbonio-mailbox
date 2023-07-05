@@ -5,8 +5,7 @@
 
 package com.zimbra.cs.account;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -16,11 +15,9 @@ import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import com.google.common.collect.Maps;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.ACL;
@@ -33,13 +30,13 @@ import com.zimbra.cs.service.mail.SendMsgTest.DirectInsertionMailboxManager;
  * @author zimbra
  *
  */
-@Ignore
+@Disabled
 public class ShareInfoTest {
 
     /**
      * @throws java.lang.Exception
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
          MailboxTestUtil.initServer();
          Provisioning prov = Provisioning.getInstance();
@@ -54,77 +51,77 @@ public class ShareInfoTest {
          MailboxManager.setInstance(new DirectInsertionMailboxManager());
     }
 
-    @Test
-    public void testGenNotifyBody() {
+ @Test
+ void testGenNotifyBody() {
 
-        Locale locale = new Locale("en", "US");
-        String notes = "none";
+  Locale locale = new Locale("en", "US");
+  String notes = "none";
 
-        ShareInfoData sid = new ShareInfoData();
-        sid.setGranteeDisplayName("Demo User Three");
-        sid.setGranteeId("46031e4c-deb4-4724-b5bb-8f854d0c518a");
-        sid.setGranteeName("Demo User Three");
-        sid.setGranteeType(ACL.GRANTEE_USER);
+  ShareInfoData sid = new ShareInfoData();
+  sid.setGranteeDisplayName("Demo User Three");
+  sid.setGranteeId("46031e4c-deb4-4724-b5bb-8f854d0c518a");
+  sid.setGranteeName("Demo User Three");
+  sid.setGranteeType(ACL.GRANTEE_USER);
 
-        sid.setPath("/Calendar/Cal1");
-        sid.setFolderDefaultView(MailItem.Type.APPOINTMENT);
-        sid.setItemUuid("9badf685-3420-458b-9ce5-826b0bec638f");
-        sid.setItemId(257);
+  sid.setPath("/Calendar/Cal1");
+  sid.setFolderDefaultView(MailItem.Type.APPOINTMENT);
+  sid.setItemUuid("9badf685-3420-458b-9ce5-826b0bec638f");
+  sid.setItemId(257);
 
-        sid.setOwnerAcctId("bbf152ca-e7cd-477e-9f72-70fef715c5f9");
-        sid.setOwnerAcctEmail("test@zimbra.com");
-        sid.setOwnerAcctDisplayName("Demo User Two");
+  sid.setOwnerAcctId("bbf152ca-e7cd-477e-9f72-70fef715c5f9");
+  sid.setOwnerAcctEmail("test@zimbra.com");
+  sid.setOwnerAcctDisplayName("Demo User Two");
 
-        try {
+  try {
 
-            sid.setRights(ACL.stringToRights("rwidxap"));
-            MimeMultipart mmp = ShareInfo.NotificationSender.genNotifBody(sid,
-                    notes, locale, null, null);
-            Assert.assertNotNull(mmp);
-            String body = (String) mmp.getBodyPart(0).getDataHandler()
-                    .getContent();
-            assertTrue(body.indexOf("Role: Admin") != -1);
+   sid.setRights(ACL.stringToRights("rwidxap"));
+   MimeMultipart mmp = ShareInfo.NotificationSender.genNotifBody(sid,
+     notes, locale, null, null);
+   assertNotNull(mmp);
+   String body = (String) mmp.getBodyPart(0).getDataHandler()
+     .getContent();
+   assertTrue(body.indexOf("Role: Admin") != -1);
 
-        } catch (ServiceException | MessagingException | IOException e) {
-            fail("Exception should not be thrown: " + e.getMessage());
-        }
-    }
+  } catch (ServiceException | MessagingException | IOException e) {
+   fail("Exception should not be thrown: " + e.getMessage());
+  }
+ }
 
 
-    @Test
-    public void testGenNotifyBodyForCustom() {
+ @Test
+ void testGenNotifyBodyForCustom() {
 
-        Locale locale = new Locale("en", "US");
-        String notes = "none";
+  Locale locale = new Locale("en", "US");
+  String notes = "none";
 
-        ShareInfoData sid = new ShareInfoData();
-        sid.setGranteeDisplayName("Demo User Three");
-        sid.setGranteeId("46031e4c-deb4-4724-b5bb-8f854d0c518a");
-        sid.setGranteeName("Demo User Three");
-        sid.setGranteeType(ACL.GRANTEE_USER);
+  ShareInfoData sid = new ShareInfoData();
+  sid.setGranteeDisplayName("Demo User Three");
+  sid.setGranteeId("46031e4c-deb4-4724-b5bb-8f854d0c518a");
+  sid.setGranteeName("Demo User Three");
+  sid.setGranteeType(ACL.GRANTEE_USER);
 
-        sid.setPath("/Calendar/Cal1");
-        sid.setFolderDefaultView(MailItem.Type.APPOINTMENT);
-        sid.setItemUuid("9badf685-3420-458b-9ce5-826b0bec638f");
-        sid.setItemId(257);
+  sid.setPath("/Calendar/Cal1");
+  sid.setFolderDefaultView(MailItem.Type.APPOINTMENT);
+  sid.setItemUuid("9badf685-3420-458b-9ce5-826b0bec638f");
+  sid.setItemId(257);
 
-        sid.setOwnerAcctId("bbf152ca-e7cd-477e-9f72-70fef715c5f9");
-        sid.setOwnerAcctEmail("test@zimbra.com");
-        sid.setOwnerAcctDisplayName("Demo User Two");
+  sid.setOwnerAcctId("bbf152ca-e7cd-477e-9f72-70fef715c5f9");
+  sid.setOwnerAcctEmail("test@zimbra.com");
+  sid.setOwnerAcctDisplayName("Demo User Two");
 
-        try {
+  try {
 
-            sid.setRights(ACL.stringToRights("rwdxap"));
-            MimeMultipart mmp = ShareInfo.NotificationSender.genNotifBody(sid,
-                    notes, locale, null, null);
-            Assert.assertNotNull(mmp);
-            String body = (String) mmp.getBodyPart(0).getDataHandler()
-                    .getContent();
-            assertTrue(body.indexOf("Role: Custom") != -1);
+   sid.setRights(ACL.stringToRights("rwdxap"));
+   MimeMultipart mmp = ShareInfo.NotificationSender.genNotifBody(sid,
+     notes, locale, null, null);
+   assertNotNull(mmp);
+   String body = (String) mmp.getBodyPart(0).getDataHandler()
+     .getContent();
+   assertTrue(body.indexOf("Role: Custom") != -1);
 
-        } catch (ServiceException | MessagingException | IOException e) {
-            fail("Exception should not be thrown: " + e.getMessage());
-        }
-    }
+  } catch (ServiceException | MessagingException | IOException e) {
+   fail("Exception should not be thrown: " + e.getMessage());
+  }
+ }
 
 }

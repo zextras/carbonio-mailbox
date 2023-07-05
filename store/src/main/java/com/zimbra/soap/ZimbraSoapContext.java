@@ -760,17 +760,17 @@ public final class ZimbraSoapContext {
     }
 
     /** Called by the Session object if a new notification comes in. */
-    synchronized public void signalNotification(boolean canceled) {
+    public synchronized void signalNotification(boolean canceled) {
         mWaitForNotifications = false;
         mCanceledWaitForNotifications = canceled;
         continuationResume.resumeIfSuspended();
     }
 
-    synchronized public boolean isCanceledWaitForNotifications() {
+    public synchronized boolean isCanceledWaitForNotifications() {
         return mCanceledWaitForNotifications;
     }
 
-    synchronized public boolean waitingForNotifications() {
+    public synchronized boolean waitingForNotifications() {
         return mWaitForNotifications;
     }
 

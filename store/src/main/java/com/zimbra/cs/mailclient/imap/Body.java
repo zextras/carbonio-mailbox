@@ -103,7 +103,7 @@ public final class Body {
             names.add(is.readAString());
             is.skipSpaces();
         }
-        return names.toArray(new String[names.size()]);
+        return names.toArray(new String[0]);
     }
 
     public String getPart() { return part; }

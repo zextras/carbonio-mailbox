@@ -123,8 +123,7 @@ public class CreateGalSyncAccount extends AdminDocumentHandler {
             Domain domain, String folder, String name, GalMode type)  throws ServiceException {
         String acctName = account.getName();
         String acctId = account.getId();
-        HashSet<String> galAcctIds = new HashSet<String>();
-        galAcctIds.addAll(Arrays.asList(domain.getGalAccountId()));
+      HashSet<String> galAcctIds = new HashSet<String>(Arrays.asList(domain.getGalAccountId()));
         if (!galAcctIds.contains(acctId)) {
             galAcctIds.add(acctId);
             domain.setGalAccountId(galAcctIds.toArray(new String[0]));

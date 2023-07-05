@@ -28,7 +28,7 @@ import com.zimbra.cs.mailbox.OperationContext;
 
 public abstract class ImapMailboxStore {
 
-    protected final static transient ImapFlagCache flags = ImapFlagCache.getSystemFlags();
+    protected static final transient ImapFlagCache flags = ImapFlagCache.getSystemFlags();
 
     protected ImapMailboxStore() {
     }

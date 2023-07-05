@@ -29,11 +29,11 @@ public final class LogFactory {
     private LogFactory() {
     }
 
-    public synchronized static void init() {
+    public static synchronized void init() {
         PropertyConfigurator.configure(LC.zimbra_log4j_properties.value());
     }
 
-    public synchronized static void reset() {
+    public static synchronized void reset() {
         ZimbraLog.misc.info("Resetting all loggers");
         // LogManager.resetConfiguration() will set all logger's level to null. We don't want to leave account loggers
         // with that state.

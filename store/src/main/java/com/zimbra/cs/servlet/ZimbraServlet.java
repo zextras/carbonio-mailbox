@@ -564,7 +564,7 @@ public class ZimbraServlet extends HttpServlet {
                           })
                       .onFailure(
                           ex -> ZimbraLog.misc.warn("failed to get proxy IPs, skipping.", ex)));
-      return new RemoteIP.TrustedIPs(trustedIps.toArray(new String[trustedIps.size()]));
+      return new RemoteIP.TrustedIPs(trustedIps.toArray(new String[0]));
     } catch (ServiceException e) {
       ZimbraLog.misc.warn("failed to get trusted IPs, only localhost will be trusted", e);
     }

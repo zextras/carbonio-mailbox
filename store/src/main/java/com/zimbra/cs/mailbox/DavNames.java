@@ -17,7 +17,7 @@ import com.zimbra.common.util.ZimbraLog;
  * TODO: Make these names persistent rather than in memory.
  */
 public class DavNames {
-    public final static class DavName {
+    public static final class DavName {
         public final int mailbox_id;
         public final int folder_id;
         public final String davBaseName;
@@ -58,7 +58,7 @@ public class DavNames {
         }
     }
 
-    public final static class MboxAndId {
+    public static final class MboxAndId {
         public final int mailbox_id;
         public final int item_id;
 
@@ -125,13 +125,13 @@ public class DavNames {
         return get(DavName.create(mailbox_id, folder_id, davBaseName));
     }
 
-    public synchronized static Integer put(DavName davName, int id) {
+    public static synchronized Integer put(DavName davName, int id) {
         ZimbraLog.dav.debug("DavNameMap.put '%s' id=%d", davName, id);
         idToName.put(MboxAndId.create(davName.mailbox_id, id), davName);
         return nameToID.put(davName, id);
     }
 
-    public synchronized static void remove(DavName davName) {
+    public static synchronized void remove(DavName davName) {
         ZimbraLog.dav.debug("DavNameMap.remove '%s'", davName);
         Integer id = nameToID.get(davName);
         idToName.remove(davName);
@@ -140,7 +140,7 @@ public class DavNames {
         }
     }
 
-    public synchronized static void remove(int mailbox_id, int item_id) {
+    public static synchronized void remove(int mailbox_id, int item_id) {
         MboxAndId mboxAndId = MboxAndId.create(mailbox_id, item_id);
         ZimbraLog.dav.debug("DavNameMap.remove '%s'", mboxAndId);
         DavName davName = idToName.get(mboxAndId);

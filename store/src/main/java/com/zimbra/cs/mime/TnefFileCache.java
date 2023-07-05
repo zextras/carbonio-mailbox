@@ -54,7 +54,7 @@ public class TnefFileCache {
         return sInstance;
     }
     
-    public synchronized static void startup()
+    public static synchronized void startup()
     throws IOException {
         if (sInstance == null) {
             File cacheDir = new File(LC.zimbra_tmp_directory.value() + File.separator + "tnef");
@@ -65,7 +65,7 @@ public class TnefFileCache {
         }
     }
     
-    public synchronized static void shutdown() {
+    public static synchronized void shutdown() {
         if (sInstance != null) {
             try {
                 FileUtil.deleteDir(sInstance.mCacheDir);

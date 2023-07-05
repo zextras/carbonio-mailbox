@@ -28,8 +28,8 @@ import org.apache.log4j.Level;
  */
 public class XmlElementDescription
 implements DescriptionNode, XmlUnit {
-    private final static int INDENT_CHAR_NUM = 4;
-    private final static int WRAP_COLUMN_GUIDE = 120;
+    private static final int INDENT_CHAR_NUM = 4;
+    private static final int WRAP_COLUMN_GUIDE = 120;
     DescriptionNode parent;
     private final List<XmlAttributeDescription> attribs = Lists.newArrayList();
     private final List<DescriptionNode> children = Lists.newArrayList();
@@ -320,9 +320,7 @@ implements DescriptionNode, XmlUnit {
     }
 
     private static void writeNbsp(StringBuilder desc, int cnt) {
-        for (int c = 1; c <= cnt; c++) {
-            desc.append("&nbsp;");
-        }
+      desc.append("&nbsp;".repeat(Math.max(0, cnt)));
     }
 
     private void writeStartOptionalInfo(StringBuilder desc) {

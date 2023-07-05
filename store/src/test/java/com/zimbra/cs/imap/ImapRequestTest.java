@@ -7,10 +7,11 @@ package com.zimbra.cs.imap;
 
 import java.nio.charset.Charset;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Charsets;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit test for {@link ImapRequest}.
@@ -19,13 +20,13 @@ import com.google.common.base.Charsets;
  */
 public final class ImapRequestTest {
 
-    @Test
-    public void readNonAsciiAstring() throws Exception {
-        NioImapRequest req = new NioImapRequest(null);
-        String result = "\u65e5\u672c\u8a9e";
-        String raw = new String(result.getBytes("ISO-2022-JP"), Charsets.ISO_8859_1);
-        req.parse("\"" + raw.replace("\\", "\\\\") + "\"\r\n");
-        Assert.assertEquals(result, req.readAstring(Charset.forName("ISO-2022-JP")));
-    }
+ @Test
+ void readNonAsciiAstring() throws Exception {
+  NioImapRequest req = new NioImapRequest(null);
+  String result = "\u65e5\u672c\u8a9e";
+  String raw = new String(result.getBytes("ISO-2022-JP"), Charsets.ISO_8859_1);
+  req.parse("\"" + raw.replace("\\", "\\\\") + "\"\r\n");
+  assertEquals(result, req.readAstring(Charset.forName("ISO-2022-JP")));
+ }
 
 }

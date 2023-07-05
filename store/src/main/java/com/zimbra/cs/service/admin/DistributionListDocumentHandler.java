@@ -19,7 +19,7 @@ public abstract class DistributionListDocumentHandler extends AdminDocumentHandl
 
     private static final String GROUP = "__GROUP__";
 
-    abstract protected Group getGroup(Element request) throws ServiceException;
+    protected abstract Group getGroup(Element request) throws ServiceException;
 
     protected final Group getGroupAndCacheInContext(Element request, Map<String, Object> context)
     throws ServiceException {

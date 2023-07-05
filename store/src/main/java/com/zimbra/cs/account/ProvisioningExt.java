@@ -12,7 +12,7 @@ import com.zimbra.cs.util.Zimbra;
 
 public abstract class ProvisioningExt {
     
-    public static abstract class ProvExt {
+    public abstract static class ProvExt {
         public abstract boolean serverOnly();
         
         public boolean enabled() {
@@ -22,7 +22,7 @@ public abstract class ProvisioningExt {
         }
     }
 
-    public static abstract class PostCreateAccountListener extends ProvExt {
+    public abstract static class PostCreateAccountListener extends ProvExt {
         public abstract void handle(Account acct) throws ServiceException;
     }
     

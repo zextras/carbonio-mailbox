@@ -139,7 +139,8 @@ public class RssFormatter extends Formatter {
         item.addElement("description").setText(doc.getFragment());
         item.addElement("author").setText(doc.getCreator());
         item.addElement("pubDate").setText(mDateFormat.format(new Date(doc.getDate())));
-        item.addElement("link").setText(context.req.getRequestURL().append("?id=" + doc.getId()).toString());
+        item.addElement("link").setText(
+            context.req.getRequestURL().append("?id=").append(doc.getId()).toString());
     }
 
     @Override

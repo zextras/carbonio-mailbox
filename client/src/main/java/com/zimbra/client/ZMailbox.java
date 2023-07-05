@@ -5080,9 +5080,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         mContent = null;
         mContentType = contentType;
         mSubParts = new ArrayList<MessagePart>();
-        for (MessagePart sub : parts) {
-          mSubParts.add(sub);
-        }
+        mSubParts.addAll(Arrays.asList(parts));
       }
 
       public String getContentType() {
@@ -6189,7 +6187,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
           if (searchQuery.length() > 1) {
             searchQuery.append(" or ");
           }
-          searchQuery.append("inid:").append("\"" + folderId + "\"");
+          searchQuery.append("inid:").append("\"").append(folderId).append("\"");
           // folder2List.
           List<ZAppointmentHit> appts = new ArrayList<ZAppointmentHit>();
           ZApptSummaryResult result =

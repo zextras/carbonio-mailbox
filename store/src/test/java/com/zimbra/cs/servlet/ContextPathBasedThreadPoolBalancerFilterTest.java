@@ -5,10 +5,11 @@
 
 package com.zimbra.cs.servlet;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
+
 //import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
-@Ignore("doesn't work due to Java version mismatch in build environment")
+@Disabled("doesn't work due to Java version mismatch in build environment")
 public class ContextPathBasedThreadPoolBalancerFilterTest {
     static final int WAIT_MS = 3000; // min time for slow ZimbraServlet.addRemoteIpToLoggingContext to run
 /*

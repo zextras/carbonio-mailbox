@@ -35,9 +35,11 @@ public class MailUtil {
         String sentDate = new SimpleDateFormat("MMMMM d, yyyy").format(new Date());
         String sentTime = new SimpleDateFormat("h:mm a").format(new Date());
 
-        text.append("Your message \"" + subject + "\" sent on " + sentDate + " at " + sentTime + " " + TimeZone.getDefault().getDisplayName() + " " +
-                "could not be delivered to one or more recipients.\n\n" +
-                "For further assistance, please send mail to postmaster.\n\n");
+        text.append("Your message \"").append(subject).append("\" sent on ").append(sentDate)
+            .append(" at ").append(sentTime).append(" ")
+            .append(TimeZone.getDefault().getDisplayName()).append(" ")
+            .append("could not be delivered to one or more recipients.\n\n")
+            .append("For further assistance, please send mail to postmaster.\n\n");
 
         List<String> invalidAddrs = new ArrayList<String> ();
         List<String> unsentAddrs = new ArrayList<String> ();
@@ -54,10 +56,10 @@ public class MailUtil {
         }
 
         for (String addr : invalidAddrs)
-            text.append(addr + ":" + "Invalid Address\n");
+            text.append(addr).append(":").append("Invalid Address\n");
 
         for (String addr : unsentAddrs)
-            text.append(addr + ":" + "Unsent Address\n");
+            text.append(addr).append(":").append("Unsent Address\n");
 
         failedDeliverymm.setText(text.toString());
         failedDeliverymm.saveChanges();

@@ -156,7 +156,7 @@ public class Recurrence
          */
         public void setInviteId(InviteInfo invId);
 
-        abstract public Element toXml(Element parent);
+        public abstract Element toXml(Element parent);
     }
 
 
@@ -231,8 +231,8 @@ public class Recurrence
      */
     public static class MultiRuleSorter
     {
-        static private final String FN_NUM_RULES = "nr";
-        static private final String FN_RULE = "r";
+        private static final String FN_NUM_RULES = "nr";
+        private static final String FN_RULE = "r";
 
         public Metadata encodeMetadata() {
             Metadata meta = new Metadata();
@@ -870,7 +870,7 @@ public class Recurrence
      *  an ExceptionRule (ie component with a RECURRENCE-ID property)
      *
      */
-    public static abstract class CompoundRuleBase implements IRecurrence {
+    public abstract static class CompoundRuleBase implements IRecurrence {
         protected CompoundRuleBase(ParsedDateTime dtstart, ParsedDuration duration, InviteInfo invId,
                 List<IRecurrence> addRules,
                 List<IRecurrence> subtractRules)
@@ -1173,7 +1173,7 @@ public class Recurrence
      */
     public static class CancellationRule implements IException
     {
-        static private final String FN_RECURRENCE_ID = "recurId";
+        private static final String FN_RECURRENCE_ID = "recurId";
 
         private final RecurId mRecurRange;
 

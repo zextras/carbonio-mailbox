@@ -83,7 +83,7 @@ import com.zimbra.cs.mailbox.Mailbox;
  */
 public final class ElasticSearchIndex extends IndexStore {
 
-    private final static String indexType = "zimbra";
+    private static final String indexType = "zimbra";
     private final Mailbox mailbox;
     private final String key;
     private final String indexUrl;

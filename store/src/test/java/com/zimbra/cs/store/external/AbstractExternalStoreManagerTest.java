@@ -8,10 +8,11 @@ package com.zimbra.cs.store.external;
 import java.io.File;
 import java.io.InputStream;
 
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import com.zimbra.cs.account.MockProvisioning;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.ThreaderTest;
@@ -26,66 +27,66 @@ import qa.unittest.TestUtil;
 
 public abstract class AbstractExternalStoreManagerTest extends AbstractStoreManagerTest {
 
-    @Test
-    public void testUncachedSubstream() throws Exception {
-        ParsedMessage pm = ThreaderTest.getRootMessage();
-        byte[] mimeBytes = TestUtil.readInputStream(pm.getRawInputStream());
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+ @Test
+ void testUncachedSubstream() throws Exception {
+  ParsedMessage pm = ThreaderTest.getRootMessage();
+  byte[] mimeBytes = TestUtil.readInputStream(pm.getRawInputStream());
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-        StoreManager sm = StoreManager.getInstance();
-        Blob blob = sm.storeIncoming(pm.getRawInputStream());
-        StagedBlob staged = sm.stage(blob, mbox);
-        MailboxBlob mblob = sm.link(staged, mbox, 0, 0);
-        mblob = sm.getMailboxBlob(mbox, 0, 0, staged.getLocator());
+  StoreManager sm = StoreManager.getInstance();
+  Blob blob = sm.storeIncoming(pm.getRawInputStream());
+  StagedBlob staged = sm.stage(blob, mbox);
+  MailboxBlob mblob = sm.link(staged, mbox, 0, 0);
+  mblob = sm.getMailboxBlob(mbox, 0, 0, staged.getLocator());
 
-        Blob localBlob = mblob.getLocalBlob();
-        InputStream stream = sm.getContent(localBlob);
+  Blob localBlob = mblob.getLocalBlob();
+  InputStream stream = sm.getContent(localBlob);
 
-        Assert.assertTrue("input stream external", stream instanceof BlobInputStream);
+  assertTrue(stream instanceof BlobInputStream, "input stream external");
 
-        if (sm instanceof ExternalStoreManager) {
-            ((ExternalStoreManager) sm).clearCache();
-        }
-        blob.getFile().delete();
-        Assert.assertFalse(blob.getFile().exists());
+  if (sm instanceof ExternalStoreManager) {
+   ((ExternalStoreManager) sm).clearCache();
+  }
+  blob.getFile().delete();
+  assertFalse(blob.getFile().exists());
 
-        //create new stream spanning the whole blob
-        InputStream newStream = ((BlobInputStream) stream).newStream(0, -1);
-        Assert.assertNotNull(newStream);
-        Assert.assertTrue("stream content = mime content", TestUtil.bytesEqual(mimeBytes, newStream));
-    }
+  //create new stream spanning the whole blob
+  InputStream newStream = ((BlobInputStream) stream).newStream(0, -1);
+  assertNotNull(newStream);
+  assertTrue(TestUtil.bytesEqual(mimeBytes, newStream), "stream content = mime content");
+ }
 
-    @Test
-    public void testUncachedFile() throws Exception {
-        ParsedMessage pm = ThreaderTest.getRootMessage();
-        byte[] mimeBytes = TestUtil.readInputStream(pm.getRawInputStream());
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+ @Test
+ void testUncachedFile() throws Exception {
+  ParsedMessage pm = ThreaderTest.getRootMessage();
+  byte[] mimeBytes = TestUtil.readInputStream(pm.getRawInputStream());
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-        StoreManager sm = StoreManager.getInstance();
-        Blob blob = sm.storeIncoming(pm.getRawInputStream());
-        StagedBlob staged = sm.stage(blob, mbox);
-        MailboxBlob mblob = sm.link(staged, mbox, 0, 0);
-        mblob = sm.getMailboxBlob(mbox, 0, 0, staged.getLocator());
+  StoreManager sm = StoreManager.getInstance();
+  Blob blob = sm.storeIncoming(pm.getRawInputStream());
+  StagedBlob staged = sm.stage(blob, mbox);
+  MailboxBlob mblob = sm.link(staged, mbox, 0, 0);
+  mblob = sm.getMailboxBlob(mbox, 0, 0, staged.getLocator());
 
-        Blob localBlob = mblob.getLocalBlob();
-        InputStream stream = sm.getContent(localBlob);
+  Blob localBlob = mblob.getLocalBlob();
+  InputStream stream = sm.getContent(localBlob);
 
-        Assert.assertTrue("input stream external", stream instanceof BlobInputStream);
+  assertTrue(stream instanceof BlobInputStream, "input stream external");
 
-        if (sm instanceof ExternalStoreManager) {
-            ((ExternalStoreManager) sm).clearCache();
-        }
-        blob.getFile().delete();
-        Assert.assertFalse(blob.getFile().exists());
+  if (sm instanceof ExternalStoreManager) {
+   ((ExternalStoreManager) sm).clearCache();
+  }
+  blob.getFile().delete();
+  assertFalse(blob.getFile().exists());
 
-        //now get it again. this would bomb if it only looked in cache
-        stream = sm.getContent(mblob.getLocalBlob());
-        Assert.assertTrue("input stream external", stream instanceof ExternalBlobInputStream);
-        ExternalBlobInputStream extStream = (ExternalBlobInputStream) stream;
-        File file = extStream.getRootFile();
-        Assert.assertTrue(file.exists());
+  //now get it again. this would bomb if it only looked in cache
+  stream = sm.getContent(mblob.getLocalBlob());
+  assertTrue(stream instanceof ExternalBlobInputStream, "input stream external");
+  ExternalBlobInputStream extStream = (ExternalBlobInputStream) stream;
+  File file = extStream.getRootFile();
+  assertTrue(file.exists());
 
-        Assert.assertTrue("stream content = mime content", TestUtil.bytesEqual(mimeBytes, stream));
-    }
+  assertTrue(TestUtil.bytesEqual(mimeBytes, stream), "stream content = mime content");
+ }
 
 }

@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -251,9 +252,7 @@ public final class JaxbInfo {
         List<String> propOrder = Lists.newArrayList();
         if ( (null == xmlType) || (null == xmlType.propOrder()) )
             return propOrder;
-        for (String prop : xmlType.propOrder()) {
-            propOrder.add(prop);
-        }
+      propOrder.addAll(Arrays.asList(xmlType.propOrder()));
         return propOrder;
     }
 

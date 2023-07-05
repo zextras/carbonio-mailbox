@@ -92,7 +92,7 @@ abstract class ImapSearch {
     }
 
 
-    static abstract class LogicalOperation extends ImapSearch {
+    abstract static class LogicalOperation extends ImapSearch {
         protected List<ImapSearch> mChildren = new ArrayList<ImapSearch>();
 
         protected LogicalOperation addChild(ImapSearch i4search) {

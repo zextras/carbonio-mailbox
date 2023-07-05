@@ -421,7 +421,7 @@ public abstract class AuthMechanism {
         StringBuffer sb = null;
         if (mArgs != null) {
           sb = new StringBuffer();
-          for (String s : mArgs) sb.append("[" + s + "] ");
+          for (String s : mArgs) sb.append("[").append(s).append("] ");
         }
         ZimbraLog.account.debug("CustomAuth: handlerName=" + mHandlerName + ", args=" + sb);
       }

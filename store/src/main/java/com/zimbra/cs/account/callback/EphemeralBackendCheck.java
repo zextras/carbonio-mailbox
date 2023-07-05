@@ -164,7 +164,7 @@ public class EphemeralBackendCheck extends AttributeCallback {
     /**
      * Helper interface specifying how the outcomes of checkMigration() are handled
      */
-    public static abstract class MigrationStateHelper {
+    public abstract static class MigrationStateHelper {
 
         public static enum Reason {NO_MIGRATION, MIGRATION_ERROR, URL_MISMATCH }
 

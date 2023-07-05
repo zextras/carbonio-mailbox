@@ -28,7 +28,7 @@ public class AutoProvisionThread extends Thread implements Provisioning.EagerAut
     /**
      * Starts up the auto provision thread.
      */
-    public synchronized static void startup() {
+    public static synchronized void startup() {
         synchronized (THREAD_CONTROL_LOCK) {
             if (isRunning()) {
                 ZimbraLog.autoprov.warn("Cannot start a second auto provision thread while another one is running.");
@@ -61,7 +61,7 @@ public class AutoProvisionThread extends Thread implements Provisioning.EagerAut
     /**
      * Returns <tt>true</tt> if the mailbox auto provision thread is currently running.
      */
-    public synchronized static boolean isRunning() {
+    public static synchronized boolean isRunning() {
         synchronized (THREAD_CONTROL_LOCK) {
             if (autoProvThread != null) {
                 return true;
@@ -74,7 +74,7 @@ public class AutoProvisionThread extends Thread implements Provisioning.EagerAut
     /**
      * Shuts down the auto provision thread.  Does nothing if it is not running.
      */
-    public synchronized static void shutdown() {
+    public static synchronized void shutdown() {
         synchronized (THREAD_CONTROL_LOCK) {
             if (autoProvThread != null) {
                 ZimbraLog.autoprov.info("Shutting down auto provision thread");
@@ -87,7 +87,7 @@ public class AutoProvisionThread extends Thread implements Provisioning.EagerAut
         }
     }
     
-    public synchronized static void switchAutoProvThreadIfNecessary() throws ServiceException {
+    public static synchronized void switchAutoProvThreadIfNecessary() throws ServiceException {
         Server localServer = Provisioning.getInstance().getLocalServer();
         
         long interval = localServer.getTimeInterval(Provisioning.A_zimbraAutoProvPollingInterval, 0);

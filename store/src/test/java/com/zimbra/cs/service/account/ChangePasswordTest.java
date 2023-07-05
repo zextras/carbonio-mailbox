@@ -22,52 +22,52 @@ import com.zimbra.soap.type.AccountSelector;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ChangePasswordTest {
 
   private Provisioning provisioning;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     MailboxTestUtil.initServer();
     this.provisioning = spy(Provisioning.getInstance());
     provisioning.createAccount("test@zextras.com", "secret", new HashMap<String, Object>());
   }
 
-  /**
-   * Test for CO-329. When change password is invoked, it should forward the request context to
-   * {@link com.zimbra.cs.account.Provisioning#changePassword(Account, String, String, boolean,
+ /**
+  * Test for CO-329. When change password is invoked, it should forward the request context to
+  * {@link com.zimbra.cs.account.Provisioning#changePassword(Account, String, String, boolean,
    * Map)}
-   */
-  @Test
-  public void shouldPassContextToProvisioningChangePassword() throws Exception {
-    ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
-    final String oldPassword = "secret";
-    final String newPassword = "newSecret";
-    final String user = "test@zextras.com";
-    final boolean dryRun = false;
-    changePasswordRequest.setOldPassword(oldPassword);
-    changePasswordRequest.setPassword(newPassword);
-    changePasswordRequest.setDryRun(dryRun);
-    changePasswordRequest.setAccount(AccountSelector.fromName(user));
-    Account acct = provisioning.get(Key.AccountBy.name, user);
-    final Element request = JaxbUtil.jaxbToElement(changePasswordRequest);
-    // prepare request
-    final HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);
-    final Map<String, Object> ctx = new HashMap<String, Object>();
-    final ZimbraSoapContext zsc =
-        new ZimbraSoapContext(
-            AuthProvider.getAuthToken(acct),
-            acct.getId(),
-            SoapProtocol.Soap12,
-            SoapProtocol.Soap12);
-    ctx.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    ctx.put(SoapServlet.SERVLET_REQUEST, mockHttpRequest);
-    when(mockHttpRequest.getScheme()).thenReturn("https");
-    // ChangePassword and verify context is passwd down to provisioning
-    new ChangePassword(provisioning).handle(request, ctx);
-    verify(provisioning, times(1)).changePassword(acct, oldPassword, newPassword, dryRun, ctx);
-  }
+  */
+ @Test
+ void shouldPassContextToProvisioningChangePassword() throws Exception {
+  ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+  final String oldPassword = "secret";
+  final String newPassword = "newSecret";
+  final String user = "test@zextras.com";
+  final boolean dryRun = false;
+  changePasswordRequest.setOldPassword(oldPassword);
+  changePasswordRequest.setPassword(newPassword);
+  changePasswordRequest.setDryRun(dryRun);
+  changePasswordRequest.setAccount(AccountSelector.fromName(user));
+  Account acct = provisioning.get(Key.AccountBy.name, user);
+  final Element request = JaxbUtil.jaxbToElement(changePasswordRequest);
+  // prepare request
+  final HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);
+  final Map<String, Object> ctx = new HashMap<String, Object>();
+  final ZimbraSoapContext zsc =
+    new ZimbraSoapContext(
+      AuthProvider.getAuthToken(acct),
+      acct.getId(),
+      SoapProtocol.Soap12,
+      SoapProtocol.Soap12);
+  ctx.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+  ctx.put(SoapServlet.SERVLET_REQUEST, mockHttpRequest);
+  when(mockHttpRequest.getScheme()).thenReturn("https");
+  // ChangePassword and verify context is passwd down to provisioning
+  new ChangePassword(provisioning).handle(request, ctx);
+  verify(provisioning, times(1)).changePassword(acct, oldPassword, newPassword, dryRun, ctx);
+ }
 }

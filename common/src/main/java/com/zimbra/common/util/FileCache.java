@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -312,9 +313,7 @@ public class FileCache<K> {
         Set<File> fileSet = Sets.newLinkedHashSet();
         File[] files = dir.listFiles();
         if (files != null) {
-            for (File file : files) {
-                fileSet.add(file);
-            }
+          fileSet.addAll(Arrays.asList(files));
         }
         return fileSet;
     }

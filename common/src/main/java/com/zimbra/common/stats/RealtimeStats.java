@@ -6,6 +6,7 @@
 package com.zimbra.common.stats;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +32,7 @@ public class RealtimeStats implements Accumulator {
             throw new IllegalArgumentException("names cannot be null or empty");
         }
         mNames = new ArrayList<String>();
-        for (String name : names) {
-            mNames.add(name);
-        }
+      mNames.addAll(Arrays.asList(names));
     }
     
     public void addName(String name) {

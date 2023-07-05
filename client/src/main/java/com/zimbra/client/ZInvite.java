@@ -1600,7 +1600,7 @@ public class ZInvite implements ToZJSONObject {
         }
 
         public String toString() {
-            return String.format("[ZRecurrenceDate]"); // TODO
+            return "[ZRecurrenceDate]"; // TODO
         }
 
         public String dump() {
@@ -1658,7 +1658,7 @@ public class ZInvite implements ToZJSONObject {
         }
 
         public String toString() {
-            return String.format("[ZRecurrenceDates]"); // TODO
+            return "[ZRecurrenceDates]"; // TODO
         }
 
         public String dump() {
@@ -1963,7 +1963,7 @@ public class ZInvite implements ToZJSONObject {
         }
 
         public String toString() {
-            return String.format("[ZByRule]"); //TODO
+            return "[ZByRule]"; //TODO
         }
 
         public String dump() {
@@ -2014,7 +2014,7 @@ public class ZInvite implements ToZJSONObject {
         }
 
         public String toString() {
-            return String.format("[ZRecurrenceRule]"); // TODO
+            return "[ZRecurrenceRule]"; // TODO
         }
 
         public String dump() {
@@ -2211,7 +2211,7 @@ public class ZInvite implements ToZJSONObject {
         }
 
         public String toString() {
-            return String.format("[ZRecurrence]");
+            return "[ZRecurrence]";
         }
 
         public String dump() {

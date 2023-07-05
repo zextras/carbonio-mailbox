@@ -5,23 +5,24 @@
 
 package com.zimbra.cs.store;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class BlobInputStreamTest {
-    @Before
+    @BeforeEach
     public void startUp() {
         BlobInputStream.setFileDescriptorCache(new FileDescriptorCache(null));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         BlobInputStream.setFileDescriptorCache(null);
     }
@@ -38,45 +39,45 @@ public class BlobInputStreamTest {
         return file;
     }
 
-    @Test
-    public void deleteHalfway() throws Exception {
-        // set up file and build base stream
-        File file = createTempFile();
-        BlobInputStream bis = new BlobInputStream(file, file.length());
+ @Test
+ void deleteHalfway() throws Exception {
+  // set up file and build base stream
+  File file = createTempFile();
+  BlobInputStream bis = new BlobInputStream(file, file.length());
 
-        // make sure you can read from it (this also puts it in the FD cache)
-        Assert.assertEquals("can read 10 bytes", CONTENT.length, bis.read(new byte[100]));
+  // make sure you can read from it (this also puts it in the FD cache)
+  assertEquals(CONTENT.length, bis.read(new byte[100]), "can read 10 bytes");
 
-        // get a full-length substream
-        InputStream copy = bis.newStream(0, CONTENT.length);
-        Assert.assertNotNull("can create substream before delete", copy);
-        Assert.assertEquals("can read 10 bytes from full substream", CONTENT.length, copy.read(new byte[100]));
-        try (InputStream badStartIs = bis.newStream(-1, CONTENT.length)) {
-            Assert.fail("Shouldn't be able to create newStream with start < 0");
-        } catch (IllegalArgumentException iae) {
-            Assert.assertTrue("Blob name included in exception message", iae.getMessage().contains(file.getAbsolutePath()));
-        }
+  // get a full-length substream
+  InputStream copy = bis.newStream(0, CONTENT.length);
+  assertNotNull(copy, "can create substream before delete");
+  assertEquals(CONTENT.length, copy.read(new byte[100]), "can read 10 bytes from full substream");
+  try (InputStream badStartIs = bis.newStream(-1, CONTENT.length)) {
+   fail("Shouldn't be able to create newStream with start < 0");
+  } catch (IllegalArgumentException iae) {
+   assertTrue(iae.getMessage().contains(file.getAbsolutePath()), "Blob name included in exception message");
+  }
 
-        // rely on the FD cache to keep it readable through a file delete
-        file.delete();
-        Assert.assertFalse("file is gone", file.exists());
-        InputStream substream = bis.newStream(2, 8);
-        Assert.assertNotNull("can create substream after delete", substream);
-        Assert.assertEquals("can read 6 bytes from substream after delete", 6, substream.read(new byte[100]));
+  // rely on the FD cache to keep it readable through a file delete
+  file.delete();
+  assertFalse(file.exists(), "file is gone");
+  InputStream substream = bis.newStream(2, 8);
+  assertNotNull(substream, "can create substream after delete");
+  assertEquals(6, substream.read(new byte[100]), "can read 6 bytes from substream after delete");
 
-        try (InputStream badStartIs = bis.newStream(-1, CONTENT.length)) {
-            Assert.fail("Shouldn't be able to create newStream with start < 0 - especially after delete");
-        } catch (IllegalArgumentException iae) {
-            Assert.assertTrue("Blob name included in exception message", iae.getMessage().contains(file.getAbsolutePath()));
-        }
+  try (InputStream badStartIs = bis.newStream(-1, CONTENT.length)) {
+   fail("Shouldn't be able to create newStream with start < 0 - especially after delete");
+  } catch (IllegalArgumentException iae) {
+   assertTrue(iae.getMessage().contains(file.getAbsolutePath()), "Blob name included in exception message");
+  }
 
-        // set up file again
-        file = createTempFile();
-        bis = new BlobInputStream(file, file.length());
+  // set up file again
+  file = createTempFile();
+  bis = new BlobInputStream(file, file.length());
 
-        // new file is not in FD cache, so it shouldn't be readable after a file delete
-        file.delete();
-        Assert.assertFalse("file is gone", file.exists());
-        Assert.assertNull("can't create substream after delete", bis.newStream(0, CONTENT.length));
-    }
+  // new file is not in FD cache, so it shouldn't be readable after a file delete
+  file.delete();
+  assertFalse(file.exists(), "file is gone");
+  assertNull(bis.newStream(0, CONTENT.length), "can't create substream after delete");
+ }
 }

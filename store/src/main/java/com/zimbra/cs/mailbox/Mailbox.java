@@ -99,6 +99,7 @@ import com.zimbra.cs.mailbox.FoldersTagsCache.FoldersTags;
 import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
 import com.zimbra.cs.mailbox.MailItem.PendingDelete;
 import com.zimbra.cs.mailbox.MailItem.TargetConstraint;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.MailboxListener.ChangeNotification;
@@ -3756,9 +3757,7 @@ public class Mailbox implements MailboxStore {
           }
           List<Flag> allFlags = Flag.allOf(this);
           result = new ArrayList<MailItem>(allFlags.size());
-          for (Flag flag : allFlags) {
-            result.add(flag);
-          }
+          result.addAll(allFlags);
           success = true;
           break;
         default:
@@ -7777,7 +7776,7 @@ public class Mailbox implements MailboxStore {
         ArrayUtil.toIntArray(ids),
         MailItem.Type.UNKNOWN,
         flags,
-        tags.toArray(new String[tags.size()]),
+        tags.toArray(new String[0]),
         null);
   }
 
@@ -7945,7 +7944,7 @@ public class Mailbox implements MailboxStore {
             int newId =
                 getNextItemId(
                     redoPlayer == null ? ID_AUTO_INCREMENT : redoPlayer.getDestId(conv.getId()));
-            copy = Conversation.create(this, newId, msgs.toArray(new Message[msgs.size()]));
+            copy = Conversation.create(this, newId, msgs.toArray(new Message[0]));
             redoRecorder.setDest(conv.getId(), newId, copy.getUuid());
           }
         } else {
@@ -9538,9 +9537,7 @@ public class Mailbox implements MailboxStore {
             || folder.getDefaultView() == MailItem.Type.TASK;
     Set<Integer> toRemove = new HashSet<Integer>();
     if (subscription && isCalendar) {
-      for (int i : listItemIds(octxt, MailItem.Type.UNKNOWN, folder.getId())) {
-        toRemove.add(i);
-      }
+      toRemove.addAll(listItemIds(octxt, Type.UNKNOWN, folder.getId()));
     }
 
     // if there's nothing to add, we can short-circuit here

@@ -41,7 +41,7 @@ extends Thread {
     /**
      * Starts up the mailbox purge thread.
      */
-    public synchronized static void startup() {
+    public static synchronized void startup() {
         synchronized (THREAD_CONTROL_LOCK) {
             if (isRunning()) {
                 ZimbraLog.purge.warn("Cannot start a second purge thread while another one is running.");
@@ -67,7 +67,7 @@ extends Thread {
     /**
      * Returns <tt>true</tt> if the mailbox purge thread is currently running.
      */
-    public synchronized static boolean isRunning() {
+    public static synchronized boolean isRunning() {
         synchronized (THREAD_CONTROL_LOCK) {
             if (sPurgeThread != null) {
                 return true;
@@ -80,7 +80,7 @@ extends Thread {
     /**
      * Shuts down the mailbox purge thread.  Does nothing if it is not running.
      */
-    public synchronized static void shutdown() {
+    public static synchronized void shutdown() {
         synchronized (THREAD_CONTROL_LOCK) {
             if (sPurgeThread != null) {
                 sPurgeThread.requestShutdown();

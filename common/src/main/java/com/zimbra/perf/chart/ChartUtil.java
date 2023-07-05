@@ -68,8 +68,8 @@ public class ChartUtil {
     private static final String OPT_AGGREGATE_END_AT = "aggregate-end-at";
     private static final String OPT_NO_SUMMARY = "no-summary";
 
-    private final static String GROUP_PLOT_SYNTHETIC = "group-plot-synthetic$";
-    private final static String RATIO_PLOT_SYNTHETIC = "ratio-plot-synthetic$";
+    private static final String GROUP_PLOT_SYNTHETIC = "group-plot-synthetic$";
+    private static final String RATIO_PLOT_SYNTHETIC = "ratio-plot-synthetic$";
 
     private static final SimpleDateFormat[] sDateFormats = {
             new SimpleDateFormat("MM/dd/yyyy HH:mm:ss"),
@@ -507,7 +507,7 @@ public class ChartUtil {
                         new File(mDestDir, cs.getOutDocument()), true);
                 try {
                     List<PlotSettings> plots = cs.getPlots();
-                    String statString = "";
+                    StringBuilder statString = new StringBuilder();
                     boolean first = true;
                     for (PlotSettings ps : plots) {
                         DataColumn dc = new DataColumn(ps.getInfile(),
@@ -518,10 +518,10 @@ public class ChartUtil {
                         if (first)
                             first = false;
                         else
-                            statString += " &nbsp;&nbsp; ";
-                        statString += ps.getAggregateFunction() +
-                                "(" + ps.getLegend() + ") = " +
-                        formatDouble(mAggregates.get(dc).doubleValue());
+                            statString.append(" &nbsp;&nbsp; ");
+                        statString.append(ps.getAggregateFunction()).append("(")
+                            .append(ps.getLegend()).append(") = ")
+                            .append(formatDouble(mAggregates.get(dc).doubleValue()));
                     }
 
                     writer.write("<a name=\"" + cs.getOutfile() + "\">");
@@ -590,7 +590,7 @@ public class ChartUtil {
                     continue;
 
                 List<PlotSettings> plots = cs.getPlots();
-                String statString = "";
+                StringBuilder statString = new StringBuilder();
                 boolean first = true;
                 for (PlotSettings ps : plots) {
                     DataColumn dc = new DataColumn(ps.getInfile(), ps.getDataColumn());
@@ -600,9 +600,9 @@ public class ChartUtil {
                     if (first)
                         first = false;
                     else
-                        statString += " &nbsp;&nbsp; ";
-                    statString += ps.getAggregateFunction() + "(" + ps.getLegend() + ") = " +
-                                  formatDouble(mAggregates.get(dc).doubleValue());
+                        statString.append(" &nbsp;&nbsp; ");
+                    statString.append(ps.getAggregateFunction()).append("(").append(ps.getLegend())
+                        .append(") = ").append(formatDouble(mAggregates.get(dc).doubleValue()));
                     count++;
                 }
 
@@ -903,9 +903,9 @@ public class ChartUtil {
                                     e.printStackTrace(System.out);
                                 }
                             } catch (NumberFormatException e) {
-                                System.out.println(String.format(
-                                        "%s: unable to parse value '%s' for %s: %s",
-                                        context, val, column, e));
+                                System.out.printf(
+                                    "%s: unable to parse value '%s' for %s: %s%n",
+                                        context, val, column, e);
                             }
                         } else { // default an entry to 0 if string is empty
                             series.AddEntry(ts, 0.0);
@@ -1138,9 +1138,8 @@ public class ChartUtil {
         List<PlotSettings> plots = cs.getPlots();
         if (cs.getTopPlots() > 0 && plots.size() > cs.getTopPlots()) {
             String aggregateFunction = cs.getTopPlotsType().name().toLowerCase();
-            System.out.println(
-                    String.format("Reducing %d to %d plots for chart '%s'",
-                            plots.size(), cs.getTopPlots(), cs.getTitle()));
+            System.out.printf("Reducing %d to %d plots for chart '%s'%n",
+                    plots.size(), cs.getTopPlots(), cs.getTitle());
             ArrayList<PlotAggregatePair> aggregates = new ArrayList<PlotAggregatePair>();
             for (PlotSettings ps : plots) {
                 DataColumn dc = new DataColumn(ps.getInfile(), ps.getDataColumn());

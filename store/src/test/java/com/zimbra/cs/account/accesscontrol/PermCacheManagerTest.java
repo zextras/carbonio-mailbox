@@ -5,14 +5,14 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import com.zimbra.common.localconfig.LC;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.common.util.Constants;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
@@ -112,7 +112,7 @@ public class PermCacheManagerTest {
                                     if (cachedPerm != perm) {
                                         System.out.println();
                                     }
-                                    Assert.assertEquals(cachedPerm, perm);
+                                    assertEquals(cachedPerm, perm);
                                 }
                             }
                         }
@@ -210,21 +210,21 @@ public class PermCacheManagerTest {
         CachedPermission cachedPerm;
         
         cachedPerm = pcm.get(target, cacheKey, right);
-        Assert.assertEquals(CachedPermission.NOT_CACHED, cachedPerm);
-        Assert.assertEquals(0.0, PermissionCache.getHitRate(), 0);
+        assertEquals(CachedPermission.NOT_CACHED, cachedPerm);
+        assertEquals(0.0, PermissionCache.getHitRate(), 0);
         
         CachedPermission expectedPerm = CachedPermission.ALLOWED;
         pcm.put(target, cacheKey, right, expectedPerm);
         cachedPerm = pcm.get(target, cacheKey, right);
-        Assert.assertEquals(expectedPerm, cachedPerm);
-        Assert.assertEquals(50.0, PermissionCache.getHitRate(), 0);
+        assertEquals(expectedPerm, cachedPerm);
+        assertEquals(50.0, PermissionCache.getHitRate(), 0);
         
         for (int i = 0; i < 8; i++) {
             cachedPerm = pcm.get(target, cacheKey, right);
-            Assert.assertEquals(expectedPerm, cachedPerm);
+            assertEquals(expectedPerm, cachedPerm);
         }
         
-        Assert.assertEquals(90.0, PermissionCache.getHitRate(), 0);
+        assertEquals(90.0, PermissionCache.getHitRate(), 0);
     }
     
     // @Test
@@ -244,7 +244,7 @@ public class PermCacheManagerTest {
             String cacheKey = PermissionCache.buildCacheKey(grantee, right, false);
             
             CachedPermission cachedPerm = pcm.get(target, cacheKey, right);
-            Assert.assertEquals(CachedPermission.NOT_CACHED, cachedPerm);
+            assertEquals(CachedPermission.NOT_CACHED, cachedPerm);
             
             for (CachedPermission expectedPerm : CachedPermission.values()) {
                 if (expectedPerm == CachedPermission.NOT_CACHED)
@@ -253,7 +253,7 @@ public class PermCacheManagerTest {
                 // System.out.println("Testing " + expectedPerm.name());
                 pcm.put(target, cacheKey, right, expectedPerm);
                 cachedPerm = pcm.get(target, cacheKey, right);
-                Assert.assertEquals(expectedPerm, cachedPerm);
+                assertEquals(expectedPerm, cachedPerm);
                 
                 // verify other rights are not affected
                 for (int otherRightIdx = 0; otherRightIdx < cacheableRights.size(); otherRightIdx++) {
@@ -270,7 +270,7 @@ public class PermCacheManagerTest {
                         expectedPermForOtherRights = CachedPermission.NOT_CACHED;
                     
                     CachedPermission permOtherRight = pcm.get(target, cacheKey, otherRight);
-                    Assert.assertEquals(expectedPermForOtherRights, permOtherRight);
+                    assertEquals(expectedPermForOtherRights, permOtherRight);
                 }
             }
         }
@@ -293,7 +293,7 @@ public class PermCacheManagerTest {
         
         pcm.put(target, cacheKey, right, expectedPerm);
         cachedPerm = pcm.get(target, cacheKey, right);
-        Assert.assertEquals(expectedPerm, cachedPerm);
+        assertEquals(expectedPerm, cachedPerm);
         
         // wait for TTL 
         long waitFor = acl_cache_target_maxage * Constants.MILLIS_PER_MINUTE + 1000; // plus one second for the cusion
@@ -301,7 +301,7 @@ public class PermCacheManagerTest {
         Thread.sleep(waitFor);
         
         cachedPerm = pcm.get(target, cacheKey, right);
-        Assert.assertEquals(CachedPermission.NOT_CACHED, cachedPerm);
+        assertEquals(CachedPermission.NOT_CACHED, cachedPerm);
     }
     
     // @Test
@@ -351,8 +351,8 @@ public class PermCacheManagerTest {
 
         Thread.currentThread().join();
     }
- 
-    @Test
-    public void noOp() throws Exception {
-    }
+
+ @Test
+ void noOp() throws Exception {
+ }
 }

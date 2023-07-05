@@ -33,6 +33,11 @@ services {
             local_bind_port    = 20003
             local_bind_address = "127.78.0.7"
           },
+          {
+            destination_name   = "carbonio-clamav"
+            local_bind_port    = 20004
+            local_bind_address = "127.78.0.7"
+          },
         ]
       }
     }

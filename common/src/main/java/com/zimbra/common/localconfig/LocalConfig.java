@@ -84,7 +84,7 @@ public class LocalConfig {
     private String expandDeep(String key, Set<String> seenKeys) throws ConfigException {
         if (seenKeys.contains(key)) {
             StringBuilder sb = new StringBuilder();
-            sb.append("recursive expansion of key '" + key + "':");
+            sb.append("recursive expansion of key '").append(key).append("':");
             for (String seen : seenKeys)
                 sb.append(" ").append(seen);
             throw new ConfigException(sb.toString());
@@ -282,12 +282,10 @@ public class LocalConfig {
 
         // Add known keys.
         String[] knownKeys = KnownKey.getAll();
-        for (int i = 0; i < knownKeys.length; i++)
-            union.add(knownKeys[i]);
+      union.addAll(Arrays.asList(knownKeys));
 
         // Add set keys (this might contain unknown keys)
-        for (String key : mConfiguredKeys.keySet())
-            union.add(key);
+      union.addAll(mConfiguredKeys.keySet());
 
         return union.toArray(new String[0]);
     }

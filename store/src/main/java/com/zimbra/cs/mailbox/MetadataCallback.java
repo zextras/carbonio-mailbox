@@ -21,7 +21,7 @@ public abstract class MetadataCallback {
 
     /** Adds an instance of an callback class that will be triggered when a
      *  message is added to a user mailbox and when an item is serialized.  */
-    public synchronized static void addCallback(MetadataCallback callback) {
+    public static synchronized void addCallback(MetadataCallback callback) {
         if (callback == null) {
             ZimbraLog.mailbox.error("", new IllegalStateException("MetadataCallback cannot be null"));
         } else if (sCallbackKeys.contains(callback.getMetadataSectionKey())) {

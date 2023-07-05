@@ -22,7 +22,7 @@ import com.zimbra.cs.mailbox.Metadata;
 
 public class RecurId implements Cloneable
 {
-    static public int RANGE_NONE                 = 1;
+    public static int RANGE_NONE                 = 1;
     public static final int RANGE_THISANDFUTURE = 2;
     public static final int RANGE_THISANDPRIOR  = 3;
     

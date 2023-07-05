@@ -13,13 +13,14 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.zimbra.common.service.ServiceException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
@@ -38,21 +39,21 @@ public class StoreManagerNegativeTest {
 
     static StoreManager originalStoreManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         MailboxTestUtil.initProvisioning();
         Provisioning.getInstance().createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         originalStoreManager = StoreManager.getInstance();
         StoreManager.setInstance(getStoreManager());
         StoreManager.getInstance().startup();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         StoreManager.getInstance().shutdown();
         StoreManager.setInstance(originalStoreManager);
@@ -62,60 +63,60 @@ public class StoreManagerNegativeTest {
         return new BrokenStreamingStoreManager();
     }
 
-    @Test
-    public void nullLocator() throws Exception {
-        Random rand = new Random();
-        byte[] bytes = new byte[10000];
-        rand.nextBytes(bytes);
+ @Test
+ void nullLocator() throws Exception {
+  Random rand = new Random();
+  byte[] bytes = new byte[10000];
+  rand.nextBytes(bytes);
 
-        StoreManager sm = StoreManager.getInstance();
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  StoreManager sm = StoreManager.getInstance();
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-        IncomingBlob incoming = sm.newIncomingBlob("foo", null);
+  IncomingBlob incoming = sm.newIncomingBlob("foo", null);
 
-        OutputStream out = incoming.getAppendingOutputStream();
-        out.write(bytes);
+  OutputStream out = incoming.getAppendingOutputStream();
+  out.write(bytes);
 
-        Blob blob = incoming.getBlob();
+  Blob blob = incoming.getBlob();
 
-        Assert.assertEquals("blob size = incoming written", bytes.length, blob.getRawSize());
+  assertEquals(bytes.length, blob.getRawSize(), "blob size = incoming written");
 
-        Assert.assertTrue("blob content = mime content", TestUtil.bytesEqual(bytes, blob.getInputStream()));
+  assertTrue(TestUtil.bytesEqual(bytes, blob.getInputStream()), "blob content = mime content");
 
-        StagedBlob staged = sm.stage(blob, mbox);
-        Assert.assertEquals("staged size = blob size", blob.getRawSize(), staged.getSize());
+  StagedBlob staged = sm.stage(blob, mbox);
+  assertEquals(blob.getRawSize(), staged.getSize(), "staged size = blob size");
 
-        MailboxBlob mblob = sm.link(staged, mbox, 0, 0);
-        Assert.assertEquals("link size = staged size", staged.getSize(), mblob.getSize());
-        try {
-            mblob.getLocalBlob().getInputStream();
-            Assert.fail("Expected IOException since locator is not handled correctly");
-        } catch (IOException io) {
-            //expected
-        } finally {
-            sm.delete(mblob);
-        }
-    }
+  MailboxBlob mblob = sm.link(staged, mbox, 0, 0);
+  assertEquals(staged.getSize(), mblob.getSize(), "link size = staged size");
+  try {
+   mblob.getLocalBlob().getInputStream();
+   fail("Expected IOException since locator is not handled correctly");
+  } catch (IOException io) {
+   //expected
+  } finally {
+   sm.delete(mblob);
+  }
+ }
 
-    @Test
-    public void incorrectRemoteSize() throws Exception {
-        Random rand = new Random();
-        byte[] bytes = new byte[10000];
-        rand.nextBytes(bytes);
+ @Test
+ void incorrectRemoteSize() throws Exception {
+  Random rand = new Random();
+  byte[] bytes = new byte[10000];
+  rand.nextBytes(bytes);
 
-        StoreManager sm = StoreManager.getInstance();
-        IncomingBlob incoming = sm.newIncomingBlob("foo", null);
+  StoreManager sm = StoreManager.getInstance();
+  IncomingBlob incoming = sm.newIncomingBlob("foo", null);
 
-        OutputStream out = incoming.getAppendingOutputStream();
-        out.write(bytes);
+  OutputStream out = incoming.getAppendingOutputStream();
+  out.write(bytes);
 
-        try {
-            incoming.getCurrentSize();
-            Assert.fail("Expected exception since remote size is incorrect");
-        } catch (IOException ioe) {
-            //expected
-        }
-    }
+  try {
+   incoming.getCurrentSize();
+   fail("Expected exception since remote size is incorrect");
+  } catch (IOException ioe) {
+   //expected
+  }
+ }
 
 
 

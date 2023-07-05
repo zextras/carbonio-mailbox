@@ -15,8 +15,6 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ProvisioningConstants;
-import com.zimbra.common.account.ZAttrProvisioning.DistributionListSubscriptionPolicy;
-import com.zimbra.common.account.ZAttrProvisioning.DistributionListUnsubscriptionPolicy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.accesscontrol.ACLUtil;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
@@ -31,12 +29,6 @@ import com.zimbra.soap.account.type.HABGroupMember;
 public abstract class Group extends MailTarget implements AliasedEntry {
 
     private boolean isHABGroup = Boolean.FALSE;
-
-    public static final DistributionListSubscriptionPolicy
-            DEFAULT_SUBSCRIPTION_POLICY = DistributionListSubscriptionPolicy.REJECT;
-
-    public static final DistributionListUnsubscriptionPolicy
-            DEFAULT_UNSUBSCRIPTION_POLICY = DistributionListUnsubscriptionPolicy.REJECT;
 
     public Group(String name, String id, Map<String, Object> attrs, Provisioning prov) {
         super(name, id, attrs, null, prov);
@@ -70,8 +62,6 @@ public abstract class Group extends MailTarget implements AliasedEntry {
     public abstract boolean isPrefReplyToEnabled();
     public abstract String getPrefReplyToAddress();
     public abstract String getPrefReplyToDisplay();
-    public abstract DistributionListSubscriptionPolicy getDistributionListSubscriptionPolicy();
-    public abstract DistributionListUnsubscriptionPolicy getDistributionListUnsubscriptionPolicy();
 
     public boolean hideInGal() {
         String hideInGal = getAttr(Provisioning.A_zimbraHideInGal);
@@ -85,24 +75,6 @@ public abstract class Group extends MailTarget implements AliasedEntry {
 
     public boolean isMemberOf(Account acct) throws ServiceException {
         return getProvisioning().inACLGroup(acct, getId());
-    }
-
-    public DistributionListSubscriptionPolicy getSubscriptionPolicy() {
-        DistributionListSubscriptionPolicy policy = getDistributionListSubscriptionPolicy();
-        if (policy == null) {
-            return DEFAULT_SUBSCRIPTION_POLICY;
-        } else {
-            return policy;
-        }
-    }
-
-    public DistributionListUnsubscriptionPolicy getUnsubscriptionPolicy() {
-        DistributionListUnsubscriptionPolicy policy = getDistributionListUnsubscriptionPolicy();
-        if (policy == null) {
-            return DEFAULT_UNSUBSCRIPTION_POLICY;
-        } else {
-            return policy;
-        }
     }
 
     @Override

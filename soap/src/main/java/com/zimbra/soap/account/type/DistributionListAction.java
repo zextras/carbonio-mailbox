@@ -34,9 +34,7 @@ public class DistributionListAction extends AccountKeyValuePairs {
         revokeRights,
         setRights,
         addMembers,
-        removeMembers,
-        acceptSubsReq,
-        rejectSubsReq;
+        removeMembers;
 
         public static Operation fromString(String s) throws ServiceException {
             try {
@@ -62,8 +60,6 @@ public class DistributionListAction extends AccountKeyValuePairs {
      * <tr><td><b>setRights</b>      </td><td>set rights</td></tr>
      * <tr><td><b>addMembers</b>     </td><td>add list members</td></tr>
      * <tr><td><b>removeMembers</b>  </td><td>remove list members</td></tr>
-     * <tr><td><b>acceptSubsReq</b>  </td><td>accept subscription/un-subscription request</td></tr>
-     * <tr><td><b>rejectSubsReq</b>  </td><td>reject subscription/un-subscription request</td></tr>
      * </table>
      */
     @XmlAttribute(name=AccountConstants.A_OP /* op */, required=true)
@@ -103,14 +99,6 @@ public class DistributionListAction extends AccountKeyValuePairs {
      */
     @XmlElement(name=AccountConstants.E_RIGHT /* right */, required=false)
     protected List<DistributionListRightSpec> rights;
-
-    /**
-     * @zm-api-field-description Subscription request
-     * <br />
-     * Required if op="acceptSubsReq" or op="rejectSubsReq"
-     */
-    @XmlElement(name=AccountConstants.E_DL_SUBS_REQ /* subsReq */, required=false)
-    protected DistributionListSubscribeReq subsReq;
 
     /**
      * no-argument constructor wanted by JAXB
@@ -191,13 +179,4 @@ public class DistributionListAction extends AccountKeyValuePairs {
     public List<DistributionListRightSpec> getRights() {
         return rights;
     }
-
-    public void setSubsReq(DistributionListSubscribeReq subsReq) {
-        this.subsReq = subsReq;
-    }
-
-    public DistributionListSubscribeReq getSubsReq() {
-        return subsReq;
-    }
-
 }

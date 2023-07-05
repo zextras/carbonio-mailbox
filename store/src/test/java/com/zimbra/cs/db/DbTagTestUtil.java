@@ -1,5 +1,7 @@
 package com.zimbra.cs.db;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -17,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Assert;
 
 public class DbTagTestUtil extends DbTag {
 
@@ -81,7 +82,7 @@ public class DbTagTestUtil extends DbTag {
           while (rs.next()) {
               int itemId = rs.getInt(1), type = rs.getInt(2), tagId = rs.getInt(3);
               String tname = tagId > 0 ? tdata.get(tagId).name : mbox.getFlagById(tagId).getName();
-              Assert.fail("found tag " + tname + " on " + MailItem.Type.of((byte) type) + " " + itemId);
+              fail("found tag " + tname + " on " + MailItem.Type.of((byte) type) + " " + itemId);
           }
       } catch (SQLException e) {
           throw ServiceException.FAILURE("validating TAGGED_ITEM entries", e);
@@ -136,8 +137,8 @@ public class DbTagTestUtil extends DbTag {
                           tagcheck.add(namecheck);
                       }
                   }
-                  Assert.assertEquals("flags for item " + id, flags, flagcheck);
-                  Assert.assertEquals("tags for item " + id, tags, tagcheck);
+                  assertEquals(flags, flagcheck, "flags for item " + id);
+                  assertEquals(tags, tagcheck, "tags for item " + id);
               } catch (SQLException e) {
                   throw ServiceException.FAILURE("consistency checking TAGGED_ITEM vs. MAIL_ITEM", e);
               } finally {
@@ -171,13 +172,13 @@ public class DbTagTestUtil extends DbTag {
           while (rs.next()) {
               int id = rs.getInt(1), size = rs.getInt(2), unread = rs.getInt(3);
               UnderlyingData data = tcheck.remove(id);
-              Assert.assertNotNull("no TAG row for id " + id, data);
-              Assert.assertEquals("size for tag " + data.name, size, data.size);
-              Assert.assertEquals("unread for tag " + data.name, unread, data.unreadCount);
+              assertNotNull(data, "no TAG row for id " + id);
+              assertEquals(size, data.size, "size for tag " + data.name);
+              assertEquals(unread, data.unreadCount, "unread for tag " + data.name);
           }
           for (UnderlyingData data : tcheck.values()) {
-              Assert.assertEquals("size for tag " + data.name, 0, data.size);
-              Assert.assertEquals("unread for tag " + data.name, 0, data.unreadCount);
+              assertEquals(0, data.size, "size for tag " + data.name);
+              assertEquals(0, data.unreadCount, "unread for tag " + data.name);
           }
       } catch (SQLException e) {
           throw ServiceException.FAILURE("consistency checking TAGGED_ITEM vs. TAG", e);
@@ -191,14 +192,14 @@ public class DbTagTestUtil extends DbTag {
     public static <T> void assertCollectionsEqual(String msg, java.util.Collection<T> expected, java.util.Collection<T> actual) {
         String prefix = msg == null ? "" : msg + ": ";
         if (expected == null) {
-            Assert.assertNull(prefix + "expected <null>", actual);
+            assertNull(actual, prefix + "expected <null>");
         } else if (actual == null) {
-            Assert.fail(prefix + "was <null>, expected " + expected);
+            fail(prefix + "was <null>, expected " + expected);
         } else {
-            Assert.assertEquals(prefix + "collection size", expected.size(), actual.size());
+            assertEquals(expected.size(), actual.size(), prefix + "collection size");
             for (T t : expected) {
                 if (!actual.contains(t)) {
-                    Assert.fail(prefix + "actual collection does not contain <" + t + ">");
+                    fail(prefix + "actual collection does not contain <" + t + ">");
                 }
             }
         }

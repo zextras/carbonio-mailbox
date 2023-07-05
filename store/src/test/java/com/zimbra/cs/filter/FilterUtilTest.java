@@ -5,17 +5,14 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Account;
@@ -30,13 +27,15 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 
 import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_VARIABLES;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for {@link FilterUtil}.
  */
 public class FilterUtilTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
@@ -44,41 +43,41 @@ public class FilterUtilTest {
         Server server = Provisioning.getInstance().getServer(acct1);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void truncateBody() throws Exception {
-        // truncate a body containing a multi-byte char
-        String body = StringUtil.truncateIfRequired("Andr\u00e9", 5);
+ @Test
+ void truncateBody() throws Exception {
+  // truncate a body containing a multi-byte char
+  String body = StringUtil.truncateIfRequired("Andr\u00e9", 5);
 
-        Assert.assertTrue("truncated body should not have a partial char at the end", "Andr".equals(body));
-    }
+  assertEquals("Andr", body, "truncated body should not have a partial char at the end");
+ }
 
-    @Test
-    public void noBody() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        String content =
-                "From: user1@example.com\r\n"
-                + "To: user2@example.com\r\n"
-                + "Subject: test\r\n"
-                + "Content-Type: application/octet-stream;name=\"test.pdf\"\r\n"
-                + "Content-Transfer-Encoding: base64\r\n\r\n"
-                + "R0a1231312ad124svsdsal=="; //obviously not a real pdf
-        ParsedMessage parsedMessage = new ParsedMessage(content.getBytes(), false);
-        Map<String, String> vars = FilterUtil.getVarsMap(mbox, parsedMessage, parsedMessage.getMimeMessage());
-    }
+ @Test
+ void noBody() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  String content =
+    "From: user1@example.com\r\n"
+      + "To: user2@example.com\r\n"
+      + "Subject: test\r\n"
+      + "Content-Type: application/octet-stream;name=\"test.pdf\"\r\n"
+      + "Content-Transfer-Encoding: base64\r\n\r\n"
+      + "R0a1231312ad124svsdsal=="; //obviously not a real pdf
+  ParsedMessage parsedMessage = new ParsedMessage(content.getBytes(), false);
+  Map<String, String> vars = FilterUtil.getVarsMap(mbox, parsedMessage, parsedMessage.getMimeMessage());
+ }
 
-    @Test
-    public void noHeaders() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        String content = "just some content";
-        ParsedMessage parsedMessage = new ParsedMessage(content.getBytes(), false);
-        Map<String, String> vars = FilterUtil.getVarsMap(mbox, parsedMessage, parsedMessage.getMimeMessage());
+ @Test
+ void noHeaders() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  String content = "just some content";
+  ParsedMessage parsedMessage = new ParsedMessage(content.getBytes(), false);
+  Map<String, String> vars = FilterUtil.getVarsMap(mbox, parsedMessage, parsedMessage.getMimeMessage());
 
-    }
+ }
 
     /*
      * Create and initialize the ZimbraMailAdapter object 
@@ -105,106 +104,106 @@ public class FilterUtilTest {
         return mailAdapter;
     }
 
-    @Test
-    public void testVariableReplacementVariableOn() {
-        try {
-            ZimbraMailAdapter mailAdapter = initZimbraMailAdapter();
+ @Test
+ void testVariableReplacementVariableOn() {
+  try {
+   ZimbraMailAdapter mailAdapter = initZimbraMailAdapter();
 
-            // Variable feature: ON
-            mailAdapter.setVariablesExtAvailable(ZimbraMailAdapter.VARIABLEFEATURETYPE.AVAILABLE);
-            mailAdapter.addCapabilities(CAPABILITY_VARIABLES);
+   // Variable feature: ON
+   mailAdapter.setVariablesExtAvailable(ZimbraMailAdapter.VARIABLEFEATURETYPE.AVAILABLE);
+   mailAdapter.addCapabilities(CAPABILITY_VARIABLES);
 
-            String varValue = FilterUtil.replaceVariables(mailAdapter, "${var}");
-            Assert.assertEquals("hello", varValue);
+   String varValue = FilterUtil.replaceVariables(mailAdapter, "${var}");
+   assertEquals("hello", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${0}");
-            Assert.assertEquals("test1", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${0}");
+   assertEquals("test1", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${var!}");
-            Assert.assertEquals("${var!}", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${var!}");
+   assertEquals("${var!}", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${var2}");
-            Assert.assertEquals("", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${var2}");
+   assertEquals("", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${test${var}");
-            Assert.assertEquals("${testhello", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${test${var}");
+   assertEquals("${testhello", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${test${var}");
-            Assert.assertEquals("${testhello", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${test${var}");
+   assertEquals("${testhello", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "\\\\${President, ${var} Inc.}");
-            Assert.assertEquals("\\\\${President, hello Inc.}", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "\\\\${President, ${var} Inc.}");
+   assertEquals("\\\\${President, hello Inc.}", varValue);
 
-            // set "company" "ACME";
-            // set "a.b" "おしらせ"; (or any non-ascii characters)
-            // set "c_d" "C";
-            // set "1" "One"; ==> Should be ignored or error [Note 1]
-            // set "23" "twenty three"; ==> Should be ignored or error [Note 1]
-            // set "combination" "Hello ${company}!!";
-            mailAdapter.addVariable("var", "hello");
+   // set "company" "ACME";
+   // set "a.b" "おしらせ"; (or any non-ascii characters)
+   // set "c_d" "C";
+   // set "1" "One"; ==> Should be ignored or error [Note 1]
+   // set "23" "twenty three"; ==> Should be ignored or error [Note 1]
+   // set "combination" "Hello ${company}!!";
+   mailAdapter.addVariable("var", "hello");
 
-            mailAdapter.addVariable("company", "ACME");
-            mailAdapter.addVariable("a_b", "\u304a\u3057\u3089\u305b");
-            mailAdapter.addVariable("c_d", "C");
-            mailAdapter.addVariable("1", "One");
-            mailAdapter.addVariable("23", "twenty three");
-            mailAdapter.addVariable("combination", "Hello ACME!!");
+   mailAdapter.addVariable("company", "ACME");
+   mailAdapter.addVariable("a_b", "\u304a\u3057\u3089\u305b");
+   mailAdapter.addVariable("c_d", "C");
+   mailAdapter.addVariable("1", "One");
+   mailAdapter.addVariable("23", "twenty three");
+   mailAdapter.addVariable("combination", "Hello ACME!!");
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${full}");
-            Assert.assertEquals("", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${full}");
+   assertEquals("", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${company}");
-            Assert.assertEquals("ACME", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${company}");
+   assertEquals("ACME", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${BAD${Company}");
-            Assert.assertEquals("${BADACME", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${BAD${Company}");
+   assertEquals("${BADACME", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${company");
-            Assert.assertEquals("${company", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${company");
+   assertEquals("${company", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${${COMpANY}}");
-            Assert.assertEquals("${ACME}", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${${COMpANY}}");
+   assertEquals("${ACME}", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${a_b}}");
-            Assert.assertEquals("\u304a\u3057\u3089\u305b}", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${a_b}}");
+   assertEquals("\u304a\u3057\u3089\u305b}", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "$c_d}}");
-            Assert.assertEquals("$c_d}}", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "$c_d}}");
+   assertEquals("$c_d}}", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "You've got a mail. ${a_b} ${combination} ${c_d}hao!");
-            Assert.assertEquals("You've got a mail. \u304a\u3057\u3089\u305b Hello ACME!! Chao!", varValue);
-        } catch (Exception e) {
-            fail("No exception should be thrown: " + e);
-        }
-    }
-    
-    @Test
-    public void testVariableReplacementQutdAndEncoded() {
-        try {
-            ZimbraMailAdapter mailAdapter = initZimbraMailAdapter();
-            mailAdapter.setVariablesExtAvailable(ZimbraMailAdapter.VARIABLEFEATURETYPE.AVAILABLE);
-            mailAdapter.addCapabilities(CAPABILITY_VARIABLES);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "You've got a mail. ${a_b} ${combination} ${c_d}hao!");
+   assertEquals("You've got a mail. \u304a\u3057\u3089\u305b Hello ACME!! Chao!", varValue);
+  } catch (Exception e) {
+   fail("No exception should be thrown: " + e);
+  }
+ }
 
-            String varValue = FilterUtil.replaceVariables(mailAdapter, "${va\\r}");
-            Assert.assertEquals("hello", varValue);
+ @Test
+ void testVariableReplacementQutdAndEncoded() {
+  try {
+   ZimbraMailAdapter mailAdapter = initZimbraMailAdapter();
+   mailAdapter.setVariablesExtAvailable(ZimbraMailAdapter.VARIABLEFEATURETYPE.AVAILABLE);
+   mailAdapter.addCapabilities(CAPABILITY_VARIABLES);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${}");
-            Assert.assertEquals("${}", varValue);
+   String varValue = FilterUtil.replaceVariables(mailAdapter, "${va\\r}");
+   assertEquals("hello", varValue);
 
-            mailAdapter.addVariable("var", "hel\\*lo");
-            varValue = FilterUtil.replaceVariables(mailAdapter, "${var}");
-            Assert.assertEquals("hel\\*lo", varValue);
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${}");
+   assertEquals("${}", varValue);
 
-            varValue = FilterUtil.replaceVariables(mailAdapter, "hello${test}");
-            Assert.assertEquals("hello", varValue);
-        } catch (Exception e) {
-            fail("No exception should be thrown: " + e);
-        }
-    }
+   mailAdapter.addVariable("var", "hel\\*lo");
+   varValue = FilterUtil.replaceVariables(mailAdapter, "${var}");
+   assertEquals("hel\\*lo", varValue);
 
-    @Test
-    public void testToJavaRegex() {
-        String regex = FilterUtil.sieveToJavaRegex("coyote@**.com");
-        Assert.assertEquals("coyote@(.*?)(.*)\\.com", regex);
-    }
+   varValue = FilterUtil.replaceVariables(mailAdapter, "hello${test}");
+   assertEquals("hello", varValue);
+  } catch (Exception e) {
+   fail("No exception should be thrown: " + e);
+  }
+ }
+
+ @Test
+ void testToJavaRegex() {
+  String regex = FilterUtil.sieveToJavaRegex("coyote@**.com");
+  assertEquals("coyote@(.*?)(.*)\\.com", regex);
+ }
 }

@@ -64,7 +64,7 @@ public class ADGroupHandler extends GroupHandler {
         
         SearchADGroupMembers searcher = new SearchADGroupMembers();
         TreeSet<String> result = searcher.searchLdap(ldapContext, searchBase, entryDN);
-        return result.toArray(new String[result.size()]);
+        return result.toArray(new String[0]);
     }
     
     

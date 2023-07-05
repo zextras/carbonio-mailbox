@@ -48,10 +48,10 @@ public abstract class WaitSetBase implements IWaitSet {
     protected HashSet<WaitSetSession /*accountId*/> mSentSignalledSessions = Sets.newHashSet();
     protected Map<String /*accountId*/, PendingModifications> sentPendingModifications = Maps.newHashMap();
 
-    abstract protected Map<String, WaitSetAccount> destroy();
-    abstract protected int countSessions();
-    abstract protected boolean cbSeqIsCurrent();
-    abstract protected String toNextSeqNo();
+    protected abstract Map<String, WaitSetAccount> destroy();
+    protected abstract int countSessions();
+    protected abstract boolean cbSeqIsCurrent();
+    protected abstract String toNextSeqNo();
 
     public long getLastAccessedTime() {
         return mLastAccessedTime;

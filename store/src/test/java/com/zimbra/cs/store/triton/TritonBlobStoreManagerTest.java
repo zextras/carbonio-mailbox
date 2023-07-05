@@ -8,11 +8,12 @@ package com.zimbra.cs.store.triton;
 import java.io.ByteArrayInputStream;
 import java.util.Random;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import com.zimbra.cs.account.MockProvisioning;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.store.AbstractStoreManagerTest;
@@ -25,7 +26,7 @@ import com.zimbra.cs.store.external.ContentAddressableStoreManager;
 import com.zimbra.cs.store.triton.TritonBlobStoreManager.HashType;
 import qa.unittest.TestUtil;
 
-@Ignore("requires Triton server")
+@Disabled("requires Triton server")
 public class TritonBlobStoreManagerTest extends AbstractStoreManagerTest {
     @Override
     protected StoreManager getStoreManager() {
@@ -43,92 +44,92 @@ public class TritonBlobStoreManagerTest extends AbstractStoreManagerTest {
         };
     }
 
-    @Test
-    public void sis() throws Exception {
-        TritonBlobStoreManager sm = (TritonBlobStoreManager) StoreManager.getInstance();
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+ @Test
+ void sis() throws Exception {
+  TritonBlobStoreManager sm = (TritonBlobStoreManager) StoreManager.getInstance();
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-        Assert.assertTrue("StoreManager is content addressable", sm instanceof ContentAddressableStoreManager);
-        Assert.assertTrue("StoreManager supports SIS check", sm.supports(StoreFeature.SINGLE_INSTANCE_SERVER_CREATE));
+  assertTrue(sm instanceof ContentAddressableStoreManager, "StoreManager is content addressable");
+  assertTrue(sm.supports(StoreFeature.SINGLE_INSTANCE_SERVER_CREATE), "StoreManager supports SIS check");
 
-        Random rand = new Random();
-        byte[] bytes = new byte[10000];
+  Random rand = new Random();
+  byte[] bytes = new byte[10000];
 
-        rand.nextBytes(bytes);
+  rand.nextBytes(bytes);
 
-        Blob blob = sm.storeIncoming(new ByteArrayInputStream(bytes));
+  Blob blob = sm.storeIncoming(new ByteArrayInputStream(bytes));
 
-        //blob has not yet been finalized, so it shouldn't exist in remote system yet
+  //blob has not yet been finalized, so it shouldn't exist in remote system yet
 
-        byte[] hash = sm.getHash(blob);
+  byte[] hash = sm.getHash(blob);
 
-        Assert.assertNull("object not yet created", sm.getSisBlob(hash));
+  assertNull(sm.getSisBlob(hash), "object not yet created");
 
-        Assert.assertEquals("blob size = incoming written", bytes.length, blob.getRawSize());
+  assertEquals(bytes.length, blob.getRawSize(), "blob size = incoming written");
 
-        Assert.assertTrue("blob content = mime content", TestUtil.bytesEqual(bytes, blob.getInputStream()));
+  assertTrue(TestUtil.bytesEqual(bytes, blob.getInputStream()), "blob content = mime content");
 
-        StagedBlob staged = sm.stage(blob, mbox);
-        Assert.assertEquals("staged size = blob size", blob.getRawSize(), staged.getSize());
+  StagedBlob staged = sm.stage(blob, mbox);
+  assertEquals(blob.getRawSize(), staged.getSize(), "staged size = blob size");
 
-        MailboxBlob mblob = sm.link(staged, mbox, 0, 0);
-        Assert.assertEquals("link size = staged size", staged.getSize(), mblob.getSize());
-        Assert.assertTrue("link content = mime content", TestUtil.bytesEqual(bytes, mblob.getLocalBlob().getInputStream()));
+  MailboxBlob mblob = sm.link(staged, mbox, 0, 0);
+  assertEquals(staged.getSize(), mblob.getSize(), "link size = staged size");
+  assertTrue(TestUtil.bytesEqual(bytes, mblob.getLocalBlob().getInputStream()), "link content = mime content");
 
-        //blob uploaded, now sis should return true and increment ref count
-        Blob sisBlob = sm.getSisBlob(hash);
-        Assert.assertNotNull("object created", sisBlob);
+  //blob uploaded, now sis should return true and increment ref count
+  Blob sisBlob = sm.getSisBlob(hash);
+  assertNotNull(sisBlob, "object created");
 
-        Assert.assertEquals("blob size = incoming written", bytes.length, sisBlob.getRawSize());
-        Assert.assertTrue("blob content = mime content", TestUtil.bytesEqual(bytes, sisBlob.getInputStream()));
+  assertEquals(bytes.length, sisBlob.getRawSize(), "blob size = incoming written");
+  assertTrue(TestUtil.bytesEqual(bytes, sisBlob.getInputStream()), "blob content = mime content");
 
-        //delete once, should still exist;
-        sm.delete(mblob);
-        Assert.assertNotNull("object still ref'd", sm.getSisBlob(hash));
+  //delete once, should still exist;
+  sm.delete(mblob);
+  assertNotNull(sm.getSisBlob(hash), "object still ref'd");
 
-        //delete twice (once for original, once since we just did a sisCheck above)
-        sm.delete(mblob);
-        sm.delete(mblob);
+  //delete twice (once for original, once since we just did a sisCheck above)
+  sm.delete(mblob);
+  sm.delete(mblob);
 
-        Assert.assertNull("object deleted", sm.getSisBlob(hash));
-    }
+  assertNull(sm.getSisBlob(hash), "object deleted");
+ }
 
-    @Test
-    public void sisEmpty() throws Exception {
-        TritonBlobStoreManager sm = (TritonBlobStoreManager) StoreManager.getInstance();
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+ @Test
+ void sisEmpty() throws Exception {
+  TritonBlobStoreManager sm = (TritonBlobStoreManager) StoreManager.getInstance();
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-        Assert.assertTrue("StoreManager is content addressable", sm instanceof ContentAddressableStoreManager);
-        Assert.assertTrue("StoreManager supports SIS check", sm.supports(StoreFeature.SINGLE_INSTANCE_SERVER_CREATE));
+  assertTrue(sm instanceof ContentAddressableStoreManager, "StoreManager is content addressable");
+  assertTrue(sm.supports(StoreFeature.SINGLE_INSTANCE_SERVER_CREATE), "StoreManager supports SIS check");
 
-        byte[] bytes = new byte[0];
+  byte[] bytes = new byte[0];
 
-        Blob blob = sm.storeIncoming(new ByteArrayInputStream(bytes));
+  Blob blob = sm.storeIncoming(new ByteArrayInputStream(bytes));
 
-        //blob has not yet been finalized, so it shouldn't exist in remote system yet
+  //blob has not yet been finalized, so it shouldn't exist in remote system yet
 
-        byte[] hash = sm.getHash(blob);
+  byte[] hash = sm.getHash(blob);
 
-        Assert.assertNotNull("empty blob always exists", sm.getSisBlob(hash));
+  assertNotNull(sm.getSisBlob(hash), "empty blob always exists");
 
-        Assert.assertEquals("blob size = incoming written", bytes.length, blob.getRawSize());
+  assertEquals(bytes.length, blob.getRawSize(), "blob size = incoming written");
 
-        Assert.assertTrue("blob content = mime content", TestUtil.bytesEqual(bytes, blob.getInputStream()));
+  assertTrue(TestUtil.bytesEqual(bytes, blob.getInputStream()), "blob content = mime content");
 
-        StagedBlob staged = sm.stage(blob, mbox);
-        Assert.assertEquals("staged size = blob size", blob.getRawSize(), staged.getSize());
+  StagedBlob staged = sm.stage(blob, mbox);
+  assertEquals(blob.getRawSize(), staged.getSize(), "staged size = blob size");
 
-        MailboxBlob mblob = sm.link(staged, mbox, 0, 0);
-        Assert.assertEquals("link size = staged size", staged.getSize(), mblob.getSize());
-        Assert.assertTrue("link content = mime content", TestUtil.bytesEqual(bytes, mblob.getLocalBlob().getInputStream()));
-
-
-        //blob uploaded, now sis should return true and increment ref count
-        Blob sisBlob = sm.getSisBlob(hash);
-        Assert.assertNotNull("object created", sisBlob);
+  MailboxBlob mblob = sm.link(staged, mbox, 0, 0);
+  assertEquals(staged.getSize(), mblob.getSize(), "link size = staged size");
+  assertTrue(TestUtil.bytesEqual(bytes, mblob.getLocalBlob().getInputStream()), "link content = mime content");
 
 
-        Assert.assertEquals("blob size = incoming written", bytes.length, sisBlob.getRawSize());
-        Assert.assertTrue("blob content = mime content", TestUtil.bytesEqual(bytes, sisBlob.getInputStream()));
-    }
+  //blob uploaded, now sis should return true and increment ref count
+  Blob sisBlob = sm.getSisBlob(hash);
+  assertNotNull(sisBlob, "object created");
+
+
+  assertEquals(bytes.length, sisBlob.getRawSize(), "blob size = incoming written");
+  assertTrue(TestUtil.bytesEqual(bytes, sisBlob.getInputStream()), "blob content = mime content");
+ }
 }

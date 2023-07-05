@@ -3065,7 +3065,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 </attr>
 
 <attr id="577" name="zimbraPrefCalendarReminderMobile" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.0" deprecatedSince="6.0.0_BETA1">
-  <defaultCOSValue>FALSE</defaultCOSValue>  
+  <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>The mobile device (phone) the reminder goes to.</desc>
   <deprecateDesc>was added for Yahoo calendar, no longer used</deprecateDesc>
 </attr>
@@ -3640,6 +3640,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 </attr>
 
 <attr id="685" name="zimbraReverseProxyMailMode" type="enum" value="https,redirect" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="5.0.7">
+  <globalConfigValue>redirect</globalConfigValue>
   <desc>whether to run proxy in HTTPS or redirect mode. See also related attributes zimbraMailProxyPort and zimbraMailSSLProxyPort</desc>
 </attr>
 
@@ -3920,7 +3921,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 
 <attr id="742" name="zimbraServerId" type="id" cardinality="single" requiredIn="xmppComponent" since="6.0.0_BETA1">
   <desc>ZimbraID of the server that this component is running on</desc>
-</attr>  
+</attr>
 
 <attr id="743" name="zimbraAdminConsoleDNSCheckEnabled" type="boolean" deprecatedSince="23.6.0" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" since="5.0.10">
   <globalConfigValue>FALSE</globalConfigValue>
@@ -4227,7 +4228,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 <attr id="794" name="zimbraCalendarCalDavUseDistinctAppointmentAndToDoCollection" type="boolean" cardinality="single" optionalIn="globalConfig" since="5.0.12" deprecatedSince="8.0.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>
-    When set to TRUE, Calendar folders and Todo folders in Zimbra will be advertised as Calendar only and Todo only via CalDAV.  
+    When set to TRUE, Calendar folders and Todo folders in Zimbra will be advertised as Calendar only and Todo only via CalDAV.
     When set to FALSE, Calendar folders will be able to store both appointments and tasks, and Todo folders will not be advertised as CalDAV enabled.
   </desc>
   <deprecateDesc>Deprecated per bug 69886.</deprecateDesc>
@@ -4385,7 +4386,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 
 <attr id="823" name="zimbraPrefReadReceiptsToAddress" type="string" max="256" cardinality="single" optionalIn="account,identity,dataSource" flags="domainAdminModifiable" since="6.0.0_BETA1" deprecatedSince="6.0.8">
   <desc>
-    address to put in reply-to header of read receipt messages, 
+    address to put in reply-to header of read receipt messages,
     if it is not set, then the compose identities primary email address is used.
   </desc>
   <deprecateDesc>Deprecated per bug 46988.  This feature was never fully implemented.</deprecateDesc>
@@ -4893,53 +4894,64 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
-<attr id="1056" name="zimbraVersionCheckLastAttempt" type="gentime" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+<attr id="1056" name="zimbraVersionCheckLastAttempt" type="gentime" cardinality="single" optionalIn="globalConfig" since="6.0.2" deprecatedSince="23.7.0">
   <desc>time Zimbra version was last checked</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
-<attr id="1057" name="zimbraVersionCheckLastSuccess" type="gentime" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+<attr id="1057" name="zimbraVersionCheckLastSuccess" type="gentime" cardinality="single" optionalIn="globalConfig" since="6.0.2" deprecatedSince="23.7.0">
   <desc>time Zimbra version was last checked successfully</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
-<attr id="1058" name="zimbraVersionCheckLastResponse" type="string" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+<attr id="1058" name="zimbraVersionCheckLastResponse" type="string" cardinality="single" optionalIn="globalConfig" since="6.0.2" deprecatedSince="23.7.0">
   <desc>last response of last Zimbra version check</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
-<attr id="1059" name="zimbraVersionCheckInterval" type="duration" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+<attr id="1059" name="zimbraVersionCheckInterval" type="duration" cardinality="single" optionalIn="globalConfig" since="6.0.2" deprecatedSince="23.7.0">
   <globalConfigValue>1d</globalConfigValue>
   <desc>Time interval after which Zimbra version check detects a new version</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
-<attr id="1060" name="zimbraVersionCheckServer" type="id" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+<attr id="1060" name="zimbraVersionCheckServer" type="id" cardinality="single" optionalIn="globalConfig" since="6.0.2" deprecatedSince="23.7.0">
   <desc>zimbraId of the server that should perform the Zimbra version checks</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
-<attr id="1061" name="zimbraVersionCheckURL" type="string" max="256" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+<attr id="1061" name="zimbraVersionCheckURL" type="string" max="256" cardinality="single" optionalIn="globalConfig" since="6.0.2" deprecatedSince="23.7.0">
   <globalConfigValue>updateUrl</globalConfigValue>
   <desc>URL of the Zimbra version check script</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
-<attr id="1062" name="zimbraVersionCheckSendNotifications" type="boolean" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+<attr id="1062" name="zimbraVersionCheckSendNotifications" type="boolean" cardinality="single" optionalIn="globalConfig" since="6.0.2" deprecatedSince="23.7.0">
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>whether to send a notification message if Zimbra version check detects a new version</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
-<attr id="1063" name="zimbraVersionCheckNotificationEmail" type="cs_emailp" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+<attr id="1063" name="zimbraVersionCheckNotificationEmail" type="cs_emailp" cardinality="single" optionalIn="globalConfig" since="6.0.2" deprecatedSince="23.7.0">
   <desc>email address to send mail to for the Zimbra version check notification message</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
-<attr id="1064" name="zimbraVersionCheckNotificationEmailFrom" type="string" max="1000" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+<attr id="1064" name="zimbraVersionCheckNotificationEmailFrom" type="string" max="1000" cardinality="single" optionalIn="globalConfig" since="6.0.2" deprecatedSince="23.7.0">
   <desc>from address for the Zimbra version check notification message</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
-<attr id="1065" name="zimbraVersionCheckNotificationSubject" type="string" max="1000" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+<attr id="1065" name="zimbraVersionCheckNotificationSubject" type="string" max="1000" cardinality="single" optionalIn="globalConfig" since="6.0.2" deprecatedSince="23.7.0">
   <globalConfigValue>${IS_CRITICAL} updates are available for your Zimbra server</globalConfigValue>
   <desc>template used to construct the subject of an Zimbra version check notification message</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
-<attr id="1066" name="zimbraVersionCheckNotificationBody" type="string" max="10000" cardinality="single" optionalIn="globalConfig" since="6.0.2">
+<attr id="1066" name="zimbraVersionCheckNotificationBody" type="string" max="10000" cardinality="single" optionalIn="globalConfig" since="6.0.2" deprecatedSince="23.7.0">
   <globalConfigValue>${BEGIN_PREFIX}The following updates were found:${NEWLINE}${NEWLINE}${END_PREFIX}${BEGIN_UPDATE}${UPDATE_COUNTER}.  ${IS_CRITICAL}.  Version: ${UPDATE_VERSION}, URL: ${UPDATE_URL}${NEWLINE}${NEWLINE}${END_UPDATE}${BEGIN_SIGNATURE}Zimbra Updater${NEWLINE}${END_SIGNATURE}</globalConfigValue>
   <desc>template used to construct the body of an Zimbra version check notification message</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
 <attr id="1067" name="zimbraPrefGetMailAction" type="enum" value="default,update" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="6.0.2">
@@ -6315,12 +6327,14 @@ TODO: delete them permanently from here
   <desc>whether or not to show direction buttons in compose toolbar</desc>
 </attr>
 
-<attr id="1275" name="zimbraDistributionListSubscriptionPolicy" type="enum" value="ACCEPT,REJECT,APPROVAL" cardinality="single" optionalIn="distributionList,group" since="8.0.0">
+<attr id="1275" name="zimbraDistributionListSubscriptionPolicy" type="enum" value="ACCEPT,REJECT,APPROVAL" cardinality="single" optionalIn="distributionList,group" since="8.0.0" deprecatedSince="23.7.0">
   <desc>distribution subscription policy. ACCEPT: always accept, REJECT: always reject, APPROVAL: require owners approval.</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
-<attr id="1276" name="zimbraDistributionListUnsubscriptionPolicy" type="enum" value="ACCEPT,REJECT,APPROVAL" cardinality="single" optionalIn="distributionList,group" since="8.0.0">
+<attr id="1276" name="zimbraDistributionListUnsubscriptionPolicy" type="enum" value="ACCEPT,REJECT,APPROVAL" cardinality="single" optionalIn="distributionList,group" since="8.0.0" deprecatedSince="23.7.0">
   <desc>distribution subscription policy. ACCEPT: always accept, REJECT: always reject, APPROVAL: require owners approval.</desc>
+  <deprecateDesc>deprecated as no longer used</deprecateDesc>
 </attr>
 
 <attr id="1277" name="zimbraMobilePolicyAllowStorageCard" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0">
@@ -8905,9 +8919,9 @@ TODO: delete them permanently from here
   <globalConfigValue>X-XSS-Protection: "1; mode=block"</globalConfigValue>
   <globalConfigValue>X-Frame-Options: "sameorigin"</globalConfigValue>
   <globalConfigValue>Expect-CT: max-age=86400</globalConfigValue>
-  <globalConfigValue>Content-Security-Policy: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' *.zextras.tools; connect-src 'self' *.zextras.tools; img-src  * blob: data:; font-src 'self' fonts.gstatic.com; object-src 'self'; media-src  * blob: data:; child-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; form-action 'self'; frame-ancestors 'self';"</globalConfigValue>
   <desc>
-     Custom response headers to be added by the proxy. For example, can be used to add a HSTS header
+     Custom response headers to be added by the proxy. The carbonioReverseProxyResponseCSPHeader should be used along with this to
+     produce complete Proxy Response header. Usage: can be used to add a HSTS header
      that will enforce SSL usage on the client side. Note: the value
      MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo: "Bar1; Bar2").
   </desc>
@@ -10033,5 +10047,16 @@ TODO: delete them permanently from here
   <defaultCOSValue>FALSE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>Whether the Team feature enabled for account or COS</desc>
+</attr>
+
+<attr id="3133" name="carbonioReverseProxyResponseCSPHeader" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainInherited" requiresRestart="nginxproxy" since="23.7.0">
+  <globalConfigValue>Content-Security-Policy: "default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';"</globalConfigValue>
+  <desc>
+    Content Security Policy headers to be added by the proxy. This is used along with the zimbraReverseProxyResponseHeaders by the ProxyConfGen
+    to produce a complete set of Response Headers returned by the by the proxy.
+    Usage: can be used to add a Content-Security-Policy header
+    that will enforce CSP rule on the client side. Note: the value
+    MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo: "Bar1; Bar2").
+  </desc>
 </attr>
 </attrs>

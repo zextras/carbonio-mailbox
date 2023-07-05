@@ -62,67 +62,67 @@ public class IcalXmlStrMap {
 
     
     // frequency 
-    public final static String FREQ_YEARLY = "YEA";
-    public final static String FREQ_WEEKLY = "WEE";
-    public final static String FREQ_SECONDLY = "SEC";
-    public final static String FREQ_MONTHLY = "MON";
-    public final static String FREQ_MINUTELY = "MIN";
-    public final static String FREQ_HOURLY = "HOU";
-    public final static String FREQ_DAILY = "DAI";
+    public static final String FREQ_YEARLY = "YEA";
+    public static final String FREQ_WEEKLY = "WEE";
+    public static final String FREQ_SECONDLY = "SEC";
+    public static final String FREQ_MONTHLY = "MON";
+    public static final String FREQ_MINUTELY = "MIN";
+    public static final String FREQ_HOURLY = "HOU";
+    public static final String FREQ_DAILY = "DAI";
 
     // class
-    public final static String CLASS_PUBLIC = "PUB";
-    public final static String CLASS_PRIVATE = "PRI";
-    public final static String CLASS_CONFIDENTIAL = "CON";
+    public static final String CLASS_PUBLIC = "PUB";
+    public static final String CLASS_PRIVATE = "PRI";
+    public static final String CLASS_CONFIDENTIAL = "CON";
 
     // free-busy
-    public final static String FBTYPE_BUSY = "B";
-    public final static String FBTYPE_FREE = "F";
-    public final static String FBTYPE_BUSY_TENTATIVE = "T";
-    public final static String FBTYPE_BUSY_UNAVAILABLE = "O";
-    public final static String FBTYPE_NODATA = "N";
+    public static final String FBTYPE_BUSY = "B";
+    public static final String FBTYPE_FREE = "F";
+    public static final String FBTYPE_BUSY_TENTATIVE = "T";
+    public static final String FBTYPE_BUSY_UNAVAILABLE = "O";
+    public static final String FBTYPE_NODATA = "N";
 
     // transparency 
-    public final static String TRANSP_OPAQUE = "O";
-    public final static String TRANSP_TRANSPARENT = "T";
+    public static final String TRANSP_OPAQUE = "O";
+    public static final String TRANSP_TRANSPARENT = "T";
 
     // Even status can be TENTATIVE, CONFIRMED or CANCELLED.
     // Todo status can be NEEDS-ACTION, COMPLETED, IN-PROCESS or CANCELLED.
     // Journal status (not yet supported) can be DRAFT, FINAL or CANCELLED.
-    public final static String STATUS_TENTATIVE = "TENT";
-    public final static String STATUS_CONFIRMED = "CONF";
-    public final static String STATUS_CANCELLED = "CANC";
-    public final static String STATUS_NEEDS_ACTION = "NEED";
-    public final static String STATUS_COMPLETED = "COMP";
-    public final static String STATUS_IN_PROCESS = "INPR";
-    public final static String STATUS_ZCO_WAITING = "WAITING";
-    public final static String STATUS_ZCO_DEFERRED = "DEFERRED";
+    public static final String STATUS_TENTATIVE = "TENT";
+    public static final String STATUS_CONFIRMED = "CONF";
+    public static final String STATUS_CANCELLED = "CANC";
+    public static final String STATUS_NEEDS_ACTION = "NEED";
+    public static final String STATUS_COMPLETED = "COMP";
+    public static final String STATUS_IN_PROCESS = "INPR";
+    public static final String STATUS_ZCO_WAITING = "WAITING";
+    public static final String STATUS_ZCO_DEFERRED = "DEFERRED";
 
     // attendee participation status =
     //   NEeds-action, TEntative, ACcept, DEclined,
     //   DG (delegated), COmpleted (for todo), IN-process (for todo)
-    public final static String PARTSTAT_TENTATIVE = "TE";
-    public final static String PARTSTAT_NEEDS_ACTION = "NE";
-    public final static String PARTSTAT_DELEGATED = "DG";
-    public final static String PARTSTAT_DECLINED = "DE";
-    public final static String PARTSTAT_COMPLETED = "CO";
-    public final static String PARTSTAT_ACCEPTED = "AC";
-    public final static String PARTSTAT_IN_PROCESS = "IN";
-    public final static String PARTSTAT_ZCO_WAITING = "WA";
-    public final static String PARTSTAT_ZCO_DEFERRED = "DF";
+    public static final String PARTSTAT_TENTATIVE = "TE";
+    public static final String PARTSTAT_NEEDS_ACTION = "NE";
+    public static final String PARTSTAT_DELEGATED = "DG";
+    public static final String PARTSTAT_DECLINED = "DE";
+    public static final String PARTSTAT_COMPLETED = "CO";
+    public static final String PARTSTAT_ACCEPTED = "AC";
+    public static final String PARTSTAT_IN_PROCESS = "IN";
+    public static final String PARTSTAT_ZCO_WAITING = "WA";
+    public static final String PARTSTAT_ZCO_DEFERRED = "DF";
 
     // attendee role
-    public final static String ROLE_NON_PARTICIPANT = "NON";
-    public final static String ROLE_OPT_PARTICIPANT = "OPT";
-    public final static String ROLE_REQUIRED = "REQ";
-    public final static String ROLE_CHAIR = "CHA";
+    public static final String ROLE_NON_PARTICIPANT = "NON";
+    public static final String ROLE_OPT_PARTICIPANT = "OPT";
+    public static final String ROLE_REQUIRED = "REQ";
+    public static final String ROLE_CHAIR = "CHA";
 
     // attendee calendar user type
-    public final static String CUTYPE_INDIVIDUAL = "IND";
-    public final static String CUTYPE_GROUP      = "GRO";
-    public final static String CUTYPE_RESOURCE   = "RES";
-    public final static String CUTYPE_ROOM       = "ROO";
-    public final static String CUTYPE_UNKNOWN    = "UNK";
+    public static final String CUTYPE_INDIVIDUAL = "IND";
+    public static final String CUTYPE_GROUP      = "GRO";
+    public static final String CUTYPE_RESOURCE   = "RES";
+    public static final String CUTYPE_ROOM       = "ROO";
+    public static final String CUTYPE_UNKNOWN    = "UNK";
 
     static {
         sCUTypeMap.add(ICalTok.INDIVIDUAL.toString(), CUTYPE_INDIVIDUAL);

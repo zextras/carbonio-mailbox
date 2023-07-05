@@ -45,7 +45,7 @@ public class BlobDeduper {
     private Map<Short, String> volumeBlobsProgress = new LinkedHashMap<Short, String>();
     private Map<Short, String> blobDigestsProgress = new LinkedHashMap<Short, String>();
     
-    private final static BlobDeduper SINGLETON = new BlobDeduper();
+    private static final BlobDeduper SINGLETON = new BlobDeduper();
 
     private BlobDeduper() {
     }
@@ -342,8 +342,7 @@ public class BlobDeduper {
             try {
                 conn = DbPool.getConnection();
                 Set<Integer> groupIds = DbMailbox.getMboxGroupIds(conn);
-                List<Integer> groupList = new ArrayList<Integer>();
-                groupList.addAll(groupIds);
+                List<Integer> groupList = new ArrayList<Integer>(groupIds);
                 Collections.sort(groupList);
                 return groupList;
             } finally {

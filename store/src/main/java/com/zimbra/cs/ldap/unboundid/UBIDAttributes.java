@@ -71,9 +71,7 @@ public class UBIDAttributes extends ZAttributes {
             }
         } else {
             String[] values = attr.getValues();
-            for (int i = 0; i < values.length; i++) {
-                result[i] = values[i];
-            }
+          System.arraycopy(values, 0, result, 0, values.length);
         }
         return result;
     }

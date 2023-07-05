@@ -7,6 +7,7 @@ package com.zimbra.client.event;
 
 import com.zimbra.client.ToZJSONObject;
 import com.zimbra.client.ZJSONObject;
+import java.util.Arrays;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -29,8 +30,7 @@ public class ZDeleteEvent implements ToZJSONObject {
         if (mList == null) {
             mList = new ArrayList<String>();
             if (mIds != null && mIds.length() > 0)
-            	for (String id : mIds.split(","))
-            		mList.add(id);
+              mList.addAll(Arrays.asList(mIds.split(",")));
         }
         return mList;
     }

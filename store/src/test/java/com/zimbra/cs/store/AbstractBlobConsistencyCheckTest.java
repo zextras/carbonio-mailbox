@@ -9,14 +9,13 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.zimbra.common.service.ServiceException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.MockProvisioning;
@@ -43,7 +42,7 @@ public abstract class AbstractBlobConsistencyCheckTest {
     protected abstract void appendText(MailboxBlob blob, String text) throws IOException;
     protected abstract String createUnexpectedBlob(int index) throws ServiceException, IOException;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         MailboxTestUtil.initProvisioning();
@@ -53,7 +52,7 @@ public abstract class AbstractBlobConsistencyCheckTest {
         System.setProperty("zimbra.native.required", "false");
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         originalStoreManager = StoreManager.getInstance();
         StoreManager.setInstance(getStoreManager());
@@ -63,133 +62,133 @@ public abstract class AbstractBlobConsistencyCheckTest {
     }
 
 
-    @Test
-    public void singleBlob() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+ @Test
+ void singleBlob() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-        mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+  mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
 
-        BlobConsistencyChecker checker = getChecker();
-        Results results = checker.check(getVolumeIds(), mbox.getId(), true, false);
-        Assert.assertEquals(0, results.unexpectedBlobs.size());
-        Assert.assertEquals(0, results.missingBlobs.size());
-        Assert.assertEquals(0, results.usedBlobs.size());
-        Assert.assertEquals(0, results.incorrectSize.size());
-        Assert.assertEquals(0, results.incorrectModContent.size());
-    }
+  BlobConsistencyChecker checker = getChecker();
+  Results results = checker.check(getVolumeIds(), mbox.getId(), true, false);
+  assertEquals(0, results.unexpectedBlobs.size());
+  assertEquals(0, results.missingBlobs.size());
+  assertEquals(0, results.usedBlobs.size());
+  assertEquals(0, results.incorrectSize.size());
+  assertEquals(0, results.incorrectModContent.size());
+ }
 
-    @Test
-    public void missingBlobs() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+ @Test
+ void missingBlobs() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-        int msgs = 10;
-        for (int i = 0; i < msgs; i++) {
-            mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
-        }
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+  int msgs = 10;
+  for (int i = 0; i < msgs; i++) {
+   mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
+  }
 
-        deleteAllBlobs();
+  deleteAllBlobs();
 
-        BlobConsistencyChecker checker = getChecker();
-        Results results = checker.check(getVolumeIds(), mbox.getId(), true, false);
+  BlobConsistencyChecker checker = getChecker();
+  Results results = checker.check(getVolumeIds(), mbox.getId(), true, false);
 
-        Assert.assertEquals(msgs, results.missingBlobs.size());
+  assertEquals(msgs, results.missingBlobs.size());
 
-        Assert.assertEquals(0, results.unexpectedBlobs.size());
-        Assert.assertEquals(0, results.usedBlobs.size());
-        Assert.assertEquals(0, results.incorrectSize.size());
-        Assert.assertEquals(0, results.incorrectModContent.size());
-    }
+  assertEquals(0, results.unexpectedBlobs.size());
+  assertEquals(0, results.usedBlobs.size());
+  assertEquals(0, results.incorrectSize.size());
+  assertEquals(0, results.incorrectModContent.size());
+ }
 
-    @Test
-    public void unexpectedBlobs() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        String path = createUnexpectedBlob(0);
+ @Test
+ void unexpectedBlobs() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  String path = createUnexpectedBlob(0);
 
-        BlobConsistencyChecker checker = getChecker();
-        Results results = checker.check(getVolumeIds(), mbox.getId(), true, false);
+  BlobConsistencyChecker checker = getChecker();
+  Results results = checker.check(getVolumeIds(), mbox.getId(), true, false);
 
-        Assert.assertEquals(0, results.missingBlobs.size());
+  assertEquals(0, results.missingBlobs.size());
 
-        Assert.assertEquals(1, results.unexpectedBlobs.size());
-        BlobInfo info = results.unexpectedBlobs.values().iterator().next();
-        Assert.assertEquals(path, info.path);
+  assertEquals(1, results.unexpectedBlobs.size());
+  BlobInfo info = results.unexpectedBlobs.values().iterator().next();
+  assertEquals(path, info.path);
 
-        Assert.assertEquals(0, results.usedBlobs.size());
-        Assert.assertEquals(0, results.incorrectSize.size());
-        Assert.assertEquals(0, results.incorrectModContent.size());
+  assertEquals(0, results.usedBlobs.size());
+  assertEquals(0, results.incorrectSize.size());
+  assertEquals(0, results.incorrectModContent.size());
 
-        deleteAllBlobs();
+  deleteAllBlobs();
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-        mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+  mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
 
 
-        int msgs = 10;
-        for (int i = 0; i < msgs; i++) {
-            createUnexpectedBlob(i);
-        }
+  int msgs = 10;
+  for (int i = 0; i < msgs; i++) {
+   createUnexpectedBlob(i);
+  }
 
-        results = checker.check(getVolumeIds(), mbox.getId(), true, false);
+  results = checker.check(getVolumeIds(), mbox.getId(), true, false);
 
-        Assert.assertEquals(0, results.missingBlobs.size());
+  assertEquals(0, results.missingBlobs.size());
 
-        Assert.assertEquals(msgs, results.unexpectedBlobs.size());
+  assertEquals(msgs, results.unexpectedBlobs.size());
 
-        Assert.assertEquals(0, results.usedBlobs.size());
-        Assert.assertEquals(0, results.incorrectSize.size());
-        Assert.assertEquals(0, results.incorrectModContent.size());
-    }
+  assertEquals(0, results.usedBlobs.size());
+  assertEquals(0, results.incorrectSize.size());
+  assertEquals(0, results.incorrectModContent.size());
+ }
 
-    @Test
-    public void wrongSize() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+ @Test
+ void wrongSize() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-        Message msg = mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+  Message msg = mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
 
-        MailboxBlob blob = msg.getBlob();
-        String text = "some garbage";
-        appendText(blob, text);
+  MailboxBlob blob = msg.getBlob();
+  String text = "some garbage";
+  appendText(blob, text);
 
-        BlobConsistencyChecker checker = getChecker();
-        Results results = checker.check(getVolumeIds(), mbox.getId(), true, false);
+  BlobConsistencyChecker checker = getChecker();
+  Results results = checker.check(getVolumeIds(), mbox.getId(), true, false);
 
-        Assert.assertEquals(0, results.missingBlobs.size());
-        Assert.assertEquals(0, results.unexpectedBlobs.size());
-        Assert.assertEquals(0, results.usedBlobs.size());
+  assertEquals(0, results.missingBlobs.size());
+  assertEquals(0, results.unexpectedBlobs.size());
+  assertEquals(0, results.usedBlobs.size());
 
-        Assert.assertEquals(1, results.incorrectSize.size());
-        BlobInfo info = results.incorrectSize.values().iterator().next();
-        Assert.assertEquals(blob.size + text.length(), (long) info.fileDataSize);
+  assertEquals(1, results.incorrectSize.size());
+  BlobInfo info = results.incorrectSize.values().iterator().next();
+  assertEquals(blob.size + text.length(), (long) info.fileDataSize);
 
-        Assert.assertEquals(0, results.incorrectModContent.size());
-    }
+  assertEquals(0, results.incorrectModContent.size());
+ }
 
-    @Test
-    public void allBlobs() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+ @Test
+ void allBlobs() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-        int msgs = 10;
-        for (int i = 0; i < msgs; i++) {
-            mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
-        }
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+  int msgs = 10;
+  for (int i = 0; i < msgs; i++) {
+   mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
+  }
 
-        BlobConsistencyChecker checker = getChecker();
-        Results results = checker.check(getVolumeIds(), mbox.getId(), true, true);
+  BlobConsistencyChecker checker = getChecker();
+  Results results = checker.check(getVolumeIds(), mbox.getId(), true, true);
 
-        Assert.assertEquals(0, results.missingBlobs.size());
-        Assert.assertEquals(0, results.unexpectedBlobs.size());
+  assertEquals(0, results.missingBlobs.size());
+  assertEquals(0, results.unexpectedBlobs.size());
 
-        Assert.assertEquals(msgs, results.usedBlobs.size());
+  assertEquals(msgs, results.usedBlobs.size());
 
-        Assert.assertEquals(0, results.incorrectSize.size());
-        Assert.assertEquals(0, results.incorrectModContent.size());
-    }
+  assertEquals(0, results.incorrectSize.size());
+  assertEquals(0, results.incorrectModContent.size());
+ }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         StoreManager.getInstance().shutdown();
         StoreManager.setInstance(originalStoreManager);

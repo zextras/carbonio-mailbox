@@ -10,6 +10,7 @@ package com.zimbra.cs.account.ldap;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.Provisioning;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -27,9 +28,7 @@ public class LdapObjectClass {
   private static void addExtraObjectClasses(Set<String> ocs, Provisioning prov, String extraOCAttr)
       throws ServiceException {
     String[] extraObjectClasses = prov.getConfig().getMultiAttr(extraOCAttr);
-    for (String eoc : extraObjectClasses) {
-      ocs.add(eoc);
-    }
+    ocs.addAll(Arrays.asList(extraObjectClasses));
 
     /*
     if (additionalObjectClasses != null) {

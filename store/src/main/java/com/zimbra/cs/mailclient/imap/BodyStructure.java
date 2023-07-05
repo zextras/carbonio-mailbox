@@ -116,7 +116,7 @@ public class BodyStructure {
                 readExt(is);
             }
         }
-        this.parts = parts.toArray(new BodyStructure[parts.size()]);
+        this.parts = parts.toArray(new BodyStructure[0]);
     }
 
     // ext             = body-fld-dsp [SP body-fld-lang
@@ -216,7 +216,7 @@ public class BodyStructure {
             lang.add(is.readString());
             is.skipSpaces();
         }
-        return lang.toArray(new String[lang.size()]);
+        return lang.toArray(new String[0]);
     }
     
     public String getType() { return type; }

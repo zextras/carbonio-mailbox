@@ -154,8 +154,8 @@
 
 
     <dependency>
-      <artifactId>junit</artifactId>
-      <groupId>junit</groupId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -176,6 +176,12 @@
       <artifactId>zm-native</artifactId>
       <groupId>zextras</groupId>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>RELEASE</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
   <modelVersion>4.0.0</modelVersion>
@@ -191,6 +197,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
       </plugin>
       <!-- Analyze dependencies -->
       <plugin>

@@ -533,12 +533,12 @@ public class EditHeaderExtension {
      * This method verifies if the key is set for immutable header or not.
      * @return <b>true</b> if immutable header found else <b>false</b>
      */
-    static public boolean isImmutableHeaderKey(String key, ZimbraMailAdapter mailAdapter) {
+    public static boolean isImmutableHeaderKey(String key, ZimbraMailAdapter mailAdapter) {
         List<String> immutableHeaders = Arrays.asList(mailAdapter.getAccount().getSieveImmutableHeaders().split(","));
         return immutableHeaders.stream().map(String::trim).anyMatch(x -> x.equalsIgnoreCase(key));
     }
 
-    static public boolean saveChanges(ZimbraMailAdapter zma, String actionName, MimeMessage mm) {
+    public static boolean saveChanges(ZimbraMailAdapter zma, String actionName, MimeMessage mm) {
         if (zma.getEditHeaderParseStatus() == PARSESTATUS.UNKNOWN) {
             try {
                 mm.saveChanges();

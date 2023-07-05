@@ -220,7 +220,7 @@ public class CalDavDataImport extends MailItemImport {
     List<Integer> deleted = new ArrayList<Integer>();
     int lastSync = (int) rootFolder.getLastSyncDate();
     if (lastSync > 0) {
-      for (int itemId : mbox.getTombstones(lastSync).getAllIds()) deleted.add(itemId);
+      deleted.addAll(mbox.getTombstones(lastSync).getAllIds());
     }
     CalDavClient client = getClient();
     Map<String, DavObject> calendars = client.getCalendars();

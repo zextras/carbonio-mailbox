@@ -510,12 +510,13 @@ public class ZimbraACE {
 
         // grantee
         if (mGranteeType == GranteeType.GT_GUEST || mGranteeType == GranteeType.GT_KEY)
-            sb.append(encodeGrantee(mGrantee) + S_SECRET_DELIMITER + encodeSecret(mSecret) + S_DELIMITER);
+            sb.append(encodeGrantee(mGrantee)).append(S_SECRET_DELIMITER)
+                .append(encodeSecret(mSecret)).append(S_DELIMITER);
         else
-            sb.append(mGrantee + S_DELIMITER);
+            sb.append(mGrantee).append(S_DELIMITER);
 
         // grantee type
-        sb.append(getGranteeType().getCode() + S_DELIMITER);
+        sb.append(getGranteeType().getCode()).append(S_DELIMITER);
 
         // right
         if (mRightModifier != null)

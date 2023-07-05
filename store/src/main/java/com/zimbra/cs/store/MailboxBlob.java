@@ -89,7 +89,7 @@ public abstract class MailboxBlob {
         return mailbox;
     }
 
-    abstract public Blob getLocalBlob() throws IOException;
+    public abstract Blob getLocalBlob() throws IOException;
 
     @Override
     public String toString() {

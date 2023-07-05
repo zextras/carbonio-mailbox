@@ -162,12 +162,12 @@ public class CheckAttrRight extends CheckRight {
 
             sb.append("Allowed: {");
             for (Map.Entry<String, Integer> as : allowSome.entrySet()) {
-                sb.append("(" + as.getKey() + ", " + as.getValue() + ")");
+                sb.append("(").append(as.getKey()).append(", ").append(as.getValue()).append(")");
             }
             sb.append("}");
             sb.append(" Denied: {");
             for (Map.Entry<String, Integer> ds : denySome.entrySet()) {
-                sb.append("(" + ds.getKey() + ", " + ds.getValue() + ")");
+                sb.append("(").append(ds.getKey()).append(", ").append(ds.getValue()).append(")");
             }
             sb.append("}");
 
@@ -467,8 +467,8 @@ public class CheckAttrRight extends CheckRight {
             return AllowedAttrs.ALLOW_ALL_ATTRS();
         } else {
             // get all attrs that can appear on the target entry
-            Set<String> allowed = new HashSet<String>();
-            allowed.addAll(AttributeManager.getInstance().getAllAttrsInClass(klass));
+          Set<String> allowed = new HashSet<String>(
+              AttributeManager.getInstance().getAllAttrsInClass(klass));
 
             // remove denied from all
             for (String d : denySome.keySet())

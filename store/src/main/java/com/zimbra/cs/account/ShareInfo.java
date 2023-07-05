@@ -899,14 +899,12 @@ public class ShareInfo {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<h4>\n");
-        sb.append(
-            "<p>"
-                + L10nUtil.getMessage(MsgKey.shareNotifBodyAddedToGroup1, locale, dlName)
-                + "</p>\n");
-        sb.append(
-            "<p>"
-                + L10nUtil.getMessage(MsgKey.shareNotifBodyAddedToGroup2, locale, dlName)
-                + "</p>\n");
+        sb.append("<p>")
+            .append(L10nUtil.getMessage(MsgKey.shareNotifBodyAddedToGroup1, locale, dlName))
+            .append("</p>\n");
+        sb.append("<p>")
+            .append(L10nUtil.getMessage(MsgKey.shareNotifBodyAddedToGroup2, locale, dlName))
+            .append("</p>\n");
         sb.append("</h4>\n");
         sb.append("\n");
 

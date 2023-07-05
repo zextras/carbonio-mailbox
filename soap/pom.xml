@@ -76,15 +76,15 @@
     </dependency>
 
     <dependency>
-      <artifactId>junit</artifactId>
-      <groupId>junit</groupId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <artifactId>xmlunit</artifactId>
-      <groupId>xmlunit</groupId>
-      <version>1.6</version>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-core</artifactId>
+      <version>2.9.1</version>
       <scope>test</scope>
     </dependency>
 
@@ -106,6 +106,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

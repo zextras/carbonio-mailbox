@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ import com.zimbra.common.account.ZAttr;
  */
 public abstract class ZAttrShareLocator extends NamedEntry {
 
-    public ZAttrShareLocator(String id, Map<String,Object> attrs, Provisioning prov) {
+    protected ZAttrShareLocator(String id, Map<String,Object> attrs, Provisioning prov) {
         super(null, id, attrs, null, prov);
     }
 
@@ -29,7 +30,7 @@ public abstract class ZAttrShareLocator extends NamedEntry {
      */
     @ZAttr(id=-1)
     public String getCn() {
-        return getAttr(Provisioning.A_cn, null, true);
+        return getAttr(ZAttrProvisioning.A_cn, null, true);
     }
 
     /**
@@ -40,8 +41,8 @@ public abstract class ZAttrShareLocator extends NamedEntry {
      */
     @ZAttr(id=-1)
     public void setCn(String cn) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, cn);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, cn);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -54,8 +55,8 @@ public abstract class ZAttrShareLocator extends NamedEntry {
      */
     @ZAttr(id=-1)
     public Map<String,Object> setCn(String cn, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, cn);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, cn);
         return attrs;
     }
 
@@ -66,8 +67,8 @@ public abstract class ZAttrShareLocator extends NamedEntry {
      */
     @ZAttr(id=-1)
     public void unsetCn() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -79,8 +80,8 @@ public abstract class ZAttrShareLocator extends NamedEntry {
      */
     @ZAttr(id=-1)
     public Map<String,Object> unsetCn(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, "");
         return attrs;
     }
 
@@ -93,7 +94,7 @@ public abstract class ZAttrShareLocator extends NamedEntry {
      */
     @ZAttr(id=1375)
     public String getShareOwnerAccountId() {
-        return getAttr(Provisioning.A_zimbraShareOwnerAccountId, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraShareOwnerAccountId, null, true);
     }
 
     /**
@@ -106,8 +107,8 @@ public abstract class ZAttrShareLocator extends NamedEntry {
      */
     @ZAttr(id=1375)
     public void setShareOwnerAccountId(String zimbraShareOwnerAccountId) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraShareOwnerAccountId, zimbraShareOwnerAccountId);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraShareOwnerAccountId, zimbraShareOwnerAccountId);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -122,8 +123,8 @@ public abstract class ZAttrShareLocator extends NamedEntry {
      */
     @ZAttr(id=1375)
     public Map<String,Object> setShareOwnerAccountId(String zimbraShareOwnerAccountId, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraShareOwnerAccountId, zimbraShareOwnerAccountId);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraShareOwnerAccountId, zimbraShareOwnerAccountId);
         return attrs;
     }
 
@@ -136,8 +137,8 @@ public abstract class ZAttrShareLocator extends NamedEntry {
      */
     @ZAttr(id=1375)
     public void unsetShareOwnerAccountId() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraShareOwnerAccountId, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraShareOwnerAccountId, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -151,8 +152,8 @@ public abstract class ZAttrShareLocator extends NamedEntry {
      */
     @ZAttr(id=1375)
     public Map<String,Object> unsetShareOwnerAccountId(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraShareOwnerAccountId, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraShareOwnerAccountId, "");
         return attrs;
     }
 
