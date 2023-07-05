@@ -678,8 +678,6 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.UnloadMailboxResponse.class,
           com.zimbra.soap.admin.message.UnregisterMailboxMoveOutRequest.class,
           com.zimbra.soap.admin.message.UnregisterMailboxMoveOutResponse.class,
-          com.zimbra.soap.admin.message.UpdatePresenceSessionIdRequest.class,
-          com.zimbra.soap.admin.message.UpdatePresenceSessionIdResponse.class,
           com.zimbra.soap.admin.message.UploadDomCertRequest.class,
           com.zimbra.soap.admin.message.UploadDomCertResponse.class,
           com.zimbra.soap.admin.message.UploadProxyCARequest.class,
