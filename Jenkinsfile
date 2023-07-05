@@ -40,7 +40,7 @@ pipeline {
 
                 sh 'mkdir staging'
 
-                sh 'cp -r store* milter* native client common packages soap staging'
+                sh 'cp -r store* milter* native client common packages soap carbonio-jetty-libs staging'
                 stash includes: 'staging/**', name: 'staging'
 
             }
