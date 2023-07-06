@@ -148,37 +148,6 @@ public class AuthRequest {
     private String requestedSkin;
 
     /**
-     *@zm-api-field-description the TOTP code used for two-factor authentication
-     *
-     */
-    @XmlElement(name=AccountConstants.E_TWO_FACTOR_CODE /* twoFactorCode */, required=false)
-    private String twoFactorCode;
-
-    /**
-     *@zm-api-field-description whether the client represents a trusted device
-     *
-     */
-    @XmlAttribute(name=AccountConstants.A_TRUSTED_DEVICE /* deviceTrusted */, required=false)
-    private ZmBoolean deviceTrusted;
-
-    /**
-     *@zm-api-field-description whether the client represents a trusted device
-     *
-     */
-    @XmlElement(name=AccountConstants.E_TRUSTED_TOKEN /* trustedToken */, required=false)
-    private String trustedDeviceToken;
-
-    /**
-     *@zm-api-field-description unique device identifier; used to verify trusted mobile devices
-     *
-     */
-    @XmlElement(name=AccountConstants.E_DEVICE_ID /* deviceId */, required=false)
-    private String deviceId;
-
-    @XmlAttribute(name=AccountConstants.A_GENERATE_DEVICE_ID /* generateDeviceId */, required=false)
-    private ZmBoolean generateDeviceId;
-
-    /**
      * @zm-api-field-description type of token to be returned, it can be auth or jwt
      * 
      */
@@ -307,48 +276,4 @@ public class AuthRequest {
         this.csrfSupported = ZmBoolean.fromBool(csrfSupported);
     }
 
-    public AuthRequest setTwoFactorCode(String totp) {
-        this.twoFactorCode = totp;
-        return this;
-    }
-
-    public String getTwoFactorCode() {
-        return twoFactorCode;
-    }
-
-    public AuthRequest setDeviceTrusted(Boolean deviceTrusted) {
-        this.deviceTrusted = ZmBoolean.fromBool(deviceTrusted);
-        return this;
-    }
-
-    public ZmBoolean getDeviceTrusted() {
-        return deviceTrusted;
-    }
-
-    public AuthRequest setTrustedDeviceToken(String token) {
-        this.trustedDeviceToken = token;
-        return this;
-    }
-
-    public String getTrustedDeviceToken() {
-        return trustedDeviceToken;
-    }
-
-    public AuthRequest setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-        return this;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public AuthRequest setGenerateDeviceId(Boolean generateId) {
-        this.generateDeviceId = ZmBoolean.fromBool(generateId);
-        return this;
-    }
-
-    public ZmBoolean getGenerateDeviceId() {
-        return generateDeviceId;
-    }
 }

@@ -13,7 +13,6 @@ import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.AdminExtConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.ReplicationConstants;
-import com.zimbra.common.soap.SyncConstants;
 import com.zimbra.common.soap.ZimbraNamespace;
 import com.zimbra.soap.JaxbUtil;
 import java.io.File;
@@ -450,11 +449,6 @@ public class WsdlGenerator {
             ReplicationConstants.NAMESPACE_STR,
             zcsService,
             packageToRequestListMap.get("com.zimbra.soap.replication.message")));
-    nsInfoList.add(
-        WsdlInfoForNamespace.create(
-            SyncConstants.NAMESPACE_STR,
-            zcsService,
-            packageToRequestListMap.get("com.zimbra.soap.sync.message")));
   }
 
   /**

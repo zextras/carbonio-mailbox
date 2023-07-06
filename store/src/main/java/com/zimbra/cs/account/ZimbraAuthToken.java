@@ -126,18 +126,6 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
     if (expireTime == 0) {
       long lifetime;
       switch (usage) {
-        case ENABLE_TWO_FACTOR_AUTH:
-          lifetime =
-              acct.getTimeInterval(
-                  Provisioning.A_zimbraTwoFactorAuthTokenLifetime,
-                  DEFAULT_TWO_FACTOR_AUTH_LIFETIME * 1000);
-          break;
-        case TWO_FACTOR_AUTH:
-          lifetime =
-              acct.getTimeInterval(
-                  Provisioning.A_zimbraTwoFactorAuthEnablementTokenLifetime,
-                  DEFAULT_TWO_FACTOR_ENABLEMENT_AUTH_LIFETIME * 1000);
-          break;
         case AUTH:
         default:
           lifetime =
