@@ -1,0 +1,854 @@
+dn: cn=schema
+objectClass: olcSchemaConfig
+cn: schema
+olcObjectIdentifier: OLcfg 1.3.6.1.4.1.4203.1.12.2
+olcObjectIdentifier: OLcfgAt OLcfg:3
+olcObjectIdentifier: OLcfgGlAt OLcfgAt:0
+olcObjectIdentifier: OLcfgBkAt OLcfgAt:1
+olcObjectIdentifier: OLcfgDbAt OLcfgAt:2
+olcObjectIdentifier: OLcfgOvAt OLcfgAt:3
+olcObjectIdentifier: OLcfgCtAt OLcfgAt:4
+olcObjectIdentifier: OLcfgOc OLcfg:4
+olcObjectIdentifier: OLcfgGlOc OLcfgOc:0
+olcObjectIdentifier: OLcfgBkOc OLcfgOc:1
+olcObjectIdentifier: OLcfgDbOc OLcfgOc:2
+olcObjectIdentifier: OLcfgOvOc OLcfgOc:3
+olcObjectIdentifier: OLcfgCtOc OLcfgOc:4
+olcObjectIdentifier: OMsyn 1.3.6.1.4.1.1466.115.121.1
+olcObjectIdentifier: OMsBoolean OMsyn:7
+olcObjectIdentifier: OMsDN OMsyn:12
+olcObjectIdentifier: OMsDirectoryString OMsyn:15
+olcObjectIdentifier: OMsIA5String OMsyn:26
+olcObjectIdentifier: OMsInteger OMsyn:27
+olcObjectIdentifier: OMsOID OMsyn:38
+olcObjectIdentifier: OMsOctetString OMsyn:40
+olcObjectIdentifier: olmAttributes 1.3.6.1.4.1.4203.666.1.55
+olcObjectIdentifier: olmSubSystemAttributes olmAttributes:0
+olcObjectIdentifier: olmGenericAttributes olmSubSystemAttributes:0
+olcObjectIdentifier: olmDatabaseAttributes olmSubSystemAttributes:1
+olcObjectIdentifier: olmObjectClasses 1.3.6.1.4.1.4203.666.3.16
+olcObjectIdentifier: olmSubSystemObjectClasses olmObjectClasses:0
+olcObjectIdentifier: olmGenericObjectClasses olmSubSystemObjectClasses:0
+olcObjectIdentifier: olmDatabaseObjectClasses olmSubSystemObjectClasses:1
+olcObjectIdentifier: olmBDBAttributes olmDatabaseAttributes:1
+olcObjectIdentifier: olmBDBObjectClasses olmDatabaseObjectClasses:1
+olcAttributeTypes: ( 2.5.4.0 NAME 'objectClass' DESC 'RFC4512: object classes 
+ of the entity' EQUALITY objectIdentifierMatch SYNTAX 1.3.6.1.4.1.1466.115.121
+ .1.38 )
+olcAttributeTypes: ( 2.5.21.9 NAME 'structuralObjectClass' DESC 'RFC4512: stru
+ ctural object class of entry' EQUALITY objectIdentifierMatch SYNTAX 1.3.6.1.4
+ .1.1466.115.121.1.38 SINGLE-VALUE NO-USER-MODIFICATION USAGE directoryOperati
+ on )
+olcAttributeTypes: ( 2.5.18.1 NAME 'createTimestamp' DESC 'RFC4512: time which
+  object was created' EQUALITY generalizedTimeMatch ORDERING generalizedTimeOr
+ deringMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.24 SINGLE-VALUE NO-USER-MODIFIC
+ ATION USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.18.2 NAME 'modifyTimestamp' DESC 'RFC4512: time which
+  object was last modified' EQUALITY generalizedTimeMatch ORDERING generalized
+ TimeOrderingMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.24 SINGLE-VALUE NO-USER-M
+ ODIFICATION USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.18.3 NAME 'creatorsName' DESC 'RFC4512: name of creat
+ or' EQUALITY distinguishedNameMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 SING
+ LE-VALUE NO-USER-MODIFICATION USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.18.4 NAME 'modifiersName' DESC 'RFC4512: name of last
+  modifier' EQUALITY distinguishedNameMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.
+ 12 SINGLE-VALUE NO-USER-MODIFICATION USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.18.9 NAME 'hasSubordinates' DESC 'X.501: entry has ch
+ ildren' EQUALITY booleanMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 SINGLE-VALU
+ E NO-USER-MODIFICATION USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.18.10 NAME 'subschemaSubentry' DESC 'RFC4512: name of
+  controlling subschema entry' EQUALITY distinguishedNameMatch SYNTAX 1.3.6.1.
+ 4.1.1466.115.121.1.12 SINGLE-VALUE NO-USER-MODIFICATION USAGE directoryOperat
+ ion )
+olcAttributeTypes: ( 1.3.6.1.1.20 NAME 'entryDN' DESC 'DN of the entry' EQUALI
+ TY distinguishedNameMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 SINGLE-VALUE N
+ O-USER-MODIFICATION USAGE directoryOperation )
+olcAttributeTypes: ( 1.3.6.1.1.16.4 NAME 'entryUUID' DESC 'UUID of the entry' 
+ EQUALITY UUIDMatch ORDERING UUIDOrderingMatch SYNTAX 1.3.6.1.1.16.1 SINGLE-VA
+ LUE NO-USER-MODIFICATION USAGE directoryOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.7 NAME 'entryCSN' DESC 'change seq
+ uence number of the entry content' EQUALITY CSNMatch ORDERING CSNOrderingMatc
+ h SYNTAX 1.3.6.1.4.1.4203.666.11.2.1{64} SINGLE-VALUE NO-USER-MODIFICATION US
+ AGE directoryOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.13 NAME 'namingCSN' DESC 'change s
+ equence number of the entry naming (RDN)' EQUALITY CSNMatch ORDERING CSNOrder
+ ingMatch SYNTAX 1.3.6.1.4.1.4203.666.11.2.1{64} SINGLE-VALUE NO-USER-MODIFICA
+ TION USAGE directoryOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.23 NAME 'syncreplCookie' DESC 'syn
+ crepl Cookie for shadow copy' EQUALITY octetStringMatch ORDERING octetStringO
+ rderingMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 SINGLE-VALUE NO-USER-MODIFI
+ CATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.25 NAME 'contextCSN' DESC 'the lar
+ gest committed CSN of a context' EQUALITY CSNMatch ORDERING CSNOrderingMatch 
+ SYNTAX 1.3.6.1.4.1.4203.666.11.2.1{64} NO-USER-MODIFICATION USAGE dSAOperatio
+ n )
+olcAttributeTypes: ( 1.3.6.1.4.1.1466.101.120.6 NAME 'altServer' DESC 'RFC4512
+ : alternative servers' SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 USAGE dSAOperatio
+ n )
+olcAttributeTypes: ( 1.3.6.1.4.1.1466.101.120.5 NAME 'namingContexts' DESC 'RF
+ C4512: naming contexts' SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 USAGE dSAOperati
+ on )
+olcAttributeTypes: ( 1.3.6.1.4.1.1466.101.120.13 NAME 'supportedControl' DESC 
+ 'RFC4512: supported controls' SYNTAX 1.3.6.1.4.1.1466.115.121.1.38 USAGE dSAO
+ peration )
+olcAttributeTypes: ( 1.3.6.1.4.1.1466.101.120.7 NAME 'supportedExtension' DESC
+  'RFC4512: supported extended operations' SYNTAX 1.3.6.1.4.1.1466.115.121.1.3
+ 8 USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.1466.101.120.15 NAME 'supportedLDAPVersion' D
+ ESC 'RFC4512: supported LDAP versions' SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 U
+ SAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.1466.101.120.14 NAME 'supportedSASLMechanisms
+ ' DESC 'RFC4512: supported SASL mechanisms' SYNTAX 1.3.6.1.4.1.1466.115.121.1
+ .15 USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.1.3.5 NAME 'supportedFeatures' DESC 'RFC
+ 4512: features supported by the server' EQUALITY objectIdentifierMatch SYNTAX
+  1.3.6.1.4.1.1466.115.121.1.38 USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.10 NAME 'monitorContext' DESC 'mon
+ itor context' SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 SINGLE-VALUE NO-USER-MODIF
+ ICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.1.12.2.1 NAME 'configContext' DESC 'conf
+ ig context' SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 SINGLE-VALUE NO-USER-MODIFIC
+ ATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.1.4 NAME 'vendorName' DESC 'RFC3045: name of impl
+ ementation vendor' EQUALITY caseExactMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.
+ 15 SINGLE-VALUE NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.1.5 NAME 'vendorVersion' DESC 'RFC3045: version o
+ f implementation' EQUALITY caseExactMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.1
+ 5 SINGLE-VALUE NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 2.5.18.5 NAME 'administrativeRole' DESC 'RFC3672: adminis
+ trative role' EQUALITY objectIdentifierMatch SYNTAX 1.3.6.1.4.1.1466.115.121.
+ 1.38 USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.18.6 NAME 'subtreeSpecification' DESC 'RFC3672: subtr
+ ee specification' SYNTAX 1.3.6.1.4.1.1466.115.121.1.45 SINGLE-VALUE USAGE dir
+ ectoryOperation )
+olcAttributeTypes: ( 2.5.21.1 NAME 'dITStructureRules' DESC 'RFC4512: DIT stru
+ cture rules' EQUALITY integerFirstComponentMatch SYNTAX 1.3.6.1.4.1.1466.115.
+ 121.1.17 USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.21.2 NAME 'dITContentRules' DESC 'RFC4512: DIT conten
+ t rules' EQUALITY objectIdentifierFirstComponentMatch SYNTAX 1.3.6.1.4.1.1466
+ .115.121.1.16 USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.21.4 NAME 'matchingRules' DESC 'RFC4512: matching rul
+ es' EQUALITY objectIdentifierFirstComponentMatch SYNTAX 1.3.6.1.4.1.1466.115.
+ 121.1.30 USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.21.5 NAME 'attributeTypes' DESC 'RFC4512: attribute t
+ ypes' EQUALITY objectIdentifierFirstComponentMatch SYNTAX 1.3.6.1.4.1.1466.11
+ 5.121.1.3 USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.21.6 NAME 'objectClasses' DESC 'RFC4512: object class
+ es' EQUALITY objectIdentifierFirstComponentMatch SYNTAX 1.3.6.1.4.1.1466.115.
+ 121.1.37 USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.21.7 NAME 'nameForms' DESC 'RFC4512: name forms ' EQU
+ ALITY objectIdentifierFirstComponentMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.3
+ 5 USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.21.8 NAME 'matchingRuleUse' DESC 'RFC4512: matching r
+ ule uses' EQUALITY objectIdentifierFirstComponentMatch SYNTAX 1.3.6.1.4.1.146
+ 6.115.121.1.31 USAGE directoryOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.1466.101.120.16 NAME 'ldapSyntaxes' DESC 'RFC
+ 4512: LDAP syntaxes' EQUALITY objectIdentifierFirstComponentMatch SYNTAX 1.3.
+ 6.1.4.1.1466.115.121.1.54 USAGE directoryOperation )
+olcAttributeTypes: ( 2.5.4.1 NAME ( 'aliasedObjectName' 'aliasedEntryName' ) D
+ ESC 'RFC4512: name of aliased object' EQUALITY distinguishedNameMatch SYNTAX 
+ 1.3.6.1.4.1.1466.115.121.1.12 SINGLE-VALUE )
+olcAttributeTypes: ( 2.16.840.1.113730.3.1.34 NAME 'ref' DESC 'RFC3296: subord
+ inate referral URL' EQUALITY caseExactMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1
+ .15 USAGE distributedOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.1.3.1 NAME 'entry' DESC 'OpenLDAP ACL en
+ try pseudo-attribute' SYNTAX 1.3.6.1.4.1.4203.1.1.1 SINGLE-VALUE NO-USER-MODI
+ FICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.1.3.2 NAME 'children' DESC 'OpenLDAP ACL
+  children pseudo-attribute' SYNTAX 1.3.6.1.4.1.4203.1.1.1 SINGLE-VALUE NO-USE
+ R-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.8 NAME ( 'authzTo' 'saslAuthzTo' )
+  DESC 'proxy authorization targets' EQUALITY authzMatch SYNTAX 1.3.6.1.4.1.42
+ 03.666.2.7 USAGE distributedOperation X-ORDERED 'VALUES' )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.9 NAME ( 'authzFrom' 'saslAuthzFro
+ m' ) DESC 'proxy authorization sources' EQUALITY authzMatch SYNTAX 1.3.6.1.4.
+ 1.4203.666.2.7 USAGE distributedOperation X-ORDERED 'VALUES' )
+olcAttributeTypes: ( 1.3.6.1.4.1.1466.101.119.3 NAME 'entryTtl' DESC 'RFC2589:
+  entry time-to-live' SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 SINGLE-VALUE NO-USE
+ R-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.1466.101.119.4 NAME 'dynamicSubtrees' DESC 'R
+ FC2589: dynamic subtrees' SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 NO-USER-MODIFI
+ CATION USAGE dSAOperation )
+olcAttributeTypes: ( 2.5.4.49 NAME 'distinguishedName' DESC 'RFC4519: common s
+ upertype of DN attributes' EQUALITY distinguishedNameMatch SYNTAX 1.3.6.1.4.1
+ .1466.115.121.1.12 )
+olcAttributeTypes: ( 2.5.4.41 NAME 'name' DESC 'RFC4519: common supertype of n
+ ame attributes' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYN
+ TAX 1.3.6.1.4.1.1466.115.121.1.15{32768} )
+olcAttributeTypes: ( 2.5.4.3 NAME ( 'cn' 'commonName' ) DESC 'RFC4519: common 
+ name(s) for which the entity is known by' SUP name )
+olcAttributeTypes: ( 0.9.2342.19200300.100.1.1 NAME ( 'uid' 'userid' ) DESC 'R
+ FC4519: user identifier' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstrings
+ Match SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} )
+olcAttributeTypes: ( 1.3.6.1.1.1.1.0 NAME 'uidNumber' DESC 'RFC2307: An intege
+ r uniquely identifying a user in an administrative domain' EQUALITY integerMa
+ tch SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.1.1.1.1 NAME 'gidNumber' DESC 'RFC2307: An intege
+ r uniquely identifying a group in an administrative domain' EQUALITY integerM
+ atch SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 SINGLE-VALUE )
+olcAttributeTypes: ( 2.5.4.35 NAME 'userPassword' DESC 'RFC4519/2307: password
+  of user' EQUALITY octetStringMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{128}
+  )
+olcAttributeTypes: ( 1.3.6.1.4.1.250.1.57 NAME 'labeledURI' DESC 'RFC2079: Uni
+ form Resource Identifier with optional label' EQUALITY caseExactMatch SYNTAX 
+ 1.3.6.1.4.1.1466.115.121.1.15 )
+olcAttributeTypes: ( 2.5.4.13 NAME 'description' DESC 'RFC4519: descriptive in
+ formation' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1
+ .3.6.1.4.1.1466.115.121.1.15{1024} )
+olcAttributeTypes: ( 2.5.4.34 NAME 'seeAlso' DESC 'RFC4519: DN of related obje
+ ct' SUP distinguishedName )
+olcAttributeTypes: ( OLcfgGlAt:78 NAME 'olcConfigFile' DESC 'File for slapd co
+ nfiguration directives' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SI
+ NGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:79 NAME 'olcConfigDir' DESC 'Directory for slap
+ d configuration backend' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString S
+ INGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:1 NAME 'olcAccess' DESC 'Access Control List' E
+ QUALITY caseIgnoreMatch SYNTAX OMsDirectoryString X-ORDERED 'VALUES' )
+olcAttributeTypes: ( OLcfgGlAt:2 NAME 'olcAllows' DESC 'Allowed set of depreca
+ ted features' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgGlAt:3 NAME 'olcArgsFile' DESC 'File for slapd comma
+ nd line options' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGLE-VA
+ LUE )
+olcAttributeTypes: ( OLcfgGlAt:5 NAME 'olcAttributeOptions' EQUALITY caseIgnor
+ eMatch SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgGlAt:4 NAME 'olcAttributeTypes' DESC 'OpenLDAP attri
+ buteTypes' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString X-ORDERED 'VALU
+ ES' )
+olcAttributeTypes: ( OLcfgGlAt:6 NAME 'olcAuthIDRewrite' EQUALITY caseIgnoreMa
+ tch SYNTAX OMsDirectoryString X-ORDERED 'VALUES' )
+olcAttributeTypes: ( OLcfgGlAt:7 NAME 'olcAuthzPolicy' EQUALITY caseIgnoreMatc
+ h SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:8 NAME 'olcAuthzRegexp' EQUALITY caseIgnoreMatc
+ h SYNTAX OMsDirectoryString X-ORDERED 'VALUES' )
+olcAttributeTypes: ( OLcfgGlAt:9 NAME 'olcBackend' DESC 'A type of backend' EQ
+ UALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGLE-VALUE X-ORDERED 'SIBL
+ INGS' )
+olcAttributeTypes: ( OLcfgGlAt:10 NAME 'olcConcurrency' SYNTAX OMsInteger SING
+ LE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:11 NAME 'olcConnMaxPending' SYNTAX OMsInteger S
+ INGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:12 NAME 'olcConnMaxPendingAuth' SYNTAX OMsInteg
+ er SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:13 NAME 'olcDatabase' DESC 'The backend type fo
+ r a database instance' SUP olcBackend SINGLE-VALUE X-ORDERED 'SIBLINGS' )
+olcAttributeTypes: ( OLcfgGlAt:14 NAME 'olcDefaultSearchBase' SYNTAX OMsDN SIN
+ GLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:15 NAME 'olcDisallows' EQUALITY caseIgnoreMatch
+  SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgGlAt:16 NAME 'olcDitContentRules' DESC 'OpenLDAP DIT
+  content rules' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString X-ORDERED 
+ 'VALUES' )
+olcAttributeTypes: ( OLcfgGlAt:17 NAME 'olcGentleHUP' SYNTAX OMsBoolean SINGLE
+ -VALUE )
+olcAttributeTypes: ( OLcfgDbAt:0.17 NAME 'olcHidden' SYNTAX OMsBoolean SINGLE-
+ VALUE )
+olcAttributeTypes: ( OLcfgGlAt:18 NAME 'olcIdleTimeout' SYNTAX OMsInteger SING
+ LE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:19 NAME 'olcInclude' SUP labeledURI )
+olcAttributeTypes: ( OLcfgGlAt:20 NAME 'olcIndexSubstrIfMinLen' SYNTAX OMsInte
+ ger SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:21 NAME 'olcIndexSubstrIfMaxLen' SYNTAX OMsInte
+ ger SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:22 NAME 'olcIndexSubstrAnyLen' SYNTAX OMsIntege
+ r SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:23 NAME 'olcIndexSubstrAnyStep' SYNTAX OMsInteg
+ er SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:84 NAME 'olcIndexIntLen' SYNTAX OMsInteger SING
+ LE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:0.4 NAME 'olcLastMod' SYNTAX OMsBoolean SINGLE-
+ VALUE )
+olcAttributeTypes: ( OLcfgGlAt:85 NAME 'olcLdapSyntaxes' DESC 'OpenLDAP ldapSy
+ ntax' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString X-ORDERED 'VALUES' )
+olcAttributeTypes: ( OLcfgDbAt:0.5 NAME 'olcLimits' EQUALITY caseIgnoreMatch S
+ YNTAX OMsDirectoryString X-ORDERED 'VALUES' )
+olcAttributeTypes: ( OLcfgGlAt:26 NAME 'olcLocalSSF' SYNTAX OMsInteger SINGLE-
+ VALUE )
+olcAttributeTypes: ( OLcfgGlAt:27 NAME 'olcLogFile' SYNTAX OMsDirectoryString 
+ SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:28 NAME 'olcLogLevel' EQUALITY caseIgnoreMatch 
+ SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgDbAt:0.6 NAME 'olcMaxDerefDepth' SYNTAX OMsInteger S
+ INGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:0.16 NAME 'olcMirrorMode' SYNTAX OMsBoolean SIN
+ GLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:30 NAME 'olcModuleLoad' EQUALITY caseIgnoreMatc
+ h SYNTAX OMsDirectoryString X-ORDERED 'VALUES' )
+olcAttributeTypes: ( OLcfgGlAt:31 NAME 'olcModulePath' SYNTAX OMsDirectoryStri
+ ng SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:0.18 NAME 'olcMonitoring' SYNTAX OMsBoolean SIN
+ GLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:32 NAME 'olcObjectClasses' DESC 'OpenLDAP objec
+ t classes' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString X-ORDERED 'VALU
+ ES' )
+olcAttributeTypes: ( OLcfgGlAt:33 NAME 'olcObjectIdentifier' EQUALITY caseIgno
+ reMatch SYNTAX OMsDirectoryString X-ORDERED 'VALUES' )
+olcAttributeTypes: ( OLcfgGlAt:34 NAME 'olcOverlay' SUP olcDatabase SINGLE-VAL
+ UE X-ORDERED 'SIBLINGS' )
+olcAttributeTypes: ( OLcfgGlAt:35 NAME 'olcPasswordCryptSaltFormat' SYNTAX OMs
+ DirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:36 NAME 'olcPasswordHash' EQUALITY caseIgnoreMa
+ tch SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgGlAt:37 NAME 'olcPidFile' SYNTAX OMsDirectoryString 
+ SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:38 NAME 'olcPlugin' EQUALITY caseIgnoreMatch SY
+ NTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgGlAt:39 NAME 'olcPluginLogFile' SYNTAX OMsDirectoryS
+ tring SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:40 NAME 'olcReadOnly' SYNTAX OMsBoolean SINGLE-
+ VALUE )
+olcAttributeTypes: ( OLcfgGlAt:41 NAME 'olcReferral' SUP labeledURI SINGLE-VAL
+ UE )
+olcAttributeTypes: ( OLcfgDbAt:0.7 NAME 'olcReplica' SUP labeledURI EQUALITY c
+ aseIgnoreMatch X-ORDERED 'VALUES' )
+olcAttributeTypes: ( OLcfgGlAt:43 NAME 'olcReplicaArgsFile' SYNTAX OMsDirector
+ yString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:44 NAME 'olcReplicaPidFile' SYNTAX OMsDirectory
+ String SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:45 NAME 'olcReplicationInterval' SYNTAX OMsInte
+ ger SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:46 NAME 'olcReplogFile' SYNTAX OMsDirectoryStri
+ ng SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:47 NAME 'olcRequires' EQUALITY caseIgnoreMatch 
+ SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgGlAt:48 NAME 'olcRestrict' EQUALITY caseIgnoreMatch 
+ SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgGlAt:49 NAME 'olcReverseLookup' SYNTAX OMsBoolean SI
+ NGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:0.8 NAME 'olcRootDN' EQUALITY distinguishedName
+ Match SYNTAX OMsDN SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:51 NAME 'olcRootDSE' EQUALITY caseIgnoreMatch S
+ YNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgDbAt:0.9 NAME 'olcRootPW' SYNTAX OMsDirectoryString 
+ SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:53 NAME 'olcSaslHost' SYNTAX OMsDirectoryString
+  SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:54 NAME 'olcSaslRealm' SYNTAX OMsDirectoryStrin
+ g SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:56 NAME 'olcSaslSecProps' SYNTAX OMsDirectorySt
+ ring SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:58 NAME 'olcSchemaDN' EQUALITY distinguishedNam
+ eMatch SYNTAX OMsDN SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:59 NAME 'olcSecurity' EQUALITY caseIgnoreMatch 
+ SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgGlAt:81 NAME 'olcServerID' EQUALITY caseIgnoreMatch 
+ SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgGlAt:60 NAME 'olcSizeLimit' SYNTAX OMsDirectoryStrin
+ g SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:61 NAME 'olcSockbufMaxIncoming' SYNTAX OMsInteg
+ er SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:62 NAME 'olcSockbufMaxIncomingAuth' SYNTAX OMsI
+ nteger SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:83 NAME 'olcSortVals' DESC 'Attributes whose va
+ lues will always be sorted' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryStrin
+ g )
+olcAttributeTypes: ( OLcfgDbAt:0.15 NAME 'olcSubordinate' SYNTAX OMsDirectoryS
+ tring SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:0.10 NAME 'olcSuffix' EQUALITY distinguishedNam
+ eMatch SYNTAX OMsDN )
+olcAttributeTypes: ( OLcfgDbAt:0.11 NAME 'olcSyncrepl' EQUALITY caseIgnoreMatc
+ h SYNTAX OMsDirectoryString X-ORDERED 'VALUES' )
+olcAttributeTypes: ( OLcfgGlAt:66 NAME 'olcThreads' SYNTAX OMsInteger SINGLE-V
+ ALUE )
+olcAttributeTypes: ( OLcfgGlAt:67 NAME 'olcTimeLimit' SYNTAX OMsDirectoryStrin
+ g )
+olcAttributeTypes: ( OLcfgGlAt:68 NAME 'olcTLSCACertificateFile' SYNTAX OMsDir
+ ectoryString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:69 NAME 'olcTLSCACertificatePath' SYNTAX OMsDir
+ ectoryString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:70 NAME 'olcTLSCertificateFile' SYNTAX OMsDirec
+ toryString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:71 NAME 'olcTLSCertificateKeyFile' SYNTAX OMsDi
+ rectoryString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:72 NAME 'olcTLSCipherSuite' SYNTAX OMsDirectory
+ String SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:73 NAME 'olcTLSCRLCheck' SYNTAX OMsDirectoryStr
+ ing SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:82 NAME 'olcTLSCRLFile' SYNTAX OMsDirectoryStri
+ ng SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:74 NAME 'olcTLSRandFile' SYNTAX OMsDirectoryStr
+ ing SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:75 NAME 'olcTLSVerifyClient' SYNTAX OMsDirector
+ yString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:77 NAME 'olcTLSDHParamFile' SYNTAX OMsDirectory
+ String SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgGlAt:80 NAME 'olcToolThreads' SYNTAX OMsInteger SING
+ LE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:0.12 NAME 'olcUpdateDN' SYNTAX OMsDN SINGLE-VAL
+ UE )
+olcAttributeTypes: ( OLcfgDbAt:0.13 NAME 'olcUpdateRef' SUP labeledURI EQUALIT
+ Y caseIgnoreMatch )
+olcAttributeTypes: ( OLcfgDbAt:0.1 NAME 'olcDbDirectory' DESC 'Directory for d
+ atabase content' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGLE-VA
+ LUE )
+olcAttributeTypes: ( OLcfgDbAt:1.11 NAME 'olcDbCacheFree' DESC 'Number of extr
+ a entries to free when max is reached' SYNTAX OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:1.1 NAME 'olcDbCacheSize' DESC 'Entry cache siz
+ e in entries' SYNTAX OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:1.2 NAME 'olcDbCheckpoint' DESC 'Database check
+ point interval in kbytes and minutes' SYNTAX OMsDirectoryString SINGLE-VALUE 
+ )
+olcAttributeTypes: ( OLcfgDbAt:1.13 NAME 'olcDbCryptFile' DESC 'Pathname of fi
+ le containing the DB encryption key' SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:1.14 NAME 'olcDbCryptKey' DESC 'DB encryption k
+ ey' SYNTAX OMsOctetString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:1.3 NAME 'olcDbConfig' DESC 'BerkeleyDB DB_CONF
+ IG configuration directives' SYNTAX OMsIA5String X-ORDERED 'VALUES' )
+olcAttributeTypes: ( OLcfgDbAt:1.4 NAME 'olcDbNoSync' DESC 'Disable synchronou
+ s database writes' SYNTAX OMsBoolean SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:1.5 NAME 'olcDbDirtyRead' DESC 'Allow reads of 
+ uncommitted data' SYNTAX OMsBoolean SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:1.12 NAME 'olcDbDNcacheSize' DESC 'DN cache siz
+ e' SYNTAX OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:1.6 NAME 'olcDbIDLcacheSize' DESC 'IDL cache si
+ ze in IDLs' SYNTAX OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:0.2 NAME 'olcDbIndex' DESC 'Attribute index par
+ ameters' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgDbAt:1.7 NAME 'olcDbLinearIndex' DESC 'Index attribu
+ tes one at a time' SYNTAX OMsBoolean SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:1.8 NAME 'olcDbLockDetect' DESC 'Deadlock detec
+ tion algorithm' SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:0.3 NAME 'olcDbMode' DESC 'Unix permissions of 
+ database files' SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:1.9 NAME 'olcDbSearchStack' DESC 'Depth of sear
+ ch stack in IDLs' SYNTAX OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgDbAt:1.10 NAME 'olcDbShmKey' DESC 'Key for shared me
+ mory region' SYNTAX OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.1 NAME 'monitoredInfo' DESC 'mo
+ nitored info' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYNTA
+ X 1.3.6.1.4.1.1466.115.121.1.15{32768} NO-USER-MODIFICATION USAGE dSAOperatio
+ n )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.2 NAME 'managedInfo' DESC 'moni
+ tor managed info' SUP name )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.3 NAME 'monitorCounter' DESC 'm
+ onitor counter' EQUALITY integerMatch ORDERING integerOrderingMatch SYNTAX 1.
+ 3.6.1.4.1.1466.115.121.1.27 NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.4 NAME 'monitorOpCompleted' DES
+ C 'monitor completed operations' SUP monitorCounter NO-USER-MODIFICATION USAG
+ E dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.5 NAME 'monitorOpInitiated' DES
+ C 'monitor initiated operations' SUP monitorCounter NO-USER-MODIFICATION USAG
+ E dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.6 NAME 'monitorConnectionNumber
+ ' DESC 'monitor connection number' SUP monitorCounter NO-USER-MODIFICATION US
+ AGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.7 NAME 'monitorConnectionAuthzD
+ N' DESC 'monitor connection authorization DN' EQUALITY distinguishedNameMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 NO-USER-MODIFICATION USAGE dSAOperation
+  )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.8 NAME 'monitorConnectionLocalA
+ ddress' DESC 'monitor connection local address' SUP monitoredInfo NO-USER-MOD
+ IFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.9 NAME 'monitorConnectionPeerAd
+ dress' DESC 'monitor connection peer address' SUP monitoredInfo NO-USER-MODIF
+ ICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.10 NAME 'monitorTimestamp' DESC
+  'monitor timestamp' EQUALITY generalizedTimeMatch ORDERING generalizedTimeOr
+ deringMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.24 SINGLE-VALUE NO-USER-MODIFIC
+ ATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.11 NAME 'monitorOverlay' DESC '
+ name of overlays defined for a given database' SUP monitoredInfo NO-USER-MODI
+ FICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.12 NAME 'readOnly' DESC 'read/w
+ rite status of a given database' EQUALITY booleanMatch SYNTAX 1.3.6.1.4.1.146
+ 6.115.121.1.7 SINGLE-VALUE USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.13 NAME 'restrictedOperation' D
+ ESC 'name of restricted operation for a given database' SUP managedInfo )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.14 NAME 'monitorConnectionProto
+ col' DESC 'monitor connection protocol' SUP monitoredInfo NO-USER-MODIFICATIO
+ N USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.15 NAME 'monitorConnectionOpsRe
+ ceived' DESC 'monitor number of operations received by the connection' SUP mo
+ nitorCounter NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.16 NAME 'monitorConnectionOpsEx
+ ecuting' DESC 'monitor number of operations in execution within the connectio
+ n' SUP monitorCounter NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.17 NAME 'monitorConnectionOpsPe
+ nding' DESC 'monitor number of pending operations within the connection' SUP 
+ monitorCounter NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.18 NAME 'monitorConnectionOpsCo
+ mpleted' DESC 'monitor number of operations completed within the connection' 
+ SUP monitorCounter NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.19 NAME 'monitorConnectionGet' 
+ DESC 'number of times connection_get() was called so far' SUP monitorCounter 
+ NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.20 NAME 'monitorConnectionRead'
+  DESC 'number of times connection_read() was called so far' SUP monitorCounte
+ r NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.21 NAME 'monitorConnectionWrite
+ ' DESC 'number of times connection_write() was called so far' SUP monitorCoun
+ ter NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.22 NAME 'monitorConnectionMask'
+  DESC 'monitor connection mask' SUP monitoredInfo NO-USER-MODIFICATION USAGE 
+ dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.23 NAME 'monitorConnectionListe
+ ner' DESC 'monitor connection listener' SUP monitoredInfo NO-USER-MODIFICATIO
+ N USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.24 NAME 'monitorConnectionPeerD
+ omain' DESC 'monitor connection peer domain' SUP monitoredInfo NO-USER-MODIFI
+ CATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.25 NAME 'monitorConnectionStart
+ Time' DESC 'monitor connection start time' SUP monitorTimestamp SINGLE-VALUE 
+ NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.26 NAME 'monitorConnectionActiv
+ ityTime' DESC 'monitor connection activity time' SUP monitorTimestamp SINGLE-
+ VALUE NO-USER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.27 NAME 'monitorIsShadow' DESC 
+ 'TRUE if the database is shadow' EQUALITY booleanMatch SYNTAX 1.3.6.1.4.1.146
+ 6.115.121.1.7 SINGLE-VALUE USAGE dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.28 NAME 'monitorUpdateRef' DESC
+  'update referral for shadow databases' SUP monitoredInfo SINGLE-VALUE USAGE 
+ dSAOperation )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.1.55.29 NAME 'monitorRuntimeConfig' 
+ DESC 'TRUE if component allows runtime configuration' EQUALITY booleanMatch S
+ YNTAX 1.3.6.1.4.1.1466.115.121.1.7 SINGLE-VALUE USAGE dSAOperation )
+olcAttributeTypes: ( OLcfgOvAt:1.1 NAME 'olcSpCheckpoint' DESC 'ContextCSN che
+ ckpoint interval in ops and minutes' SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgOvAt:1.2 NAME 'olcSpSessionlog' DESC 'Session log si
+ ze in ops' SYNTAX OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgOvAt:1.3 NAME 'olcSpNoPresent' DESC 'Omit Present ph
+ ase processing' SYNTAX OMsBoolean SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgOvAt:1.4 NAME 'olcSpReloadHint' DESC 'Observe Reload
+  Hint in Request control' SYNTAX OMsBoolean SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgOvAt:4.1 NAME 'olcAccessLogDB' DESC 'Suffix of datab
+ ase for log content' SUP distinguishedName SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgOvAt:4.2 NAME 'olcAccessLogOps' DESC 'Operation type
+ s to log' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( OLcfgOvAt:4.3 NAME 'olcAccessLogPurge' DESC 'Log cleanup 
+ parameters' SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgOvAt:4.4 NAME 'olcAccessLogSuccess' DESC 'Log succes
+ sful ops only' SYNTAX OMsBoolean SINGLE-VALUE )
+olcAttributeTypes: ( OLcfgOvAt:4.5 NAME 'olcAccessLogOld' DESC 'Log old values
+  when modifying entries matching the filter' SYNTAX OMsDirectoryString SINGLE
+ -VALUE )
+olcAttributeTypes: ( OLcfgOvAt:4.6 NAME 'olcAccessLogOldAttr' DESC 'Log old va
+ lues of these attributes even if unmodified' EQUALITY caseIgnoreMatch SYNTAX 
+ OMsDirectoryString )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.1 NAME 'reqDN' DESC 'Target D
+ N of request' EQUALITY distinguishedNameMatch SYNTAX OMsDN SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.2 NAME 'reqStart' DESC 'Start
+  time of request' EQUALITY generalizedTimeMatch ORDERING generalizedTimeOrder
+ ingMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.24 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.3 NAME 'reqEnd' DESC 'End tim
+ e of request' EQUALITY generalizedTimeMatch ORDERING generalizedTimeOrderingM
+ atch SYNTAX 1.3.6.1.4.1.1466.115.121.1.24 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.4 NAME 'reqType' DESC 'Type o
+ f request' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.5 NAME 'reqSession' DESC 'Ses
+ sion ID of request' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGLE
+ -VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.6 NAME 'reqAuthzID' DESC 'Aut
+ horization ID of requestor' EQUALITY distinguishedNameMatch SYNTAX OMsDN SING
+ LE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.7 NAME 'reqResult' DESC 'Resu
+ lt code of request' EQUALITY integerMatch ORDERING integerOrderingMatch SYNTA
+ X OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.8 NAME 'reqMessage' DESC 'Err
+ or text of request' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch
+  SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.9 NAME 'reqReferral' DESC 'Re
+ ferrals returned for request' SUP labeledURI )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.10 NAME 'reqControls' DESC 'R
+ equest controls' EQUALITY objectIdentifierFirstComponentMatch SYNTAX 1.3.6.1.
+ 4.1.4203.666.11.5.3.1 X-ORDERED 'VALUES' )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.11 NAME 'reqRespControls' DES
+ C 'Response controls of request' EQUALITY objectIdentifierFirstComponentMatch
+  SYNTAX 1.3.6.1.4.1.4203.666.11.5.3.1 X-ORDERED 'VALUES' )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.12 NAME 'reqId' DESC 'ID of R
+ equest to Abandon' EQUALITY integerMatch ORDERING integerOrderingMatch SYNTAX
+  OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.13 NAME 'reqVersion' DESC 'Pr
+ otocol version of Bind request' EQUALITY integerMatch ORDERING integerOrderin
+ gMatch SYNTAX OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.14 NAME 'reqMethod' DESC 'Bin
+ d method of request' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGL
+ E-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.15 NAME 'reqAssertion' DESC '
+ Compare Assertion of request' SYNTAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.16 NAME 'reqMod' DESC 'Modifi
+ cations of request' EQUALITY octetStringMatch SUBSTR octetStringSubstringsMat
+ ch SYNTAX OMsOctetString )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.17 NAME 'reqOld' DESC 'Old va
+ lues of entry before request completed' EQUALITY octetStringMatch SUBSTR octe
+ tStringSubstringsMatch SYNTAX OMsOctetString )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.18 NAME 'reqNewRDN' DESC 'New
+  RDN of request' EQUALITY distinguishedNameMatch SYNTAX OMsDN SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.19 NAME 'reqDeleteOldRDN' DES
+ C 'Delete old RDN' EQUALITY booleanMatch SYNTAX OMsBoolean SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.20 NAME 'reqNewSuperior' DESC
+  'New superior DN of request' EQUALITY distinguishedNameMatch SYNTAX OMsDN SI
+ NGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.21 NAME 'reqScope' DESC 'Scop
+ e of request' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString SINGLE-VALUE
+  )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.22 NAME 'reqDerefAliases' DES
+ C 'Disposition of Aliases in request' EQUALITY caseIgnoreMatch SYNTAX OMsDire
+ ctoryString SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.23 NAME 'reqAttrsOnly' DESC '
+ Attributes and values of request' EQUALITY booleanMatch SYNTAX OMsBoolean SIN
+ GLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.24 NAME 'reqFilter' DESC 'Fil
+ ter of request' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch SYN
+ TAX OMsDirectoryString SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.25 NAME 'reqAttr' DESC 'Attri
+ butes of request' EQUALITY caseIgnoreMatch SYNTAX OMsDirectoryString )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.26 NAME 'reqSizeLimit' DESC '
+ Size limit of request' EQUALITY integerMatch ORDERING integerOrderingMatch SY
+ NTAX OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.27 NAME 'reqTimeLimit' DESC '
+ Time limit of request' EQUALITY integerMatch ORDERING integerOrderingMatch SY
+ NTAX OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.28 NAME 'reqEntries' DESC 'Nu
+ mber of entries returned' EQUALITY integerMatch ORDERING integerOrderingMatch
+  SYNTAX OMsInteger SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.29 NAME 'reqData' DESC 'Data 
+ of extended request' EQUALITY octetStringMatch SUBSTR octetStringSubstringsMa
+ tch SYNTAX OMsOctetString SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.4203.666.11.5.1.30 NAME 'auditContext' DESC '
+ DN of auditContainer' SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 SINGLE-VALUE NO-US
+ ER-MODIFICATION USAGE dSAOperation )
+olcAttributeTypes: ( olmBDBAttributes:1 NAME 'olmBDBEntryCache' DESC 'Number o
+ f items in Entry Cache' SUP monitorCounter NO-USER-MODIFICATION USAGE dSAOper
+ ation )
+olcAttributeTypes: ( olmBDBAttributes:2 NAME 'olmBDBDNCache' DESC 'Number of i
+ tems in DN Cache' SUP monitorCounter NO-USER-MODIFICATION USAGE dSAOperation 
+ )
+olcAttributeTypes: ( olmBDBAttributes:3 NAME 'olmBDBIDLCache' DESC 'Number of 
+ items in IDL Cache' SUP monitorCounter NO-USER-MODIFICATION USAGE dSAOperatio
+ n )
+olcAttributeTypes: ( olmBDBAttributes:4 NAME 'olmDbDirectory' DESC 'Path name 
+ of the directory where the database environment resides' SUP monitoredInfo NO
+ -USER-MODIFICATION USAGE dSAOperation )
+olcObjectClasses: ( 2.5.6.0 NAME 'top' DESC 'top of the superclass chain' ABST
+ RACT MUST objectClass )
+olcObjectClasses: ( 1.3.6.1.4.1.1466.101.120.111 NAME 'extensibleObject' DESC 
+ 'RFC4512: extensible object' SUP top AUXILIARY )
+olcObjectClasses: ( 2.5.6.1 NAME 'alias' DESC 'RFC4512: an alias' SUP top STRU
+ CTURAL MUST aliasedObjectName )
+olcObjectClasses: ( 2.16.840.1.113730.3.2.6 NAME 'referral' DESC 'namedref: na
+ med subordinate referral' SUP top STRUCTURAL MUST ref )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.1.4.1 NAME ( 'OpenLDAProotDSE' 'LDAProotD
+ SE' ) DESC 'OpenLDAP Root DSE object' SUP top STRUCTURAL MAY cn )
+olcObjectClasses: ( 2.5.17.0 NAME 'subentry' DESC 'RFC3672: subentry' SUP top 
+ STRUCTURAL MUST ( cn $ subtreeSpecification ) )
+olcObjectClasses: ( 2.5.20.1 NAME 'subschema' DESC 'RFC4512: controlling subsc
+ hema (sub)entry' AUXILIARY MAY ( dITStructureRules $ nameForms $ dITContentRu
+ les $ objectClasses $ attributeTypes $ matchingRules $ matchingRuleUse ) )
+olcObjectClasses: ( 1.3.6.1.4.1.1466.101.119.2 NAME 'dynamicObject' DESC 'RFC2
+ 589: Dynamic Object' SUP top AUXILIARY )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.3.4 NAME 'glue' DESC 'Glue Entry' SUP
+  top STRUCTURAL )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.3.5 NAME 'syncConsumerSubentry' DESC 
+ 'Persistent Info for SyncRepl Consumer' AUXILIARY MAY syncreplCookie )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.3.6 NAME 'syncProviderSubentry' DESC 
+ 'Persistent Info for SyncRepl Producer' AUXILIARY MAY contextCSN )
+olcObjectClasses: ( OLcfgGlOc:0 NAME 'olcConfig' DESC 'OpenLDAP configuration 
+ object' SUP top ABSTRACT )
+olcObjectClasses: ( OLcfgGlOc:1 NAME 'olcGlobal' DESC 'OpenLDAP Global configu
+ ration options' SUP olcConfig STRUCTURAL MAY ( cn $ olcConfigFile $ olcConfig
+ Dir $ olcAllows $ olcArgsFile $ olcAttributeOptions $ olcAuthIDRewrite $ olcA
+ uthzPolicy $ olcAuthzRegexp $ olcConcurrency $ olcConnMaxPending $ olcConnMax
+ PendingAuth $ olcDisallows $ olcGentleHUP $ olcIdleTimeout $ olcIndexSubstrIf
+ MaxLen $ olcIndexSubstrIfMinLen $ olcIndexSubstrAnyLen $ olcIndexSubstrAnySte
+ p $ olcIndexIntLen $ olcLocalSSF $ olcLogLevel $ olcPasswordCryptSaltFormat $
+  olcPasswordHash $ olcPidFile $ olcPluginLogFile $ olcReadOnly $ olcReferral 
+ $ olcReplogFile $ olcRequires $ olcRestrict $ olcReverseLookup $ olcRootDSE $
+  olcSaslHost $ olcSaslRealm $ olcSaslSecProps $ olcSecurity $ olcServerID $ o
+ lcSizeLimit $ olcSockbufMaxIncoming $ olcSockbufMaxIncomingAuth $ olcThreads 
+ $ olcTimeLimit $ olcTLSCACertificateFile $ olcTLSCACertificatePath $ olcTLSCe
+ rtificateFile $ olcTLSCertificateKeyFile $ olcTLSCipherSuite $ olcTLSCRLCheck
+  $ olcTLSRandFile $ olcTLSVerifyClient $ olcTLSDHParamFile $ olcTLSCRLFile $ 
+ olcToolThreads $ olcObjectIdentifier $ olcAttributeTypes $ olcObjectClasses $
+  olcDitContentRules $ olcLdapSyntaxes ) )
+olcObjectClasses: ( OLcfgGlOc:2 NAME 'olcSchemaConfig' DESC 'OpenLDAP schema o
+ bject' SUP olcConfig STRUCTURAL MAY ( cn $ olcObjectIdentifier $ olcAttribute
+ Types $ olcObjectClasses $ olcDitContentRules $ olcLdapSyntaxes ) )
+olcObjectClasses: ( OLcfgGlOc:3 NAME 'olcBackendConfig' DESC 'OpenLDAP Backend
+ -specific options' SUP olcConfig STRUCTURAL MUST olcBackend )
+olcObjectClasses: ( OLcfgGlOc:4 NAME 'olcDatabaseConfig' DESC 'OpenLDAP Databa
+ se-specific options' SUP olcConfig STRUCTURAL MUST olcDatabase MAY ( olcHidde
+ n $ olcSuffix $ olcSubordinate $ olcAccess $ olcLastMod $ olcLimits $ olcMaxD
+ erefDepth $ olcPlugin $ olcReadOnly $ olcReplica $ olcReplicaArgsFile $ olcRe
+ plicaPidFile $ olcReplicationInterval $ olcReplogFile $ olcRequires $ olcRest
+ rict $ olcRootDN $ olcRootPW $ olcSchemaDN $ olcSecurity $ olcSizeLimit $ olc
+ Syncrepl $ olcTimeLimit $ olcUpdateDN $ olcUpdateRef $ olcMirrorMode $ olcMon
+ itoring ) )
+olcObjectClasses: ( OLcfgGlOc:5 NAME 'olcOverlayConfig' DESC 'OpenLDAP Overlay
+ -specific options' SUP olcConfig STRUCTURAL MUST olcOverlay )
+olcObjectClasses: ( OLcfgGlOc:6 NAME 'olcIncludeFile' DESC 'OpenLDAP configura
+ tion include file' SUP olcConfig STRUCTURAL MUST olcInclude MAY ( cn $ olcRoo
+ tDSE ) )
+olcObjectClasses: ( OLcfgGlOc:7 NAME 'olcFrontendConfig' DESC 'OpenLDAP fronte
+ nd configuration' AUXILIARY MAY ( olcDefaultSearchBase $ olcPasswordHash $ ol
+ cSortVals ) )
+olcObjectClasses: ( OLcfgGlOc:8 NAME 'olcModuleList' DESC 'OpenLDAP dynamic mo
+ dule info' SUP olcConfig STRUCTURAL MAY ( cn $ olcModulePath $ olcModuleLoad 
+ ) )
+olcObjectClasses: ( OLcfgDbOc:2.1 NAME 'olcLdifConfig' DESC 'LDIF backend conf
+ iguration' SUP olcDatabaseConfig STRUCTURAL MUST olcDbDirectory )
+olcObjectClasses: ( OLcfgDbOc:1.2 NAME 'olcHdbConfig' DESC 'HDB backend config
+ uration' SUP olcDatabaseConfig STRUCTURAL MUST olcDbDirectory MAY ( olcDbCach
+ eSize $ olcDbCheckpoint $ olcDbConfig $ olcDbCryptFile $ olcDbCryptKey $ olcD
+ bNoSync $ olcDbDirtyRead $ olcDbIDLcacheSize $ olcDbIndex $ olcDbLinearIndex 
+ $ olcDbLockDetect $ olcDbMode $ olcDbSearchStack $ olcDbShmKey $ olcDbCacheFr
+ ee $ olcDbDNcacheSize ) )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.3.16.1 NAME 'monitor' DESC 'OpenLDAP 
+ system monitoring' SUP top STRUCTURAL MUST cn MAY ( description $ seeAlso $ l
+ abeledURI $ monitoredInfo $ managedInfo $ monitorOverlay ) )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.3.16.2 NAME 'monitorServer' DESC 'Ser
+ ver monitoring root entry' SUP monitor STRUCTURAL )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.3.16.3 NAME 'monitorContainer' DESC '
+ monitor container class' SUP monitor STRUCTURAL )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.3.16.4 NAME 'monitorCounterObject' DE
+ SC 'monitor counter class' SUP monitor STRUCTURAL )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.3.16.5 NAME 'monitorOperation' DESC '
+ monitor operation class' SUP monitor STRUCTURAL )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.3.16.6 NAME 'monitorConnection' DESC 
+ 'monitor connection class' SUP monitor STRUCTURAL )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.3.16.7 NAME 'managedObject' DESC 'mon
+ itor managed entity class' SUP monitor STRUCTURAL )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.3.16.8 NAME 'monitoredObject' DESC 'm
+ onitor monitored entity class' SUP monitor STRUCTURAL )
+olcObjectClasses: ( OLcfgDbOc:4.1 NAME 'olcMonitorConfig' DESC 'Monitor backen
+ d configuration' SUP olcDatabaseConfig STRUCTURAL )
+olcObjectClasses: ( OLcfgOvOc:1.1 NAME 'olcSyncProvConfig' DESC 'SyncRepl Prov
+ ider configuration' SUP olcOverlayConfig STRUCTURAL MAY ( olcSpCheckpoint $ o
+ lcSpSessionlog $ olcSpNoPresent $ olcSpReloadHint ) )
+olcObjectClasses: ( OLcfgOvOc:4.1 NAME 'olcAccessLogConfig' DESC 'Access log c
+ onfiguration' SUP olcOverlayConfig STRUCTURAL MUST olcAccessLogDB MAY ( olcAc
+ cessLogOps $ olcAccessLogPurge $ olcAccessLogSuccess $ olcAccessLogOld $ olcA
+ ccessLogOldAttr ) )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.0 NAME 'auditContainer' DESC '
+ AuditLog container' SUP top STRUCTURAL MAY ( cn $ reqStart $ reqEnd ) )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.1 NAME 'auditObject' DESC 'Ope
+ nLDAP request auditing' SUP top STRUCTURAL MUST ( reqStart $ reqType $ reqSes
+ sion ) MAY ( reqDN $ reqAuthzID $ reqControls $ reqRespControls $ reqEnd $ re
+ qResult $ reqMessage $ reqReferral ) )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.2 NAME 'auditReadObject' DESC 
+ 'OpenLDAP read request record' SUP auditObject STRUCTURAL )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.3 NAME 'auditWriteObject' DESC
+  'OpenLDAP write request record' SUP auditObject STRUCTURAL )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.4 NAME 'auditAbandon' DESC 'Ab
+ andon operation' SUP auditObject STRUCTURAL MUST reqId )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.5 NAME 'auditAdd' DESC 'Add op
+ eration' SUP auditWriteObject STRUCTURAL MUST reqMod )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.6 NAME 'auditBind' DESC 'Bind 
+ operation' SUP auditObject STRUCTURAL MUST ( reqVersion $ reqMethod ) )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.7 NAME 'auditCompare' DESC 'Co
+ mpare operation' SUP auditReadObject STRUCTURAL MUST reqAssertion )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.8 NAME 'auditDelete' DESC 'Del
+ ete operation' SUP auditWriteObject STRUCTURAL MAY reqOld )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.9 NAME 'auditModify' DESC 'Mod
+ ify operation' SUP auditWriteObject STRUCTURAL MUST reqMod MAY reqOld )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.10 NAME 'auditModRDN' DESC 'Mo
+ dRDN operation' SUP auditWriteObject STRUCTURAL MUST ( reqNewRDN $ reqDeleteO
+ ldRDN ) MAY ( reqNewSuperior $ reqMod $ reqOld ) )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.11 NAME 'auditSearch' DESC 'Se
+ arch operation' SUP auditReadObject STRUCTURAL MUST ( reqScope $ reqDerefAlia
+ ses $ reqAttrsonly ) MAY ( reqFilter $ reqAttr $ reqEntries $ reqSizeLimit $ 
+ reqTimeLimit ) )
+olcObjectClasses: ( 1.3.6.1.4.1.4203.666.11.5.2.12 NAME 'auditExtended' DESC '
+ Extended operation' SUP auditObject STRUCTURAL MAY reqData )
+olcObjectClasses: ( olmBDBObjectClasses:1 NAME 'olmBDBDatabase' SUP top AUXILI
+ ARY MAY ( olmBDBEntryCache $ olmBDBDNCache $ olmBDBIDLCache $ olmDbDirectory 
+ ) )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.1 DESC 'ACI Item' X-BINARY-TRANS
+ FER-REQUIRED 'TRUE' X-NOT-HUMAN-READABLE 'TRUE' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.2 DESC 'Access Point' X-NOT-HUMA
+ N-READABLE 'TRUE' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.3 DESC 'Attribute Type Descripti
+ on' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.4 DESC 'Audio' X-NOT-HUMAN-READA
+ BLE 'TRUE' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.5 DESC 'Binary' X-NOT-HUMAN-READ
+ ABLE 'TRUE' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.6 DESC 'Bit String' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.7 DESC 'Boolean' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.8 DESC 'Certificate' X-BINARY-TR
+ ANSFER-REQUIRED 'TRUE' X-NOT-HUMAN-READABLE 'TRUE' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.9 DESC 'Certificate List' X-BINA
+ RY-TRANSFER-REQUIRED 'TRUE' X-NOT-HUMAN-READABLE 'TRUE' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.10 DESC 'Certificate Pair' X-BIN
+ ARY-TRANSFER-REQUIRED 'TRUE' X-NOT-HUMAN-READABLE 'TRUE' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.12 DESC 'Distinguished Name' )
+olcLdapSyntaxes: ( 1.2.36.79672281.1.5.0 DESC 'RDN' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.13 DESC 'Data Quality' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.14 DESC 'Delivery Method' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.15 DESC 'Directory String' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.16 DESC 'DIT Content Rule Descri
+ ption' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.17 DESC 'DIT Structure Rule Desc
+ ription' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.19 DESC 'DSA Quality' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.20 DESC 'DSE Type' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.21 DESC 'Enhanced Guide' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.22 DESC 'Facsimile Telephone Num
+ ber' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.23 DESC 'Fax' X-NOT-HUMAN-READAB
+ LE 'TRUE' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.24 DESC 'Generalized Time' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.25 DESC 'Guide' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.26 DESC 'IA5 String' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.27 DESC 'Integer' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.28 DESC 'JPEG' X-NOT-HUMAN-READA
+ BLE 'TRUE' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.29 DESC 'Master And Shadow Acces
+ s Points' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.30 DESC 'Matching Rule Descripti
+ on' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.31 DESC 'Matching Rule Use Descr
+ iption' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.32 DESC 'Mail Preference' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.33 DESC 'MHS OR Address' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.34 DESC 'Name And Optional UID' 
+ )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.35 DESC 'Name Form Description' 
+ )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.36 DESC 'Numeric String' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.37 DESC 'Object Class Descriptio
+ n' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.38 DESC 'OID' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.39 DESC 'Other Mailbox' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.40 DESC 'Octet String' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.41 DESC 'Postal Address' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.42 DESC 'Protocol Information' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.43 DESC 'Presentation Address' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.44 DESC 'Printable String' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.11 DESC 'Country String' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.45 DESC 'SubtreeSpecification' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.49 DESC 'Supported Algorithm' X-
+ BINARY-TRANSFER-REQUIRED 'TRUE' X-NOT-HUMAN-READABLE 'TRUE' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.50 DESC 'Telephone Number' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.51 DESC 'Teletex Terminal Identi
+ fier' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.52 DESC 'Telex Number' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.54 DESC 'LDAP Syntax Description
+ ' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.55 DESC 'Modify Rights' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.56 DESC 'LDAP Schema Definition'
+  )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.57 DESC 'LDAP Schema Description
+ ' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.1466.115.121.1.58 DESC 'Substring Assertion' )
+olcLdapSyntaxes: ( 1.3.6.1.1.1.0.0 DESC 'RFC2307 NIS Netgroup Triple' )
+olcLdapSyntaxes: ( 1.3.6.1.1.1.0.1 DESC 'RFC2307 Boot Parameter' )
+olcLdapSyntaxes: ( 1.3.6.1.1.15.1 DESC 'Certificate Exact Assertion' )
+olcLdapSyntaxes: ( 1.3.6.1.1.15.2 DESC 'Certificate Assertion' )
+olcLdapSyntaxes: ( 1.3.6.1.1.15.3 DESC 'Certificate Pair Exact Assertion' )
+olcLdapSyntaxes: ( 1.3.6.1.1.15.4 DESC 'Certificate Pair Assertion' )
+olcLdapSyntaxes: ( 1.3.6.1.1.15.5 DESC 'Certificate List Exact Assertion' )
+olcLdapSyntaxes: ( 1.3.6.1.1.15.6 DESC 'Certificate List Assertion' )
+olcLdapSyntaxes: ( 1.3.6.1.1.15.7 DESC 'Algorithm Identifier' )
+olcLdapSyntaxes: ( 1.3.6.1.1.16.1 DESC 'UUID' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.4203.666.11.2.1 DESC 'CSN' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.4203.666.11.2.4 DESC 'CSN SID' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.4203.1.1.1 DESC 'OpenLDAP void' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.4203.666.2.7 DESC 'OpenLDAP authz' )
+olcLdapSyntaxes: ( 1.3.6.1.4.1.4203.666.11.5.3.1 DESC 'Control' )
+structuralObjectClass: olcSchemaConfig
+entryUUID: 15264cac-333e-102d-86f7-d562901af228
+creatorsName: cn=config
+createTimestamp: 20081020215916Z
+entryCSN: 20081020215916.275992Z#000000#000#000000
+modifiersName: cn=config
+modifyTimestamp: 20081020215916Z
