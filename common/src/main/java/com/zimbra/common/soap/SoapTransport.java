@@ -42,7 +42,7 @@ public abstract class SoapTransport {
     private boolean voidOnExpired = false;
     private boolean isAdmin = false;
     private String originalUserAgent;
-    public static final String DEFAULT_USER_AGENT_NAME = "ZCS";
+    public static final String DEFAULT_USER_AGENT_NAME = "Carbonio";
     private static String sDefaultUserAgentName = DEFAULT_USER_AGENT_NAME;
     private static String sDefaultUserAgentVersion;
     private static final ViaHolder viaHolder = new ViaHolder();
