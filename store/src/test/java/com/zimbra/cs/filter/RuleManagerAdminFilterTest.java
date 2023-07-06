@@ -5,21 +5,9 @@
 
 package com.zimbra.cs.filter;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.mail.Header;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Maps;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.Maps;
 import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
@@ -33,6 +21,12 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link RuleManager} with admin-defined rules.
@@ -250,70 +244,6 @@ public final class RuleManagerAdminFilterTest {
   assertEquals("admin-after3-baz", tags[5]);
  }
 
- /*  @Test
-     public void variableAdminOnUserOn() throws Exception {
-         Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-         RuleManager.clearCachedRules(account);
- 
-         Map<String, Object> attrs = Maps.newHashMap();
-         attrs = Maps.newHashMap();
-         Provisioning.getInstance().getServer(account).modify(attrs);
- 
-         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
- 
-         account.unsetMailAdminSieveScriptBefore();
-         account.unsetMailSieveScript();
-         account.unsetMailAdminSieveScriptAfter();
- 
-         account.setMailAdminSieveScriptBefore(variableScripts[0]);
-         account.setMailSieveScript(variableScripts[1]);
-         account.setMailAdminSieveScriptAfter(variableScripts[2]);
- 
-         List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox),
-                 mbox, new ParsedMessage(message.getBytes(), false),
-                 0, account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-         Assert.assertEquals(1, ids.size());
-         Message msg = mbox.getMessageById(null, ids.get(0).getId());
-         String[] tags = msg.getTags();
-         Assert.assertEquals(3, tags.length);
-         Assert.assertEquals("before-foo", tags[0]); // ${var} is a valid variable
-         Assert.assertEquals("enduser-", tags[1]);   // Variable feature is on but no definition of ${var}
-         Assert.assertEquals("after-", tags[2]);     // Variable feature is on but no definition of ${var}
-     }
- 
-     @Test
-     public void variableAdminOnUserOn2() throws Exception {
-         Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-         RuleManager.clearCachedRules(account);
- 
-         Map<String, Object> attrs = Maps.newHashMap();
-         attrs = Maps.newHashMap();
-         Provisioning.getInstance().getServer(account).modify(attrs);
- 
-         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
- 
-         account.unsetMailAdminSieveScriptBefore();
-         account.unsetMailSieveScript();
-         account.unsetMailAdminSieveScriptAfter();
- 
-         String enduserScript = "require [\"tag\", \"log\", \"variables\"];"
-                 + "set \"var\" \"bar\";"
-                 + "tag \"enduser-${var}\";";
-         account.setMailAdminSieveScriptBefore(variableScripts[0]);
-         account.setMailSieveScript(enduserScript);
-         account.setMailAdminSieveScriptAfter(variableScripts[2]);
- 
-         List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox),
-                 mbox, new ParsedMessage(message.getBytes(), false),
-                 0, account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-         Assert.assertEquals(1, ids.size());
-         Message msg = mbox.getMessageById(null, ids.get(0).getId());
-         String[] tags = msg.getTags();
-         Assert.assertEquals(3, tags.length);
-         Assert.assertEquals("before-foo", tags[0]); // "foo" is assigned in admin-defined filter
-         Assert.assertEquals("enduser-bar", tags[1]);// "bar" is assigned in user-defined filter
-         Assert.assertEquals("after-", tags[2]);     // Variable feature is on but no definition of ${var}
-     }*/
 
  @Test
  void stopAtAdminBefore() throws Exception {

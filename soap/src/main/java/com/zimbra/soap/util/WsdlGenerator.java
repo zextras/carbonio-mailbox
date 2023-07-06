@@ -5,6 +5,17 @@
 
 package com.zimbra.soap.util;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.zimbra.common.soap.AccountConstants;
+import com.zimbra.common.soap.AdminConstants;
+import com.zimbra.common.soap.AdminExtConstants;
+import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.ReplicationConstants;
+import com.zimbra.common.soap.VoiceConstants;
+import com.zimbra.common.soap.ZimbraNamespace;
+import com.zimbra.soap.JaxbUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,9 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.xml.XMLConstants;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -24,19 +33,6 @@ import org.dom4j.Namespace;
 import org.dom4j.QName;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.zimbra.common.soap.AccountConstants;
-import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.soap.AdminExtConstants;
-import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.soap.ReplicationConstants;
-import com.zimbra.common.soap.SyncConstants;
-import com.zimbra.common.soap.VoiceConstants;
-import com.zimbra.common.soap.ZimbraNamespace;
-import com.zimbra.soap.JaxbUtil;
 
 /**
  * This class represents a utility to generate the top level WSDL files for
@@ -403,8 +399,6 @@ public class WsdlGenerator {
                 packageToRequestListMap.get("com.zimbra.soap.mail.message")));
         nsInfoList.add(WsdlInfoForNamespace.create(ReplicationConstants.NAMESPACE_STR, zcsService,
                 packageToRequestListMap.get("com.zimbra.soap.replication.message")));
-        nsInfoList.add(WsdlInfoForNamespace.create(SyncConstants.NAMESPACE_STR, zcsService,
-                packageToRequestListMap.get("com.zimbra.soap.sync.message")));
         nsInfoList.add(WsdlInfoForNamespace.create(VoiceConstants.NAMESPACE_STR, zcsService,
                 packageToRequestListMap.get("com.zimbra.soap.voice.message")));
     }

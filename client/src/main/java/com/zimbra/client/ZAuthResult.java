@@ -5,44 +5,21 @@
 
 package com.zimbra.client;
 
-import java.util.List;
-import java.util.Map;
-
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.util.MapUtil;
 import com.zimbra.soap.account.message.AuthResponse;
 import com.zimbra.soap.account.type.Session;
-import com.zimbra.soap.type.ZmBoolean;
+import java.util.List;
+import java.util.Map;
 
 public class ZAuthResult {
 
     private long expires;
-    private long trustExpires;
-    private boolean twoFactorAuthRequired;
-    private boolean trustedDevicesEnabled;
     private AuthResponse data;
-
-    /*
-    public ZAuthResult(Element e) throws ServiceException {
-        mAuthToken = new ZAuthToken(e.getElement(AccountConstants.E_AUTH_TOKEN), false);
-
-        mLifetime = e.getAttributeLong(AccountConstants.E_LIFETIME);
-        mExpires = System.currentTimeMillis() + mLifetime;
-        mRefer = e.getAttribute(AccountConstants.E_REFERRAL, null);
-        mAttrs = ZGetInfoResult.getMap(e, AccountConstants.E_ATTRS, AccountConstants.E_ATTR);
-        mPrefs = ZGetInfoResult.getMap(e, AccountConstants.E_PREFS, AccountConstants.E_PREF);
-        mSkin = e.getAttribute(AccountConstants.E_SKIN, null);
-    }
-    */
 
     public ZAuthResult(AuthResponse res) {
         data = res;
         expires = data.getLifetime() + System.currentTimeMillis();
-        if (data.getTrustedToken() != null) {
-            trustExpires = data.getTrustLifetime() + System.currentTimeMillis();
-        }
-        twoFactorAuthRequired = ZmBoolean.toBool(data.getTwoFactorAuthRequired(), false);
-        trustedDevicesEnabled = ZmBoolean.toBool(data.getTrustedDevicesEnabled(), false);
     }
 
     public ZAuthToken getAuthToken() {
@@ -92,25 +69,5 @@ public class ZAuthResult {
 
     public String getCsrfToken() {
         return data.getCsrfToken();
-    }
-
-    public String getTrustedToken() {
-        return data.getTrustedToken();
-    }
-
-    public long getTrustLifetime() {
-        return trustExpires;
-    }
-
-    public String getDeviceId() {
-        return data.getDeviceId();
-    }
-
-    public boolean getTwoFactorAuthRequired() {
-        return twoFactorAuthRequired;
-    }
-
-    public boolean getTrustedDevicesEnabled() {
-        return trustedDevicesEnabled;
     }
 }

@@ -207,40 +207,6 @@ CREATE TABLE scheduled_task (
    INDEX i_mailbox_id (mailbox_id)
 ) ENGINE = InnoDB;
 
--- Mobile Devices
-CREATE TABLE mobile_devices (
-   mailbox_id          INTEGER UNSIGNED NOT NULL,
-   device_id           VARCHAR(64) NOT NULL,
-   device_type         VARCHAR(64) NOT NULL,
-   user_agent          VARCHAR(64),
-   protocol_version    VARCHAR(64),
-   provisionable       BOOLEAN NOT NULL DEFAULT 0,
-   status              TINYINT UNSIGNED NOT NULL DEFAULT 0,
-   policy_key          INTEGER UNSIGNED,
-   recovery_password   VARCHAR(64),
-   first_req_received  INTEGER UNSIGNED NOT NULL,
-   last_policy_update  INTEGER UNSIGNED,
-   remote_wipe_req     INTEGER UNSIGNED,
-   remote_wipe_ack     INTEGER UNSIGNED,
-   policy_values       VARCHAR(512),
-   last_used_date      DATE,
-   deleted_by_user     BOOLEAN NOT NULL DEFAULT 0,
-   model               VARCHAR(64),
-   imei                VARCHAR(64),
-   friendly_name       VARCHAR(512),
-   os                  VARCHAR(64),
-   os_language         VARCHAR(64),
-   phone_number        VARCHAR(64),
-   unapproved_appl_list TEXT NULL,
-   approved_appl_list   TEXT NULL,
-   mobile_operator      VARCHAR(512),
-   last_updated_by     ENUM('Admin','User') DEFAULT 'Admin',
-
-   PRIMARY KEY (mailbox_id, device_id),
-   CONSTRAINT fk_mobile_mailbox_id FOREIGN KEY (mailbox_id) REFERENCES mailbox(id) ON DELETE CASCADE,
-   INDEX i_last_used_date (last_used_date)
-) ENGINE = InnoDB;
-
 -- Tracks ACLs to be pushed to LDAP
 CREATE TABLE pending_acl_push (
    mailbox_id  INTEGER UNSIGNED NOT NULL,

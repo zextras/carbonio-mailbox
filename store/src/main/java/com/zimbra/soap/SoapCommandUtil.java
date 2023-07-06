@@ -63,7 +63,6 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
     private static final String LO_ADMIN_PRIV = "admin-priv";
     private static final String LO_ADMIN = "admin";
     private static final String LO_PASSWORD = "password";
-    private static final String LO_TOTP = "totp";
     private static final String LO_PASSFILE = "passfile";
     private static final String LO_URL = "url";
     private static final String LO_ZADMIN = "zadmin";
@@ -105,8 +104,6 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
     private String mAdminAccountName;
     private String mTargetAccountName;
     private String mPassword;
-    private String mTwoFactorCode;
-    private String mTwoFactorScratchCode;
     private String[] mPaths;
     private String mAuthToken;
     private String mSessionId;
@@ -188,8 +185,6 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
 
         mOptions.addOption(new Option(null, LO_USE_SESSION, false, "Use a SOAP session."));
 
-        mOptions.addOption(new Option(null, LO_TOTP, true, "TOTP token for two-factor auth"));
-
         try {
             mOut = new PrintStream(System.out, true, "utf-8");
         } catch (UnsupportedEncodingException e) {}
@@ -237,9 +232,6 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
         }
         if (CliUtil.hasOption(cl, LO_PASSWORD)) {
             mPassword = CliUtil.getOptionValue(cl, LO_PASSWORD);
-        }
-        if (CliUtil.hasOption(cl,LO_TOTP)) {
-            mTwoFactorCode = CliUtil.getOptionValue(cl, LO_TOTP);
         }
 
         mAdminAccountName = CliUtil.getOptionValue(cl, LO_ADMIN);
@@ -415,9 +407,6 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
         Element account = auth.addElement(AccountConstants.E_ACCOUNT).setText(mAuthAccountName);
         account.addAttribute(AdminConstants.A_BY, StringUtil.isUUID(mAuthAccountName) ? AdminConstants.BY_ID : AdminConstants.BY_NAME);
         auth.addElement(AccountConstants.E_PASSWORD).setText(mPassword);
-        if (mTwoFactorCode != null) {
-            auth.addElement(AccountConstants.E_TWO_FACTOR_CODE).setText(mTwoFactorCode);
-        }
         // Authenticate and get auth token
         Element response = getTransport(false).invoke(auth, false, !mUseSession, null);
         handleAuthResponse(response);
@@ -498,15 +487,10 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
             return;
         }
 
-        // If this is an EnableTwoFactorAuthRequest, skip authentication
-        boolean skipAuth = request.getName().equals(AccountConstants.E_ENABLE_TWO_FACTOR_AUTH_REQUEST);
-        // Authenticate if necessary
-        if (!skipAuth) {
-             if (mAdminAccountName != null) {
-                adminAuth();
-            } else {
-                mailboxAuth();
-            }
+        if (mAdminAccountName != null) {
+            adminAuth();
+        } else {
+            mailboxAuth();
         }
 
         // Send request and print response.

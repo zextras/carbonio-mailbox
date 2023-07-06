@@ -5,9 +5,6 @@
 
 package com.zimbra.doc.soap;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.zimbra.common.soap.AccountConstants;
@@ -15,10 +12,12 @@ import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.AdminExtConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.ReplicationConstants;
-import com.zimbra.common.soap.SyncConstants;
 import com.zimbra.common.soap.VoiceConstants;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.util.JaxbInfo;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.xml.bind.annotation.XmlSchema;
 
 /**
@@ -34,7 +33,6 @@ public class WsdlDocGenerator {
         serviceDescriptions.put(AdminExtConstants.NAMESPACE_STR, "The Admin Extension Service includes additional commands for administering Zimbra.");
         serviceDescriptions.put(MailConstants.NAMESPACE_STR, "The Mail Service includes commands for managing mail and calendar information.");
         serviceDescriptions.put(ReplicationConstants.NAMESPACE_STR, "The zimbraRepl Service includes commands for managing Zimbra Server replication.");
-        serviceDescriptions.put(SyncConstants.NAMESPACE_STR, "The zimbraSync Service includes commands for managing devices using Synchronization.");
         serviceDescriptions.put(VoiceConstants.NAMESPACE_STR, "The zimbraVoice Service includes commands related to Unified Communications.");
     }
 

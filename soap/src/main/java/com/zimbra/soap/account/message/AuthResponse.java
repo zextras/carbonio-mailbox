@@ -90,18 +90,6 @@ public class AuthResponse {
     private String csrfToken;
 
     /**
-     * @zm-api-field-description random secure device ID generated for the requesting device
-     */
-    @XmlElement(name=AccountConstants.E_DEVICE_ID, required=false)
-    private String deviceId;
-
-    /**
-     * @zm-api-field-description trusted device token
-     */
-    @XmlElement(name=AccountConstants.E_TRUSTED_TOKEN /* trustedToken */, required=false)
-    private String trustedToken;
-
-    /**
      * @zm-api-field-description indicates whether the authentication account acts as a "Proxy" to a Zimbra account
      * on another system.
      */
@@ -124,12 +112,6 @@ public class AuthResponse {
     @XmlElementWrapper(name=AccountConstants.E_ATTRS /* attrs */)
     @XmlElement(name=AccountConstants.E_ATTR /* attr */)
     private final List<Attr> attrs = new ArrayList<Attr>();
-
-    @XmlElement(name=AccountConstants.E_TWO_FACTOR_AUTH_REQUIRED, required=false)
-    private ZmBoolean twoFactorAuthRequired;
-
-    @XmlElement(name=AccountConstants.E_TRUSTED_DEVICES_ENABLED, required=false)
-    private ZmBoolean trustedDevicesEnabled;
 
     public AuthResponse() {
     }
@@ -196,31 +178,9 @@ public class AuthResponse {
         this.csrfToken = csrfToken;
     }
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setTrustedToken(String trustedToken) {
-        this.trustedToken = trustedToken;
-    }
-
-    public String getTrustedToken() {
-        return trustedToken;
-    }
-
     public Long getTrustLifetime() { return trustLifetime; }
     public AuthResponse setTrustLifetime(Long trustLifetime) { this.trustLifetime = trustLifetime; return this; }
 
-    public ZmBoolean getTwoFactorAuthRequired() { return twoFactorAuthRequired; }
-    public AuthResponse setTwoFactorAuthRequired(boolean bool) { this.twoFactorAuthRequired = ZmBoolean.fromBool(bool); return this; }
-
     public Boolean getZmgProxy() { return ZmBoolean.toBool(zmgProxy); }
     public void setZmgProxy(Boolean zmgProxy) { this.zmgProxy = ZmBoolean.fromBool(zmgProxy); }
-
-    public ZmBoolean getTrustedDevicesEnabled() { return trustedDevicesEnabled; }
-    public AuthResponse setTrustedDevicesEnabled(boolean bool) { this.trustedDevicesEnabled = ZmBoolean.fromBool(bool); return this; }
 }

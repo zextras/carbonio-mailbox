@@ -247,12 +247,6 @@ public final class MailConstants {
     public static final String E_AUTO_COMPLETE_RESPONSE = "AutoCompleteResponse";
     public static final String E_RANKING_ACTION_REQUEST = "RankingActionRequest";
     public static final String E_RANKING_ACTION_RESPONSE = "RankingActionResponse";
-    public static final String E_SEND_VERIFICATION_CODE_REQUEST = "SendVerificationCodeRequest";
-    public static final String E_SEND_VERIFICATION_CODE_RESPONSE = "SendVerificationCodeResponse";
-    public static final String E_VERIFY_CODE_REQUEST = "VerifyCodeRequest";
-    public static final String E_VERIFY_CODE_RESPONSE = "VerifyCodeResponse";
-    public static final String E_INVALIDATE_REMINDER_DEVICE_REQUEST = "InvalidateReminderDeviceRequest";
-    public static final String E_INVALIDATE_REMINDER_DEVICE_RESPONSE = "InvalidateReminderDeviceResponse";
     public static final String E_ADD_COMMENT_REQUEST = "AddCommentRequest";
     public static final String E_ADD_COMMENT_RESPONSE = "AddCommentResponse";
     public static final String E_GET_COMMENTS_REQUEST = "GetCommentsRequest";
@@ -540,14 +534,6 @@ public final class MailConstants {
     // contact ranking mgmt
     public static final QName RANKING_ACTION_REQUEST = QName.get(E_RANKING_ACTION_REQUEST, NAMESPACE);
     public static final QName RANKING_ACTION_RESPONSE = QName.get(E_RANKING_ACTION_RESPONSE, NAMESPACE);
-
-    // device verification for sms reminders
-    public static final QName SEND_VERIFICATION_CODE_REQUEST = QName.get(E_SEND_VERIFICATION_CODE_REQUEST, NAMESPACE);
-    public static final QName SEND_VERIFICATION_CODE_RESPONSE = QName.get(E_SEND_VERIFICATION_CODE_RESPONSE, NAMESPACE);
-    public static final QName VERIFY_CODE_REQUEST = QName.get(E_VERIFY_CODE_REQUEST, NAMESPACE);
-    public static final QName VERIFY_CODE_RESPONSE = QName.get(E_VERIFY_CODE_RESPONSE, NAMESPACE);
-    public static final QName INVALIDATE_REMINDER_DEVICE_REQUEST = QName.get(E_INVALIDATE_REMINDER_DEVICE_REQUEST, NAMESPACE);
-    public static final QName INVALIDATE_REMINDER_DEVICE_RESPONSE = QName.get(E_INVALIDATE_REMINDER_DEVICE_RESPONSE, NAMESPACE);
 
     // comments
     public static final QName ADD_COMMENT_REQUEST = QName.get(E_ADD_COMMENT_REQUEST, NAMESPACE);
@@ -1287,16 +1273,11 @@ public final class MailConstants {
     public static final String A_FILEAS = "fileas";
     public static final String A_LDAP_OFFSET = "ldapOffset";
 
-    // device verification for reminders
-    public static final String A_VERIFICATION_CODE = "code";
-    public static final String A_VERIFICATION_SUCCESS = "success";
-
     public static final String A_USER = "user";
     public static final String A_TS = "ts";
     public static final String A_ITEMID = "itemId";
     public static final String A_ITEM_NAME = "itemName";
 
-    public static final String E_DEVICE = "device";
     public static final String A_CREATED = "created";
     public static final String A_ACCESSED = "accessed";
 
