@@ -13,7 +13,7 @@
   <property name="ldap.conf.dir" location="${ldap.dir}/conf"/>
   <property name="slapd.config.dir" value="${ldap.conf.dir}/ldap/config" />
   <property name="slapd.config.src" value="${slapd.config.dir}/cn=config.ldif"/>
-  <property name="ldap.build.dir" value="${maven.build.dir}/ldap"/>
+  <property name="ldap.build.dir" value="${basedir}/build/ldap"/>
 
   <condition property="production.suffix" value=".production" else="">
     <isset property="is-production"/>
@@ -34,7 +34,6 @@
     <mkdir dir="${maven.build.dir}/data"/>
     <mkdir dir="${maven.build.dir}/zimbra"/>
     <mkdir dir="${maven.build.dir}/zimbra/conf"/>
-
     <mkdir dir="${maven.build.dir}/bin"/>
     <mkdir dir="${maven.build.dir}/conf/attrs"/>
     <mkdir dir="${maven.build.dir}/conf/msgs"/>
