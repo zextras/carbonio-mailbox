@@ -18,7 +18,7 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
  * @author davidefrison
  * @since 23.8.0
  */
-@Plugin(name = "MailboxPatternLayout", category = "Converter")
+@Plugin(name = "MailboxPatternConverter", category = "Converter")
 @ConverterKeys({"z"})
 public class MailboxPatternConverter extends LogEventPatternConverter {
 
