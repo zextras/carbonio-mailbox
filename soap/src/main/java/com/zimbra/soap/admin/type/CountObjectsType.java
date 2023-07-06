@@ -25,7 +25,7 @@ public enum CountObjectsType {
 
   private boolean allowsDomain;
 
-  private CountObjectsType(boolean allowsDomain) {
+  CountObjectsType(boolean allowsDomain) {
     this.allowsDomain = allowsDomain;
   }
 
