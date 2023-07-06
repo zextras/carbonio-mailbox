@@ -216,8 +216,8 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/sac-1.3.jar"
   install -D carbonio-jetty-libs/target/dependencies/policy-2.3.jar \
     "${pkgdir}/opt/zextras/lib/jars/policy-2.3.jar"
-  install -D carbonio-jetty-libs/target/dependencies/slf4j-api-1.7.30.jar \
-    "${pkgdir}/opt/zextras/lib/jars/slf4j-api-1.7.30.jar"
+  install -D carbonio-jetty-libs/target/dependencies/slf4j-api-1.7.36.jar \
+    "${pkgdir}/opt/zextras/lib/jars/slf4j-api-1.7.36.jar"
   install -D carbonio-jetty-libs/target/dependencies/spring-aop-5.1.10.RELEASE.jar \
     "${pkgdir}/opt/zextras/lib/jars/spring-aop-5.1.10.RELEASE.jar"
   install -D carbonio-jetty-libs/target/dependencies/spring-beans-5.1.10.RELEASE.jar \

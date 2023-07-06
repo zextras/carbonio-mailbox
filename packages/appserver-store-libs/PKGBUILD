@@ -143,8 +143,8 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/common/lib/oauth-provider-20100527.jar"
   install -D carbonio-jetty-libs/target/dependencies/owasp-java-html-sanitizer-20191001.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/owasp-java-html-sanitizer-20191001.1.jar"
-  install -D carbonio-jetty-libs/target/dependencies/slf4j-api-1.7.30.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/slf4j-api-1.7.30.jar"
+  install -D carbonio-jetty-libs/target/dependencies/slf4j-api-1.7.36.jar \
+    "${pkgdir}/opt/zextras/jetty_base/common/lib/slf4j-api-1.7.36.jar"
   install -D carbonio-jetty-libs/target/dependencies/spymemcached-2.12.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/spymemcached-2.12.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/sshd-common-2.7.0.jar \
