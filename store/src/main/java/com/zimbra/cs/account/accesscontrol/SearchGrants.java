@@ -151,8 +151,6 @@ public final class SearchGrants {
         tt = TargetType.domain;
       } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraServer)) {
         tt = TargetType.server;
-      } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraUCService)) {
-        tt = TargetType.ucservice;
       } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraXMPPComponent)) {
         tt = TargetType.xmppcomponent;
       } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraZimletEntry)) {
@@ -312,12 +310,10 @@ public final class SearchGrants {
 
     if (onMaster) {
       LdapProv.getInst()
-          .searchLdapOnMaster(
-              base, query.toString(), fetchAttrs.toArray(new String[0]), visitor);
+          .searchLdapOnMaster(base, query.toString(), fetchAttrs.toArray(new String[0]), visitor);
     } else {
       LdapProv.getInst()
-          .searchLdapOnReplica(
-              base, query.toString(), fetchAttrs.toArray(new String[0]), visitor);
+          .searchLdapOnReplica(base, query.toString(), fetchAttrs.toArray(new String[0]), visitor);
     }
   }
 }

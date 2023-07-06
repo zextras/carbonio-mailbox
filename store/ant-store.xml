@@ -102,10 +102,6 @@
       <param name="getter.output" value="ZAttrServer.java"/>
     </antcall>
     <antcall target="generate-getter">
-      <param name="getter.class" value="ucService"/>
-      <param name="getter.output" value="ZAttrUCService.java"/>
-    </antcall>
-    <antcall target="generate-getter">
       <param name="getter.class" value="globalConfig"/>
       <param name="getter.output" value="ZAttrConfig.java"/>
     </antcall>

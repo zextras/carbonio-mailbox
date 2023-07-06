@@ -75532,6 +75532,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @return zimbraUCProviderEnabled, or null if unset
@@ -75544,6 +75545,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @param zimbraUCProviderEnabled new value
@@ -75559,6 +75561,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @param zimbraUCProviderEnabled new value
@@ -75575,6 +75578,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -75589,6 +75593,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @param attrs existing map to populate, or null to create a new map
