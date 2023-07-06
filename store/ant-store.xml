@@ -252,8 +252,8 @@
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}" />
       <arg line="-a generateDefaultExternalCOSLdif -i ${maven.build.dir}/attrs -o ${ldap.build.dir}/zimbra_defaultexternalcos.ldif" />
     </java>
-    <copy todir="${maven.build.dir}/ldap-config" file="${ldap.conf.dir}/ldap/carbonio.ldif" />
-    <copy todir="${maven.build.dir}/ldap-config" file="${ldap.conf.dir}/ldap/mimehandlers.ldif" />
+    <copy todir="${ldap.build.dir}/" file="${ldap.conf.dir}/ldap/carbonio.ldif" />
+    <copy todir="${ldap.build.dir}/" file="${ldap.conf.dir}/ldap/mimehandlers.ldif" />
     <copy todir="${ldap.build.dir}/schema" file="${ldap.conf.dir}/ldap/amavisd.schema" />
     <copy todir="${ldap.build.dir}/schema" file="${ldap.conf.dir}/ldap/amavisd.ldif" />
     <copy todir="${ldap.build.dir}/schema" file="${ldap.conf.dir}/ldap/opendkim.ldif" />
