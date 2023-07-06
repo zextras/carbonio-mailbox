@@ -47362,7 +47362,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @return zimbraUCServiceId, or null if unset
@@ -47375,7 +47375,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param zimbraUCServiceId new value
@@ -47391,7 +47391,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param zimbraUCServiceId new value
@@ -47408,7 +47408,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -47423,7 +47423,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param attrs existing map to populate, or null to create a new map

@@ -17422,7 +17422,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraTwoFactorTimeWindowOffset = "zimbraTwoFactorTimeWindowOffset";
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * call control service URL for the UC service
      *
      * @since ZCS 8.0.0
@@ -17431,7 +17431,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCCallControlURL = "zimbraUCCallControlURL";
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @since ZCS 8.0.0
@@ -17440,7 +17440,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCPassword = "zimbraUCPassword";
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * presence session id for Cisco presence service
      *
      * @since ZCS 8.0.0
@@ -17449,7 +17449,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCPresenceSessionId = "zimbraUCPresenceSessionId";
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * presence service URL for the UC service
      *
      * @since ZCS 8.0.0
@@ -17458,7 +17458,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCPresenceURL = "zimbraUCPresenceURL";
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * provider for the UC service
      *
      * @since ZCS 8.0.0
@@ -17467,7 +17467,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCProvider = "zimbraUCProvider";
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @since ZCS 8.0.0
@@ -17476,7 +17476,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCProviderEnabled = "zimbraUCProviderEnabled";
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @since ZCS 8.0.0
@@ -17485,7 +17485,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCServiceId = "zimbraUCServiceId";
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @since ZCS 8.0.0
@@ -17494,7 +17494,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCUsername = "zimbraUCUsername";
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * user info service URL for the UC service
      *
      * @since ZCS 8.0.0
@@ -17503,7 +17503,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCUserURL = "zimbraUCUserURL";
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * voicemail service URL for the UC service
      *
      * @since ZCS 8.0.0

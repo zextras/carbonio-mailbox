@@ -7100,52 +7100,52 @@ TODO: delete them permanently from here
   <desc>Whether OpenWith feature is enabled on devices.</desc>
 </attr>
 
-<attr id="1401" name="zimbraUCServiceId" type="id" cardinality="single" optionalIn="account,cos,domain" flags="accountCosDomainInherited" since="8.0.0" deprecatedSince="23.7.0">
+<attr id="1401" name="zimbraUCServiceId" type="id" cardinality="single" optionalIn="account,cos,domain" flags="accountCosDomainInherited" since="8.0.0" deprecatedSince="23.8.0">
   <desc>UC service zimbraId</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
 
-<attr id="1402" name="zimbraUCProvider" type="cstring" max="256" cardinality="single" callback="UCProvider" since="8.0.0" deprecatedSince="23.7.0">
+<attr id="1402" name="zimbraUCProvider" type="cstring" max="256" cardinality="single" callback="UCProvider" since="8.0.0" deprecatedSince="23.8.0">
   <desc>provider for the UC service</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
 
-<attr id="1403" name="zimbraUCUserURL" type="string" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.7.0">
+<attr id="1403" name="zimbraUCUserURL" type="string" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.8.0">
   <desc>user info service URL for the UC service</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
 
-<attr id="1404" name="zimbraUCVoicemailURL" type="string" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.7.0">
+<attr id="1404" name="zimbraUCVoicemailURL" type="string" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.8.0">
   <desc>voicemail service URL for the UC service</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
 
-<attr id="1405" name="zimbraUCCallControlURL" type="string" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.7.0">
+<attr id="1405" name="zimbraUCCallControlURL" type="string" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.8.0">
   <desc>call control service URL for the UC service</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
 
-<attr id="1406" name="zimbraUCPresenceURL" type="string" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.7.0">
+<attr id="1406" name="zimbraUCPresenceURL" type="string" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.8.0">
   <desc>presence service URL for the UC service</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
 
-<attr id="1407" name="zimbraUCPresenceSessionId" type="string" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.7.0">
+<attr id="1407" name="zimbraUCPresenceSessionId" type="string" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.8.0">
   <desc>presence session id for Cisco presence service</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
 
-<attr id="1408" name="zimbraUCUsername" type="string" max="256" cardinality="single" optionalIn="account" since="8.0.0" deprecatedSince="23.7.0">
+<attr id="1408" name="zimbraUCUsername" type="string" max="256" cardinality="single" optionalIn="account" since="8.0.0" deprecatedSince="23.8.0">
   <desc>username for the user's UC service</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
 
-<attr id="1409" name="zimbraUCPassword" type="string" max="256" cardinality="single" optionalIn="account" since="8.0.0" deprecatedSince="23.7.0">
+<attr id="1409" name="zimbraUCPassword" type="string" max="256" cardinality="single" optionalIn="account" since="8.0.0" deprecatedSince="23.8.0">
   <desc>password for the user's UC service</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
 
-<attr id="1410" name="zimbraUCProviderEnabled" type="string" max="256" cardinality="single" optionalIn="globalConfig" since="8.0.0" deprecatedSince="23.7.0">
+<attr id="1410" name="zimbraUCProviderEnabled" type="string" max="256" cardinality="single" optionalIn="globalConfig" since="8.0.0" deprecatedSince="23.8.0">
   <desc>Designated UC provider of the system</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>

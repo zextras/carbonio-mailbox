@@ -61490,7 +61490,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @return zimbraUCPassword, or null if unset
@@ -61503,7 +61503,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @param zimbraUCPassword new value
@@ -61519,7 +61519,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @param zimbraUCPassword new value
@@ -61536,7 +61536,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -61551,7 +61551,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -61567,7 +61567,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @return zimbraUCServiceId, or null if unset
@@ -61580,7 +61580,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param zimbraUCServiceId new value
@@ -61596,7 +61596,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param zimbraUCServiceId new value
@@ -61613,7 +61613,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -61628,7 +61628,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -61644,7 +61644,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @return zimbraUCUsername, or null if unset
@@ -61657,7 +61657,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @param zimbraUCUsername new value
@@ -61673,7 +61673,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @param zimbraUCUsername new value
@@ -61690,7 +61690,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -61705,7 +61705,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.7.0. UCService is not in use anymore. Orig desc:
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @param attrs existing map to populate, or null to create a new map
