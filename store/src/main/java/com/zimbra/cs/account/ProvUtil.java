@@ -79,6 +79,7 @@ import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.admin.message.LockoutMailboxRequest;
 import com.zimbra.soap.admin.message.UnregisterMailboxMoveOutRequest;
 import com.zimbra.soap.admin.type.CacheEntryType;
+import com.zimbra.soap.admin.type.CountObjectsType;
 import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
 import com.zimbra.soap.admin.type.MailboxMoveSpec;
@@ -563,6 +564,13 @@ public class ProvUtil implements HttpDebugListener {
         new RightCommandHelp(false, false, true)),
     COPY_COS("copyCos", "cpc", "{src-cos-name|id} {dest-cos-name}", Category.COS, 2, 2),
     COUNT_ACCOUNT("countAccount", "cta", "{domain|id}", Category.DOMAIN, 1, 1),
+    COUNT_OBJECTS(
+        "countObjects",
+        "cto",
+        "{" + CountObjectsType.names("|") + "} [-d {domain|id}]",
+        Category.MISC,
+        1,
+        4),
     CREATE_ACCOUNT(
         "createAccount",
         "ca",
@@ -1469,6 +1477,9 @@ public class ProvUtil implements HttpDebugListener {
         break;
       case CREATE_SERVER:
         console.println(prov.createServer(args[1], getMapAndCheck(args, 2, true)).getId());
+        break;
+      case COUNT_OBJECTS:
+        doCountObjects(args);
         break;
       case CREATE_XMPP_COMPONENT:
         doCreateXMPPComponent(args);
@@ -3115,6 +3126,37 @@ public class ProvUtil implements HttpDebugListener {
         console.println(cos.getName());
       }
     }
+  }
+
+  private void doCountObjects(String[] args) throws ServiceException {
+
+    CountObjectsType type = CountObjectsType.fromString(args[1]);
+
+    Domain domain = null;
+    int idx = 2;
+    while (args.length > idx) {
+      String arg = args[idx];
+
+      if (arg.equals("-d")) {
+        if (domain != null) {
+          throw ServiceException.INVALID_REQUEST(
+              "domain is already specified as:" + domain.getName(), null);
+        }
+        idx++;
+        if (args.length <= idx) {
+          usage();
+          throw ServiceException.INVALID_REQUEST("expecting domain, not enough args", null);
+        }
+        domain = lookupDomain(args[idx]);
+      } else {
+        usage();
+        return;
+      }
+
+      idx++;
+    }
+    long result = prov.countObjects(type, domain);
+    console.println(result);
   }
 
   private void dumpCos(Cos cos, Set<String> attrNames) throws ServiceException {
