@@ -12,24 +12,29 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 
 /**
  * Pattern Layout to expand %z in log4j2.
- * @see org.apache.logging.log4j.core.layout.PatternLayout
  *
+ * @see org.apache.logging.log4j.core.layout.PatternLayout Also:
+ *     https://logging.apache.org/log4j/2.x/manual/extending.html#patternconverters
  * @author davidefrison
  * @since 23.8.0
  */
 @Plugin(name = "MailboxPatternLayout", category = "Converter")
-@ConverterKeys({ "z" })
-public class MailboxPatternLayout extends LogEventPatternConverter {
+@ConverterKeys({"z"})
+public class MailboxPatternConverter extends LogEventPatternConverter {
 
+  /** Constructs an instance of LoggingEventPatternConverter. */
+  public MailboxPatternConverter(String[] options) {
+    super("MailboxConverter", null);
+  }
 
   /**
-   * Constructs an instance of LoggingEventPatternConverter.
+   * Obtains an instance of pattern converter.
    *
-   * @param name  name of converter.
-   * @param style CSS style for output.
+   * @param options options, may be null.
+   * @return instance of pattern converter.
    */
-  protected MailboxPatternLayout(String name, String style) {
-    super(name, style);
+  public static MailboxPatternConverter newInstance(final String[] options) {
+    return new MailboxPatternConverter(options);
   }
 
   @Override
