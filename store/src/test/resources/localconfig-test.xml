@@ -10,7 +10,4 @@
   <key name="zimbra_home">
     <value>build/zimbra</value>
   </key>
-  <key name="zimbra_attrs_directory">
-    <value>./ldap/attrs</value>
-  </key>
 </localconfig>

@@ -8,8 +8,8 @@
   <property name="store-conf.config.dir" location="${basedir}/../store-conf/conf"/>
 
   <!-- LDAP -->
+  <property name="attrs.dir" location="${conf.dir}/attrs"/>
   <property name="ldap.dir" location="${basedir}/ldap"/>
-  <property name="attrs.dir" location="${ldap.dir}/attrs"/>
   <property name="ldap.conf.dir" location="${ldap.dir}/conf"/>
   <property name="slapd.config.dir" value="${ldap.conf.dir}/ldap/config" />
   <property name="slapd.config.src" value="${slapd.config.dir}/cn=config.ldif"/>
