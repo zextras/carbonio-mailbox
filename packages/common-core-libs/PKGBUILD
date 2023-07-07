@@ -184,8 +184,6 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/log4j-core-2.20.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/log4j-slf4j-impl-2.20.0.jar \
     "${pkgdir}/opt/zextras/lib/jars/log4j-slf4j-impl-2.20.0.jar"
-  install -D carbonio-jetty-libs/target/dependencies/log4j-web-2.20.0.jar \
-    "${pkgdir}/opt/zextras/lib/jars/log4j-web-2.20.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/lucene-analyzers-3.5.0.jar \
     "${pkgdir}/opt/zextras/lib/jars/lucene-analyzers-3.5.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/lucene-core-3.5.0.jar \

@@ -11,12 +11,6 @@
   <display-name>Zimbra Service</display-name>
   <description>SOAP Service</description>
 
-  <!-- See: https://logging.apache.org/log4j/2.x/manual/webapp.html -->
-  <context-param>
-    <param-name>log4jConfiguration</param-name>
-    <param-value>file:///opt/zextras/conf/log4j.properties</param-value>
-  </context-param>
-
   <filter>
       <filter-name>guiceFilter</filter-name>
       <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
