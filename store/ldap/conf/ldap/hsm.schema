@@ -1,0 +1,33 @@
+objectIdentifier ZimbraHsmAttrType ZimbraLDAP:4
+
+objectIdentifier zimbraHsmGlobalConfig ZimbraHsmAttrType:1
+objectIdentifier zimbraHsmServer ZimbraHsmAttrType:2
+
+#objectIdentifier zimbraHsmAge ZimbraHsmAttrType:20
+
+#attributetype ( zimbraHsmAge
+	#NAME 'zimbraHsmAge'
+	#DESC 'minimum age of mail items whose filesystem data will be moved to secondary storage (nnnnn[hmsd])'
+	#EQUALITY caseIgnoreIA5Match
+	#SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{32}
+	#SINGLE-VALUE )	
+
+# Extends global config entry (dn: cn=config,cn=zimbra)
+# with hsm-related attributes.
+objectclass ( zimbraHsmGlobalConfig
+	NAME 'zimbraHsmGlobalConfig'
+	DESC 'global configuration for HSM'
+	SUP top AUXILIARY
+	MAY (
+		zimbraHsmAge
+	))
+
+# Extends each server entry (dn: cn=<server>,cn=servers,cn=zimbra)
+# with hsm-related attributes.
+objectclass ( zimbraHsmServer
+	NAME 'zimbraHsmServer'
+	DESC 'Server-specific configuration for HSM'
+	SUP zimbraHsmGlobalConfig AUXILIARY
+	MAY (
+		zimbraHsmAge
+	))
