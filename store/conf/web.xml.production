@@ -655,7 +655,7 @@
   </servlet-mapping>
   <env-entry>
     <description>
-        Zimbra Services Installed on the server.
+        Carbonio Services Installed on the server.
     </description>
     <env-entry-name>zimbraServicesEnabled</env-entry-name>
     <env-entry-type>java.lang.String</env-entry-type>
