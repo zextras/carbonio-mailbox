@@ -1,0 +1,17 @@
+dn: olcDatabase={1}monitor
+objectClass: olcDatabaseConfig
+olcDatabase: {1}monitor
+olcAccess: {0}to dn.children="cn=monitor"  by dn.children="cn=admins,cn=zimbra
+ " read
+olcLastMod: TRUE
+olcMaxDerefDepth: 15
+olcReadOnly: FALSE
+olcRootDN: cn=config
+olcMonitoring: FALSE
+structuralObjectClass: olcDatabaseConfig
+entryUUID: 152a9cf8-333e-102d-86ff-d562901af228
+creatorsName: cn=config
+createTimestamp: 20081020215916Z
+entryCSN: 20081020215916.275992Z#000000#000#000000
+modifiersName: cn=config
+modifyTimestamp: 20081020215916Z

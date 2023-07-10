@@ -7,6 +7,12 @@ package com.zimbra.common.soap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.Lists;
+import com.google.common.io.Closeables;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.Element.ElementFactory;
+import com.zimbra.common.soap.Element.XMLElement;
+import com.zimbra.common.util.ZimbraLog;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -19,10 +25,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
-
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.dom4j.DocumentException;
 import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
@@ -33,13 +39,6 @@ import org.junit.jupiter.api.TestInfo;
 import org.python.google.common.base.Joiner;
 import org.xml.sax.SAXException;
 
-import com.google.common.collect.Lists;
-import com.google.common.io.Closeables;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.Element.ElementFactory;
-import com.zimbra.common.soap.Element.XMLElement;
-import com.zimbra.common.util.ZimbraLog;
-
 /**
  */
 @Disabled("add required xml files to run")
@@ -48,7 +47,7 @@ public class ElementTest {
     
     public String testName;
 
-    private static final Logger LOG = Logger.getLogger(ElementTest.class);
+  private static final Logger LOG = LogManager.getLogger(ElementTest.class);
     private static final int maxiter = 50000;
 
     // Using null because XML files missing and class init fails
@@ -59,10 +58,9 @@ public class ElementTest {
 
 
     static {
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.INFO);
-        LOG.setLevel(Level.INFO);
-    }
+    Configurator.setRootLevel(Level.INFO);
+    Configurator.setLevel(LOG, Level.INFO);
+  }
 
     private void logInfo(String format, Object ... objects) {
         if (LOG.isInfoEnabled()) {
