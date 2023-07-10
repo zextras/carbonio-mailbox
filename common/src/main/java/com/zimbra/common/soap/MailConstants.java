@@ -203,7 +203,6 @@ public final class MailConstants {
     public static final String E_CHECK_SPELLING_RESPONSE = "CheckSpellingResponse";
     public static final String E_SAVE_DOCUMENT_REQUEST = "SaveDocumentRequest";
     public static final String E_SAVE_DOCUMENT_RESPONSE = "SaveDocumentResponse";
-    public static final String E_DIFF_DOCUMENT_RESPONSE = "DiffDocumentResponse";
     public static final String E_LIST_DOCUMENT_REVISIONS_REQUEST = "ListDocumentRevisionsRequest";
     public static final String E_LIST_DOCUMENT_REVISIONS_RESPONSE = "ListDocumentRevisionsResponse";
     public static final String E_PURGE_REVISION_REQUEST = "PurgeRevisionRequest";
