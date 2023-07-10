@@ -184,8 +184,6 @@ public final class MailService implements DocumentService {
 
     // Documents
     dispatcher.registerHandler(
-        MailConstants.DIFF_DOCUMENT_REQUEST, new com.zimbra.cs.service.doc.DiffDocument());
-    dispatcher.registerHandler(
         MailConstants.LIST_DOCUMENT_REVISIONS_REQUEST,
         new com.zimbra.cs.service.doc.ListDocumentRevisions());
     dispatcher.registerHandler(

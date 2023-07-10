@@ -722,8 +722,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.DeleteDataSourceResponse.class,
           com.zimbra.soap.mail.message.DestroyWaitSetRequest.class,
           com.zimbra.soap.mail.message.DestroyWaitSetResponse.class,
-          com.zimbra.soap.mail.message.DiffDocumentRequest.class,
-          com.zimbra.soap.mail.message.DiffDocumentResponse.class,
           com.zimbra.soap.mail.message.DismissCalendarItemAlarmRequest.class,
           com.zimbra.soap.mail.message.DismissCalendarItemAlarmResponse.class,
           com.zimbra.soap.mail.message.EmptyDumpsterRequest.class,
