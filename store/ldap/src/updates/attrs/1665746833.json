@@ -1,0 +1,14 @@
+{
+   "zimbra_globalconfig":[
+      "carbonioWebUiDarkMode",
+      "carbonioWebUiTitle",
+      "carbonioWebUiDescription",
+      "carbonioAdminUiTitle",
+      "carbonioAdminUiDescription",
+      "carbonioVideoServerRecordingEnabled"
+   ],
+   "zimbra_defaultcos":[
+      "carbonioPrefWebUiDarkMode",
+      "carbonioVideoServerRecordingEnabled"
+   ]
+}

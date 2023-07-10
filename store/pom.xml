@@ -580,6 +580,24 @@
             <id>generate-buildinfo</id>
             <phase>generate-sources</phase>
           </execution>
+          <!-- LDAP Config gen before packaging -->
+          <execution>
+            <configuration>
+              <target>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <taskdef classpathref="maven.plugin.classpath"
+                  resource="net/sf/antcontrib/antlib.xml"/>
+                <ant antfile="${basedir}/ant-store.xml">
+                  <target name="generate-ldap-config"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>generate-ldap-config</id>
+            <phase>prepare-package</phase>
+          </execution>
           <!-- Prepare required files for testing -->
           <execution>
             <id>test</id>

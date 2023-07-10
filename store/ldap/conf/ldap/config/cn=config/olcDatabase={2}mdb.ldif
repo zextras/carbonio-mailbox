@@ -1,0 +1,99 @@
+dn: olcDatabase={2}mdb
+objectClass: olcDatabaseConfig
+objectClass: olcMdbConfig
+olcDatabase: {2}mdb
+olcSuffix:
+olcAccess: {0}to attrs=userPassword  by anonymous auth  by dn.children="cn=adm
+ ins,cn=zimbra" write
+olcAccess: {1}to dn.subtree="cn=zimbra"  by dn.children="cn=admins,cn=zimbra" 
+ write
+olcAccess: {2}to attrs=zimbraZimletUserProperties,zimbraGalLdapBindPassword,zi
+ mbraGalLdapBindDn,zimbraAuthTokenKey,zimbraPreAuthKey,zimbraPasswordHistory,z
+ imbraIsAdminAccount,zimbraAuthLdapSearchBindPassword  by dn.children="cn=admi
+ ns,cn=zimbra" write  by * none
+olcAccess: {3}to attrs=objectclass  by dn.children="cn=admins,cn=zimbra" write
+   by dn.base="uid=zmpostfix,cn=appaccts,cn=zimbra" read  by dn.base="uid=zmam
+ avis,cn=appaccts,cn=zimbra" read  by users read  by * none
+olcAccess: {4}to attrs=@amavisAccount  by dn.children="cn=admins,cn=zimbra" wr
+ ite  by dn.base="uid=zmamavis,cn=appaccts,cn=zimbra" read  by * +0 break
+olcAccess: {5}to attrs=mail  by dn.children="cn=admins,cn=zimbra" write  by dn
+ .base="uid=zmamavis,cn=appaccts,cn=zimbra" read  by * +0 break
+olcAccess: {6}to attrs=zimbraAllowFromAddress,DKIMIdentity,DKIMSelector,DKIMDo
+ main,DKIMKey  by dn.children="cn=admins,cn=zimbra" write  by dn.base="uid=zmp
+ ostfix,cn=appaccts,cn=zimbra" read  by * none
+olcAccess: {7}to filter="(!(zimbraHideInGal=TRUE))"  attrs=cn,co,company,dc,di
+ splayName,givenName,gn,initials,l,mail,o,ou,physicalDeliveryOfficeName,postal
+ Code,sn,st,street,streetAddress,telephoneNumber,title,uid,homePhone,pager,mob
+ ile,userCertificate  by dn.children="cn=admins,cn=zimbra" write  by dn.base="
+ uid=zmpostfix,cn=appaccts,cn=zimbra" read  by users read  by * none
+olcAccess: {8}to attrs=zimbraId,zimbraMailAddress,zimbraMailAlias,zimbraMail
+ CanonicalAddress,zimbraOldMailAddress,zimbraMailCatchAllAddress,zimbraMailC
+ atchAllCanonicalAddress,zimbraMailCatchAllForwardingAddress,zimbraMailDeliveryAddress,zimbraMail
+ ForwardingAddress,zimbraPrefMailForwardingAddress,zimbraMailHost,zimbraMail
+ Status,zimbraMailTransport,zimbraDomainName,zimbraDomainType,zimbraPrefMail
+ LocalDeliveryDisabled,member,memberURL,zimbraMemberOf  by dn.children="cn=a
+ dmins,cn=zimbra" write  by dn.base="uid=zmpostfix,cn=appaccts,cn=zimbra" re
+ ad  by dn.base="uid=zmamavis,cn=appaccts,cn=zimbra" read  by * none
+olcAccess: {9}to dn.subtree="cn=groups,cn=zimbra" attrs=zimbraMailAlias,member
+ ,zimbraMailStatus,entry  by dn.children="cn=admins,cn=zimbra" write  by dn.ba
+ se="uid=zmpostfix,cn=appaccts,cn=zimbra" read
+olcAccess: {10}to attrs=entry  by dn.children="cn=admins,cn=zimbra" write  by *
+  read
+olcLastMod: TRUE
+olcMaxDerefDepth: 15
+olcReadOnly: FALSE
+olcRootDN: cn=config
+olcSizeLimit: unlimited
+olcTimeLimit: unlimited
+olcMonitoring: TRUE
+olcDbDirectory: /opt/zextras/data/ldap/mdb/db
+olcDbCheckpoint: 0 0
+olcDbEnvFlags: writemap
+olcDbEnvFlags: nometasync
+olcDbNoSync: TRUE
+olcDbIndex: objectClass eq
+olcDbIndex: entryUUID eq
+olcDbIndex: entryCSN eq
+olcDbIndex: cn pres,eq,sub
+olcDbIndex: uid pres,eq
+olcDbIndex: zimbraForeignPrincipal eq
+olcDbIndex: zimbraYahooId eq
+olcDbIndex: zimbraId eq
+olcDbIndex: zimbraVirtualHostname eq
+olcDbIndex: zimbraVirtualIPAddress eq
+olcDbIndex: zimbraMailDeliveryAddress eq,sub
+olcDbIndex: zimbraAuthKerberos5Realm eq
+olcDbIndex: zimbraMailForwardingAddress eq
+olcDbIndex: zimbraMailCatchAllAddress eq,sub
+olcDbIndex: zimbraMailHost eq
+olcDbIndex: zimbraMemberOf eq
+olcDbIndex: zimbraSharedItem eq,sub
+olcDbIndex: zimbraMailTransport eq
+olcDbIndex: zimbraMailAlias eq,sub
+olcDbIndex: zimbraOldMailAddress eq,sub
+olcDbIndex: zimbraACE sub
+olcDbIndex: zimbraDomainName eq,sub
+olcDbIndex: mail pres,eq,sub
+olcDbIndex: zimbraCalResSite eq,sub
+olcDbIndex: givenName pres,eq,sub
+olcDbIndex: displayName pres,eq,sub
+olcDbIndex: sn pres,eq,sub
+olcDbIndex: zimbraCalResRoom eq,sub
+olcDbIndex: zimbraCalResCapacity eq
+olcDbIndex: zimbraCalResBuilding eq,sub
+olcDbIndex: zimbraCalResFloor eq,sub
+olcDbIndex: zimbraDomainAliasTargetID eq
+olcDbIndex: zimbraUCServiceId eq
+olcDbIndex: DKIMIdentity eq
+olcDbIndex: DKIMSelector eq
+olcDbMode: 0600
+olcDbMaxsize: 85899345920
+olcDbRtxnSize: 0
+olcDbSearchStack: 16
+structuralObjectClass: olcMdbConfig
+entryUUID: 152ab0a8-333e-102d-8700-d562901af228
+creatorsName: cn=config
+createTimestamp: 20081020215916Z
+entryCSN: 20081020215916.275992Z#000000#000#000000
+modifiersName: cn=config
+modifyTimestamp: 20081020215916Z

@@ -63,11 +63,6 @@
         <version>1.7.36</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
-        <version>2.20.0</version>
-      </dependency>
-      <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-continuation</artifactId>
         <version>${jetty.version}</version>
@@ -358,10 +353,38 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j</artifactId>
+        <artifactId>log4j-api</artifactId>
         <version>${log4j.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.16</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-pool2</artifactId>
+        <version>2.4.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>apache-jsp</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.java.dev.jna</groupId>
+        <artifactId>jna</artifactId>
+        <version>3.4.0</version>
       </dependency>
       <dependency>
         <groupId>org.dom4j</groupId>
@@ -406,15 +429,9 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
-        <artifactId>store-extra-runtime-dependencies</artifactId>
+        <artifactId>carbonio-jetty</artifactId>
         <type>pom</type>
         <version>${revision}</version>
-      </dependency>
-      <dependency>
-        <groupId>zimbra</groupId>
-        <artifactId>zm-jetty</artifactId>
-        <version>22.11.0</version>
-        <type>pom</type>
         <exclusions>
           <exclusion>
             <artifactId>*</artifactId>
@@ -860,7 +877,7 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
-    <module>store-extra-runtime-dependencies</module>
+    <module>carbonio-jetty-libs</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -890,7 +907,7 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <revision>23.7.0-SNAPSHOT</revision>
+    <revision>23.8.0-SNAPSHOT</revision>
     <mockserver.version>5.13.0</mockserver.version>
   </properties>
   <version>${revision}</version>
@@ -1193,6 +1210,10 @@
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
