@@ -870,8 +870,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.ResetRecentMessageCountResponse.class,
           com.zimbra.soap.mail.message.RevokePermissionRequest.class,
           com.zimbra.soap.mail.message.RevokePermissionResponse.class,
-          com.zimbra.soap.mail.message.SaveDocumentRequest.class,
-          com.zimbra.soap.mail.message.SaveDocumentResponse.class,
           com.zimbra.soap.mail.message.SaveDraftRequest.class,
           com.zimbra.soap.mail.message.SaveDraftResponse.class,
           com.zimbra.soap.mail.message.SaveIMAPSubscriptionsRequest.class,
