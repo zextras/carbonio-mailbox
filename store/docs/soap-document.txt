@@ -135,22 +135,3 @@ that the document is a note.
 //   http://{server}/home/[~]{username}/?id={item-id}          // by id
 //
 
-//
-// ListDocumentRevisions
-//
-// returns {num} number of revisions starting from {version} of the requested
-// document.  {num} defaults to 1.  {version} defaults to the current version.
-//
-<ListDocumentRevisionsRequest>
-  <doc id="{item-id}" [ver="{version}"] [count="{num}"]/>
-</ListDocumentRevisionsRequest>
-
-<ListDocumentRevisionsResponse>
-  [<doc name="{name}" ver="{version}" cr="{creator}" id="{message-id}" s="{size}" cd="{created-date}" l="{folder}" [f="{flags}"] [tn="{tag-names}"] [loid="{lock-owner-account-id}"] [loe="{lock-owner-email}"] [desc="{optional-description}] [descEnabled="true|false"]>
-     <fr>... fragment ...</fr>
-  </doc>]+
-  [<user id="{account-id}" name="{display-name}" email="{email-address}"/>]*
-</ListDocumentRevisionsResponse>
-
-Documents that have multiple revisions have the flag "/", which indicates that the document is versioned.
-

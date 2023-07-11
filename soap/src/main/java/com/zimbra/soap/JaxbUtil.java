@@ -830,8 +830,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.ImportDataResponse.class,
           com.zimbra.soap.mail.message.ItemActionRequest.class,
           com.zimbra.soap.mail.message.ItemActionResponse.class,
-          com.zimbra.soap.mail.message.ListDocumentRevisionsRequest.class,
-          com.zimbra.soap.mail.message.ListDocumentRevisionsResponse.class,
           com.zimbra.soap.mail.message.ListIMAPSubscriptionsRequest.class,
           com.zimbra.soap.mail.message.ListIMAPSubscriptionsResponse.class,
           com.zimbra.soap.mail.message.ModifyAppointmentRequest.class,
