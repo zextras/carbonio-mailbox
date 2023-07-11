@@ -11,7 +11,6 @@ import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.AdminExtConstants;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.soap.ReplicationConstants;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.util.JaxbInfo;
 import java.util.List;
@@ -42,9 +41,6 @@ public class WsdlDocGenerator {
     serviceDescriptions.put(
         MailConstants.NAMESPACE_STR,
         "The Mail Service includes commands for managing mail and calendar information.");
-    serviceDescriptions.put(
-        ReplicationConstants.NAMESPACE_STR,
-        "The zimbraRepl Service includes commands for managing Zimbra Server replication.");
   }
 
   private static String getNamespace(Class<?> jaxbClass, Map<Package, String> pkgToNamespace) {
