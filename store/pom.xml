@@ -416,6 +416,17 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
     </dependency>
+    <!-- Note this should be provided in container classpath -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <!-- Needed to bridge log4j -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -423,16 +434,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- Note this should be provided in container classpath -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <scope>provided</scope>
-    </dependency>
+
     <dependency>
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
@@ -457,12 +463,6 @@
     <dependency>
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>zextras</groupId>
-      <artifactId>store-extra-runtime-dependencies</artifactId>
-      <type>pom</type>
-      <scope>runtime</scope>
     </dependency>
     <!-- DI -->
     <dependency>
@@ -589,6 +589,24 @@
             <id>generate-buildinfo</id>
             <phase>generate-sources</phase>
           </execution>
+          <!-- LDAP Config gen before packaging -->
+          <execution>
+            <configuration>
+              <target>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <taskdef classpathref="maven.plugin.classpath"
+                  resource="net/sf/antcontrib/antlib.xml"/>
+                <ant antfile="${basedir}/ant-store.xml">
+                  <target name="generate-ldap-config"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>generate-ldap-config</id>
+            <phase>prepare-package</phase>
+          </execution>
           <!-- Prepare required files for testing -->
           <execution>
             <id>test</id>
@@ -709,9 +727,9 @@
             <version>2.9.1-patch-01</version>
           </dependency>
           <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.20.0</version>
           </dependency>
 
           <!-- These dependencies come from zm-jetty in repo: https://github.com/Zextras/carbonio-zcs-lib

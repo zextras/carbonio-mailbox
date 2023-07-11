@@ -1,0 +1,7 @@
+{
+  "zimbra_globalconfig": [
+    "carbonioSendFullErrorStack",
+    "carbonioSendAnalytics",
+    "carbonioAllowFeedback"
+  ]
+}

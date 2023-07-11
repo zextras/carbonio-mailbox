@@ -394,8 +394,6 @@ public final class LC {
   public static final KnownKey ldap_cache_right_maxage = KnownKey.newKey(15);
   public static final KnownKey ldap_cache_server_maxsize = KnownKey.newKey(100);
   public static final KnownKey ldap_cache_server_maxage = KnownKey.newKey(15);
-  public static final KnownKey ldap_cache_ucservice_maxsize = KnownKey.newKey(100);
-  public static final KnownKey ldap_cache_ucservice_maxage = KnownKey.newKey(15);
 
   @Supported public static final KnownKey ldap_cache_timezone_maxsize = KnownKey.newKey(100);
   public static final KnownKey ldap_cache_xmppcomponent_maxsize = KnownKey.newKey(100);
@@ -1137,8 +1135,6 @@ public final class LC {
   public static final KnownKey ldap_dit_base_dn_mime = KnownKey.newKey("");
   // LDAP Custom DIT base DN for server entries
   public static final KnownKey ldap_dit_base_dn_server = KnownKey.newKey("");
-  // LDAP Custom DIT base DN for ucservice entries
-  public static final KnownKey ldap_dit_base_dn_ucservice = KnownKey.newKey("");
   // LDAP Custom DIT base DN for share locator entries
   public static final KnownKey ldap_dit_base_dn_share_locator = KnownKey.newKey("");
   // LDAP Custom DIT base DN for xmpp component entries
@@ -1157,8 +1153,6 @@ public final class LC {
   public static final KnownKey ldap_dit_naming_rdn_attr_mime = KnownKey.newKey("");
   // LDAP Custom DIT RDN attr for server entries
   public static final KnownKey ldap_dit_naming_rdn_attr_server = KnownKey.newKey("");
-  // LDAP Custom DIT RDN attr for ucservice entries
-  public static final KnownKey ldap_dit_naming_rdn_attr_ucservice = KnownKey.newKey("");
   public static final KnownKey ldap_dit_naming_rdn_attr_user = KnownKey.newKey("");
   public static final KnownKey ldap_dit_naming_rdn_attr_share_locator = KnownKey.newKey("");
   // LDAP Custom DIT RDN attr for xmpp component entries

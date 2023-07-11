@@ -1,0 +1,20 @@
+<zimbraDirSync>
+    <masterURL>ldap://gw.example.com</masterURL>
+    <masterFilter>objectclass=person</masterFilter>
+    <masterSearchBase>\</masterSearchBase>
+    <masterBindUser>cn=admin,dc=example,dc=com</masterBindUser>
+    <masterBindPassword>test123</masterBindPassword>
+    <masterBindTimeout>20</masterBindTimeout>
+    <logLevel>0</logLevel>
+    <requiredMasterAttribute attr='sn'></requiredMasterAttribute>
+    <localIgnore type="smtp">aa@example.com</localIgnore>
+    <masterIgnore type="smtp">test0@example.com</masterIgnore>
+    <localPassword type="static">test123</localPassword>
+    <localDeleteAdmin>false</localDeleteAdmin>
+    <deletionScriptFile>del_sh</deletionScriptFile>
+    <domains>example.com</domains>
+	<localCos>testcos</localCos>
+	<attributeMap>
+        <attr local="displayName" master="name"/>
+    </attributeMap>
+</zimbraDirSync>

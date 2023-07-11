@@ -5,13 +5,6 @@
 
 package com.zimbra.cs.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.common.base.Strings;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.localconfig.LC;
@@ -22,7 +15,6 @@ import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
-import com.zimbra.cs.account.AccountServiceException.AuthFailedServiceException;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthToken.TokenType;
 import com.zimbra.cs.account.AuthToken.Usage;
@@ -31,6 +23,11 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
 import com.zimbra.cs.service.admin.AdminAccessControl;
 import com.zimbra.cs.servlet.ZimbraServlet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 public abstract class AuthProvider {
 
@@ -911,14 +908,7 @@ public abstract class AuthProvider {
         String acctStatus = acct.getAccountStatus(prov);
 
         if (!delegatedAuth && !Provisioning.ACCOUNT_STATUS_ACTIVE.equals(acctStatus)) {
-            if (at.getUsage() == Usage.TWO_FACTOR_AUTH) {
-                // if this is a 2FA token, attempting to log into an inactive account
-                // should throw the same error as when authenticating with a username/password
-                // for an inactive account
-                throw AuthFailedServiceException.AUTH_FAILED(acct.getName(), "account not active");
-            } else {
                 throw ServiceException.AUTH_EXPIRED("account not active");
-            }
         }
 
         // if using delegated auth, make sure the "admin" is really an active admin account

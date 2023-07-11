@@ -1,0 +1,12 @@
+{
+  "zimbra_defaultcos": [
+    "carbonioFeatureChatsEnabled",
+    "carbonioFeatureTeamEnabled",
+    "carbonioFeatureMeetingEnabled"
+  ],
+  "zimbra_defaultexternalcos": [
+    "carbonioFeatureChatsEnabled",
+    "carbonioFeatureTeamEnabled",
+    "carbonioFeatureMeetingEnabled"
+  ]
+}

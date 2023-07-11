@@ -79,13 +79,6 @@ public class AuthRequest {
     @XmlElement(name=AccountConstants.E_VIRTUAL_HOST /* virtualHost */, required=false)
     private String virtualHost;
 
-    /**
-     *@zm-api-field-description the TOTP code used for two-factor authentication
-     *
-     */
-    @XmlElement(name=AccountConstants.E_TWO_FACTOR_CODE /* twoFactorCode */, required=false)
-    private String twoFactorCode;
-
     public AuthRequest() {
         this((String)null, (String)null);
     }

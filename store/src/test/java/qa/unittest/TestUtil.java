@@ -13,14 +13,12 @@ import com.zimbra.client.ZEmailAddress;
 import com.zimbra.client.ZFolder;
 import com.zimbra.client.ZGetMessageParams;
 import com.zimbra.client.ZMailbox;
-import com.zimbra.client.ZMailbox.TrustedStatus;
 import com.zimbra.client.ZMailbox.ZOutgoingMessage;
 import com.zimbra.client.ZMailbox.ZOutgoingMessage.MessagePart;
 import com.zimbra.client.ZMessage;
 import com.zimbra.client.ZMessage.ZMimePart;
 import com.zimbra.client.ZSearchHit;
 import com.zimbra.client.ZSearchParams;
-import com.zimbra.common.account.Key;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
@@ -345,30 +343,6 @@ public class TestUtil {
         return sp;
     }
 
-    public static ZMailbox getZMailbox(String username, String password, String twoFactorCode, TrustedStatus trusted)
-            throws ServiceException {
-        ZMailbox.Options options = new ZMailbox.Options();
-        options.setAccount(getAddress(username));
-        options.setAccountBy(Key.AccountBy.name);
-        options.setPassword(password);
-        options.setUri(TestUtil.getSoapUrl(TestUtil.getAccount(username).getServer()));
-        if (twoFactorCode != null) {
-            options.setTwoFactorCode(twoFactorCode);
-        }
-        if (trusted == TrustedStatus.trusted) {
-            options.setTrustedDevice(true);
-        }
-        return ZMailbox.getMailbox(options);
-    }
-
-    public static ZMailbox getZMailbox(String username, String twoFactorCode, TrustedStatus trusted)
-            throws ServiceException {
-        return getZMailbox(username, DEFAULT_PASSWORD, twoFactorCode, trusted);
-    }
-
-    public static ZMailbox getZMailbox(String username, String scratchCode) throws ServiceException {
-        return getZMailbox(username, scratchCode, TrustedStatus.not_trusted);
-    }
 
     /**
      * Creates an account for the given username, with password set to {@link #DEFAULT_PASSWORD}.

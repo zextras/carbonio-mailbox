@@ -50,7 +50,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
   private static Filter FILTER_ALL_NON_SYSTEM_ARCHIVING_ACCOUNTS;
   private static Filter FILTER_ALL_NON_SYSTEM_INTERNAL_ACCOUNTS;
   private static Filter FILTER_ALL_SERVERS;
-  private static Filter FILTER_ALL_UC_SERVICES;
   private static Filter FILTER_ALL_SHARE_LOCATORS;
   private static Filter FILTER_ALL_SIGNATURES;
   private static Filter FILTER_ALL_XMPP_COMPONENTS;
@@ -141,10 +140,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
 
     FILTER_ALL_SERVERS =
         Filter.createEqualityFilter(LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraServer);
-
-    FILTER_ALL_UC_SERVICES =
-        Filter.createEqualityFilter(
-            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraUCService);
 
     FILTER_ALL_SHARE_LOCATORS =
         Filter.createEqualityFilter(
@@ -465,15 +460,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
   }
 
   @Override
-  public ZLdapFilter accountsOnUCService(String usServiceId) {
-    return new UBIDLdapFilter(
-        FilterId.ACCOUNTS_ON_UCSERVICE,
-        Filter.createANDFilter(
-            Filter.createEqualityFilter(Provisioning.A_zimbraUCServiceId, usServiceId),
-            FILTER_ALL_ACCOUNTS));
-  }
-
-  @Override
   public ZLdapFilter externalAccountsHomedOnServer(String serverServiceHostname) {
     return new UBIDLdapFilter(
         FilterId.EXTERNAL_ACCOUNTS_HOMED_ON_SERVER,
@@ -608,15 +594,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
         Filter.createANDFilter(
             FILTER_ALL_COSES,
             Filter.createEqualityFilter(Provisioning.A_zimbraMailHostPool, serverId)));
-  }
-
-  @Override
-  public ZLdapFilter cosesOnUCService(String usServiceId) {
-    return new UBIDLdapFilter(
-        FilterId.COSES_ON_UCSERVICE,
-        Filter.createANDFilter(
-            Filter.createEqualityFilter(Provisioning.A_zimbraUCServiceId, usServiceId),
-            FILTER_ALL_COSES));
   }
 
   /*
@@ -857,15 +834,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
         Filter.createNOTFilter(Filter.createPresenceFilter(Provisioning.A_zimbraAutoProvLock)));
   }
 
-  @Override
-  public ZLdapFilter domainsOnUCService(String usServiceId) {
-    return new UBIDLdapFilter(
-        FilterId.DOMAINS_ON_UCSERVICE,
-        Filter.createANDFilter(
-            Filter.createEqualityFilter(Provisioning.A_zimbraUCServiceId, usServiceId),
-            FILTER_ALL_DOMAINS));
-  }
-
   /*
    * global config
    */
@@ -931,22 +899,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
         Filter.createANDFilter(
             FILTER_ALL_SERVERS,
             Filter.createEqualityFilter(Provisioning.A_zimbraServiceEnabled, service)));
-  }
-
-  /*
-   * UC service
-   */
-  @Override
-  public ZLdapFilter allUCServices() {
-    return new UBIDLdapFilter(FilterId.ALL_UC_SERVICES, FILTER_ALL_UC_SERVICES);
-  }
-
-  @Override
-  public ZLdapFilter ucServiceById(String id) {
-    return new UBIDLdapFilter(
-        FilterId.UC_SERVICE_BY_ID,
-        Filter.createANDFilter(
-            Filter.createEqualityFilter(Provisioning.A_zimbraId, id), FILTER_ALL_UC_SERVICES));
   }
 
   /*
