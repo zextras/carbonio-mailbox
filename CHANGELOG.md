@@ -1,4 +1,12 @@
 
+
+## [4.6.1](https://github.com/Zextras/carbonio-mailbox/compare/4.6.0...4.6.1) (2023-07-11)
+
+
+### Bug Fixes
+
+* **CO-782:** Delete Draft from authed user's mailbox in SendMsg ([#267](https://github.com/Zextras/carbonio-mailbox/issues/267)) ([228639e](https://github.com/Zextras/carbonio-mailbox/commit/228639eda9dec757f297d11287e02b5b1e77fb29))
+
 # [4.6.0](https://github.com/Zextras/carbonio-mailbox/compare/4.5.0...4.6.0) (2023-07-05)
 
 ### Bug Fixes
