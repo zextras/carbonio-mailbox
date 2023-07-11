@@ -82,6 +82,7 @@ public abstract class MailItem
     @Deprecated
     INVITE(7, MailItemType.INVITE),
     /** Item is a bare {@link Document}. */
+    @Deprecated
     DOCUMENT(8, MailItemType.DOCUMENT),
     /** Item is a {@link Note}. */
     NOTE(9, MailItemType.NOTE),
