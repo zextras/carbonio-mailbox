@@ -1013,7 +1013,6 @@
               <exclude>com.zimbra.cs.service.mail.SendMsgTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
-              <exclude>com.zimbra.cs.service.mail.ModifyProfileImageTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
             </excludes>
           </configuration>

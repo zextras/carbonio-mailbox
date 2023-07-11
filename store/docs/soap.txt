@@ -4741,29 +4741,6 @@ Valid 'op' values: move, read, unread
 </SearchActionResponse>
 
 -----------------------------
-API to save account profile image
-<ModifyProfileImageRequest uid="{upload_id}">{base64_encoded_image_data}
-</ModifyProfileImageRequest>
-
-{upload_id} = Upload Id of profile image uploaded
-{base64_encoded_image_data} = Image data encoded in base64 format
-
-Note: If the {base64_encoded_image_data} is present in the value field, the {upload_id} is ignored.
-If the {base64_encoded_image_data} is not present in the request, the {upload_id} is used to fetch the image data.
-If both {base64_encoded_image_data} and {upload_id} are not present, the profile image is removed if already exist.
-
-<ModifyProfileImageResponse itemId="{item_id}">
-</ModifyProfileImageResponse>
-
-{item_id} = Item Id of saved profile image
-
-Note: The item id returned in response can be used to download the profile image using REST URL
-
-Server Debug config parameters:
-1. profile_image_max_size = maximum image size allowed for account profile
-2. profile_thumbnail_image_dimension = profile ldap thumbnail image dimesion
-
------------------------------
 API to set recovery email address
 <SetRecoveryAccountRequest op="{op}" recoveryAccount="{recoveryAccount}" recoveryAccountVerificationCode="{recoveryAccountVerificationCode}" channel="email">
 </SetRecoveryAccountRequest>
