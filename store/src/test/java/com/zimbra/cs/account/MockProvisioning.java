@@ -21,6 +21,7 @@ import com.zimbra.cs.account.AccountServiceException.AuthFailedServiceException;
 import com.zimbra.cs.account.NamedEntry.Visitor;
 import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.auth.AuthContext.Protocol;
+import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.mime.MockMimeTypeInfo;
 import com.zimbra.cs.mime.handler.MessageRFC822Handler;
@@ -71,7 +72,7 @@ public final class MockProvisioning extends Provisioning {
     attrs.put(A_zimbraRedoLogProvider, MockRedoLogProvider.class.getName());
     attrs.put(A_zimbraId, UUID.randomUUID().toString());
     attrs.put(A_zimbraMailMode, MailMode.http.toString());
-    attrs.put(A_zimbraSmtpPort, "7025");
+    attrs.put(A_zimbraSmtpPort, String.valueOf(SmtpConfig.DEFAULT_PORT));
     attrs.put(A_zimbraLowestSupportedAuthVersion, "1");
     attrs.put(
         A_zimbraSSLPrivateKey,

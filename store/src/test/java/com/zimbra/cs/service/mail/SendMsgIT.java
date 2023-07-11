@@ -1,0 +1,187 @@
+// SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
+package com.zimbra.cs.service.mail;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.util.ServerSetup;
+import com.zimbra.common.account.Key;
+import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.SoapProtocol;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.accesscontrol.ACLUtil;
+import com.zimbra.cs.account.accesscontrol.GranteeType;
+import com.zimbra.cs.account.accesscontrol.Right;
+import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.account.accesscontrol.RightModifier;
+import com.zimbra.cs.account.accesscontrol.ZimbraACE;
+import com.zimbra.cs.mailbox.ACL;
+import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.cs.mailbox.MailServiceException;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.mailbox.Message;
+import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mailclient.smtp.SmtpConfig;
+import com.zimbra.cs.mime.ParsedMessage;
+import com.zimbra.cs.service.AuthProvider;
+import com.zimbra.soap.SoapEngine;
+import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.mail.message.SendMsgRequest;
+import com.zimbra.soap.mail.type.EmailAddrInfo;
+import com.zimbra.soap.mail.type.MsgToSend;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.UUID;
+import javax.mail.Address;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMessage.RecipientType;
+import javax.mail.internet.MimeMultipart;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+class SendMsgIT {
+
+  private static GreenMail greenMail;
+
+  @BeforeAll
+  public static void setUp() throws Exception {
+    MailboxTestUtil.initServer();
+
+    // Setup SMTP
+    greenMail =
+        new GreenMail(
+            new ServerSetup[] {
+              new ServerSetup(
+                  SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
+            });
+    greenMail.start();
+
+    Provisioning prov = Provisioning.getInstance();
+    prov.createAccount(
+        "recipient@test.com",
+        "secret",
+        new HashMap<>() {
+          {
+            put(ZAttrProvisioning.A_zimbraId, UUID.randomUUID().toString());
+          }
+        });
+    final Account sharedAcct =
+        prov.createAccount(
+            "shared@test.com",
+            "secret",
+            new HashMap<>() {
+              {
+                put(ZAttrProvisioning.A_zimbraId, UUID.randomUUID().toString());
+              }
+            });
+    final Account delegated =
+        prov.createAccount("delegated@test.com", "secret", new HashMap<String, Object>());
+    // Grant sendAs to delegated@
+    final Set<ZimbraACE> aces =
+        new HashSet<>() {
+          {
+            add(
+                new ZimbraACE(
+                    delegated.getId(),
+                    GranteeType.GT_USER,
+                    RightManager.getInstance().getRight(Right.RT_sendAs),
+                    RightModifier.RM_CAN_DELEGATE,
+                    null));
+          }
+        };
+    ACLUtil.grantRight(Provisioning.getInstance(), sharedAcct, aces);
+    // Grant shared@ root folder access to delegated@
+    final short rwidx = ACL.stringToRights("rwidx");
+    final Mailbox sharedAcctMailbox = MailboxManager.getInstance().getMailboxByAccount(sharedAcct);
+    final Folder rootSharedAcctFolder = sharedAcctMailbox.getFolderByPath(null, "/");
+    sharedAcctMailbox.grantAccess(
+        null,
+        rootSharedAcctFolder.getFolderId(),
+        delegated.getId(),
+        ACL.GRANTEE_AUTHUSER,
+        rwidx,
+        null);
+  }
+
+  @AfterAll
+  public static void tearDown() {
+    greenMail.stop();
+  }
+
+  private Message createDraft(String sender) throws Exception {
+    final MimeMessage mimeMessage = new MimeMessage(Session.getInstance(new Properties()));
+    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, sender);
+    final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+    final OperationContext operationContext = new OperationContext(acct);
+    Address[] recipients = new Address[] {new InternetAddress(acct.getName())};
+    mimeMessage.setFrom(new InternetAddress(acct.getName()));
+    mimeMessage.setRecipients(RecipientType.TO, recipients);
+    mimeMessage.setSubject("Test email");
+    Multipart multipart = new MimeMultipart();
+    MimeBodyPart text = new MimeBodyPart();
+    text.setText("Hello there");
+    mimeMessage.setContent(multipart);
+    mimeMessage.setSender(new InternetAddress(acct.getName()));
+    final ParsedMessage parsedMessage =
+        new ParsedMessage(mimeMessage, mailbox.attachmentsIndexingEnabled());
+    return mailbox.saveDraft(operationContext, parsedMessage, Mailbox.ID_AUTO_INCREMENT);
+  }
+
+  @Test
+  void shouldDeleteDraftFromAuthAcctMailboxWhenSendingMailAsSharedAccount() throws Exception {
+    final Account delegatedAcct =
+        Provisioning.getInstance().get(Key.AccountBy.name, "delegated@test.com");
+
+    final Account shared = Provisioning.getInstance().get(Key.AccountBy.name, "shared@test.com");
+
+    final Message draft = createDraft(delegatedAcct.getName());
+    final SendMsgRequest sendMsgRequest = new SendMsgRequest();
+    final MsgToSend msgToSend = new MsgToSend();
+    final EmailAddrInfo emailAddrInfo = new EmailAddrInfo("recipient@test.com");
+    // easiest way to create a message, sorry
+    final String requestBody =
+        String.format(
+            "{\"m\":{\"did\":\"%d\",\"id\":\"%d\",\"su\":{\"_content\":\"AAA\"},\"e\":[{\"t\":\"f\",\"a\":\"shared@test.com\",\"d\":\"Test"
+                + " Shared\"},{\"t\":\"t\",\"a\":\"recipient@demo.zextras.io\"}],"
+                + "\"mp\":[{\"ct\":\"multipart/alternative\","
+                + "\"mp\":[{\"ct\":\"text/html\",\"body\":true,\"content\":{\"_content\":\"<html><body><div"
+                + " style=\\\"font-family: arial, helvetica, sans-serif; font-size: 12pt; color:"
+                + " #000000\\\"><p>Test</p></div></body></html>\"}},"
+                + "{\"ct\":\"text/plain\",\"content\":{\"_content\":\"Test\"}}]}]}}}",
+            draft.getId(), draft.getId());
+    final Element jsonElement = Element.parseJSON(requestBody);
+
+    Map<String, Object> context = new HashMap<String, Object>();
+    ZimbraSoapContext zsc =
+        new ZimbraSoapContext(
+            AuthProvider.getAuthToken(delegatedAcct),
+            shared.getId(),
+            SoapProtocol.Soap12,
+            SoapProtocol.Soap12);
+    context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+    new SendMsg().handle(jsonElement, context);
+    final Mailbox delegatedMbox = MailboxManager.getInstance().getMailboxByAccount(delegatedAcct);
+    final MailServiceException receivedException =
+        assertThrows(
+            MailServiceException.class, () -> delegatedMbox.getMessageById(null, draft.getId()));
+
+    // check draft is deleted after successful send
+    assertEquals(MailServiceException.NO_SUCH_MSG, receivedException.getCode());
+    assertEquals("no such message: " + draft.getId(), receivedException.getMessage());
+  }
+}
