@@ -278,14 +278,12 @@ public final class ZimbraLog {
 
   /** the "zimbra.activity" logger. For ACTIVITY-related events */
   public static final Log activity = LogFactory.getLog("zimbra.activity");
+
   /** the "zimbra.ews" logger. For EWS-related events */
   public static final Log ews = LogFactory.getLog("zimbra.ews");
 
   /** the "zimbra.oauth" logger. For OAuth code. */
   public static final Log oauth = LogFactory.getLog("zimbra.oauth");
-
-  /** the "zimbra.zmg" logger. For Zimbra Mobile Gateway. */
-  public static final Log zmg = LogFactory.getLog("zimbra.zmg");
 
   /** the "zimbra.smime" logger. For Zimbra Smime. */
   public static final Log smime = LogFactory.getLog("zimbra.smime");

@@ -123,10 +123,6 @@ public class ZFeatures {
     return getBool(ZAttrProvisioning.A_zimbraFeatureMailForwardingInFiltersEnabled);
   }
 
-  public boolean getMobileSync() {
-    return getBool(ZAttrProvisioning.A_zimbraFeatureMobileSyncEnabled);
-  }
-
   public boolean getSkinChange() {
     return getBool(ZAttrProvisioning.A_zimbraFeatureSkinChangeEnabled);
   }
@@ -194,16 +190,19 @@ public class ZFeatures {
     return get(ZAttrProvisioning.A_zimbraFeatureNewAddrBookEnabled) == null
         || getBool(ZAttrProvisioning.A_zimbraFeatureNewAddrBookEnabled);
   }
+
   // defaults to TRUE
   public boolean getPop3Enabled() {
     return get(ZAttrProvisioning.A_zimbraPop3Enabled) == null
         || getBool(ZAttrProvisioning.A_zimbraPop3Enabled);
   }
+
   // defaults to TRUE
   public boolean getSpam() {
     return get(ZAttrProvisioning.A_zimbraFeatureAntispamEnabled) == null
         || getBool(ZAttrProvisioning.A_zimbraFeatureAntispamEnabled);
   }
+
   // defaults to TRUE
   public boolean getWebClientEnabled() {
     return get(ZAttrProvisioning.A_zimbraFeatureWebClientEnabled) == null

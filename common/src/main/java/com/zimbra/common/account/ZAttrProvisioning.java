@@ -7143,7 +7143,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureMobileAppEnabled = "zimbraFeatureMobileAppEnabled";
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -7159,7 +7160,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureMobilePolicyEnabled = "zimbraFeatureMobilePolicyEnabled";
 
     /**
-     * whether to permit mobile sync
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether to permit mobile sync
      */
     @ZAttr(id=347)
     public static final String A_zimbraFeatureMobileSyncEnabled = "zimbraFeatureMobileSyncEnabled";
@@ -8927,7 +8929,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraIsMobileGatewayAppAccount = "zimbraIsMobileGatewayAppAccount";
 
     /**
-     * whether or not an account represents a Mobile Gateway Proxy account
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether or not an account represents a Mobile
+     * Gateway Proxy account
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -14680,7 +14684,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefZimletTreeOpen = "zimbraPrefZimletTreeOpen";
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @since ZCS 8.7.0,9.0.0
      */
