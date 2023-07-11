@@ -144,8 +144,6 @@ public final class JaxbUtil {
           com.zimbra.soap.account.message.ModifyWhiteBlackListResponse.class,
           com.zimbra.soap.account.message.ModifyZimletPrefsRequest.class,
           com.zimbra.soap.account.message.ModifyZimletPrefsResponse.class,
-          com.zimbra.soap.account.message.RegisterMobileGatewayAppResponse.class,
-          com.zimbra.soap.account.message.RenewMobileGatewayAppTokenResponse.class,
           com.zimbra.soap.account.message.ResetPasswordRequest.class,
           com.zimbra.soap.account.message.ResetPasswordResponse.class,
           com.zimbra.soap.admin.message.ResetAccountPasswordRequest.class,

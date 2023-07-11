@@ -37,11 +37,9 @@ public class CreateDataSource extends MailDocumentHandler {
     Element eDataSource = getDataSourceElement(request);
     DataSourceType type = DataSourceType.fromString(eDataSource.getName());
 
-    final boolean isAppProvisioned = false;
-
     Account account = getRequestedAccount(zsc);
 
-    if (eDataSource.getAttributeBool(MailConstants.A_DS_TEST, false) && !isAppProvisioned) {
+    if (eDataSource.getAttributeBool(MailConstants.A_DS_TEST, false)) {
       TestDataSource.testDataSourceConnection(prov, eDataSource, type, account);
     }
     if (!canModifyOptions(zsc, account))

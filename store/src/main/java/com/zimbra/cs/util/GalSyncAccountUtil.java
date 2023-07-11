@@ -47,6 +47,7 @@ public class GalSyncAccountUtil {
   private static Map<String, Integer> mCommands;
 
   private static void usage() {
+    System.out.println("zmgsautil: {command}");
     System.out.println(
         "\tcreateAccount -a {account-name} -n {datasource-name} --domain {domain-name} -t"
             + " zimbra|ldap -s {server} [-f {folder-name}] [-p {polling-interval}]");

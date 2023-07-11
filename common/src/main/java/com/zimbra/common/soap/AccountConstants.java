@@ -124,12 +124,6 @@ public class AccountConstants {
   public static final String E_GET_SMIME_PUBLIC_CERTS_REQUEST = "GetSMIMEPublicCertsRequest";
   public static final String E_GET_SMIME_PUBLIC_CERTS_RESPONSE = "GetSMIMEPublicCertsResponse";
 
-  public static final String E_BOOTSTRAP_MOBILE_GATEWAY_APP_RESPONSE =
-      "BootstrapMobileGatewayAppResponse";
-  public static final String E_RENEW_MOBILE_GATEWAY_APP_TOKEN_REQUEST =
-      "RenewMobileGatewayAppTokenRequest";
-  public static final String E_RENEW_MOBILE_GATEWAY_APP_TOKEN_RESPONSE =
-      "RenewMobileGatewayAppTokenResponse";
   public static final String E_REGISTER_MOBILE_GATEWAY_APP_REQUEST =
       "RegisterMobileGatewayAppRequest";
   public static final String E_REGISTER_MOBILE_GATEWAY_APP_RESPONSE =
