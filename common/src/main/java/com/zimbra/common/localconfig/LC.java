@@ -779,6 +779,7 @@ public final class LC {
   public static final KnownKey zimbra_csv_formatter_disable_timeout = KnownKey.newKey(true);
   public static final KnownKey zimbra_archive_formatter_search_chunk_size = KnownKey.newKey(4096);
   public static final KnownKey zimbra_gal_sync_disable_timeout = KnownKey.newKey(true);
+
   // for bug 79865
   /**
    * The max idle time for an HTTP DAV Method in milliseconds. Timeout 0 implies an infinite timeout
@@ -821,6 +822,7 @@ public final class LC {
    * ({@code com.sun.mail.smtp.SMTPTransport}).
    */
   public static final KnownKey javamail_zsmtp = KnownKey.newKey(true);
+
   /**
    * {@code true} to use Zimbra's MIME parser implementation ({@code
    * com.zimbra.common.mime.shim.JavaMailMimeMessage}), otherwise use JavaMail's default
@@ -1353,24 +1355,6 @@ public final class LC {
       KnownKey.newKey("application/x-ms*");
 
   public static final KnownKey enable_delegated_admin_ldap_access = KnownKey.newKey(true);
-
-  // OAuth2 Social
-  public static final KnownKey zm_oauth_classes_handlers_yahoo =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.YahooOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_google =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.GoogleOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_facebook =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.FacebookOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_outlook =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.OutlookOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_twitter =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.TwitterOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_slack =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.SlackOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_zoom =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.ZoomOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_dropbox =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.DropboxOAuth2Handler");
 
   // alias login
   public static final KnownKey alias_login_enabled = KnownKey.newKey(true);
