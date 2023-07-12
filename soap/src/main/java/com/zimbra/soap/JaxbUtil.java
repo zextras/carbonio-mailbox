@@ -856,8 +856,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.NoteActionResponse.class,
           com.zimbra.soap.mail.message.OpenIMAPFolderRequest.class,
           com.zimbra.soap.mail.message.OpenIMAPFolderResponse.class,
-          com.zimbra.soap.mail.message.PurgeRevisionRequest.class,
-          com.zimbra.soap.mail.message.PurgeRevisionResponse.class,
           com.zimbra.soap.mail.message.RankingActionRequest.class,
           com.zimbra.soap.mail.message.RankingActionResponse.class,
           com.zimbra.soap.mail.message.RecordIMAPSessionRequest.class,

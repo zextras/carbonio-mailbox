@@ -1,8 +1,3 @@
-//
-// Notebook feature and WikiItem are deprecated as of 7.0.0.  Briefcase
-// and Documents are still supported and they can be used to store
-// versioned rich text content as WikiItem.
-//
 // Documents are stored in the mailbox of the requestor.  The access to
 // the Documents will be determined by ACL of the folder the Notes are 
 // stored.  By default Documents are accesible to the account holder only, thus 

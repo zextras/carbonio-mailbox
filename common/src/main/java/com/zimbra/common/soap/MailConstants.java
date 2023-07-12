@@ -201,8 +201,6 @@ public final class MailConstants {
     public static final String E_GET_SPELL_DICTIONARIES_RESPONSE = "GetSpellDictionariesResponse";
     public static final String E_CHECK_SPELLING_REQUEST = "CheckSpellingRequest";
     public static final String E_CHECK_SPELLING_RESPONSE = "CheckSpellingResponse";
-    public static final String E_PURGE_REVISION_REQUEST = "PurgeRevisionRequest";
-    public static final String E_PURGE_REVISION_RESPONSE = "PurgeRevisionResponse";
     public static final String E_CREATE_DATA_SOURCE_REQUEST = "CreateDataSourceRequest";
     public static final String E_CREATE_DATA_SOURCE_RESPONSE = "CreateDataSourceResponse";
     public static final String E_GET_DATA_SOURCES_REQUEST = "GetDataSourcesRequest";
@@ -465,10 +463,6 @@ public final class MailConstants {
 
     public static final QName CHECK_SPELLING_REQUEST = QName.get(E_CHECK_SPELLING_REQUEST, NAMESPACE);
     public static final QName CHECK_SPELLING_RESPONSE = QName.get(E_CHECK_SPELLING_RESPONSE, NAMESPACE);
-
-    // documents
-    public static final QName PURGE_REVISION_REQUEST = QName.get(E_PURGE_REVISION_REQUEST, NAMESPACE);
-    public static final QName PURGE_REVISION_RESPONSE = QName.get(E_PURGE_REVISION_RESPONSE, NAMESPACE);
 
     // data sources
     public static final QName CREATE_DATA_SOURCE_REQUEST = QName.get(E_CREATE_DATA_SOURCE_REQUEST, NAMESPACE);

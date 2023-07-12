@@ -182,10 +182,6 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(
         MailConstants.GET_SPELL_DICTIONARIES_REQUEST, new GetSpellDictionaries());
 
-    // Documents
-    dispatcher.registerHandler(
-        MailConstants.PURGE_REVISION_REQUEST, new com.zimbra.cs.service.mail.PurgeRevision());
-
     // data source
     dispatcher.registerHandler(MailConstants.GET_DATA_SOURCES_REQUEST, new GetDataSources());
     dispatcher.registerHandler(MailConstants.CREATE_DATA_SOURCE_REQUEST, new CreateDataSource());
