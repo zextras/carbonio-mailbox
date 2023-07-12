@@ -53,7 +53,6 @@
       <artifactId>micrometer-core</artifactId>
     </dependency>
 
-
     <dependency>
       <artifactId>lucene-core</artifactId>
       <groupId>org.apache.lucene</groupId>
@@ -509,6 +508,16 @@
       <artifactId>mockserver-core</artifactId>
       <scope>test</scope>
     </dependency>
+
+
+    <!-- https://mvnrepository.com/artifact/com.icegreen/greenmail -->
+    <dependency>
+      <groupId>com.icegreen</groupId>
+      <artifactId>greenmail</artifactId>
+      <version>1.6.14</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
