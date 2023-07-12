@@ -124,10 +124,6 @@ public class AccountConstants {
   public static final String E_GET_SMIME_PUBLIC_CERTS_REQUEST = "GetSMIMEPublicCertsRequest";
   public static final String E_GET_SMIME_PUBLIC_CERTS_RESPONSE = "GetSMIMEPublicCertsResponse";
 
-  public static final String E_REGISTER_MOBILE_GATEWAY_APP_REQUEST =
-      "RegisterMobileGatewayAppRequest";
-  public static final String E_REGISTER_MOBILE_GATEWAY_APP_RESPONSE =
-      "RegisterMobileGatewayAppResponse";
   public static final String E_GET_GCM_SENDER_ID_REQUEST = "GetGcmSenderIdRequest";
   public static final String E_GET_GCM_SENDER_ID_RESPONSE = "GetGcmSenderIdResponse";
 
