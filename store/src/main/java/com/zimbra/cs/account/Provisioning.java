@@ -16,7 +16,6 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ExceptionToString;
 import com.zimbra.common.util.L10nUtil;
-import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.accesscontrol.Right;
@@ -998,33 +997,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract void renameAccount(String zimbraId, String newName) throws ServiceException;
 
   /**
-   * Returns the domain under which ZMG app accounts are created by default.
-   *
-   * @return
-   * @throws ServiceException
-   */
-  public Domain getDefaultZMGDomain() throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  /**
-   * Creates an account for an app that interfaces with the Mobile Gateway features.
-   *
-   * @param accountId id to use for the new account
-   * @param appCredsDigest a string representing the unique set of credentials of the app
-   * @return
-   */
-  public Account autoProvZMGAppAccount(String accountId, String appCredsDigest)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  public Pair<Account, Boolean> autoProvZMGProxyAccount(String emailAddr, String password)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  /**
    * Looks up an account by the specified key.
    *
    * @return the <code>Account</code>, or <code>null</code> if no <code>Account</code> with the
@@ -1041,6 +1013,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     // returns whether a shutdown has been request to the scheduler
     public boolean isShutDownRequested();
   }
+
   /**
    * Auto provisioning account in EAGER mode.
    *
@@ -2796,6 +2769,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       throws ServiceException {
     throw ServiceException.UNSUPPORTED();
   }
+
   // address list
   public String createAddressList(
       Domain domain, String name, String desc, Map<String, Object> attrs) throws ServiceException {

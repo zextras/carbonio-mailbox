@@ -12111,7 +12111,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @return zimbraFeatureMobileGatewayEnabled, or false if unset
      *
@@ -12123,7 +12124,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @param zimbraFeatureMobileGatewayEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12138,7 +12140,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @param zimbraFeatureMobileGatewayEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -12154,7 +12157,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -12168,7 +12172,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -12255,7 +12260,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to permit mobile sync
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether to permit mobile sync
      *
      * @return zimbraFeatureMobileSyncEnabled, or false if unset
      */
@@ -12265,7 +12271,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to permit mobile sync
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether to permit mobile sync
      *
      * @param zimbraFeatureMobileSyncEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12278,7 +12285,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to permit mobile sync
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether to permit mobile sync
      *
      * @param zimbraFeatureMobileSyncEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -12292,7 +12300,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to permit mobile sync
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether to permit mobile sync
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -12304,7 +12313,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to permit mobile sync
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether to permit mobile sync
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -44147,7 +44157,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @return zimbraPrefZmgPushNotificationEnabled, or false if unset
      *
@@ -44159,7 +44171,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @param zimbraPrefZmgPushNotificationEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -44174,7 +44188,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @param zimbraPrefZmgPushNotificationEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -44190,7 +44206,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -44204,7 +44222,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
