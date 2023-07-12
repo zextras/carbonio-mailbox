@@ -176,7 +176,6 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(
         MailConstants.CHECK_RECUR_CONFLICTS_REQUEST, new CheckRecurConflicts());
 
-
     // spell check
     dispatcher.registerHandler(MailConstants.CHECK_SPELLING_REQUEST, new CheckSpelling());
     dispatcher.registerHandler(
@@ -216,10 +215,6 @@ public final class MailService implements DocumentService {
     // folder ACl
     dispatcher.registerHandler(
         MailConstants.GET_EFFECTIVE_FOLDER_PERMS_REQUEST, new GetEffectiveFolderPerms());
-
-    // yahoo auth
-    dispatcher.registerHandler(MailConstants.GET_YAHOO_COOKIE_REQUEST, new GetYahooCookie());
-    dispatcher.registerHandler(MailConstants.GET_YAHOO_AUTH_TOKEN_REQUEST, new GetYahooAuthToken());
 
     dispatcher.registerHandler(MailConstants.AUTO_COMPLETE_REQUEST, new AutoComplete());
     dispatcher.registerHandler(MailConstants.RANKING_ACTION_REQUEST, new RankingAction());
