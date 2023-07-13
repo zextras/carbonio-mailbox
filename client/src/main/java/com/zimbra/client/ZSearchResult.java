@@ -69,8 +69,6 @@ public class ZSearchResult implements ToZJSONObject {
         ZAppointmentHit.addInstances(h, hits, tz, false);
       } else if (h.getName().equals(MailConstants.E_TASK)) {
         ZAppointmentHit.addInstances(h, hits, tz, true);
-      } else if (h.getName().equals(MailConstants.E_DOC)) {
-        hits.add(new ZDocumentHit(h));
       } else if (h.getName().equals(MailConstants.E_HIT)) {
         ZIdHit hit = new ZIdHit(h);
         hits.add(hit);
