@@ -49,11 +49,9 @@ public class Folder {
         @XmlEnumValue("conversation") CONVERSATION ("conversation"),
         @XmlEnumValue("message") MESSAGE ("message"),
         @XmlEnumValue("contact") CONTACT ("contact"),
-        @XmlEnumValue("document") DOCUMENT ("document"),
         @XmlEnumValue("appointment") APPOINTMENT ("appointment"),
         @XmlEnumValue("virtual conversation") VIRTUAL_CONVERSATION ("virtual conversation"),
         @XmlEnumValue("remote folder") REMOTE_FOLDER ("remote folder"),
-        @XmlEnumValue("wiki") WIKI ("wiki"),
         @XmlEnumValue("task") TASK ("task"),
         @XmlEnumValue("chat") CHAT ("chat");
 
