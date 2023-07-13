@@ -47,7 +47,6 @@ import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.convert.ConversionUnsupportedException;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.html.BrowserDefang;
 import com.zimbra.cs.html.DefangFactory;
@@ -57,7 +56,6 @@ import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -128,8 +126,6 @@ public final class NativeFormatter extends Formatter {
                 } else {
                     context.resp.sendError(HttpServletResponse.SC_FORBIDDEN, "permission denied");
                 }
-            } else if (context.target instanceof Document) {
-                handleDocument(context, (Document) context.target);
             } else if (context.target instanceof Contact) {
                 handleContact(context, (Contact) context.target);
             } else {
@@ -349,60 +345,6 @@ public final class NativeFormatter extends Formatter {
 
     }
 
-    private void handleDocument(UserServletContext context, Document doc) throws IOException, ServiceException, ServletException {
-        String v = context.params.get(UserServlet.QP_VERSION);
-        int version = v != null ? Integer.parseInt(v) : -1;
-        String contentType = doc.getContentType();
-
-        doc = (version > 0 ? (Document)doc.getMailbox().getItemRevision(context.opContext, doc.getId(), doc.getType(), version) : doc);
-        InputStream is = doc.getContentStream();
-        CustomMetadata customData = doc.getCustomData("Profile");
-        if (customData != null && customData.containsKey("p") && customData.get("p").equals("1")) {
-            try {
-                if ((context.hasMaxWidth() || context.hasMaxHeight())
-                    && (doc.getSize() < LC.max_image_size_to_resize.intValue())) {
-                    byte[] data = getResizedImageData(is, doc.getContentType(), doc.getName(),
-                        context.getMaxWidth(), context.getMaxHeight());
-                    String returnCode = null;
-                    if (data != null) {
-                        returnCode = new String(Arrays.copyOfRange(data, 0,
-                            NativeFormatter.RETURN_CODE_NO_RESIZE.length()), "UTF-8");
-                    }
-                    if (data != null && !NativeFormatter.RETURN_CODE_NO_RESIZE.equals(returnCode)) {
-                            InputStream profileInputStream = new ByteArrayInputStream(data);
-                            long size = data.length;
-                            sendbackBinaryData(context.req, context.resp, profileInputStream,
-                                contentType, null, doc.getName(), size);
-                            return;
-                    }
-                }
-            } catch (Exception e) {
-                log.info("Unable to resize image.  Returning original content.", e);
-            }
-        }
-        if (HTML_VIEW.equals(context.getView()) && !(contentType != null && contentType.startsWith(MimeConstants.CT_TEXT_HTML))) {
-            if (ExtensionUtil.getExtension("convertd") != null) {
-                // If the requested view is html, but the requested content is not, use convertd extension when deployed
-                handleConversion(context, is, doc.getName(), doc.getContentType(), doc.getDigest(), doc.getSize());
-            } else {
-                // If the requested view is html, but the content is not, respond with a conversion error, so that
-                // either an error page, or page invoking an error callback handler can be shown
-                try {
-                    updateClient(context, new ConversionUnsupportedException(String.format("Native format cannot be displayed inline: %s", contentType)));
-                } catch (UserServletException e) {
-                    throw new ServletException(e.getLocalizedMessage(), e);
-                }
-            }
-        } else {
-            String defaultCharset = context.targetAccount.getAttr(Provisioning.A_zimbraPrefMailDefaultCharset, null);
-            boolean neuter = doc.getAccount().getBooleanAttr(Provisioning.A_zimbraNotebookSanitizeHtml, true);
-            if (neuter)
-                sendbackOriginalDoc(is, contentType, defaultCharset, doc.getName(), null, doc.getSize(), context.req, context.resp);
-            else
-                sendbackBinaryData(context.req, context.resp, is, contentType, null , doc.getName(), doc.getSize());
-        }
-    }
-
     private void handleConversion(UserServletContext ctxt, InputStream is, String filename, String ct, String digest, long length) throws IOException, ServletException {
         try {
             ctxt.req.setAttribute(ATTR_INPUTSTREAM, is);
@@ -532,9 +474,7 @@ public final class NativeFormatter extends Formatter {
             if (result == UploadScanner.ERROR)
                 throw MailServiceException.SCAN_ERROR(filename);
 
-            item = mbox.addDocumentRevision(context.opContext, item.getId(), pd);
         } catch (NoSuchItemException nsie) {
-            item = mbox.createDocument(context.opContext, folder.getId(), pd, MailItem.Type.DOCUMENT, 0);
         }
 
         sendZimbraHeaders(context, context.resp, item);

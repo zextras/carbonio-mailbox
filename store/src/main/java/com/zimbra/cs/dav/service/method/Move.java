@@ -40,11 +40,11 @@ public class Move extends DavMethod {
             if (srcCollection.getDefaultView() != MailItem.Type.UNKNOWN && srcCollection.getDefaultView() != col.getDefaultView())
                 throw new DavException("cannot move to incompatible collection", HttpServletResponse.SC_FORBIDDEN, null);
         } else {
-            // allow moving of collections of type document or unknown only.
-            if ( !(((Collection) mir).getDefaultView() == MailItem.Type.DOCUMENT || ((Collection) mir).getDefaultView() == MailItem.Type.UNKNOWN) )
+            // allow moving of collections of type unknown only.
+            if ( !(((Collection) mir).getDefaultView() == MailItem.Type.UNKNOWN) )
                 throw new DavException("cannot move non-document collection", HttpServletResponse.SC_FORBIDDEN, null);
             // do not allow moving of collection if destination type is not document or unknown.            
-            if (!(col.getDefaultView() == MailItem.Type.UNKNOWN || col.getDefaultView() == MailItem.Type.DOCUMENT))
+            if (!(col.getDefaultView() == MailItem.Type.UNKNOWN))
                 throw new DavException("cannot move to incompatible collection", HttpServletResponse.SC_FORBIDDEN, null);    
         }
             

@@ -125,7 +125,6 @@ import com.zimbra.cs.mime.ParsedMessage.CalendarPartInfo;
 import com.zimbra.cs.mime.ParsedMessageDataSource;
 import com.zimbra.cs.mime.ParsedMessageOptions;
 import com.zimbra.cs.pop3.Pop3Message;
-import com.zimbra.cs.redolog.op.AddDocumentRevision;
 import com.zimbra.cs.redolog.op.AlterItemTag;
 import com.zimbra.cs.redolog.op.ColorItem;
 import com.zimbra.cs.redolog.op.CopyItem;
@@ -165,7 +164,6 @@ import com.zimbra.cs.redolog.op.ModifySavedSearch;
 import com.zimbra.cs.redolog.op.MoveItem;
 import com.zimbra.cs.redolog.op.PurgeImapDeleted;
 import com.zimbra.cs.redolog.op.PurgeOldMessages;
-import com.zimbra.cs.redolog.op.PurgeRevision;
 import com.zimbra.cs.redolog.op.RecoverItem;
 import com.zimbra.cs.redolog.op.RedoableOp;
 import com.zimbra.cs.redolog.op.RefreshMountpoint;
@@ -175,7 +173,6 @@ import com.zimbra.cs.redolog.op.RenameMailbox;
 import com.zimbra.cs.redolog.op.RepositionNote;
 import com.zimbra.cs.redolog.op.RevokeAccess;
 import com.zimbra.cs.redolog.op.SaveChat;
-import com.zimbra.cs.redolog.op.SaveDocument;
 import com.zimbra.cs.redolog.op.SaveDraft;
 import com.zimbra.cs.redolog.op.SetActiveSyncDisabled;
 import com.zimbra.cs.redolog.op.SetCalendarItem;
@@ -213,7 +210,6 @@ import com.zimbra.cs.session.SoapSession;
 import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.store.Blob;
 import com.zimbra.cs.store.MailboxBlob;
-import com.zimbra.cs.store.MailboxBlobDataSource;
 import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.StoreManager.StoreFeature;
@@ -3673,9 +3669,6 @@ public class Mailbox implements MailboxStore {
       } else {
         // check for the specified item -- folder first, then document
         item = parent.findSubfolder(name);
-        if (item == null) {
-          item = getItem(DbMailItem.getByName(this, parent.getId(), name, MailItem.Type.DOCUMENT));
-        }
       }
       // make sure the item is visible to the requester
       if (checkAccess(item) == null) {
@@ -4986,37 +4979,6 @@ public class Mailbox implements MailboxStore {
       return sl;
     } finally {
       endTransaction(success);
-    }
-  }
-
-  public Document getDocumentById(OperationContext octxt, int id) throws ServiceException {
-    return (Document) getItemById(octxt, id, MailItem.Type.DOCUMENT);
-  }
-
-  public Document getDocumentByUuid(OperationContext octxt, String uuid) throws ServiceException {
-    return (Document) getItemByUuid(octxt, uuid, MailItem.Type.DOCUMENT);
-  }
-
-  Document getDocumentById(int id) throws ServiceException {
-    return (Document) getItemById(id, MailItem.Type.DOCUMENT);
-  }
-
-  public List<Document> getDocumentList(OperationContext octxt, int folderId)
-      throws ServiceException {
-    return getDocumentList(octxt, folderId, SortBy.NONE);
-  }
-
-  public List<Document> getDocumentList(OperationContext octxt, int folderId, SortBy sort)
-      throws ServiceException {
-    lock.lock(false);
-    try {
-      List<Document> docs = new ArrayList<Document>();
-      for (MailItem item : getItemList(octxt, MailItem.Type.DOCUMENT, folderId, sort)) {
-        docs.add((Document) item);
-      }
-      return docs;
-    } finally {
-      lock.release();
     }
   }
 
@@ -10272,11 +10234,6 @@ public class Mailbox implements MailboxStore {
         purgedAll = updatePurgedAll(purgedAll, numPurged, maxItemsPerFolder);
       }
 
-      if (userFileVersioningEnabled && userFileVersionLifeTime > 0) {
-        int numPurged =
-            MailItem.purgeRevisions(this, getOperationTimestampMillis() - userFileVersionLifeTime);
-        ZimbraLog.purge.debug("Purged %d revisions", numPurged);
-      }
       // Process any folders that have retention policy set.
       for (Folder folder : getFolderList(octxt, SortBy.NONE)) {
         RetentionPolicy rp =
@@ -10403,276 +10360,6 @@ public class Mailbox implements MailboxStore {
       success = true;
     } finally {
       endTransaction(success);
-    }
-  }
-
-  public WikiItem createWiki(
-      OperationContext octxt,
-      int folderId,
-      String wikiword,
-      String author,
-      String description,
-      InputStream data)
-      throws ServiceException {
-    return (WikiItem)
-        createDocument(
-            octxt,
-            folderId,
-            wikiword,
-            WikiItem.WIKI_CONTENT_TYPE,
-            author,
-            description,
-            true,
-            data,
-            MailItem.Type.WIKI);
-  }
-
-  public Document createDocument(
-      OperationContext octxt,
-      int folderId,
-      String filename,
-      String mimeType,
-      String author,
-      String description,
-      InputStream data)
-      throws ServiceException {
-    return createDocument(
-        octxt,
-        folderId,
-        filename,
-        mimeType,
-        author,
-        description,
-        true,
-        data,
-        MailItem.Type.DOCUMENT);
-  }
-
-  public Document createDocument(
-      OperationContext octxt,
-      int folderId,
-      String filename,
-      String mimeType,
-      String author,
-      String description,
-      boolean descEnabled,
-      InputStream data,
-      MailItem.Type type)
-      throws ServiceException {
-    try {
-      ParsedDocument pd =
-          new ParsedDocument(
-              data,
-              filename,
-              mimeType,
-              System.currentTimeMillis(),
-              author,
-              description,
-              descEnabled);
-      return createDocument(octxt, folderId, pd, type, 0);
-    } catch (IOException ioe) {
-      throw ServiceException.FAILURE("error writing document blob", ioe);
-    }
-  }
-
-  public Document createDocument(
-      OperationContext octxt, int folderId, ParsedDocument pd, MailItem.Type type, int flags)
-      throws IOException, ServiceException {
-    return createDocument(octxt, folderId, pd, type, flags, null, null, true);
-  }
-
-  public Document createDocument(
-      OperationContext octxt,
-      int folderId,
-      ParsedDocument pd,
-      MailItem.Type type,
-      int flags,
-      MailItem parent,
-      CustomMetadata custom,
-      boolean indexing)
-      throws IOException, ServiceException {
-    StoreManager sm = StoreManager.getInstance();
-    StagedBlob staged = sm.stage(pd.getBlob(), this);
-
-    SaveDocument redoRecorder =
-        new SaveDocument(mId, pd.getDigest(), pd.getSize(), folderId, flags);
-
-    boolean success = false;
-    try {
-      long start = System.currentTimeMillis();
-
-      beginTransaction("createDoc", octxt, redoRecorder);
-
-      SaveDocument redoPlayer = (octxt == null ? null : (SaveDocument) octxt.getPlayer());
-      int itemId =
-          getNextItemId(redoPlayer == null ? ID_AUTO_INCREMENT : redoPlayer.getMessageId());
-      String uuid = redoPlayer == null ? UUIDUtil.generateUUID() : redoPlayer.getUuid();
-
-      Document doc;
-      switch (type) {
-        case DOCUMENT:
-          doc =
-              Document.create(
-                  itemId,
-                  uuid,
-                  getFolderById(folderId),
-                  pd.getFilename(),
-                  pd.getContentType(),
-                  pd,
-                  custom,
-                  flags,
-                  parent);
-          break;
-        case WIKI:
-          doc = WikiItem.create(itemId, uuid, getFolderById(folderId), pd.getFilename(), pd, null);
-          break;
-        default:
-          throw MailServiceException.INVALID_TYPE(type.toString());
-      }
-
-      redoRecorder.setMessageId(itemId);
-      redoRecorder.setUuid(doc.getUuid());
-      redoRecorder.setDocument(pd);
-      redoRecorder.setItemType(type);
-      redoRecorder.setDescription(pd.getDescription());
-      redoRecorder.setFlags(doc.getFlagBitmask());
-
-      // Get the redolog data from the mailbox blob.  This is less than ideal in the
-      // HTTP store case because it will result in network access, and possibly an
-      // extra write to local disk.  If this becomes a problem, we should update the
-      // ParsedDocument constructor to take a DataSource instead of an InputStream.
-      MailboxBlob mailboxBlob = doc.setContent(staged, pd);
-      redoRecorder.setMessageBodyInfo(
-          new MailboxBlobDataSource(mailboxBlob), mailboxBlob.getSize());
-
-      if (indexing) {
-        index.add(doc);
-      }
-
-      success = true;
-      long elapsed = System.currentTimeMillis() - start;
-      ZimbraLog.mailbox.debug("createDocument elapsed=" + elapsed);
-      return doc;
-    } catch (IOException ioe) {
-      throw ServiceException.FAILURE("error writing document blob", ioe);
-    } finally {
-      endTransaction(success);
-      sm.quietDelete(staged);
-    }
-  }
-
-  public Document addDocumentRevision(
-      OperationContext octxt,
-      int docId,
-      String author,
-      String name,
-      String description,
-      InputStream data)
-      throws ServiceException {
-    Document doc = getDocumentById(octxt, docId);
-    try {
-      ParsedDocument pd =
-          new ParsedDocument(
-              data,
-              name,
-              doc.getContentType(),
-              System.currentTimeMillis(),
-              author,
-              description,
-              doc.isDescriptionEnabled());
-      return addDocumentRevision(octxt, docId, pd);
-    } catch (IOException ioe) {
-      throw ServiceException.FAILURE("error writing document blob", ioe);
-    }
-  }
-
-  public Document addDocumentRevision(
-      OperationContext octxt,
-      int docId,
-      String author,
-      String name,
-      String description,
-      boolean descEnabled,
-      InputStream data)
-      throws ServiceException {
-    Document doc = getDocumentById(octxt, docId);
-    try {
-      ParsedDocument pd =
-          new ParsedDocument(
-              data,
-              name,
-              doc.getContentType(),
-              System.currentTimeMillis(),
-              author,
-              description,
-              descEnabled);
-      return addDocumentRevision(octxt, docId, pd);
-    } catch (IOException ioe) {
-      throw ServiceException.FAILURE("error writing document blob", ioe);
-    }
-  }
-
-  public Document addDocumentRevision(OperationContext octxt, int docId, ParsedDocument pd)
-      throws IOException, ServiceException {
-
-    StoreManager sm = StoreManager.getInstance();
-    StagedBlob staged = sm.stage(pd.getBlob(), this);
-
-    AddDocumentRevision redoRecorder =
-        new AddDocumentRevision(mId, pd.getDigest(), pd.getSize(), 0);
-
-    boolean success = false;
-    try {
-      beginTransaction("addDocumentRevision", octxt, redoRecorder);
-
-      Document doc = getDocumentById(docId);
-      redoRecorder.setDocument(pd);
-      redoRecorder.setDocId(docId);
-      redoRecorder.setItemType(doc.getType());
-      // TODO: simplify the redoRecorder by not subclassing from CreateMessage
-
-      // Get the redolog data from the mailbox blob.  This is less than ideal in the
-      // HTTP store case because it will result in network access, and possibly an
-      // extra write to local disk.  If this becomes a problem, we should update the
-      // ParsedDocument constructor to take a DataSource instead of an InputStream.
-      MailboxBlob mailboxBlob = doc.setContent(staged, pd);
-      redoRecorder.setMessageBodyInfo(
-          new MailboxBlobDataSource(mailboxBlob), mailboxBlob.getSize());
-
-      index.add(doc);
-
-      success = true;
-      return doc;
-    } catch (IOException ioe) {
-      throw ServiceException.FAILURE("error writing document blob", ioe);
-    } finally {
-      endTransaction(success);
-      sm.quietDelete(staged);
-    }
-  }
-
-  public void purgeRevision(
-      OperationContext octxt, int itemId, int rev, boolean includeOlderRevisions)
-      throws ServiceException {
-    PurgeRevision redoRecorder = new PurgeRevision(mId, itemId, rev, includeOlderRevisions);
-    boolean success = false;
-    try {
-      beginTransaction("purgeRevision", octxt, redoRecorder);
-      MailItem item = getItemById(itemId, MailItem.Type.DOCUMENT);
-      item.purgeRevision(rev, includeOlderRevisions);
-      success = true;
-    } finally {
-      endTransaction(success);
-    }
-  }
-
-  public Message updateOrCreateChat(OperationContext octxt, ParsedMessage pm, int id)
-      throws IOException, ServiceException {
-    // special-case saving a new Chat
-    if (id == ID_AUTO_INCREMENT) {
-      return createChat(octxt, pm, ID_FOLDER_IM_LOGS, Flag.BITMASK_FROM_ME, null);
-    } else {
-      return updateChat(octxt, pm, id);
     }
   }
 
@@ -11552,9 +11239,6 @@ public class Mailbox implements MailboxStore {
       beginTransaction("createComment", octxt, redoRecorder);
 
       MailItem parent = getItemById(octxt, parentId, MailItem.Type.UNKNOWN);
-      if (parent.getType() != MailItem.Type.DOCUMENT) {
-        throw MailServiceException.CANNOT_PARENT();
-      }
       CreateComment redoPlayer = (CreateComment) currentChange().getRedoPlayer();
       int itemId = redoPlayer == null ? getNextItemId(ID_AUTO_INCREMENT) : redoPlayer.getItemId();
       String uuid = redoPlayer == null ? UUIDUtil.generateUUID() : redoPlayer.getUuid();

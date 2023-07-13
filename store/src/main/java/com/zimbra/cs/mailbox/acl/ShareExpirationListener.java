@@ -30,8 +30,7 @@ import com.zimbra.cs.session.PendingModifications.Change;
 public class ShareExpirationListener extends MailboxListener {
 
     private static final ImmutableSet<MailItem.Type> registeredTypes = ImmutableSet.of(
-            MailItem.Type.FOLDER, MailItem.Type.DOCUMENT
-    );
+            MailItem.Type.FOLDER);
 
     @Override
     public Set<MailItem.Type> registerForItemTypes() {

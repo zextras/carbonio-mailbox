@@ -5,25 +5,15 @@
 
 package com.zimbra.cs.mailbox;
 
-import com.zimbra.client.ZMailbox;
-import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.AuthTokenException;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.ZimbraAuthToken;
 import com.zimbra.cs.account.callback.CallbackUtil;
-import com.zimbra.cs.mailbox.util.TypedIdList;
-import com.zimbra.cs.mime.ParsedDocument;
-import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.Config;
-import com.zimbra.cs.util.Zimbra;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -154,105 +144,6 @@ public class ContactBackupThread extends Thread {
     long diff = endTime - startTime.getTime();
     ZimbraLog.contactbackup.debug("finished iteration on mailboxes, iteration took %d ms", diff);
     ContactBackupThread.shutdown();
-  }
-
-  private void createBackup(
-      OperationContext octxt, Mailbox mbox, Account account, Folder folder, Date startTime) {
-    Date date = new Date();
-    SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-    StringBuilder filename = new StringBuilder();
-    filename.append(FILE_NAME).append("-").append(sdf.format(date));
-    InputStream is = null;
-    ZimbraAuthToken token = null;
-    try {
-      token = new ZimbraAuthToken(account);
-      ZMailbox.Options zoptions =
-          new ZMailbox.Options(token.toZAuthToken(), AccountUtil.getSoapUri(account));
-      zoptions.setNoSession(true);
-      zoptions.setTargetAccount(account.getId());
-      zoptions.setTargetAccountBy(AccountBy.id);
-      ZMailbox zmbx = ZMailbox.getMailbox(zoptions);
-      is = zmbx.getRESTResource(CONTACT_RES_URL);
-      ParsedDocument pd =
-          new ParsedDocument(
-              is,
-              filename.toString(),
-              CT_TYPE,
-              startTime.getTime(),
-              OPERATION,
-              FILE_DESC + startTime.toString());
-      Document doc = mbox.createDocument(octxt, folder.getId(), pd, MailItem.Type.DOCUMENT, 0);
-      ZimbraLog.contactbackup.debug("contact backup created size %d bytes", doc.getSize());
-    } catch (UnsupportedOperationException | IOException | ServiceException exception) {
-      success = false;
-      ZimbraLog.contactbackup.warn("contact export failed, continuing to next mailbox");
-      ZimbraLog.contactbackup.debug(exception);
-    } catch (OutOfMemoryError e) {
-      Zimbra.halt("OutOfMemoryError while creating contact backup", e);
-    } finally {
-      if (is != null) {
-        try {
-          is.close();
-        } catch (IOException ioe) {
-          ZimbraLog.contactbackup.debug("IOExcepion occured while closing stream", ioe);
-        }
-      }
-      if (token != null) {
-        try {
-          token.deRegister();
-        } catch (AuthTokenException e) {
-          ZimbraLog.contactbackup.warn("failed to deregister token");
-          ZimbraLog.contactbackup.debug(e);
-        }
-      }
-    }
-  }
-
-  private void purgeOldBackups(
-      OperationContext octxt, Mailbox mbox, Folder folder, Date startTime) {
-    long lifeTime =
-        CallbackUtil.getTimeInterval(Provisioning.A_zimbraFeatureContactBackupLifeTime, 0);
-    long cutoff = startTime.getTime() - lifeTime;
-    TypedIdList list = null;
-    try {
-      list = mbox.getItemIds(octxt, folder.getId());
-    } catch (ServiceException se) {
-      ZimbraLog.contactbackup.warn("exception occured while getting list of contact backups");
-      ZimbraLog.contactbackup.debug(se);
-      success = false;
-      return;
-    }
-    if (!list.isEmpty()) {
-      int counter = 0;
-      for (Integer id : list.getAllIds()) {
-        try {
-          mbox.beginTransaction(OPERATION, octxt);
-          MailItem item = mbox.getItemById(id, MailItem.Type.DOCUMENT);
-          mbox.endTransaction(true);
-          if (item.getDate() < cutoff) {
-            try {
-              ZimbraLog.contactbackup.debug("deleting item with id: %s", item.getId());
-              mbox.delete(octxt, item.getId(), MailItem.Type.DOCUMENT);
-              counter++;
-            } catch (ServiceException se) {
-              success = false;
-              ZimbraLog.contactbackup.warn(
-                  "failed to delete item (id=%d) from contact backup folder", item.getId());
-              ZimbraLog.contactbackup.debug(se);
-            }
-          }
-        } catch (ServiceException se) {
-          success = false;
-          ZimbraLog.contactbackup.warn(
-              "exception occured while getting document from contact backup folder");
-          ZimbraLog.contactbackup.debug(se);
-          continue;
-        }
-      }
-      ZimbraLog.contactbackup.debug("%d items deleted", counter);
-    } else {
-      ZimbraLog.contactbackup.debug("No items found in contact backup folder");
-    }
   }
 
   private void createReport(StringBuilder builder, Date startTime) {

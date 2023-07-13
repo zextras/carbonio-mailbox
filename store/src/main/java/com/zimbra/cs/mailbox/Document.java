@@ -23,7 +23,7 @@ import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.common.mailbox.Color;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.common.localconfig.LC;
+
 /**
  * @since Aug 23, 2004
  */
@@ -117,7 +117,7 @@ public class Document extends MailItem {
                 throw new MailItem.TemporaryIndexingException();
             }
 
-            ParsedDocument pd = null;
+            ParsedDocument pd;
             pd = new ParsedDocument(mblob.getLocalBlob(), getName(), getContentType(),
                     getChangeDate(), getCreator(), getDescription(), isDescriptionEnabled());
 
@@ -187,9 +187,6 @@ public class Document extends MailItem {
 
     protected static UnderlyingData prepareCreate(MailItem.Type type, int id, String uuid, Folder folder, String name,
             String mimeType, ParsedDocument pd, Metadata meta, CustomMetadata custom, int flags, boolean skipParsing) throws ServiceException {
-        if (folder == null || !folder.canContain(Type.DOCUMENT)) {
-            throw MailServiceException.CANNOT_CONTAIN();
-        }
         if (!folder.canAccess(ACL.RIGHT_INSERT)) {
             throw ServiceException.PERM_DENIED("you do not have the required rights on the folder");
         }
@@ -217,31 +214,6 @@ public class Document extends MailItem {
                 skipParsing ? null : pd.getFragment(), null, 0, pd.getDescription(), pd.isDescriptionEnabled(), null).toString();
         data.setFlags(flags);
        return data;
-    }
-
-    static Document create(int id, String uuid, Folder folder, String filename, String type, ParsedDocument pd,
-            CustomMetadata custom, int flags) throws ServiceException {
-        return create(id, uuid, folder, filename, type, pd, custom, flags, null);
-    }
-    static Document create(int id, String uuid, Folder folder, String filename, String type, ParsedDocument pd,
-            CustomMetadata custom, int flags, MailItem parent) throws ServiceException {
-        assert(id != Mailbox.ID_AUTO_INCREMENT);
-
-        Mailbox mbox = folder.getMailbox();
-        UnderlyingData data = prepareCreate(Type.DOCUMENT, id, uuid, folder, filename, type, pd, null, custom, flags);
-        if (parent != null) {
-            data.parentId = parent.mId;
-        }
-        data.contentChanged(mbox);
-
-        ZimbraLog.mailop.info("Adding Document %s: id=%d, folderId=%d, folderName=%s",
-                filename, data.id, folder.getId(), folder.getName());
-        new DbMailItem(mbox).create(data);
-
-        Document doc = new Document(mbox, data);
-        doc.finishCreation(parent);
-        pd.setVersion(doc.getVersion());
-        return doc;
     }
 
     @Override

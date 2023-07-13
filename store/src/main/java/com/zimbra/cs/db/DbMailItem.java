@@ -2066,12 +2066,6 @@ public class DbMailItem {
         MailItem.Type.MESSAGE.toByte() + ',' +
         MailItem.Type.CHAT.toByte() + ')';
 
-    @SuppressWarnings("deprecation")
-    private static final String DOCUMENT_TYPES = "(" +
-        MailItem.Type.DOCUMENT.toByte() + ',' +
-        MailItem.Type.LINK.toByte() + ',' +
-        MailItem.Type.WIKI.toByte() + ')';
-
     private static final String CALENDAR_TYPES = "(" +
         MailItem.Type.APPOINTMENT.toByte() + ',' +
         MailItem.Type.TASK.toByte() + ')';
@@ -2079,7 +2073,6 @@ public class DbMailItem {
     private static final String DUMPSTER_TYPES = "(" +
         MailItem.Type.MESSAGE.toByte() + ',' +
         MailItem.Type.CONTACT.toByte() + ',' +
-        MailItem.Type.DOCUMENT.toByte() + ',' +
         MailItem.Type.LINK.toByte() + ',' +
         MailItem.Type.APPOINTMENT.toByte() + ',' +
         MailItem.Type.TASK.toByte() + ',' +
@@ -2104,7 +2097,6 @@ public class DbMailItem {
         switch (type) {
             case FOLDER:    return "type IN " + FOLDER_TYPES;
             case MESSAGE:   return "type IN " + MESSAGE_TYPES;
-            case DOCUMENT:  return "type IN " + DOCUMENT_TYPES;
             default:        return "type = " + type.toByte();
         }
     }
@@ -3169,8 +3161,6 @@ public class DbMailItem {
             stmt = null;
 
             accumulateLeafRevisions(info, mbox, versionedIds);
-            accumulateComments(info, mbox);
-
             return info;
         } catch (SQLException e) {
             throw ServiceException.FAILURE("accumulating deletion info", e);
@@ -3392,39 +3382,6 @@ public class DbMailItem {
             }
         } catch (SQLException e) {
             throw ServiceException.FAILURE("getting version deletion info for items: " + versioned, e);
-        } finally {
-            DbPool.closeResults(rs);
-            DbPool.closeStatement(stmt);
-        }
-    }
-
-    static void accumulateComments(PendingDelete info, Mailbox mbox) throws ServiceException {
-        List<Integer> documents = info.itemIds.getIds(MailItem.Type.DOCUMENT);
-        if (documents == null || documents.size() == 0) {
-            return;
-        }
-        DbConnection conn = mbox.getOperationConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try {
-            stmt = conn.prepareStatement("SELECT type, id, uuid " +
-                    " FROM " + getMailItemTableName(mbox) +
-                    " WHERE " + DbUtil.whereIn("parent_id", documents.size()) +
-                    (DebugConfig.disableMailboxGroups ? "" : " AND mailbox_id = ?"));
-            int pos = 1;
-            for (int id : documents) {
-                stmt.setInt(pos++, id);
-            }
-            pos = setMailboxId(stmt, mbox, pos);
-            rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                // Assumption - comments are always in the Comments folder
-                info.itemIds.add(MailItem.Type.of(rs.getByte(1)), rs.getInt(2), Mailbox.ID_FOLDER_COMMENTS,
-                        rs.getString(3));
-            }
-        } catch (SQLException e) {
-            throw ServiceException.FAILURE("getting Comment deletion info for items: " + documents, e);
         } finally {
             DbPool.closeResults(rs);
             DbPool.closeStatement(stmt);

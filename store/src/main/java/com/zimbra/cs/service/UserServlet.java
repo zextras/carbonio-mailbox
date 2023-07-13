@@ -189,10 +189,6 @@ public class UserServlet extends ZimbraServlet {
 
     public static final String QP_CSVSEPARATOR = "csvsep"; // separator
 
-    public static final String QP_VERSION = "ver";  // version for WikiItem and Document
-
-    public static final String QP_HISTORY = "history";  // history for WikiItem
-
     public static final String QP_LANGUAGE = "language"; // all three
 
     public static final String QP_COUNTRY = "country"; // all three
@@ -803,16 +799,6 @@ public class UserServlet extends ZimbraServlet {
             return FormatType.ICS;
         case CONTACT:
             return context.target instanceof Folder? FormatType.CSV : FormatType.VCF;
-        case DOCUMENT:
-            // Zimbra docs and folder rendering should use html formatter.
-            if (context.target instanceof Folder)
-                return FormatType.HTML;
-            String contentType = ((Document)context.target).getContentType();
-            if (contentType != null && contentType.indexOf(';') > 0)
-                contentType = contentType.substring(0, contentType.indexOf(';')).toLowerCase();
-            if (ZIMBRA_DOC_CONTENT_TYPE.contains(contentType))
-                return FormatType.HTML;
-            return FormatType.HTML_CONVERTED;
         default:
             return FormatType.HTML_CONVERTED;
         }
@@ -972,9 +958,6 @@ public class UserServlet extends ZimbraServlet {
             Document doc = (Document) item;
             StringBuilder u = new StringBuilder(url);
             u.append("?").append(QP_AUTH).append('=').append(AUTH_COOKIE);
-            if (doc.getType() == MailItem.Type.WIKI) {
-                u.append("&fmt=wiki");
-            }
             HttpPut method = new HttpPut(u.toString());
             String contentType = doc.getContentType();
             method.addHeader("Content-Type", contentType);

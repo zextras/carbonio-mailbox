@@ -8,6 +8,7 @@ package com.zimbra.cs.mailbox.acl;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.zimbra.cs.mailbox.MailItem.Type;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -27,7 +28,6 @@ import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
@@ -85,7 +85,7 @@ public class AclPushTest {
 
   Folder folder = mbox.createFolder(null, "shared",
     new Folder.FolderOptions()
-      .setDefaultView(MailItem.Type.DOCUMENT));
+      .setDefaultView(Type.FOLDER));
 
   OperationContext octxt = new OperationContext(owner);
   Multimap<Integer, Integer> mboxIdToItemIds = null;
@@ -123,10 +123,10 @@ public class AclPushTest {
 
    Folder folder = mbox.createFolder(null, "shared",
      new Folder.FolderOptions()
-       .setDefaultView(MailItem.Type.DOCUMENT));
+       .setDefaultView(Type.FOLDER));
    Folder folder2 = mbox.createFolder(null, "shared; hello",
      new Folder.FolderOptions()
-       .setDefaultView(MailItem.Type.DOCUMENT));
+       .setDefaultView(Type.FOLDER));
 
    OperationContext octxt = new OperationContext(owner);
    Multimap<Integer, Integer> mboxIdToItemIds = null;

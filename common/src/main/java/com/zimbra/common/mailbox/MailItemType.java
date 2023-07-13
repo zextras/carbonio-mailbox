@@ -14,7 +14,6 @@ public enum MailItemType {
         MESSAGE, /** Item is a mail Message. */
         CONTACT, /** Item is a Contact. */
         @Deprecated INVITE, /** Item is a InviteMessage with a {@code text/calendar} MIME part. */
-        @Deprecated DOCUMENT, /** Item is a bare Document. */
         NOTE, /** Item is a Note. */
         FLAG, /** Item is a memory-only system Flag. */
         APPOINTMENT, /** Item is a calendar Appointment. */

@@ -127,7 +127,6 @@ import com.zimbra.cs.mailbox.RetentionPolicyManager;
 import com.zimbra.cs.mailbox.SearchFolder;
 import com.zimbra.cs.mailbox.SenderList;
 import com.zimbra.cs.mailbox.Tag;
-import com.zimbra.cs.mailbox.WikiItem;
 import com.zimbra.cs.mailbox.calendar.Alarm;
 import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
 import com.zimbra.cs.mailbox.calendar.Invite;
@@ -212,10 +211,6 @@ public final class ToXML {
         } else if (item instanceof Conversation) {
             return encodeConversationSummary(parent, ifmt, octxt, (Conversation) item, null,
                     OutputParticipants.PUT_SENDERS, fields, false);
-        } else if (item instanceof WikiItem) {
-            return encodeWiki(parent, ifmt, octxt, (WikiItem) item, fields);
-        } else if (item instanceof Document) {
-            return encodeDocument(parent, ifmt, octxt, (Document) item, fields);
         } else if (item instanceof Message) {
             OutputParticipants output = fields == NOTIFY_FIELDS ?
                     OutputParticipants.PUT_BOTH : OutputParticipants.PUT_SENDERS;
@@ -2992,16 +2987,6 @@ throws ServiceException {
         return el;
     }
 
-    public static Element encodeWiki(Element parent, ItemIdFormatter ifmt, OperationContext octxt, WikiItem wiki) throws ServiceException {
-        return encodeWiki(parent, ifmt, octxt, wiki, NOTIFY_FIELDS);
-    }
-
-    public static Element encodeWiki(Element parent, ItemIdFormatter ifmt, OperationContext octxt, WikiItem wiki, int fields)
-    throws ServiceException {
-        Element elem = parent.addNonUniqueElement(MailConstants.E_WIKIWORD);
-        encodeDocumentCommon(elem, ifmt, octxt, wiki, fields);
-        return elem;
-    }
 
     public static Element encodeDocument(Element parent, ItemIdFormatter ifmt, OperationContext octxt, Document doc) throws ServiceException {
         return encodeDocument(parent, ifmt, octxt, doc, Change.ALL_FIELDS);

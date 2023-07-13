@@ -1700,8 +1700,6 @@ public class Folder extends MailItem implements FolderStore {
         switch (getDefaultView()) {
         case APPOINTMENT:
         case TASK:
-        case WIKI:
-        case DOCUMENT:
             return false;
         case CONTACT:
         case CHAT:

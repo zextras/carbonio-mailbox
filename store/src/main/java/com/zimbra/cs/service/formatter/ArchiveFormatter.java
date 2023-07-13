@@ -42,7 +42,6 @@ import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.MailServiceException.ExportPeriodNotSpecifiedException;
 import com.zimbra.cs.mailbox.MailServiceException.ExportPeriodTooLongException;
-import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Mailbox.SetCalendarItemData;
 import com.zimbra.cs.mailbox.MailboxMaintenance;
@@ -55,7 +54,6 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.SearchFolder;
 import com.zimbra.cs.mailbox.Tag;
 import com.zimbra.cs.mailbox.Task;
-import com.zimbra.cs.mailbox.WikiItem;
 import com.zimbra.cs.mailbox.calendar.IcsImportParseHandler;
 import com.zimbra.cs.mailbox.calendar.IcsImportParseHandler.ImportInviteVisitor;
 import com.zimbra.cs.mailbox.calendar.Invite;
@@ -310,8 +308,6 @@ public abstract class ArchiveFormatter extends Formatter {
         EnumSet.of(
             MailItem.Type.MESSAGE,
             MailItem.Type.CONTACT,
-            MailItem.Type.DOCUMENT,
-            MailItem.Type.WIKI,
             MailItem.Type.APPOINTMENT,
             MailItem.Type.TASK,
             MailItem.Type.CHAT,
@@ -665,10 +661,6 @@ public abstract class ArchiveFormatter extends Formatter {
 
       case VIRTUAL_CONVERSATION:
         return aos;
-
-      case WIKI:
-        ext = "wiki";
-        break;
     }
 
     fldr = fldrs.get(fid);
@@ -1255,10 +1247,7 @@ public abstract class ArchiveFormatter extends Formatter {
     }
     if (view != Folder.Type.UNKNOWN
         && fldr.getDefaultView() != Folder.Type.UNKNOWN
-        && fldr.getDefaultView() != view
-        && !((view == MailItem.Type.DOCUMENT || view == MailItem.Type.WIKI)
-            && (fldr.getDefaultView() == Folder.Type.DOCUMENT
-                || fldr.getDefaultView() == Folder.Type.WIKI))) {
+        && fldr.getDefaultView() != view) {
       throw FormatterServiceException.INVALID_TYPE(view.toString(), path);
     }
     return fldr;
@@ -1503,86 +1492,6 @@ public abstract class ArchiveFormatter extends Formatter {
                     ct.getTags());
           }
           break;
-
-        case DOCUMENT:
-        case WIKI:
-          Document doc = (Document) mi;
-          Document oldDoc = null;
-          Integer oldId = idMap.get(mi.getId());
-
-          fldr =
-              createParent(
-                  context,
-                  fmap,
-                  path,
-                  doc.getType() == MailItem.Type.DOCUMENT
-                      ? MailItem.Type.DOCUMENT
-                      : MailItem.Type.WIKI);
-          if (oldId == null) {
-            try {
-              for (Document listDoc : mbox.getDocumentList(octxt, fldr.getId())) {
-                if (doc.getName().equals(listDoc.getName())) {
-                  oldDoc = listDoc;
-                  idMap.put(doc.getId(), oldDoc.getId());
-                  break;
-                }
-              }
-            } catch (Exception e) {
-            }
-          } else {
-            oldDoc = mbox.getDocumentById(octxt, oldId);
-          }
-          if (oldDoc != null) {
-            if (r == Resolve.Replace && oldId == null) {
-              mbox.delete(octxt, oldDoc.getId(), oldDoc.getType());
-            } else if (doc.getVersion() < oldDoc.getVersion()) {
-              return;
-            } else {
-              oldItem = oldDoc;
-              if (doc.getVersion() > oldDoc.getVersion()) {
-                newItem =
-                    mbox.addDocumentRevision(
-                        octxt,
-                        oldDoc.getId(),
-                        doc.getCreator(),
-                        doc.getName(),
-                        doc.getDescription(),
-                        doc.isDescriptionEnabled(),
-                        ais.getInputStream());
-              }
-              if (r != Resolve.Skip) {
-                mbox.setDate(octxt, oldDoc.getId(), doc.getType(), doc.getDate());
-              }
-            }
-          }
-          if (oldItem == null) {
-            if (mi.getType() == MailItem.Type.DOCUMENT) {
-              newItem =
-                  mbox.createDocument(
-                      octxt,
-                      fldr.getId(),
-                      doc.getName(),
-                      doc.getContentType(),
-                      doc.getCreator(),
-                      doc.getDescription(),
-                      ais.getInputStream());
-            } else {
-              WikiItem wi = (WikiItem) mi;
-
-              newItem =
-                  mbox.createWiki(
-                      octxt,
-                      fldr.getId(),
-                      wi.getWikiWord(),
-                      wi.getCreator(),
-                      wi.getDescription(),
-                      ais.getInputStream());
-            }
-            mbox.setDate(octxt, newItem.getId(), doc.getType(), doc.getDate());
-            idMap.put(doc.getId(), newItem.getId());
-          }
-          break;
-
         case FLAG:
           return;
 
@@ -1935,10 +1844,6 @@ public abstract class ArchiveFormatter extends Formatter {
           type = MailItem.Type.APPOINTMENT;
           view = MailItem.Type.APPOINTMENT;
         }
-      } else if (file.endsWith(".wiki")) {
-        defaultFldr = Mailbox.ID_FOLDER_NOTEBOOK;
-        type = MailItem.Type.WIKI;
-        view = MailItem.Type.WIKI;
       } else {
         throw ServiceException.FAILURE("Unable to identify file extension");
       }
@@ -1950,10 +1855,7 @@ public abstract class ArchiveFormatter extends Formatter {
           fldr = mbox.getFolderById(oc, defaultFldr);
         }
         if (fldr.getDefaultView() != MailItem.Type.UNKNOWN
-            && fldr.getDefaultView() != view
-            && !((view == MailItem.Type.DOCUMENT || view == MailItem.Type.WIKI)
-                && (fldr.getDefaultView() == MailItem.Type.DOCUMENT
-                    || fldr.getDefaultView() == MailItem.Type.WIKI))) {
+            && fldr.getDefaultView() != view) {
           throw FormatterServiceException.INVALID_TYPE(view.toString(), fldr.getPath());
         }
       } else {
@@ -2006,37 +1908,6 @@ public abstract class ArchiveFormatter extends Formatter {
               if (vcf.fields.isEmpty()) continue;
               mbox.createContact(oc, vcf.asParsedContact(), fldr.getId(), null);
             }
-          }
-          break;
-        case DOCUMENT:
-        case WIKI:
-          String creator =
-              context.getAuthAccount() == null ? null : context.getAuthAccount().getName();
-
-          try {
-            oldItem = mbox.getItemByPath(oc, file, fldr.getId());
-            if (oldItem.getType() != type) {
-              addError(errs, FormatterServiceException.MISMATCHED_TYPE(name));
-            } else if (r == Resolve.Replace) {
-              mbox.delete(oc, oldItem.getId(), type);
-              throw MailServiceException.NO_SUCH_ITEM(oldItem.getId());
-            } else if (r != Resolve.Skip) {
-              newItem =
-                  mbox.addDocumentRevision(
-                      oc, oldItem.getId(), creator, oldItem.getName(), null, ais.getInputStream());
-            }
-          } catch (NoSuchItemException e) {
-            if (type == MailItem.Type.WIKI) {
-              newItem =
-                  mbox.createWiki(oc, fldr.getId(), file, creator, null, ais.getInputStream());
-            } else {
-              newItem =
-                  mbox.createDocument(
-                      oc, fldr.getId(), file, null, creator, null, ais.getInputStream());
-            }
-          }
-          if (newItem != null) {
-            if (timestamp) mbox.setDate(oc, newItem.getId(), type, aie.getModTime());
           }
           break;
         case MESSAGE:

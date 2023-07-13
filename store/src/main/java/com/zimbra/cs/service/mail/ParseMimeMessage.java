@@ -448,17 +448,6 @@ public final class ParseMimeMessage {
             attachContact(mmp, iid, contentID, ctxt);
             break;
           }
-          case MailConstants.E_DOC:
-            String path = elem.getAttribute(MailConstants.A_PATH, null);
-            if (path != null) {
-              attachDocument(mmp, path, contentID, ctxt);
-            } else {
-              ItemId iid = new ItemId(elem.getAttribute(MailConstants.A_ID),
-                  ctxt.zsc);
-              int version = (int) elem.getAttributeLong(MailConstants.A_VERSION, 0);
-              attachDocument(mmp, iid, version, contentID, ctxt);
-            }
-            break;
           default:
             break;
         }
@@ -783,30 +772,7 @@ public final class ParseMimeMessage {
     mmp.addBodyPart(mbp);
   }
 
-  @SuppressWarnings("unchecked")
-  private static void attachDocument(MimeMultipart mmp, ItemId iid, int version, String contentID,
-      ParseMessageContext ctxt)
-      throws MessagingException, ServiceException {
-    if (!iid.isLocal()) {
-      Map<String, String> params = Collections.emptyMap();
-      if (version > 0) {
-        params = new HashMap<>();
-        params.put("ver", Integer.toString(version));
-      }
-      attachRemoteItem(mmp, iid, contentID, ctxt, params, null);
-      return;
-    }
 
-    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(iid.getAccountId());
-    Document doc;
-    if (version > 0) {
-      doc = (Document) mbox.getItemRevision(ctxt.octxt, iid.getId(), MailItem.Type.DOCUMENT,
-          version);
-    } else {
-      doc = mbox.getDocumentById(ctxt.octxt, iid.getId());
-    }
-    attachDocument(mmp, doc, contentID, ctxt);
-  }
 
   private static void attachDocument(MimeMultipart mmp, String path, String contentID,
       ParseMessageContext ctxt)

@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpException;
 
-import com.google.common.io.Closeables;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.SoapProtocol;
@@ -48,8 +47,8 @@ import com.zimbra.cs.util.IOUtil;
 public abstract class Formatter {
 
     static final Set<MailItem.Type> SEARCH_FOR_EVERYTHING = EnumSet.of(MailItem.Type.APPOINTMENT,
-            MailItem.Type.CONTACT, MailItem.Type.DOCUMENT, MailItem.Type.MESSAGE, MailItem.Type.NOTE,
-            MailItem.Type.TASK, MailItem.Type.WIKI);
+            MailItem.Type.CONTACT, MailItem.Type.MESSAGE, MailItem.Type.NOTE,
+            MailItem.Type.TASK);
 
     protected static final int TIME_UNSPECIFIED = -1;
 
@@ -236,9 +235,6 @@ public abstract class Formatter {
                 return context.targetMailbox.getCalendarItemsForRange(context.opContext, startTime, endTime, folder.getId(), null);
             case CONTACT:
                 return context.targetMailbox.getContactList(context.opContext, folder.getId(), SortBy.NAME_ASC);
-            case DOCUMENT:
-            case WIKI:
-                return context.targetMailbox.getDocumentList(context.opContext, folder.getId(), SortBy.NAME_ASC);
             default:
                 return context.targetMailbox.getItemList(context.opContext, MailItem.Type.MESSAGE, folder.getId(), context.sortBy);
         }

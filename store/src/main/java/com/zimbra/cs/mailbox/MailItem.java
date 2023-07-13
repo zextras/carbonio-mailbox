@@ -81,9 +81,6 @@ public abstract class MailItem
     /** Item is a {@link InviteMessage} with a {@code text/calendar} MIME part. */
     @Deprecated
     INVITE(7, MailItemType.INVITE),
-    /** Item is a bare {@link Document}. */
-    @Deprecated
-    DOCUMENT(8, MailItemType.DOCUMENT),
     /** Item is a {@link Note}. */
     NOTE(9, MailItemType.NOTE),
     /** Item is a memory-only system {@link Flag}. */
@@ -97,9 +94,6 @@ public abstract class MailItem
      * Mailbox}.
      */
     MOUNTPOINT(13, MailItemType.MOUNTPOINT),
-    /** Item is a {@link WikiItem} */
-    @Deprecated
-    WIKI(14, MailItemType.WIKI),
     /** Item is a {@link Task} */
     TASK(15, MailItemType.TASK),
     /** Item is a {@link Chat} */
@@ -1827,8 +1821,6 @@ public abstract class MailItem
         return new Message(mbox, data, skipCache);
       case CONTACT:
         return new Contact(mbox, data, skipCache);
-      case DOCUMENT:
-        return new Document(mbox, data, skipCache);
       case NOTE:
         return new Note(mbox, data, skipCache);
       case APPOINTMENT:
@@ -1837,8 +1829,6 @@ public abstract class MailItem
         return new Task(mbox, data, skipCache);
       case MOUNTPOINT:
         return new Mountpoint(mbox, data, skipCache);
-      case WIKI:
-        return new WikiItem(mbox, data, skipCache);
       case CHAT:
         return new Chat(mbox, data, skipCache);
       case COMMENT:
@@ -1878,9 +1868,6 @@ public abstract class MailItem
         return MailServiceException.NO_SUCH_MSG(id);
       case CONTACT:
         return MailServiceException.NO_SUCH_CONTACT(id);
-      case WIKI:
-      case DOCUMENT:
-        return MailServiceException.NO_SUCH_DOC(id);
       case NOTE:
         return MailServiceException.NO_SUCH_NOTE(id);
       case APPOINTMENT:
@@ -1906,9 +1893,6 @@ public abstract class MailItem
       case MOUNTPOINT:
       case FOLDER:
         return MailServiceException.NO_SUCH_FOLDER_UUID(uuid);
-      case WIKI:
-      case DOCUMENT:
-        return MailServiceException.NO_SUCH_DOC_UUID(uuid);
       default:
         return MailServiceException.NO_SUCH_ITEM_UUID(uuid);
     }
@@ -1939,8 +1923,6 @@ public abstract class MailItem
     } else if (desired == Type.TAG && actual == Type.FLAG) {
       return true;
     } else if (desired == Type.CONVERSATION && actual == Type.VIRTUAL_CONVERSATION) {
-      return true;
-    } else if (desired == Type.DOCUMENT && actual == Type.WIKI) {
       return true;
     } else if (desired == Type.MESSAGE && actual == Type.CHAT) {
       return true;
@@ -2360,56 +2342,7 @@ public abstract class MailItem
     mRevisions = null;
   }
 
-  public static int purgeRevisions(Mailbox mbx, long before) throws ServiceException {
-    HashSet<Integer> outdatedIds =
-        DbMailItem.getItemsWithOutdatedRevisions(mbx, (int) (before / 1000));
-    int numberofpurgedrevisions = 0;
-    for (Iterator<Integer> iter = outdatedIds.iterator(); iter.hasNext(); ) {
-      MailItem item = getById(mbx, iter.next());
 
-      // Purge revisions and their blobs .
-      if (item != null
-          && item.getType() == Type.DOCUMENT
-          && item.isTagged(Flag.FlagInfo.VERSIONED)) {
-        List<MailItem> revisions = item.loadRevisions();
-        List<MailItem> toPurge = new ArrayList<MailItem>();
-
-        Folder folder = item.getFolder();
-        for (Iterator<MailItem> it = revisions.iterator(); it.hasNext(); ) {
-          MailItem revision = it.next();
-          if (revision.getDate() < before) {
-            toPurge.add(revision);
-            it.remove();
-          }
-        }
-
-        // The following logic depends on version, mod_metadata and mod_content each being
-        // monotonically increasing in the revisions list. (f(n) <= f(n+1))
-
-        // Filter out blobs that are still in use; mark the rest for deletion.
-        int oldestRemainingSavedSequence =
-            revisions.isEmpty() ? item.mData.modContent : revisions.get(0).getSavedSequence();
-        for (MailItem revision : toPurge) {
-          if (revision.getSavedSequence() < oldestRemainingSavedSequence) {
-            item.mMailbox.updateSize(-revision.getSize());
-            folder.updateSize(0, 0, -revision.getSize());
-            revision.markBlobForDeletion();
-          }
-          numberofpurgedrevisions++;
-        }
-
-        // Purge revisions from db.
-        int highestPurgedVer = toPurge.get(toPurge.size() - 1).getVersion();
-        DbMailItem.purgeRevisions(item, highestPurgedVer, true);
-
-        if (revisions.isEmpty()) {
-          item.tagChanged(item.mMailbox.getFlagById(Flag.ID_VERSIONED), false);
-        }
-      }
-    }
-
-    return numberofpurgedrevisions;
-  }
 
   /**
    * Recalculates the size, metadata, etc. for an existing MailItem and persists that information to
@@ -3544,7 +3477,7 @@ public abstract class MailItem
   static String getMailopContext(MailItem item) {
     if (item == null || !ZimbraLog.mailop.isInfoEnabled()) {
       return "<undefined>";
-    } else if (item instanceof Folder || item instanceof Tag || item instanceof WikiItem) {
+    } else if (item instanceof Folder || item instanceof Tag) {
       return String.format(
           "%s %s (id=%d)", item.getClass().getSimpleName(), item.getName(), item.getId());
     } else if (item instanceof Contact) {
