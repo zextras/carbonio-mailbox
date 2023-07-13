@@ -31,7 +31,7 @@ import com.zimbra.cs.service.mail.SendMsgTest.DirectInsertionMailboxManager;
  * @author zimbra
  *
  */
-public class ExtShareInfoTest {
+class ExtShareInfoTest {
 
     private Account ownerAcct = null;
     private Account testAcct = null;
@@ -60,8 +60,6 @@ public class ExtShareInfoTest {
  void testGenNotifyBody() {
 
   Locale locale = new Locale("en", "US");
-  String notes = "none";
-
   ShareInfoData sid = new ShareInfoData();
   sid.setGranteeDisplayName("Demo User Three");
   sid.setGranteeId(testAcct.getId());
@@ -80,7 +78,7 @@ public class ExtShareInfoTest {
   try {
    sid.setRights(ACL.stringToRights("rwidxap"));
    MimeMultipart mmp = ShareInfo.NotificationSender.genNotifBody(sid,
-     notes, locale, null, null);
+     locale, null, null);
    assertNotNull(mmp);
    String body = (String) mmp.getBodyPart(0).getDataHandler()
      .getContent();

@@ -78,10 +78,7 @@ public class SendShareNotification extends MailDocumentHandler {
         // validate the share specified in the request and build a share info if all is valid
         Collection<ShareInfoData> shareInfos = validateRequest(zsc, context, octxt, mbox, request);
 
-        // grab notes if there is one
-        Element eNotes = request.getOptionalElement(MailConstants.E_NOTES);
         Action action = Action.fromString(request.getAttribute(MailConstants.A_ACTION, null));
-        String notes = eNotes==null ? null : eNotes.getText();
 
         // send the messages
         try {
@@ -92,13 +89,13 @@ public class SendShareNotification extends MailDocumentHandler {
                 if (ACL.GRANTEE_GROUP == sid.getGranteeTypeCode()) {
                     sharesWithGroupGrantee.add(sid);
                 } else {
-                    sendNotificationEmail(octxt, mbox, authAccount, account, sid, notes, action, null, null);
+                    sendNotificationEmail(octxt, mbox, authAccount, account, sid, action, null, null);
                 }
             }
 
             // send to group grantees
             sendNotificationEmailToGroupGrantees(octxt, mbox, authAccount, account,
-                    sharesWithGroupGrantee, notes, action);
+                    sharesWithGroupGrantee, action);
 
         } catch (MessagingException e) {
             throw ServiceException.FAILURE(
@@ -530,7 +527,7 @@ public class SendShareNotification extends MailDocumentHandler {
     }
 
     protected MimeMessage generateShareNotification(Account authAccount, Account ownerAccount,
-        ShareInfoData sid, String notes, Action action, Collection<String> internalRecipients,
+        ShareInfoData sid, Action action, Collection<String> internalRecipients,
         String externalRecipient) throws ServiceException, MessagingException {
         Locale locale = authAccount.getLocale();
         String charset = authAccount.getAttr(Provisioning.A_zimbraPrefMailDefaultCharset,
@@ -577,14 +574,14 @@ public class SendShareNotification extends MailDocumentHandler {
             extUserShareAcceptUrl = AccountUtil.getShareAcceptURL(owner, sid.getItemId(), externalGranteeName);
             extUserLoginUrl = AccountUtil.getExtUserLoginURL(owner);
         }
-        String mimePartText = ShareInfo.NotificationSender.getMimePartText(sid, notes, locale,
+        String mimePartText = ShareInfo.NotificationSender.getMimePartText(sid, locale,
             action, extUserShareAcceptUrl, extUserLoginUrl);
-        String mimePartHtml = ShareInfo.NotificationSender.getMimePartHtml(sid, notes, locale,
+        String mimePartHtml = ShareInfo.NotificationSender.getMimePartHtml(sid, locale,
             action, extUserShareAcceptUrl, extUserLoginUrl);
 
         String mimePartXml = null;
         if (!goesToExternalAddr) {
-            mimePartXml = ShareInfo.NotificationSender.genXmlPart(sid, notes, null, action);
+            mimePartXml = ShareInfo.NotificationSender.genXmlPart(sid, null, action);
         }
 
         MimeMultipart mmp = AccountUtil.generateMimeMultipart(mimePartText, mimePartHtml,
@@ -599,17 +596,17 @@ public class SendShareNotification extends MailDocumentHandler {
 
     private void sendNotificationEmail(OperationContext octxt, Mailbox mbox,
             Account authAccount, Account ownerAccount,
-            ShareInfoData sid, String notes, Action action,
+            ShareInfoData sid, Action action,
             Collection<String> internalRecipients, String externalRecipient)
     throws ServiceException, MessagingException  {
-        MimeMessage mm = generateShareNotification(authAccount, ownerAccount, sid, notes, action,
+        MimeMessage mm = generateShareNotification(authAccount, ownerAccount, sid, action,
                 internalRecipients, externalRecipient);
         mbox.getMailSender().sendMimeMessage(octxt, mbox, true, mm, null, null, null, null, false);
     }
 
     private void sendNotificationEmailToGroupGrantees(OperationContext octxt, Mailbox mbox,
             Account authAccount, Account ownerAccount, Collection<ShareInfoData> sids,
-            String notes, Action action)
+            Action action)
     throws ServiceException, MessagingException {
         Provisioning prov = Provisioning.getInstance();
 
@@ -634,12 +631,12 @@ public class SendShareNotification extends MailDocumentHandler {
             if (addrs.groupAddr() != null) {
                 // just send to the group's address, no treatment needed for recipients
                 sendNotificationEmail(octxt, mbox, authAccount, ownerAccount, sid,
-                        notes, action, null, null);
+                         action, null, null);
             } else {
                 // send one common notif email to all internal members,
                 if (addrs.internalAddrs() != null) {
                     sendNotificationEmail(octxt, mbox, authAccount, ownerAccount, sid,
-                            notes, action, addrs.internalAddrs(), null);
+                             action, addrs.internalAddrs(), null);
                 }
 
                 // send one personalized notif email to each external member
@@ -648,11 +645,11 @@ public class SendShareNotification extends MailDocumentHandler {
                     if (extMembers.size() <= DebugConfig.sendGroupShareNotificationSynchronouslyThreshold) {
                         // send synchronously
                         sendNotificationEmailToGroupExternalMembers(octxt, mbox,
-                                authAccount, ownerAccount, sid, notes, action, extMembers);
+                                authAccount, ownerAccount, sid,  action, extMembers);
                     } else {
                         // send asynchronously in a separate thread to avoid holding up the request
                         sendNotificationEmailToGroupExternalMembersAsync(octxt, mbox,
-                                authAccount, ownerAccount, sid, notes, action, extMembers);
+                                authAccount, ownerAccount, sid,  action, extMembers);
                     }
                 }
             }
@@ -662,11 +659,11 @@ public class SendShareNotification extends MailDocumentHandler {
     private void sendNotificationEmailToGroupExternalMembers(
             OperationContext octxt, Mailbox mbox,
             Account authAccount, Account ownerAccount, ShareInfoData sid,
-            String notes, Action action, Collection<String> extMembers) {
+             Action action, Collection<String> extMembers) {
         for (String extMember : extMembers) {
             try {
                 sendNotificationEmail(octxt, mbox, authAccount, ownerAccount, sid,
-                        notes, action, null, extMember);
+                         action, null, extMember);
             } catch (ServiceException e) {
                 sLog.warn("Ignoring error while sending share notification to external group member " + extMember , e);
             } catch (MessagingException e) {
@@ -678,16 +675,13 @@ public class SendShareNotification extends MailDocumentHandler {
     private void sendNotificationEmailToGroupExternalMembersAsync(
             final OperationContext octxt, final Mailbox mbox,
             final Account authAccount, final Account ownerAccount, final ShareInfoData sid,
-            final String notes, final Action action, final Collection<String> extMembers) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    sendNotificationEmailToGroupExternalMembers(octxt, mbox,
-                            authAccount, ownerAccount, sid, notes, action, extMembers);
-                } catch (OutOfMemoryError e) {
-                    Zimbra.halt("OutOfMemoryError while sending share notification to external group members", e);
-                }
+            final Action action, final Collection<String> extMembers) {
+        Runnable r = () -> {
+            try {
+                sendNotificationEmailToGroupExternalMembers(octxt, mbox,
+                        authAccount, ownerAccount, sid, action, extMembers);
+            } catch (OutOfMemoryError e) {
+                Zimbra.halt("OutOfMemoryError while sending share notification to external group members", e);
             }
         };
         Thread senderThread = new Thread(r, "SendShareNotification");

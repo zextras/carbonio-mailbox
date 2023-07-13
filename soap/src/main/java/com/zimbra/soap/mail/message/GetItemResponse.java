@@ -19,7 +19,6 @@ import com.zimbra.soap.mail.type.ConversationSummary;
 import com.zimbra.soap.mail.type.DocumentInfo;
 import com.zimbra.soap.mail.type.Folder;
 import com.zimbra.soap.mail.type.MessageSummary;
-import com.zimbra.soap.mail.type.NoteInfo;
 import com.zimbra.soap.mail.type.TagInfo;
 import com.zimbra.soap.mail.type.TaskItemInfo;
 
@@ -32,7 +31,6 @@ public class GetItemResponse {
     @XmlElements({
         @XmlElement(name=MailConstants.E_FOLDER /* folder */, type=Folder.class),
         @XmlElement(name=MailConstants.E_TAG /* tag */, type=TagInfo.class),
-        @XmlElement(name=MailConstants.E_NOTE /* note */, type=NoteInfo.class),
         @XmlElement(name=MailConstants.E_CONTACT /* cn */, type=ContactInfo.class),
         @XmlElement(name=MailConstants.E_APPOINTMENT /* appt */, type=CalendarItemInfo.class),
         @XmlElement(name=MailConstants.E_TASK /* task */, type=TaskItemInfo.class),

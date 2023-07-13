@@ -55,7 +55,6 @@ public class ShareInfoTest {
  void testGenNotifyBody() {
 
   Locale locale = new Locale("en", "US");
-  String notes = "none";
 
   ShareInfoData sid = new ShareInfoData();
   sid.setGranteeDisplayName("Demo User Three");
@@ -75,8 +74,7 @@ public class ShareInfoTest {
   try {
 
    sid.setRights(ACL.stringToRights("rwidxap"));
-   MimeMultipart mmp = ShareInfo.NotificationSender.genNotifBody(sid,
-     notes, locale, null, null);
+   MimeMultipart mmp = ShareInfo.NotificationSender.genNotifBody(sid, locale, null, null);
    assertNotNull(mmp);
    String body = (String) mmp.getBodyPart(0).getDataHandler()
      .getContent();
@@ -92,7 +90,6 @@ public class ShareInfoTest {
  void testGenNotifyBodyForCustom() {
 
   Locale locale = new Locale("en", "US");
-  String notes = "none";
 
   ShareInfoData sid = new ShareInfoData();
   sid.setGranteeDisplayName("Demo User Three");
@@ -113,7 +110,7 @@ public class ShareInfoTest {
 
    sid.setRights(ACL.stringToRights("rwdxap"));
    MimeMultipart mmp = ShareInfo.NotificationSender.genNotifBody(sid,
-     notes, locale, null, null);
+     locale, null, null);
    assertNotNull(mmp);
    String body = (String) mmp.getBodyPart(0).getDataHandler()
      .getContent();

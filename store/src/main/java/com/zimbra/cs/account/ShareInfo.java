@@ -552,7 +552,7 @@ public class ShareInfo {
     private static final String NEWLINE = "\n";
 
     public static MimeMultipart genNotifBody(
-        ShareInfoData sid, String notes, Locale locale, Action action, String externalGroupMember)
+        ShareInfoData sid, Locale locale, Action action, String externalGroupMember)
         throws MessagingException, ServiceException {
 
       // Body
@@ -586,7 +586,6 @@ public class ShareInfo {
             genPart(
                 sid,
                 action == Action.edit,
-                notes,
                 extUserShareAcceptUrl,
                 extUserLoginUrl,
                 locale,
@@ -607,7 +606,6 @@ public class ShareInfo {
             genPart(
                 sid,
                 action == Action.edit,
-                notes,
                 extUserShareAcceptUrl,
                 extUserLoginUrl,
                 locale,
@@ -622,7 +620,7 @@ public class ShareInfo {
       if (!goesToExternalAddr) {
         MimeBodyPart xmlPart = new ZMimeBodyPart();
         xmlPart.setDataHandler(
-            new DataHandler(new XmlPartDataSource(genXmlPart(sid, notes, null, action))));
+            new DataHandler(new XmlPartDataSource(genXmlPart(sid, null, action))));
         mmp.addBodyPart(xmlPart);
       }
 
@@ -631,7 +629,6 @@ public class ShareInfo {
 
     public static String getMimePartHtml(
         ShareInfoData sid,
-        String notes,
         Locale locale,
         Action action,
         String extUserShareAcceptUrl,
@@ -648,7 +645,6 @@ public class ShareInfo {
             genPart(
                 sid,
                 action == Action.edit,
-                notes,
                 extUserShareAcceptUrl,
                 extUserLoginUrl,
                 locale,
@@ -661,7 +657,6 @@ public class ShareInfo {
 
     public static String getMimePartText(
         ShareInfoData sid,
-        String notes,
         Locale locale,
         Action action,
         String extUserShareAcceptUrl,
@@ -677,7 +672,6 @@ public class ShareInfo {
             genPart(
                 sid,
                 action == Action.edit,
-                notes,
                 extUserShareAcceptUrl,
                 extUserLoginUrl,
                 locale,
@@ -690,7 +684,6 @@ public class ShareInfo {
     private static String genPart(
         ShareInfoData sid,
         boolean shareModified,
-        String senderNotes,
         String extUserShareAcceptUrl,
         String extUserLoginUrl,
         Locale locale,
@@ -711,14 +704,6 @@ public class ShareInfo {
                 extUserShareAcceptUrl,
                 extUserLoginUrl);
       }
-      if (!Strings.isNullOrEmpty(senderNotes)) {
-        if (!html) {
-          senderNotes = L10nUtil.getMessage(MsgKey.shareNotifBodyNotesText, locale, senderNotes);
-        } else {
-          senderNotes = senderNotes.replaceAll(NotificationSender.NEWLINE, HTML_LINE_BREAK);
-          senderNotes = L10nUtil.getMessage(MsgKey.shareNotifBodyNotesHtml, locale, senderNotes);
-        }
-      }
       MsgKey msgKey;
       if (shareModified) {
         msgKey = html ? MsgKey.shareModifyBodyHtml : MsgKey.shareModifyBodyText;
@@ -735,8 +720,7 @@ public class ShareInfo {
                   sid.getGranteeNotifName(),
                   getRoleFromRights(sid, locale),
                   getRightsText(sid, locale),
-                  Strings.nullToEmpty(externalShareInfo),
-                  Strings.nullToEmpty(senderNotes)))
+                  Strings.nullToEmpty(externalShareInfo)))
           .toString();
     }
 
@@ -757,7 +741,7 @@ public class ShareInfo {
     }
 
     public static String genXmlPart(
-        ShareInfoData sid, String senderNotes, StringBuilder sb, Action action)
+        ShareInfoData sid, StringBuilder sb, Action action)
         throws ServiceException {
       if (sb == null) {
         sb = new StringBuilder();
@@ -887,9 +871,9 @@ public class ShareInfo {
 
         if (idx == null) {
           for (ShareInfoData sid : mShares) {
-            genPart(sid, false, null, null, null, locale, sb, false);
+            genPart(sid, false, null, null, locale, sb, false);
           }
-        } else genPart(mShares.get(idx), false, null, null, null, locale, sb, false);
+        } else genPart(mShares.get(idx), false, null, null, locale, sb, false);
 
         sb.append("\n\n");
         return sb.toString();
@@ -910,9 +894,9 @@ public class ShareInfo {
 
         if (idx == null) {
           for (ShareInfoData sid : mShares) {
-            genPart(sid, false, null, null, null, locale, sb, true);
+            genPart(sid, false, null, null, locale, sb, true);
           }
-        } else genPart(mShares.get(idx), false, null, null, null, locale, sb, true);
+        } else genPart(mShares.get(idx), false, null, null, locale, sb, true);
 
         return sb.toString();
       }
@@ -922,10 +906,10 @@ public class ShareInfo {
 
         if (idx == null) {
           for (ShareInfoData sid : mShares) {
-            genXmlPart(sid, null, sb, null);
+            genXmlPart(sid, sb , null);
           }
         } else {
-          genXmlPart(mShares.get(idx), null, sb, null);
+          genXmlPart(mShares.get(idx), sb, null);
         }
         return sb.toString();
       }

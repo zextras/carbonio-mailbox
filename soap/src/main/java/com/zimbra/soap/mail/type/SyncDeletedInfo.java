@@ -44,7 +44,6 @@ public class SyncDeletedInfo {
         @XmlElement(name=MailConstants.E_CONTACT /* cn */, type=ContactIdsAttr.class),
         @XmlElement(name=MailConstants.E_APPOINTMENT /* appt */, type=ApptIdsAttr.class),
         @XmlElement(name=MailConstants.E_TASK /* task */, type=TaskIdsAttr.class),
-        @XmlElement(name=MailConstants.E_NOTES /* notes */, type=NoteIdsAttr.class),
         @XmlElement(name=MailConstants.E_WIKIWORD /* w */, type=WikiIdsAttr.class),
         @XmlElement(name=MailConstants.E_DOC /* doc */, type=DocIdsAttr.class)
     })
