@@ -29,9 +29,9 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.parsers.DocumentBuilder;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -107,7 +107,7 @@ import com.zimbra.soap.type.KeyValuePair;
 public class JaxbToJsonTest {
      public String testName;
 
-    private static final Logger LOG = Logger.getLogger(JaxbToJsonTest.class);
+  private static final Logger LOG = LogManager.getLogger(JaxbToJsonTest.class);
 
     private static String jsonEmptyGetSystemRetentionPolicyResponse =
             "{\n" +
@@ -137,11 +137,9 @@ public class JaxbToJsonTest {
             "  \"_jsns\": \"urn:zimbraMail\"\n" +
             "}";
 
-    static {
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.INFO);
-        LOG.setLevel(Level.INFO);
-    }
+  static {
+    com.zimbra.common.util.LogManager.setThisLogAndRootToLevel(LOG, Level.INFO);
+  }
 
     private void logDebug(String format, Object ... objects) {
         if (LOG.isDebugEnabled()) {

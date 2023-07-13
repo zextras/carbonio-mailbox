@@ -1,0 +1,16 @@
+{
+	"zimbra_defaultcos": [
+		"carbonioFeatureFilesAppEnabled",
+		"carbonioFeatureChatsAppEnabled",
+		"carbonioFeatureMailsAppEnabled",
+		"carbonioFeatureFilesEnabled",
+		"carbonioFeatureChatsEnabled"
+	],
+	"zimbra_defaultexternalcos": [
+		"carbonioFeatureFilesAppEnabled",
+		"carbonioFeatureChatsAppEnabled",
+		"carbonioFeatureMailsAppEnabled",
+		"carbonioFeatureFilesEnabled",
+		"carbonioFeatureChatsEnabled"
+	]
+}

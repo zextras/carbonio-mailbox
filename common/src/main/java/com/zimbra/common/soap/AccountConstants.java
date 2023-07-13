@@ -124,19 +124,6 @@ public class AccountConstants {
   public static final String E_GET_SMIME_PUBLIC_CERTS_REQUEST = "GetSMIMEPublicCertsRequest";
   public static final String E_GET_SMIME_PUBLIC_CERTS_RESPONSE = "GetSMIMEPublicCertsResponse";
 
-  // Zimbra Mobile Gateway
-  public static final String E_BOOTSTRAP_MOBILE_GATEWAY_APP_REQUEST =
-      "BootstrapMobileGatewayAppRequest";
-  public static final String E_BOOTSTRAP_MOBILE_GATEWAY_APP_RESPONSE =
-      "BootstrapMobileGatewayAppResponse";
-  public static final String E_RENEW_MOBILE_GATEWAY_APP_TOKEN_REQUEST =
-      "RenewMobileGatewayAppTokenRequest";
-  public static final String E_RENEW_MOBILE_GATEWAY_APP_TOKEN_RESPONSE =
-      "RenewMobileGatewayAppTokenResponse";
-  public static final String E_REGISTER_MOBILE_GATEWAY_APP_REQUEST =
-      "RegisterMobileGatewayAppRequest";
-  public static final String E_REGISTER_MOBILE_GATEWAY_APP_RESPONSE =
-      "RegisterMobileGatewayAppResponse";
   public static final String E_GET_GCM_SENDER_ID_REQUEST = "GetGcmSenderIdRequest";
   public static final String E_GET_GCM_SENDER_ID_RESPONSE = "GetGcmSenderIdResponse";
 
@@ -317,24 +304,6 @@ public class AccountConstants {
       QName.get(E_GET_SMIME_PUBLIC_CERTS_REQUEST, NAMESPACE);
   public static final QName GET_SMIME_PUBLIC_CERTS_RESPONSE =
       QName.get(E_GET_SMIME_PUBLIC_CERTS_RESPONSE, NAMESPACE);
-
-  // Zimbra Mobile Gateway
-  public static final QName BOOTSTRAP_MOBILE_GATEWAY_APP_REQUEST =
-      QName.get(E_BOOTSTRAP_MOBILE_GATEWAY_APP_REQUEST, NAMESPACE);
-  public static final QName BOOTSTRAP_MOBILE_GATEWAY_APP_RESPONSE =
-      QName.get(E_BOOTSTRAP_MOBILE_GATEWAY_APP_RESPONSE, NAMESPACE);
-  public static final QName RENEW_MOBILE_GATEWAY_APP_TOKEN_REQUEST =
-      QName.get(E_RENEW_MOBILE_GATEWAY_APP_TOKEN_REQUEST, NAMESPACE);
-  public static final QName RENEW_MOBILE_GATEWAY_APP_TOKEN_RESPONSE =
-      QName.get(E_RENEW_MOBILE_GATEWAY_APP_TOKEN_RESPONSE, NAMESPACE);
-  public static final QName REGISTER_MOBILE_GATEWAY_APP_REQUEST =
-      QName.get(E_REGISTER_MOBILE_GATEWAY_APP_REQUEST, NAMESPACE);
-  public static final QName REGISTER_MOBILE_GATEWAY_APP_RESPONSE =
-      QName.get(E_REGISTER_MOBILE_GATEWAY_APP_RESPONSE, NAMESPACE);
-  public static final QName GET_GCM_SENDER_ID_REQUEST =
-      QName.get(E_GET_GCM_SENDER_ID_REQUEST, NAMESPACE);
-  public static final QName GET_GCM_SENDER_ID_RESPONSE =
-      QName.get(E_GET_GCM_SENDER_ID_RESPONSE, NAMESPACE);
 
   // OAuth
   public static final QName GET_OAUTH_CONSUMERS_REQUEST =
@@ -577,20 +546,6 @@ public class AccountConstants {
   public static final String A_LOG_OFF = "logoff";
   public static final String A_CLEAR_ALL_SOAP_SESSIONS = "all";
   public static final String A_EXCLUDE_CURRENT_SESSION = "excludeCurrent";
-
-  // Zimbra Mobile Gateway
-  public static final String E_APP_ID = "appId";
-  public static final String E_APP_KEY = "appKey";
-  public static final String A_WANT_APP_TOKEN = "wantAppToken";
-  public static final String E_ZMG_DEVICE = "zmgDevice";
-  public static final String A_DEVICE_ID = "appId";
-  public static final String A_REGISTRATION_ID = "registrationId";
-  public static final String A_PUSH_PROVIDER = "pushProvider";
-  public static final String A_OS_NAME = "osName";
-  public static final String A_OS_VERSION = "osVersion";
-  public static final String A_MAX_PAYLOAD_SIZE = "maxPayloadSize";
-  public static final String E_GCM_SENDER_ID = "gcmSenderId";
-  public static final String A_ZMG_PROXY = "zmgProxy";
 
   // oauth consumer attributes
   public static final String A_ACCESS_TOKEN = "accessToken";

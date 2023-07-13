@@ -1,0 +1,9 @@
+{
+  "zimbra_globalconfig": [
+    "zimbraMtaSmtpdRejectUnlistedRecipient",
+    "zimbraMtaSmtpdRejectUnlistedSender",
+    "zimbraMtaSmtpdSenderRestrictions",
+    "zimbraMtaSmtpdSenderLoginMaps",
+    "carbonioLogoUrl"
+  ]
+}

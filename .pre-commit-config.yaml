@@ -1,6 +1,6 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-exclude: (ZAttr.*\.java$|attrs\.xml|rights(-[a-zA-Z]+)?\.xml|mvnw|package-lock.json|go.sum)
+exclude: (ZAttr.*\.java$|attrs\.xml|rights((-[a-zA-Z]+)+)?\.xml|generated\/.*.java|mvnw|package-lock.json|go.sum)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
