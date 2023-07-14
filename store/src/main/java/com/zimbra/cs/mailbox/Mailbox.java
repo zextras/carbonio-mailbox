@@ -119,7 +119,6 @@ import com.zimbra.cs.mime.MPartInfo;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.ParsedAddress;
 import com.zimbra.cs.mime.ParsedContact;
-import com.zimbra.cs.mime.ParsedDocument;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.mime.ParsedMessage.CalendarPartInfo;
 import com.zimbra.cs.mime.ParsedMessageDataSource;
@@ -3666,7 +3665,7 @@ public class Mailbox implements MailboxStore {
       if (folderId == ID_FOLDER_TAGS) {
         item = getTagByName(octxt, name);
       } else {
-        // check for the specified item -- folder first, then document
+        // check for the specified item -- folder
         item = parent.findSubfolder(name);
       }
       // make sure the item is visible to the requester
@@ -10362,6 +10361,16 @@ public class Mailbox implements MailboxStore {
     }
   }
 
+  public Message updateOrCreateChat(OperationContext octxt, ParsedMessage pm, int id)
+      throws IOException, ServiceException {
+    // special-case saving a new Chat
+    if (id == ID_AUTO_INCREMENT) {
+      return createChat(octxt, pm, ID_FOLDER_IM_LOGS, Flag.BITMASK_FROM_ME, null);
+    } else {
+      return updateChat(octxt, pm, id);
+    }
+  }
+
   public Chat createChat(
       OperationContext octxt, ParsedMessage pm, int folderId, int flags, String[] tags)
       throws IOException, ServiceException {
@@ -11229,6 +11238,7 @@ public class Mailbox implements MailboxStore {
     }
   }
 
+  // FIXME probably can remove Comment logic as it seems to be related to Document
   public Comment createComment(OperationContext octxt, int parentId, String text, String creatorId)
       throws ServiceException {
     CreateComment redoRecorder = new CreateComment(mId, parentId, text, creatorId);

@@ -57,7 +57,7 @@ public class GetFolderTest {
   mbox.createFolder(
     null,
     "Inbox/foo/bar/baz",
-    new Folder.FolderOptions().setDefaultView(Type.COMMENT));
+    new Folder.FolderOptions().setDefaultView(Type.FOLDER));
 
   // first, test the default setup (full tree)
   Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
@@ -99,14 +99,14 @@ public class GetFolderTest {
   Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
-  Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(Type.COMMENT);
+  Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(Type.FOLDER);
   mbox.createFolder(null, "foo", fopt);
   mbox.createFolder(null, "bar/baz", fopt);
   mbox.createFolder(null, "Inbox/woot", fopt);
 
   Element request =
     new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST)
-      .addAttribute(MailConstants.A_DEFAULT_VIEW, Type.COMMENT.toString());
+      .addAttribute(MailConstants.A_DEFAULT_VIEW, Type.FOLDER.toString());
   Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
 
   Element root = response.getOptionalElement(MailConstants.E_FOLDER);
@@ -139,7 +139,7 @@ public class GetFolderTest {
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
   Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
 
-  Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(Type.COMMENT);
+  Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(Type.FOLDER);
   int folderId = mbox2.createFolder(null, "foo", fopt).getId();
   Folder folder = mbox2.getFolderById(null, folderId);
   mbox2.createFolder(null, "bar", folderId, fopt);
