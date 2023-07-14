@@ -105,7 +105,7 @@ public final class Utils {
           .filter(Files::isDirectory)
           .map(Path::getFileName)
           .map(Path::toString)
-          .collect(Collectors.toList());
+          .collect(Collectors.toCollection(ArrayList::new));
     } catch (IOException ignored) {
       // ignore
     }
