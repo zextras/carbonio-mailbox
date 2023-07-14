@@ -464,6 +464,12 @@
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
     </dependency>
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>store-extra-runtime-dependencies</artifactId>
+      <type>pom</type>
+      <scope>runtime</scope>
+    </dependency>
     <!-- DI -->
     <dependency>
       <artifactId>javax.inject</artifactId>

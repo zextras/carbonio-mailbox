@@ -878,6 +878,7 @@
     <module>native</module>
     <module>store-conf</module>
     <module>carbonio-jetty-libs</module>
+    <module>store-extra-runtime-dependencies</module>
   </modules>
   <packaging>pom</packaging>
 
