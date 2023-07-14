@@ -1,7 +1,11 @@
 
+## [4.6.2](https://github.com/Zextras/carbonio-mailbox/compare/4.6.1...4.6.2) (2023-07-14)
+
+### Bug Fixes
+
+* proxyconfgen failing to delete cerbot domain conf ([#281](https://github.com/Zextras/carbonio-mailbox/issues/281)) ([dcb5e3d](https://github.com/Zextras/carbonio-mailbox/commit/dcb5e3de5a8a7a74519658f0d18f9cc5961902cd))
 
 ## [4.6.1](https://github.com/Zextras/carbonio-mailbox/compare/4.6.0...4.6.1) (2023-07-11)
-
 
 ### Bug Fixes
 
