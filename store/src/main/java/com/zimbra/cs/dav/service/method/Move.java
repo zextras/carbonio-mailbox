@@ -15,7 +15,6 @@ import com.zimbra.cs.dav.DavException;
 import com.zimbra.cs.dav.resource.Collection;
 import com.zimbra.cs.dav.resource.DavResource;
 import com.zimbra.cs.dav.resource.MailItemResource;
-import com.zimbra.cs.dav.resource.Notebook;
 import com.zimbra.cs.dav.service.DavMethod;
 import com.zimbra.cs.mailbox.MailItem;
 
@@ -52,7 +51,7 @@ public class Move extends DavMethod {
 
     public void handle(DavContext ctxt) throws DavException, IOException, ServiceException {
         String newName = null;        
-        if (mir instanceof Collection || mir instanceof Notebook)
+        if (mir instanceof Collection)
             newName = ctxt.getNewName();        
         if (ctxt.isOverwriteSet()) {
             mir.moveORcopyWithOverwrite(ctxt, col, newName, true);

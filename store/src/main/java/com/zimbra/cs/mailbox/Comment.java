@@ -24,9 +24,6 @@ public class Comment extends MailItem {
     }
 
     public static Comment create(Mailbox mbox, MailItem parent, int id, String uuid, String text, String creatorId, CustomMetadata custom) throws ServiceException {
-        if (!(parent instanceof Document))
-            throw MailServiceException.CANNOT_PARENT();
-
         UnderlyingData data = new UnderlyingData();
         data.uuid = uuid;
         data.id = id;

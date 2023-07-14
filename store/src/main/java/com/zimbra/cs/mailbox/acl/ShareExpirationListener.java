@@ -14,7 +14,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.ACL;
-import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailboxListener;
@@ -44,7 +43,7 @@ public class ShareExpirationListener extends MailboxListener {
         }
         if (notification.mods.created != null) {
             for (BaseItemInfo created : notification.mods.created.values()) {
-                if (created instanceof Folder || created instanceof Document) {
+                if (created instanceof Folder) {
                     MailItem mi = (MailItem) created;
                     if (mi.getACL() != null) {
                         scheduleExpireAccessOpIfReq(mi);
@@ -54,7 +53,7 @@ public class ShareExpirationListener extends MailboxListener {
         }
         if (notification.mods.modified != null) {
             for (Change change : notification.mods.modified.values()) {
-                if ((change.what instanceof Folder || change.what instanceof Document) &&
+                if ((change.what instanceof Folder) &&
                         (change.why & Change.ACL) != 0) {
                     scheduleExpireAccessOpIfReq((MailItem) change.what);
                 }

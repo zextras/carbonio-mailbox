@@ -65,7 +65,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ZimbraAuthTokenEncoded;
 import com.zimbra.cs.httpclient.URLUtil;
-import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -954,20 +953,6 @@ public class UserServlet extends ZimbraServlet {
 
     public static Pair<Header[], HttpInputStream> putMailItem(ZAuthToken authToken, String url, MailItem item)
     throws ServiceException, IOException {
-        if (item instanceof Document) {
-            Document doc = (Document) item;
-            StringBuilder u = new StringBuilder(url);
-            u.append("?").append(QP_AUTH).append('=').append(AUTH_COOKIE);
-            HttpPut method = new HttpPut(u.toString());
-            String contentType = doc.getContentType();
-            method.addHeader("Content-Type", contentType);
-            method.setEntity(new InputStreamEntity(doc.getContentStream(), doc.getSize(), ContentType.create(contentType)));
-            
-            method.addHeader("X-Zimbra-Description", doc.getDescription());
-            method.setEntity(new InputStreamEntity(doc.getContentStream(), doc.getSize(), ContentType.create(contentType)));
-            Pair<Header[], HttpResponse> pair = doHttpOp(authToken, method);
-            return new Pair<Header[], HttpInputStream>(pair.getFirst(), new HttpInputStream(pair.getSecond()));
-        }
         return putRemoteResource(authToken, url, item.getContentStream(), null);
     }
 

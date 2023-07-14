@@ -136,7 +136,6 @@ import com.zimbra.cs.redolog.op.CreateContact;
 import com.zimbra.cs.redolog.op.CreateFolder;
 import com.zimbra.cs.redolog.op.CreateFolderPath;
 import com.zimbra.cs.redolog.op.CreateInvite;
-import com.zimbra.cs.redolog.op.CreateLink;
 import com.zimbra.cs.redolog.op.CreateMailbox;
 import com.zimbra.cs.redolog.op.CreateMessage;
 import com.zimbra.cs.redolog.op.CreateMountpoint;
@@ -3630,7 +3629,7 @@ public class Mailbox implements MailboxStore {
    * passed-in folder ID.
    *
    * <p>This can return anything with a name; at present, that is limited to {@link Folder}s, {@link
-   * Tag}s, and {@link Document}s.
+   * Tag}s.
    */
   public MailItem getItemByPath(OperationContext octxt, String name, int folderId)
       throws ServiceException {
@@ -11247,26 +11246,6 @@ public class Mailbox implements MailboxStore {
       index.add(comment);
       success = true;
       return comment;
-    } finally {
-      endTransaction(success);
-    }
-  }
-
-  public Link createLink(
-      OperationContext octxt, int folderId, String name, String ownerId, int remoteId)
-      throws ServiceException {
-    CreateLink redoRecorder = new CreateLink(mId, folderId, name, ownerId, remoteId);
-
-    boolean success = false;
-    try {
-      beginTransaction("createLink", octxt, redoRecorder);
-      CreateLink redoPlayer = (CreateLink) currentChange().getRedoPlayer();
-      int itemId = getNextItemId(redoPlayer == null ? ID_AUTO_INCREMENT : redoPlayer.getId());
-      String uuid = redoPlayer == null ? UUIDUtil.generateUUID() : redoPlayer.getUuid();
-      Link link = Link.create(getFolderById(folderId), itemId, uuid, name, ownerId, remoteId, null);
-      redoRecorder.setIdAndUuid(link.getId(), link.getUuid());
-      success = true;
-      return link;
     } finally {
       endTransaction(success);
     }

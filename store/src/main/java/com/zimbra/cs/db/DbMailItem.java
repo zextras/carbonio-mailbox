@@ -2073,7 +2073,6 @@ public class DbMailItem {
     private static final String DUMPSTER_TYPES = "(" +
         MailItem.Type.MESSAGE.toByte() + ',' +
         MailItem.Type.CONTACT.toByte() + ',' +
-        MailItem.Type.LINK.toByte() + ',' +
         MailItem.Type.APPOINTMENT.toByte() + ',' +
         MailItem.Type.TASK.toByte() + ',' +
         MailItem.Type.CHAT.toByte() + ',' +

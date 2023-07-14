@@ -21,7 +21,6 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SmimeConstants;
 import com.zimbra.common.util.CharsetUtil;
-import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.zmime.ZMimeBodyPart;
@@ -32,17 +31,13 @@ import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.IDNUtil;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.Fragment;
-import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Flag;
-import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailSender.SafeSendFailedException;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
-import com.zimbra.cs.mailbox.Mountpoint;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
 import com.zimbra.cs.mailbox.calendar.Invite;
@@ -768,61 +763,6 @@ public final class ParseMimeMessage {
     mbp.setHeader("Content-Disposition",
         new ContentDisposition(Part.ATTACHMENT, ctxt.use2231).setCharset(ctxt.defaultCharset)
             .setParameter("filename", filename).toString());
-    mbp.setContentID(contentID);
-    mmp.addBodyPart(mbp);
-  }
-
-
-
-  private static void attachDocument(MimeMultipart mmp, String path, String contentID,
-      ParseMessageContext ctxt)
-      throws MessagingException, ServiceException {
-    MailItem item = null;
-    try {
-      // first, just blindly try to fetch the item
-      item = ctxt.mbox.getItemByPath(ctxt.octxt, path);
-    } catch (NoSuchItemException ignored) {
-    }
-
-    if (item == null) {
-      // on a miss, check for a mountpoint and, if so, fetch via UserServlet
-      Pair<Folder, String> match = ctxt.mbox.getFolderByPathLongestMatch(ctxt.octxt,
-          Mailbox.ID_FOLDER_USER_ROOT, path);
-      if (!(match.getFirst() instanceof Mountpoint)) {
-        throw MailServiceException.NO_SUCH_DOC(path);
-      }
-
-      Map<String, String> params = new HashMap<String, String>(3);
-      params.put(UserServlet.QP_NAME, match.getSecond());
-      attachRemoteItem(mmp, ((Mountpoint) match.getFirst()).getTarget(), contentID, ctxt, params,
-          null);
-      return;
-    }
-
-    // on a hit, attach it directly
-    if (!(item instanceof Document)) {
-      throw MailServiceException.NO_SUCH_DOC(path);
-    }
-    attachDocument(mmp, (Document) item, contentID, ctxt);
-  }
-
-  private static void attachDocument(MimeMultipart mmp, Document doc, String contentID,
-      ParseMessageContext ctxt)
-      throws MessagingException, ServiceException {
-    ctxt.incrementSize("attached document", (long) (doc.getSize() * 1.33));
-    ContentType ct = new ContentType(doc.getContentType());
-    if (MimeConstants.isZimbraDocument(ct.getContentType())) {
-      ct = new ContentType(MimeConstants.CT_TEXT_HTML);
-    }
-
-    MimeBodyPart mbp = new ZMimeBodyPart();
-    mbp.setDataHandler(
-        new DataHandler(new MailboxBlobDataSource(doc.getBlob(), ct.getContentType())));
-    mbp.setHeader("Content-Type",
-        ct.cleanup().setParameter("name", doc.getName()).setCharset(ctxt.defaultCharset)
-            .toString());
-    mbp.setHeader("Content-Disposition",
-        new ContentDisposition(Part.ATTACHMENT).setParameter("filename", doc.getName()).toString());
     mbp.setContentID(contentID);
     mmp.addBodyPart(mbp);
   }

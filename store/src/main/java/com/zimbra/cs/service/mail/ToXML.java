@@ -109,10 +109,8 @@ import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.Contact.Attachment;
 import com.zimbra.cs.mailbox.ContactGroup;
 import com.zimbra.cs.mailbox.Conversation;
-import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.Link;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -2988,105 +2986,7 @@ throws ServiceException {
     }
 
 
-    public static Element encodeDocument(Element parent, ItemIdFormatter ifmt, OperationContext octxt, Document doc) throws ServiceException {
-        return encodeDocument(parent, ifmt, octxt, doc, Change.ALL_FIELDS);
-    }
 
-    public static Element encodeDocument(Element parent, ItemIdFormatter ifmt, OperationContext octxt, Document doc,
-            int fields) throws ServiceException {
-        Element el = parent.addNonUniqueElement(MailConstants.E_DOC);
-        encodeDocumentCommon(el, ifmt, octxt, doc, fields);
-        if (needToOutput(fields, Change.LOCK)) {
-            String lockOwner = doc.getLockOwner();
-            if (lockOwner == null) {
-                el.addAttribute(MailConstants.A_LOCKOWNER_ID, "");
-            } else {
-                Account a;
-                try {
-                    a = Provisioning.getInstance().getAccountById(lockOwner);
-                    if (a != null) {
-                        el.addAttribute(MailConstants.A_LOCKOWNER_EMAIL, a.getName());
-                    } else {
-                        ZimbraLog.soap.warn("lock owner not found: %s", lockOwner);
-                    }
-                } catch (ServiceException e) {
-                    ZimbraLog.soap.warn("can't lookup lock owner", e);
-                }
-                el.addAttribute(MailConstants.A_LOCKOWNER_ID, lockOwner);
-                el.addAttribute(MailConstants.A_LOCKTIMESTAMP, doc.getLockTimestamp());
-            }
-        }
-        return el;
-    }
-
-    public static Element encodeDocumentCommon(Element m, ItemIdFormatter ifmt, OperationContext octxt, Document doc, int fields)
-    throws ServiceException {
-        m.addAttribute(MailConstants.A_ID, ifmt.formatItemId(doc));
-        m.addAttribute(MailConstants.A_UUID, doc.getUuid());
-        if (needToOutput(fields, Change.NAME)) {
-            m.addAttribute(MailConstants.A_NAME, doc.getName());
-        }
-        if (needToOutput(fields, Change.SIZE)) {
-            m.addAttribute(MailConstants.A_SIZE, doc.getSize());
-        }
-        if (needToOutput(fields, Change.DATE)) {
-            m.addAttribute(MailConstants.A_DATE, doc.getDate());
-        }
-        if (needToOutput(fields, Change.FOLDER)) {
-            m.addAttribute(MailConstants.A_FOLDER,
-                    ifmt.formatItemId(new ItemId(doc.getMailbox().getAccountId(), doc.getFolderId())));
-            m.addAttribute(MailConstants.A_FOLDER_UUID, doc.getFolderUuid());
-        }
-        if (needToOutput(fields, Change.CONFLICT)) {
-            m.addAttribute(MailConstants.A_MODIFIED_SEQUENCE, doc.getModifiedSequence());
-            m.addAttribute(MailConstants.A_METADATA_VERSION, doc.getMetadataVersion());
-            m.addAttribute(MailConstants.A_CHANGE_DATE, (doc.getChangeDate() / 1000));
-            m.addAttribute(MailConstants.A_REVISION, doc.getSavedSequence());
-        }
-        recordItemTags(m, doc, octxt, fields | Change.FLAGS);
-        if (needToOutput(fields, Change.METADATA)) {
-            encodeAllCustomMetadata(m, doc, fields);
-            String description = doc.getDescription();
-            if (!Strings.isNullOrEmpty(description)) {
-                m.addAttribute(MailConstants.A_DESC, description);
-            }
-            m.addAttribute(MailConstants.A_CONTENT_TYPE, doc.getContentType());
-            m.addAttribute(MailConstants.A_DESC_ENABLED, doc.isDescriptionEnabled());
-        }
-
-        if (needToOutput(fields, Change.CONTENT) || needToOutput(fields, Change.NAME)) {
-            try {
-                m.addAttribute(MailConstants.A_VERSION, doc.getVersion());
-                m.addAttribute(MailConstants.A_LAST_EDITED_BY, doc.getCreator());
-                String fragment = doc.getFragment();
-                if (!Strings.isNullOrEmpty(fragment)) {
-                    m.addAttribute(MailConstants.E_FRAG, fragment, Element.Disposition.CONTENT);
-                }
-                Document revision = null;
-                int v = 1;
-                while (revision == null && v <= doc.getVersion()) {
-                    revision = (Document) doc.getMailbox().getItemRevision(octxt, doc.getId(), doc.getType(), v++, doc.inDumpster());
-                }
-                if (revision != null) {
-                    m.addAttribute(MailConstants.A_CREATOR, revision.getCreator());
-                    m.addAttribute(MailConstants.A_CREATED_DATE, revision.getDate());
-                }
-            } catch (Exception e) {
-                LOG.warn("ignoring exception while fetching revision for document %s", doc.getSubject(), e);
-            }
-        }
-
-        // return ACLs when they are set
-        if (needToOutput(fields, Change.ACL)) {
-            if (fields != NOTIFY_FIELDS || doc.isTagged(Flag.FlagInfo.NO_INHERIT)) {
-                encodeACL(octxt, m, doc.getEffectiveACL(), false);
-            }
-        }
-        for (ToXMLExtension ext : extensions) {
-            ext.encodeDocumentAdditionalAttribute(m, ifmt, octxt, doc, fields);
-        }
-        return m;
-    }
 
     public static Element encodeDataSource(Element parent, DataSource ds) {
         Element m = parent.addNonUniqueElement(getDsType(ds));
@@ -3536,36 +3436,5 @@ throws ServiceException {
             encodeAllCustomMetadata(c, comment, fields);
         }
         return c;
-    }
-
-    public static Element encodeLink(Element response, ItemIdFormatter ifmt, Link link, int fields) {
-        Element el = response.addNonUniqueElement(MailConstants.E_LINK);
-        el.addAttribute(MailConstants.A_ID, ifmt.formatItemId(link));
-        el.addAttribute(MailConstants.A_UUID, link.getUuid());
-
-        if (needToOutput(fields, Change.NAME)) {
-            String name = link.getName();
-            if (!Strings.isNullOrEmpty(name)) {
-                el.addAttribute(MailConstants.A_NAME, name);
-            }
-        }
-        if (needToOutput(fields, Change.CONTENT)) {
-            el.addAttribute(MailConstants.A_ZIMBRA_ID, link.getOwnerId());
-            el.addAttribute(MailConstants.A_REMOTE_ID, link.getRemoteId());
-            NamedEntry nentry = FolderAction.lookupGranteeByZimbraId(link.getOwnerId(), ACL.GRANTEE_USER);
-            el.addAttribute(MailConstants.A_OWNER_NAME, nentry == null ? null : nentry.getName());
-        }
-        return el;
-    }
-
-    public interface ToXMLExtension {
-        Element encodeDocumentAdditionalAttribute(Element elem, ItemIdFormatter ifmt, OperationContext octxt,
-                Document doc, int fields);
-    }
-
-    private static Set<ToXMLExtension> extensions = new HashSet<ToXMLExtension>();
-
-    public static void addExtension(ToXMLExtension e) {
-        extensions.add(e);
     }
 }

@@ -35,7 +35,6 @@ import com.zimbra.cs.mailbox.Chat;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.Conversation;
 import com.zimbra.cs.mailbox.DeliveryOptions;
-import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
@@ -709,7 +708,7 @@ public abstract class ArchiveFormatter extends Formatter {
       String path =
           mi instanceof Contact
               ? getEntryName(mi, fldr, name, ext, charsetEncoder, names)
-              : getEntryName(mi, fldr, name, ext, charsetEncoder, !(mi instanceof Document));
+              : getEntryName(mi, fldr, name, ext, charsetEncoder, false);
       long miSize = mi.getSize();
 
       if (miSize == 0 && mi.getDigest() != null) {

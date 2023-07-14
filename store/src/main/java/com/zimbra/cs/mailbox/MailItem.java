@@ -99,9 +99,7 @@ public abstract class MailItem
     /** Item is a {@link Chat} */
     CHAT(16, MailItemType.CHAT),
     /** Item is a {@link Comment} */
-    COMMENT(17, MailItemType.COMMENT),
-    /** Item is a {@link Link} pointing to a {@link Document} */
-    LINK(18, MailItemType.LINK);
+    COMMENT(17, MailItemType.COMMENT);
 
     private static final Map<Byte, Type> BYTE2TYPE;
 
@@ -990,7 +988,7 @@ public abstract class MailItem
 
   /**
    * Returns the 1-based version number on the item's content. Each time the item's "content"
-   * changes (e.g. editing a {@link Document} or a draft), this counter is incremented.
+   * changes this counter is incremented.
    */
   public int getVersion() {
     return mVersion;

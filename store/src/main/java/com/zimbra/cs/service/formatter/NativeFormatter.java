@@ -53,7 +53,6 @@ import com.zimbra.cs.html.DefangFactory;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.DeliveryOptions;
-import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -463,9 +462,6 @@ public final class NativeFormatter extends Formatter {
 
             item = mbox.getItemByPath(context.opContext, filename, folder.getId());
             // XXX: should we just overwrite here instead?
-            if (!(item instanceof Document))
-                throw new UserServletException(HttpServletResponse.SC_BAD_REQUEST, "cannot overwrite existing object at that path");
-
             // scan upload for viruses
             StringBuffer info = new StringBuffer();
             UploadScanner.Result result = UploadScanner.acceptStream(is, info);
