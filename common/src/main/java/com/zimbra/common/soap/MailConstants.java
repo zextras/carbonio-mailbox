@@ -253,10 +253,6 @@ public final class MailConstants {
   public static final String E_AUTO_COMPLETE_RESPONSE = "AutoCompleteResponse";
   public static final String E_RANKING_ACTION_REQUEST = "RankingActionRequest";
   public static final String E_RANKING_ACTION_RESPONSE = "RankingActionResponse";
-  public static final String E_ADD_COMMENT_REQUEST = "AddCommentRequest";
-  public static final String E_ADD_COMMENT_RESPONSE = "AddCommentResponse";
-  public static final String E_GET_COMMENTS_REQUEST = "GetCommentsRequest";
-  public static final String E_GET_COMMENTS_RESPONSE = "GetCommentsResponse";
   public static final String E_GET_SHARE_NOTIFICATIONS_REQUEST = "GetShareNotificationsRequest";
   public static final String E_GET_SHARE_NOTIFICATIONS_RESPONSE = "GetShareNotificationsResponse";
   public static final String E_GET_DATA_SOURCE_USAGE_REQUEST = "GetDataSourceUsageRequest";
@@ -626,12 +622,6 @@ public final class MailConstants {
   public static final QName RANKING_ACTION_REQUEST = QName.get(E_RANKING_ACTION_REQUEST, NAMESPACE);
   public static final QName RANKING_ACTION_RESPONSE =
       QName.get(E_RANKING_ACTION_RESPONSE, NAMESPACE);
-
-  // comments
-  public static final QName ADD_COMMENT_REQUEST = QName.get(E_ADD_COMMENT_REQUEST, NAMESPACE);
-  public static final QName ADD_COMMENT_RESPONSE = QName.get(E_ADD_COMMENT_RESPONSE, NAMESPACE);
-  public static final QName GET_COMMENTS_REQUEST = QName.get(E_GET_COMMENTS_REQUEST, NAMESPACE);
-  public static final QName GET_COMMENTS_RESPONSE = QName.get(E_GET_COMMENTS_RESPONSE, NAMESPACE);
 
   // sharing
   public static final QName GET_SHARE_NOTIFICATIONS_REQUEST =

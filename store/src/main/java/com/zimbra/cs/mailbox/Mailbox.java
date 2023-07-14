@@ -130,7 +130,6 @@ import com.zimbra.cs.redolog.op.CopyItem;
 import com.zimbra.cs.redolog.op.CreateCalendarItemPlayer;
 import com.zimbra.cs.redolog.op.CreateCalendarItemRecorder;
 import com.zimbra.cs.redolog.op.CreateChat;
-import com.zimbra.cs.redolog.op.CreateComment;
 import com.zimbra.cs.redolog.op.CreateContact;
 import com.zimbra.cs.redolog.op.CreateFolder;
 import com.zimbra.cs.redolog.op.CreateFolderPath;
@@ -2199,19 +2198,6 @@ public class Mailbox implements MailboxStore {
           "Conversations",
           hidden,
           MailItem.Type.CONVERSATION,
-          0,
-          MailItem.DEFAULT_COLOR_RGB,
-          null,
-          null,
-          null);
-      Folder.create(
-          ID_FOLDER_COMMENTS,
-          UUIDUtil.generateUUID(),
-          this,
-          root,
-          "Comments",
-          hidden,
-          MailItem.Type.COMMENT,
           0,
           MailItem.DEFAULT_COLOR_RGB,
           null,
@@ -7934,11 +7920,7 @@ public class Mailbox implements MailboxStore {
             for (MailItem.UnderlyingData data :
                 DbMailItem.getByParent(item, SortBy.DATE_DESC, -1, true)) {
               MailItem child = getItem(data);
-              Folder destination =
-                  (child.getType() == MailItem.Type.COMMENT)
-                      ? getFolderById(ID_FOLDER_COMMENTS)
-                      : folder;
-              child.copy(destination, getNextItemId(ID_AUTO_INCREMENT), child.getUuid(), copy);
+              child.copy(folder, getNextItemId(ID_AUTO_INCREMENT), child.getUuid(), copy);
             }
           }
           redoRecorder.setDest(item.getId(), newId, copy.getUuid());
@@ -11238,64 +11220,7 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  // FIXME probably can remove Comment logic as it seems to be related to Document
-  public Comment createComment(OperationContext octxt, int parentId, String text, String creatorId)
-      throws ServiceException {
-    CreateComment redoRecorder = new CreateComment(mId, parentId, text, creatorId);
 
-    boolean success = false;
-    try {
-      beginTransaction("createComment", octxt, redoRecorder);
-
-      MailItem parent = getItemById(octxt, parentId, MailItem.Type.UNKNOWN);
-      CreateComment redoPlayer = (CreateComment) currentChange().getRedoPlayer();
-      int itemId = redoPlayer == null ? getNextItemId(ID_AUTO_INCREMENT) : redoPlayer.getItemId();
-      String uuid = redoPlayer == null ? UUIDUtil.generateUUID() : redoPlayer.getUuid();
-      Comment comment = Comment.create(this, parent, itemId, uuid, text, creatorId, null);
-      redoRecorder.setItemIdAndUuid(comment.getId(), comment.getUuid());
-      index.add(comment);
-      success = true;
-      return comment;
-    } finally {
-      endTransaction(success);
-    }
-  }
-
-  public Collection<Comment> getComments(
-      OperationContext octxt, int parentId, int offset, int length) throws ServiceException {
-    return getComments(octxt, parentId, offset, length, false);
-  }
-
-  Collection<Comment> getComments(
-      OperationContext octxt, int parentId, int offset, int length, boolean fromDumpster)
-      throws ServiceException {
-    boolean success = false;
-    try {
-      beginTransaction("getComments", octxt, null);
-      MailItem parent = getItemById(parentId, MailItem.Type.UNKNOWN, fromDumpster);
-      return parent.getComments(SortBy.DATE_DESC, offset, length);
-    } finally {
-      endTransaction(success);
-    }
-  }
-
-  public Collection<Comment> getComments(
-      OperationContext octxt, String parentUuid, int offset, int length) throws ServiceException {
-    return getComments(octxt, parentUuid, offset, length, false);
-  }
-
-  Collection<Comment> getComments(
-      OperationContext octxt, String parentUuid, int offset, int length, boolean fromDumpster)
-      throws ServiceException {
-    boolean success = false;
-    try {
-      beginTransaction("getComments", octxt, null);
-      MailItem parent = getItemByUuid(parentUuid, MailItem.Type.UNKNOWN, fromDumpster);
-      return parent.getComments(SortBy.DATE_DESC, offset, length);
-    } finally {
-      endTransaction(success);
-    }
-  }
 
   public UnderlyingData getFirstChildData(OperationContext octxt, MailItem parent)
       throws ServiceException {

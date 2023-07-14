@@ -97,9 +97,7 @@ public abstract class MailItem
     /** Item is a {@link Task} */
     TASK(15, MailItemType.TASK),
     /** Item is a {@link Chat} */
-    CHAT(16, MailItemType.CHAT),
-    /** Item is a {@link Comment} */
-    COMMENT(17, MailItemType.COMMENT);
+    CHAT(16, MailItemType.CHAT);
 
     private static final Map<Byte, Type> BYTE2TYPE;
 
@@ -1829,8 +1827,6 @@ public abstract class MailItem
         return new Mountpoint(mbox, data, skipCache);
       case CHAT:
         return new Chat(mbox, data, skipCache);
-      case COMMENT:
-        return new Comment(mbox, data, skipCache);
       case VIRTUAL_CONVERSATION:
         return new VirtualConversation(mbox, data, skipCache);
       default:
@@ -3757,22 +3753,6 @@ public abstract class MailItem
    */
   void unlock(Account authuser) throws ServiceException {
     throw MailServiceException.CANNOT_UNLOCK(mId);
-  }
-
-  List<Comment> getComments(SortBy sortBy, int offset, int length) throws ServiceException {
-    List<UnderlyingData> listData = DbMailItem.getByParent(this, sortBy, -1, inDumpster());
-    ArrayList<Comment> comments = new ArrayList<Comment>();
-    for (UnderlyingData data : listData) {
-      MailItem item = mMailbox.getItem(data);
-      if (item instanceof Comment) {
-        comments.add((Comment) item);
-      }
-    }
-    if (comments.size() <= offset) {
-      return Collections.<Comment>emptyList();
-    }
-    int last = length == -1 ? comments.size() : Math.min(comments.size(), offset + length);
-    return comments.subList(offset, last);
   }
 
   public Metadata serializeUnderlyingData() {

@@ -159,7 +159,7 @@ public class GetFolderTest {
       acct2.getId(),
       folderId,
       folder.getUuid(),
-      Type.COMMENT,
+      Type.CONVERSATION,
       0,
       (byte) 2,
       false);

@@ -210,10 +210,6 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.AUTO_COMPLETE_REQUEST, new AutoComplete());
     dispatcher.registerHandler(MailConstants.RANKING_ACTION_REQUEST, new RankingAction());
 
-    // comments
-    dispatcher.registerHandler(MailConstants.ADD_COMMENT_REQUEST, new AddComment());
-    dispatcher.registerHandler(MailConstants.GET_COMMENTS_REQUEST, new GetComments());
-
     // share
     dispatcher.registerHandler(
         MailConstants.GET_SHARE_NOTIFICATIONS_REQUEST, new GetShareNotifications());

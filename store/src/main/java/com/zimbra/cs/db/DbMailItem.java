@@ -1612,12 +1612,6 @@ public class DbMailItem {
             unsetDeletedFlag = item.getUnderlyingData().isSet(FlagInfo.DELETED);
             allIds.remove(Integer.valueOf(item.getId()));
         }
-        // first delete the Comments
-        List<Integer> allComments = info.itemIds.getIds(MailItem.Type.COMMENT);
-        if (allComments != null && allComments.size() != 0) {
-            delete(mbox, allComments, fromDumpster, unsetDeletedFlag);
-            allIds.removeAll(allComments);
-        }
         // delete all non-folder items
         List<Integer> allFolders = info.itemIds.getIds(MailItem.Type.FOLDER);
         if (allFolders != null) {
@@ -2075,8 +2069,7 @@ public class DbMailItem {
         MailItem.Type.CONTACT.toByte() + ',' +
         MailItem.Type.APPOINTMENT.toByte() + ',' +
         MailItem.Type.TASK.toByte() + ',' +
-        MailItem.Type.CHAT.toByte() + ',' +
-        MailItem.Type.COMMENT.toByte() + ')';
+        MailItem.Type.CHAT.toByte() +  ')';
 
     public static final String NON_SEARCHABLE_TYPES = "(" +
         MailItem.Type.FOLDER.toByte() + ',' +

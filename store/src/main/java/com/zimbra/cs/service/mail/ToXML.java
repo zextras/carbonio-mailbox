@@ -104,7 +104,6 @@ import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.CalendarItem.AlarmData;
 import com.zimbra.cs.mailbox.CalendarItem.Instance;
 import com.zimbra.cs.mailbox.Chat;
-import com.zimbra.cs.mailbox.Comment;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.Contact.Attachment;
 import com.zimbra.cs.mailbox.ContactGroup;
@@ -213,8 +212,6 @@ public final class ToXML {
             OutputParticipants output = fields == NOTIFY_FIELDS ?
                     OutputParticipants.PUT_BOTH : OutputParticipants.PUT_SENDERS;
             return encodeMessageSummary(parent, ifmt, octxt, (Message) item, output, fields);
-        } else if (item instanceof Comment) {
-            return encodeComment(parent, ifmt, octxt, (Comment) item, fields);
         } else {
             return null;
         }
@@ -3404,37 +3401,5 @@ throws ServiceException {
         }
     }
 
-    public static Element encodeComment(Element response, ItemIdFormatter ifmt, OperationContext octxt, Comment comment)
-    throws ServiceException {
-        return encodeComment(response, ifmt, octxt, comment, NOTIFY_FIELDS);
-    }
 
-    public static Element encodeComment(Element response, ItemIdFormatter ifmt, OperationContext octxt, Comment comment,
-            int fields) throws ServiceException {
-        Element c = response.addNonUniqueElement(MailConstants.E_COMMENT);
-        if (needToOutput(fields, Change.PARENT)) {
-            c.addAttribute(MailConstants.A_PARENT_ID, ifmt.formatItemId(comment.getParentId()));
-        }
-        if (needToOutput(fields, Change.SUBJECT)) {
-            c.setText(comment.getText());
-        }
-        c.addAttribute(MailConstants.A_ID, ifmt.formatItemId(comment));
-        c.addAttribute(MailConstants.A_UUID, comment.getUuid());
-        try {
-            Account a = comment.getCreatorAccount();
-            if (a != null) {
-                c.addAttribute(MailConstants.A_EMAIL, a.getName());
-            }
-        } catch (ServiceException e) {
-        }
-        recordItemTags(c, comment, octxt, fields);
-        encodeColor(c, comment, fields);
-        if (needToOutput(fields, Change.DATE)) {
-            c.addAttribute(MailConstants.A_DATE, comment.getDate());
-        }
-        if (needToOutput(fields, Change.METADATA)) {
-            encodeAllCustomMetadata(c, comment, fields);
-        }
-        return c;
-    }
 }

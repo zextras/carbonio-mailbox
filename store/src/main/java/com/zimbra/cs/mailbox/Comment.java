@@ -23,26 +23,6 @@ public class Comment extends MailItem {
         super(mbox, data, skipCache);
     }
 
-    public static Comment create(Mailbox mbox, MailItem parent, int id, String uuid, String text, String creatorId, CustomMetadata custom) throws ServiceException {
-        UnderlyingData data = new UnderlyingData();
-        data.uuid = uuid;
-        data.id = id;
-        data.type = Type.COMMENT.toByte();
-        data.folderId = Mailbox.ID_FOLDER_COMMENTS;
-        data.parentId = parent.mId;
-        data.setSubject(text);
-        data.date = mbox.getOperationTimestamp();
-        data.size = text.length();
-        data.metadata = encodeMetadata(DEFAULT_COLOR_RGB, 1, 1, creatorId, custom);
-        data.contentChanged(mbox);
-
-        new DbMailItem(mbox).create(data);
-        Comment comment = new Comment(mbox, data);
-        comment.finishCreation(parent);
-
-        return comment;
-    }
-
     @Override
     public String getSender() {
         return "";

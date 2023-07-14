@@ -168,7 +168,7 @@ public final class FolderTest {
  void deleteFolder() throws Exception {
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-  Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(Type.COMMENT);
+  Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(Type.FOLDER);
   Folder root = mbox.createFolder(null, "/Root", fopt);
   mbox.createFolder(null, "/Root/test1", fopt);
   mbox.createFolder(null, "/Root/test2", fopt);
@@ -391,7 +391,7 @@ public final class FolderTest {
     private static void checkName(Mailbox mbox, String name, boolean valid) {
         try {
             mbox.createFolder(null, name, Mailbox.ID_FOLDER_USER_ROOT, new Folder.FolderOptions().setDefaultView(
-                Type.COMMENT));
+                Type.FOLDER));
             if (!valid) {
                 fail("should not have been allowed to create folder: [" + name + "]");
             }
