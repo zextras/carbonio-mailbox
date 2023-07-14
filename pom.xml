@@ -429,7 +429,13 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
-        <artifactId>carbonio-jetty</artifactId>
+        <artifactId>store-extra-runtime-dependencies</artifactId>
+        <type>pom</type>
+        <version>${revision}</version>
+      </dependency>
+      <dependency>
+        <groupId>zextras</groupId>
+        <artifactId>carbonio-jetty-libs</artifactId>
         <type>pom</type>
         <version>${revision}</version>
         <exclusions>

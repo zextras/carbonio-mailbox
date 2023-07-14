@@ -738,10 +738,11 @@
             <version>2.20.0</version>
           </dependency>
 
-          <!-- These dependencies come from zm-jetty in repo: https://github.com/Zextras/carbonio-zcs-lib
-          Also they are provided on installation by packages carbonio-common-core-libs and carbonio-appserver-store-libs.
-          zm-jetty is not used here because it brings dependencies that break the startup of the server due to conflicts,
-          so only strictly necessary dependencies have been selected from it.
+          <!-- Some of these dependencies are the same of carbonio-jetty-libs.
+          In production they are provided on installation by packages carbonio-common-core-libs and carbonio-appserver-store-libs
+          and are needed to startup the WebApp with Jetty
+          Only these few strictly needed have been selected, else with maven jetty plugin the startup does not work.
+          This because of some complex logic in mailbox startup that calls itself.
           -->
           <dependency>
             <groupId>org.mariadb.jdbc</groupId>
