@@ -1,4 +1,12 @@
 
+
+## [4.6.3](https://github.com/Zextras/carbonio-mailbox/compare/4.6.2...4.6.3) (2023-07-17)
+
+
+### Bug Fixes
+
+* [CO-792] fix ProxyConfGen ([#283](https://github.com/Zextras/carbonio-mailbox/issues/283)) ([9bebfae](https://github.com/Zextras/carbonio-mailbox/commit/9bebfaecd2c145b3337b17f21e4bbd1b4cb068aa))
+
 ## [4.6.2](https://github.com/Zextras/carbonio-mailbox/compare/4.6.1...4.6.2) (2023-07-14)
 
 ### Bug Fixes
