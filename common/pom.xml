@@ -181,12 +181,6 @@
       <artifactId>zm-native</artifactId>
       <groupId>zextras</groupId>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>RELEASE</version>
-      <scope>test</scope>
-    </dependency>
 
   </dependencies>
   <modelVersion>4.0.0</modelVersion>
