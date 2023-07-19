@@ -80,7 +80,6 @@ public abstract class AuthProvider {
     // always add the zimbra providers if there is no provider configured.
     if (providerList.size() == 0) {
       providerList.add(registeredProviders.get(ZimbraAuthProvider.ZIMBRA_AUTH_PROVIDER));
-      // providerList.add(registeredProviders.get(ZimbraOAuthProvider.ZIMBRA_OAUTH_PROVIDER));
     }
 
     setProviders(providerList);

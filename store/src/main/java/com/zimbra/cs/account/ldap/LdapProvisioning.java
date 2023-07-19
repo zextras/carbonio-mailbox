@@ -8779,18 +8779,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             passwdAlreadyEncrypted ? password : DataSource.encryptData(dsId, password);
         entry.setAttr(A_zimbraDataSourcePassword, encrypted);
       }
-      String oauthToken = entry.getAttrString(A_zimbraDataSourceOAuthToken);
-      if (oauthToken != null) {
-        String encrypted =
-            passwdAlreadyEncrypted ? oauthToken : DataSource.encryptData(dsId, oauthToken);
-        entry.setAttr(A_zimbraDataSourceOAuthToken, encrypted);
-      }
-      String clientSecret = entry.getAttrString(A_zimbraDataSourceOAuthClientSecret);
-      if (clientSecret != null) {
-        String encrypted =
-            passwdAlreadyEncrypted ? clientSecret : DataSource.encryptData(dsId, clientSecret);
-        entry.setAttr(A_zimbraDataSourceOAuthClientSecret, encrypted);
-      }
       String smtpPassword = entry.getAttrString(A_zimbraDataSourceSmtpAuthPassword);
       if (smtpPassword != null) {
         String encrypted =
@@ -8890,15 +8878,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     String password = (String) attrs.get(A_zimbraDataSourcePassword);
     if (password != null) {
       attrs.put(A_zimbraDataSourcePassword, DataSource.encryptData(ds.getId(), password));
-    }
-    String oauthToken = (String) attrs.get(A_zimbraDataSourceOAuthToken);
-    if (oauthToken != null) {
-      attrs.put(A_zimbraDataSourceOAuthToken, DataSource.encryptData(ds.getId(), oauthToken));
-    }
-    String clientSecret = (String) attrs.get(A_zimbraDataSourceOAuthClientSecret);
-    if (clientSecret != null) {
-      attrs.put(
-          A_zimbraDataSourceOAuthClientSecret, DataSource.encryptData(ds.getId(), clientSecret));
     }
     String smtpPassword = (String) attrs.get(A_zimbraDataSourceSmtpAuthPassword);
     if (smtpPassword != null) {

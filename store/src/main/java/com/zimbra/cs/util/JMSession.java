@@ -110,9 +110,6 @@ public final class JMSession {
     boolean isAuthRequired = ds.isSmtpAuthRequired();
     String smtpUser = ds.getSmtpUsername();
     String smtpPass = ds.getDecryptedSmtpPassword();
-    if (DataSourceAuthMechanism.XOAUTH2.name().equalsIgnoreCase(ds.getAuthMechanism())) {
-      smtpPass = ds.getDecryptedOAuthToken();
-    }
 
     boolean useSSL = ds.isSmtpConnectionSecure();
 

@@ -6,14 +6,6 @@ package com.zimbra.soap.mail;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
-import org.junit.jupiter.api.Test;
-
 import com.zimbra.soap.mail.message.CreateDataSourceRequest;
 import com.zimbra.soap.mail.message.GetDataSourcesResponse;
 import com.zimbra.soap.mail.message.ImportDataRequest;
@@ -35,6 +27,11 @@ import com.zimbra.soap.mail.type.Pop3DataSourceNameOrId;
 import com.zimbra.soap.mail.type.RssDataSourceNameOrId;
 import com.zimbra.soap.type.DataSource;
 import com.zimbra.soap.type.DataSource.ConnectionType;
+import java.util.List;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import org.junit.jupiter.api.Test;
 
 public class DataSourceJaxbTest {
 
@@ -42,58 +39,64 @@ public class DataSourceJaxbTest {
   void testCreateDataSourceRequest() throws JAXBException {
     JAXBContext jaxb = JAXBContext.newInstance(CreateDataSourceRequest.class);
     Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-    CreateDataSourceRequest req = (CreateDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("CreateUnknownDataSourceRequest.xml"));
+    CreateDataSourceRequest req =
+        (CreateDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("CreateUnknownDataSourceRequest.xml"));
     DataSource ds = req.getDataSource();
     assertNotNull(ds, "Generic DataSource should not be NULL");
     assertTrue(ds instanceof MailDataSource, "DataSource should be an instance of MailDataSource");
     assertEquals("257", ds.getFolderId(), "wrong folder ID");
-    assertEquals("AAbbccdd1244eeffVdNHR.l0_jzuWvPNtAt0BCCcOm8w9wq1gdB", ds.getRefreshToken(), "wrong refresh token");
     assertEquals("yahoo.com", ds.getHost(), "wrong host");
     assertEquals("blablah@yahoo.com", ds.getName(), "wrong name");
     assertEquals("com.synacor.zimbra.OAuthDataImport", ds.getImportClass(), "wrong import class");
 
-    req = (CreateDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("CreateImapDataSourceRequest.xml"));
+    req =
+        (CreateDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("CreateImapDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "IMAP DataSource should not be NULL");
-    assertTrue(ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
+    assertTrue(
+        ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
     assertEquals("2", ds.getFolderId(), "wrong folder ID");
-    assertEquals("AAbbccdd1244eeffVdNHR.l0_jzuWvPNtAt0BCCcOm8w9wq1gdB", ds.getRefreshToken(), "wrong refresh token");
-    assertEquals("test123", ((MailImapDataSource) ds).getClientSecret(), "wrong clientSecret");
-    assertEquals("someclientid", ((MailImapDataSource) ds).getClientId(), "wrong clietnId");
-    //using a string that's as long as a real OAuth2 token to make sure Jaxb does not truncate it
-    assertEquals("LoremIpsumZZZyyY123.MaybeLorem.53445.WWW.YelpcYE1p6L1iS5vwZAg8pntEPGs2M.FcbPqY7PxBxORvoYhcbiTLlK7YcRwMB.1gprP5vxYghvqPT9KKV_EJ2vpDQr881.dzLB896UWZYI3hLrqAwiePEhFdw1XXTNP4u6gJ8J6ErPSZJInN1SMK74smQZErEpBgNfyFD2kgNPfcdxjMLh5ODjvhMufHcsb_NI5liTCOWa7k693ziHVZQkyGCJdAzxhtYeIyaCxyTsvaj3ybeXcye.qWFvwpdZbqWj8U8DqRXpjrq6wnNsK1ljGafon_uuX06wWNLh5P0GmLkaW4Yrumh9L7ir59Wm9bQ98TuHxNQDnLLqCK42P3Grb8guWGFRetPiLV2mb4ZT0fPAOeYPmaJXc2_OEWtr.KlazJt.ig6Me1HWR0vHC_MnfHUFA028wooDD9URrhTeMrvizeoePMfd3tgMEw721AbAoH58tg5VebNH_F_.wlQKYkU9rXv4v5Mzw3vsCKvW6wniJzepaY6gwKpMjlWn4CxAQNwRMPyoCDR2gRUXriulDO7vKbQ1ku_g2H.Swq2XGyr0EKjOjRAKVNGWJAh.1flPkzF0W5n7kcgJnG1H3AopZJMAypTiNQEDEyjqDCF41jgN4rKo5q9skZMbRG0D5jL0T_SoKDp6jWoXbWAmeog4Tb0eCHD0QJJGOa1BfFZkXbDB0Eet8JxxfG.0vM23oIervWHqcBPlfKJtkxiI9CCdqOniDNPfhbxkaSlOq3bQRmFOq08jaOwswlsECm4U95bEDxAtKcnVl8AnrP8qsbqxmanHdTh.dehEnjJ1gXyGpaMEBA2Yrt_QEewyWEDuR_zBKsomeDotsSp1.tyw3WCqnMx27tArDDasdNNlPPdfRVQlqe6gX45HfK0C8PAXsPnqZUA07.pFTa8ifcucsdqbh3_UpXnuPj8Mn.67GxwvujJkO8WpD3nCQpwp4Fns6NOnoNoasdgyiSCcGpCsGs2l6ZIFJyUMvIf4q6cfEiJ18lyBjRxi3rpgMAYTt5sOmikOst.gttN1gettkvWyY8-",
-        ((MailImapDataSource) ds).getOAuthToken(),
-        "wrong oauth token");
     assertEquals("imap.yahoo.com", ds.getHost(), "wrong host");
     assertEquals("blablah2@yahoo.com", ds.getName(), "wrong name");
 
-    req = (CreateDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("CreateCalDataSourceRequest.xml"));
+    req =
+        (CreateDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("CreateCalDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "Cal DataSource should not be NULL");
-    assertTrue(ds instanceof MailCalDataSource, "DataSource should be an instance of MailCalDataSource");
+    assertTrue(
+        ds instanceof MailCalDataSource, "DataSource should be an instance of MailCalDataSource");
     assertEquals("5", ds.getFolderId(), "wrong folder ID");
     assertEquals("calendar.google.com", ds.getHost(), "wrong host");
     assertEquals("someCalDS", ds.getName(), "wrong name");
 
-    req = (CreateDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("CreateGalDataSourceRequest.xml"));
+    req =
+        (CreateDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("CreateGalDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "GAL DataSource should not be NULL");
-    assertTrue(ds instanceof MailGalDataSource, "DataSource should be an instance of MailGalDataSource");
+    assertTrue(
+        ds instanceof MailGalDataSource, "DataSource should be an instance of MailGalDataSource");
     assertEquals("7", ds.getFolderId(), "wrong folder ID");
     assertEquals("ldap.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("zimbraGAL", ds.getName(), "wrong name");
     assertEquals("24h", ds.getPollingInterval(), "wrong polling interval");
     assertTrue(ds.isEnabled(), "wrong isEnabled");
 
-    req = (CreateDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("CreatePop3DataSourceRequest.xml"));
+    req =
+        (CreateDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("CreatePop3DataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "POP3 DataSource should not be NULL");
-    assertTrue(ds instanceof MailPop3DataSource, "DataSource should be an instance of MailPop3DataSource");
+    assertTrue(
+        ds instanceof MailPop3DataSource, "DataSource should be an instance of MailPop3DataSource");
     assertEquals("1", ds.getFolderId(), "wrong folder ID");
     assertEquals("pop.email.provider.domain", ds.getHost(), "wrong host");
     assertEquals("pop3DSForTest", ds.getName(), "wrong name");
@@ -101,22 +104,29 @@ public class DataSourceJaxbTest {
     assertTrue(((MailPop3DataSource) ds).isLeaveOnServer(), "wrong leaveOnServer");
     assertFalse(ds.isEnabled(), "wrong isEnabled");
 
-    req = (CreateDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("CreateCaldavDataSourceRequest.xml"));
+    req =
+        (CreateDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("CreateCaldavDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "CalDAV DataSource should not be NULL");
-    assertTrue(ds instanceof MailCaldavDataSource, "DataSource should be an instance of MailCaldavDataSource");
+    assertTrue(
+        ds instanceof MailCaldavDataSource,
+        "DataSource should be an instance of MailCaldavDataSource");
     assertEquals("3", ds.getFolderId(), "wrong folder ID");
     assertEquals("some.cal.dav.host", ds.getHost(), "wrong host");
     assertEquals("caldavDS", ds.getName(), "wrong name");
     assertEquals("1h", ds.getPollingInterval(), "wrong polling interval");
     assertFalse(ds.isEnabled(), "wrong isEnabled");
 
-    req = (CreateDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("CreateRssDataSourceRequest.xml"));
+    req =
+        (CreateDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("CreateRssDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "RSS DataSource should not be NULL");
-    assertTrue(ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
+    assertTrue(
+        ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
     assertEquals("260", ds.getFolderId(), "wrong folder ID");
     assertEquals("some.rss.dav.host", ds.getHost(), "wrong host");
     assertEquals("RssFeedDataSource", ds.getName(), "wrong name");
@@ -128,71 +138,95 @@ public class DataSourceJaxbTest {
   void testModifyDataSourceRequest() throws JAXBException {
     JAXBContext jaxb = JAXBContext.newInstance(ModifyDataSourceRequest.class);
     Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-    ModifyDataSourceRequest req = (ModifyDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("ModifyUnknownDataSourceRequest.xml"));
+    ModifyDataSourceRequest req =
+        (ModifyDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("ModifyUnknownDataSourceRequest.xml"));
     DataSource ds = req.getDataSource();
     assertNotNull(ds, "Generic DataSource should not be NULL");
     assertNotNull(ds.getId(), "Generic DataSource ID should not be NULL");
-    assertEquals("11e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for generic DataSource");
+    assertEquals(
+        "11e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for generic DataSource");
     assertTrue(ds instanceof MailDataSource, "DataSource should be an instance of MailDataSource");
-    assertEquals("AAbbccdd1244eeffVdNHR.l0_jzuWvPNtAt0BCCcOm8w9wq1gdB", ds.getRefreshToken(), "wrong refresh token");
     assertEquals("yahoo.com", ds.getHost(), "wrong host");
     assertEquals("com.synacor.zimbra.OAuthDataImport", ds.getImportClass(), "wrong import class");
     assertEquals("60s", ds.getPollingInterval(), "wrong polling interval");
 
-    req = (ModifyDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("ModifyImapDataSourceRequest.xml"));
+    req =
+        (ModifyDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("ModifyImapDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "IMAP DataSource should not be NULL");
     assertNotNull(ds.getId(), "IMAP DataSource ID should not be NULL");
-    assertEquals("71e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for IMAP DataSource");
-    assertTrue(ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
+    assertEquals(
+        "71e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for IMAP DataSource");
+    assertTrue(
+        ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
     assertEquals("30m", ds.getPollingInterval(), "wrong polling interval");
 
-    req = (ModifyDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("ModifyCalDataSourceRequest.xml"));
+    req =
+        (ModifyDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("ModifyCalDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "Cal DataSource should not be NULL");
     assertNotNull(ds.getId(), "Cal DataSource ID should not be NULL");
     assertEquals("61e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for Cal DataSource");
-    assertTrue(ds instanceof MailCalDataSource, "DataSource should be an instance of MailCalDataSource");
+    assertTrue(
+        ds instanceof MailCalDataSource, "DataSource should be an instance of MailCalDataSource");
     assertEquals("333", ds.getFolderId(), "wrong folder ID");
 
-    req = (ModifyDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("ModifyGalDataSourceRequest.xml"));
+    req =
+        (ModifyDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("ModifyGalDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "GAL DataSource should not be NULL");
     assertNotNull(ds.getId(), "GAL DataSource ID should not be NULL");
     assertEquals("51e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for GAL DataSource");
-    assertTrue(ds instanceof MailGalDataSource, "DataSource should be an instance of MailGalDataSource");
+    assertTrue(
+        ds instanceof MailGalDataSource, "DataSource should be an instance of MailGalDataSource");
     assertEquals("69s", ds.getPollingInterval(), "wrong polling interval");
 
-    req = (ModifyDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("ModifyPop3DataSourceRequest.xml"));
+    req =
+        (ModifyDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("ModifyPop3DataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "POP3 DataSource should not be NULL");
     assertNotNull(ds.getId(), "POP3 DataSource ID should not be NULL");
-    assertEquals("41e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for POP3 DataSource");
-    assertTrue(ds instanceof MailPop3DataSource, "DataSource should be an instance of MailPop3DataSource");
+    assertEquals(
+        "41e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for POP3 DataSource");
+    assertTrue(
+        ds instanceof MailPop3DataSource, "DataSource should be an instance of MailPop3DataSource");
     assertEquals("1m", ds.getPollingInterval(), "wrong polling interval");
     assertFalse(((MailPop3DataSource) ds).isLeaveOnServer(), "wrong leaveOnServer");
 
-    req = (ModifyDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("ModifyCaldavDataSourceRequest.xml"));
+    req =
+        (ModifyDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("ModifyCaldavDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "Caldav DataSource should not be NULL");
     assertNotNull(ds.getId(), "Caldav DataSource ID should not be NULL");
-    assertEquals("31e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for Caldav DataSource");
-    assertTrue(ds instanceof MailCaldavDataSource, "DataSource should be an instance of MailCaldavDataSource");
+    assertEquals(
+        "31e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for Caldav DataSource");
+    assertTrue(
+        ds instanceof MailCaldavDataSource,
+        "DataSource should be an instance of MailCaldavDataSource");
     assertEquals("60s", ds.getPollingInterval(), "wrong polling interval");
 
-    req = (ModifyDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("ModifyRssDataSourceRequest.xml"));
+    req =
+        (ModifyDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("ModifyRssDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "RSS DataSource should not be NULL");
     assertNotNull(ds.getId(), "RSS DataSource ID should not be NULL");
     assertEquals("21e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for RSS DataSource");
-    assertTrue(ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
+    assertTrue(
+        ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
     assertEquals("2d", ds.getPollingInterval(), "wrong polling interval");
     assertFalse(ds.isEnabled(), "wrong isEnabled");
   }
@@ -201,70 +235,92 @@ public class DataSourceJaxbTest {
   void testTestDataSourceRequest() throws Exception {
     JAXBContext jaxb = JAXBContext.newInstance(TestDataSourceRequest.class);
     Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-    TestDataSourceRequest req = (TestDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("TestUnknownDataSourceRequest.xml"));
+    TestDataSourceRequest req =
+        (TestDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("TestUnknownDataSourceRequest.xml"));
     DataSource ds = req.getDataSource();
     assertNotNull(ds, "Generic DataSource should not be NULL");
     assertNotNull(ds.getId(), "Generic DataSource ID should not be NULL");
-    assertEquals("11e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for generic DataSource");
+    assertEquals(
+        "11e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for generic DataSource");
     assertTrue(ds instanceof MailDataSource, "DataSource should be an instance of MailDataSource");
 
-    req = (TestDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("TestImapDataSourceRequest.xml"));
+    req =
+        (TestDataSourceRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("TestImapDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "IMAP DataSource should not be NULL");
     assertNotNull(ds.getId(), "IMAP DataSource ID should not be NULL");
-    assertEquals("71e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for IMAP DataSource");
-    assertTrue(ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
+    assertEquals(
+        "71e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for IMAP DataSource");
+    assertTrue(
+        ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
 
-    req = (TestDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("TestCalDataSourceRequest.xml"));
+    req =
+        (TestDataSourceRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("TestCalDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "Cal DataSource should not be NULL");
     assertNotNull(ds.getId(), "Cal DataSource ID should not be NULL");
     assertEquals("31e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for Cal DataSource");
-    assertTrue(ds instanceof MailCalDataSource, "DataSource should be an instance of MailCalDataSource");
+    assertTrue(
+        ds instanceof MailCalDataSource, "DataSource should be an instance of MailCalDataSource");
 
-    req = (TestDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("TestGalDataSourceRequest.xml"));
+    req =
+        (TestDataSourceRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("TestGalDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "GAL DataSource should not be NULL");
     assertNotNull(ds.getId(), "GAL DataSource ID should not be NULL");
     assertEquals("51e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for GAL DataSource");
-    assertTrue(ds instanceof MailGalDataSource, "DataSource should be an instance of MailGalDataSource");
+    assertTrue(
+        ds instanceof MailGalDataSource, "DataSource should be an instance of MailGalDataSource");
 
-    req = (TestDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("TestPop3DataSourceRequest.xml"));
+    req =
+        (TestDataSourceRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("TestPop3DataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "POP3 DataSource should not be NULL");
     assertNotNull(ds.getId(), "POP3 DataSource ID should not be NULL");
-    assertEquals("41e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for POP3 DataSource");
-    assertTrue(ds instanceof MailPop3DataSource, "DataSource should be an instance of MailPop3DataSource");
+    assertEquals(
+        "41e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for POP3 DataSource");
+    assertTrue(
+        ds instanceof MailPop3DataSource, "DataSource should be an instance of MailPop3DataSource");
 
-    req = (TestDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("TestCaldavDataSourceRequest.xml"));
+    req =
+        (TestDataSourceRequest)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("TestCaldavDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "Caldav DataSource should not be NULL");
     assertNotNull(ds.getId(), "Caldav DataSource ID should not be NULL");
-    assertEquals("31e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for Caldav DataSource");
-    assertTrue(ds instanceof MailCaldavDataSource, "DataSource should be an instance of MailCaldavDataSource");
+    assertEquals(
+        "31e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for Caldav DataSource");
+    assertTrue(
+        ds instanceof MailCaldavDataSource,
+        "DataSource should be an instance of MailCaldavDataSource");
 
-    req = (TestDataSourceRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("TestRssDataSourceRequest.xml"));
+    req =
+        (TestDataSourceRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("TestRssDataSourceRequest.xml"));
     ds = req.getDataSource();
     assertNotNull(ds, "RSS DataSource should not be NULL");
     assertNotNull(ds.getId(), "RSS DataSource ID should not be NULL");
     assertEquals("21e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for RSS DataSource");
-    assertTrue(ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
+    assertTrue(
+        ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
   }
 
   @Test
   void testGetDataSourcesResponse() throws Exception {
-    //response with one Unknown datasource
+    // response with one Unknown datasource
     JAXBContext jaxb = JAXBContext.newInstance(GetDataSourcesResponse.class);
     Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-    GetDataSourcesResponse resp = (GetDataSourcesResponse) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("GetUnknownDataSourcesResponse.xml"));
+    GetDataSourcesResponse resp =
+        (GetDataSourcesResponse)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("GetUnknownDataSourcesResponse.xml"));
     List<DataSource> dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -272,16 +328,18 @@ public class DataSourceJaxbTest {
     DataSource ds = dsList.get(0);
     assertNotNull(ds, "Generic DataSource should not be NULL");
     assertNotNull(ds.getId(), "Generic DataSource ID should not be NULL");
-    assertEquals("8d17e182-fdc6-4f6c-b83f-d478c9b04bfd", ds.getId(), "Wrong ID for generic DataSource");
+    assertEquals(
+        "8d17e182-fdc6-4f6c-b83f-d478c9b04bfd", ds.getId(), "Wrong ID for generic DataSource");
     assertTrue(ds instanceof MailDataSource, "DataSource should be an instance of MailDataSource");
-    assertEquals("AAbbcdd22wkBVsVdNHR.l0_jzuWvPNiAt0DBOcRm7w9zLorEM", ds.getRefreshToken(), "wrong refresh token");
     assertEquals("yahoo.com", ds.getHost(), "wrong host");
     assertEquals("com.synacor.zimbra.OAuthDataImport", ds.getImportClass(), "wrong import class");
     assertEquals("blablah@yahoo.com", ds.getName(), "wrong datasource name");
 
-    //response with one IMAP datasource
-    resp = (GetDataSourcesResponse) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("GetImapDataSourcesResponse.xml"));
+    // response with one IMAP datasource
+    resp =
+        (GetDataSourcesResponse)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("GetImapDataSourcesResponse.xml"));
     dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -289,15 +347,18 @@ public class DataSourceJaxbTest {
     ds = dsList.get(0);
     assertNotNull(ds, "IMAP DataSource should not be NULL");
     assertNotNull(ds.getId(), "IMAP DataSource ID should not be NULL");
-    assertEquals("d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for IMAP DataSource");
-    assertTrue(ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
+    assertEquals(
+        "d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for IMAP DataSource");
+    assertTrue(
+        ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
     assertEquals(ConnectionType.cleartext, ds.getConnectionType(), "wrong connectionType");
     assertEquals("imap.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("myIMAPSource", ds.getName(), "wrong datasource name");
 
-    //response with an Unknown and an IMAP datasources
-    resp = (GetDataSourcesResponse) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("GetTwoDataSourcesResponse.xml"));
+    // response with an Unknown and an IMAP datasources
+    resp =
+        (GetDataSourcesResponse)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("GetTwoDataSourcesResponse.xml"));
     dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -305,9 +366,9 @@ public class DataSourceJaxbTest {
     ds = dsList.get(0);
     assertNotNull(ds, "Generic DataSource should not be NULL");
     assertNotNull(ds.getId(), "Generic DataSource ID should not be NULL");
-    assertEquals("8d17e182-fdc6-4f6c-b83f-d478c9b04bfd", ds.getId(), "Wrong ID for generic DataSource");
+    assertEquals(
+        "8d17e182-fdc6-4f6c-b83f-d478c9b04bfd", ds.getId(), "Wrong ID for generic DataSource");
     assertTrue(ds instanceof MailDataSource, "DataSource should be an instance of MailDataSource");
-    assertEquals("AAbbcdd22wkBVsVdNHR.l0_jzuWvPNiAt0DBOcRm7w9zLorEM", ds.getRefreshToken(), "wrong refresh token");
     assertEquals("yahoo.com", ds.getHost(), "wrong host");
     assertEquals("com.synacor.zimbra.OAuthDataImport", ds.getImportClass(), "wrong import class");
     assertEquals("blablah@yahoo.com", ds.getName(), "wrong datasource name");
@@ -315,15 +376,19 @@ public class DataSourceJaxbTest {
     ds = dsList.get(1);
     assertNotNull(ds, "IMAP DataSource should not be NULL");
     assertNotNull(ds.getId(), "IMAP DataSource ID should not be NULL");
-    assertEquals("d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for IMAP DataSource");
-    assertTrue(ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
+    assertEquals(
+        "d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for IMAP DataSource");
+    assertTrue(
+        ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
     assertEquals(ConnectionType.cleartext, ds.getConnectionType(), "wrong connectionType");
     assertEquals("imap.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("myIMAPSource", ds.getName(), "wrong datasource name");
 
-    //Response with one element of each type of datasource
-    resp = (GetDataSourcesResponse) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("GetOneEachDataSourcesResponse.xml"));
+    // Response with one element of each type of datasource
+    resp =
+        (GetDataSourcesResponse)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("GetOneEachDataSourcesResponse.xml"));
     dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -331,9 +396,9 @@ public class DataSourceJaxbTest {
     ds = dsList.get(0);
     assertNotNull(ds, "Generic DataSource should not be NULL");
     assertNotNull(ds.getId(), "Generic DataSource ID should not be NULL");
-    assertEquals("8d17e182-fdc6-4f6c-b83f-d478c9b04bfd", ds.getId(), "Wrong ID for generic DataSource");
+    assertEquals(
+        "8d17e182-fdc6-4f6c-b83f-d478c9b04bfd", ds.getId(), "Wrong ID for generic DataSource");
     assertTrue(ds instanceof MailDataSource, "DataSource should be an instance of MailDataSource");
-    assertEquals("AAbbcdd22wkBVsVdNHR.l0_jzuWvPNiAt0DBOcRm7w9zLorEM", ds.getRefreshToken(), "wrong refresh token");
     assertEquals("yahoo.com", ds.getHost(), "wrong host");
     assertEquals("com.synacor.zimbra.OAuthDataImport", ds.getImportClass(), "wrong import class");
     assertEquals("blablah@yahoo.com", ds.getName(), "wrong datasource name");
@@ -341,8 +406,10 @@ public class DataSourceJaxbTest {
     ds = dsList.get(1);
     assertNotNull(ds, "IMAP DataSource should not be NULL");
     assertNotNull(ds.getId(), "IMAP DataSource ID should not be NULL");
-    assertEquals("d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for IMAP DataSource");
-    assertTrue(ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
+    assertEquals(
+        "d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for IMAP DataSource");
+    assertTrue(
+        ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
     assertEquals(ConnectionType.cleartext, ds.getConnectionType(), "wrong connectionType");
     assertEquals("imap.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("myIMAPSource", ds.getName(), "wrong datasource name");
@@ -350,8 +417,10 @@ public class DataSourceJaxbTest {
     ds = dsList.get(2);
     assertNotNull(ds, "POP3 DataSource should not be NULL");
     assertNotNull(ds.getId(), "POP3 DataSource ID should not be NULL");
-    assertEquals("b5e98a1f-5f93-4e19-a1a4-956c4c95af1b", ds.getId(), "Wrong ID for POP3 DataSource");
-    assertTrue(ds instanceof MailPop3DataSource, "DataSource should be an instance of MailPop3DataSource");
+    assertEquals(
+        "b5e98a1f-5f93-4e19-a1a4-956c4c95af1b", ds.getId(), "Wrong ID for POP3 DataSource");
+    assertTrue(
+        ds instanceof MailPop3DataSource, "DataSource should be an instance of MailPop3DataSource");
     assertEquals(ConnectionType.cleartext, ds.getConnectionType(), "wrong connectionType");
     assertEquals("pop.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("myPop3Mail", ds.getName(), "wrong datasource name");
@@ -361,7 +430,8 @@ public class DataSourceJaxbTest {
     assertNotNull(ds, "RSS DataSource should not be NULL");
     assertNotNull(ds.getId(), "RSS DataSource ID should not be NULL");
     assertEquals("89bca37f-9096-419d-9471-62149a58cbdc", ds.getId(), "Wrong ID for RSS DataSource");
-    assertTrue(ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
+    assertTrue(
+        ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
     assertEquals(ConnectionType.cleartext, ds.getConnectionType(), "wrong connectionType");
     assertEquals("rss.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("myRssFeed", ds.getName(), "wrong datasource name");
@@ -372,7 +442,8 @@ public class DataSourceJaxbTest {
     assertNotNull(ds, "Cal DataSource should not be NULL");
     assertNotNull(ds.getId(), "Cal DataSource ID should not be NULL");
     assertEquals("112da07b-43e3-41ab-a0b3-5c109169ee49", ds.getId(), "Wrong ID for Cal DataSource");
-    assertTrue(ds instanceof MailCalDataSource, "DataSource should be an instance of MailCalDataSource");
+    assertTrue(
+        ds instanceof MailCalDataSource, "DataSource should be an instance of MailCalDataSource");
     assertEquals("calendar.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("GCal", ds.getName(), "wrong datasource name");
     assertEquals("63100000", ds.getPollingInterval(), "wrong polling interval");
@@ -381,21 +452,27 @@ public class DataSourceJaxbTest {
     assertNotNull(ds, "GAL DataSource should not be NULL");
     assertNotNull(ds.getId(), "GAL DataSource ID should not be NULL");
     assertEquals("ed408f4d-f8d5-4597-bf49-563ed62b64de", ds.getId(), "Wrong ID for GAL DataSource");
-    assertTrue(ds instanceof MailGalDataSource, "DataSource should be an instance of MailCalDataSource");
+    assertTrue(
+        ds instanceof MailGalDataSource, "DataSource should be an instance of MailCalDataSource");
     assertEquals("ldap.somehost.local", ds.getHost(), "wrong host");
     assertEquals("corpAddressBook", ds.getName(), "wrong datasource name");
 
     ds = dsList.get(6);
     assertNotNull(ds, "Caldav DataSource should not be NULL");
     assertNotNull(ds.getId(), "Caldav DataSource ID should not be NULL");
-    assertEquals("95c066a8-5ad6-40fa-a094-06f8b3531878", ds.getId(), "Wrong ID for Caldav DataSource");
-    assertTrue(ds instanceof MailCaldavDataSource, "DataSource should be an instance of MailCaldavDataSource");
+    assertEquals(
+        "95c066a8-5ad6-40fa-a094-06f8b3531878", ds.getId(), "Wrong ID for Caldav DataSource");
+    assertTrue(
+        ds instanceof MailCaldavDataSource,
+        "DataSource should be an instance of MailCaldavDataSource");
     assertEquals("dav.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("externalDAV", ds.getName(), "wrong datasource name");
 
-    //Response with multiple instances of some types of data sources
-    resp = (GetDataSourcesResponse) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("GetManyDataSourcesResponse.xml"));
+    // Response with multiple instances of some types of data sources
+    resp =
+        (GetDataSourcesResponse)
+            unmarshaller.unmarshal(
+                getClass().getResourceAsStream("GetManyDataSourcesResponse.xml"));
     dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -403,9 +480,9 @@ public class DataSourceJaxbTest {
     ds = dsList.get(0);
     assertNotNull(ds, "Generic DataSource should not be NULL");
     assertNotNull(ds.getId(), "Generic DataSource ID should not be NULL");
-    assertEquals("8d17e182-fdc6-4f6c-b83f-d478c9b04bfd", ds.getId(), "Wrong ID for generic DataSource");
+    assertEquals(
+        "8d17e182-fdc6-4f6c-b83f-d478c9b04bfd", ds.getId(), "Wrong ID for generic DataSource");
     assertTrue(ds instanceof MailDataSource, "DataSource should be an instance of MailDataSource");
-    assertEquals("AAbbcdd22wkBVsVdNHR.l0_jzuWvPNiAt0DBOcRm7w9zLorEM", ds.getRefreshToken(), "wrong refresh token");
     assertEquals("yahoo.com", ds.getHost(), "wrong host");
     assertEquals("com.synacor.zimbra.OAuthDataImport", ds.getImportClass(), "wrong import class");
     assertEquals("blablah@yahoo.com", ds.getName(), "wrong datasource name");
@@ -413,8 +490,10 @@ public class DataSourceJaxbTest {
     ds = dsList.get(1);
     assertNotNull(ds, "IMAP DataSource should not be NULL");
     assertNotNull(ds.getId(), "IMAP DataSource ID should not be NULL");
-    assertEquals("d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for IMAP DataSource");
-    assertTrue(ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
+    assertEquals(
+        "d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for IMAP DataSource");
+    assertTrue(
+        ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
     assertEquals(ConnectionType.cleartext, ds.getConnectionType(), "wrong connectionType");
     assertEquals("imap.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("myIMAPSource", ds.getName(), "wrong datasource name");
@@ -423,8 +502,10 @@ public class DataSourceJaxbTest {
     ds = dsList.get(2);
     assertNotNull(ds, "POP3 DataSource should not be NULL");
     assertNotNull(ds.getId(), "POP3 DataSource ID should not be NULL");
-    assertEquals("b5e98a1f-5f93-4e19-a1a4-956c4c95af1b", ds.getId(), "Wrong ID for POP3 DataSource");
-    assertTrue(ds instanceof MailPop3DataSource, "DataSource should be an instance of MailPop3DataSource");
+    assertEquals(
+        "b5e98a1f-5f93-4e19-a1a4-956c4c95af1b", ds.getId(), "Wrong ID for POP3 DataSource");
+    assertTrue(
+        ds instanceof MailPop3DataSource, "DataSource should be an instance of MailPop3DataSource");
     assertEquals(ConnectionType.cleartext, ds.getConnectionType(), "wrong connectionType");
     assertEquals("pop.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("myPop3Mail", ds.getName(), "wrong datasource name");
@@ -434,7 +515,8 @@ public class DataSourceJaxbTest {
     assertNotNull(ds, "RSS DataSource should not be NULL");
     assertNotNull(ds.getId(), "RSS DataSource ID should not be NULL");
     assertEquals("89bca37f-9096-419d-9471-62149a58cbdc", ds.getId(), "Wrong ID for RSS DataSource");
-    assertTrue(ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
+    assertTrue(
+        ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
     assertEquals(ConnectionType.cleartext, ds.getConnectionType(), "wrong connectionType");
     assertEquals("rss.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("myRssFeed", ds.getName(), "wrong datasource name");
@@ -445,7 +527,8 @@ public class DataSourceJaxbTest {
     assertNotNull(ds, "Cal DataSource should not be NULL");
     assertNotNull(ds.getId(), "Cal DataSource ID should not be NULL");
     assertEquals("112da07b-43e3-41ab-a0b3-5c109169ee49", ds.getId(), "Wrong ID for Cal DataSource");
-    assertTrue(ds instanceof MailCalDataSource, "DataSource should be an instance of MailCalDataSource");
+    assertTrue(
+        ds instanceof MailCalDataSource, "DataSource should be an instance of MailCalDataSource");
     assertEquals("calendar.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("GCal", ds.getName(), "wrong datasource name");
     assertEquals("63100000", ds.getPollingInterval(), "wrong polling interval");
@@ -454,23 +537,29 @@ public class DataSourceJaxbTest {
     assertNotNull(ds, "GAL DataSource should not be NULL");
     assertNotNull(ds.getId(), "GAL DataSource ID should not be NULL");
     assertEquals("ed408f4d-f8d5-4597-bf49-563ed62b64de", ds.getId(), "Wrong ID for GAL DataSource");
-    assertTrue(ds instanceof MailGalDataSource, "DataSource should be an instance of MailCalDataSource");
+    assertTrue(
+        ds instanceof MailGalDataSource, "DataSource should be an instance of MailCalDataSource");
     assertEquals("ldap.somehost.local", ds.getHost(), "wrong host");
     assertEquals("corpAddressBook", ds.getName(), "wrong datasource name");
 
     ds = dsList.get(6);
     assertNotNull(ds, "Caldav DataSource should not be NULL");
     assertNotNull(ds.getId(), "Caldav DataSource ID should not be NULL");
-    assertEquals("95c066a8-5ad6-40fa-a094-06f8b3531878", ds.getId(), "Wrong ID for Caldav DataSource");
-    assertTrue(ds instanceof MailCaldavDataSource, "DataSource should be an instance of MailCaldavDataSource");
+    assertEquals(
+        "95c066a8-5ad6-40fa-a094-06f8b3531878", ds.getId(), "Wrong ID for Caldav DataSource");
+    assertTrue(
+        ds instanceof MailCaldavDataSource,
+        "DataSource should be an instance of MailCaldavDataSource");
     assertEquals("dav.zimbra.com", ds.getHost(), "wrong host");
     assertEquals("externalDAV", ds.getName(), "wrong datasource name");
 
     ds = dsList.get(7);
     assertNotNull(ds, "2d RSS DataSource should not be NULL");
     assertNotNull(ds.getId(), "2d RSS DataSource ID should not be NULL");
-    assertEquals("f32349af-9a78-4c26-80a1-338203378930", ds.getId(), "Wrong ID for the 2d RSS DataSource");
-    assertTrue(ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
+    assertEquals(
+        "f32349af-9a78-4c26-80a1-338203378930", ds.getId(), "Wrong ID for the 2d RSS DataSource");
+    assertTrue(
+        ds instanceof MailRssDataSource, "DataSource should be an instance of MailRssDataSource");
     assertEquals(ConnectionType.cleartext, ds.getConnectionType(), "wrong connectionType");
     assertEquals("news.yahoo.com", ds.getHost(), "wrong host");
     assertEquals("myYahoo", ds.getName(), "wrong datasource name");
@@ -480,8 +569,10 @@ public class DataSourceJaxbTest {
     ds = dsList.get(8);
     assertNotNull(ds, "2d IMAP DataSource should not be NULL");
     assertNotNull(ds.getId(), "2d IMAP DataSource ID should not be NULL");
-    assertEquals("b2e929f5-e124-47a0-b1b4-a7fbcd14fb31", ds.getId(), "Wrong ID for the 2d IMAP DataSource");
-    assertTrue(ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
+    assertEquals(
+        "b2e929f5-e124-47a0-b1b4-a7fbcd14fb31", ds.getId(), "Wrong ID for the 2d IMAP DataSource");
+    assertTrue(
+        ds instanceof MailImapDataSource, "DataSource should be an instance of MailImapDataSource");
     assertEquals(ConnectionType.tls_if_available, ds.getConnectionType(), "wrong connectionType");
     assertEquals("imap3.zimbra.com", ds.getHost(), "wrong host");
     assertEquals(193, ds.getPort().intValue(), "wrong port");
@@ -490,9 +581,11 @@ public class DataSourceJaxbTest {
     ds = dsList.get(9);
     assertNotNull(ds, "2d Generic DataSource should not be NULL");
     assertNotNull(ds.getId(), "2d Generic DataSource ID should not be NULL");
-    assertEquals("82e3b467-5a0f-4cff-ad8d-533ed6fc4992", ds.getId(), "Wrong ID for the 2d generic DataSource");
+    assertEquals(
+        "82e3b467-5a0f-4cff-ad8d-533ed6fc4992",
+        ds.getId(),
+        "Wrong ID for the 2d generic DataSource");
     assertTrue(ds instanceof MailDataSource, "DataSource should be an instance of MailDataSource");
-    assertNull(ds.getRefreshToken(), "Refresh token should be NULL");
     assertEquals("abook.gmail.com", ds.getHost(), "wrong host");
     assertEquals("com.synacor.zimbra.OAuthDataImport", ds.getImportClass(), "wrong import class");
     assertEquals("someone@gmail.com", ds.getName(), "wrong datasource name");
@@ -502,8 +595,9 @@ public class DataSourceJaxbTest {
   void testImportDataRequest() throws Exception {
     JAXBContext jaxb = JAXBContext.newInstance(ImportDataRequest.class);
     Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-    ImportDataRequest resp = (ImportDataRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("UnknownImportDataRequest.xml"));
+    ImportDataRequest resp =
+        (ImportDataRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("UnknownImportDataRequest.xml"));
     List<DataSourceNameOrId> dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -511,11 +605,14 @@ public class DataSourceJaxbTest {
     DataSourceNameOrId ds = dsList.get(0);
     assertNotNull(ds, "Generic DataSourceNameOrId should not be NULL");
     assertNotNull(ds.getId(), "Generic DataSourceNameOrId ID should not be NULL");
-    assertEquals("8d17e182-fdc6-4f6c-b83f-d478c9b04bfd", ds.getId(), "Wrong ID for generic DataSource");
-    assertTrue(ds instanceof DataSourceNameOrId, "DataSource should be an instance of DataSourceNameOrId");
+    assertEquals(
+        "8d17e182-fdc6-4f6c-b83f-d478c9b04bfd", ds.getId(), "Wrong ID for generic DataSource");
+    assertTrue(
+        ds instanceof DataSourceNameOrId, "DataSource should be an instance of DataSourceNameOrId");
 
-    resp = (ImportDataRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("ImapImportDataRequest.xml"));
+    resp =
+        (ImportDataRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("ImapImportDataRequest.xml"));
     dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -523,11 +620,15 @@ public class DataSourceJaxbTest {
     ds = dsList.get(0);
     assertNotNull(ds, "IMAP DataSourceNameOrId should not be NULL");
     assertNotNull(ds.getId(), "IMAP DataSourceNameOrId ID should not be NULL");
-    assertEquals("d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for IMAP DataSourceNameOrId");
-    assertTrue(ds instanceof ImapDataSourceNameOrId, "DataSourceNameOrId should be an instance of ImapDataSourceNameOrId");
+    assertEquals(
+        "d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for IMAP DataSourceNameOrId");
+    assertTrue(
+        ds instanceof ImapDataSourceNameOrId,
+        "DataSourceNameOrId should be an instance of ImapDataSourceNameOrId");
 
-    resp = (ImportDataRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("Pop3ImportDataRequest.xml"));
+    resp =
+        (ImportDataRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("Pop3ImportDataRequest.xml"));
     dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -535,11 +636,15 @@ public class DataSourceJaxbTest {
     ds = dsList.get(0);
     assertNotNull(ds, "POP3 DataSourceNameOrId should not be NULL");
     assertNotNull(ds.getId(), "POP3 DataSourceNameOrId ID should not be NULL");
-    assertEquals("d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for POP3 DataSourceNameOrId");
-    assertTrue(ds instanceof Pop3DataSourceNameOrId, "DataSourceNameOrId should be an instance of Pop3DataSourceNameOrId");
+    assertEquals(
+        "d96e9a7d-6af9-4625-ba68-37bcd73fce6d", ds.getId(), "Wrong ID for POP3 DataSourceNameOrId");
+    assertTrue(
+        ds instanceof Pop3DataSourceNameOrId,
+        "DataSourceNameOrId should be an instance of Pop3DataSourceNameOrId");
 
-    resp = (ImportDataRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("RssImportDataRequest.xml"));
+    resp =
+        (ImportDataRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("RssImportDataRequest.xml"));
     dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -547,11 +652,15 @@ public class DataSourceJaxbTest {
     ds = dsList.get(0);
     assertNotNull(ds, "POP3 DataSourceNameOrId should not be NULL");
     assertNotNull(ds.getId(), "POP3 DataSourceNameOrId ID should not be NULL");
-    assertEquals("21e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for RSS DataSourceNameOrId");
-    assertTrue(ds instanceof RssDataSourceNameOrId, "DataSourceNameOrId should be an instance of RssDataSourceNameOrId");
+    assertEquals(
+        "21e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for RSS DataSourceNameOrId");
+    assertTrue(
+        ds instanceof RssDataSourceNameOrId,
+        "DataSourceNameOrId should be an instance of RssDataSourceNameOrId");
 
-    resp = (ImportDataRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("CaldavImportDataRequest.xml"));
+    resp =
+        (ImportDataRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("CaldavImportDataRequest.xml"));
     dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -559,11 +668,17 @@ public class DataSourceJaxbTest {
     ds = dsList.get(0);
     assertNotNull(ds, "Caldav DataSourceNameOrId should not be NULL");
     assertNotNull(ds.getId(), "Caldav DataSourceNameOrId ID should not be NULL");
-    assertEquals("31e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for Caldav DataSourceNameOrId");
-    assertTrue(ds instanceof CaldavDataSourceNameOrId, "DataSourceNameOrId should be an instance of CaldavDataSourceNameOrId");
+    assertEquals(
+        "31e1c69c-bbb3-4f5d-8903-14ef8bdacbcc",
+        ds.getId(),
+        "Wrong ID for Caldav DataSourceNameOrId");
+    assertTrue(
+        ds instanceof CaldavDataSourceNameOrId,
+        "DataSourceNameOrId should be an instance of CaldavDataSourceNameOrId");
 
-    resp = (ImportDataRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("CalImportDataRequest.xml"));
+    resp =
+        (ImportDataRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("CalImportDataRequest.xml"));
     dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -571,11 +686,17 @@ public class DataSourceJaxbTest {
     ds = dsList.get(0);
     assertNotNull(ds, "Cal DataSourceNameOrId should not be NULL");
     assertNotNull(ds.getId(), "Cal DataSourceNameOrId ID should not be NULL");
-    assertEquals("61e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for Caldav DataSourceNameOrId");
-    assertTrue(ds instanceof CalDataSourceNameOrId, "DataSourceNameOrId should be an instance of CalDataSourceNameOrId");
+    assertEquals(
+        "61e1c69c-bbb3-4f5d-8903-14ef8bdacbcc",
+        ds.getId(),
+        "Wrong ID for Caldav DataSourceNameOrId");
+    assertTrue(
+        ds instanceof CalDataSourceNameOrId,
+        "DataSourceNameOrId should be an instance of CalDataSourceNameOrId");
 
-    resp = (ImportDataRequest) unmarshaller.unmarshal(
-        getClass().getResourceAsStream("GalImportDataRequest.xml"));
+    resp =
+        (ImportDataRequest)
+            unmarshaller.unmarshal(getClass().getResourceAsStream("GalImportDataRequest.xml"));
     dsList = resp.getDataSources();
     assertNotNull(dsList, "datasources should not be NULL");
     assertFalse(dsList.isEmpty(), "list of datasources should not be empty");
@@ -583,7 +704,12 @@ public class DataSourceJaxbTest {
     ds = dsList.get(0);
     assertNotNull(ds, "GAL DataSourceNameOrId should not be NULL");
     assertNotNull(ds.getId(), "GAL DataSourceNameOrId ID should not be NULL");
-    assertEquals("51e1c69c-bbb3-4f5d-8903-14ef8bdacbcc", ds.getId(), "Wrong ID for Caldav DataSourceNameOrId");
-    assertTrue(ds instanceof GalDataSourceNameOrId, "DataSourceNameOrId should be an instance of CalDataSourceNameOrId");
+    assertEquals(
+        "51e1c69c-bbb3-4f5d-8903-14ef8bdacbcc",
+        ds.getId(),
+        "Wrong ID for Caldav DataSourceNameOrId");
+    assertTrue(
+        ds instanceof GalDataSourceNameOrId,
+        "DataSourceNameOrId should be an instance of CalDataSourceNameOrId");
   }
 }

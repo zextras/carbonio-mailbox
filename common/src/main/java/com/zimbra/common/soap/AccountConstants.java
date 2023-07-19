@@ -356,7 +356,6 @@ public class AccountConstants {
   public static final String E_SOAP_URL = "soapURL";
   public static final String E_ADMIN_URL = "adminURL";
   public static final String E_PUBLIC_URL = "publicURL";
-  public static final String E_COMMUNITY_URL = "communityURL";
   public static final String E_CHANGE_PASSWORD_URL = "changePasswordURL";
   public static final String E_PREAUTH = "preauth";
   public static final String E_A = "a";
