@@ -666,8 +666,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.BrowseResponse.class,
           com.zimbra.soap.mail.message.CancelAppointmentRequest.class,
           com.zimbra.soap.mail.message.CancelAppointmentResponse.class,
-          com.zimbra.soap.mail.message.CancelTaskRequest.class,
-          com.zimbra.soap.mail.message.CancelTaskResponse.class,
           com.zimbra.soap.mail.message.CheckPermissionRequest.class,
           com.zimbra.soap.mail.message.CheckPermissionResponse.class,
           com.zimbra.soap.mail.message.CheckRecurConflictsRequest.class,

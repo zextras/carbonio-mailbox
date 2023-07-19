@@ -6549,39 +6549,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return new ZAppointmentResult(invoke(req));
   }
 
-  public void cancelTask(
-      String id,
-      String component,
-      ZTimeZone tz,
-      ZDateTime instance,
-      CancelRange range,
-      ZOutgoingMessage message)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.CANCEL_TASK_REQUEST);
-
-    req.addAttribute(MailConstants.A_ID, id);
-    req.addAttribute(MailConstants.E_INVITE_COMPONENT, component);
-
-    if (tz != null) {
-      tz.toElement(req);
-    }
-
-    if (instance != null) {
-      Element instEl = instance.toElement(MailConstants.E_INSTANCE, req);
-      if (range != null) {
-        instEl.addAttribute(MailConstants.A_CAL_RANGE, range.name());
-      }
-    }
-
-    if (message != null) {
-      getMessageElement(req, message, null);
-    }
-
-    mMessageCache.remove(id);
-
-    invoke(req);
-  }
-
   private void setVoiceStorePrincipal(Element req) {
     req.addNonUniqueElement(mVoiceStorePrincipal.clone());
   }
