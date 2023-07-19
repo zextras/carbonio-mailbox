@@ -70,10 +70,6 @@ public class ProxiedHit extends ZimbraHit  {
             return MailItemType.CONTACT;
         } else if (MailConstants.E_NOTE.equals(elemName)) {
             return MailItemType.NOTE;
-        } else if (MailConstants.E_DOC.equals(elemName)) {
-            return MailItemType.DOCUMENT;
-        } else if (MailConstants.E_WIKIWORD.equals(elemName)) {
-            return MailItemType.WIKI;
         } else if (MailConstants.E_APPOINTMENT.equals(elemName)) {
             return MailItemType.APPOINTMENT;
         } else if (MailConstants.E_TASK.equals(elemName)) {

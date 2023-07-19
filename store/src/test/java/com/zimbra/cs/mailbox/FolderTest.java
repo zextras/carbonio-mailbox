@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zimbra.cs.mailbox.MailItem.Type;
 import java.util.HashMap;
 import java.util.List;
 
@@ -167,7 +168,7 @@ public final class FolderTest {
  void deleteFolder() throws Exception {
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
-  Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(MailItem.Type.DOCUMENT);
+  Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(Type.FOLDER);
   Folder root = mbox.createFolder(null, "/Root", fopt);
   mbox.createFolder(null, "/Root/test1", fopt);
   mbox.createFolder(null, "/Root/test2", fopt);
@@ -389,7 +390,8 @@ public final class FolderTest {
 
     private static void checkName(Mailbox mbox, String name, boolean valid) {
         try {
-            mbox.createFolder(null, name, Mailbox.ID_FOLDER_USER_ROOT, new Folder.FolderOptions().setDefaultView(MailItem.Type.DOCUMENT));
+            mbox.createFolder(null, name, Mailbox.ID_FOLDER_USER_ROOT, new Folder.FolderOptions().setDefaultView(
+                Type.FOLDER));
             if (!valid) {
                 fail("should not have been allowed to create folder: [" + name + "]");
             }

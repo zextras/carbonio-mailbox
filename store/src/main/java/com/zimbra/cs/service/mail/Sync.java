@@ -35,7 +35,6 @@ import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.service.util.SyncToken;
 import com.zimbra.cs.session.PendingModifications.Change;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.SyncRequest;
 
@@ -176,8 +175,6 @@ public class Sync extends MailDocumentHandler {
                 initialItemSync(f, MailConstants.E_CONTACT, idlist.getIds(MailItem.Type.CONTACT));
                 initialItemSync(f, MailConstants.E_NOTE, idlist.getIds(MailItem.Type.NOTE));
                 initialCalendarSync(f, idlist, octxt, mbox, folder, calendarStart);
-                initialItemSync(f, MailConstants.E_DOC, idlist.getIds(MailItem.Type.DOCUMENT));
-                initialItemSync(f, MailConstants.E_WIKIWORD, idlist.getIds(MailItem.Type.WIKI));
                 initialCovSync(f, idlist, octxt, mbox, folder, messageSyncStart);
             }
         }
@@ -445,10 +442,6 @@ public class Sync extends MailDocumentHandler {
                 return MailConstants.E_TASK;
             case NOTE:
                 return MailConstants.E_NOTE;
-            case WIKI:
-                return MailConstants.E_WIKIWORD;
-            case DOCUMENT:
-                return MailConstants.E_DOC;
             default:
                 return null;
         }
@@ -477,10 +470,6 @@ public class Sync extends MailDocumentHandler {
             return MailItem.Type.TASK;
         } else if (name.equals(MailConstants.E_NOTE)) {
             return MailItem.Type.NOTE;
-        } else if (name.equals(MailConstants.E_WIKIWORD)) {
-            return MailItem.Type.WIKI;
-        } else if (name.equals(MailConstants.E_DOC)) {
-            return MailItem.Type.DOCUMENT;
         } else {
             return MailItem.Type.UNKNOWN;
         }

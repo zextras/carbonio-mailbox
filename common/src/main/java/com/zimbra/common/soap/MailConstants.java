@@ -247,10 +247,6 @@ public final class MailConstants {
   public static final String E_AUTO_COMPLETE_RESPONSE = "AutoCompleteResponse";
   public static final String E_RANKING_ACTION_REQUEST = "RankingActionRequest";
   public static final String E_RANKING_ACTION_RESPONSE = "RankingActionResponse";
-  public static final String E_ADD_COMMENT_REQUEST = "AddCommentRequest";
-  public static final String E_ADD_COMMENT_RESPONSE = "AddCommentResponse";
-  public static final String E_GET_COMMENTS_REQUEST = "GetCommentsRequest";
-  public static final String E_GET_COMMENTS_RESPONSE = "GetCommentsResponse";
   public static final String E_GET_SHARE_NOTIFICATIONS_REQUEST = "GetShareNotificationsRequest";
   public static final String E_GET_SHARE_NOTIFICATIONS_RESPONSE = "GetShareNotificationsResponse";
   public static final String E_GET_DATA_SOURCE_USAGE_REQUEST = "GetDataSourceUsageRequest";
@@ -554,50 +550,23 @@ public final class MailConstants {
   public static final QName CHECK_SPELLING_RESPONSE =
       QName.get(E_CHECK_SPELLING_RESPONSE, NAMESPACE);
 
-  // documents
-  public static final QName SAVE_DOCUMENT_REQUEST = QName.get(E_SAVE_DOCUMENT_REQUEST, NAMESPACE);
-  public static final QName SAVE_DOCUMENT_RESPONSE = QName.get(E_SAVE_DOCUMENT_RESPONSE, NAMESPACE);
-  public static final QName DIFF_DOCUMENT_REQUEST = QName.get(E_DIFF_DOCUMENT_REQUEST, NAMESPACE);
-  public static final QName DIFF_DOCUMENT_RESPONSE = QName.get(E_DIFF_DOCUMENT_RESPONSE, NAMESPACE);
-  public static final QName LIST_DOCUMENT_REVISIONS_REQUEST =
-      QName.get(E_LIST_DOCUMENT_REVISIONS_REQUEST, NAMESPACE);
-  public static final QName LIST_DOCUMENT_REVISIONS_RESPONSE =
-      QName.get(E_LIST_DOCUMENT_REVISIONS_RESPONSE, NAMESPACE);
-  public static final QName PURGE_REVISION_REQUEST = QName.get(E_PURGE_REVISION_REQUEST, NAMESPACE);
-  public static final QName PURGE_REVISION_RESPONSE =
-      QName.get(E_PURGE_REVISION_RESPONSE, NAMESPACE);
-
-  // data sources
-  public static final QName CREATE_DATA_SOURCE_REQUEST =
-      QName.get(E_CREATE_DATA_SOURCE_REQUEST, NAMESPACE);
-  public static final QName CREATE_DATA_SOURCE_RESPONSE =
-      QName.get(E_CREATE_DATA_SOURCE_RESPONSE, NAMESPACE);
-  public static final QName GET_DATA_SOURCES_REQUEST =
-      QName.get(E_GET_DATA_SOURCES_REQUEST, NAMESPACE);
-  public static final QName GET_DATA_SOURCES_RESPONSE =
-      QName.get(E_GET_DATA_SOURCES_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_DATA_SOURCE_REQUEST =
-      QName.get(E_MODIFY_DATA_SOURCE_REQUEST, NAMESPACE);
-  public static final QName MODIFY_DATA_SOURCE_RESPONSE =
-      QName.get(E_MODIFY_DATA_SOURCE_RESPONSE, NAMESPACE);
-  public static final QName TEST_DATA_SOURCE_REQUEST =
-      QName.get(E_TEST_DATA_SOURCE_REQUEST, NAMESPACE);
-  public static final QName TEST_DATA_SOURCE_RESPONSE =
-      QName.get(E_TEST_DATA_SOURCE_RESPONSE, NAMESPACE);
-  public static final QName DELETE_DATA_SOURCE_REQUEST =
-      QName.get(E_DELETE_DATA_SOURCE_REQUEST, NAMESPACE);
-  public static final QName DELETE_DATA_SOURCE_RESPONSE =
-      QName.get(E_DELETE_DATA_SOURCE_RESPONSE, NAMESPACE);
-  public static final QName IMPORT_DATA_REQUEST = QName.get(E_IMPORT_DATA_REQUEST, NAMESPACE);
-  public static final QName IMPORT_DATA_RESPONSE = QName.get(E_IMPORT_DATA_RESPONSE, NAMESPACE);
-  public static final QName GET_IMPORT_STATUS_REQUEST =
-      QName.get(E_GET_IMPORT_STATUS_REQUEST, NAMESPACE);
-  public static final QName GET_IMPORT_STATUS_RESPONSE =
-      QName.get(E_GET_IMPORT_STATUS_RESPONSE, NAMESPACE);
-  public static final QName GET_DATA_SOURCE_USAGE_REQUEST =
-      QName.get(E_GET_DATA_SOURCE_USAGE_REQUEST, NAMESPACE);
-  public static final QName GET_DATA_SOURCE_USAGE_RESPONSE =
-      QName.get(E_GET_DATA_SOURCE_USAGE_RESPONSE, NAMESPACE);
+    // data sources
+    public static final QName CREATE_DATA_SOURCE_REQUEST = QName.get(E_CREATE_DATA_SOURCE_REQUEST, NAMESPACE);
+    public static final QName CREATE_DATA_SOURCE_RESPONSE = QName.get(E_CREATE_DATA_SOURCE_RESPONSE, NAMESPACE);
+    public static final QName GET_DATA_SOURCES_REQUEST = QName.get(E_GET_DATA_SOURCES_REQUEST, NAMESPACE);
+    public static final QName GET_DATA_SOURCES_RESPONSE = QName.get(E_GET_DATA_SOURCES_RESPONSE, NAMESPACE);
+    public static final QName MODIFY_DATA_SOURCE_REQUEST = QName.get(E_MODIFY_DATA_SOURCE_REQUEST, NAMESPACE);
+    public static final QName MODIFY_DATA_SOURCE_RESPONSE = QName.get(E_MODIFY_DATA_SOURCE_RESPONSE, NAMESPACE);
+    public static final QName TEST_DATA_SOURCE_REQUEST = QName.get(E_TEST_DATA_SOURCE_REQUEST, NAMESPACE);
+    public static final QName TEST_DATA_SOURCE_RESPONSE = QName.get(E_TEST_DATA_SOURCE_RESPONSE, NAMESPACE);
+    public static final QName DELETE_DATA_SOURCE_REQUEST = QName.get(E_DELETE_DATA_SOURCE_REQUEST, NAMESPACE);
+    public static final QName DELETE_DATA_SOURCE_RESPONSE = QName.get(E_DELETE_DATA_SOURCE_RESPONSE, NAMESPACE);
+    public static final QName IMPORT_DATA_REQUEST = QName.get(E_IMPORT_DATA_REQUEST, NAMESPACE);
+    public static final QName IMPORT_DATA_RESPONSE = QName.get(E_IMPORT_DATA_RESPONSE, NAMESPACE);
+    public static final QName GET_IMPORT_STATUS_REQUEST = QName.get(E_GET_IMPORT_STATUS_REQUEST, NAMESPACE);
+    public static final QName GET_IMPORT_STATUS_RESPONSE = QName.get(E_GET_IMPORT_STATUS_RESPONSE, NAMESPACE);
+    public static final QName GET_DATA_SOURCE_USAGE_REQUEST = QName.get(E_GET_DATA_SOURCE_USAGE_REQUEST, NAMESPACE);
+    public static final QName GET_DATA_SOURCE_USAGE_RESPONSE = QName.get(E_GET_DATA_SOURCE_USAGE_RESPONSE, NAMESPACE);
 
   public static final QName CREATE_WAIT_SET_REQUEST =
       QName.get(E_CREATE_WAIT_SET_REQUEST, NAMESPACE);
@@ -641,12 +610,6 @@ public final class MailConstants {
   public static final QName RANKING_ACTION_REQUEST = QName.get(E_RANKING_ACTION_REQUEST, NAMESPACE);
   public static final QName RANKING_ACTION_RESPONSE =
       QName.get(E_RANKING_ACTION_RESPONSE, NAMESPACE);
-
-  // comments
-  public static final QName ADD_COMMENT_REQUEST = QName.get(E_ADD_COMMENT_REQUEST, NAMESPACE);
-  public static final QName ADD_COMMENT_RESPONSE = QName.get(E_ADD_COMMENT_RESPONSE, NAMESPACE);
-  public static final QName GET_COMMENTS_REQUEST = QName.get(E_GET_COMMENTS_REQUEST, NAMESPACE);
-  public static final QName GET_COMMENTS_RESPONSE = QName.get(E_GET_COMMENTS_RESPONSE, NAMESPACE);
 
   // sharing
   public static final QName GET_SHARE_NOTIFICATIONS_REQUEST =
@@ -1474,32 +1437,19 @@ public final class MailConstants {
   public static final QName SEARCH_ACTION_REQUEST = QName.get(E_SEARCH_ACTION_REQUEST, NAMESPACE);
   public static final QName SEARCH_ACTION_RESPONSE = QName.get(E_SEARCH_ACTION_RESPONSE, NAMESPACE);
 
-  // Profile image API
-  public static final String E_MODIFY_PROFILE_IMAGE_REQUEST = "ModifyProfileImageRequest";
-  public static final String E_MODIFY_PROFILE_IMAGE_RESPONSE = "ModifyProfileImageResponse";
-  public static final QName MODIFY_PROFILE_IMAGE_REQUEST =
-      QName.get(E_MODIFY_PROFILE_IMAGE_REQUEST, NAMESPACE);
-  public static final QName MODIFY_PROFILE_IMAGE_RESPONSE =
-      QName.get(E_MODIFY_PROFILE_IMAGE_RESPONSE, NAMESPACE);
-
-  // Password reset API
-  public static final String E_SET_RECOVERY_ACCOUNT_REQUEST = "SetRecoveryAccountRequest";
-  public static final String E_SET_RECOVERY_ACCOUNT_RESPONSE = "SetRecoveryAccountResponse";
-  public static final QName SET_RECOVERY_EMAIL_REQUEST =
-      QName.get(E_SET_RECOVERY_ACCOUNT_REQUEST, NAMESPACE);
-  public static final QName SET_RECOVERY_EMAIL_RESPONSE =
-      QName.get(E_SET_RECOVERY_ACCOUNT_RESPONSE, NAMESPACE);
-  public static final String A_RECOVERY_ATTEMPTS_LEFT = "recoveryAttemptsLeft";
-  public static final String A_RECOVERY_ACCOUNT_VERIFICATION_CODE =
-      "recoveryAccountVerificationCode";
-  public static final String E_RECOVER_ACCOUNT_REQUEST = "RecoverAccountRequest";
-  public static final String E_RECOVER_ACCOUNT_RESPONSE = "RecoverAccountResponse";
-  public static final QName RECOVER_ACCOUNT_REQUEST =
-      QName.get(E_RECOVER_ACCOUNT_REQUEST, NAMESPACE);
-  public static final QName RECOVER_ACCOUNT_RESPONSE =
-      QName.get(E_RECOVER_ACCOUNT_RESPONSE, NAMESPACE);
-  public static final String A_RECOVERY_ACCOUNT = "recoveryAccount";
-  public static final String A_CHANNEL = "channel";
+    // Password reset API
+    public static final String E_SET_RECOVERY_ACCOUNT_REQUEST = "SetRecoveryAccountRequest";
+    public static final String E_SET_RECOVERY_ACCOUNT_RESPONSE = "SetRecoveryAccountResponse";
+    public static final QName SET_RECOVERY_EMAIL_REQUEST = QName.get(E_SET_RECOVERY_ACCOUNT_REQUEST, NAMESPACE);
+    public static final QName SET_RECOVERY_EMAIL_RESPONSE = QName.get(E_SET_RECOVERY_ACCOUNT_RESPONSE, NAMESPACE);
+    public static final String A_RECOVERY_ATTEMPTS_LEFT = "recoveryAttemptsLeft";
+    public static final String A_RECOVERY_ACCOUNT_VERIFICATION_CODE = "recoveryAccountVerificationCode";
+    public static final String E_RECOVER_ACCOUNT_REQUEST = "RecoverAccountRequest";
+    public static final String E_RECOVER_ACCOUNT_RESPONSE = "RecoverAccountResponse";
+    public static final QName RECOVER_ACCOUNT_REQUEST = QName.get(E_RECOVER_ACCOUNT_REQUEST, NAMESPACE);
+    public static final QName RECOVER_ACCOUNT_RESPONSE = QName.get(E_RECOVER_ACCOUNT_RESPONSE, NAMESPACE);
+    public static final String A_RECOVERY_ACCOUNT = "recoveryAccount";
+    public static final String A_CHANNEL = "channel";
 
   // Upload attachment API
   public static final String A_NODE_ID = "nodeId";

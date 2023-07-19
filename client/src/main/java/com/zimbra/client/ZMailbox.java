@@ -5639,33 +5639,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return result;
   }
 
-  public String createDocument(String folderId, String name, String attachmentId)
-      throws ServiceException {
-    return createDocument(folderId, name, attachmentId, false);
-  }
-
-  public String createDocument(String folderId, String name, String attachmentId, boolean isNote)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.SAVE_DOCUMENT_REQUEST);
-    Element doc = req.addUniqueElement(MailConstants.E_DOC);
-    doc.addAttribute(MailConstants.A_NAME, name);
-    doc.addAttribute(MailConstants.A_FOLDER, folderId);
-    if (isNote) {
-      doc.addAttribute(MailConstants.A_FLAGS, ZItem.Flag.NOTE.toString());
-    }
-    Element upload = doc.addNonUniqueElement(MailConstants.E_UPLOAD);
-    upload.addAttribute(MailConstants.A_ID, attachmentId);
-    return invoke(req).getElement(MailConstants.E_DOC).getAttribute(MailConstants.A_ID);
-  }
-
-  public ZDocument getDocument(String id) throws ServiceException {
-    Element req = newRequestElement(MailConstants.GET_ITEM_REQUEST);
-    Element item = req.addUniqueElement(MailConstants.E_ITEM);
-    item.addAttribute(MailConstants.A_ID, id);
-    Element e = invoke(req).getElement(MailConstants.E_DOC);
-    return new ZDocument(e);
-  }
-
   /**
    * modify prefs. The key in the map is the pref name, and the value should be a String[], a
    * Collection of String objects, or a single String/Object.toString.

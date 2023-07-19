@@ -660,17 +660,18 @@ public final class ZimbraLog {
     if (level == null) {
       level = defaultLevel;
     }
-    Properties p = new Properties();
-    p.put("log4j.rootLogger", level + ",A1");
-
-    p.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-    if (stderr) p.put("log4j.appender.A1.target", "System.err");
-
-    p.put("log4j.appender.A1.layout", "org.apache.log4j.PatternLayout");
+    Properties properties = new Properties();
+    properties.put("rootLogger", level + ",A1");
+    properties.put("appender.A1.type", "Console");
+    properties.put("appender.A1.name", "STDOUT");
+    if (stderr) {
+      properties.put("appender.A1.target", "SYSTEM_ERR");
+    }
+    properties.put("appender.A1.layout.type", "PatternLayout");
     if (showThreads) {
-      p.put("log4j.appender.A1.layout.ConversionPattern", "[%t] [%x] %p: %m%n");
+      properties.put("appender.A1.layout.pattern", "[%t] [%x] %p: %m%n");
     } else {
-      p.put("log4j.appender.A1.layout.ConversionPattern", "[%x] %p: %m%n");
+      properties.put("appender.A1.layout.pattern", "[%x] %p: %m%n");
     }
   }
 

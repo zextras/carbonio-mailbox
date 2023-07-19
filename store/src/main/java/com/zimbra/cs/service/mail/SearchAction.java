@@ -107,12 +107,6 @@ public class SearchAction extends MailDocumentHandler {
             } else if ("conversation".equalsIgnoreCase(searchRequest.getSearchTypes())
                 && folder.getDefaultView() == MailItem.Type.CONVERSATION) {
                 mbox.move(octxt, Integer.parseInt(id), MailItem.Type.CONVERSATION, folder.getId());
-            } else if ("wiki".equalsIgnoreCase(searchRequest.getSearchTypes())
-                && folder.getDefaultView() == MailItem.Type.WIKI) {
-                mbox.move(octxt, Integer.parseInt(id), MailItem.Type.WIKI, folder.getId());
-            } else if ("document".equalsIgnoreCase(searchRequest.getSearchTypes())
-                && folder.getDefaultView() == MailItem.Type.DOCUMENT) {
-                mbox.move(octxt, Integer.parseInt(id), MailItem.Type.DOCUMENT, folder.getId());
             } else if (folder.getDefaultView() == MailItem.Type.UNKNOWN) {
                 mbox.move(octxt, Integer.parseInt(id), MailItem.Type.UNKNOWN, folder.getId());
             } else {

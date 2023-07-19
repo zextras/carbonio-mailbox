@@ -57,8 +57,6 @@ import com.zimbra.client.ZContactHit;
 import com.zimbra.client.ZConversation;
 import com.zimbra.client.ZConversation.ZMessageSummary;
 import com.zimbra.client.ZConversationHit;
-import com.zimbra.client.ZDocument;
-import com.zimbra.client.ZDocumentHit;
 import com.zimbra.client.ZEmailAddress;
 import com.zimbra.client.ZFilterRule;
 import com.zimbra.client.ZFilterRules;
@@ -2291,14 +2289,6 @@ public class ZMailboxUtil implements DebugListener {
                 String from = "<na>";
                 mIndexToId.put(i, ah.getId());
                 stdout.format(itemFormat, i++, ah.getId(), ah.getIsTask() ? "task" : "appo", from, sub, cal);
-            } else if (hit instanceof ZDocumentHit) {
-                ZDocumentHit dh = (ZDocumentHit) hit;
-                ZDocument doc = dh.getDocument();
-                cal.setTimeInMillis(doc.getModifiedDate());
-                String name = doc.getName();
-                String editor = doc.getEditor();
-                mIndexToId.put(i, dh.getId());
-                stdout.format(itemFormat, i++, dh.getId(), doc.isWiki()?"wiki":"doc", editor, name, cal);
             }
         }
         stdout.println();

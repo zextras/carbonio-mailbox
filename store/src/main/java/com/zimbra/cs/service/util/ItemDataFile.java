@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.util;
 
+import com.zimbra.cs.mailbox.MailItem.Type;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,7 +32,6 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.util.tar.*;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
-import com.zimbra.cs.service.util.ItemData;
 
 public class ItemDataFile {
     public static void create(String path, OutputStream os) throws IOException {
@@ -224,10 +224,8 @@ public class ItemDataFile {
                 } else {
                     type = MailItem.Type.APPOINTMENT;
                 }
-            } else if (path.endsWith(".wiki")) {
-                type = MailItem.Type.WIKI;
             } else {
-                type = MailItem.Type.DOCUMENT;
+                type = Type.UNKNOWN;
             }
             if (skip(types, type)) {
 

@@ -35,9 +35,7 @@ import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Pair;
@@ -53,7 +51,6 @@ import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.ContactGroup;
 import com.zimbra.cs.mailbox.ContactGroup.Member;
 import com.zimbra.cs.mailbox.Conversation;
-import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
@@ -735,33 +732,6 @@ public class ItemActionHelper {
                     }
                     createdIds.add(createdId);
                 }
-                break;
-            case DOCUMENT:
-                Document doc = (Document) item;
-                SoapHttpTransport transport = new SoapHttpTransport(zoptions.getUri());
-                try {
-                    in = StoreManager.getInstance().getContent(doc.getBlob());
-                    String uploadId = zmbx.uploadContentAsStream(name, in, doc.getContentType(), doc.getSize(), 4000, true);
-                    // instead of using convenience method from ZMailbox
-                    // we need to hand marshall the request and set the
-                    // response protocol explicitly to what was requested
-                    // from the client.
-                    Element req = new XMLElement(MailConstants.SAVE_DOCUMENT_REQUEST);
-                    Element edoc = req.addUniqueElement(MailConstants.E_DOC);
-                    edoc.addAttribute(MailConstants.A_NAME, name);
-                    edoc.addAttribute(MailConstants.A_FOLDER, folderStr);
-                    edoc.addAttribute(MailConstants.A_FLAGS, flags);
-                    Element upload = edoc.addNonUniqueElement(MailConstants.E_UPLOAD);
-                    upload.addAttribute(MailConstants.A_ID, uploadId);
-                    transport.setResponseProtocol(mResponseProtocol);
-                    transport.setAuthToken(zat);
-                    Element response = transport.invoke(req);
-                    createdId = response.getElement(MailConstants.E_DOC).getAttribute(MailConstants.A_ID);
-                } finally {
-                    ByteUtil.closeStream(in);
-                    transport.shutdown();
-                }
-                createdIds.add(createdId);
                 break;
             case APPOINTMENT:
             case TASK:
