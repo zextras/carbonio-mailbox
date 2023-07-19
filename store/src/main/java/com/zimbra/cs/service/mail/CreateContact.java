@@ -43,8 +43,6 @@ import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.Contact.Attachment;
 import com.zimbra.cs.mailbox.ContactGroup;
 import com.zimbra.cs.mailbox.ContactGroup.Member;
-import com.zimbra.cs.mailbox.Document;
-import com.zimbra.cs.mailbox.DocumentDataSource;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -392,13 +390,6 @@ public class CreateContact extends MailDocumentHandler  {
                         DataSource ds = new MessageDataSource(msg);
                         return new Attachment(new DataHandler(ds), name, (int) msg.getSize());
                     }
-                } else if (item instanceof Document) {
-                    Document doc = (Document) item;
-                    if (part != null && !part.equals("")) {
-                        throw MailServiceException.NO_SUCH_PART(part);
-                    }
-                    DataSource ds = new DocumentDataSource(doc);
-                    return new Attachment(new DataHandler(ds), name, (int) doc.getSize());
                 }
             } catch (IOException ioe) {
                 throw ServiceException.FAILURE("error attaching existing item data", ioe);

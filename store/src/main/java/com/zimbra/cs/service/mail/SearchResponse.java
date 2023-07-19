@@ -21,7 +21,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.index.CalendarItemHit;
 import com.zimbra.cs.index.ContactHit;
 import com.zimbra.cs.index.ConversationHit;
-import com.zimbra.cs.index.DocumentHit;
 import com.zimbra.cs.index.MessageHit;
 import com.zimbra.cs.index.MessagePartHit;
 import com.zimbra.cs.index.NoteHit;
@@ -37,10 +36,8 @@ import com.zimbra.cs.mailbox.ContactGroup;
 import com.zimbra.cs.mailbox.ContactMemberOfMap;
 import com.zimbra.cs.mailbox.Conversation;
 import com.zimbra.cs.mailbox.Flag;
-import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.mailbox.WikiItem;
 import com.zimbra.cs.service.mail.GetCalendarItemSummaries.EncodeCalendarItemResult;
 import com.zimbra.cs.service.mail.ToXML.EmailType;
 import com.zimbra.cs.service.util.ItemId;
@@ -172,8 +169,6 @@ final class SearchResponse {
                 el = add((NoteHit) hit);
             } else if (hit instanceof CalendarItemHit) {
                 el = add((CalendarItemHit) hit); // el could be null
-            } else if (hit instanceof DocumentHit) {
-                el = add((DocumentHit) hit);
             } else {
                 LOG.error("Got an unknown hit type putting search hits: " + hit);
                 return;
@@ -335,16 +330,6 @@ final class SearchResponse {
 
     private Element add(NoteHit hit) throws ServiceException {
         return ToXML.encodeNote(element, ifmt, octxt, hit.getNote());
-    }
-
-    private Element add(DocumentHit hit) throws ServiceException {
-        if (hit.getItemType() == MailItem.Type.DOCUMENT) {
-            return ToXML.encodeDocument(element, ifmt, octxt, hit.getDocument());
-        } else if (hit.getItemType() == MailItem.Type.WIKI) {
-            return ToXML.encodeWiki(element, ifmt, octxt, (WikiItem) hit.getDocument());
-        } else {
-            throw ServiceException.UNKNOWN_DOCUMENT("invalid document type " + hit.getItemType(), null);
-        }
     }
 
     /**

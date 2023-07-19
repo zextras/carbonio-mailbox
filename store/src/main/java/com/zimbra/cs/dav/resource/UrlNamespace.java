@@ -30,7 +30,6 @@ import com.zimbra.cs.dav.service.DavServlet;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.DavNames;
-import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -625,9 +624,6 @@ public class UrlNamespace {
                 } else {
                     resource = new Collection(ctxt, f);
                 }
-                break;
-            case DOCUMENT :
-                resource = new Notebook(ctxt, (Document)item);
                 break;
             case APPOINTMENT :
             case TASK :

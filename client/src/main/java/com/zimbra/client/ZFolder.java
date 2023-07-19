@@ -236,14 +236,12 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     chat,
     contact,
     conversation,
-    document,
     message,
     remote,
     search,
     task,
     unknown,
-    voice,
-    wiki;
+    voice;
 
     public static View fromString(String src) {
       if (src == null) {
@@ -562,8 +560,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     switch (getDefaultView()) {
       case appointment:
       case task:
-      case wiki:
-      case document:
         return false;
       case contact:
       case chat:

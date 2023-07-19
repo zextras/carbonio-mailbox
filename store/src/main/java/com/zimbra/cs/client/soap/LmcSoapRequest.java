@@ -506,48 +506,6 @@ public abstract class LmcSoapRequest {
         return newTag;
     }
 
-    protected LmcDocument parseDocument(Element doc) {
-        LmcDocument result = parseDocumentCommon(doc, new LmcDocument());
-        return result;
-    }
-
-    protected LmcWiki parseWiki(Element wiki) {
-        LmcWiki result = new LmcWiki();
-        parseDocumentCommon(wiki, result);
-
-        result.setWikiWord(wiki.attributeValue(MailConstants.A_NAME));
-
-        try {
-            Element c = DomUtil.get(wiki, MailConstants.A_BODY);
-            result.setContents(c.getText());
-        } catch (Exception e) {}
-
-        return result;
-    }
-
-    private LmcDocument parseDocumentCommon(Element doc, LmcDocument result) {
-        result.setID(doc.attributeValue(MailConstants.A_ID));
-        result.setName(doc.attributeValue(MailConstants.A_NAME));
-        result.setContentType(doc.attributeValue(MailConstants.A_CONTENT_TYPE));
-        result.setFolder(doc.attributeValue(MailConstants.A_FOLDER));
-        result.setRev(doc.attributeValue(MailConstants.A_VERSION));
-        result.setLastModifiedDate(doc.attributeValue(MailConstants.A_DATE));
-        result.setLastEditor(doc.attributeValue(MailConstants.A_LAST_EDITED_BY));
-        result.setRestUrl(doc.attributeValue(MailConstants.A_REST_URL));
-        result.setCreator(doc.attributeValue(MailConstants.A_CREATOR));
-        result.setCreateDate(doc.attributeValue(MailConstants.A_CREATED_DATE));
-
-        for (Iterator it = doc.elementIterator(); it.hasNext();) {
-            Element e = (Element) it.next();
-
-            String elementType = e.getQName().getName();
-            if (elementType.equals(MailConstants.E_FRAG)) {
-                // fragment
-                result.setFragment(e.getText());
-            }
-        }
-        return result;
-    }
     /**
      * Add the XML representation of the message to the element.
      * @param e - the element at the root
