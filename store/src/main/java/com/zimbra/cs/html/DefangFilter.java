@@ -421,6 +421,14 @@ public class DefangFilter extends DefaultFilter {
     }
   }
 
+  /** Comment. */
+  @Override
+  public void comment(XMLString text, Augmentations augs) throws XNIException {
+    // we can safely ignore comments
+    // they can only provide loop holes for hackers to exploit
+    // e.g. CDATA sections are reported as comments with our HTML parser configuration
+  }
+
   /** Processing instruction. */
   @Override
   public void processingInstruction(String target, XMLString data, Augmentations augs)
