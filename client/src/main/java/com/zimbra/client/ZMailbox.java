@@ -39,7 +39,6 @@ import com.zimbra.client.event.ZModifyMessageEvent;
 import com.zimbra.client.event.ZModifyMountpointEvent;
 import com.zimbra.client.event.ZModifySearchFolderEvent;
 import com.zimbra.client.event.ZModifyTagEvent;
-import com.zimbra.client.event.ZModifyTaskEvent;
 import com.zimbra.client.event.ZRefreshEvent;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -1332,8 +1331,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         event = new ZModifyMailboxEvent(e);
       } else if (e.getName().equals(MailConstants.E_APPOINTMENT)) {
         event = new ZModifyAppointmentEvent(e);
-      } else if (e.getName().equals(MailConstants.E_TASK)) {
-        event = new ZModifyTaskEvent(e);
       }
       if (event != null) {
         handleEvent(event);
@@ -6547,26 +6544,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
     if (optionalUid != null) {
       invEl.addAttribute(MailConstants.A_UID, optionalUid);
-    }
-
-    return new ZAppointmentResult(invoke(req));
-  }
-
-  public ZAppointmentResult modifyTask(
-      String id, String component, ZDateTime exceptionId, ZOutgoingMessage message, ZInvite invite)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.MODIFY_TASK_REQUEST);
-
-    req.addAttribute(MailConstants.A_ID, id);
-    req.addAttribute(MailConstants.E_INVITE_COMPONENT, component);
-
-    Element mEl = getMessageElement(req, message, null);
-
-    Element invEl = invite.toElement(mEl);
-
-    if (exceptionId != null) {
-      Element compEl = invEl.getElement(MailConstants.E_INVITE_COMPONENT);
-      exceptionId.toElement(MailConstants.E_CAL_EXCEPTION_ID, compEl);
     }
 
     return new ZAppointmentResult(invoke(req));

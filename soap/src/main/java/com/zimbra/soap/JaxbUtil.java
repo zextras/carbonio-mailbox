@@ -826,8 +826,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.ModifyOutgoingFilterRulesResponse.class,
           com.zimbra.soap.mail.message.ModifySearchFolderRequest.class,
           com.zimbra.soap.mail.message.ModifySearchFolderResponse.class,
-          com.zimbra.soap.mail.message.ModifyTaskRequest.class,
-          com.zimbra.soap.mail.message.ModifyTaskResponse.class,
           com.zimbra.soap.mail.message.MsgActionRequest.class,
           com.zimbra.soap.mail.message.MsgActionResponse.class,
           com.zimbra.soap.mail.message.NoOpRequest.class,

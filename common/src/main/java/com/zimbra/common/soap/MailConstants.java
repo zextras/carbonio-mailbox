@@ -184,7 +184,6 @@ public final class MailConstants {
   public static final String E_GET_TASK_SUMMARIES_REQUEST = "GetTaskSummariesRequest";
   public static final String E_SET_TASK_REQUEST = "SetTaskRequest";
   public static final String E_CREATE_TASK_EXCEPTION_REQUEST = "CreateTaskExceptionRequest";
-  public static final String E_MODIFY_TASK_REQUEST = "ModifyTaskRequest";
   public static final String E_ADD_TASK_INVITE_REQUEST = "AddTaskInviteRequest";
   public static final String E_ADD_TASK_INVITE_RESPONSE = "AddTaskInviteResponse";
   public static final String E_CANCEL_TASK_REQUEST = "CancelTaskRequest";
@@ -494,7 +493,6 @@ public final class MailConstants {
   public static final QName SET_TASK_REQUEST = QName.get(E_SET_TASK_REQUEST, NAMESPACE);
   public static final QName CREATE_TASK_EXCEPTION_REQUEST =
       QName.get(E_CREATE_TASK_EXCEPTION_REQUEST, NAMESPACE);
-  public static final QName MODIFY_TASK_REQUEST = QName.get(E_MODIFY_TASK_REQUEST, NAMESPACE);
   public static final QName ADD_TASK_INVITE_REQUEST =
       QName.get(E_ADD_TASK_INVITE_REQUEST, NAMESPACE);
   public static final QName ADD_TASK_INVITE_RESPONSE =
