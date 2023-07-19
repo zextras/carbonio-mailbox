@@ -923,9 +923,6 @@ public class Folder extends MailItem implements FolderStore {
             "you do not have the required rights on the parent folder");
       }
     }
-    if (view == Type.INVITE) {
-      throw MailServiceException.INVALID_TYPE(view.toString());
-    }
 
     UnderlyingData data = new UnderlyingData();
     data.uuid = uuid;
