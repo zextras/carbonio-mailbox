@@ -12315,7 +12315,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraNotebookMaxRevisions = "zimbraNotebookMaxRevisions";
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.7.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      */
     @ZAttr(id=369)
     public static final String A_zimbraNotebookPageCacheSize = "zimbraNotebookPageCacheSize";
