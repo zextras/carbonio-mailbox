@@ -84,11 +84,14 @@ public final class Utils {
    */
   public static List<String> getFilesPathInDirectory(final String directoryPath) {
     try (Stream<Path> paths = Files.walk(Paths.get(directoryPath), 1)) {
-      return paths.filter(Files::isRegularFile).map(Path::toString).collect(Collectors.toList());
+      return paths
+          .filter(Files::isRegularFile)
+          .map(Path::toString)
+          .collect(Collectors.toCollection(ArrayList::new));
     } catch (IOException ignored) {
       // ignore
     }
-    return List.of();
+    return new ArrayList<>();
   }
 
   /**
@@ -105,10 +108,10 @@ public final class Utils {
           .filter(Files::isDirectory)
           .map(Path::getFileName)
           .map(Path::toString)
-          .collect(Collectors.toList());
+          .collect(Collectors.toCollection(ArrayList::new));
     } catch (IOException ignored) {
       // ignore
     }
-    return List.of();
+    return new ArrayList<>();
   }
 }

@@ -2389,6 +2389,9 @@ public class ProxyConfGen {
   private static void deleteDomainCertbotConfiguration(
       final List<DomainAttrItem> mDomainReverseProxyAttrs, final boolean dryRun) {
     List<String> domainNames = Utils.getSubdirectoriesNames(CERTBOT_WORKING_DIR);
+    if (domainNames.isEmpty()) {
+      return;
+    }
     for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
       domainNames.removeIf(domain -> domain.contains(entry.domainName));
     }
@@ -2413,13 +2416,16 @@ public class ProxyConfGen {
    * @since 23.7.0
    */
   private static void executeCertbotDelete(final List<String> args) throws ProxyConfException {
+    if (args.isEmpty()) {
+      return;
+    }
     args.forEach(domainName -> LOG.info("Deleting Let's Encrypt configuration for " + domainName));
-    List<String> mutableArgs = new ArrayList<>(args);
-    mutableArgs.add(0, CERTBOT);
-    mutableArgs.add(1, "delete");
+
+    args.add(0, CERTBOT);
+    args.add(1, "delete");
 
     try {
-      new ProcessBuilder(mutableArgs).start();
+      new ProcessBuilder(args).start();
     } catch (IOException e) {
       throw new ProxyConfException("Unable to delete Let's Encrypt configurations", e);
     }
