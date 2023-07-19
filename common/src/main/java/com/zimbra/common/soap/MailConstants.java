@@ -182,7 +182,6 @@ public final class MailConstants {
   public static final String E_IMPORT_APPOINTMENTS_REQUEST = "ImportAppointmentsRequest";
   public static final String E_IMPORT_APPOINTMENTS_RESPONSE = "ImportAppointmentsResponse";
   public static final String E_GET_TASK_SUMMARIES_REQUEST = "GetTaskSummariesRequest";
-  public static final String E_GET_TASK_REQUEST = "GetTaskRequest";
   public static final String E_SET_TASK_REQUEST = "SetTaskRequest";
   public static final String E_CREATE_TASK_EXCEPTION_REQUEST = "CreateTaskExceptionRequest";
   public static final String E_MODIFY_TASK_REQUEST = "ModifyTaskRequest";
@@ -208,14 +207,6 @@ public final class MailConstants {
   public static final String E_GET_SPELL_DICTIONARIES_RESPONSE = "GetSpellDictionariesResponse";
   public static final String E_CHECK_SPELLING_REQUEST = "CheckSpellingRequest";
   public static final String E_CHECK_SPELLING_RESPONSE = "CheckSpellingResponse";
-  public static final String E_SAVE_DOCUMENT_REQUEST = "SaveDocumentRequest";
-  public static final String E_SAVE_DOCUMENT_RESPONSE = "SaveDocumentResponse";
-  public static final String E_DIFF_DOCUMENT_REQUEST = "DiffDocumentRequest";
-  public static final String E_DIFF_DOCUMENT_RESPONSE = "DiffDocumentResponse";
-  public static final String E_LIST_DOCUMENT_REVISIONS_REQUEST = "ListDocumentRevisionsRequest";
-  public static final String E_LIST_DOCUMENT_REVISIONS_RESPONSE = "ListDocumentRevisionsResponse";
-  public static final String E_PURGE_REVISION_REQUEST = "PurgeRevisionRequest";
-  public static final String E_PURGE_REVISION_RESPONSE = "PurgeRevisionResponse";
   public static final String E_CREATE_DATA_SOURCE_REQUEST = "CreateDataSourceRequest";
   public static final String E_CREATE_DATA_SOURCE_RESPONSE = "CreateDataSourceResponse";
   public static final String E_GET_DATA_SOURCES_REQUEST = "GetDataSourcesRequest";
@@ -500,7 +491,6 @@ public final class MailConstants {
 
   public static final QName GET_TASK_SUMMARIES_REQUEST =
       QName.get(E_GET_TASK_SUMMARIES_REQUEST, NAMESPACE);
-  public static final QName GET_TASK_REQUEST = QName.get(E_GET_TASK_REQUEST, NAMESPACE);
   public static final QName SET_TASK_REQUEST = QName.get(E_SET_TASK_REQUEST, NAMESPACE);
   public static final QName CREATE_TASK_EXCEPTION_REQUEST =
       QName.get(E_CREATE_TASK_EXCEPTION_REQUEST, NAMESPACE);

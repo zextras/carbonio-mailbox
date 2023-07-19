@@ -792,8 +792,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.GetSystemRetentionPolicyResponse.class,
           com.zimbra.soap.mail.message.GetTagRequest.class,
           com.zimbra.soap.mail.message.GetTagResponse.class,
-          com.zimbra.soap.mail.message.GetTaskRequest.class,
-          com.zimbra.soap.mail.message.GetTaskResponse.class,
           com.zimbra.soap.mail.message.GetTaskSummariesRequest.class,
           com.zimbra.soap.mail.message.GetTaskSummariesResponse.class,
           com.zimbra.soap.mail.message.GetWorkingHoursRequest.class,
