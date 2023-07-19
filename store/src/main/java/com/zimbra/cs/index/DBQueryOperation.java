@@ -626,17 +626,11 @@ public class DBQueryOperation extends QueryOperation {
                 case TASK:
                     result.add(MailItem.Type.TASK);
                     break;
-                case DOCUMENT:
-                    result.add(MailItem.Type.DOCUMENT);
-                    break;
                 case NOTE:
                     result.add(MailItem.Type.NOTE);
                     break;
                 case FLAG:
                     result.add(MailItem.Type.FLAG);
-                    break;
-                case WIKI:
-                    result.add(MailItem.Type.WIKI);
                     break;
             }
         }

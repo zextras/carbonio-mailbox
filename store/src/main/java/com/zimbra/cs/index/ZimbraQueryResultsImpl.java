@@ -160,11 +160,6 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
         return hit;
     }
 
-    protected DocumentHit getDocumentHit(Mailbox mbx, int id, com.zimbra.cs.mailbox.Document item,
-            Document doc, Object sortValue) {
-        return new DocumentHit(this, mbx, id, item, doc, sortValue);
-    }
-
     /**
      * @param type
      * @return
@@ -222,10 +217,6 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
                 break;
             case TASK:
                 result = getTaskHit(mbox, sr.getId(), (Task) item, sr.getSortValue());
-                break;
-            case DOCUMENT:
-            case WIKI:
-                result = getDocumentHit(mbox, sr.getId(), (com.zimbra.cs.mailbox.Document) item, doc, sr.getSortValue());
                 break;
             default:
                 assert(false);

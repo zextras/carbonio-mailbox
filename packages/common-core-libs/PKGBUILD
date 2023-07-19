@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-common-core-libs"
-pkgver="4.0.10"
+pkgver="4.6.1"
 pkgrel="1"
 pkgdesc="Replace Carbonio core libs"
 pkgdesclong=(

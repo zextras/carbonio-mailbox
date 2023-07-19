@@ -50913,7 +50913,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      *
      * @return zimbraNotebookPageCacheSize, or 10240 if unset
      */
@@ -50923,7 +50924,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      *
      * @param zimbraNotebookPageCacheSize new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -50936,7 +50938,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      *
      * @param zimbraNotebookPageCacheSize new value
      * @param attrs existing map to populate, or null to create a new map
@@ -50950,7 +50953,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -50962,7 +50966,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

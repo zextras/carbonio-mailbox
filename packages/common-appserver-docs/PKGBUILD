@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-common-appserver-docs"
-pkgver="4.6.1"
+pkgver="4.6.3"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox Docs"
 pkgdesclong=(
@@ -126,8 +126,6 @@ package() {
     "${pkgdir}/opt/zextras/documentation/soap-calendar.txt"
   install -D "store/docs/soap-context-extension.txt" \
     "${pkgdir}/opt/zextras/documentation/soap-context-extension.txt"
-  install -D "store/docs/soap-document.txt" \
-    "${pkgdir}/opt/zextras/documentation/soap-document.txt"
   install -D "store/docs/soap-im.txt" \
     "${pkgdir}/opt/zextras/documentation/soap-im.txt"
   install -D "store/docs/soap-mobile.txt" \

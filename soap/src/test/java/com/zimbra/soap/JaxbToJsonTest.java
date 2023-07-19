@@ -89,13 +89,11 @@ import com.zimbra.soap.jaxb.XmlElemJsonAttr;
 import com.zimbra.soap.json.JacksonUtil;
 import com.zimbra.soap.json.jackson.annotate.ZimbraJsonAttribute;
 import com.zimbra.soap.json.jackson.annotate.ZimbraKeyValuePairs;
-import com.zimbra.soap.mail.message.DiffDocumentResponse;
 import com.zimbra.soap.mail.message.GetFilterRulesResponse;
 import com.zimbra.soap.mail.message.GetSystemRetentionPolicyResponse;
 import com.zimbra.soap.mail.message.NoOpResponse;
 import com.zimbra.soap.mail.type.AppointmentData;
 import com.zimbra.soap.mail.type.CalendaringDataInterface;
-import com.zimbra.soap.mail.type.DispositionAndText;
 import com.zimbra.soap.mail.type.FilterAction;
 import com.zimbra.soap.mail.type.FilterRule;
 import com.zimbra.soap.mail.type.FilterTest;
@@ -302,49 +300,6 @@ public class JaxbToJsonTest {
     VerifyIndexResponse roundtripped = JaxbUtil.elementToJaxb(jsonJaxbElem, VerifyIndexResponse.class);
     assertEquals(true, roundtripped.isStatus(), "roundtripped status");
     assertEquals(msg, roundtripped.getMessage(), "roundtripped message");
-  }
-
-  /**
-   * XmlValue should map to an attribute with name "_content"
-   * At present, classes that want this feature need the annotation @JsonProperty("_content"),
-   * otherwise, the name "value" is used.
-   *    "chunk": [ { "disp": "disposition 1", "_content": "text 1\nIn the sun" },
-   *               { "disp": "disPosition 2", "_content": "text 2" }],
-   */
-  @Test
-  void xmlValueAnnotation() throws Exception {
-    String dispos1 = "disposition 1";
-    String text1 = "text 1\nIn the sun";
-    String dispos2 = "disPosition 2";
-    String text2 = "text 2";
-    // ---------------------------------  For Comparison - Element handling where the JAXB has an @XmlValue
-    Element legacyElem = JSONElement.mFactory.createElement(MailConstants.DIFF_DOCUMENT_RESPONSE);
-    legacyElem.addNonUniqueElement(MailConstants.E_CHUNK).addAttribute(MailConstants.A_DISP, dispos1).setText(text1);
-    legacyElem.addNonUniqueElement(MailConstants.E_CHUNK).addAttribute(MailConstants.A_DISP, dispos2).setText(text2);
-    logDebug("DiffDocumentResponse JSONElement ---> prettyPrint\n%1$s", legacyElem.prettyPrint());
-    // --------------------------------- @XmlValue handling test - need @JsonProperty("_content") annotation
-    DiffDocumentResponse ddResp = new DiffDocumentResponse();
-    ddResp.addChunk(DispositionAndText.create(dispos1, text1));
-    ddResp.addChunk(DispositionAndText.create(dispos2, text2));
-    Element jsonJaxbElem = JacksonUtil.jaxbToJSONElement(ddResp);
-    logDebug("DiffDocumentResponse JSONElement from JAXB ---> prettyPrint\n%1$s", jsonJaxbElem.prettyPrint());
-    List<Element> chunks = jsonJaxbElem.listElements();
-    assertEquals(2, chunks.size(), "Number of child elements");
-    Element chunk1 = chunks.get(0);
-    Element chunk2 = chunks.get(1);
-    assertEquals(dispos1, chunk1.getAttribute(MailConstants.A_DISP), "1st chunk disposition");
-    assertEquals(text1, chunk1.getText(), "1st chunk value");
-    assertEquals(dispos2, chunk2.getAttribute(MailConstants.A_DISP), "2nd chunk disposition");
-    assertEquals(text2, chunk2.getText(), "2nd chunk value");
-    DiffDocumentResponse roundtripped = JaxbUtil.elementToJaxb(jsonJaxbElem, DiffDocumentResponse.class);
-    List<DispositionAndText> rtChunks = roundtripped.getChunks();
-    assertEquals(2, rtChunks.size(), "Number of roundtripped chunks");
-    DispositionAndText rtChunk1 = rtChunks.get(0);
-    DispositionAndText rtChunk2 = rtChunks.get(1);
-    assertEquals(dispos1, rtChunk1.getDisposition(), "1st roundtripped chunk disposition");
-    assertEquals(text1, rtChunk1.getText(), "1st roundtripped chunk value");
-    assertEquals(dispos2, rtChunk2.getDisposition(), "2nd roundtripped chunk disposition");
-    assertEquals(text2, rtChunk2.getText(), "2nd roundtripped chunk value");
   }
 
   /**

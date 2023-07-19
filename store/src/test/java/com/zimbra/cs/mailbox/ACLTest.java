@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zimbra.cs.mailbox.MailItem.Type;
 import java.util.HashMap;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -46,7 +47,7 @@ public class ACLTest {
   Account grantee = Provisioning.getInstance().get(Key.AccountBy.name, "principal@zimbra.com");
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(owner);
 
-  Folder folder = mbox.createFolder(null, "shared", new Folder.FolderOptions().setDefaultView(MailItem.Type.DOCUMENT));
+  Folder folder = mbox.createFolder(null, "shared", new Folder.FolderOptions().setDefaultView(Type.FOLDER));
   OperationContext octxt = new OperationContext(owner);
   mbox.grantAccess(octxt, folder.getId(), grantee.getId(), ACL.GRANTEE_USER, ACL.stringToRights("r"), null);
   try {
@@ -65,7 +66,7 @@ public class ACLTest {
   Account grantee = Provisioning.getInstance().get(Key.AccountBy.name, "principal@zimbra.com");
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(owner);
 
-  Folder folder = mbox.createFolder(null, "shared", new Folder.FolderOptions().setDefaultView(MailItem.Type.DOCUMENT));
+  Folder folder = mbox.createFolder(null, "shared", new Folder.FolderOptions().setDefaultView(Type.FOLDER));
   OperationContext octxt = new OperationContext(owner);
   mbox.grantAccess(octxt, folder.getId(), grantee.getId(), ACL.GRANTEE_USER, ACL.stringToRights("r"), null);
   try {
