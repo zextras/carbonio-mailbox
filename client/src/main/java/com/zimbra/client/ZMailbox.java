@@ -244,8 +244,10 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   /** include items in the Trash folder */
   public static final String TC_INCLUDE_TRASH = "t";
+
   /** include items in the Spam/Junk folder */
   public static final String TC_INCLUDE_JUNK = "j";
+
   /** include items in the Sent folder */
   public static final String TC_INCLUDE_SENT = "s";
 
@@ -638,6 +640,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     public boolean getAuthAuthToken() {
       return mAuthAuthToken;
     }
+
     /**
      * @param authAuthToken set to true if you want to send an AuthRequest to valid the auth token
      */
@@ -2098,6 +2101,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       throws ServiceException {
     return createContact(folderId, tags, attrs, null, null);
   }
+
   /**
    * Creates a new contact.
    *
@@ -6521,30 +6525,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   }
 
   /* tasks */
-
-  public ZAppointmentResult createTask(
-      String folderId, String flags, ZOutgoingMessage message, ZInvite invite, String optionalUid)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.CREATE_TASK_REQUEST);
-
-    //noinspection UnusedDeclaration
-    Element mEl = getMessageElement(req, message, null);
-
-    if (flags != null) {
-      mEl.addAttribute(MailConstants.A_FLAGS, flags);
-    }
-
-    if (folderId != null) {
-      mEl.addAttribute(MailConstants.A_FOLDER, folderId);
-    }
-
-    Element invEl = invite.toElement(mEl);
-    if (optionalUid != null) {
-      invEl.addAttribute(MailConstants.A_UID, optionalUid);
-    }
-
-    return new ZAppointmentResult(invoke(req));
-  }
 
   public ZAppointmentResult createTaskException(
       String id,

@@ -702,8 +702,6 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.CreateTagResponse.class,
           com.zimbra.soap.mail.message.CreateTaskExceptionRequest.class,
           com.zimbra.soap.mail.message.CreateTaskExceptionResponse.class,
-          com.zimbra.soap.mail.message.CreateTaskRequest.class,
-          com.zimbra.soap.mail.message.CreateTaskResponse.class,
           com.zimbra.soap.mail.message.CreateWaitSetRequest.class,
           com.zimbra.soap.mail.message.CreateWaitSetResponse.class,
           com.zimbra.soap.mail.message.DeclineCounterAppointmentRequest.class,
