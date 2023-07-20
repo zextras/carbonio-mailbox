@@ -423,6 +423,11 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
+        <artifactId>mailbox-soap-client</artifactId>
+        <version>${revision}</version>
+      </dependency>
+      <dependency>
+        <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
         <version>${revision}</version>
         <classifier>classes</classifier>
@@ -883,6 +888,7 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
+    <module>mailbox-soap-client</module>
     <module>carbonio-jetty-libs</module>
     <module>store-extra-runtime-dependencies</module>
   </modules>

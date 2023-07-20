@@ -1,0 +1,77 @@
+<!--
+SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <name>carbonio-mailbox-soap-client</name>
+  <packaging>jar</packaging>
+  <artifactId>mailbox-soap-client</artifactId>
+
+  <parent>
+    <groupId>zextras</groupId>
+    <version>${revision}</version>
+    <artifactId>zm-mailbox</artifactId>
+  </parent>
+  <dependencies>
+    <!-- We just need the .wsdl from this dependency -->
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>zm-soap</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <artifactId>jaxws-rt</artifactId>
+      <groupId>com.sun.xml.ws</groupId>
+      <version>2.3.1</version>
+    </dependency>
+    <dependency>
+      <artifactId>jaxb-impl</artifactId>
+      <groupId>com.sun.xml.bind</groupId>
+      <version>2.3.1</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>jaxws-maven-plugin</artifactId>
+          <configuration>
+            <args>
+              <arg>-B-XautoNameResolution</arg>
+              <arg>-XadditionalHeaders</arg>
+            </args>
+            <wsdlFiles>
+              <wsdlFile>com/zimbra/soap/ZimbraService.wsdl</wsdlFile>
+            </wsdlFiles>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>wsimport</goal>
+              </goals>
+            </execution>
+          </executions>
+          <groupId>org.codehaus.mojo</groupId>
+          <version>2.6</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
