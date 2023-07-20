@@ -95,8 +95,6 @@ public abstract class MailItem
      */
     MOUNTPOINT(13, MailItemType.MOUNTPOINT),
     /** Item is a {@link Task} */
-    TASK(15, MailItemType.TASK),
-    /** Item is a {@link Chat} */
     CHAT(16, MailItemType.CHAT);
 
     private static final Map<Byte, Type> BYTE2TYPE;
@@ -1821,8 +1819,6 @@ public abstract class MailItem
         return new Note(mbox, data, skipCache);
       case APPOINTMENT:
         return new Appointment(mbox, data, skipCache);
-      case TASK:
-        return new Task(mbox, data, skipCache);
       case MOUNTPOINT:
         return new Mountpoint(mbox, data, skipCache);
       case CHAT:
@@ -1866,8 +1862,6 @@ public abstract class MailItem
         return MailServiceException.NO_SUCH_NOTE(id);
       case APPOINTMENT:
         return MailServiceException.NO_SUCH_APPT(id);
-      case TASK:
-        return MailServiceException.NO_SUCH_TASK(id);
       default:
         return MailServiceException.NO_SUCH_ITEM(id);
     }
@@ -2335,8 +2329,6 @@ public abstract class MailItem
     getMailbox().updateSize(-info.size);
     mRevisions = null;
   }
-
-
 
   /**
    * Recalculates the size, metadata, etc. for an existing MailItem and persists that information to

@@ -1557,9 +1557,6 @@ public class Folder extends MailItem implements FolderStore {
       case Mailbox.ID_FOLDER_CALENDAR:
         view = Type.APPOINTMENT;
         break;
-      case Mailbox.ID_FOLDER_TASKS:
-        view = Type.TASK;
-        break;
       case Mailbox.ID_FOLDER_AUTO_CONTACTS:
       case Mailbox.ID_FOLDER_CONTACTS:
         view = Type.CONTACT;
@@ -1871,7 +1868,6 @@ public class Folder extends MailItem implements FolderStore {
   public boolean isVisibleInImap(boolean displayMailFoldersOnly) {
     switch (getDefaultView()) {
       case APPOINTMENT:
-      case TASK:
       case CONTACT:
       case CHAT:
         return !displayMailFoldersOnly;

@@ -142,8 +142,6 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(
         MailConstants.CREATE_TASK_EXCEPTION_REQUEST, new CreateTaskException());
     dispatcher.registerHandler(MailConstants.ADD_TASK_INVITE_REQUEST, new AddTaskInvite());
-    dispatcher.registerHandler(
-        MailConstants.COMPLETE_TASK_INSTANCE_REQUEST, new CompleteTaskInstance());
 
     dispatcher.registerHandler(
         MailConstants.GET_CALITEM_SUMMARIES_REQUEST, new GetCalendarItemSummaries());

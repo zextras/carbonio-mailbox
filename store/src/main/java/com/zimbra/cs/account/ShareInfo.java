@@ -850,9 +850,6 @@ public class ShareInfo {
         case APPOINTMENT:
           folderView = L10nUtil.getMessage(MsgKey.calendar, locale);
           break;
-        case TASK:
-          folderView = L10nUtil.getMessage(MsgKey.task, locale);
-          break;
         case CONTACT:
           folderView = L10nUtil.getMessage(MsgKey.addressBook, locale);
           break;
