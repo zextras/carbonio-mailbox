@@ -90,7 +90,6 @@ import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.Mountpoint;
-import com.zimbra.cs.mailbox.Note;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.OperationContextData;
 import com.zimbra.cs.mailbox.RetentionPolicyManager;
@@ -198,8 +197,6 @@ public final class ToXML {
       return encodeFolder(parent, ifmt, octxt, (Folder) item, fields);
     } else if (item instanceof Tag) {
       return encodeTag(parent, ifmt, octxt, (Tag) item, fields);
-    } else if (item instanceof Note) {
-      return encodeNote(parent, ifmt, octxt, (Note) item, fields);
     } else if (item instanceof Contact) {
       return encodeContact(parent, ifmt, octxt, (Contact) item, false, null, fields);
     } else if (item instanceof CalendarItem) {
@@ -1151,46 +1148,6 @@ public final class ToXML {
         .addAttribute(MailConstants.A_CONTENT_TYPE, attach.getContentType());
     kvp.addAttribute(MailConstants.A_SIZE, attach.getSize())
         .addAttribute(MailConstants.A_CONTENT_FILENAME, attach.getFilename());
-  }
-
-  public static Element encodeNote(
-      Element parent, ItemIdFormatter ifmt, OperationContext octxt, Note note)
-      throws ServiceException {
-    return encodeNote(parent, ifmt, octxt, note, NOTIFY_FIELDS);
-  }
-
-  public static Element encodeNote(
-      Element parent, ItemIdFormatter ifmt, OperationContext octxt, Note note, int fields)
-      throws ServiceException {
-    Element el = parent.addNonUniqueElement(MailConstants.E_NOTE);
-    el.addAttribute(MailConstants.A_ID, ifmt.formatItemId(note));
-    if (needToOutput(fields, Change.CONTENT) && note.getSavedSequence() != 0) {
-      el.addAttribute(MailConstants.A_REVISION, note.getSavedSequence());
-    }
-    if (needToOutput(fields, Change.FOLDER)) {
-      el.addAttribute(
-          MailConstants.A_FOLDER,
-          ifmt.formatItemId(new ItemId(note.getMailbox().getAccountId(), note.getFolderId())));
-    }
-    if (needToOutput(fields, Change.DATE)) {
-      el.addAttribute(MailConstants.A_DATE, note.getDate());
-    }
-    recordItemTags(el, note, octxt, fields);
-    if (needToOutput(fields, Change.POSITION)) {
-      el.addAttribute(MailConstants.A_BOUNDS, note.getBounds().toString());
-    }
-    encodeColor(el, note, fields);
-    if (needToOutput(fields, Change.CONTENT)) {
-      el.addAttribute(MailConstants.E_CONTENT, note.getText(), Element.Disposition.CONTENT);
-    }
-    if (needToOutput(fields, Change.CONFLICT)) {
-      el.addAttribute(MailConstants.A_CHANGE_DATE, note.getChangeDate() / 1000);
-      el.addAttribute(MailConstants.A_MODIFIED_SEQUENCE, note.getModifiedSequence());
-    }
-    if (needToOutput(fields, Change.METADATA)) {
-      encodeAllCustomMetadata(el, note, fields);
-    }
-    return el;
   }
 
   public static Element encodeTag(

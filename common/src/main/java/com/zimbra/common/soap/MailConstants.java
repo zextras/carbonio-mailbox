@@ -131,12 +131,6 @@ public final class MailConstants {
   public static final String E_EXPORT_CONTACTS_RESPONSE = "ExportContactsResponse";
   public static final String E_CONTACT_ACTION_REQUEST = "ContactActionRequest";
   public static final String E_CONTACT_ACTION_RESPONSE = "ContactActionResponse";
-  public static final String E_CREATE_NOTE_REQUEST = "CreateNoteRequest";
-  public static final String E_CREATE_NOTE_RESPONSE = "CreateNoteResponse";
-  public static final String E_GET_NOTE_REQUEST = "GetNoteRequest";
-  public static final String E_GET_NOTE_RESPONSE = "GetNoteResponse";
-  public static final String E_NOTE_ACTION_REQUEST = "NoteActionRequest";
-  public static final String E_NOTE_ACTION_RESPONSE = "NoteActionResponse";
   public static final String E_SYNC_REQUEST = "SyncRequest";
   public static final String E_SYNC_RESPONSE = "SyncResponse";
   public static final String E_GET_RULES_REQUEST = "GetRulesRequest";
@@ -426,13 +420,7 @@ public final class MailConstants {
       QName.get(E_GET_CONTACT_BACKUP_LIST_REQUEST, NAMESPACE);
   public static final QName GET_CONTACT_BACKUP_LIST_RESPONSE =
       QName.get(E_GET_CONTACT_BACKUP_LIST_RESPONSE, NAMESPACE);
-  // notes
-  public static final QName CREATE_NOTE_REQUEST = QName.get(E_CREATE_NOTE_REQUEST, NAMESPACE);
-  public static final QName CREATE_NOTE_RESPONSE = QName.get(E_CREATE_NOTE_RESPONSE, NAMESPACE);
-  public static final QName GET_NOTE_REQUEST = QName.get(E_GET_NOTE_REQUEST, NAMESPACE);
-  public static final QName GET_NOTE_RESPONSE = QName.get(E_GET_NOTE_RESPONSE, NAMESPACE);
-  public static final QName NOTE_ACTION_REQUEST = QName.get(E_NOTE_ACTION_REQUEST, NAMESPACE);
-  public static final QName NOTE_ACTION_RESPONSE = QName.get(E_NOTE_ACTION_RESPONSE, NAMESPACE);
+
   // sync for Outlook
   public static final QName SYNC_REQUEST = QName.get(E_SYNC_REQUEST, NAMESPACE);
   public static final QName SYNC_RESPONSE = QName.get(E_SYNC_RESPONSE, NAMESPACE);
@@ -697,7 +685,6 @@ public final class MailConstants {
   public static final String E_MSG = "m";
   public static final String E_CONV = "c";
   public static final String E_CHAT = "chat";
-  public static final String E_NOTE = "note";
   public static final String E_TAG = "tag";
   public static final String E_CONTACT = "cn";
   public static final String E_FOLDER = "folder";
@@ -817,7 +804,6 @@ public final class MailConstants {
   public static final String A_INTERNAL_GRANT_EXPIRY = "internalGrantExpiry";
   public static final String A_GUEST_GRANT_EXPIRY = "guestGrantExpiry";
   public static final String E_GRANT = "grant";
-  public static final String E_NOTES = "notes";
   public static final String E_SHARE = "share";
   public static final String E_REVOKE = "revoke";
   public static final String A_EXPIRE = "expire";

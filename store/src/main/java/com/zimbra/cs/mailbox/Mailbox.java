@@ -103,7 +103,6 @@ import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.MailboxListener.ChangeNotification;
-import com.zimbra.cs.mailbox.Note.Rectangle;
 import com.zimbra.cs.mailbox.Tag.NormalizedTags;
 import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
 import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
@@ -137,7 +136,6 @@ import com.zimbra.cs.redolog.op.CreateInvite;
 import com.zimbra.cs.redolog.op.CreateMailbox;
 import com.zimbra.cs.redolog.op.CreateMessage;
 import com.zimbra.cs.redolog.op.CreateMountpoint;
-import com.zimbra.cs.redolog.op.CreateNote;
 import com.zimbra.cs.redolog.op.CreateSavedSearch;
 import com.zimbra.cs.redolog.op.CreateTag;
 import com.zimbra.cs.redolog.op.DateItem;
@@ -146,7 +144,6 @@ import com.zimbra.cs.redolog.op.DeleteItem;
 import com.zimbra.cs.redolog.op.DeleteItemFromDumpster;
 import com.zimbra.cs.redolog.op.DeleteMailbox;
 import com.zimbra.cs.redolog.op.DismissCalendarItemAlarm;
-import com.zimbra.cs.redolog.op.EditNote;
 import com.zimbra.cs.redolog.op.EnableSharedReminder;
 import com.zimbra.cs.redolog.op.FixCalendarItemEndTime;
 import com.zimbra.cs.redolog.op.FixCalendarItemPriority;
@@ -167,7 +164,6 @@ import com.zimbra.cs.redolog.op.RefreshMountpoint;
 import com.zimbra.cs.redolog.op.RenameItem;
 import com.zimbra.cs.redolog.op.RenameItemPath;
 import com.zimbra.cs.redolog.op.RenameMailbox;
-import com.zimbra.cs.redolog.op.RepositionNote;
 import com.zimbra.cs.redolog.op.RevokeAccess;
 import com.zimbra.cs.redolog.op.SaveChat;
 import com.zimbra.cs.redolog.op.SaveDraft;
@@ -4620,6 +4616,7 @@ public class Mailbox implements MailboxStore {
     }
     return folders;
   }
+
   /**
    * ZBUG 1634 setting the FOLDER ID for which delegation has been called e.g If user1 shares his
    * Inbox, Sent and a Calendar to user2, and user2 tries to use delegation in Apple calDAV, it
@@ -4781,27 +4778,6 @@ public class Mailbox implements MailboxStore {
   public Mountpoint getMountpointByUuid(OperationContext octxt, String mptUuid)
       throws ServiceException {
     return (Mountpoint) getItemByUuid(octxt, mptUuid, MailItem.Type.MOUNTPOINT);
-  }
-
-  public Note getNoteById(OperationContext octxt, int noteId) throws ServiceException {
-    return (Note) getItemById(octxt, noteId, MailItem.Type.NOTE);
-  }
-
-  Note getNoteById(int noteId) throws ServiceException {
-    return (Note) getItemById(noteId, MailItem.Type.NOTE);
-  }
-
-  public List<Note> getNoteList(OperationContext octxt, int folderId) throws ServiceException {
-    return getNoteList(octxt, folderId, SortBy.NONE);
-  }
-
-  public List<Note> getNoteList(OperationContext octxt, int folderId, SortBy sort)
-      throws ServiceException {
-    List<Note> notes = new ArrayList<Note>();
-    for (MailItem item : getItemList(octxt, MailItem.Type.NOTE, folderId, sort)) {
-      notes.add((Note) item);
-    }
-    return notes;
   }
 
   public Chat getChatById(OperationContext octxt, int id) throws ServiceException {
@@ -6152,6 +6128,7 @@ public class Mailbox implements MailboxStore {
         addRevision,
         false);
   }
+
   /**
    * Directly add an Invite into the system...this process also gets triggered when we add a Message
    * that has a text/calendar Mime part: but this API is useful when you don't want to add a
@@ -8673,80 +8650,6 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public Note createNote(
-      OperationContext octxt, String content, Rectangle location, byte color, int folderId)
-      throws ServiceException {
-    return createNote(octxt, content, location, new Color(color), folderId);
-  }
-
-  public Note createNote(
-      OperationContext octxt, String content, Rectangle location, Color color, int folderId)
-      throws ServiceException {
-    content = StringUtil.stripControlCharacters(content);
-    if (Strings.isNullOrEmpty(content)) {
-      throw ServiceException.INVALID_REQUEST("note content may not be empty", null);
-    }
-    CreateNote redoRecorder = new CreateNote(mId, folderId, content, color, location);
-
-    boolean success = false;
-    try {
-      beginTransaction("createNote", octxt, redoRecorder);
-      CreateNote redoPlayer = (CreateNote) currentChange().getRedoPlayer();
-
-      int noteId = getNextItemId(redoPlayer == null ? ID_AUTO_INCREMENT : redoPlayer.getNoteId());
-      Note note = Note.create(noteId, getFolderById(folderId), content, location, color, null);
-      redoRecorder.setNoteId(noteId);
-
-      index.add(note);
-      success = true;
-      return note;
-    } finally {
-      endTransaction(success);
-    }
-  }
-
-  public void editNote(OperationContext octxt, int noteId, String content) throws ServiceException {
-    content = StringUtil.stripControlCharacters(content);
-    if (Strings.isNullOrEmpty(content)) {
-      throw ServiceException.INVALID_REQUEST("note content may not be empty", null);
-    }
-    EditNote redoRecorder = new EditNote(mId, noteId, content);
-
-    boolean success = false;
-    try {
-      beginTransaction("editNote", octxt, redoRecorder);
-
-      Note note = getNoteById(noteId);
-      checkItemChangeID(note);
-
-      note.setContent(content);
-      index.add(note);
-
-      success = true;
-    } finally {
-      endTransaction(success);
-    }
-  }
-
-  public void repositionNote(OperationContext octxt, int noteId, Rectangle location)
-      throws ServiceException {
-    Preconditions.checkNotNull(location, "must specify note bounds");
-    RepositionNote redoRecorder = new RepositionNote(mId, noteId, location);
-
-    boolean success = false;
-    try {
-      beginTransaction("repositionNote", octxt, redoRecorder);
-
-      Note note = getNoteById(noteId);
-      checkItemChangeID(note);
-
-      note.reposition(location);
-      success = true;
-    } finally {
-      endTransaction(success);
-    }
-  }
-
   CalendarItem createCalendarItem(
       int folderId,
       int flags,
@@ -11219,8 +11122,6 @@ public class Mailbox implements MailboxStore {
       endTransaction(success);
     }
   }
-
-
 
   public UnderlyingData getFirstChildData(OperationContext octxt, MailItem parent)
       throws ServiceException {
