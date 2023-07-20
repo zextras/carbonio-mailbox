@@ -36,7 +36,6 @@ import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.Metadata;
-import com.zimbra.cs.mailbox.Note;
 import com.zimbra.cs.mailbox.Tag;
 import com.zimbra.cs.mailbox.VirtualConversation;
 import com.zimbra.cs.mailbox.util.TagUtil;
@@ -1219,38 +1218,6 @@ public class DbMailItem {
     } catch (SQLException e) {
       throw ServiceException.FAILURE(
           "writing metadata for mailbox " + item.getMailboxId() + ", item " + item.getId(), e);
-    } finally {
-      DbPool.closeStatement(stmt);
-    }
-  }
-
-  // need to kill the Note class sooner rather than later
-  public static void saveSubject(Note note) throws ServiceException {
-    Mailbox mbox = note.getMailbox();
-    DbConnection conn = mbox.getOperationConnection();
-    PreparedStatement stmt = null;
-    try {
-      stmt =
-          conn.prepareStatement(
-              "UPDATE "
-                  + getMailItemTableName(note)
-                  + " SET date = ?, size = ?, subject = ?, mod_metadata = ?, change_date = ?,"
-                  + " mod_content = ? WHERE "
-                  + IN_THIS_MAILBOX_AND
-                  + "id = ?");
-      int pos = 1;
-      stmt.setInt(pos++, (int) (note.getDate() / 1000));
-      stmt.setLong(pos++, note.getSize());
-      stmt.setString(pos++, note.getSubject());
-      stmt.setInt(pos++, mbox.getOperationChangeID());
-      stmt.setInt(pos++, mbox.getOperationTimestamp());
-      stmt.setInt(pos++, mbox.getOperationChangeID());
-      pos = setMailboxId(stmt, mbox, pos);
-      stmt.setInt(pos++, note.getId());
-      stmt.executeUpdate();
-    } catch (SQLException e) {
-      throw ServiceException.FAILURE(
-          "writing subject for mailbox " + note.getMailboxId() + ", note " + note.getId(), e);
     } finally {
       DbPool.closeStatement(stmt);
     }

@@ -78,11 +78,6 @@ public abstract class MailItem
     MESSAGE(5, MailItemType.MESSAGE),
     /** Item is a {@link Contact}. */
     CONTACT(6, MailItemType.CONTACT),
-    /** Item is a {@link InviteMessage} with a {@code text/calendar} MIME part. */
-    @Deprecated
-    INVITE(7, MailItemType.INVITE),
-    /** Item is a {@link Note}. */
-    NOTE(9, MailItemType.NOTE),
     /** Item is a memory-only system {@link Flag}. */
     FLAG(10, MailItemType.FLAG),
     /** Item is a calendar {@link Appointment}. */
@@ -110,7 +105,7 @@ public abstract class MailItem
     private final byte btype;
     private final MailItemType miType;
 
-    private Type(int b, MailItemType mit) {
+    Type(int b, MailItemType mit) {
       btype = (byte) b;
       miType = mit;
     }
@@ -243,7 +238,7 @@ public abstract class MailItem
 
     private final int id;
 
-    private IndexStatus(int id) {
+    IndexStatus(int id) {
       this.id = id;
     }
 
@@ -1815,8 +1810,6 @@ public abstract class MailItem
         return new Message(mbox, data, skipCache);
       case CONTACT:
         return new Contact(mbox, data, skipCache);
-      case NOTE:
-        return new Note(mbox, data, skipCache);
       case APPOINTMENT:
         return new Appointment(mbox, data, skipCache);
       case MOUNTPOINT:
@@ -1858,8 +1851,6 @@ public abstract class MailItem
         return MailServiceException.NO_SUCH_MSG(id);
       case CONTACT:
         return MailServiceException.NO_SUCH_CONTACT(id);
-      case NOTE:
-        return MailServiceException.NO_SUCH_NOTE(id);
       case APPOINTMENT:
         return MailServiceException.NO_SUCH_APPT(id);
       default:

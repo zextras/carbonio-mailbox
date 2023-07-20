@@ -211,13 +211,12 @@ public class Sync extends MailDocumentHandler {
       if (folder.getId() == Mailbox.ID_FOLDER_TAGS) {
         initialTagSync(f, octxt, ifmt, mbox);
       } else {
-        TypedIdList idlist = mbox.getItemIds(octxt, folder.getId());
-        initialMsgSync(f, idlist, octxt, mbox, folder, messageSyncStart);
-        initialItemSync(f, MailConstants.E_CHAT, idlist.getIds(MailItem.Type.CHAT));
-        initialItemSync(f, MailConstants.E_CONTACT, idlist.getIds(MailItem.Type.CONTACT));
-        initialItemSync(f, MailConstants.E_NOTE, idlist.getIds(MailItem.Type.NOTE));
-        initialCalendarSync(f, idlist, octxt, mbox, folder, calendarStart);
-        initialCovSync(f, idlist, octxt, mbox, folder, messageSyncStart);
+        TypedIdList idList = mbox.getItemIds(octxt, folder.getId());
+        initialMsgSync(f, idList, octxt, mbox, folder, messageSyncStart);
+        initialItemSync(f, MailConstants.E_CHAT, idList.getIds(MailItem.Type.CHAT));
+        initialItemSync(f, MailConstants.E_CONTACT, idList.getIds(MailItem.Type.CONTACT));
+        initialCalendarSync(f, idList, octxt, mbox, folder, calendarStart);
+        initialCovSync(f, idList, octxt, mbox, folder, messageSyncStart);
       }
     }
 
@@ -560,8 +559,6 @@ public class Sync extends MailDocumentHandler {
         return MailConstants.E_CONTACT;
       case APPOINTMENT:
         return MailConstants.E_APPOINTMENT;
-      case NOTE:
-        return MailConstants.E_NOTE;
       default:
         return null;
     }
@@ -586,8 +583,6 @@ public class Sync extends MailDocumentHandler {
       return MailItem.Type.CONTACT;
     } else if (name.equals(MailConstants.E_APPOINTMENT)) {
       return MailItem.Type.APPOINTMENT;
-    } else if (name.equals(MailConstants.E_NOTE)) {
-      return MailItem.Type.NOTE;
     } else {
       return MailItem.Type.UNKNOWN;
     }

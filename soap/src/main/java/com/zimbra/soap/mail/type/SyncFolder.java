@@ -23,8 +23,7 @@ public class SyncFolder extends Folder {
     @XmlElement(name = MailConstants.E_CHAT /* chat */, type = ChatIdsAttr.class),
     @XmlElement(name = MailConstants.E_MSG /* m */, type = MsgIdsAttr.class),
     @XmlElement(name = MailConstants.E_CONTACT /* cn */, type = ContactIdsAttr.class),
-    @XmlElement(name = MailConstants.E_APPOINTMENT /* appt */, type = ApptIdsAttr.class),
-    @XmlElement(name = MailConstants.E_NOTES /* notes */, type = NoteIdsAttr.class)
+    @XmlElement(name = MailConstants.E_APPOINTMENT /* appt */, type = ApptIdsAttr.class)
   })
   private List<IdsAttr> itemIds = Lists.newArrayList();
 

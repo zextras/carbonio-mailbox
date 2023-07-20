@@ -44,11 +44,7 @@ import org.apache.http.HttpException;
 public abstract class Formatter {
 
   static final Set<MailItem.Type> SEARCH_FOR_EVERYTHING =
-      EnumSet.of(
-          MailItem.Type.APPOINTMENT,
-          MailItem.Type.CONTACT,
-          MailItem.Type.MESSAGE,
-          MailItem.Type.NOTE);
+      EnumSet.of(MailItem.Type.APPOINTMENT, MailItem.Type.CONTACT, MailItem.Type.MESSAGE);
 
   protected static final int TIME_UNSPECIFIED = -1;
 

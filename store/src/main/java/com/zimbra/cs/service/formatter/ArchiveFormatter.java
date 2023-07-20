@@ -44,7 +44,6 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.Message.CalendarItemInfo;
 import com.zimbra.cs.mailbox.Mountpoint;
-import com.zimbra.cs.mailbox.Note;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.SearchFolder;
 import com.zimbra.cs.mailbox.Tag;
@@ -300,8 +299,7 @@ public abstract class ArchiveFormatter extends Formatter {
             MailItem.Type.MESSAGE,
             MailItem.Type.CONTACT,
             MailItem.Type.APPOINTMENT,
-            MailItem.Type.CHAT,
-            MailItem.Type.NOTE);
+            MailItem.Type.CHAT);
     ArchiveOutputStream aos = null;
     String types = context.getTypesString();
     MailboxMaintenance maintenance = null;
@@ -627,10 +625,6 @@ public abstract class ArchiveFormatter extends Formatter {
           }
         }
         ext = "eml";
-        break;
-
-      case NOTE:
-        ext = "note";
         break;
 
       case VIRTUAL_CONVERSATION:
@@ -1535,43 +1529,6 @@ public abstract class ArchiveFormatter extends Formatter {
                     mp.isReminderEnabled());
           }
           break;
-
-        case NOTE:
-          Note note = (Note) mi;
-          Note oldNote = null;
-
-          fldr = createPath(context, fmap, path, MailItem.Type.NOTE);
-          try {
-            for (Note listNote : mbox.getNoteList(octxt, fldr.getId())) {
-              if (note.getSubject().equals(listNote.getSubject())) {
-                oldNote = listNote;
-                break;
-              }
-            }
-          } catch (Exception e) {
-          }
-          if (oldNote != null) {
-            if (r == Resolve.Replace) {
-              mbox.delete(octxt, oldNote.getId(), oldNote.getType());
-            } else {
-              oldItem = oldNote;
-              if (r == Resolve.Modify) {
-                mbox.editNote(octxt, oldItem.getId(), new String(readArchiveEntry(ais, aie), UTF8));
-              }
-            }
-            break;
-          }
-          if (oldItem == null) {
-            newItem =
-                mbox.createNote(
-                    octxt,
-                    new String(readArchiveEntry(ais, aie), UTF8),
-                    note.getBounds(),
-                    note.getColor(),
-                    fldr.getId());
-          }
-          break;
-
         case SEARCHFOLDER:
           SearchFolder sf = (SearchFolder) mi;
           MailItem oldSF = null;

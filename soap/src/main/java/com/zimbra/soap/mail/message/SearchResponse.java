@@ -16,7 +16,6 @@ import com.zimbra.soap.mail.type.ContactInfo;
 import com.zimbra.soap.mail.type.ConversationHitInfo;
 import com.zimbra.soap.mail.type.MessageHitInfo;
 import com.zimbra.soap.mail.type.MessagePartHitInfo;
-import com.zimbra.soap.mail.type.NoteHitInfo;
 import com.zimbra.soap.mail.type.SuggestedQueryString;
 import com.zimbra.soap.type.BaseQueryInfo;
 import com.zimbra.soap.type.SearchHit;
@@ -86,7 +85,6 @@ public class SearchResponse {
     @XmlElement(name = MailConstants.E_CHAT /* chat */, type = ChatHitInfo.class),
     @XmlElement(name = MailConstants.E_MIMEPART /* mp */, type = MessagePartHitInfo.class),
     @XmlElement(name = MailConstants.E_CONTACT /* cn */, type = ContactInfo.class),
-    @XmlElement(name = MailConstants.E_NOTE /* note */, type = NoteHitInfo.class),
     @XmlElement(name = MailConstants.E_APPOINTMENT /* appt */, type = AppointmentHitInfo.class)
   })
   private List<SearchHit> searchHits = Lists.newArrayList();

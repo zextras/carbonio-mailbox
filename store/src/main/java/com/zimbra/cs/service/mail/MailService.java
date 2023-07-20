@@ -6,7 +6,6 @@
 package com.zimbra.cs.service.mail;
 
 import com.zextras.carbonio.files.FilesClient;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
@@ -95,13 +94,6 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.CONTACT_ACTION_REQUEST, new ContactAction());
     dispatcher.registerHandler(MailConstants.EXPORT_CONTACTS_REQUEST, new ExportContacts());
     dispatcher.registerHandler(MailConstants.IMPORT_CONTACTS_REQUEST, new ImportContacts());
-
-    // notes
-    if (LC.notes_enabled.booleanValue()) {
-      dispatcher.registerHandler(MailConstants.GET_NOTE_REQUEST, new GetNote());
-      dispatcher.registerHandler(MailConstants.CREATE_NOTE_REQUEST, new CreateNote());
-      dispatcher.registerHandler(MailConstants.NOTE_ACTION_REQUEST, new NoteAction());
-    }
 
     // sync
     dispatcher.registerHandler(MailConstants.SYNC_REQUEST, new Sync());

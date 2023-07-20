@@ -643,9 +643,6 @@ public class DBQueryOperation extends QueryOperation {
         case APPOINTMENT:
           result.add(MailItem.Type.APPOINTMENT);
           break;
-        case NOTE:
-          result.add(MailItem.Type.NOTE);
-          break;
         case FLAG:
           result.add(MailItem.Type.FLAG);
           break;

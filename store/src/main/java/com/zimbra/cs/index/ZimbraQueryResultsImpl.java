@@ -13,8 +13,6 @@ import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Message;
-import com.zimbra.cs.mailbox.Note;
-import com.zimbra.cs.mailbox.Task;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +51,6 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
   private Map<Integer, MessageHit> messageHits;
   private Map<String, MessagePartHit> partHits;
   private Map<Integer, ContactHit> contactHits;
-  private Map<Integer, NoteHit> noteHits;
   private Map<Integer, CalendarItemHit> calItemHits;
 
   private final Set<MailItem.Type> types;
@@ -70,7 +67,6 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
     messageHits = new LRUHashMap<Integer, MessageHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
     partHits = new LRUHashMap<String, MessagePartHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
     contactHits = new LRUHashMap<Integer, ContactHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
-    noteHits = new LRUHashMap<Integer, NoteHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
     calItemHits = new LRUHashMap<Integer, CalendarItemHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
   }
   ;
@@ -114,29 +110,11 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
     return hit;
   }
 
-  protected NoteHit getNoteHit(Mailbox mbx, int id, Note note, Object sortValue) {
-    NoteHit hit = noteHits.get(id);
-    if (hit == null) {
-      hit = new NoteHit(this, mbx, id, note, sortValue);
-      noteHits.put(id, hit);
-    }
-    return hit;
-  }
-
   protected CalendarItemHit getAppointmentHit(
       Mailbox mbx, int id, CalendarItem cal, Object sortValue) {
     CalendarItemHit hit = calItemHits.get(id);
     if (hit == null) {
       hit = new CalendarItemHit(this, mbx, id, cal, sortValue);
-      calItemHits.put(id, hit);
-    }
-    return hit;
-  }
-
-  protected CalendarItemHit getTaskHit(Mailbox mbx, int id, Task task, Object sortValue) {
-    CalendarItemHit hit = calItemHits.get(id);
-    if (hit == null) {
-      hit = new TaskHit(this, mbx, id, task, sortValue);
       calItemHits.put(id, hit);
     }
     return hit;
@@ -210,9 +188,6 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
         break;
       case CONTACT:
         result = getContactHit(mbox, sr.getId(), (Contact) item, sr.getSortValue());
-        break;
-      case NOTE:
-        result = getNoteHit(mbox, sr.getId(), (Note) item, sr.getSortValue());
         break;
       case APPOINTMENT:
         result = getAppointmentHit(mbox, sr.getId(), (CalendarItem) item, sr.getSortValue());
