@@ -916,6 +916,8 @@
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <revision>23.9.0-SNAPSHOT</revision>
     <mockserver.version>5.13.0</mockserver.version>
+    <!-- Skip Dependency check by default -->
+    <dependency-check.skip>true</dependency-check.skip>
   </properties>
   <version>${revision}</version>
   <profiles>
