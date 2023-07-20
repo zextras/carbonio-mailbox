@@ -19,17 +19,6 @@ SPDX-License-Identifier: AGPL-3.0-only
     <artifactId>zm-mailbox</artifactId>
   </parent>
   <dependencies>
-    <!-- We just need the .wsdl from this dependency -->
-    <dependency>
-      <groupId>zextras</groupId>
-      <artifactId>zm-soap</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <dependency>
       <artifactId>jaxws-rt</artifactId>
       <groupId>com.sun.xml.ws</groupId>
@@ -52,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
               <arg>-XadditionalHeaders</arg>
             </args>
             <wsdlFiles>
-              <wsdlFile>com/zimbra/soap/ZimbraService.wsdl</wsdlFile>
+              <wsdlFile>${project.parent.basedir}/soap/target/classes/com/zimbra/soap/ZimbraService.wsdl</wsdlFile>
             </wsdlFiles>
           </configuration>
           <executions>
