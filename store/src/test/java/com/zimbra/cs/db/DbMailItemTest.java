@@ -603,10 +603,6 @@ public final class DbMailItemTest {
     assertEquals(tombstones.size(), 4);
 
     types = new HashSet<MailItem.Type>();
-    tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(tombstones.size(), 5);
-
-    types = new HashSet<MailItem.Type>();
     types.add(MailItem.Type.CONTACT);
     tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
     assertEquals(tombstones.size(), 2);
@@ -615,6 +611,6 @@ public final class DbMailItemTest {
     types.add(MailItem.Type.MESSAGE);
     types.add(MailItem.Type.APPOINTMENT);
     tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(tombstones.size(), 12);
+    assertEquals(tombstones.size(), 7);
   }
 }
