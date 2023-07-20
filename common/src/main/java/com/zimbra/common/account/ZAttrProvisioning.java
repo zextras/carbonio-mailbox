@@ -12308,21 +12308,24 @@ public class ZAttrProvisioning {
     public static final String A_zimbraNotebookMaxCachedTemplatesPerFolder = "zimbraNotebookMaxCachedTemplatesPerFolder";
 
     /**
-     * maximum number of revisions to keep for wiki pages and documents. 0
-     * means unlimited.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: maximum number of revisions to keep for wiki pages and
+     * documents. 0 means unlimited.
      */
     @ZAttr(id=482)
     public static final String A_zimbraNotebookMaxRevisions = "zimbraNotebookMaxRevisions";
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      */
     @ZAttr(id=369)
     public static final String A_zimbraNotebookPageCacheSize = "zimbraNotebookPageCacheSize";
 
     /**
-     * whether to strip off potentially harming HTML tags in Wiki and HTML
-     * Documents.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
+     * and HTML Documents.
      *
      * @since ZCS 5.0.6
      */

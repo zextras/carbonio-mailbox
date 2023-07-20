@@ -27,7 +27,6 @@ import com.zimbra.soap.mail.type.ContactInfo;
 import com.zimbra.soap.mail.type.ConversationSummary;
 import com.zimbra.soap.mail.type.DocumentInfo;
 import com.zimbra.soap.mail.type.MessageSummary;
-import com.zimbra.soap.mail.type.NoteInfo;
 import com.zimbra.soap.mail.type.SyncDeletedInfo;
 import com.zimbra.soap.mail.type.SyncFolder;
 import com.zimbra.soap.mail.type.TagInfo;
@@ -81,7 +80,6 @@ public class SyncResponse {
     @XmlElements({
         @XmlElement(name=MailConstants.E_FOLDER /* folder */, type=SyncFolder.class),
         @XmlElement(name=MailConstants.E_TAG /* tag */, type=TagInfo.class),
-        @XmlElement(name=MailConstants.E_NOTE /* note */, type=NoteInfo.class),
         @XmlElement(name=MailConstants.E_CONTACT /* cn */, type=ContactInfo.class),
         @XmlElement(name=MailConstants.E_APPOINTMENT /* appt */, type=CalendarItemInfo.class),
         @XmlElement(name=MailConstants.E_TASK /* task */, type=TaskItemInfo.class),

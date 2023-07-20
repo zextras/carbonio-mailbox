@@ -96,13 +96,6 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.EXPORT_CONTACTS_REQUEST, new ExportContacts());
     dispatcher.registerHandler(MailConstants.IMPORT_CONTACTS_REQUEST, new ImportContacts());
 
-    // notes
-    if (LC.notes_enabled.booleanValue()) {
-      dispatcher.registerHandler(MailConstants.GET_NOTE_REQUEST, new GetNote());
-      dispatcher.registerHandler(MailConstants.CREATE_NOTE_REQUEST, new CreateNote());
-      dispatcher.registerHandler(MailConstants.NOTE_ACTION_REQUEST, new NoteAction());
-    }
-
     // sync
     dispatcher.registerHandler(MailConstants.SYNC_REQUEST, new Sync());
 
@@ -181,15 +174,6 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(
         MailConstants.GET_SPELL_DICTIONARIES_REQUEST, new GetSpellDictionaries());
 
-    // Documents
-    dispatcher.registerHandler(
-        MailConstants.DIFF_DOCUMENT_REQUEST, new com.zimbra.cs.service.doc.DiffDocument());
-    dispatcher.registerHandler(
-        MailConstants.LIST_DOCUMENT_REVISIONS_REQUEST,
-        new com.zimbra.cs.service.doc.ListDocumentRevisions());
-    dispatcher.registerHandler(
-        MailConstants.PURGE_REVISION_REQUEST, new com.zimbra.cs.service.mail.PurgeRevision());
-
     // data source
     dispatcher.registerHandler(MailConstants.GET_DATA_SOURCES_REQUEST, new GetDataSources());
     dispatcher.registerHandler(MailConstants.CREATE_DATA_SOURCE_REQUEST, new CreateDataSource());
@@ -219,10 +203,6 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.AUTO_COMPLETE_REQUEST, new AutoComplete());
     dispatcher.registerHandler(MailConstants.RANKING_ACTION_REQUEST, new RankingAction());
 
-    // comments
-    dispatcher.registerHandler(MailConstants.ADD_COMMENT_REQUEST, new AddComment());
-    dispatcher.registerHandler(MailConstants.GET_COMMENTS_REQUEST, new GetComments());
-
     // share
     dispatcher.registerHandler(
         MailConstants.GET_SHARE_NOTIFICATIONS_REQUEST, new GetShareNotifications());
@@ -251,10 +231,6 @@ public final class MailService implements DocumentService {
 
     // SearchAction API
     dispatcher.registerHandler(MailConstants.SEARCH_ACTION_REQUEST, new SearchAction());
-
-    // Profile Image API
-    dispatcher.registerHandler(
-        MailConstants.MODIFY_PROFILE_IMAGE_REQUEST, new ModifyProfileImage());
 
     // Password reset API
     dispatcher.registerHandler(MailConstants.RECOVER_ACCOUNT_REQUEST, new RecoverAccount());

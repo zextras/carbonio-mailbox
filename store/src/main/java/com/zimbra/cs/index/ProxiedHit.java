@@ -15,137 +15,130 @@ import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.service.util.ItemId;
 
 /**
- * A {@link ZimbraHit} which is being proxied from another server: i.e. we did a SOAP request somewhere else and are now
- * wrapping results we got from request.
+ * A {@link ZimbraHit} which is being proxied from another server: i.e. we did a SOAP request
+ * somewhere else and are now wrapping results we got from request.
  *
  * @since Mar 28, 2005
  * @author tim
  */
-public class ProxiedHit extends ZimbraHit  {
-    private int proxiedConvId = -1;
-    private int proxiedMsgId = -1;
-    private ItemId itemId;
-    private final Element element;
+public class ProxiedHit extends ZimbraHit {
+  private int proxiedConvId = -1;
+  private int proxiedMsgId = -1;
+  private ItemId itemId;
+  private final Element element;
 
-    public ProxiedHit(ZimbraQueryResultsImpl results, Element elt, Object sortValue) {
-        super(results, null, sortValue);
-        element = elt;
+  public ProxiedHit(ZimbraQueryResultsImpl results, Element elt, Object sortValue) {
+    super(results, null, sortValue);
+    element = elt;
+  }
+
+  @Override
+  public ItemId getParsedItemID() throws ServiceException {
+    if (itemId == null) {
+      itemId = new ItemId(element.getAttribute(MailConstants.A_ID), (String) null);
     }
+    return itemId;
+  }
 
-    @Override
-    public ItemId getParsedItemID() throws ServiceException {
-        if (itemId == null) {
-            itemId = new ItemId(element.getAttribute(MailConstants.A_ID), (String) null);
-        }
-        return itemId;
+  void setParsedItemId(ItemId value) {
+    itemId = value;
+  }
+
+  @Override
+  int getConversationId() throws ServiceException {
+    if (proxiedConvId <= 0) {
+      proxiedConvId = (int) element.getAttributeLong(MailConstants.A_CONV_ID, 0);
     }
+    return proxiedConvId;
+  }
 
-    void setParsedItemId(ItemId value) {
-        itemId = value;
+  @Override
+  public MailItem getMailItem() {
+    return null;
+  }
+
+  @Override
+  public MailItemType getMailItemType() throws ServiceException {
+    String elemName = element.getName();
+    if (MailConstants.E_CONV.equals(elemName)) {
+      return MailItemType.CONVERSATION;
+    } else if (MailConstants.E_MSG.equals(elemName)) {
+      return MailItemType.MESSAGE;
+    } else if (MailConstants.E_CHAT.equals(elemName)) {
+      return MailItemType.CHAT;
+    } else if (MailConstants.E_CONTACT.equals(elemName)) {
+      return MailItemType.CONTACT;
+    } else if (MailConstants.E_APPOINTMENT.equals(elemName)) {
+      return MailItemType.APPOINTMENT;
+    } else if (MailConstants.E_TASK.equals(elemName)) {
+      return MailItemType.TASK;
     }
+    return MailItemType.UNKNOWN;
+  }
 
-    @Override
-    int getConversationId() throws ServiceException {
-        if (proxiedConvId <= 0) {
-            proxiedConvId = (int) element.getAttributeLong(MailConstants.A_CONV_ID, 0);
-        }
-        return proxiedConvId;
+  @Override
+  public int getImapUid() throws ServiceException {
+    return element.getAttributeInt(MailConstants.A_IMAP_UID, proxiedMsgId);
+  }
+
+  @Override
+  public int getFlagBitmask() throws ServiceException {
+    String flags = element.getAttribute(MailConstants.A_FLAGS, null);
+    return Flag.toBitmask(flags);
+  }
+
+  @Override
+  public String[] getTags() throws ServiceException {
+    String tn = element.getAttribute(MailConstants.A_TAG_NAMES, null);
+    if (Strings.isNullOrEmpty(tn)) {
+      return new String[] {};
     }
+    return tn.split(",");
+  }
 
-    @Override
-    public MailItem getMailItem() {
-        return null;
+  @Override
+  public int getItemId() throws ServiceException {
+    if (proxiedMsgId <= 0) {
+      proxiedMsgId = getParsedItemID().getId();
     }
+    return proxiedMsgId;
+  }
 
-    @Override
-    public MailItemType getMailItemType() throws ServiceException {
-        String elemName = element.getName();
-        if (MailConstants.E_CONV.equals(elemName)) {
-            return MailItemType.CONVERSATION;
-        } else if (MailConstants.E_MSG.equals(elemName)) {
-            return MailItemType.MESSAGE;
-        } else if (MailConstants.E_CHAT.equals(elemName)) {
-            return MailItemType.CHAT;
-        } else if (MailConstants.E_CONTACT.equals(elemName)) {
-            return MailItemType.CONTACT;
-        } else if (MailConstants.E_NOTE.equals(elemName)) {
-            return MailItemType.NOTE;
-        } else if (MailConstants.E_DOC.equals(elemName)) {
-            return MailItemType.DOCUMENT;
-        } else if (MailConstants.E_WIKIWORD.equals(elemName)) {
-            return MailItemType.WIKI;
-        } else if (MailConstants.E_APPOINTMENT.equals(elemName)) {
-            return MailItemType.APPOINTMENT;
-        } else if (MailConstants.E_TASK.equals(elemName)) {
-            return MailItemType.TASK;
-        }
-        return MailItemType.UNKNOWN;
-    }
+  @Override
+  void setItem(MailItem item) {
+    assert (false); // can't preload a proxied hit!
+  }
 
-    @Override
-    public int getImapUid() throws ServiceException {
-        return element.getAttributeInt(MailConstants.A_IMAP_UID, proxiedMsgId);
-    }
+  @Override
+  boolean itemIsLoaded() {
+    return true;
+  }
 
-    @Override
-    public int getFlagBitmask() throws ServiceException {
-        String flags = element.getAttribute(MailConstants.A_FLAGS, null);
-        return Flag.toBitmask(flags);
-    }
+  String getFragment() {
+    Element frag = element.getOptionalElement(MailConstants.E_FRAG);
+    return frag != null ? frag.getText() : "";
+  }
 
-    @Override
-    public String[] getTags() throws ServiceException {
-        String tn = element.getAttribute(MailConstants.A_TAG_NAMES, null);
-        if (Strings.isNullOrEmpty(tn)) {
-            return new String[] {};
-        }
-        return tn.split(",");
-    }
+  @Override
+  String getName() throws ServiceException {
+    return element.getAttribute(MailConstants.A_SORT_FIELD);
+  }
 
-    @Override
-    public int getItemId() throws ServiceException {
-        if (proxiedMsgId <= 0) {
-            proxiedMsgId = getParsedItemID().getId();
-        }
-        return proxiedMsgId;
-    }
+  @Override
+  public String toString() {
+    return element.toString();
+  }
 
-    @Override
-    void setItem(MailItem item) {
-        assert(false); // can't preload a proxied hit!
-    }
+  public String getServer() {
+    return ((ProxiedQueryResults) getResults()).getServer();
+  }
 
-    @Override
-    boolean itemIsLoaded() {
-        return true;
-    }
+  public Element getElement() {
+    return element;
+  }
 
-    String getFragment() {
-        Element frag = element.getOptionalElement(MailConstants.E_FRAG);
-        return frag != null ? frag.getText() : "";
-    }
-
-    @Override
-    String getName() throws ServiceException {
-        return element.getAttribute(MailConstants.A_SORT_FIELD);
-    }
-
-    @Override
-    public String toString() {
-        return element.toString();
-    }
-
-    public String getServer() {
-        return ((ProxiedQueryResults) getResults()).getServer();
-    }
-
-    public Element getElement() {
-        return element;
-    }
-
-    @Override
-    boolean isLocal() {
-        return false;
-    }
-
+  @Override
+  boolean isLocal() {
+    return false;
+  }
 }

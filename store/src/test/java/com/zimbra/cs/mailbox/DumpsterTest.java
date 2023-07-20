@@ -9,13 +9,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mime.ParsedDocument;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.mime.ParsedMessageOptions;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,47 +38,8 @@ public class DumpsterTest {
         mbox.createFolder(
             null,
             "/Briefcase/f",
-            new Folder.FolderOptions().setDefaultView(MailItem.Type.DOCUMENT));
-    createDocument("doc.txt", "This is a document");
+            new Folder.FolderOptions().setDefaultView(Type.FOLDER));
   }
-
- @Test
- void recoverItem() throws Exception {
-  MailItem doc = createDocument("doc1.txt", "This is a document");
-  // move to trash
-  mbox.move(null, doc.mId, MailItem.Type.DOCUMENT, Mailbox.ID_FOLDER_TRASH);
-  doc = mbox.getItemById(null, doc.mId, MailItem.Type.DOCUMENT);
-  // delete the item from trash to move to dumpster
-  mbox.delete(null, doc.mId, MailItem.Type.DOCUMENT);
-  // recover
-  List<MailItem> recovered =
-    mbox.recover(null, new int[]{doc.mId}, MailItem.Type.DOCUMENT, folder.getId());
-  assertEquals(recovered.size(), 1);
- }
-
- // Verify we cannot change tags or flags on items in dumpster
- @Test
- void flagDumpsterItem() throws Exception {
-  MailItem doc = createDocument("doc2.txt", "This is a document");
-  // hard delete to move to dumpster
-  mbox.delete(null, doc.mId, MailItem.Type.DOCUMENT);
-  doc = mbox.getItemById(null, doc.mId, MailItem.Type.DOCUMENT, true);
-  boolean success = false;
-  boolean immutableException = false;
-  try {
-   mbox.beginTransaction("alterTag", null);
-   doc.alterTag(Flag.FlagInfo.FLAGGED.toFlag(mbox), true);
-   success = true;
-  } catch (MailServiceException e) {
-   immutableException = MailServiceException.IMMUTABLE_OBJECT.equals(e.getCode());
-   if (!immutableException) {
-    throw e;
-   }
-  } finally {
-   mbox.endTransaction(success);
-  }
-  assertTrue(immutableException, "expected IMMUTABLE_OBJECT exception");
- }
 
  @Test
  void moveDumpsterEmail() throws Exception {
@@ -229,7 +187,7 @@ public class DumpsterTest {
 
  @Test
  void folderTest() throws Exception {
-  Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(MailItem.Type.DOCUMENT);
+  Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(Type.FOLDER);
   Folder rootSource = mbox.createFolder(null, "/DumpsterTestSource", fopt);
   Folder subFolder1 = mbox.createFolder(null, "/DumpsterTestSource/test1", fopt);
 
@@ -265,10 +223,4 @@ public class DumpsterTest {
   assertTrue(noSuchObjException, "expected NO_SUCH_MSG exception");
  }
 
-  private MailItem createDocument(String name, String content) throws Exception {
-    InputStream in = new ByteArrayInputStream(content.getBytes());
-    ParsedDocument pd =
-        new ParsedDocument(in, name, "text/plain", System.currentTimeMillis(), null, null);
-    return mbox.createDocument(null, folder.getId(), pd, MailItem.Type.DOCUMENT, 0);
-  }
 }

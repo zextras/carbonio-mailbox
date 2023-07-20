@@ -1034,8 +1034,6 @@ public final class LC {
   public static final KnownKey freebusy_exchange_cn3 = KnownKey.newKey(null);
   public static final KnownKey freebusy_disable_nodata_status = KnownKey.newKey(false);
 
-  public static final KnownKey notes_enabled = KnownKey.newKey(false);
-
   public static final KnownKey zimbra_lmtp_validate_messages = KnownKey.newKey(true);
   public static final KnownKey zimbra_lmtp_max_line_length = KnownKey.newKey(10240);
 

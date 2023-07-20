@@ -131,12 +131,6 @@ public final class MailConstants {
   public static final String E_EXPORT_CONTACTS_RESPONSE = "ExportContactsResponse";
   public static final String E_CONTACT_ACTION_REQUEST = "ContactActionRequest";
   public static final String E_CONTACT_ACTION_RESPONSE = "ContactActionResponse";
-  public static final String E_CREATE_NOTE_REQUEST = "CreateNoteRequest";
-  public static final String E_CREATE_NOTE_RESPONSE = "CreateNoteResponse";
-  public static final String E_GET_NOTE_REQUEST = "GetNoteRequest";
-  public static final String E_GET_NOTE_RESPONSE = "GetNoteResponse";
-  public static final String E_NOTE_ACTION_REQUEST = "NoteActionRequest";
-  public static final String E_NOTE_ACTION_RESPONSE = "NoteActionResponse";
   public static final String E_SYNC_REQUEST = "SyncRequest";
   public static final String E_SYNC_RESPONSE = "SyncResponse";
   public static final String E_GET_RULES_REQUEST = "GetRulesRequest";
@@ -253,10 +247,6 @@ public final class MailConstants {
   public static final String E_AUTO_COMPLETE_RESPONSE = "AutoCompleteResponse";
   public static final String E_RANKING_ACTION_REQUEST = "RankingActionRequest";
   public static final String E_RANKING_ACTION_RESPONSE = "RankingActionResponse";
-  public static final String E_ADD_COMMENT_REQUEST = "AddCommentRequest";
-  public static final String E_ADD_COMMENT_RESPONSE = "AddCommentResponse";
-  public static final String E_GET_COMMENTS_REQUEST = "GetCommentsRequest";
-  public static final String E_GET_COMMENTS_RESPONSE = "GetCommentsResponse";
   public static final String E_GET_SHARE_NOTIFICATIONS_REQUEST = "GetShareNotificationsRequest";
   public static final String E_GET_SHARE_NOTIFICATIONS_RESPONSE = "GetShareNotificationsResponse";
   public static final String E_GET_DATA_SOURCE_USAGE_REQUEST = "GetDataSourceUsageRequest";
@@ -430,13 +420,7 @@ public final class MailConstants {
       QName.get(E_GET_CONTACT_BACKUP_LIST_REQUEST, NAMESPACE);
   public static final QName GET_CONTACT_BACKUP_LIST_RESPONSE =
       QName.get(E_GET_CONTACT_BACKUP_LIST_RESPONSE, NAMESPACE);
-  // notes
-  public static final QName CREATE_NOTE_REQUEST = QName.get(E_CREATE_NOTE_REQUEST, NAMESPACE);
-  public static final QName CREATE_NOTE_RESPONSE = QName.get(E_CREATE_NOTE_RESPONSE, NAMESPACE);
-  public static final QName GET_NOTE_REQUEST = QName.get(E_GET_NOTE_REQUEST, NAMESPACE);
-  public static final QName GET_NOTE_RESPONSE = QName.get(E_GET_NOTE_RESPONSE, NAMESPACE);
-  public static final QName NOTE_ACTION_REQUEST = QName.get(E_NOTE_ACTION_REQUEST, NAMESPACE);
-  public static final QName NOTE_ACTION_RESPONSE = QName.get(E_NOTE_ACTION_RESPONSE, NAMESPACE);
+
   // sync for Outlook
   public static final QName SYNC_REQUEST = QName.get(E_SYNC_REQUEST, NAMESPACE);
   public static final QName SYNC_RESPONSE = QName.get(E_SYNC_RESPONSE, NAMESPACE);
@@ -566,19 +550,6 @@ public final class MailConstants {
   public static final QName CHECK_SPELLING_RESPONSE =
       QName.get(E_CHECK_SPELLING_RESPONSE, NAMESPACE);
 
-  // documents
-  public static final QName SAVE_DOCUMENT_REQUEST = QName.get(E_SAVE_DOCUMENT_REQUEST, NAMESPACE);
-  public static final QName SAVE_DOCUMENT_RESPONSE = QName.get(E_SAVE_DOCUMENT_RESPONSE, NAMESPACE);
-  public static final QName DIFF_DOCUMENT_REQUEST = QName.get(E_DIFF_DOCUMENT_REQUEST, NAMESPACE);
-  public static final QName DIFF_DOCUMENT_RESPONSE = QName.get(E_DIFF_DOCUMENT_RESPONSE, NAMESPACE);
-  public static final QName LIST_DOCUMENT_REVISIONS_REQUEST =
-      QName.get(E_LIST_DOCUMENT_REVISIONS_REQUEST, NAMESPACE);
-  public static final QName LIST_DOCUMENT_REVISIONS_RESPONSE =
-      QName.get(E_LIST_DOCUMENT_REVISIONS_RESPONSE, NAMESPACE);
-  public static final QName PURGE_REVISION_REQUEST = QName.get(E_PURGE_REVISION_REQUEST, NAMESPACE);
-  public static final QName PURGE_REVISION_RESPONSE =
-      QName.get(E_PURGE_REVISION_RESPONSE, NAMESPACE);
-
   // data sources
   public static final QName CREATE_DATA_SOURCE_REQUEST =
       QName.get(E_CREATE_DATA_SOURCE_REQUEST, NAMESPACE);
@@ -654,12 +625,6 @@ public final class MailConstants {
   public static final QName RANKING_ACTION_RESPONSE =
       QName.get(E_RANKING_ACTION_RESPONSE, NAMESPACE);
 
-  // comments
-  public static final QName ADD_COMMENT_REQUEST = QName.get(E_ADD_COMMENT_REQUEST, NAMESPACE);
-  public static final QName ADD_COMMENT_RESPONSE = QName.get(E_ADD_COMMENT_RESPONSE, NAMESPACE);
-  public static final QName GET_COMMENTS_REQUEST = QName.get(E_GET_COMMENTS_REQUEST, NAMESPACE);
-  public static final QName GET_COMMENTS_RESPONSE = QName.get(E_GET_COMMENTS_RESPONSE, NAMESPACE);
-
   // sharing
   public static final QName GET_SHARE_NOTIFICATIONS_REQUEST =
       QName.get(E_GET_SHARE_NOTIFICATIONS_REQUEST, NAMESPACE);
@@ -720,7 +685,6 @@ public final class MailConstants {
   public static final String E_MSG = "m";
   public static final String E_CONV = "c";
   public static final String E_CHAT = "chat";
-  public static final String E_NOTE = "note";
   public static final String E_TAG = "tag";
   public static final String E_CONTACT = "cn";
   public static final String E_FOLDER = "folder";
@@ -840,7 +804,6 @@ public final class MailConstants {
   public static final String A_INTERNAL_GRANT_EXPIRY = "internalGrantExpiry";
   public static final String A_GUEST_GRANT_EXPIRY = "guestGrantExpiry";
   public static final String E_GRANT = "grant";
-  public static final String E_NOTES = "notes";
   public static final String E_SHARE = "share";
   public static final String E_REVOKE = "revoke";
   public static final String A_EXPIRE = "expire";
@@ -1486,14 +1449,6 @@ public final class MailConstants {
   public static final String E_BULK_ACTION = "BulkAction";
   public static final QName SEARCH_ACTION_REQUEST = QName.get(E_SEARCH_ACTION_REQUEST, NAMESPACE);
   public static final QName SEARCH_ACTION_RESPONSE = QName.get(E_SEARCH_ACTION_RESPONSE, NAMESPACE);
-
-  // Profile image API
-  public static final String E_MODIFY_PROFILE_IMAGE_REQUEST = "ModifyProfileImageRequest";
-  public static final String E_MODIFY_PROFILE_IMAGE_RESPONSE = "ModifyProfileImageResponse";
-  public static final QName MODIFY_PROFILE_IMAGE_REQUEST =
-      QName.get(E_MODIFY_PROFILE_IMAGE_REQUEST, NAMESPACE);
-  public static final QName MODIFY_PROFILE_IMAGE_RESPONSE =
-      QName.get(E_MODIFY_PROFILE_IMAGE_RESPONSE, NAMESPACE);
 
   // Password reset API
   public static final String E_SET_RECOVERY_ACCOUNT_REQUEST = "SetRecoveryAccountRequest";
