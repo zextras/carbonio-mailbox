@@ -11,6 +11,9 @@ pipeline {
         booleanParam defaultValue: false, description: 'Upload packages in playground repositories.', name: 'PLAYGROUND'
         booleanParam defaultValue: false, description: 'Skip test and sonar analysis.', name: 'SKIP_TEST_WITH_COVERAGE'
         booleanParam defaultValue: false, description: 'Skip sonar analysis.', name: 'SKIP_SONARQUBE'
+        booleanParam defaultValue: false,
+                description: 'Whether to upload the packages in rc-jdk17 repositories',
+                name: 'RC_JDK17'
     }
     environment {
         JAVA_OPTS='-Dfile.encoding=UTF8'
@@ -133,6 +136,83 @@ pipeline {
                     }
                     }
                 }
+                }
+            }
+        }
+        stage('Upload To RC-JDK17') {
+            when {
+                anyOf {
+                    expression { params.RC_JDK17 == true }
+                }
+            }
+            steps {
+                unstash 'artifacts-ubuntu-focal'
+                unstash 'artifacts-rocky-8'
+
+                script {
+                    def server = Artifactory.server 'zextras-artifactory'
+                    def buildInfo
+                    def uploadSpec
+                    buildInfo = Artifactory.newBuildInfo()
+                    uploadSpec ='''{
+                        "files": [{
+                            "pattern": "artifacts/*focal*.deb",
+                            "target": "ubuntu-rc-jdk17/pool/",
+                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-conf)-(*).rpm",
+                            "target": "centos8-rc-jdk17/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-service)-(*).rpm",
+                            "target": "centos8-rc-jdk17/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-war)-(*).rpm",
+                            "target": "centos8-rc-jdk17/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-conf)-(*).rpm",
+                            "target": "centos8-rc-jdk17/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-db)-(*).rpm",
+                            "target": "centos8-rc-jdk17/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-docs)-(*).rpm",
+                            "target": "centos8-rc-jdk17/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-appserver-native-lib)-(*).rpm",
+                            "target": "centos8-rc-jdk17/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-core-jar)-(*).rpm",
+                            "target": "centos8-rc-jdk17/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-store-libs)-(*).rpm",
+                            "target": "centos8-rc-jdk17/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-core-libs)-(*).rpm",
+                            "target": "centos8-rc-jdk17/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        }
+                        ]
+                    }'''
+                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                 }
             }
         }
