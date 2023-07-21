@@ -89,7 +89,10 @@ pipeline {
         }
         stage('Publish to maven') {
             when {
-                buildingTag()
+                anyOf {
+                    buildingTag()
+                    expression { params.RC_JDK17 == true }
+                }
             }
             steps {
               mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pprod')
