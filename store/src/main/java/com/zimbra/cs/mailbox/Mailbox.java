@@ -5054,8 +5054,7 @@ public class Mailbox implements MailboxStore {
    * <tt>Spam</tt> or <tt>Trash</tt> are returned.
    *
    * @param octxt The {@link OperationContext}.
-   * @param type If MailItem.TYPE_APPOINTMENT, return only appointments. If MailItem.TYPE_TASK,
-   *     return only tasks. If MailItem.TYPE_UNKNOWN, return both.
+   * @param type If MailItem.TYPE_APPOINTMENT or MailItem.TYPE_UNKNOWN return only appointments.
    * @param start The start time of the range, in milliseconds. <tt>-1</tt> means to leave the start
    *     time unconstrained.
    * @param end The end time of the range, in milliseconds. <tt>-1</tt> means to leave the end time

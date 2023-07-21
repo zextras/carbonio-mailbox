@@ -79,8 +79,7 @@ public class GetCalendarItemSummaries extends CalendarRequest {
    * Encodes a calendar item
    *
    * @param parent
-   * @param elementName name of element to add (MailConstants .E_APPOINTMENT or
-   *     MailConstants.E_TASK)
+   * @param elementName name of element to add (MailConstants .E_APPOINTMENT)
    * @param rangeStart start period to expand instances (or -1 for no start time constraint)
    * @param rangeEnd end period to expand instances (or -1 for no end time constraint)
    * @param newFormat temporary HACK - true: SearchRequest, false: GetAppointmentSummaries
