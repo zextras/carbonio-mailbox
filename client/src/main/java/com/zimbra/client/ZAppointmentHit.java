@@ -117,7 +117,6 @@ public class ZAppointmentHit implements ZSearchHit {
   private String mConvId;
   private long mHitDate;
   private boolean mInstanceExpanded;
-  private boolean mIsTask;
 
   private long mStartTime;
   private long mEndTime;
@@ -226,7 +225,6 @@ public class ZAppointmentHit implements ZSearchHit {
       appt.mSortField = sortField;
       appt.mConvId = convId;
       appt.mHitDate = hitDate;
-      appt.mIsTask = isTask;
 
       appt.mDraft = inst.getAttributeBool(MailConstants.A_CAL_DRAFT, isDraft);
 
@@ -346,10 +344,6 @@ public class ZAppointmentHit implements ZSearchHit {
     return mFolderId;
   }
 
-  public boolean getIsTask() {
-    return mIsTask;
-  }
-
   public long getSize() {
     return mSize;
   }
@@ -406,7 +400,6 @@ public class ZAppointmentHit implements ZSearchHit {
     jo.put("sortField", mSortField);
     jo.put("conversationId", mConvId);
     jo.put("size", mSize);
-    jo.put("isTask", mIsTask);
     jo.put("hitDate", mHitDate);
     return jo;
   }
