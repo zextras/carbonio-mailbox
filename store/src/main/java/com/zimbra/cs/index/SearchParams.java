@@ -5,9 +5,7 @@
 
 package com.zimbra.cs.index;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.zimbra.common.calendar.ICalTimeZone;
@@ -98,8 +96,6 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
 
   /** If FALSE, then items with the \Muted tag set are not returned. */
   private boolean includeTagMuted = true;
-
-  private Set<TaskHit.Status> allowableTaskStatuses; // if NULL, allow all
 
   /** timezone that the query should be parsed in (for date/time queries). */
   private TimeZone timezone;
@@ -212,10 +208,6 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
     return includeTagMuted;
   }
 
-  public Set<TaskHit.Status> getAllowableTaskStatuses() {
-    return allowableTaskStatuses;
-  }
-
   @Override
   public int getLimit() {
     return limit;
@@ -285,10 +277,6 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
 
   public final void setIncludeTagMuted(boolean value) {
     includeTagMuted = value;
-  }
-
-  public void setAllowableTaskStatuses(Set<TaskHit.Status> value) {
-    allowableTaskStatuses = value;
   }
 
   /**
@@ -461,10 +449,6 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
    * @param el This object's parameters are added as attributes (or sub-elements) of this parameter
    */
   public void encodeParams(Element el) {
-    if (allowableTaskStatuses != null) {
-      el.addAttribute(
-          MailConstants.A_ALLOWABLE_TASK_STATUS, Joiner.on(',').join(allowableTaskStatuses));
-    }
     el.addAttribute(MailConstants.A_INCLUDE_TAG_DELETED, getIncludeTagDeleted());
     el.addAttribute(MailConstants.A_INCLUDE_TAG_MUTED, getIncludeTagMuted());
     if (this.includeMemberOf()) {
@@ -564,18 +548,6 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
     }
     params.setIncludeTagDeleted(MoreObjects.firstNonNull(soapParams.getIncludeTagDeleted(), false));
     params.setIncludeTagMuted(MoreObjects.firstNonNull(soapParams.getIncludeTagMuted(), true));
-    String allowableTasks = soapParams.getAllowableTaskStatus();
-    if (allowableTasks != null) {
-      params.allowableTaskStatuses = new HashSet<TaskHit.Status>();
-      for (String task : Splitter.on(',').split(allowableTasks)) {
-        try {
-          TaskHit.Status status = TaskHit.Status.valueOf(task.toUpperCase());
-          params.allowableTaskStatuses.add(status);
-        } catch (IllegalArgumentException e) {
-          ZimbraLog.index.debug("Skipping unknown task completion status: %s", task);
-        }
-      }
-    }
 
     params.setInlineRule(ExpandResults.valueOf(soapParams.getFetch(), zsc));
     if (params.getInlineRule() != ExpandResults.NONE) {
@@ -685,7 +657,6 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
     params.setIncludeTagDeleted(
         request.getAttributeBool(MailConstants.A_INCLUDE_TAG_DELETED, false));
     params.setIncludeTagMuted(request.getAttributeBool(MailConstants.A_INCLUDE_TAG_MUTED, true));
-    String allowableTasks = request.getAttribute(MailConstants.A_ALLOWABLE_TASK_STATUS, null);
 
     params.setInlineRule(
         ExpandResults.valueOf(request.getAttribute(MailConstants.A_FETCH, null), zsc));
@@ -891,9 +862,6 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
     result.types = types;
     result.prefetch = prefetch;
     result.fetch = fetch;
-    if (allowableTaskStatuses != null) {
-      result.allowableTaskStatuses = new HashSet<TaskHit.Status>(allowableTaskStatuses);
-    }
     if (cursor != null) {
       result.cursor = new Cursor(cursor);
     }

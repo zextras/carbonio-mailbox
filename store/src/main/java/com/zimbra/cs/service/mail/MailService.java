@@ -129,12 +129,6 @@ public final class MailService implements DocumentService {
         MailConstants.DECLINE_COUNTER_APPOINTMENT_REQUEST, new DeclineCounterAppointment());
     dispatcher.registerHandler(MailConstants.IMPORT_APPOINTMENTS_REQUEST, new ImportAppointments());
 
-    dispatcher.registerHandler(MailConstants.GET_TASK_SUMMARIES_REQUEST, new GetTaskSummaries());
-    dispatcher.registerHandler(MailConstants.SET_TASK_REQUEST, new SetTask());
-    dispatcher.registerHandler(
-        MailConstants.CREATE_TASK_EXCEPTION_REQUEST, new CreateTaskException());
-    dispatcher.registerHandler(MailConstants.ADD_TASK_INVITE_REQUEST, new AddTaskInvite());
-
     dispatcher.registerHandler(
         MailConstants.GET_CALITEM_SUMMARIES_REQUEST, new GetCalendarItemSummaries());
     //        dispatcher.registerHandler(GET_CALITEM_REQUEST, new GetCalendarItem());

@@ -768,8 +768,7 @@ public final class ZimbraQuery {
     try {
       results = operation.run(mailbox, params, chunkSize);
       if (((!params.getIncludeTagDeleted() || !params.getIncludeTagMuted())
-              && params.getFetchMode() != SearchParams.Fetch.IDS)
-          || params.getAllowableTaskStatuses() != null) {
+          && params.getFetchMode() != SearchParams.Fetch.IDS)) {
         // we have to do some filtering of the result set
         FilteredQueryResults filtered = new FilteredQueryResults(results, params);
 
@@ -778,9 +777,6 @@ public final class ZimbraQuery {
         }
         if (!params.getIncludeTagMuted()) {
           filtered.setFilterTagMuted(true);
-        }
-        if (params.getAllowableTaskStatuses() != null) {
-          filtered.setAllowedTaskStatuses(params.getAllowableTaskStatuses());
         }
         results = filtered;
       }

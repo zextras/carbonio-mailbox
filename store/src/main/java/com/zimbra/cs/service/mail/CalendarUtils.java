@@ -1260,27 +1260,6 @@ public class CalendarUtils {
       }
     }
 
-    if (newInv.isTodo()) {
-      // PERCENT-COMPLETE
-      String pctComplete = element.getAttribute(MailConstants.A_TASK_PERCENT_COMPLETE, null);
-      newInv.setPercentComplete(pctComplete);
-
-      // COMPLETED
-      String completed = element.getAttribute(MailConstants.A_TASK_COMPLETED, null);
-      if (completed != null) {
-        try {
-          ParsedDateTime c = ParsedDateTime.parseUtcOnly(completed);
-          newInv.setCompleted(c.getUtcTime());
-        } catch (ParseException e) {
-          throw ServiceException.INVALID_REQUEST("Invalid COMPLETED value: " + completed, e);
-        }
-      } else if (status.equals(IcalXmlStrMap.STATUS_COMPLETED)) {
-        newInv.setCompleted(System.currentTimeMillis());
-      } else {
-        newInv.setCompleted(0);
-      }
-    }
-
     // ATTENDEEs
     boolean hasAttendees = false;
     for (Iterator<Element> iter = element.elementIterator(MailConstants.E_CAL_ATTENDEE);
