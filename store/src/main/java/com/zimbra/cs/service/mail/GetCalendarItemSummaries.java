@@ -24,7 +24,6 @@ import com.zimbra.cs.mailbox.CalendarItem.AlarmData;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.mailbox.Task;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.InviteInfo;
 import com.zimbra.cs.mailbox.calendar.RecurId;
@@ -102,17 +101,7 @@ public class GetCalendarItemSummaries extends CalendarRequest {
     boolean hidePrivate = !calItem.allowPrivateAccess(authAccount, lc.isUsingAdminPrivileges());
 
     try {
-      boolean expandRanges;
-      if (calItem instanceof Task) {
-        expandRanges = true;
-        if (rangeStart == -1 && rangeEnd == -1) {
-          rangeStart = Long.MIN_VALUE;
-          rangeEnd = Long.MAX_VALUE;
-        }
-      } else {
-        expandRanges = (rangeStart != -1 && rangeEnd != -1 && rangeStart < rangeEnd);
-      }
-
+      boolean expandRanges = (rangeStart != -1 && rangeEnd != -1 && rangeStart < rangeEnd);
       boolean isAppointment = calItem instanceof Appointment;
 
       // Use the marshalling code in calendar summary cache for uniform output, when we can.

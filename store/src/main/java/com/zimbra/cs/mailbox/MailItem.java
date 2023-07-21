@@ -89,7 +89,7 @@ public abstract class MailItem
      * Mailbox}.
      */
     MOUNTPOINT(13, MailItemType.MOUNTPOINT),
-    /** Item is a {@link Task} */
+    /** Item is a {@link Chat} */
     CHAT(16, MailItemType.CHAT);
 
     private static final Map<Byte, Type> BYTE2TYPE;

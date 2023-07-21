@@ -1638,15 +1638,6 @@ public class CalendarUtils {
                   + folder.getName()
                   + "' to 'Calendar' folder for mailbox "
                   + mbox.getId());
-        else
-          ZimbraLog.calendar.info(
-              "Migrating "
-                  + idlist.size()
-                  + " Task(s) from '"
-                  + folder.getName()
-                  + "' to 'Tasks' folder for mailbox "
-                  + mbox.getId());
-
         int[] items = new int[idlist.size()];
         int i = 0;
         for (Integer id : idlist.getAllIds()) {

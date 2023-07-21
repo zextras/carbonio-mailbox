@@ -595,8 +595,7 @@ public abstract class CalendarItem extends MailItem {
 
     new DbMailItem(mbox).setSender(sender).create(data);
 
-    CalendarItem item =
-        type == Type.APPOINTMENT ? new Appointment(mbox, data) : new Task(mbox, data);
+    CalendarItem item = new Appointment(mbox, data);
     Invite defInvite = item.getDefaultInviteOrNull();
     if (defInvite != null) {
       if (firstInvite.getXZimbraDescriptionHtml() != null) {
@@ -4243,12 +4242,7 @@ public abstract class CalendarItem extends MailItem {
 
     AlarmData alarmData =
         getNextAlarmHelper(atOrAfter, snoozeUntil, instances, startTime, forEmailAction);
-    if (alarmData == null && this instanceof Task) {
-      // special handling for Tasks
-      return getNextAlarmHelperForTasks(atOrAfter, snoozeUntil, forEmailAction);
-    } else {
-      return alarmData;
-    }
+    return alarmData;
   }
 
   private AlarmData getNextAlarmHelper(
