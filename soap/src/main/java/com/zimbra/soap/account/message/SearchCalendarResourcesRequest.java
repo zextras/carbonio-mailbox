@@ -18,23 +18,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-// Removed following attributes which SearchParams.parse looks for as assuming they don't make sense
-// for
-// Calendar resource search of GAL:
-// MailConstants.A_INCLUDE_TAG_DELETED (includeTagDeleted),
-// MailConstants.A_CAL_EXPAND_INST_START (calExpandInstStart), MailConstants.A_CAL_EXPAND_INST_END
-// (calExpandInstEnd),
-// MailConstants.E_QUERY (query), MailConstants.A_IN_DUMPSTER (inDumpster),
-// MailConstants.A_SEARCH_TYPES (types),
-// MailConstants.A_GROUPBY (groupBy), MailConstants.A_FETCH (fetch), MailConstants.A_MARK_READ
-// (read),
-// MailConstants.A_MAX_INLINED_LENGTH (max) MailConstants.A_WANT_HTML (html),
-// MailConstants.A_NEUTER (neuter), MailConstants.A_RECIPIENTS (recip), MailConstants.A_PREFETCH
-// (prefetch),
-// MailConstants.A_RESULT_MODE (resultMode), MailConstants.A_FIELD (field), MailConstants.A_HEADER
-// (header),
-// MailConstants.E_CAL_TZ (tz)
-
 /**
  * @zm-api-command-auth-required true
  * @zm-api-command-admin-auth-required false
