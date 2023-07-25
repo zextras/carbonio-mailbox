@@ -461,11 +461,6 @@
         <version>${unboundid-ldapsdk.version}</version>
       </dependency>
       <dependency>
-        <groupId>oauth</groupId>
-        <artifactId>oauth</artifactId>
-        <version>1.4</version>
-      </dependency>
-      <dependency>
         <groupId>org.owasp.antisamy</groupId>
         <artifactId>antisamy</artifactId>
         <version>1.5.13</version>

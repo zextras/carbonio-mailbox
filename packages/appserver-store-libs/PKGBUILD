@@ -137,10 +137,6 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/common/lib/mariadb-java-client-2.7.3.jar"
   install -D carbonio-jetty-libs/target/dependencies/nekohtml-1.9.22.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/nekohtml-1.9.22.jar"
-  install -D carbonio-jetty-libs/target/dependencies/oauth-20100527.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/oauth-20100527.jar"
-  install -D carbonio-jetty-libs/target/dependencies/oauth-provider-20100527.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/oauth-provider-20100527.jar"
   install -D carbonio-jetty-libs/target/dependencies/owasp-java-html-sanitizer-20191001.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/owasp-java-html-sanitizer-20191001.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/slf4j-api-1.7.36.jar \

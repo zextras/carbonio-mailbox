@@ -5700,7 +5700,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceName = "zimbraDataSourceName";
 
     /**
-     * Client Id for OAuth token
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Client Id for OAuth token
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5708,7 +5709,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthClientId = "zimbraDataSourceOAuthClientId";
 
     /**
-     * Client Secret for OAuth token
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Client Secret for OAuth token
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5716,7 +5718,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthClientSecret = "zimbraDataSourceOAuthClientSecret";
 
     /**
-     * Refresh token for authentication using OAuth
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Refresh token for authentication using OAuth
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5724,7 +5727,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthRefreshToken = "zimbraDataSourceOAuthRefreshToken";
 
     /**
-     * Url for refreshing OAuth Token
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Url for refreshing OAuth Token
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5732,7 +5736,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthRefreshTokenUrl = "zimbraDataSourceOAuthRefreshTokenUrl";
 
     /**
-     * OAuth token for authentication using OAuth
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth token for authentication using OAuth
      *
      * @since ZCS 8.7.0
      */
@@ -12385,7 +12390,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraNotifySSLServerEnabled = "zimbraNotifySSLServerEnabled";
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -12403,8 +12410,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraOAuthConsumerAPIScope = "zimbraOAuthConsumerAPIScope";
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @since ZCS 7.0.0
      */

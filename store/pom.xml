@@ -148,11 +148,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>oauth</artifactId>
-      <groupId>oauth</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>antisamy</artifactId>
       <groupId>org.owasp.antisamy</groupId>
     </dependency>
