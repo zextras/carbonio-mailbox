@@ -15,7 +15,7 @@ public enum MailboxMoveType {
     // case must match protocol
     out, in;
 
-    static public MailboxMoveType fromString(String str)
+    public static MailboxMoveType fromString(String str)
     throws ServiceException {
         try {
             return MailboxMoveType.valueOf(str);

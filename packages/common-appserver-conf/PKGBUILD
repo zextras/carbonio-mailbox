@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-common-appserver-conf"
-pkgver="4.4.0"
+pkgver="4.6.3"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox Configuration"
 pkgdesclong=(
@@ -40,8 +40,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/log4j.properties.in"
   install -D "store-conf/conf/stats.conf.in" \
     "${pkgdir}/opt/zextras/conf/stats.conf.in"
-  install -D "store/conf/unbound.conf.in" \
-    "${pkgdir}/opt/zextras/conf/unbound.conf.in"
 
   install -D "store/conf/attrs/amavisd-new-attrs.xml" \
     "${pkgdir}/opt/zextras/conf/attrs/amavisd-new-attrs.xml"

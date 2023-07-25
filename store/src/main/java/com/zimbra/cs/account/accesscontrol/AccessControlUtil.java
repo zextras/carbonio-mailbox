@@ -35,7 +35,7 @@ public class AccessControlUtil {
         return (asAdmin && acct != null && acct.isIsDelegatedAdminAccount());
     }
 
-    static public Account authTokenToAccount(AuthToken authToken, Right rightNeeded) {
+    public static Account authTokenToAccount(AuthToken authToken, Right rightNeeded) {
         Account granteeAcct = null;
         try {
 
@@ -58,7 +58,7 @@ public class AccessControlUtil {
         return granteeAcct;
     }
 
-    static public MailTarget emailAddrToMailTarget(String emailAddr, Right rightNeeded) {
+    public static MailTarget emailAddrToMailTarget(String emailAddr, Right rightNeeded) {
         MailTarget grantee = null;
         if (emailAddr != null) {
             try {
@@ -86,7 +86,7 @@ public class AccessControlUtil {
         return grantee;
     }
 
-    static public Account emailAddrToAccount(String emailAddr, Right rightNeeded) {
+    public static Account emailAddrToAccount(String emailAddr, Right rightNeeded) {
         Account granteeAcct = null;
         try {
             if (emailAddr != null) {

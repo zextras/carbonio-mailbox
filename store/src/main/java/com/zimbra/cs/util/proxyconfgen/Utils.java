@@ -84,10 +84,34 @@ public final class Utils {
    */
   public static List<String> getFilesPathInDirectory(final String directoryPath) {
     try (Stream<Path> paths = Files.walk(Paths.get(directoryPath), 1)) {
-      return paths.filter(Files::isRegularFile).map(Path::toString).collect(Collectors.toList());
+      return paths
+          .filter(Files::isRegularFile)
+          .map(Path::toString)
+          .collect(Collectors.toCollection(ArrayList::new));
     } catch (IOException ignored) {
       // ignore
     }
-    return List.of();
+    return new ArrayList<>();
+  }
+
+  /**
+   * Get subdirectories names from the given directory path.
+   *
+   * @param directoryPath path to get subdirectories names
+   * @return list of directories names
+   * @author Yuliya Aheeva
+   * @since 23.7.0
+   */
+  public static List<String> getSubdirectoriesNames(final String directoryPath) {
+    try (Stream<Path> paths = Files.list(Path.of(directoryPath))) {
+      return paths
+          .filter(Files::isDirectory)
+          .map(Path::getFileName)
+          .map(Path::toString)
+          .collect(Collectors.toCollection(ArrayList::new));
+    } catch (IOException ignored) {
+      // ignore
+    }
+    return new ArrayList<>();
   }
 }

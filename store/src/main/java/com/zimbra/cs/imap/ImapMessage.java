@@ -468,6 +468,7 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
             char c = value.charAt(i);
             if (c == '"' || c == '\\' || c >= 0x7f || c < 0x20) {
                 encoded = true;
+                break;
             }
         }
         if (!encoded) {

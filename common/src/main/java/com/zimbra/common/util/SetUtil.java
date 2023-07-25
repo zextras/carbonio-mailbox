@@ -73,13 +73,9 @@ public class SetUtil {
 	 * @return
 	 */
 	public static <T> Set<T> union (Set<T> out, Set<T> lhs, Set<T> rhs) {
-		
-		for (T o : lhs) {
-			out.add(o);
-		}
-		for (T o : rhs) {
-			out.add(o);
-		}
+
+    out.addAll(lhs);
+    out.addAll(rhs);
 		return out;
 	}
 	
@@ -92,9 +88,7 @@ public class SetUtil {
 	 * @return
 	 */
 	public static <T> Set<T> union (Set<T> lhs, Set<T> rhs) {
-		for (T o : rhs) {
-			lhs.add(o);
-		}
+    lhs.addAll(rhs);
 		return lhs;
 	}
 	

@@ -46,7 +46,7 @@ import com.zimbra.cs.service.util.ItemId;
  * @author kchen
  */
 public class RuleRewriter {
-    final static Set<String> MATCH_TYPES = new HashSet<String>();
+    static final Set<String> MATCH_TYPES = new HashSet<String>();
     static {
         MATCH_TYPES.add(":is");
         MATCH_TYPES.add(":contains");
@@ -336,7 +336,7 @@ public class RuleRewriter {
             String nodeName = subnode.getName();
             if ("r".equals(nodeName)) {
                 String ruleName = subnode.getAttribute("name");
-                sb.append("# " + ruleName + "\n");
+                sb.append("# ").append(ruleName).append("\n");
                 boolean active = subnode.getAttributeBool(MailConstants.A_ACTIVE, true);
                 sb.append(active ? "if " : "disabled_if ");
                 condition(sb, subnode, false, ruleName);

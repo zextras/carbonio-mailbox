@@ -4,8 +4,11 @@ import static com.google.common.base.Predicates.instanceOf;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.For;
+import static java.util.function.Function.identity;
+import static java.util.function.Predicate.not;
 
 import com.zextras.carbonio.files.FilesClient;
+import com.zextras.carbonio.files.entities.NodeId;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -18,11 +21,9 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.control.Try;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import javax.mail.Part;
 import javax.mail.internet.MimePart;
 
 /**
@@ -53,65 +54,38 @@ public class CopyToFiles extends MailDocumentHandler {
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     final ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    // get auth token
-    final Try<String> authCookieTry =
-        Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded());
-    // map element to copy-to-files request object
-    final Try<CopyToFilesRequest> copyToFilesRequestTry = getRequestObject(request);
-    // get Files destination folder
-    final Try<String> destFolderIdTry = copyToFilesRequestTry.flatMap(this::getDestinationFolderId);
-    // get attachment
-    final Try<MimePart> attachmentTry =
-        copyToFilesRequestTry.flatMap(
-            copyToFilesRequest -> getAttachmentToCopy(copyToFilesRequest, zsc));
-    // get attachment size
-    final Try<Long> attachmentSizeTry =
-        attachmentTry.mapTry(Part::getInputStream).flatMap(this::getAttachmentSize);
-    // get attachment content-type
-    final Try<String> contentTypeTry = attachmentTry.flatMap(this::getAttachmentContentType);
-    // get attachment name
-    final Try<String> fileNameTry = attachmentTry.flatMapTry(this::getAttachmentName);
-    // get attachment content stream
-    final Try<InputStream> attachmentStreamTry =
-        attachmentTry.mapTry(Part::getInputStream).onFailure(ex -> mLog.debug(ex.getMessage()));
-
-    // execute Files api call and flatten yield result
-    // maps every non-ServiceException to internal error
-    String nodeId =
+    final NodeId nodeId =
         Optional.ofNullable(
-                For(
-                        authCookieTry,
-                        destFolderIdTry,
-                        fileNameTry,
-                        contentTypeTry,
-                        attachmentStreamTry,
-                        attachmentSizeTry)
-                    .yield(
-                        (authCookie,
-                            destFolderId,
-                            fileName,
-                            contentType,
-                            attachmentStream,
-                            attachmentSize) ->
-                            filesClient.uploadFile(
-                                authCookie,
-                                destFolderId,
-                                fileName,
-                                contentType,
-                                attachmentStream,
-                                attachmentSize))
-                    .flatMap(x -> x)
-                    .onFailure(ex -> mLog.debug(ex.getMessage()))
+                getRequestObject(request)
+                    .flatMap(
+                        copyToFilesRequest ->
+                            this.getAttachmentToCopy(copyToFilesRequest, zsc)
+                                .flatMap(
+                                    attachment ->
+                                        Try.withResources(attachment::getInputStream)
+                                            .of(
+                                                inputStream ->
+                                                    For(
+                                                            this.getCookie(zsc),
+                                                            this.getDestinationFolderId(
+                                                                copyToFilesRequest),
+                                                            this.getAttachmentName(attachment),
+                                                            this.getAttachmentContentType(
+                                                                attachment),
+                                                            Try.of(() -> inputStream),
+                                                            this.getAttachmentSize(attachment))
+                                                        .yield(filesClient::uploadFile))))
+                    .flatMap(identity())
+                    .flatMap(identity())
+                    .onFailure(ex -> mLog.error(ex.getMessage()))
                     .mapFailure(
                         Case(
-                            $(ex -> !(ex instanceof ServiceException)),
-                            ex -> ServiceException.FAILURE("internal error.", ex)))
+                            $(not(instanceOf(ServiceException.class))),
+                            ServiceException::INTERNAL_ERROR))
                     .get())
-            .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."))
-            .getNodeId();
-
+            .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."));
     CopyToFilesResponse copyToFilesResponse = new CopyToFilesResponse();
-    copyToFilesResponse.setNodeId(nodeId);
+    copyToFilesResponse.setNodeId(nodeId.getNodeId());
     return zsc.jaxbToElement(copyToFilesResponse);
   }
 
@@ -123,11 +97,12 @@ public class CopyToFiles extends MailDocumentHandler {
    */
   private Try<CopyToFilesRequest> getRequestObject(Element request) {
     return Try.<CopyToFilesRequest>of(() -> JaxbUtil.elementToJaxb(request))
-        .onFailure(ex -> mLog.debug(ex.getMessage()))
-        .mapFailure(
-            Case(
-                $(instanceOf(Exception.class)),
-                ex -> ServiceException.PARSE_ERROR("Malformed request.", ex)));
+        .onFailure(ex -> mLog.error(ex.getMessage()))
+        .recoverWith(ex -> Try.failure(ServiceException.PARSE_ERROR("Malformed request.", ex)));
+  }
+
+  private Try<String> getCookie(ZimbraSoapContext zsc) {
+    return Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded());
   }
 
   /**
@@ -138,51 +113,60 @@ public class CopyToFiles extends MailDocumentHandler {
    * @return try of a {@link MimePart}
    */
   private Try<MimePart> getAttachmentToCopy(CopyToFilesRequest request, ZimbraSoapContext context) {
-    // get mail message
+    // get messageId with UUID if available
+    final String[] uuidMsgId = request.getMessageId().split(":");
+    String accountUUID;
+    String msgId;
+    if (Objects.equals(2, uuidMsgId.length)) {
+      accountUUID = uuidMsgId[0];
+      msgId = uuidMsgId[1];
+    } else {
+      accountUUID = context.getAuthtokenAccountId();
+      msgId = request.getMessageId();
+    }
     final Try<Integer> messageIdTry =
-        Try.of(() -> Integer.parseInt(request.getMessageId()))
-            .onFailure(ex -> mLog.debug(ex.getMessage()))
+        Try.of(() -> Integer.parseInt(msgId))
+            .onFailure(ex -> mLog.error(ex.getMessage()))
             .mapFailure(
                 Case(
-                    $(instanceOf(Exception.class)),
+                    $(instanceOf(NumberFormatException.class)),
                     ex ->
                         ServiceException.PARSE_ERROR(
-                            MailConstants.A_MESSAGE_ID + " must be an integer.", ex)));
-    // get mail attachment
+                            MailConstants.A_MESSAGE_ID + " must be an integer.", ex)),
+                Case($(instanceOf(Exception.class)), ServiceException::INTERNAL_ERROR));
     return For(Try.of(() -> request), messageIdTry)
         .yield(
             (req, messageId) ->
                 attachmentService
-                    .getAttachment(
-                        context.getAuthtokenAccountId(),
-                        context.getAuthToken(),
-                        messageId,
-                        req.getPart())
-                    .onFailure(ex -> mLog.debug(ex.getMessage()))
-                    .mapFailure(
-                        Case(
-                            $(instanceOf(Exception.class)),
-                            ex -> ServiceException.NOT_FOUND("File not found.", ex))))
+                    .getAttachment(accountUUID, context.getAuthToken(), messageId, req.getPart())
+                    .onFailure(ex -> mLog.error(ex.getMessage()))
+                    .recoverWith(
+                        ex -> Try.failure(ServiceException.NOT_FOUND("File not found.", ex))))
         .flatMap(result -> result);
   }
 
   /**
-   * Calculates size of input stream by reading it. The operation is done by reading chunks of 8kb.
+   * Calculates real size of a {@link com.zimbra.cs.mime.Mime} by reading its input stream with
+   * auto-closable. The operation is done by reading chunks of 8kb. This method exists because for
+   * images the size returned by {@link MimePart#getSize()} is not equal to the real one.
    *
-   * @param inputStream input stream to calculate size of
-   * @return size of given input stream
+   * @param attachment mimepart to calculate size of
+   * @return size of mime part
    */
-  private Try<Long> getAttachmentSize(InputStream inputStream) {
+  private Try<Long> getAttachmentSize(MimePart attachment) {
 
-    return Try.of(
-        () -> {
-          long fileSize = 0;
-          byte[] buffer = new byte[8192];
-          for (int read = inputStream.read(buffer); read != -1; read = inputStream.read(buffer)) {
-            fileSize += read;
-          }
-          return fileSize;
-        });
+    return Try.withResources(attachment::getInputStream)
+        .of(
+            inputStream -> {
+              long fileSize = 0;
+              byte[] buffer = new byte[8192];
+              for (int read = inputStream.read(buffer);
+                  read != -1;
+                  read = inputStream.read(buffer)) {
+                fileSize += read;
+              }
+              return fileSize;
+            });
   }
 
   /**
@@ -200,7 +184,7 @@ public class CopyToFiles extends MailDocumentHandler {
               String destId = optional.orElse("LOCAL_ROOT");
               return Objects.equals("", destId) ? "LOCAL_ROOT" : destId;
             })
-        .onFailure(ex -> mLog.debug(ex.getMessage()));
+        .onFailure(ex -> mLog.error(ex.getMessage()));
   }
 
   /**
@@ -210,12 +194,9 @@ public class CopyToFiles extends MailDocumentHandler {
    * @return attachment file name
    */
   private Try<String> getAttachmentName(MimePart attachment) {
-    return Try.of(() -> attachment.getFileName())
-        .onFailure(ex -> mLog.debug(ex.getMessage()))
-        .mapFailure(
-            Case(
-                $(instanceOf(Exception.class)),
-                ex -> ServiceException.FAILURE("Cannot get file name.", ex)));
+    return Try.of(attachment::getFileName)
+        .onFailure(ex -> mLog.error(ex.getMessage()))
+        .recoverWith(ex -> Try.failure(ServiceException.FAILURE("Cannot get file name.", ex)));
   }
 
   /**
@@ -226,11 +207,9 @@ public class CopyToFiles extends MailDocumentHandler {
    * @return try of attachment content type
    */
   private Try<String> getAttachmentContentType(MimePart attachment) {
-    return Try.of(() -> attachment.getContentType())
-        .onFailure(ex -> mLog.debug(ex.getMessage()))
-        .mapFailure(
-            Case(
-                $(instanceOf(Exception.class)),
-                ex -> ServiceException.FAILURE("Cannot get file content-type.", ex)));
+    return Try.of(attachment::getContentType)
+        .onFailure(ex -> mLog.error(ex.getMessage()))
+        .recoverWith(
+            ex -> Try.failure(ServiceException.FAILURE("Cannot get file content-type.", ex)));
   }
 }

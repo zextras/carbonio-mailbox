@@ -10,14 +10,12 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.account.Key.UCServiceBy;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ExceptionToString;
 import com.zimbra.common.util.L10nUtil;
-import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.accesscontrol.Right;
@@ -42,7 +40,6 @@ import com.zimbra.soap.admin.type.DistributionListSelector;
 import com.zimbra.soap.admin.type.DomainSelector;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
 import com.zimbra.soap.admin.type.ServerSelector;
-import com.zimbra.soap.admin.type.UCServiceSelector;
 import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.AutoProvPrincipalBy;
 import com.zimbra.soap.type.GalSearchType;
@@ -244,16 +241,8 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
   public static final int SD_SERVER_FLAG = 0x40;
 
-  public static final int SD_UC_SERVICE_FLAG = 0x80;
-
   /** return coses from searchDirectory */
   public static final int SD_DYNAMIC_GROUP_FLAG = 0x100;
-
-  /** do not fixup objectclass in query for searchObject, only used from LdapUpgrade */
-  public static final int SO_NO_FIXUP_OBJECTCLASS = 0x200;
-
-  /** do not fixup return attrs for searchObject, onlt used from LdapUpgrade */
-  public static final int SO_NO_FIXUP_RETURNATTRS = 0x400;
 
   /** return distribution lists from searchAccounts/searchDirectory */
   public static final int SD_HAB_FLAG = 0x12;
@@ -294,7 +283,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
    * cached. For LdapProvisionig, each LDAP related method will cost one or more LDAP trips. The
    * only usage for useCache=false is zmconfigd. (bug 70975 and 71267)
    *
-   * @param useCache
    * @return
    */
   public static Provisioning getInstance(CacheMode origCacheMode) {
@@ -380,7 +368,8 @@ public abstract class Provisioning extends ZAttrProvisioning {
    *       attr is updated
    * </ul>
    *
-   * Calls {@link #modifyAttrs(Map, boolean)} with <code>checkImmutable=false</code>.
+   * Calls {@link #modifyAttrs(com.zimbra.cs.account.Entry, java.util.Map, boolean)} with <code>
+   * checkImmutable=false</code>.
    */
   public void modifyAttrs(Entry e, Map<String, ? extends Object> attrs) throws ServiceException {
     modifyAttrs(e, attrs, false);
@@ -1008,33 +997,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract void renameAccount(String zimbraId, String newName) throws ServiceException;
 
   /**
-   * Returns the domain under which ZMG app accounts are created by default.
-   *
-   * @return
-   * @throws ServiceException
-   */
-  public Domain getDefaultZMGDomain() throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  /**
-   * Creates an account for an app that interfaces with the Mobile Gateway features.
-   *
-   * @param accountId id to use for the new account
-   * @param appCredsDigest a string representing the unique set of credentials of the app
-   * @return
-   */
-  public Account autoProvZMGAppAccount(String accountId, String appCredsDigest)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  public Pair<Account, Boolean> autoProvZMGProxyAccount(String emailAddr, String password)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  /**
    * Looks up an account by the specified key.
    *
    * @return the <code>Account</code>, or <code>null</code> if no <code>Account</code> with the
@@ -1051,10 +1013,10 @@ public abstract class Provisioning extends ZAttrProvisioning {
     // returns whether a shutdown has been request to the scheduler
     public boolean isShutDownRequested();
   }
+
   /**
    * Auto provisioning account in EAGER mode.
    *
-   * @param domain
    * @return
    * @throws ServiceException
    */
@@ -1393,15 +1355,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   }
 
   /**
-   * @param ucService
-   * @return may return null
-   */
-  public static UCServiceSelector getSelector(UCService ucService) {
-    if (ucService == null) return null;
-    return UCServiceSelector.fromId(ucService.getId());
-  }
-
-  /**
    * @param acct
    * @return may return null
    */
@@ -1603,51 +1556,21 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public List<Server> getAllWebClientServers() throws ServiceException {
     List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
     List<Server> webclientservers = getAllServers(Provisioning.SERVICE_WEBCLIENT);
-
-    for (Server server : mailboxservers) {
-      String version = server.getAttr(Provisioning.A_zimbraServerVersion, null);
-      // We get all pre 8.5 servers first (ones which don't have the zimbraServerVersion set)
-      if (version != null) {
-        continue;
-      }
-      // Add it to the list of 8.5+ webclient servers and return this list
-      webclientservers.add(server);
-    }
-
+    webclientservers.addAll(mailboxservers);
     return webclientservers;
   }
 
   public List<Server> getAllAdminClientServers() throws ServiceException {
     List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
     List<Server> adminclientservers = getAllServers(Provisioning.SERVICE_ADMINCLIENT);
-
-    for (Server server : mailboxservers) {
-      String version = server.getAttr(Provisioning.A_zimbraServerVersion, null);
-      // We get all pre 8.5 servers first (ones which don't have the zimbraServerVersion set)
-      if (version != null) {
-        continue;
-      }
-      // Add it to the list of 8.5+ adminclient servers and return this list
-      adminclientservers.add(server);
-    }
-
+    adminclientservers.addAll(mailboxservers);
     return adminclientservers;
   }
 
   public List<Server> getAllZimletServers() throws ServiceException {
     List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
     List<Server> zimletservers = getAllServers(Provisioning.SERVICE_ZIMLET);
-
-    for (Server server : mailboxservers) {
-      String version = server.getAttr(Provisioning.A_zimbraServerVersion, null);
-      // We get all pre 8.5 servers first (ones which don't have the zimbraServerVersion set)
-      if (version != null) {
-        continue;
-      }
-      // Add it to the list of 8.5+ zimlet servers and return this list
-      zimletservers.add(server);
-    }
-
+    zimletservers.addAll(mailboxservers);
     return zimletservers;
   }
 
@@ -1666,40 +1589,11 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public List<Server> getAllMailClientServers() throws ServiceException {
     List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
     List<Server> mailclientservers = getAllServers(Provisioning.SERVICE_MAILCLIENT);
-
-    for (Server server : mailboxservers) {
-      String version = server.getAttr(Provisioning.A_zimbraServerVersion, null);
-      // We get all pre 8.5 servers first (ones which don't have the zimbraServerVersion set)
-      if (version != null) {
-        continue;
-      }
-      // Add it to the list of 8.5+ mailclient servers and return this list
-      mailclientservers.add(server);
-    }
-
+    mailclientservers.addAll(mailboxservers);
     return mailclientservers;
   }
 
   public abstract void deleteServer(String zimbraId) throws ServiceException;
-
-  /*
-   * UC service
-   */
-  public abstract UCService createUCService(String name, Map<String, Object> attrs)
-      throws ServiceException;
-
-  public abstract void deleteUCService(String zimbraId) throws ServiceException;
-
-  public abstract UCService get(UCServiceBy keyName, String key) throws ServiceException;
-
-  public abstract List<UCService> getAllUCServices() throws ServiceException;
-
-  public abstract void renameUCService(String zimbraId, String newName) throws ServiceException;
-
-  public String updatePresenceSessionId(String zimbraId, String username, String password)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
 
   /*
    * ==============================
@@ -2057,7 +1951,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
    *
    * @param server
    * @param opts
-   * @param visitor
    * @throws ServiceException
    */
   public List<NamedEntry> searchAccountsOnServer(Server server, SearchAccountsOptions opts)
@@ -2616,8 +2509,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     throw ServiceException.UNSUPPORTED();
   }
 
-  public long countObjects(CountObjectsType type, Domain domain, UCService ucService)
-      throws ServiceException {
+  public long countObjects(CountObjectsType type, Domain domain) throws ServiceException {
     throw ServiceException.UNSUPPORTED();
   }
 
@@ -2877,6 +2769,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       throws ServiceException {
     throw ServiceException.UNSUPPORTED();
   }
+
   // address list
   public String createAddressList(
       Domain domain, String name, String desc, Map<String, Object> attrs) throws ServiceException {

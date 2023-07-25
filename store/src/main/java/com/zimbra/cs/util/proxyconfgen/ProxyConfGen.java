@@ -93,7 +93,9 @@ public class ProxyConfGen {
   private static Provisioning mProv = null;
   private static boolean mGenConfPerVhn = false;
   private static boolean hasCustomTemplateLocationArg = false;
-  private static final String CERTBOT_WORKING_DIR = "/common/certbot/etc/letsencrypt/live/";
+  private static final String CERTBOT = mWorkingDir + "/libexec/certbot";
+  private static final String CERTBOT_WORKING_DIR =
+      mWorkingDir + "/common/certbot/etc/letsencrypt/live/";
   private static final String CERT = "/fullchain.pem";
   private static final String KEY = "/privkey.pem";
 
@@ -229,6 +231,7 @@ public class ProxyConfGen {
     attrsNeeded.add(ZAttrProvisioning.A_zimbraReverseProxyClientCertCA);
     attrsNeeded.add(ZAttrProvisioning.A_zimbraWebClientLoginURL);
     attrsNeeded.add(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
+    attrsNeeded.add(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader);
 
     final List<DomainAttrItem> result = new ArrayList<>();
 
@@ -246,12 +249,14 @@ public class ProxyConfGen {
           String clientCertCA = entry.getAttr(ZAttrProvisioning.A_zimbraReverseProxyClientCertCA);
           String[] rspHeaders =
               entry.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
+          String cspRspHeader =
+              entry.getAttr(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "");
 
           if (virtualHostnames.length == 0
               || (certificate == null
-              && privateKey == null
-              && clientCertMode == null
-              && clientCertCA == null)) {
+                  && privateKey == null
+                  && clientCertMode == null
+                  && clientCertCA == null)) {
             return; // ignore the items that don't have virtual host
             // name, cert or key. Those domains will use the
             // config
@@ -285,7 +290,8 @@ public class ProxyConfGen {
                     privateKey,
                     clientCertMode,
                     clientCertCA,
-                    rspHeaders));
+                    rspHeaders,
+                    cspRspHeader));
           }
         };
     mProv.getAllDomains(visitor, attrsNeeded.toArray(new String[0]));
@@ -319,8 +325,6 @@ public class ProxyConfGen {
     }
     return sb.toString();
   }
-
-
 
   /* Guess how to find a server object -- taken from ProvUtil::guessServerBy */
   public static Key.ServerBy guessServerBy(String value) {
@@ -592,8 +596,8 @@ public class ProxyConfGen {
         }
       } else if (attr.equals("sso")
           && (item.clientCertMode == null
-          || item.clientCertMode.equals("")
-          || item.clientCertMode.equals("off"))) {
+              || item.clientCertMode.equals("")
+              || item.clientCertMode.equals("off"))) {
         return true;
       }
     }
@@ -661,6 +665,9 @@ public class ProxyConfGen {
     ArrayList<String> responseHeadersList = new ArrayList<>();
     for (i = 0; i < item.rspHeaders.length; i++) {
       responseHeadersList.add(item.rspHeaders[i]);
+    }
+    if (!item.cspHeader.isBlank()) {
+      responseHeadersList.add(item.cspHeader);
     }
     mDomainConfVars.put(
         "web.add.headers.vhost",
@@ -1933,8 +1940,14 @@ public class ProxyConfGen {
     String[] rspHeaders =
         ProxyConfVar.configSource.getMultiAttr(
             ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
+    String cspHeader =
+        ProxyConfVar.configSource.getAttr(
+            ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "");
     ArrayList<String> responseHeadersList = new ArrayList<>();
     Collections.addAll(responseHeadersList, rspHeaders);
+    if (!cspHeader.isBlank()) {
+      responseHeadersList.add(cspHeader);
+    }
     mConfVars.put(
         "web.add.headers.default",
         new AddHeadersVar(
@@ -2123,10 +2136,13 @@ public class ProxyConfGen {
       LOG.debug("Loading Attrs in Domain Level");
       mDomainReverseProxyAttrs = loadDomainReverseProxyAttrs();
 
-      //save Let's Encrypt certificate key pairs from CERTBOT_SSL_DIR to LDAP
+      // cleanup Certbot domain configurations
+      deleteDomainCertbotConfiguration(mDomainReverseProxyAttrs, mDryRun);
+
+      // save Certbot cert/key pairs from CERTBOT_SSL_DIR to LDAP
       saveCertificateKeyPairFromCertbotWorkingDirToLdap(mDomainReverseProxyAttrs, mDryRun);
 
-      //download domain cert key pairs from LDAP to DOMAIN_SSL_DIR
+      // download domain cert/key pairs from LDAP to DOMAIN_SSL_DIR
       downloadCertificateKeyPairToDomainCertDir(mDomainReverseProxyAttrs, mDryRun);
 
       mServerAttrs = loadServerAttrs();
@@ -2300,8 +2316,8 @@ public class ProxyConfGen {
   }
 
   /**
-   * Downloads all the certificates/keys present in mDomainReverseProxyAttrs
-   * List<{@link DomainAttrItem}> to {@link ProxyConfGen#DOMAIN_SSL_DIR}.
+   * Downloads all the certificates/keys present in mDomainReverseProxyAttrs List<{@link
+   * DomainAttrItem}> to {@link ProxyConfGen#DOMAIN_SSL_DIR}.
    *
    * @param mDomainReverseProxyAttrs List<{@link DomainAttrItem}> domain attribute items collected
    *     from domains
@@ -2361,6 +2377,61 @@ public class ProxyConfGen {
   }
 
   /**
+   * Deletes existing Let's Encrypt domain configuration (certificate/key pair, renewal
+   * configuration and related links) for deleted domains.
+   *
+   * @param mDomainReverseProxyAttrs List<{@link DomainAttrItem}> domain attribute items collected
+   *     from domains
+   * @param dryRun if it's a dry run
+   * @author Yuliya Aheeva
+   * @since 23.7.0
+   */
+  private static void deleteDomainCertbotConfiguration(
+      final List<DomainAttrItem> mDomainReverseProxyAttrs, final boolean dryRun) {
+    List<String> domainNames = Utils.getSubdirectoriesNames(CERTBOT_WORKING_DIR);
+    if (domainNames.isEmpty()) {
+      return;
+    }
+    for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
+      domainNames.removeIf(domain -> domain.contains(entry.domainName));
+    }
+    if (dryRun) {
+      domainNames.forEach(
+          domainName -> LOG.info("Will delete Let's Encrypt config for domain " + domainName));
+    } else {
+      try {
+        executeCertbotDelete(domainNames);
+      } catch (ProxyConfException e) {
+        LOG.info(e.getMessage());
+      }
+    }
+  }
+
+  /**
+   * Executes Certbot delete command.
+   *
+   * @param args domain names to perform Certbot cleanup for
+   * @throws ProxyConfException in case of failure during the deletion
+   * @author Yuliya Aheeva
+   * @since 23.7.0
+   */
+  private static void executeCertbotDelete(final List<String> args) throws ProxyConfException {
+    if (args.isEmpty()) {
+      return;
+    }
+    args.forEach(domainName -> LOG.info("Deleting Let's Encrypt configuration for " + domainName));
+
+    args.add(0, CERTBOT);
+    args.add(1, "delete");
+
+    try {
+      new ProcessBuilder(args).start();
+    } catch (IOException e) {
+      throw new ProxyConfException("Unable to delete Let's Encrypt configurations", e);
+    }
+  }
+
+  /**
    * Saves existing Let's Encrypt fullchain certificate private key pairs from Certbot working
    * directory {@link DomainCertManager#CERTBOT_WORKING_DIR} to LDAP.
    *
@@ -2394,7 +2465,7 @@ public class ProxyConfGen {
    * @since 23.4.0
    */
   private static boolean isDomainManagedByCertbot(final String domainName) {
-    final File directory = new File(Path.of(mWorkingDir, CERTBOT_WORKING_DIR, domainName).toUri());
+    final File directory = new File(Path.of(CERTBOT_WORKING_DIR, domainName).toUri());
     return directory.exists();
   }
 
@@ -2413,13 +2484,13 @@ public class ProxyConfGen {
     final String domainName = entry.domainName;
 
     try {
-      final Domain domain = Optional.ofNullable(mProv.get(DomainBy.name, domainName))
-          .orElseThrow(() -> AccountServiceException.NO_SUCH_DOMAIN(domainName));
+      final Domain domain =
+          Optional.ofNullable(mProv.get(DomainBy.name, domainName))
+              .orElseThrow(() -> AccountServiceException.NO_SUCH_DOMAIN(domainName));
 
       final File certificateFile =
-          new File(Path.of(mWorkingDir, CERTBOT_WORKING_DIR, domainName + CERT).toUri());
-      final File privateKeyFile =
-          new File(Path.of(mWorkingDir, CERTBOT_WORKING_DIR, domainName + KEY).toUri());
+          new File(Path.of(CERTBOT_WORKING_DIR, domainName + CERT).toUri());
+      final File privateKeyFile = new File(Path.of(CERTBOT_WORKING_DIR, domainName + KEY).toUri());
 
       if (certificateFile.exists() && privateKeyFile.exists()) {
         final Map<String, Object> attrs = new HashMap<>();
@@ -2448,7 +2519,7 @@ public class ProxyConfGen {
   /**
    * Updates certificate key pair values in DOMAIN_SSL_DIR.
    *
-   * This method backs up existing certificate and private key files for the given domain before
+   * <p>This method backs up existing certificate and private key files for the given domain before
    * creating new ones and populating them with the new data. Backup files gets restored if the
    * transaction fails.
    *
@@ -2464,7 +2535,8 @@ public class ProxyConfGen {
       final String domainName, final String certificate, final String privateKey)
       throws ProxyConfException {
 
-    final File certificateFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
+    final File certificateFile =
+        new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_CRT_EXT).toUri());
     final File privateKeyFile = new File(Path.of(DOMAIN_SSL_DIR, domainName + SSL_KEY_EXT).toUri());
 
     // Backup the old files

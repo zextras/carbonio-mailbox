@@ -657,7 +657,6 @@
       <desc>domain admin domain right</desc>
       <rights>
         <r n="accessGAL"/>
-        <r n="checkDomainMXRecord"/>
         <r n="countAccount"/>
         <r n="createAccount"/>
         <r n="createAlias"/>

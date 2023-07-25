@@ -330,6 +330,7 @@ public class ZInternetHeader {
             byte c = content[pos];
             if (c <= 0 || c >= 0x7F || (c == '=' && pos < end - 1 && content[pos + 1] == '?')) {
                 complicated = true;
+                break;
             }
         }
         if (!complicated) {
@@ -404,7 +405,7 @@ public class ZInternetHeader {
         return text.toString();
     }
 
-    static private void setupNewNeedDecode(StringBuilder needDecode, FieldElement current) {
+    private static void setupNewNeedDecode(StringBuilder needDecode, FieldElement current) {
         needDecode.setLength(0);
         needDecode.append("=?")
                   .append(current.getCharset())
@@ -414,7 +415,7 @@ public class ZInternetHeader {
                   .append(current.getText());
     }
 
-    static private void decodeAndAppend(StringBuilder needDecode, StringBuilder text) {
+    private static void decodeAndAppend(StringBuilder needDecode, StringBuilder text) {
         needDecode.append("?=");
         ZByteString decoded = ZMimeUtility.decodeWordBytes(needDecode.toString().getBytes());
         if (null != decoded) {
@@ -426,7 +427,7 @@ public class ZInternetHeader {
 
     public enum SequenceType {UNDEFINED, ERROR, COMMENT /* comment */, EW /* encoded-word */, LWS /* linear-white-space */};
     public enum EncodeSequenceState {CHARSET, ENCODEMETHOD, TEXT, UNDEFINED};
-    static public class FieldElement {
+    public static class FieldElement {
         private SequenceType seqType;
         private ByteArrayOutputStream bytes;
         private ByteArrayOutputStream charset;
@@ -489,7 +490,7 @@ public class ZInternetHeader {
      * @param length length
      * @return a list of parsed FieldElement.  If the content text is mal-formatted, return null.
      */
-    static private List<FieldElement> parse(final byte[] content, final int start, final int length) {
+    private static List<FieldElement> parse(final byte[] content, final int start, final int length) {
         Fields fields = new Fields();
         final int end = start + length;
 

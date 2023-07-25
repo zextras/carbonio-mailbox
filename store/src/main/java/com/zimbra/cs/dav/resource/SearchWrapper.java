@@ -71,9 +71,9 @@ public class SearchWrapper extends PhantomResource {
         else if (term.equals(YEAR))
             mQuery.append("after:\"-1year\" ");
         else if (BrowseWrapper.BY_SENDER.equals(prevTerm))
-            mQuery.append("from:(@"+term+") ");
+            mQuery.append("from:(@").append(term).append(") ");
         else if (BrowseWrapper.BY_TYPE.equals(prevTerm)) {
-            mQuery.append("attachment:\""+term+"\" ");
+            mQuery.append("attachment:\"").append(term).append("\" ");
             if (!term.equals("any"))
                 mContentType = getActualContentType(term);
         }

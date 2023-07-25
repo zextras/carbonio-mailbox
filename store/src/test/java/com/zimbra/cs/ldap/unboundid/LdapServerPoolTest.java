@@ -4,12 +4,12 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.ldap.unboundid;
-
-import junit.framework.Assert;
-
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import com.unboundid.ldap.sdk.FailoverServerSet;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.unboundid.ldap.sdk.SingleServerSet;
 import com.zimbra.cs.ldap.LdapConnType;
 import com.zimbra.cs.ldap.LdapServerConfig.ZimbraLdapConfig;
@@ -17,19 +17,19 @@ import com.zimbra.cs.ldap.LdapServerType;
 
 public class LdapServerPoolTest {
 
-    @Test
-    public void testLDAPICreatePool() throws Exception {
-        LdapServerPool pool = new LdapServerPool(new MockLdapiServerConfig(LdapServerType.MASTER));
-        SingleServerSet set = (SingleServerSet) pool.serverSet;
-        Assert.assertEquals("dummy_host", set.getAddress());
-    }
+ @Test
+ void testLDAPICreatePool() throws Exception {
+  LdapServerPool pool = new LdapServerPool(new MockLdapiServerConfig(LdapServerType.MASTER));
+  SingleServerSet set = (SingleServerSet) pool.serverSet;
+  assertEquals("dummy_host", set.getAddress());
+ }
 
-    @Test
-    public void testLDAPCreatePool() throws Exception {
-         LdapServerPool pool = new LdapServerPool(new MockLdapServerConfig(LdapServerType.MASTER));
-         FailoverServerSet set = (FailoverServerSet) pool.serverSet;
-         Assert.assertTrue(set.reOrderOnFailover());
-    }
+ @Test
+ void testLDAPCreatePool() throws Exception {
+  LdapServerPool pool = new LdapServerPool(new MockLdapServerConfig(LdapServerType.MASTER));
+  FailoverServerSet set = (FailoverServerSet) pool.serverSet;
+  assertTrue(set.reOrderOnFailover());
+ }
 
     public static class MockLdapiServerConfig extends ZimbraLdapConfig {
 

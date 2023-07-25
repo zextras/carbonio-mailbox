@@ -5,23 +5,26 @@
 
 package com.zimbra.common.service;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.common.service.ServiceException.Argument;
 
 public class ServiceExceptionTest {
 
-    @Test
-    public void testArgumentEquals() {
-        Argument arg1a = new Argument("1", "one", Argument.Type.STR);
-        Argument arg1b = new Argument("1", "one", Argument.Type.STR);
-        Argument arg1c = new Argument("1", "two", Argument.Type.STR);
-        Argument arg2 = new Argument("2", "one", Argument.Type.STR);
-        
-        Assert.assertFalse(arg1a.equals(null));
-        Assert.assertTrue(arg1a.equals(arg1b));
-        Assert.assertFalse(arg1a.equals(arg1c));
-        Assert.assertFalse(arg1a.equals(arg2));
-    }
+  @Test
+  void testArgumentEquals() {
+    Argument arg1a = new Argument("1", "one", Argument.Type.STR);
+    Argument arg1b = new Argument("1", "one", Argument.Type.STR);
+    Argument arg1c = new Argument("1", "two", Argument.Type.STR);
+    Argument arg2 = new Argument("2", "one", Argument.Type.STR);
+
+    assertNotEquals(arg1a, null);
+    assertEquals(arg1a, arg1b);
+    assertNotEquals(arg1a, arg1c);
+    assertNotEquals(arg1a, arg2);
+  }
 }

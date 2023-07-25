@@ -135,7 +135,7 @@ public class XHtmlDocumentHandler extends DefaultHandler {
                     continue;
                 }
                 out.append(" ");
-                out.append(aName+"=\""+attrs.getValue(i)+"\"");
+                out.append(aName).append("=\"").append(attrs.getValue(i)).append("\"");
               }
             }
             out.append(">");

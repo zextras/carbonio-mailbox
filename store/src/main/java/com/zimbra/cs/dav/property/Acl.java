@@ -223,7 +223,7 @@ public class Acl extends ResourceProperty {
         return grant;
     }
 
-    static protected HashMap<String, Short> sRightsMap;
+    protected static HashMap<String, Short> sRightsMap;
     private static final short RIGHT_UNSUPPORTED = 0;
 
     static {

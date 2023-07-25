@@ -115,19 +115,6 @@ public final class AdminConstants {
   public static final String E_GET_ALL_SERVERS_REQUEST = "GetAllServersRequest";
   public static final String E_GET_ALL_SERVERS_RESPONSE = "GetAllServersResponse";
 
-  public static final String E_CREATE_UC_SERVICE_REQUEST = "CreateUCServiceRequest";
-  public static final String E_CREATE_UC_SERVICE_RESPONSE = "CreateUCServiceResponse";
-  public static final String E_DELETE_UC_SERVICE_REQUEST = "DeleteUCServiceRequest";
-  public static final String E_DELETE_UC_SERVICE_RESPONSE = "DeleteUCServiceResponse";
-  public static final String E_GET_UC_SERVICE_REQUEST = "GetUCServiceRequest";
-  public static final String E_GET_UC_SERVICE_RESPONSE = "GetUCServiceResponse";
-  public static final String E_GET_ALL_UC_SERVICES_REQUEST = "GetAllUCServicesRequest";
-  public static final String E_GET_ALL_UC_SERVICES_RESPONSE = "GetAllUCServicesResponse";
-  public static final String E_MODIFY_UC_SERVICE_REQUEST = "ModifyUCServiceRequest";
-  public static final String E_MODIFY_UC_SERVICE_RESPONSE = "ModifyUCServiceResponse";
-  public static final String E_RENAME_UC_SERVICE_REQUEST = "RenameUCServiceRequest";
-  public static final String E_RENAME_UC_SERVICE_RESPONSE = "RenameUCServiceResponse";
-
   public static final String E_GET_CONFIG_REQUEST = "GetConfigRequest";
   public static final String E_GET_CONFIG_RESPONSE = "GetConfigResponse";
   public static final String E_MODIFY_CONFIG_REQUEST = "ModifyConfigRequest";
@@ -158,8 +145,6 @@ public final class AdminConstants {
   public static final String E_CHECK_GAL_CONFIG_RESPONSE = "CheckGalConfigResponse";
   public static final String E_CHECK_EXCHANGE_AUTH_REQUEST = "CheckExchangeAuthRequest";
   public static final String E_CHECK_EXCHANGE_AUTH_RESPONSE = "CheckExchangeAuthResponse";
-  public static final String E_CHECK_DOMAIN_MX_RECORD_REQUEST = "CheckDomainMXRecordRequest";
-  public static final String E_CHECK_DOMAIN_MX_RECORD_RESPONSE = "CheckDomainMXRecordResponse";
 
   public static final String E_AUTO_COMPLETE_GAL_REQUEST = "AutoCompleteGalRequest";
   public static final String E_AUTO_COMPLETE_GAL_RESPONSE = "AutoCompleteGalResponse";
@@ -332,7 +317,7 @@ public final class AdminConstants {
   public static final String E_GET_DISTRIBUTION_LIST_MEMBERSHIP_RESPONSE =
       "GetDistributionListMembershipResponse";
 
-  //certbot
+  // certbot
   public static final String E_ISSUE_CERT_REQUEST = "IssueCertRequest";
   public static final String E_ISSUE_CERT_RESPONSE = "IssueCertResponse";
 
@@ -509,10 +494,6 @@ public final class AdminConstants {
   public static final String E_MODIFY_SMIME_CONFIG_REQUEST = "ModifySMIMEConfigRequest";
   public static final String E_MODIFY_SMIME_CONFIG_RESPONSE = "ModifySMIMEConfigResponse";
 
-  // Version Check
-  public static final String E_VC_REQUEST = "VersionCheckRequest";
-  public static final String E_VC_RESPONSE = "VersionCheckResponse";
-
   // Auto Provision
   public static final String E_AUTO_PROV_ACCOUNT_REQUEST = "AutoProvAccountRequest";
   public static final String E_AUTO_PROV_ACCOUNT_RESPONSE = "AutoProvAccountResponse";
@@ -544,15 +525,6 @@ public final class AdminConstants {
   // StoreManager verification utility
   public static final String E_VERIFY_STORE_MANAGER_REQUEST = "VerifyStoreManagerRequest";
   public static final String E_VERIFY_STORE_MANAGER_RESPONSE = "VerifyStoreManagerResponse";
-
-  // Two-Factor Authentication
-  public static final String E_CLEAR_TWO_FACTOR_AUTH_DATA_REQUEST = "ClearTwoFactorAuthDataRequest";
-  public static final String E_CLEAR_TWO_FACTOR_AUTH_DATA_RESPONSE =
-      "ClearTwoFactorAuthDataResponse";
-  public static final String E_GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_REQUEST =
-      "GetClearTwoFactorAuthDataStatusRequest";
-  public static final String E_GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_RESPONSE =
-      "GetClearTwoFactorAuthDataStatusResponse";
 
   // Skins
   // Skins
@@ -695,31 +667,6 @@ public final class AdminConstants {
       QName.get(E_GET_ALL_SERVERS_REQUEST, NAMESPACE);
   public static final QName GET_ALL_SERVERS_RESPONSE =
       QName.get(E_GET_ALL_SERVERS_RESPONSE, NAMESPACE);
-
-  public static final QName CREATE_UC_SERVICE_REQUEST =
-      QName.get(E_CREATE_UC_SERVICE_REQUEST, NAMESPACE);
-  public static final QName CREATE_UC_SERVICE_RESPONSE =
-      QName.get(E_CREATE_UC_SERVICE_RESPONSE, NAMESPACE);
-  public static final QName DELETE_UC_SERVICE_REQUEST =
-      QName.get(E_DELETE_UC_SERVICE_REQUEST, NAMESPACE);
-  public static final QName DELETE_UC_SERVICE_RESPONSE =
-      QName.get(E_DELETE_UC_SERVICE_RESPONSE, NAMESPACE);
-  public static final QName GET_UC_SERVICE_REQUEST = QName.get(E_GET_UC_SERVICE_REQUEST, NAMESPACE);
-  public static final QName GET_UC_SERVICE_RESPONSE =
-      QName.get(E_GET_UC_SERVICE_RESPONSE, NAMESPACE);
-  public static final QName GET_ALL_UC_SERVICES_REQUEST =
-      QName.get(E_GET_ALL_UC_SERVICES_REQUEST, NAMESPACE);
-  public static final QName GET_ALL_UC_SERVICES_RESPONSE =
-      QName.get(E_GET_ALL_UC_SERVICES_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_UC_SERVICE_REQUEST =
-      QName.get(E_MODIFY_UC_SERVICE_REQUEST, NAMESPACE);
-  public static final QName MODIFY_UC_SERVICE_RESPONSE =
-      QName.get(E_MODIFY_UC_SERVICE_RESPONSE, NAMESPACE);
-  public static final QName RENAME_UC_SERVICE_REQUEST =
-      QName.get(E_RENAME_UC_SERVICE_REQUEST, NAMESPACE);
-  public static final QName RENAME_UC_SERVICE_RESPONSE =
-      QName.get(E_RENAME_UC_SERVICE_RESPONSE, NAMESPACE);
-
   public static final QName GET_CONFIG_REQUEST = QName.get(E_GET_CONFIG_REQUEST, NAMESPACE);
   public static final QName GET_CONFIG_RESPONSE = QName.get(E_GET_CONFIG_RESPONSE, NAMESPACE);
   public static final QName MODIFY_CONFIG_REQUEST = QName.get(E_MODIFY_CONFIG_REQUEST, NAMESPACE);
@@ -766,10 +713,6 @@ public final class AdminConstants {
       QName.get(E_CHECK_EXCHANGE_AUTH_REQUEST, NAMESPACE);
   public static final QName CHECK_EXCHANGE_AUTH_RESPONSE =
       QName.get(E_CHECK_EXCHANGE_AUTH_RESPONSE, NAMESPACE);
-  public static final QName CHECK_DOMAIN_MX_RECORD_REQUEST =
-      QName.get(E_CHECK_DOMAIN_MX_RECORD_REQUEST, NAMESPACE);
-  public static final QName CHECK_DOMAIN_MX_RECORD_RESPONSE =
-      QName.get(E_CHECK_DOMAIN_MX_RECORD_RESPONSE, NAMESPACE);
 
   public static final QName AUTO_COMPLETE_GAL_REQUEST =
       QName.get(E_AUTO_COMPLETE_GAL_REQUEST, NAMESPACE);
@@ -1263,10 +1206,6 @@ public final class AdminConstants {
   public static final QName MODIFY_SMIME_CONFIG_RESPONSE =
       QName.get(E_MODIFY_SMIME_CONFIG_RESPONSE, NAMESPACE);
 
-  // Version Check
-  public static final QName VC_REQUEST = QName.get(E_VC_REQUEST, NAMESPACE);
-  public static final QName VC_RESPONSE = QName.get(E_VC_RESPONSE, NAMESPACE);
-
   // Auto provision
   public static final QName AUTO_PROV_ACCOUNT_REQUEST =
       QName.get(E_AUTO_PROV_ACCOUNT_REQUEST, NAMESPACE);
@@ -1300,16 +1239,6 @@ public final class AdminConstants {
   // Skins
   public static final QName GET_ALL_SKINS_REQUEST = QName.get(E_GET_ALL_SKINS_REQUEST, NAMESPACE);
   public static final QName GET_ALL_SKINS_RESPONSE = QName.get(E_GET_ALL_SKINS_RESPONSE, NAMESPACE);
-
-  // Two-Factor Authentication
-  public static final QName CLEAR_TWO_FACTOR_AUTH_DATA_REQUEST =
-      QName.get(E_CLEAR_TWO_FACTOR_AUTH_DATA_REQUEST, NAMESPACE);
-  public static final QName CLEAR_TWO_FACTOR_AUTH_DATA_RESPONSE =
-      QName.get(E_CLEAR_TWO_FACTOR_AUTH_DATA_RESPONSE, NAMESPACE);
-  public static final QName GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_REQUEST =
-      QName.get(E_GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_REQUEST, NAMESPACE);
-  public static final QName GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_RESPONSE =
-      QName.get(E_GET_CLEAR_TWO_FACTOR_AUTH_DATA_STATUS_RESPONSE, NAMESPACE);
 
   public static final String E_FILTER_RULES = "filterRules";
   public static final String E_FILTER_RULE = "filterRule";
@@ -1431,7 +1360,6 @@ public final class AdminConstants {
   public static final String E_QUEUE = "queue";
   public static final String E_ACTION = "action";
   public static final String E_SERVER = "server";
-  public static final String E_UC_SERVICE = "ucservice";
   public static final String E_XMPP_COMPONENT = "xmppcomponent";
   public static final String E_STATUS = "status";
   public static final String E_END_TIME = "endTime";
@@ -1771,22 +1699,6 @@ public final class AdminConstants {
   public static final String A_WEEK = "week";
   public static final String A_WKDAY = "wkday";
   public static final String A_MDAY = "mday";
-
-  // Version Check
-  public static final String VERSION_CHECK_STATUS = "status";
-  public static final String VERSION_CHECK_CHECK = "check";
-  public static final String E_VERSION_CHECK = "versionCheck";
-  public static final String A_UPDATE_TYPE = "type";
-  public static final String E_UPDATES = "updates";
-  public static final String E_UPDATE = "update";
-  public static final String A_VERSION_CHECK_STATUS = "status";
-  public static final String A_CRITICAL = "critical";
-  public static final String A_UPDATE_URL = "updateURL";
-  public static final String A_SHORT_VERSION = "shortversion";
-  public static final String A_VERSION = "version";
-  public static final String A_RELEASE = "release";
-  public static final String A_PLATFORM = "platform";
-  public static final String A_BUILDTYPE = "buildtype";
 
   // ZimbraLicenseExtenstion LicenseService and LicenseAdminService
   public static final String E_CONTENT = "content";

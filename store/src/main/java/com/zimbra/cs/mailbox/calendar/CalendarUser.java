@@ -168,9 +168,7 @@ public abstract class CalendarUser {
 
     List<ZParameter> xparams = Util.decodeXParamsFromMetadata(meta);
     if (xparams != null) {
-      for (ZParameter xparam : xparams) {
-        mXParams.add(xparam);
-      }
+      mXParams.addAll(xparams);
     }
   }
 

@@ -1066,7 +1066,7 @@ class ImapFolderSync {
         Collection<DataSourceItem> mappings = tracker.getMappings();
         List<Integer> allIds = mailbox.listItemIds(mailbox.getOperationContext(),
                 MailItem.Type.MESSAGE, tracker.getItemId());
-        Integer sortedIds[] = allIds.toArray(new Integer[allIds.size()]);
+        Integer sortedIds[] = allIds.toArray(new Integer[0]);
 
         Arrays.sort(sortedIds);
         for (DataSourceItem mapping : mappings) {

@@ -80,7 +80,7 @@ public class Tag extends MailItem implements ZimbraTag {
         }
 
         public NormalizedTags(Collection<String> tagsFromDB) {
-            this(tagsFromDB == null ? null : tagsFromDB.toArray(new String[tagsFromDB.size()]));
+            this(tagsFromDB == null ? null : tagsFromDB.toArray(new String[0]));
         }
 
         public NormalizedTags(String[] tagsFromDB) {

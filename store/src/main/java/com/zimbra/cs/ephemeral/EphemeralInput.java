@@ -96,7 +96,7 @@ public class EphemeralInput {
     }
 
 
-    public static abstract class Expiration {
+    public abstract static class Expiration {
         public abstract long getMillis();
         public long getRelativeMillis() {
             return getMillis() - System.currentTimeMillis();

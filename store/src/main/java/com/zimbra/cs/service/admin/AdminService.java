@@ -12,10 +12,7 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @zm-service-description The Admin Service includes commands for server, account and mailbox
@@ -64,10 +61,10 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.GET_ACCOUNT_MEMBERSHIP_REQUEST, new GetAccountMembership());
 
-    //certbot
+    // certbot
     dispatcher.registerHandler(AdminConstants.ISSUE_CERT_REQUEST, new IssueCert());
 
-    //domain
+    // domain
     dispatcher.registerHandler(AdminConstants.CREATE_DOMAIN_REQUEST, new CreateDomain());
     dispatcher.registerHandler(AdminConstants.GET_DOMAIN_REQUEST, new GetDomain());
     dispatcher.registerHandler(AdminConstants.GET_DOMAIN_INFO_REQUEST, new GetDomainInfo());
@@ -89,13 +86,6 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.MODIFY_SERVER_REQUEST, new ModifyServer());
     dispatcher.registerHandler(AdminConstants.DELETE_SERVER_REQUEST, new DeleteServer());
 
-    dispatcher.registerHandler(AdminConstants.CREATE_UC_SERVICE_REQUEST, new CreateUCService());
-    dispatcher.registerHandler(AdminConstants.GET_UC_SERVICE_REQUEST, new GetUCService());
-    dispatcher.registerHandler(AdminConstants.GET_ALL_UC_SERVICES_REQUEST, new GetAllUCServices());
-    dispatcher.registerHandler(AdminConstants.MODIFY_UC_SERVICE_REQUEST, new ModifyUCService());
-    dispatcher.registerHandler(AdminConstants.DELETE_UC_SERVICE_REQUEST, new DeleteUCService());
-    dispatcher.registerHandler(AdminConstants.RENAME_UC_SERVICE_REQUEST, new RenameUCService());
-
     dispatcher.registerHandler(AdminConstants.GET_CONFIG_REQUEST, new GetConfig());
     dispatcher.registerHandler(AdminConstants.GET_ALL_CONFIG_REQUEST, new GetAllConfig());
     dispatcher.registerHandler(AdminConstants.MODIFY_CONFIG_REQUEST, new ModifyConfig());
@@ -115,9 +105,6 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.CHECK_HOSTNAME_RESOLVE_REQUEST, new CheckHostnameResolve());
     dispatcher.registerHandler(AdminConstants.CHECK_EXCHANGE_AUTH_REQUEST, new CheckExchangeAuth());
-    dispatcher.registerHandler(
-        AdminConstants.CHECK_DOMAIN_MX_RECORD_REQUEST, new CheckDomainMXRecord());
-
     dispatcher.registerHandler(AdminConstants.CREATE_VOLUME_REQUEST, new CreateVolume());
     dispatcher.registerHandler(AdminConstants.GET_VOLUME_REQUEST, new GetVolume());
     dispatcher.registerHandler(AdminConstants.GET_ALL_VOLUMES_REQUEST, new GetAllVolumes());
@@ -255,7 +242,6 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.FLUSH_CACHE_REQUEST, new FlushCache());
 
     dispatcher.registerHandler(AdminConstants.COUNT_ACCOUNT_REQUEST, new CountAccount());
-    dispatcher.registerHandler(AdminConstants.COUNT_OBJECTS_REQUEST, new CountObjects());
 
     dispatcher.registerHandler(AdminConstants.GET_SHARE_INFO_REQUEST, new GetShareInfo());
 
@@ -325,9 +311,6 @@ public class AdminService implements DocumentService {
 
     // local config
     dispatcher.registerHandler(AdminConstants.RELOAD_LOCAL_CONFIG_REQUEST, new ReloadLocalConfig());
-
-    // wiki migration
-    dispatcher.registerHandler(AdminConstants.MIGRATE_ACCOUNT_REQUEST, new MigrateAccount());
 
     // noop
     dispatcher.registerHandler(AdminConstants.NO_OP_REQUEST, new NoOp());

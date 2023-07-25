@@ -86,7 +86,7 @@ public class Envelope {
                 addrs.add(readAddress(is));
                 is.skipSpaces();
             }
-            return addrs.toArray(new Address[addrs.size()]);
+            return addrs.toArray(new Address[0]);
         } else {
             is.skipNil();
             return null;

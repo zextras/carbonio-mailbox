@@ -24,7 +24,6 @@ import com.zimbra.cs.account.GlobalGrant;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.UCService;
 import com.zimbra.cs.account.XMPPComponent;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.ldap.LdapDIT;
@@ -65,12 +64,6 @@ public enum TargetType {
       "DynamicGroup"), // dynamic group
   domain(true, false, AttributeClass.domain, com.zimbra.soap.type.TargetType.domain, "Domain"),
   server(true, false, AttributeClass.server, com.zimbra.soap.type.TargetType.server, "Server"),
-  ucservice(
-      true,
-      false,
-      AttributeClass.ucService,
-      com.zimbra.soap.type.TargetType.ucservice,
-      "UCService"),
   xmppcomponent(
       true,
       false,
@@ -168,8 +161,6 @@ public enum TargetType {
 
     TargetType.server.setInheritedByTargetTypes(new TargetType[] {server});
 
-    TargetType.ucservice.setInheritedByTargetTypes(new TargetType[] {ucservice});
-
     TargetType.xmppcomponent.setInheritedByTargetTypes(new TargetType[] {xmppcomponent});
 
     TargetType.zimlet.setInheritedByTargetTypes(new TargetType[] {zimlet});
@@ -185,7 +176,6 @@ public enum TargetType {
           group,
           domain,
           server,
-          ucservice,
           xmppcomponent,
           zimlet,
           config,
@@ -397,12 +387,6 @@ public enum TargetType {
           throw AccountServiceException.NO_SUCH_SERVER(target);
         }
         break;
-      case ucservice:
-        targetEntry = prov.get(Key.UCServiceBy.fromString(targetBy.name()), target);
-        if (targetEntry == null && mustFind) {
-          throw AccountServiceException.NO_SUCH_UC_SERVICE(target);
-        }
-        break;
       case xmppcomponent:
         targetEntry = prov.get(Key.XMPPComponentBy.fromString(targetBy.name()), target);
         if (targetEntry == null && mustFind) {
@@ -451,7 +435,6 @@ public enum TargetType {
     else if (target instanceof DistributionList) return TargetType.dl;
     else if (target instanceof DynamicGroup) return TargetType.group;
     else if (target instanceof Server) return TargetType.server;
-    else if (target instanceof UCService) return TargetType.ucservice;
     else if (target instanceof Config) return TargetType.config;
     else if (target instanceof GlobalGrant) return TargetType.global;
     else if (target instanceof Zimlet) return TargetType.zimlet;
@@ -532,9 +515,6 @@ public enum TargetType {
         break;
       case server:
         base = dit.serverBaseDN();
-        break;
-      case ucservice:
-        base = dit.ucServiceBaseDN();
         break;
       case xmppcomponent:
         base = dit.xmppcomponentBaseDN();

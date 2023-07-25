@@ -26,9 +26,16 @@
         <version>${error_prone_annotations.version}</version>
       </dependency>
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.8.2</version>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.9.3</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>5.9.3</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.curator</groupId>
@@ -53,12 +60,7 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>${slf4j.version}</version>
+        <version>1.7.36</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
@@ -108,12 +110,12 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpmime</artifactId>
-        <version>4.5.13</version>
+        <version>4.5.14</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.4.13</version>
+        <version>4.4.16</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -138,7 +140,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>1.4</version>
+        <version>2.11.0</version>
       </dependency>
       <dependency>
         <groupId>io.vavr</groupId>
@@ -350,9 +352,39 @@
         <version>20090211</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
+        <version>1.2.16</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
         <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-pool2</artifactId>
+        <version>2.4.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>apache-jsp</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.java.dev.jna</groupId>
+        <artifactId>jna</artifactId>
+        <version>3.4.0</version>
       </dependency>
       <dependency>
         <groupId>org.dom4j</groupId>
@@ -402,10 +434,10 @@
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>zimbra</groupId>
-        <artifactId>zm-jetty</artifactId>
-        <version>22.11.0</version>
+        <groupId>zextras</groupId>
+        <artifactId>carbonio-jetty-libs</artifactId>
         <type>pom</type>
+        <version>${revision}</version>
         <exclusions>
           <exclusion>
             <artifactId>*</artifactId>
@@ -427,11 +459,6 @@
         <groupId>com.unboundid</groupId>
         <artifactId>unboundid-ldapsdk</artifactId>
         <version>${unboundid-ldapsdk.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>oauth</groupId>
-        <artifactId>oauth</artifactId>
-        <version>1.4</version>
       </dependency>
       <dependency>
         <groupId>org.owasp.antisamy</groupId>
@@ -522,6 +549,12 @@
         <groupId>jline</groupId>
         <artifactId>jline</artifactId>
         <version>0.9.93</version>
+        <exclusions>
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>javax.annotation</groupId>
@@ -847,6 +880,21 @@
         <artifactId>opentelemetry-exporter-jaeger</artifactId>
         <version>1.25.0</version>
       </dependency>
+      <dependency>
+        <groupId>org.mock-server</groupId>
+        <artifactId>mockserver-core</artifactId>
+        <version>${mockserver.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mock-server</groupId>
+        <artifactId>mockserver-netty</artifactId>
+        <version>${mockserver.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mock-server</groupId>
+        <artifactId>mockserver-client-java</artifactId>
+        <version>${mockserver.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -859,6 +907,7 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
+    <module>carbonio-jetty-libs</module>
     <module>store-extra-runtime-dependencies</module>
   </modules>
   <packaging>pom</packaging>
@@ -870,7 +919,6 @@
     <jetty.version>9.4.48.v20220622</jetty.version>
     <lucene.version>3.5.0</lucene.version>
     <curator.version>2.0.1-incubating</curator.version>
-    <slf4j.version>1.7.30</slf4j.version>
     <jackson.version>2.8.9</jackson.version>
     <bouncycastle.version>1.60</bouncycastle.version>
     <asm.version>8.0.1</asm.version>
@@ -879,8 +927,8 @@
     <jython.version>2.7.2</jython.version>
     <cxf.version>3.3.4</cxf.version>
     <nekohtml.version>1.9.22</nekohtml.version>
-    <log4j.version>1.2.16</log4j.version>
-    <dom4j.version>2.1.1</dom4j.version>
+    <log4j.version>2.20.0</log4j.version>
+    <dom4j.version>2.1.4</dom4j.version>
     <zookeeper.version>3.4.5</zookeeper.version>
     <zkclient.version>0.11</zkclient.version>
     <hsqldb.version>2.2.9</hsqldb.version>
@@ -890,7 +938,10 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <revision>23.6.0-SNAPSHOT</revision>
+    <revision>23.9.0-SNAPSHOT</revision>
+    <mockserver.version>5.13.0</mockserver.version>
+    <!-- Skip Dependency check by default -->
+    <dependency-check.skip>true</dependency-check.skip>
   </properties>
   <version>${revision}</version>
   <profiles>
@@ -965,9 +1016,30 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <groupId>org.apache.maven.plugins</groupId>
+          <version>3.11.0</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-antrun-plugin</artifactId>
           <groupId>org.apache.maven.plugins</groupId>
           <version>3.1.0</version>
+        </plugin>
+        <!-- Dependency Checker -->
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>8.2.1</version>
+          <configuration>
+            <outputDirectory>${dependency.check.report.dir}</outputDirectory>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>aggregate</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <!-- Testing -->
         <plugin>
@@ -992,7 +1064,6 @@
               <exclude>com.zimbra.cs.service.mail.SendMsgTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
-              <exclude>com.zimbra.cs.service.mail.ModifyProfileImageTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
             </excludes>
           </configuration>
@@ -1121,14 +1192,6 @@
                 <artifactId>spymemcached</artifactId>
               </excludeDependency>
               <excludeDependency>
-                <groupId>org.dom4j</groupId>
-                <artifactId>dom4j</artifactId>
-              </excludeDependency>
-              <excludeDependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-              </excludeDependency>
-              <excludeDependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
               </excludeDependency>
@@ -1175,6 +1238,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
       </plugin>
     </plugins>
   </build>

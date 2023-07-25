@@ -5,13 +5,12 @@
 
 package com.zimbra.cs.store;
 
-import org.junit.BeforeClass;
-
 import com.zimbra.cs.store.file.FileBlobStore;
+import org.junit.jupiter.api.BeforeAll;
 
 public class FileBlobStoreTest extends AbstractStoreManagerTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void disableNative() {
         //don't fail test even if native libraries not installed
         //this makes it easier to run unit tests from command line

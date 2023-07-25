@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,8 +57,6 @@ import com.zimbra.client.ZContactHit;
 import com.zimbra.client.ZConversation;
 import com.zimbra.client.ZConversation.ZMessageSummary;
 import com.zimbra.client.ZConversationHit;
-import com.zimbra.client.ZDocument;
-import com.zimbra.client.ZDocumentHit;
 import com.zimbra.client.ZEmailAddress;
 import com.zimbra.client.ZFilterRule;
 import com.zimbra.client.ZFilterRules;
@@ -2290,14 +2289,6 @@ public class ZMailboxUtil implements DebugListener {
                 String from = "<na>";
                 mIndexToId.put(i, ah.getId());
                 stdout.format(itemFormat, i++, ah.getId(), ah.getIsTask() ? "task" : "appo", from, sub, cal);
-            } else if (hit instanceof ZDocumentHit) {
-                ZDocumentHit dh = (ZDocumentHit) hit;
-                ZDocument doc = dh.getDocument();
-                cal.setTimeInMillis(doc.getModifiedDate());
-                String name = doc.getName();
-                String editor = doc.getEditor();
-                mIndexToId.put(i, dh.getId());
-                stdout.format(itemFormat, i++, dh.getId(), doc.isWiki()?"wiki":"doc", editor, name, cal);
             }
         }
         stdout.println();
@@ -2739,9 +2730,7 @@ public class ZMailboxUtil implements DebugListener {
 
     private List<String> getList(String[] args, int offset) {
         List<String> attrs = new ArrayList<String>();
-        for (int i = offset; i < args.length; i++) {
-            attrs.add(args[i]);
-        }
+        attrs.addAll(Arrays.asList(args).subList(offset, args.length));
         return attrs;
     }
 

@@ -5,14 +5,17 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zimbra.cs.mailbox.MailItem.Type;
 import java.util.HashMap;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.common.account.Key;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.GuestAccount;
@@ -21,7 +24,7 @@ import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
 
 public class ACLTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
@@ -33,71 +36,71 @@ public class ACLTest {
         prov.createAccount("principal@zimbra.com", "secret", attrs);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void testRegrant() throws Exception {
-        Account owner = Provisioning.getInstance().get(Key.AccountBy.name, "owner@zimbra.com");
-        Account grantee = Provisioning.getInstance().get(Key.AccountBy.name, "principal@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(owner);
+ @Test
+ void testRegrant() throws Exception {
+  Account owner = Provisioning.getInstance().get(Key.AccountBy.name, "owner@zimbra.com");
+  Account grantee = Provisioning.getInstance().get(Key.AccountBy.name, "principal@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(owner);
 
-        Folder folder = mbox.createFolder(null, "shared", new Folder.FolderOptions().setDefaultView(MailItem.Type.DOCUMENT));
-        OperationContext octxt = new OperationContext(owner);
-        mbox.grantAccess(octxt, folder.getId(), grantee.getId(), ACL.GRANTEE_USER, ACL.stringToRights("r"), null);
-        try {
-            mbox.grantAccess(octxt, folder.getId(), grantee.getId(), ACL.GRANTEE_USER, ACL.stringToRights("r"), null);
-            Assert.fail("regrant has succeeded");
-        } catch (ServiceException se) {
-            if (!se.getCode().equals(MailServiceException.GRANT_EXISTS)) {
-                Assert.fail("regrant throws ServiceException with code "+se.getCode());
-            }
-        }
-    }
+  Folder folder = mbox.createFolder(null, "shared", new Folder.FolderOptions().setDefaultView(Type.FOLDER));
+  OperationContext octxt = new OperationContext(owner);
+  mbox.grantAccess(octxt, folder.getId(), grantee.getId(), ACL.GRANTEE_USER, ACL.stringToRights("r"), null);
+  try {
+   mbox.grantAccess(octxt, folder.getId(), grantee.getId(), ACL.GRANTEE_USER, ACL.stringToRights("r"), null);
+   fail("regrant has succeeded");
+  } catch (ServiceException se) {
+   if (!se.getCode().equals(MailServiceException.GRANT_EXISTS)) {
+    fail("regrant throws ServiceException with code " + se.getCode());
+   }
+  }
+ }
 
-    @Test
-    public void testRegrantDifferentPermission() throws Exception {
-        Account owner = Provisioning.getInstance().get(Key.AccountBy.name, "owner@zimbra.com");
-        Account grantee = Provisioning.getInstance().get(Key.AccountBy.name, "principal@zimbra.com");
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(owner);
+ @Test
+ void testRegrantDifferentPermission() throws Exception {
+  Account owner = Provisioning.getInstance().get(Key.AccountBy.name, "owner@zimbra.com");
+  Account grantee = Provisioning.getInstance().get(Key.AccountBy.name, "principal@zimbra.com");
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(owner);
 
-        Folder folder = mbox.createFolder(null, "shared", new Folder.FolderOptions().setDefaultView(MailItem.Type.DOCUMENT));
-        OperationContext octxt = new OperationContext(owner);
-        mbox.grantAccess(octxt, folder.getId(), grantee.getId(), ACL.GRANTEE_USER, ACL.stringToRights("r"), null);
-        try {
-            mbox.grantAccess(octxt, folder.getId(), grantee.getId(), ACL.GRANTEE_USER, ACL.stringToRights("rw"), null);
-        } catch (ServiceException se) {
-            if (!se.getCode().equals(MailServiceException.GRANT_EXISTS)) {
-                Assert.fail("regrant throws ServiceException with code "+se.getCode());
-            }
-            Assert.fail("regrant has failed");
-        }
-    }
-    
-    @Test
-	public void testPublicAccess() throws Exception {
-		Account owner = Provisioning.getInstance().get(Key.AccountBy.name,"owner@zimbra.com");
-		owner.setExternalSharingEnabled(false);
-		Account guestUser = GuestAccount.ANONYMOUS_ACCT;
+  Folder folder = mbox.createFolder(null, "shared", new Folder.FolderOptions().setDefaultView(Type.FOLDER));
+  OperationContext octxt = new OperationContext(owner);
+  mbox.grantAccess(octxt, folder.getId(), grantee.getId(), ACL.GRANTEE_USER, ACL.stringToRights("r"), null);
+  try {
+   mbox.grantAccess(octxt, folder.getId(), grantee.getId(), ACL.GRANTEE_USER, ACL.stringToRights("rw"), null);
+  } catch (ServiceException se) {
+   if (!se.getCode().equals(MailServiceException.GRANT_EXISTS)) {
+    fail("regrant throws ServiceException with code " + se.getCode());
+   }
+   fail("regrant has failed");
+  }
+ }
 
-		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(owner);
+ @Test
+ void testPublicAccess() throws Exception {
+  Account owner = Provisioning.getInstance().get(Key.AccountBy.name, "owner@zimbra.com");
+  owner.setExternalSharingEnabled(false);
+  Account guestUser = GuestAccount.ANONYMOUS_ACCT;
 
-		Folder folder = mbox.createFolder(null, "sharedCalender",new Folder.FolderOptions().setDefaultView(MailItem.Type.APPOINTMENT));
-		OperationContext octxt = new OperationContext(owner);
-		mbox.grantAccess(octxt, folder.getId(), guestUser.getId(),ACL.GRANTEE_PUBLIC, ACL.stringToRights("r"), null);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(owner);
 
-		UnderlyingData underlyingData = new UnderlyingData();
-		underlyingData.setSubject("test subject");
-		underlyingData.folderId = folder.getId();
-		underlyingData.name = "name";
-		underlyingData.type = MailItem.Type.APPOINTMENT.toByte();
-		underlyingData.uuid = owner.getUid();
-		underlyingData.parentId = folder.getId();
-		underlyingData.setBlobDigest("test digest");
+  Folder folder = mbox.createFolder(null, "sharedCalender", new Folder.FolderOptions().setDefaultView(MailItem.Type.APPOINTMENT));
+  OperationContext octxt = new OperationContext(owner);
+  mbox.grantAccess(octxt, folder.getId(), guestUser.getId(), ACL.GRANTEE_PUBLIC, ACL.stringToRights("r"), null);
 
-		CalendarItem calendarItem = new Appointment(mbox, underlyingData, true);
-		Assert.assertTrue(calendarItem.canAccess(ACL.RIGHT_READ, guestUser,false));
-	}
+  UnderlyingData underlyingData = new UnderlyingData();
+  underlyingData.setSubject("test subject");
+  underlyingData.folderId = folder.getId();
+  underlyingData.name = "name";
+  underlyingData.type = MailItem.Type.APPOINTMENT.toByte();
+  underlyingData.uuid = owner.getUid();
+  underlyingData.parentId = folder.getId();
+  underlyingData.setBlobDigest("test digest");
+
+  CalendarItem calendarItem = new Appointment(mbox, underlyingData, true);
+  assertTrue(calendarItem.canAccess(ACL.RIGHT_READ, guestUser, false));
+ }
 }

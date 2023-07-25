@@ -8,26 +8,23 @@ package com.zimbra.cs.account;
 import static com.zimbra.common.account.ProvisioningConstants.FALSE;
 import static com.zimbra.common.account.ProvisioningConstants.TRUE;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.zimbra.common.account.ZAttr;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.ldap.LdapDateUtil;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * AUTO-GENERATED. DO NOT EDIT.
- *
- */
+/** AUTO-GENERATED. DO NOT EDIT. */
 public abstract class ZAttrDistributionList extends Group {
 
-    protected ZAttrDistributionList(String name, String id, Map<String, Object> attrs, Provisioning prov) {
-        super(name, id, attrs, prov);
-    }
+  protected ZAttrDistributionList(
+      String name, String id, Map<String, Object> attrs, Provisioning prov) {
+    super(name, id, attrs, prov);
+  }
 
-    ///// BEGIN-AUTO-GEN-REPLACE
+  ///// BEGIN-AUTO-GEN-REPLACE
 
     /**
      * RFC2256: common name(s) for which the entity is known by
@@ -36,7 +33,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public String getCn() {
-        return getAttr(Provisioning.A_cn, null, true);
+        return getAttr(ZAttrProvisioning.A_cn, null, true);
     }
 
     /**
@@ -47,8 +44,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void setCn(String cn) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, cn);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, cn);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -61,8 +58,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> setCn(String cn, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, cn);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, cn);
         return attrs;
     }
 
@@ -73,8 +70,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void unsetCn() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -86,8 +83,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> unsetCn(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_cn, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_cn, "");
         return attrs;
     }
 
@@ -98,7 +95,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public String[] getDescription() {
-        return getMultiAttr(Provisioning.A_description, true, true);
+        return getMultiAttr(ZAttrProvisioning.A_description, true, true);
     }
 
     /**
@@ -109,8 +106,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void setDescription(String[] description) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_description, description);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_description, description);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -123,8 +120,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> setDescription(String[] description, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_description, description);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_description, description);
         return attrs;
     }
 
@@ -136,8 +133,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void addDescription(String description) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_description, description);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_description, description);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -150,8 +147,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> addDescription(String description, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_description, description);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_description, description);
         return attrs;
     }
 
@@ -163,8 +160,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void removeDescription(String description) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_description, description);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_description, description);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -177,8 +174,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> removeDescription(String description, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_description, description);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_description, description);
         return attrs;
     }
 
@@ -189,8 +186,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void unsetDescription() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_description, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_description, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -202,8 +199,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> unsetDescription(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_description, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_description, "");
         return attrs;
     }
 
@@ -214,7 +211,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public String getDisplayName() {
-        return getAttr(Provisioning.A_displayName, null, true);
+        return getAttr(ZAttrProvisioning.A_displayName, null, true);
     }
 
     /**
@@ -225,8 +222,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void setDisplayName(String displayName) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_displayName, displayName);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_displayName, displayName);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -239,8 +236,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> setDisplayName(String displayName, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_displayName, displayName);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_displayName, displayName);
         return attrs;
     }
 
@@ -251,8 +248,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void unsetDisplayName() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_displayName, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_displayName, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -264,8 +261,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> unsetDisplayName(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_displayName, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_displayName, "");
         return attrs;
     }
 
@@ -276,7 +273,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public String getMail() {
-        return getAttr(Provisioning.A_mail, null, true);
+        return getAttr(ZAttrProvisioning.A_mail, null, true);
     }
 
     /**
@@ -287,8 +284,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void setMail(String mail) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_mail, mail);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_mail, mail);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -301,8 +298,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> setMail(String mail, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_mail, mail);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_mail, mail);
         return attrs;
     }
 
@@ -313,8 +310,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void unsetMail() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_mail, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_mail, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -326,8 +323,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> unsetMail(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_mail, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_mail, "");
         return attrs;
     }
 
@@ -338,7 +335,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public String getUid() {
-        return getAttr(Provisioning.A_uid, null, true);
+        return getAttr(ZAttrProvisioning.A_uid, null, true);
     }
 
     /**
@@ -349,8 +346,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void setUid(String uid) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_uid, uid);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_uid, uid);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -363,8 +360,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> setUid(String uid, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_uid, uid);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_uid, uid);
         return attrs;
     }
 
@@ -375,8 +372,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public void unsetUid() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_uid, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_uid, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -388,8 +385,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=-1)
     public Map<String,Object> unsetUid(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_uid, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_uid, "");
         return attrs;
     }
 
@@ -402,7 +399,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=659)
     public String[] getACE() {
-        return getMultiAttr(Provisioning.A_zimbraACE, true, true);
+        return getMultiAttr(ZAttrProvisioning.A_zimbraACE, true, true);
     }
 
     /**
@@ -415,8 +412,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=659)
     public void setACE(String[] zimbraACE) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraACE, zimbraACE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraACE, zimbraACE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -431,8 +428,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=659)
     public Map<String,Object> setACE(String[] zimbraACE, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraACE, zimbraACE);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraACE, zimbraACE);
         return attrs;
     }
 
@@ -446,8 +443,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=659)
     public void addACE(String zimbraACE) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraACE, zimbraACE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -462,8 +459,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=659)
     public Map<String,Object> addACE(String zimbraACE, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraACE, zimbraACE);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         return attrs;
     }
 
@@ -477,8 +474,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=659)
     public void removeACE(String zimbraACE) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraACE, zimbraACE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -493,8 +490,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=659)
     public Map<String,Object> removeACE(String zimbraACE, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraACE, zimbraACE);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraACE, zimbraACE);
         return attrs;
     }
 
@@ -507,8 +504,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=659)
     public void unsetACE() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraACE, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraACE, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -522,8 +519,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=659)
     public Map<String,Object> unsetACE(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraACE, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraACE, "");
         return attrs;
     }
 
@@ -536,7 +533,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=761)
     public String[] getAdminConsoleUIComponents() {
-        return getMultiAttr(Provisioning.A_zimbraAdminConsoleUIComponents, true, true);
+        return getMultiAttr(ZAttrProvisioning.A_zimbraAdminConsoleUIComponents, true, true);
     }
 
     /**
@@ -549,8 +546,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=761)
     public void setAdminConsoleUIComponents(String[] zimbraAdminConsoleUIComponents) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -565,8 +562,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=761)
     public Map<String,Object> setAdminConsoleUIComponents(String[] zimbraAdminConsoleUIComponents, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
         return attrs;
     }
 
@@ -580,8 +577,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=761)
     public void addAdminConsoleUIComponents(String zimbraAdminConsoleUIComponents) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -596,8 +593,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=761)
     public Map<String,Object> addAdminConsoleUIComponents(String zimbraAdminConsoleUIComponents, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
         return attrs;
     }
 
@@ -611,8 +608,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=761)
     public void removeAdminConsoleUIComponents(String zimbraAdminConsoleUIComponents) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -627,8 +624,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=761)
     public Map<String,Object> removeAdminConsoleUIComponents(String zimbraAdminConsoleUIComponents, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraAdminConsoleUIComponents, zimbraAdminConsoleUIComponents);
         return attrs;
     }
 
@@ -641,8 +638,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=761)
     public void unsetAdminConsoleUIComponents() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraAdminConsoleUIComponents, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraAdminConsoleUIComponents, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -656,8 +653,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=761)
     public Map<String,Object> unsetAdminConsoleUIComponents(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraAdminConsoleUIComponents, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraAdminConsoleUIComponents, "");
         return attrs;
     }
 
@@ -670,7 +667,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=2109)
     public boolean isChatAllowDlMemberAddAsFriend() {
-        return getBooleanAttr(Provisioning.A_zimbraChatAllowDlMemberAddAsFriend, false, true);
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraChatAllowDlMemberAddAsFriend, false, true);
     }
 
     /**
@@ -683,8 +680,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=2109)
     public void setChatAllowDlMemberAddAsFriend(boolean zimbraChatAllowDlMemberAddAsFriend) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraChatAllowDlMemberAddAsFriend, zimbraChatAllowDlMemberAddAsFriend ? TRUE : FALSE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraChatAllowDlMemberAddAsFriend, zimbraChatAllowDlMemberAddAsFriend ? TRUE : FALSE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -699,8 +696,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=2109)
     public Map<String,Object> setChatAllowDlMemberAddAsFriend(boolean zimbraChatAllowDlMemberAddAsFriend, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraChatAllowDlMemberAddAsFriend, zimbraChatAllowDlMemberAddAsFriend ? TRUE : FALSE);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraChatAllowDlMemberAddAsFriend, zimbraChatAllowDlMemberAddAsFriend ? TRUE : FALSE);
         return attrs;
     }
 
@@ -713,8 +710,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=2109)
     public void unsetChatAllowDlMemberAddAsFriend() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraChatAllowDlMemberAddAsFriend, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraChatAllowDlMemberAddAsFriend, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -728,8 +725,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=2109)
     public Map<String,Object> unsetChatAllowDlMemberAddAsFriend(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraChatAllowDlMemberAddAsFriend, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraChatAllowDlMemberAddAsFriend, "");
         return attrs;
     }
 
@@ -746,7 +743,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=790)
     public Date getCreateTimestamp() {
-        return getGeneralizedTimeAttr(Provisioning.A_zimbraCreateTimestamp, null, true);
+        return getGeneralizedTimeAttr(ZAttrProvisioning.A_zimbraCreateTimestamp, null, true);
     }
 
     /**
@@ -758,7 +755,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=790)
     public String getCreateTimestampAsString() {
-        return getAttr(Provisioning.A_zimbraCreateTimestamp, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraCreateTimestamp, null, true);
     }
 
     /**
@@ -771,8 +768,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=790)
     public void setCreateTimestamp(Date zimbraCreateTimestamp) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -787,8 +784,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=790)
     public Map<String,Object> setCreateTimestamp(Date zimbraCreateTimestamp, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(zimbraCreateTimestamp));
         return attrs;
     }
 
@@ -802,8 +799,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=790)
     public void setCreateTimestampAsString(String zimbraCreateTimestamp) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -818,8 +815,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=790)
     public Map<String,Object> setCreateTimestampAsString(String zimbraCreateTimestamp, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, zimbraCreateTimestamp);
         return attrs;
     }
 
@@ -832,8 +829,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=790)
     public void unsetCreateTimestamp() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -847,8 +844,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=790)
     public Map<String,Object> unsetCreateTimestamp(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraCreateTimestamp, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraCreateTimestamp, "");
         return attrs;
     }
 
@@ -862,7 +859,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=811)
     public String getDistributionListSendShareMessageFromAddress() {
-        return getAttr(Provisioning.A_zimbraDistributionListSendShareMessageFromAddress, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraDistributionListSendShareMessageFromAddress, null, true);
     }
 
     /**
@@ -876,8 +873,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=811)
     public void setDistributionListSendShareMessageFromAddress(String zimbraDistributionListSendShareMessageFromAddress) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSendShareMessageFromAddress, zimbraDistributionListSendShareMessageFromAddress);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSendShareMessageFromAddress, zimbraDistributionListSendShareMessageFromAddress);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -893,8 +890,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=811)
     public Map<String,Object> setDistributionListSendShareMessageFromAddress(String zimbraDistributionListSendShareMessageFromAddress, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSendShareMessageFromAddress, zimbraDistributionListSendShareMessageFromAddress);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSendShareMessageFromAddress, zimbraDistributionListSendShareMessageFromAddress);
         return attrs;
     }
 
@@ -908,8 +905,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=811)
     public void unsetDistributionListSendShareMessageFromAddress() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSendShareMessageFromAddress, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSendShareMessageFromAddress, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -924,8 +921,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=811)
     public Map<String,Object> unsetDistributionListSendShareMessageFromAddress(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSendShareMessageFromAddress, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSendShareMessageFromAddress, "");
         return attrs;
     }
 
@@ -940,7 +937,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=810)
     public boolean isDistributionListSendShareMessageToNewMembers() {
-        return getBooleanAttr(Provisioning.A_zimbraDistributionListSendShareMessageToNewMembers, false, true);
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraDistributionListSendShareMessageToNewMembers, false, true);
     }
 
     /**
@@ -955,8 +952,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=810)
     public void setDistributionListSendShareMessageToNewMembers(boolean zimbraDistributionListSendShareMessageToNewMembers) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSendShareMessageToNewMembers, zimbraDistributionListSendShareMessageToNewMembers ? TRUE : FALSE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSendShareMessageToNewMembers, zimbraDistributionListSendShareMessageToNewMembers ? TRUE : FALSE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -973,8 +970,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=810)
     public Map<String,Object> setDistributionListSendShareMessageToNewMembers(boolean zimbraDistributionListSendShareMessageToNewMembers, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSendShareMessageToNewMembers, zimbraDistributionListSendShareMessageToNewMembers ? TRUE : FALSE);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSendShareMessageToNewMembers, zimbraDistributionListSendShareMessageToNewMembers ? TRUE : FALSE);
         return attrs;
     }
 
@@ -989,8 +986,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=810)
     public void unsetDistributionListSendShareMessageToNewMembers() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSendShareMessageToNewMembers, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSendShareMessageToNewMembers, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1006,12 +1003,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=810)
     public Map<String,Object> unsetDistributionListSendShareMessageToNewMembers(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSendShareMessageToNewMembers, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSendShareMessageToNewMembers, "");
         return attrs;
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1023,10 +1021,11 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1275)
     public ZAttrProvisioning.DistributionListSubscriptionPolicy getDistributionListSubscriptionPolicy() {
-        try { String v = getAttr(Provisioning.A_zimbraDistributionListSubscriptionPolicy, true, true); return v == null ? null : ZAttrProvisioning.DistributionListSubscriptionPolicy.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
+        try { String v = getAttr(ZAttrProvisioning.A_zimbraDistributionListSubscriptionPolicy, true, true); return v == null ? null : ZAttrProvisioning.DistributionListSubscriptionPolicy.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1038,10 +1037,11 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1275)
     public String getDistributionListSubscriptionPolicyAsString() {
-        return getAttr(Provisioning.A_zimbraDistributionListSubscriptionPolicy, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraDistributionListSubscriptionPolicy, null, true);
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1054,12 +1054,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1275)
     public void setDistributionListSubscriptionPolicy(ZAttrProvisioning.DistributionListSubscriptionPolicy zimbraDistributionListSubscriptionPolicy) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSubscriptionPolicy, zimbraDistributionListSubscriptionPolicy.toString());
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSubscriptionPolicy, zimbraDistributionListSubscriptionPolicy.toString());
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1073,12 +1074,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1275)
     public Map<String,Object> setDistributionListSubscriptionPolicy(ZAttrProvisioning.DistributionListSubscriptionPolicy zimbraDistributionListSubscriptionPolicy, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSubscriptionPolicy, zimbraDistributionListSubscriptionPolicy.toString());
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSubscriptionPolicy, zimbraDistributionListSubscriptionPolicy.toString());
         return attrs;
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1091,12 +1093,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1275)
     public void setDistributionListSubscriptionPolicyAsString(String zimbraDistributionListSubscriptionPolicy) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSubscriptionPolicy, zimbraDistributionListSubscriptionPolicy);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSubscriptionPolicy, zimbraDistributionListSubscriptionPolicy);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1110,12 +1113,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1275)
     public Map<String,Object> setDistributionListSubscriptionPolicyAsString(String zimbraDistributionListSubscriptionPolicy, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSubscriptionPolicy, zimbraDistributionListSubscriptionPolicy);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSubscriptionPolicy, zimbraDistributionListSubscriptionPolicy);
         return attrs;
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1127,12 +1131,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1275)
     public void unsetDistributionListSubscriptionPolicy() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSubscriptionPolicy, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSubscriptionPolicy, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1145,12 +1150,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1275)
     public Map<String,Object> unsetDistributionListSubscriptionPolicy(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListSubscriptionPolicy, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListSubscriptionPolicy, "");
         return attrs;
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1162,10 +1168,11 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1276)
     public ZAttrProvisioning.DistributionListUnsubscriptionPolicy getDistributionListUnsubscriptionPolicy() {
-        try { String v = getAttr(Provisioning.A_zimbraDistributionListUnsubscriptionPolicy, true, true); return v == null ? null : ZAttrProvisioning.DistributionListUnsubscriptionPolicy.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
+        try { String v = getAttr(ZAttrProvisioning.A_zimbraDistributionListUnsubscriptionPolicy, true, true); return v == null ? null : ZAttrProvisioning.DistributionListUnsubscriptionPolicy.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return null; }
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1177,10 +1184,11 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1276)
     public String getDistributionListUnsubscriptionPolicyAsString() {
-        return getAttr(Provisioning.A_zimbraDistributionListUnsubscriptionPolicy, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraDistributionListUnsubscriptionPolicy, null, true);
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1193,12 +1201,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1276)
     public void setDistributionListUnsubscriptionPolicy(ZAttrProvisioning.DistributionListUnsubscriptionPolicy zimbraDistributionListUnsubscriptionPolicy) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListUnsubscriptionPolicy, zimbraDistributionListUnsubscriptionPolicy.toString());
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListUnsubscriptionPolicy, zimbraDistributionListUnsubscriptionPolicy.toString());
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1212,12 +1221,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1276)
     public Map<String,Object> setDistributionListUnsubscriptionPolicy(ZAttrProvisioning.DistributionListUnsubscriptionPolicy zimbraDistributionListUnsubscriptionPolicy, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListUnsubscriptionPolicy, zimbraDistributionListUnsubscriptionPolicy.toString());
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListUnsubscriptionPolicy, zimbraDistributionListUnsubscriptionPolicy.toString());
         return attrs;
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1230,12 +1240,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1276)
     public void setDistributionListUnsubscriptionPolicyAsString(String zimbraDistributionListUnsubscriptionPolicy) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListUnsubscriptionPolicy, zimbraDistributionListUnsubscriptionPolicy);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListUnsubscriptionPolicy, zimbraDistributionListUnsubscriptionPolicy);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1249,12 +1260,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1276)
     public Map<String,Object> setDistributionListUnsubscriptionPolicyAsString(String zimbraDistributionListUnsubscriptionPolicy, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListUnsubscriptionPolicy, zimbraDistributionListUnsubscriptionPolicy);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListUnsubscriptionPolicy, zimbraDistributionListUnsubscriptionPolicy);
         return attrs;
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1266,12 +1278,13 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1276)
     public void unsetDistributionListUnsubscriptionPolicy() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListUnsubscriptionPolicy, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListUnsubscriptionPolicy, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
+     * Deprecated since: 23.7.0. deprecated as no longer used. Orig desc:
      * distribution subscription policy. ACCEPT: always accept, REJECT:
      * always reject, APPROVAL: require owners approval.
      *
@@ -1284,8 +1297,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1276)
     public Map<String,Object> unsetDistributionListUnsubscriptionPolicy(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraDistributionListUnsubscriptionPolicy, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraDistributionListUnsubscriptionPolicy, "");
         return attrs;
     }
 
@@ -1296,7 +1309,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=325)
     public String getGroupId() {
-        return getAttr(Provisioning.A_zimbraGroupId, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraGroupId, null, true);
     }
 
     /**
@@ -1307,8 +1320,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=325)
     public void setGroupId(String zimbraGroupId) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraGroupId, zimbraGroupId);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraGroupId, zimbraGroupId);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1321,8 +1334,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=325)
     public Map<String,Object> setGroupId(String zimbraGroupId, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraGroupId, zimbraGroupId);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraGroupId, zimbraGroupId);
         return attrs;
     }
 
@@ -1333,8 +1346,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=325)
     public void unsetGroupId() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraGroupId, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraGroupId, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1346,8 +1359,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=325)
     public Map<String,Object> unsetGroupId(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraGroupId, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraGroupId, "");
         return attrs;
     }
 
@@ -1358,7 +1371,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1)
     public String getId() {
-        return getAttr(Provisioning.A_zimbraId, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraId, null, true);
     }
 
     /**
@@ -1369,8 +1382,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1)
     public void setId(String zimbraId) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, zimbraId);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, zimbraId);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1383,8 +1396,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1)
     public Map<String,Object> setId(String zimbraId, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, zimbraId);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, zimbraId);
         return attrs;
     }
 
@@ -1395,8 +1408,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1)
     public void unsetId() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1408,8 +1421,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1)
     public Map<String,Object> unsetId(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraId, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraId, "");
         return attrs;
     }
 
@@ -1422,7 +1435,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=802)
     public boolean isIsAdminGroup() {
-        return getBooleanAttr(Provisioning.A_zimbraIsAdminGroup, false, true);
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraIsAdminGroup, false, true);
     }
 
     /**
@@ -1435,8 +1448,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=802)
     public void setIsAdminGroup(boolean zimbraIsAdminGroup) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraIsAdminGroup, zimbraIsAdminGroup ? TRUE : FALSE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIsAdminGroup, zimbraIsAdminGroup ? TRUE : FALSE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1451,8 +1464,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=802)
     public Map<String,Object> setIsAdminGroup(boolean zimbraIsAdminGroup, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraIsAdminGroup, zimbraIsAdminGroup ? TRUE : FALSE);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIsAdminGroup, zimbraIsAdminGroup ? TRUE : FALSE);
         return attrs;
     }
 
@@ -1465,8 +1478,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=802)
     public void unsetIsAdminGroup() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraIsAdminGroup, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIsAdminGroup, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1480,8 +1493,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=802)
     public Map<String,Object> unsetIsAdminGroup(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraIsAdminGroup, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraIsAdminGroup, "");
         return attrs;
     }
 
@@ -1492,7 +1505,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=345)
     public String getLocaleAsString() {
-        return getAttr(Provisioning.A_zimbraLocale, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraLocale, null, true);
     }
 
     /**
@@ -1503,8 +1516,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=345)
     public void setLocale(String zimbraLocale) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraLocale, zimbraLocale);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraLocale, zimbraLocale);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1517,8 +1530,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=345)
     public Map<String,Object> setLocale(String zimbraLocale, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraLocale, zimbraLocale);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraLocale, zimbraLocale);
         return attrs;
     }
 
@@ -1529,8 +1542,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=345)
     public void unsetLocale() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraLocale, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraLocale, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1542,8 +1555,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=345)
     public Map<String,Object> unsetLocale(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraLocale, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraLocale, "");
         return attrs;
     }
 
@@ -1554,7 +1567,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=9)
     public String getNotes() {
-        return getAttr(Provisioning.A_zimbraNotes, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraNotes, null, true);
     }
 
     /**
@@ -1565,8 +1578,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=9)
     public void setNotes(String zimbraNotes) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraNotes, zimbraNotes);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraNotes, zimbraNotes);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1579,8 +1592,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=9)
     public Map<String,Object> setNotes(String zimbraNotes, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraNotes, zimbraNotes);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraNotes, zimbraNotes);
         return attrs;
     }
 
@@ -1591,8 +1604,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=9)
     public void unsetNotes() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraNotes, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraNotes, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1604,8 +1617,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=9)
     public Map<String,Object> unsetNotes(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraNotes, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraNotes, "");
         return attrs;
     }
 
@@ -1619,7 +1632,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1333)
     public String[] getPrefAllowAddressForDelegatedSender() {
-        return getMultiAttr(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, true, true);
+        return getMultiAttr(ZAttrProvisioning.A_zimbraPrefAllowAddressForDelegatedSender, true, true);
     }
 
     /**
@@ -1633,8 +1646,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1333)
     public void setPrefAllowAddressForDelegatedSender(String[] zimbraPrefAllowAddressForDelegatedSender) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1650,8 +1663,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1333)
     public Map<String,Object> setPrefAllowAddressForDelegatedSender(String[] zimbraPrefAllowAddressForDelegatedSender, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
         return attrs;
     }
 
@@ -1666,8 +1679,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1333)
     public void addPrefAllowAddressForDelegatedSender(String zimbraPrefAllowAddressForDelegatedSender) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1683,8 +1696,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1333)
     public Map<String,Object> addPrefAllowAddressForDelegatedSender(String zimbraPrefAllowAddressForDelegatedSender, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
         return attrs;
     }
 
@@ -1699,8 +1712,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1333)
     public void removePrefAllowAddressForDelegatedSender(String zimbraPrefAllowAddressForDelegatedSender) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1716,8 +1729,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1333)
     public Map<String,Object> removePrefAllowAddressForDelegatedSender(String zimbraPrefAllowAddressForDelegatedSender, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraPrefAllowAddressForDelegatedSender, zimbraPrefAllowAddressForDelegatedSender);
         return attrs;
     }
 
@@ -1731,8 +1744,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1333)
     public void unsetPrefAllowAddressForDelegatedSender() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefAllowAddressForDelegatedSender, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1747,8 +1760,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=1333)
     public Map<String,Object> unsetPrefAllowAddressForDelegatedSender(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefAllowAddressForDelegatedSender, "");
         return attrs;
     }
 
@@ -1759,7 +1772,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=60)
     public String getPrefReplyToAddress() {
-        return getAttr(Provisioning.A_zimbraPrefReplyToAddress, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraPrefReplyToAddress, null, true);
     }
 
     /**
@@ -1770,8 +1783,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=60)
     public void setPrefReplyToAddress(String zimbraPrefReplyToAddress) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToAddress, zimbraPrefReplyToAddress);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToAddress, zimbraPrefReplyToAddress);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1784,8 +1797,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=60)
     public Map<String,Object> setPrefReplyToAddress(String zimbraPrefReplyToAddress, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToAddress, zimbraPrefReplyToAddress);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToAddress, zimbraPrefReplyToAddress);
         return attrs;
     }
 
@@ -1796,8 +1809,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=60)
     public void unsetPrefReplyToAddress() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToAddress, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToAddress, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1809,8 +1822,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=60)
     public Map<String,Object> unsetPrefReplyToAddress(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToAddress, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToAddress, "");
         return attrs;
     }
 
@@ -1821,7 +1834,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=404)
     public String getPrefReplyToDisplay() {
-        return getAttr(Provisioning.A_zimbraPrefReplyToDisplay, null, true);
+        return getAttr(ZAttrProvisioning.A_zimbraPrefReplyToDisplay, null, true);
     }
 
     /**
@@ -1832,8 +1845,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=404)
     public void setPrefReplyToDisplay(String zimbraPrefReplyToDisplay) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToDisplay, zimbraPrefReplyToDisplay);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToDisplay, zimbraPrefReplyToDisplay);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1846,8 +1859,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=404)
     public Map<String,Object> setPrefReplyToDisplay(String zimbraPrefReplyToDisplay, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToDisplay, zimbraPrefReplyToDisplay);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToDisplay, zimbraPrefReplyToDisplay);
         return attrs;
     }
 
@@ -1858,8 +1871,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=404)
     public void unsetPrefReplyToDisplay() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToDisplay, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToDisplay, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1871,8 +1884,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=404)
     public Map<String,Object> unsetPrefReplyToDisplay(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToDisplay, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToDisplay, "");
         return attrs;
     }
 
@@ -1883,7 +1896,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=405)
     public boolean isPrefReplyToEnabled() {
-        return getBooleanAttr(Provisioning.A_zimbraPrefReplyToEnabled, false, true);
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraPrefReplyToEnabled, false, true);
     }
 
     /**
@@ -1894,8 +1907,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=405)
     public void setPrefReplyToEnabled(boolean zimbraPrefReplyToEnabled) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToEnabled, zimbraPrefReplyToEnabled ? TRUE : FALSE);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToEnabled, zimbraPrefReplyToEnabled ? TRUE : FALSE);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1908,8 +1921,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=405)
     public Map<String,Object> setPrefReplyToEnabled(boolean zimbraPrefReplyToEnabled, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToEnabled, zimbraPrefReplyToEnabled ? TRUE : FALSE);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToEnabled, zimbraPrefReplyToEnabled ? TRUE : FALSE);
         return attrs;
     }
 
@@ -1920,8 +1933,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=405)
     public void unsetPrefReplyToEnabled() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToEnabled, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToEnabled, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1933,8 +1946,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=405)
     public Map<String,Object> unsetPrefReplyToEnabled(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraPrefReplyToEnabled, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraPrefReplyToEnabled, "");
         return attrs;
     }
 
@@ -1947,7 +1960,7 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=357)
     public String[] getShareInfo() {
-        return getMultiAttr(Provisioning.A_zimbraShareInfo, true, true);
+        return getMultiAttr(ZAttrProvisioning.A_zimbraShareInfo, true, true);
     }
 
     /**
@@ -1960,8 +1973,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=357)
     public void setShareInfo(String[] zimbraShareInfo) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraShareInfo, zimbraShareInfo);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -1976,8 +1989,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=357)
     public Map<String,Object> setShareInfo(String[] zimbraShareInfo, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraShareInfo, zimbraShareInfo);
         return attrs;
     }
 
@@ -1991,8 +2004,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=357)
     public void addShareInfo(String zimbraShareInfo) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraShareInfo, zimbraShareInfo);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -2007,8 +2020,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=357)
     public Map<String,Object> addShareInfo(String zimbraShareInfo, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "+" + Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraShareInfo, zimbraShareInfo);
         return attrs;
     }
 
@@ -2022,8 +2035,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=357)
     public void removeShareInfo(String zimbraShareInfo) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraShareInfo, zimbraShareInfo);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -2038,8 +2051,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=357)
     public Map<String,Object> removeShareInfo(String zimbraShareInfo, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        StringUtil.addToMultiMap(attrs, "-" + Provisioning.A_zimbraShareInfo, zimbraShareInfo);
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraShareInfo, zimbraShareInfo);
         return attrs;
     }
 
@@ -2052,8 +2065,8 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=357)
     public void unsetShareInfo() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraShareInfo, "");
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraShareInfo, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
@@ -2067,12 +2080,11 @@ public abstract class ZAttrDistributionList extends Group {
      */
     @ZAttr(id=357)
     public Map<String,Object> unsetShareInfo(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<String,Object>();
-        attrs.put(Provisioning.A_zimbraShareInfo, "");
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_zimbraShareInfo, "");
         return attrs;
     }
 
-    ///// END-AUTO-GEN-REPLACE
-
+  ///// END-AUTO-GEN-REPLACE
 
 }

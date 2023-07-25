@@ -64,7 +64,7 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
             if (!attrs.contains(keyAttr)) {
                 attrs.add(keyAttr);
             }
-            returnAttrs = attrs.toArray(new String[attrs.size()]);
+            returnAttrs = attrs.toArray(new String[0]);
         }
         
         Element eDomain = request.getElement(AdminConstants.E_DOMAIN);

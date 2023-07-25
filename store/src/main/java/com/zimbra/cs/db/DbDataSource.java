@@ -482,7 +482,7 @@ public class DbDataSource {
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT item_id, remote_id, ").append(thisTable).append(".metadata, mi.unread, mi.flags FROM ");
             sb.append(thisTable);
-            sb.append("  LEFT OUTER JOIN " + DbMailItem.getMailItemTableName(mbox)).append(" mi ");
+            sb.append("  LEFT OUTER JOIN ").append(DbMailItem.getMailItemTableName(mbox)).append(" mi ");
             sb.append("  ON ").append(MBOX_JOIN).append(thisTable).append(".item_id = mi.id ");
             sb.append(" WHERE ");
             sb.append(IN_THIS_MAILBOX_AND);

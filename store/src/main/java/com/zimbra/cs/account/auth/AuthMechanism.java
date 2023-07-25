@@ -13,9 +13,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException.AuthFailedServiceException;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.auth.AuthContext.Protocol;
-import com.zimbra.cs.account.auth.twofactor.AppSpecificPasswords;
-import com.zimbra.cs.account.auth.twofactor.TwoFactorAuth;
 import com.zimbra.cs.account.krb5.Krb5Login;
 import com.zimbra.cs.account.krb5.Krb5Principal;
 import com.zimbra.cs.account.ldap.LdapProv;
@@ -189,42 +186,6 @@ public abstract class AuthMechanism {
     return npi;
   }
 
-  /**
-   * @param acct
-   * @param password
-   * @param authCtxt
-   * @throws ServiceException
-   * @throws AuthFailedServiceException
-   */
-  public static boolean doTwoFactorAuth(Account acct, String password, Map<String, Object> authCtxt)
-      throws ServiceException, AuthFailedServiceException {
-    TwoFactorAuth twoFactorManager = TwoFactorAuth.getFactory().getTwoFactorAuth(acct);
-    AppSpecificPasswords appPasswords = TwoFactorAuth.getFactory().getAppSpecificPasswords(acct);
-    boolean authDone = false;
-    if (twoFactorManager.twoFactorAuthRequired() && authCtxt != null) {
-      // if two-factor auth is enabled, check non-http protocols against app-specific passwords
-      Protocol proto = (Protocol) authCtxt.get("proto");
-      switch (proto) {
-        case soap:
-        case http_basic:
-          break;
-        default:
-          if (appPasswords.isEnabled()) {
-            appPasswords.authenticate(password);
-            authDone = true;
-          } else {
-            AuthFailedServiceException afe =
-                AuthFailedServiceException.AUTH_FAILED(
-                    acct.getName(), namePassedIn(authCtxt), "invalid password");
-            AuthListener.invokeOnException(afe);
-            throw afe;
-          }
-      }
-    }
-
-    return authDone;
-  }
-
   /*
    * ZimbraAuth
    */
@@ -252,10 +213,6 @@ public abstract class AuthMechanism {
     public void doAuth(
         LdapProv prov, Domain domain, Account acct, String password, Map<String, Object> authCtxt)
         throws ServiceException {
-
-      if (AuthMechanism.doTwoFactorAuth(acct, password, authCtxt)) {
-        return;
-      }
 
       String encodedPassword = acct.getAttr(Provisioning.A_userPassword);
       if (encodedPassword == null) {
@@ -314,10 +271,6 @@ public abstract class AuthMechanism {
     public void doAuth(
         LdapProv prov, Domain domain, Account acct, String password, Map<String, Object> authCtxt)
         throws ServiceException {
-
-      if (AuthMechanism.doTwoFactorAuth(acct, password, authCtxt)) {
-        return;
-      }
       prov.externalLdapAuth(domain, authMech, acct, password, authCtxt);
     }
 
@@ -421,7 +374,7 @@ public abstract class AuthMechanism {
         StringBuffer sb = null;
         if (mArgs != null) {
           sb = new StringBuffer();
-          for (String s : mArgs) sb.append("[" + s + "] ");
+          for (String s : mArgs) sb.append("[").append(s).append("] ");
         }
         ZimbraLog.account.debug("CustomAuth: handlerName=" + mHandlerName + ", args=" + sb);
       }

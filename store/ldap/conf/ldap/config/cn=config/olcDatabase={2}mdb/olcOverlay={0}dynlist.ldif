@@ -1,0 +1,12 @@
+dn: olcOverlay={0}dynlist
+objectClass: olcOverlayConfig
+objectClass: olcDynamicList
+olcOverlay: {0}dynlist
+olcDlAttrSet: {0}groupOfURLs memberURL member
+structuralObjectClass: olcDynamicList
+entryUUID: ebde3804-2bd4-1030-8534-3b5a5eda29c8
+creatorsName: cn=config
+createTimestamp: 20110615195344Z
+entryCSN: 20110615195344.738130Z#000000#000#000000
+modifiersName: cn=config
+modifyTimestamp: 20110615195344Z

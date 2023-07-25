@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -225,9 +226,7 @@ public class AttributeInfo {
         case TYPE_ENUM:
             String enums[] = value.split(",");
             mEnumSet = new LinkedHashSet<String>(enums.length);
-            for (int i=0; i < enums.length; i++) {
-                mEnumSet.add(enums[i]);
-            }
+          mEnumSet.addAll(Arrays.asList(enums));
             break;
         case TYPE_REGEX:
             mRegex = Pattern.compile(value);

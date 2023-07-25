@@ -765,7 +765,6 @@ public final class ImapConnection extends MailConnection {
         ImapConfig config = new ImapConfig(server.getServiceHostname());
         config.setMechanism(ZimbraAuthenticator.MECHANISM);
         config.setAuthenticatorFactory(authFactory);
-        config.setPort(server.getRemoteImapBindPort());
         config.setAuthenticationId(acct.getName());
         ImapConnection connection = new ImapConnection(config);
         try {

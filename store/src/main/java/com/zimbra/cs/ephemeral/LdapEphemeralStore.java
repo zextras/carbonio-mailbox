@@ -129,7 +129,7 @@ public class LdapEphemeralStore extends EphemeralStore {
      * as well as fetching values from this location.
      */
     @VisibleForTesting
-    static abstract class AbstractLdapHelper {
+    abstract static class AbstractLdapHelper {
         protected Map<String, Object> attrs;
 
         public AbstractLdapHelper() {

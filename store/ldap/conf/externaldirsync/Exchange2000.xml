@@ -1,0 +1,20 @@
+<zimbraDirSync>    
+    <masterURL>ldap://exchange2000.example.com</masterURL>
+    <masterFilter>objectclass=person</masterFilter>
+    <masterSearchBase>DC=example,DC=com</masterSearchBase>
+    <masterBindUser>exchange\administrator</masterBindUser>
+    <masterBindPassword>test123</masterBindPassword>
+    <masterBindTimeout>20</masterBindTimeout>
+    <logLevel>1</logLevel>
+    <requiredMasterAttribute attr="mail"></requiredMasterAttribute>
+    <localIgnore type="smtp">extestuser@example.com</localIgnore>
+    <masterIgnore type="smtp">extestuser@example.com</masterIgnore>
+    <localPassword type="attribute">name</localPassword>
+    <localDeleteAdmin>false</localDeleteAdmin>
+    <deletionScriptFile>del_sh</deletionScriptFile>
+    <domains>example.com,example2.com</domains>
+	<localCos>testcos</localCos>
+    <attributeMap>
+        <attr local="displayName" master="name"/>
+    </attributeMap>
+</zimbraDirSync>

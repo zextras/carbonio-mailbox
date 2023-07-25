@@ -75,7 +75,7 @@ public class ValueCounter<E> {
                 buf.append(", ");
             }
             Object value = i.next();
-            buf.append(value + ": " + getCount(value));
+            buf.append(value).append(": ").append(getCount(value));
         }
         return buf.toString();
     }

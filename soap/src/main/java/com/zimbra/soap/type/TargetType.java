@@ -6,7 +6,6 @@
 package com.zimbra.soap.type;
 
 import com.zimbra.common.service.ServiceException;
-
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlEnum;
 
@@ -21,7 +20,6 @@ public enum TargetType {
   group,
   domain,
   server,
-  ucservice,
   xmppcomponent,
   zimlet,
   config,

@@ -188,12 +188,12 @@ public abstract class Session {
 
     /** Whether the session should be attached to the target {@link Mailbox}
      *  when its {@link #register()} method is invoked. */
-    abstract protected boolean isMailboxListener();
+    protected abstract boolean isMailboxListener();
 
     /** Whether the session should be added to the {@link SessionCache} when
      *  its {@link #register()} method is invoked.  A session ID is assigned
      *  when a session is added to the cache. */
-    abstract protected boolean isRegisteredInCache();
+    protected abstract boolean isRegisteredInCache();
 
     public static final int OPERATION_HISTORY_LENGTH = 6;
     public static final int OPERATION_HISTORY_TIME = 10 * 1000;
@@ -305,7 +305,7 @@ public abstract class Session {
         mailbox = null;
     }
 
-    abstract protected void cleanup();
+    protected abstract void cleanup();
 
     public long getLastAccessTime() {
         return mLastAccessed;

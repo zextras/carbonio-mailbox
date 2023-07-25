@@ -67,7 +67,7 @@ public class GalContact implements Comparable {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("LdapGalContact: { ");
-        sb.append("id="+mId);
+        sb.append("id=").append(mId);
         sb.append("}");
         return sb.toString();
     }

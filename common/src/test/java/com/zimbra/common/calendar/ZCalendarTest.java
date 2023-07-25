@@ -1,36 +1,40 @@
 package com.zimbra.common.calendar;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 public class ZCalendarTest {
 
-  public static class ScheduleAgentTest {
+  @Nested
+  public class ScheduleAgentTest {
 
     @Test
-    public void shouldReturnServerWhenCaseInsensitiveServer() {
+    void shouldReturnServerWhenCaseInsensitiveServer() {
       assertEquals(ScheduleAgent.SERVER, ScheduleAgent.getScheduleAgent("serVER"));
     }
 
     @Test
-    public void shouldReturnClientWhenCaseInsensitiveClient() {
+    void shouldReturnClientWhenCaseInsensitiveClient() {
       assertEquals(ScheduleAgent.CLIENT, ScheduleAgent.getScheduleAgent("cLIENT"));
     }
 
     @Test
-    public void shouldReturnNoneWhenCaseInsensitiveNone() {
+    void shouldReturnNoneWhenCaseInsensitiveNone() {
       assertEquals(ScheduleAgent.NONE, ScheduleAgent.getScheduleAgent("None"));
     }
 
     @Test
-    public void shouldReturnNullWhenInputNull() {
+    void shouldReturnNullWhenInputNull() {
       assertNull(ScheduleAgent.getScheduleAgent(null));
     }
 
     @Test
-    public void shouldReturnNullWhenNoMatch() {
+    void shouldReturnNullWhenNoMatch() {
       assertNull(ScheduleAgent.getScheduleAgent("wonderIfThisIsAccepted"));
     }
   }

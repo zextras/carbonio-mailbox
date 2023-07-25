@@ -162,7 +162,7 @@ public final class DbSearch {
      * Generate the ORDER BY part that goes at the end of the SELECT.
      * Note: Assumes that <b>mi.id</b> is something defined in the SELECT which can be ordered by.
      */
-    static protected String orderBy(SortBy sort, boolean alias) {
+    protected static String orderBy(SortBy sort, boolean alias) {
         if (sort.getKey() == SortBy.Key.NONE) { // no ORDER BY for NONE
             return "";
         }
@@ -1166,7 +1166,7 @@ public final class DbSearch {
         }
     }
 
-    public static abstract class Result {
+    public abstract static class Result {
         private final Object sortValue;
 
         protected Result(Object sortValue) {

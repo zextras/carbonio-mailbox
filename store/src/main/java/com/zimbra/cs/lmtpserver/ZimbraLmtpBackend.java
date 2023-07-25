@@ -764,7 +764,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
     }
 
     private static String[] getRecipientsEmailAddress(Collection<LmtpAddress> recipients) {
-        LmtpAddress[] recipientsArray = recipients.toArray(new LmtpAddress[recipients.size()]);
+        LmtpAddress[] recipientsArray = recipients.toArray(new LmtpAddress[0]);
         String[] recipientEmailAddrs = new String[recipientsArray.length];
         for (int i = 0; i < recipientsArray.length; i ++) {
             recipientEmailAddrs[i] = recipientsArray[i].getEmailAddress();

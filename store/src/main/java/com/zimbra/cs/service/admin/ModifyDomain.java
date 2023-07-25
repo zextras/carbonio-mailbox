@@ -14,6 +14,7 @@ import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccountServiceException;
+import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
  */
 public class ModifyDomain extends AdminDocumentHandler {
 
-  public boolean domainAuthSufficient(Map context) {
+  public boolean domainAuthSufficient(Map<String, Object> context) {
     return true;
   }
 
@@ -53,7 +54,7 @@ public class ModifyDomain extends AdminDocumentHandler {
           "can not access domain, domain is in " + domain.getDomainStatusAsString() + " status");
     }
 
-    checkDomainRight(zsc, domain, attrs);
+    AdminAccessControl adminAccessControl = checkDomainRight(zsc, domain, attrs);
 
     // check to see if domain default cos is being changed, need right on new cos
     checkCos(zsc, attrs, Provisioning.A_zimbraDomainDefaultCOSId);
@@ -66,20 +67,23 @@ public class ModifyDomain extends AdminDocumentHandler {
       throw ServiceException.INVALID_REQUEST(
           Provisioning.A_zimbraDomainName + " cannot be changed.", null);
     }
-    if (!Objects.isNull(gotPublicServiceHostname)
-        && !(isPublicServiceHostnameCompliant(domain, gotPublicServiceHostname))) {
-      throw ServiceException.FAILURE(
-          "Public service hostname must be a valid FQDN and compatible with current domain (or its"
-              + " aliases).");
-    }
-    final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
-    if (!(Objects.isNull(gotVirtualHostNames))
-        && !(Arrays.equals(gotVirtualHostNames, new String[] {""}))
-        && !(areVirtualHostnamesCompliant(
-            domain, Arrays.stream(gotVirtualHostNames).collect(Collectors.toList())))) {
-      throw ServiceException.FAILURE(
-          "Virtual hostnames must be valid FQDNs and compatible with current domain (or its"
-              + " aliases).");
+
+    if (!hasAdminRightAndCanModifyConfig(adminAccessControl, prov.getConfig())) {
+      if (!Objects.isNull(gotPublicServiceHostname)
+          && !(isPublicServiceHostnameCompliant(domain, gotPublicServiceHostname))) {
+        throw ServiceException.FAILURE(
+            "Public service hostname must be a valid FQDN and compatible with current domain "
+                + "(or its aliases).");
+      }
+      final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
+      if (!(Objects.isNull(gotVirtualHostNames))
+          && !(Arrays.equals(gotVirtualHostNames, new String[] {""}))
+          && !(areVirtualHostnamesCompliant(
+              domain, Arrays.stream(gotVirtualHostNames).collect(Collectors.toList())))) {
+        throw ServiceException.FAILURE(
+            "Virtual hostnames must be valid FQDNs and compatible with current domain "
+                + "(or its aliases).");
+      }
     }
 
     // pass in true to checkImmutable
@@ -95,11 +99,30 @@ public class ModifyDomain extends AdminDocumentHandler {
   }
 
   /**
+   * Checks if an authenticated user has right to modify global config.
+   *
+   * <p><Note> Global admin and delegated admin with the granted right Admin.R_modifyGlobalConfig
+   * should be able to set an arbitrary value on zimbraPublicServiceHostname and(or)
+   * zimbraVirtualHostname. </Note>
+   *
+   * @param adminAccessControl {@link com.zimbra.cs.service.admin.AdminAccessControl}
+   * @param config the global config {@link com.zimbra.cs.account.Config}
+   * @return true if an authenticated user has right to modify global config, false otherwise.
+   * @throws ServiceException if something goes wrong during the checks.
+   * @author Yuliya Aheeva
+   * @since 23.6.0
+   */
+  protected boolean hasAdminRightAndCanModifyConfig(AdminAccessControl adminAccessControl, Config config)
+      throws ServiceException {
+    return adminAccessControl.isGlobalAdmin()
+        || adminAccessControl.hasRight(config, Admin.R_modifyGlobalConfig);
+  }
+
+  /**
    * Checks that given publicServiceHostname is valid for a domain.
    *
    * @param domain domain being updated
    * @param publicServiceHostname value to check against domain
-   * @throws ServiceException exception if public service hostname not valid
    */
   private boolean isPublicServiceHostnameCompliant(Domain domain, String publicServiceHostname) {
     return isFQDNCompliant(domain.getDomainName(), publicServiceHostname);

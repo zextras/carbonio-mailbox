@@ -166,14 +166,6 @@ CheckDirectoryRequest
     Notes:
 
 ------------------------------
-CheckDomainMXRecordRequest
-
-    Related rights:
-        checkDomainMXRecord
-
-    Notes:
-
-------------------------------
 CheckExchangeAuthRequest
 
     Related rights:

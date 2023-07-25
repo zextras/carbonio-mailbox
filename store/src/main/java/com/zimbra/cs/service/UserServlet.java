@@ -65,7 +65,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ZimbraAuthTokenEncoded;
 import com.zimbra.cs.httpclient.URLUtil;
-import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -188,10 +187,6 @@ public class UserServlet extends ZimbraServlet {
     public static final String QP_CSVLOCALE = "csvlocale"; // refining locale for csvfmt - e.g. zh-CN
 
     public static final String QP_CSVSEPARATOR = "csvsep"; // separator
-
-    public static final String QP_VERSION = "ver";  // version for WikiItem and Document
-
-    public static final String QP_HISTORY = "history";  // history for WikiItem
 
     public static final String QP_LANGUAGE = "language"; // all three
 
@@ -754,15 +749,18 @@ public class UserServlet extends ZimbraServlet {
             return false;
         Mountpoint mpt = (Mountpoint) item;
 
-        String uri = SERVLET_PATH + "/~/?" + QP_ID + '=' + HttpUtil.urlEscape(mpt.getOwnerId()) + "%3A" + mpt.getRemoteId();
+        StringBuilder uri = new StringBuilder(
+            SERVLET_PATH + "/~/?" + QP_ID + '=' + HttpUtil.urlEscape(mpt.getOwnerId()) + "%3A"
+                + mpt.getRemoteId());
         if (context.format != null)
-            uri += '&' + QP_FMT + '=' + HttpUtil.urlEscape(context.format.toString());
+            uri.append('&' + QP_FMT + '=').append(HttpUtil.urlEscape(context.format.toString()));
         if (context.extraPath != null)
-            uri += '&' + QP_NAME + '=' + HttpUtil.urlEscape(context.extraPath);
+            uri.append('&' + QP_NAME + '=').append(HttpUtil.urlEscape(context.extraPath));
         for (Map.Entry<String, String> entry : HttpUtil.getURIParams(req).entrySet()) {
             String qp = entry.getKey();
             if (!qp.equals(QP_ID) && !qp.equals(QP_FMT))
-                uri += '&' + HttpUtil.urlEscape(qp) + '=' + HttpUtil.urlEscape(entry.getValue());
+                uri.append('&').append(HttpUtil.urlEscape(qp)).append('=')
+                    .append(HttpUtil.urlEscape(entry.getValue()));
         }
 
         Provisioning prov = Provisioning.getInstance();
@@ -770,7 +768,7 @@ public class UserServlet extends ZimbraServlet {
         if (targetAccount == null)
             throw new UserServletException(HttpServletResponse.SC_BAD_REQUEST, L10nUtil.getMessage(MsgKey.errNoSuchAccount, req));
         try {
-            proxyServletRequest(req, resp, prov.getServer(targetAccount), uri, getProxyAuthToken(context));
+            proxyServletRequest(req, resp, prov.getServer(targetAccount), uri.toString(), getProxyAuthToken(context));
         } catch (HttpException e) {
             throw new IOException("Unknown error", e);
         }
@@ -800,16 +798,6 @@ public class UserServlet extends ZimbraServlet {
             return FormatType.ICS;
         case CONTACT:
             return context.target instanceof Folder? FormatType.CSV : FormatType.VCF;
-        case DOCUMENT:
-            // Zimbra docs and folder rendering should use html formatter.
-            if (context.target instanceof Folder)
-                return FormatType.HTML;
-            String contentType = ((Document)context.target).getContentType();
-            if (contentType != null && contentType.indexOf(';') > 0)
-                contentType = contentType.substring(0, contentType.indexOf(';')).toLowerCase();
-            if (ZIMBRA_DOC_CONTENT_TYPE.contains(contentType))
-                return FormatType.HTML;
-            return FormatType.HTML_CONVERTED;
         default:
             return FormatType.HTML_CONVERTED;
         }
@@ -965,23 +953,6 @@ public class UserServlet extends ZimbraServlet {
 
     public static Pair<Header[], HttpInputStream> putMailItem(ZAuthToken authToken, String url, MailItem item)
     throws ServiceException, IOException {
-        if (item instanceof Document) {
-            Document doc = (Document) item;
-            StringBuilder u = new StringBuilder(url);
-            u.append("?").append(QP_AUTH).append('=').append(AUTH_COOKIE);
-            if (doc.getType() == MailItem.Type.WIKI) {
-                u.append("&fmt=wiki");
-            }
-            HttpPut method = new HttpPut(u.toString());
-            String contentType = doc.getContentType();
-            method.addHeader("Content-Type", contentType);
-            method.setEntity(new InputStreamEntity(doc.getContentStream(), doc.getSize(), ContentType.create(contentType)));
-            
-            method.addHeader("X-Zimbra-Description", doc.getDescription());
-            method.setEntity(new InputStreamEntity(doc.getContentStream(), doc.getSize(), ContentType.create(contentType)));
-            Pair<Header[], HttpResponse> pair = doHttpOp(authToken, method);
-            return new Pair<Header[], HttpInputStream>(pair.getFirst(), new HttpInputStream(pair.getSecond()));
-        }
         return putRemoteResource(authToken, url, item.getContentStream(), null);
     }
 

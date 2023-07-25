@@ -9,7 +9,7 @@ package com.zimbra.cs.index.query.parser;
 final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstants {/*@bgen(jjtree)*/
   protected JJTParserState jjtree = new JJTParserState();
 
-  final public SimpleNode parse() throws ParseException {
+  public final SimpleNode parse() throws ParseException {
                             /*@bgen(jjtree) Root */
   SimpleNode jjtn000 = new SimpleNode(JJTROOT);
   boolean jjtc000 = true;
@@ -64,7 +64,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     throw new Error("Missing return statement in function");
   }
 
-  final private void Query() throws ParseException {
+  private final void Query() throws ParseException {
                         /*@bgen(jjtree) Query */
   SimpleNode jjtn000 = new SimpleNode(JJTQUERY);
   boolean jjtc000 = true;
@@ -202,7 +202,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void Clause() throws ParseException {
+  private final void Clause() throws ParseException {
                          /*@bgen(jjtree) Clause */
   SimpleNode jjtn000 = new SimpleNode(JJTCLAUSE);
   boolean jjtc000 = true;
@@ -315,7 +315,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void DefaultClause() throws ParseException {
+  private final void DefaultClause() throws ParseException {
                                 /*@bgen(jjtree) DefaultClause */
   SimpleNode jjtn000 = new SimpleNode(JJTDEFAULTCLAUSE);
   boolean jjtc000 = true;
@@ -342,7 +342,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void TextClause() throws ParseException {
+  private final void TextClause() throws ParseException {
                              /*@bgen(jjtree) TextClause */
   SimpleNode jjtn000 = new SimpleNode(JJTTEXTCLAUSE);
   boolean jjtc000 = true;
@@ -373,7 +373,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void ItemClause() throws ParseException {
+  private final void ItemClause() throws ParseException {
                              /*@bgen(jjtree) ItemClause */
   SimpleNode jjtn000 = new SimpleNode(JJTITEMCLAUSE);
   boolean jjtc000 = true;
@@ -404,7 +404,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void DateClause() throws ParseException {
+  private final void DateClause() throws ParseException {
                              /*@bgen(jjtree) DateClause */
   SimpleNode jjtn000 = new SimpleNode(JJTDATECLAUSE);
   boolean jjtc000 = true;
@@ -435,7 +435,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void TextField() throws ParseException {
+  private final void TextField() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FIELD:
       jj_consume_token(FIELD);
@@ -564,7 +564,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void DateField() throws ParseException {
+  private final void DateField() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DATE:
       jj_consume_token(DATE);
@@ -609,7 +609,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void Conjunction() throws ParseException {
+  private final void Conjunction() throws ParseException {
                               /*@bgen(jjtree) Conjunction */
   SimpleNode jjtn000 = new SimpleNode(JJTCONJUNCTION);
   boolean jjtc000 = true;
@@ -636,7 +636,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void Modifier() throws ParseException {
+  private final void Modifier() throws ParseException {
                            /*@bgen(jjtree) Modifier */
   SimpleNode jjtn000 = new SimpleNode(JJTMODIFIER);
   boolean jjtc000 = true;
@@ -666,7 +666,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void DateModifier() throws ParseException {
+  private final void DateModifier() throws ParseException {
                                /*@bgen(jjtree) DateModifier */
   SimpleNode jjtn000 = new SimpleNode(JJTDATEMODIFIER);
   boolean jjtc000 = true;
@@ -682,7 +682,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void SortBy() throws ParseException {
+  private final void SortBy() throws ParseException {
                          /*@bgen(jjtree) SortBy */
   SimpleNode jjtn000 = new SimpleNode(JJTSORTBY);
   boolean jjtc000 = true;
@@ -710,7 +710,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void TextTerm() throws ParseException {
+  private final void TextTerm() throws ParseException {
                            /*@bgen(jjtree) TextTerm */
   SimpleNode jjtn000 = new SimpleNode(JJTTEXTTERM);
   boolean jjtc000 = true;
@@ -804,7 +804,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void ItemTerm() throws ParseException {
+  private final void ItemTerm() throws ParseException {
                            /*@bgen(jjtree) ItemTerm */
   SimpleNode jjtn000 = new SimpleNode(JJTITEMTERM);
   boolean jjtc000 = true;
@@ -902,7 +902,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
     }
   }
 
-  final private void DateTerm() throws ParseException {
+  private final void DateTerm() throws ParseException {
                            /*@bgen(jjtree) DateTerm */
   SimpleNode jjtn000 = new SimpleNode(JJTDATETERM);
   boolean jjtc000 = true;
@@ -1032,10 +1032,10 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[33];
-  static private int[] jj_la1_0;
-  static private int[] jj_la1_1;
-  static private int[] jj_la1_2;
+  private final int[] jj_la1 = new int[33];
+  private static int[] jj_la1_0;
+  private static int[] jj_la1_1;
+  private static int[] jj_la1_2;
   static {
       jj_la1_init_0();
       jj_la1_init_1();
@@ -1136,7 +1136,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
 
 
 /** Get the next Token. */
-  final public Token getNextToken() {
+  public final Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
     jj_ntk = -1;
@@ -1145,7 +1145,7 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
   }
 
 /** Get the specific Token. */
-  final public Token getToken(int index) {
+  public final Token getToken(int index) {
     Token t = token;
     for (int i = 0; i < index; i++) {
       if (t.next != null) t = t.next;
@@ -1203,11 +1203,11 @@ final class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConstan
   }
 
   /** Enable tracing. */
-  final public void enable_tracing() {
+  public final void enable_tracing() {
   }
 
   /** Disable tracing. */
-  final public void disable_tracing() {
+  public final void disable_tracing() {
   }
 
 }

@@ -174,7 +174,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
         return errors;
     }
 
-    synchronized protected List<WaitSetError> addAccountErrors(List<WaitSetAccount> wsas) {
+    protected synchronized List<WaitSetError> addAccountErrors(List<WaitSetAccount> wsas) {
         List<WaitSetError> errors = new ArrayList<WaitSetError>();
 
         for (WaitSetAccount wsa : wsas) {
@@ -219,7 +219,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
         return errors;
     }
 
-    synchronized protected void cleanupSession(WaitSetSession session) {
+    protected synchronized void cleanupSession(WaitSetSession session) {
         WaitSetAccount acct = mSessions.get(session.getTargetAccountId());
         if (acct != null) {
             acct.cleanupSession();
@@ -235,7 +235,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
      * Cleanup and remove all the sessions referenced by this WaitSet
      */
     @Override
-    synchronized protected HashMap<String, WaitSetAccount> destroy() {
+    protected synchronized HashMap<String, WaitSetAccount> destroy() {
         try {
             MailboxManager.getInstance().removeListener(this);
         } catch (ServiceException e) {
@@ -264,7 +264,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
      *
      * @param session
      */
-    synchronized protected void unsignalDataReady(WaitSetSession session) {
+    protected synchronized void unsignalDataReady(WaitSetSession session) {
         if (mSessions.containsKey(session.getTargetAccountId())) { // ...false if waitset is shutting down...
             mCurrentSignalledAccounts.remove(session.getTargetAccountId());
             mCurrentSignalledSessions.remove(session.getTargetAccountId());
@@ -275,7 +275,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
      * Called by the WaitSetSession when there is data to be signalled by this session
      * @param session
      */
-    synchronized protected void signalDataReady(WaitSetSession session) {
+    protected synchronized void signalDataReady(WaitSetSession session) {
         signalDataReady(session, null);
     }
 
@@ -283,7 +283,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
      * Called by the WaitSetSession when there is data to be signalled by this session
      * @param session
      */
-    synchronized protected void signalDataReady(WaitSetSession session, PendingModifications pms) {
+    protected synchronized void signalDataReady(WaitSetSession session, PendingModifications pms) {
         boolean trace = ZimbraLog.session.isTraceEnabled();
         if (trace) ZimbraLog.session.trace("SomeAccountsWaitSet.signalDataReady 1");
         String targetAccId = session.getTargetAccountId();

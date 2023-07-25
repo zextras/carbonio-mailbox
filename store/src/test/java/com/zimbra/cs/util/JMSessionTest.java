@@ -11,11 +11,13 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.sun.mail.smtp.SMTPMessage;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import com.zimbra.common.account.ZAttrProvisioning.ShareNotificationMtaConnectionType;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
@@ -37,7 +39,7 @@ import com.zimbra.cs.mailclient.smtp.SmtpsTransport;
  */
 public class JMSessionTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         LC.zimbra_attrs_directory.setDefault(MailboxTestUtil.getZimbraServerDir("") + "conf/attrs");
@@ -46,18 +48,18 @@ public class JMSessionTest {
         Provisioning.setInstance(prov);
     }
 
-    @Test
-    public void getTransport() throws Exception {
-        Assert.assertSame(SmtpTransport.class,
-                JMSession.getSession().getTransport("smtp").getClass());
-        Assert.assertSame(SmtpsTransport.class,
-                JMSession.getSession().getTransport("smtps").getClass());
+ @Test
+ void getTransport() throws Exception {
+  assertSame(SmtpTransport.class,
+    JMSession.getSession().getTransport("smtp").getClass());
+  assertSame(SmtpsTransport.class,
+    JMSession.getSession().getTransport("smtps").getClass());
 
-        Assert.assertSame(SmtpTransport.class,
-                JMSession.getSmtpSession().getTransport("smtp").getClass());
-        Assert.assertSame(SmtpsTransport.class,
-                JMSession.getSmtpSession().getTransport("smtps").getClass());
-    }
+  assertSame(SmtpTransport.class,
+    JMSession.getSmtpSession().getTransport("smtp").getClass());
+  assertSame(SmtpsTransport.class,
+    JMSession.getSmtpSession().getTransport("smtps").getClass());
+ }
 
     //@Test
     public void testRelayMta() throws Exception {
@@ -85,14 +87,14 @@ public class JMSessionTest {
         Transport.send(out);
     }
 
-    @Test
-    public void messageID() throws Exception {
-        Provisioning prov = Provisioning.getInstance();
-        Domain domain = prov.createDomain("example.com", new HashMap<String, Object>());
-        Account account = prov.createAccount("user1@example.com", "test123", new HashMap<String, Object>());
+ @Test
+ void messageID() throws Exception {
+  Provisioning prov = Provisioning.getInstance();
+  Domain domain = prov.createDomain("example.com", new HashMap<String, Object>());
+  Account account = prov.createAccount("user1@example.com", "test123", new HashMap<String, Object>());
 
-        MimeMessage mm = new MimeMessage(JMSession.getSmtpSession(account));
-        mm.saveChanges();
-        Assert.assertEquals("message ID contains account domain", domain.getName() + '>', mm.getMessageID().split("@")[1]);
-    }
+  MimeMessage mm = new MimeMessage(JMSession.getSmtpSession(account));
+  mm.saveChanges();
+  assertEquals(domain.getName() + '>', mm.getMessageID().split("@")[1], "message ID contains account domain");
+ }
 }

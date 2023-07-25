@@ -8,10 +8,12 @@ package com.zimbra.cs.service.formatter;
 import java.io.BufferedReader;
 import java.io.StringReader;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Strings;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for {@link ContactCSV}.
@@ -22,15 +24,15 @@ import com.google.common.base.Strings;
  */
 public final class ContactCSVTest {
 
-    @Test
-    public void invalidFormat() throws Exception {
-        StringReader reader = new StringReader(Strings.repeat("a\tb\tc", 100));
-        try {
-            ContactCSV.getContacts(new BufferedReader(reader), null);
-            Assert.fail();
-        } catch (ContactCSV.ParseException e) {
-            Assert.assertEquals("invalid format - header field 1 of 1 is too long (length=500)", e.getMessage());
-        }
-    }
+ @Test
+ void invalidFormat() throws Exception {
+  StringReader reader = new StringReader(Strings.repeat("a\tb\tc", 100));
+  try {
+   ContactCSV.getContacts(new BufferedReader(reader), null);
+   fail();
+  } catch (ContactCSV.ParseException e) {
+   assertEquals("invalid format - header field 1 of 1 is too long (length=500)", e.getMessage());
+  }
+ }
 
 }

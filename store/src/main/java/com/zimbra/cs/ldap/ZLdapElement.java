@@ -26,7 +26,7 @@ public abstract class ZLdapElement {
 
         @Override
         public void println(String txt) {
-            buffer.append(txt + "\n");
+            buffer.append(txt).append("\n");
         }
         
         @Override

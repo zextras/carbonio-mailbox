@@ -10,7 +10,6 @@ import com.google.common.collect.Maps;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.Key.ShareLocatorBy;
-import com.zimbra.common.account.Key.UCServiceBy;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.MimeConstants;
@@ -21,6 +20,7 @@ import com.zimbra.cs.account.AccountServiceException.AuthFailedServiceException;
 import com.zimbra.cs.account.NamedEntry.Visitor;
 import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.auth.AuthContext.Protocol;
+import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.mime.MockMimeTypeInfo;
 import com.zimbra.cs.mime.handler.MessageRFC822Handler;
@@ -71,7 +71,7 @@ public final class MockProvisioning extends Provisioning {
     attrs.put(A_zimbraRedoLogProvider, MockRedoLogProvider.class.getName());
     attrs.put(A_zimbraId, UUID.randomUUID().toString());
     attrs.put(A_zimbraMailMode, MailMode.http.toString());
-    attrs.put(A_zimbraSmtpPort, "7025");
+    attrs.put(A_zimbraSmtpPort, String.valueOf(SmtpConfig.DEFAULT_PORT));
     attrs.put(A_zimbraLowestSupportedAuthVersion, "1");
     attrs.put(
         A_zimbraSSLPrivateKey,
@@ -883,31 +883,6 @@ public final class MockProvisioning extends Provisioning {
   @Override
   public void deleteShareLocator(String id) throws ServiceException {
     shareLocators.remove(id);
-  }
-
-  @Override
-  public UCService createUCService(String name, Map<String, Object> attrs) throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void deleteUCService(String zimbraId) throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public UCService get(UCServiceBy keyName, String key) throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public List<UCService> getAllUCServices() throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void renameUCService(String zimbraId, String newName) throws ServiceException {
-    throw new UnsupportedOperationException();
   }
 
   @Override

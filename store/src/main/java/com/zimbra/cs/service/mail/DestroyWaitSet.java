@@ -40,7 +40,7 @@ public class DestroyWaitSet extends MailDocumentHandler {
         return staticHandle(request, context, response);
     }
     
-    static public Element staticHandle(Element request, Map<String, Object> context, Element response) throws ServiceException {
+    public static Element staticHandle(Element request, Map<String, Object> context, Element response) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         String waitSetId = request.getAttribute(MailConstants.A_WAITSET_ID);
         WaitSetMgr.destroy(zsc, zsc.getRequestedAccountId(), waitSetId);

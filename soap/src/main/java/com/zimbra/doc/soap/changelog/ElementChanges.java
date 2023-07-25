@@ -18,7 +18,7 @@ import com.zimbra.doc.soap.apidesc.SoapApiType;
  */
 public class ElementChanges {
 
-    private final static String NO_VALUE = "[NONE]";
+    private static final String NO_VALUE = "[NONE]";
     
     private final String xpath;
     private final SoapApiNamedElement baseElem;

@@ -65,7 +65,7 @@ public abstract class Db {
 
     private static String ESCAPE_SEQUENCE = "\\";
 
-    public synchronized static Db getInstance() {
+    public static synchronized Db getInstance() {
         if (sDatabase == null) {
             String className = LC.zimbra_class_database.value();
             if (className != null && !className.equals("")) {
@@ -180,7 +180,7 @@ public abstract class Db {
 
 
     /** Returns <tt>true</tt> if the database with the given name exists. */
-    abstract public boolean databaseExists(DbConnection conn, String dbname)
+    public abstract boolean databaseExists(DbConnection conn, String dbname)
     throws ServiceException;
 
     /** Callback executed immediately before creating a user database. */

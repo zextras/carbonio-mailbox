@@ -36,7 +36,7 @@ import com.zimbra.soap.type.NamedValue;
 public class GalGroupMembers {
 
     // common super interface for all the DLMembers classes
-    public static abstract class DLMembersResult {
+    public abstract static class DLMembersResult {
         protected Set<String> mMembersSet;
 
         protected abstract Set<String> getAllMembers() throws ServiceException;
@@ -46,11 +46,11 @@ public class GalGroupMembers {
         }
     }
 
-    public static abstract class DLMembers extends DLMembersResult {
+    public abstract static class DLMembers extends DLMembersResult {
 
-        abstract public int getTotal();
+        public abstract int getTotal();
 
-        abstract public String getDLZimbraId();
+        public abstract String getDLZimbraId();
 
         /**
          *
@@ -58,7 +58,7 @@ public class GalGroupMembers {
          * @param endIndex   the ending index, exclusive.
          * @param resp
          */
-        abstract public void encodeMembers(int beginIndex, int endIndex, Element resp);
+        public abstract void encodeMembers(int beginIndex, int endIndex, Element resp);
 
         protected Element encodeMember(Element parent, String member) {
             return parent.addElement(AccountConstants.E_DLM).setText(member);

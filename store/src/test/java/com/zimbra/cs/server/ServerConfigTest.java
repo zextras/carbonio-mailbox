@@ -5,9 +5,9 @@
 
 package com.zimbra.cs.server;
 
-import junit.framework.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ServerConfigTest {
 
@@ -18,38 +18,38 @@ public class ServerConfigTest {
     private static final String MULTI_ADDR1 = "host2.example.com";
     private static final String MULTI_ADDR2 = "8.9.10.11";
 
-    @Test
-    public void singleIp() {
-        String[] single = {SINGLE_IP};
-        String[] get = ServerConfig.getAddrListCsv(single);
-        Assert.assertEquals(1, get.length);
-        Assert.assertEquals(SINGLE_IP, get[0]);
-    }
+ @Test
+ void singleIp() {
+  String[] single = {SINGLE_IP};
+  String[] get = ServerConfig.getAddrListCsv(single);
+  assertEquals(1, get.length);
+  assertEquals(SINGLE_IP, get[0]);
+ }
 
-    @Test
-    public void singleHostname() {
-        String[] single = {SINGLE_HOSTNAME};
-        String[] get = ServerConfig.getAddrListCsv(single);
-        Assert.assertEquals(1, get.length);
-        Assert.assertEquals(SINGLE_HOSTNAME, get[0]);
-    }
+ @Test
+ void singleHostname() {
+  String[] single = {SINGLE_HOSTNAME};
+  String[] get = ServerConfig.getAddrListCsv(single);
+  assertEquals(1, get.length);
+  assertEquals(SINGLE_HOSTNAME, get[0]);
+ }
 
-    @Test
-    public void empty() {
-        String[] empty = {};
-        String[] get = ServerConfig.getAddrListCsv(empty);
-        Assert.assertEquals(0, get.length);
-    }
+ @Test
+ void empty() {
+  String[] empty = {};
+  String[] get = ServerConfig.getAddrListCsv(empty);
+  assertEquals(0, get.length);
+ }
 
 
-    @Test
-    public void multiAddrsSingleString() {
-        String[] multi = {MULTI_ADDR0 + "," + MULTI_ADDR1 + "," + MULTI_ADDR2};
-        Assert.assertEquals(1, multi.length);
-        String[] get = ServerConfig.getAddrListCsv(multi);
-        Assert.assertEquals(3, get.length);
-        Assert.assertEquals(MULTI_ADDR0, get[0]);
-        Assert.assertEquals(MULTI_ADDR1, get[1]);
-        Assert.assertEquals(MULTI_ADDR2, get[2]);
-    }
+ @Test
+ void multiAddrsSingleString() {
+  String[] multi = {MULTI_ADDR0 + "," + MULTI_ADDR1 + "," + MULTI_ADDR2};
+  assertEquals(1, multi.length);
+  String[] get = ServerConfig.getAddrListCsv(multi);
+  assertEquals(3, get.length);
+  assertEquals(MULTI_ADDR0, get[0]);
+  assertEquals(MULTI_ADDR1, get[1]);
+  assertEquals(MULTI_ADDR2, get[2]);
+ }
 }

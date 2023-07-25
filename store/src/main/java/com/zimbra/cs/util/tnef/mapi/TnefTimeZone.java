@@ -188,9 +188,10 @@ public class TnefTimeZone {
             
         if (sLog.isDebugEnabled()) {
             StringBuilder debugInfo = new StringBuilder();
-            debugInfo.append(bias * -1 + " " + 
-                    "{" + endMonth + "," + endDayOfWeek + "," + endDay + "," + endHour + "} " + 
-                    "{" + startMonth + "," + startDayOfWeek + "," + startDay + "," + startHour + "}");
+            debugInfo.append(bias * -1).append(" ").append("{").append(endMonth).append(",")
+                .append(endDayOfWeek).append(",").append(endDay).append(",").append(endHour)
+                .append("} ").append("{").append(startMonth).append(",").append(startDayOfWeek)
+                .append(",").append(startDay).append(",").append(startHour).append("}");
             sLog.debug(debugInfo);
         }
          

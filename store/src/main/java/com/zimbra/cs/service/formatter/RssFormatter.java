@@ -15,7 +15,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.Constants;
 import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.CalendarItem.Instance;
@@ -73,8 +72,6 @@ public class RssFormatter extends Formatter {
                         }
                     } else if (itItem instanceof Message) {
                         addMessage((Message) itItem, channel);
-                    } else if (itItem instanceof Document) {
-                        addDocument((Document) itItem, channel, context);
                     }
                 }
             }
@@ -131,15 +128,6 @@ public class RssFormatter extends Formatter {
         // Element guid = item.addElement("guid");
         // guid.setText(acct.getId()+"/"+m.getId());
         // guid.addAttribute("isPermaLink", "false");
-    }
-
-    private void addDocument(Document doc, Element channel, UserServletContext context) {
-        Element item = channel.addElement("item");
-        item.addElement("title").setText(doc.getName() + " ver " + doc.getVersion());
-        item.addElement("description").setText(doc.getFragment());
-        item.addElement("author").setText(doc.getCreator());
-        item.addElement("pubDate").setText(mDateFormat.format(new Date(doc.getDate())));
-        item.addElement("link").setText(context.req.getRequestURL().append("?id=" + doc.getId()).toString());
     }
 
     @Override

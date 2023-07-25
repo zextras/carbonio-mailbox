@@ -559,7 +559,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
                 if (newName != null) {
                     tags.add(newName);
                 }
-                i4msg.tags = tags.isEmpty() ? null : tags.toArray(new String[tags.size()]);
+                i4msg.tags = tags.isEmpty() ? null : tags.toArray(new String[0]);
             }
         }
     }

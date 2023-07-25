@@ -5,139 +5,207 @@
 
 package com.zimbra.client;
 
-import java.util.Collection;
-import java.util.Map;
-
 import com.google.common.collect.Iterables;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.account.ZAttrProvisioning;
+import java.util.Collection;
+import java.util.Map;
 
 public class ZFeatures {
 
-    private Map<String, Collection<String>> mAttrs;
+  private Map<String, Collection<String>> mAttrs;
 
-    public ZFeatures(Map<String, Collection<String>> attrs) {
-        mAttrs = attrs;
+  public ZFeatures(Map<String, Collection<String>> attrs) {
+    mAttrs = attrs;
+  }
+
+  /**
+   * @param name name of attr to get
+   * @return null if unset, or first value in list
+   */
+  private String get(String name) {
+    Collection<String> value = mAttrs.get(name);
+    if (value == null || value.isEmpty()) {
+      return null;
     }
+    return Iterables.get(value, 0);
+  }
 
-    /**
-     * @param name name of attr to get
-     * @return null if unset, or first value in list
-     */
-    private String get(String name) {
-        Collection<String> value = mAttrs.get(name);
-        if (value == null || value.isEmpty()) {
-            return null;
-        }
-        return Iterables.get(value, 0);
+  public boolean getBool(String name) {
+    return ProvisioningConstants.TRUE.equals(get(name));
+  }
 
-    }
+  public Map<String, Collection<String>> getAttrs() {
+    return mAttrs;
+  }
 
-    public boolean getBool(String name) {
-        return ProvisioningConstants.TRUE.equals(get(name));
-    }
+  public boolean getContacts() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureContactsEnabled);
+  }
 
-    public Map<String, Collection<String>> getAttrs() { return mAttrs; }
-    
-    public boolean getTouchClient() { return getBool(ZAttrProvisioning.A_zimbraFeatureTouchClientEnabled); }
+  public boolean getMail() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureMailEnabled);
+  }
 
-    public boolean getContacts() { return getBool(ZAttrProvisioning.A_zimbraFeatureContactsEnabled); }
+  public boolean getAdminMail() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureAdminMailEnabled);
+  }
 
-    public boolean getMail() { return getBool(ZAttrProvisioning.A_zimbraFeatureMailEnabled); }
+  public boolean getVoice() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureVoiceEnabled);
+  }
 
-    public boolean getAdminMail() {return getBool(ZAttrProvisioning.A_zimbraFeatureAdminMailEnabled); }
+  public boolean getCalendar() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureCalendarEnabled);
+  }
 
-    public boolean getVoice() { return getBool(ZAttrProvisioning.A_zimbraFeatureVoiceEnabled); }
+  public boolean getCalendarUpsell() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureCalendarUpsellEnabled);
+  }
 
-    public boolean getCalendar() { return getBool(ZAttrProvisioning.A_zimbraFeatureCalendarEnabled); }
+  public String getCalendarUpsellURL() {
+    return get(ZAttrProvisioning.A_zimbraFeatureCalendarUpsellURL);
+  }
 
-    public boolean getCalendarUpsell() { return getBool(ZAttrProvisioning.A_zimbraFeatureCalendarUpsellEnabled); }
+  public boolean getTasks() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureTasksEnabled);
+  }
 
-    public String getCalendarUpsellURL() { return get(ZAttrProvisioning.A_zimbraFeatureCalendarUpsellURL); }    
+  public boolean getTagging() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureTaggingEnabled);
+  }
 
-    public boolean getTasks() { return getBool(ZAttrProvisioning.A_zimbraFeatureTasksEnabled); }
+  public boolean getOptions() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureOptionsEnabled);
+  }
 
-    public boolean getTagging() { return getBool(ZAttrProvisioning.A_zimbraFeatureTaggingEnabled); }
+  public boolean getSavedSearches() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureSavedSearchesEnabled);
+  }
 
-    public boolean getOptions() { return getBool(ZAttrProvisioning.A_zimbraFeatureOptionsEnabled); }
-    
-    public boolean getAdvancedSearch() { return getBool(ZAttrProvisioning.A_zimbraFeatureAdvancedSearchEnabled); }
+  public boolean getConversations() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureConversationsEnabled);
+  }
 
-    public boolean getSavedSearches() { return getBool(ZAttrProvisioning.A_zimbraFeatureSavedSearchesEnabled); }
+  public boolean getChangePassword() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureChangePasswordEnabled);
+  }
 
-    public boolean getConversations() { return getBool(ZAttrProvisioning.A_zimbraFeatureConversationsEnabled); }
+  public boolean getInitialSearchPreference() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureInitialSearchPreferenceEnabled);
+  }
 
-    public boolean getChangePassword() { return getBool(ZAttrProvisioning.A_zimbraFeatureChangePasswordEnabled); }
+  public boolean getFilters() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureFiltersEnabled);
+  }
 
-    public boolean getInitialSearchPreference() { return getBool(ZAttrProvisioning.A_zimbraFeatureInitialSearchPreferenceEnabled); }
+  public boolean getGal() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureGalEnabled);
+  }
 
-    public boolean getFilters() { return getBool(ZAttrProvisioning.A_zimbraFeatureFiltersEnabled); }
+  public boolean getHtmlCompose() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureHtmlComposeEnabled);
+  }
 
-    public boolean getGal() { return getBool(ZAttrProvisioning.A_zimbraFeatureGalEnabled); }
+  public boolean getViewInHtml() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureViewInHtmlEnabled);
+  }
 
-    public boolean getHtmlCompose() { return getBool(ZAttrProvisioning.A_zimbraFeatureHtmlComposeEnabled); }
+  public boolean getSharing() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureSharingEnabled);
+  }
 
-    public boolean getIM() { return getBool(ZAttrProvisioning.A_zimbraFeatureIMEnabled); }
+  public boolean getMailForwarding() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureMailForwardingEnabled);
+  }
 
-    public boolean getViewInHtml() { return getBool(ZAttrProvisioning.A_zimbraFeatureViewInHtmlEnabled); }
+  public boolean getMailForwardingInFilter() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureMailForwardingInFiltersEnabled);
+  }
 
-    public boolean getSharing() { return getBool(ZAttrProvisioning.A_zimbraFeatureSharingEnabled); }
+  public boolean getSkinChange() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureSkinChangeEnabled);
+  }
 
-    public boolean getMailForwarding() { return getBool(ZAttrProvisioning.A_zimbraFeatureMailForwardingEnabled); }
+  public boolean getNotebook() {
+    return false;
+  } // bug:56196 getBool(ZAttrProvisioning.A_zimbraFeatureNotebookEnabled);
 
-    public boolean getMailForwardingInFilter() { return getBool(ZAttrProvisioning.A_zimbraFeatureMailForwardingInFiltersEnabled); }
+  public boolean getGalAutoComplete() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureGalAutoCompleteEnabled);
+  }
 
-    public boolean getMobileSync() { return getBool(ZAttrProvisioning.A_zimbraFeatureMobileSyncEnabled); }
+  public boolean getOutOfOfficeReply() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureOutOfOfficeReplyEnabled);
+  }
 
-    public boolean getSkinChange() { return getBool(ZAttrProvisioning.A_zimbraFeatureSkinChangeEnabled); }
+  public boolean getNewMailNotification() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureNewMailNotificationEnabled);
+  }
 
-    public boolean getNotebook() { return false; } //bug:56196 getBool(ZAttrProvisioning.A_zimbraFeatureNotebookEnabled);
+  public boolean getIdentities() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureIdentitiesEnabled);
+  }
 
-    public boolean getBriefcases() { return getBool(ZAttrProvisioning.A_zimbraFeatureBriefcasesEnabled); }
+  public boolean getPop3DataSource() {
+    return getBool(ZAttrProvisioning.A_zimbraFeaturePop3DataSourceEnabled);
+  }
 
-    public boolean getGalAutoComplete() { return getBool(ZAttrProvisioning.A_zimbraFeatureGalAutoCompleteEnabled); }
+  public boolean getGroupcalendarEnabled() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureGroupCalendarEnabled);
+  }
 
-    public boolean getOutOfOfficeReply() { return getBool(ZAttrProvisioning.A_zimbraFeatureOutOfOfficeReplyEnabled); }
+  public boolean getDataSourceImportOnLogin() {
+    return getBool(ZAttrProvisioning.A_zimbraDataSourceImportOnLogin);
+  }
 
-    public boolean getNewMailNotification() { return getBool(ZAttrProvisioning.A_zimbraFeatureNewMailNotificationEnabled); }
+  public boolean getFlagging() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureFlaggingEnabled);
+  }
 
-    public boolean getIdentities() { return getBool(ZAttrProvisioning.A_zimbraFeatureIdentitiesEnabled); }
+  public boolean getMailPriority() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureMailPriorityEnabled);
+  }
 
-    public boolean getPop3DataSource() { return getBool(ZAttrProvisioning.A_zimbraFeaturePop3DataSourceEnabled); }
-    
-    public boolean getGroupcalendarEnabled() { return getBool(ZAttrProvisioning.A_zimbraFeatureGroupCalendarEnabled); }
+  public boolean getPortalEnabled() {
+    return getBool(ZAttrProvisioning.A_zimbraFeaturePortalEnabled);
+  }
 
-    public boolean getDataSourceImportOnLogin() { return getBool(ZAttrProvisioning.A_zimbraDataSourceImportOnLogin); }
+  public boolean getContactsDetailedSearch() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureContactsDetailedSearchEnabled);
+  }
 
-    public boolean getFlagging() { return getBool(ZAttrProvisioning.A_zimbraFeatureFlaggingEnabled); }
+  public boolean getDiscardFilterEnabled() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureDiscardInFiltersEnabled);
+  }
 
-    public boolean getMailPriority() { return getBool(ZAttrProvisioning.A_zimbraFeatureMailPriorityEnabled); }
+  // defaults to TRUE
+  public boolean getWebClientShowOfflineLink() {
+    return get(ZAttrProvisioning.A_zimbraWebClientShowOfflineLink) == null
+        || getBool(ZAttrProvisioning.A_zimbraWebClientShowOfflineLink);
+  }
 
-    public boolean getPortalEnabled() { return getBool(ZAttrProvisioning.A_zimbraFeaturePortalEnabled); }
+  // defaults to TRUE
+  public boolean getNewAddrBookEnabled() {
+    return get(ZAttrProvisioning.A_zimbraFeatureNewAddrBookEnabled) == null
+        || getBool(ZAttrProvisioning.A_zimbraFeatureNewAddrBookEnabled);
+  }
 
-    public boolean getContactsDetailedSearch() { return getBool(ZAttrProvisioning.A_zimbraFeatureContactsDetailedSearchEnabled); }
+  // defaults to TRUE
+  public boolean getPop3Enabled() {
+    return get(ZAttrProvisioning.A_zimbraPop3Enabled) == null
+        || getBool(ZAttrProvisioning.A_zimbraPop3Enabled);
+  }
 
-    public boolean getDiscardFilterEnabled() { return getBool(ZAttrProvisioning.A_zimbraFeatureDiscardInFiltersEnabled); }
-    
-    // defaults to TRUE
-    public boolean getWebSearchEnabled() { return get(ZAttrProvisioning.A_zimbraFeatureWebSearchEnabled) == null ||
-    											  getBool(ZAttrProvisioning.A_zimbraFeatureWebSearchEnabled); }
+  // defaults to TRUE
+  public boolean getSpam() {
+    return get(ZAttrProvisioning.A_zimbraFeatureAntispamEnabled) == null
+        || getBool(ZAttrProvisioning.A_zimbraFeatureAntispamEnabled);
+  }
 
-    // defaults to TRUE
-    public boolean getWebClientShowOfflineLink() { return get(ZAttrProvisioning.A_zimbraWebClientShowOfflineLink) == null ||
-                                                          getBool(ZAttrProvisioning.A_zimbraWebClientShowOfflineLink); }
-
-	// defaults to TRUE
-	public boolean getNewAddrBookEnabled() { return get(ZAttrProvisioning.A_zimbraFeatureNewAddrBookEnabled) == null ||
-													getBool(ZAttrProvisioning.A_zimbraFeatureNewAddrBookEnabled); }
-	// defaults to TRUE
-	public boolean getPop3Enabled() { return	get(ZAttrProvisioning.A_zimbraPop3Enabled) == null ||
-												getBool(ZAttrProvisioning.A_zimbraPop3Enabled); }
-	// defaults to TRUE
-	public boolean getSpam() { return	get(ZAttrProvisioning.A_zimbraFeatureAntispamEnabled) == null ||
-												getBool(ZAttrProvisioning.A_zimbraFeatureAntispamEnabled); }
-	// defaults to TRUE
-	public boolean getWebClientEnabled() { return	get(ZAttrProvisioning.A_zimbraFeatureWebClientEnabled) == null ||
-												getBool(ZAttrProvisioning.A_zimbraFeatureWebClientEnabled); }
+  // defaults to TRUE
+  public boolean getWebClientEnabled() {
+    return get(ZAttrProvisioning.A_zimbraFeatureWebClientEnabled) == null
+        || getBool(ZAttrProvisioning.A_zimbraFeatureWebClientEnabled);
+  }
 }
-

@@ -375,9 +375,9 @@ public class ZAuthToken {
         
         SoapHttpTransport.DebugListener dl = new SoapHttpTransport.DebugListener() {
             public void receiveSoapMessage(Element envelope) {
-                System.out.printf("======== SOAP RECEIVE =========\n");
+                System.out.print("======== SOAP RECEIVE =========\n");
                 System.out.println(envelope.prettyPrint());
-                System.out.printf("===============================\n");
+                System.out.print("===============================\n");
                 
             }
 

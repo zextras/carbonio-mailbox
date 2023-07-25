@@ -5,21 +5,18 @@
 
 package com.zimbra.cs.service.account;
 
-import java.util.Iterator;
-import java.util.Map;
-
+import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
+import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.common.account.Key;
-import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.account.Key.IdentityBy;
 import com.zimbra.soap.DocumentHandler;
-import com.zimbra.common.soap.Element;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.util.Iterator;
+import java.util.Map;
 
 public class ModifyIdentity extends DocumentHandler {
     
@@ -46,28 +43,6 @@ public class ModifyIdentity extends DocumentHandler {
             identity = prov.get(account, Key.IdentityBy.id, key = id);
         } else {
             identity = prov.get(account, Key.IdentityBy.name, key = eIdentity.getAttribute(AccountConstants.A_NAME));
-        }
-
-        if (identity == null) {
-            String[] childIds = account.getChildAccount();
-            for (String childId : childIds) {
-                Account childAccount = prov.get(AccountBy.id, childId, zsc.getAuthToken());
-                if (childAccount != null) {
-                    Identity childIdentity;
-
-                    if (id != null) {
-                        childIdentity = prov.get(childAccount, Key.IdentityBy.id, key = id);
-                    } else {
-                        childIdentity = prov.get(childAccount, Key.IdentityBy.name, key = eIdentity.getAttribute(AccountConstants.A_NAME));
-                    }
-
-                    if (childIdentity != null) {
-                        identity = childIdentity;
-                        account = childAccount;
-                        break;
-                    }
-                }
-            }
         }
 
         if (identity == null)

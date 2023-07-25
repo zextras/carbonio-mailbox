@@ -5,24 +5,24 @@
 
 package com.zimbra.common.iochannel;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.Assert;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.zimbra.common.iochannel.Server.NotifyCallback;
 import com.zimbra.common.util.Log.Level;
 import com.zimbra.common.util.LogFactory;
 
-@Ignore("re-enable when bug 74392 is resolved")
+@Disabled("re-enable when bug 74392 is resolved")
 public class ServerTest {
 
     private static class CountDownCallback implements NotifyCallback {
@@ -73,8 +73,7 @@ public class ServerTest {
     private static Server s2;
     private static Client c;
 
-    @BeforeClass public static void setup() throws Exception {
-        LogFactory.init();
+    @BeforeAll public static void setup() throws Exception {
         LogFactory.getLog("iochannel").setLevel(Level.debug);
         s1 = Server.start(new TestConfig(TestConfig.C.main));
         s2 = Server.start(new TestConfig(TestConfig.C.alternate));
@@ -82,7 +81,7 @@ public class ServerTest {
         c.setWaitInterval(1000);
     }
 
-    @AfterClass public static void shutdown() throws Exception {
+    @AfterAll public static void shutdown() throws Exception {
         c.shutdown();
         s1.shutdown();
         s2.shutdown();
@@ -95,117 +94,125 @@ public class ServerTest {
         "A Michigan woman who continued to get food stamps after winning a lottery jackpot was arraigned Tuesday on welfare fraud charges. Amanda Clayton, 25, of Lincoln Park was arrested on Monday. If convicted of the two felony charges, she could face up to four years in prison.",
     };
 
-    @Test public void testConfig() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        s1.registerCallback(new CountDownCallback(latch));
-        s2.registerCallback(new CountDownCallback(latch));
-        Exception e = null;
-        try {
-            c.getPeer("bogus").sendMessage(messages[0]);
-            Assert.fail("bogus config");
-        } catch (IOChannelException ex) {
-            e = ex;
-        }
-        Assert.assertNotNull(e);
+  @Test
+  void testConfig() throws Exception {
+    CountDownLatch latch = new CountDownLatch(1);
+    s1.registerCallback(new CountDownCallback(latch));
+    s2.registerCallback(new CountDownCallback(latch));
+    Exception e = null;
+    try {
+      c.getPeer("bogus").sendMessage(messages[0]);
+      fail("bogus config");
+    } catch (IOChannelException ex) {
+      e = ex;
     }
+    assertNotNull(e);
+  }
 
-    @Test public void testOne() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        s1.registerCallback(new CountDownCallback(latch));
-        c.getPeer("self").sendMessage(messages[0]);
-        latch.await(2, TimeUnit.SECONDS);
-        Assert.assertEquals(0, latch.getCount());
-    }
+  @Test
+  void testOne() throws Exception {
+    CountDownLatch latch = new CountDownLatch(1);
+    s1.registerCallback(new CountDownCallback(latch));
+    c.getPeer("self").sendMessage(messages[0]);
+    latch.await(2, TimeUnit.SECONDS);
+    assertEquals(0, latch.getCount());
+  }
 
-    @Test public void testMultiClient() throws Exception {
-        CountDownLatch latch = new CountDownLatch(6);
-        s1.registerCallback(new CountDownCallback(latch));
-        c.getPeer("self").sendMessage(messages[0]);
-        c.getPeer("copy2").sendMessage(messages[0]);
-        c.getPeer("self").sendMessage(messages[1]);
-        c.getPeer("copy2").sendMessage(messages[1]);
-        c.getPeer("self").sendMessage(messages[2]);
-        c.getPeer("copy2").sendMessage(messages[2]);
-        latch.await(2, TimeUnit.SECONDS);
-        Assert.assertEquals(0, latch.getCount());
-    }
+  @Test
+  void testMultiClient() throws Exception {
+    CountDownLatch latch = new CountDownLatch(6);
+    s1.registerCallback(new CountDownCallback(latch));
+    c.getPeer("self").sendMessage(messages[0]);
+    c.getPeer("copy2").sendMessage(messages[0]);
+    c.getPeer("self").sendMessage(messages[1]);
+    c.getPeer("copy2").sendMessage(messages[1]);
+    c.getPeer("self").sendMessage(messages[2]);
+    c.getPeer("copy2").sendMessage(messages[2]);
+    latch.await(2, TimeUnit.SECONDS);
+    assertEquals(0, latch.getCount());
+  }
 
-    @Test public void testMultiServer() throws Exception {
-        CountDownLatch latch1 = new CountDownLatch(2);
-        CountDownLatch latch2 = new CountDownLatch(2);
-        s1.registerCallback(new CountDownCallback(latch1));
-        s2.registerCallback(new CountDownCallback(latch2));
-        c.getPeer("peer1").sendMessage(messages[0]);
-        c.getPeer("peer2").sendMessage(messages[1]);
-        c.getPeer("peer1").sendMessage(messages[2]);
-        c.getPeer("peer2").sendMessage(messages[3]);
-        latch1.await(2, TimeUnit.SECONDS);
-        latch2.await(2, TimeUnit.SECONDS);
-        Assert.assertEquals(0, latch1.getCount());
-        Assert.assertEquals(0, latch2.getCount());
-    }
+  @Test
+  void testMultiServer() throws Exception {
+    CountDownLatch latch1 = new CountDownLatch(2);
+    CountDownLatch latch2 = new CountDownLatch(2);
+    s1.registerCallback(new CountDownCallback(latch1));
+    s2.registerCallback(new CountDownCallback(latch2));
+    c.getPeer("peer1").sendMessage(messages[0]);
+    c.getPeer("peer2").sendMessage(messages[1]);
+    c.getPeer("peer1").sendMessage(messages[2]);
+    c.getPeer("peer2").sendMessage(messages[3]);
+    latch1.await(2, TimeUnit.SECONDS);
+    latch2.await(2, TimeUnit.SECONDS);
+    assertEquals(0, latch1.getCount());
+    assertEquals(0, latch2.getCount());
+  }
 
-    @Test public void testConnectionRefused() throws Exception {
-        s1.shutdown();
-        Thread.sleep(1000);
-        c.getPeer("self").sendMessage(messages[0]);
-        Thread.sleep(1000);
-        CountDownLatch latch = new CountDownLatch(1);
-        s1 = Server.start(new TestConfig(TestConfig.C.main));
-        s1.registerCallback(new CountDownCallback(latch));
-        latch.await(2, TimeUnit.SECONDS);
-        Assert.assertEquals(0, latch.getCount());
-    }
+  @Test
+  void testConnectionRefused() throws Exception {
+    s1.shutdown();
+    Thread.sleep(1000);
+    c.getPeer("self").sendMessage(messages[0]);
+    Thread.sleep(1000);
+    CountDownLatch latch = new CountDownLatch(1);
+    s1 = Server.start(new TestConfig(TestConfig.C.main));
+    s1.registerCallback(new CountDownCallback(latch));
+    latch.await(2, TimeUnit.SECONDS);
+    assertEquals(0, latch.getCount());
+  }
 
-    @Test public void testServerDown() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        s1.registerCallback(new CountDownCallback(latch));
-        c.getPeer("self").sendMessage(messages[0]);
-        latch.await(2, TimeUnit.SECONDS);
-        Assert.assertEquals(0, latch.getCount());
-        s1.shutdown();
-        Thread.sleep(1000);
-        c.getPeer("self").sendMessage(messages[1]);
-        Thread.sleep(1000);
-        latch = new CountDownLatch(1);
-        s1 = Server.start(new TestConfig(TestConfig.C.main));
-        s1.registerCallback(new CountDownCallback(latch));
-        latch.await(2, TimeUnit.SECONDS);
-        Assert.assertEquals(0, latch.getCount());
-    }
+  @Test
+  void testServerDown() throws Exception {
+    CountDownLatch latch = new CountDownLatch(1);
+    s1.registerCallback(new CountDownCallback(latch));
+    c.getPeer("self").sendMessage(messages[0]);
+    latch.await(2, TimeUnit.SECONDS);
+    assertEquals(0, latch.getCount());
+    s1.shutdown();
+    Thread.sleep(1000);
+    c.getPeer("self").sendMessage(messages[1]);
+    Thread.sleep(1000);
+    latch = new CountDownLatch(1);
+    s1 = Server.start(new TestConfig(TestConfig.C.main));
+    s1.registerCallback(new CountDownCallback(latch));
+    latch.await(2, TimeUnit.SECONDS);
+    assertEquals(0, latch.getCount());
+  }
 
-    @Test public void testOneServerDown() throws Exception {
-        CountDownLatch latch1 = new CountDownLatch(2);
-        CountDownLatch latch2 = new CountDownLatch(2);
-        s1.registerCallback(new CountDownCallback(latch1));
-        s2.registerCallback(new CountDownCallback(latch2));
-        c.getPeer("peer1").sendMessage(messages[0]);
-        c.getPeer("peer2").sendMessage(messages[1]);
-        Thread.sleep(1000);
-        s1.shutdown();
-        Thread.sleep(1000);
-        c.getPeer("peer1").sendMessage(messages[2]);
-        c.getPeer("peer2").sendMessage(messages[3]);
-        Thread.sleep(1000);
-        s1 = Server.start(new TestConfig(TestConfig.C.main));
-        s1.registerCallback(new CountDownCallback(latch1));
-        latch1.await(2, TimeUnit.SECONDS);
-        latch2.await(2, TimeUnit.SECONDS);
-        Assert.assertEquals(0, latch1.getCount());
-        Assert.assertEquals(0, latch2.getCount());
-    }
+  @Test
+  void testOneServerDown() throws Exception {
+    CountDownLatch latch1 = new CountDownLatch(2);
+    CountDownLatch latch2 = new CountDownLatch(2);
+    s1.registerCallback(new CountDownCallback(latch1));
+    s2.registerCallback(new CountDownCallback(latch2));
+    c.getPeer("peer1").sendMessage(messages[0]);
+    c.getPeer("peer2").sendMessage(messages[1]);
+    Thread.sleep(1000);
+    s1.shutdown();
+    Thread.sleep(1000);
+    c.getPeer("peer1").sendMessage(messages[2]);
+    c.getPeer("peer2").sendMessage(messages[3]);
+    Thread.sleep(1000);
+    s1 = Server.start(new TestConfig(TestConfig.C.main));
+    s1.registerCallback(new CountDownCallback(latch1));
+    latch1.await(2, TimeUnit.SECONDS);
+    latch2.await(2, TimeUnit.SECONDS);
+    assertEquals(0, latch1.getCount());
+    assertEquals(0, latch2.getCount());
+  }
 
-    @Test public void testLargeMessage() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        s1.registerCallback(new CountDownCallback(latch));
-        String msg = messages[1];
-        while (msg.length() < Packet.maxMessageSize) {
-            msg += msg;
-        }
-        c.getPeer("self").sendMessage(msg);
-        Thread.sleep(2000);
-        c.getPeer("self").sendMessage(messages[0]);
-        latch.await(2, TimeUnit.SECONDS);
-        Assert.assertEquals(0, latch.getCount());
+  @Test
+  void testLargeMessage() throws Exception {
+    CountDownLatch latch = new CountDownLatch(1);
+    s1.registerCallback(new CountDownCallback(latch));
+    String msg = messages[1];
+    while (msg.length() < Packet.maxMessageSize) {
+      msg += msg;
     }
+    c.getPeer("self").sendMessage(msg);
+    Thread.sleep(2000);
+    c.getPeer("self").sendMessage(messages[0]);
+    latch.await(2, TimeUnit.SECONDS);
+    assertEquals(0, latch.getCount());
+  }
 }

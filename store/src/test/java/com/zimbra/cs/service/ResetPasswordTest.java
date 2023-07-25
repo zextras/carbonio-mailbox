@@ -5,25 +5,7 @@
 
 package com.zimbra.cs.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.mail.Address;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.MethodRule;
-import org.junit.rules.TestName;
-import org.junit.rules.TestWatchman;
-import org.junit.runners.model.FrameworkMethod;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureResetPasswordStatus;
@@ -44,27 +26,32 @@ import com.zimbra.cs.service.account.ResetPassword;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.ResetPasswordRequest;
-
-import junit.framework.Assert;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import javax.mail.Address;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 public class ResetPasswordTest {
 
-    final static String USER_NAME = "test4802@zimbra.com";
-    final static String PASSWORD = "old_secret";
-    final static String NEW_PASSWORD = "new_secret";
+    static final String USER_NAME = "test4802@zimbra.com";
+    static final String PASSWORD = "old_secret";
+    static final String NEW_PASSWORD = "new_secret";
 
-    @Rule
-    public TestName testName = new TestName();
-    @Rule
-    public MethodRule watchman = new TestWatchman() {
+    
+    public String testName;
 
-        @Override
-        public void failed(Throwable e, FrameworkMethod method) {
-            System.out.println(method.getName() + " " + e.getClass().getSimpleName());
-        }
-    };
-
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
@@ -139,52 +126,56 @@ public class ResetPasswordTest {
         }
     }
 
-    @Before
-    public void setUp() throws Exception {
-        System.out.println(testName.getMethodName());
-        MailboxTestUtil.clearData();
-    }
+ @BeforeEach
+ public void setUp(TestInfo testInfo) throws Exception {
+  Optional<Method> testMethod = testInfo.getTestMethod();
+  if (testMethod.isPresent()) {
+   this.testName = testMethod.get().getName();
+  }
+  System.out.println( testName);
+  MailboxTestUtil.clearData();
+ }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() throws Exception {
         MailboxTestUtil.clearData();
     }
 
-    @Test
-    public void testResetPassword() throws Exception {
-        Provisioning prov = Provisioning.getInstance();
-        Account acct1 = prov.getAccount(USER_NAME);
-        acct1.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
-        ResetPassword resetPassword = new TestResetPassword();
-        Map<String, Object> ctxt = ServiceTestUtil.getRequestContext(acct1);
+ @Test
+ void testResetPassword() throws Exception {
+  Provisioning prov = Provisioning.getInstance();
+  Account acct1 = prov.getAccount(USER_NAME);
+  acct1.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
+  ResetPassword resetPassword = new TestResetPassword();
+  Map<String, Object> ctxt = ServiceTestUtil.getRequestContext(acct1);
 
-        ResetPasswordRequest resetReq = new ResetPasswordRequest();
-        resetReq.setPassword(NEW_PASSWORD);
-        Element request = JaxbUtil.jaxbToElement(resetReq);
-        try {
-            resetPassword.handle(request, ctxt);
-        } catch (ServiceException se) {
-            Assert.fail("This should not happen");
-        }
-    }
+  ResetPasswordRequest resetReq = new ResetPasswordRequest();
+  resetReq.setPassword(NEW_PASSWORD);
+  Element request = JaxbUtil.jaxbToElement(resetReq);
+  try {
+   resetPassword.handle(request, ctxt);
+  } catch (ServiceException se) {
+   fail("This should not happen");
+  }
+ }
 
-    @Test
-    public void testResetPassword_FeatureDisabled() throws Exception {
-        Provisioning prov = Provisioning.getInstance();
-        Account acct1 = prov.getAccount(USER_NAME);
-        acct1.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
-        ResetPassword resetPassword = new TestResetPassword();
-        Map<String, Object> ctxt = ServiceTestUtil.getRequestContext(acct1);
+ @Test
+ void testResetPassword_FeatureDisabled() throws Exception {
+  Provisioning prov = Provisioning.getInstance();
+  Account acct1 = prov.getAccount(USER_NAME);
+  acct1.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
+  ResetPassword resetPassword = new TestResetPassword();
+  Map<String, Object> ctxt = ServiceTestUtil.getRequestContext(acct1);
 
-        ResetPasswordRequest resetReq = new ResetPasswordRequest();
-        resetReq.setPassword(NEW_PASSWORD);
-        Element request = JaxbUtil.jaxbToElement(resetReq);
-        try {
-            resetPassword.handle(request, ctxt);
-        } catch (ServiceException se) {
-            Assert.assertEquals("permission denied: Reset password feature is disabled", se.getMessage());
-        }
-    }
+  ResetPasswordRequest resetReq = new ResetPasswordRequest();
+  resetReq.setPassword(NEW_PASSWORD);
+  Element request = JaxbUtil.jaxbToElement(resetReq);
+  try {
+   resetPassword.handle(request, ctxt);
+  } catch (ServiceException se) {
+   assertEquals("permission denied: Reset password feature is disabled", se.getMessage());
+  }
+ }
 }
 
 class TestResetPassword extends ResetPassword {

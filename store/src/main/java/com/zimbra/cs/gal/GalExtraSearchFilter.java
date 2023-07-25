@@ -74,7 +74,7 @@ public class GalExtraSearchFilter {
         return term;
     }
 
-    public static abstract class GalExtraQueryCallback implements GalSearchQueryCallback {
+    public abstract static class GalExtraQueryCallback implements GalSearchQueryCallback {
         protected EntrySearchFilter filter;
 
         protected GalExtraQueryCallback(EntrySearchFilter filter) {
@@ -172,7 +172,7 @@ public class GalExtraSearchFilter {
         }
     }
 
-    public static abstract class FilteredGalSearchResultCallback extends GalSearchResultCallback.PassThruGalSearchResultCallback {
+    public abstract static class FilteredGalSearchResultCallback extends GalSearchResultCallback.PassThruGalSearchResultCallback {
         private final Set<String> mAttrs;
         private final EntrySearchFilter mFilter;
 

@@ -37,12 +37,6 @@ public class AccountService implements DocumentService {
     // client info
     dispatcher.registerHandler(AccountConstants.CLIENT_INFO_REQUEST, new ClientInfo());
 
-    // oauth
-    dispatcher.registerHandler(
-        AccountConstants.GET_OAUTH_CONSUMERS_REQUEST, new GetOAuthConsumers());
-    dispatcher.registerHandler(
-        AccountConstants.REVOKE_OAUTH_CONSUMER_REQUEST, new RevokeOAuthConsumer());
-
     // prefs
     dispatcher.registerHandler(AccountConstants.GET_PREFS_REQUEST, new GetPrefs());
     dispatcher.registerHandler(AccountConstants.MODIFY_PREFS_REQUEST, new ModifyPrefs());
@@ -100,8 +94,6 @@ public class AccountService implements DocumentService {
         AccountConstants.GET_DISTRIBUTION_LIST_REQUEST, new GetDistributionList());
     dispatcher.registerHandler(
         AccountConstants.GET_DISTRIBUTION_LIST_MEMBERS_REQUEST, new GetDistributionListMembers());
-    dispatcher.registerHandler(
-        AccountConstants.SUBSCRIBE_DISTRIBUTION_LIST_REQUEST, new SubscribeDistributionList());
 
     // rights
     dispatcher.registerHandler(AccountConstants.CHECK_RIGHTS_REQUEST, new CheckRights());
