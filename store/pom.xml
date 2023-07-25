@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>zm-store</artifactId>
+  <artifactId>mailbox-store</artifactId>
 
   <!-- To sort out dependencies take a look at: https://wiki.eclipse.org/Jetty/Reference/Dependencies -->
   <dependencies>
@@ -444,23 +444,23 @@
       <groupId>javax.servlet</groupId>
     </dependency>
     <dependency>
-      <artifactId>zm-common</artifactId>
-      <groupId>zextras</groupId>
+      <artifactId>mailbox-common</artifactId>
+      <groupId>com.zextras</groupId>
     </dependency>
     <dependency>
-      <artifactId>zm-client</artifactId>
-      <groupId>zextras</groupId>
+      <artifactId>mailbox-client</artifactId>
+      <groupId>com.zextras</groupId>
     </dependency>
     <dependency>
-      <groupId>zextras</groupId>
-      <artifactId>zm-soap</artifactId>
+      <groupId>com.zextras</groupId>
+      <artifactId>mailbox-soap</artifactId>
     </dependency>
     <dependency>
-      <groupId>zextras</groupId>
-      <artifactId>zm-native</artifactId>
+      <groupId>com.zextras</groupId>
+      <artifactId>mailbox-native</artifactId>
     </dependency>
     <dependency>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
       <artifactId>store-extra-runtime-dependencies</artifactId>
       <type>pom</type>
       <scope>runtime</scope>
@@ -525,8 +525,8 @@
   <packaging>war</packaging>
 
   <parent>
-    <artifactId>zm-mailbox</artifactId>
-    <groupId>zextras</groupId>
+    <artifactId>mailbox-bom</artifactId>
+    <groupId>com.zextras</groupId>
     <version>${revision}</version>
   </parent>
 
@@ -779,10 +779,10 @@
           <packagingExcludes>
             WEB-INF/lib/commons-logging-*.jar,
             <!-- zm packages already provided by zcs-lib -->
-            WEB-INF/lib/zm-common*.jar,
-            WEB-INF/lib/zm-native*.jar,
-            WEB-INF/lib/zm-soap*.jar,
-            WEB-INF/lib/zm-client*.jar,
+            WEB-INF/lib/mailbox-common*.jar,
+            WEB-INF/lib/mailbox-native*.jar,
+            WEB-INF/lib/mailbox-soap*.jar,
+            WEB-INF/lib/mailbox-client*.jar,
             %regex[WEB-INF/lib/log4j-(?!over-slf4j).*.jar],
             <!-- These should be marked as provided, but then some packages must bring in its dependencies -->
             WEB-INF/classes/org/**,

@@ -2,7 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>zm-client</artifactId>
+  <artifactId>mailbox-client</artifactId>
   <dependencies>
     <dependency>
       <artifactId>guava</artifactId>
@@ -52,13 +52,13 @@
 
 
     <dependency>
-      <artifactId>zm-common</artifactId>
-      <groupId>zextras</groupId>
+      <artifactId>mailbox-common</artifactId>
+      <groupId>com.zextras</groupId>
     </dependency>
 
     <dependency>
-      <artifactId>zm-soap</artifactId>
-      <groupId>zextras</groupId>
+      <artifactId>mailbox-soap</artifactId>
+      <groupId>com.zextras</groupId>
     </dependency>
   </dependencies>
   <modelVersion>4.0.0</modelVersion>
@@ -66,8 +66,8 @@
   <packaging>jar</packaging>
 
   <parent>
-    <artifactId>zm-mailbox</artifactId>
-    <groupId>zextras</groupId>
+    <artifactId>mailbox-bom</artifactId>
+    <groupId>com.zextras</groupId>
     <version>${revision}</version>
   </parent>
 

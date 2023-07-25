@@ -3,14 +3,14 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>zm-mailbox</artifactId>
-    <groupId>zextras</groupId>
+    <artifactId>mailbox-bom</artifactId>
+    <groupId>com.zextras</groupId>
     <version>${revision}</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
-  <artifactId>zm-soap</artifactId>
+  <artifactId>mailbox-soap</artifactId>
 
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
@@ -19,8 +19,8 @@
 
   <dependencies>
     <dependency>
-      <artifactId>zm-common</artifactId>
-      <groupId>zextras</groupId>
+      <artifactId>mailbox-common</artifactId>
+      <groupId>com.zextras</groupId>
     </dependency>
     <dependency>
       <artifactId>guava</artifactId>

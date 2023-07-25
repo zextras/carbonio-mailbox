@@ -2,7 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>zm-mailbox</artifactId>
+  <artifactId>mailbox-bom</artifactId>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -397,44 +397,44 @@
         <version>3.1.0</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
-        <artifactId>zm-common</artifactId>
+        <groupId>com.zextras</groupId>
+        <artifactId>mailbox-common</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
-        <artifactId>zm-client</artifactId>
+        <groupId>com.zextras</groupId>
+        <artifactId>mailbox-client</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
-        <artifactId>zm-soap</artifactId>
+        <groupId>com.zextras</groupId>
+        <artifactId>mailbox-soap</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
-        <artifactId>zm-native</artifactId>
+        <groupId>com.zextras</groupId>
+        <artifactId>mailbox-native</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
-        <artifactId>zm-store</artifactId>
+        <groupId>com.zextras</groupId>
+        <artifactId>mailbox-store</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
-        <artifactId>zm-store</artifactId>
+        <groupId>com.zextras</groupId>
+        <artifactId>mailbox-store</artifactId>
         <version>${revision}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>store-extra-runtime-dependencies</artifactId>
         <type>pom</type>
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>carbonio-jetty-libs</artifactId>
         <type>pom</type>
         <version>${revision}</version>
@@ -869,7 +869,7 @@
     </dependencies>
   </dependencyManagement>
 
-  <groupId>zextras</groupId>
+  <groupId>com.zextras</groupId>
   <modelVersion>4.0.0</modelVersion>
   <modules>
     <module>soap</module>
@@ -908,8 +908,8 @@
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
-    <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <revision>23.9.0-SNAPSHOT</revision>
+    <modifier>-SNAPSHOT</modifier>
+    <revision>4.7.0${modifier}</revision>
     <mockserver.version>5.13.0</mockserver.version>
   </properties>
   <version>${revision}</version>
@@ -923,6 +923,9 @@
           <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
         </repository>
       </distributionManagement>
+      <properties>
+        <modifier></modifier>
+      </properties>
     </profile>
     <profile>
       <id>dev</id>
@@ -932,6 +935,9 @@
           <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
         </snapshotRepository>
       </distributionManagement>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
     </profile>
   </profiles>
 

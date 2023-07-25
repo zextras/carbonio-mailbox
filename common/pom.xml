@@ -2,7 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>zm-common</artifactId>
+  <artifactId>mailbox-common</artifactId>
   <dependencies>
     <dependency>
       <artifactId>mockito-core</artifactId>
@@ -178,16 +178,16 @@
     </dependency>
 
     <dependency>
-      <artifactId>zm-native</artifactId>
-      <groupId>zextras</groupId>
+      <artifactId>mailbox-native</artifactId>
+      <groupId>com.zextras</groupId>
     </dependency>
 
   </dependencies>
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>zm-mailbox</artifactId>
-    <groupId>zextras</groupId>
+    <artifactId>mailbox-bom</artifactId>
+    <groupId>com.zextras</groupId>
     <version>${revision}</version>
   </parent>
 
