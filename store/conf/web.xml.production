@@ -342,7 +342,7 @@
 
   <servlet>
     <servlet-name>PreAuthServlet</servlet-name>
-    <servlet-class>com.zimbra.cs.service.PreAuthServlet</servlet-class>
+    <servlet-class>com.zimbra.cs.service.servlet.preauth.PreAuthServlet</servlet-class>
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
