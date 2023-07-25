@@ -18654,8 +18654,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @return zimbraOAuthConsumerCredentials, or empty array if unset
      *
@@ -18667,8 +18668,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -18683,8 +18685,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new value
      * @param attrs existing map to populate, or null to create a new map
@@ -18700,8 +18703,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -18716,8 +18720,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -18733,8 +18738,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -18749,8 +18755,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -18766,8 +18773,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -18781,8 +18789,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

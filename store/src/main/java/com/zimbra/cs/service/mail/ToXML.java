@@ -3572,12 +3572,6 @@ public final class ToXML {
     if (ds.getDataSourceImportClassName() != null) {
       m.addAttribute(MailConstants.A_DS_IMPORT_CLASS, ds.getDataSourceImportClassName());
     }
-    if (ds.getOauthRefreshToken() != null) {
-      m.addAttribute(MailConstants.A_DS_REFRESH_TOKEN, ds.getOauthRefreshToken());
-    }
-    if (ds.getOauthRefreshTokenUrl() != null) {
-      m.addAttribute(MailConstants.A_DS_REFRESH_TOKEN_URL, ds.getOauthRefreshTokenUrl());
-    }
     m.addAttribute(MailConstants.A_DS_EMAIL_ADDRESS, ds.getEmailAddress());
     m.addAttribute(
         MailConstants.A_DS_USE_ADDRESS_FOR_FORWARD_REPLY, ds.useAddressForForwardReply());

@@ -1301,13 +1301,8 @@ public final class MailConstants {
   public static final String A_DS_REPLYTO_DISPLAY = "replyToDisplay";
   public static final String A_DS_IMPORT_CLASS = "importClass";
   public static final String A_DS_FAILING_SINCE = "failingSince";
-  public static final String A_DS_OAUTH_TOKEN = "oauthToken";
   public static final String A_DS_TEST = "test";
   public static final String A_DS_USAGE = "usage";
-  public static final String A_DS_CLIENT_ID = "clientId";
-  public static final String A_DS_CLIENT_SECRET = "clientSecret";
-  public static final String A_DS_REFRESH_TOKEN = "refreshToken";
-  public static final String A_DS_REFRESH_TOKEN_URL = "refreshTokenUrl";
 
   public static final String A_ACCT_RELATIVE_PATH = "acctRelPath";
 

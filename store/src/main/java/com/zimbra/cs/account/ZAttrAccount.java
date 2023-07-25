@@ -35204,7 +35204,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @return zimbraOAuthAccessor, or empty array if unset
      *
@@ -35216,7 +35218,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -35231,7 +35235,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new value
      * @param attrs existing map to populate, or null to create a new map
@@ -35247,7 +35253,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -35262,7 +35270,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -35278,7 +35288,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -35293,7 +35305,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -35309,7 +35323,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -35323,7 +35339,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
