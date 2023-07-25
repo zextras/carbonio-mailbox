@@ -4,7 +4,15 @@ import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.cs.account.Provisioning;
 import java.util.Map;
 
+/**
+ * This class represents the parameters for auto-provisioning of an account. It encapsulates the
+ * necessary information required to auto-provision an account based on the provided input.
+ *
+ * @author Keshav Bhatt
+ * @since 23.9.0
+ */
 class AutoProvisioningParams {
+
   private final String accountIdentifier;
   private final AccountBy accountBy;
   private final Provisioning provisioning;

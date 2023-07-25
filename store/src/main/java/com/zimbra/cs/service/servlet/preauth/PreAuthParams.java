@@ -7,6 +7,9 @@ import java.util.Set;
 /**
  * This enum represents the pre-auth parameters used by this servlet. It provides a set of
  * predefined parameter names that can be used for pre-authentication processing.
+ *
+ * @author Keshav Bhatt
+ * @since 23.9.0
  */
 enum PreAuthParams {
   PARAM_PRE_AUTH("preauth"),

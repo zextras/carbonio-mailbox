@@ -71,8 +71,7 @@ class PreAuthServletTest {
     // Stub mocks
     when(requestMock.getParameter(PreAuthParams.PARAM_IS_REDIRECT.getParamName())).thenReturn("1");
     when(requestMock.getParameter(PreAuthParams.PARAM_AUTHTOKEN.getParamName()))
-        .thenReturn(
-            "0_3eda3cae8900bb9c5fbbc4151e28d759c67e7119_69643d33363a61666465373664322d396634342d343466382d616537392d3938633536313662326639363b6578703d31333a313639303338333032353431313b747970653d363a7a696d6272613b753d313a613b7469643d31303a313236313635323935363b");
+        .thenReturn("0_3eda3cae8900bb9c5fbbc4151e28d759c67e7119");
 
     // Call doGet
     PreAuthServlet preAuthServletSpy = spy(PreAuthServlet.class);
@@ -84,8 +83,7 @@ class PreAuthServletTest {
             eq(requestMock),
             eq(responseMock),
             eq(Provisioning.getInstance()),
-            eq(
-                "0_3eda3cae8900bb9c5fbbc4151e28d759c67e7119_69643d33363a61666465373664322d396634342d343466382d616537392d3938633536313662326639363b6578703d31333a313639303338333032353431313b747970653d363a7a696d6272613b753d313a613b7469643d31303a313236313635323935363b"),
+            eq("0_3eda3cae8900bb9c5fbbc4151e28d759c67e7119"),
             anyString(),
             eq(true));
   }

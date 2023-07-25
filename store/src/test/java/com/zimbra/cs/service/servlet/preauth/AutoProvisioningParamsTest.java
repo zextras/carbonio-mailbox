@@ -71,9 +71,8 @@ class AutoProvisioningParamsTest {
 
   @Test
   void testAutoProvisioningParamsBuilder() {
-    String accountIdentifier = "user@example.com";
+    String accountIdentifier = "one@test.com";
     AccountBy accountBy = AccountBy.id;
-    boolean isAdmin = true;
     long timestamp = 1627545650L;
     long expires = 1627645650L;
     String preAuth = "xyz789";
@@ -84,7 +83,7 @@ class AutoProvisioningParamsTest {
                 accountIdentifier,
                 accountBy,
                 Provisioning.getInstance(),
-                isAdmin,
+                true,
                 timestamp,
                 expires,
                 preAuth)
