@@ -22,8 +22,6 @@ public enum MailItemType {
   @Deprecated
   INVITE,
   /** Item is a InviteMessage with a {@code text/calendar} MIME part. */
-  NOTE,
-  /** Item is a Note. */
   FLAG,
   /** Item is a memory-only system Flag. */
   APPOINTMENT,
@@ -32,8 +30,6 @@ public enum MailItemType {
   /** Item is a memory-only, 1-message VirtualConversation. */
   MOUNTPOINT,
   /** Item is a Mountpoint pointing to a Folder, possibly in another user's Mailbox. */
-  TASK,
-  /** Item is a Task */
   CHAT
   /** Item is a Chat */
 }
