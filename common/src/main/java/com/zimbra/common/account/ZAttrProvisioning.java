@@ -2807,6 +2807,24 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAdminUiLoginLogo = "carbonioAdminUiLoginLogo";
 
     /**
+     * Login URL for Carbonio Admin web client to send the user to upon
+     * failed login, auth expired, or no/invalid auth
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3136)
+    public static final String A_carbonioAdminUILoginURL = "carbonioAdminUILoginURL";
+
+    /**
+     * Logout URL for Carbonio Admin web client to send the user to upon
+     * explicit logging out
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3137)
+    public static final String A_carbonioAdminUILogoutURL = "carbonioAdminUILogoutURL";
+
+    /**
      * Admin Web UI Title preference for domain
      *
      * @since ZCS 22.11.0
@@ -3068,6 +3086,24 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3097)
     public static final String A_carbonioWebUiLoginLogo = "carbonioWebUiLoginLogo";
+
+    /**
+     * Login URL for Carbonio web client to send the user to upon failed
+     * login, auth expired, or no/invalid auth
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public static final String A_carbonioWebUILoginURL = "carbonioWebUILoginURL";
+
+    /**
+     * Logout URL for Carbonio web client to send the user to upon explicit
+     * logging out
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public static final String A_carbonioWebUILogoutURL = "carbonioWebUILogoutURL";
 
     /**
      * Web UI Primary Color preference for domain
