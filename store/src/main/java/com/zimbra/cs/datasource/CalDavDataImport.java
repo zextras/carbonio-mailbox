@@ -316,9 +316,7 @@ public class CalDavDataImport extends MailItemImport {
       int i = 0;
       for (DataSourceItem f : allFolders.values()) {
         Folder folder = mbox.getFolderById(octxt, f.itemId);
-        if (folder != null
-            && folder.getDefaultView() != MailItem.Type.APPOINTMENT
-            && folder.getDefaultView() != MailItem.Type.TASK) {
+        if (folder != null && folder.getDefaultView() != MailItem.Type.APPOINTMENT) {
           continue;
         }
         fids.add(f.itemId);

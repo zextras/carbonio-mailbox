@@ -26,7 +26,6 @@ import com.zimbra.client.event.ZCreateMessageEvent;
 import com.zimbra.client.event.ZCreateMountpointEvent;
 import com.zimbra.client.event.ZCreateSearchFolderEvent;
 import com.zimbra.client.event.ZCreateTagEvent;
-import com.zimbra.client.event.ZCreateTaskEvent;
 import com.zimbra.client.event.ZDeleteEvent;
 import com.zimbra.client.event.ZEventHandler;
 import com.zimbra.client.event.ZModifyAppointmentEvent;
@@ -39,7 +38,6 @@ import com.zimbra.client.event.ZModifyMessageEvent;
 import com.zimbra.client.event.ZModifyMountpointEvent;
 import com.zimbra.client.event.ZModifySearchFolderEvent;
 import com.zimbra.client.event.ZModifyTagEvent;
-import com.zimbra.client.event.ZModifyTaskEvent;
 import com.zimbra.client.event.ZRefreshEvent;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -244,8 +242,10 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   /** include items in the Trash folder */
   public static final String TC_INCLUDE_TRASH = "t";
+
   /** include items in the Spam/Junk folder */
   public static final String TC_INCLUDE_JUNK = "j";
+
   /** include items in the Sent folder */
   public static final String TC_INCLUDE_SENT = "s";
 
@@ -638,6 +638,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     public boolean getAuthAuthToken() {
       return mAuthAuthToken;
     }
+
     /**
      * @param authAuthToken set to true if you want to send an AuthRequest to valid the auth token
      */
@@ -1329,8 +1330,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         event = new ZModifyMailboxEvent(e);
       } else if (e.getName().equals(MailConstants.E_APPOINTMENT)) {
         event = new ZModifyAppointmentEvent(e);
-      } else if (e.getName().equals(MailConstants.E_TASK)) {
-        event = new ZModifyTaskEvent(e);
       }
       if (event != null) {
         handleEvent(event);
@@ -1372,8 +1371,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         event = new ZCreateContactEvent(e);
       } else if (e.getName().equals(MailConstants.E_APPOINTMENT)) {
         event = new ZCreateAppointmentEvent(e);
-      } else if (e.getName().equals(MailConstants.E_TASK)) {
-        event = new ZCreateTaskEvent(e);
       } else if (e.getName().equals(MailConstants.E_FOLDER)) {
         String parentId = e.getAttribute(MailConstants.A_FOLDER);
         ZFolder parent = getFolderById(parentId);
@@ -2098,6 +2095,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       throws ServiceException {
     return createContact(folderId, tags, attrs, null, null);
   }
+
   /**
    * Creates a new contact.
    *
@@ -3506,20 +3504,12 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return getFolderById(ZFolder.ID_CALENDAR);
   }
 
-  public ZFolder getNotebok() throws ServiceException {
-    return getFolderById(ZFolder.ID_NOTEBOOK);
-  }
-
   public ZFolder getAutoContacts() throws ServiceException {
     return getFolderById(ZFolder.ID_AUTO_CONTACTS);
   }
 
   public ZFolder getChats() throws ServiceException {
     return getFolderById(ZFolder.ID_CHATS);
-  }
-
-  public ZFolder getTasks() throws ServiceException {
-    return getFolderById(ZFolder.ID_TASKS);
   }
 
   /**
@@ -4794,7 +4784,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @param owner either the id or name of the owner
    * @param itemBy used to specify whether sharedItem is an id or path to the shared item
    * @param sharedItem either the id or path of the item
-   * @param reminderEnabled whether client should show reminders on appointments/tasks
+   * @param reminderEnabled whether client should show reminders on appointments
    * @return newly created folder
    * @throws ServiceException on error
    * @param color initial color
@@ -4841,7 +4831,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   }
 
   /**
-   * enable/disable displaying reminder for shared appointments/tasks
+   * enable/disable displaying reminder for shared appointments
    *
    * @param mountpointId
    * @param reminderEnabled
@@ -6011,8 +6001,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @param endMsec ending time of range, in msecs
    * @param folderIds list of folder ids
    * @param timeZone TimeZone used to correct allday appts
-   * @param types ZSearchParams.TYPE_APPOINTMENT and/or ZSearchParams.TYPE_TASK. If null,
-   *     TYPE_APPOINTMENT is used.
+   * @param types ZSearchParams.TYPE_APPOINTMENT. If null, TYPE_APPOINTMENT is used.
    * @return list of appts within the specified range
    * @throws ServiceException on error
    */
@@ -6518,111 +6507,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       }
     }
     return result;
-  }
-
-  /* tasks */
-
-  public ZAppointmentResult createTask(
-      String folderId, String flags, ZOutgoingMessage message, ZInvite invite, String optionalUid)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.CREATE_TASK_REQUEST);
-
-    //noinspection UnusedDeclaration
-    Element mEl = getMessageElement(req, message, null);
-
-    if (flags != null) {
-      mEl.addAttribute(MailConstants.A_FLAGS, flags);
-    }
-
-    if (folderId != null) {
-      mEl.addAttribute(MailConstants.A_FOLDER, folderId);
-    }
-
-    Element invEl = invite.toElement(mEl);
-    if (optionalUid != null) {
-      invEl.addAttribute(MailConstants.A_UID, optionalUid);
-    }
-
-    return new ZAppointmentResult(invoke(req));
-  }
-
-  public ZAppointmentResult createTaskException(
-      String id,
-      String component,
-      ZDateTime exceptionId,
-      ZOutgoingMessage message,
-      ZInvite invite,
-      String optionalUid)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.CREATE_TASK_EXCEPTION_REQUEST);
-
-    req.addAttribute(MailConstants.A_ID, id);
-    req.addAttribute(MailConstants.E_INVITE_COMPONENT, component);
-
-    Element mEl = getMessageElement(req, message, null);
-
-    Element invEl = invite.toElement(mEl);
-    Element compEl = invEl.getElement(MailConstants.E_INVITE_COMPONENT);
-    exceptionId.toElement(MailConstants.E_CAL_EXCEPTION_ID, compEl);
-
-    if (optionalUid != null) {
-      invEl.addAttribute(MailConstants.A_UID, optionalUid);
-    }
-
-    return new ZAppointmentResult(invoke(req));
-  }
-
-  public ZAppointmentResult modifyTask(
-      String id, String component, ZDateTime exceptionId, ZOutgoingMessage message, ZInvite invite)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.MODIFY_TASK_REQUEST);
-
-    req.addAttribute(MailConstants.A_ID, id);
-    req.addAttribute(MailConstants.E_INVITE_COMPONENT, component);
-
-    Element mEl = getMessageElement(req, message, null);
-
-    Element invEl = invite.toElement(mEl);
-
-    if (exceptionId != null) {
-      Element compEl = invEl.getElement(MailConstants.E_INVITE_COMPONENT);
-      exceptionId.toElement(MailConstants.E_CAL_EXCEPTION_ID, compEl);
-    }
-
-    return new ZAppointmentResult(invoke(req));
-  }
-
-  public void cancelTask(
-      String id,
-      String component,
-      ZTimeZone tz,
-      ZDateTime instance,
-      CancelRange range,
-      ZOutgoingMessage message)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.CANCEL_TASK_REQUEST);
-
-    req.addAttribute(MailConstants.A_ID, id);
-    req.addAttribute(MailConstants.E_INVITE_COMPONENT, component);
-
-    if (tz != null) {
-      tz.toElement(req);
-    }
-
-    if (instance != null) {
-      Element instEl = instance.toElement(MailConstants.E_INSTANCE, req);
-      if (range != null) {
-        instEl.addAttribute(MailConstants.A_CAL_RANGE, range.name());
-      }
-    }
-
-    if (message != null) {
-      getMessageElement(req, message, null);
-    }
-
-    mMessageCache.remove(id);
-
-    invoke(req);
   }
 
   private void setVoiceStorePrincipal(Element req) {

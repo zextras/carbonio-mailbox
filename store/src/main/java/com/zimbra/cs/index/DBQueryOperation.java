@@ -643,9 +643,6 @@ public class DBQueryOperation extends QueryOperation {
         case APPOINTMENT:
           result.add(MailItem.Type.APPOINTMENT);
           break;
-        case TASK:
-          result.add(MailItem.Type.TASK);
-          break;
         case FLAG:
           result.add(MailItem.Type.FLAG);
           break;
@@ -916,12 +913,6 @@ public class DBQueryOperation extends QueryOperation {
     switch (sort) {
       case NONE:
         throw new IllegalArgumentException("Invalid request: cannot use cursor with SortBy=NONE");
-      case TASK_DUE_ASC:
-      case TASK_DUE_DESC:
-      case TASK_PERCENT_COMPLETE_ASC:
-      case TASK_PERCENT_COMPLETE_DESC:
-      case TASK_STATUS_ASC:
-      case TASK_STATUS_DESC:
       case NAME_LOCALIZED_ASC:
       case NAME_LOCALIZED_DESC:
         return;

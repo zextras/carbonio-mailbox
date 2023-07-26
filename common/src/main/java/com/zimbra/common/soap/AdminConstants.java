@@ -527,7 +527,6 @@ public final class AdminConstants {
   public static final String E_VERIFY_STORE_MANAGER_RESPONSE = "VerifyStoreManagerResponse";
 
   // Skins
-  // Skins
   public static final String E_GET_ALL_SKINS_REQUEST = "GetAllSkinsRequest";
   public static final String E_GET_ALL_SKINS_RESPONSE = "GetAllSkinsResponse";
 
