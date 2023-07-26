@@ -1,7 +1,11 @@
 
+## [4.6.4](https://github.com/Zextras/carbonio-mailbox/compare/4.6.3...4.6.4) (2023-07-26)
+
+### Bug Fixes
+
+* [CO-803] Fix NPE while exporting user data in tgz format ([#293](https://github.com/Zextras/carbonio-mailbox/issues/293)) ([3a037ca](https://github.com/Zextras/carbonio-mailbox/commit/3a037ca514143facc9c1c51574fd84beaf2e91f6))
 
 ## [4.6.3](https://github.com/Zextras/carbonio-mailbox/compare/4.6.2...4.6.3) (2023-07-17)
-
 
 ### Bug Fixes
 
