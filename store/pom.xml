@@ -120,6 +120,11 @@
     </dependency>
 
     <dependency>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <groupId>javax.ws.rs</groupId>
+    </dependency>
+
+    <dependency>
       <artifactId>commons-fileupload</artifactId>
       <groupId>commons-fileupload</groupId>
     </dependency>

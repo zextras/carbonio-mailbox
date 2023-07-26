@@ -33,16 +33,19 @@ import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.util.Zimbra;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.context.Scope;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response.Status.Family;
 import org.apache.http.HttpVersion;
 import org.apache.http.ParseException;
 import org.apache.http.ProtocolVersion;
@@ -56,14 +59,19 @@ public class SoapServlet extends ZimbraServlet {
 
   /** context name of auth token extracted from cookie */
   public static final String ZIMBRA_AUTH_TOKEN = "zimbra.authToken";
+
   /** context name of servlet context */
   public static final String SERVLET_CONTEXT = "servlet.context";
+
   /** context name of servlet HTTP request */
   public static final String SERVLET_REQUEST = "servlet.request";
+
   /** context name of servlet HTTP response */
   public static final String SERVLET_RESPONSE = "servlet.response";
+
   /** If this is a request sent to the admin port */
   public static final String IS_ADMIN_REQUEST = "zimbra.isadminreq";
+
   /** Flag for requests that want to force invalidation of client cookies */
   public static final String INVALIDATE_COOKIES = "zimbra.invalidateCookies";
 
@@ -199,15 +207,11 @@ public class SoapServlet extends ZimbraServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
-    ZimbraLog.clearContext();
-        final Span parentSpan = GlobalOpenTelemetry.getTracer(SERVICE_NAME).spanBuilder("soap")
-            .startSpan();
     long startTime = ZimbraPerf.STOPWATCH_SOAP.start();
 
-        try (Scope scope = parentSpan.makeCurrent()){
+    try {
       doWork(req, resp);
     } finally {
-            parentSpan.end();
       ZimbraLog.clearContext();
       ZimbraPerf.STOPWATCH_SOAP.stop(startTime);
     }
@@ -217,18 +221,17 @@ public class SoapServlet extends ZimbraServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     ZimbraLog.clearContext();
     long startTime = ZimbraPerf.STOPWATCH_SOAP.start();
-        final Span parentSpan = GlobalOpenTelemetry.getTracer(SERVICE_NAME).spanBuilder("soap")
-            .startSpan();
-        try (Scope scope = parentSpan.makeCurrent()) {
+    try {
       doWork(req, resp);
     } finally {
-            parentSpan.end();
       ZimbraLog.clearContext();
       ZimbraPerf.STOPWATCH_SOAP.stop(startTime);
     }
   }
 
   private void doWork(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    final Span dispatcherSpan =
+        GlobalOpenTelemetry.getTracer(SERVICE_NAME).spanBuilder(req.getRequestURI()).startSpan();
     int len = req.getContentLength();
     byte[] buffer;
     boolean isResumed = true;
@@ -288,6 +291,9 @@ public class SoapServlet extends ZimbraServlet {
         Element fault = SoapProtocol.Soap12.soapFault(e);
         Element envelope = SoapProtocol.Soap12.soapEnvelope(fault);
         sendResponse(req, resp, envelope);
+        dispatcherSpan.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, resp.getStatus());
+        dispatcherSpan.setStatus(StatusCode.ERROR);
+        dispatcherSpan.end();
         return;
       }
 
@@ -319,16 +325,12 @@ public class SoapServlet extends ZimbraServlet {
         SoapEngine.ORIG_REQUEST_USER_AGENT,
         req.getHeader(HeaderConstants.HTTP_HEADER_ORIG_USER_AGENT));
     Element envelope = null;
-        final Span dispatcherSpan = GlobalOpenTelemetry.getTracer(SERVICE_NAME)
-            .spanBuilder(req.getRequestURI())
-            .startSpan();
     try {
       envelope = mEngine.dispatch(req.getRequestURI(), buffer, context);
       if (context.containsKey(INVALIDATE_COOKIES)) {
         ZAuthToken.clearCookies(resp);
       }
-        }
-        catch (Throwable e) {
+    } catch (Throwable e) {
       if (e instanceof OutOfMemoryError) {
         Zimbra.halt("handler exception", e);
       }
@@ -346,14 +348,17 @@ public class SoapServlet extends ZimbraServlet {
       Element fault = SoapProtocol.Soap12.soapFault(ServiceException.FAILURE(e.toString(), e));
       envelope = SoapProtocol.Soap12.soapEnvelope(fault);
     }
-        finally {
-            dispatcherSpan.end();
-        }
 
     if (ZimbraLog.soap.isTraceEnabled()) {
       ZimbraLog.soap.trace("S:\n%s", envelope.prettyPrint());
     }
     sendResponse(req, resp, envelope);
+    dispatcherSpan.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, resp.getStatus());
+    if (Objects.equals(Family.familyOf(resp.getStatus()), Family.SERVER_ERROR)) {
+      dispatcherSpan.setStatus(StatusCode.ERROR);
+    }
+    dispatcherSpan.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, resp.getStatus());
+    dispatcherSpan.end();
   }
 
   private int soapResponseBufferSize() {
