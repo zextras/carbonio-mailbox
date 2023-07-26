@@ -545,7 +545,7 @@ public abstract class ArchiveFormatter extends Formatter {
       throws ServiceException {
 
     String ext = null, name = null;
-    StringBuilder extra = null;
+    StringBuilder extra = new StringBuilder();
     Integer fid = mi.getFolderId();
     String fldr;
     InputStream is = null;
