@@ -11,7 +11,7 @@ class DomainAttrExceptionItem extends DomainAttrItem {
   ProxyConfException exception;
 
   public DomainAttrExceptionItem(ProxyConfException e) {
-    super(null, null, null, null, null, null, null, null, null);
+    super(null, null, null, null, null, null, null, null, null, null, null, null, null);
     this.exception = e;
   }
 }

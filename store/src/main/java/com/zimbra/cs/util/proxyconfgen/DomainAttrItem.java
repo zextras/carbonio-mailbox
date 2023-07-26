@@ -17,6 +17,10 @@ class DomainAttrItem {
   String clientCertCa;
   String[] rspHeaders;
   String cspHeader;
+  String webUiLoginUrl;
+  String webUiLogoutUrl;
+  String adminUiLoginUrl;
+  String adminUiLogoutUrl;
 
   public DomainAttrItem(
       String dn,
@@ -27,7 +31,11 @@ class DomainAttrItem {
       String ccm,
       String cca,
       String[] rhdr,
-      String csp) {
+      String csp,
+      String webUiLoginUrl,
+      String webUiLogoutUrl,
+      String adminUiLoginUrl,
+      String adminUiLogoutUrl) {
     this.domainName = dn;
     this.virtualHostname = vhn;
     this.virtualIPAddress = vip;
@@ -37,5 +45,9 @@ class DomainAttrItem {
     this.clientCertCa = cca;
     this.rspHeaders = rhdr;
     this.cspHeader = csp;
+    this.webUiLoginUrl = webUiLoginUrl;
+    this.webUiLogoutUrl = webUiLogoutUrl;
+    this.adminUiLoginUrl = adminUiLoginUrl;
+    this.adminUiLogoutUrl = adminUiLogoutUrl;
   }
 }

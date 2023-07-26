@@ -20,14 +20,35 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.util.BuildInfo;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.cli.CommandLine;
@@ -67,10 +88,13 @@ public class ProxyConfGen {
   private static final Map<String, ProxyConfVar> mConfVars = new HashMap<>();
   private static final Map<String, String> mVars = new HashMap<>();
   private static final Map<String, ProxyConfVar> mDomainConfVars = new HashMap<>();
+
   /** the pattern for custom header cmd, such as "!{explode domain} */
   private static final Pattern CMD_PATTERN =
       Pattern.compile("(.*)!\\{([^}]+)}(.*)", Pattern.DOTALL);
 
+  private static final String CERT = "/fullchain.pem";
+  private static final String KEY = "/privkey.pem";
   static List<DomainAttrItem> mDomainReverseProxyAttrs;
   static List<ServerAttrItem> mServerAttrs;
   static Set<String> mListenAddresses = new HashSet<>();
@@ -79,6 +103,9 @@ public class ProxyConfGen {
   private static String mWorkingDir = "/opt/zextras";
   static final String OVERRIDE_TEMPLATE_DIR = mWorkingDir + "/conf/nginx/templates_custom";
   static String mTemplateDir = mWorkingDir + "/conf/nginx/templates";
+  private static final String CERTBOT = mWorkingDir + "/libexec/certbot";
+  private static final String CERTBOT_WORKING_DIR =
+      mWorkingDir + "/common/certbot/etc/letsencrypt/live/";
   private static String mConfDir = mWorkingDir + "/conf";
   private static final String DOMAIN_SSL_DIR = mConfDir + File.separator + "domaincerts";
   private static final String DEFAULT_SSL_CRT = mConfDir + File.separator + "nginx.crt";
@@ -93,11 +120,6 @@ public class ProxyConfGen {
   private static Provisioning mProv = null;
   private static boolean mGenConfPerVhn = false;
   private static boolean hasCustomTemplateLocationArg = false;
-  private static final String CERTBOT = mWorkingDir + "/libexec/certbot";
-  private static final String CERTBOT_WORKING_DIR =
-      mWorkingDir + "/common/certbot/etc/letsencrypt/live/";
-  private static final String CERT = "/fullchain.pem";
-  private static final String KEY = "/privkey.pem";
 
   static {
     mOptions.addOption("h", "help", false, "show this usage text");
@@ -232,6 +254,10 @@ public class ProxyConfGen {
     attrsNeeded.add(ZAttrProvisioning.A_zimbraWebClientLoginURL);
     attrsNeeded.add(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
     attrsNeeded.add(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader);
+    attrsNeeded.add(ZAttrProvisioning.A_carbonioWebUILoginURL);
+    attrsNeeded.add(ZAttrProvisioning.A_carbonioWebUILogoutURL);
+    attrsNeeded.add(ZAttrProvisioning.A_carbonioAdminUILoginURL);
+    attrsNeeded.add(ZAttrProvisioning.A_carbonioAdminUILogoutURL);
 
     final List<DomainAttrItem> result = new ArrayList<>();
 
@@ -251,6 +277,10 @@ public class ProxyConfGen {
               entry.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
           String cspRspHeader =
               entry.getAttr(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "");
+          String webUiLoginUrl = entry.getAttr(ZAttrProvisioning.A_carbonioWebUILoginURL, "");
+          String webUiLogoutUrl = entry.getAttr(ZAttrProvisioning.A_carbonioWebUILogoutURL, "");
+          String adminUiLoginUrl = entry.getAttr(ZAttrProvisioning.A_carbonioAdminUILoginURL, "");
+          String adminUiLogoutUrl = entry.getAttr(ZAttrProvisioning.A_carbonioAdminUILogoutURL, "");
 
           if (virtualHostnames.length == 0
               || (certificate == null
@@ -291,7 +321,11 @@ public class ProxyConfGen {
                     clientCertMode,
                     clientCertCA,
                     rspHeaders,
-                    cspRspHeader));
+                    cspRspHeader,
+                    webUiLoginUrl,
+                    webUiLogoutUrl,
+                    adminUiLoginUrl,
+                    adminUiLogoutUrl));
           }
         };
     mProv.getAllDomains(visitor, attrsNeeded.toArray(new String[0]));
@@ -1943,8 +1977,7 @@ public class ProxyConfGen {
     String cspHeader =
         ProxyConfVar.configSource.getAttr(
             ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "");
-    ArrayList<String> responseHeadersList = new ArrayList<>();
-    Collections.addAll(responseHeadersList, rspHeaders);
+    ArrayList<String> responseHeadersList = new ArrayList<>(Arrays.asList(rspHeaders));
     if (!cspHeader.isBlank()) {
       responseHeadersList.add(cspHeader);
     }
