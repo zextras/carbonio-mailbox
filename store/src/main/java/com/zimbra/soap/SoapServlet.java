@@ -34,6 +34,7 @@ import com.zimbra.cs.util.Zimbra;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.context.Scope;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import java.io.EOFException;
 import java.io.IOException;
@@ -230,135 +231,138 @@ public class SoapServlet extends ZimbraServlet {
   }
 
   private void doWork(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    final Span dispatcherSpan =
+    final Span span =
         GlobalOpenTelemetry.getTracer(SERVICE_NAME).spanBuilder(req.getRequestURI()).startSpan();
-    int len = req.getContentLength();
-    byte[] buffer;
-    boolean isResumed = true;
+    try (Scope ss = span.makeCurrent()) {
+      int len = req.getContentLength();
+      byte[] buffer;
+      boolean isResumed = true;
 
-    // resuming from a Jetty Continuation does *not* reset the HttpRequest's input stream -
-    // therefore we store the read buffer in the Continuation, and use the stored buffer
-    // if we're resuming
-    buffer = (byte[]) req.getAttribute("com.zimbra.request.buffer");
-    if (buffer == null) {
-      isResumed = false;
+      // resuming from a Jetty Continuation does *not* reset the HttpRequest's input stream -
+      // therefore we store the read buffer in the Continuation, and use the stored buffer
+      // if we're resuming
+      buffer = (byte[]) req.getAttribute("com.zimbra.request.buffer");
+      if (buffer == null) {
+        isResumed = false;
 
-      // Look up max request size
-      int maxSize = 0;
-      try {
-        maxSize =
-            Provisioning.getInstance()
-                .getLocalServer()
-                .getIntAttr(Provisioning.A_zimbraSoapRequestMaxSize, 0);
-      } catch (ServiceException e) {
-        ZimbraLog.soap.warn(
-            "Unable to look up %s.  Not limiting the request size.",
-            Provisioning.A_zimbraSoapRequestMaxSize, e);
-      }
-      if (maxSize <= 0) {
-        maxSize = Integer.MAX_VALUE;
-      }
-
-      // Read the request
-      boolean success;
-      if (len > maxSize) {
-        success = false;
-      } else {
-        BufferStream bs = null;
-
+        // Look up max request size
+        int maxSize = 0;
         try {
-          bs = new BufferStream(len, maxSize, maxSize);
-          int in = (int) bs.readFrom(req.getInputStream(), len >= 0 ? len : Integer.MAX_VALUE);
-
-          if (len > 0 && in < len)
-            throw new EOFException("SOAP content truncated " + in + "!=" + len);
-          success = in <= maxSize;
-          buffer = bs.toByteArray();
-        } finally {
-          ByteUtil.closeStream(bs);
+          maxSize =
+              Provisioning.getInstance()
+                  .getLocalServer()
+                  .getIntAttr(Provisioning.A_zimbraSoapRequestMaxSize, 0);
+        } catch (ServiceException e) {
+          ZimbraLog.soap.warn(
+              "Unable to look up %s.  Not limiting the request size.",
+              Provisioning.A_zimbraSoapRequestMaxSize, e);
         }
+        if (maxSize <= 0) {
+          maxSize = Integer.MAX_VALUE;
+        }
+
+        // Read the request
+        boolean success;
+        if (len > maxSize) {
+          success = false;
+        } else {
+          BufferStream bs = null;
+
+          try {
+            bs = new BufferStream(len, maxSize, maxSize);
+            int in = (int) bs.readFrom(req.getInputStream(), len >= 0 ? len : Integer.MAX_VALUE);
+
+            if (len > 0 && in < len)
+              throw new EOFException("SOAP content truncated " + in + "!=" + len);
+            success = in <= maxSize;
+            buffer = bs.toByteArray();
+          } finally {
+            ByteUtil.closeStream(bs);
+          }
+        }
+
+        // Handle requests that exceed the size limit
+        if (!success) {
+          String sizeString = (len < 0 ? "" : " size " + len);
+          String msg =
+              String.format(
+                  "Request%s exceeded limit of %d bytes set for %s.",
+                  sizeString, maxSize, Provisioning.A_zimbraSoapRequestMaxSize);
+          ServiceException e = ServiceException.INVALID_REQUEST(msg, null);
+          ZimbraLog.soap.warn(null, e);
+          Element fault = SoapProtocol.Soap12.soapFault(e);
+          Element envelope = SoapProtocol.Soap12.soapEnvelope(fault);
+          sendResponse(req, resp, envelope);
+          span.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, resp.getStatus());
+          span.setStatus(StatusCode.ERROR);
+          return;
+        }
+
+        req.setAttribute("com.zimbra.request.buffer", buffer);
       }
 
-      // Handle requests that exceed the size limit
-      if (!success) {
-        String sizeString = (len < 0 ? "" : " size " + len);
-        String msg =
-            String.format(
-                "Request%s exceeded limit of %d bytes set for %s.",
-                sizeString, maxSize, Provisioning.A_zimbraSoapRequestMaxSize);
-        ServiceException e = ServiceException.INVALID_REQUEST(msg, null);
-        ZimbraLog.soap.warn(null, e);
-        Element fault = SoapProtocol.Soap12.soapFault(e);
-        Element envelope = SoapProtocol.Soap12.soapEnvelope(fault);
-        sendResponse(req, resp, envelope);
-        dispatcherSpan.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, resp.getStatus());
-        dispatcherSpan.setStatus(StatusCode.ERROR);
-        dispatcherSpan.end();
-        return;
+      HashMap<String, Object> context = new HashMap<String, Object>();
+      context.put(SERVLET_CONTEXT, getServletContext());
+      context.put(SERVLET_REQUEST, req);
+      context.put(SERVLET_RESPONSE, resp);
+
+      try {
+        Boolean isAdminReq = isAdminRequest(req);
+        context.put(IS_ADMIN_REQUEST, isAdminReq);
+      } catch (ServiceException se) {
+        ZimbraLog.soap.warn("unable to determine isAdminReq", se);
       }
 
-      req.setAttribute("com.zimbra.request.buffer", buffer);
-    }
+      // setup IPs in the context and add to logging context
+      RemoteIP remoteIp = new RemoteIP(req, ZimbraServlet.getTrustedIPs());
+      context.put(SoapEngine.SOAP_REQUEST_IP, remoteIp.getClientIP());
+      context.put(SoapEngine.ORIG_REQUEST_IP, remoteIp.getOrigIP());
+      context.put(SoapEngine.REQUEST_IP, remoteIp.getRequestIP());
+      remoteIp.addToLoggingContext();
 
-    HashMap<String, Object> context = new HashMap<String, Object>();
-    context.put(SERVLET_CONTEXT, getServletContext());
-    context.put(SERVLET_REQUEST, req);
-    context.put(SERVLET_RESPONSE, resp);
+      // checkAuthToken(req.getCookies(), context);
+      context.put(SoapEngine.REQUEST_PORT, req.getServerPort());
+      context.put(
+          SoapEngine.ORIG_REQUEST_USER_AGENT,
+          req.getHeader(HeaderConstants.HTTP_HEADER_ORIG_USER_AGENT));
+      Element envelope = null;
+      try {
+        envelope = mEngine.dispatch(req.getRequestURI(), buffer, context);
+        if (context.containsKey(INVALIDATE_COOKIES)) {
+          ZAuthToken.clearCookies(resp);
+        }
+      } catch (Throwable e) {
+        if (e instanceof OutOfMemoryError) {
+          Zimbra.halt("handler exception", e);
+        }
 
-    try {
-      Boolean isAdminReq = isAdminRequest(req);
-      context.put(IS_ADMIN_REQUEST, isAdminReq);
-    } catch (ServiceException se) {
-      ZimbraLog.soap.warn("unable to determine isAdminReq", se);
-    }
+        if (ZimbraLog.soap.isTraceEnabled()
+            && !context.containsKey(SoapEngine.SOAP_REQUEST_LOGGED)) {
+          ZimbraLog.soap.trace(
+              !isResumed ? "C:\n%s" : "C: (resumed)\n%s", new String(buffer, Charsets.UTF_8));
+        }
 
-    // setup IPs in the context and add to logging context
-    RemoteIP remoteIp = new RemoteIP(req, ZimbraServlet.getTrustedIPs());
-    context.put(SoapEngine.SOAP_REQUEST_IP, remoteIp.getClientIP());
-    context.put(SoapEngine.ORIG_REQUEST_IP, remoteIp.getOrigIP());
-    context.put(SoapEngine.REQUEST_IP, remoteIp.getRequestIP());
-    remoteIp.addToLoggingContext();
+        // don't interfere with Jetty Continuations -- pass the exception right up
+        if (e.getClass().getName().equals("org.eclipse.jetty.continuation.ContinuationThrowable"))
+          throw (Error) e;
 
-    // checkAuthToken(req.getCookies(), context);
-    context.put(SoapEngine.REQUEST_PORT, req.getServerPort());
-    context.put(
-        SoapEngine.ORIG_REQUEST_USER_AGENT,
-        req.getHeader(HeaderConstants.HTTP_HEADER_ORIG_USER_AGENT));
-    Element envelope = null;
-    try {
-      envelope = mEngine.dispatch(req.getRequestURI(), buffer, context);
-      if (context.containsKey(INVALIDATE_COOKIES)) {
-        ZAuthToken.clearCookies(resp);
-      }
-    } catch (Throwable e) {
-      if (e instanceof OutOfMemoryError) {
-        Zimbra.halt("handler exception", e);
-      }
-
-      if (ZimbraLog.soap.isTraceEnabled() && !context.containsKey(SoapEngine.SOAP_REQUEST_LOGGED)) {
-        ZimbraLog.soap.trace(
-            !isResumed ? "C:\n%s" : "C: (resumed)\n%s", new String(buffer, Charsets.UTF_8));
+        ZimbraLog.soap.warn("handler exception", e);
+        Element fault = SoapProtocol.Soap12.soapFault(ServiceException.FAILURE(e.toString(), e));
+        envelope = SoapProtocol.Soap12.soapEnvelope(fault);
       }
 
-      // don't interfere with Jetty Continuations -- pass the exception right up
-      if (e.getClass().getName().equals("org.eclipse.jetty.continuation.ContinuationThrowable"))
-        throw (Error) e;
-
-      ZimbraLog.soap.warn("handler exception", e);
-      Element fault = SoapProtocol.Soap12.soapFault(ServiceException.FAILURE(e.toString(), e));
-      envelope = SoapProtocol.Soap12.soapEnvelope(fault);
+      if (ZimbraLog.soap.isTraceEnabled()) {
+        ZimbraLog.soap.trace("S:\n%s", envelope.prettyPrint());
+      }
+      sendResponse(req, resp, envelope);
+      span.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, resp.getStatus());
+      if (Objects.equals(Family.familyOf(resp.getStatus()), Family.SERVER_ERROR)) {
+        span.setStatus(StatusCode.ERROR);
+      }
+      span.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, resp.getStatus());
+    } finally {
+      span.end();
     }
-
-    if (ZimbraLog.soap.isTraceEnabled()) {
-      ZimbraLog.soap.trace("S:\n%s", envelope.prettyPrint());
-    }
-    sendResponse(req, resp, envelope);
-    dispatcherSpan.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, resp.getStatus());
-    if (Objects.equals(Family.familyOf(resp.getStatus()), Family.SERVER_ERROR)) {
-      dispatcherSpan.setStatus(StatusCode.ERROR);
-    }
-    dispatcherSpan.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, resp.getStatus());
-    dispatcherSpan.end();
   }
 
   private int soapResponseBufferSize() {
