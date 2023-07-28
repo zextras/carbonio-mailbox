@@ -3423,8 +3423,10 @@ public class ZAttrProvisioning {
     public static final String A_zimbraAddressListLdapFilter = "zimbraAddressListLdapFilter";
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * @since ZCS 6.0.9
      */
