@@ -77,6 +77,7 @@ public class ProxyConfGen {
   static final String ZIMBRA_SSL_UPSTREAM_ZX_NAME = "zx_ssl";
   static final int ZIMBRA_UPSTREAM_ZX_PORT = 8742;
   static final int ZIMBRA_UPSTREAM_SSL_ZX_PORT = 8743;
+  private static final String DEFAULT_WEB_LOGIN_PATH = "/static/login/";
   private static final int DEFAULT_SERVERS_NAME_HASH_MAX_SIZE = 512;
   private static final int DEFAULT_SERVERS_NAME_HASH_BUCKET_SIZE = 64;
   private static final Log LOG = LogFactory.getLog(ProxyConfGen.class);
@@ -113,8 +114,9 @@ public class ProxyConfGen {
   private static final String DEFAULT_SSL_CLIENT_CERT_CA =
       mConfDir + File.separator + "nginx.client.ca.crt";
   private static final String DEFAULT_DH_PARAM_FILE = mConfDir + File.separator + "dhparam.pem";
+
+  private static String mConfIncludesDir;
   private static String mIncDir = "nginx/includes";
-  private static String mConfIncludesDir = mConfDir + File.separator + mIncDir;
   private static String mConfPrefix = "nginx.conf";
   private static String mTemplatePrefix = mConfPrefix;
   private static Provisioning mProv = null;
@@ -122,6 +124,7 @@ public class ProxyConfGen {
   private static boolean hasCustomTemplateLocationArg = false;
 
   static {
+    mConfIncludesDir = mConfDir + File.separator + mIncDir;
     mOptions.addOption("h", "help", false, "show this usage text");
     mOptions.addOption("v", "verbose", false, "be verbose");
 
@@ -709,7 +712,6 @@ public class ProxyConfGen {
             "web.add.headers.vhost",
             responseHeadersList,
             "add_header directive for vhost web proxy"));
-
     LOG.debug("Updating Default Domain Variable Map");
     try {
       updateDefaultDomainVars();
@@ -1987,6 +1989,45 @@ public class ProxyConfGen {
             "web.add.headers.default",
             responseHeadersList,
             "add_header directive for default web proxy"));
+    mConfVars.put(
+        "web.carbonio.webui.login.url.default",
+        new ProxyConfVar(
+            "web.carbonio.webui.login.url.default",
+            ZAttrProvisioning.A_carbonioWebUILoginURL,
+            DEFAULT_WEB_LOGIN_PATH,
+            ProxyConfValueType.STRING,
+            ProxyConfOverride.CONFIG,
+            "Login URL for Carbonio web client to send the user to upon failed login, auth expired,"
+                + " or no/invalid auth"));
+    mConfVars.put(
+        "web.carbonio.webui.logout.url.default",
+        new ProxyConfVar(
+            "web.carbonio.webui.logout.url.default",
+            ZAttrProvisioning.A_carbonioWebUILogoutURL,
+            DEFAULT_WEB_LOGIN_PATH,
+            ProxyConfValueType.STRING,
+            ProxyConfOverride.CONFIG,
+            "Logout URL for Carbonio web client to send the user to upon explicit logging out"));
+    mConfVars.put(
+        "web.carbonio.admin.login.url.default",
+        new ProxyConfVar(
+            "web.carbonio.admin.login.url.default",
+            ZAttrProvisioning.A_carbonioAdminUILoginURL,
+            DEFAULT_WEB_LOGIN_PATH,
+            ProxyConfValueType.STRING,
+            ProxyConfOverride.CONFIG,
+            "Login URL for Carbonio Admin web client to send the user to upon failed login, auth"
+                + " expired, or no/invalid auth"));
+    mConfVars.put(
+        "web.carbonio.admin.logout.url.default",
+        new ProxyConfVar(
+            "web.carbonio.admin.logout.url.default",
+            ZAttrProvisioning.A_carbonioAdminUILogoutURL,
+            DEFAULT_WEB_LOGIN_PATH,
+            ProxyConfValueType.STRING,
+            ProxyConfOverride.CONFIG,
+            "Logout URL for Carbonio Admin web client to send the user to upon explicit logging"
+                + " out"));
   }
 
   /* update the default variable map from the active configuration */
