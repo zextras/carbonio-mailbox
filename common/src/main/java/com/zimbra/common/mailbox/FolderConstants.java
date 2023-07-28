@@ -23,11 +23,9 @@ public final class FolderConstants {
 
   // no longer created in new mailboxes since Helix (bug 39647).  old mailboxes may still contain a
   // system folder with id 12
-  @Deprecated public static final int ID_FOLDER_NOTEBOOK = 12;
   public static final int ID_FOLDER_AUTO_CONTACTS = 13;
   public static final int ID_FOLDER_IM_LOGS = 14;
-  public static final int ID_FOLDER_TASKS = 15;
-  public static final int ID_FOLDER_COMMENTS = 17;
+
   // ID_FOLDER_PROFILE Was used for folder related to ProfileServlet which was used in pre-release
   // Iron Maiden only.
   // Old mailboxes may still contain a system folder with id 18

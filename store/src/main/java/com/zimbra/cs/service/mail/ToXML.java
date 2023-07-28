@@ -2178,8 +2178,6 @@ public final class ToXML {
       numTries++;
       if (calItem instanceof Appointment) {
         elem = parent.addNonUniqueElement(MailConstants.E_APPOINTMENT);
-      } else {
-        elem = parent.addNonUniqueElement(MailConstants.E_TASK);
       }
       try {
         setCalendarItemFields(
@@ -2672,16 +2670,6 @@ public final class ToXML {
         Geo geo = invite.getGeo();
         if (geo != null) {
           geo.toXml(e);
-        }
-        // Percent Complete (VTODO)
-        if (invite.isTodo()) {
-          String pct = invite.getPercentComplete();
-          if (pct != null) e.addAttribute(MailConstants.A_TASK_PERCENT_COMPLETE, pct);
-          long completed = invite.getCompleted();
-          if (completed != 0) {
-            ParsedDateTime c = ParsedDateTime.fromUTCTime(completed);
-            e.addAttribute(MailConstants.A_TASK_COMPLETED, c.getDateTimePartString());
-          }
         }
 
         // Attendee(s)

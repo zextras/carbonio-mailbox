@@ -1,5 +1,9 @@
 def mvnCmd(String cmd) {
-  sh 'mvn -B -s settings-jenkins.xml ' + cmd
+    def extraOptions = ''
+    if (env.BRANCH_NAME == 'main') {
+        extraOptions = '-Ddependency-check.skip=false'
+    }
+  sh 'mvn -B -s settings-jenkins.xml ' + extraOptions + ' ' + cmd
 }
 pipeline {
     agent {
@@ -35,7 +39,6 @@ pipeline {
         }
         stage('Build') {
             steps {
-
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
 
                 sh 'mkdir staging'

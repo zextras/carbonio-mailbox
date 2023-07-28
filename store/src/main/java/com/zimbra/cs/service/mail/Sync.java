@@ -283,8 +283,7 @@ public class Sync extends MailDocumentHandler {
     }
   }
 
-  private static final Set<MailItem.Type> CALENDAR_TYPES =
-      EnumSet.of(MailItem.Type.APPOINTMENT, MailItem.Type.TASK);
+  private static final Set<MailItem.Type> CALENDAR_TYPES = EnumSet.of(MailItem.Type.APPOINTMENT);
 
   /**
    * @param calendarStart start time of range, in milliseconds. {@code -1} means to leave the start
@@ -304,7 +303,6 @@ public class Sync extends MailDocumentHandler {
               octxt, MailItem.Type.UNKNOWN, calendarStart, -1, folder.getId());
     }
     initialItemSync(f, MailConstants.E_APPOINTMENT, idlist.getIds(MailItem.Type.APPOINTMENT));
-    initialItemSync(f, MailConstants.E_TASK, idlist.getIds(MailItem.Type.TASK));
   }
 
   private static void initialItemSync(Element f, String ename, List<Integer> items) {
@@ -561,8 +559,6 @@ public class Sync extends MailDocumentHandler {
         return MailConstants.E_CONTACT;
       case APPOINTMENT:
         return MailConstants.E_APPOINTMENT;
-      case TASK:
-        return MailConstants.E_TASK;
       default:
         return null;
     }
@@ -587,8 +583,6 @@ public class Sync extends MailDocumentHandler {
       return MailItem.Type.CONTACT;
     } else if (name.equals(MailConstants.E_APPOINTMENT)) {
       return MailItem.Type.APPOINTMENT;
-    } else if (name.equals(MailConstants.E_TASK)) {
-      return MailItem.Type.TASK;
     } else {
       return MailItem.Type.UNKNOWN;
     }

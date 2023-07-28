@@ -14,6 +14,7 @@ import com.zimbra.cs.dav.resource.DavResource;
 import com.zimbra.cs.dav.resource.RemoteCalendarCollection;
 import com.zimbra.cs.dav.resource.UrlNamespace;
 import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Mountpoint;
 import java.util.HashMap;
@@ -47,23 +48,23 @@ public class UrlNamespaceTest {
     rcc = mock(RemoteCalendarCollection.class);
   }
 
- /**
-  * @throws java.lang.Exception
+  /**
+   * @throws java.lang.Exception
    */
- @Test
- void testGetResourceFromMailItem() throws Exception {
-  when(ctxt.useIcalDelegation()).thenReturn(Boolean.FALSE);
-  when(item.getType()).thenReturn(MailItem.Type.MOUNTPOINT);
-  when(item.getDefaultView()).thenReturn(MailItem.Type.TASK);
-  try (MockedStatic<UrlNamespace> urlNamespaceMockedStatic = mockStatic(UrlNamespace.class)) {
-   urlNamespaceMockedStatic
-     .when(() -> UrlNamespace.getRemoteCalendarCollection(ctxt, item))
-     .thenReturn(rcc);
-   urlNamespaceMockedStatic
-     .when(() -> UrlNamespace.getResourceFromMailItem(ctxt, item))
-     .thenCallRealMethod();
-   DavResource resource = UrlNamespace.getResourceFromMailItem(ctxt, item);
-   assertTrue(resource instanceof RemoteCalendarCollection);
+  @Test
+  void testGetResourceFromMailItem() throws Exception {
+    when(ctxt.useIcalDelegation()).thenReturn(Boolean.FALSE);
+    when(item.getType()).thenReturn(MailItem.Type.MOUNTPOINT);
+    when(item.getDefaultView()).thenReturn(Type.APPOINTMENT);
+    try (MockedStatic<UrlNamespace> urlNamespaceMockedStatic = mockStatic(UrlNamespace.class)) {
+      urlNamespaceMockedStatic
+          .when(() -> UrlNamespace.getRemoteCalendarCollection(ctxt, item))
+          .thenReturn(rcc);
+      urlNamespaceMockedStatic
+          .when(() -> UrlNamespace.getResourceFromMailItem(ctxt, item))
+          .thenCallRealMethod();
+      DavResource resource = UrlNamespace.getResourceFromMailItem(ctxt, item);
+      assertTrue(resource instanceof RemoteCalendarCollection);
+    }
   }
- }
 }

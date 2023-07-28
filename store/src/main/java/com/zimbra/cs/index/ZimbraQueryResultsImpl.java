@@ -13,7 +13,6 @@ import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Message;
-import com.zimbra.cs.mailbox.Task;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -121,15 +120,6 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
     return hit;
   }
 
-  protected CalendarItemHit getTaskHit(Mailbox mbx, int id, Task task, Object sortValue) {
-    CalendarItemHit hit = calItemHits.get(id);
-    if (hit == null) {
-      hit = new TaskHit(this, mbx, id, task, sortValue);
-      calItemHits.put(id, hit);
-    }
-    return hit;
-  }
-
   protected MessageHit getMessageHit(
       Mailbox mbx, int id, Message msg, Document doc, Object sortValue) {
     MessageHit hit = messageHits.get(id);
@@ -201,9 +191,6 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
         break;
       case APPOINTMENT:
         result = getAppointmentHit(mbox, sr.getId(), (CalendarItem) item, sr.getSortValue());
-        break;
-      case TASK:
-        result = getTaskHit(mbox, sr.getId(), (Task) item, sr.getSortValue());
         break;
       default:
         assert (false);
