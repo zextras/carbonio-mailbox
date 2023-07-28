@@ -706,13 +706,58 @@ public class ProxyConfGen {
     if (!item.cspHeader.isBlank()) {
       responseHeadersList.add(item.cspHeader);
     }
+    // Add domain the response headers list variables for web
     mDomainConfVars.put(
         "web.add.headers.vhost",
         new AddHeadersVar(
             "web.add.headers.vhost",
             responseHeadersList,
             "add_header directive for vhost web proxy"));
-    LOG.debug("Updating Default Domain Variable Map");
+
+    // Add domain custom login and logout variables for webUi and AdminUi
+    mDomainConfVars.put(
+        "web.carbonio.webui.login.url.vhost",
+        new WebCustomLoginLogoutUrlVar(
+            "web.carbonio.webui.login.url.vhost",
+            ZAttrProvisioning.A_carbonioWebUILoginURL,
+            DEFAULT_WEB_LOGIN_PATH,
+            ProxyConfValueType.STRING,
+            ProxyConfOverride.CUSTOM,
+            "Login URL for Carbonio web client to send the user to upon failed login, auth expired,"
+                + " or no/invalid auth",
+            item.webUiLoginUrl));
+    mDomainConfVars.put(
+        "web.carbonio.webui.logout.url.vhost",
+        new WebCustomLoginLogoutUrlVar(
+            "web.carbonio.webui.logout.url.vhost",
+            ZAttrProvisioning.A_carbonioWebUILogoutURL,
+            DEFAULT_WEB_LOGIN_PATH,
+            ProxyConfValueType.STRING,
+            ProxyConfOverride.CUSTOM,
+            "Logout URL for Carbonio web client to send the user to upon explicit logging out",
+            item.webUiLogoutUrl));
+    mDomainConfVars.put(
+        "web.carbonio.admin.login.url.vhost",
+        new WebCustomLoginLogoutUrlVar(
+            "web.carbonio.admin.login.url.vhost",
+            ZAttrProvisioning.A_carbonioAdminUILoginURL,
+            DEFAULT_WEB_LOGIN_PATH,
+            ProxyConfValueType.STRING,
+            ProxyConfOverride.CUSTOM,
+            "Login URL for Carbonio Admin web client to send the user to upon failed login, auth"
+                + " expired, or no/invalid auth",
+            item.adminUiLoginUrl));
+    mDomainConfVars.put(
+        "web.carbonio.admin.logout.url.vhost",
+        new WebCustomLoginLogoutUrlVar(
+            "web.carbonio.admin.logout.url.vhost",
+            ZAttrProvisioning.A_carbonioAdminUILogoutURL,
+            DEFAULT_WEB_LOGIN_PATH,
+            ProxyConfValueType.STRING,
+            ProxyConfOverride.CUSTOM,
+            "Logout URL for Carbonio Admin web client to send the user to upon explicit logging"
+                + " out",
+            item.adminUiLogoutUrl));
     try {
       updateDefaultDomainVars();
     } catch (ProxyConfException | ServiceException pe) {
@@ -2041,6 +2086,7 @@ public class ProxyConfGen {
 
   /* update the default domain variable map from the active configuration */
   public static void updateDefaultDomainVars() throws ServiceException, ProxyConfException {
+    LOG.debug("Updating Default Domain Variable Map");
     Set<String> keys = mDomainConfVars.keySet();
     for (String key : keys) {
       mDomainConfVars.get(key).update();
