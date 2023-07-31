@@ -5,6 +5,9 @@
 
 package com.zimbra.cs.util.proxyconfgen;
 
+import static com.zimbra.cs.util.proxyconfgen.ProxyConfVar.configSource;
+import static com.zimbra.cs.util.proxyconfgen.ProxyConfVar.serverSource;
+
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -77,7 +80,7 @@ public class ProxyConfGen {
   static final String ZIMBRA_SSL_UPSTREAM_ZX_NAME = "zx_ssl";
   static final int ZIMBRA_UPSTREAM_ZX_PORT = 8742;
   static final int ZIMBRA_UPSTREAM_SSL_ZX_PORT = 8743;
-  private static final String DEFAULT_WEB_LOGIN_PATH = "/static/login/";
+  static final String DEFAULT_WEB_LOGIN_PATH = "/static/login/";
   private static final int DEFAULT_SERVERS_NAME_HASH_MAX_SIZE = 512;
   private static final int DEFAULT_SERVERS_NAME_HASH_BUCKET_SIZE = 64;
   private static final Log LOG = LogFactory.getLog(ProxyConfGen.class);
@@ -712,8 +715,12 @@ public class ProxyConfGen {
         new AddHeadersVar(
             "web.add.headers.vhost",
             responseHeadersList,
-            "add_header directive for vhost web proxy"));
-
+            "add_header directive for vhost web proxy",
+            Map.of(
+                ZAttrProvisioning.A_carbonioWebUILoginURL, item.webUiLoginUrl,
+                ZAttrProvisioning.A_carbonioWebUILogoutURL, item.webUiLogoutUrl,
+                ZAttrProvisioning.A_carbonioAdminUILoginURL, item.adminUiLoginUrl,
+                ZAttrProvisioning.A_carbonioAdminUILogoutURL, item.adminUiLogoutUrl)));
     // Add domain custom login and logout variables for webUi and AdminUi
     mDomainConfVars.put(
         "web.carbonio.webui.login.url.vhost",
@@ -2019,11 +2026,9 @@ public class ProxyConfGen {
 
     // Get the response headers list from globalconfig
     String[] rspHeaders =
-        ProxyConfVar.configSource.getMultiAttr(
-            ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
+        configSource.getMultiAttr(ZAttrProvisioning.A_zimbraReverseProxyResponseHeaders);
     String cspHeader =
-        ProxyConfVar.configSource.getAttr(
-            ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "");
+        configSource.getAttr(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "");
     ArrayList<String> responseHeadersList = new ArrayList<>(Arrays.asList(rspHeaders));
     if (!cspHeader.isBlank()) {
       responseHeadersList.add(cspHeader);
@@ -2033,7 +2038,20 @@ public class ProxyConfGen {
         new AddHeadersVar(
             "web.add.headers.default",
             responseHeadersList,
-            "add_header directive for default web proxy"));
+            "add_header directive for default web proxy",
+            Map.of(
+                ZAttrProvisioning.A_carbonioWebUILoginURL,
+                configSource.getAttr(
+                    ZAttrProvisioning.A_carbonioWebUILoginURL, DEFAULT_WEB_LOGIN_PATH),
+                ZAttrProvisioning.A_carbonioWebUILogoutURL,
+                configSource.getAttr(
+                    ZAttrProvisioning.A_carbonioWebUILogoutURL, DEFAULT_WEB_LOGIN_PATH),
+                ZAttrProvisioning.A_carbonioAdminUILoginURL,
+                configSource.getAttr(
+                    ZAttrProvisioning.A_carbonioAdminUILoginURL, DEFAULT_WEB_LOGIN_PATH),
+                ZAttrProvisioning.A_carbonioAdminUILogoutURL,
+                configSource.getAttr(
+                    ZAttrProvisioning.A_carbonioAdminUILogoutURL, DEFAULT_WEB_LOGIN_PATH))));
     mConfVars.put(
         "web.carbonio.webui.login.url.default",
         new ProxyConfVar(
@@ -2178,8 +2196,8 @@ public class ProxyConfGen {
     }
 
     mProv = Provisioning.getInstance();
-    ProxyConfVar.configSource = mProv.getConfig();
-    ProxyConfVar.serverSource = mProv.getLocalServer();
+    configSource = mProv.getConfig();
+    serverSource = mProv.getLocalServer();
 
     if (cl.hasOption('h')) {
       usage(null);
