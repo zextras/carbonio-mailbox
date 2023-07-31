@@ -18077,8 +18077,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraZimletVersion = "zimbraZimletVersion";
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @since ZCS 8.5.0
      */
