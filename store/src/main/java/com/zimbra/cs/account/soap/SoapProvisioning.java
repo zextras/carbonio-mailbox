@@ -133,8 +133,6 @@ import com.zimbra.soap.admin.message.GetAllAccountLoggersRequest;
 import com.zimbra.soap.admin.message.GetAllAccountLoggersResponse;
 import com.zimbra.soap.admin.message.GetAllAccountsRequest;
 import com.zimbra.soap.admin.message.GetAllAccountsResponse;
-import com.zimbra.soap.admin.message.GetAllActiveServersRequest;
-import com.zimbra.soap.admin.message.GetAllActiveServersResponse;
 import com.zimbra.soap.admin.message.GetAllAdminAccountsRequest;
 import com.zimbra.soap.admin.message.GetAllAdminAccountsResponse;
 import com.zimbra.soap.admin.message.GetAllCalendarResourcesRequest;
@@ -205,10 +203,8 @@ import com.zimbra.soap.admin.message.RenameDistributionListRequest;
 import com.zimbra.soap.admin.message.ResetAllLoggersRequest;
 import com.zimbra.soap.admin.message.SearchDirectoryRequest;
 import com.zimbra.soap.admin.message.SearchDirectoryResponse;
-import com.zimbra.soap.admin.message.SetLocalServerOnlineRequest;
 import com.zimbra.soap.admin.message.SetPasswordRequest;
 import com.zimbra.soap.admin.message.SetPasswordResponse;
-import com.zimbra.soap.admin.message.SetServerOfflineRequest;
 import com.zimbra.soap.admin.message.VerifyIndexRequest;
 import com.zimbra.soap.admin.message.VerifyIndexResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
@@ -1168,24 +1164,6 @@ public class SoapProvisioning extends Provisioning {
   @Override
   public List<Server> getAllServers() throws ServiceException {
     return getAllServers(null, true);
-  }
-
-  public List<Server> getAllActiveServers() throws ServiceException {
-    List<Server> result = new ArrayList<Server>();
-    GetAllActiveServersResponse resp = invokeJaxb(new GetAllActiveServersRequest());
-    for (ServerInfo serverInfo : resp.getServerList()) {
-      result.add(new SoapServer(serverInfo, this));
-    }
-    return result;
-  }
-
-  public void setServerOffline(ServerBy keyType, String key) throws ServiceException {
-    ServerSelector sel = new ServerSelector(SoapProvisioning.toJaxb(keyType), key);
-    invokeJaxb(new SetServerOfflineRequest(sel));
-  }
-
-  public void setLocalServerOnline() throws ServiceException {
-    invokeJaxb(new SetLocalServerOnlineRequest());
   }
 
   public static class QuotaUsage {

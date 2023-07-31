@@ -41,7 +41,6 @@ import com.zimbra.cs.session.SessionCache;
 import com.zimbra.cs.session.WaitSetMgr;
 import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.store.StoreManager;
-import com.zimbra.cs.zookeeper.CuratorManager;
 import com.zimbra.znative.Util;
 import java.io.File;
 import java.io.IOException;
@@ -397,11 +396,6 @@ public final class Zimbra {
       }
 
       SessionCache.shutdown();
-
-      CuratorManager curatorManager = CuratorManager.getInstance();
-      if (curatorManager != null) {
-        curatorManager.stop();
-      }
     }
 
     MailboxIndex.shutdown();
