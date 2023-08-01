@@ -689,8 +689,10 @@ public final class LC {
   public static final KnownKey zimbra_class_provisioning =
       KnownKey.newKey("com.zimbra.cs.account.ldap.LdapProvisioning");
 
+  @Deprecated(since = "23.9.0", forRemoval = true)
   public static final KnownKey zimbra_class_accessmanager =
       KnownKey.newKey("com.zimbra.cs.account.accesscontrol.ACLAccessManager");
+
   public static final KnownKey zimbra_class_mboxmanager =
       KnownKey.newKey("com.zimbra.cs.mailbox.MailboxManager");
   public static final KnownKey zimbra_class_database = KnownKey.newKey("com.zimbra.cs.db.MariaDB");

@@ -743,7 +743,6 @@ public class ProvUtil implements HttpDebugListener {
         Via.ldap),
     GET_ACCOUNT_LOGGERS(
         "getAccountLoggers", "gal", "[-s/--server hostname] {name@domain|id}", Category.LOG, 1, 3),
-    GET_ALL_ACTIVE_SERVERS("getAllActiveServers", "gaas", "[-v]", Category.SERVER, 0, 1),
     GET_ALL_ACCOUNT_LOGGERS(
         "getAllAccountLoggers", "gaal", "[-s/--server hostname]", Category.LOG, 0, 2),
     GET_ALL_ADMIN_ACCOUNTS(
@@ -1093,7 +1092,6 @@ public class ProvUtil implements HttpDebugListener {
         Category.SEARCH,
         2,
         Integer.MAX_VALUE),
-    SET_LOCAL_SERVER_ONLINE("setLocalServerOnline", "slso", "", Category.SERVER, 0, 0),
     SELECT_MAILBOX(
         "selectMailbox",
         "sm",
@@ -1104,7 +1102,6 @@ public class ProvUtil implements HttpDebugListener {
     SET_ACCOUNT_COS(
         "setAccountCos", "sac", "{name@domain|id} {cos-name|cos-id}", Category.ACCOUNT, 2, 2),
     SET_PASSWORD("setPassword", "sp", "{name@domain|id} {password}", Category.ACCOUNT, 2, 2),
-    SET_SERVER_OFFLINE("setServerOffline", "sso", "{name|id}", Category.SERVER, 1, 1),
     GET_ALL_MTA_AUTH_URLS("getAllMtaAuthURLs", "gamau", "", Category.SERVER, 0, 0),
     GET_ALL_REVERSE_PROXY_URLS("getAllReverseProxyURLs", "garpu", "", Category.REVERSEPROXY, 0, 0),
     GET_ALL_REVERSE_PROXY_BACKENDS(
@@ -1533,9 +1530,6 @@ public class ProvUtil implements HttpDebugListener {
       case GET_ALL_ACCOUNTS:
         doGetAllAccounts(args);
         break;
-      case GET_ALL_ACTIVE_SERVERS:
-        doGetAllActiveServers(args);
-        break;
       case GET_ALL_ADMIN_ACCOUNTS:
         doGetAllAdminAccounts(args);
         break;
@@ -1725,12 +1719,6 @@ public class ProvUtil implements HttpDebugListener {
         break;
       case SET_ACCOUNT_COS:
         prov.setCOS(lookupAccount(args[1]), lookupCos(args[2]));
-        break;
-      case SET_SERVER_OFFLINE:
-        doSetServerOffline(args);
-        break;
-      case SET_LOCAL_SERVER_ONLINE:
-        doSetLocalServerOnline();
         break;
       case SEARCH_ACCOUNTS:
         doSearchAccounts(args);
@@ -3489,33 +3477,6 @@ public class ProvUtil implements HttpDebugListener {
     for (Server server : servers) {
       if (verbose) {
         dumpServer(server, applyDefault, null);
-      } else {
-        console.println(server.getName());
-      }
-    }
-  }
-
-  private void doGetAllActiveServers(String[] args) throws ServiceException {
-    boolean verbose = false;
-
-    int i = 1;
-    while (i < args.length) {
-      String arg = args[i];
-      if (arg.equals("-v")) {
-        verbose = true;
-        break;
-      }
-      i++;
-    }
-
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-
-    List<Server> servers = ((SoapProvisioning) prov).getAllActiveServers();
-    for (Server server : servers) {
-      if (verbose) {
-        dumpServer(server, true, null);
       } else {
         console.println(server.getName());
       }
@@ -5398,21 +5359,6 @@ public class ProvUtil implements HttpDebugListener {
 
   private void doGetXMPPComponent(String[] args) throws ServiceException {
     dumpXMPPComponent(lookupXMPPComponent(args[1]), getArgNameSet(args, 2));
-  }
-
-  private void doSetServerOffline(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    String key = args[1];
-    ((SoapProvisioning) prov).setServerOffline(guessServerBy(key), key);
-  }
-
-  private void doSetLocalServerOnline() throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    ((SoapProvisioning) prov).setLocalServerOnline();
   }
 
   private static class RightArgs {

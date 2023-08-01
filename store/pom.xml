@@ -93,17 +93,7 @@
     </dependency>
 
     <dependency>
-      <artifactId>curator-framework</artifactId>
-      <groupId>org.apache.curator</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>curator-recipes</artifactId>
-      <groupId>org.apache.curator</groupId>
-    </dependency>
-
-    <dependency>
-      <artifactId>curator-x-discovery</artifactId>
       <groupId>org.apache.curator</groupId>
     </dependency>
 
@@ -273,11 +263,6 @@
       <artifactId>sqltool</artifactId>
       <groupId>org.hsqldb</groupId>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.curator</groupId>
-      <artifactId>curator-client</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

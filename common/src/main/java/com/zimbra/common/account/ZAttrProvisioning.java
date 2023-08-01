@@ -3459,8 +3459,10 @@ public class ZAttrProvisioning {
     public static final String A_zimbraAddressListLdapFilter = "zimbraAddressListLdapFilter";
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * @since ZCS 6.0.9
      */
@@ -18113,8 +18115,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraZimletVersion = "zimbraZimletVersion";
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @since ZCS 8.5.0
      */
