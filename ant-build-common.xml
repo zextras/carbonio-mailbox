@@ -2,7 +2,7 @@
 <project xmlns:antcontrib="antlib:net.sf.antcontrib" name="build-common">
   <!-- Ignore the classpath from the shell running ant.  This avoids dependency
       on the user's environment and suppresses the warning about includeAntRuntime. -->
-  <dirname file="${ant.file.build-common}" property="zm-mailbox.basedir"/>
+  <dirname file="${ant.file.build-common}" property="mailbox.basedir"/>
   <property name="build.sysclasspath" value="ignore"/>
   <!-- Java -->
   <property name="javac.target" value="11"/>
@@ -30,30 +30,30 @@
   <property location="${zimbra.home.dir}/lib/ext-common" name="ext-common.jars.dir"/>
   <property location="${zimbra.home.dir}/jars-src" name="common.sourcejars.dir"/>
   <!-- ZimbraCommon -->
-  <property location="${zm-mailbox.basedir}/common" name="common.dir"/>
+  <property location="${mailbox.basedir}/common" name="common.dir"/>
   <property location="${common.dir}/src/main/java" name="common.src.java.dir"/>
   <property location="${common.dir}/target/classes" name="common.classes.dir"/>
   <property location="${common.dir}/target/zimbracommon.jar" name="common.jarfile"/>
   <property location="../jars-internal/jars" name="common.internal.jars.dir"/>
   <!-- ZimbraNative -->
-  <property location="${zm-mailbox.basedir}/native" name="native.dir"/>
+  <property location="${mailbox.basedir}/native" name="native.dir"/>
   <property location="${native.dir}/target/classes" name="native.classes.dir"/>
   <!-- ZimbraServer -->
-  <property location="${zm-mailbox.basedir}/store" name="server.dir"/>
+  <property location="${mailbox.basedir}/store" name="server.dir"/>
   <property location="${server.dir}/target/classes" name="server.classes.dir"/>
   <property location="${server.dir}/target/test-classes" name="server.test.classes.dir"/>
   <property location="${server.dir}/target/zimbrastore.jar" name="server.jarfile"/>
   <property location="${zimbra.home.dir}/jars" name="server.jars.dir"/>
   <property location="${server.dir}/conf" name="server.conf.dir"/>
   <!-- ZimbraSoap -->
-  <property location="${zm-mailbox.basedir}/soap" name="soap.dir"/>
+  <property location="${mailbox.basedir}/soap" name="soap.dir"/>
   <property location="${soap.dir}/target/classes" name="soap.classes.dir"/>
   <property location="${soap.dir}/target/zimbrasoap.jar" name="soap.jarfile"/>
   <!-- ZimbraClient -->
-  <property location="${zm-mailbox.basedir}/client" name="client.dir"/>
+  <property location="${mailbox.basedir}/client" name="client.dir"/>
   <property location="${client.dir}/target/classes" name="client.classes.dir"/>
   <property location="${client.dir}/target/zimbraclient.jar" name="client.jarfile"/>
-  <property location="${zm-mailbox.basedir}/store-conf/conf/msgs" name="msgs.dir"/>
+  <property location="${mailbox.basedir}/store-conf/conf/msgs" name="msgs.dir"/>
 
 
   <target name="require-version" depends="carbonio-version" >
