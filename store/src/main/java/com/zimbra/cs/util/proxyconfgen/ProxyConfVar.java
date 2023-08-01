@@ -89,7 +89,7 @@ class ProxyConfVar {
       throw new ProxyConfException(
           "the custom update of ProxyConfVar with key "
               + mKeyword
-              + " has to be implementated by override");
+              + " has to be implemented by override");
     }
   }
 
