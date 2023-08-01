@@ -911,6 +911,8 @@
     <modifier>-SNAPSHOT</modifier>
     <revision>4.7.0${modifier}</revision>
     <mockserver.version>5.13.0</mockserver.version>
+    <!-- Skip Dependency check by default -->
+    <dependency-check.skip>true</dependency-check.skip>
   </properties>
   <version>${revision}</version>
   <profiles>

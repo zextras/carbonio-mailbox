@@ -270,15 +270,8 @@ public class Mailbox implements MailboxStore {
   public static final int ID_FOLDER_CALENDAR = FolderConstants.ID_FOLDER_CALENDAR; // 10;
   public static final int ID_FOLDER_ROOT = FolderConstants.ID_FOLDER_ROOT; // 11;
 
-  @Deprecated
-  // no longer created in mailboxes since Helix (bug 39647).  old mboxes may still contain a system
-  // folder with id 12
-  public static final int ID_FOLDER_NOTEBOOK = FolderConstants.ID_FOLDER_NOTEBOOK; // 12;
-
   public static final int ID_FOLDER_AUTO_CONTACTS = FolderConstants.ID_FOLDER_AUTO_CONTACTS; // 13;
   public static final int ID_FOLDER_IM_LOGS = FolderConstants.ID_FOLDER_IM_LOGS; // 14;
-  public static final int ID_FOLDER_TASKS = FolderConstants.ID_FOLDER_TASKS; // 15;
-  public static final int ID_FOLDER_COMMENTS = FolderConstants.ID_FOLDER_COMMENTS; // 17;
   // ID_FOLDER_PROFILE Was used for folder related to ProfileServlet which was used in pre-release
   // Iron Maiden only.
   // Old mailboxes may still contain a system folder with id 18
@@ -2301,19 +2294,6 @@ public class Mailbox implements MailboxStore {
           "Calendar",
           system,
           MailItem.Type.APPOINTMENT,
-          Flag.BITMASK_CHECKED,
-          MailItem.DEFAULT_COLOR_RGB,
-          null,
-          null,
-          null);
-      Folder.create(
-          ID_FOLDER_TASKS,
-          UUIDUtil.generateUUID(),
-          this,
-          userRoot,
-          "Tasks",
-          system,
-          MailItem.Type.TASK,
           Flag.BITMASK_CHECKED,
           MailItem.DEFAULT_COLOR_RGB,
           null,
@@ -4722,7 +4702,7 @@ public class Mailbox implements MailboxStore {
 
   public static boolean isCalendarFolder(Folder f) {
     MailItem.Type view = f.getDefaultView();
-    return (view == MailItem.Type.APPOINTMENT || view == MailItem.Type.TASK);
+    return (view == MailItem.Type.APPOINTMENT);
   }
 
   public List<Mountpoint> getCalendarMountpoints(OperationContext octxt, SortBy sort)
@@ -4960,7 +4940,7 @@ public class Mailbox implements MailboxStore {
 
   private void checkCalendarType(MailItem item) throws ServiceException {
     MailItem.Type type = item.getType();
-    if (type != MailItem.Type.APPOINTMENT && type != MailItem.Type.TASK) {
+    if (type != MailItem.Type.APPOINTMENT) {
       throw MailServiceException.NO_SUCH_CALITEM(item.getId());
     }
   }
@@ -5014,18 +4994,6 @@ public class Mailbox implements MailboxStore {
   public List<MailItem> getAppointmentList(OperationContext octxt, int folderId)
       throws ServiceException {
     return getItemList(octxt, MailItem.Type.APPOINTMENT, folderId);
-  }
-
-  public Task getTaskById(OperationContext octxt, int id) throws ServiceException {
-    return (Task) getItemById(octxt, id, MailItem.Type.TASK);
-  }
-
-  Task getTaskById(int id) throws ServiceException {
-    return (Task) getItemById(id, MailItem.Type.TASK);
-  }
-
-  public List<MailItem> getTaskList(OperationContext octxt, int folderId) throws ServiceException {
-    return getItemList(octxt, MailItem.Type.TASK, folderId);
   }
 
   /**
@@ -5086,8 +5054,7 @@ public class Mailbox implements MailboxStore {
    * <tt>Spam</tt> or <tt>Trash</tt> are returned.
    *
    * @param octxt The {@link OperationContext}.
-   * @param type If MailItem.TYPE_APPOINTMENT, return only appointments. If MailItem.TYPE_TASK,
-   *     return only tasks. If MailItem.TYPE_UNKNOWN, return both.
+   * @param type If MailItem.TYPE_APPOINTMENT or MailItem.TYPE_UNKNOWN return only appointments.
    * @param start The start time of the range, in milliseconds. <tt>-1</tt> means to leave the start
    *     time unconstrained.
    * @param end The end time of the range, in milliseconds. <tt>-1</tt> means to leave the end time
@@ -5858,7 +5825,6 @@ public class Mailbox implements MailboxStore {
     ZimbraLog.calendar.info("Started: timezone fixup in calendar of mailbox " + getId());
     List<List<MailItem>> lists = new ArrayList<List<MailItem>>(2);
     lists.add(getItemList(octxt, MailItem.Type.APPOINTMENT));
-    lists.add(getItemList(octxt, MailItem.Type.TASK));
     for (List<MailItem> items : lists) {
       for (Iterator<MailItem> iter = items.iterator(); iter.hasNext(); ) {
         Object obj = iter.next();
@@ -5947,7 +5913,6 @@ public class Mailbox implements MailboxStore {
     @SuppressWarnings("unchecked")
     List<MailItem>[] lists = new List[2];
     lists[0] = getItemList(octxt, MailItem.Type.APPOINTMENT);
-    lists[1] = getItemList(octxt, MailItem.Type.TASK);
     for (List<MailItem> items : lists) {
       for (Iterator<MailItem> iter = items.iterator(); iter.hasNext(); ) {
         Object obj = iter.next();
@@ -6003,7 +5968,6 @@ public class Mailbox implements MailboxStore {
     @SuppressWarnings("unchecked")
     List<MailItem>[] lists = new List[2];
     lists[0] = getItemList(octxt, MailItem.Type.APPOINTMENT);
-    lists[1] = getItemList(octxt, MailItem.Type.TASK);
     for (List<MailItem> items : lists) {
       for (Iterator<MailItem> iter = items.iterator(); iter.hasNext(); ) {
         Object obj = iter.next();
@@ -9377,9 +9341,7 @@ public class Mailbox implements MailboxStore {
     // If syncing a folder with calendar items, remember the current items.  After applying the new
     // appointments/tasks, we need to remove ones that were not updated because they are apparently
     // deleted from the source feed.
-    boolean isCalendar =
-        folder.getDefaultView() == MailItem.Type.APPOINTMENT
-            || folder.getDefaultView() == MailItem.Type.TASK;
+    boolean isCalendar = folder.getDefaultView() == MailItem.Type.APPOINTMENT;
     Set<Integer> toRemove = new HashSet<Integer>();
     if (subscription && isCalendar) {
       toRemove.addAll(listItemIds(octxt, Type.UNKNOWN, folder.getId()));

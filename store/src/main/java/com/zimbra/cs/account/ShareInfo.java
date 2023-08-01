@@ -740,8 +740,7 @@ public class ShareInfo {
           sid.getOwnerNotifName());
     }
 
-    public static String genXmlPart(
-        ShareInfoData sid, StringBuilder sb, Action action)
+    public static String genXmlPart(ShareInfoData sid, StringBuilder sb, Action action)
         throws ServiceException {
       if (sb == null) {
         sb = new StringBuilder();
@@ -834,9 +833,6 @@ public class ShareInfo {
         case APPOINTMENT:
           folderView = L10nUtil.getMessage(MsgKey.calendar, locale);
           break;
-        case TASK:
-          folderView = L10nUtil.getMessage(MsgKey.task, locale);
-          break;
         case CONTACT:
           folderView = L10nUtil.getMessage(MsgKey.addressBook, locale);
           break;
@@ -906,7 +902,7 @@ public class ShareInfo {
 
         if (idx == null) {
           for (ShareInfoData sid : mShares) {
-            genXmlPart(sid, sb , null);
+            genXmlPart(sid, sb, null);
           }
         } else {
           genXmlPart(mShares.get(idx), sb, null);

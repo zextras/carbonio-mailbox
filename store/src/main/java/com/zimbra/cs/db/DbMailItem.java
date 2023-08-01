@@ -2515,8 +2515,7 @@ public class DbMailItem {
   private static final String MESSAGE_TYPES =
       "(" + MailItem.Type.MESSAGE.toByte() + ',' + MailItem.Type.CHAT.toByte() + ')';
 
-  private static final String CALENDAR_TYPES =
-      "(" + MailItem.Type.APPOINTMENT.toByte() + ',' + MailItem.Type.TASK.toByte() + ')';
+  private static final String CALENDAR_TYPES = "(" + MailItem.Type.APPOINTMENT.toByte() + ')';
 
   private static final String DUMPSTER_TYPES =
       "("
@@ -2525,8 +2524,6 @@ public class DbMailItem {
           + MailItem.Type.CONTACT.toByte()
           + ','
           + MailItem.Type.APPOINTMENT.toByte()
-          + ','
-          + MailItem.Type.TASK.toByte()
           + ','
           + MailItem.Type.CHAT.toByte()
           + ')';

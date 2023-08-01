@@ -50,12 +50,9 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   public static final String ID_CALENDAR =
       Integer.toString(FolderConstants.ID_FOLDER_CALENDAR); // "10"
   public static final String ID_ROOT = Integer.toString(FolderConstants.ID_FOLDER_ROOT); // "11"
-  public static final String ID_NOTEBOOK =
-      Integer.toString(FolderConstants.ID_FOLDER_NOTEBOOK); // "12"
   public static final String ID_AUTO_CONTACTS =
       Integer.toString(FolderConstants.ID_FOLDER_AUTO_CONTACTS); // "13"
   public static final String ID_CHATS = Integer.toString(FolderConstants.ID_FOLDER_IM_LOGS); // "14"
-  public static final String ID_TASKS = Integer.toString(FolderConstants.ID_FOLDER_TASKS); // "15"
 
   public static final String ID_FIRST_USER_ID = "256";
   public static final double BASE64_TO_NORMAL_RATIO = 1.34;
@@ -852,6 +849,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   public String getRgb() {
     return mRgb;
   }
+
   /**
    * remote URL (RSS, iCal, etc) this folder syncs to
    *
