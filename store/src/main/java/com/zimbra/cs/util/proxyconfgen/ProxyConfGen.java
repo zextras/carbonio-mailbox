@@ -724,44 +724,36 @@ public class ProxyConfGen {
     // Add domain custom login and logout variables for webUi and AdminUi
     mDomainConfVars.put(
         "web.carbonio.webui.login.url.vhost",
-        new WebCustomLoginLogoutUrlVar(
+        new WebCustomLoginUrlVar(
             "web.carbonio.webui.login.url.vhost",
             ZAttrProvisioning.A_carbonioWebUILoginURL,
             DEFAULT_WEB_LOGIN_PATH,
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.CUSTOM,
             "Login URL for Carbonio web client to send the user to upon failed login, auth expired,"
                 + " or no/invalid auth",
             item.webUiLoginUrl));
     mDomainConfVars.put(
-        "web.carbonio.webui.logout.url.vhost",
-        new WebCustomLoginLogoutUrlVar(
-            "web.carbonio.webui.logout.url.vhost",
+        "web.carbonio.webui.logout.redirect.vhost",
+        new WebCustomLogoutRedirectVar(
+            "web.carbonio.webui.logout.redirect.vhost",
             ZAttrProvisioning.A_carbonioWebUILogoutURL,
             DEFAULT_WEB_LOGIN_PATH,
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.CUSTOM,
             "Logout URL for Carbonio web client to send the user to upon explicit logging out",
             item.webUiLogoutUrl));
     mDomainConfVars.put(
         "web.carbonio.admin.login.url.vhost",
-        new WebCustomLoginLogoutUrlVar(
+        new WebCustomLoginUrlVar(
             "web.carbonio.admin.login.url.vhost",
             ZAttrProvisioning.A_carbonioAdminUILoginURL,
             DEFAULT_WEB_LOGIN_PATH,
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.CUSTOM,
             "Login URL for Carbonio Admin web client to send the user to upon failed login, auth"
                 + " expired, or no/invalid auth",
             item.adminUiLoginUrl));
     mDomainConfVars.put(
-        "web.carbonio.admin.logout.url.vhost",
-        new WebCustomLoginLogoutUrlVar(
-            "web.carbonio.admin.logout.url.vhost",
+        "web.carbonio.admin.logout.redirect.vhost",
+        new WebCustomLogoutRedirectVar(
+            "web.carbonio.admin.logout.redirect.vhost",
             ZAttrProvisioning.A_carbonioAdminUILogoutURL,
             DEFAULT_WEB_LOGIN_PATH,
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.CUSTOM,
             "Logout URL for Carbonio Admin web client to send the user to upon explicit logging"
                 + " out",
             item.adminUiLogoutUrl));
@@ -2063,14 +2055,13 @@ public class ProxyConfGen {
             "Login URL for Carbonio web client to send the user to upon failed login, auth expired,"
                 + " or no/invalid auth"));
     mConfVars.put(
-        "web.carbonio.webui.logout.url.default",
-        new ProxyConfVar(
-            "web.carbonio.webui.logout.url.default",
+        "web.carbonio.webui.logout.redirect.default",
+        new WebCustomLogoutRedirectVar(
+            "web.carbonio.webui.logout.redirect.default",
             ZAttrProvisioning.A_carbonioWebUILogoutURL,
             DEFAULT_WEB_LOGIN_PATH,
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.CONFIG,
-            "Logout URL for Carbonio web client to send the user to upon explicit logging out"));
+            "Logout URL for Carbonio web client to send the user to upon explicit logging out",
+            configSource.getAttr(ZAttrProvisioning.A_carbonioWebUILogoutURL, "")));
     mConfVars.put(
         "web.carbonio.admin.login.url.default",
         new ProxyConfVar(
@@ -2082,15 +2073,14 @@ public class ProxyConfGen {
             "Login URL for Carbonio Admin web client to send the user to upon failed login, auth"
                 + " expired, or no/invalid auth"));
     mConfVars.put(
-        "web.carbonio.admin.logout.url.default",
-        new ProxyConfVar(
-            "web.carbonio.admin.logout.url.default",
+        "web.carbonio.admin.logout.redirect.default",
+        new WebCustomLogoutRedirectVar(
+            "web.carbonio.admin.logout.redirect.default",
             ZAttrProvisioning.A_carbonioAdminUILogoutURL,
             DEFAULT_WEB_LOGIN_PATH,
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.CONFIG,
             "Logout URL for Carbonio Admin web client to send the user to upon explicit logging"
-                + " out"));
+                + " out",
+            configSource.getAttr(ZAttrProvisioning.A_carbonioAdminUILogoutURL, "")));
   }
 
   /* update the default variable map from the active configuration */
