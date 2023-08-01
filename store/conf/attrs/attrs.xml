@@ -10084,19 +10084,19 @@ TODO: delete them permanently from here
   </desc>
 </attr>
 
-<attr id="3134" name="carbonioWebUILoginURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.9.0">
+<attr id="3134" name="carbonioWebUILoginURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.9.0">
   <desc>Login URL for Carbonio web client to send the user to upon failed login, auth expired, or no/invalid auth</desc>
 </attr>
 
-<attr id="3135" name="carbonioWebUILogoutURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.9.0">
+<attr id="3135" name="carbonioWebUILogoutURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.9.0">
   <desc>Logout URL for Carbonio web client to send the user to upon explicit logging out</desc>
 </attr>
 
-<attr id="3136" name="carbonioAdminUILoginURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.9.0">
+<attr id="3136" name="carbonioAdminUILoginURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.9.0">
   <desc>Login URL for Carbonio Admin web client to send the user to upon failed login, auth expired, or no/invalid auth</desc>
 </attr>
 
-<attr id="3137" name="carbonioAdminUILogoutURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.9.0">
+<attr id="3137" name="carbonioAdminUILogoutURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.9.0">
   <desc>Logout URL for Carbonio Admin web client to send the user to upon explicit logging out</desc>
 </attr>
 </attrs>
