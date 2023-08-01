@@ -7322,7 +7322,8 @@ TODO: delete them permanently from here
   <deprecateDesc>dropping always on cluster feature in whole</deprecateDesc>
 </attr>
 
-<attr id="1447" name="zimbraZookeeperClientServerList" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
+<attr id="1447" name="zimbraZookeeperClientServerList" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0" deprecatedSince="23.9.0">
+  <deprecateDesc>Not supported</deprecateDesc>
   <desc>list of host:port for zookeeper servers; set to empty value to disable the use of zookeeper</desc>
 </attr>
 

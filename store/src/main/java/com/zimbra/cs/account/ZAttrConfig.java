@@ -78907,8 +78907,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @return zimbraZookeeperClientServerList, or empty array if unset
      *
@@ -78920,8 +78921,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -78936,8 +78938,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList new value
      * @param attrs existing map to populate, or null to create a new map
@@ -78953,8 +78956,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -78969,8 +78973,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -78986,8 +78991,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -79002,8 +79008,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -79019,8 +79026,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -79034,8 +79042,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
