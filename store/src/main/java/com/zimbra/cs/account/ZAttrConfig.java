@@ -3781,8 +3781,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3796,8 +3798,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3811,8 +3815,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3829,8 +3835,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3848,8 +3856,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3866,8 +3876,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3885,8 +3897,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3902,8 +3916,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
