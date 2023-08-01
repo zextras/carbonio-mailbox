@@ -1,6 +1,8 @@
 package com.zimbra.cs.util.proxyconfgen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
@@ -31,10 +33,11 @@ class AddHeadersVarTest {
 
   @Test
   void testUpdateCSPHeader() throws ServiceException, ProxyConfException {
+    // Sample input data
     String key = "web.add.headers.vhost";
-    ArrayList<String> rhdr = new ArrayList<>();
-    rhdr.add(
-        "Content-Security-Policy: default-src 'self'; connect-src 'self' *.blahblah.tools;"
+    ArrayList<String> responseHeaders = new ArrayList<>();
+    responseHeaders.add(
+        "Content-Security-Policy: default-src 'self'; connect-src 'self' *.test.tools;"
             + " script-src 'self';");
     String description = "add_header directive for vhost web proxy";
 
@@ -46,14 +49,14 @@ class AddHeadersVarTest {
 
     // Create an instance of AddHeadersVar
     AddHeadersVar addHeadersVar =
-        new AddHeadersVar(key, rhdr, description, customLogInLogoutUrlValueMap);
+        new AddHeadersVar(key, responseHeaders, description, customLogInLogoutUrlValueMap);
 
     // Perform the update
     addHeadersVar.update();
 
     // test if the connect-src directive of CSP header was updated as expected
     String expectedCspValue =
-        "add_header Content-Security-Policy default-src 'self'; connect-src 'self' *.blahblah.tools"
+        "add_header Content-Security-Policy default-src 'self'; connect-src 'self' *.test.tools"
             + " https://auth.test.com https://auth.test.com/logout; script-src 'self';;";
     assertEquals(expectedCspValue, addHeadersVar.confValue());
   }
@@ -94,6 +97,41 @@ class AddHeadersVarTest {
   }
 
   @Test
+  void testModifyCspHeaderValue2() throws ServiceException, ProxyConfException {
+    // Sample input data
+    String key = "web.add.headers.default";
+    ArrayList<String> responseHeaders = new ArrayList<>();
+    responseHeaders.add(
+        "Content-Security-Policy: default-src 'self'; connect-src 'self' *.test.tools;"
+            + " script-src 'self';");
+    String description = "add_header directive for vhost web proxy";
+
+    Map<String, String> customLogInLogoutUrlValueMap = new HashMap<>();
+    customLogInLogoutUrlValueMap.put(
+        ZAttrProvisioning.A_carbonioWebUILoginURL, "https://auth.test.com");
+    customLogInLogoutUrlValueMap.put(
+        ZAttrProvisioning.A_carbonioWebUILogoutURL, "https://auth.test.com/logout");
+    customLogInLogoutUrlValueMap.put(
+        ZAttrProvisioning.A_carbonioAdminUILoginURL, "https://admin-auth.test.com");
+    customLogInLogoutUrlValueMap.put(
+        ZAttrProvisioning.A_carbonioAdminUILogoutURL, "https://admin-auth.test.com/logout");
+
+    // Create an instance of AddHeadersVar
+    AddHeadersVar addHeadersVar =
+        new AddHeadersVar(key, responseHeaders, description, customLogInLogoutUrlValueMap);
+
+    // Perform the update
+    addHeadersVar.update();
+
+    // test if the connect-src directive of CSP header was updated as expected
+    String expectedCspValue =
+        "add_header Content-Security-Policy default-src 'self'; connect-src 'self'"
+            + " *.test.tools https://auth.test.com https://admin-auth.test.com/logout"
+            + " https://auth.test.com/logout https://admin-auth.test.com; script-src 'self';;";
+    assertEquals(expectedCspValue, addHeadersVar.confValue());
+  }
+
+  @Test
   void testExtractConnectSrcDirective() {
     // Sample input data
     String cspHeader1 = "default-src 'self'; script-src 'self';";
@@ -109,5 +147,29 @@ class AddHeadersVarTest {
     assertEquals("", connectSrcDirective1); // No connect-src directive in the header
     assertEquals(
         "connect-src 'self' https://test.com/login https://test.com/logout", connectSrcDirective2);
+  }
+
+  @Test
+  void testValidSrcDirectiveUrl() {
+    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com"));
+    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("http://subdomain.test.com"));
+    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://sub.domain.test.com:8080"));
+    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://*.test.com"));
+    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://*.test.com/*"));
+    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://test.com/*"));
+    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://test.com:8080/*"));
+    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://test.com/path?param=value"));
+    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com:99999"));
+  }
+
+  @Test
+  void testInvalidSrcDirectiveUrl() {
+    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("invalid_url"));
+    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("http:/test.com"));
+    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("https:/test.com"));
+    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com,https://test.com"));
+    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com https://test.com"));
+    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com;https://test.com"));
+    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com:abc"));
   }
 }
