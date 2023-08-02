@@ -23,7 +23,7 @@ class PreAuthParamsTest {
 
   @Test
   void testGetPreAuthParams() {
-    Set<String> preAuthParams = PreAuthParams.getPreAuthParams();
+    final Set<String> preAuthParams = PreAuthParams.getPreAuthParams();
     assertTrue(preAuthParams.contains("preauth"));
     assertTrue(preAuthParams.contains("authtoken"));
     assertTrue(preAuthParams.contains("account"));

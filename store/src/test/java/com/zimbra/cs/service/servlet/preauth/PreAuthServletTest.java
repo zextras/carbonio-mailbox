@@ -25,7 +25,7 @@ import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,25 +44,35 @@ class PreAuthServletTest {
 
   @InjectMocks private PreAuthServlet preAuthServlet;
 
-  @AfterAll
-  public static void tearDown() throws Exception {
-    MailboxTestUtil.clearData();
-  }
+  private AutoCloseable closeable;
 
   @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-    Provisioning prov = Provisioning.getInstance();
+  static void init() throws Exception {
 
-    Map<String, Object> domainAttrs = Maps.newHashMap();
-    String preAuthKey = PreAuthKey.generateRandomPreAuthKey();
+    MailboxTestUtil.initServer();
+
+    final Provisioning prov = Provisioning.getInstance();
+
+    final Map<String, Object> domainAttrs = Maps.newHashMap();
+    final String preAuthKey = PreAuthKey.generateRandomPreAuthKey();
 
     domainAttrs.put(Provisioning.A_zimbraPreAuthKey, preAuthKey);
     prov.createDomain("test.com", domainAttrs);
 
-    Map<String, Object> attrs = Maps.newHashMap();
+    final Map<String, Object> attrs = Maps.newHashMap();
     attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
     prov.createAccount("one@test.com", "secret", attrs);
+  }
+
+  @BeforeEach
+  public void setUp() {
+    closeable = MockitoAnnotations.openMocks(this);
+  }
+
+  @AfterEach
+  public void tearDown() throws Exception {
+    closeable.close();
+    MailboxTestUtil.clearData();
   }
 
   @Test
@@ -144,14 +154,14 @@ class PreAuthServletTest {
 
   @Test
   void testSetCookieAndRedirect() throws IOException, ServiceException {
-    Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
-    long expires = 1690231807995L;
-    AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
+    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
+    final long expires = 1690231807995L;
+    final AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
 
     // Stub mocks
     when(requestMock.getScheme()).thenReturn("https");
-    when(Utils.getOptionalParam(requestMock, "redirectURL", null))
-        .thenReturn("https://test.com/carbonio"); // external redirect url are sanitized
+    when(requestMock.getParameter(PreAuthParams.PARAM_REDIRECT_URL.getParamName()))
+        .thenReturn("https://test.com/carbonio");
 
     // Test: verify redirects to correct path
     preAuthServlet.setCookieAndRedirect(requestMock, responseMock, authToken);
@@ -160,14 +170,14 @@ class PreAuthServletTest {
 
   @Test
   void testSetCookieAndRedirectWhenNullRedirectUrl() throws IOException, ServiceException {
-    Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
-    long expires = 1690231807995L;
-    AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
+    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
+    final long expires = 1690231807995L;
+    final AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
 
     // Stub mocks
     when(requestMock.getScheme()).thenReturn("https");
 
-    Map<String, String[]> parameterMap = new HashMap<>();
+    final Map<String, String[]> parameterMap = new HashMap<>();
     parameterMap.put("preauth", new String[] {"454ff228621d67771377de58b18035e03f2be0c9"});
     parameterMap.put("isredirect", new String[] {"1"});
     when(requestMock.getParameterMap()).thenReturn(parameterMap);
@@ -190,16 +200,11 @@ class PreAuthServletTest {
                   };
                 });
     // set redirect URL to be null
-    when(Utils.getOptionalParam(requestMock, "redirectURL", null)).thenReturn(null);
+    when(Utils.getOptionalParam(requestMock, PreAuthParams.PARAM_REDIRECT_URL.getParamName(), null))
+        .thenReturn(null);
 
     // Test: verify redirects to correct path
     preAuthServlet.setCookieAndRedirect(requestMock, responseMock, authToken);
     verify(responseMock).sendRedirect("/");
-  }
-
-  @BeforeEach
-  void setUp() throws Exception {
-    MockitoAnnotations.openMocks(this);
-    MailboxTestUtil.clearData();
   }
 }

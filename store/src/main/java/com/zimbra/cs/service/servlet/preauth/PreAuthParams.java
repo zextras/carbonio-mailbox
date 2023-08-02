@@ -1,7 +1,5 @@
 package com.zimbra.cs.service.servlet.preauth;
 
-import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -22,13 +20,17 @@ enum PreAuthParams {
   PARAM_TIMESTAMP("timestamp"),
   PARAM_EXPIRES("expires");
 
-  private static final HashSet<String> PRE_AUTH_PARAMS = new HashSet<>();
-
-  static {
-    for (PreAuthParams param : EnumSet.allOf(PreAuthParams.class)) {
-      PRE_AUTH_PARAMS.add(param.getParamName());
-    }
-  }
+  private static final Set<String> PRE_AUTH_PARAMS =
+      Set.of(
+          PARAM_PRE_AUTH.getParamName(),
+          PARAM_AUTHTOKEN.getParamName(),
+          PARAM_ACCOUNT.getParamName(),
+          PARAM_ADMIN.getParamName(),
+          PARAM_IS_REDIRECT.getParamName(),
+          PARAM_BY.getParamName(),
+          PARAM_REDIRECT_URL.getParamName(),
+          PARAM_TIMESTAMP.getParamName(),
+          PARAM_EXPIRES.getParamName());
 
   private final String paramName;
 

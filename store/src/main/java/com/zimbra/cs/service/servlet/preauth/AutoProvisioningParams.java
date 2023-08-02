@@ -22,15 +22,23 @@ class AutoProvisioningParams {
   private final String preAuth;
   private final Map<String, Object> authContext;
 
-  private AutoProvisioningParams(AutoProvisioningParamsBuilder builder) {
-    this.accountIdentifier = builder.accountIdentifier;
-    this.accountBy = builder.accountBy;
-    this.provisioning = builder.provisioning;
-    this.isAdmin = builder.isAdmin;
-    this.timestamp = builder.timestamp;
-    this.expires = builder.expires;
-    this.preAuth = builder.preAuth;
-    this.authContext = builder.authContext;
+  private AutoProvisioningParams(
+      String accountIdentifier,
+      AccountBy accountBy,
+      Provisioning provisioning,
+      boolean isAdmin,
+      long timestamp,
+      long expires,
+      String preAuth,
+      Map<String, Object> authContext) {
+    this.accountIdentifier = accountIdentifier;
+    this.accountBy = accountBy;
+    this.provisioning = provisioning;
+    this.isAdmin = isAdmin;
+    this.timestamp = timestamp;
+    this.expires = expires;
+    this.preAuth = preAuth;
+    this.authContext = authContext;
   }
 
   public String getAccountIdentifier() {
@@ -65,41 +73,71 @@ class AutoProvisioningParams {
     return authContext;
   }
 
+  // Getter methods ...
+
   static class AutoProvisioningParamsBuilder {
 
-    private final String accountIdentifier;
-    private final AccountBy accountBy;
-    private final Provisioning provisioning;
-    private final boolean isAdmin;
-    private final long timestamp;
-    private final long expires;
-    private final String preAuth;
+    private String accountIdentifier;
+    private AccountBy accountBy;
+    private Provisioning provisioning;
+    private boolean isAdmin;
+    private long timestamp;
+    private long expires;
+    private String preAuth;
     private Map<String, Object> authContext;
 
-    AutoProvisioningParamsBuilder(
-        String accountIdentifier,
-        AccountBy accountBy,
-        Provisioning provisioning,
-        boolean isAdmin,
-        long timestamp,
-        long expires,
-        String preAuth) {
+    AutoProvisioningParamsBuilder() {}
+
+    AutoProvisioningParamsBuilder withAccountIdentifier(String accountIdentifier) {
       this.accountIdentifier = accountIdentifier;
-      this.accountBy = accountBy;
-      this.provisioning = provisioning;
-      this.isAdmin = isAdmin;
-      this.timestamp = timestamp;
-      this.expires = expires;
-      this.preAuth = preAuth;
+      return this;
     }
 
-    public AutoProvisioningParamsBuilder authContext(Map<String, Object> authContext) {
+    AutoProvisioningParamsBuilder withAccountBy(AccountBy accountBy) {
+      this.accountBy = accountBy;
+      return this;
+    }
+
+    AutoProvisioningParamsBuilder withProvisioning(Provisioning provisioning) {
+      this.provisioning = provisioning;
+      return this;
+    }
+
+    AutoProvisioningParamsBuilder withIsAdmin(boolean isAdmin) {
+      this.isAdmin = isAdmin;
+      return this;
+    }
+
+    AutoProvisioningParamsBuilder withTimestamp(Long timestamp) {
+      this.timestamp = timestamp;
+      return this;
+    }
+
+    AutoProvisioningParamsBuilder withExpires(Long expires) {
+      this.expires = expires;
+      return this;
+    }
+
+    AutoProvisioningParamsBuilder withPreAuth(String preAuth) {
+      this.preAuth = preAuth;
+      return this;
+    }
+
+    public AutoProvisioningParamsBuilder withAuthContext(Map<String, Object> authContext) {
       this.authContext = authContext;
       return this;
     }
 
     public AutoProvisioningParams build() {
-      return new AutoProvisioningParams(this);
+      return new AutoProvisioningParams(
+          accountIdentifier,
+          accountBy,
+          provisioning,
+          isAdmin,
+          timestamp,
+          expires,
+          preAuth,
+          authContext);
     }
   }
 }

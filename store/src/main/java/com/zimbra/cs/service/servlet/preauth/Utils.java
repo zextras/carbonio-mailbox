@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 /** This Utility class contains common utility methods to be used by the PreAuth service. */
@@ -43,25 +44,26 @@ class Utils {
   }
 
   /**
-   * Retrieves the value of the specified optional parameter from the given HttpServletRequest.
+   * Retrieves the value of an optional parameter from the provided {@link HttpServletRequest}. If
+   * the parameter with the given name is present in the request, its value is returned as a
+   * non-empty {@link Optional}. If the parameter is not present, the default value is returned as a
+   * non-empty {@link Optional}. If the default value is null, the method returns an empty {@link
+   * Optional}.
    *
-   * <p>If the parameter is present in the request, its value is returned. If the parameter is
-   * missing, the default value is returned (if provided). If no default value is provided and the
-   * parameter is missing, null is returned.
-   *
-   * @param req The HttpServletRequest from which to retrieve the parameter.
-   * @param paramName The name of the optional parameter to retrieve.
-   * @param def The default value to return if the parameter is missing (can be null for optional
-   *     parameters).
-   * @return The value of the optional parameter if present, or the default value if provided and
-   *     the parameter is missing.
+   * @param req The {@link HttpServletRequest} object from which to retrieve the parameter.
+   * @param paramName The name of the parameter to retrieve.
+   * @param defaultValue The default value to return if the parameter is not present. If null, an
+   *     empty {@link Optional} is returned.
+   * @return A {@link Optional} containing the value of the parameter if present, or the default
+   *     value if not present (or empty if defaultValue is null).
    */
-  static String getOptionalParam(HttpServletRequest req, String paramName, String def) {
-    String param = req.getParameter(paramName);
+  static Optional<String> getOptionalParam(
+      HttpServletRequest req, String paramName, String defaultValue) {
+    final String param = req.getParameter(paramName);
     if (param == null) {
-      return def;
+      return Optional.ofNullable(defaultValue);
     } else {
-      return param;
+      return Optional.of(param);
     }
   }
 
@@ -96,19 +98,24 @@ class Utils {
 
     String sanitizedURL = redirectURL;
 
-    URL url = new URL(redirectURL);
-    String protocol = url.getProtocol();
-    String host = url.getHost();
-    int port = url.getPort();
+    final URL url = new URL(redirectURL);
+    final String protocol = url.getProtocol();
+    final String host = url.getHost();
+    final int port = url.getPort();
 
-    String protocolPattern = "^(http|https|ftp|file)://.*$";
+    final String protocolPattern = "^(http|https|ftp|file)://.*$";
     if (redirectURL.matches(protocolPattern)) {
-      String replaceProtocol = String.format("%s://", protocol);
+      final String replaceProtocol = String.format("%s://", protocol);
       sanitizedURL = sanitizedURL.replace(replaceProtocol, "");
     }
 
     if (host != null) {
-      String strToReplace = (port == -1) ? host : String.format("%s:%d", host, port);
+      String strToReplace;
+      if (port == -1) {
+        strToReplace = host;
+      } else {
+        strToReplace = String.format("%s:%d", host, port);
+      }
       sanitizedURL = sanitizedURL.replace(strToReplace, "");
     }
 
@@ -134,17 +141,18 @@ class Utils {
   static AuthToken generateAuthToken(Account acct, long expires, boolean admin)
       throws AuthProviderException {
     AuthToken authToken;
-
     if (admin) {
-      authToken =
-          (expires == 0)
-              ? AuthProvider.getAuthToken(acct, true)
-              : AuthProvider.getAuthToken(acct, expires, true, null);
+      if (expires == 0) {
+        authToken = AuthProvider.getAuthToken(acct, true);
+      } else {
+        authToken = AuthProvider.getAuthToken(acct, expires, true, null);
+      }
     } else {
-      authToken =
-          (expires == 0)
-              ? AuthProvider.getAuthToken(acct)
-              : AuthProvider.getAuthToken(acct, expires);
+      if (expires == 0) {
+        authToken = AuthProvider.getAuthToken(acct);
+      } else {
+        authToken = AuthProvider.getAuthToken(acct, expires);
+      }
     }
     return authToken;
   }

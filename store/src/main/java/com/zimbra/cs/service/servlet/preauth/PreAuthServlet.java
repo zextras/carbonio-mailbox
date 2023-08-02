@@ -35,10 +35,18 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * The PreAuthServlet class extends the {@link ZimbraServlet} and handles pre-authentication
+ * requests. This servlet is responsible for processing requests containing pre-authentication
+ * tokens and raw authentication tokens. It determines the appropriate action based on the type of
+ * the tokens and whether a referral to the correct server is needed. The class also handles
+ * auto-provisioning of accounts if required.
+ */
 public class PreAuthServlet extends ZimbraServlet {
 
   static final String DEFAULT_MAIL_URL = "/";
@@ -68,12 +76,15 @@ public class PreAuthServlet extends ZimbraServlet {
       final Server server = provisioning.getLocalServer();
       final String referMode = server.getAttr(ZAttrProvisioning.A_zimbraMailReferMode, "wronghost");
 
-      final boolean isRedirectParam =
-          Utils.getOptionalParam(req, PreAuthParams.PARAM_IS_REDIRECT.getParamName(), "0")
-              .equals("1");
+      final Optional<String> isRedirectParamOptional =
+          Utils.getOptionalParam(req, PreAuthParams.PARAM_IS_REDIRECT.getParamName(), "0");
 
-      final String rawAuthTokenParam =
+      final boolean isRedirectParam = isRedirectParamOptional.orElse("0").equals("1");
+
+      final Optional<String> rawAuthTokenParamOptional =
           Utils.getOptionalParam(req, PreAuthParams.PARAM_AUTHTOKEN.getParamName(), null);
+
+      final String rawAuthTokenParam = rawAuthTokenParamOptional.orElse(null);
 
       if (rawAuthTokenParam != null) {
         handleRawAuthTokenRequest(
@@ -120,46 +131,36 @@ public class PreAuthServlet extends ZimbraServlet {
       String referMode,
       boolean isRedirect)
       throws AuthTokenException, IOException, ServiceException, ServletException {
-    AuthToken authToken = AuthProvider.getAuthToken(rawAuthToken);
+    final AuthToken authToken = AuthProvider.getAuthToken(rawAuthToken);
     validateAuthToken(authToken);
 
     final boolean isAdmin = AuthToken.isAnyAdmin(authToken);
     final Account acct = provisioning.get(AccountBy.id, authToken.getAccountId(), authToken);
 
-    // We've got an auth token in the request,
-    // Check if we need a redirect to the correct server
     if (isAdmin || needReferral(acct, referMode, isRedirect)) {
-      // Authtoken in get request is for one time use only.
-      // Deregister and generate new one.
       AuthToken updatedAuthToken = regenerateAuthToken(authToken);
-      // No need to redirect to the correct server,
-      // just send them off to do business
       setCookieAndRedirect(req, resp, updatedAuthToken);
     } else {
-      // Redirect to the correct server with the incoming auth token
-      // we no longer send the auth token we generate over when we
-      // redirect to the correct server,
-      // but customer can be sending a token in their preauth URL,
-      // in this case, just send over the auth token as is.
       redirectToCorrectServer(req, resp, acct, null);
     }
   }
 
   /**
-   * Handles the processing of requests containing preauth token passed as request parameter.
+   * Handles the processing of requests containing pre-auth token passed as request parameter.
    *
    * <p>This method is responsible for processing the pre-authentication request. It extracts the
-   * preauth parameters from the HttpServletRequest, such as the pre-authentication token, account
+   * pre-auth parameters from the HttpServletRequest, such as the pre-authentication token, account
    * identifier, accountBy type, timestamp, expiration time, and admin flag. The method then
    * validates the account's status and admin access. If the request requires referral to the
    * correct server or if the admin flag is set, a new AuthToken may be generated based on the
    * account information, and the response will be sent as a redirect to the correct server.
-   * Otherwise, the method redirects the request to the correct server using the existing AuthToken,
-   * if available.
+   * Otherwise, the method redirects the request to the correct server using the existing {@link
+   * AuthToken}, if available.
    *
-   * @param req The HttpServletRequest object representing the incoming HTTP request.
-   * @param resp The HttpServletResponse object representing the HTTP response to be sent back.
-   * @param provisioning The Provisioning instance for retrieving account information.
+   * @param req The {@link HttpServletRequest} object representing the incoming HTTP request.
+   * @param resp The {@link HttpServletResponse} object representing the HTTP response to be sent
+   *     back.
+   * @param provisioning The {@link Provisioning} instance for retrieving account information.
    * @param referMode The mode for server referral, specifying whether redirection is needed or not.
    * @param isRedirect A boolean flag indicating if the request is a redirect request.
    * @throws IOException If an I/O error occurs while handling the request.
@@ -177,17 +178,26 @@ public class PreAuthServlet extends ZimbraServlet {
 
     final String preAuthParam =
         Utils.getRequiredParam(req, PreAuthParams.PARAM_PRE_AUTH.getParamName());
+
     final String accountParam =
         Utils.getRequiredParam(req, PreAuthParams.PARAM_ACCOUNT.getParamName());
+
+    final Optional<String> adminParamOpt =
+        Utils.getOptionalParam(req, PreAuthParams.PARAM_ADMIN.getParamName(), "0");
     final boolean adminParam =
-        Utils.getOptionalParam(req, PreAuthParams.PARAM_ADMIN.getParamName(), "0").equals("1")
-            && isAdminRequest(req);
+        adminParamOpt.map(param -> param.equals("1")).orElse(false) && isAdminRequest(req);
+
     final long timestampParam =
         Long.parseLong(Utils.getRequiredParam(req, PreAuthParams.PARAM_TIMESTAMP.getParamName()));
+
     final long expiresParam =
         Long.parseLong(Utils.getRequiredParam(req, PreAuthParams.PARAM_EXPIRES.getParamName()));
-    final String accountByParam =
+
+    final Optional<String> optionalParam =
         Utils.getOptionalParam(req, PreAuthParams.PARAM_BY.getParamName(), AccountBy.name.name());
+
+    final String accountByParam = optionalParam.orElse(AccountBy.name.name());
+
     final AccountBy accountBy = AccountBy.fromString(accountByParam);
 
     boolean accountAutoProvisioned = false;
@@ -197,15 +207,15 @@ public class PreAuthServlet extends ZimbraServlet {
     if (acct == null) {
       acct =
           createAutoProvisionedAccount(
-              new AutoProvisioningParamsBuilder(
-                      accountParam,
-                      accountBy,
-                      provisioning,
-                      adminParam,
-                      timestampParam,
-                      expiresParam,
-                      preAuthParam)
-                  .authContext(authContext)
+              new AutoProvisioningParamsBuilder()
+                  .withAccountIdentifier(accountParam)
+                  .withAccountBy(accountBy)
+                  .withProvisioning(provisioning)
+                  .withIsAdmin(adminParam)
+                  .withTimestamp(timestampParam)
+                  .withExpires(expiresParam)
+                  .withPreAuth(preAuthParam)
+                  .withAuthContext(authContext)
                   .build());
       if (acct != null) {
         accountAutoProvisioned = true;
@@ -219,8 +229,8 @@ public class PreAuthServlet extends ZimbraServlet {
       handleInactiveAccount(acct, provisioning);
     }
 
-    if (adminParam) {
-      validateAdminAccount(acct);
+    if (adminParam && !validateAdminAccount(acct)) {
+      throw ServiceException.PERM_DENIED("not an admin account");
     }
 
     if (adminParam || needReferral(acct, referMode, isRedirect)) {
@@ -235,7 +245,7 @@ public class PreAuthServlet extends ZimbraServlet {
             adminParam,
             authContext);
       }
-      AuthToken localAuthToken = Utils.generateAuthToken(acct, expiresParam, adminParam);
+      final AuthToken localAuthToken = Utils.generateAuthToken(acct, expiresParam, adminParam);
       setCookieAndRedirect(req, resp, localAuthToken);
     } else {
       redirectToCorrectServer(req, resp, acct, null);
@@ -243,26 +253,24 @@ public class PreAuthServlet extends ZimbraServlet {
   }
 
   /**
-   * Handles the validation of an admin account.
+   * Validates whether the given account is an admin account or not.
    *
-   * <p>Checks if the provided account is either a domain admin account, an admin account, or a
-   * delegated admin account. If the account does not fall under any of these admin categories, a
-   * ServiceException with a permission denied message is thrown.
+   * <p>An account is considered an admin account if it satisfies any of the following conditions: -
+   * It has the attribute "zimbraIsDomainAdminAccount" set to true. - It has the attribute
+   * "zimbraIsAdminAccount" set to true. - It has the attribute "zimbraIsDelegatedAdminAccount" set
+   * to true.
    *
-   * @param account The Account to be validated.
-   * @throws ServiceException If the account is not an admin account, indicating a permission denied
-   *     scenario.
+   * @param account The account to be validated.
+   * @return {@code true} if the account is an admin account, {@code false} otherwise.
    */
-  private void validateAdminAccount(Account account) throws ServiceException {
+  private boolean validateAdminAccount(Account account) {
     final boolean isDomainAdminAccount =
         account.getBooleanAttr(ZAttrProvisioning.A_zimbraIsDomainAdminAccount, false);
     final boolean isAdminAccount =
         account.getBooleanAttr(ZAttrProvisioning.A_zimbraIsAdminAccount, false);
     final boolean isDelegatedAdminAccount =
         account.getBooleanAttr(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, false);
-    if (!(isDomainAdminAccount || isAdminAccount || isDelegatedAdminAccount)) {
-      throw ServiceException.PERM_DENIED("not an admin account");
-    }
+    return isDomainAdminAccount || isAdminAccount || isDelegatedAdminAccount;
   }
 
   /**
@@ -367,7 +375,6 @@ public class PreAuthServlet extends ZimbraServlet {
 
     if (autoProvisioningParams.getAccountBy() == AccountBy.name
         && !autoProvisioningParams.isAdmin()) {
-      // Try auto provision the account
       final EmailAddress email =
           new EmailAddress(autoProvisioningParams.getAccountIdentifier(), false);
       final String domainName = email.getDomain();
@@ -426,14 +433,10 @@ public class PreAuthServlet extends ZimbraServlet {
    * @throws ServiceException If there is an issue with the service processing some involved calls.
    */
   boolean needReferral(Account acct, String referMode, boolean isRedirect) throws ServiceException {
-    // If this request is already a redirect, don't redirect again
-    if (isRedirect) {
-      return true;
-    }
-
-    return (!Provisioning.MAIL_REFER_MODE_ALWAYS.equals(referMode)
-        && (!Provisioning.MAIL_REFER_MODE_WRONGHOST.equals(referMode)
-            || Provisioning.onLocalServer(acct)));
+    return (isRedirect
+        || !Provisioning.MAIL_REFER_MODE_ALWAYS.equals(referMode)
+            && (!Provisioning.MAIL_REFER_MODE_WRONGHOST.equals(referMode)
+                || Provisioning.onLocalServer(acct)));
   }
 
   /**
@@ -453,8 +456,6 @@ public class PreAuthServlet extends ZimbraServlet {
       String name = names.nextElement();
 
       if (nonPreAuthParamsOnly && PreAuthParams.getPreAuthParams().contains(name)) {
-        // Skip adding this parameter as it is a pre-authentication parameter and we are filtering
-        // out non-pre-authentication parameters.
         continue;
       }
 
@@ -489,7 +490,6 @@ public class PreAuthServlet extends ZimbraServlet {
     final StringBuilder stringBuilder = new StringBuilder();
     Provisioning provisioning = Provisioning.getInstance();
 
-    // Append the base URL with the request URI and set the "isredirect" parameter
     stringBuilder.append(
         URLUtil.getServiceURL(provisioning.getServer(acct), req.getRequestURI(), true));
     stringBuilder
@@ -504,15 +504,11 @@ public class PreAuthServlet extends ZimbraServlet {
           .append(PreAuthParams.PARAM_AUTHTOKEN.getParamName())
           .append('=')
           .append(token);
-      // Send only non-preauth (customer's) params over, as preauth params would be useless with a
-      // token
+
       addQueryParams(req, stringBuilder, false, true);
     } else {
-      // Send all incoming params over
       addQueryParams(req, stringBuilder, false, false);
     }
-
-    // Perform the redirection
     resp.sendRedirect(stringBuilder.toString());
   }
 
@@ -532,8 +528,9 @@ public class PreAuthServlet extends ZimbraServlet {
     final boolean secureCookie = req.getScheme().equals("https");
     authToken.encode(resp, isAdmin, secureCookie);
 
-    String redirectURL =
+    final Optional<String> redirectURLOptional =
         Utils.getOptionalParam(req, PreAuthParams.PARAM_REDIRECT_URL.getParamName(), null);
+    String redirectURL = redirectURLOptional.orElse(null);
 
     try {
       redirectURL = Utils.convertRedirectURLRelativeToContext(redirectURL);
@@ -544,7 +541,7 @@ public class PreAuthServlet extends ZimbraServlet {
     if (redirectURL != null) {
       resp.sendRedirect(redirectURL);
     } else {
-      StringBuilder sb = new StringBuilder();
+      final StringBuilder sb = new StringBuilder();
       addQueryParams(req, sb, true, true);
       redirectToApp(Utils.getBaseUrl(req), resp, authToken, isAdmin, sb);
     }
@@ -586,7 +583,6 @@ public class PreAuthServlet extends ZimbraServlet {
       redirectUrl = server.getAttr(ZAttrProvisioning.A_zimbraMailURL, DEFAULT_MAIL_URL);
     }
 
-    // Append the query parameters if available
     if (sb.length() > 0) {
       redirectUrl += "?" + sb;
     }

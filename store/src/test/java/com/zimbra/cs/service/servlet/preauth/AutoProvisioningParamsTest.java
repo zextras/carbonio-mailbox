@@ -11,51 +11,45 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class AutoProvisioningParamsTest {
 
-  @AfterAll
-  public static void tearDown() throws Exception {
-    MailboxTestUtil.clearData();
-  }
-
   @BeforeAll
-  public static void init() throws Exception {
+  static void init() throws Exception {
     MailboxTestUtil.initServer();
   }
 
-  @BeforeEach
-  void setUp() throws Exception {
+  @AfterEach
+  public void tearDown() throws Exception {
     MailboxTestUtil.clearData();
   }
 
   @Test
   void testAutoProvisioningParams() {
-    String accountIdentifier = "one@test.com";
-    AccountBy accountBy = AccountBy.name;
+    final String accountIdentifier = "one@test.com";
+    final AccountBy accountBy = AccountBy.name;
 
-    boolean isAdmin = false;
-    long timestamp = 1627545650L;
-    long expires = 1627645650L;
-    String preAuth = "abc123";
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    Map<String, Object> authContext = Utils.createAuthContext(accountIdentifier, request);
+    final boolean isAdmin = false;
+    final long timestamp = 1627545650L;
+    final long expires = 1627645650L;
+    final String preAuth = "abc123";
+    final HttpServletRequest request = mock(HttpServletRequest.class);
+    final Map<String, Object> authContext = Utils.createAuthContext(accountIdentifier, request);
 
     // Build the AutoProvisioningParams using the builder
-    AutoProvisioningParams params =
-        new AutoProvisioningParams.AutoProvisioningParamsBuilder(
-                accountIdentifier,
-                accountBy,
-                Provisioning.getInstance(),
-                isAdmin,
-                timestamp,
-                expires,
-                preAuth)
-            .authContext(authContext)
+    final AutoProvisioningParams params =
+        new AutoProvisioningParams.AutoProvisioningParamsBuilder()
+            .withAccountIdentifier(accountIdentifier)
+            .withAccountBy(accountBy)
+            .withProvisioning(Provisioning.getInstance())
+            .withIsAdmin(isAdmin)
+            .withTimestamp(timestamp)
+            .withExpires(expires)
+            .withPreAuth(preAuth)
+            .withAuthContext(authContext)
             .build();
 
     // Verify the properties of AutoProvisioningParams
@@ -71,22 +65,22 @@ class AutoProvisioningParamsTest {
 
   @Test
   void testAutoProvisioningParamsBuilder() {
-    String accountIdentifier = "one@test.com";
-    AccountBy accountBy = AccountBy.id;
-    long timestamp = 1627545650L;
-    long expires = 1627645650L;
-    String preAuth = "xyz789";
+    final String accountIdentifier = "one@test.com";
+    final AccountBy accountBy = AccountBy.id;
+    final long timestamp = 1627545650L;
+    final long expires = 1627645650L;
+    final String preAuth = "xyz789";
 
     // Build the AutoProvisioningParams using the builder without setting authContext
-    AutoProvisioningParams params =
-        new AutoProvisioningParams.AutoProvisioningParamsBuilder(
-                accountIdentifier,
-                accountBy,
-                Provisioning.getInstance(),
-                true,
-                timestamp,
-                expires,
-                preAuth)
+    final AutoProvisioningParams params =
+        new AutoProvisioningParams.AutoProvisioningParamsBuilder()
+            .withAccountIdentifier(accountIdentifier)
+            .withAccountBy(accountBy)
+            .withProvisioning(Provisioning.getInstance())
+            .withIsAdmin(true)
+            .withTimestamp(timestamp)
+            .withExpires(expires)
+            .withPreAuth(preAuth)
             .build();
 
     // Verify the properties of AutoProvisioningParams
