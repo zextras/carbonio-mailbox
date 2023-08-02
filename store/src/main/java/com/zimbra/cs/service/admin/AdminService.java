@@ -338,12 +338,6 @@ public class AdminService implements DocumentService {
     // Skins
     dispatcher.registerHandler(AdminConstants.GET_ALL_SKINS_REQUEST, new GetAllSkins());
 
-    dispatcher.registerHandler(
-        AdminConstants.GET_ALL_ACTIVE_SERVERS_REQUEST, new GetAllActiveServers());
-    dispatcher.registerHandler(AdminConstants.SET_SERVER_OFFLINE_REQUEST, new SetServerOffline());
-    dispatcher.registerHandler(
-        AdminConstants.SET_LOCAL_SERVER_ONLINE_REQUEST, new SetLocalServerOnline());
-
     // Filter rules
     dispatcher.registerHandler(AdminConstants.GET_FILTER_RULES_REQUEST, new GetFilterRules());
     dispatcher.registerHandler(AdminConstants.MODIFY_FILTER_RULES_REQUEST, new ModifyFilterRules());

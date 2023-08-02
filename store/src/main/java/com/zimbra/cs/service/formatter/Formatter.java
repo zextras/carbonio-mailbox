@@ -44,11 +44,7 @@ import org.apache.http.HttpException;
 public abstract class Formatter {
 
   static final Set<MailItem.Type> SEARCH_FOR_EVERYTHING =
-      EnumSet.of(
-          MailItem.Type.APPOINTMENT,
-          MailItem.Type.CONTACT,
-          MailItem.Type.MESSAGE,
-          MailItem.Type.TASK);
+      EnumSet.of(MailItem.Type.APPOINTMENT, MailItem.Type.CONTACT, MailItem.Type.MESSAGE);
 
   protected static final int TIME_UNSPECIFIED = -1;
 
@@ -247,9 +243,6 @@ public abstract class Formatter {
       throws ServiceException {
     switch (folder.getDefaultView()) {
       case APPOINTMENT:
-      case TASK:
-        return context.targetMailbox.getCalendarItemsForRange(
-            context.opContext, startTime, endTime, folder.getId(), null);
       case CONTACT:
         return context.targetMailbox.getContactList(
             context.opContext, folder.getId(), SortBy.NAME_ASC);

@@ -89,8 +89,6 @@ public abstract class MailItem
      * Mailbox}.
      */
     MOUNTPOINT(13, MailItemType.MOUNTPOINT),
-    /** Item is a {@link Task} */
-    TASK(15, MailItemType.TASK),
     /** Item is a {@link Chat} */
     CHAT(16, MailItemType.CHAT);
 
@@ -1814,8 +1812,6 @@ public abstract class MailItem
         return new Contact(mbox, data, skipCache);
       case APPOINTMENT:
         return new Appointment(mbox, data, skipCache);
-      case TASK:
-        return new Task(mbox, data, skipCache);
       case MOUNTPOINT:
         return new Mountpoint(mbox, data, skipCache);
       case CHAT:
@@ -1857,8 +1853,6 @@ public abstract class MailItem
         return MailServiceException.NO_SUCH_CONTACT(id);
       case APPOINTMENT:
         return MailServiceException.NO_SUCH_APPT(id);
-      case TASK:
-        return MailServiceException.NO_SUCH_TASK(id);
       default:
         return MailServiceException.NO_SUCH_ITEM(id);
     }

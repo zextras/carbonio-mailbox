@@ -5153,13 +5153,15 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>When a virus is detected quarantine message to this account</desc>
 </attr>
 
-<attr id="1101" name="zimbraAdminAccessControlMech" type="enum" cardinality="single" value="acl,global" optionalIn="globalConfig" since="6.0.9" requiresRestart="mailbox">
+<attr id="1101" name="zimbraAdminAccessControlMech" type="enum" cardinality="single" value="acl,global" optionalIn="globalConfig" since="6.0.9" requiresRestart="mailbox"
+deprecatedSince="23.9.0">
   <globalConfigValue>acl</globalConfigValue>
   <desc>
     access control mechanism for admin access
       acl: ACL based access control (a.k.a. delegated admin).
       global: allows only global admins.
   </desc>
+  <deprecateDesc>Access control mechanism cannot be modified as in managed only with ACLs.</deprecateDesc>
 </attr>
 
 <attr id="1102" name="zimbraPrefContactsExpandAppleContactGroups" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable"  since="7.0.0" deprecatedSince="8.0.0">
@@ -7322,7 +7324,8 @@ TODO: delete them permanently from here
   <deprecateDesc>dropping always on cluster feature in whole</deprecateDesc>
 </attr>
 
-<attr id="1447" name="zimbraZookeeperClientServerList" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
+<attr id="1447" name="zimbraZookeeperClientServerList" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0" deprecatedSince="23.9.0">
+  <deprecateDesc>Not supported</deprecateDesc>
   <desc>list of host:port for zookeeper servers; set to empty value to disable the use of zookeeper</desc>
 </attr>
 
