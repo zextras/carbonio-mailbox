@@ -84,7 +84,7 @@ import org.eclipse.jetty.http.HttpStatus;
  *                                  Default value : rectangular
  *                   quality  =  lowest | low | medium | high | highest
  *                                  Default value : medium
- *             output_format  =  jpeg | png ; default inline(jpeg)
+ *             output_format  =  jpeg | png | gif; default inline(jpeg)
  *                                  Default value : jpeg
  *                      crop  =  True will crop the picture starting from the borders
  *                               This option will lose information, leaving it False will scale and have borders to fill the requested size.
@@ -114,16 +114,22 @@ public class PreviewServlet extends ZimbraServlet {
   public static final String PDF_PREVIEW_REGEX =
       SERVLET_PATH
           + "/pdf/"
-          + MESSAGE_ID_REGEXP + PART_NUMBER_REGEXP + "/?((?=(?!thumbnail))(?=([^/ ]*)))";
+          + MESSAGE_ID_REGEXP
+          + PART_NUMBER_REGEXP
+          + "/?((?=(?!thumbnail))(?=([^/ ]*)))";
   public static final String IMG_PREVIEW_REGEX =
       SERVLET_PATH
-          + "/image/" + MESSAGE_ID_REGEXP + PART_NUMBER_REGEXP
+          + "/image/"
+          + MESSAGE_ID_REGEXP
+          + PART_NUMBER_REGEXP
           + "/([0-9]*x[0-9]*)/?((?=(?!thumbnail))(?=([^/"
           + " ]*)))";
   public static final String DOC_PREVIEW_REGEX =
       SERVLET_PATH
           + "/document/"
-          + MESSAGE_ID_REGEXP + PART_NUMBER_REGEXP + "/?((?=(?!thumbnail))(?=([^/ ]*)))";
+          + MESSAGE_ID_REGEXP
+          + PART_NUMBER_REGEXP
+          + "/?((?=(?!thumbnail))(?=([^/ ]*)))";
   private static final long serialVersionUID = -4834966842520538743L;
   private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
   private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.7:20001/";
@@ -132,7 +138,7 @@ public class PreviewServlet extends ZimbraServlet {
   /**
    * removes the disposition query parameter from the url
    *
-   * @param requestUrl      the requestUrl ({@link String})
+   * @param requestUrl the requestUrl ({@link String})
    * @param dispositionType disposition type ({@link String})
    * @return Request Url for Preview ({@link String})
    */
@@ -175,7 +181,7 @@ public class PreviewServlet extends ZimbraServlet {
    *
    * @param authToken the {@link AuthToken} passed in request
    * @param messageId {@link String} the messageId that we want to get attachment from
-   * @param part      {@link String} the part number of the attachment in email
+   * @param part {@link String} the part number of the attachment in email
    * @return Try of attachment's URL {@link String} for content servlet
    */
   static String getContentServletResourceUrl(AuthToken authToken, String messageId, String part) {
@@ -197,7 +203,7 @@ public class PreviewServlet extends ZimbraServlet {
    * This method generates the final query {@link Query} from passed Optional area string and {@link
    * PreviewQueryParameters}
    *
-   * @param optArea         the optional area {@link String} parameter
+   * @param optArea the optional area {@link String} parameter
    * @param queryParameters the {@link PreviewQueryParameters} object
    * @return {@link Query}
    */
@@ -245,7 +251,7 @@ public class PreviewServlet extends ZimbraServlet {
    *
    * @param authToken the {@link AuthToken} passed in request
    * @param messageId {@link String} the messageId that we want to get attachment from
-   * @param part      {@link String} the part number of the attachment in email
+   * @param part {@link String} the part number of the attachment in email
    * @return the {@link MimePart} object
    */
   private Try<BlobResponseStore> getAttachment(AuthToken authToken, String messageId, String part) {
@@ -284,9 +290,9 @@ public class PreviewServlet extends ZimbraServlet {
   /**
    * Adds request configuration to client builder
    *
-   * @param authToken     the {@link AuthToken} passed in request
+   * @param authToken the {@link AuthToken} passed in request
    * @param clientBuilder the {@link HttpClientBuilder} object
-   * @param getRequest    the {@link HttpServletRequest} that has to be encoded
+   * @param getRequest the {@link HttpServletRequest} that has to be encoded
    * @return Try of encoded {@link CloseableHttpClient} object
    */
   private Try<CloseableHttpClient> encodeClientBuilderRequest(
@@ -458,8 +464,8 @@ public class PreviewServlet extends ZimbraServlet {
    * This method is used to map the preview service's {@link BlobResponse} to our {@link
    * BlobResponseStore} object
    *
-   * @param response        preview service's {@link BlobResponse}
-   * @param fileName        filename that we want to assign to our {@link BlobResponseStore} object
+   * @param response preview service's {@link BlobResponse}
+   * @param fileName filename that we want to assign to our {@link BlobResponseStore} object
    * @param dispositionType disposition will be: attachment or inline(default)
    * @return mapped {@link BlobResponseStore} object
    */
@@ -480,8 +486,8 @@ public class PreviewServlet extends ZimbraServlet {
    *
    * @param request the {@link HttpServletRequest} object
    * @return {@link String} complete URL (
-   * <pre> protocol + servername + port + path + query </pre>
-   * )
+   *     <pre> protocol + servername + port + path + query </pre>
+   *     )
    */
   String getUrlWithQueryParams(final HttpServletRequest request) {
     StringBuffer url = request.getRequestURL();
@@ -496,7 +502,7 @@ public class PreviewServlet extends ZimbraServlet {
    * This method is used to send success response for {@link HttpServletRequest} with the blob we
    * got from preview service
    *
-   * @param resp              the {@link HttpServletResponse} object
+   * @param resp the {@link HttpServletResponse} object
    * @param blobResponseStore the {@link BlobResponseStore} object
    */
   void respondWithSuccess(HttpServletResponse resp, BlobResponseStore blobResponseStore) {
@@ -520,9 +526,9 @@ public class PreviewServlet extends ZimbraServlet {
   /**
    * This method is used to send error response for {@link HttpServletRequest}
    *
-   * @param resp    the {@link HttpServletResponse} object
+   * @param resp the {@link HttpServletResponse} object
    * @param errCode error code for {@link HttpServletResponse}
-   * @param reason  message string for {@link HttpServletResponse}
+   * @param reason message string for {@link HttpServletResponse}
    */
   void respondWithError(HttpServletResponse resp, int errCode, String reason) {
     resp.setContentType("text/html; charset=UTF-8");
@@ -536,9 +542,9 @@ public class PreviewServlet extends ZimbraServlet {
   /**
    * This override method is to proxy 5xx error with 404
    *
-   * @param resp    the {@link HttpServletResponse} object
+   * @param resp the {@link HttpServletResponse} object
    * @param errCode error code for {@link HttpServletResponse}
-   * @param reason  message string for {@link HttpServletResponse}
+   * @param reason message string for {@link HttpServletResponse}
    * @throws IOException while sendError
    */
   void sendError(HttpServletResponse resp, int errCode, String reason) throws IOException {
@@ -571,8 +577,7 @@ public class PreviewServlet extends ZimbraServlet {
     }
 
     final Pattern requiredQueryParametersPattern =
-        Pattern.compile(
-            SERVLET_PATH + "/([a-zA-Z]+)/" + MESSAGE_ID_REGEXP + PART_NUMBER_REGEXP);
+        Pattern.compile(SERVLET_PATH + "/([a-zA-Z]+)/" + MESSAGE_ID_REGEXP + PART_NUMBER_REGEXP);
 
     final Matcher requiredQueryParametersMatcher =
         requiredQueryParametersPattern.matcher(getUrlWithQueryParams(req));
@@ -599,24 +604,24 @@ public class PreviewServlet extends ZimbraServlet {
       Try.of(() -> getAttachmentPreview(getUrlWithQueryParams(req), attachmentMimePart.get()))
           .onSuccess(previewOfAttachment -> respondWithSuccess(resp, previewOfAttachment.get()))
           .onFailure(
-              ex -> {
-                if (ex instanceof BadRequest) {
-                  respondWithError(resp, HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
-                } else if (ex instanceof ItemNotFound) {
-                  respondWithError(resp, HttpServletResponse.SC_NOT_FOUND, ex.getMessage());
-                } else if (ex instanceof ValidationError) {
-                  respondWithError(resp, HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
-                } else {
+              BadRequest.class,
+              ex -> respondWithError(resp, HttpServletResponse.SC_BAD_REQUEST, ex.getMessage()))
+          .onFailure(
+              ItemNotFound.class,
+              ex -> respondWithError(resp, HttpServletResponse.SC_NOT_FOUND, ex.getMessage()))
+          .onFailure(
+              ValidationError.class,
+              ex -> respondWithError(resp, HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage()))
+          .onFailure(
+              ex ->
                   respondWithError(
-                      resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
-                }
-              });
+                      resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage()));
     }
   }
 
   /**
-   * @param req  the {@link HttpServletRequest} object that will be used to provide req metadata in
-   *             error message
+   * @param req the {@link HttpServletRequest} object that will be used to provide req metadata in
+   *     error message
    * @param resp the {@link HttpServletResponse} to send the error response
    * @return the {@link AuthToken} AuthToken object extracted from req metadata
    */
@@ -679,8 +684,7 @@ class PreviewQueryParameters {
   }
 
   @SuppressWarnings("unused") // unused but required for testing
-  public PreviewQueryParameters() {
-  }
+  public PreviewQueryParameters() {}
 
   public Optional<String> getQuality() {
     return Optional.ofNullable(quality == null ? null : quality.name());
@@ -728,7 +732,9 @@ class PreviewQueryParameters {
     JPEG,
 
     @JsonProperty("png")
-    PNG
+    PNG,
+    @JsonProperty("gif")
+    GIF
   }
 
   enum Shape {
