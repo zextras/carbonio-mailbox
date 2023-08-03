@@ -55,7 +55,7 @@ class UtilsTest {
   }
 
   @Test
-  void testGetRequiredParam() throws ServiceException {
+  void getRequiredParam_should_returnValue_when_paramExists() throws ServiceException {
     final String paramName = "requiredParam";
     final HttpServletRequest request = createMockRequestWithParamValue(paramName, "requiredValue");
 
@@ -64,7 +64,7 @@ class UtilsTest {
   }
 
   @Test
-  void testMissingRequiredParam() {
+  void getRequiredParam_should_throwServiceException_when_paramMissing() {
     final String paramName = "requiredParam";
     final HttpServletRequest request = createMockRequestWithParamValue(paramName, null);
 
@@ -72,7 +72,7 @@ class UtilsTest {
   }
 
   @Test
-  void testGetOptionalParamWithValue() {
+  void getOptionalParam_should_returnValue_when_paramExists() {
     final String paramName = "optionalParam";
     final HttpServletRequest request = createMockRequestWithParamValue(paramName, "optionalValue");
 
@@ -84,7 +84,7 @@ class UtilsTest {
   }
 
   @Test
-  void testOptionalParamWithoutValue() {
+  void getOptionalParam_should_returnEmptyOptional_when_paramMissingAndDefaultValueNull() {
     final String paramName = "nonExistentParam";
     final HttpServletRequest request = createMockRequestWithParamValue(paramName, null);
 
@@ -94,7 +94,7 @@ class UtilsTest {
   }
 
   @Test
-  void testOptionalParamWithDefaultValue() {
+  void getOptionalParam_should_returnDefaultValue_when_paramMissingAndDefaultValueProvided() {
     final String paramName = "nonExistentParam";
     final HttpServletRequest request = createMockRequestWithParamValue(paramName, null);
 
@@ -106,7 +106,7 @@ class UtilsTest {
   }
 
   @Test
-  void testGetBaseUrl() {
+  void getBaseUrl_should_returnBaseUrl_when_validRequest() {
     // Mock HttpServletRequest
     final HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getScheme()).thenReturn("http");
@@ -119,7 +119,8 @@ class UtilsTest {
   }
 
   @Test
-  void testConvertRedirectURLRelativeToContext() throws MalformedURLException {
+  void convertRedirectURLRelativeToContext_should_returnConvertedUrl_when_validInput()
+      throws MalformedURLException {
     // Test: Valid URL with path parameter
     final String inputURL1 = "http://test.com:8080/path";
     final String expectedOutput1 = "/path";
@@ -129,18 +130,25 @@ class UtilsTest {
     final String inputURL2 = "https://sub.test.com/";
     final String expectedOutput2 = "/";
     assertEquals(expectedOutput2, Utils.convertRedirectURLRelativeToContext(inputURL2));
+  }
 
+  @Test
+  void convertRedirectURLRelativeToContext_should_throwMalformedURLException_when_invalidInput() {
     // Test: Invalid URL, should throw MalformedURLException
     final String inputURL3 = "invalid-url";
     assertThrows(
         MalformedURLException.class, () -> Utils.convertRedirectURLRelativeToContext(inputURL3));
+  }
 
+  @Test
+  void convertRedirectURLRelativeToContext_should_returnNull_when_inputIsNull()
+      throws MalformedURLException {
     // Test: Null input, should return null
     assertNull(Utils.convertRedirectURLRelativeToContext(null));
   }
 
   @Test
-  void testGenerateAuthTokenForRegularAccount() throws ServiceException {
+  void generateAuthToken_should_generateAuthTokenForRegularAccount() throws ServiceException {
     final Account account = Provisioning.getInstance().get(Key.AccountBy.name, TEST_ACCOUNT_NAME);
     final long expires = 1690231807995L;
     final AuthToken expectedToken = AuthProvider.getAuthToken(account, expires, false, null);
@@ -152,7 +160,7 @@ class UtilsTest {
   }
 
   @Test
-  void testGenerateAuthTokenForAdminAccount() throws ServiceException {
+  void generateAuthToken_should_generateAuthTokenForAdminAccount() throws ServiceException {
     final Account account =
         Provisioning.getInstance().get(Key.AccountBy.name, TEST_ADMIN_ACCOUNT_NAME);
     final long expires = 1690231807995L;
@@ -165,7 +173,7 @@ class UtilsTest {
   }
 
   @Test
-  void testCreateAuthContext() {
+  void createAuthContext_should_createValidAuthContextObject() {
     final String accountIdentifier = "one@test.com";
 
     final HttpServletRequest request = mock(HttpServletRequest.class);

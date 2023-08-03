@@ -28,7 +28,7 @@ class AutoProvisioningParamsTest {
   }
 
   @Test
-  void testAutoProvisioningParams() {
+  void autoProvisioningParams_should_setPropertiesCorrectly_when_usingBuilder() {
     final String accountIdentifier = "one@test.com";
     final AccountBy accountBy = AccountBy.name;
 
@@ -64,7 +64,7 @@ class AutoProvisioningParamsTest {
   }
 
   @Test
-  void testAutoProvisioningParamsBuilder() {
+  void autoProvisioningParamsBuilder_should_setDefaultAdminValue_when_notProvided() {
     final String accountIdentifier = "one@test.com";
     final AccountBy accountBy = AccountBy.id;
     final long timestamp = 1627545650L;

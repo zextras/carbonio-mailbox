@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class PreAuthParamsTest {
 
   @Test
-  void testGetParamName() {
+  void getParamName_should_returnCorrectParamName() {
     assertEquals("preauth", PreAuthParams.PARAM_PRE_AUTH.getParamName());
     assertEquals("authtoken", PreAuthParams.PARAM_AUTHTOKEN.getParamName());
     assertEquals("account", PreAuthParams.PARAM_ACCOUNT.getParamName());
@@ -22,7 +22,7 @@ class PreAuthParamsTest {
   }
 
   @Test
-  void testGetPreAuthParams() {
+  void getPreAuthParams_should_returnAllPreAuthParams() {
     final Set<String> preAuthParams = PreAuthParams.getPreAuthParams();
     assertTrue(preAuthParams.contains("preauth"));
     assertTrue(preAuthParams.contains("authtoken"));

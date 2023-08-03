@@ -76,18 +76,15 @@ class PreAuthServletTest {
   }
 
   @Test
-  void testDoGetWithRawAuthToken()
+  void doGet_should_handleRawAuthTokenRequest_when_validRawAuthToken()
       throws ServletException, IOException, ServiceException, AuthTokenException {
-    // Stub mocks
     when(requestMock.getParameter(PreAuthParams.PARAM_IS_REDIRECT.getParamName())).thenReturn("1");
     when(requestMock.getParameter(PreAuthParams.PARAM_AUTHTOKEN.getParamName()))
         .thenReturn("0_3eda3cae8900bb9c5fbbc4151e28d759c67e7119");
 
-    // Call doGet
     PreAuthServlet preAuthServletSpy = spy(PreAuthServlet.class);
     preAuthServletSpy.doGet(requestMock, responseMock);
 
-    // Test: verify if handleRawAuthTokenRequest is called with the correct parameters
     verify(preAuthServletSpy)
         .handleRawAuthTokenRequest(
             eq(requestMock),
@@ -99,17 +96,15 @@ class PreAuthServletTest {
   }
 
   @Test
-  void testDoGetWithPreAuth() throws ServletException, IOException, ServiceException {
-    // Stub mocks
+  void doGet_should_handlePreAuthRequest_when_validPreAuth()
+      throws ServletException, IOException, ServiceException {
     when(requestMock.getParameter(PreAuthParams.PARAM_IS_REDIRECT.getParamName())).thenReturn("1");
     when(requestMock.getParameter(PreAuthParams.PARAM_PRE_AUTH.getParamName()))
         .thenReturn("454ff228621d67771377de58b18035e03f2be0c9");
 
-    // Call doGet
     PreAuthServlet preAuthServletSpy = spy(PreAuthServlet.class);
     preAuthServletSpy.doGet(requestMock, responseMock);
 
-    // Test: verify if handlePreAuthRequest is called with the correct parameters
     verify(preAuthServletSpy)
         .handlePreAuthRequest(
             eq(requestMock),
@@ -120,15 +115,14 @@ class PreAuthServletTest {
   }
 
   @Test
-  void testRedirectToAppForAdmin() throws ServiceException, IOException {
+  void redirectToApp_should_redirectToAdminUrl_when_adminUser()
+      throws ServiceException, IOException {
     final String baseUrl = "https://test.com";
     final StringBuilder sb = new StringBuilder("param1=value1&param2=value2");
 
-    // Stub
     final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
     when(authTokenMock.getAccount()).thenReturn(account);
 
-    // Test: verify redirect to web admin UI
     preAuthServlet.redirectToApp(baseUrl, responseMock, authTokenMock, true, sb);
     verify(responseMock)
         .sendRedirect(
@@ -136,16 +130,15 @@ class PreAuthServletTest {
   }
 
   @Test
-  void testRedirectToAppForNonAdmin() throws ServiceException, IOException {
+  void redirectToApp_should_redirectToMailUrl_when_nonAdminUser()
+      throws ServiceException, IOException {
 
     final String baseUrl = "https://test.com";
     final StringBuilder sb = new StringBuilder("param1=value1&param2=value2");
 
-    // Stub
     final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
     when(authTokenMock.getAccount()).thenReturn(account);
 
-    // Test: verify redirect to web UI
     preAuthServlet.redirectToApp(baseUrl, responseMock, authTokenMock, false, sb);
     verify(responseMock)
         .sendRedirect(
@@ -153,28 +146,27 @@ class PreAuthServletTest {
   }
 
   @Test
-  void testSetCookieAndRedirect() throws IOException, ServiceException {
+  void setCookieAndRedirect_should_redirectToCorrectPath_when_validAuthToken()
+      throws IOException, ServiceException {
     final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
     final long expires = 1690231807995L;
     final AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
 
-    // Stub mocks
     when(requestMock.getScheme()).thenReturn("https");
     when(requestMock.getParameter(PreAuthParams.PARAM_REDIRECT_URL.getParamName()))
         .thenReturn("https://test.com/carbonio");
 
-    // Test: verify redirects to correct path
     preAuthServlet.setCookieAndRedirect(requestMock, responseMock, authToken);
     verify(responseMock).sendRedirect("/carbonio");
   }
 
   @Test
-  void testSetCookieAndRedirectWhenNullRedirectUrl() throws IOException, ServiceException {
+  void setCookieAndRedirect_should_redirectToRootPath_when_nullRedirectUrl()
+      throws IOException, ServiceException {
     final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
     final long expires = 1690231807995L;
     final AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
 
-    // Stub mocks
     when(requestMock.getScheme()).thenReturn("https");
 
     final Map<String, String[]> parameterMap = new HashMap<>();
@@ -199,11 +191,10 @@ class PreAuthServletTest {
                     }
                   };
                 });
-    // set redirect URL to be null
+
     when(Utils.getOptionalParam(requestMock, PreAuthParams.PARAM_REDIRECT_URL.getParamName(), null))
         .thenReturn(null);
 
-    // Test: verify redirects to correct path
     preAuthServlet.setCookieAndRedirect(requestMock, responseMock, authToken);
     verify(responseMock).sendRedirect("/");
   }
