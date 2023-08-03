@@ -16,16 +16,12 @@ class WebCustomLogoutRedirectVarTest {
   }
 
   @AfterEach
-  public void tearDown() {
-    try {
-      MailboxTestUtil.clearData();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  public void tearDown() throws Exception {
+    MailboxTestUtil.clearData();
   }
 
   @Test
-  void testCustomUrlEmpty() {
+  void constructor_should_setDefaultValue_when_customUrlEmpty() {
     String keyword = "web.custom.logout.redirect";
     String attribute = ZAttrProvisioning.A_carbonioAdminUILogoutURL;
     Object defaultValue = "/static/login/";
@@ -39,7 +35,7 @@ class WebCustomLogoutRedirectVarTest {
   }
 
   @Test
-  void testCustomUrlNotEmpty() {
+  void constructor_should_setValue_when_customUrlIsNotEmpty() {
     String keyword = "web.custom.logout.redirect";
     String attribute = ZAttrProvisioning.A_carbonioAdminUILogoutURL;
     Object defaultValue = "/static/login/";
