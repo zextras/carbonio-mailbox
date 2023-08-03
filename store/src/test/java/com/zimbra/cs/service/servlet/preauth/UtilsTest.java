@@ -138,6 +138,10 @@ class UtilsTest {
     final String inputURL3 = "invalid-url";
     assertThrows(
         MalformedURLException.class, () -> Utils.convertRedirectURLRelativeToContext(inputURL3));
+
+    final String inputURL4 = "test.com";
+    assertThrows(
+        MalformedURLException.class, () -> Utils.convertRedirectURLRelativeToContext(inputURL4));
   }
 
   @Test

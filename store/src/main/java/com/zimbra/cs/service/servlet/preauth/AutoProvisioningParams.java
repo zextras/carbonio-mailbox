@@ -73,8 +73,6 @@ class AutoProvisioningParams {
     return authContext;
   }
 
-  // Getter methods ...
-
   static class AutoProvisioningParamsBuilder {
 
     private String accountIdentifier;
