@@ -58,7 +58,7 @@ import org.eclipse.jetty.http.HttpStatus;
  *
  * <pre>
  *
- *   Based on Carbonio Preview SDK 0.2.4
+ *   Based on Carbonio Preview SDK 1.0.2
  *
  *   The API is the almost same as of preview service(https://zextras.atlassian.net/wiki/spaces/SW/pages/2353430753/Preview+API)
  *   with few modification that let us make it use as preview service for mailbox attachments.
@@ -84,7 +84,7 @@ import org.eclipse.jetty.http.HttpStatus;
  *                                  Default value : rectangular
  *                   quality  =  lowest | low | medium | high | highest
  *                                  Default value : medium
- *             output_format  =  jpeg | png | gif; default inline(jpeg)
+ *             output_format  =  jpeg | png; default inline(jpeg)
  *                                  Default value : jpeg
  *                      crop  =  True will crop the picture starting from the borders
  *                               This option will lose information, leaving it False will scale and have borders to fill the requested size.
