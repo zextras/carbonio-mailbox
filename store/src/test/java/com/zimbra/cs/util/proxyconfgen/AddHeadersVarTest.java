@@ -75,8 +75,8 @@ class AddHeadersVarTest {
     final String cspValue2 = "default-src 'self'; script-src 'self'; connect-src 'self';";
 
     final AddHeadersVar addHeadersVar = new AddHeadersVar(null, null, null, null);
-    final String modifiedCspValue1 = addHeadersVar.modifyCspHeaderValue(cspValue1);
-    final String modifiedCspValue2 = addHeadersVar.modifyCspHeaderValue(cspValue2);
+    final String modifiedCspValue1 = addHeadersVar.generateModifiedCspHeaderValue(cspValue1);
+    final String modifiedCspValue2 = addHeadersVar.generateModifiedCspHeaderValue(cspValue2);
 
     assertEquals("", modifiedCspValue1); // No connect-src directive, so no modification
     assertEquals("default-src 'self'; script-src 'self'; connect-src 'self';", modifiedCspValue2);

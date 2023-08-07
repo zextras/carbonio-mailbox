@@ -23,6 +23,21 @@ public class AddHeadersVar extends ProxyConfVar {
     this.customLoginLogoutUrls = customLoginLogoutUrls;
   }
 
+  /**
+   * Checks if the provided URL is a valid source directive URL that can be used in a
+   * Content-Security-Policy.
+   *
+   * @param url The URL to be validated.
+   * @return {@code true} if the URL is a valid source directive URL, otherwise {@code false}.
+   * @author Keshav Bhatt
+   * @since 23.9.0
+   */
+  static boolean isValidSrcDirectiveUrl(String url) {
+    return Pattern.matches(
+        "^(https?://(w{3}\\.)?)?((\\*\\.)?\\w+(-\\w+)*\\.\\w+(\\.[a-zA-Z]+)*(:\\d{1,5})?(/\\*|/\\w*)*(\\??(.+=.*)?(&.+=.*)?)?)?$",
+        url);
+  }
+
   @Override
   public void update() throws ServiceException {
     ArrayList<KeyValue> directives = new ArrayList<>();
@@ -32,7 +47,7 @@ public class AddHeadersVar extends ProxyConfVar {
 
       // Handle CSP header
       if (header.key.equalsIgnoreCase("Content-Security-Policy")) {
-        String newCspValue = modifyCspHeaderValue(header.value);
+        String newCspValue = generateModifiedCspHeaderValue(header.value);
         if (!newCspValue.isEmpty()) {
           header = new KeyValue(header.key, newCspValue);
         }
@@ -61,9 +76,9 @@ public class AddHeadersVar extends ProxyConfVar {
   }
 
   /**
-   * Modifies the Content-Security-Policy header value by adding custom URLs to the connect-src
-   * directive if they don't exist. If no connect-src directive is found, the original value is
-   * returned.
+   * Generates a modified Content-Security-Policy header value by adding custom URLs to the
+   * connect-src directive if they don't exist. If no connect-src directive is found, an empty
+   * string is returned.
    *
    * @param cspValue The original Content-Security-Policy header value to modify.
    * @return The modified Content-Security-Policy header value with added custom URLs to the
@@ -71,19 +86,35 @@ public class AddHeadersVar extends ProxyConfVar {
    * @author Keshav Bhatt
    * @since 23.9.0
    */
-  String modifyCspHeaderValue(String cspValue) {
+  String generateModifiedCspHeaderValue(String cspValue) {
     final String connectSrcDirective = extractConnectSrcDirective(cspValue);
     if (connectSrcDirective.isEmpty()) {
-      // Skip updating if no connect-src directive is found
       return "";
     }
 
     if (customLoginLogoutUrls == null) {
-      // Return the original CSP header value if customLoginLogoutUrls is null
       return cspValue;
     }
 
-    // Add customLoginLogoutUrls if they do not exist in connect-src directive
+    final String newConnectSrcDirective =
+        generateModifiedConnectSrcDirectiveWithCustomUrls(connectSrcDirective);
+    if (!connectSrcDirective.equalsIgnoreCase(newConnectSrcDirective)) {
+      return cspValue.replace(connectSrcDirective, newConnectSrcDirective);
+    }
+
+    return "";
+  }
+
+  /**
+   * Adds custom URLs to the connect-src directive of a Content-Security-Policy header value, if
+   * they don't already exist, and returns a String containing the modified directive.
+   *
+   * @param connectSrcDirective The original connect-src directive extracted from the CSP header
+   *     value.
+   * @return A String containing the modified connect-src directive with added custom URLs.
+   * @since 23.9.0
+   */
+  private String generateModifiedConnectSrcDirectiveWithCustomUrls(String connectSrcDirective) {
     final Set<String> addedUrls = new HashSet<>();
     final StringBuilder newConnectSrcDirectiveBuilder = new StringBuilder(connectSrcDirective);
 
@@ -95,14 +126,7 @@ public class AddHeadersVar extends ProxyConfVar {
         addedUrls.add(url.toLowerCase());
       }
     }
-
-    // Prepare the new connectSrcDirective as needed
-    final String newConnectSrcDirective = newConnectSrcDirectiveBuilder.toString();
-    if (!connectSrcDirective.equalsIgnoreCase(newConnectSrcDirective)) {
-      return cspValue.replace(connectSrcDirective, newConnectSrcDirective);
-    }
-
-    return "";
+    return newConnectSrcDirectiveBuilder.toString();
   }
 
   /**
@@ -123,21 +147,6 @@ public class AddHeadersVar extends ProxyConfVar {
     } else {
       return "";
     }
-  }
-
-  /**
-   * Checks if the provided URL is a valid source directive URL that can be used in a
-   * Content-Security-Policy.
-   *
-   * @param url The URL to be validated.
-   * @return {@code true} if the URL is a valid source directive URL, otherwise {@code false}.
-   * @author Keshav Bhatt
-   * @since 23.9.0
-   */
-  static boolean isValidSrcDirectiveUrl(String url) {
-    return Pattern.matches(
-        "^(https?://(w{3}\\.)?)?((\\*\\.)?\\w+(-\\w+)*\\.\\w+(\\.[a-zA-Z]+)*(:\\d{1,5})?(/\\*|/\\w*)*(\\??(.+=.*)?(&.+=.*)?)?)?$",
-        url);
   }
 
   @Override
