@@ -23,6 +23,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.util.BuildInfo;
+import com.zimbra.cs.util.proxyconfgen.DomainAttrItem.Builder;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -318,20 +319,18 @@ public class ProxyConfGen {
             }
 
             result.add(
-                new DomainAttrItem(
-                    domainName,
-                    virtualHostnames[i],
-                    vip,
-                    certificate,
-                    privateKey,
-                    clientCertMode,
-                    clientCertCA,
-                    rspHeaders,
-                    cspRspHeader,
-                    webUiLoginUrl,
-                    webUiLogoutUrl,
-                    adminUiLoginUrl,
-                    adminUiLogoutUrl));
+                new Builder(domainName, virtualHostnames[i], vip)
+                    .withSslCertificate(certificate)
+                    .withSslPrivateKey(privateKey)
+                    .withClientCertMode(clientCertMode)
+                    .withClientCertCa(clientCertCA)
+                    .withRspHeaders(rspHeaders)
+                    .withCspHeader(cspRspHeader)
+                    .withWebUiLoginUrl(webUiLoginUrl)
+                    .withWebUiLogoutUrl(webUiLogoutUrl)
+                    .withAdminUiLoginUrl(adminUiLoginUrl)
+                    .withAdminUiLogoutUrl(adminUiLogoutUrl)
+                    .build());
           }
         };
     mProv.getAllDomains(visitor, attrsNeeded.toArray(new String[0]));
@@ -349,8 +348,8 @@ public class ProxyConfGen {
     }
 
     mDomainReverseProxyAttrs.stream()
-        .filter(item -> !ProxyConfUtil.isEmptyString(item.clientCertCa))
-        .map(item -> item.clientCertCa)
+        .map(DomainAttrItem::getClientCertCa)
+        .filter(clientCertCa -> !ProxyConfUtil.isEmptyString(clientCertCa))
         .forEachOrdered(caSet::add);
 
     StringBuilder sb = new StringBuilder();
@@ -563,7 +562,7 @@ public class ProxyConfGen {
       while (cache == null && it.hasNext()) {
         item = it.next();
         if (item instanceof DomainAttrExceptionItem) {
-          throw ((DomainAttrExceptionItem) item).exception;
+          throw ((DomainAttrExceptionItem) item).getException();
         }
 
         if (isRequiredAttrsNotValid(item, requiredAttrs)) {
@@ -577,7 +576,7 @@ public class ProxyConfGen {
       while (it.hasNext()) {
         item = it.next();
         if (item instanceof DomainAttrExceptionItem) {
-          throw ((DomainAttrExceptionItem) item).exception;
+          throw ((DomainAttrExceptionItem) item).getException();
         }
 
         if (isRequiredAttrsNotValid(item, requiredAttrs)) {
@@ -631,13 +630,13 @@ public class ProxyConfGen {
     for (String attr : requiredAttrs) {
       if (attr.equals("vhn")) {
         // check virtual hostname
-        if (item.virtualHostname == null || item.virtualHostname.equals("")) {
+        if (item.getVirtualHostname() == null || item.getVirtualHostname().equals("")) {
           return true;
         }
       } else if (attr.equals("sso")
-          && (item.clientCertMode == null
-              || item.clientCertMode.equals("")
-              || item.clientCertMode.equals("off"))) {
+          && (item.getClientCertMode() == null
+              || item.getClientCertMode().equals("")
+              || item.getClientCertMode().equals("off"))) {
         return true;
       }
     }
@@ -647,23 +646,23 @@ public class ProxyConfGen {
   private static void fillVarsWithDomainAttrs(DomainAttrItem item) throws ProxyConfException {
 
     String defaultVal;
-    mVars.put("vhn", item.virtualHostname);
+    mVars.put("vhn", item.getVirtualHostname());
     int i;
 
     // resolve the virtual host name
     InetAddress vip = null;
     try {
-      if (item.virtualIPAddress == null) {
-        vip = InetAddress.getByName(item.virtualHostname);
+      if (item.getVirtualIPAddress() == null) {
+        vip = InetAddress.getByName(item.getVirtualHostname());
       } else {
-        vip = InetAddress.getByName(item.virtualIPAddress);
+        vip = InetAddress.getByName(item.getVirtualIPAddress());
       }
     } catch (UnknownHostException e) {
       if (mEnforceDNSResolution) {
         throw new ProxyConfException(
-            "virtual host name \"" + item.virtualHostname + "\" is not resolvable", e);
+            "virtual host name \"" + item.getVirtualHostname() + "\" is not resolvable", e);
       } else {
-        LOG.warn("virtual host name \"" + item.virtualHostname + "\" is not resolvable");
+        LOG.warn("virtual host name \"" + item.getVirtualHostname() + "\" is not resolvable");
       }
     }
 
@@ -703,11 +702,11 @@ public class ProxyConfGen {
 
     // Get the response headers list for this domain
     ArrayList<String> responseHeadersList = new ArrayList<>();
-    for (i = 0; i < item.rspHeaders.length; i++) {
-      responseHeadersList.add(item.rspHeaders[i]);
+    for (i = 0; i < item.getRspHeaders().length; i++) {
+      responseHeadersList.add(item.getRspHeaders()[i]);
     }
-    if (!item.cspHeader.isBlank()) {
-      responseHeadersList.add(item.cspHeader);
+    if (!item.getCspHeader().isBlank()) {
+      responseHeadersList.add(item.getCspHeader());
     }
     // Add domain the response headers list variables for web
     mDomainConfVars.put(
@@ -717,10 +716,10 @@ public class ProxyConfGen {
             responseHeadersList,
             "add_header directive for vhost web proxy",
             Map.of(
-                ZAttrProvisioning.A_carbonioWebUILoginURL, item.webUiLoginUrl,
-                ZAttrProvisioning.A_carbonioWebUILogoutURL, item.webUiLogoutUrl,
-                ZAttrProvisioning.A_carbonioAdminUILoginURL, item.adminUiLoginUrl,
-                ZAttrProvisioning.A_carbonioAdminUILogoutURL, item.adminUiLogoutUrl)));
+                ZAttrProvisioning.A_carbonioWebUILoginURL, item.getWebUiLoginUrl(),
+                ZAttrProvisioning.A_carbonioWebUILogoutURL, item.getWebUiLogoutUrl(),
+                ZAttrProvisioning.A_carbonioAdminUILoginURL, item.getAdminUiLoginUrl(),
+                ZAttrProvisioning.A_carbonioAdminUILogoutURL, item.getAdminUiLogoutUrl())));
     // Add domain custom login and logout variables for webUi and AdminUi
     mDomainConfVars.put(
         "web.carbonio.webui.login.url.vhost",
@@ -730,7 +729,7 @@ public class ProxyConfGen {
             DEFAULT_WEB_LOGIN_PATH,
             "Login URL for Carbonio web client to send the user to upon failed login, auth expired,"
                 + " or no/invalid auth",
-            item.webUiLoginUrl));
+            item.getWebUiLoginUrl()));
     mDomainConfVars.put(
         "web.carbonio.webui.logout.redirect.vhost",
         new WebCustomLogoutRedirectVar(
@@ -738,7 +737,7 @@ public class ProxyConfGen {
             ZAttrProvisioning.A_carbonioWebUILogoutURL,
             DEFAULT_WEB_LOGIN_PATH,
             "Logout URL for Carbonio web client to send the user to upon explicit logging out",
-            item.webUiLogoutUrl));
+            item.getWebUiLogoutUrl()));
     mDomainConfVars.put(
         "web.carbonio.admin.login.url.vhost",
         new WebCustomLoginUrlVar(
@@ -747,39 +746,39 @@ public class ProxyConfGen {
             DEFAULT_WEB_LOGIN_PATH,
             "Login URL for Carbonio Admin web client to send the user to upon failed login, auth"
                 + " expired, or no/invalid auth",
-            item.adminUiLoginUrl));
+            item.getAdminUiLoginUrl()));
     mDomainConfVars.put(
         "web.carbonio.admin.logout.redirect.vhost",
         new WebCustomLogoutRedirectVar(
             "web.carbonio.admin.logout.redirect.vhost",
             ZAttrProvisioning.A_carbonioAdminUILogoutURL,
             DEFAULT_WEB_LOGIN_PATH,
-            "Logout URL for Carbonio Admin web client to send the user to upon explicit logging"
+            "Logout URL for Carbonio Admin web client togetWsend the user to upon explicit logging"
                 + " out",
-            item.adminUiLogoutUrl));
+            item.getAdminUiLogoutUrl()));
     try {
       updateDefaultDomainVars();
     } catch (ProxyConfException | ServiceException pe) {
       handleException(pe);
     }
 
-    if (item.sslCertificate != null) {
-      mVars.put("ssl.crt", DOMAIN_SSL_DIR + File.separator + item.domainName + SSL_CRT_EXT);
+    if (item.getSslCertificate() != null) {
+      mVars.put("ssl.crt", DOMAIN_SSL_DIR + File.separator + item.getDomainName() + SSL_CRT_EXT);
     } else {
       defaultVal = mVars.get("ssl.crt.default");
       mVars.put("ssl.crt", defaultVal);
     }
 
-    if (item.sslPrivateKey != null) {
-      mVars.put("ssl.key", DOMAIN_SSL_DIR + File.separator + item.domainName + SSL_KEY_EXT);
+    if (item.getSslPrivateKey() != null) {
+      mVars.put("ssl.key", DOMAIN_SSL_DIR + File.separator + item.getDomainName() + SSL_KEY_EXT);
     } else {
       defaultVal = mVars.get("ssl.key.default");
       mVars.put("ssl.key", defaultVal);
     }
 
-    if (item.clientCertMode != null) {
-      mVars.put("ssl.clientcertmode", item.clientCertMode);
-      if (item.clientCertMode.equals("on") || item.clientCertMode.equals("optional")) {
+    if (item.getClientCertMode() != null) {
+      mVars.put("ssl.clientcertmode", item.getClientCertMode());
+      if (item.getClientCertMode().equals("on") || item.getClientCertMode().equals("optional")) {
         mVars.put("web.sso.certauth.enabled", "");
       } else {
         mVars.put("web.sso.certauth.enabled", "#");
@@ -789,8 +788,8 @@ public class ProxyConfGen {
       mVars.put("ssl.clientcertmode", defaultVal);
     }
 
-    if (item.clientCertCa != null) {
-      String clientCertCaPath = getClientCertCaPathByDomain(item.domainName);
+    if (item.getClientCertCa() != null) {
+      String clientCertCaPath = getClientCertCaPathByDomain(item.getDomainName());
       mVars.put("ssl.clientcertca", clientCertCaPath);
       // DnVhnVIPItem.clientCertCa stores the CA cert's content, other than path
       // if it is not null or "", loadReverseProxyVhnAndVIP() will save its content .
@@ -2462,9 +2461,10 @@ public class ProxyConfGen {
     } else {
       Utils.createFolder(DOMAIN_SSL_DIR);
       for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
-        if (!ProxyConfUtil.isEmptyString(entry.sslCertificate)
-            && !ProxyConfUtil.isEmptyString(entry.sslPrivateKey)) {
-          updateCertificateKeyPair(entry.domainName, entry.sslCertificate, entry.sslPrivateKey);
+        if (!ProxyConfUtil.isEmptyString(entry.getSslCertificate())
+            && !ProxyConfUtil.isEmptyString(entry.getSslPrivateKey())) {
+          updateCertificateKeyPair(
+              entry.getDomainName(), entry.getSslCertificate(), entry.getSslPrivateKey());
         }
       }
     }
@@ -2484,7 +2484,7 @@ public class ProxyConfGen {
 
     List<String> filesInDirectory = Utils.getFilesPathInDirectory(DOMAIN_SSL_DIR);
     for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
-      filesInDirectory.removeIf(filePath -> (filePath.contains(entry.domainName)));
+      filesInDirectory.removeIf(filePath -> (filePath.contains(entry.getDomainName())));
     }
     if (dryRun) {
       filesInDirectory.forEach(
@@ -2521,7 +2521,7 @@ public class ProxyConfGen {
       return;
     }
     for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
-      domainNames.removeIf(domain -> domain.contains(entry.domainName));
+      domainNames.removeIf(domain -> domain.contains(entry.getDomainName()));
     }
     if (dryRun) {
       domainNames.forEach(
@@ -2577,7 +2577,7 @@ public class ProxyConfGen {
       LOG.info("Will save Let's Encrypt certificate/key pairs to LDAP.");
     } else {
       for (DomainAttrItem entry : mDomainReverseProxyAttrs) {
-        if (isDomainManagedByCertbot(entry.domainName)) {
+        if (isDomainManagedByCertbot(entry.getDomainName())) {
           updateCertificateKeyPair(entry);
         }
       }
@@ -2609,7 +2609,7 @@ public class ProxyConfGen {
   private static void updateCertificateKeyPair(final DomainAttrItem entry)
       throws ProxyConfException {
 
-    final String domainName = entry.domainName;
+    final String domainName = entry.getDomainName();
 
     try {
       final Domain domain =
@@ -2628,14 +2628,14 @@ public class ProxyConfGen {
         final FileInputStream keyInputStream = new FileInputStream(privateKeyFile);
         final String privateKey = IOUtils.toString(keyInputStream, StandardCharsets.UTF_8.name());
 
-        attrs.put(Provisioning.A_zimbraSSLCertificate, certificate);
-        attrs.put(Provisioning.A_zimbraSSLPrivateKey, privateKey);
+        attrs.put(ZAttrProvisioning.A_zimbraSSLCertificate, certificate);
+        attrs.put(ZAttrProvisioning.A_zimbraSSLPrivateKey, privateKey);
 
         LOG.info("Saving " + domainName + " Let's Encrypt certificate/key pair to LDAP");
         mProv.modifyAttrs(domain, attrs, true);
 
-        entry.sslCertificate = certificate;
-        entry.sslPrivateKey = privateKey;
+        entry.setSslCertificate(certificate);
+        entry.setSslPrivateKey(privateKey);
       }
 
     } catch (Exception e) {
@@ -2791,8 +2791,9 @@ public class ProxyConfGen {
   /** check whether client cert verify is enabled in domain level */
   static boolean isDomainClientCertVerifyEnabled() {
     for (DomainAttrItem item : mDomainReverseProxyAttrs) {
-      if (item.clientCertMode != null
-          && (item.clientCertMode.equals("on") || item.clientCertMode.equals("optional"))) {
+      if (item.getClientCertMode() != null
+          && (item.getClientCertMode().equals("on")
+              || item.getClientCertMode().equals("optional"))) {
         return true;
       }
     }
