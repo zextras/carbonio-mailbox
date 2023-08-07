@@ -22,13 +22,13 @@ class WebCustomLogoutRedirectVarTest {
 
   @Test
   void constructor_should_setDefaultValue_when_customUrlEmpty() {
-    String keyword = "web.custom.logout.redirect";
-    String attribute = ZAttrProvisioning.A_carbonioAdminUILogoutURL;
-    Object defaultValue = "/static/login/";
-    String description = "Custom logout redirect URL for web proxy";
-    String customUrl = "";
+    final String keyword = "web.custom.logout.redirect";
+    final String attribute = ZAttrProvisioning.A_carbonioAdminUILogoutURL;
+    final Object defaultValue = "/static/login/";
+    final String description = "Custom logout redirect URL for web proxy";
+    final String customUrl = "";
 
-    WebCustomLogoutRedirectVar var =
+    final WebCustomLogoutRedirectVar var =
         new WebCustomLogoutRedirectVar(keyword, attribute, defaultValue, description, customUrl);
 
     assertEquals("return 307 /static/login/", var.mValue);
@@ -36,13 +36,13 @@ class WebCustomLogoutRedirectVarTest {
 
   @Test
   void constructor_should_setValue_when_customUrlIsNotEmpty() {
-    String keyword = "web.custom.logout.redirect";
-    String attribute = ZAttrProvisioning.A_carbonioAdminUILogoutURL;
-    Object defaultValue = "/static/login/";
-    String description = "Custom logout redirect URL for web proxy";
-    String customUrl = "https://custom-logout-url.com";
+    final String keyword = "web.custom.logout.redirect";
+    final String attribute = ZAttrProvisioning.A_carbonioAdminUILogoutURL;
+    final Object defaultValue = "/static/login/";
+    final String description = "Custom logout redirect URL for web proxy";
+    final String customUrl = "https://custom-logout-url.com";
 
-    WebCustomLogoutRedirectVar var =
+    final WebCustomLogoutRedirectVar var =
         new WebCustomLogoutRedirectVar(keyword, attribute, defaultValue, description, customUrl);
 
     assertEquals("return 200", var.mValue);

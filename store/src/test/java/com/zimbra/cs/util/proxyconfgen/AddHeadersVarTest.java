@@ -29,25 +29,25 @@ class AddHeadersVarTest {
 
   @Test
   void update_should_modifyCspHeaderValueCorrectly() throws ServiceException, ProxyConfException {
-    String key = "web.add.headers.vhost";
-    ArrayList<String> responseHeaders = new ArrayList<>();
+    final String key = "web.add.headers.vhost";
+    final ArrayList<String> responseHeaders = new ArrayList<>();
     responseHeaders.add(
         "Content-Security-Policy: default-src 'self'; connect-src 'self' *.test.tools;"
             + " script-src 'self';");
-    String description = "add_header directive for vhost web proxy";
+    final String description = "add_header directive for vhost web proxy";
 
-    Map<String, String> customLogInLogoutUrlValueMap = new HashMap<>();
+    final Map<String, String> customLogInLogoutUrlValueMap = new HashMap<>();
     customLogInLogoutUrlValueMap.put(
         ZAttrProvisioning.A_carbonioWebUILoginURL, "https://auth.test.com");
     customLogInLogoutUrlValueMap.put(
         ZAttrProvisioning.A_carbonioWebUILogoutURL, "https://auth.test.com/logout");
 
-    AddHeadersVar addHeadersVar =
+    final AddHeadersVar addHeadersVar =
         new AddHeadersVar(key, responseHeaders, description, customLogInLogoutUrlValueMap);
 
     addHeadersVar.update();
 
-    String expectedCspValue =
+    final String expectedCspValue =
         "add_header Content-Security-Policy default-src 'self'; connect-src 'self' *.test.tools"
             + " https://auth.test.com https://auth.test.com/logout; script-src 'self';;";
     assertEquals(expectedCspValue, addHeadersVar.confValue());
@@ -55,12 +55,12 @@ class AddHeadersVarTest {
 
   @Test
   void parseHeaderLine_should_parseHeaderCorrectly() {
-    String headerLine1 = "Content-Security-Policy: default-src 'self';";
-    String headerLine2 = "X-Frame-Options: DENY";
+    final String headerLine1 = "Content-Security-Policy: default-src 'self';";
+    final String headerLine2 = "X-Frame-Options: DENY";
 
-    AddHeadersVar addHeadersVar = new AddHeadersVar(null, null, null, null);
-    KeyValue header1 = addHeadersVar.parseHeaderLine(headerLine1);
-    KeyValue header2 = addHeadersVar.parseHeaderLine(headerLine2);
+    final AddHeadersVar addHeadersVar = new AddHeadersVar(null, null, null, null);
+    final KeyValue header1 = addHeadersVar.parseHeaderLine(headerLine1);
+    final KeyValue header2 = addHeadersVar.parseHeaderLine(headerLine2);
 
     assertEquals("Content-Security-Policy", header1.key);
     assertEquals("default-src 'self';", header1.value);
@@ -71,12 +71,12 @@ class AddHeadersVarTest {
 
   @Test
   void modifyCspHeaderValue_should_modifyHeaderValueCorrectly() {
-    String cspValue1 = "default-src 'self'; script-src 'self';";
-    String cspValue2 = "default-src 'self'; script-src 'self'; connect-src 'self';";
+    final String cspValue1 = "default-src 'self'; script-src 'self';";
+    final String cspValue2 = "default-src 'self'; script-src 'self'; connect-src 'self';";
 
-    AddHeadersVar addHeadersVar = new AddHeadersVar(null, null, null, null);
-    String modifiedCspValue1 = addHeadersVar.modifyCspHeaderValue(cspValue1);
-    String modifiedCspValue2 = addHeadersVar.modifyCspHeaderValue(cspValue2);
+    final AddHeadersVar addHeadersVar = new AddHeadersVar(null, null, null, null);
+    final String modifiedCspValue1 = addHeadersVar.modifyCspHeaderValue(cspValue1);
+    final String modifiedCspValue2 = addHeadersVar.modifyCspHeaderValue(cspValue2);
 
     assertEquals("", modifiedCspValue1); // No connect-src directive, so no modification
     assertEquals("default-src 'self'; script-src 'self'; connect-src 'self';", modifiedCspValue2);
@@ -85,14 +85,14 @@ class AddHeadersVarTest {
   @Test
   void update_should_modifyCspHeaderValueCorrectly_when_multipleUrls()
       throws ServiceException, ProxyConfException {
-    String key = "web.add.headers.default";
-    ArrayList<String> responseHeaders = new ArrayList<>();
+    final String key = "web.add.headers.default";
+    final ArrayList<String> responseHeaders = new ArrayList<>();
     responseHeaders.add(
         "Content-Security-Policy: default-src 'self'; connect-src 'self' *.test.tools;"
             + " script-src 'self';");
-    String description = "add_header directive for vhost web proxy";
+    final String description = "add_header directive for vhost web proxy";
 
-    Map<String, String> customLogInLogoutUrlValueMap = new HashMap<>();
+    final Map<String, String> customLogInLogoutUrlValueMap = new HashMap<>();
     customLogInLogoutUrlValueMap.put(
         ZAttrProvisioning.A_carbonioWebUILoginURL, "https://auth.test.com");
     customLogInLogoutUrlValueMap.put(
@@ -102,12 +102,12 @@ class AddHeadersVarTest {
     customLogInLogoutUrlValueMap.put(
         ZAttrProvisioning.A_carbonioAdminUILogoutURL, "https://admin-auth.test.com/logout");
 
-    AddHeadersVar addHeadersVar =
+    final AddHeadersVar addHeadersVar =
         new AddHeadersVar(key, responseHeaders, description, customLogInLogoutUrlValueMap);
 
     addHeadersVar.update();
 
-    String expectedCspValue =
+    final String expectedCspValue =
         "add_header Content-Security-Policy default-src 'self'; connect-src 'self'"
             + " *.test.tools https://auth.test.com https://admin-auth.test.com/logout"
             + " https://auth.test.com/logout https://admin-auth.test.com; script-src 'self';;";
@@ -116,13 +116,13 @@ class AddHeadersVarTest {
 
   @Test
   void extractConnectSrcDirective_should_extractCorrectDirective() {
-    String cspHeader1 = "default-src 'self'; script-src 'self';";
-    String cspHeader2 =
+    final String cspHeader1 = "default-src 'self'; script-src 'self';";
+    final String cspHeader2 =
         "default-src 'self'; connect-src 'self' https://test.com/login https://test.com/logout;";
 
-    AddHeadersVar addHeadersVar = new AddHeadersVar(null, null, null, null);
-    String connectSrcDirective1 = addHeadersVar.extractConnectSrcDirective(cspHeader1);
-    String connectSrcDirective2 = addHeadersVar.extractConnectSrcDirective(cspHeader2);
+    final AddHeadersVar addHeadersVar = new AddHeadersVar(null, null, null, null);
+    final String connectSrcDirective1 = addHeadersVar.extractConnectSrcDirective(cspHeader1);
+    final String connectSrcDirective2 = addHeadersVar.extractConnectSrcDirective(cspHeader2);
 
     assertEquals("", connectSrcDirective1); // No connect-src directive in the header
     assertEquals(
