@@ -20,7 +20,7 @@ This directory hold the artifacts required to update the existing LDAP install.
 ## What are update files?
 
 Update files are the JSON files created following the pattern found in `example.template` that contains data that our
-update script (`src/libexec/ldapattributeupdate`) consumes.
+update script (`/opt/zextras/libexec/ldapattributeupdate`) consumes.
 
 The aim is to have newly added entries/attributes to these JSON file in which will be installed
 in `/opt/zextras/common/etc/openldap/zimbra/updates/attrs/`
@@ -29,8 +29,6 @@ in `/opt/zextras/common/etc/openldap/zimbra/updates/attrs/`
 
 Update files are named as the value of last timestamp of last commit on `attrs.xml`(this can be retrieved
 using `git log -1 --pretty=format:%at carbonio-mailbox/store/conf/attrs/attrs.xml`).
-
-![image is not available](blob:https://zextras.atlassian.net/bb2b58e7-bafd-43cb-a480-f9ba7c9c0e88#media-blob-url=true&id=7c8a9cbd-3aa8-43b5-b59c-9822f497eee0&collection=contentId-2394128424&contextId=2394128424&mimeType=image%2Fpng&name=schema_proto.png&size=46878&height=369&width=544&alt=)
 
 ## How update files are consumed by ldapattributeupdate script?
 

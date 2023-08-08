@@ -38,13 +38,13 @@ public abstract class ZAttrDomain extends NamedEntry {
     /**
      * Link to the Carbonio Admin Documentation
      *
-     * @return carbonioAdminDocumentationUrl, or "https://docs.zextras.com" if unset
+     * @return carbonioAdminDocumentationUrl, or "https://docs.zextras.com/carbonio/html/adminpanel/introduction.html" if unset
      *
      * @since ZCS 23.9.0
      */
     @ZAttr(id=3135)
     public String getCarbonioAdminDocumentationUrl() {
-        return getAttr(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, "https://docs.zextras.com", true);
+        return getAttr(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, "https://docs.zextras.com/carbonio/html/adminpanel/introduction.html", true);
     }
 
     /**
@@ -1219,13 +1219,13 @@ public abstract class ZAttrDomain extends NamedEntry {
     /**
      * Link to the Carbonio User Documentation
      *
-     * @return carbonioUserDocumentationUrl, or "https://docs.zextras.com" if unset
+     * @return carbonioUserDocumentationUrl, or "https://docs.zextras.com/carbonio/html/usage.html" if unset
      *
      * @since ZCS 23.9.0
      */
     @ZAttr(id=3134)
     public String getCarbonioUserDocumentationUrl() {
-        return getAttr(ZAttrProvisioning.A_carbonioUserDocumentationUrl, "https://docs.zextras.com", true);
+        return getAttr(ZAttrProvisioning.A_carbonioUserDocumentationUrl, "https://docs.zextras.com/carbonio/html/usage.html", true);
     }
 
     /**
