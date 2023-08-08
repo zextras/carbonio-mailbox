@@ -121,30 +121,6 @@
       <groupId>org.objenesis</groupId>
     </dependency>
     <dependency>
-      <artifactId>jersey-client</artifactId>
-      <groupId>com.sun.jersey</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jersey-core</artifactId>
-      <groupId>com.sun.jersey</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jersey-json</artifactId>
-      <groupId>com.sun.jersey</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jersey-servlet</artifactId>
-      <groupId>com.sun.jersey</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jersey-server</artifactId>
-      <groupId>com.sun.jersey</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jersey-multipart</artifactId>
-      <groupId>com.sun.jersey.contribs</groupId>
-    </dependency>
-    <dependency>
       <artifactId>jsr181-api</artifactId>
       <groupId>javax.jws</groupId>
     </dependency>

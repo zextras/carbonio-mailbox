@@ -296,6 +296,19 @@
   </servlet>
 
   <servlet>
+    <servlet-name>PreviewServletJersey</servlet-name>
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>com.zextras.mailbox.servlet.MailboxResourceConfig</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PreviewServletJersey</servlet-name>
+    <url-pattern>/preview/jersey/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>UserServlet</servlet-name>
     <servlet-class>com.zimbra.cs.service.UserServlet</servlet-class>
     <async-supported>true</async-supported>
