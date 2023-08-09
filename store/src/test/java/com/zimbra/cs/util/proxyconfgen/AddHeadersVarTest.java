@@ -14,6 +14,8 @@ import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class AddHeadersVarTest {
 
@@ -129,27 +131,35 @@ class AddHeadersVarTest {
         "connect-src 'self' https://test.com/login https://test.com/logout", connectSrcDirective2);
   }
 
-  @Test
-  void isValidSrcDirectiveUrl_should_returnTrueForValidUrls() {
-    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com"));
-    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("http://subdomain.test.com"));
-    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://sub.domain.test.com:8080"));
-    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://*.test.com"));
-    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://*.test.com/*"));
-    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://test.com/*"));
-    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://test.com:8080/*"));
-    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://test.com/path?param=value"));
-    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com:99999"));
+  @ParameterizedTest
+  @ValueSource(
+      strings = {
+        "https://www.test.com",
+        "http://subdomain.test.com",
+        "https://sub.domain.test.com:8080",
+        "https://*.test.com",
+        "https://*.test.com/*",
+        "https://test.com/*",
+        "https://test.com:8080/*",
+        "https://test.com/path?param=value",
+        "https://www.test.com:99999"
+      })
+  void isValidSrcDirectiveUrl_should_returnTrueForValidUrls(String url) {
+    assertTrue(AddHeadersVar.isValidSrcDirectiveUrl(url));
   }
 
-  @Test
-  void isValidSrcDirectiveUrl_should_returnFalseForInvalidUrls() {
-    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("invalid_url"));
-    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("http:/test.com"));
-    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("https:/test.com"));
-    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com,https://test.com"));
-    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com https://test.com"));
-    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com;https://test.com"));
-    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl("https://www.test.com:abc"));
+  @ParameterizedTest
+  @ValueSource(
+      strings = {
+        "invalid_url",
+        "http:/test.com",
+        "https:/test.com",
+        "https://www.test.com,https://test.com",
+        "https://www.test.com https://test.com",
+        "https://www.test.com;https://test.com",
+        "https://www.test.com:abc"
+      })
+  void isValidSrcDirectiveUrl_should_returnFalseForInvalidUrls(String url) {
+    assertFalse(AddHeadersVar.isValidSrcDirectiveUrl(url));
   }
 }
