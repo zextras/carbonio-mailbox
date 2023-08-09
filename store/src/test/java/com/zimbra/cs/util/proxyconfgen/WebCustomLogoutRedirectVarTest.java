@@ -21,7 +21,7 @@ class WebCustomLogoutRedirectVarTest {
   }
 
   @Test
-  void constructor_should_setDefaultValue_when_customUrlEmpty() {
+  void update_should_setDefaultValue_when_customUrlEmpty() {
     final String keyword = "web.custom.logout.redirect";
     final String attribute = ZAttrProvisioning.A_carbonioAdminUILogoutURL;
     final Object defaultValue = "/static/login/";
@@ -30,12 +30,12 @@ class WebCustomLogoutRedirectVarTest {
 
     final WebCustomLogoutRedirectVar var =
         new WebCustomLogoutRedirectVar(keyword, attribute, defaultValue, description, customUrl);
-
+    var.update();
     assertEquals("return 307 /static/login/", var.mValue);
   }
 
   @Test
-  void constructor_should_setValue_when_customUrlIsNotEmpty() {
+  void update_should_setValue_when_customUrlIsNotEmpty() {
     final String keyword = "web.custom.logout.redirect";
     final String attribute = ZAttrProvisioning.A_carbonioAdminUILogoutURL;
     final Object defaultValue = "/static/login/";
@@ -44,7 +44,7 @@ class WebCustomLogoutRedirectVarTest {
 
     final WebCustomLogoutRedirectVar var =
         new WebCustomLogoutRedirectVar(keyword, attribute, defaultValue, description, customUrl);
-
+    var.update();
     assertEquals("return 200", var.mValue);
   }
 }
