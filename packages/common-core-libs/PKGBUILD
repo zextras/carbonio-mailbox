@@ -104,10 +104,10 @@ package() {
 
   install -D carbonio-jetty-libs/target/dependencies/jamm-0.2.5.jar \
     "${pkgdir}/opt/zextras/lib/jars/jamm-0.2.5.jar"
-  install -D carbonio-jetty-libs/target/dependencies/javax.servlet-api-3.1.0.jar \
-    "${pkgdir}/opt/zextras/lib/jars/javax.servlet-api-3.1.0.jar"
-  install -D carbonio-jetty-libs/target/dependencies/javax.ws.rs-api-2.0-m10.jar \
-    "${pkgdir}/opt/zextras/lib/jars/javax.ws.rs-api-2.0-m10.jar"
+  install -D carbonio-jetty-libs/target/dependencies/javax.servlet-api-4.0.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/javax.servlet-api-4.0.1.jar"
+  install -D carbonio-jetty-libs/target/dependencies/javax.ws.rs-api-2.1.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/javax.ws.rs-api-2.1.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/jaxb-api-2.3.0.jar \
     "${pkgdir}/opt/zextras/lib/jars/jaxb-api-2.3.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/jaxb-impl-2.3.1.jar \
@@ -126,18 +126,6 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/jcs-1.3.jar"
   install -D carbonio-jetty-libs/target/dependencies/jdom-1.1.3.jar \
     "${pkgdir}/opt/zextras/lib/jars/jdom-1.1.3.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jersey-client-1.11.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jersey-client-1.11.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jersey-core-1.11.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jersey-core-1.11.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jersey-json-1.11.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jersey-json-1.11.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jersey-multipart-1.12.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jersey-multipart-1.12.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jersey-server-1.11.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jersey-server-1.11.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jersey-servlet-1.11.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jersey-servlet-1.11.jar"
   install -D carbonio-jetty-libs/target/dependencies/jfreechart-1.0.19.jar \
     "${pkgdir}/opt/zextras/lib/jars/jfreechart-1.0.19.jar"
   install -D carbonio-jetty-libs/target/dependencies/jna-3.4.0.jar \
