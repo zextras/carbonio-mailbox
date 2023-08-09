@@ -15,7 +15,7 @@ import com.google.common.collect.Maps;
 import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.mailbox.filter.AuthorizationFilter;
-import com.zextras.mailbox.resource.PreviewController;
+import com.zextras.mailbox.resource.preview.PreviewController;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
@@ -29,6 +29,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 import javax.mail.internet.MimeBodyPart;
+import javax.servlet.http.HttpUtils;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Response;
 import org.apache.http.HttpStatus;
@@ -37,7 +39,6 @@ import org.apache.http.entity.InputStreamEntity;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.glassfish.jersey.test.DeploymentContext;
-import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.ServletDeploymentContext;
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
@@ -46,7 +47,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class PreviewControllerAcceptanceTest extends JerseyTest {
+class PreviewControllerAcceptanceTest extends MailboxJerseyTest {
 
   private AttachmentService mockAttachmentService;
   private PreviewClient previewClient;
@@ -79,14 +80,21 @@ class PreviewControllerAcceptanceTest extends JerseyTest {
     provisioning.createAccount(TEST_ACCOUNT_NAME, "secret", attrs);
   }
 
+  /**
+   * Provides arguments as: image name, type, thumbnail path, query params
+   *
+   * @return arguments for Preview test
+   */
   private static Stream<Arguments> getAttachment() {
     return Stream.of(
-        Arguments.of("MrKrab.gif", "image", ""),
-        Arguments.of("MrKrab.gif", "image", "0x0/thumbnail"),
-        Arguments.of("Calcolo_del_fuso.JPEG", "image", ""),
-        Arguments.of("Calcolo_del_fuso.JPEG", "image", "0x0/thumbnail"),
-        Arguments.of("In-CC0.pdf", "pdf", ""),
-        Arguments.of("In-CC0.pdf", "pdf", "0x0/thumbnail"));
+        Arguments.of("MrKrab.gif", "image", "", ""),
+        Arguments.of("MrKrab.gif", "image", "0x0/thumbnail", ""),
+        Arguments.of(
+            "MrKrab.gif", "image", "0x0/thumbnail", "?first_page=1&last_page=2&first_page=10"),
+        Arguments.of("Calcolo_del_fuso.JPEG", "image", "", ""),
+        Arguments.of("Calcolo_del_fuso.JPEG", "image", "0x0/thumbnail", "?quality=high"),
+        Arguments.of("In-CC0.pdf", "pdf", "", ""),
+        Arguments.of("In-CC0.pdf", "pdf", "0x0/thumbnail", ""));
   }
 
   /**
@@ -135,7 +143,7 @@ class PreviewControllerAcceptanceTest extends JerseyTest {
   @ParameterizedTest
   @MethodSource("getAttachment")
   public void shouldReturnPreviewWhenRequestingAttachment(
-      String fileName, String type, String optionalThumbnailUrl) throws Exception {
+      String fileName, String type, String optionalThumbnailUrl, String query) throws Exception {
     final InputStream gifAttachment = this.getClass().getResourceAsStream(fileName);
     final int messageId = 100;
     final String partNumber = "2";
@@ -155,17 +163,22 @@ class PreviewControllerAcceptanceTest extends JerseyTest {
 
     final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
     final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
+
+    WebTarget target =
+        target("/" + type + "/" + messageId + "/" + partNumber + "/" + optionalThumbnailUrl);
+    target = addParams(target, query);
     final Response response =
-        target("/" + type + "/" + messageId + "/" + partNumber + "/" + optionalThumbnailUrl)
-            .queryParam("first_page", 1)
-            .queryParam("last_page", 1)
-            .request()
-            .cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded()))
-            .get();
+        target.request().cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded())).get();
     final byte[] expectedContent = this.getClass().getResourceAsStream(fileName).readAllBytes();
     final int statusCode = response.getStatus();
     final InputStream content = response.readEntity(InputStream.class);
     assertEquals(HttpStatus.SC_OK, statusCode);
     assertArrayEquals(expectedContent, content.readAllBytes());
+  }
+
+  private WebTarget addParams(WebTarget webTarget, String paramString) {
+    Map<String, String[]> paramsMap = HttpUtils.parseQueryString(paramString);
+    paramsMap.forEach((key, value) -> webTarget.queryParam(key, value));
+    return webTarget;
   }
 }

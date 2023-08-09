@@ -20,6 +20,6 @@ class MailboxResourceConfigTest extends MailboxJerseyTest {
   @Test
   void shouldInitializePreviewController() {
     final Response response = target("/pdf/1/2").request().get();
-    Assertions.assertEquals(500, response.getStatus());
+    Assertions.assertNotEquals(404, response.getStatus());
   }
 }

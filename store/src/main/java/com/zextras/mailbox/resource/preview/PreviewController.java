@@ -2,24 +2,20 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.resource;
+package com.zextras.mailbox.resource.preview;
 
 import static com.zextras.mailbox.filter.AuthorizationFilter.CTX_AUTH_TOKEN;
 
 import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.Query;
-import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AttachmentService;
 import io.vavr.Function3;
 import io.vavr.control.Try;
 import java.io.InputStream;
-import java.util.Hashtable;
-import java.util.Objects;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpUtils;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -97,46 +93,6 @@ public class PreviewController {
   }
 
   /**
-   * Builds a {@link QueryBuilder} from received query String
-   *
-   * @param area comes from the url path and is optional
-   * @return
-   */
-  private Query getPreviewQuery(String area) {
-    String queryString = this.servletRequest.getQueryString();
-    final Hashtable<String, String[]> parseQueryString = HttpUtils.parseQueryString(queryString);
-    final QueryBuilder queryBuilder = new QueryBuilder();
-    final String[] shapes = parseQueryString.get("shape");
-    if (Objects.isNull(area) || Objects.equals(area, "")) {
-      queryBuilder.setPreviewArea(area);
-    }
-    if (!Objects.isNull(shapes) && shapes.length > 0) {
-      queryBuilder.setShape(shapes[0]);
-    }
-    final String[] firstPages = parseQueryString.get("first_page");
-    if (!Objects.isNull(firstPages) && firstPages.length > 0) {
-      final int firstPage = Integer.parseInt(firstPages[0]);
-      queryBuilder.setFirstPage(firstPage);
-    }
-    final String[] lastPages = parseQueryString.get("last_page");
-    if (!Objects.isNull(lastPages) && lastPages.length > 0) {
-      final int lastPage = Integer.parseInt(lastPages[0]);
-      queryBuilder.setLastPage(lastPage);
-    }
-    final String[] crops = parseQueryString.get("crop");
-    if (!Objects.isNull(crops) && crops.length > 0) {
-      final boolean crop = Boolean.parseBoolean(crops[0]);
-      queryBuilder.setCrop(crop);
-    }
-    final String[] qualities = parseQueryString.get("quality");
-    if (!Objects.isNull(qualities) && qualities.length > 0) {
-      final String quality = qualities[0];
-      queryBuilder.setQuality(quality);
-    }
-    return queryBuilder.build();
-  }
-
-  /**
    * This method gets the attachment and ask preview service for a preview. It assumes the same
    * logic for all attachment types.
    *
@@ -160,7 +116,10 @@ public class PreviewController {
                         .of(
                             inputStream ->
                                 doPost.apply(
-                                    inputStream, getPreviewQuery(area), attachment.getFileName())))
+                                    inputStream,
+                                    PreviewQueryUtil.getPreviewQuery(
+                                        this.servletRequest.getQueryString(), area),
+                                    attachment.getFileName())))
             .flatMap(x -> x);
     if (tryPreviewClientResponse.isSuccess()) {
       final BlobResponse blobResponse = tryPreviewClientResponse.get();
