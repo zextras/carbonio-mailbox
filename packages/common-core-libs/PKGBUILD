@@ -158,8 +158,8 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/junixsocket-native-common-2.4.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/native-lib-loader-2.3.5.jar \
     "${pkgdir}/opt/zextras/lib/jars/native-lib-loader-2.3.5.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jython-standalone-2.7.2.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jython-standalone-2.7.2.jar"
+  install -D carbonio-jetty-libs/target/dependencies/jython-standalone-2.5.2.jar \
+    "${pkgdir}/opt/zextras/lib/jars/jython-standalone-2.5.2.jar"
   install -D carbonio-jetty-libs/target/dependencies/jline-0.9.93.jar \
     "${pkgdir}/opt/zextras/lib/jars/jline-0.9.93.jar"
   install -D carbonio-jetty-libs/target/dependencies/jzlib-1.0.7.jar \

@@ -36,156 +36,74 @@ public abstract class ZAttrDomain extends NamedEntry {
   ///// BEGIN-AUTO-GEN-REPLACE
 
     /**
-     * Login URL for Carbonio Admin web client to send the user to upon
-     * failed login, auth expired, or no/invalid auth
+     * Link to the Carbonio Admin Documentation
      *
-     * @return carbonioAdminUILoginURL, or null if unset
+     * @return carbonioAdminDocumentationUrl, or "https://docs.zextras.com/carbonio/html/adminpanel/introduction.html" if unset
      *
      * @since ZCS 23.9.0
      */
-    @ZAttr(id=3136)
-    public String getCarbonioAdminUILoginURL() {
-        return getAttr(ZAttrProvisioning.A_carbonioAdminUILoginURL, null, true);
+    @ZAttr(id=3135)
+    public String getCarbonioAdminDocumentationUrl() {
+        return getAttr(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, "https://docs.zextras.com/carbonio/html/adminpanel/introduction.html", true);
     }
 
     /**
-     * Login URL for Carbonio Admin web client to send the user to upon
-     * failed login, auth expired, or no/invalid auth
+     * Link to the Carbonio Admin Documentation
      *
-     * @param carbonioAdminUILoginURL new value
+     * @param carbonioAdminDocumentationUrl new value
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
      * @since ZCS 23.9.0
      */
-    @ZAttr(id=3136)
-    public void setCarbonioAdminUILoginURL(String carbonioAdminUILoginURL) throws com.zimbra.common.service.ServiceException {
+    @ZAttr(id=3135)
+    public void setCarbonioAdminDocumentationUrl(String carbonioAdminDocumentationUrl) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioAdminUILoginURL, carbonioAdminUILoginURL);
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, carbonioAdminDocumentationUrl);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
-     * Login URL for Carbonio Admin web client to send the user to upon
-     * failed login, auth expired, or no/invalid auth
+     * Link to the Carbonio Admin Documentation
      *
-     * @param carbonioAdminUILoginURL new value
+     * @param carbonioAdminDocumentationUrl new value
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      *
      * @since ZCS 23.9.0
      */
-    @ZAttr(id=3136)
-    public Map<String,Object> setCarbonioAdminUILoginURL(String carbonioAdminUILoginURL, Map<String,Object> attrs) {
+    @ZAttr(id=3135)
+    public Map<String,Object> setCarbonioAdminDocumentationUrl(String carbonioAdminDocumentationUrl, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioAdminUILoginURL, carbonioAdminUILoginURL);
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, carbonioAdminDocumentationUrl);
         return attrs;
     }
 
     /**
-     * Login URL for Carbonio Admin web client to send the user to upon
-     * failed login, auth expired, or no/invalid auth
+     * Link to the Carbonio Admin Documentation
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
      * @since ZCS 23.9.0
      */
-    @ZAttr(id=3136)
-    public void unsetCarbonioAdminUILoginURL() throws com.zimbra.common.service.ServiceException {
+    @ZAttr(id=3135)
+    public void unsetCarbonioAdminDocumentationUrl() throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioAdminUILoginURL, "");
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, "");
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
-     * Login URL for Carbonio Admin web client to send the user to upon
-     * failed login, auth expired, or no/invalid auth
+     * Link to the Carbonio Admin Documentation
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      *
      * @since ZCS 23.9.0
      */
-    @ZAttr(id=3136)
-    public Map<String,Object> unsetCarbonioAdminUILoginURL(Map<String,Object> attrs) {
+    @ZAttr(id=3135)
+    public Map<String,Object> unsetCarbonioAdminDocumentationUrl(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioAdminUILoginURL, "");
-        return attrs;
-    }
-
-    /**
-     * Logout URL for Carbonio Admin web client to send the user to upon
-     * explicit logging out
-     *
-     * @return carbonioAdminUILogoutURL, or null if unset
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3137)
-    public String getCarbonioAdminUILogoutURL() {
-        return getAttr(ZAttrProvisioning.A_carbonioAdminUILogoutURL, null, true);
-    }
-
-    /**
-     * Logout URL for Carbonio Admin web client to send the user to upon
-     * explicit logging out
-     *
-     * @param carbonioAdminUILogoutURL new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3137)
-    public void setCarbonioAdminUILogoutURL(String carbonioAdminUILogoutURL) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioAdminUILogoutURL, carbonioAdminUILogoutURL);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Logout URL for Carbonio Admin web client to send the user to upon
-     * explicit logging out
-     *
-     * @param carbonioAdminUILogoutURL new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3137)
-    public Map<String,Object> setCarbonioAdminUILogoutURL(String carbonioAdminUILogoutURL, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioAdminUILogoutURL, carbonioAdminUILogoutURL);
-        return attrs;
-    }
-
-    /**
-     * Logout URL for Carbonio Admin web client to send the user to upon
-     * explicit logging out
-     *
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3137)
-    public void unsetCarbonioAdminUILogoutURL() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioAdminUILogoutURL, "");
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Logout URL for Carbonio Admin web client to send the user to upon
-     * explicit logging out
-     *
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3137)
-    public Map<String,Object> unsetCarbonioAdminUILogoutURL(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioAdminUILogoutURL, "");
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, "");
         return attrs;
     }
 
@@ -1299,6 +1217,78 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
+     * Link to the Carbonio User Documentation
+     *
+     * @return carbonioUserDocumentationUrl, or "https://docs.zextras.com/carbonio/html/usage.html" if unset
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public String getCarbonioUserDocumentationUrl() {
+        return getAttr(ZAttrProvisioning.A_carbonioUserDocumentationUrl, "https://docs.zextras.com/carbonio/html/usage.html", true);
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @param carbonioUserDocumentationUrl new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public void setCarbonioUserDocumentationUrl(String carbonioUserDocumentationUrl) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, carbonioUserDocumentationUrl);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @param carbonioUserDocumentationUrl new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public Map<String,Object> setCarbonioUserDocumentationUrl(String carbonioUserDocumentationUrl, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, carbonioUserDocumentationUrl);
+        return attrs;
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public void unsetCarbonioUserDocumentationUrl() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public Map<String,Object> unsetCarbonioUserDocumentationUrl(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, "");
+        return attrs;
+    }
+
+    /**
      * Enable video server recording for Carbonio
      *
      * @return carbonioVideoServerRecordingEnabled, or false if unset
@@ -1367,160 +1357,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     public Map<String,Object> unsetCarbonioVideoServerRecordingEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_carbonioVideoServerRecordingEnabled, "");
-        return attrs;
-    }
-
-    /**
-     * Login URL for Carbonio web client to send the user to upon failed
-     * login, auth expired, or no/invalid auth
-     *
-     * @return carbonioWebUILoginURL, or null if unset
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3134)
-    public String getCarbonioWebUILoginURL() {
-        return getAttr(ZAttrProvisioning.A_carbonioWebUILoginURL, null, true);
-    }
-
-    /**
-     * Login URL for Carbonio web client to send the user to upon failed
-     * login, auth expired, or no/invalid auth
-     *
-     * @param carbonioWebUILoginURL new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3134)
-    public void setCarbonioWebUILoginURL(String carbonioWebUILoginURL) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioWebUILoginURL, carbonioWebUILoginURL);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Login URL for Carbonio web client to send the user to upon failed
-     * login, auth expired, or no/invalid auth
-     *
-     * @param carbonioWebUILoginURL new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3134)
-    public Map<String,Object> setCarbonioWebUILoginURL(String carbonioWebUILoginURL, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioWebUILoginURL, carbonioWebUILoginURL);
-        return attrs;
-    }
-
-    /**
-     * Login URL for Carbonio web client to send the user to upon failed
-     * login, auth expired, or no/invalid auth
-     *
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3134)
-    public void unsetCarbonioWebUILoginURL() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioWebUILoginURL, "");
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Login URL for Carbonio web client to send the user to upon failed
-     * login, auth expired, or no/invalid auth
-     *
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3134)
-    public Map<String,Object> unsetCarbonioWebUILoginURL(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioWebUILoginURL, "");
-        return attrs;
-    }
-
-    /**
-     * Logout URL for Carbonio web client to send the user to upon explicit
-     * logging out
-     *
-     * @return carbonioWebUILogoutURL, or null if unset
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3135)
-    public String getCarbonioWebUILogoutURL() {
-        return getAttr(ZAttrProvisioning.A_carbonioWebUILogoutURL, null, true);
-    }
-
-    /**
-     * Logout URL for Carbonio web client to send the user to upon explicit
-     * logging out
-     *
-     * @param carbonioWebUILogoutURL new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3135)
-    public void setCarbonioWebUILogoutURL(String carbonioWebUILogoutURL) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioWebUILogoutURL, carbonioWebUILogoutURL);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Logout URL for Carbonio web client to send the user to upon explicit
-     * logging out
-     *
-     * @param carbonioWebUILogoutURL new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3135)
-    public Map<String,Object> setCarbonioWebUILogoutURL(String carbonioWebUILogoutURL, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioWebUILogoutURL, carbonioWebUILogoutURL);
-        return attrs;
-    }
-
-    /**
-     * Logout URL for Carbonio web client to send the user to upon explicit
-     * logging out
-     *
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3135)
-    public void unsetCarbonioWebUILogoutURL() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioWebUILogoutURL, "");
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * Logout URL for Carbonio web client to send the user to upon explicit
-     * logging out
-     *
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3135)
-    public Map<String,Object> unsetCarbonioWebUILogoutURL(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioWebUILogoutURL, "");
         return attrs;
     }
 
