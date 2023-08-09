@@ -26,6 +26,7 @@ import io.vavr.control.Try;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 import javax.mail.internet.MimeBodyPart;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Response;
@@ -42,6 +43,9 @@ import org.glassfish.jersey.test.spi.TestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class PreviewControllerAcceptanceTest extends JerseyTest {
 
@@ -88,12 +92,17 @@ class PreviewControllerAcceptanceTest extends JerseyTest {
     super.tearDown();
   }
 
+  private static Stream<Arguments> getAttachment() {
+    return Stream.of(Arguments.of("MrKrab.gif", "image"));
+  }
+
   // TODO: test GIF, PNG, JPEG, DOC, PDF + all thumbnail
 
-  @Test
-  public void shouldReturnGifPreviewWhenRequestingGifAttachment() throws Exception {
-    final String fileName = "MrKrab.gif";
-    final InputStream gifAttachment = this.getClass().getResourceAsStream("/" + fileName);
+  @ParameterizedTest
+  @MethodSource("getAttachment")
+  public void shouldReturnGifPreviewWhenRequestingGifAttachment(String fileName, String type)
+      throws Exception {
+    final InputStream gifAttachment = this.getClass().getResourceAsStream(fileName);
     final int messageId = 100;
     final String partNumber = "2";
 
@@ -103,7 +112,7 @@ class PreviewControllerAcceptanceTest extends JerseyTest {
     final BlobResponse previewResponse = new BlobResponse(inputStreamEntity);
 
     final MimeBodyPart mimePart = new MimeBodyPart();
-    mimePart.attachFile(this.getClass().getResource("/" + fileName).getFile());
+    mimePart.attachFile(this.getClass().getResource(fileName).getFile());
 
     when(mockAttachmentService.getAttachment(any(), any(), eq(messageId), eq(partNumber)))
         .thenReturn(Try.of(() -> mimePart));
@@ -113,14 +122,13 @@ class PreviewControllerAcceptanceTest extends JerseyTest {
     final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
     final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
     final Response response =
-        target("/image/" + messageId + "/" + partNumber + "/")
+        target("/" + type + "/" + messageId + "/" + partNumber + "/")
             .queryParam("first_page", 1)
             .queryParam("last_page", 1)
             .request()
             .cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded()))
             .get();
-    final byte[] expectedContent =
-        this.getClass().getResourceAsStream("/" + fileName).readAllBytes();
+    final byte[] expectedContent = this.getClass().getResourceAsStream(fileName).readAllBytes();
     final int statusCode = response.getStatus();
     final InputStream content = response.readEntity(InputStream.class);
     assertEquals(HttpStatus.SC_OK, statusCode);

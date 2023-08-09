@@ -15,6 +15,10 @@
     </dependency>
 
     <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+    </dependency>
+    <dependency>
       <artifactId>httpmime</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
     </dependency>
@@ -503,7 +507,6 @@
       <version>1.6.14</version>
       <scope>test</scope>
     </dependency>
-
     <!-- https://mvnrepository.com/artifact/org.glassfish.hk2/guice-bridge -->
     <dependency>
       <groupId>org.glassfish.hk2</groupId>
@@ -547,6 +550,17 @@
       <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
       <version>2.27</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-common</artifactId>
+      <version>2.27</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet-core</artifactId>
+      <version>2.27</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
