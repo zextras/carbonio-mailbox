@@ -489,6 +489,8 @@
   <attrs>
     <a n="zimbraDomainDefaultCOSId"/> 
     <a n="carbonioAdminDocumentationUrl"/>
+    <a n="carbonioAdminUILoginURL"/>
+    <a n="carbonioAdminUILogoutURL"/>
     <a n="carbonioAdminUiAppLogo"/>
     <a n="carbonioAdminUiBackground"/>
     <a n="carbonioAdminUiDarkAppLogo"/>
@@ -503,6 +505,8 @@
     <a n="carbonioNotificationFrom"/>
     <a n="carbonioNotificationRecipients"/>
     <a n="carbonioUserDocumentationUrl"/>
+    <a n="carbonioWebUILoginURL"/>
+    <a n="carbonioWebUILogoutURL"/>
     <a n="carbonioWebUiAppLogo"/>
     <a n="carbonioWebUiBannerText"/>
     <a n="carbonioWebUiDarkAppLogo"/>

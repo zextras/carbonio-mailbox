@@ -2820,7 +2820,7 @@ public class ZAttrProvisioning {
      *
      * @since ZCS 23.9.0
      */
-    @ZAttr(id=3136)
+    @ZAttr(id=3138)
     public static final String A_carbonioAdminUILoginURL = "carbonioAdminUILoginURL";
 
     /**
@@ -2829,7 +2829,7 @@ public class ZAttrProvisioning {
      *
      * @since ZCS 23.9.0
      */
-    @ZAttr(id=3137)
+    @ZAttr(id=3139)
     public static final String A_carbonioAdminUILogoutURL = "carbonioAdminUILogoutURL";
 
     /**
@@ -3109,7 +3109,7 @@ public class ZAttrProvisioning {
      *
      * @since ZCS 23.9.0
      */
-    @ZAttr(id=3134)
+    @ZAttr(id=3136)
     public static final String A_carbonioWebUILoginURL = "carbonioWebUILoginURL";
 
     /**
@@ -3118,7 +3118,7 @@ public class ZAttrProvisioning {
      *
      * @since ZCS 23.9.0
      */
-    @ZAttr(id=3135)
+    @ZAttr(id=3137)
     public static final String A_carbonioWebUILogoutURL = "carbonioWebUILogoutURL";
 
     /**
