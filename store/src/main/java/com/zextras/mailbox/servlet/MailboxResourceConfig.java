@@ -4,7 +4,6 @@
 
 package com.zextras.mailbox.servlet;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.zextras.mailbox.filter.AuthorizationFilter;
@@ -22,10 +21,10 @@ import org.jvnet.hk2.guice.bridge.api.GuiceIntoHK2Bridge;
 public class MailboxResourceConfig extends ResourceConfig {
 
   @Inject
-  public MailboxResourceConfig(ServiceLocator serviceLocator, AbstractModule abstractModule) {
+  public MailboxResourceConfig(ServiceLocator serviceLocator) {
     packages("com.zextras.mailbox.resource");
     register(AuthorizationFilter.class);
-    Injector injector = Guice.createInjector(abstractModule);
+    Injector injector = Guice.createInjector(new PreviewServletModule());
     initGuiceIntoHK2Bridge(serviceLocator, injector);
   }
 

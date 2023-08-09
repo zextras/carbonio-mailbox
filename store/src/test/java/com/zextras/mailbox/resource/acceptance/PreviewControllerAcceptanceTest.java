@@ -41,7 +41,6 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.ServletDeploymentContext;
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -78,18 +77,6 @@ class PreviewControllerAcceptanceTest extends JerseyTest {
     Map<String, Object> attrs = Maps.newHashMap();
     attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
     provisioning.createAccount(TEST_ACCOUNT_NAME, "secret", attrs);
-  }
-
-  // do not name this setup()
-  @BeforeEach
-  public void before() throws Exception {
-    super.setUp();
-  }
-
-  // do not name this tearDown()
-  @AfterEach
-  public void after() throws Exception {
-    super.tearDown();
   }
 
   private static Stream<Arguments> getAttachment() {
@@ -147,7 +134,7 @@ class PreviewControllerAcceptanceTest extends JerseyTest {
 
   @ParameterizedTest
   @MethodSource("getAttachment")
-  public void shouldReturnGifPreviewWhenRequestingGifAttachment(
+  public void shouldReturnPreviewWhenRequestingAttachment(
       String fileName, String type, String optionalThumbnailUrl) throws Exception {
     final InputStream gifAttachment = this.getClass().getResourceAsStream(fileName);
     final int messageId = 100;
