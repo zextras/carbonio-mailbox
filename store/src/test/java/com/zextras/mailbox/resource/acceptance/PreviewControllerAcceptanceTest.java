@@ -25,6 +25,7 @@ import com.zimbra.cs.service.AuthProvider;
 import io.vavr.control.Try;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 import javax.mail.internet.MimeBodyPart;
@@ -42,7 +43,6 @@ import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -94,15 +94,61 @@ class PreviewControllerAcceptanceTest extends JerseyTest {
 
   private static Stream<Arguments> getAttachment() {
     return Stream.of(
-        Arguments.of("MrKrab.gif", "image"), Arguments.of("Calcolo_del_fuso.JPEG", "image"));
+        Arguments.of("MrKrab.gif", "image", ""),
+        Arguments.of("MrKrab.gif", "image", "0x0/thumbnail"),
+        Arguments.of("Calcolo_del_fuso.JPEG", "image", ""),
+        Arguments.of("Calcolo_del_fuso.JPEG", "image", "0x0/thumbnail"),
+        Arguments.of("In-CC0.pdf", "pdf", ""),
+        Arguments.of("In-CC0.pdf", "pdf", "0x0/thumbnail"));
   }
 
-  // TODO: test GIF, PNG, JPEG, DOC, PDF + all thumbnail
+  /**
+   * Mocks {@link PreviewClient} method to call by requested attachment type
+   *
+   * @param isThumbNail if should mock thumbnail method
+   * @param fileName name of file
+   * @param type type of file/attachment
+   * @param response response to return from mock
+   */
+  private void mockPreviewByType(
+      String fileName, String type, boolean isThumbNail, BlobResponse response) {
+    switch (type) {
+      case "image":
+        if (isThumbNail) {
+          when(previewClient.postThumbnailOfImage(any(), any(), eq(fileName)))
+              .thenReturn(Try.of(() -> response));
+          break;
+        }
+        when(previewClient.postPreviewOfImage(any(), any(), eq(fileName)))
+            .thenReturn(Try.of(() -> response));
+        break;
+      case "pdf":
+        if (isThumbNail) {
+          when(previewClient.postThumbnailOfPdf(any(), any(), eq(fileName)))
+              .thenReturn(Try.of(() -> response));
+          break;
+        }
+        when(previewClient.postPreviewOfPdf(any(), any(), eq(fileName)))
+            .thenReturn(Try.of(() -> response));
+        break;
+      case "doc":
+        if (isThumbNail) {
+          when(previewClient.postThumbnailOfDocument(any(), any(), eq(fileName)))
+              .thenReturn(Try.of(() -> response));
+          break;
+        }
+        when(previewClient.postPreviewOfDocument(any(), any(), eq(fileName)))
+            .thenReturn(Try.of(() -> response));
+        break;
+      default:
+        break;
+    }
+  }
 
   @ParameterizedTest
   @MethodSource("getAttachment")
-  public void shouldReturnGifPreviewWhenRequestingGifAttachment(String fileName, String type)
-      throws Exception {
+  public void shouldReturnGifPreviewWhenRequestingGifAttachment(
+      String fileName, String type, String optionalThumbnailUrl) throws Exception {
     final InputStream gifAttachment = this.getClass().getResourceAsStream(fileName);
     final int messageId = 100;
     final String partNumber = "2";
@@ -117,56 +163,19 @@ class PreviewControllerAcceptanceTest extends JerseyTest {
 
     when(mockAttachmentService.getAttachment(any(), any(), eq(messageId), eq(partNumber)))
         .thenReturn(Try.of(() -> mimePart));
-    when(previewClient.postPreviewOfImage(any(), any(), eq(fileName)))
-        .thenReturn(Try.of(() -> previewResponse));
+    this.mockPreviewByType(
+        fileName, type, !Objects.equals("", optionalThumbnailUrl), previewResponse);
 
     final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
     final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
     final Response response =
-        target("/" + type + "/" + messageId + "/" + partNumber + "/")
+        target("/" + type + "/" + messageId + "/" + partNumber + "/" + optionalThumbnailUrl)
             .queryParam("first_page", 1)
             .queryParam("last_page", 1)
             .request()
             .cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded()))
             .get();
     final byte[] expectedContent = this.getClass().getResourceAsStream(fileName).readAllBytes();
-    final int statusCode = response.getStatus();
-    final InputStream content = response.readEntity(InputStream.class);
-    assertEquals(HttpStatus.SC_OK, statusCode);
-    assertArrayEquals(expectedContent, content.readAllBytes());
-  }
-
-  @Test
-  public void shouldReturnGifThumbnailWhenRequestingGifAttachment() throws Exception {
-    final String fileName = "MrKrab.gif";
-    final InputStream gifAttachment = this.getClass().getResourceAsStream("/" + fileName);
-    final int messageId = 100;
-    final String partNumber = "2";
-
-    final InputStreamEntity inputStreamEntity = new InputStreamEntity(gifAttachment);
-    inputStreamEntity.setContentType(ContentType.IMAGE_GIF.getMimeType());
-
-    final BlobResponse previewResponse = new BlobResponse(inputStreamEntity);
-
-    final MimeBodyPart mimePart = new MimeBodyPart();
-    mimePart.attachFile(this.getClass().getResource("/" + fileName).getFile());
-
-    when(mockAttachmentService.getAttachment(any(), any(), eq(messageId), eq(partNumber)))
-        .thenReturn(Try.of(() -> mimePart));
-    when(previewClient.postThumbnailOfImage(any(), any(), eq(fileName)))
-        .thenReturn(Try.of(() -> previewResponse));
-
-    final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
-    final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
-    final Response response =
-        target("/image/" + messageId + "/" + partNumber + "/0x0/thumbnail/")
-            .queryParam("first_page", 1)
-            .queryParam("last_page", 1)
-            .request()
-            .cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded()))
-            .get();
-    final byte[] expectedContent =
-        this.getClass().getResourceAsStream("/" + fileName).readAllBytes();
     final int statusCode = response.getStatus();
     final InputStream content = response.readEntity(InputStream.class);
     assertEquals(HttpStatus.SC_OK, statusCode);
