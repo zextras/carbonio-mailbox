@@ -335,9 +335,6 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.VERIFY_STORE_MANAGER_REQUEST, new VerifyStoreManager());
 
-    // Skins
-    dispatcher.registerHandler(AdminConstants.GET_ALL_SKINS_REQUEST, new GetAllSkins());
-
     // Filter rules
     dispatcher.registerHandler(AdminConstants.GET_FILTER_RULES_REQUEST, new GetFilterRules());
     dispatcher.registerHandler(AdminConstants.MODIFY_FILTER_RULES_REQUEST, new ModifyFilterRules());

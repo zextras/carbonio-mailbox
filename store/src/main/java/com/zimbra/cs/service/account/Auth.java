@@ -10,6 +10,7 @@ package com.zimbra.cs.service.account;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.account.ZAttrProvisioning.AutoProvAuthMech;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
@@ -41,7 +42,6 @@ import com.zimbra.cs.servlet.CsrfFilter;
 import com.zimbra.cs.servlet.util.CsrfUtil;
 import com.zimbra.cs.session.Session;
 import com.zimbra.cs.util.AccountUtil;
-import com.zimbra.cs.util.SkinUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -59,6 +59,18 @@ import org.apache.commons.lang.StringUtils;
  * @author schemers
  */
 public class Auth extends AccountDocumentHandler {
+
+  // for auth by auth token
+  public static void addAccountToLogContextByAuthToken(Provisioning prov, AuthToken at) {
+    String id = at.getAccountId();
+    if (id != null) {
+      AccountUtil.addAccountToLogContext(prov, id, ZimbraLog.C_NAME, ZimbraLog.C_ID, null);
+    }
+    String aid = at.getAdminAccountId();
+    if (aid != null && !aid.equals(id)) {
+      AccountUtil.addAccountToLogContext(prov, aid, ZimbraLog.C_ANAME, ZimbraLog.C_AID, null);
+    }
+  }
 
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
@@ -88,7 +100,9 @@ public class Auth extends AccountDocumentHandler {
         String virtualHost = virtualHostEl == null ? null : virtualHostEl.getText().toLowerCase();
         if (virtualHost != null && acctValue.indexOf('@') == -1) {
           Domain d = prov.get(Key.DomainBy.virtualHostname, virtualHost);
-          if (d != null) acctValue = acctValue + "@" + d.getName();
+          if (d != null) {
+            acctValue = acctValue + "@" + d.getName();
+          }
         }
       }
       acct = prov.get(acctBy, acctValue);
@@ -137,8 +151,9 @@ public class Auth extends AccountDocumentHandler {
         // this could've been done in the very beginning of the method,
         // we do it here instead - after the account is added to log context
         // so the account will show in log context
-        if (!checkPasswordSecurity(context))
+        if (!checkPasswordSecurity(context)) {
           throw ServiceException.INVALID_REQUEST("clear text password is not allowed", null);
+        }
         AuthToken.Usage usage = at.getUsage();
         Account authTokenAcct = AuthProvider.validateAuthToken(prov, at, false, usage);
         if (verifyAccount) {
@@ -175,7 +190,7 @@ public class Auth extends AccountDocumentHandler {
     Element preAuthEl = request.getOptionalElement(AccountConstants.E_PREAUTH);
     long expires = 0;
 
-    Map<String, Object> authCtxt = new HashMap<String, Object>();
+    Map<String, Object> authCtxt = new HashMap<>();
     authCtxt.put(AuthContext.AC_ORIGINATING_CLIENT_IP, context.get(SoapEngine.ORIG_REQUEST_IP));
     authCtxt.put(AuthContext.AC_REMOTE_IP, context.get(SoapEngine.SOAP_REQUEST_IP));
     authCtxt.put(AuthContext.AC_ACCOUNT_NAME_PASSEDIN, acctValuePassedIn);
@@ -276,7 +291,7 @@ public class Auth extends AccountDocumentHandler {
   }
 
   private boolean tokenTypeAndElementValidation(
-      TokenType tokenType, Element authElem, Element jwtElem) throws AuthFailedServiceException {
+      TokenType tokenType, Element authElem, Element jwtElem) {
     if (jwtElem != null && authElem != null) {
       ZimbraLog.account.debug("both jwt and auth element can not be present in auth request");
       return Boolean.FALSE;
@@ -320,18 +335,18 @@ public class Auth extends AccountDocumentHandler {
     boolean isCorrectHost = Provisioning.onLocalServer(acct);
     if (isCorrectHost) {
       Session session = updateAuthenticatedAccount(zsc, at, context, true);
-      if (session != null)
+      if (session != null) {
         ZimbraSoapContext.encodeSession(response, session.getSessionId(), session.getSessionType());
+      }
     }
 
     Server localhost = Provisioning.getInstance().getLocalServer();
-    String referMode = localhost.getAttr(Provisioning.A_zimbraMailReferMode, "wronghost");
-    // if (!isCorrectHost || LC.zimbra_auth_always_send_refer.booleanValue()) {
+    String referMode = localhost.getAttr(ZAttrProvisioning.A_zimbraMailReferMode, "wronghost");
     if (Provisioning.MAIL_REFER_MODE_ALWAYS.equals(referMode)
         || (Provisioning.MAIL_REFER_MODE_WRONGHOST.equals(referMode) && !isCorrectHost)) {
       response.addAttribute(
           AccountConstants.E_REFERRAL,
-          acct.getAttr(Provisioning.A_zimbraMailHost),
+          acct.getAttr(ZAttrProvisioning.A_zimbraMailHost),
           Element.Disposition.CONTENT);
     }
 
@@ -358,17 +373,10 @@ public class Auth extends AccountDocumentHandler {
       }
     }
 
-    Element requestedSkinEl = request.getOptionalElement(AccountConstants.E_REQUESTED_SKIN);
-    String requestedSkin = requestedSkinEl != null ? requestedSkinEl.getText() : null;
-    String skin = SkinUtil.chooseSkin(acct, requestedSkin);
-    ZimbraLog.webclient.debug("chooseSkin() returned " + skin);
-    if (skin != null) {
-      response.addNonUniqueElement(AccountConstants.E_SKIN).setText(skin);
-    }
-
     boolean csrfCheckEnabled = false;
-    if (httpReq.getAttribute(Provisioning.A_zimbraCsrfTokenCheckEnabled) != null) {
-      csrfCheckEnabled = (Boolean) httpReq.getAttribute(Provisioning.A_zimbraCsrfTokenCheckEnabled);
+    if (httpReq.getAttribute(ZAttrProvisioning.A_zimbraCsrfTokenCheckEnabled) != null) {
+      csrfCheckEnabled =
+          (Boolean) httpReq.getAttribute(ZAttrProvisioning.A_zimbraCsrfTokenCheckEnabled);
     }
 
     if (csrfSupport && csrfCheckEnabled) {
@@ -397,15 +405,5 @@ public class Auth extends AccountDocumentHandler {
   @Override
   public boolean needsAuth(Map<String, Object> context) {
     return false;
-  }
-
-  // for auth by auth token
-  public static void addAccountToLogContextByAuthToken(Provisioning prov, AuthToken at) {
-    String id = at.getAccountId();
-    if (id != null)
-      AccountUtil.addAccountToLogContext(prov, id, ZimbraLog.C_NAME, ZimbraLog.C_ID, null);
-    String aid = at.getAdminAccountId();
-    if (aid != null && !aid.equals(id))
-      AccountUtil.addAccountToLogContext(prov, aid, ZimbraLog.C_ANAME, ZimbraLog.C_AID, null);
   }
 }

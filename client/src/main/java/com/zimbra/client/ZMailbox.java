@@ -410,7 +410,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     private ZEventHandler mHandler;
     private List<String> mAttrs;
     private List<String> mPrefs;
-    private String mRequestedSkin;
     private boolean mCsrfSupported; // Used by AuthRequest
     private Map<String, String> mCustomHeaders;
     private SoapTransport.NotificationFormat notificationFormat =
@@ -671,15 +670,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
     public Options setAttrs(List<String> attrs) {
       mAttrs = attrs;
-      return this;
-    }
-
-    public String getRequestedSkin() {
-      return mRequestedSkin;
-    }
-
-    public Options setRequestedSkin(String skin) {
-      mRequestedSkin = skin;
       return this;
     }
 
@@ -969,7 +959,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     AuthRequest auth = new AuthRequest(account, password);
     auth.setPassword(password);
     auth.setVirtualHost(options.getVirtualHost());
-    auth.setRequestedSkin(options.getRequestedSkin());
     auth.setCsrfSupported(options.getCsrfSupported());
     if (options.getAuthToken() != null) {
       auth.setAuthToken(new AuthToken(options.getAuthToken().getValue(), false));
@@ -988,7 +977,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     AuthRequest req = new AuthRequest();
     ZAuthToken zat = options.getAuthToken(); // cannot be null here
     req.setAuthToken(new AuthToken(zat.getValue(), false));
-    req.setRequestedSkin(options.getRequestedSkin());
     req.setCsrfSupported(options.getCsrfSupported());
     addAttrsAndPrefs(req, options);
 
@@ -5658,20 +5646,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       }
     }
     invoke(req);
-  }
-
-  public List<String> getAvailableSkins() throws ServiceException {
-    Element req = newRequestElement(AccountConstants.GET_AVAILABLE_SKINS_REQUEST);
-    Element resp = invoke(req);
-    List<String> result = new ArrayList<String>();
-    for (Element skin : resp.listElements(AccountConstants.E_SKIN)) {
-      String name = skin.getAttribute(AccountConstants.A_NAME, null);
-      if (name != null) {
-        result.add(name);
-      }
-    }
-    Collections.sort(result);
-    return result;
   }
 
   public List<String> getAvailableLocales() throws ServiceException {
