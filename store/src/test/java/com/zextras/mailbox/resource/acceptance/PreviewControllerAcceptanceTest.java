@@ -93,7 +93,8 @@ class PreviewControllerAcceptanceTest extends JerseyTest {
   }
 
   private static Stream<Arguments> getAttachment() {
-    return Stream.of(Arguments.of("MrKrab.gif", "image"));
+    return Stream.of(
+        Arguments.of("MrKrab.gif", "image"), Arguments.of("Calcolo_del_fuso.JPEG", "image"));
   }
 
   // TODO: test GIF, PNG, JPEG, DOC, PDF + all thumbnail
