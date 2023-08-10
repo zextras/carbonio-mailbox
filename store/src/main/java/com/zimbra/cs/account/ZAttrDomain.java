@@ -12526,10 +12526,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @return zimbraFreebusyExchangeServerType, or ZAttrProvisioning.FreebusyExchangeServerType.webdav if unset and/or has invalid value
      *
@@ -12541,10 +12540,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @return zimbraFreebusyExchangeServerType, or "webdav" if unset
      *
@@ -12556,10 +12554,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12574,10 +12571,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @param attrs existing map to populate, or null to create a new map
@@ -12593,10 +12589,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12611,10 +12606,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @param attrs existing map to populate, or null to create a new map
@@ -12630,10 +12624,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -12647,10 +12640,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
