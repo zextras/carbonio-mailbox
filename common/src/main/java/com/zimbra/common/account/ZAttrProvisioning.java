@@ -7167,8 +7167,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureMobilePolicyEnabled = "zimbraFeatureMobilePolicyEnabled";
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      */
     @ZAttr(id=347)
     public static final String A_zimbraFeatureMobileSyncEnabled = "zimbraFeatureMobileSyncEnabled";

@@ -1027,6 +1027,7 @@
       <a n="zimbraFeatureInitialSearchPreferenceEnabled"/>
       <!-- Unexposed features -->
       <!-- <a n="zimbraFeatureViewInHtmlEnabled"/>
+      <a n="zimbraFeatureMobileSyncEnabled"/>
       <a n="zimbraFeatureVoiceEnabled"/>
       <a n="zimbraFeaturePortalEnabled"/>
       <a n="zimbraFeatureSignaturesEnabled"/>
@@ -1097,6 +1098,7 @@
       <a n="zimbraFeatureInitialSearchPreferenceEnabled"/>
       <!-- Unexposed features -->
       <!-- <a n="zimbraFeatureViewInHtmlEnabled"/>
+      <a n="zimbraFeatureMobileSyncEnabled"/>
       <a n="zimbraFeatureVoiceEnabled"/>
       <a n="zimbraFeaturePortalEnabled"/>
       <a n="zimbraFeatureSignaturesEnabled"/>
@@ -1496,6 +1498,7 @@
     <desc> Admin Console set attr rights for COS Mobile Tab </desc>
     <ui name="Configure-COSes-COS-MobileAccess(modify)"/>
     <attrs>
+      <a n="zimbraFeatureMobileSyncEnabled"/>
       <a n="zimbraFeatureMobilePolicyEnabled"/>
       <a n="zimbraMobilePolicyAllowNonProvisionableDevices"/>
       <a n="zimbraMobilePolicyAllowPartialProvisioning"/>
@@ -1517,6 +1520,7 @@
     <desc> Admin Console view attr rights for COS Mobile Tab </desc>
     <ui name="Configure-COSes-COS-MobileAccess(view)"/>
     <attrs>
+      <a n="zimbraFeatureMobileSyncEnabled"/>
       <a n="zimbraFeatureMobilePolicyEnabled"/>
       <a n="zimbraMobilePolicyAllowNonProvisionableDevices"/>
       <a n="zimbraMobilePolicyAllowPartialProvisioning"/>
