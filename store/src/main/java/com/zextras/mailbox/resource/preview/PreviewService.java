@@ -11,13 +11,17 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AttachmentService;
 import io.vavr.Tuple2;
 import io.vavr.control.Try;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.mail.internet.MimePart;
 
+@Singleton
 public class PreviewService {
 
   private final PreviewClient previewClient;
   private final AttachmentService attachmentService;
 
+  @Inject
   public PreviewService(PreviewClient previewClient, AttachmentService attachmentService) {
     this.previewClient = previewClient;
     this.attachmentService = attachmentService;
