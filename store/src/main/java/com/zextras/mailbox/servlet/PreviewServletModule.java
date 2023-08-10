@@ -14,7 +14,7 @@ public class PreviewServletModule extends AbstractModule {
   @Override
   protected void configure() {
     super.configure();
-    bind(PreviewClient.class).toInstance(PreviewClient.atURL("http://127.78.0.7:20001/"));
+    bind(PreviewClient.class).toInstance(PreviewClient.atURL("http", "127.78.0.7", 20001));
     bind(AttachmentService.class).toInstance(new MailboxAttachmentService());
   }
 }
