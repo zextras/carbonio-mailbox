@@ -2733,6 +2733,14 @@ public class ZAttrProvisioning {
     public static final String A_c = "c";
 
     /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public static final String A_carbonioAdminDocumentationUrl = "carbonioAdminDocumentationUrl";
+
+    /**
      * SSL proxy port for Carbonio admin console UI
      *
      * @since ZCS 9.0.0
@@ -2970,6 +2978,14 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3092)
     public static final String A_carbonioSendFullErrorStack = "carbonioSendFullErrorStack";
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public static final String A_carbonioUserDocumentationUrl = "carbonioUserDocumentationUrl";
 
     /**
      * Enable video server recording for Carbonio

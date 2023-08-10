@@ -10085,4 +10085,14 @@ TODO: delete them permanently from here
     MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo: "Bar1; Bar2").
   </desc>
 </attr>
+
+<attr id="3134" name="carbonioUserDocumentationUrl" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainInherited,domainAdminModifiable" since="23.9.0">
+  <globalConfigValue>https://docs.zextras.com/carbonio/html/usage.html</globalConfigValue>
+  <desc>Link to the Carbonio User Documentation</desc>
+</attr>
+
+<attr id="3135" name="carbonioAdminDocumentationUrl" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainInherited,domainAdminModifiable" since="23.9.0">
+  <globalConfigValue>https://docs.zextras.com/carbonio/html/adminpanel/introduction.html</globalConfigValue>
+  <desc>Link to the Carbonio Admin Documentation</desc>
+</attr>
 </attrs>

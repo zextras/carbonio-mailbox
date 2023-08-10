@@ -15,7 +15,6 @@ public enum CacheEntryType {
   // non ldap entries
   acl,
   locale,
-  skin,
   uistrings,
   license,
 

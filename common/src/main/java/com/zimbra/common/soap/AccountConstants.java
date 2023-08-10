@@ -39,8 +39,6 @@ public class AccountConstants {
   public static final String E_GET_ALL_LOCALES_RESPONSE = "GetAllLocalesResponse";
   public static final String E_GET_AVAILABLE_LOCALES_REQUEST = "GetAvailableLocalesRequest";
   public static final String E_GET_AVAILABLE_LOCALES_RESPONSE = "GetAvailableLocalesResponse";
-  public static final String E_GET_AVAILABLE_SKINS_REQUEST = "GetAvailableSkinsRequest";
-  public static final String E_GET_AVAILABLE_SKINS_RESPONSE = "GetAvailableSkinsResponse";
   public static final String E_GET_AVAILABLE_CSV_FORMATS_REQUEST = "GetAvailableCsvFormatsRequest";
   public static final String E_GET_AVAILABLE_CSV_FORMATS_RESPONSE =
       "GetAvailableCsvFormatsResponse";
@@ -172,10 +170,6 @@ public class AccountConstants {
       QName.get(E_GET_AVAILABLE_LOCALES_REQUEST, NAMESPACE);
   public static final QName GET_AVAILABLE_LOCALES_RESPONSE =
       QName.get(E_GET_AVAILABLE_LOCALES_RESPONSE, NAMESPACE);
-  public static final QName GET_AVAILABLE_SKINS_REQUEST =
-      QName.get(E_GET_AVAILABLE_SKINS_REQUEST, NAMESPACE);
-  public static final QName GET_AVAILABLE_SKINS_RESPONSE =
-      QName.get(E_GET_AVAILABLE_SKINS_RESPONSE, NAMESPACE);
   public static final QName GET_AVAILABLE_CSV_FORMATS_REQUEST =
       QName.get(E_GET_AVAILABLE_CSV_FORMATS_REQUEST, NAMESPACE);
   public static final QName GET_AVAILABLE_CSV_FORMATS_RESPONSE =
@@ -365,7 +359,6 @@ public class AccountConstants {
   public static final String E_ENTRY_SEARCH_FILTER_SINGLECOND = "cond";
   public static final String E_LOCALE = "locale";
   public static final String E_VIRTUAL_HOST = "virtualHost";
-  public static final String E_SKIN = "skin";
   public static final String E_HAB_ROOTS = "habRoots";
   public static final String E_HAB = "hab";
   public static final String E_IDENTITIES = "identities";
@@ -378,7 +371,6 @@ public class AccountConstants {
   public static final String E_CHILD_ACCOUNTS = "childAccounts";
   public static final String E_CHILD_ACCOUNT = "childAccount";
   public static final String E_CONTENT = "content";
-  public static final String E_REQUESTED_SKIN = "requestedSkin";
   public static final String E_REST = "rest";
   public static final String E_CSV = "csv";
   public static final String E_COS = "cos";

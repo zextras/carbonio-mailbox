@@ -41,6 +41,23 @@ import javax.xml.bind.annotation.XmlType;
 public class AuthResponse {
 
   /**
+   * @zm-api-field-description Requested preference settings.
+   */
+  @ZimbraKeyValuePairs
+  @XmlElementWrapper(name = AccountConstants.E_PREFS /* prefs */)
+  @XmlElement(name = AccountConstants.E_PREF /* pref */)
+  private final List<Pref> prefs = new ArrayList<Pref>();
+
+  /**
+   * @zm-api-field-description Requested attribute settings. Only attributes that are allowed to be
+   *     returned by GetInfo will be returned by this call
+   */
+  @ZimbraKeyValuePairs
+  @XmlElementWrapper(name = AccountConstants.E_ATTRS /* attrs */)
+  @XmlElement(name = AccountConstants.E_ATTR /* attr */)
+  private final List<Attr> attrs = new ArrayList<Attr>();
+
+  /**
    * @zm-api-field-description The authorization token
    */
   @XmlElement(name = AccountConstants.E_AUTH_TOKEN /* authToken */, required = true)
@@ -75,35 +92,11 @@ public class AuthResponse {
   private String refer;
 
   /**
-   * @zm-api-field-description if requestedSkin specified, the name of the skin to use Always
-   *     returned, might be same as original host request was sent to.
-   */
-  @XmlElement(name = AccountConstants.E_SKIN /* skin */, required = false)
-  private String skin;
-
-  /**
    * @zm-api-field-description if client is CSRF token enabled , the CSRF token Returned only when
    *     client says it is CSRF enabled .
    */
   @XmlElement(name = HeaderConstants.E_CSRFTOKEN /* CSRF token*/, required = false)
   private String csrfToken;
-
-  /**
-   * @zm-api-field-description Requested preference settings.
-   */
-  @ZimbraKeyValuePairs
-  @XmlElementWrapper(name = AccountConstants.E_PREFS /* prefs */)
-  @XmlElement(name = AccountConstants.E_PREF /* pref */)
-  private final List<Pref> prefs = new ArrayList<Pref>();
-
-  /**
-   * @zm-api-field-description Requested attribute settings. Only attributes that are allowed to be
-   *     returned by GetInfo will be returned by this call
-   */
-  @ZimbraKeyValuePairs
-  @XmlElementWrapper(name = AccountConstants.E_ATTRS /* attrs */)
-  @XmlElement(name = AccountConstants.E_ATTR /* attr */)
-  private final List<Attr> attrs = new ArrayList<Attr>();
 
   public AuthResponse() {}
 
@@ -145,15 +138,6 @@ public class AuthResponse {
 
   public AuthResponse setRefer(String refer) {
     this.refer = refer;
-    return this;
-  }
-
-  public String getSkin() {
-    return skin;
-  }
-
-  public AuthResponse setSkin(String skin) {
-    this.skin = skin;
     return this;
   }
 
