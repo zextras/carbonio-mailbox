@@ -1,6 +1,7 @@
 package com.zimbra.cs.util.proxyconfgen;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.util.proxyconfgen.ProxyConfVar.KeyValue;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,6 +9,8 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class ProxyConfUtil {
 
@@ -15,7 +18,7 @@ class ProxyConfUtil {
 
   public static void writeContentToFile(String content, String filePath) throws ServiceException {
 
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath)); ) {
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
       bw.write(content);
     } catch (IOException e) {
       throw ServiceException.FAILURE(
@@ -61,6 +64,38 @@ class ProxyConfUtil {
       }
       return ips[0]; // try to return an IPv4, but if there is none,
       // simply return the first IPv6
+    }
+  }
+
+  /**
+   * Checks if the provided URL is a valid source directive URL that can be used in a
+   * Content-Security-Policy.
+   *
+   * @param url The URL to be validated.
+   * @return {@code true} if the URL is a valid source directive URL, otherwise {@code false}.
+   * @author Keshav Bhatt
+   * @since 23.9.0
+   */
+  static boolean isValidSrcDirectiveUrl(String url) {
+    return Pattern.matches(
+        "^(https?://(w{3}\\.)?)?((\\*\\.)?\\w+(-\\w+)*\\.\\w+(\\.[a-zA-Z]+)*(:\\d{1,5})?(/\\*|/\\w*)*(\\??(.+=.*)?(&.+=.*)?)?)?$",
+        url);
+  }
+
+  /**
+   * Parses a header line and extracts the key-value pair.
+   *
+   * @param headerLine The header line to parse.
+   * @return A KeyValue object representing the key-value pair of the header.
+   * @author Keshav Bhatt
+   * @since 23.9.0
+   */
+  static KeyValue parseHeaderLine(String headerLine) {
+    final Matcher matcher = ProxyConfVar.RE_HEADER.matcher(headerLine);
+    if (matcher.matches()) {
+      return new KeyValue(matcher.group(1), matcher.group(2));
+    } else {
+      return new KeyValue(headerLine);
     }
   }
 }

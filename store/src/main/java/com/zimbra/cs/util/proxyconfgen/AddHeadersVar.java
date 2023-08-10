@@ -23,27 +23,12 @@ public class AddHeadersVar extends ProxyConfVar {
     this.customLoginLogoutUrls = customLoginLogoutUrls;
   }
 
-  /**
-   * Checks if the provided URL is a valid source directive URL that can be used in a
-   * Content-Security-Policy.
-   *
-   * @param url The URL to be validated.
-   * @return {@code true} if the URL is a valid source directive URL, otherwise {@code false}.
-   * @author Keshav Bhatt
-   * @since 23.9.0
-   */
-  static boolean isValidSrcDirectiveUrl(String url) {
-    return Pattern.matches(
-        "^(https?://(w{3}\\.)?)?((\\*\\.)?\\w+(-\\w+)*\\.\\w+(\\.[a-zA-Z]+)*(:\\d{1,5})?(/\\*|/\\w*)*(\\??(.+=.*)?(&.+=.*)?)?)?$",
-        url);
-  }
-
   @Override
   public void update() throws ServiceException {
     ArrayList<KeyValue> directives = new ArrayList<>();
 
     for (String headerLine : responseHeaders) {
-      KeyValue header = parseHeaderLine(headerLine);
+      KeyValue header = ProxyConfUtil.parseHeaderLine(headerLine);
 
       // Handle CSP header
       if (header.key.equalsIgnoreCase("Content-Security-Policy")) {
@@ -56,23 +41,6 @@ public class AddHeadersVar extends ProxyConfVar {
     }
 
     mValue = directives;
-  }
-
-  /**
-   * Parses a header line and extracts the key-value pair.
-   *
-   * @param headerLine The header line to parse.
-   * @return A KeyValue object representing the key-value pair of the header.
-   * @author Keshav Bhatt
-   * @since 23.9.0
-   */
-  KeyValue parseHeaderLine(String headerLine) {
-    final Matcher matcher = RE_HEADER.matcher(headerLine);
-    if (matcher.matches()) {
-      return new KeyValue(matcher.group(1), matcher.group(2));
-    } else {
-      return new KeyValue(headerLine);
-    }
   }
 
   /**
@@ -119,7 +87,7 @@ public class AddHeadersVar extends ProxyConfVar {
     final StringBuilder newConnectSrcDirectiveBuilder = new StringBuilder(connectSrcDirective);
 
     for (String url : customLoginLogoutUrls.values()) {
-      if (isValidSrcDirectiveUrl(url)
+      if (ProxyConfUtil.isValidSrcDirectiveUrl(url)
           && (!addedUrls.contains(url.toLowerCase())
               && !connectSrcDirective.toLowerCase().contains(url.toLowerCase()))) {
         newConnectSrcDirectiveBuilder.append(" ").append(url);
