@@ -14,60 +14,56 @@ import java.util.Map;
 
 public class ZAuthResult {
 
-    private long expires;
-    private AuthResponse data;
+  private long expires;
+  private AuthResponse data;
 
-    public ZAuthResult(AuthResponse res) {
-        data = res;
-        expires = data.getLifetime() + System.currentTimeMillis();
-    }
+  public ZAuthResult(AuthResponse res) {
+    data = res;
+    expires = data.getLifetime() + System.currentTimeMillis();
+  }
 
-    public ZAuthToken getAuthToken() {
-        return new ZAuthToken(data.getAuthToken());
-    }
+  public ZAuthToken getAuthToken() {
+    return new ZAuthToken(data.getAuthToken());
+  }
 
-    public String getSessionId() {
-        Session session = data.getSession();
-        if (session == null) {
-            return null;
-        }
-        return session.getId();
+  public String getSessionId() {
+    Session session = data.getSession();
+    if (session == null) {
+      return null;
     }
+    return session.getId();
+  }
 
-    void setSessionId(String id) {
-        Session session = data.getSession();
-        if (session == null) {
-            session = new Session();
-            data.setSession(session);
-        }
-        session.setId(id);
+  void setSessionId(String id) {
+    Session session = data.getSession();
+    if (session == null) {
+      session = new Session();
+      data.setSession(session);
     }
+    session.setId(id);
+  }
 
-    public long getExpires() {
-        return expires;
-    }
+  public long getExpires() {
+    return expires;
+  }
 
-    public long getLifetime() {
-        return data.getLifetime();
-    }
+  public long getLifetime() {
+    return data.getLifetime();
+  }
 
-    public String getRefer() {
-        return data.getRefer();
-    }
+  public String getRefer() {
+    return data.getRefer();
+  }
 
-    public Map<String, List<String>> getAttrs() {
-        return MapUtil.multimapToMapOfLists(data.getAttrsMultimap());
-    }
+  public Map<String, List<String>> getAttrs() {
+    return MapUtil.multimapToMapOfLists(data.getAttrsMultimap());
+  }
 
-    public Map<String, List<String>> getPrefs() {
-        return MapUtil.multimapToMapOfLists(data.getPrefsMultimap());
-    }
+  public Map<String, List<String>> getPrefs() {
+    return MapUtil.multimapToMapOfLists(data.getPrefsMultimap());
+  }
 
-    public String getSkin() {
-        return data.getSkin();
-    }
-
-    public String getCsrfToken() {
-        return data.getCsrfToken();
-    }
+  public String getCsrfToken() {
+    return data.getCsrfToken();
+  }
 }

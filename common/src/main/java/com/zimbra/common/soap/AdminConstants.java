@@ -520,10 +520,6 @@ public final class AdminConstants {
   public static final String E_VERIFY_STORE_MANAGER_REQUEST = "VerifyStoreManagerRequest";
   public static final String E_VERIFY_STORE_MANAGER_RESPONSE = "VerifyStoreManagerResponse";
 
-  // Skins
-  public static final String E_GET_ALL_SKINS_REQUEST = "GetAllSkinsRequest";
-  public static final String E_GET_ALL_SKINS_RESPONSE = "GetAllSkinsResponse";
-
   public static final QName PING_REQUEST = QName.get(E_PING_REQUEST, NAMESPACE);
   public static final QName PING_RESPONSE = QName.get(E_PING_RESPONSE, NAMESPACE);
   public static final QName CHECK_HEALTH_REQUEST = QName.get(E_CHECK_HEALTH_REQUEST, NAMESPACE);
@@ -1216,10 +1212,6 @@ public final class AdminConstants {
   public static final QName VERIFY_STORE_MANAGER_RESPONSE =
       QName.get(E_VERIFY_STORE_MANAGER_RESPONSE, NAMESPACE);
 
-  // Skins
-  public static final QName GET_ALL_SKINS_REQUEST = QName.get(E_GET_ALL_SKINS_REQUEST, NAMESPACE);
-  public static final QName GET_ALL_SKINS_RESPONSE = QName.get(E_GET_ALL_SKINS_RESPONSE, NAMESPACE);
-
   public static final String E_FILTER_RULES = "filterRules";
   public static final String E_FILTER_RULE = "filterRule";
   public static final String E_GET_FILTER_RULES_REQUEST = "GetFilterRulesRequest";
@@ -1375,7 +1367,6 @@ public final class AdminConstants {
   public static final String E_ENTRY = "entry";
   public static final String E_KEY = "key";
   public static final String E_PRINCIPAL = "principal";
-  public static final String E_SKIN = "skin";
   public static final String E_TOKEN = "token";
 
   // HAB
