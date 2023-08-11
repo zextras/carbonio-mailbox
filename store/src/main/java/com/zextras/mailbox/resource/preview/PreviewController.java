@@ -44,7 +44,7 @@ public class PreviewController {
   @GET
   @Path("/doc/" + PREVIEW_REGEXP)
   public Response getDocPreview(
-      @PathParam("messageId") int messageId,
+      @PathParam("messageId") String messageId,
       @PathParam("partNumber") String partNumber,
       @PathParam("previewArea") String previewArea) {
     return this.doPostPreview(messageId, partNumber, previewArea, PreviewType.DOC);
@@ -53,7 +53,7 @@ public class PreviewController {
   @GET
   @Path("/doc/" + THUMBNAIL_REGEXP)
   public Response getDocThumbnail(
-      @PathParam("messageId") int messageId,
+      @PathParam("messageId") String messageId,
       @PathParam("partNumber") String partNumber,
       @PathParam("previewArea") String previewArea) {
     return this.doPostPreview(messageId, partNumber, previewArea, PreviewType.DOC_THUMBNAIL);
@@ -62,7 +62,7 @@ public class PreviewController {
   @GET
   @Path("/image/" + PREVIEW_REGEXP)
   public Response getImagePreview(
-      @PathParam("messageId") int messageId,
+      @PathParam("messageId") String messageId,
       @PathParam("partNumber") String partNumber,
       @PathParam("previewArea") String previewArea) {
     return this.doPostPreview(messageId, partNumber, previewArea, PreviewType.IMAGE);
@@ -71,7 +71,7 @@ public class PreviewController {
   @GET
   @Path("/image/" + THUMBNAIL_REGEXP)
   public Response getImageThumbnail(
-      @PathParam("messageId") int messageId,
+      @PathParam("messageId") String messageId,
       @PathParam("partNumber") String partNumber,
       @PathParam("previewArea") String previewArea) {
     return this.doPostPreview(messageId, partNumber, previewArea, PreviewType.IMAGE_THUMBNAIL);
@@ -80,7 +80,7 @@ public class PreviewController {
   @GET
   @Path("/pdf/" + PREVIEW_REGEXP)
   public Response getPdfPreview(
-      @PathParam("messageId") int messageId,
+      @PathParam("messageId") String messageId,
       @PathParam("partNumber") String partNumber,
       @PathParam("previewArea") String previewArea) {
     return this.doPostPreview(messageId, partNumber, previewArea, PreviewType.PDF);
@@ -89,7 +89,7 @@ public class PreviewController {
   @GET
   @Path("/pdf/" + THUMBNAIL_REGEXP)
   public Response getPdfThumbnail(
-      @PathParam("messageId") int messageId,
+      @PathParam("messageId") String messageId,
       @PathParam("partNumber") String partNumber,
       @PathParam("previewArea") String previewArea) {
     return this.doPostPreview(messageId, partNumber, previewArea, PreviewType.PDF_THUMBNAIL);
@@ -99,12 +99,12 @@ public class PreviewController {
    * This method gets the attachment and ask preview service for a preview. It assumes the same
    * logic for all attachment types.
    *
-   * @param messageId message id of email
+   * @param accountUuidMessageId message id of email, can be accountUuid:id or just id of email.
    * @param partNumber part number of mime attachme
    * @return
    */
   private Response doPostPreview(
-      int messageId, String partNumber, String area, PreviewType previewType) {
+      String accountUuidMessageId, String partNumber, String area, PreviewType previewType) {
 
     final AuthToken authToken = (AuthToken) servletRequest.getAttribute(CTX_AUTH_TOKEN);
     final Query query =
@@ -114,9 +114,19 @@ public class PreviewController {
     if (Objects.equals("attachment", dispositionParameter)) {
       disposition.set("attachment");
     }
+
+    // TODO: refactor this code along with same logic in CopyToFiles
+    int messageId;
+    String accountUuid = authToken.getAccountId();
+    final String[] accountUuidAndMessageId = accountUuidMessageId.split(":");
+    if (accountUuidAndMessageId.length > 1) {
+      accountUuid = accountUuidAndMessageId[0];
+      messageId = Integer.parseInt(accountUuidAndMessageId[1]);
+    } else {
+      messageId = Integer.parseInt(accountUuidAndMessageId[0]);
+    }
     return previewService
-        .getAttachmentAndPreview(
-            authToken.getAccountId(), authToken, previewType, messageId, partNumber, query)
+        .getAttachmentAndPreview(accountUuid, authToken, previewType, messageId, partNumber, query)
         .mapTry(
             attachmentAndPreview ->
                 Response.ok()

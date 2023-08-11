@@ -44,6 +44,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.logging.log4j.util.Strings;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.glassfish.jersey.test.DeploymentContext;
@@ -63,25 +64,48 @@ class PreviewControllerAcceptanceTest extends MailboxJerseyTest {
   private Provisioning provisioning;
 
   /**
-   * Provides arguments as: image name, endpoint, area, if want thumbnail, query params, if inline
+   * Provides arguments as: account uuid of attachment owner, image name, endpoint, area, if want
+   * thumbnail, query params, if disposition inline
    *
    * @return arguments for Preview test
    */
   private static Stream<Arguments> getAttachment() {
     return Stream.of(
-        Arguments.of("MrKrab.gif", "image", "0x0", false, "disp=attachment", false),
-        Arguments.of("MrKrab.gif", "image", "0x0", true, "", true),
         Arguments.of(
+            UUID.randomUUID().toString(),
+            "MrKrab.gif",
+            "image",
+            "0x0",
+            false,
+            "disp=attachment",
+            false),
+        Arguments.of("", "MrKrab.gif", "image", "0x0", true, "", true),
+        Arguments.of(
+            "",
             "MrKrab.gif",
             "image",
             "0x0",
             false,
             "first_page=1&last_page=2&first_page=10&disp=attachment",
             false),
-        Arguments.of("Calcolo_del_fuso.JPEG", "image", "0x0", false, "disp=inline", true),
-        Arguments.of("Calcolo_del_fuso.JPEG", "image", "0x0", true, "quality=high", true),
-        Arguments.of("In-CC0.pdf", "pdf", "0x0", false, "", true),
-        Arguments.of("In-CC0.pdf", "pdf", "0x0", true, "", true));
+        Arguments.of(
+            UUID.randomUUID().toString(),
+            "Calcolo_del_fuso.JPEG",
+            "image",
+            "0x0",
+            false,
+            "disp=inline",
+            true),
+        Arguments.of(
+            UUID.randomUUID().toString(),
+            "Calcolo_del_fuso.JPEG",
+            "image",
+            "0x0",
+            true,
+            "quality=high",
+            true),
+        Arguments.of("", "In-CC0.pdf", "pdf", "0x0", false, "", true),
+        Arguments.of("", "In-CC0.pdf", "pdf", "0x0", true, "", true));
   }
 
   @Override
@@ -115,6 +139,7 @@ class PreviewControllerAcceptanceTest extends MailboxJerseyTest {
   @ParameterizedTest
   @MethodSource("getAttachment")
   public void shouldReturnPreviewWhenRequestingAttachment(
+      String accountId,
       String fileName,
       String type,
       String area,
@@ -138,16 +163,22 @@ class PreviewControllerAcceptanceTest extends MailboxJerseyTest {
     final Tuple2<MimePart, BlobResponse> attachmentAndPreview =
         new Tuple2<>(mimePart, previewResponse);
 
-    when(previewService.getAttachmentAndPreview(
-            any(), any(), any(), eq(messageId), eq(partNumber), any()))
-        .thenReturn(Try.of(() -> attachmentAndPreview));
-
     final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
     final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
+    final String expectedAccountId =
+        Strings.isEmpty(accountId) ? authToken.getAccountId() : accountId;
+
+    when(previewService.getAttachmentAndPreview(
+            eq(expectedAccountId), any(), any(), eq(messageId), eq(partNumber), any()))
+        .thenReturn(Try.of(() -> attachmentAndPreview));
 
     final String thumbnailUrl = isThumbNail ? "thumbnail" : "";
+    final String messageIdPath =
+        Strings.isEmpty(accountId) ? String.valueOf(messageId) : accountId + ":" + messageId;
+
     WebTarget target =
-        target("/" + type + "/" + messageId + "/" + partNumber + "/" + area + "/" + thumbnailUrl);
+        target(
+            "/" + type + "/" + messageIdPath + "/" + partNumber + "/" + area + "/" + thumbnailUrl);
     target = addParams(target, query);
     final Response response =
         target.request().cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded())).get();
