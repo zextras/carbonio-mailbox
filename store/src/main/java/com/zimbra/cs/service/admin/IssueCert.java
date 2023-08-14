@@ -27,8 +27,8 @@ import java.util.Optional;
 public class IssueCert extends AdminDocumentHandler {
 
   public static final String RESPONSE =
-      "The System is processing your certificate generation request. It will send the result to the"
-          + " Global and Domain notification recipients if they are set.";
+      "The System is processing your certificate generation request.\n"
+          + "It will send the result to the Global and Domain notification recipients.";
 
   /**
    * Handles the request. Searches a domain by id, checks admin rights (accessible to global and
