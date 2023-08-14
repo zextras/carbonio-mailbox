@@ -18,15 +18,17 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Admin Handler class to issue a LetsEncrypt certificate for a domain using
- * {@link com.zimbra.cs.rmgmt.RemoteManager}, {@link RemoteCertbot}.
+ * Admin Handler class to issue a LetsEncrypt certificate for a domain using {@link
+ * com.zimbra.cs.rmgmt.RemoteManager}, {@link RemoteCertbot}.
  *
  * @author Yuliya Aheeva
  * @since 23.3.0
  */
 public class IssueCert extends AdminDocumentHandler {
-  public static final String RESPONSE = "The System is processing your certificate generation "
-      + "request. It will send the result to the Domain notification recipients.";
+
+  public static final String RESPONSE =
+      "The System is processing your certificate generation request. It will send the result to the"
+          + " Global and Domain notification recipients if they are set.";
 
   /**
    * Handles the request. Searches a domain by id, checks admin rights (accessible to global and
@@ -40,53 +42,68 @@ public class IssueCert extends AdminDocumentHandler {
    * @return {@link Element} representation of {@link
    *     com.zimbra.soap.admin.message.IssueCertResponse}
    * @throws ServiceException in case if domain could not be found, domain doesn't have
-   * PublicServiceHostname and at least one VirtualHostName,
-   * server with proxy node could not be found or domain admin doesn't have rights to deal with
-   * this domain.
+   *     PublicServiceHostname and at least one VirtualHostName, server with proxy node could not be
+   *     found or domain admin doesn't have rights to deal with this domain.
    */
   @Override
   public Element handle(final Element request, final Map<String, Object> context)
       throws ServiceException {
 
-    ZimbraSoapContext zsc = getZimbraSoapContext(context);
+    final ZimbraSoapContext zsc = getZimbraSoapContext(context);
 
-    Provisioning prov = Provisioning.getInstance();
-    String domainId = request.getAttribute(AdminConstants.A_DOMAIN);
-    Domain domain = Optional.ofNullable(prov.get(DomainBy.id, domainId))
-        .orElseThrow(() -> ServiceException.INVALID_REQUEST(
-            "Domain with id " + domainId + " could not be found.", null));
+    final Provisioning prov = Provisioning.getInstance();
+    final String domainId = request.getAttribute(AdminConstants.A_DOMAIN);
+    final Domain domain =
+        Optional.ofNullable(prov.get(DomainBy.id, domainId))
+            .orElseThrow(
+                () ->
+                    ServiceException.INVALID_REQUEST(
+                        "Domain with id " + domainId + " could not be found.", null));
 
-    AdminAccessControl admin = checkDomainRight(zsc, domain, AdminRights.R_getDomain);
-    String adminMail = admin.mAuthedAcct.getMail();
+    final AdminAccessControl admin =
+        checkDomainRight(zsc, domain, AdminRights.R_setDomainAdminDomainAttrs);
+    final String adminMail = admin.mAuthedAcct.getMail();
 
-    String chain = request.getAttribute(AdminConstants.A_CHAIN_TYPE, AdminConstants.DEFAULT_CHAIN);
+    final String chain =
+        request.getAttribute(AdminConstants.A_CHAIN_TYPE, AdminConstants.DEFAULT_CHAIN);
 
-    String domainName = Optional.ofNullable(domain.getDomainName())
-        .orElseThrow(() -> ServiceException.FAILURE(
-            "Domain with id " + domainId + " must have domain name", null));
-    String publicServiceHostname = Optional.ofNullable(domain.getPublicServiceHostname())
-        .orElseThrow(() -> ServiceException.FAILURE(
-            "Domain " + domainName + " must have PublicServiceHostname.", null));
-    String[] virtualHostNames = Optional.ofNullable(domain.getVirtualHostname())
-        .filter(hosts -> hosts.length > 0)
-        .orElseThrow(() -> ServiceException.FAILURE(
-            "Domain " + domainName + " must have at least one VirtualHostName."));
+    final String domainName =
+        Optional.ofNullable(domain.getDomainName())
+            .orElseThrow(
+                () ->
+                    ServiceException.FAILURE(
+                        "Domain with id " + domainId + " must have domain name", null));
+    final String publicServiceHostname =
+        Optional.ofNullable(domain.getPublicServiceHostname())
+            .orElseThrow(
+                () ->
+                    ServiceException.FAILURE(
+                        "Domain " + domainName + " must have PublicServiceHostname.", null));
+    final String[] virtualHostNames =
+        Optional.ofNullable(domain.getVirtualHostname())
+            .filter(hosts -> hosts.length > 0)
+            .orElseThrow(
+                () ->
+                    ServiceException.FAILURE(
+                        "Domain " + domainName + " must have at least one VirtualHostName."));
 
-    // First release will work only on ONE proxy even if there are multiple proxy in the infrastructure.
-    Server proxyServer =
-        prov.getAllServers()
-            .stream()
+    // First release will work only on ONE proxy even if there are multiple proxy in the
+    // infrastructure.
+    final Server proxyServer =
+        prov.getAllServers().stream()
             .filter(Server::hasProxyService)
             .findFirst()
-            .orElseThrow(() -> ServiceException.FAILURE(
-                "Issuing LetsEncrypt certificate command requires carbonio-proxy. "
-                    + "Make sure carbonio-proxy is installed, up and running."));
+            .orElseThrow(
+                () ->
+                    ServiceException.FAILURE(
+                        "Issuing LetsEncrypt certificate command requires carbonio-proxy. "
+                            + "Make sure carbonio-proxy is installed, up and running."));
 
     ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert for domain " + domainName);
 
-    RemoteManager remoteManager = RemoteManager.getRemoteManager(proxyServer);
-    RemoteCertbot certbot = RemoteCertbot.getRemoteCertbot(remoteManager);
-    String command =
+    final RemoteManager remoteManager = RemoteManager.getRemoteManager(proxyServer);
+    final RemoteCertbot certbot = RemoteCertbot.getRemoteCertbot(remoteManager);
+    final String command =
         certbot.createCommand(
             RemoteCommands.CERTBOT_CERTONLY,
             adminMail,
@@ -95,15 +112,15 @@ public class IssueCert extends AdminDocumentHandler {
             publicServiceHostname,
             virtualHostNames);
 
-    Mailbox mbox = getRequestedMailbox(zsc);
-    CertificateNotificationManager certificateNotificationManager =
+    final Mailbox mbox = getRequestedMailbox(zsc);
+    final CertificateNotificationManager certificateNotificationManager =
         CertificateNotificationManager.getCertificateNotificationManager(mbox, domain);
 
     certbot.supplyAsync(certificateNotificationManager, command);
 
-    Element response = zsc.createElement(AdminConstants.ISSUE_CERT_RESPONSE);
+    final Element response = zsc.createElement(AdminConstants.ISSUE_CERT_RESPONSE);
 
-    Element responseMessageElement =
+    final Element responseMessageElement =
         response
             .addNonUniqueElement(AdminConstants.E_MESSAGE)
             .addAttribute(AdminConstants.A_DOMAIN, domainName);
