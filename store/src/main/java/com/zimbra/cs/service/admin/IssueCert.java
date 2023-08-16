@@ -60,11 +60,11 @@ public class IssueCert extends AdminDocumentHandler {
                     ServiceException.INVALID_REQUEST(
                         "Domain with id " + domainId + " could not be found.", null));
 
-    final AdminAccessControl admin =
+    final AdminAccessControl adminAccessControl =
         checkDomainRight(zsc, domain, AdminRights.R_setDomainAdminDomainAttrs);
-    final String adminMail = admin.mAuthedAcct.getMail();
+    final String adminMail = adminAccessControl.mAuthedAcct.getMail();
 
-    final String chain =
+    final String chainType =
         request.getAttribute(AdminConstants.A_CHAIN_TYPE, AdminConstants.DEFAULT_CHAIN);
 
     final String domainName =
@@ -107,7 +107,7 @@ public class IssueCert extends AdminDocumentHandler {
         certbot.createCommand(
             RemoteCommands.CERTBOT_CERTONLY,
             adminMail,
-            chain,
+            chainType,
             domainName,
             publicServiceHostname,
             virtualHostNames);

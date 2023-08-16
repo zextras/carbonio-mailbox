@@ -118,7 +118,7 @@ public class IssueCertTest {
   }
 
   @Test
-  void shouldSupplyAsyncAndReturnResponse() throws Exception {
+  void handleShouldSupplyAsyncAndReturnResponse() throws Exception {
     domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
     domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
 
@@ -175,41 +175,45 @@ public class IssueCertTest {
   }
 
   @Test
-  void shouldReturnInvalidIfNoSuchDomain() {
-    assertThrows(
-        ServiceException.class,
-        () -> handler.handle(request, context),
-        "Domain with id domainId could not be found.");
+  void handleShouldThrowServiceExceptionWhenNoSuchDomain() {
+    final ServiceException exception =
+        assertThrows(ServiceException.class, () -> handler.handle(request, context));
+    assertEquals(
+        "invalid request: Domain with id domainId could not be found.", exception.getMessage());
   }
 
   @Test
-  void shouldReturnInvalidIfNoPublicServiceHostName() throws Exception {
+  void handleShouldThrowServiceExceptionWhenNoPublicServiceHostName() throws Exception {
     domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
     provisioning.createDomain(domainName, domainAttributes);
-    assertThrows(
-        ServiceException.class,
-        () -> handler.handle(request, context),
-        "must have PublicServiceHostname");
+    final ServiceException exception =
+        assertThrows(ServiceException.class, () -> handler.handle(request, context));
+    assertEquals(
+        "system failure: Domain example.com must have PublicServiceHostname.",
+        exception.getMessage());
   }
 
   @Test
-  void shouldReturnInvalidIfNoVirtualHostName() throws Exception {
+  void handleShouldThrowServiceExceptionWhenNoVirtualHostName() throws Exception {
     domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
     provisioning.createDomain(domainName, domainAttributes);
-    assertThrows(
-        ServiceException.class,
-        () -> handler.handle(request, context),
-        "must have at least one VirtualHostName.");
+    final ServiceException exception =
+        assertThrows(ServiceException.class, () -> handler.handle(request, context));
+    assertEquals(
+        "system failure: Domain example.com must have at least one VirtualHostName.",
+        exception.getMessage());
   }
 
   @Test
-  void shouldReturnFailureIfNoServerWithProxy() throws Exception {
+  void handleShouldThrowServiceExceptionWhenNoServerWithProxyIsAvailable() throws Exception {
     domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
     domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
     provisioning.createDomain(domainName, domainAttributes);
-    assertThrows(
-        ServiceException.class,
-        () -> handler.handle(request, context),
-        "Issuing LetsEncrypt certificate command requires carbonio-proxy.");
+    final ServiceException exception =
+        assertThrows(ServiceException.class, () -> handler.handle(request, context));
+    assertEquals(
+        "system failure: Issuing LetsEncrypt certificate command requires carbonio-proxy. Make sure"
+            + " carbonio-proxy is installed, up and running.",
+        exception.getMessage());
   }
 }
