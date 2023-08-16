@@ -17604,8 +17604,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      *
      * @return zimbraFeatureMobileSyncEnabled, or false if unset
      */
@@ -17615,8 +17614,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      *
      * @param zimbraFeatureMobileSyncEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -17629,8 +17627,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      *
      * @param zimbraFeatureMobileSyncEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -17644,8 +17641,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -17657,8 +17653,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

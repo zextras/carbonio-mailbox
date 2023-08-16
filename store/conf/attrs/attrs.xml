@@ -1882,10 +1882,9 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>serverId:mboxId of mailbox before being moved</desc>
 </attr>
 
-<attr id="347" name="zimbraFeatureMobileSyncEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" deprecatedSince="23.8.0">
+<attr id="347" name="zimbraFeatureMobileSyncEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>whether to permit mobile sync</desc>
-  <deprecateDesc>Zimbra Mobile Gateway feature has been removed</deprecateDesc>
 </attr>
 
 <attr id="348" name="zimbraImapProxyBindPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" callback="CheckPortConflict" requiresRestart="nginxproxy">
@@ -5562,9 +5561,9 @@ TODO: delete them permanently from here
   <desc>show just the display name of email addresses in the message header area and compose pane</desc>
 </attr>
 
-<attr id="1174" name="zimbraFreebusyExchangeServerType" type="enum" value="webdav,ews" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainAdminModifiable" since="6.0.11">
+<attr id="1174" name="zimbraFreebusyExchangeServerType" type="enum" value="webdav" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainAdminModifiable" since="6.0.11">
   <globalConfigValue>webdav</globalConfigValue>
-  <desc>Can be set to either webdav for Exchange 2007 or older, or ews for 2010 and newer</desc>
+  <desc>Can be set to webdav for Exchange 2007 or older</desc>
 </attr>
 
 <attr id="1175" name="zimbraMailboxMoveTempDir" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="7.0.1">

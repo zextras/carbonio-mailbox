@@ -101,8 +101,6 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jaxb-impl-2.3.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/jaxen-1.1.3.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jaxen-1.1.3.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jaxws-api-2.3.0.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/jaxws-api-2.3.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/jcommon-1.0.21.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/jcommon-1.0.21.jar"
   install -D carbonio-jetty-libs/target/dependencies/jdom-1.1.3.jar \

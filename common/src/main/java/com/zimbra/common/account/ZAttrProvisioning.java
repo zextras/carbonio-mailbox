@@ -512,8 +512,7 @@ public class ZAttrProvisioning {
     }
 
     public enum FreebusyExchangeServerType {
-        webdav("webdav"),
-        ews("ews");
+        webdav("webdav");
         private final String mValue;
         FreebusyExchangeServerType(String value) { mValue = value; }
         @Override
@@ -525,7 +524,6 @@ public class ZAttrProvisioning {
              throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
         }
         public boolean isWebdav() { return this == webdav;}
-        public boolean isEws() { return this == ews;}
     }
 
     public enum GalLdapAuthMech {
@@ -7183,8 +7181,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureMobilePolicyEnabled = "zimbraFeatureMobilePolicyEnabled";
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      */
     @ZAttr(id=347)
     public static final String A_zimbraFeatureMobileSyncEnabled = "zimbraFeatureMobileSyncEnabled";
@@ -7783,8 +7780,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFreebusyExchangeCachedIntervalStart = "zimbraFreebusyExchangeCachedIntervalStart";
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
      * @since ZCS 6.0.11
      */

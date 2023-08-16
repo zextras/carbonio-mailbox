@@ -83,11 +83,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>jaxws-api</artifactId>
-      <groupId>javax.xml.ws</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>commons-fileupload</artifactId>
       <groupId>commons-fileupload</groupId>
     </dependency>
