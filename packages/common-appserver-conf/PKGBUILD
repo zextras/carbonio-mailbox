@@ -202,3 +202,61 @@ package() {
   install -D "store-conf/conf/rights/user-rights.xml" \
     "${pkgdir}/opt/zextras/conf/rights/user-rights.xml"
 }
+
+postinst:apt() {
+  # Update LC mailboxd_java_options for JDK17 on post-upgrade
+  if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
+    echo -n "*Updating mailboxd_java_options for JDK17..."
+    java_options=$(su - zextras -c "/opt/zextras/bin/zmlocalconfig -m nokey mailboxd_java_options 2> /dev/null")
+    new_java_options="$java_options"
+    needs_update=false
+    if ! echo "$java_options" | grep -q -e '-Djava.security.egd'; then
+        new_java_options="$new_java_options -Djava.security.egd=file:/dev/./urandom"
+        needs_update=true
+    fi
+    if ! echo "$java_options" | grep -q -e '--add-opens\ java.base/java.lang=ALL-UNNAMED'; then
+        new_java_options="$new_java_options --add-opens java.base/java.lang=ALL-UNNAMED"
+        needs_update=true
+    fi
+    if $needs_update; then
+        new_java_options="$(echo "$new_java_options" | sed -e 's/^[[:space:]]*//')"
+        su - zextras -c "/opt/zextras/bin/zmlocalconfig -f -e mailboxd_java_options='$new_java_options' 2> /dev/null"
+        if [ "$?" -eq 0 ]; then
+            echo "done."
+        else
+            echo "failed."
+        fi
+    else
+        echo "already up-to-date."
+    fi
+  fi
+}
+
+postinst:yum() {
+  # Update LC mailboxd_java_options for JDK17 on post-upgrade
+  if [ "$1" -eq 2 ]; then
+    echo -n "*Updating mailboxd_java_options for JDK17..."
+    java_options=$(su - zextras -c "/opt/zextras/bin/zmlocalconfig -m nokey mailboxd_java_options 2> /dev/null")
+    new_java_options="$java_options"
+    needs_update=false
+    if ! echo "$java_options" | grep -q -e '-Djava.security.egd'; then
+        new_java_options="$new_java_options -Djava.security.egd=file:/dev/./urandom"
+        needs_update=true
+    fi
+    if ! echo "$java_options" | grep -q -e '--add-opens\ java.base/java.lang=ALL-UNNAMED'; then
+        new_java_options="$new_java_options --add-opens java.base/java.lang=ALL-UNNAMED"
+        needs_update=true
+    fi
+    if $needs_update; then
+        new_java_options="$(echo "$new_java_options" | sed -e 's/^[[:space:]]*//')"
+        su - zextras -c "/opt/zextras/bin/zmlocalconfig -f -e mailboxd_java_options='$new_java_options' 2> /dev/null"
+        if [ "$?" -eq 0 ]; then
+            echo "done."
+        else
+            echo "failed."
+        fi
+    else
+        echo "already up-to-date."
+    fi
+  fi
+}
