@@ -45,7 +45,6 @@ urn:zimbra  -- top-level namespace for global attributes/elements
   <soap:Header>
     <context xmlns="urn:zimbra">
       [<authToken>...</authToken>]
-      [<csrfToken>...</csrfToken>]
       [<authTokenControl voidOnExpired="1"/>]
       [<session [id="{returned-from-server-in-last-response}" [seq="{highest_notification_received}"] [type="admin"]/>]
       [<account by="name|id">{account-name-or-id}</account>]
@@ -420,7 +419,7 @@ global soap/system errors used with zimbra:Error/Code:
    account.TWO_FACTOR_SETUP_REQUIRED
 
 
- <AuthRequest xmlns="urn:zimbraAccount" [persistAuthTokenCookie="1"][csrfTokenSecured="0|1"] [deviceTrusted="0|1"] [generateDeviceId="0|1"][tokenType="JWT"]>
+ <AuthRequest xmlns="urn:zimbraAccount" [persistAuthTokenCookie="1"] [deviceTrusted="0|1"] [generateDeviceId="0|1"][tokenType="JWT"]>
    [<account by="name|id|foreignPrincipal">...</account>]
    [<password>...</password>]
    [<recoveryCode>...</recoveryCode>]
@@ -438,7 +437,6 @@ global soap/system errors used with zimbra:Error/Code:
 
  <AuthResponse>
    <authToken>...</authToken>
-   [<csrfToken>...</csrfToken>]
    <lifetime>{lifetime-in-millseconds}</lifetime>
    <session .../>
    <refer>{mail-host}</refer>
@@ -474,10 +472,6 @@ When token type is JWT, authToken element is not supported i.e. JWT can not be i
                                 the cookie will be deleted when the Web browser exits.
                              1: The "Expires" attribute of the cookie will be set per rfc6265.
 
-
-  {csrfTokenSecured} = controls whether the client has the capability to handle CSRF token
-                0: (default) the client is not capable of handling CSRF token
-                1: The client is capable of handling CSRF token.
   {mail-host} = host additional SOAP requests should be directed to. Always returned, might be same as original host request was sent to.
 
   {virtual-host} = if specified (in conjunction with by="name"), virtual-host is used to determine the domain of the account name, if it

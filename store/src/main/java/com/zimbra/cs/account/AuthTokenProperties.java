@@ -33,7 +33,6 @@ public class AuthTokenProperties implements Cloneable {
   public static final String C_TOKEN_ID = "tid";
   // mailbox server version where this account resides
   public static final String C_SERVER_VERSION = "version";
-  public static final String C_CSRF = "csrf";
   public static final String C_KEY_VERSION = "kv";
 
   private String accountId;
@@ -54,7 +53,6 @@ public class AuthTokenProperties implements Cloneable {
   private AuthMech authMech;
   private Integer tokenID = -1;
   private String server_version; // version of the mailbox server where this account resides
-  private boolean csrfTokenEnabled;
   private Usage usage; // what this token will be used for
 
   public AuthTokenProperties(
@@ -159,11 +157,6 @@ public class AuthTokenProperties implements Cloneable {
       tokenID = -1;
     }
     server_version = (String) map.get(C_SERVER_VERSION);
-
-    String csrf = (String) map.get(C_CSRF);
-    if (csrf != null) {
-      csrfTokenEnabled = "1".equals(map.get(C_CSRF));
-    }
   }
 
   // TODO: remove in future version of Carbonio
@@ -248,14 +241,6 @@ public class AuthTokenProperties implements Cloneable {
 
   public String getServerVersion() {
     return server_version;
-  }
-
-  public boolean isCsrfTokenEnabled() {
-    return csrfTokenEnabled;
-  }
-
-  public void setCsrfTokenEnabled(boolean csrfTokenEnabled) {
-    this.csrfTokenEnabled = csrfTokenEnabled;
   }
 
   public Usage getUsage() {

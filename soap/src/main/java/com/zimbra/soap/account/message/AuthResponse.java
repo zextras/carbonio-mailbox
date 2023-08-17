@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.XmlType;
    [<prefs><pref name="{name}" modified="{modified-time}">{value}</pref>...</prefs>]
    [<attrs><attr name="{name}">{value}</a>...</attrs>]
    [<skin>{skin-name}</skin>]
-   [<csrfToken>{csrf-token}</csrfToken>]
  </AuthResponse>
 /**
  * @zm-api-response-description Response to account authentication request.

@@ -738,7 +738,7 @@ public class ItemActionHelper {
   private AuthToken getAuthToken() throws ServiceException {
     AuthToken authToken = null;
 
-    if (mOpCtxt != null) authToken = AuthToken.getCsrfUnsecuredAuthToken(mOpCtxt.getAuthToken());
+    if (mOpCtxt != null) authToken = mOpCtxt.getAuthToken();
 
     if (authToken == null) authToken = AuthProvider.getAuthToken(mAuthenticatedAccount);
 

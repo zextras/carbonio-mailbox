@@ -466,7 +466,7 @@ public class Search extends MailDocumentHandler {
     req.addAttribute(MailConstants.E_QUERY, queryStr.toString(), Element.Disposition.CONTENT);
 
     Account target = Provisioning.getInstance().get(Key.AccountBy.id, nominalTargetAcctId);
-    AuthToken authToken = AuthToken.getCsrfUnsecuredAuthToken(zsc.getAuthToken());
+    AuthToken authToken = zsc.getAuthToken();
     String pxyAuthToken = authToken.getProxyAuthToken();
     ZAuthToken zat = pxyAuthToken == null ? authToken.toZAuthToken() : new ZAuthToken(pxyAuthToken);
     ZMailbox.Options zoptions = new ZMailbox.Options(zat, AccountUtil.getSoapUri(target));

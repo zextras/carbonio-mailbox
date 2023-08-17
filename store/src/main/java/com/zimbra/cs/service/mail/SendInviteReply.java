@@ -549,7 +549,7 @@ public class SendInviteReply extends CalendarRequest {
   private static ZMailbox getRemoteZMailbox(
       OperationContext octxt, Account authAcct, Account targetAcct) throws ServiceException {
     AuthToken authToken = null;
-    if (octxt != null) authToken = AuthToken.getCsrfUnsecuredAuthToken(octxt.getAuthToken());
+    if (octxt != null) authToken = octxt.getAuthToken();
     if (authToken == null) authToken = AuthProvider.getAuthToken(authAcct);
     String pxyAuthToken = authToken.getProxyAuthToken();
     ZAuthToken zat = pxyAuthToken == null ? authToken.toZAuthToken() : new ZAuthToken(pxyAuthToken);

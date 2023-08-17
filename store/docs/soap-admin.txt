@@ -13,7 +13,7 @@ Note that name1 appears twice.
 When updating multiple attributes, you need to specify all the old values at the same time you specify new ones.
 
 ----------------------------
- <AuthRequest xmlns="urn:zimbraAdmin" [persistAuthTokenCookie="1"] [csrfTokenSecured="0|1"]>
+ <AuthRequest xmlns="urn:zimbraAdmin" [persistAuthTokenCookie="1"]>
    [<name>...</name>]
    [<account by="name|id|foreignPrincipal">...</account>]
    <password>...</password>
@@ -23,19 +23,14 @@ When updating multiple attributes, you need to specify all the old values at the
 
  <AuthResponse>
    <authToken>...</authToken>
-   [<csrfToken>...</csrfToken>]
    <lifetime>{lifetime-in-milliseconds}</lifetime>
  </AuthResponse>
 
-  {persistAuthTokenCookie} = controls whether the auth token cookie in the response should 
+  {persistAuthTokenCookie} = controls whether the auth token cookie in the response should
                              be persisted when the browser exits.
                              0: (default)
                                 the cookie will be deleted when the Web browser exits.
                              1: The "Expires" attribute of the cookie will be set per rfc6265.
-
-  {csrfTokenSecured} = controls whether the client has the capability to handle CSRF token
-                0: (default) the client is not capable of handling CSRF token
-                1: The client is capable of handling CSRF token.
 
 Note: Only works with admin/domain-admin accounts
 
@@ -951,10 +946,10 @@ Use cases:
 
 purges aged messages out of trash, spam, and entire mailbox
   (if <mbox> element is omitted, purges all mailboxes on server)
-  
+
 <PurgeMessagesResponse>
     <mbox id="{account-id}" mbxid="{mailbox-id}" s="{size}"/>
-</PurgeMessagesResponse>  
+</PurgeMessagesResponse>
 
 -----------------------------
 
@@ -1317,22 +1312,22 @@ Notes:
   </mbox>*
 </CheckBlobConsistencyResponse>
 
-Notes: 
+Notes:
 
 Checks for items that have no blob, blobs that have no item, and items that
 have an incorrect blob size stored in their metadata.  If no volumes are
 specified, all volumes are checked. If no mailboxes are specified, all mailboxes are checked.
 Blob sizes are checked by default. Set checkSize to 0 to avoid the CPU overhead of uncompressing
-compressed blobs in order to calculate size. 
+compressed blobs in order to calculate size.
 
 external-flag - boolean indicating if the blob is stored locally in FileBlobStore or in an ExternalStoreManager
 
 Blob consistency checking for external blob stores is supported with limitations.
 
 The volume element is ignored for external stores.
-For external blobs the volumeId is always -1 and the path is the locator used by the external store. 
-Unexpected blob detection is only possible if the external store implementation partitions blobs by mailbox. 
-If reportUsedBlobs is set to 1 a complete list of all blobs used by the mailbox(es) is returned. 
+For external blobs the volumeId is always -1 and the path is the locator used by the external store.
+Unexpected blob detection is only possible if the external store implementation partitions blobs by mailbox.
+If reportUsedBlobs is set to 1 a complete list of all blobs used by the mailbox(es) is returned.
 
 -----------------------------
 
@@ -1402,7 +1397,7 @@ Notes:
     total = total number of distribution lists (not affected by limit/offset)
 
     req-attrs = comma-seperated list of attrs to return
-    
+
     dynamic = whether this is a dynamic distribution list
 
 Access: domain admin sufficient
@@ -1452,8 +1447,8 @@ Access: domain admin sufficient
 Unlike add, remove of a non-existent member causes an exception and no
 modification to the list.
 
-when "account" element is used all aliases as well as main email address of the account will be removed from the DL. 
-Unlike when using "dlm" element, if none of the email addresses that belong to an account referenced in "account" element are 
+when "account" element is used all aliases as well as main email address of the account will be removed from the DL.
+Unlike when using "dlm" element, if none of the email addresses that belong to an account referenced in "account" element are
 members of the DL, no exception is thrown.
 
 -----------------------------
@@ -2340,7 +2335,7 @@ e.g.
 
 -----------------------------
 
-# count number of objects.  
+# count number of objects.
 # Returns number of objects of requested type.
 
 <CountObjectsRequest type="{count-objects-type}">
@@ -2348,13 +2343,13 @@ e.g.
     [<ucservice by="{ucservice-by}">...</ucservice>]
 </CountObjectsRequest>
 
-{count-objects-type} = userAccount | 
-                       account | 
-                       alias | 
+{count-objects-type} = userAccount |
+                       account |
+                       alias |
                        dl |
                        calresource |
                        domain |
-                       cos | 
+                       cos |
                        server |
                        accountOnUCService |
                        cosOnUCService |
@@ -2363,11 +2358,11 @@ e.g.
 <CountObjectsResponse num="{result}" type="{count-objects-type}">
 </CountObjectsResponse>
 
-Note: For account/alias/dl, if a <domain> is specified, only entries on the 
-      specified domain are counted.  If no domain is specified, entries on 
+Note: For account/alias/dl, if a <domain> is specified, only entries on the
+      specified domain are counted.  If no domain is specified, entries on
       all domains are counted.
-      
-      For accountOnUCService/cosOnUCService/domainOnUCService, <ucservice> is required, 
+
+      For accountOnUCService/cosOnUCService/domainOnUCService, <ucservice> is required,
       and <domain> cannot be specified.
 
 ---------------------------------------------------------------------------
@@ -2519,7 +2514,7 @@ Notes:
     - name attribute is for the name of the data source.
     - if folder attr is not present it'll default to Contacts folder.
     - passed in attrs in <a/> are used to initialize the gal data source.
-  - server is a required parameter and specifies the mailhost on which this account resides.  
+  - server is a required parameter and specifies the mailhost on which this account resides.
 
 
 example for creating gal sync account for Zimbra LDAP server.
@@ -2557,11 +2552,11 @@ Access: domain admin sufficient
   <account name="{name}" id="{id}"/>
 </AddGalSyncDataSourceResponse>
 
-Notes: 
+Notes:
   - Add additional data sources to the existing galsync account.
   - non-existing account causes an exception.
   - name attribute is for the name of the data source.
-  
+
 Access: domain admin sufficient
 
 ----------------------------
@@ -2650,7 +2645,7 @@ A request that does nothing and always returns nothing. Used to keep an admin se
                    calendarResource,identity,dataSource,pop3DataSource,imapDataSource,rssDataSource,
                    liveDataSource,galDataSource,signature,xmppComponent,aclTarget
 
-Only one of attrs or entryTypes can be specified.  
+Only one of attrs or entryTypes can be specified.
 If both are specified, INVALID_REQUEST will be thrown.
 If neither is specified, all attributes will be returned.
 
@@ -2661,7 +2656,7 @@ If neither is specified, all attributes will be returned.
 
 ----------------------------
 <AutoProvAccountRequest>
-    <domain by="name|id">...</domain>  
+    <domain by="name|id">...</domain>
     <principal by="dn|name">...</principal>
     [<password>...</password>]
 </AutoProvAccountRequest>
@@ -2675,10 +2670,10 @@ If neither is specified, all attributes will be returned.
 
 ----------------------------
 
-<SearchAutoProvDirectoryRequest [limit="..."] [offset="..."] [maxResults="..."] 
+<SearchAutoProvDirectoryRequest [limit="..."] [offset="..."] [maxResults="..."]
     [attrs="a1,a2,a3"] [refresh="1"] keyAttr="{key-attr}">
-  <domain by="name|id">...</domain>  
-  [<name>...</name>]  
+  <domain by="name|id">...</domain>
+  [<name>...</name>]
   [<query>...</query>]
 </SearchDirectoryRequest>
 
@@ -2690,26 +2685,26 @@ If neither is specified, all attributes will be returned.
 </SearchAutoProvDirectoryResponse>
 
 Notes:
-  <name>  - name to fill the auto provisioning search template configured on the domain 
+  <name>  - name to fill the auto provisioning search template configured on the domain
   <query> - query string should be an LDAP-style filter string (RFC 2254)
-  only one of <name> or <query> can be provided.  If neither is provided, the configured 
+  only one of <name> or <query> can be provided.  If neither is provided, the configured
   search filter for auto provision will be used.
-    
+
   maxResults = maximum results that the backend will attempt to fetch from the directory before
   returning a account.TOO_MANY_SEARCH_RESULTS error.
 
   limit    - the number of accounts to return per page (0 is default and means all)
   offset   - the starting offset (0, 25, etc)
   domain   - the Zimbra domain name
-  keyAttr  - name of attribute for the key.  Value of the key attribute will appear in the 
-             <key> element in the response.  It is recommended to pick a key attribute that 
-             is single-valued and can unique identify an entry in the external auto provision 
-             directory.  If the key attribute contains multiple values then multiple <key> 
-             elements will appear in the response. 
+  keyAttr  - name of attribute for the key.  Value of the key attribute will appear in the
+             <key> element in the response.  It is recommended to pick a key attribute that
+             is single-valued and can unique identify an entry in the external auto provision
+             directory.  If the key attribute contains multiple values then multiple <key>
+             elements will appear in the response.
              Entries are returned in ascending key order.
   attrs    - comma-seperated list of attrs to return
   refresh  - whether to always re-search in LDAP even when cached entries are available.  0 is default.
-  
+
   more-flag = true if more entries left to return
   search-total = total number of accounts that matched search (not affected by limit/offset)
 
@@ -2720,12 +2715,12 @@ Notes:
 <AutoProvTaskControlResponse status="started|running|idle|stopped">
 </AutoProvTaskControlResponse>
 
-Under normal situations, the EAGER auto provisioning task(thread) should be started/stopped 
-automatically by the server when appropriate.  The task should be running when 
-zimbraAutoProvPollingInterval is not 0 and zimbraAutoProvScheduledDomains is not empty.  
+Under normal situations, the EAGER auto provisioning task(thread) should be started/stopped
+automatically by the server when appropriate.  The task should be running when
+zimbraAutoProvPollingInterval is not 0 and zimbraAutoProvScheduledDomains is not empty.
 The task should be stopped otherwise.
- 
-This API is to manually force start/stop or query status of the EAGER auto provisioning task. 
+
+This API is to manually force start/stop or query status of the EAGER auto provisioning task.
 It is only for diagnosis purpose and should not be used under normal situations.
 
   action start - start EAGER auto provisioning task
@@ -2738,7 +2733,7 @@ It is only for diagnosis purpose and should not be used under normal situations.
     status stopped - success
     status idle - EAGER auto provisioning task is not running
 
-   
+
 -----------------------------
 
 The system retention policy SOAP APIs allow the administrator to edit
@@ -2883,9 +2878,9 @@ If "cos" element is specified the opeartion create/modify/get/delete gets applie
 Verify basic StoreManager functionality and performance. To be used by integrators during StoreManager development.
 
 numberOfBlobs - number of blobs to create. Defaults to 1000 if not specified.
-fileSize - size of each blob file in bytes. Defaults to 1024 if not specified. 
+fileSize - size of each blob file in bytes. Defaults to 1024 if not specified.
 
-All times reported in response are the total elapsed time for all blobs. 
+All times reported in response are the total elapsed time for all blobs.
 
 storeManagerClass - Java class name for the currently deployed StoreManager implementation
 incomingTime - time (ms) for the store incoming operation
@@ -3159,7 +3154,7 @@ Note that as of ZCS 8.5 nested filter rules are supported in the SOAP API but no
 Notify action:
 <actionNotify> generates the Zimbra specific format of the notify filter rule.
 <actionRFCCompliantNotify> generates the RFC 5436 and 5436 compliant notify filter rule.
-<actionRFCCompliantNotify> is available only when the global config 'zimbraMailSieveNotifyActionRFCCompliant' key is set to TRUE 
+<actionRFCCompliantNotify> is available only when the global config 'zimbraMailSieveNotifyActionRFCCompliant' key is set to TRUE
 (if this key is set to TRUE, the Zimbra-format notify action will fail to execute, and vise versa).
   {from} : The from address which is displayed at the From header of the notification message.
   {subject} : The subject of the notification message.
@@ -3281,4 +3276,3 @@ API to create address list in given domain
 
 searchFilter: See SearchCalendarResourcesRequest section in soap.txt.
 domain: domain is optional element, if domain is not provided, admin account's domain is used from admin auth token
-

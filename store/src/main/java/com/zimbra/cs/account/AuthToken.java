@@ -13,7 +13,6 @@ import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -43,38 +42,6 @@ public abstract class AuthToken {
 
   public static boolean isAnyAdmin(AuthToken authToken) {
     return authToken.isAdmin() || authToken.isDomainAdmin() || authToken.isDelegatedAdmin();
-  }
-
-  /**
-   * Returns an auth token that does not require a csrf token along with it for successful auth.
-   *
-   * <p>This utility method is useful when a mailbox server wants to make a request to a server
-   * running within the same system using the auth token inside an op/soap context.
-   *
-   * @param authToken
-   * @return clone of an existing Auth token
-   */
-  public static AuthToken getCsrfUnsecuredAuthToken(AuthToken authToken) {
-    // Bug :96496
-    if (authToken == null) {
-      // this is an edge case where the user is changing password during first login and
-      // the autToken is null
-      return null;
-    }
-
-    if (authToken.isCsrfTokenEnabled()) {
-      AuthToken token;
-      try {
-        token = (AuthToken) authToken.clone();
-        token.setCsrfTokenEnabled(false);
-        return token;
-      } catch (CloneNotSupportedException e) {
-        ZimbraLog.misc.debug("Error cloning auth token.", e);
-        return null;
-      }
-    } else {
-      return authToken;
-    }
   }
 
   @Override
@@ -109,12 +76,6 @@ public abstract class AuthToken {
   public abstract String getDigest();
 
   public abstract String getCrumb() throws AuthTokenException;
-
-  public boolean isCsrfTokenEnabled() {
-    return false;
-  }
-
-  public void setCsrfTokenEnabled(boolean csrfEnabled) {}
 
   public boolean isDelegatedAuth() {
     return (getAdminAccountId() != null && !getAdminAccountId().equals(""));

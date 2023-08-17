@@ -3,13 +3,13 @@ GOALS/CONCEPTS
 ------------------------------------------------------------
 0) we have too many ways of getting at data (content, ical, rss, etc), we have:
 
-  get an attachment: 
+  get an attachment:
 
     http://{server}/service/content/get?id=544&part=2
 
-  get the calendar as ical: 
+  get the calendar as ical:
 
-    http://{server}/service/ical/cal.ics  
+    http://{server}/service/ical/cal.ics
 
   get an RSS feed ("is:unread inbox" by default):
 
@@ -28,20 +28,20 @@ GOALS/CONCEPTS
 
 1) everything item should be addressable using a clean, REST URL format
 
-2) Should have user-friendly URLs for humans consumption, as well 
+2) Should have user-friendly URLs for humans consumption, as well
    as low-level ID-driven URLs for use within programs (web client references to
    attachemnts, etc).
 
 3) Should be able to request different "flavors" for content. i.e., XML, JSON,
-   ICS, RSS/ATOM, RDF, HTML, CSV, microformats, etc. The flavor will be based 
-   on the "fmt" query param. "flavor" is a term used in articles on REST, 
+   ICS, RSS/ATOM, RDF, HTML, CSV, microformats, etc. The flavor will be based
+   on the "fmt" query param. "flavor" is a term used in articles on REST,
    and basically means MIME content-type. If an explicit flavor is not requested,
    then the default for a given type will be used.
 
    folders in our system have a "hint" for which view to use to display the folder's
    contents. We should use that hint to determine the default flavor for a folder.
 
-4) all items should minimally have an XML and JSON repsentation, ideally using 
+4) all items should minimally have an XML and JSON repsentation, ideally using
    our existing formats, though we might want to re-examine them and/or have different
    views for those types.
 
@@ -74,18 +74,18 @@ URL
           {date-specifier} = mm/dd/yyyy | yyyy/dd/mm | \d+ (milliseconds) | [mp+-]?([0-9]+)([mhdwy][a-z]*)
 
               absolute dates:
-  
+
               mm/dd/yyyy (i.e., 12/25/1998)
               yyyy/dd/mm (i.e., 1989/12/25)
-              \d+       (num milliseconds, i.e., 1132276598000)   
-  
+              \d+       (num milliseconds, i.e., 1132276598000)
+
              relative dates:
-  
+
              [mp+-]?([0-9]+)([mhdwy][a-z]*)?g
 
              p/+/{not-specified}   current time plus an offset (p and '' are supported for use in query params)
              m/-                   current time minus an offset
- 
+
              ([mhdwy][a-z]*)  units, everything after the first character is ignored (except for "mi" case):
 
              m(onths)
@@ -94,15 +94,15 @@ URL
              w(eeks)
              h(ours)
              y(ears)
-     
+
              examples:
                1day     1 day from now
-              +2days    2 days from now 
+              +2days    2 days from now
               p1day     1 day from now
               -2days     2 days ago
               +60mi     60 minutes from now
               +1week    1 week from now
-              +6mon     6 months from now 
+              +6mon     6 months from now
               1year     1 year from now
 
           {auth-types} = comma-separated list. Legal values are:
@@ -174,8 +174,8 @@ URL
 
               timeout=mscec update brower client with a text newline to prevent
                   upload timeouts
-                 
-              nohierarchy=1 do not include the target folder's parent hierarchy 
+
+              nohierarchy=1 do not include the target folder's parent hierarchy
 
 ------------------------------------------------------------
 EXAMPLES
@@ -183,10 +183,10 @@ EXAMPLES
 
 There are two primary formats, one using a folder, and one using a mail item id.
 
-http://server/home/[~]{account-name}/{folder-path}    // path to a folder 
+http://server/home/[~]{account-name}/{folder-path}    // path to a folder
 http://server/home/[~]{account-name}/?id={item-id}    // a mail item id
 
-A single ~ is allowed and references the authenticated user accessing the data. 
+A single ~ is allowed and references the authenticated user accessing the data.
 
 Some examples:
 
@@ -268,11 +268,11 @@ We probably want to allow the same params that the SearchRequest soap command al
 to allow for paging, restricting what types of items are returned, etc:
 
  types="{types}" (done)
- 
- [limit="..."] 
+
+ [limit="..."]
  [offset="..."]
  [sortBy="{sort-by}"]
- [groupBy="{group-by}"] 
+ [groupBy="{group-by}"]
 
  [cursorId="prevId"]
 
@@ -329,7 +329,7 @@ ISSUES/NOTES
   /home/roland/sales/*?fmt=zip               // all folders in sales (not including sales)
   /home/roland/sales/*?fmt=zip?recursive=1   //  same as previous, but recursive
 
-2. user-friendly item "ids"? It would be nice to have user-friendly names 
+2. user-friendly item "ids"? It would be nice to have user-friendly names
    for items inside of a folder, such as (+ is url-encoded form of a space):
 
   /home/roland/calendar/Staff+Meeting
@@ -337,13 +337,13 @@ ISSUES/NOTES
   /home/roland/inbox/Important+Meeting
 
   Exchange allows this type of naming, need to determine how/if we'd want to do
-  this, and how to deal with collisions like it does. 
-  
+  this, and how to deal with collisions like it does.
+
   Might need to come up with a per-item query-param string, or use search:
-  
+
   /home/roland/contacts/?query="Roland Schemers"
 
-3. there will probably by mail-item specific query params, like duration for 
+3. there will probably by mail-item specific query params, like duration for
    calendars, picking alternate views for .html flavors, etc. Should try and
    standardize where possible. For exmaple:
 
@@ -361,29 +361,29 @@ ISSUES/NOTES
    /home/roland/inbox?fmt=csv
 
    but ideally we'd emit a simple CSV format. We could define to be something like a
-   separate column for each header, and specially named columns for the "body" 
-   and/or mime parts of the message. The mime body parts would not be incuded, 
+   separate column for each header, and specially named columns for the "body"
+   and/or mime parts of the message. The mime body parts would not be incuded,
    just a URL referencing them.
 
 6. We should have an extension mechanism to allow people to plug in the their own
-   formats. The plugin would get a context containing the query params, the path 
+   formats. The plugin would get a context containing the query params, the path
    (resolve/unresovled parts), and the target mail item.
 
 7. When using the extension-style format syntax:
 
    /home/roland/inbox.rss
-   
+
    vs:
-   
+
    /home/roland/inbox?fmt=rss
 
   If there is a folder/document that is actually named "inbox.rss", then it takes precedence
-  over the "inbox" folder. So you'll have to explicitly use the fmt query parameter to 
+  over the "inbox" folder. So you'll have to explicitly use the fmt query parameter to
   disambiguate between the two:
 
    /home/roland/inbox?fmt=rss
    /home/roland/inbox.rss?fmt=zip
-   
+
 ------------------------------------------------------------
 REFERENCES
 ------------------------------------------------------------
@@ -400,7 +400,7 @@ Meerkat: An Open Service API
   http://www.oreillynet.com/pub/a/rss/2000/05/09/meerkat_api.html
 
 REST and the Real World
- 
+
   http://webservices.xml.com/pub/a/ws/2002/02/20/rest.html?page=1
 
 Microformats
@@ -416,33 +416,16 @@ APPENDIX A: URL forms
 ------------------------------------------------------------
 Here various ways to access john.doe@zimbra.com's calendar:
 
-shortcut to yourself: 
+shortcut to yourself:
   /home/~/calendar
   /home/~/?id=10       // id 10 is always the calendar folder
 
-explicit account: 
+explicit account:
    /~john.doe/calendar
    /home/john.doe/calendar
    /home/john.doe/?id=10
    /home/john.doe@zimbra.com/calendar
    /home/34cc4086-801e-42a0-a67a-ea93c1590c4e/?id=10
-   
-------------------------------------------------------------
-APPENDIX B: POST Data with CSRF token
-------------------------------------------------------------
-For POST request which is currently supported for Import in ZWC the CSRF token is expected 
-as a HTTP header
-X-Zimbra-Csrf-Token
-or as a form field
-csrfToken
-
-------Example with Form field ---
-Content-Disposition: form-data; name="csrfToken"
-0_2f9a602552d8be83930b8e061718a5b56eabbc87
-
-----Example with Http Header----
-Referer http://localhost:7070/
-X-Zimbra-Csrf-Token 0_b9c88c641becf7943e7c9af7e569ea911cf8b7a0
 
 ---------------------------------------------------
 Profile configuration files

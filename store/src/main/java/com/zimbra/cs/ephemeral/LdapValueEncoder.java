@@ -7,7 +7,7 @@ package com.zimbra.cs.ephemeral;
 import com.zimbra.cs.account.Provisioning;
 
 /**
- * Value encoder that encodes auth and CSRF tokens in a backwards-compatible format.
+ * Value encoder that encodes auth in a backwards-compatible format.
  *
  * @author iraykin
  */

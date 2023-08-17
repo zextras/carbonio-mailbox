@@ -510,7 +510,7 @@ public class SendMsg extends MailDocumentHandler {
         ownerMbox.delete(octxt, iidDraft.getId(), MailItem.Type.MESSAGE);
       } else {
         Account target = Provisioning.getInstance().get(Key.AccountBy.id, iidDraft.getAccountId());
-        AuthToken at = AuthToken.getCsrfUnsecuredAuthToken(zsc.getAuthToken());
+        AuthToken at = zsc.getAuthToken();
         ZAuthToken zat =
             at.getProxyAuthToken() == null
                 ? at.toZAuthToken()

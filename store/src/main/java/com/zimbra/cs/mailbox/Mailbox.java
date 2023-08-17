@@ -6503,7 +6503,7 @@ public class Mailbox implements MailboxStore {
               }
             }
             Options options = new Options();
-            AuthToken authToken = AuthToken.getCsrfUnsecuredAuthToken(getAuthToken(octxt));
+            AuthToken authToken = getAuthToken(octxt);
             options.setAuthToken(authToken.toZAuthToken());
             options.setTargetAccount(orgAccount.getName());
             options.setTargetAccountBy(AccountBy.name);
@@ -6525,7 +6525,7 @@ public class Mailbox implements MailboxStore {
       Account ownerAccount, String uid, boolean includeInvites, boolean includeContent)
       throws ServiceException {
     Options options = new Options();
-    AuthToken authToken = AuthToken.getCsrfUnsecuredAuthToken(getAuthToken(getOperationContext()));
+    AuthToken authToken = getAuthToken(getOperationContext());
     options.setAuthToken(authToken.toZAuthToken());
     options.setTargetAccount(getAccount().getName());
     options.setTargetAccountBy(AccountBy.name);
@@ -9847,7 +9847,7 @@ public class Mailbox implements MailboxStore {
     // Look up remote folder by UUID to discover the new numeric id.
     Account shareOwner =
         Provisioning.getInstance().get(Key.AccountBy.id, shloc.getShareOwnerAccountId());
-    AuthToken at = AuthToken.getCsrfUnsecuredAuthToken(octxt.getAuthToken());
+    AuthToken at = octxt.getAuthToken();
     String pxyAuthToken = Provisioning.onLocalServer(shareOwner) ? null : at.getProxyAuthToken();
     ZAuthToken zat = null;
     if (pxyAuthToken == null) {

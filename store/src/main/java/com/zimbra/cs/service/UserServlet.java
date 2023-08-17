@@ -444,7 +444,7 @@ public class UserServlet extends ZimbraServlet {
    */
   public static String getExternalRestUrl(OperationContext octxt, Mountpoint mpt)
       throws ServiceException {
-    AuthToken authToken = AuthToken.getCsrfUnsecuredAuthToken(octxt.getAuthToken());
+    AuthToken authToken = octxt.getAuthToken();
     // check to see if it is a local mount point, if it is there's
     // no need to do anything
     if (mpt.isLocal()) {

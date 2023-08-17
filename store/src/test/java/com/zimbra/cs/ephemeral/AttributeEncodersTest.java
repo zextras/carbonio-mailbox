@@ -50,7 +50,6 @@ public class AttributeEncodersTest {
     // dynamic key, expiration
     assertEquals("bar|1|1000", dynamicExpirationEncoder.encodeValue(dynamicInput, location));
 
-    // test special handling of auth and CSRF token encoding for LDAP backwards compatibility
     ValueEncoder ldapValueEncoder = new LdapValueEncoder();
     EphemeralKey authKey = new EphemeralKey(Provisioning.A_zimbraAuthTokens, "tokenId");
     EphemeralInput authInput = new EphemeralInput(authKey, "serverVersion");

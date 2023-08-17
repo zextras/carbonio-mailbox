@@ -118,7 +118,6 @@ public class LdapEphemeralStoreTest {
     EphemeralResult result = store.get(key, target);
     assertEquals(result.getValue(), "validToken");
     helper.reset();
-    // no expiration will result in an invalid auth/CSRF token
     key = new EphemeralKey(attrName, "dynamicPart");
     store.set(new EphemeralInput(key, "value"), target);
     helper.reset();

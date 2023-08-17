@@ -33,7 +33,6 @@ import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.admin.AdminAccessControl;
 import com.zimbra.cs.service.admin.AdminDocumentHandler;
-import com.zimbra.cs.servlet.CsrfTokenException;
 import com.zimbra.cs.servlet.ZimbraInvalidLoginFilter;
 import com.zimbra.cs.session.Session;
 import com.zimbra.cs.session.SessionCache;
@@ -50,7 +49,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -245,8 +243,7 @@ public class SoapEngine {
     return soapProto;
   }
 
-  public Element dispatch(String path, byte[] soapMessage, Map<String, Object> context)
-      throws CsrfTokenException {
+  public Element dispatch(String path, byte[] soapMessage, Map<String, Object> context) {
     if (soapMessage == null || soapMessage.length == 0) {
       SoapProtocol soapProto = SoapProtocol.Soap12;
       return soapFaultEnv(
@@ -297,7 +294,6 @@ public class SoapEngine {
    * @param envelope the top-level element of the message
    * @param context user context parameters
    * @return an XmlObject which is a SoapEnvelope containing the response
-   * @throws CsrfTokenException if CSRF token validation fails
    */
   private Element dispatch(String path, Element envelope, Map<String, Object> context) {
     SoapProtocol soapProto = SoapProtocol.determineProtocol(envelope);
@@ -316,10 +312,6 @@ public class SoapEngine {
           soapProto, "SOAP exception", ServiceException.INVALID_REQUEST("No SOAP body", null));
     }
 
-    ServletRequest servReq = (ServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-
-    // Check if this handler requires authentication.
-    // Do not perform CSRF checks for handlers that do not require authentication
     DocumentHandler handler = dispatcher.getHandler(doc);
     ZimbraSoapContext zsc = null;
     Element ectxt = soapProto.getHeader(envelope, HeaderConstants.CONTEXT);
@@ -330,9 +322,6 @@ public class SoapEngine {
     }
 
     if (handler == null) {
-      // no CSRF check if handler is null and is not a Batch request. Only Batch Request will not
-      // have a
-      // handler, all other request should be mapped to a Handler
       if (doc.getName().equals("BatchRequest")) {
         StringBuilder sb = new StringBuilder();
         for (Element req : doc.listElements()) {

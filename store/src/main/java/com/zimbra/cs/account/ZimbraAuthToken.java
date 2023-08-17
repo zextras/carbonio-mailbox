@@ -366,9 +366,6 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
           AuthTokenProperties.C_DIGEST, properties.getDigest(), encodedBuff);
       BlobMetaData.encodeMetaData(
           AuthTokenProperties.C_SERVER_VERSION, properties.getServerVersion(), encodedBuff);
-      if (properties.isCsrfTokenEnabled()) {
-        BlobMetaData.encodeMetaData(AuthTokenProperties.C_CSRF, "1", encodedBuff);
-      }
       String data = new String(Hex.encodeHex(encodedBuff.toString().getBytes()));
       AuthTokenKey key = getCurrentKey();
       String hmac = TokenUtil.getHmac(data, key.getKey());
@@ -547,28 +544,6 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
   @Override
   public void resetProxyAuthToken() {
     properties.setProxyAuthToken(null);
-  }
-
-  /* (non-Javadoc)
-   * @see com.zimbra.cs.account.AuthToken#isCsrfTokenEnabled()
-   */
-  @Override
-  public boolean isCsrfTokenEnabled() {
-    return properties.isCsrfTokenEnabled();
-  }
-
-  @Override
-  public void setCsrfTokenEnabled(boolean csrfEnabled) {
-    if (csrfEnabled != properties.isCsrfTokenEnabled()) {
-      synchronized (ZimbraAuthToken.class) {
-        if (properties.getEncoded() != null) {
-          CACHE.remove(properties.getEncoded());
-        }
-      }
-      properties.setCsrfTokenEnabled(csrfEnabled);
-      // force re-encoding of the token
-      properties.setEncoded(null);
-    }
   }
 
   @Override
