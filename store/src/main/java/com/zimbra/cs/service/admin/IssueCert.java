@@ -36,6 +36,9 @@ public class IssueCert extends AdminDocumentHandler {
    * command, asynchronously executes it, creates response element, notifies global and domain
    * recipients about the result of remote execution.
    *
+   * <p>Note: Executes certbot command only on ONE (first found) proxy even if there are multiple
+   * proxy in the infrastructure.
+   *
    * @param request {@link Element} representation of {@link
    *     com.zimbra.soap.admin.message.IssueCertRequest}
    * @param context request context
@@ -87,8 +90,6 @@ public class IssueCert extends AdminDocumentHandler {
                     ServiceException.FAILURE(
                         "Domain " + domainName + " must have at least one VirtualHostName."));
 
-    // First release will work only on ONE proxy even if there are multiple proxy in the
-    // infrastructure.
     final Server proxyServer =
         prov.getAllServers().stream()
             .filter(Server::hasProxyService)
