@@ -14,7 +14,6 @@ import com.zimbra.common.httpclient.InputStreamRequestHttpRetryHandler;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.ContentDisposition;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.HttpUtil;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.L10nUtil.MsgKey;
@@ -49,10 +48,8 @@ import com.zimbra.cs.service.formatter.TarFormatter;
 import com.zimbra.cs.service.formatter.ZipFormatter;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.UserServletUtil;
-import com.zimbra.cs.servlet.CsrfFilter;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import com.zimbra.cs.servlet.util.AuthUtil;
-import com.zimbra.cs.servlet.util.CsrfUtil;
 import com.zimbra.cs.util.AccountUtil;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -298,7 +295,6 @@ public class UserServlet extends ZimbraServlet {
           L10nUtil.getMessage(MsgKey.errMustAuthenticate, req));
     } else if (ctxt != null
         && ctxt.cookieAuthHappened
-        && !ctxt.isCsrfAuthSucceeded()
         && (req.getMethod().equalsIgnoreCase("POST") || req.getMethod().equalsIgnoreCase("PUT"))) {
       resp.sendError(
           HttpServletResponse.SC_UNAUTHORIZED,
@@ -628,36 +624,6 @@ public class UserServlet extends ZimbraServlet {
 
       if (context.getAuthAccount() != null) {
         ZimbraLog.addAccountNameToContext(context.getAuthAccount().getName());
-      }
-
-      boolean doCsrfCheck = false;
-      if (req.getAttribute(CsrfFilter.CSRF_TOKEN_CHECK) != null) {
-        doCsrfCheck = (Boolean) req.getAttribute(CsrfFilter.CSRF_TOKEN_CHECK);
-      }
-
-      if (doCsrfCheck) {
-        String csrfToken = req.getHeader(Constants.CSRF_TOKEN);
-        if (log.isDebugEnabled()) {
-          String paramValue = req.getParameter(QP_AUTH);
-          log.debug(
-              "CSRF check is: %s, CSRF token is: %s, Authentication recd with request is: %s",
-              doCsrfCheck, csrfToken, paramValue);
-        }
-
-        if (!StringUtil.isNullOrEmpty(csrfToken)) {
-          if (!CsrfUtil.isValidCsrfToken(csrfToken, context.authToken)) {
-            context.setCsrfAuthSucceeded(Boolean.FALSE);
-            log.debug(
-                "CSRF token validation failed for account: %s"
-                    + ", Auth token is CSRF enabled:  %s"
-                    + "CSRF token is: %s",
-                context.authToken, context.authToken.isCsrfTokenEnabled(), csrfToken);
-            sendError(context, req, resp, L10nUtil.getMessage(MsgKey.errMustAuthenticate, req));
-            return;
-          } else {
-            context.setCsrfAuthSucceeded(Boolean.TRUE);
-          }
-        }
       }
       Folder folder = null;
       String filename = null;

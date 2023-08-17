@@ -17,10 +17,8 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.soap.SoapTransport;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.soap.ZimbraNamespace;
-import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
@@ -35,10 +33,8 @@ import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.admin.AdminAccessControl;
 import com.zimbra.cs.service.admin.AdminDocumentHandler;
-import com.zimbra.cs.servlet.CsrfFilter;
 import com.zimbra.cs.servlet.CsrfTokenException;
 import com.zimbra.cs.servlet.ZimbraInvalidLoginFilter;
-import com.zimbra.cs.servlet.util.CsrfUtil;
 import com.zimbra.cs.session.Session;
 import com.zimbra.cs.session.SessionCache;
 import com.zimbra.cs.session.SoapSession;
@@ -332,20 +328,12 @@ public class SoapEngine {
     } catch (ServiceException e) {
       return soapFaultEnv(soapProto, "unable to construct SOAP context", e);
     }
-    boolean doCsrfCheck = false;
-    if (servReq.getAttribute(CsrfFilter.CSRF_TOKEN_CHECK) != null) {
-      doCsrfCheck = (Boolean) servReq.getAttribute(CsrfFilter.CSRF_TOKEN_CHECK);
-    } else if (zsc.getAuthToken() != null && zsc.getAuthToken().isCsrfTokenEnabled()) {
-      doCsrfCheck = true;
-    }
 
     if (handler == null) {
       // no CSRF check if handler is null and is not a Batch request. Only Batch Request will not
       // have a
       // handler, all other request should be mapped to a Handler
-      if (!doc.getName().equals("BatchRequest")) {
-        doCsrfCheck = false;
-      } else {
+      if (doc.getName().equals("BatchRequest")) {
         StringBuilder sb = new StringBuilder();
         for (Element req : doc.listElements()) {
           if (sb.length() > 0) {
@@ -359,8 +347,6 @@ public class SoapEngine {
       }
     } else {
       if (doc.getName().equals("AuthRequest")) {
-        // this is a Auth request, no CSRF validation happens
-        doCsrfCheck = false;
         try {
           Element contextElmt = getSoapContextElement(soapProto, envelope);
           if (contextElmt != null) {
@@ -370,33 +356,6 @@ public class SoapEngine {
         } catch (ServiceException e) {
           // was trying to get the jwt salt from soap context, if any issue occurred ignore.
         }
-      } else {
-        doCsrfCheck = doCsrfCheck && handler.needsAuth(context);
-      }
-    }
-
-    if (doCsrfCheck) {
-      try {
-        HttpServletRequest httpReq = (HttpServletRequest) servReq;
-        // Bug: 96167 SoapEngine should be able to read CSRF token from HTTP headers
-        String csrfToken = httpReq.getHeader(Constants.CSRF_TOKEN);
-        if (StringUtil.isNullOrEmpty(csrfToken)) {
-          Element contextElmt = getSoapContextElement(soapProto, envelope);
-          if (contextElmt != null) {
-            csrfToken = contextElmt.getAttribute(HeaderConstants.E_CSRFTOKEN);
-          }
-        }
-        AuthToken authToken = zsc.getAuthToken();
-        if (!CsrfUtil.isValidCsrfToken(csrfToken, authToken)) {
-          LOG.info("CSRF token validation failed for account");
-          return soapFaultEnv(
-              soapProto, "cannot dispatch request", ServiceException.AUTH_REQUIRED());
-        }
-      } catch (ServiceException e) {
-        // we came here which implies clients supports CSRF authorization
-        // and CSRF token is generated
-        LOG.info("Error during CSRF validation.", e);
-        return soapFaultEnv(soapProto, "cannot dispatch request", ServiceException.AUTH_REQUIRED());
       }
     }
 
@@ -688,7 +647,9 @@ public class SoapEngine {
         ZimbraPerf.SOAP_TRACKER_PROMETHEUS.addStat(statName, startTime);
         Timer.builder("soap_exec")
             .description("Soap API execution time")
-            .tags("command", statName).register(meterRegistry).record(elapsed, TimeUnit.MILLISECONDS);
+            .tags("command", statName)
+            .register(meterRegistry)
+            .record(elapsed, TimeUnit.MILLISECONDS);
         long duration = System.currentTimeMillis() - startTime;
         if (LC.zimbra_slow_logging_enabled.booleanValue()
             && duration > LC.zimbra_slow_logging_threshold.longValue()

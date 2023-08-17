@@ -71,7 +71,6 @@ import com.zimbra.common.soap.SoapTransport;
 import com.zimbra.common.soap.SoapTransport.NotificationFormat;
 import com.zimbra.common.soap.ZimbraNamespace;
 import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.ListUtil;
 import com.zimbra.common.util.MapUtil;
 import com.zimbra.common.util.Pair;
@@ -258,7 +257,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       Collections.unmodifiableSet(EnumSet.complementOf(EnumSet.of(InfoSection.zimlets)));
 
   private ZAuthToken mAuthToken;
-  private String mCsrfToken;
   private String mTrustedToken;
   private SoapHttpTransport mTransport;
   private SessionPreference mNotifyPreference;
@@ -410,7 +408,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     private ZEventHandler mHandler;
     private List<String> mAttrs;
     private List<String> mPrefs;
-    private boolean mCsrfSupported; // Used by AuthRequest
     private Map<String, String> mCustomHeaders;
     private SoapTransport.NotificationFormat notificationFormat =
         SoapTransport.NotificationFormat.DEFAULT;
@@ -436,10 +433,9 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       setUri(uri);
     }
 
-    public Options(ZAuthToken authToken, String uri, boolean forceAuth, boolean csrfSupported) {
+    public Options(ZAuthToken authToken, String uri, boolean forceAuth) {
       mAuthToken = authToken;
       mAuthAuthToken = forceAuth;
-      mCsrfSupported = csrfSupported;
       setUri(uri);
     }
 
@@ -673,15 +669,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       return this;
     }
 
-    public boolean getCsrfSupported() {
-      return mCsrfSupported;
-    }
-
-    public Options setCsrfSupported(boolean csrfSupported) {
-      mCsrfSupported = csrfSupported;
-      return this;
-    }
-
     public Map<String, String> getCustomHeaders() {
       if (mCustomHeaders == null) {
         mCustomHeaders = new HashMap<String, String>();
@@ -797,10 +784,9 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return new ZMailbox(new Options(authToken, uri));
   }
 
-  public static ZMailbox getByAuthToken(
-      ZAuthToken authToken, String uri, boolean forceAuth, boolean csrfSupported)
+  public static ZMailbox getByAuthToken(ZAuthToken authToken, String uri, boolean forceAuth)
       throws ServiceException {
-    return new ZMailbox(new Options(authToken, uri, forceAuth, csrfSupported));
+    return new ZMailbox(new Options(authToken, uri, forceAuth));
   }
 
   public ZMailbox(Options options) throws ServiceException {
@@ -873,11 +859,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   public void initAuthToken(ZAuthToken authToken) {
     mAuthToken = authToken;
     mTransport.setAuthToken(mAuthToken);
-  }
-
-  public void initCsrfToken(String csrfToken) {
-    mCsrfToken = csrfToken;
-    mTransport.setCsrfToken(mCsrfToken);
   }
 
   public void initTrustedToken(String trustedToken) {
@@ -959,7 +940,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     AuthRequest auth = new AuthRequest(account, password);
     auth.setPassword(password);
     auth.setVirtualHost(options.getVirtualHost());
-    auth.setCsrfSupported(options.getCsrfSupported());
     if (options.getAuthToken() != null) {
       auth.setAuthToken(new AuthToken(options.getAuthToken().getValue(), false));
     }
@@ -977,7 +957,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     AuthRequest req = new AuthRequest();
     ZAuthToken zat = options.getAuthToken(); // cannot be null here
     req.setAuthToken(new AuthToken(zat.getValue(), false));
-    req.setCsrfSupported(options.getCsrfSupported());
     addAttrsAndPrefs(req, options);
 
     invokeJaxb(req, (r) -> handleAuthResponse((AuthResponse) r, options));
@@ -991,7 +970,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     final ZAuthResult authResult = new ZAuthResult(authResponse);
     authResult.setSessionId(mTransport.getSessionId());
     mAuthResult = authResult;
-    initCsrfToken(mAuthResult.getCsrfToken());
     initAuthToken(mAuthResult.getAuthToken());
   }
 
@@ -1001,10 +979,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   public ZAuthToken getAuthToken() {
     return mAuthToken;
-  }
-
-  public String getCsrfToken() {
-    return mCsrfToken;
   }
 
   public String getTrustedToken() {
@@ -1039,9 +1013,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     }
     if (mAuthToken != null) {
       mTransport.setAuthToken(mAuthToken);
-    }
-    if (mCsrfToken != null) {
-      mTransport.setCsrfToken(mCsrfToken);
     }
     for (Map.Entry<String, String> entry : options.getCustomHeaders().entrySet()) {
       mTransport.getCustomHeaders().put(entry.getKey(), entry.getValue());
@@ -2867,9 +2838,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     HttpClient client = clientBuilder.build();
     int statusCode;
     try {
-      if (mCsrfToken != null) {
-        post.addHeader(Constants.CSRF_TOKEN, mCsrfToken);
-      }
       HttpEntity entity = builder.build();
       post.setEntity(entity);
       HttpResponse response = HttpClientUtil.executeMethod(client, post);
@@ -2925,10 +2893,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       builder.addBinaryBody("upfile", in, ContentType.DEFAULT_BINARY, name);
       HttpEntity httpEntity = builder.build();
       post.setEntity(httpEntity);
-
-      if (mCsrfToken != null) {
-        post.addHeader(Constants.CSRF_TOKEN, mCsrfToken);
-      }
 
       HttpResponse response = HttpClientUtil.executeMethod(client, post);
       statusCode = response.getStatusLine().getStatusCode();

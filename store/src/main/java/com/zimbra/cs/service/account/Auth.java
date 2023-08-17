@@ -15,8 +15,6 @@ import com.zimbra.common.account.ZAttrProvisioning.AutoProvAuthMech;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.HeaderConstants;
-import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
@@ -38,8 +36,6 @@ import com.zimbra.cs.account.names.NameUtil.EmailAddress;
 import com.zimbra.cs.listeners.AuthListener;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.util.JWTUtil;
-import com.zimbra.cs.servlet.CsrfFilter;
-import com.zimbra.cs.servlet.util.CsrfUtil;
 import com.zimbra.cs.session.Session;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.SoapEngine;
@@ -50,7 +46,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
@@ -82,13 +77,8 @@ public class Auth extends AccountDocumentHandler {
     AccountBy acctBy = null;
     Account acct = null;
     Element acctEl = request.getOptionalElement(AccountConstants.E_ACCOUNT);
-    boolean csrfSupport = request.getAttributeBool(AccountConstants.A_CSRF_SUPPORT, false);
     String reqTokenType = request.getAttribute(AccountConstants.A_TOKEN_TYPE, "");
     TokenType tokenType = TokenType.fromCode(reqTokenType);
-    if (TokenType.JWT.equals(tokenType)) {
-      // in case of jwt, csrfSupport has no significance
-      csrfSupport = false;
-    }
     ZimbraLog.account.debug("auth: reqTokenType: %s, tokenType: %s", reqTokenType, tokenType);
     if (acctEl != null) {
       acctValuePassedIn = acctEl.getText();
@@ -167,15 +157,7 @@ public class Auth extends AccountDocumentHandler {
           }
         }
         if (usage == Usage.AUTH) {
-          ServletRequest httpReq = (ServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-          httpReq.setAttribute(CsrfFilter.AUTH_TOKEN, at);
-          if (csrfSupport && !at.isCsrfTokenEnabled()) {
-            // handle case where auth token was originally generated with csrf support
-            // and now client sends the same auth token but saying csrfSupport is turned off
-            // in that case do not disable CSRF check for this authToken.
-            at.setCsrfTokenEnabled(csrfSupport);
-          }
-          return doResponse(request, at, zsc, context, authTokenAcct, csrfSupport);
+          return doResponse(request, at, zsc, context, authTokenAcct);
         } else {
           acct = authTokenAcct;
         }
@@ -268,7 +250,7 @@ public class Auth extends AccountDocumentHandler {
       }
     }
 
-    AuthToken at = null;
+    AuthToken at;
     if (recoveryCode != null) {
       at = AuthProvider.getAuthToken(acct, Usage.RESET_PASSWORD, tokenType);
     } else {
@@ -277,17 +259,8 @@ public class Auth extends AccountDocumentHandler {
               ? AuthProvider.getAuthToken(acct, tokenType)
               : AuthProvider.getAuthToken(acct, expires, tokenType);
     }
-    ServletRequest httpReq = (ServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-    // For CSRF filter so that token generation can happen
-    if (csrfSupport && !at.isCsrfTokenEnabled()) {
-      // handle case where auth token was originally generated with csrf support
-      // and now client sends the same auth token but saying csrfSupport is turned off
-      // in that case do not disable CSRF check for this authToken.
-      at.setCsrfTokenEnabled(csrfSupport);
-    }
-    httpReq.setAttribute(CsrfFilter.AUTH_TOKEN, at);
     AuthListener.invokeOnSuccess(acct);
-    return doResponse(request, at, zsc, context, acct, csrfSupport);
+    return doResponse(request, at, zsc, context, acct);
   }
 
   private boolean tokenTypeAndElementValidation(
@@ -312,8 +285,7 @@ public class Auth extends AccountDocumentHandler {
       AuthToken at,
       ZimbraSoapContext zsc,
       Map<String, Object> context,
-      Account acct,
-      boolean csrfSupport)
+      Account acct)
       throws ServiceException {
     Element response = zsc.createElement(AccountConstants.AUTH_RESPONSE);
     at.encodeAuthResp(response, false);
@@ -371,22 +343,6 @@ public class Auth extends AccountDocumentHandler {
           }
         }
       }
-    }
-
-    boolean csrfCheckEnabled = false;
-    if (httpReq.getAttribute(ZAttrProvisioning.A_zimbraCsrfTokenCheckEnabled) != null) {
-      csrfCheckEnabled =
-          (Boolean) httpReq.getAttribute(ZAttrProvisioning.A_zimbraCsrfTokenCheckEnabled);
-    }
-
-    if (csrfSupport && csrfCheckEnabled) {
-      String accountId = at.getAccountId();
-      long authTokenExpiration = at.getExpires();
-      int tokenSalt = (Integer) httpReq.getAttribute(CsrfFilter.CSRF_SALT);
-      String token = CsrfUtil.generateCsrfToken(accountId, authTokenExpiration, tokenSalt, at);
-      Element csrfResponse = response.addUniqueElement(HeaderConstants.E_CSRFTOKEN);
-      csrfResponse.addText(token);
-      httpResp.setHeader(Constants.CSRF_TOKEN, token);
     }
 
     Element productQueryEl = request.getOptionalElement(AccountConstants.E_PRODUCT_QUERY);

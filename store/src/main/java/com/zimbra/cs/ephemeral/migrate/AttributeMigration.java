@@ -86,7 +86,6 @@ public class AttributeMigration {
   static {
     registerConverter(Provisioning.A_zimbraAuthTokens, new AuthTokenConverter());
     registerConverter(Provisioning.A_zimbraInvalidJWTokens, new AuthTokenConverter());
-    registerConverter(Provisioning.A_zimbraCsrfTokenData, new CsrfTokenConverter());
     registerConverter(Provisioning.A_zimbraLastLogonTimestamp, new StringAttributeConverter());
   }
 

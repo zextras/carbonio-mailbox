@@ -440,7 +440,6 @@ public class AccountConstants {
   public static final String A_SMIME_SOURCE_LOOKUP_OPT = "sourceLookupOpt";
   public static final String A_VIA = "via";
   public static final String A_VERIFY_ACCOUNT = "verifyAccount";
-  public static final String A_CSRF_SUPPORT = "csrfTokenSecured";
   public static final String A_GET_COUNT = "getCount";
   public static final String A_TOKEN_TYPE = "tokenType";
   public static final String E_JWT_TOKEN = "jwtToken";

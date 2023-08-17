@@ -29,7 +29,6 @@
    <rule ref="rulesets/apex/security.xml/ApexXSSFromURLParam"/>
    <rule ref="rulesets/apex/security.xml/ApexXSSFromEscapeFalse"/>
    <rule ref="rulesets/apex/security.xml/ApexBadCrypto"/>
-   <rule ref="rulesets/apex/security.xml/ApexCSRF"/>
    <rule ref="rulesets/apex/security.xml/ApexSOQLInjection"/>
    <rule ref="rulesets/apex/security.xml/ApexCRUDViolation"/>
    <rule ref="rulesets/apex/security.xml/ApexDangerousMethods"/>
@@ -368,7 +367,6 @@
    <rule ref="rulesets/pom/basic.xml/ProjectVersionAsDependencyVersion"/>
    <rule ref="rulesets/pom/basic.xml/InvalidDependencyTypes"/>
    <rule ref="rulesets/vf/security.xml/VfUnescapeEl"/>
-   <rule ref="rulesets/vf/security.xml/VfCsrf"/>
    <rule ref="rulesets/vm/basic.xml/AvoidDeeplyNestedIfStmts"/>
    <rule ref="rulesets/vm/basic.xml/CollapsibleIfStatements"/>
    <rule ref="rulesets/vm/basic.xml/ExcessiveTemplateLength"/>

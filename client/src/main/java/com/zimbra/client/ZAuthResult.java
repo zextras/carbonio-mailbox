@@ -62,8 +62,4 @@ public class ZAuthResult {
   public Map<String, List<String>> getPrefs() {
     return MapUtil.multimapToMapOfLists(data.getPrefsMultimap());
   }
-
-  public String getCsrfToken() {
-    return data.getCsrfToken();
-  }
 }

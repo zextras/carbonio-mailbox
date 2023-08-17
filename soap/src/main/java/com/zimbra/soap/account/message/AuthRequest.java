@@ -60,15 +60,6 @@ public class AuthRequest {
   private ZmBoolean persistAuthTokenCookie;
 
   /**
-   * @zm-api-field-description controls whether the client supports CSRF token <br>
-   *     0: (default)<br>
-   *     Client does not support CSRF token<br>
-   *     1: The client supports CSRF token. <br>
-   */
-  @XmlAttribute(name = AccountConstants.A_CSRF_SUPPORT /* support CSRF Token */, required = false)
-  private ZmBoolean csrfSupported;
-
-  /**
    * @zm-api-field-description Specifies the account to authenticate against
    */
   @XmlElement(name = AccountConstants.E_ACCOUNT, required = false)
@@ -295,19 +286,5 @@ public class AuthRequest {
   public AuthRequest addAttr(String attrName) {
     attrs.add(new Attr(attrName));
     return this;
-  }
-
-  /**
-   * @return the csrfSupported
-   */
-  public ZmBoolean getCsrfSupported() {
-    return csrfSupported;
-  }
-
-  /**
-   * @param csrfSupported the csrfSupported to set
-   */
-  public void setCsrfSupported(Boolean csrfSupported) {
-    this.csrfSupported = ZmBoolean.fromBool(csrfSupported);
   }
 }

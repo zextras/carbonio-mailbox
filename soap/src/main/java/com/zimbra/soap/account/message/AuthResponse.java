@@ -91,13 +91,6 @@ public class AuthResponse {
   @XmlElement(name = AccountConstants.E_REFERRAL /* refer */, required = false)
   private String refer;
 
-  /**
-   * @zm-api-field-description if client is CSRF token enabled , the CSRF token Returned only when
-   *     client says it is CSRF enabled .
-   */
-  @XmlElement(name = HeaderConstants.E_CSRFTOKEN /* CSRF token*/, required = false)
-  private String csrfToken;
-
   public AuthResponse() {}
 
   public AuthResponse(String authToken, long lifetime) {
@@ -171,20 +164,6 @@ public class AuthResponse {
 
   public Multimap<String, String> getPrefsMultimap() {
     return Pref.toMultimap(prefs);
-  }
-
-  /**
-   * @return the csrfToken
-   */
-  public String getCsrfToken() {
-    return csrfToken;
-  }
-
-  /**
-   * @param csrfToken the csrfToken to set
-   */
-  public void setCsrfToken(String csrfToken) {
-    this.csrfToken = csrfToken;
   }
 
   public Long getTrustLifetime() {
