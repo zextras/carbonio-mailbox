@@ -1,41 +1,35 @@
 package com.zimbra.cs.util.proxyconfgen;
 
 /**
- * A simple class of Triple<VirtualHostName, VirtualIPAddress, DomainName>. Uses this only for
- * convenient and HashMap can't guarantee order
+ * Represents attributes for a domain configuration.
  *
  * @author jiankuan
+ * @author Keshav Bhatt
  */
 class DomainAttrItem {
 
   private final String domainName;
   private final String virtualHostname;
   private final String virtualIPAddress;
+  private String clientCertMode;
+  private String clientCertCa;
+  private String[] rspHeaders;
+  private String cspHeader;
+  private String webUiLoginUrl;
+  private String webUiLogoutUrl;
+  private String adminUiLoginUrl;
+  private String adminUiLogoutUrl;
   private String sslCertificate;
   private String sslPrivateKey;
-  private final String clientCertMode;
-  private final String clientCertCa;
-  private final String[] rspHeaders;
-  private final String cspHeader;
-  private final String webUiLoginUrl;
-  private final String webUiLogoutUrl;
-  private final String adminUiLoginUrl;
-  private final String adminUiLogoutUrl;
 
-  DomainAttrItem(Builder builder) {
-    this.domainName = builder.domainName;
-    this.virtualHostname = builder.virtualHostname;
-    this.virtualIPAddress = builder.virtualIPAddress;
-    this.sslCertificate = builder.sslCertificate;
-    this.sslPrivateKey = builder.sslPrivateKey;
-    this.clientCertMode = builder.clientCertMode;
-    this.clientCertCa = builder.clientCertCa;
-    this.rspHeaders = builder.rspHeaders;
-    this.cspHeader = builder.cspHeader;
-    this.webUiLoginUrl = builder.webUiLoginUrl;
-    this.webUiLogoutUrl = builder.webUiLogoutUrl;
-    this.adminUiLoginUrl = builder.adminUiLoginUrl;
-    this.adminUiLogoutUrl = builder.adminUiLogoutUrl;
+  protected DomainAttrItem(String domainName, String virtualHostname, String virtualIPAddress) {
+    this.domainName = domainName;
+    this.virtualHostname = virtualHostname;
+    this.virtualIPAddress = virtualIPAddress;
+  }
+
+  public static DomainNameStep builder() {
+    return new Builder();
   }
 
   public String getDomainName() {
@@ -48,22 +42,6 @@ class DomainAttrItem {
 
   public String getVirtualIPAddress() {
     return virtualIPAddress;
-  }
-
-  public String getSslCertificate() {
-    return sslCertificate;
-  }
-
-  public void setSslCertificate(String sslCertificate) {
-    this.sslCertificate = sslCertificate;
-  }
-
-  public String getSslPrivateKey() {
-    return sslPrivateKey;
-  }
-
-  public void setSslPrivateKey(String sslPrivateKey) {
-    this.sslPrivateKey = sslPrivateKey;
   }
 
   public String getClientCertMode() {
@@ -98,13 +76,68 @@ class DomainAttrItem {
     return adminUiLogoutUrl;
   }
 
-  public static class Builder {
+  public String getSslCertificate() {
+    return sslCertificate;
+  }
 
-    private final String domainName;
-    private final String virtualHostname;
-    private final String virtualIPAddress;
-    private String sslCertificate;
-    private String sslPrivateKey;
+  public void setSslCertificate(String certificate) {
+    this.sslCertificate = certificate;
+  }
+
+  public String getSslPrivateKey() {
+    return sslPrivateKey;
+  }
+
+  public void setSslPrivateKey(String privateKey) {
+    this.sslPrivateKey = privateKey;
+  }
+
+  interface DomainNameStep {
+
+    VirtualHostnameStep withDomainName(String domainName);
+  }
+
+  interface VirtualHostnameStep {
+
+    VirtualIPAddressStep withVirtualHostname(String virtualHostname);
+  }
+
+  interface VirtualIPAddressStep {
+
+    FinalStep withVirtualIPAddress(String virtualIPAddress);
+  }
+
+  interface FinalStep {
+
+    DomainAttrItem build();
+
+    FinalStep withClientCertMode(String clientCertMode);
+
+    FinalStep withClientCertCa(String clientCertCa);
+
+    FinalStep withRspHeaders(String[] rspHeaders);
+
+    FinalStep withCspHeader(String cspHeader);
+
+    FinalStep withWebUiLoginUrl(String webUiLoginUrl);
+
+    FinalStep withWebUiLogoutUrl(String webUiLogoutUrl);
+
+    FinalStep withAdminUiLoginUrl(String adminUiLoginUrl);
+
+    FinalStep withAdminUiLogoutUrl(String adminUiLogoutUrl);
+
+    FinalStep withSslCertificate(String sslCertificate);
+
+    FinalStep withSslPrivateKey(String sslPrivateKey);
+  }
+
+  private static final class Builder
+      implements DomainNameStep, VirtualHostnameStep, VirtualIPAddressStep, FinalStep {
+
+    private String domainName;
+    private String virtualHostname;
+    private String virtualIPAddress;
     private String clientCertMode;
     private String clientCertCa;
     private String[] rspHeaders;
@@ -113,65 +146,88 @@ class DomainAttrItem {
     private String webUiLogoutUrl;
     private String adminUiLoginUrl;
     private String adminUiLogoutUrl;
+    private String sslCertificate;
+    private String sslPrivateKey;
 
-    public Builder(String domainName, String virtualHostname, String virtualIPAddress) {
+    public VirtualHostnameStep withDomainName(String domainName) {
       this.domainName = domainName;
+      return this;
+    }
+
+    public VirtualIPAddressStep withVirtualHostname(String virtualHostname) {
       this.virtualHostname = virtualHostname;
+      return this;
+    }
+
+    public FinalStep withVirtualIPAddress(String virtualIPAddress) {
       this.virtualIPAddress = virtualIPAddress;
-    }
-
-    public Builder withSslCertificate(String sslCertificate) {
-      this.sslCertificate = sslCertificate;
       return this;
     }
 
-    public Builder withSslPrivateKey(String sslPrivateKey) {
-      this.sslPrivateKey = sslPrivateKey;
-      return this;
-    }
-
-    public Builder withClientCertMode(String clientCertMode) {
+    public FinalStep withClientCertMode(String clientCertMode) {
       this.clientCertMode = clientCertMode;
       return this;
     }
 
-    public Builder withClientCertCa(String clientCertCa) {
+    public FinalStep withClientCertCa(String clientCertCa) {
       this.clientCertCa = clientCertCa;
       return this;
     }
 
-    public Builder withRspHeaders(String[] rspHeaders) {
+    public FinalStep withRspHeaders(String[] rspHeaders) {
       this.rspHeaders = rspHeaders;
       return this;
     }
 
-    public Builder withCspHeader(String cspHeader) {
+    public FinalStep withCspHeader(String cspHeader) {
       this.cspHeader = cspHeader;
       return this;
     }
 
-    public Builder withWebUiLoginUrl(String webUiLoginUrl) {
+    public FinalStep withWebUiLoginUrl(String webUiLoginUrl) {
       this.webUiLoginUrl = webUiLoginUrl;
       return this;
     }
 
-    public Builder withWebUiLogoutUrl(String webUiLogoutUrl) {
+    public FinalStep withWebUiLogoutUrl(String webUiLogoutUrl) {
       this.webUiLogoutUrl = webUiLogoutUrl;
       return this;
     }
 
-    public Builder withAdminUiLoginUrl(String adminUiLoginUrl) {
+    public FinalStep withAdminUiLoginUrl(String adminUiLoginUrl) {
       this.adminUiLoginUrl = adminUiLoginUrl;
       return this;
     }
 
-    public Builder withAdminUiLogoutUrl(String adminUiLogoutUrl) {
+    public FinalStep withAdminUiLogoutUrl(String adminUiLogoutUrl) {
       this.adminUiLogoutUrl = adminUiLogoutUrl;
       return this;
     }
 
+    public FinalStep withSslCertificate(String sslCertificate) {
+      this.sslCertificate = sslCertificate;
+      return this;
+    }
+
+    public FinalStep withSslPrivateKey(String sslPrivateKey) {
+      this.sslPrivateKey = sslPrivateKey;
+      return this;
+    }
+
     public DomainAttrItem build() {
-      return new DomainAttrItem(this);
+      DomainAttrItem domainAttrItem =
+          new DomainAttrItem(domainName, virtualHostname, virtualIPAddress);
+      domainAttrItem.clientCertMode = clientCertMode;
+      domainAttrItem.clientCertCa = clientCertCa;
+      domainAttrItem.rspHeaders = rspHeaders;
+      domainAttrItem.cspHeader = cspHeader;
+      domainAttrItem.webUiLoginUrl = webUiLoginUrl;
+      domainAttrItem.webUiLogoutUrl = webUiLogoutUrl;
+      domainAttrItem.adminUiLoginUrl = adminUiLoginUrl;
+      domainAttrItem.adminUiLogoutUrl = adminUiLogoutUrl;
+      domainAttrItem.sslCertificate = sslCertificate;
+      domainAttrItem.sslPrivateKey = sslPrivateKey;
+      return domainAttrItem;
     }
   }
 }

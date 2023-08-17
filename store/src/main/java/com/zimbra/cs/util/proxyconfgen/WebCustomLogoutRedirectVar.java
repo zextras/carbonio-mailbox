@@ -10,8 +10,7 @@ package com.zimbra.cs.util.proxyconfgen;
  * application, and the web proxy needs to handle the logout redirection. Upon calling update, if
  * the custom URL is provided, the web proxy will return a 200 response (this is intentional as the
  * redirect in this case will be handled by UI) with no redirection. Otherwise, it will return a 307
- * Temporary Redirect response with the default URL provided during initialization, usually we use
- * {@link ProxyConfGen#DEFAULT_WEB_LOGIN_PATH} as default value.
+ * Temporary Redirect response with the default URL provided during initialization.
  *
  * @author Keshav Bhatt
  * @see ProxyConfVar
@@ -21,7 +20,7 @@ class WebCustomLogoutRedirectVar extends ProxyConfVar {
 
   private final String mCustomUrl;
 
-  public WebCustomLogoutRedirectVar(
+  WebCustomLogoutRedirectVar(
       String keyword, String attribute, Object defaultValue, String description, String customUrl) {
     super(
         keyword,

@@ -70,4 +70,18 @@ class ProxyConfUtilTest {
     assertEquals("X-Frame-Options", header2.key);
     assertEquals("DENY", header2.value);
   }
+
+  @Test
+  void extractConnectSrcDirective_should_extractCorrectDirective() {
+    final String cspHeader1 = "default-src 'self'; script-src 'self';";
+    final String cspHeader2 =
+        "default-src 'self'; connect-src 'self' https://test.com/login https://test.com/logout;";
+
+    final String connectSrcDirective1 = ProxyConfUtil.extractConnectSrcDirectiveFromCSP(cspHeader1);
+    final String connectSrcDirective2 = ProxyConfUtil.extractConnectSrcDirectiveFromCSP(cspHeader2);
+
+    assertEquals("", connectSrcDirective1); // No connect-src directive in the header
+    assertEquals(
+        "connect-src 'self' https://test.com/login https://test.com/logout", connectSrcDirective2);
+  }
 }

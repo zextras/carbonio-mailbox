@@ -13,7 +13,7 @@ class WebCustomLoginUrlVar extends ProxyConfVar {
 
   private final String mCustomUrl;
 
-  public WebCustomLoginUrlVar(
+  WebCustomLoginUrlVar(
       String keyword, String attribute, Object defaultValue, String description, String customUrl) {
     super(
         keyword,

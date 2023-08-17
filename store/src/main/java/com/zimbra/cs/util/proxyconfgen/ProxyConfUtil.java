@@ -98,4 +98,24 @@ class ProxyConfUtil {
       return new KeyValue(headerLine);
     }
   }
+
+  /**
+   * Extracts the connect-src directive from the Content-Security-Policy header. The method uses a
+   * case-insensitive regular expression pattern to match the directive.
+   *
+   * @param cspHeader The Content-Security-Policy header to extract the connect-src directive from.
+   * @return The connect-src directive of the Content-Security-Policy header if found, or an empty
+   *     string if not found.
+   * @author Keshav Bhatt
+   * @since 23.9.0
+   */
+  static String extractConnectSrcDirectiveFromCSP(String cspHeader) {
+    final Pattern pattern = Pattern.compile("connect-src[^;]*", Pattern.CASE_INSENSITIVE);
+    final Matcher matcher = pattern.matcher(cspHeader);
+    if (matcher.find()) {
+      return matcher.group().trim();
+    } else {
+      return "";
+    }
+  }
 }

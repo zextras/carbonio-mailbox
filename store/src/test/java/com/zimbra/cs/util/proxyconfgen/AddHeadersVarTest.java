@@ -51,19 +51,6 @@ class AddHeadersVarTest {
   }
 
   @Test
-  void modifyCspHeaderValue_should_modifyHeaderValueCorrectly() {
-    final String cspValue1 = "default-src 'self'; script-src 'self';";
-    final String cspValue2 = "default-src 'self'; script-src 'self'; connect-src 'self';";
-
-    final AddHeadersVar addHeadersVar = new AddHeadersVar(null, null, null, null);
-    final String modifiedCspValue1 = addHeadersVar.generateModifiedCspHeaderValue(cspValue1);
-    final String modifiedCspValue2 = addHeadersVar.generateModifiedCspHeaderValue(cspValue2);
-
-    assertEquals("", modifiedCspValue1); // No connect-src directive, so no modification
-    assertEquals("default-src 'self'; script-src 'self'; connect-src 'self';", modifiedCspValue2);
-  }
-
-  @Test
   void update_should_modifyCspHeaderValueCorrectly_when_multipleUrls()
       throws ServiceException, ProxyConfException {
     final String key = "web.add.headers.default";
@@ -93,20 +80,5 @@ class AddHeadersVarTest {
             + " *.test.tools https://auth.test.com https://admin-auth.test.com/logout"
             + " https://auth.test.com/logout https://admin-auth.test.com; script-src 'self';;";
     assertEquals(expectedCspValue, addHeadersVar.confValue());
-  }
-
-  @Test
-  void extractConnectSrcDirective_should_extractCorrectDirective() {
-    final String cspHeader1 = "default-src 'self'; script-src 'self';";
-    final String cspHeader2 =
-        "default-src 'self'; connect-src 'self' https://test.com/login https://test.com/logout;";
-
-    final AddHeadersVar addHeadersVar = new AddHeadersVar(null, null, null, null);
-    final String connectSrcDirective1 = addHeadersVar.extractConnectSrcDirective(cspHeader1);
-    final String connectSrcDirective2 = addHeadersVar.extractConnectSrcDirective(cspHeader2);
-
-    assertEquals("", connectSrcDirective1); // No connect-src directive in the header
-    assertEquals(
-        "connect-src 'self' https://test.com/login https://test.com/logout", connectSrcDirective2);
   }
 }

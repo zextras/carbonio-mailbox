@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class AddHeadersVar extends ProxyConfVar {
 
@@ -23,6 +21,11 @@ public class AddHeadersVar extends ProxyConfVar {
     this.customLoginLogoutUrls = customLoginLogoutUrls;
   }
 
+  /**
+   * Overrides the update method to process and modify response headers.
+   *
+   * @throws ServiceException If there is an issue during the header processing.
+   */
   @Override
   public void update() throws ServiceException {
     ArrayList<KeyValue> directives = new ArrayList<>();
@@ -30,9 +33,8 @@ public class AddHeadersVar extends ProxyConfVar {
     for (String headerLine : responseHeaders) {
       KeyValue header = ProxyConfUtil.parseHeaderLine(headerLine);
 
-      // Handle CSP header
       if (header.key.equalsIgnoreCase("Content-Security-Policy")) {
-        String newCspValue = generateModifiedCspHeaderValue(header.value);
+        final String newCspValue = generateModifiedCspHeaderValue(header.value);
         if (!newCspValue.isEmpty()) {
           header = new KeyValue(header.key, newCspValue);
         }
@@ -54,8 +56,8 @@ public class AddHeadersVar extends ProxyConfVar {
    * @author Keshav Bhatt
    * @since 23.9.0
    */
-  String generateModifiedCspHeaderValue(String cspValue) {
-    final String connectSrcDirective = extractConnectSrcDirective(cspValue);
+  private String generateModifiedCspHeaderValue(String cspValue) {
+    final String connectSrcDirective = ProxyConfUtil.extractConnectSrcDirectiveFromCSP(cspValue);
     if (connectSrcDirective.isEmpty()) {
       return "";
     }
@@ -95,26 +97,6 @@ public class AddHeadersVar extends ProxyConfVar {
       }
     }
     return newConnectSrcDirectiveBuilder.toString();
-  }
-
-  /**
-   * Extracts the connect-src directive from the Content-Security-Policy header. The method uses a
-   * case-insensitive regular expression pattern to match the directive.
-   *
-   * @param cspHeader The Content-Security-Policy header to extract the connect-src directive from.
-   * @return The connect-src directive of the Content-Security-Policy header if found, or an empty
-   *     string if not found.
-   * @author Keshav Bhatt
-   * @since 23.9.0
-   */
-  String extractConnectSrcDirective(String cspHeader) {
-    final Pattern pattern = Pattern.compile("connect-src[^;]*", Pattern.CASE_INSENSITIVE);
-    final Matcher matcher = pattern.matcher(cspHeader);
-    if (matcher.find()) {
-      return matcher.group().trim();
-    } else {
-      return "";
-    }
   }
 
   @Override
