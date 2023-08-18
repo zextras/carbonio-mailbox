@@ -7,6 +7,7 @@ package com.zimbra.cs.account;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -1481,6 +1482,10 @@ public abstract class Provisioning extends ZAttrProvisioning {
     public String getReason() {
       return sb.toString();
     }
+  }
+
+  public boolean onLocalServerInstance(Account account) throws ServiceException {
+    return Provisioning.onLocalServer(account);
   }
 
   public static boolean onLocalServer(Account account) throws ServiceException {
