@@ -8,9 +8,6 @@
  */
 package com.zimbra.cs.service.admin;
 
-import java.util.List;
-import java.util.Map;
-
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.ZAttrProvisioning.AccountStatus;
 import com.zimbra.common.service.ServiceException;
@@ -23,10 +20,11 @@ import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteAccountResponse;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author schemers
@@ -86,7 +84,7 @@ public class DeleteAccount extends AdminDocumentHandler {
     prov.modifyAccountStatus(account, AccountStatus.maintenance.name());
 
     Mailbox mbox;
-    if (Provisioning.onLocalServer(account)) {
+    if (Provisioning.getInstance().onLocalServer(account)) {
       mbox = MailboxManager.getInstance().getMailboxByAccount(account, false);
     } else {
       mbox = null;

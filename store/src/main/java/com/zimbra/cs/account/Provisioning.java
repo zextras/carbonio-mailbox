@@ -7,7 +7,6 @@ package com.zimbra.cs.account;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -153,6 +152,24 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
   /** Forward/reply mail in the same format of message we are replying to */
   public static final String MAIL_FORWARDREPLY_FORMAT_SAME = "same";
+
+  public boolean onLocalServer(Account account) throws ServiceException {
+    return Provisioning.getInstance().onLocalServer(account, null);
+  }
+
+  public boolean onLocalServer(Account account, Reasons reasons) throws ServiceException {
+    String target = account.getAttr(Provisioning.A_zimbraMailHost);
+    String localhost = getInstance().getLocalServer().getAttr(Provisioning.A_zimbraServiceHostname);
+    boolean isLocal = (target != null && target.equalsIgnoreCase(localhost));
+    boolean onLocalSvr = isLocal;
+    if (!onLocalSvr && reasons != null) {
+      reasons.addReason(
+          String.format(
+              "onLocalSvr=%b isLocal=%b target=%s localhost=%s account=%s",
+              onLocalSvr, isLocal, target, localhost, account.getName()));
+    }
+    return onLocalSvr;
+  }
 
   /**
    * Possible values for zimbraMailMode and ZimbraReverseProxyMailMode. "mixed" means web server
@@ -1484,28 +1501,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     }
   }
 
-  public boolean onLocalServerInstance(Account account) throws ServiceException {
-    return Provisioning.onLocalServer(account);
-  }
-
-  public static boolean onLocalServer(Account account) throws ServiceException {
-    return onLocalServer(account, null);
-  }
-
-  public static boolean onLocalServer(Account account, Reasons reasons) throws ServiceException {
-    String target = account.getAttr(Provisioning.A_zimbraMailHost);
-    String localhost = getInstance().getLocalServer().getAttr(Provisioning.A_zimbraServiceHostname);
-    boolean isLocal = (target != null && target.equalsIgnoreCase(localhost));
-    boolean onLocalSvr = isLocal;
-    if (!onLocalSvr && reasons != null) {
-      reasons.addReason(
-          String.format(
-              "onLocalSvr=%b isLocal=%b target=%s localhost=%s account=%s",
-              onLocalSvr, isLocal, target, localhost, account.getName()));
-    }
-    return onLocalSvr;
-  }
-
   public static boolean canUseLocalIMAP(Account account) throws ServiceException {
     if (account == null) {
       return false;
@@ -1519,7 +1514,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       return Arrays.asList(upstreamIMAPServers)
           .contains(getInstance().getLocalServer().getServiceHostname());
     } else {
-      return onLocalServer(account);
+      return Provisioning.getInstance().onLocalServer(account);
     }
   }
 

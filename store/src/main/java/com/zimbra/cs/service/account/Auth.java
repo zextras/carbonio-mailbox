@@ -332,7 +332,7 @@ public class Auth extends AccountDocumentHandler {
         AccountConstants.E_LIFETIME,
         at.getExpires() - System.currentTimeMillis(),
         Element.Disposition.CONTENT);
-    boolean isCorrectHost = Provisioning.onLocalServer(acct);
+    boolean isCorrectHost = Provisioning.getInstance().onLocalServer(acct);
     if (isCorrectHost) {
       Session session = updateAuthenticatedAccount(zsc, at, context, true);
       if (session != null) {
