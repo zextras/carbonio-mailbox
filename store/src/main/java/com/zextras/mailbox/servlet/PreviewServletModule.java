@@ -6,8 +6,10 @@ package com.zextras.mailbox.servlet;
 
 import com.google.inject.AbstractModule;
 import com.zextras.carbonio.preview.PreviewClient;
+import com.zextras.mailbox.service.MailboxManagerFactory;
+import com.zextras.mailbox.service.OperationContextFactory;
 import com.zimbra.cs.service.AttachmentService;
-import com.zimbra.cs.service.MailboxAttachmentService;
+import com.zimbra.cs.service.LocalMailboxAttachmentService;
 
 public class PreviewServletModule extends AbstractModule {
 
@@ -15,6 +17,9 @@ public class PreviewServletModule extends AbstractModule {
   protected void configure() {
     super.configure();
     bind(PreviewClient.class).toInstance(PreviewClient.atURL("http", "127.78.0.7", 20001));
-    bind(AttachmentService.class).toInstance(new MailboxAttachmentService());
+    bind(AttachmentService.class)
+        .toInstance(
+            new LocalMailboxAttachmentService(
+                new OperationContextFactory(), new MailboxManagerFactory()));
   }
 }

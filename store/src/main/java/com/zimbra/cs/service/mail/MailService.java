@@ -6,8 +6,10 @@
 package com.zimbra.cs.service.mail;
 
 import com.zextras.carbonio.files.FilesClient;
+import com.zextras.mailbox.service.MailboxManagerFactory;
+import com.zextras.mailbox.service.OperationContextFactory;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.cs.service.MailboxAttachmentService;
+import com.zimbra.cs.service.LocalMailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 
@@ -227,6 +229,8 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(
         MailConstants.COPY_TO_DRIVE_REQUEST,
         new CopyToFiles(
-            new MailboxAttachmentService(), FilesClient.atURL("http://127.78.0.7:20002")));
+            new LocalMailboxAttachmentService(
+                new OperationContextFactory(), new MailboxManagerFactory()),
+            FilesClient.atURL("http://127.78.0.7:20002")));
   }
 }

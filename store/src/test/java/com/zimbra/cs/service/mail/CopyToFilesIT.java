@@ -13,6 +13,8 @@ import static org.mockserver.model.HttpRequest.request;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
+import com.zextras.mailbox.service.MailboxManagerFactory;
+import com.zextras.mailbox.service.OperationContextFactory;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
@@ -36,7 +38,7 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.service.MailboxAttachmentService;
+import com.zimbra.cs.service.LocalMailboxAttachmentService;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -80,7 +82,8 @@ class CopyToFilesIT {
   private FilesClient mockFilesClient;
   private final FilesClient realFilesClient = FilesClient.atURL("http://127.0.0.1:20002");
   private AttachmentService mockAttachmentService;
-  private final AttachmentService realAttachmentService = new MailboxAttachmentService();
+  private final AttachmentService realAttachmentService =
+      new LocalMailboxAttachmentService(new OperationContextFactory(), new MailboxManagerFactory());
   private ClientAndServer filesServer;
 
   @AfterEach
@@ -173,8 +176,7 @@ class CopyToFilesIT {
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
     CopyToFiles copyToFiles =
-        new CopyToFiles(
-            new MailboxAttachmentService(), FilesClient.atURL("http://127.0.0.1:20002"));
+        new CopyToFiles(realAttachmentService, FilesClient.atURL("http://127.0.0.1:20002"));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId(String.valueOf(message.getId()));
     up.setPart("1");
@@ -303,10 +305,10 @@ class CopyToFilesIT {
     up.setMessageId("123");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
-    final ServiceException receivedException = assertThrows(
-        ServiceException.class,
-        () -> copyToFiles.handle(element, context));
-    assertEquals("system failure: got null response from Files server.", receivedException.getMessage());
+    final ServiceException receivedException =
+        assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context));
+    assertEquals(
+        "system failure: got null response from Files server.", receivedException.getMessage());
   }
 
   @ParameterizedTest
@@ -385,7 +387,6 @@ class CopyToFilesIT {
     text.setText("Hello there");
     MimeBodyPart attachmentPart = new MimeBodyPart();
     attachmentPart.attachFile(new File(this.getClass().getResource("/" + attachment).getFile()));
-    multipart.addBodyPart(attachmentPart);
     multipart.addBodyPart(attachmentPart);
     mimeMessage.setContent(multipart);
     mimeMessage.setSender(new InternetAddress(acct.getName()));
