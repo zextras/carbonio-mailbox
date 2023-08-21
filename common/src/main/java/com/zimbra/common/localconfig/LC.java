@@ -399,10 +399,6 @@ public final class LC {
   public static final KnownKey ldap_cache_xmppcomponent_maxsize = KnownKey.newKey(100);
   public static final KnownKey ldap_cache_xmppcomponent_maxage = KnownKey.newKey(15);
 
-  @Supported public static final KnownKey ldap_cache_zimlet_maxsize = KnownKey.newKey(100);
-
-  @Supported public static final KnownKey ldap_cache_zimlet_maxage = KnownKey.newKey(15);
-
   public static final KnownKey ldap_cache_custom_dynamic_group_membership_maxage_ms =
       KnownKey.newKey(10 * Constants.MILLIS_PER_MINUTE);
 

@@ -25,7 +25,6 @@ import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.XMPPComponent;
-import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.ldap.LdapDIT;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.soap.admin.type.EffectiveRightsTargetSelector;
@@ -70,7 +69,6 @@ public enum TargetType {
       AttributeClass.xmppComponent,
       com.zimbra.soap.type.TargetType.xmppcomponent,
       "XMPPComponent"),
-  zimlet(true, false, AttributeClass.zimletEntry, com.zimbra.soap.type.TargetType.zimlet, "Zimlet"),
   config(
       false,
       false,
@@ -163,23 +161,11 @@ public enum TargetType {
 
     TargetType.xmppcomponent.setInheritedByTargetTypes(new TargetType[] {xmppcomponent});
 
-    TargetType.zimlet.setInheritedByTargetTypes(new TargetType[] {zimlet});
-
     TargetType.config.setInheritedByTargetTypes(new TargetType[] {config});
 
     TargetType.global.setInheritedByTargetTypes(
         new TargetType[] {
-          account,
-          calresource,
-          cos,
-          dl,
-          group,
-          domain,
-          server,
-          xmppcomponent,
-          zimlet,
-          config,
-          global
+          account, calresource, cos, dl, group, domain, server, xmppcomponent, config, global
         }); // inherited by all
 
     // compute mInheritFromTargetTypes and mSubTargetTypes
@@ -393,16 +379,6 @@ public enum TargetType {
           throw AccountServiceException.NO_SUCH_XMPP_COMPONENT(target);
         }
         break;
-      case zimlet:
-        Key.ZimletBy zimletBy = Key.ZimletBy.fromString(targetBy.name());
-        if (zimletBy != Key.ZimletBy.name) {
-          throw ServiceException.INVALID_REQUEST("zimlet must be by name", null);
-        }
-        targetEntry = prov.getZimlet(target);
-        if (targetEntry == null && mustFind) {
-          throw AccountServiceException.NO_SUCH_ZIMLET(target);
-        }
-        break;
       case config:
         targetEntry = prov.getConfig();
         break;
@@ -437,7 +413,6 @@ public enum TargetType {
     else if (target instanceof Server) return TargetType.server;
     else if (target instanceof Config) return TargetType.config;
     else if (target instanceof GlobalGrant) return TargetType.global;
-    else if (target instanceof Zimlet) return TargetType.zimlet;
     else if (target instanceof XMPPComponent) return TargetType.xmppcomponent;
     else
       throw ServiceException.FAILURE(
@@ -518,9 +493,6 @@ public enum TargetType {
         break;
       case xmppcomponent:
         base = dit.xmppcomponentBaseDN();
-        break;
-      case zimlet:
-        base = dit.zimletBaseDN();
         break;
       case config:
         base = dit.configDN();

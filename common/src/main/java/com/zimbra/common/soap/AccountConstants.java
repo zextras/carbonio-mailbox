@@ -48,12 +48,8 @@ public class AccountConstants {
   public static final String E_GET_WHITE_BLACK_LIST_RESPONSE = "GetWhiteBlackListResponse";
   public static final String E_MODIFY_PREFS_REQUEST = "ModifyPrefsRequest";
   public static final String E_MODIFY_PREFS_RESPONSE = "ModifyPrefsResponse";
-  public static final String E_MODIFY_PROPERTIES_REQUEST = "ModifyPropertiesRequest";
-  public static final String E_MODIFY_PROPERTIES_RESPONSE = "ModifyPropertiesResponse";
   public static final String E_MODIFY_WHITE_BLACK_LIST_REQUEST = "ModifyWhiteBlackListRequest";
   public static final String E_MODIFY_WHITE_BLACK_LIST_RESPONSE = "ModifyWhiteBlackListResponse";
-  public static final String E_MODIFY_ZIMLET_PREFS_REQUEST = "ModifyZimletPrefsRequest";
-  public static final String E_MODIFY_ZIMLET_PREFS_RESPONSE = "ModifyZimletPrefsResponse";
 
   // GAL
   public static final String E_AUTO_COMPLETE_GAL_REQUEST = "AutoCompleteGalRequest";
@@ -183,18 +179,10 @@ public class AccountConstants {
       QName.get(E_GET_WHITE_BLACK_LIST_RESPONSE, NAMESPACE);
   public static final QName MODIFY_PREFS_REQUEST = QName.get(E_MODIFY_PREFS_REQUEST, NAMESPACE);
   public static final QName MODIFY_PREFS_RESPONSE = QName.get(E_MODIFY_PREFS_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_PROPERTIES_REQUEST =
-      QName.get(E_MODIFY_PROPERTIES_REQUEST, NAMESPACE);
-  public static final QName MODIFY_PROPERTIES_RESPONSE =
-      QName.get(E_MODIFY_PROPERTIES_RESPONSE, NAMESPACE);
   public static final QName MODIFY_WHITE_BLACK_LIST_REQUEST =
       QName.get(E_MODIFY_WHITE_BLACK_LIST_REQUEST, NAMESPACE);
   public static final QName MODIFY_WHITE_BLACK_LIST_RESPONSE =
       QName.get(E_MODIFY_WHITE_BLACK_LIST_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_ZIMLET_PREFS_REQUEST =
-      QName.get(E_MODIFY_ZIMLET_PREFS_REQUEST, NAMESPACE);
-  public static final QName MODIFY_ZIMLET_PREFS_RESPONSE =
-      QName.get(E_MODIFY_ZIMLET_PREFS_RESPONSE, NAMESPACE);
 
   // GAL
   public static final QName AUTO_COMPLETE_GAL_REQUEST =
@@ -342,11 +330,7 @@ public class AccountConstants {
   public static final String E_PREVIOUS_SESSION = "prevSession";
   public static final String E_LAST_ACCESS = "accessed";
   public static final String E_RECENT_MSGS = "recent";
-  public static final String E_ZIMLET = "zimlet";
-  public static final String E_ZIMLETS = "zimlets";
-  public static final String E_ZIMLET_CONTEXT = "zimletContext";
   public static final String E_PROPERTY = "prop";
-  public static final String E_PROPERTIES = "props";
   public static final String E_SOAP_URL = "soapURL";
   public static final String E_ADMIN_URL = "adminURL";
   public static final String E_PUBLIC_URL = "publicURL";
@@ -418,10 +402,6 @@ public class AccountConstants {
   public static final String A_OWNER_OF = "ownerOf";
   public static final String A_PERSIST_AUTH_TOKEN_COOKIE = "persistAuthTokenCookie";
   public static final String A_TOTAL = "total";
-  public static final String A_ZIMLET = "zimlet";
-  public static final String A_ZIMLET_BASE_URL = "baseUrl";
-  public static final String A_ZIMLET_PRIORITY = "priority";
-  public static final String A_ZIMLET_PRESENCE = "presence";
   public static final String A_TIMESTAMP = "timestamp";
   public static final String A_TOKENIZE_KEY = "tokenizeKey";
   public static final String A_EXPIRES = "expires";
