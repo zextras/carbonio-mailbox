@@ -6,5 +6,5 @@ Y8b  d8 88   88 88 `88. 88   8D `8b  d8' 88  V888   .88.   `8b  d8'
  `Y88P' YP   YP 88   YD Y8888P'  `Y88P'  VP   V8P Y888888P  `Y88P'
 
 You are running Carbonio acceptance tests suite. Please be patient as it
-could require some time. Note that Docker is mandatory in order to run
+could require some time. Note that Podman is mandatory in order to run
 the tests.

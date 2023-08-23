@@ -11,7 +11,11 @@ spec_helper_precheck() {
     abort "Only bash is supported."
   fi
 
-  if [[ "$(command -v docker)" = "" ]]; then
-        abort "docker executable is mandatory in order to run tests."
+  if [[ "$(command -v podman)" = "" ]]; then
+    abort "podman executable is mandatory in order to run tests."
+  fi
+
+  if [[ "$(command -v xq)" = "" ]]; then
+    abort "xq executable is mandatory in order to run tests."
   fi
 }
