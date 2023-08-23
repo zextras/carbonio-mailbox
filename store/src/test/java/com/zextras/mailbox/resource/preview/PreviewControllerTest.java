@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.resource.acceptance;
+package com.zextras.mailbox.resource.preview;
 
 import static com.zimbra.common.util.ZimbraCookie.COOKIE_ZM_AUTH_TOKEN;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_DISPOSITION;
@@ -16,8 +16,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.Maps;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.mailbox.filter.AuthorizationFilter;
-import com.zextras.mailbox.resource.preview.PreviewController;
-import com.zextras.mailbox.resource.preview.PreviewService;
+import com.zextras.mailbox.resource.acceptance.MailboxJerseyTest;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
@@ -57,7 +56,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.yaml.snakeyaml.util.UriEncoder;
 
-class PreviewControllerAcceptanceTest extends MailboxJerseyTest {
+class PreviewControllerTest extends MailboxJerseyTest {
 
   private static final String TEST_ACCOUNT_NAME = "test@example.com";
   private PreviewService previewService;

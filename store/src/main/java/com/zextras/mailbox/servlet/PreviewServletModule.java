@@ -5,21 +5,32 @@
 package com.zextras.mailbox.servlet;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.zextras.carbonio.preview.PreviewClient;
-import com.zextras.mailbox.service.MailboxManagerFactory;
-import com.zextras.mailbox.service.OperationContextFactory;
+import com.zextras.mailbox.client.MailboxHttpClient;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.AttachmentService;
-import com.zimbra.cs.service.LocalMailboxAttachmentService;
+import com.zimbra.cs.service.MailboxHttpAttachmentService;
 
 public class PreviewServletModule extends AbstractModule {
 
-  @Override
-  protected void configure() {
-    super.configure();
-    bind(PreviewClient.class).toInstance(PreviewClient.atURL("http", "127.78.0.7", 20001));
-    bind(AttachmentService.class)
-        .toInstance(
-            new LocalMailboxAttachmentService(
-                new OperationContextFactory(), new MailboxManagerFactory()));
+  @Provides
+  public PreviewClient providePreviewClient() {
+    return PreviewClient.atURL("http", "127.78.0.7", 20001);
+  }
+
+  @Provides
+  public Provisioning provideProvisioning() {
+    return Provisioning.getInstance();
+  }
+
+  @Provides
+  public MailboxHttpClient provideMailboxHttpClient(Provisioning provisioning) {
+    return new MailboxHttpClient(provisioning);
+  }
+
+  @Provides
+  public AttachmentService provideHttpAttachmentService(MailboxHttpClient client) {
+    return new MailboxHttpAttachmentService(client);
   }
 }
