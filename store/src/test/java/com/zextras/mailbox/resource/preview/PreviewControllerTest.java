@@ -27,6 +27,8 @@ import io.vavr.control.Try;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -41,7 +43,6 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Response;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.logging.log4j.util.Strings;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -54,7 +55,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.yaml.snakeyaml.util.UriEncoder;
 
 class PreviewControllerTest extends MailboxJerseyTest {
 
@@ -146,12 +146,12 @@ class PreviewControllerTest extends MailboxJerseyTest {
       String query,
       boolean isInline)
       throws Exception {
-    final InputStream gifAttachment = this.getClass().getResourceAsStream(fileName);
+    final InputStream attachment = this.getClass().getResourceAsStream(fileName);
     final int messageId = 100;
     final String partNumber = "2";
 
-    final InputStreamEntity inputStreamEntity = new InputStreamEntity(gifAttachment);
-    inputStreamEntity.setContentType(ContentType.IMAGE_GIF.getMimeType());
+    final InputStreamEntity inputStreamEntity = new InputStreamEntity(attachment);
+    inputStreamEntity.setContentType(getMimeTypeFromFileName(fileName));
 
     final BlobResponse previewResponse = new BlobResponse(inputStreamEntity);
 
@@ -183,7 +183,9 @@ class PreviewControllerTest extends MailboxJerseyTest {
         target.request().cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded())).get();
     final byte[] expectedContent = this.getClass().getResourceAsStream(fileName).readAllBytes();
     final String expectedContentDisposition =
-        (isInline ? "inline" : "attachment") + "; filename*=UTF-8''" + UriEncoder.encode(fileName);
+        (isInline ? "inline" : "attachment")
+            + "; filename*=UTF-8''"
+            + URLEncoder.encode(fileName, StandardCharsets.UTF_8);
     final int statusCode = response.getStatus();
     final InputStream content = response.readEntity(InputStream.class);
     assertEquals(HttpStatus.SC_OK, statusCode);

@@ -18,11 +18,11 @@ import org.jvnet.hk2.guice.bridge.api.GuiceIntoHK2Bridge;
  *
  * @author davidefrison
  */
-public class MailboxResourceConfig extends ResourceConfig {
+public class PreviewResourceConfig extends ResourceConfig {
 
   @Inject
-  public MailboxResourceConfig(ServiceLocator serviceLocator) {
-    packages("com.zextras.mailbox.resource");
+  public PreviewResourceConfig(ServiceLocator serviceLocator) {
+    packages("com.zextras.mailbox.resource.preview");
     register(AuthorizationFilter.class);
     Injector injector = Guice.createInjector(new PreviewServletModule());
     initGuiceIntoHK2Bridge(serviceLocator, injector);

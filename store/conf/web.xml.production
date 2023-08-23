@@ -305,7 +305,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>PreviewServletJersey</servlet-name>
-    <url-pattern>/preview/jersey/*</url-pattern>
+    <url-pattern>/api/preview/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
