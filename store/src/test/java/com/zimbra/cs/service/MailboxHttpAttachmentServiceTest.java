@@ -45,7 +45,7 @@ class MailboxHttpAttachmentServiceTest {
     final InputStream expectedContent =
         new ByteArrayInputStream("hello.txt".getBytes(StandardCharsets.UTF_8));
     when(mailboxHttpClient.callUserServlet(token, accountUuid, userServletRequest))
-        .thenReturn(new UserServletResponse(contentType, fileName, content));
+        .thenReturn(Try.of(() -> new UserServletResponse(contentType, fileName, content)));
     final MimePart attachment =
         attachmentService.getAttachment(accountUuid, token, messageId, part).get();
     Assertions.assertEquals(contentType, attachment.getContentType());

@@ -23,10 +23,12 @@ import com.zimbra.cs.util.AccountUtil;
 import io.vavr.control.Try;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.mail.MessagingException;
 import org.apache.http.Header;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -61,7 +63,12 @@ public class MailboxHttpClient {
             () -> {
               final Account requestedAccount = provisioning.getAccountById(targetAccountId);
               final String baseUrl = AccountUtil.getBaseUri(requestedAccount);
-              return baseUrl + UserServlet.SERVLET_PATH + "?" + userServletRequest.toString();
+              return baseUrl
+                  + UserServlet.SERVLET_PATH
+                  + "/"
+                  + requestedAccount.getName()
+                  + "/?"
+                  + userServletRequest.toString();
             })
         .get();
   }
@@ -78,13 +85,17 @@ public class MailboxHttpClient {
    * @throws MessagingException
    * @throws AuthTokenException
    */
-  public UserServletResponse callUserServlet(
+  public Try<UserServletResponse> callUserServlet(
       AuthToken authToken, String accountId, UserServletRequest userServletRequest)
       throws HttpException, IOException, ServiceException, MessagingException, AuthTokenException {
     HttpGet request = new HttpGet(getUserServletResourceUrl(accountId, userServletRequest));
     final HttpResponse httpResponse = this.doSendRequest(authToken, request);
+    if (!Objects.equals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode())) {
+      return Try.failure(ServiceException.FAILURE("Status code not 200.", null));
+    }
     Header contentDispositionHeader = httpResponse.getFirstHeader(CONTENT_DISPOSITION);
     Header contentTypeHeader = httpResponse.getFirstHeader(CONTENT_TYPE);
+    // TODO: test failure
     String filename =
         contentDispositionHeader == null
             ? "unknown"
@@ -95,7 +106,7 @@ public class MailboxHttpClient {
             : new ContentType(contentTypeHeader.getValue()).getContentType();
 
     final InputStream content = httpResponse.getEntity().getContent();
-    return new UserServletResponse(contentType, filename, content);
+    return Try.of(() -> new UserServletResponse(contentType, filename, content));
   }
 
   /**

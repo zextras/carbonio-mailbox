@@ -8,10 +8,10 @@ import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 
 import com.zextras.mailbox.client.MailboxHttpClient;
 import com.zextras.mailbox.client.UserServletRequest;
-import com.zextras.mailbox.client.UserServletResponse;
 import com.zimbra.cs.account.AuthToken;
 import io.vavr.control.Try;
 import java.io.InputStream;
+import java.util.function.Function;
 import javax.activation.DataHandler;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimePart;
@@ -31,21 +31,21 @@ public class MailboxHttpAttachmentService implements AttachmentService {
   @Override
   public Try<MimePart> getAttachment(
       String accountId, AuthToken token, int messageId, String part) {
-    return Try.of(
-        () -> {
-          final UserServletResponse userServletResponse =
-              mailboxHttpClient.callUserServlet(
-                  token,
-                  accountId,
-                  UserServletRequest.buildRequest("co", String.valueOf(messageId), part));
-          final String contentType = userServletResponse.getContentType();
-          final InputStream content = userServletResponse.getContent();
-          final MimePart attachment = new MimeBodyPart();
-          ByteArrayDataSource bds = new ByteArrayDataSource(content, contentType);
-          attachment.setDataHandler(new DataHandler(bds));
-          attachment.setFileName(userServletResponse.getFileName());
-          attachment.setHeader(CONTENT_TYPE, contentType);
-          return attachment;
-        });
+    return Try.of(() -> UserServletRequest.buildRequest("co", String.valueOf(messageId), part))
+        .mapTry(
+            userServletRequest ->
+                mailboxHttpClient.callUserServlet(token, accountId, userServletRequest))
+        .flatMap(Function.identity())
+        .mapTry(
+            userServletResponse -> {
+              final String contentType = userServletResponse.getContentType();
+              final InputStream content = userServletResponse.getContent();
+              final MimePart attachment = new MimeBodyPart();
+              ByteArrayDataSource bds = new ByteArrayDataSource(content, contentType);
+              attachment.setDataHandler(new DataHandler(bds));
+              attachment.setFileName(userServletResponse.getFileName());
+              attachment.setHeader(CONTENT_TYPE, contentType);
+              return attachment;
+            });
   }
 }
