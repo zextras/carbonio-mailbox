@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.carbonio.preview.queries.Query;
 import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
+import com.zextras.carbonio.preview.queries.enums.Format;
 import com.zextras.carbonio.preview.queries.enums.Quality;
 import com.zextras.carbonio.preview.queries.enums.Shape;
 import io.vavr.control.Try;
@@ -26,9 +27,29 @@ class PreviewQueryUtilTest {
             "9x9",
             new QueryBuilder().setFirstPage(1).setLastPage(2).setPreviewArea("9x9").build()),
         Arguments.of(
-            "first_page=1&first_page=20",
+            "first_page=1&first_page=20&output_format=jpeg",
             "9x9",
-            new QueryBuilder().setFirstPage(1).setPreviewArea("9x9").build()),
+            new QueryBuilder()
+                .setFirstPage(1)
+                .setPreviewArea("9x9")
+                .setOutputFormat(Format.JPEG)
+                .build()),
+        Arguments.of(
+            "first_page=1&first_page=20&output_format=png",
+            "9x9",
+            new QueryBuilder()
+                .setFirstPage(1)
+                .setPreviewArea("9x9")
+                .setOutputFormat(Format.PNG)
+                .build()),
+        Arguments.of(
+            "first_page=1&first_page=20&output_format=gif",
+            "9x9",
+            new QueryBuilder()
+                .setFirstPage(1)
+                .setPreviewArea("9x9")
+                .setOutputFormat(Format.GIF)
+                .build()),
         Arguments.of(
             "first_page=1&last_page=2&quality=HIGH&crop=false&shape=RECTANGULAR",
             "9x9",

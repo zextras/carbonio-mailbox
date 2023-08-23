@@ -7,6 +7,7 @@ package com.zextras.mailbox.resource.preview;
 import com.google.common.base.Strings;
 import com.zextras.carbonio.preview.queries.Query;
 import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
+import com.zextras.carbonio.preview.queries.enums.Format;
 import com.zextras.carbonio.preview.queries.enums.Quality;
 import com.zextras.carbonio.preview.queries.enums.Shape;
 import java.util.Hashtable;
@@ -37,6 +38,12 @@ public class PreviewQueryUtil {
     final QueryBuilder queryBuilder = new QueryBuilder();
     if (!Strings.isNullOrEmpty(area)) {
       queryBuilder.setPreviewArea(area);
+    }
+    final String[] formats = parseQueryString.get("output_format");
+    if (!Objects.isNull(formats) && formats.length > 0) {
+      final String formatString = formats[0].toUpperCase();
+      final Format format = Format.valueOf(formatString);
+      queryBuilder.setOutputFormat(format);
     }
     final String[] shapes = parseQueryString.get("shape");
     if (!Objects.isNull(shapes) && shapes.length > 0) {
