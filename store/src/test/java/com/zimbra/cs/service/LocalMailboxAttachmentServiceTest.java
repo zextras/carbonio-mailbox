@@ -29,7 +29,7 @@ import javax.mail.internet.MimePart;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class MailboxAttachmentServiceTest {
+class LocalMailboxAttachmentServiceTest {
 
   /**
    * Creates a mocked message with an attachment for testing purposes

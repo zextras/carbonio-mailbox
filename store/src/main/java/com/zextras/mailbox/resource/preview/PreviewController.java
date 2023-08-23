@@ -39,8 +39,6 @@ public class PreviewController {
     this.previewService = previewService;
   }
 
-  // TODO: support display attachment
-
   @GET
   @Path("/doc/" + PREVIEW_REGEXP)
   public Response getDocPreview(
