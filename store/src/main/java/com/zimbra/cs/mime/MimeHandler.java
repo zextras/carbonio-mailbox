@@ -235,17 +235,14 @@ public abstract class MimeHandler {
    *
    * @return Lucene document
    * @throws MimeHandlerException if a MIME parser error occurred
-   * @throws ServiceException if other error occurred
    */
-  public final Document getDocument() throws MimeHandlerException, ServiceException {
+  public final Document getDocument() throws MimeHandlerException {
 
     IndexDocument doc = new IndexDocument(new Document());
     doc.addMimeType(new MimeTypeTokenStream(getContentType()));
     addFields(doc.toDocument());
     String content = getContent();
     doc.addContent(content);
-    getObjects(content, doc);
-
     doc.addPartName(partName);
 
     if (dataSource != null) {
@@ -259,32 +256,6 @@ public abstract class MimeHandler {
       }
     }
     return doc.toDocument();
-  }
-
-  public static void getObjects(String text, IndexDocument doc) {
-
-    if (DebugConfig.disableObjects) {
-      return;
-    }
-
-    //        List<ObjectHandler> objects = ObjectHandler.getObjectHandlers();
-    //        StringBuffer l_objects = new StringBuffer();
-    //        for (ObjectHandler h : objects) {
-    //            if (!h.isIndexingEnabled()) {
-    //                continue;
-    //            }
-    //            List<MatchedObject> matchedObjects = new ArrayList<MatchedObject>();
-    //            h.parse(text, matchedObjects, true);
-    //            if (!matchedObjects.isEmpty()) {
-    //                if (l_objects.length() > 0) {
-    //                    l_objects.append(',');
-    //                }
-    //                l_objects.append(h.getType());
-    //            }
-    //        }
-    //        if (l_objects.length() > 0) {
-    //            doc.addObjects(l_objects.toString());
-    //        }
   }
 
   /**
