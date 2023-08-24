@@ -330,7 +330,11 @@ public class AccountConstants {
   public static final String E_PREVIOUS_SESSION = "prevSession";
   public static final String E_LAST_ACCESS = "accessed";
   public static final String E_RECENT_MSGS = "recent";
+  public static final String E_ZIMLET = "zimlet";
+  public static final String E_ZIMLETS = "zimlets";
+  public static final String E_ZIMLET_CONTEXT = "zimletContext";
   public static final String E_PROPERTY = "prop";
+  public static final String E_PROPERTIES = "props";
   public static final String E_SOAP_URL = "soapURL";
   public static final String E_ADMIN_URL = "adminURL";
   public static final String E_PUBLIC_URL = "publicURL";
