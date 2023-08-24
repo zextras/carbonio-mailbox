@@ -69,6 +69,7 @@ public enum TargetType {
       AttributeClass.xmppComponent,
       com.zimbra.soap.type.TargetType.xmppcomponent,
       "XMPPComponent"),
+  zimlet(true, false, AttributeClass.zimletEntry, com.zimbra.soap.type.TargetType.zimlet, "Zimlet"),
   config(
       false,
       false,
@@ -161,11 +162,22 @@ public enum TargetType {
 
     TargetType.xmppcomponent.setInheritedByTargetTypes(new TargetType[] {xmppcomponent});
 
+    TargetType.zimlet.setInheritedByTargetTypes(new TargetType[] {zimlet});
     TargetType.config.setInheritedByTargetTypes(new TargetType[] {config});
 
     TargetType.global.setInheritedByTargetTypes(
         new TargetType[] {
-          account, calresource, cos, dl, group, domain, server, xmppcomponent, config, global
+          account,
+          calresource,
+          cos,
+          dl,
+          group,
+          domain,
+          server,
+          xmppcomponent,
+          zimlet,
+          config,
+          global
         }); // inherited by all
 
     // compute mInheritFromTargetTypes and mSubTargetTypes
@@ -387,7 +399,7 @@ public enum TargetType {
         break;
       default:
         ServiceException.INVALID_REQUEST(
-            "invallid target type for lookupTarget:" + targetType.toString(), null);
+            "invalid target type for lookupTarget:" + targetType.toString(), null);
     }
 
     return targetEntry;

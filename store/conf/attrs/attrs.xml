@@ -1613,7 +1613,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>URL of extra scripts used by the Zimlet</desc>
 </attr>
 
-<attr id="291" name="zimbraZimletAvailableZimlets" type="string" max="256" cardinality="multi" optionalIn="account,cos" flags="accountInfo,domainAdminModifiable,accountInherited" callback="AvailableZimlets">
+<attr id="291" name="zimbraZimletAvailableZimlets" type="string" max="256" cardinality="multi" optionalIn="account,cos" flags="accountInfo,domainAdminModifiable,accountInherited" >
   <desc>
       List of Zimlets available to this COS
       Values can be prefixed with ! or + or -
@@ -3756,7 +3756,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>maximum number of revisions to keep for calendar items (appointments and tasks). 0 means unlimited.</desc>
 </attr>
 
-<attr id="710" name="zimbraZimletDomainAvailableZimlets" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" flags="domainInherited" callback="AvailableZimlets" since="5.0.10">
+<attr id="710" name="zimbraZimletDomainAvailableZimlets" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" flags="domainInherited"  since="5.0.10">
   <desc>
       List of Zimlets available to this domain.
       Zimlets available to accounts in the domain is the union of account/cos attribute zimbraZimletAvailableZimlets and this attribute. 

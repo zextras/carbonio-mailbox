@@ -21,6 +21,7 @@ public enum TargetType {
   domain,
   server,
   xmppcomponent,
+  zimlet,
   config,
   global;
 

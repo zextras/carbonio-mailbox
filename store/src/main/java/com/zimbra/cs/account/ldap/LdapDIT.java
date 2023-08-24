@@ -20,6 +20,7 @@ import com.zimbra.cs.account.GlobalGrant;
 import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.ldap.IAttributes;
 import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.ldap.LdapUtil;
@@ -84,6 +85,7 @@ public class LdapDIT {
   protected final String DEFAULT_BASE_RDN_SERVER = "cn=servers";
   protected final String DEFAULT_BASE_RDN_SHARE_LOCATOR = "cn=sharelocators";
   protected final String DEFAULT_BASE_RDN_XMPPCOMPONENT = "cn=xmppcomponents";
+  protected final String DEFAULT_BASE_RDN_ZIMLET = "cn=zimlets";
 
   protected final String DEFAULT_NAMING_RDN_ATTR_USER = "uid";
   protected final String DEFAULT_NAMING_RDN_ATTR_COS = "cn";
@@ -94,6 +96,7 @@ public class LdapDIT {
   protected final String DEFAULT_NAMING_RDN_ATTR_SERVER = "cn";
   protected final String DEFAULT_NAMING_RDN_ATTR_SHARE_LOCATOR = "cn";
   protected final String DEFAULT_NAMING_RDN_ATTR_XMPPCOMPONENT = "cn";
+  protected final String DEFAULT_NAMING_RDN_ATTR_ZIMLET = "cn";
   protected final String DEFAULT_NAMING_RDN_ATTR_HAB = "cn";
 
   /*
@@ -115,6 +118,7 @@ public class LdapDIT {
   protected String BASE_DN_SERVER;
   protected String BASE_DN_SHARE_LOCATOR;
   protected String BASE_DN_XMPPCOMPONENT;
+  protected String BASE_DN_ZIMLET;
 
   protected String NAMING_RDN_ATTR_USER;
   protected String NAMING_RDN_ATTR_COS;
@@ -125,6 +129,7 @@ public class LdapDIT {
   protected String NAMING_RDN_ATTR_SERVER;
   protected String NAMING_RDN_ATTR_SHARE_LOCATOR;
   protected String NAMING_RDN_ATTR_XMPPCOMPONENT;
+  protected String NAMING_RDN_ATTR_ZIMLET;
   protected String NAMING_RDN_ATTR_HAB;
 
   protected String DN_GLOBALCONFIG;
@@ -154,6 +159,7 @@ public class LdapDIT {
     NAMING_RDN_ATTR_SERVER = DEFAULT_NAMING_RDN_ATTR_SERVER;
     NAMING_RDN_ATTR_SHARE_LOCATOR = DEFAULT_NAMING_RDN_ATTR_SHARE_LOCATOR;
     NAMING_RDN_ATTR_XMPPCOMPONENT = DEFAULT_NAMING_RDN_ATTR_XMPPCOMPONENT;
+    NAMING_RDN_ATTR_ZIMLET = DEFAULT_NAMING_RDN_ATTR_ZIMLET;
     NAMING_RDN_ATTR_HAB = DEFAULT_NAMING_RDN_ATTR_HAB;
 
     DN_GLOBALCONFIG = NAMING_RDN_ATTR_GLOBALCONFIG + "=config" + "," + BASE_DN_CONFIG_BRANCH;
@@ -168,6 +174,7 @@ public class LdapDIT {
     BASE_DN_SERVER = DEFAULT_BASE_RDN_SERVER + "," + BASE_DN_CONFIG_BRANCH;
     BASE_DN_SHARE_LOCATOR = DEFAULT_BASE_RDN_SHARE_LOCATOR + "," + BASE_DN_CONFIG_BRANCH;
     BASE_DN_XMPPCOMPONENT = DEFAULT_BASE_RDN_XMPPCOMPONENT + "," + BASE_DN_CONFIG_BRANCH;
+    BASE_DN_ZIMLET = DEFAULT_BASE_RDN_ZIMLET + "," + BASE_DN_CONFIG_BRANCH;
 
     BASE_DN_ZIMBRA = ROOT_DN;
   }
@@ -186,6 +193,7 @@ public class LdapDIT {
         || NAMING_RDN_ATTR_MIME == null
         || NAMING_RDN_ATTR_SERVER == null
         || NAMING_RDN_ATTR_SHARE_LOCATOR == null
+        || NAMING_RDN_ATTR_ZIMLET == null
         || BASE_DN_ADMIN == null
         || BASE_DN_APPADMIN == null
         || BASE_DN_COS == null
@@ -193,6 +201,7 @@ public class LdapDIT {
         || BASE_DN_MIME == null
         || BASE_DN_SERVER == null
         || BASE_DN_XMPPCOMPONENT == null
+        || BASE_DN_ZIMLET == null
         || DN_GLOBALCONFIG == null
         || DN_GLOBALGRANT == null) Zimbra.halt("Unable to initialize LDAP DIT");
   }
@@ -595,6 +604,19 @@ public class LdapDIT {
 
   /*
    * ==========
+   *   zimlet
+   * ==========
+   */
+  public String zimletBaseDN() {
+    return BASE_DN_ZIMLET;
+  }
+
+  public String zimletNameToDN(String name) {
+    return NAMING_RDN_ATTR_ZIMLET + "=" + LdapUtil.escapeRDNValue(name) + "," + BASE_DN_ZIMLET;
+  }
+
+  /*
+   * ==========
    *   filters
    * ==========
    */
@@ -669,6 +691,7 @@ public class LdapDIT {
     else if (entry instanceof GlobalGrant) return NAMING_RDN_ATTR_GLOBALGRANT;
     else if (entry instanceof DynamicGroup) return NAMING_RDN_ATTR_DYNAMICGROUP;
     else if (entry instanceof Server) return NAMING_RDN_ATTR_SERVER;
+    else if (entry instanceof Zimlet) return NAMING_RDN_ATTR_ZIMLET;
     else
       throw ServiceException.FAILURE(
           "entry type "
