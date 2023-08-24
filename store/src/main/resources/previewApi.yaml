@@ -1,0 +1,256 @@
+openapi: 3.0.3
+info:
+  title: Mailbox Preview Rest API - OpenAPI 3.0
+  description: |-
+    Specification for REST APIs on mailbox
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: nwebaconmonster@zextras.com
+  license:
+    name: AGPL
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Carbonio
+  url: https://docs.zextras.com/carbonio-ce/html/general.html
+servers:
+  - url: http://localhost:7070/api
+paths:
+  /preview/pdf/{messageId}/{part}:
+    get:
+      tags:
+        - preview
+        - pdf
+      parameters:
+        - $ref: "#/components/parameters/messageIdParam"
+        - $ref: "#/components/parameters/partParam"
+        - $ref: "#/components/parameters/outputFormatParam"
+        - $ref: "#/components/parameters/firstPageParam"
+        - $ref: "#/components/parameters/lastPageParam"
+        - $ref: "#/components/parameters/cropParam"
+        - $ref: "#/components/parameters/qualityParam"
+        - $ref: "#/components/parameters/shapeParam"
+        - $ref: "#/components/parameters/dispositionParam"
+      operationId: previewPdf
+      summary: Preview a PDF attachment
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/pdf:
+              schema:
+                $ref: "#/components/schemas/PreviewDTO"
+  /preview/image/{messageId}/{part}/{area}:
+    get:
+      tags:
+        - preview
+        - image
+      parameters:
+        - $ref: "#/components/parameters/messageIdParam"
+        - $ref: "#/components/parameters/partParam"
+        - $ref: "#/components/parameters/areaParam"
+        - $ref: "#/components/parameters/outputFormatParam"
+        - $ref: "#/components/parameters/firstPageParam"
+        - $ref: "#/components/parameters/lastPageParam"
+        - $ref: "#/components/parameters/cropParam"
+        - $ref: "#/components/parameters/qualityParam"
+        - $ref: "#/components/parameters/shapeParam"
+        - $ref: "#/components/parameters/dispositionParam"
+      summary: Preview an image attachment
+      operationId: previewImage
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            image/*:
+              schema:
+                $ref: "#/components/schemas/PreviewDTO"
+  /preview/document/{messageId}/{part}:
+    get:
+      tags:
+        - preview
+        - document
+      parameters:
+        - $ref: "#/components/parameters/messageIdParam"
+        - $ref: "#/components/parameters/partParam"
+        - $ref: "#/components/parameters/outputFormatParam"
+        - $ref: "#/components/parameters/firstPageParam"
+        - $ref: "#/components/parameters/lastPageParam"
+        - $ref: "#/components/parameters/cropParam"
+        - $ref: "#/components/parameters/qualityParam"
+        - $ref: "#/components/parameters/shapeParam"
+        - $ref: "#/components/parameters/dispositionParam"
+      summary: Preview a document attachment
+      operationId: previewDocument
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/*:
+              schema:
+                $ref: "#/components/schemas/PreviewDTO"
+  /preview/pdf/{messageId}/{part}/thumbnail:
+    get:
+      tags:
+        - preview
+        - thumbnail
+        - pdf
+      parameters:
+        - $ref: "#/components/parameters/messageIdParam"
+        - $ref: "#/components/parameters/partParam"
+        - $ref: "#/components/parameters/outputFormatParam"
+        - $ref: "#/components/parameters/firstPageParam"
+        - $ref: "#/components/parameters/lastPageParam"
+        - $ref: "#/components/parameters/cropParam"
+        - $ref: "#/components/parameters/qualityParam"
+        - $ref: "#/components/parameters/shapeParam"
+        - $ref: "#/components/parameters/dispositionParam"
+      operationId: previewPdfThumbnail
+      summary: Preview a PDF attachment as thumbnail
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/pdf:
+              schema:
+                $ref: "#/components/schemas/PreviewDTO"
+  /preview/image/{messageId}/{part}/{area}/thumbnail:
+    get:
+      tags:
+        - preview
+        - thumbnail
+        - image
+      parameters:
+        - $ref: "#/components/parameters/messageIdParam"
+        - $ref: "#/components/parameters/partParam"
+        - $ref: "#/components/parameters/areaParam"
+        - $ref: "#/components/parameters/outputFormatParam"
+        - $ref: "#/components/parameters/firstPageParam"
+        - $ref: "#/components/parameters/lastPageParam"
+        - $ref: "#/components/parameters/cropParam"
+        - $ref: "#/components/parameters/qualityParam"
+        - $ref: "#/components/parameters/shapeParam"
+        - $ref: "#/components/parameters/dispositionParam"
+      summary: Preview an image attachment as thumbnail
+      operationId: previewImageThumbnail
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            image/*:
+              schema:
+                $ref: "#/components/schemas/PreviewDTO"
+  /preview/document/{messageId}/{part}/thumbnail:
+    get:
+      tags:
+        - preview
+        - thumbnail
+        - document
+      parameters:
+        - $ref: "#/components/parameters/messageIdParam"
+        - $ref: "#/components/parameters/partParam"
+        - $ref: "#/components/parameters/outputFormatParam"
+        - $ref: "#/components/parameters/firstPageParam"
+        - $ref: "#/components/parameters/lastPageParam"
+        - $ref: "#/components/parameters/cropParam"
+        - $ref: "#/components/parameters/qualityParam"
+        - $ref: "#/components/parameters/shapeParam"
+        - $ref: "#/components/parameters/dispositionParam"
+      summary: Preview a document attachment as thumbnail
+      operationId: previewDocumentThumbnail
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/*:
+              schema:
+                $ref: "#/components/schemas/PreviewDTO"
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: ZM_AUTH_TOKEN
+  parameters:
+    messageIdParam:
+      name: messageId
+      in: path
+      schema:
+        type: string
+        pattern: ([a-zA-Z\-:0-9]+|[0-9]+)
+      required: true
+      description: Id of message containing file to preview
+    partParam:
+      name: part
+      in: path
+      schema:
+        type: string
+        pattern: ([0-9.]+(?:\.[0-9.]+)?)
+      required: true
+      description: Message part to preview
+    areaParam:
+      in: path
+      name: area
+      schema:
+        type: string
+        pattern: ([0-9]*x[0-9]*)
+      required: true
+      description: Area of preview
+    outputFormatParam:
+      in: query
+      name: outputFormat
+      schema:
+        type: string
+      required: false
+      description: Output format for the preview
+    cropParam:
+      in: query
+      name: crop
+      schema:
+        type: boolean
+      required: false
+      description: If crop or not the image
+    qualityParam:
+      in: query
+      name: quality
+      schema:
+        type: string
+      required: false
+      description: Quality of the preview
+    shapeParam:
+      in: query
+      name: shape
+      schema:
+        type: string
+      required: false
+      description: Shape of preview
+    firstPageParam:
+      in: query
+      name: firstPage
+      schema:
+        type: string
+      required: false
+      description: First Page number of file to see preview
+    lastPageParam:
+      in: query
+      name: lastPage
+      schema:
+        type: string
+      required: false
+      description: Page number of file to see preview
+    dispositionParam:
+      in: query
+      name: disp
+      schema:
+        type: string
+        enum: [inline, attachment]
+      required: false
+      description: Disposition of attachment
+
+  schemas:
+    PreviewDTO:
+      type: string
+      format: bytes
+security:
+  - cookieAuth: []
