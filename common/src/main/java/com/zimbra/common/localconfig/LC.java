@@ -549,12 +549,6 @@ public final class LC {
   public static final KnownKey ssl_default_digest = KnownKey.newKey("sha256");
 
   @Supported
-  public static final KnownKey zimlet_directory =
-      KnownKey.newKey("${zimbra_home}/zimlets-deployed");
-
-  public static final KnownKey zimlet_deploy_timeout = KnownKey.newKey("10"); // seconds
-
-  @Supported
   public static final KnownKey calendar_outlook_compatible_allday_events = KnownKey.newKey(false);
 
   @Supported
