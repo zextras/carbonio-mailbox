@@ -113,7 +113,6 @@ public class PreviewController {
       disposition.set("attachment");
     }
 
-    // TODO: refactor this code along with same logic in CopyToFiles
     int messageId;
     String accountUuid = authToken.getAccountId();
     final String[] accountUuidAndMessageId = accountUuidMessageId.split(":");
@@ -135,7 +134,7 @@ public class PreviewController {
                             + "; filename*=UTF-8''"
                             + URLEncoder.encode(
                                 attachmentAndPreview._1().getFileName(), StandardCharsets.UTF_8))
-                    .header(CONTENT_TYPE, attachmentAndPreview._1().getContentType())
+                    .header(CONTENT_TYPE, attachmentAndPreview._2().getMimeType())
                     .build())
         .getOrElseGet((Throwable error) -> Response.serverError().build());
   }

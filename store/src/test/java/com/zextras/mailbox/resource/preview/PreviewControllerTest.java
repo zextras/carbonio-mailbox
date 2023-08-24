@@ -6,15 +6,14 @@ package com.zextras.mailbox.resource.preview;
 
 import static com.zimbra.common.util.ZimbraCookie.COOKIE_ZM_AUTH_TOKEN;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_DISPOSITION;
-import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Maps;
 import com.zextras.carbonio.preview.queries.BlobResponse;
+import com.zextras.carbonio.preview.queries.enums.Format;
 import com.zextras.mailbox.filter.AuthorizationFilter;
 import com.zextras.mailbox.resource.acceptance.MailboxJerseyTest;
 import com.zimbra.cs.account.Account;
@@ -24,27 +23,22 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.AuthProvider;
 import io.vavr.Tuple2;
 import io.vavr.control.Try;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Stream;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimePart;
-import javax.servlet.http.HttpUtils;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Response;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
-import org.apache.logging.log4j.util.Strings;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.glassfish.jersey.test.DeploymentContext;
@@ -63,48 +57,18 @@ class PreviewControllerTest extends MailboxJerseyTest {
   private Provisioning provisioning;
 
   /**
-   * Provides arguments as: account uuid of attachment owner, image name, endpoint, area, if want
-   * thumbnail, query params, if disposition inline
+   * Provides arguments as: messageId, area, type, wanted output format, if thumbnail endpoint, if
+   * want attachment, display inline or not
    *
    * @return arguments for Preview test
    */
-  private static Stream<Arguments> getAttachment() {
+  private static Stream<Arguments> getAttachments() {
     return Stream.of(
-        Arguments.of(
-            UUID.randomUUID().toString(),
-            "MrKrab.gif",
-            "image",
-            "0x0",
-            false,
-            "disp=attachment",
-            false),
-        Arguments.of("", "MrKrab.gif", "image", "0x0", true, "", true),
-        Arguments.of(
-            "",
-            "MrKrab.gif",
-            "image",
-            "0x0",
-            false,
-            "first_page=1&last_page=2&first_page=10&disp=attachment",
-            false),
-        Arguments.of(
-            UUID.randomUUID().toString(),
-            "Calcolo_del_fuso.JPEG",
-            "image",
-            "0x0",
-            false,
-            "disp=inline",
-            true),
-        Arguments.of(
-            UUID.randomUUID().toString(),
-            "Calcolo_del_fuso.JPEG",
-            "image",
-            "0x0",
-            true,
-            "quality=high",
-            true),
-        Arguments.of("", "In-CC0.pdf", "pdf", "0x0", false, "", true),
-        Arguments.of("", "In-CC0.pdf", "pdf", "0x0", true, "", true));
+        Arguments.of("abcdef:1", "0x0", "pdf", Format.JPEG, false, true),
+        Arguments.of("1", "0x0", "image", Format.JPEG, true, true),
+        Arguments.of("12345:1", "0x0", "image", Format.PNG, false, true),
+        Arguments.of("1", "0x0", "image", Format.PNG, false, true),
+        Arguments.of("100", "0x0", "doc", Format.GIF, true, true));
   }
 
   @Override
@@ -131,74 +95,86 @@ class PreviewControllerTest extends MailboxJerseyTest {
     provisioning.createAccount(TEST_ACCOUNT_NAME, "secret", attrs);
   }
 
-  private String getMimeTypeFromFileName(String filename) throws IOException, URISyntaxException {
-    return Files.probeContentType(Path.of(this.getClass().getResource(filename).toURI()));
+  /**
+   * Behaves like Preview service. Returns mime type from requested output format.
+   *
+   * @param outputFormat see {@link Format}
+   * @return mime type for format
+   */
+  private String getContentTypeFromOutputFormat(Format outputFormat) {
+    switch (outputFormat) {
+      case GIF:
+        return ContentType.IMAGE_GIF.getMimeType();
+      case JPEG:
+        return ContentType.IMAGE_JPEG.getMimeType();
+      case PNG:
+        return ContentType.IMAGE_PNG.getMimeType();
+      default:
+        return ContentType.IMAGE_JPEG.getMimeType();
+    }
   }
 
   @ParameterizedTest
-  @MethodSource("getAttachment")
-  public void shouldReturnPreviewWhenRequestingAttachment(
-      String accountId,
-      String fileName,
-      String type,
+  @MethodSource("getAttachments")
+  public void shouldReturnPreviewWithWhenRequestingAttachmentPreview(
+      String messageId,
       String area,
+      String endpoint,
+      Format outputFormat,
       boolean isThumbNail,
-      String query,
       boolean isInline)
       throws Exception {
-    final InputStream attachment = this.getClass().getResourceAsStream(fileName);
-    final int messageId = 100;
+    final String fileName = "attachment.txt";
+    final String file = this.getClass().getResource(fileName).getFile();
+    final byte[] previewContent = this.getClass().getResourceAsStream(fileName).readAllBytes();
     final String partNumber = "2";
 
-    final InputStreamEntity inputStreamEntity = new InputStreamEntity(attachment);
-    inputStreamEntity.setContentType(getMimeTypeFromFileName(fileName));
-
+    // preview response
+    final InputStreamEntity inputStreamEntity =
+        new InputStreamEntity(new ByteArrayInputStream(previewContent));
+    inputStreamEntity.setContentType(getContentTypeFromOutputFormat(outputFormat));
     final BlobResponse previewResponse = new BlobResponse(inputStreamEntity);
 
-    final MimeBodyPart mimePart = new MimeBodyPart();
-    mimePart.attachFile(this.getClass().getResource(fileName).getFile());
-    mimePart.setHeader(CONTENT_TYPE, getMimeTypeFromFileName(fileName));
+    // attachment from  mailbox
+    final MimeBodyPart attachment = new MimeBodyPart();
+    attachment.attachFile(file);
+    attachment.setFileName(fileName);
 
     final Tuple2<MimePart, BlobResponse> attachmentAndPreview =
-        new Tuple2<>(mimePart, previewResponse);
+        new Tuple2<>(attachment, previewResponse);
 
     final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
     final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
-    final String expectedAccountId =
-        Strings.isEmpty(accountId) ? authToken.getAccountId() : accountId;
 
-    when(previewService.getAttachmentAndPreview(
-            eq(expectedAccountId), any(), any(), eq(messageId), eq(partNumber), any()))
+    when(previewService.getAttachmentAndPreview(any(), any(), any(), any(), any(), any()))
         .thenReturn(Try.of(() -> attachmentAndPreview));
 
     final String thumbnailUrl = isThumbNail ? "thumbnail" : "";
-    final String messageIdPath =
-        Strings.isEmpty(accountId) ? String.valueOf(messageId) : accountId + ":" + messageId;
-
+    final String disposition = isInline ? "inline" : "attachment";
     WebTarget target =
         target(
-            "/" + type + "/" + messageIdPath + "/" + partNumber + "/" + area + "/" + thumbnailUrl);
-    target = addParams(target, query);
+                "/"
+                    + endpoint
+                    + "/"
+                    + messageId
+                    + "/"
+                    + partNumber
+                    + "/"
+                    + area
+                    + "/"
+                    + thumbnailUrl)
+            .queryParam("output_format", outputFormat)
+            .queryParam("disp", disposition);
     final Response response =
         target.request().cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded())).get();
-    final byte[] expectedContent = this.getClass().getResourceAsStream(fileName).readAllBytes();
     final String expectedContentDisposition =
-        (isInline ? "inline" : "attachment")
-            + "; filename*=UTF-8''"
-            + URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+        disposition + "; filename*=UTF-8''" + URLEncoder.encode(fileName, StandardCharsets.UTF_8);
     final int statusCode = response.getStatus();
-    final InputStream content = response.readEntity(InputStream.class);
-    assertEquals(HttpStatus.SC_OK, statusCode);
-    assertArrayEquals(expectedContent, content.readAllBytes());
-    assertEquals(mimePart.getContentType(), response.getHeaderString(HttpHeaders.CONTENT_TYPE));
-    assertEquals(expectedContentDisposition, response.getHeaderString(CONTENT_DISPOSITION));
-  }
+    final InputStream receivedContent = response.readEntity(InputStream.class);
 
-  private WebTarget addParams(WebTarget webTarget, String paramString) {
-    Map<String, String[]> paramsMap = HttpUtils.parseQueryString(paramString);
-    for (Entry<String, String[]> entry : paramsMap.entrySet()) {
-      webTarget = webTarget.queryParam(entry.getKey(), entry.getValue());
-    }
-    return webTarget;
+    assertEquals(HttpStatus.SC_OK, statusCode);
+    assertArrayEquals(previewContent, receivedContent.readAllBytes());
+    assertEquals(previewResponse.getMimeType(), response.getHeaderString(HttpHeaders.CONTENT_TYPE));
+    assertEquals(expectedContentDisposition, response.getHeaderString(CONTENT_DISPOSITION));
   }
 }
