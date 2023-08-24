@@ -89,8 +89,6 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/common/lib/ical4j-0.9.16-patched.jar"
   install -D carbonio-jetty-libs/target/dependencies/icu4j-4.8.1.1.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/icu4j-4.8.1.1.jar"
-  install -D carbonio-jetty-libs/target/dependencies/java-semver-0.9.0.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/java-semver-0.9.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/javax.xml.soap-api-1.4.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/javax.xml.soap-api-1.4.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/jaxb-api-2.3.0.jar \
@@ -149,8 +147,6 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/common/lib/unboundid-ldapsdk-2.3.5.jar"
   install -D carbonio-jetty-libs/target/dependencies/xercesImpl-2.9.1-patch-01.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/xercesImpl-2.9.1-patch-01.jar"
-  install -D carbonio-jetty-libs/target/dependencies/yuicompressor-2.4.8.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/yuicompressor-2.4.8.jar"
   install -D carbonio-jetty-libs/target/dependencies/bcmail-jdk15on-1.60.jar \
     "${pkgdir}/opt/zextras/lib/ext-common/bcmail-jdk15on-1.60.jar"
   install -D carbonio-jetty-libs/target/dependencies/saaj-impl-1.5.1.jar \
