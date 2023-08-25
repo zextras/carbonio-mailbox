@@ -31,12 +31,15 @@ public class PreviewController implements PreviewApi {
   }
 
   /**
-   * This method gets the attachment and ask preview service for a preview. It assumes the same
-   * logic for all attachment types.
+   * Ask attachment and preview from {@link PreviewService} by providing needed args. Builds the
+   * final {@link Response} from returned answer.
    *
-   * @param accountUuidMessageId message id of email, can be accountUuid:id or just id of email.
-   * @param partNumber part number of mime attachme
-   * @return
+   * @param previewType type of preview to ask
+   * @param accountUuidMessageId parameter with accountUuid and MessageId or just MessageId
+   * @param partNumber part of attachment
+   * @param disposition disposition to return
+   * @param query query for {@link com.zextras.carbonio.preview.PreviewClient}
+   * @return {@link Response} for controller
    */
   private Response doPostPreview(
       PreviewType previewType,
@@ -74,23 +77,23 @@ public class PreviewController implements PreviewApi {
   }
 
   /**
-   * Builds a {@link Query} for preview
+   * Builds a {@link Query} for preview and executes the business logic.
    *
-   * @param previewType
-   * @param messageId
-   * @param part
-   * @param outputFormat
-   * @param firstPage
-   * @param lastPage
-   * @param crop
-   * @param quality
-   * @param shape
-   * @param disposition
-   * @return
+   * @param previewType type of preview
+   * @param accountUuidAndMessageId
+   * @param part part number
+   * @param outputFormat output format for preview
+   * @param firstPage first page for preview
+   * @param lastPage last page for preview
+   * @param crop if crop preview
+   * @param quality quality of preview
+   * @param shape shape of preview
+   * @param disposition disposition to return in response
+   * @return {@link Response} with attachment preview
    */
   private Response doPostPreview(
       PreviewType previewType,
-      String messageId,
+      String accountUuidAndMessageId,
       String part,
       String area,
       String outputFormat,
@@ -103,7 +106,7 @@ public class PreviewController implements PreviewApi {
     final Query query =
         PreviewQueryUtil.getPreviewQuery(
             area, outputFormat, firstPage, lastPage, crop, quality, shape);
-    return this.doPostPreview(previewType, messageId, part, disposition, query);
+    return this.doPostPreview(previewType, accountUuidAndMessageId, part, disposition, query);
   }
 
   @Override
