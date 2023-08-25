@@ -678,9 +678,6 @@ class PreviewQueryParameters {
     this.quality = quality;
     this.outputFormat = outputFormat;
     this.shape = shape;
-    this.crop = false;
-    this.firstPage = 0;
-    this.lastPage = 0;
   }
 
   @SuppressWarnings("unused") // unused but required for testing
