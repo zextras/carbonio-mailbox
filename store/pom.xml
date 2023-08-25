@@ -612,6 +612,7 @@
                 <apiPackage>com.zextras.mailbox.resource</apiPackage>
                 <modelPackage>com.zextras.mailbox.model</modelPackage>
                 <sourceFolder>src/gen/java/main</sourceFolder>
+                <returnResponse>true</returnResponse>
               </configOptions>
             </configuration>
           </execution>

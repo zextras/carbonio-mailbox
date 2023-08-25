@@ -8,6 +8,8 @@ import static com.zimbra.common.util.ZimbraCookie.COOKIE_ZM_AUTH_TOKEN;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_DISPOSITION;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -64,11 +66,9 @@ class PreviewControllerTest extends MailboxJerseyTest {
    */
   private static Stream<Arguments> getAttachments() {
     return Stream.of(
-        Arguments.of("abcdef:1", "0x0", "pdf", Format.JPEG, false, true),
-        Arguments.of("1", "0x0", "image", Format.JPEG, true, true),
-        Arguments.of("12345:1", "0x0", "image", Format.PNG, false, true),
-        Arguments.of("1", "0x0", "image", Format.PNG, false, true),
-        Arguments.of("100", "0x0", "doc", Format.GIF, true, true));
+        Arguments.of("/preview/pdf/abcdef:1/2", Format.JPEG, false, true),
+        Arguments.of("/preview/image/abcdef:1/2/0x0", Format.GIF, true, true),
+        Arguments.of("/preview/document/abcdef:1/2", Format.JPEG, true, true));
   }
 
   @Override
@@ -117,12 +117,7 @@ class PreviewControllerTest extends MailboxJerseyTest {
   @ParameterizedTest
   @MethodSource("getAttachments")
   public void shouldReturnPreviewWithWhenRequestingAttachmentPreview(
-      String messageId,
-      String area,
-      String endpoint,
-      Format outputFormat,
-      boolean isThumbNail,
-      boolean isInline)
+      String endpoint, Format outputFormat, boolean isThumbNail, boolean isInline)
       throws Exception {
     final String fileName = "attachment.txt";
     final String file = this.getClass().getResource(fileName).getFile();
@@ -146,25 +141,14 @@ class PreviewControllerTest extends MailboxJerseyTest {
     final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
     final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
 
-    when(previewService.getAttachmentAndPreview(any(), any(), any(), any(), any(), any()))
+    when(previewService.getAttachmentAndPreview(
+            anyString(), any(), any(), anyInt(), anyString(), any()))
         .thenReturn(Try.of(() -> attachmentAndPreview));
 
     final String thumbnailUrl = isThumbNail ? "thumbnail" : "";
     final String disposition = isInline ? "inline" : "attachment";
     WebTarget target =
-        target(
-                "/"
-                    + endpoint
-                    + "/"
-                    + messageId
-                    + "/"
-                    + partNumber
-                    + "/"
-                    + area
-                    + "/"
-                    + thumbnailUrl)
-            .queryParam("output_format", outputFormat)
-            .queryParam("disp", disposition);
+        target(endpoint).queryParam("output_format", outputFormat).queryParam("disp", disposition);
     final Response response =
         target.request().cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded())).get();
     final String expectedContentDisposition =
