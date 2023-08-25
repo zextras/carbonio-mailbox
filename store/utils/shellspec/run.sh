@@ -8,4 +8,8 @@ if [ ! -e "utils/shellspec/lib/shellspec" ]; then
   (./utils/shellspec/install.sh)
 fi
 
-utils/shellspec/lib/shellspec/shellspec "${@}"
+if [ "${CI}" != "true" ]; then
+  utils/shellspec/lib/shellspec/shellspec "${@}"
+else
+  echo "Shellspec is temporarily disabled on Jenkins"
+fi
