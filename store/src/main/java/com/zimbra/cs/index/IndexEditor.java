@@ -5,32 +5,12 @@
 
 package com.zimbra.cs.index;
 
-import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.io.TcpServerInputStream;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.SoapProtocol;
-import com.zimbra.common.util.CliUtil;
-import com.zimbra.common.util.ExceptionToString;
-import com.zimbra.common.util.Log;
-import com.zimbra.common.util.LogFactory;
-import com.zimbra.common.util.NetUtil;
-import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.MailServiceException;
-import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxIndex;
-import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.server.ProtocolHandler;
-import com.zimbra.cs.server.TcpServer;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -40,19 +20,30 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.WriterAppender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.layout.PatternLayout;
+
+import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.WriterAppender;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.account.Key.AccountBy;
+import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.MailServiceException;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxIndex;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.server.ProtocolHandler;
+import com.zimbra.cs.server.TcpServer;
+import com.zimbra.common.io.TcpServerInputStream;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.SoapProtocol;
+import com.zimbra.common.util.*;
 
 /**
  * @since Jul 20, 2004
@@ -434,13 +425,11 @@ public final class IndexEditor {
 
         public boolean enableLogging() {
             if (mAppender == null) {
-                Layout layout = PatternLayout.newBuilder().withPattern(logLayoutPattern).build();
-                mAppender = WriterAppender.newBuilder().setLayout(layout).setTarget(new OutputStreamWriter(mOutputStream)).build();
-                Logger root = LogManager.getRootLogger();
-                LoggerContext context = LoggerContext.getContext(false);
-                Configuration configuration = context.getConfiguration();
-                LoggerConfig loggerConfig = configuration.getLoggerConfig(root.getName());
-                loggerConfig.addAppender(mAppender, Level.INFO, null);
+                Layout layout = new PatternLayout(logLayoutPattern );
+                mAppender = new WriterAppender(layout, mOutputStream);
+                Logger root = Logger.getRootLogger();
+
+                root.addAppender(mAppender);
                 return true;
             } else {
                 return false;
@@ -449,11 +438,8 @@ public final class IndexEditor {
 
         public boolean disableLogging() {
             if (mAppender != null) {
-                Logger root = LogManager.getRootLogger();
-                LoggerContext context = LoggerContext.getContext(false);
-                Configuration configuration = context.getConfiguration();
-                LoggerConfig loggerConfig = configuration.getLoggerConfig(root.getName());
-                loggerConfig.removeAppender(mAppender.getName());
+                Logger root = Logger.getRootLogger();
+                root.removeAppender(mAppender);
                 mAppender = null;
                 return true;
             }
@@ -680,7 +666,7 @@ public final class IndexEditor {
             outputStream.print("Caught exception: "+e.toString());
         }
 
-        Logger root = LogManager.getRootLogger();
+        Logger root = Logger.getRootLogger();
 
         if (logLevel != null && !logLevel.equals("")) {
 
@@ -707,7 +693,7 @@ public final class IndexEditor {
                 return;
             }
 
-            Configurator.setLevel(root.getName(), newLevel);
+            root.setLevel(newLevel);
         }
         Level cur = root.getLevel();
         outputStream.println("Current level is: "+cur);

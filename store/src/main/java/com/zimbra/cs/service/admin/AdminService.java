@@ -61,10 +61,10 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.GET_ACCOUNT_MEMBERSHIP_REQUEST, new GetAccountMembership());
 
-    // certbot
+    //certbot
     dispatcher.registerHandler(AdminConstants.ISSUE_CERT_REQUEST, new IssueCert());
 
-    // domain
+    //domain
     dispatcher.registerHandler(AdminConstants.CREATE_DOMAIN_REQUEST, new CreateDomain());
     dispatcher.registerHandler(AdminConstants.GET_DOMAIN_REQUEST, new GetDomain());
     dispatcher.registerHandler(AdminConstants.GET_DOMAIN_INFO_REQUEST, new GetDomainInfo());
@@ -85,6 +85,13 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.GET_ALL_SERVERS_REQUEST, new GetAllServers());
     dispatcher.registerHandler(AdminConstants.MODIFY_SERVER_REQUEST, new ModifyServer());
     dispatcher.registerHandler(AdminConstants.DELETE_SERVER_REQUEST, new DeleteServer());
+
+    dispatcher.registerHandler(AdminConstants.CREATE_UC_SERVICE_REQUEST, new CreateUCService());
+    dispatcher.registerHandler(AdminConstants.GET_UC_SERVICE_REQUEST, new GetUCService());
+    dispatcher.registerHandler(AdminConstants.GET_ALL_UC_SERVICES_REQUEST, new GetAllUCServices());
+    dispatcher.registerHandler(AdminConstants.MODIFY_UC_SERVICE_REQUEST, new ModifyUCService());
+    dispatcher.registerHandler(AdminConstants.DELETE_UC_SERVICE_REQUEST, new DeleteUCService());
+    dispatcher.registerHandler(AdminConstants.RENAME_UC_SERVICE_REQUEST, new RenameUCService());
 
     dispatcher.registerHandler(AdminConstants.GET_CONFIG_REQUEST, new GetConfig());
     dispatcher.registerHandler(AdminConstants.GET_ALL_CONFIG_REQUEST, new GetAllConfig());
@@ -242,6 +249,7 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.FLUSH_CACHE_REQUEST, new FlushCache());
 
     dispatcher.registerHandler(AdminConstants.COUNT_ACCOUNT_REQUEST, new CountAccount());
+    dispatcher.registerHandler(AdminConstants.COUNT_OBJECTS_REQUEST, new CountObjects());
 
     dispatcher.registerHandler(AdminConstants.GET_SHARE_INFO_REQUEST, new GetShareInfo());
 
@@ -334,6 +342,15 @@ public class AdminService implements DocumentService {
     // store manager verifier
     dispatcher.registerHandler(
         AdminConstants.VERIFY_STORE_MANAGER_REQUEST, new VerifyStoreManager());
+
+    // Skins
+    dispatcher.registerHandler(AdminConstants.GET_ALL_SKINS_REQUEST, new GetAllSkins());
+
+    dispatcher.registerHandler(
+        AdminConstants.GET_ALL_ACTIVE_SERVERS_REQUEST, new GetAllActiveServers());
+    dispatcher.registerHandler(AdminConstants.SET_SERVER_OFFLINE_REQUEST, new SetServerOffline());
+    dispatcher.registerHandler(
+        AdminConstants.SET_LOCAL_SERVER_ONLINE_REQUEST, new SetLocalServerOnline());
 
     // Filter rules
     dispatcher.registerHandler(AdminConstants.GET_FILTER_RULES_REQUEST, new GetFilterRules());

@@ -5,6 +5,31 @@
 
 package com.zimbra.cs.redolog.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.log4j.Appender;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Logger;
+
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.CliUtil;
@@ -19,33 +44,6 @@ import com.zimbra.cs.redolog.logger.FileLogReader;
 import com.zimbra.cs.util.Config;
 import com.zimbra.cs.util.SoapCLI;
 import com.zimbra.cs.util.Zimbra;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 
 /**
  * zmplayredo: Program for playing back redologs.
@@ -367,21 +365,17 @@ public class PlaybackUtil {
         // set up log4j
         ZimbraLog.toolSetupLog4j("INFO", LC.zimbra_log4j_properties.value());
         // remove the console appender if any
-        Logger rootLogger = LogManager.getRootLogger();
-        LoggerContext context = LoggerContext.getContext(false);
-        Configuration configuration = context.getConfiguration();
-        LoggerConfig loggerConfig = configuration.getLoggerConfig(rootLogger.getName());
-        Map<String, Appender> appenders = loggerConfig.getAppenders();
-        AtomicReference<Appender> consoleAppender = new AtomicReference<>();
-        appenders.values().forEach(
-            appender -> {
-                if (appender instanceof ConsoleAppender) {
-                    consoleAppender.set(appender);
-                }
-            });
-        if (consoleAppender.get() != null) {
-            loggerConfig.removeAppender(consoleAppender.get().getName());
+        Logger rootLogger = Logger.getRootLogger();
+        Appender consoleAppender = null;
+        Enumeration appenders = rootLogger.getAllAppenders();
+        while (appenders.hasMoreElements()) {
+            Appender appender = (Appender) appenders.nextElement();
+            if (appender instanceof ConsoleAppender) {
+                consoleAppender = appender;
             }
+        }
+        if (consoleAppender != null)
+            rootLogger.removeAppender(consoleAppender);
 
         DbPool.startup();
         Zimbra.startupCLI();

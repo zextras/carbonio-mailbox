@@ -17,6 +17,7 @@ import com.zimbra.common.account.Key.IdentityBy;
 import com.zimbra.common.account.Key.ServerBy;
 import com.zimbra.common.account.Key.ShareLocatorBy;
 import com.zimbra.common.account.Key.SignatureBy;
+import com.zimbra.common.account.Key.UCServiceBy;
 import com.zimbra.common.account.Key.XMPPComponentBy;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.localconfig.LC;
@@ -58,6 +59,7 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ShareInfoData;
 import com.zimbra.cs.account.ShareLocator;
 import com.zimbra.cs.account.Signature;
+import com.zimbra.cs.account.UCService;
 import com.zimbra.cs.account.XMPPComponent;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.accesscontrol.Right;
@@ -113,6 +115,8 @@ import com.zimbra.soap.admin.message.CreateHABGroupRequest;
 import com.zimbra.soap.admin.message.CreateHABGroupResponse;
 import com.zimbra.soap.admin.message.CreateServerRequest;
 import com.zimbra.soap.admin.message.CreateServerResponse;
+import com.zimbra.soap.admin.message.CreateUCServiceRequest;
+import com.zimbra.soap.admin.message.CreateUCServiceResponse;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteCalendarResourceRequest;
 import com.zimbra.soap.admin.message.DeleteCosRequest;
@@ -120,6 +124,7 @@ import com.zimbra.soap.admin.message.DeleteDistributionListRequest;
 import com.zimbra.soap.admin.message.DeleteDomainRequest;
 import com.zimbra.soap.admin.message.DeleteMailboxRequest;
 import com.zimbra.soap.admin.message.DeleteServerRequest;
+import com.zimbra.soap.admin.message.DeleteUCServiceRequest;
 import com.zimbra.soap.admin.message.FlushCacheRequest;
 import com.zimbra.soap.admin.message.GetAccountInfoRequest;
 import com.zimbra.soap.admin.message.GetAccountInfoResponse;
@@ -133,6 +138,8 @@ import com.zimbra.soap.admin.message.GetAllAccountLoggersRequest;
 import com.zimbra.soap.admin.message.GetAllAccountLoggersResponse;
 import com.zimbra.soap.admin.message.GetAllAccountsRequest;
 import com.zimbra.soap.admin.message.GetAllAccountsResponse;
+import com.zimbra.soap.admin.message.GetAllActiveServersRequest;
+import com.zimbra.soap.admin.message.GetAllActiveServersResponse;
 import com.zimbra.soap.admin.message.GetAllAdminAccountsRequest;
 import com.zimbra.soap.admin.message.GetAllAdminAccountsResponse;
 import com.zimbra.soap.admin.message.GetAllCalendarResourcesRequest;
@@ -151,6 +158,8 @@ import com.zimbra.soap.admin.message.GetAllRightsRequest;
 import com.zimbra.soap.admin.message.GetAllRightsResponse;
 import com.zimbra.soap.admin.message.GetAllServersRequest;
 import com.zimbra.soap.admin.message.GetAllServersResponse;
+import com.zimbra.soap.admin.message.GetAllUCServicesRequest;
+import com.zimbra.soap.admin.message.GetAllUCServicesResponse;
 import com.zimbra.soap.admin.message.GetCalendarResourceRequest;
 import com.zimbra.soap.admin.message.GetCalendarResourceResponse;
 import com.zimbra.soap.admin.message.GetConfigRequest;
@@ -181,6 +190,8 @@ import com.zimbra.soap.admin.message.GetServerRequest;
 import com.zimbra.soap.admin.message.GetServerResponse;
 import com.zimbra.soap.admin.message.GetShareInfoRequest;
 import com.zimbra.soap.admin.message.GetShareInfoResponse;
+import com.zimbra.soap.admin.message.GetUCServiceRequest;
+import com.zimbra.soap.admin.message.GetUCServiceResponse;
 import com.zimbra.soap.admin.message.HABOrgUnitRequest;
 import com.zimbra.soap.admin.message.HABOrgUnitRequest.HabOp;
 import com.zimbra.soap.admin.message.HABOrgUnitResponse;
@@ -200,11 +211,16 @@ import com.zimbra.soap.admin.message.RenameAccountRequest;
 import com.zimbra.soap.admin.message.RenameCalendarResourceRequest;
 import com.zimbra.soap.admin.message.RenameCosRequest;
 import com.zimbra.soap.admin.message.RenameDistributionListRequest;
+import com.zimbra.soap.admin.message.RenameUCServiceRequest;
 import com.zimbra.soap.admin.message.ResetAllLoggersRequest;
 import com.zimbra.soap.admin.message.SearchDirectoryRequest;
 import com.zimbra.soap.admin.message.SearchDirectoryResponse;
+import com.zimbra.soap.admin.message.SetLocalServerOnlineRequest;
 import com.zimbra.soap.admin.message.SetPasswordRequest;
 import com.zimbra.soap.admin.message.SetPasswordResponse;
+import com.zimbra.soap.admin.message.SetServerOfflineRequest;
+import com.zimbra.soap.admin.message.UpdatePresenceSessionIdRequest;
+import com.zimbra.soap.admin.message.UpdatePresenceSessionIdResponse;
 import com.zimbra.soap.admin.message.VerifyIndexRequest;
 import com.zimbra.soap.admin.message.VerifyIndexResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
@@ -245,6 +261,8 @@ import com.zimbra.soap.admin.type.ReindexProgressInfo;
 import com.zimbra.soap.admin.type.RightInfo;
 import com.zimbra.soap.admin.type.ServerInfo;
 import com.zimbra.soap.admin.type.ServerSelector;
+import com.zimbra.soap.admin.type.UCServiceInfo;
+import com.zimbra.soap.admin.type.UCServiceSelector;
 import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.GalSearchType;
 import com.zimbra.soap.type.GranteeType;
@@ -1164,6 +1182,24 @@ public class SoapProvisioning extends Provisioning {
   @Override
   public List<Server> getAllServers() throws ServiceException {
     return getAllServers(null, true);
+  }
+
+  public List<Server> getAllActiveServers() throws ServiceException {
+    List<Server> result = new ArrayList<Server>();
+    GetAllActiveServersResponse resp = invokeJaxb(new GetAllActiveServersRequest());
+    for (ServerInfo serverInfo : resp.getServerList()) {
+      result.add(new SoapServer(serverInfo, this));
+    }
+    return result;
+  }
+
+  public void setServerOffline(ServerBy keyType, String key) throws ServiceException {
+    ServerSelector sel = new ServerSelector(SoapProvisioning.toJaxb(keyType), key);
+    invokeJaxb(new SetServerOfflineRequest(sel));
+  }
+
+  public void setLocalServerOnline() throws ServiceException {
+    invokeJaxb(new SetLocalServerOnlineRequest());
   }
 
   public static class QuotaUsage {
@@ -2731,8 +2767,10 @@ public class SoapProvisioning extends Provisioning {
   }
 
   @Override
-  public long countObjects(CountObjectsType type, Domain domain) throws ServiceException {
-    CountObjectsResponse resp = invokeJaxb(new CountObjectsRequest(type, getSelector(domain)));
+  public long countObjects(CountObjectsType type, Domain domain, UCService ucService)
+      throws ServiceException {
+    CountObjectsResponse resp =
+        invokeJaxb(new CountObjectsRequest(type, getSelector(domain), getSelector(ucService)));
     return resp.getNum();
   }
 
@@ -2900,6 +2938,57 @@ public class SoapProvisioning extends Provisioning {
   }
 
   @Override
+  public UCService createUCService(String name, Map<String, Object> attrs) throws ServiceException {
+    CreateUCServiceResponse resp = invokeJaxb(new CreateUCServiceRequest(name, attrs));
+    return new SoapUCService(resp.getUCService(), this);
+  }
+
+  @Override
+  public void deleteUCService(String zimbraId) throws ServiceException {
+    invokeJaxb(new DeleteUCServiceRequest(zimbraId));
+  }
+
+  @Override
+  public UCService get(UCServiceBy keyType, String key) throws ServiceException {
+    UCServiceSelector sel = new UCServiceSelector(SoapProvisioning.toJaxb(keyType), key);
+    try {
+      GetUCServiceResponse resp = invokeJaxb(new GetUCServiceRequest(sel));
+      return new SoapUCService(resp.getUCService(), this);
+    } catch (ServiceException e) {
+      if (e.getCode().equals(AccountServiceException.NO_SUCH_UC_SERVICE)) return null;
+      else throw e;
+    }
+  }
+
+  @Override
+  public List<UCService> getAllUCServices() throws ServiceException {
+    ArrayList<UCService> result = new ArrayList<UCService>();
+    GetAllUCServicesResponse resp = invokeJaxb(new GetAllUCServicesRequest());
+    for (UCServiceInfo ucServiceInfo : resp.getUCServiceList()) {
+      result.add(new SoapUCService(ucServiceInfo, this));
+    }
+    return result;
+  }
+
+  @Override
+  public String updatePresenceSessionId(String zimbraId, String username, String password)
+      throws ServiceException {
+
+    UCServiceSelector sel =
+        new UCServiceSelector(SoapProvisioning.toJaxb(Key.UCServiceBy.id), zimbraId);
+
+    UpdatePresenceSessionIdRequest req =
+        new UpdatePresenceSessionIdRequest(sel, username, password);
+    UpdatePresenceSessionIdResponse resp = invokeJaxb(req);
+    return resp.getSessionId();
+  }
+
+  @Override
+  public void renameUCService(String zimbraId, String newName) throws ServiceException {
+    invokeJaxb(new RenameUCServiceRequest(zimbraId, newName));
+  }
+
+  @Override
   public void autoProvControl(String action) throws ServiceException {
     invokeJaxb(new AutoProvTaskControlRequest(Action.fromString(action)));
   }
@@ -2925,6 +3014,12 @@ public class SoapProvisioning extends Provisioning {
   /* Convert to equivalent JAXB object */
   private static ServerSelector.ServerBy toJaxb(Key.ServerBy provServerBy) throws ServiceException {
     return ServerSelector.ServerBy.fromString(provServerBy.toString());
+  }
+
+  /* Convert to equivalent JAXB object */
+  private static UCServiceSelector.UCServiceBy toJaxb(Key.UCServiceBy provUCServiceBy)
+      throws ServiceException {
+    return UCServiceSelector.UCServiceBy.fromString(provUCServiceBy.toString());
   }
 
   /* Convert to equivalent JAXB object */

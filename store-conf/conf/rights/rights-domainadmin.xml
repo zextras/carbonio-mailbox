@@ -488,7 +488,6 @@
   <desc>domain attrs modifiable by domain admins for domain based access manager</desc>
   <attrs>
     <a n="zimbraDomainDefaultCOSId"/> 
-    <a n="carbonioAdminDocumentationUrl"/>
     <a n="carbonioAdminUiAppLogo"/>
     <a n="carbonioAdminUiBackground"/>
     <a n="carbonioAdminUiDarkAppLogo"/>
@@ -502,7 +501,6 @@
     <a n="carbonioLogoUrl"/>
     <a n="carbonioNotificationFrom"/>
     <a n="carbonioNotificationRecipients"/>
-    <a n="carbonioUserDocumentationUrl"/>
     <a n="carbonioWebUiAppLogo"/>
     <a n="carbonioWebUiBannerText"/>
     <a n="carbonioWebUiDarkAppLogo"/>

@@ -15,6 +15,7 @@ import com.zimbra.cs.dav.DavException;
 import com.zimbra.cs.dav.resource.Collection;
 import com.zimbra.cs.dav.resource.DavResource;
 import com.zimbra.cs.dav.resource.MailItemResource;
+import com.zimbra.cs.dav.resource.Notebook;
 import com.zimbra.cs.dav.service.DavMethod;
 import com.zimbra.cs.mailbox.MailItem;
 
@@ -39,11 +40,11 @@ public class Move extends DavMethod {
             if (srcCollection.getDefaultView() != MailItem.Type.UNKNOWN && srcCollection.getDefaultView() != col.getDefaultView())
                 throw new DavException("cannot move to incompatible collection", HttpServletResponse.SC_FORBIDDEN, null);
         } else {
-            // allow moving of collections of type unknown only.
-            if ( !(((Collection) mir).getDefaultView() == MailItem.Type.UNKNOWN) )
+            // allow moving of collections of type document or unknown only.
+            if ( !(((Collection) mir).getDefaultView() == MailItem.Type.DOCUMENT || ((Collection) mir).getDefaultView() == MailItem.Type.UNKNOWN) )
                 throw new DavException("cannot move non-document collection", HttpServletResponse.SC_FORBIDDEN, null);
             // do not allow moving of collection if destination type is not document or unknown.            
-            if (!(col.getDefaultView() == MailItem.Type.UNKNOWN))
+            if (!(col.getDefaultView() == MailItem.Type.UNKNOWN || col.getDefaultView() == MailItem.Type.DOCUMENT))
                 throw new DavException("cannot move to incompatible collection", HttpServletResponse.SC_FORBIDDEN, null);    
         }
             
@@ -51,7 +52,7 @@ public class Move extends DavMethod {
 
     public void handle(DavContext ctxt) throws DavException, IOException, ServiceException {
         String newName = null;        
-        if (mir instanceof Collection)
+        if (mir instanceof Collection || mir instanceof Notebook)
             newName = ctxt.getNewName();        
         if (ctxt.isOverwriteSet()) {
             mir.moveORcopyWithOverwrite(ctxt, col, newName, true);

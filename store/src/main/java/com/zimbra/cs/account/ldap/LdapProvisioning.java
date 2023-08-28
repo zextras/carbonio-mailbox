@@ -13,6 +13,7 @@ import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.Key.DistributionListBy;
+import com.zimbra.common.account.Key.UCServiceBy;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -24,8 +25,10 @@ import com.zimbra.common.util.EmailUtil;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
+import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.SetUtil;
 import com.zimbra.common.util.StringUtil;
+import com.zimbra.common.util.SystemUtil;
 import com.zimbra.common.util.UnmodifiableBloomFilter;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccessManager;
@@ -70,6 +73,7 @@ import com.zimbra.cs.account.SearchDirectoryOptions.SortOpt;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ShareLocator;
 import com.zimbra.cs.account.Signature;
+import com.zimbra.cs.account.UCService;
 import com.zimbra.cs.account.XMPPComponent;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
@@ -112,10 +116,12 @@ import com.zimbra.cs.account.ldap.entry.LdapMimeType;
 import com.zimbra.cs.account.ldap.entry.LdapServer;
 import com.zimbra.cs.account.ldap.entry.LdapShareLocator;
 import com.zimbra.cs.account.ldap.entry.LdapSignature;
+import com.zimbra.cs.account.ldap.entry.LdapUCService;
 import com.zimbra.cs.account.ldap.entry.LdapXMPPComponent;
 import com.zimbra.cs.account.ldap.entry.LdapZimlet;
 import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.cs.account.names.NameUtil.EmailAddress;
+import com.zimbra.cs.datasource.DataSourceManager;
 import com.zimbra.cs.ephemeral.EphemeralInput;
 import com.zimbra.cs.ephemeral.EphemeralKey;
 import com.zimbra.cs.ephemeral.EphemeralLocation;
@@ -164,6 +170,9 @@ import com.zimbra.cs.ldap.ZSearchResultEnumeration;
 import com.zimbra.cs.ldap.ZSearchScope;
 import com.zimbra.cs.ldap.unboundid.InMemoryLdapServer;
 import com.zimbra.cs.listeners.AuthListener;
+import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.service.util.JWEUtil;
 import com.zimbra.cs.service.util.ResetPasswordUtil;
@@ -232,6 +241,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private final INamedEntryCache<Group> groupCache;
   private final IMimeTypeCache mimeTypeCache;
   private final INamedEntryCache<Server> serverCache;
+  private final INamedEntryCache<UCService> ucServiceCache;
   private final INamedEntryCache<ShareLocator> shareLocatorCache;
   private final INamedEntryCache<XMPPComponent> xmppComponentCache;
   private final INamedEntryCache<LdapZimlet> zimletCache;
@@ -281,6 +291,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     groupCache = cache.groupCache();
     mimeTypeCache = cache.mimeTypeCache();
     serverCache = cache.serverCache();
+    ucServiceCache = cache.ucServiceCache();
     shareLocatorCache = cache.shareLocatorCache();
     xmppComponentCache = cache.xmppComponentCache();
     zimletCache = cache.zimletCache();
@@ -344,6 +355,16 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   @Override
   public double getServerCacheHitRate() {
     return serverCache.getHitRate();
+  }
+
+  @Override
+  public int getUCServiceCacheSize() {
+    return ucServiceCache.getSize();
+  }
+
+  @Override
+  public double getUCServiceCacheHitRate() {
+    return ucServiceCache.getHitRate();
   }
 
   @Override
@@ -524,7 +545,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       throws ServiceException {
     modifyAttrsInternal(entry, initZlc, attrs, false);
   }
-
   /**
    * should only be called internally.
    *
@@ -806,6 +826,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       domainCache.replace((Domain) entry);
     } else if (entry instanceof Server) {
       serverCache.replace((Server) entry);
+    } else if (entry instanceof UCService) {
+      ucServiceCache.replace((UCService) entry);
     } else if (entry instanceof XMPPComponent) {
       xmppComponentCache.replace((XMPPComponent) entry);
     } else if (entry instanceof LdapZimlet) {
@@ -2817,8 +2839,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       if (domainType.equalsIgnoreCase(DomainType.alias.name())) {
         entry.setAttr(A_zimbraMailCatchAllAddress, "@" + name);
-        final Domain targetDomain =
-            getDomainById((String) domainAttrs.getOrDefault(A_zimbraDomainAliasTargetId, name));
+        final Domain targetDomain = getDomainById(
+            (String) domainAttrs.getOrDefault(A_zimbraDomainAliasTargetId, name));
         entry.setAttr(A_zimbraMailCatchAllForwardingAddress, "@" + targetDomain.getDomainName());
       }
 
@@ -3625,6 +3647,40 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
+  @Override
+  public Domain getDefaultZMGDomain() throws ServiceException {
+    String domainId = getConfig().getMobileGatewayDefaultAppAccountDomainId();
+    return domainId == null ? null : getDomainById(domainId);
+  }
+
+  private static final String ZMG_APP_CREDS_FOREIGN_PRINCIPAL_PREFIX = "zmgappcreds:";
+
+  @Override
+  public Account autoProvZMGAppAccount(String accountId, String appCredsDigest)
+      throws ServiceException {
+    Account acct = getAccountById(accountId);
+    if (acct != null) {
+      return acct;
+    }
+    Domain domain = getDefaultZMGDomain();
+    if (domain == null) {
+      ZimbraLog.account.info(
+          A_zimbraMobileGatewayDefaultAppAccountDomainId + " has not been configured.");
+      throw ServiceException.FAILURE("Missing server configuration", null);
+    }
+
+    Map<String, Object> attrs = new HashMap<String, Object>();
+    attrs.put(Provisioning.A_zimbraIsMobileGatewayAppAccount, ProvisioningConstants.TRUE);
+    attrs.put(Provisioning.A_zimbraId, accountId);
+    attrs.put(
+        Provisioning.A_zimbraForeignPrincipal,
+        ZMG_APP_CREDS_FOREIGN_PRINCIPAL_PREFIX + appCredsDigest);
+    attrs.put(Provisioning.A_zimbraHideInGal, ProvisioningConstants.TRUE);
+    attrs.put(Provisioning.A_zimbraMailStatus, Provisioning.MailStatus.disabled.toString());
+    attrs.put(Provisioning.A_zimbraMailHost, getLocalServer().getServiceHostname());
+    return createDummyAccount(attrs, null, domain);
+  }
+
   private Account createDummyAccount(Map<String, Object> attrs, String password, Domain domain)
       throws ServiceException {
     SecureRandom random = new SecureRandom();
@@ -3632,6 +3688,105 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     random.nextBytes(keyBytes);
     String dummyEmailAddr = String.valueOf(Hex.encodeHex(keyBytes)) + "@" + domain.getName();
     return createAccount(dummyEmailAddr, password, attrs);
+  }
+
+  private static final String ZMG_PROXY_ACCT_FOREIGN_PRINCIPAL_PREFIX = "zmgproxyacct:";
+
+  @Override
+  public Pair<Account, Boolean> autoProvZMGProxyAccount(String emailAddr, String password)
+      throws ServiceException {
+    Account acct =
+        getAccountByForeignPrincipal(ZMG_PROXY_ACCT_FOREIGN_PRINCIPAL_PREFIX + emailAddr);
+    if (acct != null) {
+      return new Pair<>(acct, false);
+    }
+    String domainId = getConfig().getMobileGatewayDefaultProxyAccountDomainId();
+    if (domainId == null) {
+      return new Pair<>(null, false);
+    }
+    Domain domain = getDomainById(domainId);
+    if (domain == null) {
+      ZimbraLog.account.error(
+          "Domain corresponding to"
+              + A_zimbraMobileGatewayDefaultProxyAccountDomainId
+              + "not found ");
+      throw ServiceException.FAILURE("Missing server configuration", null);
+    }
+
+    String testDsId = "TestId";
+    Map<String, Object> testAttrs = getZMGProxyDataSourceAttrs(emailAddr, password, true, testDsId);
+    DataSource dsToTest =
+        new DataSource(null, DataSourceType.imap, "Test", testDsId, testAttrs, this);
+    try {
+      DataSourceManager.test(dsToTest);
+    } catch (ServiceException e) {
+      ZimbraLog.account.debug("ZMG Proxy account auto provisioning failed", e);
+      throw AuthFailedServiceException.AUTH_FAILED(
+          emailAddr, SystemUtil.getInnermostException(e).getMessage(), e);
+    }
+
+    Map<String, Object> acctAttrs = new HashMap<String, Object>();
+    acctAttrs.put(Provisioning.A_zimbraIsMobileGatewayProxyAccount, ProvisioningConstants.TRUE);
+    acctAttrs.put(
+        Provisioning.A_zimbraForeignPrincipal, ZMG_PROXY_ACCT_FOREIGN_PRINCIPAL_PREFIX + emailAddr);
+    acctAttrs.put(Provisioning.A_zimbraHideInGal, ProvisioningConstants.TRUE);
+    acctAttrs.put(Provisioning.A_zimbraMailStatus, Provisioning.MailStatus.disabled.toString());
+    acctAttrs.put(Provisioning.A_zimbraMailHost, getLocalServer().getServiceHostname());
+    acct = createDummyAccount(acctAttrs, password, domain);
+
+    DataSource ds;
+    try {
+      Map<String, Object> dsAttrs = getZMGProxyDataSourceAttrs(emailAddr, password, false, null);
+      Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+      dsAttrs.put(
+          Provisioning.A_zimbraDataSourceFolderId,
+          Integer.toString(
+              mbox.createFolder(null, "/" + emailAddr, new Folder.FolderOptions()).getId()));
+      ds = createDataSource(acct, DataSourceType.imap, emailAddr, dsAttrs);
+    } catch (ServiceException e) {
+      try {
+        deleteAccount(acct.getId());
+      } catch (ServiceException e1) {
+        if (!AccountServiceException.NO_SUCH_ACCOUNT.equals(e1.getCode())) {
+          throw e1;
+        }
+      }
+      throw e;
+    }
+
+    DataSourceManager.asyncImportData(ds);
+
+    return new Pair<>(acct, true);
+  }
+
+  private Map<String, Object> getZMGProxyDataSourceAttrs(
+      String emailAddr, String password, boolean encryptPassword, String dsId)
+      throws ServiceException {
+    Map<String, Object> testAttrs = new HashMap<String, Object>();
+    Config config = getConfig();
+    testAttrs.put(Provisioning.A_zimbraDataSourceEnabled, LdapConstants.LDAP_TRUE);
+    testAttrs.put(Provisioning.A_zimbraDataSourceIsZmgProxy, LdapConstants.LDAP_TRUE);
+    testAttrs.put(Provisioning.A_zimbraDataSourceHost, config.getMobileGatewayProxyImapHost());
+    testAttrs.put(
+        Provisioning.A_zimbraDataSourcePort,
+        Integer.toString(config.getMobileGatewayProxyImapPort()));
+    testAttrs.put(
+        Provisioning.A_zimbraDataSourceConnectionType,
+        config.getMobileGatewayProxyImapConnectionType().toString());
+    testAttrs.put(Provisioning.A_zimbraDataSourceUsername, emailAddr);
+    testAttrs.put(
+        Provisioning.A_zimbraDataSourcePassword,
+        encryptPassword ? DataSource.encryptData(dsId, password) : password);
+    testAttrs.put(Provisioning.A_zimbraDataSourceSmtpEnabled, LdapConstants.LDAP_TRUE);
+    testAttrs.put(Provisioning.A_zimbraDataSourceSmtpHost, config.getMobileGatewayProxySmtpHost());
+    testAttrs.put(
+        Provisioning.A_zimbraDataSourceSmtpPort,
+        Integer.toString(config.getMobileGatewayProxySmtpPort()));
+    testAttrs.put(
+        Provisioning.A_zimbraDataSourceSmtpConnectionType,
+        config.getMobileGatewayProxySmtpConnectionType().toString());
+    testAttrs.put(Provisioning.A_zimbraDataSourceSmtpAuthRequired, LdapConstants.LDAP_TRUE);
+    return testAttrs;
   }
 
   private void deleteDomain(String zimbraId, boolean deleteDomainAliases) throws ServiceException {
@@ -3797,8 +3952,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         domainCache.remove(domain);
         // assume subdomains exist and turn into plain dc object
         Map<String, Object> attrs = new HashMap<String, Object>();
-        List<String> objClasses =
-            new ArrayList<String>(Arrays.asList("zimbraDomain", "amavisAccount", "DKIM"));
+        List<String> objClasses = new ArrayList<String>(
+            Arrays.asList("zimbraDomain", "amavisAccount", "DKIM"));
         attrs.put("-" + A_objectClass, objClasses);
         // remove all zimbra attrs
         for (String key : domain.getAttrs(false).keySet()) {
@@ -8779,6 +8934,18 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             passwdAlreadyEncrypted ? password : DataSource.encryptData(dsId, password);
         entry.setAttr(A_zimbraDataSourcePassword, encrypted);
       }
+      String oauthToken = entry.getAttrString(A_zimbraDataSourceOAuthToken);
+      if (oauthToken != null) {
+        String encrypted =
+            passwdAlreadyEncrypted ? oauthToken : DataSource.encryptData(dsId, oauthToken);
+        entry.setAttr(A_zimbraDataSourceOAuthToken, encrypted);
+      }
+      String clientSecret = entry.getAttrString(A_zimbraDataSourceOAuthClientSecret);
+      if (clientSecret != null) {
+        String encrypted =
+            passwdAlreadyEncrypted ? clientSecret : DataSource.encryptData(dsId, clientSecret);
+        entry.setAttr(A_zimbraDataSourceOAuthClientSecret, encrypted);
+      }
       String smtpPassword = entry.getAttrString(A_zimbraDataSourceSmtpAuthPassword);
       if (smtpPassword != null) {
         String encrypted =
@@ -8878,6 +9045,15 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     String password = (String) attrs.get(A_zimbraDataSourcePassword);
     if (password != null) {
       attrs.put(A_zimbraDataSourcePassword, DataSource.encryptData(ds.getId(), password));
+    }
+    String oauthToken = (String) attrs.get(A_zimbraDataSourceOAuthToken);
+    if (oauthToken != null) {
+      attrs.put(A_zimbraDataSourceOAuthToken, DataSource.encryptData(ds.getId(), oauthToken));
+    }
+    String clientSecret = (String) attrs.get(A_zimbraDataSourceOAuthClientSecret);
+    if (clientSecret != null) {
+      attrs.put(
+          A_zimbraDataSourceOAuthClientSecret, DataSource.encryptData(ds.getId(), clientSecret));
     }
     String smtpPassword = (String) attrs.get(A_zimbraDataSourceSmtpAuthPassword);
     if (smtpPassword != null) {
@@ -9483,11 +9659,17 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   @Override
-  public long countObjects(CountObjectsType type, Domain domain) throws ServiceException {
+  public long countObjects(CountObjectsType type, Domain domain, UCService ucService)
+      throws ServiceException {
 
     if (domain != null && !type.allowsDomain()) {
       throw ServiceException.INVALID_REQUEST(
           "domain cannot be specified for counting type: " + type.toString(), null);
+    }
+
+    if (ucService != null && !type.allowsUCService()) {
+      throw ServiceException.INVALID_REQUEST(
+          "UCService cannot be specified for counting type: " + type.toString(), null);
     }
 
     ZLdapFilter filter;
@@ -9542,6 +9724,31 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       case server:
         types.add(ObjectType.servers);
         filter = filterFactory.allServers();
+        break;
+      case accountOnUCService:
+        if (ucService == null) {
+          throw ServiceException.INVALID_REQUEST(
+              "UCService is required for counting type: " + type.toString(), null);
+        }
+        types.add(ObjectType.accounts);
+        types.add(ObjectType.resources);
+        filter = filterFactory.accountsOnUCService(ucService.getId());
+        break;
+      case cosOnUCService:
+        if (ucService == null) {
+          throw ServiceException.INVALID_REQUEST(
+              "UCService is required for counting type: " + type.toString(), null);
+        }
+        types.add(ObjectType.coses);
+        filter = filterFactory.cosesOnUCService(ucService.getId());
+        break;
+      case domainOnUCService:
+        if (ucService == null) {
+          throw ServiceException.INVALID_REQUEST(
+              "UCService is required for counting type: " + type.toString(), null);
+        }
+        types.add(ObjectType.domains);
+        filter = filterFactory.domainsOnUCService(ucService.getId());
         break;
       default:
         throw ServiceException.INVALID_REQUEST(
@@ -10893,7 +11100,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       if (!addrsToAdd.isEmpty()) {
         Map<String, String[]> attrs = new HashMap<String, String[]>();
-        attrs.put("+" + LdapDynamicGroup.StaticUnit.MEMBER_ATTR, addrsToAdd.toArray(new String[0]));
+        attrs.put(
+            "+" + LdapDynamicGroup.StaticUnit.MEMBER_ATTR,
+            addrsToAdd.toArray(new String[0]));
         modifyLdapAttrs(staticUnit, zlc, attrs);
       }
 
@@ -10996,7 +11205,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       if (!addrsToRemove.isEmpty()) {
         Map<String, String[]> attrs = new HashMap<String, String[]>();
         attrs.put(
-            "-" + LdapDynamicGroup.StaticUnit.MEMBER_ATTR, addrsToRemove.toArray(new String[0]));
+            "-" + LdapDynamicGroup.StaticUnit.MEMBER_ATTR,
+            addrsToRemove.toArray(new String[0]));
         modifyLdapAttrs(staticUnit, zlc, attrs);
       }
 
@@ -11385,6 +11595,195 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   public Set<String> getDynamicGroupMembersSet(DynamicGroup group) throws ServiceException {
     List<String> members = searchDynamicGroupMembers(group);
     return Sets.newHashSet(members);
+  }
+
+  /*
+   *
+   * UC service methods
+   *
+   */
+  private UCService getUCServiceByQuery(ZLdapFilter filter, ZLdapContext initZlc)
+      throws ServiceException {
+    try {
+      ZSearchResultEntry sr = helper.searchForEntry(mDIT.ucServiceBaseDN(), filter, initZlc, false);
+      if (sr != null) {
+        return new LdapUCService(sr.getDN(), sr.getAttributes(), this);
+      }
+    } catch (LdapMultipleEntriesMatchedException e) {
+      throw AccountServiceException.MULTIPLE_ENTRIES_MATCHED("getUCServiceByQuery", e);
+    } catch (ServiceException e) {
+      throw ServiceException.FAILURE(
+          "unable to lookup ucservice via query: "
+              + filter.toFilterString()
+              + " message:"
+              + e.getMessage(),
+          e);
+    }
+    return null;
+  }
+
+  private UCService getUCServiceById(String zimbraId, ZLdapContext zlc, boolean nocache)
+      throws ServiceException {
+    if (zimbraId == null) {
+      return null;
+    }
+    UCService s = null;
+    if (!nocache) {
+      s = ucServiceCache.getById(zimbraId);
+    }
+    if (s == null) {
+      s = getUCServiceByQuery(filterFactory.ucServiceById(zimbraId), zlc);
+      ucServiceCache.put(s);
+    }
+    return s;
+  }
+
+  private UCService getUCServiceByName(String name, boolean nocache) throws ServiceException {
+    if (!nocache) {
+      UCService s = ucServiceCache.getByName(name);
+      if (s != null) {
+        return s;
+      }
+    }
+
+    try {
+      String dn = mDIT.ucServiceNameToDN(name);
+      ZAttributes attrs = helper.getAttributes(LdapUsage.GET_UCSERVICE, dn);
+      LdapUCService s = new LdapUCService(dn, attrs, this);
+      ucServiceCache.put(s);
+      return s;
+    } catch (LdapEntryNotFoundException e) {
+      return null;
+    } catch (ServiceException e) {
+      throw ServiceException.FAILURE(
+          "unable to lookup ucservice by name: " + name + " message: " + e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public UCService createUCService(String name, Map<String, Object> attrs) throws ServiceException {
+    name = name.toLowerCase().trim();
+
+    CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
+    AttributeManager.getInstance().preModify(attrs, null, callbackContext, true);
+
+    ZLdapContext zlc = null;
+    try {
+      zlc = LdapClient.getContext(LdapServerType.MASTER, LdapUsage.CREATE_UCSERVICE);
+
+      ZMutableEntry entry = LdapClient.createMutableEntry();
+      entry.mapToAttrs(attrs);
+
+      Set<String> ocs = LdapObjectClass.getUCServiceObjectClasses(this);
+      entry.addAttr(A_objectClass, ocs);
+
+      String zimbraIdStr = LdapUtil.generateUUID();
+      entry.setAttr(A_zimbraId, zimbraIdStr);
+      entry.setAttr(A_zimbraCreateTimestamp, LdapDateUtil.toGeneralizedTime(new Date()));
+      entry.setAttr(A_cn, name);
+      String dn = mDIT.ucServiceNameToDN(name);
+
+      entry.setDN(dn);
+      zlc.createEntry(entry);
+
+      UCService ucService = getUCServiceById(zimbraIdStr, zlc, true);
+      AttributeManager.getInstance().postModify(attrs, ucService, callbackContext);
+      return ucService;
+
+    } catch (LdapEntryAlreadyExistException nabe) {
+      throw AccountServiceException.SERVER_EXISTS(name);
+    } catch (LdapException e) {
+      throw e;
+    } catch (AccountServiceException e) {
+      throw e;
+    } catch (ServiceException e) {
+      throw ServiceException.FAILURE("unable to create ucservice: " + name, e);
+    } finally {
+      LdapClient.closeContext(zlc);
+    }
+  }
+
+  @Override
+  public void deleteUCService(String zimbraId) throws ServiceException {
+    LdapUCService ucService = (LdapUCService) getUCServiceById(zimbraId, null, false);
+    if (ucService == null) {
+      throw AccountServiceException.NO_SUCH_UC_SERVICE(zimbraId);
+    }
+
+    ZLdapContext zlc = null;
+    try {
+      zlc = LdapClient.getContext(LdapServerType.MASTER, LdapUsage.DELETE_UCSERVICE);
+      zlc.deleteEntry(ucService.getDN());
+      ucServiceCache.remove(ucService);
+    } catch (ServiceException e) {
+      throw ServiceException.FAILURE("unable to purge ucservice: " + zimbraId, e);
+    } finally {
+      LdapClient.closeContext(zlc);
+    }
+  }
+
+  @Override
+  public UCService get(UCServiceBy keyType, String key) throws ServiceException {
+    switch (keyType) {
+      case name:
+        return getUCServiceByName(key, false);
+      case id:
+        return getUCServiceById(key, null, false);
+      default:
+        return null;
+    }
+  }
+
+  @Override
+  public List<UCService> getAllUCServices() throws ServiceException {
+    List<UCService> result = new ArrayList<UCService>();
+
+    ZLdapFilter filter = filterFactory.allUCServices();
+
+    try {
+      ZSearchResultEnumeration ne =
+          helper.searchDir(mDIT.ucServiceBaseDN(), filter, ZSearchControls.SEARCH_CTLS_SUBTREE());
+      while (ne.hasMore()) {
+        ZSearchResultEntry sr = ne.next();
+        LdapUCService s = new LdapUCService(sr.getDN(), sr.getAttributes(), this);
+        result.add(s);
+      }
+      ne.close();
+    } catch (ServiceException e) {
+      throw ServiceException.FAILURE("unable to list all servers", e);
+    }
+
+    if (result.size() > 0) {
+      ucServiceCache.put(result, true);
+    }
+    Collections.sort(result);
+    return result;
+  }
+
+  @Override
+  public void renameUCService(String zimbraId, String newName) throws ServiceException {
+    LdapUCService ucService = (LdapUCService) getUCServiceById(zimbraId, null, false);
+    if (ucService == null) {
+      throw AccountServiceException.NO_SUCH_UC_SERVICE(zimbraId);
+    }
+
+    ZLdapContext zlc = null;
+    try {
+      zlc = LdapClient.getContext(LdapServerType.MASTER, LdapUsage.RENAME_UCSERVICE);
+      String newDn = mDIT.ucServiceNameToDN(newName);
+      zlc.renameEntry(ucService.getDN(), newDn);
+      ucServiceCache.remove(ucService);
+    } catch (LdapEntryAlreadyExistException nabe) {
+      throw AccountServiceException.UC_SERVICE_EXISTS(newName);
+    } catch (LdapException e) {
+      throw e;
+    } catch (AccountServiceException e) {
+      throw e;
+    } catch (ServiceException e) {
+      throw ServiceException.FAILURE("unable to rename ucservice: " + zimbraId, e);
+    } finally {
+      LdapClient.closeContext(zlc);
+    }
   }
 
   @Override

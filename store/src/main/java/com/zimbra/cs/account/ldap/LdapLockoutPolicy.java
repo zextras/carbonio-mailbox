@@ -5,6 +5,15 @@
 
 package com.zimbra.cs.account.ldap;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.zimbra.common.localconfig.DebugConfig;
@@ -14,15 +23,8 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.auth.PasswordUtil.SSHA512;
+import com.zimbra.cs.account.auth.twofactor.TwoFactorAuth;
 import com.zimbra.cs.ldap.LdapDateUtil;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class LdapLockoutPolicy {
 
@@ -33,15 +35,21 @@ public class LdapLockoutPolicy {
     private boolean mIsLockedOut;
     private String mAccountStatus;
     private FailedLoginState failedLogins = null;
+    private FailedLoginState twoFactorFailedLogins = null;
 
     public LdapLockoutPolicy(Provisioning prov, Account account) throws ServiceException {
         mAccount = account;
         mProv = prov;
         mAccountStatus = account.getAccountStatus(prov);
         long maxFailures = mAccount.getLongAttr(Provisioning.A_zimbraPasswordLockoutMaxFailures, 0);
-        mEnabled = (maxFailures > 0) && mAccount.getBooleanAttr(Provisioning.A_zimbraPasswordLockoutEnabled, false);
+        long max2FAFailures = mAccount.getLongAttr(Provisioning.A_zimbraTwoFactorAuthLockoutMaxFailures, 0);
+        mEnabled = (maxFailures > 0 || max2FAFailures > 0) && mAccount.getBooleanAttr(Provisioning.A_zimbraPasswordLockoutEnabled, false);
         mIsLockedOut = computeIsLockedOut();
         failedLogins = getFailedLoginState();
+        TwoFactorAuth twoFactorAuth = TwoFactorAuth.getFactory().getTwoFactorAuth(account);
+        if (twoFactorAuth.twoFactorAuthEnabled()) {
+            twoFactorFailedLogins = getTwoFactorAuthFailedLoginState();
+        }
     }
 
     private FailedLoginState getFailedLoginState() {
@@ -49,6 +57,13 @@ public class LdapLockoutPolicy {
                 Provisioning.A_zimbraPasswordLockoutFailureTime,
                 Provisioning.A_zimbraPasswordLockoutMaxFailures);
     }
+
+    private FailedLoginState getTwoFactorAuthFailedLoginState() {
+        return new FailedLoginState(mAccount,
+                Provisioning.A_zimbraTwoFactorAuthLockoutFailureTime,
+                Provisioning.A_zimbraTwoFactorAuthLockoutMaxFailures);
+    }
+
 
     private boolean computeIsLockedOut() throws ServiceException {
         // locking not enabled
@@ -84,6 +99,9 @@ public class LdapLockoutPolicy {
         Map<String, Object> attrs = new HashMap<String,Object>();
         if (failedLogins.mEnabled && failedLogins.mFailures.length > 0) {
             attrs.put(failedLogins.failuresAttrName, "");
+        }
+        if (twoFactorFailedLogins != null && twoFactorFailedLogins.mEnabled && twoFactorFailedLogins.mFailures.length > 0) {
+            attrs.put(twoFactorFailedLogins.failuresAttrName, "");
         }
         if (mLockoutExpired) {
             if (mAccountStatus.equalsIgnoreCase(Provisioning.ACCOUNT_STATUS_LOCKOUT)) {
@@ -138,6 +156,12 @@ public class LdapLockoutPolicy {
                                         }
                                     }
                                     int maxCacheSize = acct.getPasswordLockoutSuppressionCacheSize();
+                                    if (acct.isTwoFactorAuthEnabled()) {
+                                        if (acct.isFeatureAppSpecificPasswordsEnabled() &&
+                                            acct.getAppSpecificPassword() != null) {
+                                            maxCacheSize = maxCacheSize + acct.getAppSpecificPassword().length;
+                                        }
+                                    }
                                     ZimbraLog.account.debug("Password lockout suppression cache size = %s (max = %s)", cacheSize, maxCacheSize);
                                     if (cacheSize < maxCacheSize) {
                                         pwds.add(SSHA512.generateSSHA512(password, null));
@@ -155,6 +179,10 @@ public class LdapLockoutPolicy {
 
     public void failedLogin() throws ServiceException {
         failedLogin(failedLogins, null, null);
+    }
+
+    public void failedSecondFactorLogin() throws ServiceException {
+        failedLogin(twoFactorFailedLogins, null, null);
     }
 
     public void failedLogin(String protocol, String password) throws ServiceException {

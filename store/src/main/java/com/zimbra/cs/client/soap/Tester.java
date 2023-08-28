@@ -284,6 +284,39 @@ public class Tester {
         LmcTagActionResponse taResp = (LmcTagActionResponse) taReq.invoke(serverURL);
     }
 
+    private static void doCreateGetDeleteNote(LmcSession session, String serverURL)
+            throws IOException, LmcSoapClientException, ServiceException, SoapFaultException, HttpException {
+        // create the Note
+        System.out.println("=========== CREATING NOTE ============");
+        LmcCreateNoteRequest ctReq = new LmcCreateNoteRequest();
+        ctReq.setSession(session);
+        ctReq.setParentID(inboxFolderID);
+        ctReq.setContent("this is a test note");
+        ctReq.setColor("0"); // XXX where are the allowed colors defined?
+        LmcCreateNoteResponse ctResp = (LmcCreateNoteResponse) ctReq.invoke(serverURL);
+        LmcNote newNote = ctResp.getNote();
+        String noteID = newNote.getID();
+        System.out.println("created Note " + noteID);
+
+        // get the Note
+        System.out.println("=========== GET NOTE ============");
+        LmcGetNoteRequest gnReq = new LmcGetNoteRequest();
+        gnReq.setSession(session);
+        gnReq.setNoteToGet(noteID);
+        LmcGetNoteResponse gnResp = (LmcGetNoteResponse) gnReq.invoke(serverURL);
+        newNote = gnResp.getNote();
+        System.out.println("created Note\n" + newNote);
+
+        // delete the Note
+        System.out.println("=========== DELETING NOTE ============");
+        LmcNoteActionRequest taReq = new LmcNoteActionRequest();
+        taReq.setSession(session);
+        taReq.setOp(ItemAction.OP_HARD_DELETE);
+        taReq.setNoteList(noteID);
+        LmcNoteActionResponse taResp = (LmcNoteActionResponse) taReq.invoke(serverURL);
+        System.out.println("successfully deleted note " + taResp.getNoteList());
+    }
+
     private static void dumpPrefs(HashMap prefMap) {
         System.out.println("===== DUMP THE PREFS ===== ");
         Set s = prefMap.entrySet();
@@ -537,6 +570,8 @@ public class Tester {
             doCreateDeleteTag(session, serverURL);
 
             doModifyDumpPrefs(session, serverURL);
+
+            doCreateGetDeleteNote(session, serverURL);
 
             doChangePassword(session, argv[1], argv[2], serverURL);
 

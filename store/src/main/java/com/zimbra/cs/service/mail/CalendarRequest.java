@@ -68,6 +68,8 @@ public abstract class CalendarRequest extends MailDocumentHandler {
   protected CalendarRequest() {
     if (this instanceof AppointmentRequest) {
       type = MailItem.Type.APPOINTMENT;
+    } else if (this instanceof TaskRequest) {
+      type = MailItem.Type.TASK;
     }
   }
 

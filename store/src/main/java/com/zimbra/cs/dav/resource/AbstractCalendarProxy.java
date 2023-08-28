@@ -120,7 +120,7 @@ public abstract class AbstractCalendarProxy extends Principal {
             SendShareNotificationRequest ssnreq;
             if (!emailAddresses.isEmpty()) {
                 ssnreq = SendShareNotificationRequest.create(Mailbox.ID_FOLDER_CALENDAR,
-                        null /* SendShareNotificationRequest.Action */, emailAddresses);
+                        null /* SendShareNotificationRequest.Action */, null /* notes */, emailAddresses);
                 zmbox.invokeJaxb(ssnreq);
             }
 
@@ -131,7 +131,7 @@ public abstract class AbstractCalendarProxy extends Principal {
             }
             if (!emailAddresses.isEmpty()) {
                 ssnreq = SendShareNotificationRequest.create(Mailbox.ID_FOLDER_CALENDAR,
-                        SendShareNotificationRequest.Action.revoke, emailAddresses);
+                        SendShareNotificationRequest.Action.revoke, null /* notes */, emailAddresses);
                 zmbox.invokeJaxb(ssnreq);
             }
         } catch (ServiceException se) {

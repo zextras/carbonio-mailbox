@@ -5,33 +5,34 @@
 
 package com.zimbra.cs.mailclient;
 
-import static com.zimbra.cs.mailclient.auth.SaslAuthenticator.QOP_AUTH;
-import static com.zimbra.cs.mailclient.auth.SaslAuthenticator.QOP_AUTH_CONF;
-import static com.zimbra.cs.mailclient.auth.SaslAuthenticator.QOP_AUTH_INT;
+import static com.zimbra.cs.mailclient.auth.SaslAuthenticator.*;
 
 import com.zimbra.common.util.Log;
 import com.zimbra.cs.mailclient.auth.AuthenticatorFactory;
+import com.zimbra.cs.mailclient.smtp.SmtpConfig;
+import com.zimbra.cs.mailclient.smtp.SmtpConnection;
+import com.zimbra.cs.mailclient.util.SSLUtil;
 import com.zimbra.cs.mailclient.imap.ImapConfig;
 import com.zimbra.cs.mailclient.imap.ImapConnection;
 import com.zimbra.cs.mailclient.pop3.Pop3Config;
 import com.zimbra.cs.mailclient.pop3.Pop3Connection;
-import com.zimbra.cs.mailclient.smtp.SmtpConfig;
-import com.zimbra.cs.mailclient.smtp.SmtpConnection;
-import com.zimbra.cs.mailclient.util.SSLUtil;
+
+import javax.security.sasl.Sasl;
+import javax.security.auth.login.LoginException;
+
 import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import javax.security.auth.login.LoginException;
-import javax.security.sasl.Sasl;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import java.util.Map;
+import java.util.HashMap;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Level;
 
 public abstract class MailClient {
     private final MailConfig config;
@@ -45,8 +46,8 @@ public abstract class MailClient {
     }
 
     public void run(String[] args) throws LoginException, IOException {
-        Configurator.initialize(new DefaultConfiguration());
-        Configurator.setRootLevel(Level.INFO);
+        BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.INFO);
         config.getLogger().setLevel(Log.Level.trace);
         parseArguments(args, config);
         connect();

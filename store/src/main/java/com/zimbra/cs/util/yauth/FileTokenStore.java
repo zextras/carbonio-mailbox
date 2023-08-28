@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.util.yauth;
 
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,13 +18,12 @@ import java.io.FileNotFoundException;
 import java.io.BufferedReader;
 import java.util.Map;
 import java.util.HashMap;
-import org.apache.logging.log4j.Logger;
 
 public class FileTokenStore extends TokenStore {
     private final File file;
     private final Map<String, String> tokens;
 
-    private static final Logger LOG = LogManager.getLogger(FileTokenStore.class);
+    private static final Logger LOG = Logger.getLogger(FileTokenStore.class);
 
     public FileTokenStore(File file) throws IOException {
         this.file = file;

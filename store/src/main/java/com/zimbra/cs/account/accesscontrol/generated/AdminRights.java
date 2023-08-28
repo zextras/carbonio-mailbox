@@ -114,6 +114,7 @@ public class AdminRights {
     public static AdminRight R_adminConsoleServerVolumesTabRights;
     public static AdminRight R_adminConsoleSoftwareUpdatesRights;
     public static AdminRight R_adminConsoleSubDomainRights;
+    public static AdminRight R_adminConsoleUCServiceRights;
     public static AdminRight R_adminConsoleZimletACLTabRights;
     public static AdminRight R_adminConsoleZimletRights;
     public static AdminRight R_adminLoginAs;
@@ -158,6 +159,7 @@ public class AdminRights {
     public static AdminRight R_createServer;
     public static AdminRight R_createSubDomain;
     public static AdminRight R_createTopDomain;
+    public static AdminRight R_createUCService;
     public static AdminRight R_createXMPPComponent;
     public static AdminRight R_createZimlet;
     public static AdminRight R_crossDomainAdmin;
@@ -170,6 +172,7 @@ public class AdminRights {
     public static AdminRight R_deleteDomain;
     public static AdminRight R_deleteGroup;
     public static AdminRight R_deleteServer;
+    public static AdminRight R_deleteUCService;
     public static AdminRight R_deleteXMPPComponent;
     public static AdminRight R_deleteZimlet;
     public static AdminRight R_deployZimlet;
@@ -229,6 +232,7 @@ public class AdminRights {
     public static AdminRight R_getServerStats;
     public static AdminRight R_getServiceStatus;
     public static AdminRight R_getSessions;
+    public static AdminRight R_getUCService;
     public static AdminRight R_getXMPPComponent;
     public static AdminRight R_getZimlet;
     public static AdminRight R_installCertificate;
@@ -241,6 +245,7 @@ public class AdminRights {
     public static AdminRight R_listDomain;
     public static AdminRight R_listGroup;
     public static AdminRight R_listServer;
+    public static AdminRight R_listUCService;
     public static AdminRight R_listXMPPComponent;
     public static AdminRight R_listZimlet;
     public static AdminRight R_mailQueueRights;
@@ -261,6 +266,7 @@ public class AdminRights {
     public static AdminRight R_modifyGlobalConfig;
     public static AdminRight R_modifyGroup;
     public static AdminRight R_modifyServer;
+    public static AdminRight R_modifyUCService;
     public static AdminRight R_modifyXMPPComponent;
     public static AdminRight R_modifyZimlet;
     public static AdminRight R_moveAccountMailbox;
@@ -283,6 +289,7 @@ public class AdminRights {
     public static AdminRight R_renameCos;
     public static AdminRight R_renameDistributionList;
     public static AdminRight R_renameGroup;
+    public static AdminRight R_renameUCService;
     public static AdminRight R_restoreAccount;
     public static AdminRight R_rolloverRedoLog;
     public static AdminRight R_setAccountPassword;
@@ -540,6 +547,7 @@ public class AdminRights {
         R_adminConsoleServerVolumesTabRights   = rm.getAdminRight(Right.RT_adminConsoleServerVolumesTabRights);
         R_adminConsoleSoftwareUpdatesRights    = rm.getAdminRight(Right.RT_adminConsoleSoftwareUpdatesRights);
         R_adminConsoleSubDomainRights          = rm.getAdminRight(Right.RT_adminConsoleSubDomainRights);
+        R_adminConsoleUCServiceRights          = rm.getAdminRight(Right.RT_adminConsoleUCServiceRights);
         R_adminConsoleZimletACLTabRights       = rm.getAdminRight(Right.RT_adminConsoleZimletACLTabRights);
         R_adminConsoleZimletRights             = rm.getAdminRight(Right.RT_adminConsoleZimletRights);
         R_adminLoginAs                         = rm.getAdminRight(Right.RT_adminLoginAs);
@@ -584,6 +592,7 @@ public class AdminRights {
         R_createServer                         = rm.getAdminRight(Right.RT_createServer);
         R_createSubDomain                      = rm.getAdminRight(Right.RT_createSubDomain);
         R_createTopDomain                      = rm.getAdminRight(Right.RT_createTopDomain);
+        R_createUCService                      = rm.getAdminRight(Right.RT_createUCService);
         R_createXMPPComponent                  = rm.getAdminRight(Right.RT_createXMPPComponent);
         R_createZimlet                         = rm.getAdminRight(Right.RT_createZimlet);
         R_crossDomainAdmin                     = rm.getAdminRight(Right.RT_crossDomainAdmin);
@@ -596,6 +605,7 @@ public class AdminRights {
         R_deleteDomain                         = rm.getAdminRight(Right.RT_deleteDomain);
         R_deleteGroup                          = rm.getAdminRight(Right.RT_deleteGroup);
         R_deleteServer                         = rm.getAdminRight(Right.RT_deleteServer);
+        R_deleteUCService                      = rm.getAdminRight(Right.RT_deleteUCService);
         R_deleteXMPPComponent                  = rm.getAdminRight(Right.RT_deleteXMPPComponent);
         R_deleteZimlet                         = rm.getAdminRight(Right.RT_deleteZimlet);
         R_deployZimlet                         = rm.getAdminRight(Right.RT_deployZimlet);
@@ -655,6 +665,7 @@ public class AdminRights {
         R_getServerStats                       = rm.getAdminRight(Right.RT_getServerStats);
         R_getServiceStatus                     = rm.getAdminRight(Right.RT_getServiceStatus);
         R_getSessions                          = rm.getAdminRight(Right.RT_getSessions);
+        R_getUCService                         = rm.getAdminRight(Right.RT_getUCService);
         R_getXMPPComponent                     = rm.getAdminRight(Right.RT_getXMPPComponent);
         R_getZimlet                            = rm.getAdminRight(Right.RT_getZimlet);
         R_installCertificate                   = rm.getAdminRight(Right.RT_installCertificate);
@@ -667,6 +678,7 @@ public class AdminRights {
         R_listDomain                           = rm.getAdminRight(Right.RT_listDomain);
         R_listGroup                            = rm.getAdminRight(Right.RT_listGroup);
         R_listServer                           = rm.getAdminRight(Right.RT_listServer);
+        R_listUCService                        = rm.getAdminRight(Right.RT_listUCService);
         R_listXMPPComponent                    = rm.getAdminRight(Right.RT_listXMPPComponent);
         R_listZimlet                           = rm.getAdminRight(Right.RT_listZimlet);
         R_mailQueueRights                      = rm.getAdminRight(Right.RT_mailQueueRights);
@@ -687,6 +699,7 @@ public class AdminRights {
         R_modifyGlobalConfig                   = rm.getAdminRight(Right.RT_modifyGlobalConfig);
         R_modifyGroup                          = rm.getAdminRight(Right.RT_modifyGroup);
         R_modifyServer                         = rm.getAdminRight(Right.RT_modifyServer);
+        R_modifyUCService                      = rm.getAdminRight(Right.RT_modifyUCService);
         R_modifyXMPPComponent                  = rm.getAdminRight(Right.RT_modifyXMPPComponent);
         R_modifyZimlet                         = rm.getAdminRight(Right.RT_modifyZimlet);
         R_moveAccountMailbox                   = rm.getAdminRight(Right.RT_moveAccountMailbox);
@@ -709,6 +722,7 @@ public class AdminRights {
         R_renameCos                            = rm.getAdminRight(Right.RT_renameCos);
         R_renameDistributionList               = rm.getAdminRight(Right.RT_renameDistributionList);
         R_renameGroup                          = rm.getAdminRight(Right.RT_renameGroup);
+        R_renameUCService                      = rm.getAdminRight(Right.RT_renameUCService);
         R_restoreAccount                       = rm.getAdminRight(Right.RT_restoreAccount);
         R_rolloverRedoLog                      = rm.getAdminRight(Right.RT_rolloverRedoLog);
         R_setAccountPassword                   = rm.getAdminRight(Right.RT_setAccountPassword);

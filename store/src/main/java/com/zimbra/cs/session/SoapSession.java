@@ -40,6 +40,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.index.ZimbraQueryResults;
+import com.zimbra.cs.mailbox.Comment;
 import com.zimbra.cs.mailbox.Conversation;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Folder;
@@ -230,6 +231,13 @@ public class SoapSession extends Session {
                     if (item instanceof Conversation ||
                             visible.contains(item instanceof Folder ? item.getIdInMailbox() : item.getFolderIdInMailbox())) {
                         filtered.recordCreated(item);
+                    } else if (item instanceof Comment) {
+                        try {
+                            this.getMailboxOrNull().getItemById(octxt, ((Comment) item).getParentId(), MailItem.Type.UNKNOWN);
+                            filtered.recordCreated(item);
+                        } catch (ServiceException e) {
+                            // no permission.  ignore the item.
+                        }
                     }
                 }
             }

@@ -74,6 +74,7 @@ public class ServerTest {
     private static Client c;
 
     @BeforeAll public static void setup() throws Exception {
+        LogFactory.init();
         LogFactory.getLog("iochannel").setLevel(Level.debug);
         s1 = Server.start(new TestConfig(TestConfig.C.main));
         s2 = Server.start(new TestConfig(TestConfig.C.alternate));

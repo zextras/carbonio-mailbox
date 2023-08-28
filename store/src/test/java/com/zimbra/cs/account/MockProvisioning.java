@@ -10,6 +10,7 @@ import com.google.common.collect.Maps;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.Key.ShareLocatorBy;
+import com.zimbra.common.account.Key.UCServiceBy;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.MimeConstants;
@@ -883,6 +884,31 @@ public final class MockProvisioning extends Provisioning {
   @Override
   public void deleteShareLocator(String id) throws ServiceException {
     shareLocators.remove(id);
+  }
+
+  @Override
+  public UCService createUCService(String name, Map<String, Object> attrs) throws ServiceException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void deleteUCService(String zimbraId) throws ServiceException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public UCService get(UCServiceBy keyName, String key) throws ServiceException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public List<UCService> getAllUCServices() throws ServiceException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void renameUCService(String zimbraId, String newName) throws ServiceException {
+    throw new UnsupportedOperationException();
   }
 
   @Override

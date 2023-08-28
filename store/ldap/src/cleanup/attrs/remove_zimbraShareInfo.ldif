@@ -1,4 +1,0 @@
-dn: olcDatabase={2}mdb,cn=config
-changetype: modify
-delete: olcDbIndex
-olcDbIndex: zimbraShareInfo sub

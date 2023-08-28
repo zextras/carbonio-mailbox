@@ -36,7 +36,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.TokenUtil;
 import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Metadata;
@@ -336,26 +335,38 @@ public class AccountUtil {
   }
 
   public static long getMaxInternalShareLifetime(Account account, MailItem.Type folderType) {
-    if (folderType == Type.UNKNOWN) {
-      return minShareLifetime(account.getFileShareLifetime(), account.getShareLifetime());
+    switch (folderType) {
+      case DOCUMENT:
+        return account.getFileShareLifetime();
+      case UNKNOWN:
+        return minShareLifetime(account.getFileShareLifetime(), account.getShareLifetime());
+      default:
+        return account.getShareLifetime();
     }
-    return account.getShareLifetime();
   }
 
   public static long getMaxExternalShareLifetime(Account account, MailItem.Type folderType) {
-    if (folderType == Type.UNKNOWN) {
-      return minShareLifetime(
-          account.getFileExternalShareLifetime(), account.getExternalShareLifetime());
+    switch (folderType) {
+      case DOCUMENT:
+        return account.getFileExternalShareLifetime();
+      case UNKNOWN:
+        return minShareLifetime(
+            account.getFileExternalShareLifetime(), account.getExternalShareLifetime());
+      default:
+        return account.getExternalShareLifetime();
     }
-    return account.getExternalShareLifetime();
   }
 
   public static long getMaxPublicShareLifetime(Account account, MailItem.Type folderType) {
-    if (folderType == Type.UNKNOWN) {
-      return minShareLifetime(
-          account.getFilePublicShareLifetime(), account.getPublicShareLifetime());
+    switch (folderType) {
+      case DOCUMENT:
+        return account.getFilePublicShareLifetime();
+      case UNKNOWN:
+        return minShareLifetime(
+            account.getFilePublicShareLifetime(), account.getPublicShareLifetime());
+      default:
+        return account.getPublicShareLifetime();
     }
-    return account.getPublicShareLifetime();
   }
 
   private static long minShareLifetime(long shareLifetime1, long shareLifetime2) {

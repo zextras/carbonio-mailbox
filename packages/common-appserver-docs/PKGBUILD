@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-common-appserver-docs"
-pkgver="4.8.0"
+pkgver="4.6.4"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox Docs"
 pkgdesclong=(
@@ -20,6 +20,8 @@ package() {
 
   install -D "store/docs/Notification.md" \
     "${pkgdir}/opt/zextras/documentation/Notification.md"
+  install -D "store/docs/OAuthConsumer.txt" \
+    "${pkgdir}/opt/zextras/documentation/OAuthConsumer.txt"
   install -D "store/docs/RedoableOperations.txt" \
     "${pkgdir}/opt/zextras/documentation/RedoableOperations.txt"
   install -D "store/docs/ServerLocalization.txt" \
@@ -124,6 +126,8 @@ package() {
     "${pkgdir}/opt/zextras/documentation/soap-calendar.txt"
   install -D "store/docs/soap-context-extension.txt" \
     "${pkgdir}/opt/zextras/documentation/soap-context-extension.txt"
+  install -D "store/docs/soap-document.txt" \
+    "${pkgdir}/opt/zextras/documentation/soap-document.txt"
   install -D "store/docs/soap-im.txt" \
     "${pkgdir}/opt/zextras/documentation/soap-im.txt"
   install -D "store/docs/soap-mobile.txt" \

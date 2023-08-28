@@ -48,6 +48,13 @@ public class SendShareNotificationRequest {
     private final List<EmailAddrInfo> emailAddresses = Lists.newArrayList();
 
     /**
+     * @zm-api-field-tag notes
+     * @zm-api-field-description Notes
+     */
+    @XmlElement(name=MailConstants.E_NOTES /* notes */, required=false)
+    private String notes;
+
+    /**
      * @zm-api-field-tag action
      * @zm-api-field-description Set to "revoke" if it is a grant revoke notification. It is set to "expire"
      *   by the system to send notification for a grant expiry.
@@ -58,20 +65,22 @@ public class SendShareNotificationRequest {
     public SendShareNotificationRequest() {
     }
 
-    public static SendShareNotificationRequest create(Id id, Action action,
+    public static SendShareNotificationRequest create(Id id, Action action, String notes,
             List<EmailAddrInfo> emailAddresses) {
         SendShareNotificationRequest req = new SendShareNotificationRequest();
         req.setItem(id);
         req.setAction(action);
+        req.setNotes(notes);
         req.setEmailAddresses(emailAddresses);
         return req;
     }
 
-    public static SendShareNotificationRequest create(Integer id, Action action,
+    public static SendShareNotificationRequest create(Integer id, Action action, String notes,
             List<EmailAddrInfo> emailAddresses) {
         SendShareNotificationRequest req = new SendShareNotificationRequest();
         req.setItem(new Id(id));
         req.setAction(action);
+        req.setNotes(notes);
         req.setEmailAddresses(emailAddresses);
         return req;
     }
@@ -86,16 +95,19 @@ public class SendShareNotificationRequest {
     public void addEmailAddress(EmailAddrInfo emailAddress) {
         this.emailAddresses.add(emailAddress);
     }
+    public void setNotes(String notes) { this.notes = notes; }
 
     public Id getItem() { return item; }
     public List<EmailAddrInfo> getEmailAddresses() {
         return Collections.unmodifiableList(emailAddresses);
     }
+    public String getNotes() { return notes; }
 
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         return helper
             .add("item", item)
             .add("email", emailAddresses)
+            .add("notes", notes)
             .add("action", action);
     }
 
@@ -113,7 +125,7 @@ public class SendShareNotificationRequest {
     }
 
     @XmlEnum
-    public enum Action {
+    public static enum Action {
         edit,
         revoke,
         expire;
