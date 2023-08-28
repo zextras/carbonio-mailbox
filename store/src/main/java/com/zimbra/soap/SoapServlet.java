@@ -67,7 +67,7 @@ public class SoapServlet extends ZimbraServlet {
       CacheBuilder.newBuilder().build(CacheLoader.from(new ArrayListFactory()));
 
   private static Log sLog = LogFactory.getLog(SoapServlet.class);
-  private SoapEngine mEngine;
+  protected SoapEngine mEngine;
 
   // Used by sExtraServices
   private static class ArrayListFactory implements Function<String, List<DocumentService>> {
@@ -185,7 +185,7 @@ public class SoapServlet extends ZimbraServlet {
     }
   }
 
-  private void addService(DocumentService service) {
+  protected void addService(DocumentService service) {
     ZimbraLog.soap.info(
         "Adding service %s to %s", service.getClass().getSimpleName(), getServletName());
     service.registerHandlers(mEngine.getDocumentDispatcher());

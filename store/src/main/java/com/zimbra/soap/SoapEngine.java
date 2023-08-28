@@ -100,7 +100,7 @@ public class SoapEngine {
   private final DocumentDispatcher dispatcher = new DocumentDispatcher();
   private final MeterRegistry meterRegistry;
 
-  SoapEngine(MeterRegistry meterRegistry) {
+  public SoapEngine(MeterRegistry meterRegistry) {
     this.meterRegistry = meterRegistry;
     SoapTransport.setDefaultUserAgent(SoapTransport.DEFAULT_USER_AGENT_NAME, BuildInfo.VERSION);
   }
