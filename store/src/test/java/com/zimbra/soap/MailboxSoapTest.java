@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.util;
+package com.zimbra.soap;
 
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
@@ -10,9 +10,6 @@ import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.soap.DocumentService;
-import com.zimbra.soap.SoapEngine;
-import com.zimbra.soap.SoapServlet;
 import io.vavr.control.Try;
 import java.io.IOException;
 import java.util.List;
@@ -33,11 +30,12 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Class to encapsulate logic for testing Mailbox SOAP Engine.
- * Usage: extend and use {@link
- * #startServer(String, List)} {@link #stopServer()} to start and stop Mailbox Soap Servlet. Also
+ * Usage: extend the class. Before each test it will start a new server binding on random port. Also
  * uses {@link MailboxTestUtil#initServer()} to start the environment. Unfortunately this last step
  * is needed, but can be removed if {@link com.zimbra.cs.servlet.ZimbraServlet} will use a provided
  * {@link Provisioning} instead of static usage.
@@ -45,27 +43,30 @@ import org.eclipse.jetty.servlet.ServletHolder;
 public abstract class MailboxSoapTest {
 
   private MailboxSOAPServer mailboxSOAPServer;
-  private String basePath = "";
 
   /**
    * Starts Mailbox SOAP engine
    *
-   * @param basePath base endpoint of SOAP server
-   * @param handlers handlers to add in server. These will process requests.
    * @throws Exception
    */
-  protected void startServer(String basePath, List<DocumentService> handlers) throws Exception {
-    this.basePath = basePath;
-    MailboxTestUtil.initServer();
-    mailboxSOAPServer = new MailboxSOAPServer(basePath, 9090, handlers);
-    mailboxSOAPServer.start();
+  @BeforeEach
+  protected void startServer() throws Exception {
+    this.mailboxSOAPServer = new MailboxSOAPServer(getBasePath(), getHandlers());
+    this.mailboxSOAPServer.start();
   }
+
+  protected String getBasePath() {
+    return "";
+  }
+
+  protected abstract List<DocumentService> getHandlers();
 
   /**
    * Stops the server
    *
    * @throws Exception
    */
+  @AfterEach
   protected void stopServer() throws Exception {
     mailboxSOAPServer.stop();
   }
@@ -101,12 +102,10 @@ public abstract class MailboxSoapTest {
 
     private Server server;
     private final String basePath;
-    private final int port;
     private final List<DocumentService> handlers;
 
-    public MailboxSOAPServer(String basePath, int port, List<DocumentService> handlers) {
+    public MailboxSOAPServer(String basePath, List<DocumentService> handlers) {
       this.basePath = basePath;
-      this.port = port;
       this.handlers = handlers;
     }
 
@@ -126,7 +125,6 @@ public abstract class MailboxSoapTest {
 
       server.setHandler(context);
       ServerConnector connector = new ServerConnector(server);
-      connector.setPort(port);
       server.setConnectors(new Connector[] {connector});
       server.start();
     }
@@ -137,7 +135,7 @@ public abstract class MailboxSoapTest {
   }
 
   private String getTargetEndpoint() {
-    return "http://localhost:" + mailboxSOAPServer.port + basePath;
+    return mailboxSOAPServer.server.getURI().toString();
   }
 
   /**
