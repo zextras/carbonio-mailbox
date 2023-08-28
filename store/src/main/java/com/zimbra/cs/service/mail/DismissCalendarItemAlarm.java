@@ -10,6 +10,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.CalendarItem.AlarmData;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -37,7 +38,7 @@ public class DismissCalendarItemAlarm extends DocumentHandler {
    * </DismissCalendarItemAlarmResponse>
    */
 
-  private static final String[] sCalItemElems = {MailConstants.E_APPOINTMENT};
+  private static final String[] sCalItemElems = {MailConstants.E_APPOINTMENT, MailConstants.E_TASK};
 
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     ZimbraSoapContext zsc = getZimbraSoapContext(context);
@@ -71,7 +72,10 @@ public class DismissCalendarItemAlarm extends DocumentHandler {
           ciMbox.dismissCalendarItemAlarm(octxt, calItemId, dismissedAt);
 
           CalendarItem calItem = ciMbox.getCalendarItemById(octxt, calItemId);
-          Element calItemRespElem = response.addElement(MailConstants.E_APPOINTMENT);
+          Element calItemRespElem;
+          if (calItem instanceof Appointment)
+            calItemRespElem = response.addElement(MailConstants.E_APPOINTMENT);
+          else calItemRespElem = response.addElement(MailConstants.E_TASK);
           calItemRespElem.addAttribute(MailConstants.A_CAL_ID, iid.toString(ifmt));
 
           boolean hidePrivate = !calItem.allowPrivateAccess(authAcct, zsc.isUsingAdminPrivileges());

@@ -1,26 +1,4 @@
 
-# [4.8.0](https://github.com/Zextras/carbonio-mailbox/compare/4.6.4...4.8.0) (2023-08-28)
-
-### Bug Fixes
-
-* jython downgrade to 2.5.2 in order to fix configd ([#299](https://github.com/Zextras/carbonio-mailbox/issues/299)) ([e72a01e](https://github.com/Zextras/carbonio-mailbox/commit/e72a01ee8fe1ba32ff39893e147964ec98b4611d))
-* Log4j properties in Logger class ([#285](https://github.com/Zextras/carbonio-mailbox/issues/285)) ([97b8972](https://github.com/Zextras/carbonio-mailbox/commit/97b89722e7a46904d1cd7816892aa6471a1923da))
-* skin related code cleanup ([#304](https://github.com/Zextras/carbonio-mailbox/issues/304)) ([c057969](https://github.com/Zextras/carbonio-mailbox/commit/c05796953c590922cd532f9d68b01f164166a07f))
-
-### Features
-
-* [CO-767] Remove stale config from Carbonio SOAP Service  ([#266](https://github.com/Zextras/carbonio-mailbox/issues/266)) ([b692cfe](https://github.com/Zextras/carbonio-mailbox/commit/b692cfe03c8b083ef0f599f57d81a483bacf24c0))
-* [CO-809] remove curator service discover ([#297](https://github.com/Zextras/carbonio-mailbox/issues/297)) ([0c4cf47](https://github.com/Zextras/carbonio-mailbox/commit/0c4cf47dabd875099f2b206b38677a300506dfcb))
-* add json update configuration ([1df1a50](https://github.com/Zextras/carbonio-mailbox/commit/1df1a5045b5abd1f5f3256b16f65da399843c7f9))
-* add new information to ReadMe.md ([67ce5d7](https://github.com/Zextras/carbonio-mailbox/commit/67ce5d7cddf05df92b06b52a718c97882ebb5e8e))
-* add new whitelabel attributes ([38df556](https://github.com/Zextras/carbonio-mailbox/commit/38df556b94f89610cac2120f570ac82e999e81c2))
-* added default values for attributes ([d858c1d](https://github.com/Zextras/carbonio-mailbox/commit/d858c1d479c3093abf01ed9c7bb4df14ee254b68))
-* **CO-770:** remove UC Service and Voice features ([#260](https://github.com/Zextras/carbonio-mailbox/issues/260)) ([1fd0809](https://github.com/Zextras/carbonio-mailbox/commit/1fd0809e5b5348d9bb133b8dea594318c05edd26))
-* ReadMe clean up, build migration ([18249a6](https://github.com/Zextras/carbonio-mailbox/commit/18249a6dcd5c2b414f745119fc5dd30299802b61))
-* remove Domain and Global ACL Manager ([#296](https://github.com/Zextras/carbonio-mailbox/issues/296)) ([2558a04](https://github.com/Zextras/carbonio-mailbox/commit/2558a04f9195a7720c528570a1b083fcc0fb34f7))
-* remove Zimbra Mobile Gateway feature ([#271](https://github.com/Zextras/carbonio-mailbox/issues/271)) ([3a63a78](https://github.com/Zextras/carbonio-mailbox/commit/3a63a78a9b5f2a7992cb35ddc15750d3232f7dd3))
-* update mailboxd_java_options for JDK17 ([#307](https://github.com/Zextras/carbonio-mailbox/issues/307)) ([ea3fdbe](https://github.com/Zextras/carbonio-mailbox/commit/ea3fdbe0b348864c272967799f8bd159a21ec0d4))
-
 ## [4.6.4](https://github.com/Zextras/carbonio-mailbox/compare/4.6.3...4.6.4) (2023-07-26)
 
 ### Bug Fixes

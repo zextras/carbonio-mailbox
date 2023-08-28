@@ -5,11 +5,13 @@
 
 package com.zimbra.cs.util.yauth;
 
+import org.apache.log4j.Logger;
 import org.junit.jupiter.api.Test;
+
+import org.apache.log4j.BasicConfigurator;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.log4j.Level;
 
 public class AuthTest {
     private static final String APPID = "D2hTUBHAkY0IEL5MA7ibTS_1K86E8RErSSaTGn4-";
@@ -19,8 +21,8 @@ public class AuthTest {
     private static String token;
 
     static {
-         Configurator.initialize(new DefaultConfiguration());
-         Configurator.setRootLevel(Level.DEBUG);
+        BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.DEBUG);
     }
     
     private static String getToken() throws Exception {

@@ -4,9 +4,25 @@
 
 package com.zimbra.cs.util;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.lang.RandomStringUtils;
+import org.easymock.EasyMock;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import com.google.common.primitives.Bytes;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.google.common.primitives.Bytes;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
@@ -34,20 +50,8 @@ import com.zimbra.cs.service.util.JWTUtil;
 import com.zimbra.cs.service.util.UserServletUtil;
 import com.zimbra.cs.servlet.ZimbraQoSFilter;
 import com.zimbra.soap.SoapServlet;
+
 import io.jsonwebtoken.Claims;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.StringUtils;
-import org.apache.commons.lang.RandomStringUtils;
-import org.easymock.EasyMock;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 public class JWTBasedAuthTest {
 
@@ -76,7 +80,7 @@ public class JWTBasedAuthTest {
   Account acct;
   try {
    acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
-   AuthToken at = AuthProvider.getAuthToken(acct, Usage.AUTH, TokenType.JWT);
+   AuthToken at = AuthProvider.getAuthToken(acct, Usage.TWO_FACTOR_AUTH, TokenType.JWT);
    validateJWT(at, acct.getId());
   } catch (ServiceException e) {
    fail("testAccountAndUsageJWT failed");

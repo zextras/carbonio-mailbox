@@ -38,12 +38,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 public class IssueCertTest {
-  private static final MockedStatic<RemoteManager> staticRemoteManager =
-      mockStatic(RemoteManager.class);
-  private static final MockedStatic<RemoteCertbot> staticRemoteCertbot =
-      mockStatic(RemoteCertbot.class);
-  private static final MockedStatic<CertificateNotificationManager> staticNotificationManager =
-      mockStatic(CertificateNotificationManager.class);
+  private static final MockedStatic<RemoteManager> staticRemoteManager
+      = mockStatic(RemoteManager.class);
+  private static final MockedStatic<RemoteCertbot> staticRemoteCertbot
+      = mockStatic(RemoteCertbot.class);
+  private static final MockedStatic<CertificateNotificationManager> staticNotificationManager
+      = mockStatic(CertificateNotificationManager.class);
 
   private final Map<String, Object> context = new HashMap<>();
   private final Map<String, Object> domainAttributes = new HashMap<>();
@@ -56,8 +56,8 @@ public class IssueCertTest {
 
   private final RemoteManager remoteManager = mock(RemoteManager.class);
   private final RemoteCertbot remoteCertbot = mock(RemoteCertbot.class);
-  private final CertificateNotificationManager notificationManager =
-      mock(CertificateNotificationManager.class);
+  private final CertificateNotificationManager notificationManager
+      = mock(CertificateNotificationManager.class);
 
   private final IssueCert handler = new IssueCert();
   private final XMLElement request = new XMLElement(ISSUE_CERT_REQUEST);
@@ -73,16 +73,17 @@ public class IssueCertTest {
 
     RightManager.getInstance();
 
-    final String domainId = "domainId";
-    final String password = "testPwd";
+    String domainId = "domainId";
+    String password = "testPwd";
 
-    final Account account =
+    Account account =
         provisioning.createAccount(
             mail,
             password,
             new HashMap<>() {
               {
                 put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
+                put(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE");
                 put(ZAttrProvisioning.A_mail, mail);
               }
             });
@@ -90,12 +91,11 @@ public class IssueCertTest {
     domainAttributes.put(ZAttrProvisioning.A_zimbraDomainName, domainName);
     domainAttributes.put(ZAttrProvisioning.A_zimbraId, domainId);
 
-    this.zsc =
-        new ZimbraSoapContext(
-            AuthProvider.getAuthToken(account, true),
-            account.getId(),
-            SoapProtocol.Soap12,
-            SoapProtocol.Soap12);
+    this.zsc =  new ZimbraSoapContext(
+        AuthProvider.getAuthToken(account, true),
+        account.getId(),
+        SoapProtocol.Soap12,
+        SoapProtocol.Soap12);
     this.context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
 
     this.request.addNonUniqueElement(A_DOMAIN).addText(domainId);
@@ -117,103 +117,80 @@ public class IssueCertTest {
     staticNotificationManager.close();
   }
 
-  @Test
-  void handleShouldSupplyAsyncAndReturnResponse() throws Exception {
-    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
-    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
+ @Test
+ void shouldSupplyAsyncAndReturnResponse() throws Exception {
+  domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
+  domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
 
-    final Domain expectedDomain = provisioning.createDomain(domainName, domainAttributes);
+  Domain expectedDomain = provisioning.createDomain(domainName, domainAttributes);
 
-    final String serverName = "serverName";
-    final Server server =
-        provisioning.createServer(
-            serverName,
-            new HashMap<>() {
-              {
-                put(ZAttrProvisioning.A_cn, serverName);
-                put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
-              }
-            });
+  final String serverName = "serverName";
+  final Server server =
+    provisioning.createServer(
+      serverName,
+      new HashMap<>() {
+       {
+        put(ZAttrProvisioning.A_cn, serverName);
+        put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
+       }
+      });
 
-    staticRemoteManager
-        .when(() -> RemoteManager.getRemoteManager(server))
-        .thenReturn(remoteManager);
-    staticRemoteCertbot
-        .when(() -> RemoteCertbot.getRemoteCertbot(remoteManager))
-        .thenReturn(remoteCertbot);
+  staticRemoteManager.when(() -> RemoteManager.getRemoteManager(server))
+    .thenReturn(remoteManager);
+  staticRemoteCertbot.when(() -> RemoteCertbot.getRemoteCertbot(remoteManager))
+    .thenReturn(remoteCertbot);
 
-    final Mailbox expectMailbox = getRequestedMailbox(zsc);
-    staticNotificationManager
-        .when(
-            () ->
-                CertificateNotificationManager.getCertificateNotificationManager(
-                    expectMailbox, expectedDomain))
-        .thenReturn(notificationManager);
+  Mailbox expectMailbox = getRequestedMailbox(zsc);
+  staticNotificationManager.when(() -> CertificateNotificationManager
+    .getCertificateNotificationManager(expectMailbox, expectedDomain))
+    .thenReturn(notificationManager);
 
-    final String expectedCommand =
-        "certbot certonly --agree-tos --email admin@example.com"
-            + " -n --keep --webroot -w /opt/zextras "
-            + "--cert-name example.com "
-            + "-d public.example.com -d virtual.example.com";
+  String expectedCommand = "certbot certonly --agree-tos --email admin@example.com"
+    + " -n --keep --webroot -w /opt/zextras "
+    + "--cert-name example.com "
+    + "-d public.example.com -d virtual.example.com";
 
-    when(remoteCertbot.createCommand(
-            RemoteCommands.CERTBOT_CERTONLY,
-            mail,
-            AdminConstants.DEFAULT_CHAIN,
-            domainName,
-            publicServiceHostName,
-            expectedDomain.getVirtualHostname()))
-        .thenReturn(expectedCommand);
+  when(remoteCertbot.createCommand(
+    RemoteCommands.CERTBOT_CERTONLY,
+    mail,
+    AdminConstants.DEFAULT_CHAIN,
+    domainName,
+    publicServiceHostName,
+    expectedDomain.getVirtualHostname())).thenReturn(expectedCommand);
 
-    final Element response = handler.handle(request, context);
-    final Element message = response.getElement(E_MESSAGE);
+  final Element response = handler.handle(request, context);
+  final Element message = response.getElement(E_MESSAGE);
 
-    assertEquals(domainName, message.getAttribute(A_DOMAIN));
-    assertEquals(IssueCert.RESPONSE, message.getText());
+  assertEquals(domainName, message.getAttribute(A_DOMAIN));
+  assertEquals(IssueCert.RESPONSE, message.getText());
 
-    verify(remoteCertbot).supplyAsync(notificationManager, expectedCommand);
-  }
+  verify(remoteCertbot).supplyAsync(notificationManager, expectedCommand);
+ }
 
-  @Test
-  void handleShouldThrowServiceExceptionWhenNoSuchDomain() {
-    final ServiceException exception =
-        assertThrows(ServiceException.class, () -> handler.handle(request, context));
-    assertEquals(
-        "invalid request: Domain with id domainId could not be found.", exception.getMessage());
-  }
+ @Test
+ void shouldReturnInvalidIfNoSuchDomain() {
+   assertThrows(ServiceException.class, () -> handler.handle(request, context), "Domain with id domainId could not be found.");
+ }
 
-  @Test
-  void handleShouldThrowServiceExceptionWhenNoPublicServiceHostName() throws Exception {
-    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
-    provisioning.createDomain(domainName, domainAttributes);
-    final ServiceException exception =
-        assertThrows(ServiceException.class, () -> handler.handle(request, context));
-    assertEquals(
-        "system failure: Domain example.com must have PublicServiceHostname.",
-        exception.getMessage());
-  }
+ @Test
+ void shouldReturnInvalidIfNoPublicServiceHostName() throws Exception {
+  domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
+  provisioning.createDomain(domainName, domainAttributes);
+  assertThrows(ServiceException.class, () -> handler.handle(request, context),"must have PublicServiceHostname");
+ }
 
-  @Test
-  void handleShouldThrowServiceExceptionWhenNoVirtualHostName() throws Exception {
-    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
-    provisioning.createDomain(domainName, domainAttributes);
-    final ServiceException exception =
-        assertThrows(ServiceException.class, () -> handler.handle(request, context));
-    assertEquals(
-        "system failure: Domain example.com must have at least one VirtualHostName.",
-        exception.getMessage());
-  }
+ @Test
+ void shouldReturnInvalidIfNoVirtualHostName() throws Exception {
+  domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
+  provisioning.createDomain(domainName, domainAttributes);
+  assertThrows(ServiceException.class, () -> handler.handle(request, context),"must have at least one VirtualHostName.");
+ }
 
-  @Test
-  void handleShouldThrowServiceExceptionWhenNoServerWithProxyIsAvailable() throws Exception {
-    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
-    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
-    provisioning.createDomain(domainName, domainAttributes);
-    final ServiceException exception =
-        assertThrows(ServiceException.class, () -> handler.handle(request, context));
-    assertEquals(
-        "system failure: Issuing LetsEncrypt certificate command requires carbonio-proxy. Make sure"
-            + " carbonio-proxy is installed, up and running.",
-        exception.getMessage());
-  }
+ @Test
+ void shouldReturnFailureIfNoServerWithProxy() throws Exception {
+  domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
+  domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
+  provisioning.createDomain(domainName, domainAttributes);
+  assertThrows(ServiceException.class, () -> handler.handle(request, context),"Issuing LetsEncrypt certificate command requires carbonio-proxy.");
+ }
 }

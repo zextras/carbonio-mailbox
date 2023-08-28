@@ -36,6 +36,12 @@ public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
 
   public static final String TYPE_APPOINTMENT = "appointment";
 
+  public static final String TYPE_TASK = "task";
+
+  public static final String TYPE_DOCUMENT = "document";
+
+  public static final String TYPE_WIKI = "wiki";
+
   public static String getCanonicalTypes(String list) throws ServiceException {
     if (list == null || list.length() == 0) return "";
 
@@ -46,6 +52,9 @@ public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
       else if (s.startsWith("m") && TYPE_MESSAGE.startsWith(s)) sb.append(TYPE_MESSAGE);
       else if (s.startsWith("cont") && TYPE_CONTACT.startsWith(s)) sb.append(TYPE_CONTACT);
       else if (s.startsWith("a") && TYPE_APPOINTMENT.startsWith(s)) sb.append(TYPE_APPOINTMENT);
+      else if (s.startsWith("d") && TYPE_DOCUMENT.startsWith(s)) sb.append(TYPE_DOCUMENT);
+      else if (s.startsWith("w") && TYPE_WIKI.startsWith(s)) sb.append(TYPE_WIKI);
+      else if (s.startsWith("t") && TYPE_TASK.startsWith(s)) sb.append(TYPE_TASK);
       else if (s.startsWith("g") && TYPE_GAL.startsWith(s)) sb.append(TYPE_GAL);
       else throw ZClientException.CLIENT_ERROR("invalid search type: " + s, null);
     }
@@ -91,7 +100,6 @@ public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
 
   /** the field to use for text content without an operator. */
   private String mField;
-
   /** the search query to run */
   private String mQuery;
 
@@ -101,7 +109,6 @@ public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
   private long mCalExpandInstEnd;
 
   private TimeZone mTimeZone;
-
   /** used only for equals/hascode purposes */
   private String mConvId;
 

@@ -7,6 +7,7 @@ package com.zimbra.client;
 
 import org.junit.jupiter.api.Test;
 
+import com.zimbra.client.ZFolder;
 import com.zimbra.common.soap.Element;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,6 +37,10 @@ public class ZFolderTest {
         folder = new ZFolder(Element.parseXML(xml), null, null);
         assertEquals(ZFolder.View.conversation, folder.getDefaultView());
 
+        xml = "<folder id='1' rev='1' s='0' i4next='2' i4ms='1' name='X' ms='1' n='0' l='11' view='document'/>";
+        folder = new ZFolder(Element.parseXML(xml), null, null);
+        assertEquals(ZFolder.View.document, folder.getDefaultView());
+
         xml = "<folder id='1' rev='1' s='0' i4next='2' i4ms='1' name='X' ms='1' n='0' l='11' view='message'/>";
         folder = new ZFolder(Element.parseXML(xml), null, null);
         assertEquals(ZFolder.View.message, folder.getDefaultView());
@@ -55,6 +60,10 @@ public class ZFolderTest {
         xml = "<folder id='1' rev='1' s='0' i4next='2' i4ms='1' name='X' ms='1' n='0' l='11' view='voice'/>";
         folder = new ZFolder(Element.parseXML(xml), null, null);
         assertEquals(ZFolder.View.voice, folder.getDefaultView());
+
+        xml = "<folder id='1' rev='1' s='0' i4next='2' i4ms='1' name='X' ms='1' n='0' l='11' view='wiki'/>";
+        folder = new ZFolder(Element.parseXML(xml), null, null);
+        assertEquals(ZFolder.View.wiki, folder.getDefaultView());
 
         xml = "<folder id='1' rev='1' s='0' i4next='2' i4ms='1' name='X' ms='1' n='0' l='11'/>";
         folder = new ZFolder(Element.parseXML(xml), null, null);

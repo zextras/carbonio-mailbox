@@ -30,6 +30,7 @@ public class SoapConverter {
         VIEW_MAP.put(Folder.View.CHAT, ZFolder.View.chat);
         VIEW_MAP.put(Folder.View.CONTACT, ZFolder.View.contact);
         VIEW_MAP.put(Folder.View.CONVERSATION, ZFolder.View.conversation);
+        VIEW_MAP.put(Folder.View.DOCUMENT, ZFolder.View.document);
         VIEW_MAP.put(Folder.View.MESSAGE, ZFolder.View.message);
         VIEW_MAP.put(Folder.View.REMOTE_FOLDER, ZFolder.View.remote);
         VIEW_MAP.put(Folder.View.SEARCH_FOLDER, ZFolder.View.search);

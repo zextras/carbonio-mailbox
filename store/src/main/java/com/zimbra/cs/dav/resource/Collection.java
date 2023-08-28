@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.dav.resource;
 
-import com.zimbra.cs.service.FileUploadServlet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,13 +19,17 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.dav.DavContext;
 import com.zimbra.cs.dav.DavElements;
 import com.zimbra.cs.dav.DavException;
+import com.zimbra.cs.dav.DavProtocol;
 import com.zimbra.cs.dav.property.Acl;
 import com.zimbra.cs.dav.property.CalDavProperty;
 import com.zimbra.cs.dav.service.DavServlet;
+import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
+import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.service.FileUploadServlet;
 
 /**
  * RFC 2518bis section 5.
@@ -126,6 +129,8 @@ public class Collection extends MailItemResource {
 
         // XXX aggregate into single call
         ret.addAll(mbox.getItemList(ctxt.getOperationContext(), MailItem.Type.FOLDER, mId));
+        ret.addAll(mbox.getItemList(ctxt.getOperationContext(), MailItem.Type.DOCUMENT, mId));
+        ret.addAll(mbox.getItemList(ctxt.getOperationContext(), MailItem.Type.WIKI, mId));
         ret.addAll(mbox.getItemList(ctxt.getOperationContext(), MailItem.Type.CONTACT, mId));
         return ret;
     }
@@ -150,18 +155,48 @@ public class Collection extends MailItemResource {
         }
     }
 
+    // create Document at the URI
     public DavResource createItem(DavContext ctxt, String name) throws DavException, IOException {
         Mailbox mbox = null;
         try {
             mbox = getMailbox(ctxt);
         } catch (ServiceException e) {
-            throw new DavException("cannot get mailbox",
-                HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
+            throw new DavException("cannot get mailbox", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
         }
 
         FileUploadServlet.Upload upload = ctxt.getUpload();
         String ctype = upload.getContentType();
-        return createVCard(ctxt, name);
+        if (ctype != null &&
+                (ctype.startsWith(DavProtocol.VCARD_CONTENT_TYPE) ||
+                 ctype.startsWith(MimeConstants.CT_TEXT_VCARD_LEGACY) ||
+                 ctype.startsWith(MimeConstants.CT_TEXT_VCARD_LEGACY2))) {
+            // create vcard if content type is text/vcard or legacy
+            // vCard MIME types such as text/x-vcard or text/directory.
+            return createVCard(ctxt, name);
+        }
+        String author = ctxt.getAuthAccount().getName();
+        try {
+            // add a revision if the resource already exists
+            MailItem item = mbox.getItemByPath(ctxt.getOperationContext(), ctxt.getPath());
+            if (item.getType() != MailItem.Type.DOCUMENT && item.getType() != MailItem.Type.WIKI) {
+                throw new DavException("no DAV resource for " + item.getType(), HttpServletResponse.SC_NOT_ACCEPTABLE, null);
+            }
+            Document doc = mbox.addDocumentRevision(ctxt.getOperationContext(), item.getId(), author, name, null, upload.getInputStream());
+            return new Notebook(ctxt, doc);
+        } catch (ServiceException e) {
+            if (!(e instanceof NoSuchItemException))
+                throw new DavException("cannot get item ", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
+        }
+
+        // create
+        try {
+            Document doc = mbox.createDocument(ctxt.getOperationContext(), mId, name, ctype, author, null, upload.getInputStream());
+            Notebook notebook =  new Notebook(ctxt, doc);
+            notebook.mNewlyCreated = true;
+            return notebook;
+        } catch (ServiceException se) {
+            throw new DavException("cannot create ", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, se);
+        }
     }
 
     protected String relativeUrlForChild(String user, String baseName)

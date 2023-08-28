@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.dav.resource;
 
+import java.io.IOException;
 import java.util.Collections;
 
 import javax.servlet.http.HttpServletResponse;
@@ -77,6 +78,10 @@ public class RemoteCollection extends Collection {
         return Collections.emptyList();
     }
 
+    @Override
+    public DavResource createItem(DavContext ctxt, String name) throws DavException, IOException {
+        throw new DavException("request should be proxied", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    }
     static ZMailbox getRemoteMailbox(ZAuthToken zat, String ownerId) throws ServiceException {
         Account target = Provisioning.getInstance().get(Key.AccountBy.id, ownerId);
         if (target == null)

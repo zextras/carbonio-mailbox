@@ -8,52 +8,61 @@ package com.zimbra.soap.mail.message;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.zimbra.common.soap.MailConstants;
-import com.zimbra.soap.mail.type.UpdatedAlarmInfo;
-import com.zimbra.soap.mail.type.UpdatedAppointmentAlarmInfo;
+
 import java.util.Collections;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.zimbra.common.soap.MailConstants;
+import com.zimbra.soap.mail.type.UpdatedAlarmInfo;
+import com.zimbra.soap.mail.type.UpdatedAppointmentAlarmInfo;
+import com.zimbra.soap.mail.type.UpdatedTaskAlarmInfo;
+
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "DismissCalendarItemAlarmResponse")
+@XmlRootElement(name="DismissCalendarItemAlarmResponse")
 public class DismissCalendarItemAlarmResponse {
 
-  /**
-   * @zm-api-field-description Updated alarm information
-   */
-  @XmlElement(
-      name = MailConstants.E_APPOINTMENT /* appt */,
-      type = UpdatedAppointmentAlarmInfo.class)
-  private List<UpdatedAlarmInfo> updatedAlarms = Lists.newArrayList();
+    /**
+     * @zm-api-field-description Updated alarm information
+     */
+    @XmlElements({
+        @XmlElement(name=MailConstants.E_APPOINTMENT /* appt */, type=UpdatedAppointmentAlarmInfo.class),
+        @XmlElement(name=MailConstants.E_TASK /* task */, type=UpdatedTaskAlarmInfo.class)
+    })
+    private List<UpdatedAlarmInfo> updatedAlarms = Lists.newArrayList();
 
-  public DismissCalendarItemAlarmResponse() {}
-
-  public void setUpdatedAlarm(Iterable<UpdatedAlarmInfo> updatedAlarms) {
-    this.updatedAlarms.clear();
-    if (updatedAlarms != null) {
-      Iterables.addAll(this.updatedAlarms, updatedAlarms);
+    public DismissCalendarItemAlarmResponse() {
     }
-  }
 
-  public DismissCalendarItemAlarmResponse addUpdatedAlarm(UpdatedAlarmInfo updatedAlarm) {
-    this.updatedAlarms.add(updatedAlarm);
-    return this;
-  }
+    public void setUpdatedAlarm(Iterable <UpdatedAlarmInfo> updatedAlarms) {
+        this.updatedAlarms.clear();
+        if (updatedAlarms != null) {
+            Iterables.addAll(this.updatedAlarms,updatedAlarms);
+        }
+    }
 
-  public List<UpdatedAlarmInfo> getUpdatedAlarms() {
-    return Collections.unmodifiableList(updatedAlarms);
-  }
+    public DismissCalendarItemAlarmResponse addUpdatedAlarm(
+                        UpdatedAlarmInfo updatedAlarm) {
+        this.updatedAlarms.add(updatedAlarm);
+        return this;
+    }
 
-  public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
-    return helper.add("updatedAlarms", updatedAlarms);
-  }
+    public List<UpdatedAlarmInfo> getUpdatedAlarms() {
+        return Collections.unmodifiableList(updatedAlarms);
+    }
 
-  @Override
-  public String toString() {
-    return addToStringInfo(MoreObjects.toStringHelper(this)).toString();
-  }
+    public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
+        return helper
+            .add("updatedAlarms", updatedAlarms);
+    }
+
+    @Override
+    public String toString() {
+        return addToStringInfo(MoreObjects.toStringHelper(this)).toString();
+    }
 }

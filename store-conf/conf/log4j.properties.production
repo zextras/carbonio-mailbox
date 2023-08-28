@@ -1,216 +1,123 @@
-status = error
-dest = err
-name = PropertiesConfig
-packages = com.zimbra
+# An example log4j configuration file that outputs to System.out.  The
+# output information consists of relative time, log level, thread
+# name, logger name, nested diagnostic context and the message in that
+# order.
+
+# For the general syntax of property based configuration files see the
+# documenation of org.apache.log4j.PropertyConfigurator.
+
+log4j.threshhold=OFF
+
+%%uncomment VAR:!zimbraLogToSyslog%%log4j.rootLogger=INFO,LOGFILE
+%%uncomment VAR:zimbraLogToSyslog%%log4j.rootLogger=INFO,LOGFILE,SYSLOG
 
 # Appender LOGFILE writes to the file "/opt/zextras/log/mailbox.log".
 # Daily rolling policy with compressing the old log file while rotating!!
 # The archived log files location can be changed using FileNamePattern value
-
-# Reference https://logging.apache.org/log4j/2.0/manual/configuration.html#ConfigurationSyntax
-
-appender.LOGFILE.type = RollingFile
-appender.LOGFILE.name = mailboxFile
-appender.LOGFILE.fileName = /opt/zextras/log/mailbox.log
-appender.LOGFILE.filePattern = /opt/zextras/log/mailbox.log.%d{yyyy-MM-dd}
-appender.LOGFILE.layout.type = PatternLayout
-appender.LOGFILE.layout.pattern = %d %-5p [%t] [%z] %c{1} - %m%n
-appender.LOGFILE.policies.type = Policies
-appender.LOGFILE.policies.time.type = TimeBasedTriggeringPolicy
-appender.LOGFILE.policies.time.interval = 1
-appender.LOGFILE.policies.time.modulate = true
-appender.LOGFILE.strategy.type = DefaultRolloverStrategy
+log4j.appender.LOGFILE=org.apache.log4j.rolling.RollingFileAppender
+log4j.appender.LOGFILE.RollingPolicy=org.apache.log4j.rolling.TimeBasedRollingPolicy
+log4j.appender.LOGFILE.RollingPolicy.FileNamePattern=/opt/zextras/log/mailbox.log.%d{yyyy-MM-dd}
+log4j.appender.LOGFILE.File=/opt/zextras/log/mailbox.log
+log4j.appender.LOGFILE.layout=com.zimbra.common.util.ZimbraPatternLayout
+log4j.appender.LOGFILE.layout.ConversionPattern=%d %-5p [%t] [%z] %c{1} - %m%n
 
 # Appender AUDIT writes to the file "audit.log".
-appender.AUDIT.type = RollingFile
-appender.AUDIT.name = auditFile
-appender.AUDIT.fileName = /opt/zextras/log/audit.log
-appender.AUDIT.filePattern = /opt/zextras/log/audit.log.%d{yyyy-MM-dd}
-appender.AUDIT.layout.type = PatternLayout
-appender.AUDIT.layout.pattern = %d %-5p [%t] [%z] %c{1} - %m%n
-appender.AUDIT.policies.type = Policies
-appender.AUDIT.policies.time.type = TimeBasedTriggeringPolicy
-appender.AUDIT.policies.time.interval = 1
-appender.AUDIT.policies.time.modulate = true
-appender.AUDIT.strategy.type = DefaultRolloverStrategy
+log4j.appender.AUDIT=org.apache.log4j.rolling.RollingFileAppender
+log4j.appender.AUDIT.RollingPolicy=org.apache.log4j.rolling.TimeBasedRollingPolicy
+log4j.appender.AUDIT.RollingPolicy.FileNamePattern=/opt/zextras/log/audit.log.%d{yyyy-MM-dd}
+log4j.appender.AUDIT.File=/opt/zextras/log/audit.log
+log4j.appender.AUDIT.layout=com.zimbra.common.util.ZimbraPatternLayout
+log4j.appender.AUDIT.layout.ConversionPattern=%d %-5p [%t] [%z] %c{1} - %m%n
 
-# Appender SYNC writes to the file "sync.log".
-appender.SYNC.type = RollingFile
-appender.SYNC.name = syncFile
-appender.SYNC.fileName = /opt/zextras/log/sync.log
-appender.SYNC.filePattern = /opt/zextras/log/sync.log.%d{yyyy-MM-dd}
-appender.SYNC.layout.type = PatternLayout
-appender.SYNC.layout.pattern = %d %-5p [%t] [%z] %c{1} - %m%n
-appender.SYNC.policies.type = Policies
-appender.SYNC.policies.time.type = TimeBasedTriggeringPolicy
-appender.SYNC.policies.time.interval = 1
-appender.SYNC.policies.time.modulate = true
-appender.SYNC.strategy.type = DefaultRolloverStrategy
-
-# Appender SYNCTRACE writes to the file "synctrace.log".
-appender.SYNCTRACE.type = RollingFile
-appender.SYNCTRACE.name = syncTraceFile
-appender.SYNCTRACE.fileName = /opt/zextras/log/synctrace.log
-appender.SYNCTRACE.filePattern = /opt/zextras/log/synctrace.log.%d{yyyy-MM-dd}
-appender.SYNCTRACE.layout.type = PatternLayout
-appender.SYNCTRACE.layout.pattern = %d %-5p [%t] [%z] %c{1} - %m%n
-appender.SYNCTRACE.policies.type = Policies
-appender.SYNCTRACE.policies.time.type = TimeBasedTriggeringPolicy
-appender.SYNCTRACE.policies.time.interval = 1
-appender.SYNCTRACE.policies.time.modulate = true
-appender.SYNCTRACE.strategy.type = DefaultRolloverStrategy
-
-# Appender SYNCSTATE writes to the file "syncstate.log".
-appender.SYNCSTATE.type = RollingFile
-appender.SYNCSTATE.name = syncStateFile
-appender.SYNCSTATE.fileName = /opt/zextras/log/syncstate.log
-appender.SYNCSTATE.filePattern = /opt/zextras/log/syncstate.log.%d{yyyy-MM-dd}
-appender.SYNCSTATE.layout.type = PatternLayout
-appender.SYNCSTATE.layout.pattern = %d %-5p [%t] [%z] %c{1} - %m%n
-appender.SYNCSTATE.policies.type = Policies
-appender.SYNCSTATE.policies.time.type = TimeBasedTriggeringPolicy
-appender.SYNCSTATE.policies.time.interval = 1
-appender.SYNCSTATE.policies.time.modulate = true
-appender.SYNCSTATE.strategy.type = DefaultRolloverStrategy
-
-# Appender WBXML writes to the file "wbxml.log".
-appender.WBXML.type = RollingFile
-appender.WBXML.name = wbXmlFile
-appender.WBXML.fileName = /opt/zextras/log/wbxml.log
-appender.WBXML.filePattern = /opt/zextras/log/wbxml.log.%d{yyyy-MM-dd}
-appender.WBXML.layout.type = PatternLayout
-appender.WBXML.layout.pattern = %d %-5p [%t] [%z] %c{1} - %m%n
-appender.WBXML.policies.type = Policies
-appender.WBXML.policies.time.type = TimeBasedTriggeringPolicy
-appender.WBXML.policies.time.interval = 1
-appender.WBXML.policies.time.modulate = true
-appender.WBXML.strategy.type = DefaultRolloverStrategy
-
-# Appender ACTIVITY writes to the file "activity.log".
-appender.ACTIVITY.type = RollingFile
-appender.ACTIVITY.name = activityFile
-appender.ACTIVITY.fileName = /opt/zextras/log/activity.log
-appender.ACTIVITY.filePattern = /opt/zextras/log/activity.log.%d{yyyy-MM-dd}
-appender.ACTIVITY.layout.type = PatternLayout
-appender.ACTIVITY.layout.pattern = %d %-5p [%t] [%z] %c{1} - %m%n
-appender.ACTIVITY.policies.type = Policies
-appender.ACTIVITY.policies.time.type = TimeBasedTriggeringPolicy
-appender.ACTIVITY.policies.time.interval = 1
-appender.ACTIVITY.policies.time.modulate = true
-appender.ACTIVITY.strategy.type = DefaultRolloverStrategy
-
-# Appender SEARCHSTAT writes to the file "searchstat.log".
-appender.SEARCHSTAT.type = RollingFile
-appender.SEARCHSTAT.name = searchStatFile
-appender.SEARCHSTAT.fileName = /opt/zextras/log/searchstat.log
-appender.SEARCHSTAT.filePattern = /opt/zextras/log/searchstat.log.%d{yyyy-MM-dd}
-appender.SEARCHSTAT.layout.type = PatternLayout
-appender.SEARCHSTAT.layout.pattern = %d %-5p [%t] [%z] %c{1} - %m%n
-appender.SEARCHSTAT.policies.type = Policies
-appender.SEARCHSTAT.policies.time.type = TimeBasedTriggeringPolicy
-appender.SEARCHSTAT.policies.time.interval = 1
-appender.SEARCHSTAT.policies.time.modulate = true
-appender.SEARCHSTAT.strategy.type = DefaultRolloverStrategy
-
-# Appender EWS writes to the file "ews.log".
-appender.EWS.type = RollingFile
-appender.EWS.name = ewsFile
-appender.EWS.fileName = /opt/zextras/log/ews.log
-appender.EWS.filePattern = /opt/zextras/log/ews.log.%d{yyyy-MM-dd}
-appender.EWS.layout.type = PatternLayout
-appender.EWS.layout.pattern = %d %-5p [%t] [%z] %c{1} - %m%n
-appender.EWS.policies.type = Policies
-appender.EWS.policies.time.type = TimeBasedTriggeringPolicy
-appender.EWS.policies.time.interval = 1
-appender.EWS.policies.time.modulate = true
-appender.EWS.strategy.type = DefaultRolloverStrategy
+# Save zimbra.security to AUDIT appender 
+log4j.additivity.zimbra.security=false
+log4j.logger.zimbra.security=INFO,AUDIT
 
 # Syslog appender
-%%uncomment VAR:zimbraLogToSyslog%%appender.SYSLOG.type = Syslog
-%%uncomment VAR:zimbraLogToSyslog%%appender.SYSLOG.name = syslogAppender
-%%uncomment VAR:zimbraLogToSyslog%%appender.SYSLOG.host = %%zimbraLogHostname%%
-%%uncomment VAR:zimbraLogToSyslog%%appender.SYSLOG.port = 514
-%%uncomment VAR:zimbraLogToSyslog%%appender.SYSLOG.protocol = UDP
-%%uncomment VAR:zimbraLogToSyslog%%appender.SYSLOG.facility = LOCAL0
-%%uncomment VAR:zimbraLogToSyslog%%appender.SYSLOG.layout.type = PatternLayout
-%%uncomment VAR:zimbraLogToSyslog%%appender.SYSLOG.layout.pattern = mailboxd: %-5p [%t] [%z] %c{1} - %m
+log4j.appender.SYSLOG=org.apache.log4j.net.SyslogAppender
+log4j.appender.SYSLOG.SyslogHost=localhost
+log4j.appender.SYSLOG.Facility=LOCAL0
+log4j.appender.SYSLOG.layout=com.zimbra.common.util.ZimbraPatternLayout
+log4j.appender.SYSLOG.layout.ConversionPattern=mailboxd: %-5p [%t] [%z] %c{1} - %m
 
 # Logger service appender
-%%uncomment VAR:zimbraLogHostname%%appender.SLOGGER.type = Syslog
-%%uncomment VAR:zimbraLogHostname%%appender.SLOGGER.name = sloggerAppender
-%%uncomment VAR:zimbraLogHostname%%appender.SLOGGER.host = %%zimbraLogHostname%%
-%%uncomment VAR:zimbraLogHostname%%appender.SLOGGER.facility = LOCAL1
-%%uncomment VAR:zimbraLogHostname%%appender.SLOGGER.port = 514
-%%uncomment VAR:zimbraLogHostname%%appender.SLOGGER.protocol = UDP
-%%uncomment VAR:zimbraLogHostname%%appender.SLOGGER.layout.type = PatternLayout
-%%uncomment VAR:zimbraLogHostname%%appender.SLOGGER.layout.pattern = mailboxd: %-5p [%t] [%z] %c{1} - %m
+%%comment VAR:!zimbraLogHostname%%log4j.appender.SLOGGER=org.apache.log4j.net.SyslogAppender
+%%comment VAR:!zimbraLogHostname%%log4j.appender.SLOGGER.SyslogHost=%%zimbraLogHostname%%
+%%comment VAR:!zimbraLogHostname%%log4j.appender.SLOGGER.Facility=LOCAL1
+%%comment VAR:!zimbraLogHostname%%log4j.appender.SLOGGER.layout=com.zimbra.common.util.ZimbraPatternLayout
+%%comment VAR:!zimbraLogHostname%%log4j.appender.SLOGGER.layout.ConversionPattern=mailboxd: %-5p [%t] [%z] %c{1} - %m
 
-logger.zimbra.name = zimbra.mailbox
-logger.zimbra.level = info
-logger.zimbra.additivity = false
-logger.zimbra.appenderRef.LOGFILE.ref = mailboxFile
+# Appender SYNC writes to the file "sync.log".
+log4j.appender.SYNC=org.apache.log4j.rolling.RollingFileAppender
+log4j.appender.SYNC.RollingPolicy=org.apache.log4j.rolling.TimeBasedRollingPolicy
+log4j.appender.SYNC.RollingPolicy.FileNamePattern=/opt/zextras/log/sync.log.%d{yyyy-MM-dd}
+log4j.appender.SYNC.File=/opt/zextras/log/sync.log
+log4j.appender.SYNC.layout=com.zimbra.common.util.ZimbraPatternLayout
+log4j.appender.SYNC.layout.ConversionPattern=%d %-5p [%t] [%z] %c{1} - %m%n
 
-# Save zimbra.security to AUDIT appender
-logger.security.name = zimbra.security
-logger.security.level = info
-logger.security.additivity = false
-logger.security.appenderRef.AUDIT.ref = auditFile
+# Appender SYNCTRACE writes to the file "synctrace.log".
+log4j.appender.SYNCTRACE=org.apache.log4j.rolling.RollingFileAppender
+log4j.appender.SYNCTRACE.RollingPolicy=org.apache.log4j.rolling.TimeBasedRollingPolicy
+log4j.appender.SYNCTRACE.RollingPolicy.FileNamePattern=/opt/zextras/log/synctrace.log.%d{yyyy-MM-dd}
+log4j.appender.SYNCTRACE.File=/opt/zextras/log/synctrace.log
+log4j.appender.SYNCTRACE.layout=com.zimbra.common.util.ZimbraPatternLayout
+log4j.appender.SYNCTRACE.layout.ConversionPattern=%d %-5p [%t] [%z] %c{1} - %m%n
 
-logger.sync.name = zimbra.sync
-logger.sync.level = info
-logger.sync.additivity = false
-logger.sync.appenderRef.SYNC.ref = syncFile
+# Appender SYNCSTATE writes to the file "syncstate.log".
+log4j.appender.SYNCSTATE=org.apache.log4j.rolling.RollingFileAppender
+log4j.appender.SYNCSTATE.RollingPolicy=org.apache.log4j.rolling.TimeBasedRollingPolicy
+log4j.appender.SYNCSTATE.RollingPolicy.FileNamePattern=/opt/zextras/log/syncstate.log.%d{yyyy-MM-dd}
+log4j.appender.SYNCSTATE.File=/opt/zextras/log/syncstate.log
+log4j.appender.SYNCSTATE.layout=com.zimbra.common.util.ZimbraPatternLayout
+log4j.appender.SYNCSTATE.layout.ConversionPattern=%d %-5p [%t] [%z] %c{1} - %m%n
 
-logger.synctrace.name = zimbra.synctrace
-logger.synctrace.level = info
-logger.synctrace.additivity = false
-logger.synctrace.appenderRef.SYNCTRACE.ref = syncTraceFile
+# Appender WBXML writes to the file "wbxml.log".
+log4j.appender.WBXML=org.apache.log4j.rolling.RollingFileAppender
+log4j.appender.WBXML.RollingPolicy=org.apache.log4j.rolling.TimeBasedRollingPolicy
+log4j.appender.WBXML.RollingPolicy.FileNamePattern=/opt/zextras/log/wbxml.log.%d{yyyy-MM-dd}
+log4j.appender.WBXML.File=/opt/zextras/log/wbxml.log
+log4j.appender.WBXML.layout=com.zimbra.common.util.ZimbraPatternLayout
+log4j.appender.WBXML.layout.ConversionPattern=%d %-5p [%t] [%z] %c{1} - %m%n
 
-logger.syncstate.name = zimbra.syncstate
-logger.syncstate.level = info
-logger.syncstate.additivity = false
-logger.syncstate.appenderRef.SYNCSTATE.ref = syncStateFile
+# Appender ACTIVITY writes to the file "activity.log".
+log4j.appender.ACTIVITY=org.apache.log4j.rolling.RollingFileAppender
+log4j.appender.ACTIVITY.RollingPolicy=org.apache.log4j.rolling.TimeBasedRollingPolicy
+log4j.appender.ACTIVITY.RollingPolicy.FileNamePattern=/opt/zextras/log/activity.log.%d{yyyy-MM-dd}
+log4j.appender.ACTIVITY.File=/opt/zextras/log/activity.log
+log4j.appender.ACTIVITY.layout=com.zimbra.common.util.ZimbraPatternLayout
+log4j.appender.ACTIVITY.layout.ConversionPattern=%d %-5p [%t] [%z] %c{1} - %m%n
 
-logger.wbxml.name = zimbra.wbxml
-logger.wbxml.level = info
-logger.wbxml.additivity = false
-logger.wbxml.appenderRef.WBXML.ref = wbXmlFile
-
-logger.activity.name = zimbra.activity
-logger.activity.level = info
-logger.activity.additivity = false
-logger.activity.appenderRef.ACTIVITY.ref = activityFile
-
-logger.searchstat.name = zimbra.searchstat
-logger.searchstat.level = info
-logger.searchstat.additivity = false
-logger.searchstat.appenderRef.SEARCHSTAT.ref = searchStatFile
-
-logger.ews.name = zimbra.ews
-logger.ews.level = info
-logger.ews.additivity = false
-logger.ews.appenderRef.EWS.ref = ewsFile
-
-%%uncomment VAR:zimbraLogToSyslog%%logger.syslog.name = com.zimbra
-%%uncomment VAR:zimbraLogToSyslog%%logger.syslog.level = info
-%%uncomment VAR:zimbraLogToSyslog%%logger.syslog.additivity = false
-%%uncomment VAR:zimbraLogToSyslog%%logger.syslog.appenderRef.SYSLOG.ref = syslogAppender
+# Appender SEARCHSTAT writes to the file "searchstat.log".
+log4j.appender.SEARCHSTAT=org.apache.log4j.rolling.RollingFileAppender
+log4j.appender.SEARCHSTAT.RollingPolicy=org.apache.log4j.rolling.TimeBasedRollingPolicy
+log4j.appender.SEARCHSTAT.RollingPolicy.FileNamePattern=/opt/zextras/log/searchstat.log.%d{yyyy-MM-dd}
+log4j.appender.SEARCHSTAT.File=/opt/zextras/log/searchstat.log
+log4j.appender.SEARCHSTAT.layout=com.zimbra.common.util.ZimbraPatternLayout
+log4j.appender.SEARCHSTAT.layout.ConversionPattern=%d %-5p [%t] [%z] %c{1} - %m%n
 
 # HttpMethodBase spews out too many WARN on the badly formatted cookies.
-#logger.org.apache.commons.httpclient.HttpMethodBase=ERROR
-logger.httpmethodbase.name = org.apache.commons.httpclient.HttpMethodBase
-logger.httpmethodbase.level = ERROR
+log4j.logger.org.apache.commons.httpclient.HttpMethodBase=ERROR
 
 # spymemcached is too verbose at INFO level.
-#logger.net.spy.memcached=WARN
-logger.memcached.name = net.spy.memcached
-logger.memcached.level = WARN
+log4j.logger.net.spy.memcached=WARN
 
-%%uncomment VAR:zimbraLogHostname%%logger.slogger.name = zimbra.slogger
-%%uncomment VAR:zimbraLogHostname%%logger.slogger.level = error
-%%uncomment VAR:zimbraLogHostname%%logger.slogger.additivity = false
-%%uncomment VAR:zimbraLogHostname%%logger.slogger.appenderRef.SLOGGER.ref = sloggerAppender
+log4j.additivity.zimbra.sync=false
+log4j.logger.zimbra.sync=INFO,SYNC
+log4j.additivity.zimbra.synctrace=false
+log4j.logger.zimbra.synctrace=INFO,SYNCTRACE
+log4j.additivity.zimbra.syncstate=false
+log4j.logger.zimbra.syncstate=INFO,SYNCSTATE
+log4j.additivity.zimbra.wbxml=false
+log4j.logger.zimbra.wbxml=INFO,WBXML
+log4j.additivity.zimbra.activity=false
+log4j.logger.zimbra.activity=INFO,ACTIVITY
+log4j.logger.zimbra.searchstat=INFO,SEARCHSTAT
+log4j.additivity.zimbra.ews=false
+log4j.logger.zimbra.ews=INFO
 
-rootLogger.level=INFO
-
-rootLogger.appenderRef.LOGFILE.ref = mailboxFile
+log4j.logger.zimbra=INFO
+log4j.logger.zimbra.op=WARN
+log4j.logger.com.zimbra=INFO
+log4j.additivity.zimbra.slogger=FALSE
+%%comment VAR:!zimbraLogHostname%%log4j.logger.zimbra.slogger=INFO,SLOGGER
+%%uncomment VAR:!zimbraLogHostname%%log4j.logger.zimbra.slogger=ERROR

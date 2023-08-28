@@ -19,6 +19,7 @@ import com.zimbra.cs.account.GlobalGrant;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.GroupMembership;
 import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.UCService;
 import com.zimbra.cs.account.XMPPComponent;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.ldap.LdapTODO.ACLTODO;
@@ -89,6 +90,8 @@ public abstract class TargetIterator {
       iter = new TargetIterator.DynamicGroupTargetIterator(prov, target);
     } else if (target instanceof Server) {
       iter = new TargetIterator.ServerTargetIterator(prov, target);
+    } else if (target instanceof UCService) {
+      iter = new TargetIterator.UCServiceTargetIterator(prov, target);
     } else if (target instanceof Config) {
       iter = new TargetIterator.ConfigTargetIterator(prov, target);
     } else if (target instanceof GlobalGrant) {
@@ -355,6 +358,13 @@ public abstract class TargetIterator {
 
     ServerTargetIterator(Provisioning prov, Entry target) {
       super(prov, TargetType.server, target);
+    }
+  }
+
+  public static class UCServiceTargetIterator extends TargetIterator {
+
+    UCServiceTargetIterator(Provisioning prov, Entry target) {
+      super(prov, TargetType.ucservice, target);
     }
   }
 

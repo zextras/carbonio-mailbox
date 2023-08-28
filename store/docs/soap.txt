@@ -468,13 +468,13 @@ JWT can also be passed instead of account/password/preauth to validate an existi
  ZM_JWT cookie should be set in the request or jwtSalt should be present in the soap context.
 When token type is JWT, authToken element is not supported i.e. JWT can not be issued on the basis of an auth token.
 
-  {persistAuthTokenCookie} = controls whether the auth token cookie in the response should
+  {persistAuthTokenCookie} = controls whether the auth token cookie in the response should 
                              be persisted when the browser exits.
                              0: (default)
                                 the cookie will be deleted when the Web browser exits.
                              1: The "Expires" attribute of the cookie will be set per rfc6265.
-
-
+                  
+  
   {csrfTokenSecured} = controls whether the client has the capability to handle CSRF token
                 0: (default) the client is not capable of handling CSRF token
                 1: The client is capable of handling CSRF token.
@@ -490,7 +490,7 @@ When token type is JWT, authToken element is not supported i.e. JWT can not be i
   {requested-skin} = if specified the name of the skin requested by client
 
   {skin-name} = if requested-skin specified, the name of the skin to use
-
+  
   {trusted} = if trusted=1, the requesting client will not require two-factor authentication in the future
 
   {generateDeviceId} = if 1, the server will generate a unique ID for the client, and return it in the deviceId element.
@@ -502,7 +502,7 @@ Additional Notes about Auth behavior when mailstore is accessed via reverse prox
 2. When a session context is requested, AuthRequest will only return a session context if the request was passed to the mail store that holds the user account being accessed.
 Any other mail store will validate the user, and generate an Auth Token, BUT will not return a session context.
 
-3. For single node configurations (with no nginx proxy) - the session ID can be passed in either manner - as a cookie -or- in the Soap Header. For code portability it is best to use the cookie method.
+3. For single node configurations (with no nginx proxy) - the session ID can be passed in either manner - as a cookie -or- in the Soap Header. For code portability it is best to use the cookie method.  
 
 4. For a multi-node configuration passing the Auth Token in the SOAP Header of subsequent SOAP requests will NOT allow nginx to direct those requests to the correct mail store for the user account.
 The Auth Token MUST instead be sent as a cookie "ZM_AUTH_TOKEN=...Auth Token returned from AuthRequest..." as this is how nginx tells which mail store the request needs to be sent to.
@@ -510,7 +510,7 @@ The Auth Token MUST instead be sent as a cookie "ZM_AUTH_TOKEN=...Auth Token ret
 See also //depot/zimbra/main/ThirdParty/nginx/docs/HTTP for more details on the semantics of auth and nginx.
 
 See ZimbraTwoFactorAuth server extension docs for more details on two-factor authentication-related request/response attributes.
-
+ 
 ---------
 
  <ChangePasswordRequest>
@@ -611,6 +611,7 @@ For all and sessionId, <nosession> context has no effect.
    <mailURL>{mail-url}</mailURL>+
    <publicURL>{account-base-public-url}</publicURL>
    [<adminURL>{admin-base-public-url}</adminURL>]
+   [<communityURL>{community-url}</communityURL>]
    [<boshURL>{bosh-url}</boshURL>]
    <identities>
      <identity name={identity-name} id="...">
@@ -694,6 +695,7 @@ For all and sessionId, <nosession> context has no effect.
    <publicURL>{account-base-public-url}</publicURL>
    [<adminURL>{admin-base-public-url}</adminURL>]
    [<changePasswordURL>{change-password-url}</changePasswordURL>]
+   [<communityURL>{community-url}</communityURL>]
    [<boshURL>{bosh-url}</boshURL>]
 </GetAccountInfoResponse>
 
@@ -716,6 +718,10 @@ For all and sessionId, <nosession> context has no effect.
   {admin-base-public-url} = base admin console URL. Only returned for admin accounts.
   {change-password-url} = URL to talk to in order to change a password.  Not returned if not configured via domain
                           attribute zimbraChangePasswordURL
+  {community-url} = Zimbra Community URL to load in Community tab. 
+                    The URL points to /api.ashx/v2/oauth/redirect script in Zimbra Community and contains signed GET parameters used by Zimbra Community to authenticate current user.  
+                    This parameter is returned only when zimbraFeatureSocialExternalEnabled is set to TRUE and the following attributes are configured:
+                        zimbraCommunityAPIClientID, zimbraCommunityAPIClientSecret, zimbraCommunityUsernameMapping,zimbraCommunityBaseURL,zimbraCommunityHomeURL  
   {bosh-url} = Proxy URL for accessing XMPP over BOSH. Should be returned only when zimbraFeatureChatEnabled is set to TRUE for Account/COS
 ----------------------------
 
@@ -745,7 +751,7 @@ import and export of addressbook.
 ----------------------------
 
 
- <SearchGalRequest [type="{type}"] [limit="..."] [offset="..."] [sortBy="{sort-by}"] [groupBy="{group-by}"]
+ <SearchGalRequest [type="{type}"] [limit="..."] [offset="..."] [sortBy="{sort-by}"] [groupBy="{group-by}"]  
      [needExp="1|0"] [needIsOwner="[1|0]"] [needIsMember="[all|directOnly|none]"]>
   [<cursor id="{prevId}" sortVal="{prevSortValue}" endSortVal="{endSortValue}"/> ]
    <name>...</name>
@@ -786,14 +792,14 @@ import and export of addressbook.
 
   needExp: if the "exp" flag is needed in the response for group entries.
            default is 0
-
+           
   needIsOwner: if the "isOwner" flag is needed in the response for group entries.
-               default is 0
-
+               default is 0   
+           
   needIsMember = if the "isMember" flag is needed in the response for group entries.
-                 all: the isMember flag returned is 1 if the user is a direct or indirect
+                 all: the isMember flag returned is 1 if the user is a direct or indirect 
                       member of the group, 0 otherwise.
-                 directOnly: the isMember flag returned is 1 if the user is a direct
+                 directOnly: the isMember flag returned is 1 if the user is a direct 
                              member of the group, 0 otherwise.
                  none(default): the isMember flag is not returned
 
@@ -805,13 +811,13 @@ import and export of addressbook.
      1 - limit and offset in the request was honored
      0 - the underlying search does not support pagination
          limit and offset in the request was not honored
-
+         
   exp: if the user can (has right to) expand group members
        returned only if needExp is 1 in the request and only on group entries (type=group in attrs on a <cn>).
 
   isOwner: whether the user is an owner of the group
            returned only if needIsOwner is 1 in the request and only on group entries (type=group in attrs on a <cn>).
-
+           
   isMember: whether the user is a member of the group
             returned only if needIsMember is 1 in the request and only on group entries (type=group in attrs on a <cn>).
 
@@ -1369,7 +1375,7 @@ Folders:
     <retentionPolicy> ... </retentionPolicy>?
   </folder>
 
-  {folder-name}  = name of folder; whitespace is trimmed by server;
+  {folder-name}  = name of folder; whitespace is trimmed by server; 
   {parent-id}    = id of parent folder (absent for root folder)
   {flags}        = checked in UI (#), exclude free/(b)usy info, IMAP subscribed (*), does not (i)nherit rights from parent, is a s(y)nc folder with external data source, sync is turned on(~), folder does n(o)t allow inferiors / children
   {color}        = numeric; range 0-127; defaults to 0 if not present; client can display only 0-7
@@ -1405,10 +1411,10 @@ Folders:
     a <grant> element has the following attributes:
 
     {rights}       = some combination of (r)ead, (w)rite, (i)nsert, (d)elete, (a)dminister, workflow action (x), view (p)rivate, view (f)reebusy
-    {grantee-type} = the type of grantee:
-                     "usr",
-                     "grp",
-                     "dom" (domain),
+    {grantee-type} = the type of grantee: 
+                     "usr", 
+                     "grp", 
+                     "dom" (domain), 
                      "cos",
                      "all" (all authenticated users), "pub" (public authenticated and unauthenticated access),
                      "guest" (non-Zimbra email address and password),
@@ -1569,15 +1575,15 @@ Setting specifying which recipients should be returned.
 recip="0" [default]
     returned sent messages will contain "From:" Senders only
     returned conversations will contain an aggregated list of "From:" Senders from messages in the conversation
-    (maximum of 8)
+    (maximum of 8) 
 recip="1"
     returned sent messages will contain the set of "To:" Recipients instead of the Sender
     returned conversations whose first hit was sent by the user will contain that hit's "To:" recipients instead
-    of the conversation's sender list (maximum of 8)
+    of the conversation's sender list (maximum of 8) 
 recip="2"
     returned sent messages will contain the sets of both "From:" Senders and "To:" Recipients
     returned conversations will contain an aggregated list of "From:" Senders and "To:" Recipients from messages
-    in the conversation (maximum of 8 of each)
+    in the conversation (maximum of 8 of each) 
 
 unless include-imap-deleted="1", items with the \Deleted flag are omitted from the search results (defaults to "0")
 if include-muted="0", items with the \Muted flag are omitted from the search results (defaults to "1")
@@ -1649,8 +1655,8 @@ if include-muted="0", items with the \Muted flag are omitted from the search res
    pending messages right before a search. To lower latencies, this option gives a hint to the index system not to
    trigger this catch-up index prior to the search by giving up the freshness of the search results, i.e. recent
    messages may not be included in the search results.
-
-  If needExp is "1", two additional flags will be included in <e> elements for messages
+   
+  If needExp is "1", two additional flags will be included in <e> elements for messages 
   returned inline:
     - isGroup: "1" if the email address is a group
     - exp: present only when isGroup="1"
@@ -1914,7 +1920,7 @@ if nest="1" on the request, response looks like this:
    SEE SearchResponse for more info
 
 
-If needExp is "1", two additional flags will be included in <e> elements for messages
+If needExp is "1", two additional flags will be included in <e> elements for messages 
 returned inline:
   - isGroup: "1" if the email address is a group
   - exp: present only when isGroup="1"
@@ -2035,7 +2041,7 @@ if fetch="{item-id}", only the message with the given {item-id} is expanded inli
 
 if <header>s are requested, any matching headers are inlined into the response
     (not available when raw="1")
-
+    
 needExp="1" to return group info (isGroup and exp flags) on <e> elements in the response
    (default is 0.)
 
@@ -2337,7 +2343,7 @@ Actions:
 
   <action op="[!]syncon" id="{list}"/>
     - set or unset the "sync" flag of the folder to sync a local folder with a remote source
-
+    
   <action op="[!]disableactivesync" id="{list}"/>
     - If set, disable access to the folder via activesync.
       Note: Only works for user folders, doesn't have any effect on system folders.
@@ -2356,7 +2362,7 @@ Actions:
           view="{new-view}"        to change folder's default view (useful for migration)
           f="{new-flags}"          to change the folder's exclude free/(b)usy, checked (#), and IMAP subscribed (*) state
           <acl><grant ...>*</acl>  to replace the folder's existing ACL with a new ACL
-
+          
 
   {list} = on input, list of folders to act on, on output, list of folders that were acted on;
            list may only have 1 element for actions empty, sync, fb, check, !check, url, import, grant, !grant, revokeorphangrants,
@@ -2510,11 +2516,11 @@ the server to construct message based on the "did" (id of the draft). The draft 
 
 Or if you want to compose the message based on existing draft, but want to make some changes such
 as subject/recipient follow the below steps.
-
+  
 1> Send <GetMsgRequest> with the draft id as message id, and get all the data for the saved message.
 
 2> Use <SendMsgRequest> with the data retrieved from <GetMsgResponse> and set the "did" parameter to draft id.
-   This will ensure that the draft gets removed if the SendMsg is successful.
+   This will ensure that the draft gets removed if the SendMsg is successful. 
 
 # If the message is saved to the sent folder then the id of the message is returned.
 # Otherwise, no id is returned -- just a <m></m> is returned.
@@ -2824,7 +2830,7 @@ NOTE: should we return modified attrs in response?
 
 ----------
 
-<GetContactsRequest [sortBy="nameAsc|nameDesc"] [sync="1"] [l="{folder-id}"] [derefGroupMember="1"]
+<GetContactsRequest [sortBy="nameAsc|nameDesc"] [sync="1"] [l="{folder-id}"] [derefGroupMember="1"] 
     [returnHiddenAttrs="1"] [maxMembers="{max-members}"] [returnCertInfo="1"] [memberOf="1"]>
   <a n="..."/>*
   <ma n="..."/>*
@@ -2850,8 +2856,8 @@ NOTE: should we return modified attrs in response?
                         ignored if <a> is present.
 
   {max-members} : number of max GAL group members to return.
-                  If number of members on a GAL group is greater than the specified max,
-                  do not return any members under <cn> for the entry.
+                  If number of members on a GAL group is greater than the specified max, 
+                  do not return any members under <cn> for the entry.  
                   Instead, return a "tooManyMembers="1" on the <cn>.
 
   {returnCertInfo} : whether to return the certificate information block for the contact. Default is 0
@@ -3397,7 +3403,7 @@ Note that as of ZCS 8.5 nested filter rules are supported in the SOAP API but no
 Notify action:
 <actionNotify> generates the Zimbra specific format of the notify filter rule.
 <actionRFCCompliantNotify> generates the RFC 5436 and 5436 compliant notify filter rule.
-<actionRFCCompliantNotify> is available only when the global config 'zimbraMailSieveNotifyActionRFCCompliant' key is set to TRUE
+<actionRFCCompliantNotify> is available only when the global config 'zimbraMailSieveNotifyActionRFCCompliant' key is set to TRUE 
 (if this key is set to TRUE, the Zimbra-format notify action will fail to execute, and vise versa).
   {from} : The from address which is displayed at the From header of the notification message.
   {subject} : The subject of the notification message.
@@ -3541,7 +3547,7 @@ The locale list in the response is sorted by display name (name attribute).
   or
 
   <imap host="imap.myisp.com" port="143" connectionType="cleartext|ssl"
-    username="mylogin" [password="mypassword"]
+    username="mylogin" [password="mypassword"] [oauthToken="myOAuthToken"]
     [smtpEnabled="0|1" smtpHost="smtp.myisp.com" smtpPort="465" smtpConnectionType="cleartext|ssl"
     smtpAuthRequired="0|1" smtpUsername="mylogin" smtpPassword="mypassword"]/>
 </TestDataSourceRequest>
@@ -3555,7 +3561,7 @@ or
   or
 
   <imap id="{id}" [host="imap.myisp.com"] [port="143"] [connectionType="cleartext|ssl"]
-    [username="mylogin"] [password="mypassword"] />
+    [username="mylogin"] [password="mypassword"] [oauthToken="myOAuthToken"]/>
 </TestDataSourceRequest>
 
 <TestDataSourceResponse>
@@ -3599,6 +3605,8 @@ emailAddress="changed-phoebe@google.com"
 
   <imap name="My IMAP Account" isEnabled="0|1" host="imap.myisp.com" port="143" connectionType="cleartext|ssl"
     username="mylogin" [password="mypassword"] l="{folder-id}"
+    [oauthToken="myOAuthToken" clientId="clientId" clientSecret="clientSecret"
+    refreshToken="refreshToken" refreshTokenUrl="refreshTokenUrl"]
     [smtpEnabled="0|1" smtpHost="smtp.myisp.com" smtpPort="465" smtpConnectionType="cleartext|ssl"
     smtpAuthRequired="0|1" smtpUsername="mylogin" smtpPassword="mypassword"]
     [pollingInterval="10m"]
@@ -3665,6 +3673,13 @@ lastError: the error message from the most recent sync for this data source.
 failingSince: if the most recent sync(s) failed, this attribute specifies
   the timestamp of the first failure.  This attribute is not returned
   if the last sync was successful.
+  
+--------------------------
+Note: OAuthToken is temporary and it expires after a certain time interval
+Client can refresh the OAuthToken in two ways
+1. Refresh and update OAuthToken periodically
+2. Refresh and update OAuthToken if the client gets the response as - error=" Invalid credentials (Failure)"
+---------------------------
 
 ---------------------------
 
@@ -3684,6 +3699,8 @@ failingSince: if the most recent sync(s) failed, this attribute specifies
     [replyToDisplay="{replyto-display}"]/>
   *[<imap name="My IMAP Account" isEnabled="0|1" host="imap.myisp.com" port="143" connectionType="cleartext|ssl"
     username="mylogin" [password="mypassword"] l="{folder-id}"
+    [oauthToken="myOAuthToken" clientId="clientId" clientSecret="clientSecret"
+    refreshToken="refreshToken" refreshTokenUrl="refreshTokenUrl"]
     [smtpEnabled="0|1" smtpHost="smtp.myisp.com" smtpPort="465" smtpConnectionType="cleartext|ssl"
     smtpAuthRequired="0|1" smtpUsername="mylogin" smtpPassword="mypassword"]
     [pollingInterval="10m"]
@@ -3993,22 +4010,22 @@ RevokeRightsResponse returns rights that are successfully revoked.
 </DiscoverRightsRequest>
 
 Return all targets of the specified rights applicable to the requested account.
-Notes:
-  1. This call only discovers grants granted on the designated target type of the specified rights.
+Notes: 
+  1. This call only discovers grants granted on the designated target type of the specified rights.  
      It does not return grants granted on target types the rights can inherit from.
-
+     
   2. For sendAs, sendOnBehalgOf, sendAsDistList, sendOnBehalgOfDistList rights,
-     name attribute is not returned on <target> elements.  Instead, addresses
-     in the target entry's zimbraPrefAllowAddressForDelegatedSender are returned in
-     <e a="{email-address}"/> elements under the <target> element.
-     If zimbraPrefAllowAddressForDelegatedSender is not set on the target entry, the entry's
-     primary email address will be return in the only <e a="{email-address}"/> element
+     name attribute is not returned on <target> elements.  Instead, addresses 
+     in the target entry's zimbraPrefAllowAddressForDelegatedSender are returned in   
+     <e a="{email-address}"/> elements under the <target> element.  
+     If zimbraPrefAllowAddressForDelegatedSender is not set on the target entry, the entry's 
+     primary email address will be return in the only <e a="{email-address}"/> element 
      under the <target> element.
-
-  3. For all other rights, name attribute is always returned on <target> elements, no
-     <e a="{email-address}"/> will be returned.  name attribute contains the entry's
+     
+  3. For all other rights, name attribute is always returned on <target> elements, no 
+     <e a="{email-address}"/> will be returned.  name attribute contains the entry's 
      primary name.
-
+      
 
 <DiscoverRightsResponse>
     <targets right="...">
@@ -4018,10 +4035,10 @@ Notes:
     </targets>+
 </DiscoverRightsResponse>
 
-If a discoverd target is an account or a group, display name of the entry is return in the d="..."
+If a discoverd target is an account or a group, display name of the entry is return in the d="..." 
 attribute if the entry has a display name set.
 
-e.g.
+e.g. 
 <DiscoverRightsRequest>
     <right>sendAs</right>
     <right>sendAsDistList</right>
@@ -4033,7 +4050,7 @@ e.g.
         <target type="account" id="...">
             <e a="user-one@test.com"/>
             <e a="user.one@test.com"/>
-        </target>
+        </target>    
         <target type="account" id="...">
             <e a="user2@test.com"/>
         </target>
@@ -4050,7 +4067,7 @@ e.g.
     </targets>
     <targets right="viewFreeBusy">
         <target type="account" id="..." name="user1@test.com">
-    </targets>
+    </targets>    
 </DiscoverRightsResponse>
 
 ---------------------------
@@ -4077,12 +4094,12 @@ Check if the authed user has the specified right(s) on a target.
 allow = 1 | 0
         1: the authed user has the right on the target
         0: the authed user does not have the right on the target
-        For the allow="1|0" on each <target>, it is the AND value of all requetsed rights
+        For the allow="1|0" on each <target>, it is the AND value of all requetsed rights 
         for the target.
 
 
 
-
+        
 ---------------------------
 
 <GetVersionInfoRequest/>
@@ -4336,9 +4353,20 @@ Notes:
 
     more-flag = true if more members left to return
     total = total number of distribution lists (not affected by limit/offset)
-
+    
     returns group members in <dlm> element, sorted ascendingly by email address for non-hab distribution lists
     For HAB Groups, it returns group members with their details in groupMember element, sorted by seniorityIndex and then by name.
+
+-----------------------------
+
+<PurgeRevisionRequest>
+  <revision id="{item-id}" ver="{revision}" [includeOlderRevisions="true|false"]/>
+</PurgeRevisionRequest>
+
+<PurgeRevisionResponse/>
+
+When includeOlderRevisions is set to true, the server will purge all the
+old revisions inclusive of the revision specified in the request.
 
 -----------------------------
 
@@ -4406,7 +4434,7 @@ added to Documents only.
     to the user and should be hidden or removed from the UI. If "expire=1" is set
     on <revoke/> it indicates that the share expired and was automatically revoked
     by the system.
-
+    
     notification-item-id = the id of the share notification message.  The message must be in the Inbox folder.
     status is "new" if the message is unread or "seen" if the message is read.
     perm = combination of r (read) w (write) i (insert) d (delete) x (action) a (admin)
@@ -4444,7 +4472,7 @@ Notes:
 
   dynamic: 1(default): create a dynamic distribution list
            0:  create a static distribution list
-
+           
 
 -----------------------------
 
@@ -4452,13 +4480,13 @@ Notes:
   <dl by="id|name">...</dl>
 </GetDistributionListRequest>
 
-  needOwners = whether to return owners, default is 0
+  needOwners = whether to return owners, default is 0 
                1: return owners
                0: don't return owners
-
+               
   needRights = return grants for the specified (comma-separated) rights.
                e.g. needRights="sendToDistList,viewDistList"
-
+               
 
 <GetDistributionListResponse >
   <dl name="{name}" id="{id}" dynamic="1|0" [isOwner="1"] [isMember="1"]>
@@ -4467,9 +4495,9 @@ Notes:
       <owner type="{grantee-type}" id="{owner-id}" name="{owner-name}"/>+
     </owners>]
     [<rights>
-      [<right right="{right}">
+      [<right right="{right}"> 
            <grantee type={grantee-type} [id="{grantee-id}"] [name="grantee-name"]/>
-       </right>+]
+       </right>+]  
     </rights>]
   </dl>
 </GetDistributionListResponse>
@@ -4478,19 +4506,19 @@ Notes:
    If the authed account is one of the list owners, all (requested) attributes of the DL
    are returned in the response.  Otherwise only attributes visible and useful to
    non-owners are returned.
-
+   
    Specified <rights> are returned only if the authed account is one of the list owners.
-   Only grants on this group entry is returned, inherited grants on domain or globalgrant
+   Only grants on this group entry is returned, inherited grants on domain or globalgrant 
    are not returned.
 
    dynamic = whether this is a dynamic distribution list
-   grantee-type =
+   grantee-type = 
                 usr - a Zimbra internal user
                 grp - a Zimbra internal group
                 egp - an external AD group
                 all - all Zimbra users (id and name will not be present)
                 pub - public (id and name will not be present)
-
+     
 -----------------------------
 
 <DistributionListActionRequest>
@@ -4499,9 +4527,9 @@ Notes:
       [<a n="...">...</a>+]
       [<newName>{new-DL-name}</newName>]
       [<owner type={grantee-type} by="name|id}">{name-or-id}</owner>+]
-      [<right right="{right}">
+      [<right right="{right}"> 
            <grantee type={grantee-type} by="name|id}">{name-or-id}</grantee>+
-       </right>+]
+       </right>+]  
       [<dlm>{member}</dlm>+]
   </action>
 <DistributionListActionRequest>
@@ -4521,35 +4549,35 @@ Notes:
        addMembers     add list members
        removeMembers  remove list members
 
-  grantee-type:
+  grantee-type:      
      usr - a Zimbra internal user
      grp - a Zimbra internal group
      egr - an external AD group
      all - all Zimbra users (by and {name-or-id} are ignored)
      pub - public (by and {name-or-id} are ignored)
      email - an email address.  Server will lookup in directory and determine the actual grantee
-
+     
 
   <a>       required if op=modify
   <newName> required if op=rename
-  <owner>   required if op=addOwners or op=removeOwners,
-            optional if op=setOwners.  If not present when op=setOwners all current
+  <owner>   required if op=addOwners or op=removeOwners, 
+            optional if op=setOwners.  If not present when op=setOwners all current 
             owners will be removed.
   <right>   required if op=grantRight, op=revokeRight, op=setRight.
   <grantee> (sub-element of <right>)
             required if op=grantRight, op=revokeRight
-            optional if op=setRight.  If not present when op=setSenders all current
-            grants for the right will be removed.
+            optional if op=setRight.  If not present when op=setSenders all current 
+            grants for the right will be removed.            
   <dlm>     required if op=addMembers or op=removeMembers
-
-  Note:
-        For owners/rights, only grants on the group itself will be
-        modified, grants on domain and globalgrant (from which the right can be inherited)
-        will not be touched.  Only admins can modify grants on domains and globalgrant,
+  
+  Note: 
+        For owners/rights, only grants on the group itself will be 
+        modified, grants on domain and globalgrant (from which the right can be inherited) 
+        will not be touched.  Only admins can modify grants on domains and globalgrant, 
         owners of groups can only modify grants on the group entry.
-
-
-
+        
+        
+        
   bccOwners = whether to bcc all other owners on the accept/reject notification emails.
               1(default): bcc all other owners
               0: do not bcc any other owners
@@ -4571,30 +4599,54 @@ Returns groups the user is either a member or an owner of.
 
 Note: isOwner is returned only if ownerOf on the request is 1.
       isMember is returned only if memberOf on the request is not "none".
-      For example, if ownerOf="1" and memberOf="none" on the request, and
-      user is an owner and a member of a group, the returned entry for the group
+      For example, if ownerOf="1" and memberOf="none" on the request, and 
+      user is an owner and a member of a group, the returned entry for the group 
       will have isOwner="1", but isMember will not be present.
 
 {owner-of} = 1: needs groups the user is an owner of.
              0 (default): do not need groups the user is an owner of.
-
+             
 {member-of} = all: needs all groups the user is a direct or indirect member of.
               none: do not need groups the user is a member of.
-              directOnly (default): needs groups the account is a direct member of.
-
-{attrs} = comma-separated attributes to return.  Note: non-owner user can see only certain
+              directOnly (default): needs groups the account is a direct member of.    
+              
+{attrs} = comma-separated attributes to return.  Note: non-owner user can see only certain 
           attributes of a group.  If a specified attribute is not visible to the user,
           it will not be returned.
 
-{via-dl-name} = is present if the account is a member of the returned list because
-                they are either a direct or indirect member of another list that is
-                a member of the returned list.
+{via-dl-name} = is present if the account is a member of the returned list because 
+                they are either a direct or indirect member of another list that is 
+                a member of the returned list. 
                 For example,
-                if a user is a member of engineering@domain.com, and engineering@domain.com
-                is a member of all@domain.com, then
-                <dl name="all@domain.com" ... via="engineering@domain.com"/>
+                if a user is a member of engineering@domain.com, and engineering@domain.com 
+                is a member of all@domain.com, then 
+                <dl name="all@domain.com" ... via="engineering@domain.com"/> 
                 would be returned.
 
+
+-----------------------------
+GetOAuthConsumerRequest:
+This is OAuth related API used for fetching details of OAuth consumers/apps for an account.
+Response for this API include access token(this acts as a key), application name, device information, approved on date.
+
+```
+<GetOAuthConsumersRequest xmlns="urn:zimbraAccount"/>
+
+<GetOAuthConsumersResponse xmlns="urn:zimbraAccount">
+      <OauthConsumer approvedOn="{approved-on}" appName="{name-of-consumer}" accessToken="{access-token}" device="{device-name}"/>
+      <OauthConsumer .../>
+        ....
+    </GetOAuthConsumersResponse>
+```
+
+-----------------------------
+RevokeOAuthConsumerRequest:
+This is OAuth related API used for revoking access for an OAuth consumer.
+<RevokeOAuthConsumerRequest
+    accessToken="9230ae1e4828b108e7696f66e2dc3c80"
+    xmlns="urn:zimbraAccount"/>
+```
+<RevokeOAuthConsumerResponse xmlns="urn:zimbraAccount"/>```
 
 -----------------------------
 ListIMAPSubscriptionsRequest:
@@ -4689,6 +4741,29 @@ Valid 'op' values: move, read, unread
 </SearchActionResponse>
 
 -----------------------------
+API to save account profile image
+<ModifyProfileImageRequest uid="{upload_id}">{base64_encoded_image_data}
+</ModifyProfileImageRequest>
+
+{upload_id} = Upload Id of profile image uploaded
+{base64_encoded_image_data} = Image data encoded in base64 format
+
+Note: If the {base64_encoded_image_data} is present in the value field, the {upload_id} is ignored.
+If the {base64_encoded_image_data} is not present in the request, the {upload_id} is used to fetch the image data.
+If both {base64_encoded_image_data} and {upload_id} are not present, the profile image is removed if already exist.
+
+<ModifyProfileImageResponse itemId="{item_id}">
+</ModifyProfileImageResponse>
+
+{item_id} = Item Id of saved profile image
+
+Note: The item id returned in response can be used to download the profile image using REST URL
+
+Server Debug config parameters:
+1. profile_image_max_size = maximum image size allowed for account profile
+2. profile_thumbnail_image_dimension = profile ldap thumbnail image dimesion
+
+-----------------------------
 API to set recovery email address
 <SetRecoveryAccountRequest op="{op}" recoveryAccount="{recoveryAccount}" recoveryAccountVerificationCode="{recoveryAccountVerificationCode}" channel="email">
 </SetRecoveryAccountRequest>
@@ -4744,10 +4819,10 @@ Get HAB API
        <habGroup rootHabGroup="{TRUE|FALSE}" seniorityIndex="{0|1}"
        name="{habGroupName}" id="{habGroupId}" parentHabGroupId="{parentHabGroupId}">
        </habGroup>+
-
+      
     </habGroup>+
  </GetHABResponse>
-
+   
 
 ----------------------------
 API to get all active address lists in the user's domain

@@ -40,6 +40,7 @@ public class TestAttributeManager {
             AttributeClass.distributionList,
             AttributeClass.domain,
             AttributeClass.server,
+            AttributeClass.ucService,
             AttributeClass.cos,
             AttributeClass.xmppComponent,
             AttributeClass.group,
@@ -207,124 +208,124 @@ public class TestAttributeManager {
   @AfterEach
   public void tearDown() {}
 
-  @Test
-  void testInVersion() throws Exception {
+ @Test
+ void testInVersion() throws Exception {
 
-    assertTrue(am.inVersion(ATTR_ZIMBRAID, "0"));
-    assertTrue(am.inVersion(ATTR_ZIMBRAID, "5.0.10"));
+  assertTrue(am.inVersion(ATTR_ZIMBRAID, "0"));
+  assertTrue(am.inVersion(ATTR_ZIMBRAID, "5.0.10"));
 
-    assertFalse(am.inVersion(ATTR_ZIMLETDOMAIN, "0"));
-    assertFalse(am.inVersion(ATTR_ZIMLETDOMAIN, "5.0.9"));
+  assertFalse(am.inVersion(ATTR_ZIMLETDOMAIN, "0"));
+  assertFalse(am.inVersion(ATTR_ZIMLETDOMAIN, "5.0.9"));
 
-    assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "5.0.10"));
-    assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "5.0.11"));
-    assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "5.5"));
-    assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "6"));
+  assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "5.0.10"));
+  assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "5.0.11"));
+  assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "5.5"));
+  assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "6"));
 
-    assertTrue(am.inVersion(ATTR_TWO_SINCE, "8.0.8"));
-    assertTrue(am.inVersion(ATTR_TWO_SINCE, "8.0.9"));
-    assertTrue(am.inVersion(ATTR_TWO_SINCE, "8.5.1"));
-    assertTrue(am.inVersion(ATTR_TWO_SINCE, "8.5.2"));
-    assertTrue(am.inVersion(ATTR_TWO_SINCE, "9.0"));
+  assertTrue(am.inVersion(ATTR_TWO_SINCE, "8.0.8"));
+  assertTrue(am.inVersion(ATTR_TWO_SINCE, "8.0.9"));
+  assertTrue(am.inVersion(ATTR_TWO_SINCE, "8.5.1"));
+  assertTrue(am.inVersion(ATTR_TWO_SINCE, "8.5.2"));
+  assertTrue(am.inVersion(ATTR_TWO_SINCE, "9.0"));
 
-    assertFalse(am.inVersion(ATTR_TWO_SINCE, "0"));
-    assertFalse(am.inVersion(ATTR_TWO_SINCE, "0.0"));
-    assertFalse(am.inVersion(ATTR_TWO_SINCE, "6"));
-    assertFalse(am.inVersion(ATTR_TWO_SINCE, "7"));
-    assertFalse(am.inVersion(ATTR_TWO_SINCE, "7.2"));
-    assertFalse(am.inVersion(ATTR_TWO_SINCE, "7.2.7"));
-    assertFalse(am.inVersion(ATTR_TWO_SINCE, "7.1.9"));
-    assertFalse(am.inVersion(ATTR_TWO_SINCE, "8.5.0"));
-    assertFalse(am.inVersion(ATTR_TWO_SINCE, "7.2.5"));
-    assertFalse(am.inVersion(ATTR_TWO_SINCE, "7.2.7"));
+  assertFalse(am.inVersion(ATTR_TWO_SINCE, "0"));
+  assertFalse(am.inVersion(ATTR_TWO_SINCE, "0.0"));
+  assertFalse(am.inVersion(ATTR_TWO_SINCE, "6"));
+  assertFalse(am.inVersion(ATTR_TWO_SINCE, "7"));
+  assertFalse(am.inVersion(ATTR_TWO_SINCE, "7.2"));
+  assertFalse(am.inVersion(ATTR_TWO_SINCE, "7.2.7"));
+  assertFalse(am.inVersion(ATTR_TWO_SINCE, "7.1.9"));
+  assertFalse(am.inVersion(ATTR_TWO_SINCE, "8.5.0"));
+  assertFalse(am.inVersion(ATTR_TWO_SINCE, "7.2.5"));
+  assertFalse(am.inVersion(ATTR_TWO_SINCE, "7.2.7"));
 
-    assertFuzzyMaintenaceReleaseCase(ATTR_TWO_SINCE, "8.4.1", true);
-    assertFuzzyMaintenaceReleaseCase(ATTR_TWO_SINCE, "8.2.2", true);
+  assertFuzzyMaintenaceReleaseCase(ATTR_TWO_SINCE, "8.4.1", true);
+  assertFuzzyMaintenaceReleaseCase(ATTR_TWO_SINCE, "8.2.2", true);
 
-    assertTrue(am.inVersion(ATTR_MULTI_SINCE, "7.2.8"));
-    assertTrue(am.inVersion(ATTR_MULTI_SINCE, "7.2.9"));
-    assertTrue(am.inVersion(ATTR_MULTI_SINCE, "8.0.8"));
-    assertTrue(am.inVersion(ATTR_MULTI_SINCE, "8.0.9"));
-    assertTrue(am.inVersion(ATTR_MULTI_SINCE, "8.5.2"));
-    assertTrue(am.inVersion(ATTR_MULTI_SINCE, "9.0"));
-    assertTrue(am.inVersion(ATTR_MULTI_SINCE, "9.0.0"));
-    assertTrue(am.inVersion(ATTR_MULTI_SINCE, "9.0.1"));
-    assertTrue(am.inVersion(ATTR_MULTI_SINCE, "9.1.1"));
-    assertTrue(am.inVersion(ATTR_MULTI_SINCE, "10.0.0"));
+  assertTrue(am.inVersion(ATTR_MULTI_SINCE, "7.2.8"));
+  assertTrue(am.inVersion(ATTR_MULTI_SINCE, "7.2.9"));
+  assertTrue(am.inVersion(ATTR_MULTI_SINCE, "8.0.8"));
+  assertTrue(am.inVersion(ATTR_MULTI_SINCE, "8.0.9"));
+  assertTrue(am.inVersion(ATTR_MULTI_SINCE, "8.5.2"));
+  assertTrue(am.inVersion(ATTR_MULTI_SINCE, "9.0"));
+  assertTrue(am.inVersion(ATTR_MULTI_SINCE, "9.0.0"));
+  assertTrue(am.inVersion(ATTR_MULTI_SINCE, "9.0.1"));
+  assertTrue(am.inVersion(ATTR_MULTI_SINCE, "9.1.1"));
+  assertTrue(am.inVersion(ATTR_MULTI_SINCE, "10.0.0"));
 
-    assertFalse(am.inVersion(ATTR_MULTI_SINCE, "0"));
-    assertFalse(am.inVersion(ATTR_MULTI_SINCE, "0.0"));
-    assertFalse(am.inVersion(ATTR_MULTI_SINCE, "6"));
-    assertFalse(am.inVersion(ATTR_MULTI_SINCE, "7"));
-    assertFalse(am.inVersion(ATTR_MULTI_SINCE, "7.2"));
-    assertFalse(am.inVersion(ATTR_MULTI_SINCE, "7.1.9"));
-    assertFalse(am.inVersion(ATTR_MULTI_SINCE, "8.5.0"));
-    assertFalse(am.inVersion(ATTR_MULTI_SINCE, "8.5.1"));
-    assertFalse(am.inVersion(ATTR_MULTI_SINCE, "7.2.5"));
-    assertFalse(am.inVersion(ATTR_MULTI_SINCE, "7.2.7"));
+  assertFalse(am.inVersion(ATTR_MULTI_SINCE, "0"));
+  assertFalse(am.inVersion(ATTR_MULTI_SINCE, "0.0"));
+  assertFalse(am.inVersion(ATTR_MULTI_SINCE, "6"));
+  assertFalse(am.inVersion(ATTR_MULTI_SINCE, "7"));
+  assertFalse(am.inVersion(ATTR_MULTI_SINCE, "7.2"));
+  assertFalse(am.inVersion(ATTR_MULTI_SINCE, "7.1.9"));
+  assertFalse(am.inVersion(ATTR_MULTI_SINCE, "8.5.0"));
+  assertFalse(am.inVersion(ATTR_MULTI_SINCE, "8.5.1"));
+  assertFalse(am.inVersion(ATTR_MULTI_SINCE, "7.2.5"));
+  assertFalse(am.inVersion(ATTR_MULTI_SINCE, "7.2.7"));
 
-    assertFuzzyMaintenaceReleaseCase(ATTR_MULTI_SINCE, "8.4.1", true);
-  }
+  assertFuzzyMaintenaceReleaseCase(ATTR_MULTI_SINCE, "8.4.1", true);
+ }
 
-  @Test
-  void testBeforeVersion() throws Exception {
+ @Test
+ void testBeforeVersion() throws Exception {
 
-    assertTrue(am.beforeVersion(ATTR_ZIMBRAID, "0"));
-    assertTrue(am.beforeVersion(ATTR_ZIMBRAID, "5.0.10"));
+  assertTrue(am.beforeVersion(ATTR_ZIMBRAID, "0"));
+  assertTrue(am.beforeVersion(ATTR_ZIMBRAID, "5.0.10"));
 
-    assertFalse(am.beforeVersion(ATTR_ZIMLETDOMAIN, "0"));
-    assertFalse(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.0.9"));
-    assertFalse(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.0.10"));
+  assertFalse(am.beforeVersion(ATTR_ZIMLETDOMAIN, "0"));
+  assertFalse(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.0.9"));
+  assertFalse(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.0.10"));
 
-    assertTrue(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.0.11"));
-    assertTrue(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.5"));
-    assertTrue(am.beforeVersion(ATTR_ZIMLETDOMAIN, "6"));
+  assertTrue(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.0.11"));
+  assertTrue(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.5"));
+  assertTrue(am.beforeVersion(ATTR_ZIMLETDOMAIN, "6"));
 
-    assertTrue(am.beforeVersion(ATTR_TWO_SINCE, "8.0.9"));
-    assertTrue(am.beforeVersion(ATTR_TWO_SINCE, "8.5.2"));
-    assertTrue(am.beforeVersion(ATTR_TWO_SINCE, "9.0"));
+  assertTrue(am.beforeVersion(ATTR_TWO_SINCE, "8.0.9"));
+  assertTrue(am.beforeVersion(ATTR_TWO_SINCE, "8.5.2"));
+  assertTrue(am.beforeVersion(ATTR_TWO_SINCE, "9.0"));
 
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "8.0.8"));
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "8.5.1"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "8.0.8"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "8.5.1"));
 
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "0"));
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "0.0"));
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "6"));
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7"));
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7.2"));
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7.2.7"));
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7.1.9"));
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "8.5.0"));
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7.2.5"));
-    assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7.2.7"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "0"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "0.0"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "6"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7.2"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7.2.7"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7.1.9"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "8.5.0"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7.2.5"));
+  assertFalse(am.beforeVersion(ATTR_TWO_SINCE, "7.2.7"));
 
-    assertFuzzyMaintenaceReleaseCase(ATTR_TWO_SINCE, "8.4.1", false);
+  assertFuzzyMaintenaceReleaseCase(ATTR_TWO_SINCE, "8.4.1", false);
 
-    assertTrue(am.beforeVersion(ATTR_MULTI_SINCE, "7.2.9"));
-    assertTrue(am.beforeVersion(ATTR_MULTI_SINCE, "8.0.9"));
-    assertTrue(am.beforeVersion(ATTR_MULTI_SINCE, "9.0.1"));
-    assertTrue(am.beforeVersion(ATTR_MULTI_SINCE, "9.1.1"));
-    assertTrue(am.beforeVersion(ATTR_MULTI_SINCE, "10.0.0"));
+  assertTrue(am.beforeVersion(ATTR_MULTI_SINCE, "7.2.9"));
+  assertTrue(am.beforeVersion(ATTR_MULTI_SINCE, "8.0.9"));
+  assertTrue(am.beforeVersion(ATTR_MULTI_SINCE, "9.0.1"));
+  assertTrue(am.beforeVersion(ATTR_MULTI_SINCE, "9.1.1"));
+  assertTrue(am.beforeVersion(ATTR_MULTI_SINCE, "10.0.0"));
 
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7.2.8"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "8.0.8"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "8.5.2"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "9.0"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "9.0.0"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7.2.8"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "8.0.8"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "8.5.2"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "9.0"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "9.0.0"));
 
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "0"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "0.0"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "6"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7.2"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7.1.9"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "8.5.0"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "8.5.1"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7.2.5"));
-    assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7.2.7"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "0"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "0.0"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "6"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7.2"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7.1.9"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "8.5.0"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "8.5.1"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7.2.5"));
+  assertFalse(am.beforeVersion(ATTR_MULTI_SINCE, "7.2.7"));
 
-    assertFuzzyMaintenaceReleaseCase(ATTR_MULTI_SINCE, "8.4.1", false);
-  }
+  assertFuzzyMaintenaceReleaseCase(ATTR_MULTI_SINCE, "8.4.1", false);
+ }
 
   private void assertFuzzyMaintenaceReleaseCase(String attrName, String version, boolean in)
       throws ServiceException {
@@ -340,47 +341,47 @@ public class TestAttributeManager {
     assertTrue(check);
   }
 
-  @Test
-  void testIsFuture() {
-    assertTrue(am.isFuture(ATTR_FUTURE));
-    assertFalse(am.isFuture(ATTR_MULTI_SINCE));
-    assertFalse(am.isFuture(ATTR_TWO_SINCE));
-    assertFalse(am.isFuture(ATTR_ZIMBRAID));
-    assertFalse(am.isFuture(ATTR_ZIMLETDOMAIN));
-  }
+ @Test
+ void testIsFuture() {
+  assertTrue(am.isFuture(ATTR_FUTURE));
+  assertFalse(am.isFuture(ATTR_MULTI_SINCE));
+  assertFalse(am.isFuture(ATTR_TWO_SINCE));
+  assertFalse(am.isFuture(ATTR_ZIMBRAID));
+  assertFalse(am.isFuture(ATTR_ZIMLETDOMAIN));
+ }
 
-  @Test
-  void testAddedIn() throws ServiceException {
-    assertTrue(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0.10"));
+ @Test
+ void testAddedIn() throws ServiceException {
+  assertTrue(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0.10"));
 
-    assertTrue(am.addedIn(ATTR_TWO_SINCE, "8.0.8"));
-    assertTrue(am.addedIn(ATTR_TWO_SINCE, "8.5.1"));
+  assertTrue(am.addedIn(ATTR_TWO_SINCE, "8.0.8"));
+  assertTrue(am.addedIn(ATTR_TWO_SINCE, "8.5.1"));
 
-    assertTrue(am.addedIn(ATTR_MULTI_SINCE, "9.0.0"));
-    assertTrue(am.addedIn(ATTR_MULTI_SINCE, "8.0.8"));
-    assertTrue(am.addedIn(ATTR_MULTI_SINCE, "7.2.8"));
-    assertTrue(am.addedIn(ATTR_MULTI_SINCE, "8.5.2"));
+  assertTrue(am.addedIn(ATTR_MULTI_SINCE, "9.0.0"));
+  assertTrue(am.addedIn(ATTR_MULTI_SINCE, "8.0.8"));
+  assertTrue(am.addedIn(ATTR_MULTI_SINCE, "7.2.8"));
+  assertTrue(am.addedIn(ATTR_MULTI_SINCE, "8.5.2"));
 
-    assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0.11"));
-    assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0.9"));
-    assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0"));
-    assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "6.0"));
-    assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "7.0"));
+  assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0.11"));
+  assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0.9"));
+  assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0"));
+  assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "6.0"));
+  assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "7.0"));
 
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.3"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.1"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "9.0.1"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.0.7"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.0.9"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "7.2.7"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "7.2.9"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.7"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.3"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.1"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.0"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.1"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "7.1"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "7.2"));
-    assertFalse(am.addedIn(ATTR_MULTI_SINCE, "10.0"));
-  }
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.3"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.1"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "9.0.1"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.0.7"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.0.9"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "7.2.7"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "7.2.9"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.7"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.3"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.1"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.0"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.1"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "7.1"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "7.2"));
+  assertFalse(am.addedIn(ATTR_MULTI_SINCE, "10.0"));
+ }
 }

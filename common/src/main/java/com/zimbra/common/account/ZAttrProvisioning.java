@@ -512,7 +512,8 @@ public class ZAttrProvisioning {
     }
 
     public enum FreebusyExchangeServerType {
-        webdav("webdav");
+        webdav("webdav"),
+        ews("ews");
         private final String mValue;
         FreebusyExchangeServerType(String value) { mValue = value; }
         @Override
@@ -524,6 +525,7 @@ public class ZAttrProvisioning {
              throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
         }
         public boolean isWebdav() { return this == webdav;}
+        public boolean isEws() { return this == ews;}
     }
 
     public enum GalLdapAuthMech {
@@ -2733,14 +2735,6 @@ public class ZAttrProvisioning {
     public static final String A_c = "c";
 
     /**
-     * Link to the Carbonio Admin Documentation
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3135)
-    public static final String A_carbonioAdminDocumentationUrl = "carbonioAdminDocumentationUrl";
-
-    /**
      * SSL proxy port for Carbonio admin console UI
      *
      * @since ZCS 9.0.0
@@ -2978,14 +2972,6 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3092)
     public static final String A_carbonioSendFullErrorStack = "carbonioSendFullErrorStack";
-
-    /**
-     * Link to the Carbonio User Documentation
-     *
-     * @since ZCS 23.9.0
-     */
-    @ZAttr(id=3134)
-    public static final String A_carbonioUserDocumentationUrl = "carbonioUserDocumentationUrl";
 
     /**
      * Enable video server recording for Carbonio
@@ -3437,10 +3423,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraAddressListLdapFilter = "zimbraAddressListLdapFilter";
 
     /**
-     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
-     * as in managed only with ACLs.. Orig desc: access control mechanism for
-     * admin access acl: ACL based access control (a.k.a. delegated admin).
-     * global: allows only global admins.
+     * access control mechanism for admin access acl: ACL based access
+     * control (a.k.a. delegated admin). global: allows only global admins.
      *
      * @since ZCS 6.0.9
      */
@@ -5716,8 +5700,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceName = "zimbraDataSourceName";
 
     /**
-     * Deprecated since: 23.9.0. This OAuth implementation is not supported
-     * anymore. Orig desc: Client Id for OAuth token
+     * Client Id for OAuth token
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5725,8 +5708,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthClientId = "zimbraDataSourceOAuthClientId";
 
     /**
-     * Deprecated since: 23.9.0. This OAuth implementation is not supported
-     * anymore. Orig desc: Client Secret for OAuth token
+     * Client Secret for OAuth token
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5734,8 +5716,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthClientSecret = "zimbraDataSourceOAuthClientSecret";
 
     /**
-     * Deprecated since: 23.9.0. This OAuth implementation is not supported
-     * anymore. Orig desc: Refresh token for authentication using OAuth
+     * Refresh token for authentication using OAuth
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5743,8 +5724,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthRefreshToken = "zimbraDataSourceOAuthRefreshToken";
 
     /**
-     * Deprecated since: 23.9.0. This OAuth implementation is not supported
-     * anymore. Orig desc: Url for refreshing OAuth Token
+     * Url for refreshing OAuth Token
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5752,8 +5732,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthRefreshTokenUrl = "zimbraDataSourceOAuthRefreshTokenUrl";
 
     /**
-     * Deprecated since: 23.9.0. This OAuth implementation is not supported
-     * anymore. Orig desc: OAuth token for authentication using OAuth
+     * OAuth token for authentication using OAuth
      *
      * @since ZCS 8.7.0
      */
@@ -7164,8 +7143,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureMobileAppEnabled = "zimbraFeatureMobileAppEnabled";
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
+     * Whether to enable Zimbra Mobile Gateway feature
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -7780,7 +7758,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFreebusyExchangeCachedIntervalStart = "zimbraFreebusyExchangeCachedIntervalStart";
 
     /**
-     * Can be set to webdav for Exchange 2007 or older
+     * Can be set to either webdav for Exchange 2007 or older, or ews for
+     * 2010 and newer
      *
      * @since ZCS 6.0.11
      */
@@ -8948,9 +8927,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraIsMobileGatewayAppAccount = "zimbraIsMobileGatewayAppAccount";
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether or not an account represents a Mobile
-     * Gateway Proxy account
+     * whether or not an account represents a Mobile Gateway Proxy account
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -12327,24 +12304,21 @@ public class ZAttrProvisioning {
     public static final String A_zimbraNotebookMaxCachedTemplatesPerFolder = "zimbraNotebookMaxCachedTemplatesPerFolder";
 
     /**
-     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
-     * Orig desc: maximum number of revisions to keep for wiki pages and
-     * documents. 0 means unlimited.
+     * maximum number of revisions to keep for wiki pages and documents. 0
+     * means unlimited.
      */
     @ZAttr(id=482)
     public static final String A_zimbraNotebookMaxRevisions = "zimbraNotebookMaxRevisions";
 
     /**
-     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
-     * Wiki / Notebook page cache on the server.
+     * The size of composed Wiki / Notebook page cache on the server.
      */
     @ZAttr(id=369)
     public static final String A_zimbraNotebookPageCacheSize = "zimbraNotebookPageCacheSize";
 
     /**
-     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
-     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
-     * and HTML Documents.
+     * whether to strip off potentially harming HTML tags in Wiki and HTML
+     * Documents.
      *
      * @since ZCS 5.0.6
      */
@@ -12404,9 +12378,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraNotifySSLServerEnabled = "zimbraNotifySSLServerEnabled";
 
     /**
-     * Deprecated since: 23.9.0. This OAuth implementation is not supported
-     * anymore. Orig desc: Credentials associated with a successfully
-     * authorized OAuth Consumer
+     * Credentials associated with a successfully authorized OAuth Consumer
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -12424,9 +12396,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraOAuthConsumerAPIScope = "zimbraOAuthConsumerAPIScope";
 
     /**
-     * Deprecated since: 23.9.0. This OAuth implementation is not supported
-     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
-     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
+     * OAuth Consumer id, secret, and application name. It is in the format
+     * of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @since ZCS 7.0.0
      */
@@ -14709,9 +14680,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefZimletTreeOpen = "zimbraPrefZimletTreeOpen";
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
-     * notifications
+     * Option to turn on/off zimbra mobile gateway push notifications
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -17453,7 +17422,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraTwoFactorTimeWindowOffset = "zimbraTwoFactorTimeWindowOffset";
 
     /**
-     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * call control service URL for the UC service
      *
      * @since ZCS 8.0.0
@@ -17462,7 +17430,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCCallControlURL = "zimbraUCCallControlURL";
 
     /**
-     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @since ZCS 8.0.0
@@ -17471,7 +17438,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCPassword = "zimbraUCPassword";
 
     /**
-     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * presence session id for Cisco presence service
      *
      * @since ZCS 8.0.0
@@ -17480,7 +17446,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCPresenceSessionId = "zimbraUCPresenceSessionId";
 
     /**
-     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * presence service URL for the UC service
      *
      * @since ZCS 8.0.0
@@ -17489,7 +17454,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCPresenceURL = "zimbraUCPresenceURL";
 
     /**
-     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * provider for the UC service
      *
      * @since ZCS 8.0.0
@@ -17498,7 +17462,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCProvider = "zimbraUCProvider";
 
     /**
-     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @since ZCS 8.0.0
@@ -17507,7 +17470,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCProviderEnabled = "zimbraUCProviderEnabled";
 
     /**
-     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @since ZCS 8.0.0
@@ -17516,7 +17478,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCServiceId = "zimbraUCServiceId";
 
     /**
-     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @since ZCS 8.0.0
@@ -17525,7 +17486,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCUsername = "zimbraUCUsername";
 
     /**
-     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * user info service URL for the UC service
      *
      * @since ZCS 8.0.0
@@ -17534,7 +17494,6 @@ public class ZAttrProvisioning {
     public static final String A_zimbraUCUserURL = "zimbraUCUserURL";
 
     /**
-     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * voicemail service URL for the UC service
      *
      * @since ZCS 8.0.0
@@ -18091,9 +18050,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraZimletVersion = "zimbraZimletVersion";
 
     /**
-     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
-     * for zookeeper servers; set to empty value to disable the use of
-     * zookeeper
+     * list of host:port for zookeeper servers; set to empty value to disable
+     * the use of zookeeper
      *
      * @since ZCS 8.5.0
      */

@@ -94,8 +94,21 @@ public class ExportAndDeleteItems extends AdminDocumentHandler {
                                 // exception happens when we try to delete a mail_item which is already in mail_item_dumpster
                                 continue;
                             }
+
+                            for (MailItem item : list) {
+                                if (item.getType() == MailItem.Type.DOCUMENT) {
+                                    mbox.purgeRevision(null, itemId, item.getVersion(), false);
+                                }
+                            }
                             mbox.delete(null, itemId, MailItem.Type.UNKNOWN, null);
                             break;
+                        } else if (!revs.contains(0)) {
+                            try {
+                                mbox.purgeRevision(null, itemId, rev, false);
+                            } catch (NoSuchItemException ex) {
+                                // exception happens when we try to delete a revision which is already in revision_dumpster
+                                continue;
+                            }
                         }
                     }
                 }

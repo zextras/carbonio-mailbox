@@ -12,9 +12,9 @@ import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Level;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -34,13 +34,15 @@ import com.zimbra.soap.admin.type.Attr;
  */
 public class GetAllConfigTest {
 
-  private static final Logger LOG = LogManager.getLogger(GetAllConfigTest.class);
-
+    private static final Logger LOG = Logger.getLogger(GetAllConfigTest.class);
+    
     private static Unmarshaller unmarshaller;
 
-  static {
-    com.zimbra.common.util.LogManager.setThisLogAndRootToLevel(LOG, Level.INFO);
-  }
+    static {
+        BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.INFO);
+        LOG.setLevel(Level.INFO);
+    }
 
     @BeforeAll
     public static void init() throws Exception {

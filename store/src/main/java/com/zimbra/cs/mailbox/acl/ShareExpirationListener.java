@@ -14,6 +14,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.ACL;
+import com.zimbra.cs.mailbox.Document;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailboxListener;
@@ -29,7 +30,8 @@ import com.zimbra.cs.session.PendingModifications.Change;
 public class ShareExpirationListener extends MailboxListener {
 
     private static final ImmutableSet<MailItem.Type> registeredTypes = ImmutableSet.of(
-            MailItem.Type.FOLDER);
+            MailItem.Type.FOLDER, MailItem.Type.DOCUMENT
+    );
 
     @Override
     public Set<MailItem.Type> registerForItemTypes() {
@@ -43,7 +45,7 @@ public class ShareExpirationListener extends MailboxListener {
         }
         if (notification.mods.created != null) {
             for (BaseItemInfo created : notification.mods.created.values()) {
-                if (created instanceof Folder) {
+                if (created instanceof Folder || created instanceof Document) {
                     MailItem mi = (MailItem) created;
                     if (mi.getACL() != null) {
                         scheduleExpireAccessOpIfReq(mi);
@@ -53,7 +55,7 @@ public class ShareExpirationListener extends MailboxListener {
         }
         if (notification.mods.modified != null) {
             for (Change change : notification.mods.modified.values()) {
-                if ((change.what instanceof Folder) &&
+                if ((change.what instanceof Folder || change.what instanceof Document) &&
                         (change.why & Change.ACL) != 0) {
                     scheduleExpireAccessOpIfReq((MailItem) change.what);
                 }
