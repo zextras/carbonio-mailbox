@@ -394,8 +394,6 @@ public final class LC {
   public static final KnownKey ldap_cache_right_maxage = KnownKey.newKey(15);
   public static final KnownKey ldap_cache_server_maxsize = KnownKey.newKey(100);
   public static final KnownKey ldap_cache_server_maxage = KnownKey.newKey(15);
-  public static final KnownKey ldap_cache_ucservice_maxsize = KnownKey.newKey(100);
-  public static final KnownKey ldap_cache_ucservice_maxage = KnownKey.newKey(15);
 
   @Supported public static final KnownKey ldap_cache_timezone_maxsize = KnownKey.newKey(100);
   public static final KnownKey ldap_cache_xmppcomponent_maxsize = KnownKey.newKey(100);
@@ -506,7 +504,9 @@ public final class LC {
               + " -XX:SoftRefLRUPolicyMSPerMB=1 -XX:+UnlockExperimentalVMOptions"
               + " -XX:G1NewSizePercent=15 -XX:G1MaxNewSizePercent=45 -XX:-OmitStackTraceInFastThrow"
               + " -verbose:gc"
-              + " -Xlog:gc*=info,safepoint=info:file=/opt/zextras/log/gc.log:time:filecount=20,filesize=10m");
+              + " -Xlog:gc*=info,safepoint=info:file=/opt/zextras/log/gc.log:time:filecount=20,filesize=10m"
+              + " -Djava.security.egd=file:/dev/./urandom --add-opens"
+              + " java.base/java.lang=ALL-UNNAMED");
 
   @Supported
   public static final KnownKey mailboxd_pidfile =
@@ -691,8 +691,10 @@ public final class LC {
   public static final KnownKey zimbra_class_provisioning =
       KnownKey.newKey("com.zimbra.cs.account.ldap.LdapProvisioning");
 
+  @Deprecated(since = "23.9.0", forRemoval = true)
   public static final KnownKey zimbra_class_accessmanager =
       KnownKey.newKey("com.zimbra.cs.account.accesscontrol.ACLAccessManager");
+
   public static final KnownKey zimbra_class_mboxmanager =
       KnownKey.newKey("com.zimbra.cs.mailbox.MailboxManager");
   public static final KnownKey zimbra_class_database = KnownKey.newKey("com.zimbra.cs.db.MariaDB");
@@ -781,6 +783,7 @@ public final class LC {
   public static final KnownKey zimbra_csv_formatter_disable_timeout = KnownKey.newKey(true);
   public static final KnownKey zimbra_archive_formatter_search_chunk_size = KnownKey.newKey(4096);
   public static final KnownKey zimbra_gal_sync_disable_timeout = KnownKey.newKey(true);
+
   // for bug 79865
   /**
    * The max idle time for an HTTP DAV Method in milliseconds. Timeout 0 implies an infinite timeout
@@ -823,6 +826,7 @@ public final class LC {
    * ({@code com.sun.mail.smtp.SMTPTransport}).
    */
   public static final KnownKey javamail_zsmtp = KnownKey.newKey(true);
+
   /**
    * {@code true} to use Zimbra's MIME parser implementation ({@code
    * com.zimbra.common.mime.shim.JavaMailMimeMessage}), otherwise use JavaMail's default
@@ -1036,8 +1040,6 @@ public final class LC {
   public static final KnownKey freebusy_exchange_cn3 = KnownKey.newKey(null);
   public static final KnownKey freebusy_disable_nodata_status = KnownKey.newKey(false);
 
-  public static final KnownKey notes_enabled = KnownKey.newKey(false);
-
   public static final KnownKey zimbra_lmtp_validate_messages = KnownKey.newKey(true);
   public static final KnownKey zimbra_lmtp_max_line_length = KnownKey.newKey(10240);
 
@@ -1137,8 +1139,6 @@ public final class LC {
   public static final KnownKey ldap_dit_base_dn_mime = KnownKey.newKey("");
   // LDAP Custom DIT base DN for server entries
   public static final KnownKey ldap_dit_base_dn_server = KnownKey.newKey("");
-  // LDAP Custom DIT base DN for ucservice entries
-  public static final KnownKey ldap_dit_base_dn_ucservice = KnownKey.newKey("");
   // LDAP Custom DIT base DN for share locator entries
   public static final KnownKey ldap_dit_base_dn_share_locator = KnownKey.newKey("");
   // LDAP Custom DIT base DN for xmpp component entries
@@ -1157,8 +1157,6 @@ public final class LC {
   public static final KnownKey ldap_dit_naming_rdn_attr_mime = KnownKey.newKey("");
   // LDAP Custom DIT RDN attr for server entries
   public static final KnownKey ldap_dit_naming_rdn_attr_server = KnownKey.newKey("");
-  // LDAP Custom DIT RDN attr for ucservice entries
-  public static final KnownKey ldap_dit_naming_rdn_attr_ucservice = KnownKey.newKey("");
   public static final KnownKey ldap_dit_naming_rdn_attr_user = KnownKey.newKey("");
   public static final KnownKey ldap_dit_naming_rdn_attr_share_locator = KnownKey.newKey("");
   // LDAP Custom DIT RDN attr for xmpp component entries
@@ -1298,12 +1296,6 @@ public final class LC {
 
   @Supported public static final KnownKey zimbra_listeners_maxsize = KnownKey.newKey(5);
 
-  public enum PUBLIC_SHARE_VISIBILITY {
-    samePrimaryDomain,
-    all,
-    none
-  };
-
   /**
    * Added for Bug 99825 which relates to the security implications of public shares being visible
    * to users in different domains. If nothing else, it provided a means for harvesting details of
@@ -1324,18 +1316,13 @@ public final class LC {
   public static final KnownKey triton_store_url = KnownKey.newKey("");
   public static final KnownKey triton_hash_type = KnownKey.newKey("SHA0");
   public static final KnownKey triton_upload_buffer_size = KnownKey.newKey(25000);
-
   public static final KnownKey uncompressed_cache_min_lifetime =
       KnownKey.newKey(Constants.MILLIS_PER_MINUTE);
-
   public static final KnownKey check_dl_membership_enabled = KnownKey.newKey(true);
-
   public static final KnownKey conversation_ignore_maillist_prefix = KnownKey.newKey(true);
-
   // EWS web service
   public static final KnownKey ews_service_wsdl_location =
       KnownKey.newKey("/opt/zextras/lib/ext/zimbraews/");
-
   public static final KnownKey zimbra_ews_autodiscover_use_service_url = KnownKey.newKey(false);
 
   @Supported
@@ -1350,74 +1337,41 @@ public final class LC {
 
   // Remote IMAP
   @Reloadable public static final KnownKey imap_always_use_remote_store = KnownKey.newKey(false);
-
   // owasp handler
   public static final KnownKey zimbra_use_owasp_html_sanitizer = KnownKey.newKey(true);
-
   // file content type blacklist
   public static final KnownKey zimbra_file_content_type_blacklist =
       KnownKey.newKey("application/x-ms*");
-
   public static final KnownKey enable_delegated_admin_ldap_access = KnownKey.newKey(true);
-
-  // OAuth2 Social
-  public static final KnownKey zm_oauth_classes_handlers_yahoo =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.YahooOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_google =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.GoogleOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_facebook =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.FacebookOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_outlook =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.OutlookOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_twitter =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.TwitterOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_slack =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.SlackOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_zoom =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.ZoomOAuth2Handler");
-  public static final KnownKey zm_oauth_classes_handlers_dropbox =
-      KnownKey.newKey("com.zimbra.oauth.handlers.impl.DropboxOAuth2Handler");
-
   // alias login
   public static final KnownKey alias_login_enabled = KnownKey.newKey(true);
-
   // Feed Manager comma-separated blacklist. addresses can be CIDR notation, or single ip. no
   // wild-cards (default blacklist private networks)
   public static final KnownKey zimbra_feed_manager_blacklist =
       KnownKey.newKey("10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,fd00::/8");
-
   // Feed Manager comma-separated whitelist (exceptions to the blacklist). addresses can be CIDR
   // notation, or single ip. no wild-cards
   public static final KnownKey zimbra_feed_manager_whitelist = KnownKey.newKey("");
-
   // Zimbra valid class list to de-serialize
   public static final KnownKey zimbra_deserialize_classes = KnownKey.newKey("");
-
   // XML 1.0 invalid characters regex pattern
   public static final KnownKey xml_invalid_chars_regex =
       KnownKey.newKey("\\&\\#(?:x([0-9a-fA-F]+)|([0-9]+))\\;");
-
   // to switch to Tika com.zimbra.cs.convert.TikaExtractionClient
   public static final KnownKey attachment_extraction_client_class =
       KnownKey.newKey("com.zimbra.cs.convert.LegacyConverterClient");
-
   // list file for blocking common passwords
   public static final KnownKey common_passwords_txt =
       KnownKey.newKey("${zimbra_home}/conf/common-passwords.txt");
-
   // imap folder pagination size
   public static final KnownKey zimbra_imap_folder_pagination_size = KnownKey.newKey(2000);
-
   // imap folder pagination enabled
   public static final KnownKey zimbra_imap_folder_pagination_enabled = KnownKey.newKey(false);
-
   // imap different message size than postfix mta ( useful for import )
   public static final KnownKey imap_max_message_size = KnownKey.newKey(null);
-
   // unsubscribe folder creation enabled
   public static final KnownKey zimbra_feature_safe_unsubscribe_folder_enabled =
       KnownKey.newKey(false);
-
   // wsdl use public service hostname
   public static final KnownKey wsdl_use_public_service_hostname = KnownKey.newKey(true);
 
@@ -1450,25 +1404,6 @@ public final class LC {
       }
     }
   }
-
-  /**
-   * Used to apply the reloadable flag to a KnownKey in LC
-   *
-   * @author jpowers
-   */
-  @Target({ElementType.FIELD})
-  @Retention(RetentionPolicy.RUNTIME)
-  public @interface Reloadable {}
-
-  /**
-   * This annotation represents a supported local config setting. To make a new setting show up in
-   * the zmlocalconfig -i command, use this annotation
-   *
-   * @author jpowers
-   */
-  @Target({ElementType.FIELD})
-  @Retention(RetentionPolicy.RUNTIME)
-  public @interface Supported {}
 
   public static PUBLIC_SHARE_VISIBILITY getPublicShareAdvertisingScope() {
     String value = LC.public_share_advertising_scope.value();
@@ -1512,4 +1447,29 @@ public final class LC {
     // This method is there to guarantee static initializer of this
     // class is run.
   }
+
+  public enum PUBLIC_SHARE_VISIBILITY {
+    samePrimaryDomain,
+    all,
+    none
+  }
+
+  /**
+   * Used to apply the reloadable flag to a KnownKey in LC
+   *
+   * @author jpowers
+   */
+  @Target({ElementType.FIELD})
+  @Retention(RetentionPolicy.RUNTIME)
+  public @interface Reloadable {}
+
+  /**
+   * This annotation represents a supported local config setting. To make a new setting show up in
+   * the zmlocalconfig -i command, use this annotation
+   *
+   * @author jpowers
+   */
+  @Target({ElementType.FIELD})
+  @Retention(RetentionPolicy.RUNTIME)
+  public @interface Supported {}
 }

@@ -11,9 +11,9 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,13 +36,11 @@ import com.zimbra.soap.mail.type.MsgToSend;
 public final class SendMsgRequestTest {
      public String testName;
 
-    private static final Logger LOG = Logger.getLogger(SendMsgRequestTest.class);
+  private static final Logger LOG = LogManager.getLogger(SendMsgRequestTest.class);
 
-    static {
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.INFO);
-        LOG.setLevel(Level.INFO);
-    }
+  static {
+    com.zimbra.common.util.LogManager.setThisLogAndRootToLevel(LOG, Level.INFO);
+  }
 
     private void logInfo(String format, Object ... objects) {
         if (LOG.isInfoEnabled()) {

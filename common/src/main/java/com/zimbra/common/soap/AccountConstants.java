@@ -29,34 +29,6 @@ public class AccountConstants {
   public static final String E_CLIENT_INFO_RESPONSE = "ClientInfoResponse";
   public static final String E_END_SESSION_REQUEST = "EndSessionRequest";
   public static final String E_END_SESSION_RESPONSE = "EndSessionResponse";
-  public static final String E_ENABLE_TWO_FACTOR_AUTH_REQUEST = "EnableTwoFactorAuthRequest";
-  public static final String E_ENABLE_TWO_FACTOR_AUTH_RESPONSE = "EnableTwoFactorAuthResponse";
-  public static final String E_DISABLE_TWO_FACTOR_AUTH_REQUEST = "DisableTwoFactorAuthRequest";
-  public static final String E_DISABLE_TWO_FACTOR_AUTH_RESPONSE = "DisableTwoFactorAuthResponse";
-  public static final String E_CREATE_APP_SPECIFIC_PASSWORD_REQUEST =
-      "CreateAppSpecificPasswordRequest";
-  public static final String E_CREATE_APP_SPECIFIC_PASSWORD_RESPONSE =
-      "CreateAppSpecificPasswordResponse";
-  public static final String E_REVOKE_APP_SPECIFIC_PASSWORD_REQUEST =
-      "RevokeAppSpecificPasswordRequest";
-  public static final String E_REVOKE_APP_SPECIFIC_PASSWORD_RESPONSE =
-      "RevokeAppSpecificPasswordResponse";
-  public static final String E_GET_APP_SPECIFIC_PASSWORDS_REQUEST =
-      "GetAppSpecificPasswordsRequest";
-  public static final String E_GET_APP_SPECIFIC_PASSWORDS_RESPONSE =
-      "GetAppSpecificPasswordsResponse";
-  public static final String E_GET_SCRATCH_CODES_REQUEST = "GetScratchCodesRequest";
-  public static final String E_GET_SCRATCH_CODES_RESPONSE = "GetScratchCodesResponse";
-  public static final String E_GENERATE_SCRATCH_CODES_REQUEST = "GenerateScratchCodesRequest";
-  public static final String E_GENERATE_SCRATCH_CODES_RESPONSE = "GenerateScratchCodesResponse";
-  public static final String E_GET_TRUSTED_DEVICES_REQUEST = "GetTrustedDevicesRequest";
-  public static final String E_GET_TRUSTED_DEVICES_RESPONSE = "GetTrustedDevicesResponse";
-  public static final String E_REVOKE_TRUSTED_DEVICE_REQUEST = "RevokeTrustedDeviceRequest";
-  public static final String E_REVOKE_TRUSTED_DEVICE_RESPONSE = "RevokeTrustedDeviceResponse";
-  public static final String E_REVOKE_OTHER_TRUSTED_DEVICES_REQUEST =
-      "RevokeOtherTrustedDevicesRequest";
-  public static final String E_REVOKE_OTHER_TRUSTED_DEVICES_RESPONSE =
-      "RevokeOtherTrustedDevicesResponse";
   public static final String E_GET_PREFS_REQUEST = "GetPrefsRequest";
   public static final String E_GET_PREFS_RESPONSE = "GetPrefsResponse";
   public static final String E_GET_INFO_REQUEST = "GetInfoRequest";
@@ -67,8 +39,6 @@ public class AccountConstants {
   public static final String E_GET_ALL_LOCALES_RESPONSE = "GetAllLocalesResponse";
   public static final String E_GET_AVAILABLE_LOCALES_REQUEST = "GetAvailableLocalesRequest";
   public static final String E_GET_AVAILABLE_LOCALES_RESPONSE = "GetAvailableLocalesResponse";
-  public static final String E_GET_AVAILABLE_SKINS_REQUEST = "GetAvailableSkinsRequest";
-  public static final String E_GET_AVAILABLE_SKINS_RESPONSE = "GetAvailableSkinsResponse";
   public static final String E_GET_AVAILABLE_CSV_FORMATS_REQUEST = "GetAvailableCsvFormatsRequest";
   public static final String E_GET_AVAILABLE_CSV_FORMATS_RESPONSE =
       "GetAvailableCsvFormatsResponse";
@@ -152,28 +122,8 @@ public class AccountConstants {
   public static final String E_GET_SMIME_PUBLIC_CERTS_REQUEST = "GetSMIMEPublicCertsRequest";
   public static final String E_GET_SMIME_PUBLIC_CERTS_RESPONSE = "GetSMIMEPublicCertsResponse";
 
-  // Zimbra Mobile Gateway
-  public static final String E_BOOTSTRAP_MOBILE_GATEWAY_APP_REQUEST =
-      "BootstrapMobileGatewayAppRequest";
-  public static final String E_BOOTSTRAP_MOBILE_GATEWAY_APP_RESPONSE =
-      "BootstrapMobileGatewayAppResponse";
-  public static final String E_RENEW_MOBILE_GATEWAY_APP_TOKEN_REQUEST =
-      "RenewMobileGatewayAppTokenRequest";
-  public static final String E_RENEW_MOBILE_GATEWAY_APP_TOKEN_RESPONSE =
-      "RenewMobileGatewayAppTokenResponse";
-  public static final String E_REGISTER_MOBILE_GATEWAY_APP_REQUEST =
-      "RegisterMobileGatewayAppRequest";
-  public static final String E_REGISTER_MOBILE_GATEWAY_APP_RESPONSE =
-      "RegisterMobileGatewayAppResponse";
   public static final String E_GET_GCM_SENDER_ID_REQUEST = "GetGcmSenderIdRequest";
   public static final String E_GET_GCM_SENDER_ID_RESPONSE = "GetGcmSenderIdResponse";
-
-  // OAuth
-  public static final String E_OAUTH_CONSUMER = "OAuthConsumer";
-  public static final String E_GET_OAUTH_CONSUMERS_REQUEST = "GetOAuthConsumersRequest";
-  public static final String E_GET_OAUTH_CONSUMERS_RESPONSE = "GetOAuthConsumersResponse";
-  public static final String E_REVOKE_OAUTH_CONSUMER_REQUEST = "RevokeOAuthConsumerRequest";
-  public static final String E_REVOKE_OAUTH_CONSUMER_RESPONSE = "RevokeOAuthConsumerResponse";
 
   // AddressList
   public static final String E_GET_ALL_ADDRESS_LISTS_REQUEST = "GetAllAddressListsRequest";
@@ -202,46 +152,6 @@ public class AccountConstants {
   public static final QName CLIENT_INFO_RESPONSE = QName.get(E_CLIENT_INFO_RESPONSE, NAMESPACE);
   public static final QName END_SESSION_REQUEST = QName.get(E_END_SESSION_REQUEST, NAMESPACE);
   public static final QName END_SESSION_RESPONSE = QName.get(E_END_SESSION_RESPONSE, NAMESPACE);
-  public static final QName ENABLE_TWO_FACTOR_AUTH_REQUEST =
-      QName.get(E_ENABLE_TWO_FACTOR_AUTH_REQUEST, NAMESPACE);
-  public static final QName ENABLE_TWO_FACTOR_AUTH_RESPONSE =
-      QName.get(E_ENABLE_TWO_FACTOR_AUTH_RESPONSE, NAMESPACE);
-  public static final QName DISABLE_TWO_FACTOR_AUTH_REQUEST =
-      QName.get(E_DISABLE_TWO_FACTOR_AUTH_REQUEST, NAMESPACE);
-  public static final QName DISABLE_TWO_FACTOR_AUTH_RESPONSE =
-      QName.get(E_DISABLE_TWO_FACTOR_AUTH_RESPONSE, NAMESPACE);
-  public static final QName CREATE_APP_SPECIFIC_PASSWORD_REQUEST =
-      QName.get(E_CREATE_APP_SPECIFIC_PASSWORD_REQUEST, NAMESPACE);
-  public static final QName CREATE_APP_SPECIFIC_PASSWORD_RESPONSE =
-      QName.get(E_CREATE_APP_SPECIFIC_PASSWORD_RESPONSE, NAMESPACE);
-  public static final QName REVOKE_APP_SPECIFIC_PASSWORD_REQUEST =
-      QName.get(E_REVOKE_APP_SPECIFIC_PASSWORD_REQUEST, NAMESPACE);
-  public static final QName REVOKE_APP_SPECIFIC_PASSWORD_RESPONSE =
-      QName.get(E_REVOKE_APP_SPECIFIC_PASSWORD_RESPONSE, NAMESPACE);
-  public static final QName GET_APP_SPECIFIC_PASSWORDS_REQUEST =
-      QName.get(E_GET_APP_SPECIFIC_PASSWORDS_REQUEST, NAMESPACE);
-  public static final QName GET_APP_SPECIFIC_PASSWORDS_RESPONSE =
-      QName.get(E_GET_APP_SPECIFIC_PASSWORDS_RESPONSE, NAMESPACE);
-  public static final QName GET_SCRATCH_CODES_REQUEST =
-      QName.get(E_GET_SCRATCH_CODES_REQUEST, NAMESPACE);
-  public static final QName GET_SCRATCH_CODES_RESPONSE =
-      QName.get(E_GET_SCRATCH_CODES_RESPONSE, NAMESPACE);
-  public static final QName GENERATE_SCRATCH_CODES_REQUEST =
-      QName.get(E_GENERATE_SCRATCH_CODES_REQUEST, NAMESPACE);
-  public static final QName GENERATE_SCRATCH_CODES_RESPONSE =
-      QName.get(E_GENERATE_SCRATCH_CODES_RESPONSE, NAMESPACE);
-  public static final QName GET_TRUSTED_DEVICES_REQUEST =
-      QName.get(E_GET_TRUSTED_DEVICES_REQUEST, NAMESPACE);
-  public static final QName GET_TRUSTED_DEVICES_RESPONSE =
-      QName.get(E_GET_TRUSTED_DEVICES_RESPONSE, NAMESPACE);
-  public static final QName REVOKE_TRUSTED_DEVICE_REQUEST =
-      QName.get(E_REVOKE_TRUSTED_DEVICE_REQUEST, NAMESPACE);
-  public static final QName REVOKE_TRUSTED_DEVICE_RESPONSE =
-      QName.get(E_REVOKE_TRUSTED_DEVICE_RESPONSE, NAMESPACE);
-  public static final QName REVOKE_OTHER_TRUSTED_DEVICES_REQUEST =
-      QName.get(E_REVOKE_OTHER_TRUSTED_DEVICES_REQUEST, NAMESPACE);
-  public static final QName REVOKE_OTHER_TRUSTED_DEVICES_RESPONSE =
-      QName.get(E_REVOKE_OTHER_TRUSTED_DEVICES_RESPONSE, NAMESPACE);
 
   // prefs
   public static final QName GET_PREFS_REQUEST = QName.get(E_GET_PREFS_REQUEST, NAMESPACE);
@@ -260,10 +170,6 @@ public class AccountConstants {
       QName.get(E_GET_AVAILABLE_LOCALES_REQUEST, NAMESPACE);
   public static final QName GET_AVAILABLE_LOCALES_RESPONSE =
       QName.get(E_GET_AVAILABLE_LOCALES_RESPONSE, NAMESPACE);
-  public static final QName GET_AVAILABLE_SKINS_REQUEST =
-      QName.get(E_GET_AVAILABLE_SKINS_REQUEST, NAMESPACE);
-  public static final QName GET_AVAILABLE_SKINS_RESPONSE =
-      QName.get(E_GET_AVAILABLE_SKINS_RESPONSE, NAMESPACE);
   public static final QName GET_AVAILABLE_CSV_FORMATS_REQUEST =
       QName.get(E_GET_AVAILABLE_CSV_FORMATS_REQUEST, NAMESPACE);
   public static final QName GET_AVAILABLE_CSV_FORMATS_RESPONSE =
@@ -386,34 +292,6 @@ public class AccountConstants {
   public static final QName GET_SMIME_PUBLIC_CERTS_RESPONSE =
       QName.get(E_GET_SMIME_PUBLIC_CERTS_RESPONSE, NAMESPACE);
 
-  // Zimbra Mobile Gateway
-  public static final QName BOOTSTRAP_MOBILE_GATEWAY_APP_REQUEST =
-      QName.get(E_BOOTSTRAP_MOBILE_GATEWAY_APP_REQUEST, NAMESPACE);
-  public static final QName BOOTSTRAP_MOBILE_GATEWAY_APP_RESPONSE =
-      QName.get(E_BOOTSTRAP_MOBILE_GATEWAY_APP_RESPONSE, NAMESPACE);
-  public static final QName RENEW_MOBILE_GATEWAY_APP_TOKEN_REQUEST =
-      QName.get(E_RENEW_MOBILE_GATEWAY_APP_TOKEN_REQUEST, NAMESPACE);
-  public static final QName RENEW_MOBILE_GATEWAY_APP_TOKEN_RESPONSE =
-      QName.get(E_RENEW_MOBILE_GATEWAY_APP_TOKEN_RESPONSE, NAMESPACE);
-  public static final QName REGISTER_MOBILE_GATEWAY_APP_REQUEST =
-      QName.get(E_REGISTER_MOBILE_GATEWAY_APP_REQUEST, NAMESPACE);
-  public static final QName REGISTER_MOBILE_GATEWAY_APP_RESPONSE =
-      QName.get(E_REGISTER_MOBILE_GATEWAY_APP_RESPONSE, NAMESPACE);
-  public static final QName GET_GCM_SENDER_ID_REQUEST =
-      QName.get(E_GET_GCM_SENDER_ID_REQUEST, NAMESPACE);
-  public static final QName GET_GCM_SENDER_ID_RESPONSE =
-      QName.get(E_GET_GCM_SENDER_ID_RESPONSE, NAMESPACE);
-
-  // OAuth
-  public static final QName GET_OAUTH_CONSUMERS_REQUEST =
-      QName.get(E_GET_OAUTH_CONSUMERS_REQUEST, NAMESPACE);
-  public static final QName GET_OAUTH_CONSUMERS_RESPONSE =
-      QName.get(E_GET_OAUTH_CONSUMERS_RESPONSE, NAMESPACE);
-  public static final QName REVOKE_OAUTH_CONSUMER_REQUEST =
-      QName.get(E_REVOKE_OAUTH_CONSUMER_REQUEST, NAMESPACE);
-  public static final QName REVOKE_OAUTH_CONSUMER_RESPONSE =
-      QName.get(E_REVOKE_OAUTH_CONSUMER_RESPONSE, NAMESPACE);
-
   // HAB
   public static final String E_GET_HAB_REQUEST = "GetHABRequest";
   public static final String E_GET_HAB_RESPONSE = "GetHABResponse";
@@ -430,7 +308,6 @@ public class AccountConstants {
   public static final String E_ALIAS = "alias";
   public static final String E_ADMIN_DELEGATED = "adminDelegated";
   public static final String E_AUTH_TOKEN = "authToken";
-  public static final String E_TRUSTED_TOKEN = "trustedToken";
   public static final String E_CRUMB = "crumb";
   public static final String E_REFERRAL = "refer";
   public static final String E_LIFETIME = "lifetime";
@@ -473,7 +350,6 @@ public class AccountConstants {
   public static final String E_SOAP_URL = "soapURL";
   public static final String E_ADMIN_URL = "adminURL";
   public static final String E_PUBLIC_URL = "publicURL";
-  public static final String E_COMMUNITY_URL = "communityURL";
   public static final String E_CHANGE_PASSWORD_URL = "changePasswordURL";
   public static final String E_PREAUTH = "preauth";
   public static final String E_A = "a";
@@ -483,7 +359,6 @@ public class AccountConstants {
   public static final String E_ENTRY_SEARCH_FILTER_SINGLECOND = "cond";
   public static final String E_LOCALE = "locale";
   public static final String E_VIRTUAL_HOST = "virtualHost";
-  public static final String E_SKIN = "skin";
   public static final String E_HAB_ROOTS = "habRoots";
   public static final String E_HAB = "hab";
   public static final String E_IDENTITIES = "identities";
@@ -496,7 +371,6 @@ public class AccountConstants {
   public static final String E_CHILD_ACCOUNTS = "childAccounts";
   public static final String E_CHILD_ACCOUNT = "childAccount";
   public static final String E_CONTENT = "content";
-  public static final String E_REQUESTED_SKIN = "requestedSkin";
   public static final String E_REST = "rest";
   public static final String E_CSV = "csv";
   public static final String E_COS = "cos";
@@ -646,46 +520,6 @@ public class AccountConstants {
   public static final String A_LOG_OFF = "logoff";
   public static final String A_CLEAR_ALL_SOAP_SESSIONS = "all";
   public static final String A_EXCLUDE_CURRENT_SESSION = "excludeCurrent";
-
-  // Zimbra Mobile Gateway
-  public static final String E_APP_ID = "appId";
-  public static final String E_APP_KEY = "appKey";
-  public static final String A_WANT_APP_TOKEN = "wantAppToken";
-  public static final String E_ZMG_DEVICE = "zmgDevice";
-  public static final String A_DEVICE_ID = "appId";
-  public static final String A_REGISTRATION_ID = "registrationId";
-  public static final String A_PUSH_PROVIDER = "pushProvider";
-  public static final String A_OS_NAME = "osName";
-  public static final String A_OS_VERSION = "osVersion";
-  public static final String A_MAX_PAYLOAD_SIZE = "maxPayloadSize";
-  public static final String E_GCM_SENDER_ID = "gcmSenderId";
-  public static final String A_ZMG_PROXY = "zmgProxy";
-
-  // two-factor auth attributes
-  public static final String E_TWO_FACTOR_CODE = "twoFactorCode";
-  public static final String E_TWO_FACTOR_SCRATCH_CODE = "scratchCode";
-  public static final String E_TWO_FACTOR_SCRATCH_CODES = "scratchCodes";
-  public static final String A_TRUSTED_DEVICE = "deviceTrusted";
-  public static final String E_TWO_FACTOR_CREDENTIALS = "credentials";
-  public static final String E_TWO_FACTOR_SECRET = "secret";
-  public static final String E_APP_SPECIFIC_PASSWORD_DATA = "passwordData";
-  public static final String E_APP_SPECIFIC_PASSWORDS = "appSpecificPasswords";
-  public static final String E_MAX_APP_PASSWORDS = "maxAppPasswords";
-  public static final String A_APP_NAME = "appName";
-  public static final String A_DATE_CREATED = "created";
-  public static final String A_DATE_LAST_USED = "lastUsed";
-  public static final String A_THIS_DEVICE_TRUSTED = "thisDeviceTrusted";
-  public static final String A_NUM_OTHER_TRUSTED_DEVICES = "nOtherDevices";
-  public static final String E_DEVICE_ID = "deviceId";
-  public static final String A_GENERATE_DEVICE_ID = "generateDeviceId";
-  public static final String E_TWO_FACTOR_AUTH_REQUIRED = "twoFactorAuthRequired";
-  public static final String E_TRUSTED_DEVICES_ENABLED = "trustedDevicesEnabled";
-
-  // oauth consumer attributes
-  public static final String A_ACCESS_TOKEN = "accessToken";
-  public static final String A_CONSUMER_APP_NAME = "appName";
-  public static final String A_APPROVED_ON = "approvedOn";
-  public static final String A_CONSUMER_DEVICE = "device";
 
   // ext user prov URL metadata constants
   public static final String P_ACCOUNT_ID = "aid";

@@ -26,7 +26,6 @@ import com.zimbra.client.event.ZCreateMessageEvent;
 import com.zimbra.client.event.ZCreateMountpointEvent;
 import com.zimbra.client.event.ZCreateSearchFolderEvent;
 import com.zimbra.client.event.ZCreateTagEvent;
-import com.zimbra.client.event.ZCreateTaskEvent;
 import com.zimbra.client.event.ZDeleteEvent;
 import com.zimbra.client.event.ZEventHandler;
 import com.zimbra.client.event.ZModifyAppointmentEvent;
@@ -39,15 +38,10 @@ import com.zimbra.client.event.ZModifyMessageEvent;
 import com.zimbra.client.event.ZModifyMountpointEvent;
 import com.zimbra.client.event.ZModifySearchFolderEvent;
 import com.zimbra.client.event.ZModifyTagEvent;
-import com.zimbra.client.event.ZModifyTaskEvent;
-import com.zimbra.client.event.ZModifyVoiceMailItemEvent;
-import com.zimbra.client.event.ZModifyVoiceMailItemFolderEvent;
 import com.zimbra.client.event.ZRefreshEvent;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.auth.ZAuthToken;
-import com.zimbra.common.auth.twofactor.TOTPAuthenticator;
-import com.zimbra.common.auth.twofactor.TwoFactorOptions.Encoding;
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.httpclient.InputStreamRequestHttpRetryHandler;
 import com.zimbra.common.localconfig.LC;
@@ -75,7 +69,6 @@ import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.soap.SoapTransport;
 import com.zimbra.common.soap.SoapTransport.NotificationFormat;
-import com.zimbra.common.soap.VoiceConstants;
 import com.zimbra.common.soap.ZimbraNamespace;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Constants;
@@ -92,10 +85,6 @@ import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.account.message.AuthResponse;
 import com.zimbra.soap.account.message.ChangePasswordRequest;
 import com.zimbra.soap.account.message.ChangePasswordResponse;
-import com.zimbra.soap.account.message.DisableTwoFactorAuthRequest;
-import com.zimbra.soap.account.message.DisableTwoFactorAuthResponse;
-import com.zimbra.soap.account.message.EnableTwoFactorAuthRequest;
-import com.zimbra.soap.account.message.EnableTwoFactorAuthResponse;
 import com.zimbra.soap.account.message.EndSessionRequest;
 import com.zimbra.soap.account.message.GetIdentitiesRequest;
 import com.zimbra.soap.account.message.GetIdentitiesResponse;
@@ -253,8 +242,10 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   /** include items in the Trash folder */
   public static final String TC_INCLUDE_TRASH = "t";
+
   /** include items in the Spam/Junk folder */
   public static final String TC_INCLUDE_JUNK = "j";
+
   /** include items in the Sent folder */
   public static final String TC_INCLUDE_SENT = "s";
 
@@ -284,8 +275,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   private ZFilterRules outgoingRules;
   private ZAuthResult mAuthResult;
   private String mClientIp;
-  private List<ZPhoneAccount> mPhoneAccounts;
-  private Map<String, ZPhoneAccount> mPhoneAccountMap;
   private Element mVoiceStorePrincipal;
   private long mSize;
   private boolean mNoTagCache;
@@ -421,15 +410,8 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     private ZEventHandler mHandler;
     private List<String> mAttrs;
     private List<String> mPrefs;
-    private String mRequestedSkin;
     private boolean mCsrfSupported; // Used by AuthRequest
     private Map<String, String> mCustomHeaders;
-    private String mTwoFactorCode;
-    private boolean mAppSpecificPasswordsSupported;
-    private boolean mTrustedDevice;
-    private String mTrustedDeviceToken;
-    private String mDeviceId;
-    private boolean mGenerateDeviceId;
     private SoapTransport.NotificationFormat notificationFormat =
         SoapTransport.NotificationFormat.DEFAULT;
     private boolean alwaysRefreshFolders;
@@ -655,6 +637,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     public boolean getAuthAuthToken() {
       return mAuthAuthToken;
     }
+
     /**
      * @param authAuthToken set to true if you want to send an AuthRequest to valid the auth token
      */
@@ -690,75 +673,12 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       return this;
     }
 
-    public String getRequestedSkin() {
-      return mRequestedSkin;
-    }
-
-    public Options setRequestedSkin(String skin) {
-      mRequestedSkin = skin;
-      return this;
-    }
-
     public boolean getCsrfSupported() {
       return mCsrfSupported;
     }
 
     public Options setCsrfSupported(boolean csrfSupported) {
       mCsrfSupported = csrfSupported;
-      return this;
-    }
-
-    public String getTwoFactorCode() {
-      return mTwoFactorCode;
-    }
-
-    public Options setTwoFactorCode(String code) {
-      mTwoFactorCode = code;
-      return this;
-    }
-
-    public boolean getAppSpecificPasswordsSupported() {
-      return mAppSpecificPasswordsSupported;
-    }
-
-    public Options setAppSpecificPasswordsSupported(boolean bool) {
-      mAppSpecificPasswordsSupported = bool;
-      return this;
-    }
-
-    public boolean getTrustedDevice() {
-      return mTrustedDevice;
-    }
-
-    public Options setTrustedDevice(boolean bool) {
-      mTrustedDevice = bool;
-      return this;
-    }
-
-    public String getTrustedDeviceToken() {
-      return mTrustedDeviceToken;
-    }
-
-    public Options setTrustedDeviceToken(String token) {
-      mTrustedDeviceToken = token;
-      return this;
-    }
-
-    public String getDeviceId() {
-      return mDeviceId;
-    }
-
-    public Options setDeviceId(String deviceId) {
-      mDeviceId = deviceId;
-      return this;
-    }
-
-    public boolean getGenerateDeviceId() {
-      return mGenerateDeviceId;
-    }
-
-    public Options setGenerateDeviceId(boolean bool) {
-      mGenerateDeviceId = bool;
       return this;
     }
 
@@ -1038,25 +958,10 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         new AccountSelector(com.zimbra.soap.type.AccountBy.name, options.getAccount());
     AuthRequest auth = new AuthRequest(account, password);
     auth.setPassword(password);
-    auth.setTwoFactorCode(options.getTwoFactorCode());
     auth.setVirtualHost(options.getVirtualHost());
-    auth.setRequestedSkin(options.getRequestedSkin());
     auth.setCsrfSupported(options.getCsrfSupported());
-    auth.setDeviceTrusted(options.getTrustedDevice());
-    if (options.getTrustedDevice()) {
-      auth.setDeviceTrusted(true);
-    }
     if (options.getAuthToken() != null) {
       auth.setAuthToken(new AuthToken(options.getAuthToken().getValue(), false));
-    }
-    if (options.getDeviceId() != null) {
-      auth.setDeviceId(options.getDeviceId());
-    }
-    if (options.getTrustedDeviceToken() != null) {
-      auth.setTrustedDeviceToken(options.getTrustedDeviceToken());
-    }
-    if (options.getGenerateDeviceId()) {
-      auth.setGenerateDeviceId(true);
     }
     addAttrsAndPrefs(auth, options);
 
@@ -1072,10 +977,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     AuthRequest req = new AuthRequest();
     ZAuthToken zat = options.getAuthToken(); // cannot be null here
     req.setAuthToken(new AuthToken(zat.getValue(), false));
-    req.setTwoFactorCode(options.getTwoFactorCode());
-    req.setRequestedSkin(options.getRequestedSkin());
     req.setCsrfSupported(options.getCsrfSupported());
-    req.setDeviceTrusted(options.getTrustedDevice());
     addAttrsAndPrefs(req, options);
 
     invokeJaxb(req, (r) -> handleAuthResponse((AuthResponse) r, options));
@@ -1091,7 +993,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     mAuthResult = authResult;
     initCsrfToken(mAuthResult.getCsrfToken());
     initAuthToken(mAuthResult.getAuthToken());
-    initTrustedToken(mAuthResult.getTrustedToken());
   }
 
   public ZAuthResult getAuthResult() {
@@ -1417,8 +1318,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         event = new ZModifyMailboxEvent(e);
       } else if (e.getName().equals(MailConstants.E_APPOINTMENT)) {
         event = new ZModifyAppointmentEvent(e);
-      } else if (e.getName().equals(MailConstants.E_TASK)) {
-        event = new ZModifyTaskEvent(e);
       }
       if (event != null) {
         handleEvent(event);
@@ -1460,8 +1359,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         event = new ZCreateContactEvent(e);
       } else if (e.getName().equals(MailConstants.E_APPOINTMENT)) {
         event = new ZCreateAppointmentEvent(e);
-      } else if (e.getName().equals(MailConstants.E_TASK)) {
-        event = new ZCreateTaskEvent(e);
       } else if (e.getName().equals(MailConstants.E_FOLDER)) {
         String parentId = e.getAttribute(MailConstants.A_FOLDER);
         ZFolder parent = getFolderById(parentId);
@@ -2186,6 +2083,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       throws ServiceException {
     return createContact(folderId, tags, attrs, null, null);
   }
+
   /**
    * Creates a new contact.
    *
@@ -3594,20 +3492,12 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return getFolderById(ZFolder.ID_CALENDAR);
   }
 
-  public ZFolder getNotebok() throws ServiceException {
-    return getFolderById(ZFolder.ID_NOTEBOOK);
-  }
-
   public ZFolder getAutoContacts() throws ServiceException {
     return getFolderById(ZFolder.ID_AUTO_CONTACTS);
   }
 
   public ZFolder getChats() throws ServiceException {
     return getFolderById(ZFolder.ID_CHATS);
-  }
-
-  public ZFolder getTasks() throws ServiceException {
-    return getFolderById(ZFolder.ID_TASKS);
   }
 
   /**
@@ -4591,9 +4481,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     QName name;
     if (convId != null) {
       name = MailConstants.SEARCH_CONV_REQUEST;
-    } else if (params.getTypes().equals(ZSearchParams.TYPE_VOICE_MAIL)
-        || params.getTypes().equals(ZSearchParams.TYPE_CALL)) {
-      name = VoiceConstants.SEARCH_VOICE_REQUEST;
     } else if (params.getTypes().equals(ZSearchParams.TYPE_GAL)) {
       name = AccountConstants.SEARCH_GAL_REQUEST;
     } else {
@@ -4675,11 +4562,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       }
     }
 
-    if (params.getTypes().equals(ZSearchParams.TYPE_VOICE_MAIL)
-        || params.getTypes().equals(ZSearchParams.TYPE_CALL)) {
-      getAllPhoneAccounts();
-      setVoiceStorePrincipal(req);
-    }
     Element resp = invoke(req);
     if (params.getTypes().equals(ZSearchParams.TYPE_GAL)) {
       try {
@@ -4890,7 +4772,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @param owner either the id or name of the owner
    * @param itemBy used to specify whether sharedItem is an id or path to the shared item
    * @param sharedItem either the id or path of the item
-   * @param reminderEnabled whether client should show reminders on appointments/tasks
+   * @param reminderEnabled whether client should show reminders on appointments
    * @return newly created folder
    * @throws ServiceException on error
    * @param color initial color
@@ -4937,7 +4819,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   }
 
   /**
-   * enable/disable displaying reminder for shared appointments/tasks
+   * enable/disable displaying reminder for shared appointments
    *
    * @param mountpointId
    * @param reminderEnabled
@@ -5735,33 +5617,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return result;
   }
 
-  public String createDocument(String folderId, String name, String attachmentId)
-      throws ServiceException {
-    return createDocument(folderId, name, attachmentId, false);
-  }
-
-  public String createDocument(String folderId, String name, String attachmentId, boolean isNote)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.SAVE_DOCUMENT_REQUEST);
-    Element doc = req.addUniqueElement(MailConstants.E_DOC);
-    doc.addAttribute(MailConstants.A_NAME, name);
-    doc.addAttribute(MailConstants.A_FOLDER, folderId);
-    if (isNote) {
-      doc.addAttribute(MailConstants.A_FLAGS, ZItem.Flag.NOTE.toString());
-    }
-    Element upload = doc.addNonUniqueElement(MailConstants.E_UPLOAD);
-    upload.addAttribute(MailConstants.A_ID, attachmentId);
-    return invoke(req).getElement(MailConstants.E_DOC).getAttribute(MailConstants.A_ID);
-  }
-
-  public ZDocument getDocument(String id) throws ServiceException {
-    Element req = newRequestElement(MailConstants.GET_ITEM_REQUEST);
-    Element item = req.addUniqueElement(MailConstants.E_ITEM);
-    item.addAttribute(MailConstants.A_ID, id);
-    Element e = invoke(req).getElement(MailConstants.E_DOC);
-    return new ZDocument(e);
-  }
-
   /**
    * modify prefs. The key in the map is the pref name, and the value should be a String[], a
    * Collection of String objects, or a single String/Object.toString.
@@ -5791,20 +5646,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       }
     }
     invoke(req);
-  }
-
-  public List<String> getAvailableSkins() throws ServiceException {
-    Element req = newRequestElement(AccountConstants.GET_AVAILABLE_SKINS_REQUEST);
-    Element resp = invoke(req);
-    List<String> result = new ArrayList<String>();
-    for (Element skin : resp.listElements(AccountConstants.E_SKIN)) {
-      String name = skin.getAttribute(AccountConstants.A_NAME, null);
-      if (name != null) {
-        result.add(name);
-      }
-    }
-    Collections.sort(result);
-    return result;
   }
 
   public List<String> getAvailableLocales() throws ServiceException {
@@ -6134,8 +5975,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @param endMsec ending time of range, in msecs
    * @param folderIds list of folder ids
    * @param timeZone TimeZone used to correct allday appts
-   * @param types ZSearchParams.TYPE_APPOINTMENT and/or ZSearchParams.TYPE_TASK. If null,
-   *     TYPE_APPOINTMENT is used.
+   * @param types ZSearchParams.TYPE_APPOINTMENT. If null, TYPE_APPOINTMENT is used.
    * @return list of appts within the specified range
    * @throws ServiceException on error
    */
@@ -6643,286 +6483,8 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return result;
   }
 
-  /* tasks */
-
-  public ZAppointmentResult createTask(
-      String folderId, String flags, ZOutgoingMessage message, ZInvite invite, String optionalUid)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.CREATE_TASK_REQUEST);
-
-    //noinspection UnusedDeclaration
-    Element mEl = getMessageElement(req, message, null);
-
-    if (flags != null) {
-      mEl.addAttribute(MailConstants.A_FLAGS, flags);
-    }
-
-    if (folderId != null) {
-      mEl.addAttribute(MailConstants.A_FOLDER, folderId);
-    }
-
-    Element invEl = invite.toElement(mEl);
-    if (optionalUid != null) {
-      invEl.addAttribute(MailConstants.A_UID, optionalUid);
-    }
-
-    return new ZAppointmentResult(invoke(req));
-  }
-
-  public ZAppointmentResult createTaskException(
-      String id,
-      String component,
-      ZDateTime exceptionId,
-      ZOutgoingMessage message,
-      ZInvite invite,
-      String optionalUid)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.CREATE_TASK_EXCEPTION_REQUEST);
-
-    req.addAttribute(MailConstants.A_ID, id);
-    req.addAttribute(MailConstants.E_INVITE_COMPONENT, component);
-
-    Element mEl = getMessageElement(req, message, null);
-
-    Element invEl = invite.toElement(mEl);
-    Element compEl = invEl.getElement(MailConstants.E_INVITE_COMPONENT);
-    exceptionId.toElement(MailConstants.E_CAL_EXCEPTION_ID, compEl);
-
-    if (optionalUid != null) {
-      invEl.addAttribute(MailConstants.A_UID, optionalUid);
-    }
-
-    return new ZAppointmentResult(invoke(req));
-  }
-
-  public ZAppointmentResult modifyTask(
-      String id, String component, ZDateTime exceptionId, ZOutgoingMessage message, ZInvite invite)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.MODIFY_TASK_REQUEST);
-
-    req.addAttribute(MailConstants.A_ID, id);
-    req.addAttribute(MailConstants.E_INVITE_COMPONENT, component);
-
-    Element mEl = getMessageElement(req, message, null);
-
-    Element invEl = invite.toElement(mEl);
-
-    if (exceptionId != null) {
-      Element compEl = invEl.getElement(MailConstants.E_INVITE_COMPONENT);
-      exceptionId.toElement(MailConstants.E_CAL_EXCEPTION_ID, compEl);
-    }
-
-    return new ZAppointmentResult(invoke(req));
-  }
-
-  public void cancelTask(
-      String id,
-      String component,
-      ZTimeZone tz,
-      ZDateTime instance,
-      CancelRange range,
-      ZOutgoingMessage message)
-      throws ServiceException {
-    Element req = newRequestElement(MailConstants.CANCEL_TASK_REQUEST);
-
-    req.addAttribute(MailConstants.A_ID, id);
-    req.addAttribute(MailConstants.E_INVITE_COMPONENT, component);
-
-    if (tz != null) {
-      tz.toElement(req);
-    }
-
-    if (instance != null) {
-      Element instEl = instance.toElement(MailConstants.E_INSTANCE, req);
-      if (range != null) {
-        instEl.addAttribute(MailConstants.A_CAL_RANGE, range.name());
-      }
-    }
-
-    if (message != null) {
-      getMessageElement(req, message, null);
-    }
-
-    mMessageCache.remove(id);
-
-    invoke(req);
-  }
-
-  public List<ZPhoneAccount> getAllPhoneAccounts() throws ServiceException {
-    lock();
-    try {
-      if (mPhoneAccounts == null) {
-        ArrayList<ZPhoneAccount> accounts = new ArrayList<ZPhoneAccount>();
-        mPhoneAccountMap = new HashMap<String, ZPhoneAccount>();
-        Element req = newRequestElement(VoiceConstants.GET_VOICE_INFO_REQUEST);
-        Element response = invoke(req);
-        Element storePrincipalEl = response.getElement(VoiceConstants.E_STOREPRINCIPAL);
-        mVoiceStorePrincipal = storePrincipalEl.clone();
-        List<Element> phoneElements = response.listElements(VoiceConstants.E_PHONE);
-        for (Element element : phoneElements) {
-          ZPhoneAccount account = new ZPhoneAccount(element, this);
-          accounts.add(account);
-          mPhoneAccountMap.put(account.getPhone().getName(), account);
-        }
-        mPhoneAccounts = Collections.unmodifiableList(accounts);
-      }
-      return mPhoneAccounts;
-    } finally {
-      unlock();
-    }
-  }
-
   private void setVoiceStorePrincipal(Element req) {
     req.addNonUniqueElement(mVoiceStorePrincipal.clone());
-  }
-
-  public ZPhoneAccount getPhoneAccount(String name) throws ServiceException {
-    getAllPhoneAccounts(); // Make sure they're loaded.
-    return mPhoneAccountMap.get(name);
-  }
-
-  public String uploadVoiceMail(String phone, String id) throws ServiceException {
-    Element req = newRequestElement(VoiceConstants.UPLOAD_VOICE_MAIL_REQUEST);
-    setVoiceStorePrincipal(req);
-    Element actionEl = req.addNonUniqueElement(VoiceConstants.E_VOICEMSG);
-    actionEl.addAttribute(MailConstants.A_ID, id);
-    actionEl.addAttribute(VoiceConstants.A_PHONE, phone);
-    Element response = invoke(req);
-    return response.getElement(VoiceConstants.E_UPLOAD).getAttribute(MailConstants.A_ID);
-  }
-
-  public void loadCallFeatures(ZCallFeatures features) throws ServiceException {
-    Element req = newRequestElement(VoiceConstants.GET_VOICE_FEATURES_REQUEST);
-    setVoiceStorePrincipal(req);
-    Element phoneEl = req.addNonUniqueElement(VoiceConstants.E_PHONE);
-    phoneEl.addAttribute(MailConstants.A_NAME, features.getPhone().getName());
-    Collection<ZCallFeature> featureList = features.getSubscribedFeatures();
-    for (ZCallFeature feature : featureList) {
-      phoneEl.addNonUniqueElement(feature.getName());
-    }
-    Element response = invoke(req);
-
-    phoneEl = response.getElement(VoiceConstants.E_PHONE);
-    for (ZCallFeature feature : featureList) {
-      String name = feature.getName();
-      Element element = phoneEl.getOptionalElement(name);
-      if (element != null) {
-        feature.fromElement(element);
-      }
-    }
-  }
-
-  public void saveCallFeatures(ZCallFeatures newFeatures) throws ServiceException {
-    // Build up the soap request.
-    Element req = newRequestElement(VoiceConstants.MODIFY_VOICE_FEATURES_REQUEST);
-    setVoiceStorePrincipal(req);
-    Element phoneEl = req.addNonUniqueElement(VoiceConstants.E_PHONE);
-    phoneEl.addAttribute(MailConstants.A_NAME, newFeatures.getPhone().getName());
-    Collection<ZCallFeature> list = newFeatures.getAllFeatures();
-    for (ZCallFeature newFeature : list) {
-      Element element = phoneEl.addNonUniqueElement(newFeature.getName());
-      newFeature.toElement(element);
-    }
-    invoke(req);
-
-    // Copy new data into cache.
-    ZPhoneAccount account = getPhoneAccount(newFeatures.getPhone().getName());
-    ZCallFeatures oldFeatures = account.getCallFeatures();
-    for (ZCallFeature newFeature : list) {
-      ZCallFeature oldFeature = oldFeatures.getFeature(newFeature.getName());
-      oldFeature.assignFrom(newFeature);
-    }
-  }
-
-  public ZActionResult trashVoiceMail(String phone, String id) throws ServiceException {
-    return moveVoiceMail(phone, id, VoiceConstants.FID_TRASH);
-  }
-
-  public ZActionResult moveVoiceMail(String phone, String id, int folderId)
-      throws ServiceException {
-    ZActionResult result = doAction(voiceAction("move", phone, id, folderId));
-    ZModifyEvent event = new ZModifyVoiceMailItemFolderEvent(Integer.toString(folderId));
-    handleEvent(event);
-    refreshVoiceMailInbox(phone);
-    return result;
-  }
-
-  public ZActionResult emptyVoiceMailTrash(String phone, String folderId) throws ServiceException {
-    ZActionResult result = doAction(voiceAction("empty", phone, folderId, 0));
-
-    // Don't use a delete event, since it deals with the ids of the deleted items and we don't have
-    // those.
-    // Instead just clear the cache that we know know of that might need to be rebuilt.
-    mSearchPagerCache.clear(null);
-    return result;
-  }
-
-  /** Makes a server call to get updated message/unheard counts for the folders */
-  private void refreshVoiceMailInbox(String phone) throws ServiceException {
-    ZPhoneAccount account = getPhoneAccount(phone);
-    if (account == null) {
-      return;
-    }
-
-    Element req = newRequestElement(VoiceConstants.GET_VOICE_FOLDER_REQUEST);
-    setVoiceStorePrincipal(req);
-    Element phoneEl = req.addNonUniqueElement(VoiceConstants.E_PHONE);
-    phoneEl.addAttribute(MailConstants.A_NAME, phone);
-    Element response = invoke(req);
-
-    Element phoneResponse = response.getElement(VoiceConstants.E_PHONE);
-    if (phoneResponse != null) {
-      ZFolder rootFolder = account.getRootFolder();
-      Element rootEl = phoneResponse.getElement(MailConstants.E_FOLDER);
-      for (Element childEl : rootEl.listElements(MailConstants.E_FOLDER)) {
-        String name = childEl.getAttribute(MailConstants.A_NAME);
-        ZFolder childFolder = rootFolder.getSubFolderByPath(name);
-        if (childFolder != null) {
-          childFolder.setUnreadCount((int) childEl.getAttributeLong(MailConstants.A_UNREAD, 0));
-          childFolder.setMessageCount((int) childEl.getAttributeLong(MailConstants.A_NUM, 0));
-        }
-      }
-    }
-  }
-
-  public ZActionResult markVoiceMailHeard(String phone, String idList, boolean heard)
-      throws ServiceException {
-    String op = heard ? "read" : "!read";
-    ZActionResult result = doAction(voiceAction(op, phone, idList, 0));
-    int changeCount = 0;
-    boolean needRefresh = false;
-    for (String id : sCOMMA.split(idList)) {
-      ZModifyVoiceMailItemEvent event = new ZModifyVoiceMailItemEvent(id, heard);
-      handleEvent(event);
-      if (event.getMadeChange()) {
-        changeCount++;
-      } else {
-        needRefresh = true;
-      }
-    }
-    if (needRefresh) {
-      refreshVoiceMailInbox(phone);
-    } else if (changeCount > 0) {
-      ZPhoneAccount account = getPhoneAccount(phone);
-      ZFolder inbox =
-          account.getRootFolder().getSubFolderByPath(VoiceConstants.FNAME_VOICEMAILINBOX);
-      int diff = heard ? -changeCount : changeCount;
-      inbox.setUnreadCount(inbox.getUnreadCount() + diff);
-    }
-    return result;
-  }
-
-  private Element voiceAction(String op, String phone, String id, int folderId) {
-    Element req = newRequestElement(VoiceConstants.VOICE_MSG_ACTION_REQUEST);
-    setVoiceStorePrincipal(req);
-    Element actionEl = req.addNonUniqueElement(MailConstants.E_ACTION);
-    actionEl.addAttribute(MailConstants.A_ID, id);
-    actionEl.addAttribute(MailConstants.A_OPERATION, op);
-    actionEl.addAttribute(VoiceConstants.A_PHONE, phone);
-    if (folderId != 0) {
-      actionEl.addAttribute(MailConstants.A_FOLDER, Integer.toString(folderId) + '-' + phone);
-    }
-    return actionEl;
   }
 
   public ZContactByPhoneCache.ContactPhone getContactByPhone(String phone) throws ServiceException {
@@ -7201,29 +6763,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     } catch (ServiceException e) {
     }
     return new ExistingParentFolderStoreAndUnmatchedPart(getFolderById(ZFolder.ID_USER_ROOT), path);
-  }
-
-  public EnableTwoFactorAuthResponse enableTwoFactorAuth(String password, TOTPAuthenticator auth)
-      throws ServiceException {
-    EnableTwoFactorAuthRequest req = new EnableTwoFactorAuthRequest();
-    req.setName(getName());
-    req.setPassword(password);
-    EnableTwoFactorAuthResponse resp = invokeJaxb(req);
-    String secret = resp.getSecret();
-    long timestamp = System.currentTimeMillis() / 1000;
-    String totp = auth.generateCode(secret, timestamp, Encoding.BASE32);
-    req.setTwoFactorCode(totp);
-    req.setAuthToken(resp.getAuthToken());
-    resp = invokeJaxb(req);
-    resp.setSecret(secret);
-    initAuthToken(new ZAuthToken(resp.getAuthToken().getValue()));
-    return resp;
-  }
-
-  public DisableTwoFactorAuthResponse disableTwoFactorAuth(String password)
-      throws ServiceException {
-    DisableTwoFactorAuthRequest req = new DisableTwoFactorAuthRequest();
-    return invokeJaxb(req);
   }
 
   public SoapHttpTransport getTransport() {

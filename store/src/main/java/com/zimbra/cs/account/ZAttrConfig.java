@@ -32,6 +32,78 @@ public abstract class ZAttrConfig extends Entry {
   ///// BEGIN-AUTO-GEN-REPLACE
 
     /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @return carbonioAdminDocumentationUrl, or "https://docs.zextras.com/carbonio/html/adminpanel/introduction.html" if unset
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public String getCarbonioAdminDocumentationUrl() {
+        return getAttr(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, "https://docs.zextras.com/carbonio/html/adminpanel/introduction.html", true);
+    }
+
+    /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @param carbonioAdminDocumentationUrl new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public void setCarbonioAdminDocumentationUrl(String carbonioAdminDocumentationUrl) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, carbonioAdminDocumentationUrl);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @param carbonioAdminDocumentationUrl new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public Map<String,Object> setCarbonioAdminDocumentationUrl(String carbonioAdminDocumentationUrl, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, carbonioAdminDocumentationUrl);
+        return attrs;
+    }
+
+    /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public void unsetCarbonioAdminDocumentationUrl() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public Map<String,Object> unsetCarbonioAdminDocumentationUrl(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, "");
+        return attrs;
+    }
+
+    /**
      * SSL proxy port for Carbonio admin console UI
      *
      * <p>Use getCarbonioAdminProxyPortAsString to access value as a string.
@@ -1750,6 +1822,78 @@ public abstract class ZAttrConfig extends Entry {
     public Map<String,Object> unsetCarbonioSendFullErrorStack(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_carbonioSendFullErrorStack, "");
+        return attrs;
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @return carbonioUserDocumentationUrl, or "https://docs.zextras.com/carbonio/html/usage.html" if unset
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public String getCarbonioUserDocumentationUrl() {
+        return getAttr(ZAttrProvisioning.A_carbonioUserDocumentationUrl, "https://docs.zextras.com/carbonio/html/usage.html", true);
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @param carbonioUserDocumentationUrl new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public void setCarbonioUserDocumentationUrl(String carbonioUserDocumentationUrl) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, carbonioUserDocumentationUrl);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @param carbonioUserDocumentationUrl new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public Map<String,Object> setCarbonioUserDocumentationUrl(String carbonioUserDocumentationUrl, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, carbonioUserDocumentationUrl);
+        return attrs;
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public void unsetCarbonioUserDocumentationUrl() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public Map<String,Object> unsetCarbonioUserDocumentationUrl(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, "");
         return attrs;
     }
 
@@ -3781,8 +3925,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3796,8 +3942,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3811,8 +3959,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3829,8 +3979,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3848,8 +4000,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3866,8 +4020,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3885,8 +4041,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -3902,8 +4060,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * <p>Valid values: [acl, global]
      *
@@ -19512,10 +19672,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @return zimbraFreebusyExchangeServerType, or ZAttrProvisioning.FreebusyExchangeServerType.webdav if unset and/or has invalid value
      *
@@ -19527,10 +19686,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @return zimbraFreebusyExchangeServerType, or "webdav" if unset
      *
@@ -19542,10 +19700,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -19560,10 +19717,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @param attrs existing map to populate, or null to create a new map
@@ -19579,10 +19735,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -19597,10 +19752,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @param attrs existing map to populate, or null to create a new map
@@ -19616,10 +19770,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -19633,10 +19786,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -50913,7 +51065,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      *
      * @return zimbraNotebookPageCacheSize, or 10240 if unset
      */
@@ -50923,7 +51076,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      *
      * @param zimbraNotebookPageCacheSize new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -50936,7 +51090,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      *
      * @param zimbraNotebookPageCacheSize new value
      * @param attrs existing map to populate, or null to create a new map
@@ -50950,7 +51105,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -50962,7 +51118,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * The size of composed Wiki / Notebook page cache on the server.
+     * Deprecated since: 23.9.0. deprecated. Orig desc: The size of composed
+     * Wiki / Notebook page cache on the server.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -51673,8 +51830,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @return zimbraOAuthConsumerCredentials, or empty array if unset
      *
@@ -51686,8 +51844,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -51702,8 +51861,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new value
      * @param attrs existing map to populate, or null to create a new map
@@ -51719,8 +51879,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -51735,8 +51896,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -51752,8 +51914,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -51768,8 +51931,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -51785,8 +51949,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -51800,8 +51965,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -75532,6 +75698,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @return zimbraUCProviderEnabled, or null if unset
@@ -75544,6 +75711,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @param zimbraUCProviderEnabled new value
@@ -75559,6 +75727,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @param zimbraUCProviderEnabled new value
@@ -75575,6 +75744,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -75589,6 +75759,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * Designated UC provider of the system
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -78888,8 +79059,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @return zimbraZookeeperClientServerList, or empty array if unset
      *
@@ -78901,8 +79073,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -78917,8 +79090,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList new value
      * @param attrs existing map to populate, or null to create a new map
@@ -78934,8 +79108,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -78950,8 +79125,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -78967,8 +79143,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -78983,8 +79160,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param zimbraZookeeperClientServerList existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -79000,8 +79178,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -79015,8 +79194,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

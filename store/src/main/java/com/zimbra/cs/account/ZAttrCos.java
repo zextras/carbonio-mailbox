@@ -12111,7 +12111,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @return zimbraFeatureMobileGatewayEnabled, or false if unset
      *
@@ -12123,7 +12124,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @param zimbraFeatureMobileGatewayEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12138,7 +12140,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @param zimbraFeatureMobileGatewayEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -12154,7 +12157,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -12168,7 +12172,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -27473,8 +27478,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * maximum number of revisions to keep for wiki pages and documents. 0
-     * means unlimited.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: maximum number of revisions to keep for wiki pages and
+     * documents. 0 means unlimited.
      *
      * @return zimbraNotebookMaxRevisions, or 0 if unset
      */
@@ -27484,8 +27490,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * maximum number of revisions to keep for wiki pages and documents. 0
-     * means unlimited.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: maximum number of revisions to keep for wiki pages and
+     * documents. 0 means unlimited.
      *
      * @param zimbraNotebookMaxRevisions new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -27498,8 +27505,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * maximum number of revisions to keep for wiki pages and documents. 0
-     * means unlimited.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: maximum number of revisions to keep for wiki pages and
+     * documents. 0 means unlimited.
      *
      * @param zimbraNotebookMaxRevisions new value
      * @param attrs existing map to populate, or null to create a new map
@@ -27513,8 +27521,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * maximum number of revisions to keep for wiki pages and documents. 0
-     * means unlimited.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: maximum number of revisions to keep for wiki pages and
+     * documents. 0 means unlimited.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -27526,8 +27535,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * maximum number of revisions to keep for wiki pages and documents. 0
-     * means unlimited.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: maximum number of revisions to keep for wiki pages and
+     * documents. 0 means unlimited.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -27540,8 +27550,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to strip off potentially harming HTML tags in Wiki and HTML
-     * Documents.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
+     * and HTML Documents.
      *
      * @return zimbraNotebookSanitizeHtml, or true if unset
      *
@@ -27553,8 +27564,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to strip off potentially harming HTML tags in Wiki and HTML
-     * Documents.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
+     * and HTML Documents.
      *
      * @param zimbraNotebookSanitizeHtml new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -27569,8 +27581,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to strip off potentially harming HTML tags in Wiki and HTML
-     * Documents.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
+     * and HTML Documents.
      *
      * @param zimbraNotebookSanitizeHtml new value
      * @param attrs existing map to populate, or null to create a new map
@@ -27586,8 +27599,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to strip off potentially harming HTML tags in Wiki and HTML
-     * Documents.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
+     * and HTML Documents.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -27601,8 +27615,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to strip off potentially harming HTML tags in Wiki and HTML
-     * Documents.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
+     * and HTML Documents.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -44147,7 +44162,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @return zimbraPrefZmgPushNotificationEnabled, or false if unset
      *
@@ -44159,7 +44176,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @param zimbraPrefZmgPushNotificationEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -44174,7 +44193,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @param zimbraPrefZmgPushNotificationEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -44190,7 +44211,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -44204,7 +44227,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -47362,6 +47387,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @return zimbraUCServiceId, or null if unset
@@ -47374,6 +47400,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param zimbraUCServiceId new value
@@ -47389,6 +47416,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param zimbraUCServiceId new value
@@ -47405,6 +47433,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -47419,6 +47448,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param attrs existing map to populate, or null to create a new map

@@ -1,0 +1,24 @@
+{
+  "carbonio": [
+    "carbonioAdminPort",
+    "carbonioAdminPortTwo",
+    "carbonioAdminPortThree"
+  ],
+  "zimbra_globalconfig": [
+    "feature1Enabled",
+    "feature2Enabled",
+    "feature3Enabled"
+  ],
+  "zimbra_defaultcos": [
+    "userCanChangeAvatar",
+    "userCanChangeName",
+    "userCanAccessDrive"
+  ],
+  "zimbra_defaultexternalcos": [
+    "userCanAccessTeam"
+  ],
+  "mimehandlers": [
+    "textOrHtml",
+    "videoOrMp4"
+  ]
+}
