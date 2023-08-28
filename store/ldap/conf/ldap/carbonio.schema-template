@@ -1,0 +1,94 @@
+${BANNER}
+
+${ZIMBRA_ROOT_OIDS}
+
+###########################################################################
+# attribute group OIDs.  Eg: objectIdentifier ZimbraAttrType ZimbraLDAP:1
+###########################################################################
+${GROUP_OIDS}
+
+###########################################################################
+# attribute OIDs Eg: objectIdentifier zimbraId ZimbraAttrType:1
+###########################################################################
+${ATTRIBUTE_OIDS}
+
+###########################################################################
+# object class OIDs
+###########################################################################
+${OC_GROUP_OIDS}
+${OC_OIDS}
+
+###########################################################################
+# attribute definitions
+#
+# OID (the first arg) comes from the objectIdentifier defined above
+#
+# NAME should be the same as objectIdentifier
+#
+# DESC should be the description of the attribute
+#
+# EQUALITY is the rule to use when doing a search/compare for an
+# attribute value.
+#
+# SUBSTR is the rule to use when doing a substring search (*foo*)
+#
+# SYNTAX is the syntax (i.e., type) of the attribute. We should
+# probably stick to syntaxes:
+#
+#       1.3.6.1.4.1.1466.115.121.1.15 	  -> directoryString (UTF-8 string)
+#       1.3.6.1.4.1.1466.115.121.1.26   -> IA5String (ASCII String)
+#       1.3.6.1.4.1.1466.115.121.1.27   -> integer (Integer value)
+#       1.3.6.1.4.1.1466.115.121.1.7    -> boolean (TRUE/FALSE)
+#
+# SINGLE-VALUE should be present if only one instance of this
+# attribute is allowed within an entry.
+#
+# Eg:
+# 
+# attributetype ( zimbraAccountStatus
+#	NAME ( 'zimbraAccountStatus' )
+#	DESC 'account status (TODO: enumerate valid values here)'
+#	EQUALITY caseIgnoreMatch
+#	SUBSTR caseIgnoreSubstringsMatch
+#	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} 
+#	SINGLE-VALUE )
+#
+###########################################################################
+
+# break glass in case of emergency
+#
+# A generic attr like this is probably seductive, but would probably cause
+# too much pain long term...
+#
+#attributetype ( zimbraAttr
+#	NAME ( 'zimbraAttr' )
+#	DESC 'generic name=value attribute'
+#	EQUALITY caseIgnoreMatch
+#	SUBSTR caseIgnoreSubstringsMatch
+#	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
+
+#### From Microsoft Schema
+attributetype ( 1.2.840.113556.1.2.146
+  NAME ( 'company' )
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{512}
+  EQUALITY caseIgnoreMatch
+  SUBSTR caseIgnoreSubstringsMatch
+  SINGLE-VALUE )
+
+
+${ATTRIBUTE_DEFINITIONS}
+
+###########################################################################
+# object class definitions
+#
+# This is where to define the object classes. Object classes are used
+# to define which attribute MAY (optional) or MUST (required) belong
+# to an entry.
+#
+# classes can be AUXILIARY or STRUCTURAL. An entry in the directory
+# must have one and only one structural class hierarchy, but can have many
+# AUXILIARY classes.
+#
+###########################################################################
+
+${OC_DEFINITIONS}

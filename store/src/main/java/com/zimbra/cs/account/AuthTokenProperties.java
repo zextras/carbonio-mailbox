@@ -16,7 +16,6 @@ public class AuthTokenProperties implements Cloneable {
 
   public static final String C_TYPE_ZIMBRA_USER = "zimbra";
   public static final String C_TYPE_EXTERNAL_USER = "external";
-  public static final String C_TYPE_ZMG_APP = "zmgapp";
   public static final String C_ID = "id";
   // original admin id
   public static final String C_AID = "aid";
@@ -30,9 +29,9 @@ public class AuthTokenProperties implements Cloneable {
   public static final String C_VALIDITY_VALUE = "vv";
   public static final String C_AUTH_MECH = "am";
   public static final String C_USAGE = "u";
-  //cookie ID for keeping track of account's cookies
+  // cookie ID for keeping track of account's cookies
   public static final String C_TOKEN_ID = "tid";
-  //mailbox server version where this account resides
+  // mailbox server version where this account resides
   public static final String C_SERVER_VERSION = "version";
   public static final String C_CSRF = "csrf";
   public static final String C_KEY_VERSION = "kv";
@@ -48,16 +47,23 @@ public class AuthTokenProperties implements Cloneable {
   private String type;
   private String externalUserEmail;
   private String digest;
-  private String accessKey; // just a dummy placeholder for now until accesskey auth is implemented in ZimbraAuthToken
+  private String
+      accessKey; // just a dummy placeholder for now until accesskey auth is implemented in
+  // ZimbraAuthToken
   private String proxyAuthToken;
   private AuthMech authMech;
   private Integer tokenID = -1;
-  private String server_version;   // version of the mailbox server where this account resides
+  private String server_version; // version of the mailbox server where this account resides
   private boolean csrfTokenEnabled;
   private Usage usage; // what this token will be used for
 
-  public AuthTokenProperties(Account acct, boolean isAdmin, Account adminAcct, long expires,
-      AuthMech authMech, Usage usage) {
+  public AuthTokenProperties(
+      Account acct,
+      boolean isAdmin,
+      Account adminAcct,
+      long expires,
+      AuthMech authMech,
+      Usage usage) {
     if (acct != null) {
       accountId = acct.getId();
       validityValue = acct.getAuthTokenValidityValue();
@@ -85,13 +91,13 @@ public class AuthTokenProperties implements Cloneable {
     tokenID = new Random().nextInt(Integer.MAX_VALUE - 1) + 1;
   }
 
-  public AuthTokenProperties(String acctId, boolean zmgApp, String externalEmail, String pass,
-      String digest, long expires) {
+  public AuthTokenProperties(
+      String acctId, String externalEmail, String pass, String digest, long expires) {
     accountId = acctId;
     this.expires = expires;
-    externalUserEmail = externalEmail == null && !zmgApp ? "public" : externalEmail;
+    externalUserEmail = externalEmail;
     this.digest = digest != null ? digest : AuthToken.generateDigest(externalEmail, pass);
-    this.type = zmgApp ? C_TYPE_ZMG_APP : C_TYPE_EXTERNAL_USER;
+    this.type = C_TYPE_EXTERNAL_USER;
     tokenID = new Random().nextInt(Integer.MAX_VALUE - 1) + 1;
     try {
       Account acct = Provisioning.getInstance().getAccountById(accountId);
@@ -160,7 +166,7 @@ public class AuthTokenProperties implements Cloneable {
     }
   }
 
-  //TODO: remove in future version of Carbonio
+  // TODO: remove in future version of Carbonio
   // when we deeply investigate authentication
   // currently getting rid of this is causing the
   // auth token expire as soon as it is provided

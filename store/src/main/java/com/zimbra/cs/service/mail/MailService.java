@@ -6,7 +6,6 @@
 package com.zimbra.cs.service.mail;
 
 import com.zextras.carbonio.files.FilesClient;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
@@ -96,13 +95,6 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.EXPORT_CONTACTS_REQUEST, new ExportContacts());
     dispatcher.registerHandler(MailConstants.IMPORT_CONTACTS_REQUEST, new ImportContacts());
 
-    // notes
-    if (LC.notes_enabled.booleanValue()) {
-      dispatcher.registerHandler(MailConstants.GET_NOTE_REQUEST, new GetNote());
-      dispatcher.registerHandler(MailConstants.CREATE_NOTE_REQUEST, new CreateNote());
-      dispatcher.registerHandler(MailConstants.NOTE_ACTION_REQUEST, new NoteAction());
-    }
-
     // sync
     dispatcher.registerHandler(MailConstants.SYNC_REQUEST, new Sync());
 
@@ -137,18 +129,6 @@ public final class MailService implements DocumentService {
         MailConstants.DECLINE_COUNTER_APPOINTMENT_REQUEST, new DeclineCounterAppointment());
     dispatcher.registerHandler(MailConstants.IMPORT_APPOINTMENTS_REQUEST, new ImportAppointments());
 
-    dispatcher.registerHandler(MailConstants.GET_TASK_SUMMARIES_REQUEST, new GetTaskSummaries());
-    dispatcher.registerHandler(MailConstants.GET_TASK_REQUEST, new GetTask());
-    dispatcher.registerHandler(MailConstants.SET_TASK_REQUEST, new SetTask());
-    dispatcher.registerHandler(MailConstants.CREATE_TASK_REQUEST, new CreateTask());
-    dispatcher.registerHandler(
-        MailConstants.CREATE_TASK_EXCEPTION_REQUEST, new CreateTaskException());
-    dispatcher.registerHandler(MailConstants.MODIFY_TASK_REQUEST, new ModifyTask());
-    dispatcher.registerHandler(MailConstants.CANCEL_TASK_REQUEST, new CancelTask());
-    dispatcher.registerHandler(MailConstants.ADD_TASK_INVITE_REQUEST, new AddTaskInvite());
-    dispatcher.registerHandler(
-        MailConstants.COMPLETE_TASK_INSTANCE_REQUEST, new CompleteTaskInstance());
-
     dispatcher.registerHandler(
         MailConstants.GET_CALITEM_SUMMARIES_REQUEST, new GetCalendarItemSummaries());
     //        dispatcher.registerHandler(GET_CALITEM_REQUEST, new GetCalendarItem());
@@ -176,25 +156,10 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(
         MailConstants.CHECK_RECUR_CONFLICTS_REQUEST, new CheckRecurConflicts());
 
-    dispatcher.registerHandler(
-        MailConstants.SEND_VERIFICATION_CODE_REQUEST, new SendVerificationCode());
-    dispatcher.registerHandler(MailConstants.VERIFY_CODE_REQUEST, new VerifyCode());
-    dispatcher.registerHandler(
-        MailConstants.INVALIDATE_REMINDER_DEVICE_REQUEST, new InvalidateReminderDevice());
-
     // spell check
     dispatcher.registerHandler(MailConstants.CHECK_SPELLING_REQUEST, new CheckSpelling());
     dispatcher.registerHandler(
         MailConstants.GET_SPELL_DICTIONARIES_REQUEST, new GetSpellDictionaries());
-
-    // Documents
-    dispatcher.registerHandler(
-        MailConstants.DIFF_DOCUMENT_REQUEST, new com.zimbra.cs.service.doc.DiffDocument());
-    dispatcher.registerHandler(
-        MailConstants.LIST_DOCUMENT_REVISIONS_REQUEST,
-        new com.zimbra.cs.service.doc.ListDocumentRevisions());
-    dispatcher.registerHandler(
-        MailConstants.PURGE_REVISION_REQUEST, new com.zimbra.cs.service.mail.PurgeRevision());
 
     // data source
     dispatcher.registerHandler(MailConstants.GET_DATA_SOURCES_REQUEST, new GetDataSources());
@@ -222,16 +187,8 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(
         MailConstants.GET_EFFECTIVE_FOLDER_PERMS_REQUEST, new GetEffectiveFolderPerms());
 
-    // yahoo auth
-    dispatcher.registerHandler(MailConstants.GET_YAHOO_COOKIE_REQUEST, new GetYahooCookie());
-    dispatcher.registerHandler(MailConstants.GET_YAHOO_AUTH_TOKEN_REQUEST, new GetYahooAuthToken());
-
     dispatcher.registerHandler(MailConstants.AUTO_COMPLETE_REQUEST, new AutoComplete());
     dispatcher.registerHandler(MailConstants.RANKING_ACTION_REQUEST, new RankingAction());
-
-    // comments
-    dispatcher.registerHandler(MailConstants.ADD_COMMENT_REQUEST, new AddComment());
-    dispatcher.registerHandler(MailConstants.GET_COMMENTS_REQUEST, new GetComments());
 
     // share
     dispatcher.registerHandler(
@@ -261,10 +218,6 @@ public final class MailService implements DocumentService {
 
     // SearchAction API
     dispatcher.registerHandler(MailConstants.SEARCH_ACTION_REQUEST, new SearchAction());
-
-    // Profile Image API
-    dispatcher.registerHandler(
-        MailConstants.MODIFY_PROFILE_IMAGE_REQUEST, new ModifyProfileImage());
 
     // Password reset API
     dispatcher.registerHandler(MailConstants.RECOVER_ACCOUNT_REQUEST, new RecoverAccount());

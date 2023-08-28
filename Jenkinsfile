@@ -1,5 +1,9 @@
 def mvnCmd(String cmd) {
-  sh 'mvn -B -s settings-jenkins.xml ' + cmd
+    def extraOptions = ''
+    if (env.BRANCH_NAME == 'main') {
+        extraOptions = '-Ddependency-check.skip=false'
+    }
+  sh 'mvn -B -s settings-jenkins.xml ' + extraOptions + ' ' + cmd
 }
 pipeline {
     agent {
@@ -35,12 +39,11 @@ pipeline {
         }
         stage('Build') {
             steps {
-
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
 
                 sh 'mkdir staging'
 
-                sh 'cp -r store* milter* native client common packages soap staging'
+                sh 'cp -r store* milter* native client common packages soap carbonio-jetty-libs staging'
                 stash includes: 'staging/**', name: 'staging'
 
             }
@@ -196,7 +199,18 @@ pipeline {
                             "pattern": "artifacts/(carbonio-common-core-jar)-(*).rpm",
                             "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                        }]
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-store-libs)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-core-libs)-(*).rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        }
+                        ]
                     }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                 }
@@ -264,7 +278,18 @@ pipeline {
                             "pattern": "artifacts/(carbonio-common-core-jar)-(*).rpm",
                             "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                        }]
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-store-libs)-(*).rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-core-libs)-(*).rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        }
+                        ]
                     }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                 }
@@ -355,7 +380,18 @@ pipeline {
                             "pattern": "artifacts/(carbonio-common-core-jar)-(*).rpm",
                             "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                        }]
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-appserver-store-libs)-(*).rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/(carbonio-common-core-libs)-(*).rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        }
+                        ]
                     }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                     config = [

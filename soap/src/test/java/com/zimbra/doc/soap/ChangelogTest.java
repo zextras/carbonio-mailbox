@@ -5,24 +5,7 @@
 
 package com.zimbra.doc.soap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlValue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -35,80 +18,120 @@ import com.zimbra.doc.soap.changelog.CommandChanges.NamedElem;
 import com.zimbra.doc.soap.changelog.ElementChanges;
 import com.zimbra.doc.soap.changelog.SoapApiChangeLog;
 import com.zimbra.soap.type.ZmBoolean;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlValue;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ChangelogTest {
 
-    private static final Logger LOG = Logger.getLogger(ChangelogTest.class);
+  private static final Logger LOG = LogManager.getLogger(ChangelogTest.class);
 
-    static {
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.INFO);
-        LOG.setLevel(Level.INFO);
-    }
+  static {
+    com.zimbra.common.util.LogManager.setThisLogAndRootToLevel(LOG, Level.INFO);
+  }
 
     @BeforeAll
     public static void init() throws Exception {
     }
 
-    @XmlRootElement(name="aRequest")
-    public class aRequest {
-        @XmlAttribute(name="attribute1", required=false)
-        private String attribute1;
-        
-        @XmlAttribute(name="attribute2", required=false)
-        private String attribute2;
-        
-        @XmlElement(name="element", required=false)
-        private aElem element;
-        
-        public aRequest() {
-        }
+  @XmlRootElement(name = "aRequest")
+  public class aRequest {
+    @XmlAttribute(name = "attribute1", required = false)
+    private String attribute1;
 
-        public String getAttribute1() { return attribute1; }
-        public void setAttribute1(String attribute1) { this.attribute1 = attribute1; }
-        public String getAttribute2() { return attribute2; }
-        public void setAttribute2(String attribute2) { this.attribute2 = attribute2; }
-        public aElem getElement() { return element; }
-        public void setElement(aElem element) { this.element = element; }
+    @XmlAttribute(name = "attribute2", required = false)
+    private String attribute2;
+
+    @XmlElement(name = "element", required = false)
+    private aElem element;
+
+    public aRequest() {}
+
+    public String getAttribute1() {
+      return attribute1;
     }
 
-    @XmlRootElement(name="aResponse")
-    public class aResponse {
-        @XmlElement(name="an-elem", required=false)
-        private ZmBoolean anElem;
-
-        public ZmBoolean getAnElem() { return anElem; }
-        public void setAnElem(ZmBoolean anElem) { this.anElem = anElem; }
+    public void setAttribute1(String attribute1) {
+      this.attribute1 = attribute1;
     }
 
-    @XmlRootElement(name="bRequest")
-    public class bRequest {
+    public String getAttribute2() {
+      return attribute2;
     }
 
-    @XmlRootElement(name="bResponse")
-    public class bResponse {
+    public void setAttribute2(String attribute2) {
+      this.attribute2 = attribute2;
     }
 
-    @XmlRootElement(name="cRequest")
-    public class cRequest {
+    public aElem getElement() {
+      return element;
     }
 
-    @XmlRootElement(name="cResponse")
-    public class cResponse {
+    public void setElement(aElem element) {
+      this.element = element;
+    }
+  }
+
+  @XmlRootElement(name = "aResponse")
+  public class aResponse {
+    @XmlElement(name = "an-elem", required = false)
+    private ZmBoolean anElem;
+
+    public ZmBoolean getAnElem() {
+      return anElem;
     }
 
-    public class aElem {
-        @XmlAttribute(name="long-attribute", required=false)
-        private Long longAttribute;
-        @XmlAttribute(name="int-attribute", required=true)
-        private int intAttribute;
-        @XmlValue
-        int value;
-        public Long getLongAttribute() { return longAttribute; }
-        public void setLongAttribute(Long longAttribute) { this.longAttribute = longAttribute; }
-        public int getIntAttribute() { return intAttribute; }
-        public void setIntAttribute(int intAttribute) { this.intAttribute = intAttribute; }
+    public void setAnElem(ZmBoolean anElem) {
+      this.anElem = anElem;
     }
+  }
+
+  @XmlRootElement(name = "bRequest")
+  public class bRequest {}
+
+  @XmlRootElement(name = "bResponse")
+  public class bResponse {}
+
+  @XmlRootElement(name = "cRequest")
+  public class cRequest {}
+
+  @XmlRootElement(name = "cResponse")
+  public class cResponse {}
+
+  public class aElem {
+    @XmlAttribute(name = "long-attribute", required = false)
+    private Long longAttribute;
+
+    @XmlAttribute(name = "int-attribute", required = true)
+    private int intAttribute;
+
+    @XmlValue int value;
+
+    public Long getLongAttribute() {
+      return longAttribute;
+    }
+
+    public void setLongAttribute(Long longAttribute) {
+      this.longAttribute = longAttribute;
+    }
+
+    public int getIntAttribute() {
+      return intAttribute;
+    }
+
+    public void setIntAttribute(int intAttribute) {
+      this.intAttribute = intAttribute;
+    }
+  }
 
   @Test
   void makeChangelogTest()
@@ -149,8 +172,13 @@ public class ChangelogTest {
     }
     List<AttributeChanges> modAttrs = modCmd.getModifiedAttrs();
     for (AttributeChanges modAttr : modAttrs) {
-      LOG.info("    Modified Attribute " + modAttr.getXpath() + ":\nbase=" + modAttr.getBaselineRepresentation() +
-          "\ncurr=" + modAttr.getCurrentRepresentation());
+      LOG.info(
+          "    Modified Attribute "
+              + modAttr.getXpath()
+              + ":\nbase="
+              + modAttr.getBaselineRepresentation()
+              + "\ncurr="
+              + modAttr.getCurrentRepresentation());
     }
     List<NamedElem> delEs = modCmd.getDeletedElems();
     for (NamedElem el : delEs) {
@@ -162,8 +190,13 @@ public class ChangelogTest {
     }
     List<ElementChanges> modEs = modCmd.getModifiedElements();
     for (ElementChanges el : modEs) {
-      LOG.info("    Modified Element " + el.getXpath() + ":\nbase=" + el.getBaselineRepresentation() +
-          "\ncurr=" + el.getCurrentRepresentation());
+      LOG.info(
+          "    Modified Element "
+              + el.getXpath()
+              + ":\nbase="
+              + el.getBaselineRepresentation()
+              + "\ncurr="
+              + el.getCurrentRepresentation());
     }
     assertEquals(1, newCmds.size(), "Number of new commands");
     assertEquals(1, delCmds.size(), "Number of deleted commands");

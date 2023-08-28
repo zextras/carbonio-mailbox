@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
     version="3.0">
 
-  <display-name>Zimbra Service</display-name>
+  <display-name>Carbonio SOAP Service</display-name>
   <description>SOAP Service</description>
 
   <filter>
@@ -83,17 +83,6 @@ SPDX-License-Identifier: AGPL-3.0-only
   </filter-mapping>
 
   <filter>
-    <filter-name>ThrottlingFilter</filter-name>
-    <filter-class>com.zimbra.cs.servlet.ThrottlingFilter</filter-class>
-    <async-supported>true</async-supported>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>ThrottlingFilter</filter-name>
-    <url-pattern>/zimlet/*</url-pattern>
-  </filter-mapping>
-
-  <filter>
     <filter-name>ContextPathBasedThreadPoolBalancerFilter</filter-name>
     <filter-class>com.zimbra.cs.servlet.ContextPathBasedThreadPoolBalancerFilter</filter-class>
     <async-supported>true</async-supported>
@@ -151,21 +140,6 @@ SPDX-License-Identifier: AGPL-3.0-only
   <filter-mapping>
     <filter-name>SetHeaderFilter</filter-name>
     <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-  <filter>
-    <filter-name>ZimletFilter</filter-name>
-    <filter-class>com.zimbra.cs.zimlet.ZimletFilter</filter-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443, 7071</param-value>
-    </init-param>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>ZimletFilter</filter-name>
-    <url-pattern>/zimlet/*</url-pattern>
   </filter-mapping>
 
   <filter>
@@ -235,36 +209,6 @@ SPDX-License-Identifier: AGPL-3.0-only
     <init-param>
       <param-name>allowed.ports</param-name>
       <param-value>80, 443, 7070, 7071, 7072, 7443</param-value>
-    </init-param>
-  </servlet>
-
-  <servlet>
-    <servlet-name>OAuthRequestToken</servlet-name>
-    <servlet-class>com.zimbra.cs.account.oauth.OAuthRequestTokenServlet</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7071, 7443</param-value>
-    </init-param>
-  </servlet>
-
-  <servlet>
-    <servlet-name>OAuthAuthorization</servlet-name>
-    <servlet-class>com.zimbra.cs.account.oauth.OAuthAuthorizationServlet</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7071, 7443</param-value>
-    </init-param>
-  </servlet>
-
-  <servlet>
-    <servlet-name>OAuthAccessToken</servlet-name>
-    <servlet-class>com.zimbra.cs.account.oauth.OAuthAccessTokenServlet</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7071, 7443</param-value>
     </init-param>
   </servlet>
 
@@ -354,7 +298,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
   <servlet>
     <servlet-name>PreAuthServlet</servlet-name>
-    <servlet-class>com.zimbra.cs.service.PreAuthServlet</servlet-class>
+    <servlet-class>com.zimbra.cs.service.servlet.preauth.PreAuthServlet</servlet-class>
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
@@ -434,17 +378,6 @@ SPDX-License-Identifier: AGPL-3.0-only
   </servlet>
 
   <servlet>
-    <servlet-name>ProxyServlet</servlet-name>
-    <servlet-class>com.zimbra.cs.zimlet.ProxyServlet</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070</param-value>
-    </init-param>
-    <load-on-startup>8</load-on-startup>
-  </servlet>
-
-  <servlet>
     <servlet-name>DavServlet</servlet-name>
     <servlet-class>com.zimbra.cs.dav.service.DavServlet</servlet-class>
     <async-supported>true</async-supported>
@@ -487,49 +420,6 @@ SPDX-License-Identifier: AGPL-3.0-only
   </servlet>
 
   <servlet>
-    <servlet-name>ZimletResources</servlet-name>
-    <servlet-class>com.zimbra.cs.zimlet.ZimletResources</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443, 7071</param-value>
-    </init-param>
-    <!--
-    <init-param>
-      <description>The initial size of the resource cache.</description>
-      <param-name>resource-cache-size</param-name>
-      <param-value>1000</param-value>
-    </init-param>
-    -->
-    <init-param>
-      <description>
-      The temp directory of the resource cache. The servlet creates
-      a "zimletres" sub-directory in the specified directory. So you
-      should NOT append that to the directory.
-      NOTE: The special string "${webapp}" can be used to specify
-      the webapp/service/ directory. It should ONLY be used at the
-      beginning of the parameter value.
-      </description>
-      <param-name>resource-cache-dir</param-name>
-      <param-value>${webapp}/../../work/resource-cache</param-value>
-    </init-param>
-    <load-on-startup>10</load-on-startup>
-  </servlet>
-
-  <servlet>
-    <servlet-name>ZimletProperties2Javascript</servlet-name>
-    <servlet-class>com.zimbra.cs.zimlet.ZimletProps2JsServlet</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>basename-patterns</param-name>
-      <param-value>
-        /opt/zextras/zimlets-deployed/${name}/${name},
-        /opt/zextras/zimlets-deployed/_dev/${name}/${name}
-      </param-value>
-    </init-param>
-  </servlet>
-
-  <servlet>
     <servlet-name>RobotsServlet</servlet-name>
     <servlet-class>com.zimbra.cs.servlet.RobotsServlet</servlet-class>
     <load-on-startup>11</load-on-startup>
@@ -550,21 +440,6 @@ SPDX-License-Identifier: AGPL-3.0-only
   <servlet-mapping>
     <servlet-name>ExtensionDispatcherServlet</servlet-name>
     <url-pattern>/extension/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>OAuthRequestToken</servlet-name>
-    <url-pattern>/oauth/req_token</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>OAuthAuthorization</servlet-name>
-    <url-pattern>/oauth/authorization</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>OAuthAccessToken</servlet-name>
-    <url-pattern>/oauth/access_token</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -658,11 +533,6 @@ SPDX-License-Identifier: AGPL-3.0-only
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>ProxyServlet</servlet-name>
-    <url-pattern>/proxy/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
     <servlet-name>DavServlet</servlet-name>
     <url-pattern>/dav/*</url-pattern>
   </servlet-mapping>
@@ -670,16 +540,6 @@ SPDX-License-Identifier: AGPL-3.0-only
   <servlet-mapping>
     <servlet-name>DavWellKnownServlet</servlet-name>
     <url-pattern>/.well-known/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>ZimletResources</servlet-name>
-    <url-pattern>/zimlet/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>ZimletProperties2Javascript</servlet-name>
-    <url-pattern>/res/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -727,11 +587,11 @@ SPDX-License-Identifier: AGPL-3.0-only
   </servlet-mapping>
   <env-entry>
     <description>
-        Zimbra Services Installed on the server.
+        Carbonio Services Installed on the server.
     </description>
     <env-entry-name>zimbraServicesEnabled</env-entry-name>
     <env-entry-type>java.lang.String</env-entry-type>
-    <env-entry-value>service,zimbra,zimbraAdmin,zimlet,mailbox</env-entry-value>
+    <env-entry-value>service,mailbox</env-entry-value>
   </env-entry>
   <!--  additional servlets -->
 </web-app>

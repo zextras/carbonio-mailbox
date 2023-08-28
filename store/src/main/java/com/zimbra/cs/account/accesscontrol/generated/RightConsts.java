@@ -551,11 +551,6 @@ public class RightConsts {
     public static final String RT_adminConsoleSubDomainRights = "adminConsoleSubDomainRights";
 
     /**
-     * Rights for viewing Voice/Chat services through Admin Console
-     */
-    public static final String RT_adminConsoleUCServiceRights = "adminConsoleUCServiceRights";
-
-    /**
      * Admin Console rights for Zimlet ACL Tab
      */
     public static final String RT_adminConsoleZimletACLTabRights = "adminConsoleZimletACLTabRights";
@@ -777,11 +772,6 @@ public class RightConsts {
     public static final String RT_createTopDomain = "createTopDomain";
 
     /**
-     * create UC service
-     */
-    public static final String RT_createUCService = "createUCService";
-
-    /**
      * create XMPP component
      */
     public static final String RT_createXMPPComponent = "createXMPPComponent";
@@ -840,11 +830,6 @@ public class RightConsts {
      * delete server
      */
     public static final String RT_deleteServer = "deleteServer";
-
-    /**
-     * delete UC service
-     */
-    public static final String RT_deleteUCService = "deleteUCService";
 
     /**
      * delete XMPP component
@@ -1143,11 +1128,6 @@ public class RightConsts {
     public static final String RT_getSessions = "getSessions";
 
     /**
-     * get all UC service attributes
-     */
-    public static final String RT_getUCService = "getUCService";
-
-    /**
      * get all XMPP component attributes
      */
     public static final String RT_getXMPPComponent = "getXMPPComponent";
@@ -1207,11 +1187,6 @@ public class RightConsts {
      * see server in GetAllServers/SearchDirectoryResponse
      */
     public static final String RT_listServer = "listServer";
-
-    /**
-     * see UC service in GetAllUCServices/SearchDirectoryResponse
-     */
-    public static final String RT_listUCService = "listUCService";
 
     /**
      * see XMPP component in GetAllXMPPComponents
@@ -1312,11 +1287,6 @@ public class RightConsts {
      * set all server attributes
      */
     public static final String RT_modifyServer = "modifyServer";
-
-    /**
-     * set all UC service attributes
-     */
-    public static final String RT_modifyUCService = "modifyUCService";
 
     /**
      * set all XMPP component attributes
@@ -1427,11 +1397,6 @@ public class RightConsts {
      * rename group
      */
     public static final String RT_renameGroup = "renameGroup";
-
-    /**
-     * rename UC service
-     */
-    public static final String RT_renameUCService = "renameUCService";
 
     /**
      * restore accounts on a server

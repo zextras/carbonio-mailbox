@@ -17455,7 +17455,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @return zimbraFeatureMobileGatewayEnabled, or false if unset
      *
@@ -17467,7 +17468,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @param zimbraFeatureMobileGatewayEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -17482,7 +17484,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @param zimbraFeatureMobileGatewayEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -17498,7 +17501,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -17512,7 +17516,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether to enable Zimbra Mobile Gateway feature
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Whether to enable Zimbra Mobile Gateway feature
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -25027,7 +25032,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * whether or not an account represents a Mobile Gateway Proxy account
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether or not an account represents a Mobile
+     * Gateway Proxy account
      *
      * @return zimbraIsMobileGatewayProxyAccount, or false if unset
      *
@@ -25039,7 +25046,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * whether or not an account represents a Mobile Gateway Proxy account
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether or not an account represents a Mobile
+     * Gateway Proxy account
      *
      * @param zimbraIsMobileGatewayProxyAccount new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -25054,7 +25063,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * whether or not an account represents a Mobile Gateway Proxy account
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether or not an account represents a Mobile
+     * Gateway Proxy account
      *
      * @param zimbraIsMobileGatewayProxyAccount new value
      * @param attrs existing map to populate, or null to create a new map
@@ -25070,7 +25081,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * whether or not an account represents a Mobile Gateway Proxy account
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether or not an account represents a Mobile
+     * Gateway Proxy account
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -25084,7 +25097,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * whether or not an account represents a Mobile Gateway Proxy account
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: whether or not an account represents a Mobile
+     * Gateway Proxy account
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -34968,8 +34983,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * maximum number of revisions to keep for wiki pages and documents. 0
-     * means unlimited.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: maximum number of revisions to keep for wiki pages and
+     * documents. 0 means unlimited.
      *
      * @return zimbraNotebookMaxRevisions, or 0 if unset
      */
@@ -34979,8 +34995,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * maximum number of revisions to keep for wiki pages and documents. 0
-     * means unlimited.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: maximum number of revisions to keep for wiki pages and
+     * documents. 0 means unlimited.
      *
      * @param zimbraNotebookMaxRevisions new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -34993,8 +35010,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * maximum number of revisions to keep for wiki pages and documents. 0
-     * means unlimited.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: maximum number of revisions to keep for wiki pages and
+     * documents. 0 means unlimited.
      *
      * @param zimbraNotebookMaxRevisions new value
      * @param attrs existing map to populate, or null to create a new map
@@ -35008,8 +35026,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * maximum number of revisions to keep for wiki pages and documents. 0
-     * means unlimited.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: maximum number of revisions to keep for wiki pages and
+     * documents. 0 means unlimited.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -35021,8 +35040,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * maximum number of revisions to keep for wiki pages and documents. 0
-     * means unlimited.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: maximum number of revisions to keep for wiki pages and
+     * documents. 0 means unlimited.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -35035,8 +35055,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * whether to strip off potentially harming HTML tags in Wiki and HTML
-     * Documents.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
+     * and HTML Documents.
      *
      * @return zimbraNotebookSanitizeHtml, or true if unset
      *
@@ -35048,8 +35069,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * whether to strip off potentially harming HTML tags in Wiki and HTML
-     * Documents.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
+     * and HTML Documents.
      *
      * @param zimbraNotebookSanitizeHtml new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -35064,8 +35086,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * whether to strip off potentially harming HTML tags in Wiki and HTML
-     * Documents.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
+     * and HTML Documents.
      *
      * @param zimbraNotebookSanitizeHtml new value
      * @param attrs existing map to populate, or null to create a new map
@@ -35081,8 +35104,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * whether to strip off potentially harming HTML tags in Wiki and HTML
-     * Documents.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
+     * and HTML Documents.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -35096,8 +35120,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * whether to strip off potentially harming HTML tags in Wiki and HTML
-     * Documents.
+     * Deprecated since: 23.9.0. Deprecated followed by the complete cleanup.
+     * Orig desc: whether to strip off potentially harming HTML tags in Wiki
+     * and HTML Documents.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -35174,7 +35199,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @return zimbraOAuthAccessor, or empty array if unset
      *
@@ -35186,7 +35213,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -35201,7 +35230,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new value
      * @param attrs existing map to populate, or null to create a new map
@@ -35217,7 +35248,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -35232,7 +35265,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -35248,7 +35283,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -35263,7 +35300,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -35279,7 +35318,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -35293,7 +35334,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -57213,7 +57256,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @return zimbraPrefZmgPushNotificationEnabled, or false if unset
      *
@@ -57225,7 +57270,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @param zimbraPrefZmgPushNotificationEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -57240,7 +57287,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @param zimbraPrefZmgPushNotificationEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -57256,7 +57305,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -57270,7 +57321,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Option to turn on/off zimbra mobile gateway push notifications
+     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
+     * removed. Orig desc: Option to turn on/off zimbra mobile gateway push
+     * notifications
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -61490,6 +61543,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @return zimbraUCPassword, or null if unset
@@ -61502,6 +61556,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @param zimbraUCPassword new value
@@ -61517,6 +61572,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @param zimbraUCPassword new value
@@ -61533,6 +61589,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -61547,6 +61604,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * password for the user&#039;s UC service
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -61562,6 +61620,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @return zimbraUCServiceId, or null if unset
@@ -61574,6 +61633,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param zimbraUCServiceId new value
@@ -61589,6 +61649,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param zimbraUCServiceId new value
@@ -61605,6 +61666,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -61619,6 +61681,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * UC service zimbraId
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -61634,6 +61697,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @return zimbraUCUsername, or null if unset
@@ -61646,6 +61710,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @param zimbraUCUsername new value
@@ -61661,6 +61726,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @param zimbraUCUsername new value
@@ -61677,6 +61743,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -61691,6 +61758,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 23.8.0. UCService is not in use anymore. Orig desc:
      * username for the user&#039;s UC service
      *
      * @param attrs existing map to populate, or null to create a new map

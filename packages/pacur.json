@@ -27,6 +27,12 @@
     },
     {
       "name": "common-core-jar"
+    },
+    {
+      "name": "appserver-store-libs"
+    },
+    {
+      "name": "common-core-libs"
     }
   ]
 }

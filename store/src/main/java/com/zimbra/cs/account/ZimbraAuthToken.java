@@ -126,18 +126,6 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
     if (expireTime == 0) {
       long lifetime;
       switch (usage) {
-        case ENABLE_TWO_FACTOR_AUTH:
-          lifetime =
-              acct.getTimeInterval(
-                  Provisioning.A_zimbraTwoFactorAuthTokenLifetime,
-                  DEFAULT_TWO_FACTOR_AUTH_LIFETIME * 1000);
-          break;
-        case TWO_FACTOR_AUTH:
-          lifetime =
-              acct.getTimeInterval(
-                  Provisioning.A_zimbraTwoFactorAuthEnablementTokenLifetime,
-                  DEFAULT_TWO_FACTOR_ENABLEMENT_AUTH_LIFETIME * 1000);
-          break;
         case AUTH:
         default:
           lifetime =
@@ -156,17 +144,7 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
 
   public ZimbraAuthToken(
       String acctId, String externalEmail, String pass, String digest, long expires) {
-    this(acctId, false, externalEmail, pass, digest, expires);
-  }
-
-  public ZimbraAuthToken(
-      String acctId,
-      boolean zmgApp,
-      String externalEmail,
-      String pass,
-      String digest,
-      long expires) {
-    properties = new AuthTokenProperties(acctId, zmgApp, externalEmail, pass, digest, expires);
+    properties = new AuthTokenProperties(acctId, externalEmail, pass, digest, expires);
   }
 
   protected static AuthTokenKey getCurrentKey() throws AuthTokenException {
@@ -281,8 +259,6 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
 
   @Override
   public boolean isZimbraUser() {
-    // C_TYPE_ZMG_APP type indicates the bootstrap auth token issued for ZMG app. Technically
-    // that too represents a Zimbra account/user
     return AuthTokenUtil.isZimbraUser(properties.getType());
   }
 
@@ -307,7 +283,7 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
   }
 
   private void register() {
-    if (!isZimbraUser() || isZMGAppBootstrap()) {
+    if (!isZimbraUser()) {
       return;
     }
     try {
@@ -416,7 +392,7 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
 
   @Override
   public boolean isRegistered() {
-    if (!isZimbraUser() || isZMGAppBootstrap()) {
+    if (!isZimbraUser()) {
       return true;
     }
     try {
@@ -610,11 +586,6 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
     properties.setTokenID(new Random().nextInt(Integer.MAX_VALUE - 1) + 1);
     properties.setEncoded(null);
     this.register();
-  }
-
-  @Override
-  public boolean isZMGAppBootstrap() {
-    return AuthTokenProperties.C_TYPE_ZMG_APP.equals(properties.getType());
   }
 
   @Override

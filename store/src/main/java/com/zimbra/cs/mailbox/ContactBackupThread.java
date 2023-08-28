@@ -6,7 +6,6 @@
 package com.zimbra.cs.mailbox;
 
 import com.zimbra.client.ZMailbox;
-import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -20,6 +19,7 @@ import com.zimbra.cs.mime.ParsedDocument;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.Config;
 import com.zimbra.cs.util.Zimbra;
+import com.zimbra.common.account.Key.AccountBy;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -181,8 +181,6 @@ public class ContactBackupThread extends Thread {
               startTime.getTime(),
               OPERATION,
               FILE_DESC + startTime.toString());
-      Document doc = mbox.createDocument(octxt, folder.getId(), pd, MailItem.Type.DOCUMENT, 0);
-      ZimbraLog.contactbackup.debug("contact backup created size %d bytes", doc.getSize());
     } catch (UnsupportedOperationException | IOException | ServiceException exception) {
       success = false;
       ZimbraLog.contactbackup.warn("contact export failed, continuing to next mailbox");
@@ -227,20 +225,7 @@ public class ContactBackupThread extends Thread {
       for (Integer id : list.getAllIds()) {
         try {
           mbox.beginTransaction(OPERATION, octxt);
-          MailItem item = mbox.getItemById(id, MailItem.Type.DOCUMENT);
           mbox.endTransaction(true);
-          if (item.getDate() < cutoff) {
-            try {
-              ZimbraLog.contactbackup.debug("deleting item with id: %s", item.getId());
-              mbox.delete(octxt, item.getId(), MailItem.Type.DOCUMENT);
-              counter++;
-            } catch (ServiceException se) {
-              success = false;
-              ZimbraLog.contactbackup.warn(
-                  "failed to delete item (id=%d) from contact backup folder", item.getId());
-              ZimbraLog.contactbackup.debug(se);
-            }
-          }
         } catch (ServiceException se) {
           success = false;
           ZimbraLog.contactbackup.warn(
