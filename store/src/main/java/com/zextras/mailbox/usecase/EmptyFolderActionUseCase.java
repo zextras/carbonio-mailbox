@@ -8,16 +8,20 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
+import io.vavr.NotImplementedError;
 import io.vavr.control.Try;
 import java.util.Optional;
+import javax.inject.Inject;
 
-public class FolderActionUseCase {
+public class EmptyFolderActionUseCase {
 
   private final MailboxManager mailboxManager;
-  private final ItemProvider itemProvider;
+  private final ItemIdFactory itemIdFactory;
 
-  public FolderActionUseCase(MailboxManager mailboxManager) {
+  @Inject
+  public EmptyFolderActionUseCase(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
+    this.itemIdFactory = itemIdFactory;
   }
 
   /**
@@ -40,12 +44,16 @@ public class FolderActionUseCase {
                           new IllegalArgumentException(
                               "unable to locate the mailbox for the given accountId"));
 
-          // FIXME we need to move the new here
-          final ItemId itemId = new ItemId(folderId, accountId);
+          final ItemId itemId = itemIdFactory.create(folderId, accountId);
 
-          userMailbox.emptyFolder(operationContext, folderId, false);
+          userMailbox.emptyFolder(operationContext, itemId.getId(), false);
 
           return null;
         });
+  }
+
+  public Try<Void> emptyRecursively() {
+    // FIXME implement me
+    return Try.failure(new NotImplementedError());
   }
 }

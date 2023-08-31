@@ -458,6 +458,10 @@
       <groupId>com.google.inject.extensions</groupId>
       <artifactId>guice-servlet</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.inject.extensions</groupId>
+      <artifactId>guice-assistedinject</artifactId>
+    </dependency>
     <!-- Metrics collector -->
     <dependency>
       <groupId>io.prometheus</groupId>
