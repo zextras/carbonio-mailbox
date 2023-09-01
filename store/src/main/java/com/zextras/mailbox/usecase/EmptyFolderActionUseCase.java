@@ -8,7 +8,6 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
-import io.vavr.NotImplementedError;
 import io.vavr.control.Try;
 import java.util.Optional;
 import javax.inject.Inject;
@@ -33,10 +32,28 @@ public class EmptyFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> empty(OperationContext operationContext, String accountId, String folderId) {
-    return Try.of(
+    return innerEmptyCall(operationContext, accountId, folderId, false);
+  }
+
+  /**
+   * This method does recursively remove the folders.
+   *
+   * @param accountId the target account which mailbox folder will be emptied
+   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @return a {@link Try} object with the status of the operation
+   */
+  public Try<Void> emptyRecursively(
+      OperationContext operationContext, String accountId, String folderId) {
+    return innerEmptyCall(operationContext, accountId, folderId, true);
+  }
+
+  private Try<Void> innerEmptyCall(
+      OperationContext operationContext,
+      String accountId,
+      String folderId,
+      boolean removeSubFolders) {
+    return Try.run(
         () -> {
-          // There is the accountId of who is making the request
-          // There is the requested mailbox.
           final Mailbox userMailbox =
               Optional.ofNullable(mailboxManager.getMailboxByAccountId(accountId, true))
                   .orElseThrow(
@@ -45,15 +62,11 @@ public class EmptyFolderActionUseCase {
                               "unable to locate the mailbox for the given accountId"));
 
           final ItemId itemId = itemIdFactory.create(folderId, accountId);
+          userMailbox.emptyFolder(operationContext, itemId.getId(), removeSubFolders);
 
-          userMailbox.emptyFolder(operationContext, itemId.getId(), false);
-
-          return null;
+          if (itemId.getId() == Mailbox.ID_FOLDER_TRASH) {
+            userMailbox.purgeImapDeleted(operationContext);
+          }
         });
-  }
-
-  public Try<Void> emptyRecursively() {
-    // FIXME implement me
-    return Try.failure(new NotImplementedError());
   }
 }

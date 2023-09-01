@@ -141,9 +141,56 @@ class EmptyFolderActionUseCaseTest {
   }
 
   @Test
-  void shouldFolderBeEmpty() {
-    fail("Implement me");
-    // TODO actually check that the folder is being emptied
+  void shouldFolderBeEmpty() throws ServiceException {
+    final String accountId = "account-id123";
+    final String folderId = accountId + ":1";
+    final Mailbox userMailbox = mock(Mailbox.class);
+    final OperationContext operationContext = mock(OperationContext.class);
+    final ItemId itemId = mock(ItemId.class);
+
+    when(itemId.getId()).thenReturn(1);
+    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
+
+    emptyFolderActionUseCase.empty(operationContext, accountId, folderId);
+
+    verify(userMailbox, times(1)).emptyFolder(operationContext, itemId.getId(), false);
+  }
+
+  @Test
+  void shouldEmptyRecursivelySubFolders() throws ServiceException {
+    final String accountId = "account-id123";
+    final String folderId = accountId + ":1";
+    final Mailbox userMailbox = mock(Mailbox.class);
+    final OperationContext operationContext = mock(OperationContext.class);
+    final ItemId itemId = mock(ItemId.class);
+
+    when(itemId.getId()).thenReturn(1);
+    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
+
+    emptyFolderActionUseCase.emptyRecursively(operationContext, accountId, folderId);
+
+    verify(userMailbox, times(1)).emptyFolder(operationContext, itemId.getId(), true);
+  }
+
+  @Test
+  void shouldPurgeImapIfFolderIsTrashed() throws ServiceException {
+    final String accountId = "account-id123";
+    final String folderId = accountId + ":3";
+    final Mailbox userMailbox = mock(Mailbox.class);
+    final OperationContext operationContext = mock(OperationContext.class);
+    final ItemId itemId = mock(ItemId.class);
+
+    when(itemId.getId()).thenReturn(3);
+
+    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
+
+    emptyFolderActionUseCase.empty(operationContext, accountId, folderId);
+
+    verify(userMailbox, times(1)).emptyFolder(operationContext, itemId.getId(), false);
+    verify(userMailbox, times(1)).purgeImapDeleted(operationContext);
   }
 
   /**
