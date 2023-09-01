@@ -66,7 +66,7 @@ public class ImportFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, itemId.getId())).thenReturn(folder);
-    doThrow(ServiceException.RESOURCE_UNREACHABLE("IOException: ", new RuntimeException(), null))
+    doThrow(ServiceException.RESOURCE_UNREACHABLE("IOException: ", new RuntimeException()))
         .when(userMailbox)
         .importFeed(operationContext, 1, url, false);
 
