@@ -30,6 +30,37 @@ class RefreshFolderActionUseCaseTest {
   }
 
   @Test
+  void shouldReturnFailureIfTheMailboxDoesntExist() {
+    final String accountId = "nonExistingAccount";
+    final String folderId = "folderName";
+
+    final Try<Void> operationResult = refreshFolderActionUseCase.refresh(null, accountId, folderId);
+
+    assertTrue(
+        operationResult.isFailure(),
+        "Folder should not be refreshed because account id doesn't exist");
+    final Throwable gotError = operationResult.getCause();
+    assertInstanceOf(IllegalArgumentException.class, gotError);
+    assertEquals("unable to locate the mailbox for the given accountId", gotError.getMessage());
+  }
+
+  @Test
+  void shouldReturnFailureIfAccountIdIsNull() throws Exception {
+    final String accountId = null;
+    final String folderId = "folderName";
+
+    when(mailboxManager.getMailboxByAccountId(null, true))
+        .thenThrow(new IllegalArgumentException());
+    final Try<Void> operationResult = refreshFolderActionUseCase.refresh(null, accountId, folderId);
+
+    assertTrue(
+        operationResult.isFailure(), "Folder should not be refreshed because account id is null");
+    final Throwable gotError = operationResult.getCause();
+    assertInstanceOf(IllegalArgumentException.class, gotError);
+    assertNull(gotError.getMessage());
+  }
+
+  @Test
   void shouldBeSuccessAfterRefreshFolder() throws Exception {
     final String accountId = "account-id123";
     final String folderId = accountId + ":1";
@@ -57,7 +88,7 @@ class RefreshFolderActionUseCaseTest {
     when(itemId.getId()).thenReturn(1);
     doThrow(MailServiceException.NO_SUCH_FOLDER(folderId))
         .when(userMailbox)
-        .emptyFolder(operationContext, 1, false);
+        .synchronizeFolder(operationContext, 1);
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
