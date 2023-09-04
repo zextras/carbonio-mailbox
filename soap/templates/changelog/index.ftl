@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 <link href="images/favicon.ico" rel="shortcut icon">
-<title>Zimbra SOAP API : Change Log</title>
+<title>Carbonio SOAP API : Change Log</title>
 </head>
 
 <body>

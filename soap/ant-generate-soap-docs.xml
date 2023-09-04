@@ -8,7 +8,7 @@
   <property name="test.classes.dir" location="${build.dir}/test-classes"/>
   <property name="zimbra.service.wsdl.file" location="${build.classes.dir}/com/zimbra/soap/ZimbraService.wsdl" />
   <property name="soapdocs.output.dir" location="${build.dir}/docs/soap" />
-  <property name="soapdocs.src.dir" location="soap/src/java" />
+  <property name="soapdocs.src.dir" location="soap/src/main/java" />
   <property name="soapdocs.apidesc.file" location="${build.dir}/soapapi-desc.json" />
   <property name="soapdocs.apidesc.baseline.file" location="soap/baseline-soapapi-desc.json.gz" />
   <property name="soapapi.changelog.output.dir" location="${soapdocs.output.dir}/api-changelog" />

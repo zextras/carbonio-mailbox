@@ -23,7 +23,7 @@ Zimbra SOAP API Reference ${build.version}
 <script type="text/javascript">
 function windowTitle()
 {
-    parent.document.title="Command <${command.requestName}> (Zimbra SOAP API Reference ${build.version})";
+    parent.document.title="Command <${command.requestName}> (Carbonio SOAP API Reference ${build.version})";
 }
 </script>
 
