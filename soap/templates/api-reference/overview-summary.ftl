@@ -17,7 +17,7 @@ Carbonio SOAP API Reference ${build.version}
 <script type="text/javascript">
 function windowTitle()
 {
-    parent.document.title="Zimbra SOAP API Reference ${build.version}";
+    parent.document.title="Carbonio SOAP API Reference ${build.version}";
 }
 </script>
 
