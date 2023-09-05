@@ -1,5 +1,6 @@
 package com.zextras.mailbox.usecase;
 
+import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zextras.mailbox.usecase.ldap.GrantType;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
