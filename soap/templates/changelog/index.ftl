@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 <link href="images/favicon.ico" rel="shortcut icon">
-<title>Zimbra SOAP API : Change Log</title>
+<title>Carbonio SOAP API : Change Log</title>
 </head>
 
 <body>
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
     <div class="container header">
         <img src="images/logo.png" width="168" height="40" border="0" alt="Zimbra" title="Zimbra">
-        <h2>ZCS ${comparison.buildVersion} : Zimbra SOAP API : Change Log</h2>
+        <h2>ZCS ${comparison.buildVersion} : Carbonio SOAP API : Change Log</h2>
     </div>
 
     <div class="content-wrap">

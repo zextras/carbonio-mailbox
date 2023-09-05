@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlSchema;
 
 /**
  * Helper class for ZmApiDoclet intended to facilitate the generation of documentation for the
- * Zimbra SOAP API.
+ * Carbonio SOAP API.
  */
 public class WsdlDocGenerator {
 

@@ -8,7 +8,7 @@
   <property name="test.classes.dir" location="${build.dir}/test-classes"/>
   <property name="zimbra.service.wsdl.file" location="${build.classes.dir}/com/zimbra/soap/ZimbraService.wsdl" />
   <property name="soapdocs.output.dir" location="${build.dir}/docs/soap" />
-  <property name="soapdocs.src.dir" location="soap/src/java" />
+  <property name="soapdocs.src.dir" location="soap/src/main/java" />
   <property name="soapdocs.apidesc.file" location="${build.dir}/soapapi-desc.json" />
   <property name="soapdocs.apidesc.baseline.file" location="soap/baseline-soapapi-desc.json.gz" />
   <property name="soapapi.changelog.output.dir" location="${soapdocs.output.dir}/api-changelog" />
@@ -59,7 +59,7 @@
     <delete dir="${soapdocs.output.dir}" quiet="true" />
     <mkdir dir="${soapdocs.output.dir}" />
 
-    <javadoc sourcepath="${src.dir}/main/java" docletpathref="class.path" classpathref="class.path">
+    <javadoc sourcepath="${src.dir}/main/java" access="private" docletpathref="class.path" classpathref="class.path">
       <doclet name="com.zimbra.doc.soap.doclet.ZmApiDoclet">
         <param name="--templates-dir" value="${templates.dir}" />
         <param name="--output-dir" value="${soapdocs.output.dir}" />
