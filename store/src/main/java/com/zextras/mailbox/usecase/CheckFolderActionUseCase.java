@@ -1,5 +1,6 @@
 package com.zextras.mailbox.usecase;
 
+import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;

@@ -1,6 +1,7 @@
 package com.zextras.mailbox.usecase;
 
 import com.google.common.base.Strings;
+import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;

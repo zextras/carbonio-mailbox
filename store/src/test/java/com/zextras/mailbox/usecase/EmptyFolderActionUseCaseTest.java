@@ -7,6 +7,7 @@ package com.zextras.mailbox.usecase;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.mailbox.MailServiceException;

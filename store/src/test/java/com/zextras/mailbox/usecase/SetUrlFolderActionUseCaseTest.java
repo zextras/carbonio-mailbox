@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
+import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.service.util.ItemId;

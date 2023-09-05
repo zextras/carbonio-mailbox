@@ -4628,6 +4628,14 @@ public class Mailbox implements MailboxStore {
       return mFolder;
     }
 
+    public Folder getFolder() {
+      return mFolder;
+    }
+
+    public List<FolderNode> getSubFolders() {
+      return mSubfolders;
+    }
+
     @Override
     public String toString() {
       return "" + mName + " [" + mId + "]" + (mFolder == null ? " (hidden)" : "");

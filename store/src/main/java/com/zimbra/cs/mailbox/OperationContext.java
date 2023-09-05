@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.google.inject.assistedinject.Assisted;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.mailbox.OpContext;
 import com.zimbra.common.service.ServiceException;
@@ -19,6 +20,7 @@ import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.session.Session;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
 
 public class OperationContext implements OpContext {
   public static final boolean CHECK_CREATED = false, CHECK_MODIFIED = true;
@@ -42,7 +44,8 @@ public class OperationContext implements OpContext {
     player = redoPlayer;
   }
 
-  public OperationContext(Account acct) {
+  @Inject
+  public OperationContext(@Assisted("account") Account acct) {
     this(acct, false);
   }
 

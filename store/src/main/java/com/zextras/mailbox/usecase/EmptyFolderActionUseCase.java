@@ -4,6 +4,7 @@
 
 package com.zextras.mailbox.usecase;
 
+import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
