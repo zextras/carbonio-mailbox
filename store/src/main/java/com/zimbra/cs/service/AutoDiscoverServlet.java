@@ -397,7 +397,8 @@ public class AutoDiscoverServlet extends ZimbraServlet {
         return null;
       }
 
-      if (!isEwsClient(responseSchema)) {
+      if (!isEwsClient(responseSchema)
+          && !account.getBooleanAttr(Provisioning.A_zimbraFeatureMobileSyncEnabled, false)) {
         log.info("User account not enabled for ZimbraSync; user=" + user);
         sendError(resp, HttpServletResponse.SC_FORBIDDEN, "Account not enabled for ZimbraSync");
         return null;

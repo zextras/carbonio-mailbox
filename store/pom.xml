@@ -83,11 +83,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>jaxws-api</artifactId>
-      <groupId>javax.xml.ws</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>commons-fileupload</artifactId>
       <groupId>commons-fileupload</groupId>
     </dependency>
@@ -180,11 +175,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>yuicompressor</artifactId>
-      <groupId>com.yahoo.platform.yui</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>junixsocket-common</artifactId>
       <groupId>com.kohlschutter.junixsocket</groupId>
     </dependency>
@@ -222,11 +212,6 @@
     <dependency>
       <artifactId>libidn</artifactId>
       <groupId>org.gnu.inet</groupId>
-    </dependency>
-
-    <dependency>
-      <artifactId>java-semver</artifactId>
-      <groupId>com.github.zafarkhaja</groupId>
     </dependency>
 
     <dependency>

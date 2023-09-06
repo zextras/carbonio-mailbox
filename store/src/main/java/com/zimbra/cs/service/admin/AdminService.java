@@ -159,17 +159,6 @@ public class AdminService implements DocumentService {
         AdminConstants.RECALCULATE_MAILBOX_COUNTS_REQUEST, new RecalculateMailboxCounts());
 
     // zimlet
-    dispatcher.registerHandler(AdminConstants.GET_ZIMLET_REQUEST, new GetZimlet());
-    dispatcher.registerHandler(AdminConstants.CREATE_ZIMLET_REQUEST, new CreateZimlet());
-    dispatcher.registerHandler(AdminConstants.DELETE_ZIMLET_REQUEST, new DeleteZimlet());
-    dispatcher.registerHandler(
-        AdminConstants.GET_ADMIN_EXTENSION_ZIMLETS_REQUEST, new GetAdminExtensionZimlets());
-    dispatcher.registerHandler(AdminConstants.GET_ZIMLET_STATUS_REQUEST, new GetZimletStatus());
-    dispatcher.registerHandler(AdminConstants.GET_ALL_ZIMLETS_REQUEST, new GetAllZimlets());
-    dispatcher.registerHandler(AdminConstants.DEPLOY_ZIMLET_REQUEST, new DeployZimlet());
-    dispatcher.registerHandler(AdminConstants.UNDEPLOY_ZIMLET_REQUEST, new UndeployZimlet());
-    dispatcher.registerHandler(AdminConstants.CONFIGURE_ZIMLET_REQUEST, new ConfigureZimlet());
-    dispatcher.registerHandler(AdminConstants.MODIFY_ZIMLET_REQUEST, new ModifyZimlet());
     dispatcher.registerHandler(AdminConstants.DUMP_SESSIONS_REQUEST, new DumpSessions());
     dispatcher.registerHandler(AdminConstants.GET_SESSIONS_REQUEST, new GetSessions());
 
@@ -334,9 +323,6 @@ public class AdminService implements DocumentService {
     // store manager verifier
     dispatcher.registerHandler(
         AdminConstants.VERIFY_STORE_MANAGER_REQUEST, new VerifyStoreManager());
-
-    // Skins
-    dispatcher.registerHandler(AdminConstants.GET_ALL_SKINS_REQUEST, new GetAllSkins());
 
     // Filter rules
     dispatcher.registerHandler(AdminConstants.GET_FILTER_RULES_REQUEST, new GetFilterRules());

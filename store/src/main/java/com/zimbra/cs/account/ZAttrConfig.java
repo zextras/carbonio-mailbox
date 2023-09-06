@@ -19980,10 +19980,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @return zimbraFreebusyExchangeServerType, or ZAttrProvisioning.FreebusyExchangeServerType.webdav if unset and/or has invalid value
      *
@@ -19995,10 +19994,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @return zimbraFreebusyExchangeServerType, or "webdav" if unset
      *
@@ -20010,10 +20008,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -20028,10 +20025,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @param attrs existing map to populate, or null to create a new map
@@ -20047,10 +20043,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -20065,10 +20060,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @param attrs existing map to populate, or null to create a new map
@@ -20084,10 +20078,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -20101,10 +20094,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -79060,6 +79052,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether zimlets that send sensitive data are disabled in
      * &quot;mixed&quot; zimbraMailMode
      *
@@ -79073,6 +79066,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether zimlets that send sensitive data are disabled in
      * &quot;mixed&quot; zimbraMailMode
      *
@@ -79089,6 +79083,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether zimlets that send sensitive data are disabled in
      * &quot;mixed&quot; zimbraMailMode
      *
@@ -79106,6 +79101,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether zimlets that send sensitive data are disabled in
      * &quot;mixed&quot; zimbraMailMode
      *
@@ -79121,6 +79117,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether zimlets that send sensitive data are disabled in
      * &quot;mixed&quot; zimbraMailMode
      *
@@ -79137,8 +79134,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * List of Zimlets available to this domain. Zimlets available to
-     * accounts in the domain is the union of account/cos attribute
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
+     * of Zimlets available to this domain. Zimlets available to accounts in
+     * the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -79152,8 +79150,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * List of Zimlets available to this domain. Zimlets available to
-     * accounts in the domain is the union of account/cos attribute
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
+     * of Zimlets available to this domain. Zimlets available to accounts in
+     * the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -79170,8 +79169,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * List of Zimlets available to this domain. Zimlets available to
-     * accounts in the domain is the union of account/cos attribute
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
+     * of Zimlets available to this domain. Zimlets available to accounts in
+     * the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -79189,8 +79189,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * List of Zimlets available to this domain. Zimlets available to
-     * accounts in the domain is the union of account/cos attribute
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
+     * of Zimlets available to this domain. Zimlets available to accounts in
+     * the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -79207,8 +79208,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * List of Zimlets available to this domain. Zimlets available to
-     * accounts in the domain is the union of account/cos attribute
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
+     * of Zimlets available to this domain. Zimlets available to accounts in
+     * the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -79226,8 +79228,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * List of Zimlets available to this domain. Zimlets available to
-     * accounts in the domain is the union of account/cos attribute
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
+     * of Zimlets available to this domain. Zimlets available to accounts in
+     * the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -79244,8 +79247,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * List of Zimlets available to this domain. Zimlets available to
-     * accounts in the domain is the union of account/cos attribute
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
+     * of Zimlets available to this domain. Zimlets available to accounts in
+     * the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -79263,8 +79267,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * List of Zimlets available to this domain. Zimlets available to
-     * accounts in the domain is the union of account/cos attribute
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
+     * of Zimlets available to this domain. Zimlets available to accounts in
+     * the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -79280,8 +79285,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * List of Zimlets available to this domain. Zimlets available to
-     * accounts in the domain is the union of account/cos attribute
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
+     * of Zimlets available to this domain. Zimlets available to accounts in
+     * the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -79298,6 +79304,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to enable JSP compilation for Zimlets (i.e. for /zimlet
      * webapp)
      *
@@ -79311,6 +79318,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to enable JSP compilation for Zimlets (i.e. for /zimlet
      * webapp)
      *
@@ -79327,6 +79335,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to enable JSP compilation for Zimlets (i.e. for /zimlet
      * webapp)
      *
@@ -79344,6 +79353,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to enable JSP compilation for Zimlets (i.e. for /zimlet
      * webapp)
      *
@@ -79359,6 +79369,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to enable JSP compilation for Zimlets (i.e. for /zimlet
      * webapp)
      *

@@ -39,8 +39,6 @@ public class AccountConstants {
   public static final String E_GET_ALL_LOCALES_RESPONSE = "GetAllLocalesResponse";
   public static final String E_GET_AVAILABLE_LOCALES_REQUEST = "GetAvailableLocalesRequest";
   public static final String E_GET_AVAILABLE_LOCALES_RESPONSE = "GetAvailableLocalesResponse";
-  public static final String E_GET_AVAILABLE_SKINS_REQUEST = "GetAvailableSkinsRequest";
-  public static final String E_GET_AVAILABLE_SKINS_RESPONSE = "GetAvailableSkinsResponse";
   public static final String E_GET_AVAILABLE_CSV_FORMATS_REQUEST = "GetAvailableCsvFormatsRequest";
   public static final String E_GET_AVAILABLE_CSV_FORMATS_RESPONSE =
       "GetAvailableCsvFormatsResponse";
@@ -50,12 +48,8 @@ public class AccountConstants {
   public static final String E_GET_WHITE_BLACK_LIST_RESPONSE = "GetWhiteBlackListResponse";
   public static final String E_MODIFY_PREFS_REQUEST = "ModifyPrefsRequest";
   public static final String E_MODIFY_PREFS_RESPONSE = "ModifyPrefsResponse";
-  public static final String E_MODIFY_PROPERTIES_REQUEST = "ModifyPropertiesRequest";
-  public static final String E_MODIFY_PROPERTIES_RESPONSE = "ModifyPropertiesResponse";
   public static final String E_MODIFY_WHITE_BLACK_LIST_REQUEST = "ModifyWhiteBlackListRequest";
   public static final String E_MODIFY_WHITE_BLACK_LIST_RESPONSE = "ModifyWhiteBlackListResponse";
-  public static final String E_MODIFY_ZIMLET_PREFS_REQUEST = "ModifyZimletPrefsRequest";
-  public static final String E_MODIFY_ZIMLET_PREFS_RESPONSE = "ModifyZimletPrefsResponse";
 
   // GAL
   public static final String E_AUTO_COMPLETE_GAL_REQUEST = "AutoCompleteGalRequest";
@@ -172,10 +166,6 @@ public class AccountConstants {
       QName.get(E_GET_AVAILABLE_LOCALES_REQUEST, NAMESPACE);
   public static final QName GET_AVAILABLE_LOCALES_RESPONSE =
       QName.get(E_GET_AVAILABLE_LOCALES_RESPONSE, NAMESPACE);
-  public static final QName GET_AVAILABLE_SKINS_REQUEST =
-      QName.get(E_GET_AVAILABLE_SKINS_REQUEST, NAMESPACE);
-  public static final QName GET_AVAILABLE_SKINS_RESPONSE =
-      QName.get(E_GET_AVAILABLE_SKINS_RESPONSE, NAMESPACE);
   public static final QName GET_AVAILABLE_CSV_FORMATS_REQUEST =
       QName.get(E_GET_AVAILABLE_CSV_FORMATS_REQUEST, NAMESPACE);
   public static final QName GET_AVAILABLE_CSV_FORMATS_RESPONSE =
@@ -189,18 +179,10 @@ public class AccountConstants {
       QName.get(E_GET_WHITE_BLACK_LIST_RESPONSE, NAMESPACE);
   public static final QName MODIFY_PREFS_REQUEST = QName.get(E_MODIFY_PREFS_REQUEST, NAMESPACE);
   public static final QName MODIFY_PREFS_RESPONSE = QName.get(E_MODIFY_PREFS_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_PROPERTIES_REQUEST =
-      QName.get(E_MODIFY_PROPERTIES_REQUEST, NAMESPACE);
-  public static final QName MODIFY_PROPERTIES_RESPONSE =
-      QName.get(E_MODIFY_PROPERTIES_RESPONSE, NAMESPACE);
   public static final QName MODIFY_WHITE_BLACK_LIST_REQUEST =
       QName.get(E_MODIFY_WHITE_BLACK_LIST_REQUEST, NAMESPACE);
   public static final QName MODIFY_WHITE_BLACK_LIST_RESPONSE =
       QName.get(E_MODIFY_WHITE_BLACK_LIST_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_ZIMLET_PREFS_REQUEST =
-      QName.get(E_MODIFY_ZIMLET_PREFS_REQUEST, NAMESPACE);
-  public static final QName MODIFY_ZIMLET_PREFS_RESPONSE =
-      QName.get(E_MODIFY_ZIMLET_PREFS_RESPONSE, NAMESPACE);
 
   // GAL
   public static final QName AUTO_COMPLETE_GAL_REQUEST =
@@ -365,7 +347,6 @@ public class AccountConstants {
   public static final String E_ENTRY_SEARCH_FILTER_SINGLECOND = "cond";
   public static final String E_LOCALE = "locale";
   public static final String E_VIRTUAL_HOST = "virtualHost";
-  public static final String E_SKIN = "skin";
   public static final String E_HAB_ROOTS = "habRoots";
   public static final String E_HAB = "hab";
   public static final String E_IDENTITIES = "identities";
@@ -378,7 +359,6 @@ public class AccountConstants {
   public static final String E_CHILD_ACCOUNTS = "childAccounts";
   public static final String E_CHILD_ACCOUNT = "childAccount";
   public static final String E_CONTENT = "content";
-  public static final String E_REQUESTED_SKIN = "requestedSkin";
   public static final String E_REST = "rest";
   public static final String E_CSV = "csv";
   public static final String E_COS = "cos";
@@ -426,10 +406,6 @@ public class AccountConstants {
   public static final String A_OWNER_OF = "ownerOf";
   public static final String A_PERSIST_AUTH_TOKEN_COOKIE = "persistAuthTokenCookie";
   public static final String A_TOTAL = "total";
-  public static final String A_ZIMLET = "zimlet";
-  public static final String A_ZIMLET_BASE_URL = "baseUrl";
-  public static final String A_ZIMLET_PRIORITY = "priority";
-  public static final String A_ZIMLET_PRESENCE = "presence";
   public static final String A_TIMESTAMP = "timestamp";
   public static final String A_TOKENIZE_KEY = "tokenizeKey";
   public static final String A_EXPIRES = "expires";

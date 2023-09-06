@@ -148,11 +148,6 @@
         <version>${lucene.version}</version>
       </dependency>
       <dependency>
-        <groupId>javax.xml.ws</groupId>
-        <artifactId>jaxws-api</artifactId>
-        <version>2.3.0</version>
-      </dependency>
-      <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
         <version>1.4</version>
@@ -176,11 +171,6 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
         <version>1.1</version>
-      </dependency>
-      <dependency>
-        <groupId>com.yahoo.platform.yui</groupId>
-        <artifactId>yuicompressor</artifactId>
-        <version>2.4.8</version>
       </dependency>
       <dependency>
         <groupId>com.google.javascript</groupId>
@@ -226,11 +216,6 @@
         <groupId>org.gnu.inet</groupId>
         <artifactId>libidn</artifactId>
         <version>1.24</version>
-      </dependency>
-      <dependency>
-        <groupId>com.github.zafarkhaja</groupId>
-        <artifactId>java-semver</artifactId>
-        <version>0.9.0</version>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
@@ -881,7 +866,7 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <revision>23.9.0-SNAPSHOT</revision>
+    <revision>23.9.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <!-- Skip Dependency check by default -->
     <dependency-check.skip>true</dependency-check.skip>

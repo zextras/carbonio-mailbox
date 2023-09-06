@@ -218,6 +218,7 @@
       "zimbraMailIdleSessionTimeout": "1d",
       "zimbraFileShareLifetime": "0",
       "zimbraIdentityMaxNumEntries": "20",
+      "zimbraFeatureMobileSyncEnabled": "TRUE",
       "zimbraFeaturePop3DataSourceEnabled": "TRUE",
       "zimbraFeatureDiscardInFiltersEnabled": "TRUE",
       "zimbraFeatureNewMailNotificationEnabled": "TRUE",

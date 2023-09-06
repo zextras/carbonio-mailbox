@@ -153,8 +153,6 @@ public final class SearchGrants {
         tt = TargetType.server;
       } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraXMPPComponent)) {
         tt = TargetType.xmppcomponent;
-      } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraZimletEntry)) {
-        tt = TargetType.zimlet;
       } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraGlobalConfig)) {
         tt = TargetType.config;
       } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraAclTarget)) {
@@ -165,11 +163,7 @@ public final class SearchGrants {
       }
       Entry entry;
       try {
-        if (tt == TargetType.zimlet) {
-          entry = TargetType.lookupTarget(prov, tt, TargetBy.name, sgr.cn);
-        } else {
-          entry = TargetType.lookupTarget(prov, tt, TargetBy.id, sgr.zimbraId, needFullDL, true);
-        }
+        entry = TargetType.lookupTarget(prov, tt, TargetBy.id, sgr.zimbraId, needFullDL, true);
         if (entry == null) {
           ZimbraLog.acl.warn("cannot find target by id %s", sgr.zimbraId);
           throw ServiceException.FAILURE(

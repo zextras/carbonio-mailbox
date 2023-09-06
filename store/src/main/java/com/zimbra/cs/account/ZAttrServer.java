@@ -51091,6 +51091,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to enable JSP compilation for Zimlets (i.e. for /zimlet
      * webapp)
      *
@@ -51104,6 +51105,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to enable JSP compilation for Zimlets (i.e. for /zimlet
      * webapp)
      *
@@ -51120,6 +51122,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to enable JSP compilation for Zimlets (i.e. for /zimlet
      * webapp)
      *
@@ -51137,6 +51140,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to enable JSP compilation for Zimlets (i.e. for /zimlet
      * webapp)
      *
@@ -51152,6 +51156,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to enable JSP compilation for Zimlets (i.e. for /zimlet
      * webapp)
      *
