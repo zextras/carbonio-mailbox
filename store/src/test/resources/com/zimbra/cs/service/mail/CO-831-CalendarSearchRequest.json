@@ -1,0 +1,12 @@
+{
+  "_jsns": "urn:zimbraMail",
+  "limit": "500",
+  "calExpandInstEnd": 1696543200000,
+  "calExpandInstStart": 1691272800000,
+  "offset": 0,
+  "sortBy": "none",
+  "types": "appointment",
+  "query": {
+    "_content": "test"
+  }
+}
