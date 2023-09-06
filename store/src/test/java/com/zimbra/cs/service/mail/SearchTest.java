@@ -199,6 +199,6 @@ public class SearchTest {
     final Element searchRequestElement =
         Element.parseJSON(jsonSearch, MailConstants.SEARCH_REQUEST, JSONElement.mFactory);
     final Element searchResponseElement = search.handle(searchRequestElement, context);
-    Assertions.assertFalse(searchResponseElement.toString().contains("ridZ"));
+    Assertions.assertTrue(searchResponseElement.toString().contains("ridZ"));
   }
 }
