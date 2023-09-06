@@ -11,6 +11,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.zimbra.common.calendar.ZCalendar.ZCalendarBuilder;
+import com.zimbra.common.calendar.ZCalendar.ZICalendarParseHandler;
+import com.zimbra.common.calendar.ZCalendar.ZVCalendar;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
@@ -39,6 +42,7 @@ import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.MailServiceException.ExportPeriodNotSpecifiedException;
 import com.zimbra.cs.mailbox.MailServiceException.ExportPeriodTooLongException;
 import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.Mailbox.SetCalendarItemData;
 import com.zimbra.cs.mailbox.MailboxMaintenance;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
@@ -47,6 +51,9 @@ import com.zimbra.cs.mailbox.Mountpoint;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.SearchFolder;
 import com.zimbra.cs.mailbox.Tag;
+import com.zimbra.cs.mailbox.calendar.IcsImportParseHandler;
+import com.zimbra.cs.mailbox.calendar.IcsImportParseHandler.ImportInviteVisitor;
+import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.ParsedContact;
 import com.zimbra.cs.mime.ParsedMessage;
@@ -1311,7 +1318,64 @@ public abstract class ArchiveFormatter extends Formatter {
 
       switch (mi.getType()) {
         case APPOINTMENT:
+          CalendarItem ci = (CalendarItem) mi;
 
+          fldr = createPath(context, fmap, path, MailItem.Type.APPOINTMENT);
+          if (!root || r != Resolve.Reset) {
+            CalendarItem oldCI = null;
+
+            try {
+              oldCI = mbox.getCalendarItemByUid(octxt, ci.getUid());
+            } catch (Exception e) {
+            }
+            if (oldCI != null && r == Resolve.Replace) {
+              mbox.delete(octxt, oldCI.getId(), oldCI.getType());
+            } else {
+              oldItem = oldCI;
+            }
+          }
+          if (oldItem == null || r != Resolve.Skip) {
+            CalendarItem.AlarmData ad = ci.getAlarmData();
+            byte[] data = readArchiveEntry(ais, aie);
+            Map<Integer, MimeMessage> blobMimeMsgMap =
+                data == null ? null : CalendarItem.decomposeBlob(data);
+            SetCalendarItemData defScid = new SetCalendarItemData();
+            SetCalendarItemData exceptionScids[] = null;
+            Invite invs[] = ci.getInvites();
+            MimeMessage mm;
+
+            if (invs != null && invs.length > 0) {
+              defScid.invite = invs[0];
+              if (blobMimeMsgMap != null
+                  && (mm = blobMimeMsgMap.get(defScid.invite.getMailItemId())) != null) {
+                defScid.message = new ParsedMessage(mm, mbox.attachmentsIndexingEnabled());
+              }
+              if (invs.length > 1) {
+                exceptionScids = new SetCalendarItemData[invs.length - 1];
+                for (int i = 1; i < invs.length; i++) {
+                  SetCalendarItemData scid = new SetCalendarItemData();
+
+                  scid.invite = invs[i];
+                  if (blobMimeMsgMap != null
+                      && (mm = blobMimeMsgMap.get(defScid.invite.getMailItemId())) != null) {
+                    scid.message = new ParsedMessage(mm, mbox.attachmentsIndexingEnabled());
+                  }
+                  exceptionScids[i - 1] = scid;
+                }
+              }
+              newItem =
+                  mbox.setCalendarItem(
+                      octxt,
+                      oldItem != null && r == Resolve.Modify ? oldItem.getFolderId() : fldr.getId(),
+                      ci.getFlagBitmask(),
+                      ci.getTags(),
+                      defScid,
+                      exceptionScids,
+                      ci.getAllReplies(),
+                      ad == null ? CalendarItem.NEXT_ALARM_KEEP_CURRENT : ad.getNextAt());
+            }
+          }
+          break;
         case CHAT:
           Chat chat = (Chat) mi;
           byte[] content = readArchiveEntry(ais, aie);
@@ -1725,6 +1789,28 @@ public abstract class ArchiveFormatter extends Formatter {
       }
       switch (type) {
         case APPOINTMENT:
+          boolean continueOnError = context.ignoreAndContinueOnError();
+          boolean preserveExistingAlarms = context.preserveAlarms();
+          InputStream is = ais.getInputStream();
+
+          try {
+            if (aie.getSize() <= LC.calendar_ics_import_full_parse_max_size.intValue()) {
+              List<ZVCalendar> icals = ZCalendarBuilder.buildMulti(is, UTF8);
+              ImportInviteVisitor visitor =
+                  new ImportInviteVisitor(oc, fldr, preserveExistingAlarms);
+
+              Invite.createFromCalendar(
+                  context.targetAccount, null, icals, true, continueOnError, visitor);
+            } else {
+              ZICalendarParseHandler handler =
+                  new IcsImportParseHandler(
+                      oc, context.targetAccount, fldr, continueOnError, preserveExistingAlarms);
+              ZCalendarBuilder.parse(is, UTF8, handler);
+            }
+          } finally {
+            is.close();
+          }
+          break;
         case CONTACT:
           if (file.endsWith(".csv")) {
             reader = new BufferedReader(new InputStreamReader(ais.getInputStream(), UTF8));
