@@ -161,7 +161,7 @@ public class CacheToXML {
     parent.addAttribute(MailConstants.A_CAL_PARTSTAT, instance.getPartStat());
     if (isAppointment)
       parent.addAttribute(MailConstants.A_APPT_FREEBUSY_ACTUAL, instance.getFreeBusyActual());
-    else parent.addAttribute(MailConstants.A_CAL_RECURRENCE_ID_Z, instance.getRecurIdZ());
+      parent.addAttribute(MailConstants.A_CAL_RECURRENCE_ID_Z, instance.getRecurIdZ());
 
     if (!(instance instanceof FullInstanceData)) return;
 
