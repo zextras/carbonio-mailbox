@@ -6,17 +6,31 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class represents a {@link ProxyConfVar} that is used to provide response headers for the
+ * proxy.
+ */
 public class AddHeadersVar extends ProxyConfVar {
 
   private final ArrayList<String> responseHeaders;
   private final Map<String, String> customLoginLogoutUrls;
 
+  /**
+   * Creates a new instance of the {@link AddHeadersVar} class. that represents <code>add_header
+   * </code> nginx directive.
+   *
+   * @param keyword Unique keyword for this variable that will be used to explode the value in nginx
+   *     templates.
+   * @param responseHeaders List of custom response headers.
+   * @param description Description of this configuration variable.
+   * @param customLoginLogoutUrls Map of custom login/logout URLs.
+   */
   public AddHeadersVar(
-      String key,
+      String keyword,
       ArrayList<String> responseHeaders,
       String description,
       Map<String, String> customLoginLogoutUrls) {
-    super(key, null, null, ProxyConfValueType.CUSTOM, ProxyConfOverride.CUSTOM, description);
+    super(keyword, null, null, ProxyConfValueType.CUSTOM, ProxyConfOverride.CUSTOM, description);
     this.responseHeaders = responseHeaders;
     this.customLoginLogoutUrls = customLoginLogoutUrls;
   }
