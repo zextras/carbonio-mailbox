@@ -44,6 +44,7 @@ class GrantFolderActionUseCaseTest {
   private String display;
   private String secretArgs;
   private String secretPassword;
+  private String secretAccessKey;
 
   @BeforeEach
   void setUp() {
@@ -58,6 +59,7 @@ class GrantFolderActionUseCaseTest {
     expiry = 42L;
     randomExpiry = "randomExpiry";
     accountId = "accountId123";
+    secretAccessKey = "accessKey";
     operationContext = mock(OperationContext.class);
     folderId = accountId + ":1";
     userMailbox = mock(Mailbox.class);
@@ -88,7 +90,8 @@ class GrantFolderActionUseCaseTest {
             folderId,
             display,
             secretArgs,
-            secretPassword);
+            secretPassword,
+            secretAccessKey);
 
     assertTrue(grantTry.isSuccess());
   }
@@ -111,7 +114,8 @@ class GrantFolderActionUseCaseTest {
             folderId,
             null,
             secretArgs,
-            secretPassword);
+            secretPassword,
+            secretAccessKey);
     final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(grantTry::get);
 
     assertEquals(GuestAccount.GUID_AUTHUSER, grantResult.getZimbraId());
@@ -135,7 +139,8 @@ class GrantFolderActionUseCaseTest {
             folderId,
             display,
             secretArgs,
-            secretPassword);
+            secretPassword,
+            secretAccessKey);
     final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(grantTry::get);
 
     assertEquals(GuestAccount.GUID_PUBLIC, grantResult.getZimbraId());
@@ -160,7 +165,8 @@ class GrantFolderActionUseCaseTest {
             folderId,
             display,
             secretArgs,
-            secretPassword);
+            secretPassword,
+            secretAccessKey);
 
     assertDoesNotThrow(grantTry::get);
     verify(itemActionUtil, times(1)).validateGrantExpiry(randomExpiry, 420L);
@@ -184,7 +190,8 @@ class GrantFolderActionUseCaseTest {
             folderId,
             display,
             secretArgs,
-            secretPassword);
+            secretPassword,
+            secretAccessKey);
 
     assertTrue(
         operationResult.isFailure(),
@@ -213,7 +220,8 @@ class GrantFolderActionUseCaseTest {
             folderId,
             display,
             secretArgs,
-            secretPassword);
+            secretPassword,
+            secretAccessKey);
 
     final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
 
@@ -246,7 +254,8 @@ class GrantFolderActionUseCaseTest {
             folderId,
             display,
             secretArgs,
-            secretPassword);
+            secretPassword,
+            secretAccessKey);
 
     verify(userMailbox, times(1))
         .grantAccess(
@@ -286,7 +295,8 @@ class GrantFolderActionUseCaseTest {
             folderId,
             display,
             secretArgs,
-            secretPassword);
+            secretPassword,
+            secretAccessKey);
 
     verify(userMailbox, times(1))
         .grantAccess(
@@ -338,7 +348,8 @@ class GrantFolderActionUseCaseTest {
             folderId,
             display,
             secretArgs,
-            secretPassword);
+            secretPassword,
+            secretAccessKey);
 
     verify(userMailbox, times(1))
         .grantAccess(
@@ -390,7 +401,8 @@ class GrantFolderActionUseCaseTest {
             folderId,
             display,
             secretArgs,
-            secretPassword);
+            secretPassword,
+            secretAccessKey);
 
     verify(userMailbox, times(1))
         .grantAccess(
@@ -398,5 +410,41 @@ class GrantFolderActionUseCaseTest {
     final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
     assertEquals(namedEntry, grantResult.getNamedEntry());
     assertEquals(namedEntryId, grantResult.getZimbraId());
+  }
+
+  @Test
+  void shouldSetSecretWithSecretAccessKeyWhenGrantee_KEY() throws Exception {
+    display = "guest@test.com";
+    short rights = 0;
+    when(itemId.getId()).thenReturn(1);
+    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
+    when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
+
+    final Try<GrantFolderActionUseCase.Result> operationResult =
+        grantFolderActionUseCase.grant(
+            ACL.GRANTEE_KEY,
+            zimbraId,
+            expiry,
+            randomExpiry,
+            accountId,
+            operationContext,
+            folderId,
+            display,
+            secretArgs,
+            secretPassword,
+            secretAccessKey);
+
+    verify(userMailbox, times(1))
+        .grantAccess(
+            operationContext,
+            itemId.getId(),
+            display,
+            ACL.GRANTEE_KEY,
+            rights,
+            secretAccessKey,
+            expiry);
+    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    assertEquals(display, grantResult.getZimbraId());
   }
 }

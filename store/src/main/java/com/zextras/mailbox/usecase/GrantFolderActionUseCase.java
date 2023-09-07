@@ -79,7 +79,8 @@ public class GrantFolderActionUseCase {
       String folderId,
       String display,
       String secretArgs,
-      String secretPassword) {
+      String secretPassword,
+      String secretAccessKey) {
     return Try.of(
         () -> {
           String calculatedZimbraId = zimbraId;
@@ -151,6 +152,11 @@ public class GrantFolderActionUseCase {
                   }
                 }
                 break;
+              }
+            case ACL.GRANTEE_KEY:
+              {
+                calculatedZimbraId = display;
+                calculatedSecret = secretAccessKey;
               }
           }
 
