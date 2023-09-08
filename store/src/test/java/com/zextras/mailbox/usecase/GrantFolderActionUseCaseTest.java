@@ -7,6 +7,7 @@ import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zextras.mailbox.usecase.ldap.GranteeProvider;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.GuestAccount;
@@ -61,6 +62,7 @@ class GrantFolderActionUseCaseTest {
     randomExpiry = "randomExpiry";
     accountId = "accountId123";
     secretAccessKey = "accessKey";
+    display = "display";
     operationContext = mock(OperationContext.class);
     folderId = accountId + ":1";
     rights = 0;
@@ -482,5 +484,144 @@ class GrantFolderActionUseCaseTest {
     final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
     assertEquals(namedEntry, grantResult.getNamedEntry());
     assertEquals(zimbraId, grantResult.getZimbraId());
+  }
+
+  @Test
+  void shouldGrantAccessWhenZimbraIdIsNull() throws Exception {
+    MailTarget namedEntry = mock(GuestAccount.class);
+    String namedEntryId = "namedEntryId";
+    when(itemId.getId()).thenReturn(1);
+    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
+    when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
+    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+        .thenReturn(namedEntry);
+    when(namedEntry.getId()).thenReturn(namedEntryId);
+
+    final Try<GrantFolderActionUseCase.Result> operationResult =
+        grantFolderActionUseCase.grant(
+            ACL.GRANTEE_USER,
+            null,
+            expiry,
+            randomExpiry,
+            accountId,
+            operationContext,
+            folderId,
+            display,
+            secretArgs,
+            secretPassword,
+            secretAccessKey);
+
+    verify(userMailbox, times(1))
+        .grantAccess(
+            operationContext, itemId.getId(), namedEntryId, ACL.GRANTEE_USER, rights, null, expiry);
+
+    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    assertEquals(namedEntry, grantResult.getNamedEntry());
+    assertEquals(namedEntryId, grantResult.getZimbraId());
+  }
+
+  @Test
+  void shouldGrantAccessWhenZimbraIdIsNullAndEntryIsGroup() throws Exception {
+    MailTarget namedEntry = mock(Group.class);
+    String namedEntryId = "namedEntryId";
+    when(itemId.getId()).thenReturn(1);
+    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
+    when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
+    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+        .thenReturn(namedEntry);
+    when(namedEntry.getId()).thenReturn(namedEntryId);
+
+    final Try<GrantFolderActionUseCase.Result> operationResult =
+        grantFolderActionUseCase.grant(
+            ACL.GRANTEE_USER,
+            null,
+            expiry,
+            randomExpiry,
+            accountId,
+            operationContext,
+            folderId,
+            display,
+            secretArgs,
+            secretPassword,
+            secretAccessKey);
+
+    verify(userMailbox, times(1))
+        .grantAccess(
+            operationContext,
+            itemId.getId(),
+            namedEntryId,
+            ACL.GRANTEE_GROUP,
+            rights,
+            null,
+            expiry);
+
+    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    assertEquals(namedEntry, grantResult.getNamedEntry());
+    assertEquals(namedEntryId, grantResult.getZimbraId());
+  }
+
+  @Test
+  void shouldGrantAccessWhenZimbraIdIsNotFound() throws Exception {
+    MailTarget namedEntry = mock(Group.class);
+    String namedEntryId = "namedEntryId";
+    when(itemId.getId()).thenReturn(1);
+    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
+    when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
+    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+        .thenThrow(AccountServiceException.NO_SUCH_ACCOUNT("account.NO_SUCH_ACCOUNT"));
+    when(namedEntry.getId()).thenReturn(namedEntryId);
+
+    final Try<GrantFolderActionUseCase.Result> operationResult =
+        grantFolderActionUseCase.grant(
+            ACL.GRANTEE_USER,
+            null,
+            expiry,
+            randomExpiry,
+            accountId,
+            operationContext,
+            folderId,
+            display,
+            secretArgs,
+            secretPassword,
+            secretAccessKey);
+
+    verify(userMailbox, times(1))
+        .grantAccess(
+            operationContext, itemId.getId(), display, ACL.GRANTEE_GUEST, rights, null, expiry);
+
+    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    assertEquals(display, grantResult.getZimbraId());
+  }
+
+  @Test
+  void shouldReturnFailureWhenServiceException() throws Exception {
+    MailTarget namedEntry = mock(Group.class);
+    String namedEntryId = "namedEntryId";
+    when(itemId.getId()).thenReturn(1);
+    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
+    when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
+    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+        .thenThrow(ServiceException.INVALID_REQUEST("This is dummy exception!", null));
+    when(namedEntry.getId()).thenReturn(namedEntryId);
+
+    final Try<GrantFolderActionUseCase.Result> operationResult =
+        grantFolderActionUseCase.grant(
+            ACL.GRANTEE_USER,
+            null,
+            expiry,
+            randomExpiry,
+            accountId,
+            operationContext,
+            folderId,
+            display,
+            secretArgs,
+            secretPassword,
+            secretAccessKey);
+    assertThrows(ServiceException.class, operationResult::get);
+    assertTrue(operationResult.isFailure());
   }
 }
