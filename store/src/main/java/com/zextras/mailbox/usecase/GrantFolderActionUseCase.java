@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zextras.mailbox.usecase.ldap.GranteeProvider;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.GuestAccount;
@@ -70,7 +71,7 @@ public class GrantFolderActionUseCase {
   }
 
   public Try<Result> grant(
-      byte grantType,
+      byte granteeType,
       String zimbraId,
       long expiry,
       String grantExpiry,
@@ -85,7 +86,7 @@ public class GrantFolderActionUseCase {
         () -> {
           String calculatedZimbraId = zimbraId;
           long calculatedExpiration = expiry;
-          byte calculatedGrantType = grantType;
+          byte calculatedGrantType = granteeType;
           String calculatedSecret = null;
           NamedEntry nentry = null;
 
@@ -97,7 +98,7 @@ public class GrantFolderActionUseCase {
                               "Unable to retrieve a mailbox for this accountId"));
           final ItemId itemId = itemIdFactory.create(folderId, accountId);
 
-          switch (grantType) {
+          switch (granteeType) {
             case ACL.GRANTEE_AUTHUSER:
               {
                 calculatedZimbraId = GuestAccount.GUID_AUTHUSER;
@@ -157,6 +158,32 @@ public class GrantFolderActionUseCase {
               {
                 calculatedZimbraId = display;
                 calculatedSecret = secretAccessKey;
+                break;
+              }
+            default:
+              {
+                if (zimbraId != null) {
+                  nentry = granteeProvider.lookupGranteeByZimbraId(zimbraId, granteeType);
+                } else {
+                  try {
+                    nentry =
+                        granteeProvider.lookupGranteeByName(display, granteeType, operationContext);
+                    calculatedZimbraId = nentry.getId();
+                    // make sure they didn't accidentally specify "usr" instead of "grp"
+                    if (granteeType == ACL.GRANTEE_USER && nentry instanceof Group) {
+                      calculatedGrantType = ACL.GRANTEE_GROUP;
+                    }
+                  } catch (ServiceException e) {
+                    if (AccountServiceException.NO_SUCH_ACCOUNT.equals(e.getCode())) {
+                      // looks like the case of an internal user not yet provisioned
+                      // we'll treat it as external sharing
+                      calculatedGrantType = ACL.GRANTEE_GUEST;
+                      calculatedZimbraId = display;
+                    } else {
+                      throw e;
+                    }
+                  }
+                }
               }
           }
 
