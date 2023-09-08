@@ -2,7 +2,8 @@
 package com.zimbra.cs.service;
 
 import static com.zimbra.common.util.ZimbraCookie.COOKIE_ZM_AUTH_TOKEN;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
@@ -34,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -62,15 +64,12 @@ import org.junit.jupiter.api.Test;
 /**
  * @author zimbra
  */
-public class UserServletTest {
+class UserServletTest {
 
   private final String serverHost = "127.0.0.1";
   private Account testAccount;
   private Server server;
 
-  /**
-   * @throws java.lang.Exception
-   */
   @BeforeEach
   public void setUp() throws Exception {
     MailboxTestUtil.initServer("");
@@ -182,7 +181,9 @@ public class UserServletTest {
         HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build()) {
       final HttpPost httpPost = new HttpPost();
       httpPost.setEntity(
-          new FileEntity(new File(this.getClass().getResource(fileToUpload).getFile())));
+          new FileEntity(
+              new File(
+                  Objects.requireNonNull(this.getClass().getResource(fileToUpload)).getFile())));
       httpPost.setURI(URI.create(userServletEndpoint));
       return client.execute(httpPost);
     }
@@ -199,8 +200,8 @@ public class UserServletTest {
     final Element createAppointmentElement =
         Element.parseJSON(
             new String(
-                this.getClass()
-                    .getResourceAsStream("SampleAppointmentRequest.json")
+                Objects.requireNonNull(
+                        this.getClass().getResourceAsStream("SampleAppointmentRequest.json"))
                     .readAllBytes()),
             MailConstants.CREATE_APPOINTMENT_REQUEST,
             JSONElement.mFactory);
@@ -220,15 +221,18 @@ public class UserServletTest {
   }
 
   @Test
-  @DisplayName("User has 2 appointment, UserServlet should return a JSON with 2 appointments.")
+  @DisplayName("User has 2 appointments, UserServlet should return a JSON with 2 appointments.")
   void shouldNotReturnEmptyJsonIfUserHasAppointments() throws Exception {
     this.createDefaultCalendarAppointmentForTestUser();
     this.createDefaultCalendarAppointmentForTestUser();
+
     final HttpResponse httpUserServletCalResponse = this.defaultUserCalendarRequest();
     Assertions.assertEquals(
         HttpStatus.SC_OK, httpUserServletCalResponse.getStatusLine().getStatusCode());
+
     final String calendarResponse =
         new String(httpUserServletCalResponse.getEntity().getContent().readAllBytes());
+
     Assertions.assertNotEquals("{}", calendarResponse);
     final CalendarJson calendarResponseMap =
         new ObjectMapper().readValue(calendarResponse, CalendarJson.class);
@@ -237,9 +241,10 @@ public class UserServletTest {
 
   @Test
   @DisplayName("Upload .zip calendar, check calendar is not empty and contains 1 calendar")
-  void shouldUploadIcsCalendarToUserServlet() throws Exception {
+  void shouldUploadZippedCalendarsToUserServlet() throws Exception {
     this.postUserServletRequest(
         server.getURI().toString() + "~/calendar?auth=co&fmt=zip", "UploadCalendar.zip");
+
     final HttpResponse getCalendarsResponse = this.defaultUserCalendarRequest();
     Assertions.assertEquals(HttpStatus.SC_OK, getCalendarsResponse.getStatusLine().getStatusCode());
     final String calendarResponse =
@@ -247,6 +252,7 @@ public class UserServletTest {
     Assertions.assertNotEquals("{}", calendarResponse);
     final CalendarJson calendarResponseMap =
         new ObjectMapper().readValue(calendarResponse, CalendarJson.class);
+
     Assertions.assertEquals(1, calendarResponseMap.getAppt().size());
   }
 
