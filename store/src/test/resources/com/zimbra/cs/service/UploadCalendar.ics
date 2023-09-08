@@ -1,0 +1,54 @@
+BEGIN:VCALENDAR
+X-WR-CALNAME:Calendar
+X-WR-CALID:cf9b5aa8-6f7f-49dc-9062-e7188d07e413:10
+PRODID:Carbonio-Calendar-Provider
+VERSION:2.0
+METHOD:PUBLISH
+BEGIN:VTIMEZONE
+TZID:Europe/Rome
+BEGIN:STANDARD
+DTSTART:16010101T030000
+TZOFFSETTO:+0100
+TZOFFSETFROM:+0200
+RRULE:FREQ=YEARLY;WKST=MO;INTERVAL=1;BYMONTH=10;BYDAY=-1SU
+TZNAME:CET
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:16010101T020000
+TZOFFSETTO:+0200
+TZOFFSETFROM:+0100
+RRULE:FREQ=YEARLY;WKST=MO;INTERVAL=1;BYMONTH=3;BYDAY=-1SU
+TZNAME:CEST
+END:DAYLIGHT
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:a9a770f0-9901-4ac0-9efc-1301b0e7f549
+SUMMARY:New appointment
+DESCRIPTION:-:::_::_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_
+ :_:_:_:_:_:_:_::_:_::-\nTest User have invited you to a new meeting!\n\nSubj
+ ect: New appointment \nOrganizer: "Test User \n\nTime: Thursday\, September
+ 7\, 2023 11:00 AM - 11:30 AM\n \nInvitees:  \n\n\n-:::_::_:_:_:_:_:_:_:_:_:_
+ :_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_::_:_::-\n
+X-ALT-DESC;FMTTYPE=text/html:<html><body id='htmlmode'>-:::_::_:_:_:_:_:_:_:
+ _:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_::_:_::-<h3>Test Us
+ er have invited you to a new meeting!</h3><p>Subject: New appointment</p><p>
+ Organizer: Test User</p><p>Location: </p><p>Time: Thursday\, September 7\, 2
+ 023 11:00 AM - 11:30 AM</p><p>Invitees: </p><br/>-:::_::_:_:_:_:_:_:_:_:_:_:
+ _:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_::_:_::-
+ORGANIZER:mailto:test@test.com
+DTSTART;TZID="Europe/Rome":20230907T110000
+DTEND;TZID="Europe/Rome":20230907T113000
+STATUS:CONFIRMED
+CLASS:PUBLIC
+X-MICROSOFT-CDO-INTENDEDSTATUS:BUSY
+TRANSP:OPAQUE
+LAST-MODIFIED:20230906T154214Z
+DTSTAMP:20230906T154214Z
+SEQUENCE:0
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:-PT5M
+DESCRIPTION:Reminder
+END:VALARM
+END:VEVENT
+END:VCALENDAR
