@@ -1,4 +1,11 @@
 
+# [4.8.1](https://github.com/Zextras/carbonio-mailbox/compare/4.8.0...4.8.1) (2023-09-08)
+
+### Bug Fixes
+
+* empty calendar.json and upload of cal in zip format  ([#321](https://github.com/Zextras/carbonio-mailbox/issues/321)) ([e6dc2b6](https://github.com/zextras/carbonio-mailbox/commit/e6dc2b60a0488a533f7fab1a030e7767ec8f0dc2))
+* ridZ field missing in SearchRequest of Calendars ([#319](https://github.com/Zextras/carbonio-mailbox/issues/319)) ([2485376](https://github.com/zextras/carbonio-mailbox/commit/248537649d18c5e6ca97ee03e809e271b1db01a0))
+
 # [4.8.0](https://github.com/Zextras/carbonio-mailbox/compare/4.6.4...4.8.0) (2023-08-28)
 
 ### Bug Fixes
