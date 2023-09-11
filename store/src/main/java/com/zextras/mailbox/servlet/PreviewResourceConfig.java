@@ -22,7 +22,7 @@ public class PreviewResourceConfig extends ResourceConfig {
 
   @Inject
   public PreviewResourceConfig(ServiceLocator serviceLocator) {
-    packages("com.zextras.mailbox.resource.preview");
+    packages("com.zextras.mailbox.preview.resource");
     register(AuthorizationFilter.class);
     Injector injector = Guice.createInjector(new PreviewServletModule());
     initGuiceIntoHK2Bridge(serviceLocator, injector);
