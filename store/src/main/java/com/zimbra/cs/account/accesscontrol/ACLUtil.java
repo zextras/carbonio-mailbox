@@ -10,6 +10,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
+import com.zextras.mailbox.midlewarepojo.GrantInput;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -265,6 +266,49 @@ public final class ACLUtil {
         // bug 30891 for 5.0.x
         if (secret == null) {
           secret = grant.getAttribute(MailConstants.A_PASSWORD, null);
+        }
+      }
+      acl.grantAccess(zid, gtype, rights, secret, expiry);
+    }
+    return acl;
+  }
+
+  public ACL parseACL(
+      String internalGrantExpiryString,
+      String guestGrantExpiryString,
+      List<GrantInput> grantInputList,
+      MailItem.Type folderType,
+      Account account)
+      throws ServiceException {
+
+    long internalGrantExpiry =
+        itemActionUtil.validateGrantExpiry(
+            internalGrantExpiryString,
+            AccountUtil.getMaxInternalShareLifetime(account, folderType));
+    long guestGrantExpiry =
+        itemActionUtil.validateGrantExpiry(
+            guestGrantExpiryString, AccountUtil.getMaxExternalShareLifetime(account, folderType));
+    ACL acl = new ACL(internalGrantExpiry, guestGrantExpiry);
+
+    for (GrantInput grant : grantInputList) {
+      String zid = grant.getZid();
+      byte gtype = ACL.stringToType(grant.getGtype());
+      short rights = ACL.stringToRights(grant.getRights());
+      long expiry =
+          gtype == ACL.GRANTEE_PUBLIC
+              ? itemActionUtil.validateGrantExpiry(
+                  grant.getGrantExpiry(),
+                  accountUtil.getMaxPublicShareLifetime(account, folderType))
+              : Long.parseLong(grant.getGrantExpiry());
+
+      String secret = null;
+      if (gtype == ACL.GRANTEE_KEY) {
+        secret = grant.getAccessKey();
+      } else if (gtype == ACL.GRANTEE_GUEST) {
+        secret = grant.getSecretArgs();
+        // bug 30891 for 5.0.x
+        if (secret == null) {
+          secret = grant.getPassword();
         }
       }
       acl.grantAccess(zid, gtype, rights, secret, expiry);

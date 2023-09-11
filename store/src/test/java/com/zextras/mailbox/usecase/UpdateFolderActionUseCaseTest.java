@@ -9,17 +9,23 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.zextras.mailbox.midlewarepojo.GrantInput;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.accesscontrol.ACLUtil;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Flag;
+import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,13 +36,16 @@ class UpdateFolderActionUseCaseTest {
   private Mailbox userMailbox;
   private OperationContext operationContext;
   private ItemId itemId;
+  private ACLUtil aclUtil;
   private final String accountId = "account-id123";
   private final String folderId = accountId + ":1";
+  private String internalGrantExpiryString;
+  private String guestGrantExpiryString;
+  private List<GrantInput> grantInputList;
   private String newName;
   private String flags;
   private byte color;
   private String view;
-  private ACL acl;
 
   @BeforeEach
   void setUp() {
@@ -45,8 +54,10 @@ class UpdateFolderActionUseCaseTest {
     userMailbox = mock(Mailbox.class);
     operationContext = mock(OperationContext.class);
     itemId = mock(ItemId.class);
+    aclUtil = mock(ACLUtil.class);
 
-    updateFolderActionUseCase = new UpdateFolderActionUseCase(mailboxManager, itemIdFactory);
+    updateFolderActionUseCase =
+        new UpdateFolderActionUseCase(mailboxManager, itemIdFactory, aclUtil);
   }
 
   @Test
@@ -58,7 +69,16 @@ class UpdateFolderActionUseCaseTest {
 
     final Try<Void> operationResult =
         updateFolderActionUseCase.update(
-            operationContext, accountId, folderId, newName, flags, color, view, acl);
+            operationContext,
+            accountId,
+            folderId,
+            internalGrantExpiryString,
+            guestGrantExpiryString,
+            grantInputList,
+            newName,
+            flags,
+            color,
+            view);
 
     assertTrue(
         operationResult.isFailure(),
@@ -78,7 +98,16 @@ class UpdateFolderActionUseCaseTest {
 
     final Try<Void> operationResult =
         updateFolderActionUseCase.update(
-            operationContext, accountId, folderId, newName, flags, color, view, acl);
+            operationContext,
+            accountId,
+            folderId,
+            internalGrantExpiryString,
+            guestGrantExpiryString,
+            grantInputList,
+            newName,
+            flags,
+            color,
+            view);
 
     assertTrue(operationResult.isFailure(), "Folder should not be updated because no such folder");
     final Throwable gotError = operationResult.getCause();
@@ -97,7 +126,16 @@ class UpdateFolderActionUseCaseTest {
 
     final Try<Void> operationResult =
         updateFolderActionUseCase.update(
-            operationContext, accountId, folderId, newName, flags, color, view, acl);
+            operationContext,
+            accountId,
+            folderId,
+            internalGrantExpiryString,
+            guestGrantExpiryString,
+            grantInputList,
+            newName,
+            flags,
+            color,
+            view);
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "Color should be successfully set.");
@@ -117,7 +155,16 @@ class UpdateFolderActionUseCaseTest {
 
     final Try<Void> operationResult =
         updateFolderActionUseCase.update(
-            operationContext, accountId, folderId, newName, flags, color, view, acl);
+            operationContext,
+            accountId,
+            folderId,
+            internalGrantExpiryString,
+            guestGrantExpiryString,
+            grantInputList,
+            newName,
+            flags,
+            color,
+            view);
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "Tags should be successfully set.");
@@ -143,7 +190,16 @@ class UpdateFolderActionUseCaseTest {
 
     final Try<Void> operationResult =
         updateFolderActionUseCase.update(
-            operationContext, accountId, folderId, newName, flags, color, view, acl);
+            operationContext,
+            accountId,
+            folderId,
+            internalGrantExpiryString,
+            guestGrantExpiryString,
+            grantInputList,
+            newName,
+            flags,
+            color,
+            view);
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "View should be successfully set.");
@@ -163,7 +219,16 @@ class UpdateFolderActionUseCaseTest {
 
     final Try<Void> operationResult =
         updateFolderActionUseCase.update(
-            operationContext, accountId, folderId, newName, flags, color, view, acl);
+            operationContext,
+            accountId,
+            folderId,
+            internalGrantExpiryString,
+            guestGrantExpiryString,
+            grantInputList,
+            newName,
+            flags,
+            color,
+            view);
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "View should be successfully set.");
@@ -182,7 +247,16 @@ class UpdateFolderActionUseCaseTest {
 
     final Try<Void> operationResult =
         updateFolderActionUseCase.update(
-            operationContext, accountId, folderId, newName, flags, color, view, acl);
+            operationContext,
+            accountId,
+            folderId,
+            internalGrantExpiryString,
+            guestGrantExpiryString,
+            grantInputList,
+            newName,
+            flags,
+            color,
+            view);
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "View should be successfully set.");
@@ -193,16 +267,42 @@ class UpdateFolderActionUseCaseTest {
 
   @Test
   void shouldBeSuccessAfterSetPermission() throws ServiceException {
-    acl = mock(ACL.class);
+    internalGrantExpiryString = "internalGrantExpiry";
+    guestGrantExpiryString = "guestGrantExpiry";
+    grantInputList = List.of();
+
+    ACL acl = mock(ACL.class);
+    Account account = mock(Account.class);
+    Folder folder = mock(Folder.class);
     when(itemId.getId()).thenReturn(1);
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(operationContext.getmRequestedAccountId()).thenReturn(accountId);
     when(itemId.belongsTo(userMailbox)).thenReturn(true);
+    when(userMailbox.getFolderById(operationContext, itemId.getId())).thenReturn(folder);
+    when(folder.getDefaultView()).thenReturn(Type.FOLDER);
+
+    when(userMailbox.getAccount()).thenReturn(account);
+    when(aclUtil.parseACL(
+            internalGrantExpiryString,
+            guestGrantExpiryString,
+            grantInputList,
+            Type.FOLDER,
+            account))
+        .thenReturn(acl);
 
     final Try<Void> operationResult =
         updateFolderActionUseCase.update(
-            operationContext, accountId, folderId, newName, flags, color, view, acl);
+            operationContext,
+            accountId,
+            folderId,
+            internalGrantExpiryString,
+            guestGrantExpiryString,
+            grantInputList,
+            newName,
+            flags,
+            color,
+            view);
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "View should be successfully set.");
