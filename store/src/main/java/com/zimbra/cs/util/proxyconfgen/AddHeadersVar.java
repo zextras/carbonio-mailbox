@@ -24,7 +24,7 @@ public class AddHeadersVar extends ProxyConfVar {
    *     templates.
    * @param responseHeaders List of custom response headers.
    * @param description Description of this configuration variable.
-   * @param customLoginLogoutUrls Map of custom login/logout URLs.
+   * @param customLoginLogoutUrls List of custom login/logout URLs.
    */
   public AddHeadersVar(
       Provisioning prov,
