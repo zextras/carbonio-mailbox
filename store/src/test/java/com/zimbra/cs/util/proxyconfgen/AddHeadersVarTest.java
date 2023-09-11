@@ -1,27 +1,24 @@
 package com.zimbra.cs.util.proxyconfgen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class AddHeadersVarTest {
 
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
+  private Provisioning provisioning;
 
-  @AfterEach
-  public void tearDown() throws Exception {
-    MailboxTestUtil.clearData();
+  @BeforeEach
+  void setUp() {
+    provisioning = mock(Provisioning.class);
   }
 
   @Test
@@ -40,7 +37,8 @@ class AddHeadersVarTest {
         ZAttrProvisioning.A_carbonioWebUILogoutURL, "https://auth.test.com/logout");
 
     final AddHeadersVar addHeadersVar =
-        new AddHeadersVar(key, responseHeaders, description, customLogInLogoutUrlValueMap);
+        new AddHeadersVar(
+            provisioning, key, responseHeaders, description, customLogInLogoutUrlValueMap);
 
     addHeadersVar.update();
 
@@ -71,7 +69,8 @@ class AddHeadersVarTest {
         ZAttrProvisioning.A_carbonioAdminUILogoutURL, "https://admin-auth.test.com/logout");
 
     final AddHeadersVar addHeadersVar =
-        new AddHeadersVar(key, responseHeaders, description, customLogInLogoutUrlValueMap);
+        new AddHeadersVar(
+            provisioning, key, responseHeaders, description, customLogInLogoutUrlValueMap);
 
     addHeadersVar.update();
 

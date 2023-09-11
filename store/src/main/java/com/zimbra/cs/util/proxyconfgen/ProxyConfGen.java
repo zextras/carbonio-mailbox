@@ -715,6 +715,7 @@ public class ProxyConfGen {
     mDomainConfVars.put(
         "web.add.headers.vhost",
         new AddHeadersVar(
+            mProv,
             "web.add.headers.vhost",
             responseHeadersList,
             "add_header directive for vhost web proxy",
@@ -2032,6 +2033,7 @@ public class ProxyConfGen {
     mConfVars.put(
         "web.add.headers.default",
         new AddHeadersVar(
+            mProv,
             "web.add.headers.default",
             responseHeadersList,
             "add_header directive for default web proxy",

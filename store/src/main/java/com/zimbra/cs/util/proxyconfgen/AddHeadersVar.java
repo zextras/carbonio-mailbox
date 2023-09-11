@@ -1,6 +1,7 @@
 package com.zimbra.cs.util.proxyconfgen;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,11 +27,19 @@ public class AddHeadersVar extends ProxyConfVar {
    * @param customLoginLogoutUrls Map of custom login/logout URLs.
    */
   public AddHeadersVar(
+      Provisioning prov,
       String keyword,
       ArrayList<String> responseHeaders,
       String description,
       Map<String, String> customLoginLogoutUrls) {
-    super(keyword, null, null, ProxyConfValueType.CUSTOM, ProxyConfOverride.CUSTOM, description);
+    super(
+        prov,
+        keyword,
+        null,
+        null,
+        ProxyConfValueType.CUSTOM,
+        ProxyConfOverride.CUSTOM,
+        description);
     this.responseHeaders = responseHeaders;
     this.customLoginLogoutUrls = customLoginLogoutUrls;
   }

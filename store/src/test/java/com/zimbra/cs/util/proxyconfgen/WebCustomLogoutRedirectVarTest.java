@@ -5,11 +5,17 @@ import static org.mockito.Mockito.mock;
 
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Provisioning;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class WebCustomLogoutRedirectVarTest {
 
-  private final Provisioning provisioning = mock(Provisioning.class);
+  private Provisioning provisioning;
+
+  @BeforeEach
+  void setUp() {
+    provisioning = mock(Provisioning.class);
+  }
 
   @Test
   void update_should_setDefaultValue_when_customUrlEmpty() {
