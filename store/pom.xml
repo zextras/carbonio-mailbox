@@ -609,8 +609,8 @@
               <generatorName>jaxrs-spec</generatorName>
               <configOptions>
                 <interfaceOnly>true</interfaceOnly>
-                <apiPackage>com.zextras.mailbox.resource</apiPackage>
-                <modelPackage>com.zextras.mailbox.model</modelPackage>
+                <apiPackage>com.zextras.mailbox.preview.resource</apiPackage>
+                <modelPackage>com.zextras.mailbox.preview.model</modelPackage>
                 <sourceFolder>src/gen/java/main</sourceFolder>
                 <returnResponse>true</returnResponse>
               </configOptions>

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.resource.preview;
+package com.zextras.mailbox.preview.resource;
 
 import com.google.common.base.Strings;
 import com.zextras.carbonio.preview.queries.Query;
@@ -12,10 +12,7 @@ import com.zextras.carbonio.preview.queries.enums.Quality;
 import com.zextras.carbonio.preview.queries.enums.Shape;
 import java.util.Objects;
 
-/**
- * Utility class to manipulate {@link com.zextras.carbonio.preview.PreviewClient} query from an
- * input
- */
+/** Utility class to map {@link PreviewController} query to a preview service {@link Query} */
 public class PreviewQueryUtil {
 
   /**

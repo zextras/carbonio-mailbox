@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.resource.preview;
+package com.zextras.mailbox.preview.resource;
 
 import static com.zimbra.common.util.ZimbraCookie.COOKIE_ZM_AUTH_TOKEN;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_DISPOSITION;
@@ -17,6 +17,7 @@ import com.google.common.collect.Maps;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.enums.Format;
 import com.zextras.mailbox.filter.AuthorizationFilter;
+import com.zextras.mailbox.preview.usecase.PreviewUseCase;
 import com.zextras.mailbox.resource.acceptance.MailboxJerseyTest;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
@@ -48,6 +49,7 @@ import org.glassfish.jersey.test.ServletDeploymentContext;
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -55,7 +57,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 class PreviewControllerTest extends MailboxJerseyTest {
 
   private static final String TEST_ACCOUNT_NAME = "test@example.com";
-  private PreviewService previewService;
+  private PreviewUseCase previewUseCase;
   private Provisioning provisioning;
 
   /**
@@ -66,9 +68,10 @@ class PreviewControllerTest extends MailboxJerseyTest {
    */
   private static Stream<Arguments> getAttachments() {
     return Stream.of(
-        Arguments.of("/preview/pdf/abcdef:1/2", Format.JPEG, false, true),
-        Arguments.of("/preview/image/abcdef:1/2/0x0", Format.GIF, true, true),
-        Arguments.of("/preview/document/abcdef:1/2", Format.JPEG, true, true));
+        Arguments.of("/preview/pdf/abcdef:1/2", Format.JPEG, true),
+        Arguments.of("/preview/image/abcdef:1/2/0x0", Format.GIF, true),
+        Arguments.of("/preview/document/abcdef:1/2", Format.JPEG, true),
+        Arguments.of("/preview/document/abcdef:1/2/thumbnail", Format.JPEG, true));
   }
 
   @Override
@@ -81,8 +84,8 @@ class PreviewControllerTest extends MailboxJerseyTest {
 
     final ResourceConfig resourceConfig = new ResourceConfig();
     resourceConfig.register(AuthorizationFilter.class);
-    previewService = mock(PreviewService.class);
-    resourceConfig.register(new PreviewController(previewService));
+    previewUseCase = mock(PreviewUseCase.class);
+    resourceConfig.register(new PreviewController(previewUseCase));
     return ServletDeploymentContext.forServlet(new ServletContainer(resourceConfig)).build();
   }
 
@@ -116,13 +119,12 @@ class PreviewControllerTest extends MailboxJerseyTest {
 
   @ParameterizedTest
   @MethodSource("getAttachments")
+  @DisplayName("Check Preview response is same from Preview service")
   public void shouldReturnPreviewWithWhenRequestingAttachmentPreview(
-      String endpoint, Format outputFormat, boolean isThumbNail, boolean isInline)
-      throws Exception {
+      String endpoint, Format outputFormat, boolean isInline) throws Exception {
     final String fileName = "attachment.txt";
     final String file = this.getClass().getResource(fileName).getFile();
     final byte[] previewContent = this.getClass().getResourceAsStream(fileName).readAllBytes();
-    final String partNumber = "2";
 
     // preview response
     final InputStreamEntity inputStreamEntity =
@@ -141,11 +143,10 @@ class PreviewControllerTest extends MailboxJerseyTest {
     final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
     final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
 
-    when(previewService.getAttachmentAndPreview(
+    when(previewUseCase.getAttachmentAndPreview(
             anyString(), any(), any(), anyInt(), anyString(), any()))
         .thenReturn(Try.of(() -> attachmentAndPreview));
 
-    final String thumbnailUrl = isThumbNail ? "thumbnail" : "";
     final String disposition = isInline ? "inline" : "attachment";
     WebTarget target =
         target(endpoint).queryParam("output_format", outputFormat).queryParam("disp", disposition);

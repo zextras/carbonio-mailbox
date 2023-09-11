@@ -2,14 +2,15 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.resource.preview;
+package com.zextras.mailbox.preview.resource;
 
 import static com.zextras.mailbox.filter.AuthorizationFilter.CTX_AUTH_TOKEN;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_DISPOSITION;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
 import com.zextras.carbonio.preview.queries.Query;
-import com.zextras.mailbox.resource.PreviewApi;
+import com.zextras.mailbox.preview.usecase.PreviewType;
+import com.zextras.mailbox.preview.usecase.PreviewUseCase;
 import com.zimbra.cs.account.AuthToken;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -21,17 +22,17 @@ import org.glassfish.jersey.message.internal.EntityInputStream;
 
 public class PreviewController implements PreviewApi {
 
-  private final PreviewService previewService;
+  private final PreviewUseCase previewUseCase;
 
   @Context private HttpServletRequest servletRequest;
 
   @Inject
-  public PreviewController(PreviewService previewService) {
-    this.previewService = previewService;
+  public PreviewController(PreviewUseCase previewUseCase) {
+    this.previewUseCase = previewUseCase;
   }
 
   /**
-   * Ask attachment and preview from {@link PreviewService} by providing needed args. Builds the
+   * Ask attachment and preview from {@link PreviewUseCase} by providing needed args. Builds the
    * final {@link Response} from returned answer.
    *
    * @param previewType type of preview to ask
@@ -59,7 +60,7 @@ public class PreviewController implements PreviewApi {
     } else {
       messageId = Integer.parseInt(accountUuidAndMessageId[0]);
     }
-    return previewService
+    return previewUseCase
         .getAttachmentAndPreview(accountUuid, authToken, previewType, messageId, partNumber, query)
         .mapTry(
             attachmentAndPreview ->

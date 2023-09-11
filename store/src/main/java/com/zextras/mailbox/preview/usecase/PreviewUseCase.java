@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.resource.preview;
+package com.zextras.mailbox.preview.usecase;
 
 import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.queries.BlobResponse;
@@ -16,13 +16,13 @@ import javax.inject.Singleton;
 import javax.mail.internet.MimePart;
 
 @Singleton
-public class PreviewService {
+public class PreviewUseCase {
 
   private final PreviewClient previewClient;
   private final AttachmentService attachmentService;
 
   @Inject
-  public PreviewService(PreviewClient previewClient, AttachmentService attachmentService) {
+  public PreviewUseCase(PreviewClient previewClient, AttachmentService attachmentService) {
     this.previewClient = previewClient;
     this.attachmentService = attachmentService;
   }

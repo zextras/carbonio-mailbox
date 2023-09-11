@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.resource.preview;
+package com.zextras.mailbox.preview.resource;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -12,11 +12,13 @@ import static org.mockito.Mockito.verify;
 import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.queries.Query;
 import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
+import com.zextras.mailbox.preview.usecase.PreviewType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -35,6 +37,7 @@ class PreviewTypeTest {
 
   @ParameterizedTest
   @MethodSource("getPreviewTypeFunctions")
+  @DisplayName("Check correct Preview Client method is invoked")
   void shouldInvokeCorrectPreviewMethodForPreviewType(PreviewType type, String expectedMethodName)
       throws Exception {
     final PreviewClient previewClient = mock(PreviewClient.class);

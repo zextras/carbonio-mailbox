@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.resource.preview;
+package com.zextras.mailbox.preview.resource;
 
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +15,8 @@ import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.Query;
 import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
+import com.zextras.mailbox.preview.usecase.PreviewType;
+import com.zextras.mailbox.preview.usecase.PreviewUseCase;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.ZimbraAuthTokenEncoded;
 import com.zimbra.cs.service.AttachmentService;
@@ -33,9 +35,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class PreviewServiceTest {
+class PreviewUseCaseTest {
 
-  private PreviewService previewService;
+  private PreviewUseCase previewUseCase;
   ;
   private AttachmentService attachmentService;
   private PreviewClient previewClient;
@@ -44,7 +46,7 @@ class PreviewServiceTest {
   public void beforeEach() {
     attachmentService = mock(AttachmentService.class);
     previewClient = mock(PreviewClient.class);
-    this.previewService = new PreviewService(previewClient, attachmentService);
+    this.previewUseCase = new PreviewUseCase(previewClient, attachmentService);
   }
 
   private static Stream<Arguments> getPreviewTypeFunctions() {
@@ -84,7 +86,7 @@ class PreviewServiceTest {
         .thenReturn(Try.of(() -> previewResponse));
 
     final Tuple2<MimePart, BlobResponse> attachmentAndPreview =
-        previewService
+        previewUseCase
             .getAttachmentAndPreview(
                 accountId, authToken, previewType, messageId, partNumber, query)
             .get();

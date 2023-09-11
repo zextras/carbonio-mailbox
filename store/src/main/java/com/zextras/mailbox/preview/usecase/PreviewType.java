@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.resource.preview;
+package com.zextras.mailbox.preview.usecase;
 
 import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.queries.BlobResponse;
@@ -11,6 +11,7 @@ import io.vavr.Function4;
 import io.vavr.control.Try;
 import java.io.InputStream;
 
+/** An enum to route a preview type to the corresponding {@link PreviewClient} call. */
 public enum PreviewType {
   PDF(PreviewClient::postPreviewOfPdf),
   PDF_THUMBNAIL(PreviewClient::postThumbnailOfPdf),
