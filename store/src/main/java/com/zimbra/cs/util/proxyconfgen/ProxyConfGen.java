@@ -712,6 +712,12 @@ public class ProxyConfGen {
       responseHeadersList.add(item.getCspHeader());
     }
 
+    final ArrayList<String> customLogInLogoutUrlsList = new ArrayList<>();
+    customLogInLogoutUrlsList.add(item.getWebUiLoginUrl());
+    customLogInLogoutUrlsList.add(item.getWebUiLogoutUrl());
+    customLogInLogoutUrlsList.add(item.getAdminUiLoginUrl());
+    customLogInLogoutUrlsList.add(item.getAdminUiLogoutUrl());
+
     mDomainConfVars.put(
         "web.add.headers.vhost",
         new AddHeadersVar(
@@ -719,11 +725,7 @@ public class ProxyConfGen {
             "web.add.headers.vhost",
             responseHeadersList,
             "add_header directive for vhost web proxy",
-            Map.of(
-                ZAttrProvisioning.A_carbonioWebUILoginURL, item.getWebUiLoginUrl(),
-                ZAttrProvisioning.A_carbonioWebUILogoutURL, item.getWebUiLogoutUrl(),
-                ZAttrProvisioning.A_carbonioAdminUILoginURL, item.getAdminUiLoginUrl(),
-                ZAttrProvisioning.A_carbonioAdminUILogoutURL, item.getAdminUiLogoutUrl())));
+            customLogInLogoutUrlsList));
 
     mDomainConfVars.put(
         "web.carbonio.webui.login.url.vhost",
@@ -2030,6 +2032,17 @@ public class ProxyConfGen {
     if (!cspHeader.isBlank()) {
       responseHeadersList.add(cspHeader);
     }
+
+    final ArrayList<String> customLoginLogoutUrlsList = new ArrayList<>();
+    customLoginLogoutUrlsList.add(
+        configSource.getAttr(ZAttrProvisioning.A_carbonioWebUILoginURL, DEFAULT_WEB_LOGIN_PATH));
+    customLoginLogoutUrlsList.add(
+        configSource.getAttr(ZAttrProvisioning.A_carbonioWebUILogoutURL, DEFAULT_WEB_LOGIN_PATH));
+    customLoginLogoutUrlsList.add(
+        configSource.getAttr(ZAttrProvisioning.A_carbonioAdminUILoginURL, DEFAULT_WEB_LOGIN_PATH));
+    customLoginLogoutUrlsList.add(
+        configSource.getAttr(ZAttrProvisioning.A_carbonioAdminUILogoutURL, DEFAULT_WEB_LOGIN_PATH));
+
     mConfVars.put(
         "web.add.headers.default",
         new AddHeadersVar(
@@ -2037,19 +2050,7 @@ public class ProxyConfGen {
             "web.add.headers.default",
             responseHeadersList,
             "add_header directive for default web proxy",
-            Map.of(
-                ZAttrProvisioning.A_carbonioWebUILoginURL,
-                configSource.getAttr(
-                    ZAttrProvisioning.A_carbonioWebUILoginURL, DEFAULT_WEB_LOGIN_PATH),
-                ZAttrProvisioning.A_carbonioWebUILogoutURL,
-                configSource.getAttr(
-                    ZAttrProvisioning.A_carbonioWebUILogoutURL, DEFAULT_WEB_LOGIN_PATH),
-                ZAttrProvisioning.A_carbonioAdminUILoginURL,
-                configSource.getAttr(
-                    ZAttrProvisioning.A_carbonioAdminUILoginURL, DEFAULT_WEB_LOGIN_PATH),
-                ZAttrProvisioning.A_carbonioAdminUILogoutURL,
-                configSource.getAttr(
-                    ZAttrProvisioning.A_carbonioAdminUILogoutURL, DEFAULT_WEB_LOGIN_PATH))));
+            customLoginLogoutUrlsList));
     mConfVars.put(
         "web.carbonio.webui.login.url.default",
         new ProxyConfVar(

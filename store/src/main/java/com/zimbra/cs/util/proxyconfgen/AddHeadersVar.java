@@ -4,7 +4,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,7 +14,7 @@ import java.util.Set;
 public class AddHeadersVar extends ProxyConfVar {
 
   private final ArrayList<String> responseHeaders;
-  private final Map<String, String> customLoginLogoutUrls;
+  private final List<String> customLoginLogoutUrls;
 
   /**
    * Creates a new instance of the {@link AddHeadersVar} class. that represents <code>add_header
@@ -31,7 +31,7 @@ public class AddHeadersVar extends ProxyConfVar {
       String keyword,
       ArrayList<String> responseHeaders,
       String description,
-      Map<String, String> customLoginLogoutUrls) {
+      List<String> customLoginLogoutUrls) {
     super(
         prov,
         keyword,
@@ -111,7 +111,7 @@ public class AddHeadersVar extends ProxyConfVar {
     final Set<String> addedUrls = new HashSet<>();
     final StringBuilder newConnectSrcDirectiveBuilder = new StringBuilder(connectSrcDirective);
 
-    for (String url : customLoginLogoutUrls.values()) {
+    for (String url : customLoginLogoutUrls) {
       if (ProxyConfUtil.isValidSrcDirectiveUrl(url)
           && (!addedUrls.contains(url.toLowerCase())
               && !connectSrcDirective.toLowerCase().contains(url.toLowerCase()))) {

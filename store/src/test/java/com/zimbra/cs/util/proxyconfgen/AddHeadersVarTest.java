@@ -3,12 +3,10 @@ package com.zimbra.cs.util.proxyconfgen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,15 +28,13 @@ class AddHeadersVarTest {
             + " script-src 'self';");
     final String description = "add_header directive for vhost web proxy";
 
-    final Map<String, String> customLogInLogoutUrlValueMap = new HashMap<>();
-    customLogInLogoutUrlValueMap.put(
-        ZAttrProvisioning.A_carbonioWebUILoginURL, "https://auth.test.com");
-    customLogInLogoutUrlValueMap.put(
-        ZAttrProvisioning.A_carbonioWebUILogoutURL, "https://auth.test.com/logout");
+    final List<String> customLogInLogoutUrlValueList = new ArrayList<>();
+    customLogInLogoutUrlValueList.add("https://auth.test.com");
+    customLogInLogoutUrlValueList.add("https://auth.test.com/logout");
 
     final AddHeadersVar addHeadersVar =
         new AddHeadersVar(
-            provisioning, key, responseHeaders, description, customLogInLogoutUrlValueMap);
+            provisioning, key, responseHeaders, description, customLogInLogoutUrlValueList);
 
     addHeadersVar.update();
 
@@ -58,15 +54,11 @@ class AddHeadersVarTest {
             + " script-src 'self';");
     final String description = "add_header directive for vhost web proxy";
 
-    final Map<String, String> customLogInLogoutUrlValueMap = new HashMap<>();
-    customLogInLogoutUrlValueMap.put(
-        ZAttrProvisioning.A_carbonioWebUILoginURL, "https://auth.test.com");
-    customLogInLogoutUrlValueMap.put(
-        ZAttrProvisioning.A_carbonioWebUILogoutURL, "https://auth.test.com/logout");
-    customLogInLogoutUrlValueMap.put(
-        ZAttrProvisioning.A_carbonioAdminUILoginURL, "https://admin-auth.test.com");
-    customLogInLogoutUrlValueMap.put(
-        ZAttrProvisioning.A_carbonioAdminUILogoutURL, "https://admin-auth.test.com/logout");
+    final List<String> customLogInLogoutUrlValueMap = new ArrayList<>();
+    customLogInLogoutUrlValueMap.add("https://auth.test.com");
+    customLogInLogoutUrlValueMap.add("https://auth.test.com/logout");
+    customLogInLogoutUrlValueMap.add("https://admin-auth.test.com");
+    customLogInLogoutUrlValueMap.add("https://admin-auth.test.com/logout");
 
     final AddHeadersVar addHeadersVar =
         new AddHeadersVar(
@@ -75,9 +67,9 @@ class AddHeadersVarTest {
     addHeadersVar.update();
 
     final String expectedCspValue =
-        "add_header Content-Security-Policy default-src 'self'; connect-src 'self'"
-            + " *.test.tools https://auth.test.com https://admin-auth.test.com/logout"
-            + " https://auth.test.com/logout https://admin-auth.test.com; script-src 'self';;";
+        "add_header Content-Security-Policy default-src 'self'; "
+            + "connect-src 'self' *.test.tools https://auth.test.com https://auth.test.com/logout "
+            + "https://admin-auth.test.com https://admin-auth.test.com/logout; script-src 'self';;";
     assertEquals(expectedCspValue, addHeadersVar.confValue());
   }
 }
