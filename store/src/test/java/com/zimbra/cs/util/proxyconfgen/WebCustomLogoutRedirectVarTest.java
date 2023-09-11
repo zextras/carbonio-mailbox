@@ -1,24 +1,15 @@
 package com.zimbra.cs.util.proxyconfgen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import com.zimbra.common.account.ZAttrProvisioning;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import com.zimbra.cs.account.Provisioning;
 import org.junit.jupiter.api.Test;
 
 class WebCustomLogoutRedirectVarTest {
 
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
-
-  @AfterEach
-  public void tearDown() throws Exception {
-    MailboxTestUtil.clearData();
-  }
+  private final Provisioning provisioning = mock(Provisioning.class);
 
   @Test
   void update_should_setDefaultValue_when_customUrlEmpty() {
@@ -29,7 +20,8 @@ class WebCustomLogoutRedirectVarTest {
     final String customUrl = "";
 
     final WebCustomLogoutRedirectVar var =
-        new WebCustomLogoutRedirectVar(keyword, attribute, defaultValue, description, customUrl);
+        new WebCustomLogoutRedirectVar(
+            provisioning, keyword, attribute, defaultValue, description, customUrl);
     var.update();
     assertEquals("return 307 /static/login/", var.mValue);
   }
@@ -43,7 +35,8 @@ class WebCustomLogoutRedirectVarTest {
     final String customUrl = "https://custom-logout-url.com";
 
     final WebCustomLogoutRedirectVar var =
-        new WebCustomLogoutRedirectVar(keyword, attribute, defaultValue, description, customUrl);
+        new WebCustomLogoutRedirectVar(
+            provisioning, keyword, attribute, defaultValue, description, customUrl);
     var.update();
     assertEquals("return 200", var.mValue);
   }

@@ -736,6 +736,7 @@ public class ProxyConfGen {
     mDomainConfVars.put(
         "web.carbonio.webui.logout.redirect.vhost",
         new WebCustomLogoutRedirectVar(
+            mProv,
             "web.carbonio.webui.logout.redirect.vhost",
             ZAttrProvisioning.A_carbonioWebUILogoutURL,
             DEFAULT_WEB_LOGIN_PATH,
@@ -753,6 +754,7 @@ public class ProxyConfGen {
     mDomainConfVars.put(
         "web.carbonio.admin.logout.redirect.vhost",
         new WebCustomLogoutRedirectVar(
+            mProv,
             "web.carbonio.admin.logout.redirect.vhost",
             ZAttrProvisioning.A_carbonioAdminUILogoutURL,
             DEFAULT_WEB_LOGIN_PATH,
@@ -2059,6 +2061,7 @@ public class ProxyConfGen {
     mConfVars.put(
         "web.carbonio.webui.logout.redirect.default",
         new WebCustomLogoutRedirectVar(
+            mProv,
             "web.carbonio.webui.logout.redirect.default",
             ZAttrProvisioning.A_carbonioWebUILogoutURL,
             DEFAULT_WEB_LOGIN_PATH,
@@ -2077,6 +2080,7 @@ public class ProxyConfGen {
     mConfVars.put(
         "web.carbonio.admin.logout.redirect.default",
         new WebCustomLogoutRedirectVar(
+            mProv,
             "web.carbonio.admin.logout.redirect.default",
             ZAttrProvisioning.A_carbonioAdminUILogoutURL,
             DEFAULT_WEB_LOGIN_PATH,

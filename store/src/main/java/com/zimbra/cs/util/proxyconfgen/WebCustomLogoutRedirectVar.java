@@ -1,5 +1,7 @@
 package com.zimbra.cs.util.proxyconfgen;
 
+import com.zimbra.cs.account.Provisioning;
+
 /**
  * Represents a custom logout redirect configuration variable for Carbonio web proxy configuration.
  *
@@ -14,15 +16,21 @@ package com.zimbra.cs.util.proxyconfgen;
  *
  * @author Keshav Bhatt
  * @see ProxyConfVar
- * @since 23.9.0
+ * @since 23.10.0
  */
 class WebCustomLogoutRedirectVar extends ProxyConfVar {
 
   private final String mCustomUrl;
 
   WebCustomLogoutRedirectVar(
-      String keyword, String attribute, Object defaultValue, String description, String customUrl) {
+      Provisioning prov,
+      String keyword,
+      String attribute,
+      Object defaultValue,
+      String description,
+      String customUrl) {
     super(
+        prov,
         keyword,
         attribute,
         defaultValue,
