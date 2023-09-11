@@ -39,7 +39,7 @@ class SetWebOfflineSyncDaysFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     final Try<Void> operationResult =
-        setWebOfflineSyncDaysFolderActionUseCase.setRetentionPolicy(
+        setWebOfflineSyncDaysFolderActionUseCase.setWebOfflineSyncDays(
             operationContext, accountId, folderId, 1);
 
     verify(userMailbox, times(1)).setFolderWebOfflineSyncDays(operationContext, itemId.getId(), 1);

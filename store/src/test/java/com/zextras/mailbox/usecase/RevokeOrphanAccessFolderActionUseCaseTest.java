@@ -7,8 +7,6 @@ import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zextras.mailbox.usecase.ldap.GrantType;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.*;
-import com.zimbra.cs.account.soap.SoapProvisioning;
-import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.ZLdapFilter;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.cs.mailbox.*;
@@ -24,6 +22,14 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
   private MailboxManager mailboxManager;
   private RevokeOrphanAccessFolderActionUseCase revokeOrphanAccessFolderActionUseCase;
   private ItemIdFactory itemIdFactory;
+  private Mailbox userMailbox ;
+  private OperationContext operationContext;
+  private ItemId itemId;
+  private Mailbox.FolderNode folderNode;
+  private Folder folder;
+  private  ACL acl;
+  private  ACL.Grant grant;
+  private Provisioning provisioning;
 
   @BeforeEach
   void setUp() throws NoSuchFieldException, IllegalAccessException {
@@ -34,7 +40,15 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
     Field zLdapInstanceFactory = ZLdapFilterFactory.class.getDeclaredField("SINGLETON");
     zLdapInstanceFactory.setAccessible(true);
     zLdapInstanceFactory.set(null, new DummyLdapFilterFactory());
-    Provisioning.setInstance(new DummyProvisioning());
+    userMailbox = mock(Mailbox.class);
+    operationContext = mock(OperationContext.class);
+    itemId = mock(ItemId.class);
+    folderNode = mock(Mailbox.FolderNode.class);
+    folder = mock(Folder.class);
+    acl = mock(ACL.class);
+    grant = mock(ACL.Grant.class);
+    provisioning = mock(Provisioning.class);
+    Provisioning.setInstance(provisioning);
   }
 
   @Test
@@ -42,19 +56,13 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
     final String accountId = "account-id123";
     final String folderId = accountId + ":1";
     final String granteeId = "zimbra-1";
-    final Mailbox userMailbox = mock(Mailbox.class);
-    final OperationContext operationContext = mock(OperationContext.class);
-    final ItemId itemId = mock(ItemId.class);
-    final Mailbox.FolderNode folderNode = mock(Mailbox.FolderNode.class);
-    final Folder folder = mock(Folder.class);
-    final ACL acl = mock(ACL.class);
-    final ACL.Grant grant = mock(ACL.Grant.class);
 
+    when(provisioning.searchDirectory(any())).thenReturn(List.of());
     when(folder.getFolderId()).thenReturn(1);
     when(userMailbox.getAccount())
         .thenReturn(
             new Account(
-                "test", accountId, new HashMap<>(), new HashMap<>(), new DummyProvisioning()));
+                "test", accountId, new HashMap<>(), new HashMap<>(), provisioning));
     when(itemId.getId()).thenReturn(1);
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(userMailbox.getFolderTree(operationContext, itemId, true)).thenReturn(folderNode);
@@ -76,12 +84,37 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
     assertTrue(result.isSuccess());
     verify(userMailbox, atLeast(1)).revokeAccess(operationContext, itemId.getId(), granteeId);
   }
-}
+  @Test
+  void shouldReturnFailureWhenEntriesFound() throws ServiceException {
+    final String accountId = "account-id123";
+    final String folderId = accountId + ":1";
+    final String granteeId = "zimbra-1";
 
-class DummyProvisioning extends SoapProvisioning {
-  @Override
-  public List<NamedEntry> searchDirectory(SearchDirectoryOptions options) {
-    return List.of();
+    when(folder.getFolderId()).thenReturn(1);
+    when(provisioning.searchDirectory(any())).thenReturn(List.of(mock(NamedEntry.class)));
+    when(userMailbox.getAccount())
+            .thenReturn(
+                    new Account(
+                            "test", accountId, new HashMap<>(), new HashMap<>(), provisioning));
+    when(itemId.getId()).thenReturn(1);
+    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(userMailbox.getFolderTree(operationContext, itemId, true)).thenReturn(folderNode);
+    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
+    when(folderNode.getFolder()).thenReturn(folder);
+    when(folder.getFolderId()).thenReturn(1);
+    when(folder.getId()).thenReturn(1);
+    when(userMailbox.getEffectivePermissions(
+            operationContext, folderNode.getFolder().getId(), MailItem.Type.FOLDER))
+            .thenReturn((short) 0x111);
+    when(folder.getACL()).thenReturn(acl);
+    when(acl.getGrants()).thenReturn(List.of(grant));
+    when(grant.getGranteeId()).thenReturn(granteeId);
+    when(grant.getGranteeType()).thenReturn(GrantType.GRANTEE_USER.getGranteeNumber());
+
+    Try<Void> result =
+            revokeOrphanAccessFolderActionUseCase.revokeOrphanAccess(
+                    operationContext, accountId, folderId, granteeId, "usr");
+    assertTrue(result.isFailure());
   }
 }
 
@@ -108,7 +141,7 @@ class DummyLdapFilterFactory extends ZLdapFilterFactory {
   }
 
   @Override
-  public ZLdapFilter fromFilterString(FilterId filterId, String filterString) throws LdapException {
+  public ZLdapFilter fromFilterString(FilterId filterId, String filterString) {
     return new DummyFilter(FilterId.TODO);
   }
 

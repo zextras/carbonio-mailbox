@@ -20,7 +20,7 @@ public class SetWebOfflineSyncDaysFolderActionUseCase {
     this.itemIdFactory = itemIdFactory;
   }
 
-  public Try<Void> setRetentionPolicy(
+  public Try<Void> setWebOfflineSyncDays(
       OperationContext operationContext, String accountId, String folderId, int days) {
     return Try.run(
         () -> {
