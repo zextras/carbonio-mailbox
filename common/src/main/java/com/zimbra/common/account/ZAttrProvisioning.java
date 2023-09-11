@@ -2816,7 +2816,7 @@ public class ZAttrProvisioning {
      * Login URL for Carbonio Admin web client to send the user to upon
      * failed login, auth expired, or no/invalid auth
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3138)
     public static final String A_carbonioAdminUILoginURL = "carbonioAdminUILoginURL";
@@ -2825,7 +2825,7 @@ public class ZAttrProvisioning {
      * Logout URL for Carbonio Admin web client to send the user to upon
      * explicit logging out
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3139)
     public static final String A_carbonioAdminUILogoutURL = "carbonioAdminUILogoutURL";
@@ -3105,7 +3105,7 @@ public class ZAttrProvisioning {
      * Login URL for Carbonio web client to send the user to upon failed
      * login, auth expired, or no/invalid auth
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3136)
     public static final String A_carbonioWebUILoginURL = "carbonioWebUILoginURL";
@@ -3114,7 +3114,7 @@ public class ZAttrProvisioning {
      * Logout URL for Carbonio web client to send the user to upon explicit
      * logging out
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3137)
     public static final String A_carbonioWebUILogoutURL = "carbonioWebUILogoutURL";

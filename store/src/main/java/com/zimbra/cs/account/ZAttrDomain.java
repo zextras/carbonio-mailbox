@@ -113,7 +113,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      *
      * @return carbonioAdminUILoginURL, or null if unset
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3138)
     public String getCarbonioAdminUILoginURL() {
@@ -127,7 +127,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param carbonioAdminUILoginURL new value
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3138)
     public void setCarbonioAdminUILoginURL(String carbonioAdminUILoginURL) throws com.zimbra.common.service.ServiceException {
@@ -144,7 +144,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3138)
     public Map<String,Object> setCarbonioAdminUILoginURL(String carbonioAdminUILoginURL, Map<String,Object> attrs) {
@@ -159,7 +159,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3138)
     public void unsetCarbonioAdminUILoginURL() throws com.zimbra.common.service.ServiceException {
@@ -175,7 +175,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3138)
     public Map<String,Object> unsetCarbonioAdminUILoginURL(Map<String,Object> attrs) {
@@ -190,7 +190,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      *
      * @return carbonioAdminUILogoutURL, or null if unset
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3139)
     public String getCarbonioAdminUILogoutURL() {
@@ -204,7 +204,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param carbonioAdminUILogoutURL new value
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3139)
     public void setCarbonioAdminUILogoutURL(String carbonioAdminUILogoutURL) throws com.zimbra.common.service.ServiceException {
@@ -221,7 +221,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3139)
     public Map<String,Object> setCarbonioAdminUILogoutURL(String carbonioAdminUILogoutURL, Map<String,Object> attrs) {
@@ -236,7 +236,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3139)
     public void unsetCarbonioAdminUILogoutURL() throws com.zimbra.common.service.ServiceException {
@@ -252,7 +252,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3139)
     public Map<String,Object> unsetCarbonioAdminUILogoutURL(Map<String,Object> attrs) {
@@ -1520,7 +1520,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      *
      * @return carbonioWebUILoginURL, or null if unset
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3136)
     public String getCarbonioWebUILoginURL() {
@@ -1534,7 +1534,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param carbonioWebUILoginURL new value
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3136)
     public void setCarbonioWebUILoginURL(String carbonioWebUILoginURL) throws com.zimbra.common.service.ServiceException {
@@ -1551,7 +1551,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3136)
     public Map<String,Object> setCarbonioWebUILoginURL(String carbonioWebUILoginURL, Map<String,Object> attrs) {
@@ -1566,7 +1566,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3136)
     public void unsetCarbonioWebUILoginURL() throws com.zimbra.common.service.ServiceException {
@@ -1582,7 +1582,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3136)
     public Map<String,Object> unsetCarbonioWebUILoginURL(Map<String,Object> attrs) {
@@ -1597,7 +1597,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      *
      * @return carbonioWebUILogoutURL, or null if unset
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3137)
     public String getCarbonioWebUILogoutURL() {
@@ -1611,7 +1611,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param carbonioWebUILogoutURL new value
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3137)
     public void setCarbonioWebUILogoutURL(String carbonioWebUILogoutURL) throws com.zimbra.common.service.ServiceException {
@@ -1628,7 +1628,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3137)
     public Map<String,Object> setCarbonioWebUILogoutURL(String carbonioWebUILogoutURL, Map<String,Object> attrs) {
@@ -1643,7 +1643,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3137)
     public void unsetCarbonioWebUILogoutURL() throws com.zimbra.common.service.ServiceException {
@@ -1659,7 +1659,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      *
-     * @since ZCS 23.9.0
+     * @since ZCS 23.10.0
      */
     @ZAttr(id=3137)
     public Map<String,Object> unsetCarbonioWebUILogoutURL(Map<String,Object> attrs) {
