@@ -36,7 +36,6 @@ class GrantFolderActionUseCaseTest {
   private ItemId itemId;
   private String zimbraId;
   private long expiry;
-  private String randomExpiry;
   private String accountId;
   private OperationContext operationContext;
   private String folderId;
@@ -59,7 +58,6 @@ class GrantFolderActionUseCaseTest {
 
     zimbraId = "id123";
     expiry = 42L;
-    randomExpiry = "randomExpiry";
     accountId = "accountId123";
     secretAccessKey = "accessKey";
     display = "display";
@@ -85,14 +83,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> grantTry =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_USER,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -109,14 +107,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> grantTry =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_AUTHUSER,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             null,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -134,14 +132,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> grantTry =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_PUBLIC,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -160,20 +158,20 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> grantTry =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_PUBLIC,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
 
     assertDoesNotThrow(grantTry::get);
-    verify(itemActionUtil, times(1)).validateGrantExpiry(randomExpiry, 420L);
+    verify(itemActionUtil, times(1)).validateGrantExpiry(String.valueOf(expiry), 420L);
   }
 
   @Test
@@ -185,14 +183,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_GUEST,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -215,14 +213,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_GUEST,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -249,14 +247,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_GUEST,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -290,14 +288,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_GUEST,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -343,14 +341,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_GUEST,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -396,14 +394,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_GUEST,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -427,14 +425,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_KEY,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -465,14 +463,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_USER,
             zimbraId,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -500,14 +498,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_USER,
             null,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -535,14 +533,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_USER,
             null,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -576,14 +574,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_USER,
             null,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);
@@ -610,14 +608,14 @@ class GrantFolderActionUseCaseTest {
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
+            operationContext,
+            accountId,
+            folderId,
             ACL.GRANTEE_USER,
             null,
             expiry,
-            randomExpiry,
-            accountId,
-            operationContext,
-            folderId,
             display,
+            rights,
             secretArgs,
             secretPassword,
             secretAccessKey);

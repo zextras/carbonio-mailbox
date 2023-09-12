@@ -11,6 +11,12 @@ import io.vavr.control.Try;
 import java.util.Optional;
 import javax.inject.Inject;
 
+/**
+ * Use case class to set checked folder tag.
+ *
+ * @author Yuliya Aheeva
+ * @since 23.10.0
+ */
 public class CheckFolderActionUseCase {
 
   private final MailboxManager mailboxManager;
@@ -22,10 +28,26 @@ public class CheckFolderActionUseCase {
     this.itemIdFactory = itemIdFactory;
   }
 
+  /**
+   * This method is used to tag folder as checked.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account which mailbox folder will be emptied
+   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @return a {@link Try} object with the status of the operation
+   */
   public Try<Void> check(OperationContext operationContext, String accountId, String folderId) {
     return innerCheckCall(operationContext, accountId, folderId, true);
   }
 
+  /**
+   * This method is used to tag folder as unchecked.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account which mailbox folder will be emptied
+   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @return a {@link Try} object with the status of the operation
+   */
   public Try<Void> uncheck(OperationContext operationContext, String accountId, String folderId) {
     return innerCheckCall(operationContext, accountId, folderId, false);
   }

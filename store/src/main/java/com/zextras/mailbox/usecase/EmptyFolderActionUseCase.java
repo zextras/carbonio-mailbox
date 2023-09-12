@@ -13,6 +13,12 @@ import io.vavr.control.Try;
 import java.util.Optional;
 import javax.inject.Inject;
 
+/**
+ * Use case class to empty a folder.
+ *
+ * @author Davide Polonio
+ * @since 23.10.0
+ */
 public class EmptyFolderActionUseCase {
 
   private final MailboxManager mailboxManager;

@@ -9,6 +9,12 @@ import io.vavr.control.Try;
 import java.util.Optional;
 import javax.inject.Inject;
 
+/**
+ * Use case class to manage ActiveSync support on a folder.
+ *
+ * @author Yuliya Aheeva
+ * @since 23.10.0
+ */
 public class ActiveSyncFolderActionUseCase {
 
   private final MailboxManager mailboxManager;
@@ -20,11 +26,27 @@ public class ActiveSyncFolderActionUseCase {
     this.itemIdFactory = itemIdFactory;
   }
 
+  /**
+   * This method is used to enable ActiveSync on a folder.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account which mailbox folder will be emptied
+   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @return a {@link Try} object with the status of the operation
+   */
   public Try<Void> enableActiveSync(
       OperationContext operationContext, String accountId, String folderId) {
     return innerActiveSyncCall(operationContext, accountId, folderId, false);
   }
 
+  /**
+   * This method is used to disable ActiveSync on a folder.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account which mailbox folder will be emptied
+   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @return a {@link Try} object with the status of the operation
+   */
   public Try<Void> disableActiveSync(
       OperationContext operationContext, String accountId, String folderId) {
     return innerActiveSyncCall(operationContext, accountId, folderId, true);

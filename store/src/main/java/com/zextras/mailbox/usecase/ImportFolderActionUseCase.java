@@ -9,6 +9,12 @@ import io.vavr.control.Try;
 import java.util.Optional;
 import javax.inject.Inject;
 
+/**
+ * Use case class to import feed from remote datasource.
+ *
+ * @author Yuliya Aheeva
+ * @since 23.10.0
+ */
 public class ImportFolderActionUseCase {
 
   private final MailboxManager mailboxManager;
@@ -20,6 +26,14 @@ public class ImportFolderActionUseCase {
     this.itemIdFactory = itemIdFactory;
   }
 
+  /**
+   * This method is used to import feed from remote datasource.
+   *
+   * @param accountId the target account which mailbox folder will be emptied
+   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @param url the url to retrieve feed from
+   * @return a {@link Try} object with the status of the operation
+   */
   public Try<Void> importFeed(
       OperationContext operationContext, String accountId, String folderId, String url) {
     return Try.run(

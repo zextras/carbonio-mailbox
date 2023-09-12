@@ -23,6 +23,12 @@ import io.vavr.control.Try;
 import java.util.Optional;
 import javax.inject.Inject;
 
+/**
+ * Use case class to grant access to a folder.
+ *
+ * @author Yuliya Aheeva, Davide Polonio, Dima Dymkovets
+ * @since 23.10.0
+ */
 public class GrantFolderActionUseCase {
 
   private final MailboxManager mailboxManager;
@@ -70,15 +76,30 @@ public class GrantFolderActionUseCase {
     }
   }
 
+  /**
+   * This method is used to grant access on a folder.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account which mailbox folder will be emptied
+   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @param granteeType representation of ACL grantee type
+   * @param zimbraId folder zimbraId attribute
+   * @param expiry expiration time
+   * @param display display
+   * @param secretArgs secret args
+   * @param secretPassword password
+   * @param secretAccessKey access key
+   * @return a {@link Try} result {@link Result} object with the status of the operation
+   */
   public Try<Result> grant(
+      OperationContext operationContext,
+      String accountId,
+      String folderId,
       byte granteeType,
       String zimbraId,
       long expiry,
-      String grantExpiry,
-      String accountId,
-      OperationContext operationContext,
-      String folderId,
       String display,
+      short rights,
       String secretArgs,
       String secretPassword,
       String secretAccessKey) {
@@ -88,7 +109,7 @@ public class GrantFolderActionUseCase {
           long calculatedExpiration = expiry;
           byte calculatedGrantType = granteeType;
           String calculatedSecret = null;
-          NamedEntry nentry = null;
+          NamedEntry namedEntry = null;
 
           final Mailbox userMailbox =
               Optional.ofNullable(mailboxManager.getMailboxByAccountId(accountId))
@@ -109,7 +130,7 @@ public class GrantFolderActionUseCase {
                 calculatedZimbraId = GuestAccount.GUID_PUBLIC;
                 calculatedExpiration =
                     itemActionUtil.validateGrantExpiry(
-                        grantExpiry,
+                        String.valueOf(expiry),
                         accountUtil.getMaxPublicShareLifetime(
                             userMailbox.getAccount(),
                             userMailbox
@@ -126,20 +147,20 @@ public class GrantFolderActionUseCase {
                 // first make sure they didn't accidentally specify "guest" instead of "usr"
                 boolean guestGrantee = true;
                 try {
-                  nentry =
+                  namedEntry =
                       granteeProvider.lookupGranteeByName(
                           calculatedZimbraId, ACL.GRANTEE_USER, operationContext);
-                  if (nentry instanceof MailTarget) {
+                  if (namedEntry instanceof MailTarget) {
                     Domain domain = Provisioning.getInstance().getDomain(userMailbox.getAccount());
-                    String granteeDomainName = ((MailTarget) nentry).getDomainName();
+                    String granteeDomainName = ((MailTarget) namedEntry).getDomainName();
                     if (domain.isInternalSharingCrossDomainEnabled()
                         || domain.getName().equals(granteeDomainName)
                         || Sets.newHashSet(domain.getInternalSharingDomain())
                             .contains(granteeDomainName)) {
                       guestGrantee = false;
-                      calculatedZimbraId = nentry.getId();
+                      calculatedZimbraId = namedEntry.getId();
                       calculatedGrantType =
-                          nentry instanceof Group ? ACL.GRANTEE_GROUP : ACL.GRANTEE_USER;
+                          namedEntry instanceof Group ? ACL.GRANTEE_GROUP : ACL.GRANTEE_USER;
                     }
                   }
                 } catch (ServiceException e) {
@@ -163,14 +184,14 @@ public class GrantFolderActionUseCase {
             default:
               {
                 if (zimbraId != null) {
-                  nentry = granteeProvider.lookupGranteeByZimbraId(zimbraId, granteeType);
+                  namedEntry = granteeProvider.lookupGranteeByZimbraId(zimbraId, granteeType);
                 } else {
                   try {
-                    nentry =
+                    namedEntry =
                         granteeProvider.lookupGranteeByName(display, granteeType, operationContext);
-                    calculatedZimbraId = nentry.getId();
+                    calculatedZimbraId = namedEntry.getId();
                     // make sure they didn't accidentally specify "usr" instead of "grp"
-                    if (granteeType == ACL.GRANTEE_USER && nentry instanceof Group) {
+                    if (granteeType == ACL.GRANTEE_USER && namedEntry instanceof Group) {
                       calculatedGrantType = ACL.GRANTEE_GROUP;
                     }
                   } catch (ServiceException e) {
@@ -189,25 +210,27 @@ public class GrantFolderActionUseCase {
 
           Grant grantResult =
               grantAccess(
-                  calculatedGrantType,
-                  operationContext,
-                  calculatedSecret,
                   userMailbox,
+                  operationContext,
                   itemId,
                   calculatedZimbraId,
+                  calculatedGrantType,
+                  rights,
+                  calculatedSecret,
                   calculatedExpiration);
 
-          return new Result(nentry, grantResult, calculatedZimbraId);
+          return new Result(namedEntry, grantResult, calculatedZimbraId);
         });
   }
 
   private Grant grantAccess(
-      final byte grantType,
-      final OperationContext operationContext,
-      final String secret,
       final Mailbox userMailbox,
+      final OperationContext operationContext,
       final ItemId itemId,
       final String calculatedZimbraId,
+      final byte grantType,
+      final short rights,
+      final String secret,
       final long calculatedExpiration)
       throws ServiceException {
 
@@ -216,7 +239,7 @@ public class GrantFolderActionUseCase {
         itemId.getId(),
         calculatedZimbraId,
         grantType,
-        (short) 0,
+        rights,
         secret,
         calculatedExpiration);
   }
