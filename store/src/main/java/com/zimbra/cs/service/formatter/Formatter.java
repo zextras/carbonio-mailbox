@@ -243,6 +243,8 @@ public abstract class Formatter {
       throws ServiceException {
     switch (folder.getDefaultView()) {
       case APPOINTMENT:
+        return context.targetMailbox.getCalendarItemsForRange(
+            context.opContext, startTime, endTime, folder.getId(), null);
       case CONTACT:
         return context.targetMailbox.getContactList(
             context.opContext, folder.getId(), SortBy.NAME_ASC);
