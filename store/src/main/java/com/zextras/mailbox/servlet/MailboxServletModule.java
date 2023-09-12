@@ -9,16 +9,26 @@ package com.zextras.mailbox.servlet;
 import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
 import com.zextras.mailbox.metric.Metrics;
+import com.zimbra.cs.service.account.AccountService;
+import com.zimbra.cs.service.admin.AdminService;
+import com.zimbra.cs.service.mail.MailService;
+import com.zimbra.soap.AdminSoapServlet;
+import com.zimbra.soap.DocumentService;
+import com.zimbra.soap.UserSoapServlet;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.exporter.MetricsServlet;
 import io.prometheus.client.hotspot.DefaultExports;
+import java.util.List;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
-public class MetricsServletModule extends ServletModule {
+public class MailboxServletModule extends ServletModule {
 
   @Override
   protected void configureServlets() {
     serve("/metrics").with(MetricsServlet.class);
+    serve("/soap/*").with(UserSoapServlet.class);
+    serve("/admin/soap/*").with(AdminSoapServlet.class);
   }
 
   /**
@@ -31,6 +41,36 @@ public class MetricsServletModule extends ServletModule {
   @Singleton
   public MetricsServlet provideMetricsServlet(CollectorRegistry collectorRegistry) {
     return new MetricsServlet(collectorRegistry);
+  }
+
+  @Provides
+  @Singleton
+  @Named("adminSOAPAPIs")
+  public List<DocumentService> provideAdminSOAPAPIs() {
+    return List.of(new MailService(), new AdminService());
+  }
+
+  @Provides
+  @Singleton
+  @Named("adminSOAPPorts")
+  public List<Integer> provideAdminSOAPPorts() {
+    // TODO: get ports from LDAP
+    return List.of(7071, 7073);
+  }
+
+  @Provides
+  @Singleton
+  @Named("userSOAPPorts")
+  public List<Integer> provideUserSOAPPorts() {
+    // TODO: get ports from LDAP
+    return List.of(7070, 7443);
+  }
+
+  @Provides
+  @Singleton
+  @Named("userSOAPAPIs")
+  public List<DocumentService> provideUserSOAPAPIs() {
+    return List.of(new MailService(), new AccountService());
   }
 
   /**

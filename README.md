@@ -31,10 +31,25 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
  `mvn install`
 
-- Run mailbox Jetty service locally (experimental):
-  - build carbonio-db Docker image locally [store/utils/docker/carbonio-db](store/utils/docker/carbonio-db)
-  - run docker-compose up in [store/utils/docker](store/utils/docker) (starts carbonio-db and carbonio LDAP)
-  - run mvn jetty:run from store module
+## Run mailbox Jetty service locally (experimental)
+
+- build carbonio-db Docker image locally [store/utils/docker/carbonio-db](store/utils/docker/carbonio-db)
+- run docker-compose up in [store/utils/docker](store/utils/docker) (starts carbonio-db and carbonio LDAP)
+- run mvn jetty:run from store module
+
+The environment will consist of:
+
+- mailbox (jetty process)
+- an LDAP server
+- a MariaDB database
+
+To create a user (e.g.: demo@test) you need to:
+
+- create a server with your name of choice ("localhost") and with
+  attribute "zimbraServiceEnabled" equal to "service"
+- create the user demo@test with "zimbraMailHost" equal to "localhost". Upon
+  creation the system checks the user's "zimbraMailHost" against a valid
+  server enabled with "service" (mail) capability
 
 ## Contribute to Carbonio Mailbox
 

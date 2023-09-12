@@ -51,14 +51,19 @@ public class SoapServlet extends ZimbraServlet {
 
   /** context name of auth token extracted from cookie */
   public static final String ZIMBRA_AUTH_TOKEN = "zimbra.authToken";
+
   /** context name of servlet context */
   public static final String SERVLET_CONTEXT = "servlet.context";
+
   /** context name of servlet HTTP request */
   public static final String SERVLET_REQUEST = "servlet.request";
+
   /** context name of servlet HTTP response */
   public static final String SERVLET_RESPONSE = "servlet.response";
+
   /** If this is a request sent to the admin port */
   public static final String IS_ADMIN_REQUEST = "zimbra.isadminreq";
+
   /** Flag for requests that want to force invalidation of client cookies */
   public static final String INVALIDATE_COOKIES = "zimbra.invalidateCookies";
 
@@ -68,6 +73,14 @@ public class SoapServlet extends ZimbraServlet {
 
   private static Log sLog = LogFactory.getLog(SoapServlet.class);
   private SoapEngine mEngine;
+  private final List<DocumentService> documentServices;
+  private final List<Integer> allowedPorts;
+
+  public SoapServlet(List<DocumentService> documentServices, List<Integer> allowedPorts) {
+    super(allowedPorts.stream().mapToInt(Integer::intValue).toArray());
+    this.documentServices = documentServices;
+    this.allowedPorts = allowedPorts;
+  }
 
   // Used by sExtraServices
   private static class ArrayListFactory implements Function<String, List<DocumentService>> {
@@ -86,10 +99,8 @@ public class SoapServlet extends ZimbraServlet {
     mEngine = new SoapEngine(Metrics.METER_REGISTRY);
 
     int i = 0;
-    String cname;
-    while ((cname = getInitParameter(PARAM_ENGINE_HANDLER + i)) != null) {
-      loadHandler(cname);
-      i++;
+    for (DocumentService documentService : this.documentServices) {
+      addService(documentService);
     }
 
     // See if any extra services were previously added by extensions
@@ -102,9 +113,6 @@ public class SoapServlet extends ZimbraServlet {
     }
 
     mEngine.getDocumentDispatcher().clearSoapWhiteList();
-
-    if (i == 0)
-      throw new ServletException("Must specify at least one handler " + PARAM_ENGINE_HANDLER + i);
 
     try {
       Zimbra.startup();
@@ -134,36 +142,6 @@ public class SoapServlet extends ZimbraServlet {
     mEngine = null;
 
     super.destroy();
-  }
-
-  private void loadHandler(String cname) throws ServletException {
-    Class<?> dispatcherClass = null;
-    try {
-      dispatcherClass = Class.forName(cname);
-    } catch (ClassNotFoundException cnfe) {
-      throw new ServletException("can't find handler initializer class " + cname, cnfe);
-    } catch (OutOfMemoryError e) {
-      Zimbra.halt("out of memory", e);
-    } catch (Throwable t) {
-      throw new ServletException("can't find handler initializer class " + cname, t);
-    }
-
-    Object dispatcher;
-
-    try {
-      dispatcher = dispatcherClass.newInstance();
-    } catch (InstantiationException ie) {
-      throw new ServletException("can't instantiate class " + cname, ie);
-    } catch (IllegalAccessException iae) {
-      throw new ServletException("can't instantiate class " + cname, iae);
-    }
-
-    if (!(dispatcher instanceof DocumentService)) {
-      throw new ServletException("class not an instanceof HandlerInitializer: " + cname);
-    }
-
-    DocumentService hi = (DocumentService) dispatcher;
-    addService(hi);
   }
 
   /**

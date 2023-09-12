@@ -111,13 +111,19 @@ public class ZimbraServlet extends HttpServlet {
 
   private static Map<String, ZimbraServlet> sServlets = new HashMap<String, ZimbraServlet>();
 
+  public ZimbraServlet(int[] mAllowedPorts) {
+    this.mAllowedPorts = mAllowedPorts;
+  }
+
+  public ZimbraServlet() {}
+
   private int[] mAllowedPorts;
 
   @Override
   public void init() throws ServletException {
     try {
       String portsCSV = getInitParameter(PARAM_ALLOWED_PORTS);
-      if (portsCSV != null) {
+      if (mAllowedPorts == null && portsCSV != null) {
         // Split on zero-or-more spaces followed by comma followed by
         // zero-or-more spaces.
         String[] vals = portsCSV.split("\\s*,\\s*");
@@ -182,6 +188,7 @@ public class ZimbraServlet extends HttpServlet {
     }
     return true;
   }
+
   /**
    * Filter the request based on incoming port. If the allowed.ports parameter is specified for the
    * servlet, the incoming port must match one of the listed ports.
