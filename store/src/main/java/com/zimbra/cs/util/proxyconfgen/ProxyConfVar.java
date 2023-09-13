@@ -18,7 +18,7 @@ class ProxyConfVar {
   public static final String UNKNOWN_HEADER_NAME = "X-Zimbra-Unknown-Header";
   public static final Pattern RE_HEADER = Pattern.compile("^([^:]+):\\s+(.*)$");
   protected static Log mLog = LogFactory.getLog(ProxyConfGen.class);
-  protected static Provisioning mProv = Provisioning.getInstance();
+  protected Provisioning mProv;
   static Entry configSource = null;
   static Entry serverSource = null;
   String mKeyword;
@@ -29,7 +29,54 @@ class ProxyConfVar {
   ProxyConfOverride mOverride;
   String mDescription;
 
+  /**
+   * ProxyConfVar constructor(Deprecated)
+   *
+   * @param keyword Unique keyword for this variable that will be used to explode the value in nginx
+   *     templates.
+   * @param attribute Name of the attribute.
+   * @param defaultValue Default value for this variable.
+   * @param valueType the {@link ProxyConfValueType} type for this variable.
+   * @param overrideType the {@link ProxyConfOverride} type for this variable.
+   * @param description Description of this configuration variable.
+   * @deprecated This method should not be used anymore
+   *     <p>Use {@link ProxyConfVar#ProxyConfVar(Provisioning provisioning, String keyword, String
+   *     attribute, Object defaultValue, ProxyConfValueType valueType, ProxyConfOverride
+   *     overrideType, String description)} instead.
+   */
+  @Deprecated(since = "23.10.0")
   public ProxyConfVar(
+      String keyword,
+      String attribute,
+      Object defaultValue,
+      ProxyConfValueType valueType,
+      ProxyConfOverride overrideType,
+      String description) {
+    this(
+        Provisioning.getInstance(),
+        keyword,
+        attribute,
+        defaultValue,
+        valueType,
+        overrideType,
+        description);
+  }
+
+  /**
+   * ProxyConfVar constructor
+   *
+   * @param provisioning Provisioning instance
+   * @param keyword Unique keyword for this variable that will be used to explode the value in nginx
+   *     templates.
+   * @param attribute Name of the attribute.
+   * @param defaultValue Default value for this variable.
+   * @param valueType the {@link ProxyConfValueType} type for this variable.
+   * @param overrideType the {@link ProxyConfOverride} type for this variable.
+   * @param description Description of this configuration variable.
+   * @since 23.10.0
+   */
+  public ProxyConfVar(
+      Provisioning provisioning,
       String keyword,
       String attribute,
       Object defaultValue,
@@ -43,6 +90,7 @@ class ProxyConfVar {
     mOverride = overrideType;
     mValue = mDefault;
     mDescription = description;
+    mProv = provisioning;
   }
 
   public String confValue() throws ProxyConfException {
@@ -89,7 +137,7 @@ class ProxyConfVar {
       throw new ProxyConfException(
           "the custom update of ProxyConfVar with key "
               + mKeyword
-              + " has to be implementated by override");
+              + " has to be implemented by override");
     }
   }
 

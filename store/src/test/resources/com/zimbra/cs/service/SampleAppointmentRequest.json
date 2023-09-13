@@ -1,0 +1,65 @@
+{
+  "echo": "1",
+  "comp": "0",
+  "m": {
+    "e": [
+      {
+        "a": "test@test.com",
+        "p": "Test User",
+        "t": "f"
+      }
+    ],
+    "inv": {
+      "comp": [
+        {
+          "alarm": [
+            {
+              "action": "DISPLAY",
+              "trigger": {
+                "rel": {
+                  "m": "5",
+                  "related": "START",
+                  "neg": "1"
+                }
+              }
+            }
+          ],
+          "at": [],
+          "allDay": "0",
+          "fb": "B",
+          "loc": "",
+          "name": "New appointment",
+          "or": {
+            "a": "test@test.com"
+          },
+          "status": "CONF",
+          "s": {
+            "d": "20230907T110000",
+            "tz": "Europe/Rome"
+          },
+          "e": {
+            "d": "20230907T113000",
+            "tz": "Europe/Rome"
+          },
+          "class": "PUB",
+          "draft": 0
+        }
+      ]
+    },
+    "l": "10",
+    "mp": {
+      "ct": "multipart/alternative",
+      "mp": [
+        {
+          "ct": "text/html",
+          "content": "<html><body id='htmlmode'>-:::_::_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_::_:_::-<h3>Test User have invited you to a new meeting!</h3><p>Subject: New appointment</p><p>Organizer: Test User</p><p>Location: </p><p>Time: Thursday, September 7, 2023 11:00 AM - 11:30 AM</p><p>Invitees: </p><br/>-:::_::_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_::_:_::-"
+        },
+        {
+          "ct": "text/plain",
+          "content": "-:::_::_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_::_:_::-\nTest User have invited you to a new meeting!\n\nSubject: New appointment \nOrganizer: \"Test User \n\nTime: Thursday, September 7, 2023 11:00 AM - 11:30 AM\n \nInvitees:  \n\n\n-:::_::_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_::_:_::-\n"
+        }
+      ]
+    },
+    "su": "New appointment"
+  }
+}

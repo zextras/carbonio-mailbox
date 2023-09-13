@@ -8,7 +8,23 @@
  */
 package com.zimbra.cs.service.admin;
 
+import com.google.common.collect.Sets;
+import com.zimbra.common.account.Key;
+import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
+import com.zimbra.common.soap.Element;
+import com.zimbra.common.util.CsvReader;
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.accesscontrol.AdminRight;
+import com.zimbra.cs.account.accesscontrol.Rights.Admin;
+import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.admin.message.GetServiceStatusResponse;
+import com.zimbra.soap.admin.type.ServiceStatus;
+import com.zimbra.soap.admin.type.TimeZoneInfo;
+import com.zimbra.soap.type.ZeroOrOne;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,25 +37,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import com.google.common.collect.Sets;
-import com.zimbra.common.account.Key;
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.SoapFaultException;
-import com.zimbra.common.util.CsvReader;
-import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.accesscontrol.AdminRight;
-import com.zimbra.cs.account.accesscontrol.Rights.Admin;
-import com.zimbra.soap.ZimbraSoapContext;
-import com.zimbra.soap.admin.message.GetServiceStatusResponse;
-import com.zimbra.soap.admin.type.ServiceStatus;
-import com.zimbra.soap.admin.type.TimeZoneInfo;
-import com.zimbra.soap.type.ZeroOrOne;
-
-/** @author schemers */
+/**
+ * @author schemers
+ */
 public class GetServiceStatus extends AdminDocumentHandler {
   private static final String ZMRRDFETCH = LC.zimbra_home.value() + "/libexec/zmrrdfetch";
   private static final String ZMSTATUSLOG_CSV = "zmstatuslog";
@@ -108,7 +108,7 @@ public class GetServiceStatus extends AdminDocumentHandler {
         if (currentHost != null)
           hostStatus.put(currentHost, new CsvReader(new StringReader(currentWriter.toString())));
         List<ServiceStatus> status = ServiceStatus.parseData(hostStatus);
-        String[] skippedServices = {"zimlet", "zimbra", "zimbraAdmin", "zmconfigd"};
+        String[] skippedServices = {"zmconfigd"};
         Element onlyCarbonioServicesEl =
             request.getOptionalElement(AdminConstants.A_CARBONIO_SERVICES_ONLY);
         String onlyCarbonioServicesElStr =
@@ -119,11 +119,11 @@ public class GetServiceStatus extends AdminDocumentHandler {
 
         for (ServiceStatus stat : status) {
           serviceStatus.remove(stat);
-          if (reqContainsOnlyCarbonioServices){
-            if(Arrays.stream(skippedServices).noneMatch(stat.getService()::equals)) {
+          if (reqContainsOnlyCarbonioServices) {
+            if (Arrays.stream(skippedServices).noneMatch(stat.getService()::equals)) {
               serviceStatus.add(stat);
             }
-          }else{
+          } else {
             serviceStatus.add(stat);
           }
         }
