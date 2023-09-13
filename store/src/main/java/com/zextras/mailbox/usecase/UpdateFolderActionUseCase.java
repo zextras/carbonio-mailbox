@@ -17,6 +17,12 @@ import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 
+/**
+ * Use case class to update a folder.
+ *
+ * @author Yuliya Aheeva, Davide Polonio
+ * @since 23.10.0
+ */
 public class UpdateFolderActionUseCase {
 
   private final MailboxManager mailboxManager;
@@ -31,6 +37,22 @@ public class UpdateFolderActionUseCase {
     this.aclUtil = aclUtil;
   }
 
+  /**
+   * This method is used to update (set permissions, set color, set tags, set folder view, rename,
+   * move) a folder.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
+   * @param internalGrantExpiryString internal grant expiry to get ACL
+   * @param guestGrantExpiryString guest grant expiry to get ACL
+   * @param grantInputList list of {@link GrantInput}
+   * @param newName new name to rename a folder
+   * @param flags flags to tag a folder
+   * @param color new color to set
+   * @param view view to set
+   * @return a {@link Try} object with the status of the operation
+   */
   public Try<Void> update(
       OperationContext operationContext,
       String accountId,
@@ -78,12 +100,14 @@ public class UpdateFolderActionUseCase {
                             .getDefaultView()
                         : MailItem.Type.of(view),
                     userMailbox.getAccount());
+
             userMailbox.setPermissions(operationContext, itemId.getId(), acl);
           }
 
           if (color >= 0) {
             userMailbox.setColor(operationContext, itemId.getId(), MailItem.Type.FOLDER, color);
           }
+
           if (flags != null) {
             userMailbox.setTags(
                 operationContext,
@@ -93,10 +117,12 @@ public class UpdateFolderActionUseCase {
                 null,
                 null);
           }
+
           if (view != null) {
             userMailbox.setFolderDefaultView(
                 operationContext, itemId.getId(), MailItem.Type.of(view));
           }
+
           if (newName != null) {
             userMailbox.rename(
                 operationContext,
@@ -105,6 +131,7 @@ public class UpdateFolderActionUseCase {
                 newName,
                 folderItemId.getId());
           }
+
           if (folderItemId.getId() > 0) {
             userMailbox.move(
                 operationContext, itemId.getId(), MailItem.Type.FOLDER, folderItemId.getId(), null);

@@ -15,6 +15,12 @@ import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 
+/**
+ * Use case class to revoke orphan access from a folder.
+ *
+ * @author Dima Dymkovets
+ * @since 23.10.0
+ */
 public class RevokeOrphanAccessFolderActionUseCase {
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
@@ -26,6 +32,16 @@ public class RevokeOrphanAccessFolderActionUseCase {
     this.itemIdFactory = itemIdFactory;
   }
 
+  /**
+   * This method is used to revoke orphan access.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
+   * @param zimbraId folder zimbraId attribute
+   * @param grantType grant type
+   * @return a {@link Try} object with the status of the operation
+   */
   public Try<Void> revokeOrphanAccess(
       OperationContext operationContext,
       String accountId,
@@ -51,6 +67,7 @@ public class RevokeOrphanAccessFolderActionUseCase {
           if (!entries.isEmpty()) {
             throw ServiceException.INVALID_REQUEST("grantee " + zimbraId + " exists", null);
           }
+
           Mailbox.FolderNode rootNode = userMailbox.getFolderTree(operationContext, itemId, true);
           GrantType.fromGranteeTypeName(grantType)
               .mapTry(

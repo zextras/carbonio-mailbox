@@ -11,31 +11,54 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.OperationContext;
 
+/**
+ * Provider class to look up a grantee.
+ *
+ * @author Yuliya Aheeva
+ * @since 23.10.0
+ */
 public class GranteeProvider {
 
-  public NamedEntry lookupGranteeByEmailAddress(String name) throws ServiceException {
-    if (name.indexOf('<') > 0) {
-      InternetAddress addr = new InternetAddress(name);
-      name = addr.getAddress();
+  /**
+   * Looks up a grantee by email address.
+   *
+   * @param email email to find a grantee by
+   * @return {@link NamedEntry}
+   * @throws ServiceException if not able to find a grantee by email address
+   */
+  public NamedEntry lookupGranteeByEmailAddress(String email) throws ServiceException {
+    if (email.indexOf('<') > 0) {
+      InternetAddress addr = new InternetAddress(email);
+      email = addr.getAddress();
     }
     Provisioning prov = Provisioning.getInstance();
-    NamedEntry nentry = prov.get(AccountBy.name, name);
+    NamedEntry nentry = prov.get(AccountBy.name, email);
     if (nentry == null) {
-      nentry = prov.getGroup(Key.DistributionListBy.name, name);
+      nentry = prov.getGroup(Key.DistributionListBy.name, email);
     }
     return nentry;
   }
 
-  public NamedEntry lookupGranteeByName(String name, byte type, OperationContext operationContext)
-      throws ServiceException {
-    if (type == ACL.GRANTEE_AUTHUSER
-        || type == ACL.GRANTEE_PUBLIC
-        || type == ACL.GRANTEE_GUEST
-        || type == ACL.GRANTEE_KEY) return null;
+  /**
+   * Looks up a grantee by name.
+   *
+   * @param name grantee name
+   * @param granteeType ACL grantee type
+   * @param operationContext an {@link OperationContext}
+   * @return {@link NamedEntry}
+   * @throws ServiceException if not able to find a grantee by name
+   */
+  public NamedEntry lookupGranteeByName(
+      String name, byte granteeType, OperationContext operationContext) throws ServiceException {
+    if (granteeType == ACL.GRANTEE_AUTHUSER
+        || granteeType == ACL.GRANTEE_PUBLIC
+        || granteeType == ACL.GRANTEE_GUEST
+        || granteeType == ACL.GRANTEE_KEY) return null;
 
     Provisioning prov = Provisioning.getInstance();
     // for addresses, default to the authenticated user's domain
-    if ((type == ACL.GRANTEE_USER || type == ACL.GRANTEE_GROUP) && name.indexOf('@') == -1) {
+    if ((granteeType == ACL.GRANTEE_USER || granteeType == ACL.GRANTEE_GROUP)
+        && name.indexOf('@') == -1) {
       Account authacct =
           prov.get(
               AccountBy.id,
@@ -47,7 +70,7 @@ public class GranteeProvider {
 
     NamedEntry nentry = null;
     if (name != null)
-      switch (type) {
+      switch (granteeType) {
         case ACL.GRANTEE_COS:
           nentry = prov.get(Key.CosBy.name, name);
           break;
@@ -63,7 +86,7 @@ public class GranteeProvider {
       }
 
     if (nentry != null) return nentry;
-    switch (type) {
+    switch (granteeType) {
       case ACL.GRANTEE_COS:
         throw AccountServiceException.NO_SUCH_COS(name);
       case ACL.GRANTEE_DOMAIN:
@@ -73,14 +96,22 @@ public class GranteeProvider {
       case ACL.GRANTEE_GROUP:
         throw AccountServiceException.NO_SUCH_DISTRIBUTION_LIST(name);
       default:
-        throw ServiceException.FAILURE("LDAP entry not found for " + name + " : " + type, null);
+        throw ServiceException.FAILURE(
+            "LDAP entry not found for " + name + " : " + granteeType, null);
     }
   }
 
-  public NamedEntry lookupGranteeByZimbraId(String zid, byte type) {
+  /**
+   * Looks up a grantee by id.
+   *
+   * @param zimbraId account zimbraId attribute
+   * @param granteeType ACL grantee type
+   * @return {@link NamedEntry}
+   */
+  public NamedEntry lookupGranteeByZimbraId(String zid, byte granteeType) {
     Provisioning prov = Provisioning.getInstance();
     try {
-      switch (type) {
+      switch (granteeType) {
         case ACL.GRANTEE_COS:
           return prov.get(Key.CosBy.id, zid);
         case ACL.GRANTEE_DOMAIN:

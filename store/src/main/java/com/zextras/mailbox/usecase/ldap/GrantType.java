@@ -6,6 +6,12 @@ import io.vavr.control.Try;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Helper class to get grantee type.
+ *
+ * @author Dima Dymkovets
+ * @since 23.10.0
+ */
 public enum GrantType {
   GRANTEE_USER(
       (byte) 1,
@@ -37,6 +43,12 @@ public enum GrantType {
     return objectTypes;
   }
 
+  /**
+   * Gets grantee type by number.
+   *
+   * @param granteeNumber grantee number
+   * @return {@link GrantType}
+   */
   public static Try<GrantType> fromGranteeTypeNumber(byte granteeNumber) {
     return Try.of(
         () ->
@@ -49,6 +61,12 @@ public enum GrantType {
                             "invalid grantee type for revokeOrphanGrants", null)));
   }
 
+  /**
+   * Gets grantee type by name.
+   *
+   * @param granteeName grantee name
+   * @return {@link GrantType}
+   */
   public static Try<GrantType> fromGranteeTypeName(String granteeName) {
     return Try.of(
         () ->

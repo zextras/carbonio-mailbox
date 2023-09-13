@@ -80,12 +80,12 @@ public class GrantFolderActionUseCase {
    * This method is used to grant access on a folder.
    *
    * @param operationContext an {@link OperationContext}
-   * @param accountId the target account which mailbox folder will be emptied
-   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
    * @param granteeType representation of ACL grantee type
    * @param zimbraId folder zimbraId attribute
    * @param expiry expiration time
-   * @param display display
+   * @param display the display name
    * @param secretArgs secret args
    * @param secretPassword password
    * @param secretAccessKey access key

@@ -9,6 +9,12 @@ import io.vavr.control.Try;
 import java.util.Optional;
 import javax.inject.Inject;
 
+/**
+ * Use case class to refresh a folder.
+ *
+ * @author Dima Dymkovets
+ * @since 23.10.0
+ */
 public class RefreshFolderActionUseCase {
 
   private final MailboxManager mailboxManager;
@@ -20,6 +26,14 @@ public class RefreshFolderActionUseCase {
     this.itemIdFactory = itemIdFactory;
   }
 
+  /**
+   * This method is used to refresh (synchronize data) a folder.
+   *
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
+   * @param url the url to retrieve feed from
+   * @return a {@link Try} object with the status of the operation
+   */
   public Try<Void> refresh(OperationContext operationContext, String accountId, String folderId) {
     return Try.run(
         () -> {
@@ -31,6 +45,7 @@ public class RefreshFolderActionUseCase {
                               "unable to locate the mailbox for the given accountId"));
 
           final ItemId itemId = itemIdFactory.create(folderId, accountId);
+
           userMailbox.synchronizeFolder(operationContext, itemId.getId());
         });
   }

@@ -15,6 +15,12 @@ import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 
+/**
+ * Use case class to revoke access to a folder and remove revoked mountpoints.
+ *
+ * @author Yuliya Aheeva
+ * @since 23.10.0
+ */
 public class RevokeFolderActionUseCase {
 
   private final MailboxManager mailboxManager;
@@ -34,6 +40,16 @@ public class RevokeFolderActionUseCase {
     this.operationContextFactory = operationContextFactory;
   }
 
+  /**
+   * This method is used to revoke access from a folder. Revokes access, finds grantee mountpoints,
+   * deletes linked to revoked folder mountpoints.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
+   * @param granteeId grantee account zimbraId attribute
+   * @return a {@link Try} object with the status of the operation
+   */
   public Try<Void> revoke(
       OperationContext operationContext, String accountId, String folderId, String granteeId) {
 

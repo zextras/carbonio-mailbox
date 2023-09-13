@@ -28,8 +28,8 @@ public class FreeBusyFolderActionUseCase {
    * This method is used to include free busy integration to calendar folder.
    *
    * @param operationContext an {@link OperationContext}
-   * @param accountId the target account which mailbox folder will be emptied
-   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> includeFreeBusyIntegration(
@@ -41,7 +41,7 @@ public class FreeBusyFolderActionUseCase {
    * This method is used to exclude free busy integration to calendar folder.
    *
    * @param operationContext an {@link OperationContext}
-   * @param accountId the target account which mailbox folder will be emptied
+   * @param accountId the target account zimbra id attribute
    * @param folderId the id of the folder (belonging to the accountId) that will be emptied
    * @return a {@link Try} object with the status of the operation
    */

@@ -11,6 +11,12 @@ import io.vavr.control.Try;
 import java.util.Optional;
 import javax.inject.Inject;
 
+/**
+ * Use case class to manage synchronization on a folder.
+ *
+ * @author Yuliya Aheeva
+ * @since 23.10.0
+ */
 public class SyncFolderActionUseCase {
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
@@ -21,10 +27,26 @@ public class SyncFolderActionUseCase {
     this.itemIdFactory = itemIdFactory;
   }
 
+  /**
+   * This method is used to turn on the synchronization.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
+   * @return a {@link Try} object with the status of the operation
+   */
   public Try<Void> syncOn(OperationContext operationContext, String accountId, String folderId) {
     return innerSyncCall(operationContext, accountId, folderId, true);
   }
 
+  /**
+   * This method is used to turn off the synchronization.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
+   * @return a {@link Try} object with the status of the operation
+   */
   public Try<Void> syncOff(OperationContext operationContext, String accountId, String folderId) {
     return innerSyncCall(operationContext, accountId, folderId, false);
   }

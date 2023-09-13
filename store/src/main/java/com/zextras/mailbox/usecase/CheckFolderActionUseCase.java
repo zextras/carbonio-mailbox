@@ -32,8 +32,8 @@ public class CheckFolderActionUseCase {
    * This method is used to tag folder as checked.
    *
    * @param operationContext an {@link OperationContext}
-   * @param accountId the target account which mailbox folder will be emptied
-   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> check(OperationContext operationContext, String accountId, String folderId) {
@@ -44,8 +44,8 @@ public class CheckFolderActionUseCase {
    * This method is used to tag folder as unchecked.
    *
    * @param operationContext an {@link OperationContext}
-   * @param accountId the target account which mailbox folder will be emptied
-   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> uncheck(OperationContext operationContext, String accountId, String folderId) {

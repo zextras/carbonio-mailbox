@@ -29,8 +29,9 @@ public class ImportFolderActionUseCase {
   /**
    * This method is used to import feed from remote datasource.
    *
-   * @param accountId the target account which mailbox folder will be emptied
-   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
    * @param url the url to retrieve feed from
    * @return a {@link Try} object with the status of the operation
    */

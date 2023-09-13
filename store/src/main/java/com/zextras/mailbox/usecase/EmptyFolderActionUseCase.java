@@ -35,7 +35,7 @@ public class EmptyFolderActionUseCase {
    * at {@link #emptyRecursively} for recursively emptying a folder.
    *
    * @param accountId the target account which mailbox folder will be emptied
-   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @param folderId the id of the folder (belonging to the accountId)
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> empty(OperationContext operationContext, String accountId, String folderId) {
@@ -45,8 +45,9 @@ public class EmptyFolderActionUseCase {
   /**
    * This method does recursively remove the folders.
    *
+   * @param operationContext an {@link OperationContext}
    * @param accountId the target account which mailbox folder will be emptied
-   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @param folderId the id of the folder (belonging to the accountId)
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> emptyRecursively(
