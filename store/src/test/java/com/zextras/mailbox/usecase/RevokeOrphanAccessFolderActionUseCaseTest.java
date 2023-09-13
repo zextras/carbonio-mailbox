@@ -22,13 +22,13 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
   private MailboxManager mailboxManager;
   private RevokeOrphanAccessFolderActionUseCase revokeOrphanAccessFolderActionUseCase;
   private ItemIdFactory itemIdFactory;
-  private Mailbox userMailbox ;
+  private Mailbox userMailbox;
   private OperationContext operationContext;
   private ItemId itemId;
   private Mailbox.FolderNode folderNode;
   private Folder folder;
-  private  ACL acl;
-  private  ACL.Grant grant;
+  private ACL acl;
+  private ACL.Grant grant;
   private Provisioning provisioning;
 
   @BeforeEach
@@ -60,9 +60,7 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
     when(provisioning.searchDirectory(any())).thenReturn(List.of());
     when(folder.getFolderId()).thenReturn(1);
     when(userMailbox.getAccount())
-        .thenReturn(
-            new Account(
-                "test", accountId, new HashMap<>(), new HashMap<>(), provisioning));
+        .thenReturn(new Account("test", accountId, new HashMap<>(), new HashMap<>(), provisioning));
     when(itemId.getId()).thenReturn(1);
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(userMailbox.getFolderTree(operationContext, itemId, true)).thenReturn(folderNode);
@@ -84,6 +82,7 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
     assertTrue(result.isSuccess());
     verify(userMailbox, atLeast(1)).revokeAccess(operationContext, itemId.getId(), granteeId);
   }
+
   @Test
   void shouldReturnFailureWhenEntriesFound() throws ServiceException {
     final String accountId = "account-id123";
@@ -93,9 +92,7 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
     when(folder.getFolderId()).thenReturn(1);
     when(provisioning.searchDirectory(any())).thenReturn(List.of(mock(NamedEntry.class)));
     when(userMailbox.getAccount())
-            .thenReturn(
-                    new Account(
-                            "test", accountId, new HashMap<>(), new HashMap<>(), provisioning));
+        .thenReturn(new Account("test", accountId, new HashMap<>(), new HashMap<>(), provisioning));
     when(itemId.getId()).thenReturn(1);
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(userMailbox.getFolderTree(operationContext, itemId, true)).thenReturn(folderNode);
@@ -105,15 +102,15 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
     when(folder.getId()).thenReturn(1);
     when(userMailbox.getEffectivePermissions(
             operationContext, folderNode.getFolder().getId(), MailItem.Type.FOLDER))
-            .thenReturn((short) 0x111);
+        .thenReturn((short) 0x111);
     when(folder.getACL()).thenReturn(acl);
     when(acl.getGrants()).thenReturn(List.of(grant));
     when(grant.getGranteeId()).thenReturn(granteeId);
     when(grant.getGranteeType()).thenReturn(GrantType.GRANTEE_USER.getGranteeNumber());
 
     Try<Void> result =
-            revokeOrphanAccessFolderActionUseCase.revokeOrphanAccess(
-                    operationContext, accountId, folderId, granteeId, "usr");
+        revokeOrphanAccessFolderActionUseCase.revokeOrphanAccess(
+            operationContext, accountId, folderId, granteeId, "usr");
     assertTrue(result.isFailure());
   }
 }
@@ -514,11 +511,6 @@ class DummyLdapFilterFactory extends ZLdapFilterFactory {
 
   @Override
   public ZLdapFilter xmppComponentById(String id) {
-    return new DummyFilter(FilterId.TODO);
-  }
-
-  @Override
-  public ZLdapFilter allZimlets() {
     return new DummyFilter(FilterId.TODO);
   }
 
