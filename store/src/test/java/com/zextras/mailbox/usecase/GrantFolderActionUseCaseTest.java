@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
-import com.zextras.mailbox.usecase.ldap.GranteeProvider;
+import com.zextras.mailbox.usecase.service.GranteeService;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
@@ -32,7 +32,7 @@ class GrantFolderActionUseCaseTest {
   private ItemActionUtil itemActionUtil;
   private AccountUtil accountUtil;
   private ItemIdFactory itemIdFactory;
-  private GranteeProvider granteeProvider;
+  private GranteeService granteeService;
   private ItemId itemId;
   private String zimbraId;
   private long expiry;
@@ -54,7 +54,7 @@ class GrantFolderActionUseCaseTest {
     itemActionUtil = mock(ItemActionUtil.class);
     accountUtil = mock(AccountUtil.class);
     itemIdFactory = mock(ItemIdFactory.class);
-    granteeProvider = mock(GranteeProvider.class);
+    granteeService = mock(GranteeService.class);
 
     zimbraId = "id123";
     expiry = 42L;
@@ -71,7 +71,7 @@ class GrantFolderActionUseCaseTest {
 
     grantFolderActionUseCase =
         new GrantFolderActionUseCase(
-            mailboxManager, itemActionUtil, accountUtil, itemIdFactory, granteeProvider);
+            mailboxManager, itemActionUtil, accountUtil, itemIdFactory, granteeService);
   }
 
   @Test
@@ -227,7 +227,7 @@ class GrantFolderActionUseCaseTest {
 
     final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
 
-    verify(granteeProvider, times(1))
+    verify(granteeService, times(1))
         .lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext);
     assertEquals(display, grantResult.getZimbraId());
   }
@@ -242,7 +242,7 @@ class GrantFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
-    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+    when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
         .thenReturn(namedEntry);
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
@@ -283,7 +283,7 @@ class GrantFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
-    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+    when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
         .thenReturn(namedEntry);
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
@@ -332,7 +332,7 @@ class GrantFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(userMailbox.getAccount()).thenReturn(account);
-    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+    when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
         .thenReturn(namedEntry);
     when(provisioning.getDomain(account)).thenReturn(domain);
     when(namedEntry.getDomainName()).thenReturn(domainName);
@@ -385,7 +385,7 @@ class GrantFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(userMailbox.getAccount()).thenReturn(account);
-    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+    when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
         .thenReturn(namedEntry);
     when(provisioning.getDomain(account)).thenReturn(domain);
     when(namedEntry.getDomainName()).thenReturn(domainName);
@@ -458,8 +458,7 @@ class GrantFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
-    when(granteeProvider.lookupGranteeByZimbraId(zimbraId, ACL.GRANTEE_USER))
-        .thenReturn(namedEntry);
+    when(granteeService.lookupGranteeByZimbraId(zimbraId, ACL.GRANTEE_USER)).thenReturn(namedEntry);
 
     final Try<GrantFolderActionUseCase.Result> operationResult =
         grantFolderActionUseCase.grant(
@@ -492,7 +491,7 @@ class GrantFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
-    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+    when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
         .thenReturn(namedEntry);
     when(namedEntry.getId()).thenReturn(namedEntryId);
 
@@ -527,7 +526,7 @@ class GrantFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
-    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+    when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
         .thenReturn(namedEntry);
     when(namedEntry.getId()).thenReturn(namedEntryId);
 
@@ -568,7 +567,7 @@ class GrantFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
-    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+    when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
         .thenThrow(AccountServiceException.NO_SUCH_ACCOUNT("account.NO_SUCH_ACCOUNT"));
     when(namedEntry.getId()).thenReturn(namedEntryId);
 
@@ -602,7 +601,7 @@ class GrantFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
-    when(granteeProvider.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
+    when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
         .thenThrow(ServiceException.INVALID_REQUEST("This is dummy exception!", null));
     when(namedEntry.getId()).thenReturn(namedEntryId);
 

@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase.ldap;
+package com.zextras.mailbox.usecase.service;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -17,7 +17,7 @@ import com.zimbra.cs.mailbox.OperationContext;
  * @author Yuliya Aheeva
  * @since 23.10.0
  */
-public class GranteeProvider {
+public class GranteeService {
 
   /**
    * Looks up a grantee by email address.

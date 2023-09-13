@@ -2,7 +2,7 @@ package com.zextras.mailbox.usecase;
 
 import com.google.common.collect.Sets;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
-import com.zextras.mailbox.usecase.ldap.GranteeProvider;
+import com.zextras.mailbox.usecase.service.GranteeService;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.Domain;
@@ -35,7 +35,7 @@ public class GrantFolderActionUseCase {
   private final ItemActionUtil itemActionUtil;
   private final AccountUtil accountUtil;
   private final ItemIdFactory itemIdFactory;
-  private final GranteeProvider granteeProvider;
+  private final GranteeService granteeService;
 
   @Inject
   public GrantFolderActionUseCase(
@@ -43,12 +43,12 @@ public class GrantFolderActionUseCase {
       ItemActionUtil itemActionUtil,
       AccountUtil accountUtil,
       ItemIdFactory itemIdFactory,
-      GranteeProvider granteeProvider) {
+      GranteeService granteeService) {
     this.mailboxManager = mailboxManager;
     this.itemActionUtil = itemActionUtil;
     this.accountUtil = accountUtil;
     this.itemIdFactory = itemIdFactory;
-    this.granteeProvider = granteeProvider;
+    this.granteeService = granteeService;
   }
 
   public static class Result {
@@ -148,7 +148,7 @@ public class GrantFolderActionUseCase {
                 boolean guestGrantee = true;
                 try {
                   namedEntry =
-                      granteeProvider.lookupGranteeByName(
+                      granteeService.lookupGranteeByName(
                           calculatedZimbraId, ACL.GRANTEE_USER, operationContext);
                   if (namedEntry instanceof MailTarget) {
                     Domain domain = Provisioning.getInstance().getDomain(userMailbox.getAccount());
@@ -184,11 +184,11 @@ public class GrantFolderActionUseCase {
             default:
               {
                 if (zimbraId != null) {
-                  namedEntry = granteeProvider.lookupGranteeByZimbraId(zimbraId, granteeType);
+                  namedEntry = granteeService.lookupGranteeByZimbraId(zimbraId, granteeType);
                 } else {
                   try {
                     namedEntry =
-                        granteeProvider.lookupGranteeByName(display, granteeType, operationContext);
+                        granteeService.lookupGranteeByName(display, granteeType, operationContext);
                     calculatedZimbraId = namedEntry.getId();
                     // make sure they didn't accidentally specify "usr" instead of "grp"
                     if (granteeType == ACL.GRANTEE_USER && namedEntry instanceof Group) {

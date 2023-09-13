@@ -2,12 +2,12 @@ package com.zextras.mailbox.usecase;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zextras.mailbox.usecase.factory.OperationContextFactory;
+import com.zextras.mailbox.usecase.service.MountpointService;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Mountpoint;
-import com.zimbra.cs.mailbox.MountpointManager;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
@@ -24,18 +24,18 @@ import javax.inject.Inject;
 public class RevokeFolderActionUseCase {
 
   private final MailboxManager mailboxManager;
-  private final MountpointManager mountpointManager;
+  private final MountpointService mountpointService;
   private final ItemIdFactory itemIdFactory;
   private final OperationContextFactory operationContextFactory;
 
   @Inject
   public RevokeFolderActionUseCase(
       MailboxManager mailboxManager,
-      MountpointManager mountpointManager,
+      MountpointService mountpointService,
       ItemIdFactory itemIdFactory,
       OperationContextFactory operationContextFactory) {
     this.mailboxManager = mailboxManager;
-    this.mountpointManager = mountpointManager;
+    this.mountpointService = mountpointService;
     this.itemIdFactory = itemIdFactory;
     this.operationContextFactory = operationContextFactory;
   }
@@ -73,14 +73,14 @@ public class RevokeFolderActionUseCase {
               itemIdFactory.create(String.valueOf(Mailbox.ID_FOLDER_USER_ROOT), granteeId);
 
           List<Mountpoint> granteeMountpoints =
-              mountpointManager.getMountpointsByPath(
+              mountpointService.getMountpointsByPath(
                   granteeMailbox, granteeContext, granteeRootFolderId);
 
           List<Integer> brokenMountsIds =
-              mountpointManager.filterMountpointsByOwnerIdAndRemoteFolderId(
+              mountpointService.filterMountpointsByOwnerIdAndRemoteFolderId(
                   granteeMountpoints, accountId, folderId);
 
-          mountpointManager.deleteMountpoints(granteeMailbox, granteeContext, brokenMountsIds);
+          mountpointService.deleteMountpoints(granteeMailbox, granteeContext, brokenMountsIds);
         });
   }
 }

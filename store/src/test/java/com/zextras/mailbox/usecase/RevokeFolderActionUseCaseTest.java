@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.Maps;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zextras.mailbox.usecase.factory.OperationContextFactory;
+import com.zextras.mailbox.usecase.service.MountpointService;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -17,7 +18,6 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Mountpoint;
-import com.zimbra.cs.mailbox.MountpointManager;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 class RevokeFolderActionUseCaseTest {
   private RevokeFolderActionUseCase revokeFolderActionUseCase;
   private MailboxManager mailboxManager;
-  private MountpointManager mountpointManager;
+  private MountpointService mountpointService;
   private ItemIdFactory itemIdFactory;
   private OperationContextFactory operationContextFactory;
 
@@ -37,12 +37,12 @@ class RevokeFolderActionUseCaseTest {
   void setUp() throws Exception {
     mailboxManager = mock(MailboxManager.class);
     itemIdFactory = mock(ItemIdFactory.class);
-    mountpointManager = mock(MountpointManager.class);
+    mountpointService = mock(MountpointService.class);
     operationContextFactory = mock(OperationContextFactory.class);
 
     revokeFolderActionUseCase =
         new RevokeFolderActionUseCase(
-            mailboxManager, mountpointManager, itemIdFactory, operationContextFactory);
+            mailboxManager, mountpointService, itemIdFactory, operationContextFactory);
 
     MailboxTestUtil.initServer();
   }
@@ -106,10 +106,10 @@ class RevokeFolderActionUseCaseTest {
     when(itemIdFactory.create(String.valueOf(Mailbox.ID_FOLDER_USER_ROOT), granteeId))
         .thenReturn(granteeRootFolder);
     when(operationContextFactory.create(granteeAccount)).thenReturn(operationContext);
-    when(mountpointManager.getMountpointsByPath(
+    when(mountpointService.getMountpointsByPath(
             granteeMailbox, operationContext, granteeRootFolder))
         .thenReturn(granteeMounts);
-    when(mountpointManager.filterMountpointsByOwnerIdAndRemoteFolderId(
+    when(mountpointService.filterMountpointsByOwnerIdAndRemoteFolderId(
             granteeMounts, accountId, folderId))
         .thenReturn(mountPointsIds);
 
@@ -118,8 +118,8 @@ class RevokeFolderActionUseCaseTest {
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "Folder should be successfully revoked.");
 
-    verify(mountpointManager)
+    verify(mountpointService)
         .filterMountpointsByOwnerIdAndRemoteFolderId(granteeMounts, accountId, folderId);
-    verify(mountpointManager).deleteMountpoints(granteeMailbox, operationContext, mountPointsIds);
+    verify(mountpointService).deleteMountpoints(granteeMailbox, operationContext, mountPointsIds);
   }
 }

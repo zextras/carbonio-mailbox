@@ -1,4 +1,4 @@
-package com.zimbra.cs.mailbox;
+package com.zextras.mailbox.usecase.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,7 +12,14 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.ACL;
+import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem.Type;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.mailbox.Mountpoint;
+import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.mail.ItemActionHelper;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.HashMap;
@@ -25,8 +32,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-class MountpointManagerTest {
-  private MountpointManager mountpointManager;
+class MountpointServiceTest {
+  private MountpointService mountpointService;
   private MockedStatic<ItemActionHelper> itemActionHelper;
 
   @BeforeAll
@@ -36,7 +43,7 @@ class MountpointManagerTest {
 
   @BeforeEach
   public void setUp() {
-    mountpointManager = new MountpointManager();
+    mountpointService = new MountpointService();
     itemActionHelper = mockStatic(ItemActionHelper.class);
   }
 
@@ -93,7 +100,7 @@ class MountpointManagerTest {
             false);
 
     List<Mountpoint> mountPoints =
-        mountpointManager.getMountpointsByPath(granteeMailbox, granteeContext, granteeRootFolder);
+        mountpointService.getMountpointsByPath(granteeMailbox, granteeContext, granteeRootFolder);
 
     assertFalse(mountPoints.isEmpty());
     assertEquals(1, mountPoints.size());
@@ -109,7 +116,7 @@ class MountpointManagerTest {
     OperationContext operationContext = new OperationContext(account);
     List<Integer> mountpointsIds = List.of(1, 2, 3);
 
-    mountpointManager.deleteMountpoints(mailbox, operationContext, mountpointsIds);
+    mountpointService.deleteMountpoints(mailbox, operationContext, mountpointsIds);
 
     itemActionHelper.verify(
         () ->
@@ -170,7 +177,7 @@ class MountpointManagerTest {
             false);
     List<Mountpoint> mountpoints = List.of(mountpoint, mountpoint2, mountpoint3);
     List<Integer> mountPointsIds =
-        mountpointManager.filterMountpointsByOwnerIdAndRemoteFolderId(mountpoints, ownerId, "1");
+        mountpointService.filterMountpointsByOwnerIdAndRemoteFolderId(mountpoints, ownerId, "1");
     assertFalse(mountPointsIds.isEmpty());
     assertEquals(1, mountPointsIds.size());
     assertEquals(mountpoint.getId(), mountPointsIds.get(0));
