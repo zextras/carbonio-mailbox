@@ -15,20 +15,10 @@ SPDX-License-Identifier: AGPL-3.0-only
   <display-name>Carbonio SOAP Service</display-name>
   <description>SOAP Service</description>
 
-  <filter>
-    <filter-name>guiceFilter</filter-name>
-    <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
-    <async-supported>true</async-supported>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>guiceFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
   <listener>
     <listener-class>com.zextras.mailbox.servlet.GuiceMailboxServletConfig</listener-class>
   </listener>
+
   <filter>
     <filter-name>DoSFilter</filter-name>
     <filter-class>com.zimbra.cs.servlet.DoSFilter</filter-class>
@@ -192,6 +182,21 @@ SPDX-License-Identifier: AGPL-3.0-only
     <url-pattern>/home/*</url-pattern>
     <url-pattern>/upload</url-pattern>
     <url-pattern>/extension/*</url-pattern>
+  </filter-mapping>
+
+
+  <!-- Filters are executed in order of definition.
+  Guice filter should be at end of chain since it hosts Soap servlets.
+  -->
+  <filter>
+    <filter-name>guiceFilter</filter-name>
+    <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+    <async-supported>true</async-supported>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>guiceFilter</filter-name>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
 
   <servlet>

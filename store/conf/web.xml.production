@@ -11,17 +11,6 @@
   <display-name>Carbonio SOAP Service</display-name>
   <description>SOAP Service</description>
 
-  <filter>
-      <filter-name>guiceFilter</filter-name>
-      <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
-      <async-supported>true</async-supported>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>guiceFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
   <listener>
     <listener-class>com.zextras.mailbox.servlet.GuiceMailboxServletConfig</listener-class>
   </listener>
@@ -191,12 +180,16 @@
     <url-pattern>/extension/*</url-pattern>
   </filter-mapping>
 
-  <servlet>
-    <servlet-name>FirstServlet</servlet-name>
-    <servlet-class>com.zimbra.cs.servlet.FirstServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-    <async-supported>true</async-supported>
-  </servlet>
+  <filter>
+      <filter-name>guiceFilter</filter-name>
+      <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+      <async-supported>true</async-supported>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>guiceFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <servlet>
     <servlet-name>ExtensionDispatcherServlet</servlet-name>
@@ -213,50 +206,6 @@
       <max-request-size>%%zimbraMailContentMaxSize%%</max-request-size>
       <file-size-threshold>%%zimbraFileUploadMaxSize%%</file-size-threshold>
     </multipart-config>
-  </servlet>
-
-  <servlet>
-    <servlet-name>SoapServlet</servlet-name>
-    <servlet-class>com.zimbra.soap.SoapServlet</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, 7070, 7443</param-value>
-    </init-param>
-    <!-- User command handlers only -->
-    <init-param>
-      <param-name>engine.handler.0</param-name>
-      <param-value>com.zimbra.cs.service.account.AccountService</param-value>
-    </init-param>
-    <init-param>
-      <param-name>engine.handler.1</param-name>
-      <param-value>com.zimbra.cs.service.mail.MailService</param-value>
-    </init-param>
-    <load-on-startup>2</load-on-startup>
-  </servlet>
-
-  <servlet>
-    <servlet-name>AdminServlet</servlet-name>
-    <servlet-class>com.zimbra.soap.SoapServlet</servlet-class>
-    <async-supported>true</async-supported>
-    <init-param>
-      <param-name>allowed.ports</param-name>
-      <param-value>%%zimbraAdminPort%%, %%zimbraMtaAuthPort%%, 7071, 7073</param-value>
-    </init-param>
-    <!-- Admin servlet allows both admin and user commands -->
-    <init-param>
-      <param-name>engine.handler.0</param-name>
-      <param-value>com.zimbra.cs.service.admin.AdminService</param-value>
-    </init-param>
-    <init-param>
-      <param-name>engine.handler.1</param-name>
-      <param-value>com.zimbra.cs.service.account.AccountService</param-value>
-    </init-param>
-    <init-param>
-      <param-name>engine.handler.2</param-name>
-      <param-value>com.zimbra.cs.service.mail.MailService</param-value>
-    </init-param>
-    <load-on-startup>3</load-on-startup>
   </servlet>
 
   <servlet>
@@ -456,16 +405,6 @@
   <servlet-mapping>
     <servlet-name>ExtensionDispatcherServlet</servlet-name>
     <url-pattern>/extension/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>SoapServlet</servlet-name>
-    <url-pattern>/soap/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>AdminServlet</servlet-name>
-    <url-pattern>/admin/soap/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

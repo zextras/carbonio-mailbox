@@ -180,7 +180,7 @@ public class ZimbraServlet extends HttpServlet {
     if (mAllowedPorts != null && mAllowedPorts.length > 0) {
       int incoming = request.getLocalPort();
       for (int i = 0; i < mAllowedPorts.length; i++) {
-        if (mAllowedPorts[i] == incoming) {
+        if (mAllowedPorts[i] == incoming || mAllowedPorts[i] == 0) {
           return true;
         }
       }

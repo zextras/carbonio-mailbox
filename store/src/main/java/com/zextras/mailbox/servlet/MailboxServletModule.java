@@ -9,6 +9,8 @@ package com.zextras.mailbox.servlet;
 import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
 import com.zextras.mailbox.metric.Metrics;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.account.AccountService;
 import com.zimbra.cs.service.admin.AdminService;
 import com.zimbra.cs.service.mail.MailService;
@@ -52,18 +54,26 @@ public class MailboxServletModule extends ServletModule {
 
   @Provides
   @Singleton
+  public Provisioning provideProvisioning() {
+    return Provisioning.getInstance();
+  }
+
+  @Provides
+  @Singleton
   @Named("adminSOAPPorts")
-  public List<Integer> provideAdminSOAPPorts() {
-    // TODO: get ports from LDAP
-    return List.of(7071, 7073);
+  public List<Integer> provideAdminSOAPPorts(Provisioning provisioning) throws ServiceException {
+    final int adminPort = provisioning.getConfig().getAdminPort();
+    final int mtaAuthPort = provisioning.getConfig().getMtaAuthPort();
+    return List.of(adminPort, mtaAuthPort, 7071, 7073);
   }
 
   @Provides
   @Singleton
   @Named("userSOAPPorts")
-  public List<Integer> provideUserSOAPPorts() {
-    // TODO: get ports from LDAP
-    return List.of(7070, 7443);
+  public List<Integer> provideUserSOAPPorts(Provisioning provisioning) throws ServiceException {
+    final int mailSSLPort = provisioning.getConfig().getMailSSLPort();
+    final int mailPort = provisioning.getConfig().getMailPort();
+    return List.of(mailPort, mailSSLPort, 7070, 7443);
   }
 
   @Provides
