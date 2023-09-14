@@ -11,6 +11,7 @@ import com.google.inject.servlet.ServletModule;
 import com.zextras.mailbox.metric.Metrics;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
 import com.zimbra.soap.AdminSoapServlet;
 import com.zimbra.soap.UserSoapServlet;
 import io.prometheus.client.CollectorRegistry;
@@ -51,8 +52,9 @@ public class MailboxServletModule extends ServletModule {
   @Singleton
   @Named("adminSOAPPorts")
   public List<Integer> provideAdminSOAPPorts(Provisioning provisioning) throws ServiceException {
-    final int adminPort = provisioning.getConfig().getAdminPort();
-    final int mtaAuthPort = provisioning.getConfig().getMtaAuthPort();
+    final Server localServer = provisioning.getLocalServer();
+    final int adminPort = localServer.getAdminPort();
+    final int mtaAuthPort = localServer.getMtaAuthPort();
     return List.of(adminPort, mtaAuthPort, 7071, 7073);
   }
 
@@ -60,8 +62,9 @@ public class MailboxServletModule extends ServletModule {
   @Singleton
   @Named("userSOAPPorts")
   public List<Integer> provideUserSOAPPorts(Provisioning provisioning) throws ServiceException {
-    final int mailSSLPort = provisioning.getConfig().getMailSSLPort();
-    final int mailPort = provisioning.getConfig().getMailPort();
+    final Server localServer = provisioning.getLocalServer();
+    final int mailSSLPort = localServer.getMailSSLPort();
+    final int mailPort = localServer.getMailPort();
     return List.of(mailPort, mailSSLPort, 7070, 7443);
   }
 
