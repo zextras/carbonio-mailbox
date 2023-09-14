@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase.ldap;
+package com.zextras.mailbox.usecase.util;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.SearchDirectoryOptions;

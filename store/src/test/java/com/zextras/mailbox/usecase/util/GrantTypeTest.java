@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase.ldap;
+package com.zextras.mailbox.usecase.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

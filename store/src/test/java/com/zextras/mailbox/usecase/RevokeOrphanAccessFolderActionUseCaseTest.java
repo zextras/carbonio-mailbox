@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
-import com.zextras.mailbox.usecase.ldap.GrantType;
+import com.zextras.mailbox.usecase.util.GrantType;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.*;
 import com.zimbra.cs.ldap.ZLdapFilter;
