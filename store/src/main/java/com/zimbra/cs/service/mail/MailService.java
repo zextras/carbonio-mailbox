@@ -10,6 +10,7 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
+import javax.inject.Singleton;
 
 /**
  * @zm-service-description The Mail Service includes commands for managing mail and calendar
@@ -17,6 +18,7 @@ import com.zimbra.soap.DocumentService;
  * @since May 26, 2004
  * @author schemers
  */
+@Singleton
 public final class MailService implements DocumentService {
 
   @Override

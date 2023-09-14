@@ -13,12 +13,14 @@ import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Singleton;
 
 /**
  * @zm-service-description The Admin Service includes commands for server, account and mailbox
  *     administration.
  * @since May 26, 2004
  */
+@Singleton
 public class AdminService implements DocumentService {
 
   @Override

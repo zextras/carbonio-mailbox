@@ -11,11 +11,7 @@ import com.google.inject.servlet.ServletModule;
 import com.zextras.mailbox.metric.Metrics;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.service.account.AccountService;
-import com.zimbra.cs.service.admin.AdminService;
-import com.zimbra.cs.service.mail.MailService;
 import com.zimbra.soap.AdminSoapServlet;
-import com.zimbra.soap.DocumentService;
 import com.zimbra.soap.UserSoapServlet;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.exporter.MetricsServlet;
@@ -47,13 +43,6 @@ public class MailboxServletModule extends ServletModule {
 
   @Provides
   @Singleton
-  @Named("adminSOAPAPIs")
-  public List<DocumentService> provideAdminSOAPAPIs() {
-    return List.of(new MailService(), new AdminService());
-  }
-
-  @Provides
-  @Singleton
   public Provisioning provideProvisioning() {
     return Provisioning.getInstance();
   }
@@ -74,13 +63,6 @@ public class MailboxServletModule extends ServletModule {
     final int mailSSLPort = provisioning.getConfig().getMailSSLPort();
     final int mailPort = provisioning.getConfig().getMailPort();
     return List.of(mailPort, mailSSLPort, 7070, 7443);
-  }
-
-  @Provides
-  @Singleton
-  @Named("userSOAPAPIs")
-  public List<DocumentService> provideUserSOAPAPIs() {
-    return List.of(new MailService(), new AccountService());
   }
 
   /**

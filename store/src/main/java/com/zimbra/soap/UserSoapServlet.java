@@ -4,6 +4,8 @@
 
 package com.zimbra.soap;
 
+import com.zimbra.cs.service.account.AccountService;
+import com.zimbra.cs.service.mail.MailService;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,8 +18,9 @@ public class UserSoapServlet extends SoapServlet {
 
   @Inject
   public UserSoapServlet(
-      @Named("userSOAPAPIs") List<DocumentService> documentServices,
+      MailService mailService,
+      AccountService accountService,
       @Named("userSOAPPorts") List<Integer> allowedPorts) {
-    super(documentServices, allowedPorts);
+    super(List.of(mailService, accountService), allowedPorts);
   }
 }

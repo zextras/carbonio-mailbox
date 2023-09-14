@@ -18,12 +18,14 @@ import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Singleton;
 
 /**
  * @zm-service-description The Account Service includes commands for retrieving, storing and
  *     managing information user account information.
  * @author schemers
  */
+@Singleton
 public class AccountService implements DocumentService {
 
   @Override
