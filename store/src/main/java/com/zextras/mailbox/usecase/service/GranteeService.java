@@ -10,6 +10,7 @@ import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.OperationContext;
+import javax.inject.Inject;
 
 /**
  * Provider class to look up a grantee.
@@ -18,6 +19,12 @@ import com.zimbra.cs.mailbox.OperationContext;
  * @since 23.10.0
  */
 public class GranteeService {
+  private final Provisioning provisioning;
+
+  @Inject
+  public GranteeService(Provisioning provisioning) {
+    this.provisioning = provisioning;
+  }
 
   /**
    * Looks up a grantee by email address.
@@ -31,10 +38,10 @@ public class GranteeService {
       InternetAddress addr = new InternetAddress(email);
       email = addr.getAddress();
     }
-    Provisioning prov = Provisioning.getInstance();
-    NamedEntry nentry = prov.get(AccountBy.name, email);
+
+    NamedEntry nentry = provisioning.get(AccountBy.name, email);
     if (nentry == null) {
-      nentry = prov.getGroup(Key.DistributionListBy.name, email);
+      nentry = provisioning.getGroup(Key.DistributionListBy.name, email);
     }
     return nentry;
   }
@@ -55,12 +62,11 @@ public class GranteeService {
         || granteeType == ACL.GRANTEE_GUEST
         || granteeType == ACL.GRANTEE_KEY) return null;
 
-    Provisioning prov = Provisioning.getInstance();
     // for addresses, default to the authenticated user's domain
     if ((granteeType == ACL.GRANTEE_USER || granteeType == ACL.GRANTEE_GROUP)
         && name.indexOf('@') == -1) {
       Account authacct =
-          prov.get(
+          provisioning.get(
               AccountBy.id,
               operationContext.getmAuthTokenAccountId(),
               operationContext.getAuthToken());
@@ -72,16 +78,16 @@ public class GranteeService {
     if (name != null)
       switch (granteeType) {
         case ACL.GRANTEE_COS:
-          nentry = prov.get(Key.CosBy.name, name);
+          nentry = provisioning.get(Key.CosBy.name, name);
           break;
         case ACL.GRANTEE_DOMAIN:
-          nentry = prov.get(Key.DomainBy.name, name);
+          nentry = provisioning.get(Key.DomainBy.name, name);
           break;
         case ACL.GRANTEE_USER:
           nentry = lookupGranteeByEmailAddress(name);
           break;
         case ACL.GRANTEE_GROUP:
-          nentry = prov.getGroup(Key.DistributionListBy.name, name);
+          nentry = provisioning.getGroup(Key.DistributionListBy.name, name);
           break;
       }
 
@@ -109,17 +115,16 @@ public class GranteeService {
    * @return {@link NamedEntry}
    */
   public NamedEntry lookupGranteeByZimbraId(String zid, byte granteeType) {
-    Provisioning prov = Provisioning.getInstance();
     try {
       switch (granteeType) {
         case ACL.GRANTEE_COS:
-          return prov.get(Key.CosBy.id, zid);
+          return provisioning.get(Key.CosBy.id, zid);
         case ACL.GRANTEE_DOMAIN:
-          return prov.get(Key.DomainBy.id, zid);
+          return provisioning.get(Key.DomainBy.id, zid);
         case ACL.GRANTEE_USER:
-          return prov.get(AccountBy.id, zid);
+          return provisioning.get(AccountBy.id, zid);
         case ACL.GRANTEE_GROUP:
-          return prov.getGroup(Key.DistributionListBy.id, zid);
+          return provisioning.getGroup(Key.DistributionListBy.id, zid);
         case ACL.GRANTEE_GUEST:
         case ACL.GRANTEE_KEY:
         case ACL.GRANTEE_AUTHUSER:
