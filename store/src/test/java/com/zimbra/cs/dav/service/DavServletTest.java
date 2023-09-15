@@ -18,12 +18,18 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.db.DbPool;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.AuthProviderException;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -39,31 +45,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 @Testcontainers
 class DavServletTest {
 
   private static final int PORT = 8090;
-  private Server server;
-  private Provisioning provisioning;
-
-  private static class JettyServerFactory {
-
-    public static Server createDefault() throws Exception {
-      Server server = new Server();
-      ServerConnector connector = new ServerConnector(server);
-      connector.setPort(PORT);
-      ServletHandler servletHandler = new ServletHandler();
-      servletHandler.addServletWithMapping(DavServlet.class, "/dav");
-      server.setHandler(servletHandler);
-      server.setConnectors(new Connector[] {connector});
-      return server;
-    }
-  }
 
   @Container
   GenericContainer ldapContainer =
@@ -80,6 +72,30 @@ class DavServletTest {
               })
           .withExposedPorts(389);
 
+  @Container
+  GenericContainer sqlContainer =
+      new GenericContainer<>(DockerImageName.parse("cytopia/mariadb-10.1"))
+          .withStartupTimeout(Duration.of(2, TimeUnit.MINUTES.toChronoUnit()))
+          .withEnv(
+              Map.of(
+                  "MYSQL_USER", "zextras",
+                  "MYSQL_PASSWORD", "zextras",
+                  "MYSQL_ROOT_PASSWORD", "password"))
+          .withCreateContainerCmdModifier(
+              cmd -> {
+                cmd.withHostConfig(
+                    new HostConfig()
+                        .withPortBindings(
+                            new PortBinding(Binding.bindPort(7306), new ExposedPort(3306))));
+              })
+          .withCopyFileToContainer(
+              MountableFile.forClasspathResource("/db.sql", 0744), "/root/db.sql")
+          .withExposedPorts(3306);
+
+  private Server server;
+  private Provisioning provisioning;
+  private MailboxManager mailboxManager;
+
   @BeforeEach
   public void setUp() throws Exception {
     System.setProperty("log4j.configuration", "log4j-test.properties");
@@ -87,6 +103,13 @@ class DavServletTest {
         "zimbra.config",
         Objects.requireNonNull(this.getClass().getResource("/localconfig-api-test.xml")).getFile());
     provisioning = Provisioning.getInstance();
+    final ExecResult execResult =
+        sqlContainer.execInContainer("sh", "-c", "mysql -u root -ppassword < /root/db.sql");
+    if (execResult.getExitCode() != 0) {
+      throw new RuntimeException(execResult.getStderr());
+    }
+    DbPool.startup();
+    mailboxManager = MailboxManager.getInstance();
     server = JettyServerFactory.createDefault();
     server.start();
     final String serverName = "localhost";
@@ -119,6 +142,7 @@ class DavServletTest {
   @AfterEach
   public void tearDown() throws Exception {
     server.stop();
+    DbPool.shutdown();
   }
 
   private HttpResponse executeDavRequest(Account organizer)
@@ -139,8 +163,24 @@ class DavServletTest {
   @Test
   void shouldNotSendNotificationWhenScheduleAgentClient()
       throws IOException, ServiceException, AuthTokenException {
-
-    final HttpResponse response = executeDavRequest(provisioning.getAccount("organizer@test.com"));
+    final Account organizer = provisioning.getAccount("organizer@test.com");
+    final Account attendee = provisioning.getAccount("attendee@test.com");
+    final HttpResponse response = executeDavRequest(organizer);
     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    final Mailbox mailboxByAccount = mailboxManager.getMailboxByAccount(organizer);
+  }
+
+  private static class JettyServerFactory {
+
+    public static Server createDefault() throws Exception {
+      Server server = new Server();
+      ServerConnector connector = new ServerConnector(server);
+      connector.setPort(PORT);
+      ServletHandler servletHandler = new ServletHandler();
+      servletHandler.addServletWithMapping(DavServlet.class, "/dav");
+      server.setHandler(servletHandler);
+      server.setConnectors(new Connector[] {connector});
+      return server;
+    }
   }
 }
