@@ -37,4 +37,7 @@
   <key name="mailboxd_create_db_file">
     <value>./db/create_database.sql</value>
   </key>
+  <key name="zimbra_relative_volume_path">
+    <value>true</value>
+  </key>
 </localconfig>
