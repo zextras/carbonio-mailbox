@@ -10,6 +10,12 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+/**
+ * This class perform deletion of an user
+ * 
+ * @author Davide Polonio
+ * @since 23.10.0
+ */
 public class DeleteUserUseCase {
 
   private final Provisioning provisioning;
@@ -26,6 +32,13 @@ public class DeleteUserUseCase {
     this.log = log;
   }
 
+  /**
+   * Perform the deletion of an user given its id.
+   * 
+   * @param userId the {@link String} that represents an id of an user
+   * @return a {@link Try} of kind {@link Void}, stating if the output was 
+   *         successfull or not
+   */
   public Try<Void> delete(String userId) {
     return Try.of(
             () ->
