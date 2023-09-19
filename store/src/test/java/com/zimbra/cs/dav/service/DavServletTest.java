@@ -6,14 +6,11 @@ package com.zimbra.cs.dav.service;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
-import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.HealthCheck;
-import com.github.dockerjava.api.model.HostConfig;
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports.Binding;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
@@ -74,10 +71,6 @@ class DavServletTest {
                 cmd.withHostName("ldap.mail.local");
                 cmd.withHealthcheck(
                     new HealthCheck().withTest(List.of("nc -z localhost 2812 || exit 1")));
-                cmd.withHostConfig(
-                    new HostConfig()
-                        .withPortBindings(
-                            new PortBinding(Binding.bindPort(389), new ExposedPort(389))));
               })
           .withExposedPorts(389);
 
@@ -90,20 +83,12 @@ class DavServletTest {
                   "MYSQL_USER", "zextras",
                   "MYSQL_PASSWORD", "zextras",
                   "MYSQL_ROOT_PASSWORD", "password"))
-          .withCreateContainerCmdModifier(
-              cmd -> {
-                cmd.withHostConfig(
-                    new HostConfig()
-                        .withPortBindings(
-                            new PortBinding(Binding.bindPort(7306), new ExposedPort(3306))));
-              })
           .withCopyFileToContainer(
               MountableFile.forClasspathResource("/db.sql", 0744), "/root/db.sql")
           .withExposedPorts(3306);
 
   private Server server;
   private Provisioning provisioning;
-  private MailboxManager mailboxManager;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -114,6 +99,8 @@ class DavServletTest {
                   SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
             });
     greenMail.start();
+    LC.mysql_port.setDefault(sqlContainer.getMappedPort(3306));
+    LC.ldap_port.setDefault(ldapContainer.getMappedPort(389));
     System.setProperty("java.library.path", "../native/target");
     System.setProperty("log4j.configuration", "log4j-test.properties");
     System.setProperty(
@@ -126,7 +113,7 @@ class DavServletTest {
       throw new RuntimeException(execResult.getStderr());
     }
     DbPool.startup();
-    mailboxManager = MailboxManager.getInstance();
+    MailboxManager mailboxManager = MailboxManager.getInstance();
     server = JettyServerFactory.createDefault();
     server.start();
     final String serverName = "localhost";
