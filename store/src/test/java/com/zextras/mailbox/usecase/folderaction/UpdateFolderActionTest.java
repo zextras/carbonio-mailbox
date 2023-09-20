@@ -13,7 +13,7 @@ import com.zextras.mailbox.midlewarepojo.GrantInput;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.accesscontrol.ACLUtil;
+import com.zimbra.cs.account.accesscontrol.ACLHelper;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Folder;
@@ -36,7 +36,7 @@ class UpdateFolderActionTest {
   private Mailbox userMailbox;
   private OperationContext operationContext;
   private ItemId itemId;
-  private ACLUtil aclUtil;
+  private ACLHelper aclHelper;
   private final String accountId = "account-id123";
   private final String folderId = accountId + ":1";
   private String internalGrantExpiryString;
@@ -54,9 +54,9 @@ class UpdateFolderActionTest {
     userMailbox = mock(Mailbox.class);
     operationContext = mock(OperationContext.class);
     itemId = mock(ItemId.class);
-    aclUtil = mock(ACLUtil.class);
+    aclHelper = mock(ACLHelper.class);
 
-    updateFolderAction = new UpdateFolderAction(mailboxManager, itemIdFactory, aclUtil);
+    updateFolderAction = new UpdateFolderAction(mailboxManager, itemIdFactory, aclHelper);
   }
 
   @Test
@@ -282,7 +282,7 @@ class UpdateFolderActionTest {
     when(folder.getDefaultView()).thenReturn(Type.FOLDER);
 
     when(userMailbox.getAccount()).thenReturn(account);
-    when(aclUtil.parseACL(
+    when(aclHelper.parseACL(
             internalGrantExpiryString,
             guestGrantExpiryString,
             grantInputList,

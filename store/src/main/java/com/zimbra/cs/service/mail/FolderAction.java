@@ -26,7 +26,7 @@ import com.zimbra.cs.account.MailTarget;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.SearchDirectoryOptions;
-import com.zimbra.cs.account.accesscontrol.ACLUtil;
+import com.zimbra.cs.account.accesscontrol.ACLHelper;
 import com.zimbra.cs.fb.FreeBusyProvider;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mailbox.ACL;
@@ -48,7 +48,7 @@ import java.util.Set;
 public class FolderAction extends ItemAction {
 
   private final ItemActionUtil itemActionUtil;
-  private final ACLUtil aclUtil;
+  private final ACLHelper aclHelper;
   private final AccountUtil accountUtil;
 
   @Override
@@ -90,7 +90,7 @@ public class FolderAction extends ItemAction {
   public FolderAction() {
     itemActionUtil = new ItemActionUtil();
     accountUtil = new AccountUtil();
-    aclUtil = new ACLUtil(itemActionUtil, accountUtil);
+    aclHelper = new ACLHelper(itemActionUtil, accountUtil);
   }
 
   private static final Set<String> FOLDER_OPS =
@@ -296,7 +296,7 @@ public class FolderAction extends ItemAction {
       ACL acl = null;
       if (eAcl != null) {
         acl =
-            aclUtil.parseACL(
+            aclHelper.parseACL(
                 eAcl,
                 view == null
                     ? mbox.getFolderById(octxt, iid.getId()).getDefaultView()

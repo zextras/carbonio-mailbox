@@ -56,9 +56,7 @@ public enum GrantType {
                 .filter(type -> type.granteeNumber == granteeNumber)
                 .findFirst()
                 .orElseThrow(
-                    () ->
-                        ServiceException.INVALID_REQUEST(
-                            "invalid grantee type for revokeOrphanGrants", null)));
+                    () -> ServiceException.NOT_FOUND("unknown grantee type: " + granteeNumber)));
   }
 
   /**
@@ -74,8 +72,6 @@ public enum GrantType {
                 .filter(type -> type.granteeTypeName.equalsIgnoreCase(granteeName))
                 .findFirst()
                 .orElseThrow(
-                    () ->
-                        ServiceException.INVALID_REQUEST(
-                            "invalid grantee type for revokeOrphanGrants", null)));
+                    () -> ServiceException.NOT_FOUND("unknown grantee type: " + granteeName)));
   }
 }

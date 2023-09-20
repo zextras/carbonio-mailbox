@@ -32,18 +32,18 @@ import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 
-public final class ACLUtil {
+public final class ACLHelper {
   private static final String ACL_CACHE_KEY = "ENTRY.ACL_CACHE";
   private final ItemActionUtil itemActionUtil;
   private final AccountUtil accountUtil;
 
-  public ACLUtil() {
+  public ACLHelper() {
     itemActionUtil = new ItemActionUtil();
     accountUtil = new AccountUtil();
   }
 
   @Inject
-  public ACLUtil(ItemActionUtil itemActionUtil, AccountUtil accountUtil) {
+  public ACLHelper(ItemActionUtil itemActionUtil, AccountUtil accountUtil) {
     this.itemActionUtil = itemActionUtil;
     this.accountUtil = accountUtil;
   }

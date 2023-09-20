@@ -20,7 +20,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.ACLUtil;
+import com.zimbra.cs.account.accesscontrol.ACLHelper;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
 import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightManager;
@@ -126,7 +126,7 @@ class CopyToFilesIT {
                     null));
           }
         };
-    ACLUtil.grantRight(Provisioning.getInstance(), sharedAcct, aces);
+    ACLHelper.grantRight(Provisioning.getInstance(), sharedAcct, aces);
     // Grant shared@ root folder access to delegated@
     final short rwidx = ACL.stringToRights("rwidx");
     final Mailbox sharedAcctMailbox = MailboxManager.getInstance().getMailboxByAccount(sharedAcct);
@@ -303,10 +303,10 @@ class CopyToFilesIT {
     up.setMessageId("123");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
-    final ServiceException receivedException = assertThrows(
-        ServiceException.class,
-        () -> copyToFiles.handle(element, context));
-    assertEquals("system failure: got null response from Files server.", receivedException.getMessage());
+    final ServiceException receivedException =
+        assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context));
+    assertEquals(
+        "system failure: got null response from Files server.", receivedException.getMessage());
   }
 
   @ParameterizedTest

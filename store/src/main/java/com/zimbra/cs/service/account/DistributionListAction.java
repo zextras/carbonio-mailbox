@@ -16,7 +16,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Group.GroupOwner;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.ACLUtil;
+import com.zimbra.cs.account.accesscontrol.ACLHelper;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
 import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightCommand;
@@ -607,7 +607,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
         List<Grantee> grantees = entry.getValue();
 
         // remove all current grants for the right
-        List<ZimbraACE> acl = ACLUtil.getACEs(group, Collections.singleton(right));
+        List<ZimbraACE> acl = ACLHelper.getACEs(group, Collections.singleton(right));
         if (acl != null) {
           for (ZimbraACE ace : acl) {
             revokeRight(right, ace.getGranteeType(), GranteeBy.id, ace.getGrantee());

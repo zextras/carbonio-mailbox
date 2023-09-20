@@ -3,7 +3,7 @@ package com.zextras.mailbox.usecase.folderaction;
 import com.zextras.mailbox.midlewarepojo.GrantInput;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.accesscontrol.ACLUtil;
+import com.zimbra.cs.account.accesscontrol.ACLHelper;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.MailItem;
@@ -27,14 +27,14 @@ public class UpdateFolderAction {
 
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
-  private final ACLUtil aclUtil;
+  private final ACLHelper aclHelper;
 
   @Inject
   public UpdateFolderAction(
-      MailboxManager mailboxManager, ItemIdFactory itemIdFactory, ACLUtil aclUtil) {
+      MailboxManager mailboxManager, ItemIdFactory itemIdFactory, ACLHelper aclHelper) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;
-    this.aclUtil = aclUtil;
+    this.aclHelper = aclHelper;
   }
 
   /**
@@ -90,7 +90,7 @@ public class UpdateFolderAction {
 
           if (internalGrantExpiryString != null && guestGrantExpiryString != null) {
             final ACL acl =
-                aclUtil.parseACL(
+                aclHelper.parseACL(
                     internalGrantExpiryString,
                     guestGrantExpiryString,
                     grantInputList,

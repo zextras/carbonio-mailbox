@@ -10,7 +10,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.accesscontrol.ACLUtil;
+import com.zimbra.cs.account.accesscontrol.ACLHelper;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Folder;
@@ -66,7 +66,7 @@ public class CreateFolder extends MailDocumentHandler {
     boolean fetchIfExists = t.getAttributeBool(MailConstants.A_FETCH_IF_EXISTS, false);
     boolean syncToUrl = t.getAttributeBool(MailConstants.A_SYNC, true);
     ACL acl =
-        new ACLUtil()
+        new ACLHelper()
             .parseACL(
                 t.getOptionalElement(MailConstants.E_ACL),
                 MailItem.Type.of(view),
