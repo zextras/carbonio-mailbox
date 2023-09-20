@@ -1,4 +1,12 @@
 
+
+## [4.8.2](https://github.com/Zextras/carbonio-mailbox/compare/4.8.1...4.8.2) (2023-09-20)
+
+
+### Bug Fixes
+
+* allow Appointment creation from CalDAV ([#329](https://github.com/Zextras/carbonio-mailbox/issues/329)) ([27d6578](https://github.com/Zextras/carbonio-mailbox/commit/27d65789e34225c953f8fd628f9d566ddbbe218d))
+
 # [4.8.1](https://github.com/Zextras/carbonio-mailbox/compare/4.8.0...4.8.1) (2023-09-08)
 
 ### Bug Fixes
