@@ -87,8 +87,8 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/common/lib/httpmime-4.5.14.jar"
   install -D carbonio-jetty-libs/target/dependencies/ical4j-0.9.16-patched.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/ical4j-0.9.16-patched.jar"
-  install -D carbonio-jetty-libs/target/dependencies/icu4j-4.8.2.1.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/icu4j-4.8.2.1.jar"
+  install -D carbonio-jetty-libs/target/dependencies/icu4j-4.8.1.1.jar \
+    "${pkgdir}/opt/zextras/jetty_base/common/lib/icu4j-4.8.1.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/java-semver-0.9.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/java-semver-0.9.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/javax.xml.soap-api-1.4.0.jar \
