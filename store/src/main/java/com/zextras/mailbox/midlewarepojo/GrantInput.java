@@ -1,26 +1,30 @@
 package com.zextras.mailbox.midlewarepojo;
 
+/** */
 public class GrantInput {
   private String zid;
-  private String gtype;
-  private String rights;
-  private String grantExpiry;
+  private byte granteeType;
+  private short rights;
+  private long grantExpiry;
+  private String display;
   private String accessKey;
   private String secretArgs;
   private String password;
 
   public GrantInput(
       final String zid,
-      final String gtype,
-      final String rights,
-      final String grantExpiry,
+      final byte granteeType,
+      final short rights,
+      final long grantExpiry,
+      final String display,
       final String accessKey,
       final String secretArgs,
       final String password) {
     this.zid = zid;
-    this.gtype = gtype;
+    this.granteeType = granteeType;
     this.rights = rights;
     this.grantExpiry = grantExpiry;
+    this.display = display;
     this.accessKey = accessKey;
     this.secretArgs = secretArgs;
     this.password = password;
@@ -34,27 +38,27 @@ public class GrantInput {
     this.zid = zid;
   }
 
-  public String getGtype() {
-    return gtype;
+  public byte getGranteeType() {
+    return granteeType;
   }
 
-  public void setGtype(final String gtype) {
-    this.gtype = gtype;
+  public void setGranteeType(final byte granteeType) {
+    this.granteeType = granteeType;
   }
 
-  public String getRights() {
+  public short getRights() {
     return rights;
   }
 
-  public void setRights(final String rights) {
+  public void setRights(final short rights) {
     this.rights = rights;
   }
 
-  public String getGrantExpiry() {
+  public long getGrantExpiry() {
     return grantExpiry;
   }
 
-  public void setGrantExpiry(final String grantExpiry) {
+  public void setGrantExpiry(final long grantExpiry) {
     this.grantExpiry = grantExpiry;
   }
 
@@ -80,5 +84,13 @@ public class GrantInput {
 
   public void setPassword(final String password) {
     this.password = password;
+  }
+
+  public String getDisplay() {
+    return display;
+  }
+
+  public void setDisplay(final String display) {
+    this.display = display;
   }
 }

@@ -1,6 +1,7 @@
 package com.zextras.mailbox.usecase.folderaction;
 
 import com.google.common.collect.Sets;
+import com.zextras.mailbox.midlewarepojo.GrantInput;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zextras.mailbox.usecase.service.GranteeService;
 import com.zimbra.common.service.ServiceException;
@@ -82,35 +83,34 @@ public class GrantFolderAction {
    * @param operationContext an {@link OperationContext}
    * @param accountId the target account zimbra id attribute
    * @param folderId the id of the folder (belonging to the accountId)
-   * @param granteeType representation of ACL grantee type
-   * @param zimbraId folder zimbraId attribute
-   * @param expiry expiration time
-   * @param display the display name
-   * @param secretArgs secret args
-   * @param secretPassword password
-   * @param secretAccessKey access key
+   * @param grantInput {@link GrantInput}
    * @return a {@link Try} result {@link Result} object with the status of the operation
    */
   public Try<Result> grant(
       final OperationContext operationContext,
       final String accountId,
       final String folderId,
-      final byte granteeType,
-      final String zimbraId,
-      final long expiry,
-      final String display,
-      final short rights,
-      final String secretArgs,
-      final String secretPassword,
-      final String secretAccessKey) {
+      final GrantInput grantInput) {
+
+    final byte granteeType = grantInput.getGranteeType();
     switch (granteeType) {
       case ACL.GRANTEE_AUTHUSER:
         {
-          return grantGranteeAuthUserAccess(operationContext, accountId, folderId, rights, expiry);
+          return grantGranteeAuthUserAccess(
+              operationContext,
+              accountId,
+              folderId,
+              grantInput.getRights(),
+              grantInput.getGrantExpiry());
         }
       case ACL.GRANTEE_PUBLIC:
         {
-          return grantGranteePublicAccess(operationContext, accountId, folderId, rights, expiry);
+          return grantGranteePublicAccess(
+              operationContext,
+              accountId,
+              folderId,
+              grantInput.getRights(),
+              grantInput.getGrantExpiry());
         }
       case ACL.GRANTEE_GUEST:
         {
@@ -118,16 +118,22 @@ public class GrantFolderAction {
               operationContext,
               accountId,
               folderId,
-              display,
-              rights,
-              expiry,
-              secretArgs,
-              secretPassword);
+              grantInput.getDisplay(),
+              grantInput.getRights(),
+              grantInput.getGrantExpiry(),
+              grantInput.getSecretArgs(),
+              grantInput.getPassword());
         }
       case ACL.GRANTEE_KEY:
         {
           return grantGranteeKeyAccess(
-              operationContext, accountId, folderId, rights, expiry, display, secretAccessKey);
+              operationContext,
+              accountId,
+              folderId,
+              grantInput.getRights(),
+              grantInput.getGrantExpiry(),
+              grantInput.getDisplay(),
+              grantInput.getAccessKey());
         }
       default:
         {
@@ -135,15 +141,28 @@ public class GrantFolderAction {
               operationContext,
               accountId,
               folderId,
-              rights,
-              expiry,
-              zimbraId,
-              display,
+              grantInput.getRights(),
+              grantInput.getGrantExpiry(),
+              grantInput.getZid(),
+              grantInput.getDisplay(),
               granteeType);
         }
     }
   }
 
+  /**
+   * This method is used to grant access on a folder when ACL grantee type is not specified.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
+   * @param rights {@link ACL#stringToRights(String)}}
+   * @param expiry expiration time
+   * @param zimbraId zimbra id
+   * @param displayName display name
+   * @param granteeType representation of ACL grantee type
+   * @return a {@link Try} result {@link Result} object with the status of the operation
+   */
   public Try<Result> grantGranteeDefaultAccess(
       OperationContext operationContext,
       String accountId,
@@ -197,6 +216,19 @@ public class GrantFolderAction {
         });
   }
 
+  /**
+   * This method is used to grant access on a folder when ACL grantee type is {@link
+   * ACL.GRANTEE_KEY}.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
+   * @param rights {@link ACL#stringToRights(String)}}
+   * @param expiry expiration time
+   * @param displayName display name
+   * @param secretAccessKey access key
+   * @return a {@link Try} result {@link Result} object with the status of the operation
+   */
   public Try<Result> grantGranteeKeyAccess(
       OperationContext operationContext,
       String accountId,
@@ -224,6 +256,20 @@ public class GrantFolderAction {
         });
   }
 
+  /**
+   * This method is used to grant access on a folder when ACL grantee type is {@link
+   * ACL.GRANTEE_GUEST}.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
+   * @param displayName display name
+   * @param rights {@link ACL#stringToRights(String)}}
+   * @param expiry expiration time
+   * @param secretArgs guest secret arguments
+   * @param secretPassword guest password
+   * @return a {@link Try} result {@link Result} object with the status of the operation
+   */
   public Try<Result> grantGranteeGuestAccess(
       OperationContext operationContext,
       String accountId,
@@ -288,6 +334,17 @@ public class GrantFolderAction {
         });
   }
 
+  /**
+   * This method is used to grant access on a folder when ACL grantee type is {@link
+   * ACL.GRANTEE_PUBLIC}.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
+   * @param rights {@link ACL#stringToRights(String)}}
+   * @param expiry expiration time
+   * @return a {@link Try} result {@link Result} object with the status of the operation
+   */
   public Try<Result> grantGranteePublicAccess(
       OperationContext operationContext,
       String accountId,
@@ -322,6 +379,17 @@ public class GrantFolderAction {
         });
   }
 
+  /**
+   * This method is used to grant access on a folder when ACL grantee type is {@link
+   * ACL.GRANTEE_AUTHUSER}.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account zimbra id attribute
+   * @param folderId the id of the folder (belonging to the accountId)
+   * @param rights {@link ACL#stringToRights(String)}}
+   * @param expiry expiration time
+   * @return a {@link Try} result {@link Result} object with the status of the operation
+   */
   public Try<Result> grantGranteeAuthUserAccess(
       OperationContext operationContext,
       String accountId,

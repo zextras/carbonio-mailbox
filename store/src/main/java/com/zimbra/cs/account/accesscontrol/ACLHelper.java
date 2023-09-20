@@ -292,26 +292,26 @@ public final class ACLHelper {
 
     for (GrantInput grant : grantInputList) {
       String zid = grant.getZid();
-      byte gtype = ACL.stringToType(grant.getGtype());
-      short rights = ACL.stringToRights(grant.getRights());
+      byte granteeType = grant.getGranteeType();
+      short rights = grant.getRights();
       long expiry =
-          gtype == ACL.GRANTEE_PUBLIC
+          granteeType == ACL.GRANTEE_PUBLIC
               ? itemActionUtil.validateGrantExpiry(
-                  grant.getGrantExpiry(),
+                  String.valueOf(grant.getGrantExpiry()),
                   accountUtil.getMaxPublicShareLifetime(account, folderType))
-              : Long.parseLong(grant.getGrantExpiry());
+              : grant.getGrantExpiry();
 
       String secret = null;
-      if (gtype == ACL.GRANTEE_KEY) {
+      if (granteeType == ACL.GRANTEE_KEY) {
         secret = grant.getAccessKey();
-      } else if (gtype == ACL.GRANTEE_GUEST) {
+      } else if (granteeType == ACL.GRANTEE_GUEST) {
         secret = grant.getSecretArgs();
         // bug 30891 for 5.0.x
         if (secret == null) {
           secret = grant.getPassword();
         }
       }
-      acl.grantAccess(zid, gtype, rights, secret, expiry);
+      acl.grantAccess(zid, granteeType, rights, secret, expiry);
     }
     return acl;
   }
