@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,9 +19,9 @@ import io.vavr.control.Try;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SyncFolderActionUseCaseTest {
+class SyncFolderActionTest {
   private MailboxManager mailboxManager;
-  private SyncFolderActionUseCase syncFolderActionUseCase;
+  private SyncFolderAction syncFolderAction;
   private ItemIdFactory itemIdFactory;
 
   @BeforeEach
@@ -29,7 +29,7 @@ class SyncFolderActionUseCaseTest {
     mailboxManager = mock(MailboxManager.class);
     itemIdFactory = mock(ItemIdFactory.class);
 
-    syncFolderActionUseCase = new SyncFolderActionUseCase(mailboxManager, itemIdFactory);
+    syncFolderAction = new SyncFolderAction(mailboxManager, itemIdFactory);
   }
 
   @Test
@@ -44,7 +44,7 @@ class SyncFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     final Try<Void> operationResult =
-        syncFolderActionUseCase.syncOn(operationContext, accountId, folderId);
+        syncFolderAction.syncOn(operationContext, accountId, folderId);
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "Folder should be successfully synced.");
@@ -66,7 +66,7 @@ class SyncFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     final Try<Void> operationResult =
-        syncFolderActionUseCase.syncOff(operationContext, accountId, folderId);
+        syncFolderAction.syncOff(operationContext, accountId, folderId);
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "Folder should be successfully synced.");
