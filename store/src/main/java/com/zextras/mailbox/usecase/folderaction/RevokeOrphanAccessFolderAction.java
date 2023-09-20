@@ -1,7 +1,7 @@
 package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
-import com.zextras.mailbox.usecase.util.GrantType;
+import com.zextras.mailbox.usecase.util.GranteeType;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.NamedEntry;
@@ -72,7 +72,7 @@ public class RevokeOrphanAccessFolderAction {
 
           final Mailbox.FolderNode rootNode =
               userMailbox.getFolderTree(operationContext, itemId, true);
-          GrantType.fromGranteeTypeName(grantType)
+          GranteeType.fromGranteeTypeName(grantType)
               .mapTry(
                   type -> {
                     revokeOrphanGrants(operationContext, userMailbox, rootNode, zimbraId, type);
@@ -86,7 +86,7 @@ public class RevokeOrphanAccessFolderAction {
       final Mailbox mbox,
       final Mailbox.FolderNode node,
       final String granteeId,
-      final GrantType type)
+      final GranteeType type)
       throws ServiceException {
     if (node.getFolder() != null) {
       final boolean userCanAdministerFolder =
@@ -108,7 +108,7 @@ public class RevokeOrphanAccessFolderAction {
       final Mailbox mbox,
       final Mailbox.FolderNode node,
       final String granteeId,
-      final GrantType type,
+      final GranteeType type,
       final ACL acl)
       throws ServiceException {
     for (ACL.Grant grant : acl.getGrants()) {

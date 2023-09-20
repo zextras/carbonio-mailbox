@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
-import com.zextras.mailbox.usecase.util.GrantType;
+import com.zextras.mailbox.usecase.util.GranteeType;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.*;
 import com.zimbra.cs.ldap.ZLdapFilter;
@@ -74,7 +74,7 @@ class RevokeOrphanAccessFolderActionTest {
     when(folder.getACL()).thenReturn(acl);
     when(acl.getGrants()).thenReturn(List.of(grant));
     when(grant.getGranteeId()).thenReturn(granteeId);
-    when(grant.getGranteeType()).thenReturn(GrantType.GRANTEE_USER.getGranteeNumber());
+    when(grant.getGranteeType()).thenReturn(GranteeType.GRANTEE_USER.getGranteeNumber());
 
     Try<Void> result =
         revokeOrphanAccessFolderAction.revokeOrphanAccess(
@@ -106,7 +106,7 @@ class RevokeOrphanAccessFolderActionTest {
     when(folder.getACL()).thenReturn(acl);
     when(acl.getGrants()).thenReturn(List.of(grant));
     when(grant.getGranteeId()).thenReturn(granteeId);
-    when(grant.getGranteeType()).thenReturn(GrantType.GRANTEE_USER.getGranteeNumber());
+    when(grant.getGranteeType()).thenReturn(GranteeType.GRANTEE_USER.getGranteeNumber());
 
     Try<Void> result =
         revokeOrphanAccessFolderAction.revokeOrphanAccess(

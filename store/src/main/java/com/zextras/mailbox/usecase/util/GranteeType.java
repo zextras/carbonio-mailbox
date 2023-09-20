@@ -12,7 +12,7 @@ import java.util.List;
  * @author Dima Dymkovets
  * @since 23.10.0
  */
-public enum GrantType {
+public enum GranteeType {
   GRANTEE_USER(
       (byte) 1,
       "usr",
@@ -30,7 +30,7 @@ public enum GrantType {
   private final String granteeTypeName;
   private final List<SearchDirectoryOptions.ObjectType> objectTypes;
 
-  GrantType(
+  GranteeType(
       byte granteeNum,
       String granteeTypeName,
       List<SearchDirectoryOptions.ObjectType> objectTypes) {
@@ -47,12 +47,12 @@ public enum GrantType {
    * Gets grantee type by number.
    *
    * @param granteeNumber grantee number
-   * @return {@link GrantType}
+   * @return {@link GranteeType}
    */
-  public static Try<GrantType> fromGranteeTypeNumber(byte granteeNumber) {
+  public static Try<GranteeType> fromGranteeTypeNumber(byte granteeNumber) {
     return Try.of(
         () ->
-            Arrays.stream(GrantType.values())
+            Arrays.stream(GranteeType.values())
                 .filter(type -> type.granteeNumber == granteeNumber)
                 .findFirst()
                 .orElseThrow(
@@ -63,12 +63,12 @@ public enum GrantType {
    * Gets grantee type by name.
    *
    * @param granteeName grantee name
-   * @return {@link GrantType}
+   * @return {@link GranteeType}
    */
-  public static Try<GrantType> fromGranteeTypeName(String granteeName) {
+  public static Try<GranteeType> fromGranteeTypeName(String granteeName) {
     return Try.of(
         () ->
-            Arrays.stream(GrantType.values())
+            Arrays.stream(GranteeType.values())
                 .filter(type -> type.granteeTypeName.equalsIgnoreCase(granteeName))
                 .findFirst()
                 .orElseThrow(
