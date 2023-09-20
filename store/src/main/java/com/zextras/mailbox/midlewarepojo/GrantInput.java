@@ -1,6 +1,11 @@
 package com.zextras.mailbox.midlewarepojo;
 
-/** */
+/**
+ * DTO class to transfer data from WEB layer to service layer.
+ *
+ * @author Yuliya Aheeva, Davide Polonio, Dima Dymkovets
+ * @since 23.10.0
+ */
 public class GrantInput {
   private String zid;
   private byte granteeType;
@@ -94,6 +99,12 @@ public class GrantInput {
     this.display = display;
   }
 
+  /**
+   * Builder class to build {@link GrantInput}.
+   *
+   * @author Dima Dymkovets
+   * @since 23.10.0
+   */
   public static final class Builder {
     private String zid;
     private byte granteeType;
@@ -104,42 +115,42 @@ public class GrantInput {
     private String secretArgs;
     private String password;
 
-    public Builder setZimbraId(String zid) {
+    public Builder setZimbraId(final String zid) {
       this.zid = zid;
       return this;
     }
 
-    public Builder setGranteeType(byte granteeType) {
+    public Builder setGranteeType(final byte granteeType) {
       this.granteeType = granteeType;
       return this;
     }
 
-    public Builder setRights(short rights) {
+    public Builder setRights(final short rights) {
       this.rights = rights;
       return this;
     }
 
-    public Builder setGrantExpiry(long grantExpiry) {
+    public Builder setGrantExpiry(final long grantExpiry) {
       this.grantExpiry = grantExpiry;
       return this;
     }
 
-    public Builder setDisplayName(String display) {
+    public Builder setDisplayName(final String display) {
       this.display = display;
       return this;
     }
 
-    public Builder setAccessKey(String accessKey) {
+    public Builder setAccessKey(final String accessKey) {
       this.accessKey = accessKey;
       return this;
     }
 
-    public Builder setSecretArgs(String secretArgs) {
+    public Builder setSecretArgs(final String secretArgs) {
       this.secretArgs = secretArgs;
       return this;
     }
 
-    public Builder setPassword(String password) {
+    public Builder setPassword(final String password) {
       this.password = password;
       return this;
     }

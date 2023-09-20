@@ -1,6 +1,6 @@
 package com.zextras.mailbox.usecase.folderaction;
 
-import com.zextras.mailbox.midlewarepojo.GrantInput;
+import com.zextras.mailbox.midlewarepojo.UpdateInput;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.accesscontrol.ACLHelper;
@@ -13,7 +13,6 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
-import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 
@@ -44,26 +43,14 @@ public class UpdateFolderAction {
    * @param operationContext an {@link OperationContext}
    * @param accountId the target account zimbra id attribute
    * @param folderId the id of the folder (belonging to the accountId)
-   * @param internalGrantExpiryString internal grant expiry to get ACL
-   * @param guestGrantExpiryString guest grant expiry to get ACL
-   * @param grantInputList list of {@link GrantInput}
-   * @param newName new name to rename a folder
-   * @param flags flags to tag a folder
-   * @param color new color to set
-   * @param view view to set
+   * @param updateInput {@link UpdateInput}
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> update(
       final OperationContext operationContext,
       final String accountId,
       final String folderId,
-      final String internalGrantExpiryString,
-      final String guestGrantExpiryString,
-      final List<GrantInput> grantInputList,
-      final String newName,
-      final String flags,
-      final byte color,
-      final String view) {
+      final UpdateInput updateInput) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =
@@ -88,47 +75,49 @@ public class UpdateFolderAction {
             throw MailServiceException.NO_SUCH_FOLDER(folderItemId.getId());
           }
 
-          if (internalGrantExpiryString != null && guestGrantExpiryString != null) {
+          if (updateInput.getInternalGrantExpiryString() != null
+              && updateInput.getGuestGrantExpiryString() != null) {
             final ACL acl =
                 aclHelper.parseACL(
-                    internalGrantExpiryString,
-                    guestGrantExpiryString,
-                    grantInputList,
-                    view == null
+                    updateInput.getInternalGrantExpiryString(),
+                    updateInput.getGuestGrantExpiryString(),
+                    updateInput.getGrantInputList(),
+                    updateInput.getView() == null
                         ? userMailbox
                             .getFolderById(operationContext, itemId.getId())
                             .getDefaultView()
-                        : MailItem.Type.of(view),
+                        : MailItem.Type.of(updateInput.getView()),
                     userMailbox.getAccount());
 
             userMailbox.setPermissions(operationContext, itemId.getId(), acl);
           }
 
-          if (color >= 0) {
-            userMailbox.setColor(operationContext, itemId.getId(), MailItem.Type.FOLDER, color);
+          if (updateInput.getColor() >= 0) {
+            userMailbox.setColor(
+                operationContext, itemId.getId(), MailItem.Type.FOLDER, updateInput.getColor());
           }
 
-          if (flags != null) {
+          if (updateInput.getFlags() != null) {
             userMailbox.setTags(
                 operationContext,
                 itemId.getId(),
                 MailItem.Type.FOLDER,
-                Flag.toBitmask(flags),
+                Flag.toBitmask(updateInput.getFlags()),
                 null,
                 null);
           }
 
-          if (view != null) {
+          if (updateInput.getView() != null) {
             userMailbox.setFolderDefaultView(
-                operationContext, itemId.getId(), MailItem.Type.of(view));
+                operationContext, itemId.getId(), MailItem.Type.of(updateInput.getView()));
           }
 
-          if (newName != null) {
+          if (updateInput.getNewName() != null) {
             userMailbox.rename(
                 operationContext,
                 itemId.getId(),
                 MailItem.Type.FOLDER,
-                newName,
+                updateInput.getNewName(),
                 folderItemId.getId());
           }
 

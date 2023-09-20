@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.zextras.mailbox.midlewarepojo.GrantInput;
+import com.zextras.mailbox.midlewarepojo.UpdateInput;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -71,13 +72,15 @@ class UpdateFolderActionTest {
             operationContext,
             accountId,
             folderId,
-            internalGrantExpiryString,
-            guestGrantExpiryString,
-            grantInputList,
-            newName,
-            flags,
-            color,
-            view);
+            new UpdateInput.Builder()
+                .setInternalGrantExpiryString(internalGrantExpiryString)
+                .setGuestGrantExpiryString(guestGrantExpiryString)
+                .setGrantInputList(grantInputList)
+                .setNewName(newName)
+                .setFlags(flags)
+                .setColor(color)
+                .setView(view)
+                .build());
 
     assertTrue(
         operationResult.isFailure(),
@@ -100,13 +103,15 @@ class UpdateFolderActionTest {
             operationContext,
             accountId,
             folderId,
-            internalGrantExpiryString,
-            guestGrantExpiryString,
-            grantInputList,
-            newName,
-            flags,
-            color,
-            view);
+            new UpdateInput.Builder()
+                .setInternalGrantExpiryString(internalGrantExpiryString)
+                .setGuestGrantExpiryString(guestGrantExpiryString)
+                .setGrantInputList(grantInputList)
+                .setNewName(newName)
+                .setFlags(flags)
+                .setColor(color)
+                .setView(view)
+                .build());
 
     assertTrue(operationResult.isFailure(), "Folder should not be updated because no such folder");
     final Throwable gotError = operationResult.getCause();
@@ -128,13 +133,15 @@ class UpdateFolderActionTest {
             operationContext,
             accountId,
             folderId,
-            internalGrantExpiryString,
-            guestGrantExpiryString,
-            grantInputList,
-            newName,
-            flags,
-            color,
-            view);
+            new UpdateInput.Builder()
+                .setInternalGrantExpiryString(internalGrantExpiryString)
+                .setGuestGrantExpiryString(guestGrantExpiryString)
+                .setGrantInputList(grantInputList)
+                .setNewName(newName)
+                .setFlags(flags)
+                .setColor(color)
+                .setView(view)
+                .build());
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "Color should be successfully set.");
@@ -157,13 +164,15 @@ class UpdateFolderActionTest {
             operationContext,
             accountId,
             folderId,
-            internalGrantExpiryString,
-            guestGrantExpiryString,
-            grantInputList,
-            newName,
-            flags,
-            color,
-            view);
+            new UpdateInput.Builder()
+                .setInternalGrantExpiryString(internalGrantExpiryString)
+                .setGuestGrantExpiryString(guestGrantExpiryString)
+                .setGrantInputList(grantInputList)
+                .setNewName(newName)
+                .setFlags(flags)
+                .setColor(color)
+                .setView(view)
+                .build());
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "Tags should be successfully set.");
@@ -192,13 +201,15 @@ class UpdateFolderActionTest {
             operationContext,
             accountId,
             folderId,
-            internalGrantExpiryString,
-            guestGrantExpiryString,
-            grantInputList,
-            newName,
-            flags,
-            color,
-            view);
+            new UpdateInput.Builder()
+                .setInternalGrantExpiryString(internalGrantExpiryString)
+                .setGuestGrantExpiryString(guestGrantExpiryString)
+                .setGrantInputList(grantInputList)
+                .setNewName(newName)
+                .setFlags(flags)
+                .setColor(color)
+                .setView(view)
+                .build());
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "View should be successfully set.");
@@ -221,13 +232,15 @@ class UpdateFolderActionTest {
             operationContext,
             accountId,
             folderId,
-            internalGrantExpiryString,
-            guestGrantExpiryString,
-            grantInputList,
-            newName,
-            flags,
-            color,
-            view);
+            new UpdateInput.Builder()
+                .setInternalGrantExpiryString(internalGrantExpiryString)
+                .setGuestGrantExpiryString(guestGrantExpiryString)
+                .setGrantInputList(grantInputList)
+                .setNewName(newName)
+                .setFlags(flags)
+                .setColor(color)
+                .setView(view)
+                .build());
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "View should be successfully set.");
@@ -249,13 +262,15 @@ class UpdateFolderActionTest {
             operationContext,
             accountId,
             folderId,
-            internalGrantExpiryString,
-            guestGrantExpiryString,
-            grantInputList,
-            newName,
-            flags,
-            color,
-            view);
+            new UpdateInput.Builder()
+                .setInternalGrantExpiryString(internalGrantExpiryString)
+                .setGuestGrantExpiryString(guestGrantExpiryString)
+                .setGrantInputList(grantInputList)
+                .setNewName(newName)
+                .setFlags(flags)
+                .setColor(color)
+                .setView(view)
+                .build());
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "View should be successfully set.");
@@ -295,13 +310,15 @@ class UpdateFolderActionTest {
             operationContext,
             accountId,
             folderId,
-            internalGrantExpiryString,
-            guestGrantExpiryString,
-            grantInputList,
-            newName,
-            flags,
-            color,
-            view);
+            new UpdateInput.Builder()
+                .setInternalGrantExpiryString(internalGrantExpiryString)
+                .setGuestGrantExpiryString(guestGrantExpiryString)
+                .setGrantInputList(grantInputList)
+                .setNewName(newName)
+                .setFlags(flags)
+                .setColor(color)
+                .setView(view)
+                .build());
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "View should be successfully set.");
