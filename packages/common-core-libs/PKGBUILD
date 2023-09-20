@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-common-core-libs"
-pkgver="4.8.1"
+pkgver="4.8.2"
 pkgrel="1"
 pkgdesc="Replace Carbonio core libs"
 pkgdesclong=(
@@ -88,8 +88,8 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/httpmime-4.5.14.jar"
   install -D carbonio-jetty-libs/target/dependencies/ical4j-0.9.16-patched.jar \
     "${pkgdir}/opt/zextras/lib/jars/ical4j-0.9.16-patched.jar"
-  install -D carbonio-jetty-libs/target/dependencies/icu4j-4.8.1.1.jar \
-    "${pkgdir}/opt/zextras/lib/jars/icu4j-4.8.1.1.jar"
+  install -D carbonio-jetty-libs/target/dependencies/icu4j-4.8.2.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/icu4j-4.8.2.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/jackson-core-2.8.9.jar \
     "${pkgdir}/opt/zextras/lib/jars/jackson-core-2.8.9.jar"
   install -D carbonio-jetty-libs/target/dependencies/jackson-annotations-2.8.9.jar \
