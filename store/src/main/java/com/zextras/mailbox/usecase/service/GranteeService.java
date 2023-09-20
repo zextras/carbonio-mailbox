@@ -35,7 +35,7 @@ public class GranteeService {
    */
   public NamedEntry lookupGranteeByEmailAddress(String email) throws ServiceException {
     if (email.indexOf('<') > 0) {
-      InternetAddress addr = new InternetAddress(email);
+      final InternetAddress addr = new InternetAddress(email);
       email = addr.getAddress();
     }
 
@@ -56,7 +56,8 @@ public class GranteeService {
    * @throws ServiceException if not able to find a grantee by name
    */
   public NamedEntry lookupGranteeByName(
-      String name, byte granteeType, OperationContext operationContext) throws ServiceException {
+      String name, final byte granteeType, final OperationContext operationContext)
+      throws ServiceException {
     if (granteeType == ACL.GRANTEE_AUTHUSER
         || granteeType == ACL.GRANTEE_PUBLIC
         || granteeType == ACL.GRANTEE_GUEST
@@ -65,12 +66,12 @@ public class GranteeService {
     // for addresses, default to the authenticated user's domain
     if ((granteeType == ACL.GRANTEE_USER || granteeType == ACL.GRANTEE_GROUP)
         && name.indexOf('@') == -1) {
-      Account authacct =
+      final Account authacct =
           provisioning.get(
               AccountBy.id,
               operationContext.getmAuthTokenAccountId(),
               operationContext.getAuthToken());
-      String authname = (authacct == null ? null : authacct.getName());
+      final String authname = (authacct == null ? null : authacct.getName());
       if (authacct != null) name += authname.substring(authname.indexOf('@'));
     }
 
@@ -114,7 +115,7 @@ public class GranteeService {
    * @param granteeType ACL grantee type
    * @return {@link NamedEntry}
    */
-  public NamedEntry lookupGranteeByZimbraId(String zid, byte granteeType) {
+  public NamedEntry lookupGranteeByZimbraId(final String zid, final byte granteeType) {
     try {
       switch (granteeType) {
         case ACL.GRANTEE_COS:
