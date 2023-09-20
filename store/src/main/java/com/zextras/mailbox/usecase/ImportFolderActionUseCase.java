@@ -36,7 +36,10 @@ public class ImportFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> importFeed(
-      OperationContext operationContext, String accountId, String folderId, String url) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final String url) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =

@@ -34,7 +34,8 @@ public class RefreshFolderActionUseCase {
    * @param url the url to retrieve feed from
    * @return a {@link Try} object with the status of the operation
    */
-  public Try<Void> refresh(OperationContext operationContext, String accountId, String folderId) {
+  public Try<Void> refresh(
+      final OperationContext operationContext, final String accountId, final String folderId) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =

@@ -25,7 +25,8 @@ public class EmptyFolderActionUseCase {
   private final ItemIdFactory itemIdFactory;
 
   @Inject
-  public EmptyFolderActionUseCase(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
+  public EmptyFolderActionUseCase(
+      final MailboxManager mailboxManager, final ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;
   }
@@ -38,7 +39,8 @@ public class EmptyFolderActionUseCase {
    * @param folderId the id of the folder (belonging to the accountId)
    * @return a {@link Try} object with the status of the operation
    */
-  public Try<Void> empty(OperationContext operationContext, String accountId, String folderId) {
+  public Try<Void> empty(
+      final OperationContext operationContext, final String accountId, final String folderId) {
     return innerEmptyCall(operationContext, accountId, folderId, false);
   }
 
@@ -51,15 +53,15 @@ public class EmptyFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> emptyRecursively(
-      OperationContext operationContext, String accountId, String folderId) {
+      final OperationContext operationContext, final String accountId, final String folderId) {
     return innerEmptyCall(operationContext, accountId, folderId, true);
   }
 
   private Try<Void> innerEmptyCall(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      boolean removeSubFolders) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final boolean removeSubFolders) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =

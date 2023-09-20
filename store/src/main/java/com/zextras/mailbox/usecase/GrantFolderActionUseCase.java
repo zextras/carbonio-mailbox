@@ -92,17 +92,17 @@ public class GrantFolderActionUseCase {
    * @return a {@link Try} result {@link Result} object with the status of the operation
    */
   public Try<Result> grant(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      byte granteeType,
-      String zimbraId,
-      long expiry,
-      String display,
-      short rights,
-      String secretArgs,
-      String secretPassword,
-      String secretAccessKey) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final byte granteeType,
+      final String zimbraId,
+      final long expiry,
+      final String display,
+      final short rights,
+      final String secretArgs,
+      final String secretPassword,
+      final String secretAccessKey) {
     return Try.of(
         () -> {
           String calculatedZimbraId = zimbraId;

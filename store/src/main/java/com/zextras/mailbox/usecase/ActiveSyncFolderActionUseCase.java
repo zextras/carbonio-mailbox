@@ -35,7 +35,7 @@ public class ActiveSyncFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> enableActiveSync(
-      OperationContext operationContext, String accountId, String folderId) {
+      final OperationContext operationContext, final String accountId, final String folderId) {
     return innerActiveSyncCall(operationContext, accountId, folderId, false);
   }
 
@@ -48,15 +48,15 @@ public class ActiveSyncFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> disableActiveSync(
-      OperationContext operationContext, String accountId, String folderId) {
+      final OperationContext operationContext, final String accountId, final String folderId) {
     return innerActiveSyncCall(operationContext, accountId, folderId, true);
   }
 
   private Try<Void> innerActiveSyncCall(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      boolean disableActiveSyncFlag) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final boolean disableActiveSyncFlag) {
 
     return Try.run(
         () -> {

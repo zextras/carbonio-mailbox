@@ -36,7 +36,8 @@ public class CheckFolderActionUseCase {
    * @param folderId the id of the folder (belonging to the accountId)
    * @return a {@link Try} object with the status of the operation
    */
-  public Try<Void> check(OperationContext operationContext, String accountId, String folderId) {
+  public Try<Void> check(
+      final OperationContext operationContext, final String accountId, final String folderId) {
     return innerCheckCall(operationContext, accountId, folderId, true);
   }
 
@@ -48,12 +49,16 @@ public class CheckFolderActionUseCase {
    * @param folderId the id of the folder (belonging to the accountId)
    * @return a {@link Try} object with the status of the operation
    */
-  public Try<Void> uncheck(OperationContext operationContext, String accountId, String folderId) {
+  public Try<Void> uncheck(
+      final OperationContext operationContext, final String accountId, final String folderId) {
     return innerCheckCall(operationContext, accountId, folderId, false);
   }
 
   private Try<Void> innerCheckCall(
-      OperationContext operationContext, String accountId, String folderId, boolean checkFlag) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final boolean checkFlag) {
 
     return Try.run(
         () -> {

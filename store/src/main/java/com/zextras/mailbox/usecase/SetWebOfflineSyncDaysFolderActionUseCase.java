@@ -36,7 +36,10 @@ public class SetWebOfflineSyncDaysFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> setWebOfflineSyncDays(
-      OperationContext operationContext, String accountId, String folderId, int days) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final int days) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =

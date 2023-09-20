@@ -38,10 +38,10 @@ public class SetRetentionPolicyFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> setRetentionPolicy(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      RetentionPolicy retentionPolicy) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final RetentionPolicy retentionPolicy) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =

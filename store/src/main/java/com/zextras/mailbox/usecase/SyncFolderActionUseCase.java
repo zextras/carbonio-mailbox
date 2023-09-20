@@ -35,7 +35,8 @@ public class SyncFolderActionUseCase {
    * @param folderId the id of the folder (belonging to the accountId)
    * @return a {@link Try} object with the status of the operation
    */
-  public Try<Void> syncOn(OperationContext operationContext, String accountId, String folderId) {
+  public Try<Void> syncOn(
+      final OperationContext operationContext, final String accountId, final String folderId) {
     return innerSyncCall(operationContext, accountId, folderId, true);
   }
 
@@ -47,12 +48,16 @@ public class SyncFolderActionUseCase {
    * @param folderId the id of the folder (belonging to the accountId)
    * @return a {@link Try} object with the status of the operation
    */
-  public Try<Void> syncOff(OperationContext operationContext, String accountId, String folderId) {
+  public Try<Void> syncOff(
+      final OperationContext operationContext, final String accountId, final String folderId) {
     return innerSyncCall(operationContext, accountId, folderId, false);
   }
 
   private Try<Void> innerSyncCall(
-      OperationContext operationContext, String accountId, String folderId, boolean syncFlag) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final boolean syncFlag) {
 
     return Try.run(
         () -> {

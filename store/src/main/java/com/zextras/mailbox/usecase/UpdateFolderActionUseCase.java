@@ -54,16 +54,16 @@ public class UpdateFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> update(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      String internalGrantExpiryString,
-      String guestGrantExpiryString,
-      List<GrantInput> grantInputList,
-      String newName,
-      String flags,
-      byte color,
-      String view) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final String internalGrantExpiryString,
+      final String guestGrantExpiryString,
+      final List<GrantInput> grantInputList,
+      final String newName,
+      final String flags,
+      final byte color,
+      final String view) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =
@@ -89,7 +89,7 @@ public class UpdateFolderActionUseCase {
           }
 
           if (internalGrantExpiryString != null && guestGrantExpiryString != null) {
-            ACL acl =
+            final ACL acl =
                 aclUtil.parseACL(
                     internalGrantExpiryString,
                     guestGrantExpiryString,

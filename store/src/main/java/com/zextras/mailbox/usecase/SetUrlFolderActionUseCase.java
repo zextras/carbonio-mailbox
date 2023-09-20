@@ -35,11 +35,11 @@ public class SetUrlFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> setFolderUrl(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      String url,
-      boolean excludeFreeBusy) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final String url,
+      final boolean excludeFreeBusy) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =
