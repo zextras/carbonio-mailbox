@@ -21,6 +21,9 @@ public class SyncFolderActionUseCase {
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
 
+  private static final boolean ENABLE_SYNC = true;
+  private static final boolean DISABLE_SYNC = false;
+
   @Inject
   public SyncFolderActionUseCase(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
@@ -37,7 +40,7 @@ public class SyncFolderActionUseCase {
    */
   public Try<Void> syncOn(
       final OperationContext operationContext, final String accountId, final String folderId) {
-    return innerSyncCall(operationContext, accountId, folderId, true);
+    return innerSyncCall(operationContext, accountId, folderId, ENABLE_SYNC);
   }
 
   /**
@@ -50,7 +53,7 @@ public class SyncFolderActionUseCase {
    */
   public Try<Void> syncOff(
       final OperationContext operationContext, final String accountId, final String folderId) {
-    return innerSyncCall(operationContext, accountId, folderId, false);
+    return innerSyncCall(operationContext, accountId, folderId, DISABLE_SYNC);
   }
 
   private Try<Void> innerSyncCall(

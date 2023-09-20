@@ -16,7 +16,8 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 /**
- * Use case class to revoke orphan access from a folder.
+ * Use case class to revoke orphan access from a folder. "Orphan grant" is a grant whose grantee
+ * object is deleted/non-existing.
  *
  * @author Dima Dymkovets
  * @since 23.10.0
@@ -43,11 +44,11 @@ public class RevokeOrphanAccessFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> revokeOrphanAccess(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      String zimbraId,
-      String grantType) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final String zimbraId,
+      final String grantType) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =
@@ -57,18 +58,20 @@ public class RevokeOrphanAccessFolderActionUseCase {
                           new IllegalArgumentException(
                               "unable to locate the mailbox for the given accountId"));
           final ItemId itemId = itemIdFactory.create(folderId, accountId);
-          SearchDirectoryOptions opts = new SearchDirectoryOptions();
+          final SearchDirectoryOptions searchDirectoryOptions = new SearchDirectoryOptions();
 
-          String query = "(" + ZAttrProvisioning.A_zimbraId + "=" + zimbraId + ")";
-          opts.setFilterString(ZLdapFilterFactory.FilterId.SEARCH_GRANTEE, query);
-          opts.setOnMaster(true); // search the grantee on LDAP master
-          List<NamedEntry> entries = Provisioning.getInstance().searchDirectory(opts);
+          final String query = "(" + ZAttrProvisioning.A_zimbraId + "=" + zimbraId + ")";
+          searchDirectoryOptions.setFilterString(ZLdapFilterFactory.FilterId.SEARCH_GRANTEE, query);
+          searchDirectoryOptions.setOnMaster(true); // search the grantee on LDAP master
+          final List<NamedEntry> entries =
+              Provisioning.getInstance().searchDirectory(searchDirectoryOptions);
 
           if (!entries.isEmpty()) {
             throw ServiceException.INVALID_REQUEST("grantee " + zimbraId + " exists", null);
           }
 
-          Mailbox.FolderNode rootNode = userMailbox.getFolderTree(operationContext, itemId, true);
+          final Mailbox.FolderNode rootNode =
+              userMailbox.getFolderTree(operationContext, itemId, true);
           GrantType.fromGranteeTypeName(grantType)
               .mapTry(
                   type -> {
@@ -79,18 +82,18 @@ public class RevokeOrphanAccessFolderActionUseCase {
   }
 
   private void revokeOrphanGrants(
-      OperationContext octxt,
-      Mailbox mbox,
-      Mailbox.FolderNode node,
-      String granteeId,
-      GrantType type)
+      final OperationContext octxt,
+      final Mailbox mbox,
+      final Mailbox.FolderNode node,
+      final String granteeId,
+      final GrantType type)
       throws ServiceException {
     if (node.getFolder() != null) {
-      boolean canAdmin =
+      final boolean userCanAdministerFolder =
           (mbox.getEffectivePermissions(octxt, node.getFolder().getId(), MailItem.Type.FOLDER)
                   & ACL.RIGHT_ADMIN)
               != 0;
-      if (canAdmin && node.getFolder().getACL() != null) {
+      if (userCanAdministerFolder && node.getFolder().getACL() != null) {
         revokeAccess(octxt, mbox, node, granteeId, type, node.getFolder().getACL());
       }
     }
@@ -101,12 +104,12 @@ public class RevokeOrphanAccessFolderActionUseCase {
   }
 
   private static void revokeAccess(
-      OperationContext octxt,
-      Mailbox mbox,
-      Mailbox.FolderNode node,
-      String granteeId,
-      GrantType type,
-      ACL acl)
+      final OperationContext octxt,
+      final Mailbox mbox,
+      final Mailbox.FolderNode node,
+      final String granteeId,
+      final GrantType type,
+      final ACL acl)
       throws ServiceException {
     for (ACL.Grant grant : acl.getGrants()) {
       if (granteeId.equals(grant.getGranteeId())

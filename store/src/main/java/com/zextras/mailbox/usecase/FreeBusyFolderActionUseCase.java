@@ -17,6 +17,8 @@ import javax.inject.Inject;
 public class FreeBusyFolderActionUseCase {
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
+  private static final boolean ENABLE_FREEBUSY = true;
+  private static final boolean DISABLE_FREEBUSY = false;
 
   @Inject
   public FreeBusyFolderActionUseCase(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
@@ -33,8 +35,8 @@ public class FreeBusyFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> includeFreeBusyIntegration(
-      OperationContext operationContext, String accountId, String folderId) {
-    return excludeFreeBusy(operationContext, accountId, folderId, true);
+      final OperationContext operationContext, final String accountId, final String folderId) {
+    return excludeFreeBusy(operationContext, accountId, folderId, ENABLE_FREEBUSY);
   }
 
   /**
@@ -46,12 +48,15 @@ public class FreeBusyFolderActionUseCase {
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> excludeFreeBusyIntegration(
-      OperationContext operationContext, String accountId, String folderId) {
-    return excludeFreeBusy(operationContext, accountId, folderId, false);
+      final OperationContext operationContext, final String accountId, final String folderId) {
+    return excludeFreeBusy(operationContext, accountId, folderId, DISABLE_FREEBUSY);
   }
 
   private Try<Void> excludeFreeBusy(
-      OperationContext operationContext, String accountId, String folderId, boolean fb) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final boolean excludeFreeBusy) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =
@@ -68,7 +73,7 @@ public class FreeBusyFolderActionUseCase {
               itemId.getId(),
               MailItem.Type.FOLDER,
               Flag.FlagInfo.EXCLUDE_FREEBUSY,
-              fb,
+              excludeFreeBusy,
               null);
           FreeBusyProvider.mailboxChanged(accountId);
         });

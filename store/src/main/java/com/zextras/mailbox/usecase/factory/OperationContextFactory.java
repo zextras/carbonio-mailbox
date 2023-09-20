@@ -4,7 +4,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.OperationContext;
 
 /**
- * Factory class to create an {@link OperationContext}.
+ * Factory interface to create an {@link OperationContext}.
  *
  * @author Yuliya Aheeva
  * @since 23.10.0
