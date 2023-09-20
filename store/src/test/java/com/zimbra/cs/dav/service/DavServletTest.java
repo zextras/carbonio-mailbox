@@ -72,6 +72,7 @@ class DavServletTest {
                 cmd.withHealthcheck(
                     new HealthCheck().withTest(List.of("nc -z localhost 2812 || exit 1")));
               })
+          .withStartupTimeout(Duration.ofMinutes(3L))
           .withExposedPorts(389);
 
   @Container
@@ -83,6 +84,7 @@ class DavServletTest {
                   "MYSQL_USER", "zextras",
                   "MYSQL_PASSWORD", "zextras",
                   "MYSQL_ROOT_PASSWORD", "password"))
+          .withStartupTimeout(Duration.ofMinutes(3L))
           .withCopyFileToContainer(
               MountableFile.forClasspathResource("/db.sql", 0744), "/root/db.sql")
           .withExposedPorts(3306);

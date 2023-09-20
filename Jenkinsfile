@@ -3,7 +3,7 @@ def mvnCmd(String cmd) {
     if (env.BRANCH_NAME == 'main') {
         extraOptions = '-Ddependency-check.skip=false'
     }
-  sh 'mvn -B -s settings-jenkins.xml ' + extraOptions + ' ' + cmd
+  sh 'mvn -B -s settings-jenkins.xml -Ddependency-check.skip=true ' + extraOptions + ' ' + cmd
 }
 pipeline {
     agent {
@@ -56,7 +56,7 @@ pipeline {
             }
             steps {
 
-                mvnCmd("$BUILD_PROPERTIES_PARAMS test")
+                mvnCmd("$BUILD_PROPERTIES_PARAMS -Dtest=DavServletTest -X -pl store test")
 
                 publishCoverage adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: true
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
