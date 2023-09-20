@@ -93,4 +93,60 @@ public class GrantInput {
   public void setDisplay(final String display) {
     this.display = display;
   }
+
+  public static final class Builder {
+    private String zid;
+    private byte granteeType;
+    private short rights;
+    private long grantExpiry;
+    private String display;
+    private String accessKey;
+    private String secretArgs;
+    private String password;
+
+    public Builder setZimbraId(String zid) {
+      this.zid = zid;
+      return this;
+    }
+
+    public Builder setGranteeType(byte granteeType) {
+      this.granteeType = granteeType;
+      return this;
+    }
+
+    public Builder setRights(short rights) {
+      this.rights = rights;
+      return this;
+    }
+
+    public Builder setGrantExpiry(long grantExpiry) {
+      this.grantExpiry = grantExpiry;
+      return this;
+    }
+
+    public Builder setDisplayName(String display) {
+      this.display = display;
+      return this;
+    }
+
+    public Builder setAccessKey(String accessKey) {
+      this.accessKey = accessKey;
+      return this;
+    }
+
+    public Builder setSecretArgs(String secretArgs) {
+      this.secretArgs = secretArgs;
+      return this;
+    }
+
+    public Builder setPassword(String password) {
+      this.password = password;
+      return this;
+    }
+
+    public GrantInput build() {
+      return new GrantInput(
+          zid, granteeType, rights, grantExpiry, display, accessKey, secretArgs, password);
+    }
+  }
 }
