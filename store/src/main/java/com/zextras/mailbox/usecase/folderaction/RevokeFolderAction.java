@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zextras.mailbox.usecase.factory.OperationContextFactory;
@@ -21,7 +21,7 @@ import javax.inject.Inject;
  * @author Yuliya Aheeva
  * @since 23.10.0
  */
-public class RevokeFolderActionUseCase {
+public class RevokeFolderAction {
 
   private final MailboxManager mailboxManager;
   private final MountpointService mountpointService;
@@ -29,7 +29,7 @@ public class RevokeFolderActionUseCase {
   private final OperationContextFactory operationContextFactory;
 
   @Inject
-  public RevokeFolderActionUseCase(
+  public RevokeFolderAction(
       MailboxManager mailboxManager,
       MountpointService mountpointService,
       ItemIdFactory itemIdFactory,

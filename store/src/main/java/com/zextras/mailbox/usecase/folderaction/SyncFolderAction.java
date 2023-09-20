@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.cs.mailbox.Flag;
@@ -17,7 +17,7 @@ import javax.inject.Inject;
  * @author Yuliya Aheeva
  * @since 23.10.0
  */
-public class SyncFolderActionUseCase {
+public class SyncFolderAction {
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
 
@@ -25,7 +25,7 @@ public class SyncFolderActionUseCase {
   private static final boolean DISABLE_SYNC = false;
 
   @Inject
-  public SyncFolderActionUseCase(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
+  public SyncFolderAction(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;
   }

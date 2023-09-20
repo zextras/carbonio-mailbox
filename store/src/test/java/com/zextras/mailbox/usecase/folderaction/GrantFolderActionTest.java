@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,9 +25,9 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 @Execution(ExecutionMode.CONCURRENT)
-class GrantFolderActionUseCaseTest {
+class GrantFolderActionTest {
 
-  private GrantFolderActionUseCase grantFolderActionUseCase;
+  private GrantFolderAction grantFolderAction;
   private MailboxManager mailboxManager;
   private ItemActionUtil itemActionUtil;
   private AccountUtil accountUtil;
@@ -69,8 +69,8 @@ class GrantFolderActionUseCaseTest {
     folder = mock(Folder.class);
     when(folder.getDefaultView()).thenReturn(MailItem.Type.FOLDER);
 
-    grantFolderActionUseCase =
-        new GrantFolderActionUseCase(
+    grantFolderAction =
+        new GrantFolderAction(
             mailboxManager, itemActionUtil, accountUtil, itemIdFactory, granteeService);
   }
 
@@ -81,8 +81,8 @@ class GrantFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
-    final Try<GrantFolderActionUseCase.Result> grantTry =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> grantTry =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -105,8 +105,8 @@ class GrantFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
-    final Try<GrantFolderActionUseCase.Result> grantTry =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> grantTry =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -118,7 +118,7 @@ class GrantFolderActionUseCaseTest {
             secretArgs,
             secretPassword,
             secretAccessKey);
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(grantTry::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(grantTry::get);
 
     assertEquals(GuestAccount.GUID_AUTHUSER, grantResult.getZimbraId());
   }
@@ -130,8 +130,8 @@ class GrantFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
-    final Try<GrantFolderActionUseCase.Result> grantTry =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> grantTry =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -143,7 +143,7 @@ class GrantFolderActionUseCaseTest {
             secretArgs,
             secretPassword,
             secretAccessKey);
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(grantTry::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(grantTry::get);
 
     assertEquals(GuestAccount.GUID_PUBLIC, grantResult.getZimbraId());
   }
@@ -156,8 +156,8 @@ class GrantFolderActionUseCaseTest {
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(accountUtil.getMaxPublicShareLifetime(any(), eq(MailItem.Type.FOLDER))).thenReturn(420L);
 
-    final Try<GrantFolderActionUseCase.Result> grantTry =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> grantTry =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -181,8 +181,8 @@ class GrantFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -211,8 +211,8 @@ class GrantFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -225,7 +225,7 @@ class GrantFolderActionUseCaseTest {
             secretPassword,
             secretAccessKey);
 
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(operationResult::get);
 
     verify(granteeService, times(1))
         .lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext);
@@ -245,8 +245,8 @@ class GrantFolderActionUseCaseTest {
     when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
         .thenReturn(namedEntry);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -268,7 +268,7 @@ class GrantFolderActionUseCaseTest {
             rights,
             secretArgs,
             expiry);
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(operationResult::get);
     assertEquals(namedEntry, grantResult.getNamedEntry());
     assertEquals(display, grantResult.getZimbraId());
   }
@@ -286,8 +286,8 @@ class GrantFolderActionUseCaseTest {
     when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
         .thenReturn(namedEntry);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -309,7 +309,7 @@ class GrantFolderActionUseCaseTest {
             rights,
             secretPassword,
             expiry);
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(operationResult::get);
     assertEquals(namedEntry, grantResult.getNamedEntry());
     assertEquals(display, grantResult.getZimbraId());
   }
@@ -339,8 +339,8 @@ class GrantFolderActionUseCaseTest {
     when(domain.isInternalSharingCrossDomainEnabled()).thenReturn(true);
     when(namedEntry.getId()).thenReturn(namedEntryId);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -362,7 +362,7 @@ class GrantFolderActionUseCaseTest {
             rights,
             null,
             expiry);
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(operationResult::get);
     assertEquals(namedEntry, grantResult.getNamedEntry());
     assertEquals(namedEntryId, grantResult.getZimbraId());
   }
@@ -392,8 +392,8 @@ class GrantFolderActionUseCaseTest {
     when(domain.isInternalSharingCrossDomainEnabled()).thenReturn(true);
     when(namedEntry.getId()).thenReturn(namedEntryId);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -409,7 +409,7 @@ class GrantFolderActionUseCaseTest {
     verify(userMailbox, times(1))
         .grantAccess(
             operationContext, itemId.getId(), namedEntryId, ACL.GRANTEE_USER, rights, null, expiry);
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(operationResult::get);
     assertEquals(namedEntry, grantResult.getNamedEntry());
     assertEquals(namedEntryId, grantResult.getZimbraId());
   }
@@ -423,8 +423,8 @@ class GrantFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -446,7 +446,7 @@ class GrantFolderActionUseCaseTest {
             rights,
             secretAccessKey,
             expiry);
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(operationResult::get);
     assertEquals(display, grantResult.getZimbraId());
   }
 
@@ -460,8 +460,8 @@ class GrantFolderActionUseCaseTest {
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(granteeService.lookupGranteeByZimbraId(zimbraId, ACL.GRANTEE_USER)).thenReturn(namedEntry);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -478,7 +478,7 @@ class GrantFolderActionUseCaseTest {
         .grantAccess(
             operationContext, itemId.getId(), zimbraId, ACL.GRANTEE_USER, rights, null, expiry);
 
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(operationResult::get);
     assertEquals(namedEntry, grantResult.getNamedEntry());
     assertEquals(zimbraId, grantResult.getZimbraId());
   }
@@ -495,8 +495,8 @@ class GrantFolderActionUseCaseTest {
         .thenReturn(namedEntry);
     when(namedEntry.getId()).thenReturn(namedEntryId);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -513,7 +513,7 @@ class GrantFolderActionUseCaseTest {
         .grantAccess(
             operationContext, itemId.getId(), namedEntryId, ACL.GRANTEE_USER, rights, null, expiry);
 
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(operationResult::get);
     assertEquals(namedEntry, grantResult.getNamedEntry());
     assertEquals(namedEntryId, grantResult.getZimbraId());
   }
@@ -530,8 +530,8 @@ class GrantFolderActionUseCaseTest {
         .thenReturn(namedEntry);
     when(namedEntry.getId()).thenReturn(namedEntryId);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -554,7 +554,7 @@ class GrantFolderActionUseCaseTest {
             null,
             expiry);
 
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(operationResult::get);
     assertEquals(namedEntry, grantResult.getNamedEntry());
     assertEquals(namedEntryId, grantResult.getZimbraId());
   }
@@ -571,8 +571,8 @@ class GrantFolderActionUseCaseTest {
         .thenThrow(AccountServiceException.NO_SUCH_ACCOUNT("account.NO_SUCH_ACCOUNT"));
     when(namedEntry.getId()).thenReturn(namedEntryId);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,
@@ -589,7 +589,7 @@ class GrantFolderActionUseCaseTest {
         .grantAccess(
             operationContext, itemId.getId(), display, ACL.GRANTEE_GUEST, rights, null, expiry);
 
-    final GrantFolderActionUseCase.Result grantResult = assertDoesNotThrow(operationResult::get);
+    final GrantFolderAction.Result grantResult = assertDoesNotThrow(operationResult::get);
     assertEquals(display, grantResult.getZimbraId());
   }
 
@@ -605,8 +605,8 @@ class GrantFolderActionUseCaseTest {
         .thenThrow(ServiceException.INVALID_REQUEST("This is dummy exception!", null));
     when(namedEntry.getId()).thenReturn(namedEntryId);
 
-    final Try<GrantFolderActionUseCase.Result> operationResult =
-        grantFolderActionUseCase.grant(
+    final Try<GrantFolderAction.Result> operationResult =
+        grantFolderAction.grant(
             operationContext,
             accountId,
             folderId,

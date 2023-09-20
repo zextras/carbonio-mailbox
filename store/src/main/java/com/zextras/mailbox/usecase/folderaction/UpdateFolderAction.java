@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.midlewarepojo.GrantInput;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
@@ -23,14 +23,14 @@ import javax.inject.Inject;
  * @author Yuliya Aheeva, Davide Polonio
  * @since 23.10.0
  */
-public class UpdateFolderActionUseCase {
+public class UpdateFolderAction {
 
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
   private final ACLUtil aclUtil;
 
   @Inject
-  public UpdateFolderActionUseCase(
+  public UpdateFolderAction(
       MailboxManager mailboxManager, ItemIdFactory itemIdFactory, ACLUtil aclUtil) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;

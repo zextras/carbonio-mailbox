@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -17,17 +17,17 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 @Execution(ExecutionMode.CONCURRENT)
-class RefreshFolderActionUseCaseTest {
+class RefreshFolderActionTest {
 
   private MailboxManager mailboxManager;
-  private RefreshFolderActionUseCase refreshFolderActionUseCase;
+  private RefreshFolderAction refreshFolderAction;
   private ItemIdFactory itemIdFactory;
 
   @BeforeEach
   void setUp() {
     mailboxManager = mock(MailboxManager.class);
     itemIdFactory = mock(ItemIdFactory.class);
-    refreshFolderActionUseCase = new RefreshFolderActionUseCase(mailboxManager, itemIdFactory);
+    refreshFolderAction = new RefreshFolderAction(mailboxManager, itemIdFactory);
   }
 
   @Test
@@ -35,7 +35,7 @@ class RefreshFolderActionUseCaseTest {
     final String accountId = "nonExistingAccount";
     final String folderId = "folderName";
 
-    final Try<Void> operationResult = refreshFolderActionUseCase.refresh(null, accountId, folderId);
+    final Try<Void> operationResult = refreshFolderAction.refresh(null, accountId, folderId);
 
     assertTrue(
         operationResult.isFailure(),
@@ -52,7 +52,7 @@ class RefreshFolderActionUseCaseTest {
 
     when(mailboxManager.getMailboxByAccountId(null, true))
         .thenThrow(new IllegalArgumentException());
-    final Try<Void> operationResult = refreshFolderActionUseCase.refresh(null, accountId, folderId);
+    final Try<Void> operationResult = refreshFolderAction.refresh(null, accountId, folderId);
 
     assertTrue(
         operationResult.isFailure(), "Folder should not be refreshed because account id is null");
@@ -73,7 +73,7 @@ class RefreshFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
-    refreshFolderActionUseCase.refresh(operationContext, accountId, folderId);
+    refreshFolderAction.refresh(operationContext, accountId, folderId);
 
     verify(userMailbox, times(1)).synchronizeFolder(operationContext, itemId.getId());
   }
@@ -94,7 +94,7 @@ class RefreshFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     final Try<Void> operationResult =
-        refreshFolderActionUseCase.refresh(operationContext, accountId, folderId);
+        refreshFolderAction.refresh(operationContext, accountId, folderId);
 
     assertTrue(operationResult.isFailure());
     final Throwable gotError = operationResult.getCause();

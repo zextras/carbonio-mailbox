@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -14,9 +14,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-class FreeBusyFolderActionUseCaseTest {
+class FreeBusyFolderActionTest {
   private MailboxManager mailboxManager;
-  private FreeBusyFolderActionUseCase freeBusyFolderActionUseCase;
+  private FreeBusyFolderAction freeBusyFolderAction;
   private MockedStatic<FreeBusyProvider> freeBusyProvider;
   private ItemIdFactory itemIdFactory;
 
@@ -25,7 +25,7 @@ class FreeBusyFolderActionUseCaseTest {
     mailboxManager = mock(MailboxManager.class);
     itemIdFactory = mock(ItemIdFactory.class);
 
-    freeBusyFolderActionUseCase = new FreeBusyFolderActionUseCase(mailboxManager, itemIdFactory);
+    freeBusyFolderAction = new FreeBusyFolderAction(mailboxManager, itemIdFactory);
     freeBusyProvider = mockStatic(FreeBusyProvider.class);
   }
 
@@ -49,8 +49,7 @@ class FreeBusyFolderActionUseCaseTest {
         .when(() -> FreeBusyProvider.mailboxChanged(accountId))
         .then(freeBusyProvider -> null);
     Try<Void> result =
-        freeBusyFolderActionUseCase.excludeFreeBusyIntegration(
-            operationContext, accountId, folderId);
+        freeBusyFolderAction.excludeFreeBusyIntegration(operationContext, accountId, folderId);
     assertTrue(result.isSuccess());
     verify(userMailbox, times(1))
         .alterTag(
@@ -77,8 +76,7 @@ class FreeBusyFolderActionUseCaseTest {
         .when(() -> FreeBusyProvider.mailboxChanged(accountId))
         .then(freeBusyProvider -> null);
     Try<Void> result =
-        freeBusyFolderActionUseCase.includeFreeBusyIntegration(
-            operationContext, accountId, folderId);
+        freeBusyFolderAction.includeFreeBusyIntegration(operationContext, accountId, folderId);
     assertTrue(result.isSuccess());
     verify(userMailbox, times(1))
         .alterTag(

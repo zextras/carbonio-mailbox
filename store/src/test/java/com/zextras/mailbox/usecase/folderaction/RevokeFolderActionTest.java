@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -26,8 +26,8 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class RevokeFolderActionUseCaseTest {
-  private RevokeFolderActionUseCase revokeFolderActionUseCase;
+class RevokeFolderActionTest {
+  private RevokeFolderAction revokeFolderAction;
   private MailboxManager mailboxManager;
   private MountpointService mountpointService;
   private ItemIdFactory itemIdFactory;
@@ -40,8 +40,8 @@ class RevokeFolderActionUseCaseTest {
     mountpointService = mock(MountpointService.class);
     operationContextFactory = mock(OperationContextFactory.class);
 
-    revokeFolderActionUseCase =
-        new RevokeFolderActionUseCase(
+    revokeFolderAction =
+        new RevokeFolderAction(
             mailboxManager, mountpointService, itemIdFactory, operationContextFactory);
 
     MailboxTestUtil.initServer();
@@ -60,7 +60,7 @@ class RevokeFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     final Try<Void> operationResult =
-        revokeFolderActionUseCase.revoke(operationContext, accountId, folderId, granteeId);
+        revokeFolderAction.revoke(operationContext, accountId, folderId, granteeId);
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "Folder should be successfully revoked.");
@@ -114,7 +114,7 @@ class RevokeFolderActionUseCaseTest {
         .thenReturn(mountPointsIds);
 
     final Try<Void> operationResult =
-        revokeFolderActionUseCase.revoke(operationContext, accountId, folderId, granteeId);
+        revokeFolderAction.revoke(operationContext, accountId, folderId, granteeId);
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "Folder should be successfully revoked.");
 

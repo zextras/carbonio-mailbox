@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -19,14 +19,13 @@ import javax.inject.Inject;
  * @author Davide Polonio
  * @since 23.10.0
  */
-public class EmptyFolderActionUseCase {
+public class EmptyFolderAction {
 
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
 
   @Inject
-  public EmptyFolderActionUseCase(
-      final MailboxManager mailboxManager, final ItemIdFactory itemIdFactory) {
+  public EmptyFolderAction(final MailboxManager mailboxManager, final ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;
   }

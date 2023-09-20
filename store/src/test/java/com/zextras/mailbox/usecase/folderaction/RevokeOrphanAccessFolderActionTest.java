@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -17,10 +17,10 @@ import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class RevokeOrphanAccessFolderActionUseCaseTest {
+class RevokeOrphanAccessFolderActionTest {
 
   private MailboxManager mailboxManager;
-  private RevokeOrphanAccessFolderActionUseCase revokeOrphanAccessFolderActionUseCase;
+  private RevokeOrphanAccessFolderAction revokeOrphanAccessFolderAction;
   private ItemIdFactory itemIdFactory;
   private Mailbox userMailbox;
   private OperationContext operationContext;
@@ -35,8 +35,8 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
   void setUp() throws NoSuchFieldException, IllegalAccessException {
     mailboxManager = mock(MailboxManager.class);
     itemIdFactory = mock(ItemIdFactory.class);
-    revokeOrphanAccessFolderActionUseCase =
-        new RevokeOrphanAccessFolderActionUseCase(mailboxManager, itemIdFactory);
+    revokeOrphanAccessFolderAction =
+        new RevokeOrphanAccessFolderAction(mailboxManager, itemIdFactory);
     Field zLdapInstanceFactory = ZLdapFilterFactory.class.getDeclaredField("SINGLETON");
     zLdapInstanceFactory.setAccessible(true);
     zLdapInstanceFactory.set(null, new DummyLdapFilterFactory());
@@ -77,7 +77,7 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
     when(grant.getGranteeType()).thenReturn(GrantType.GRANTEE_USER.getGranteeNumber());
 
     Try<Void> result =
-        revokeOrphanAccessFolderActionUseCase.revokeOrphanAccess(
+        revokeOrphanAccessFolderAction.revokeOrphanAccess(
             operationContext, accountId, folderId, granteeId, "usr");
     assertTrue(result.isSuccess());
     verify(userMailbox, atLeast(1)).revokeAccess(operationContext, itemId.getId(), granteeId);
@@ -109,7 +109,7 @@ class RevokeOrphanAccessFolderActionUseCaseTest {
     when(grant.getGranteeType()).thenReturn(GrantType.GRANTEE_USER.getGranteeNumber());
 
     Try<Void> result =
-        revokeOrphanAccessFolderActionUseCase.revokeOrphanAccess(
+        revokeOrphanAccessFolderAction.revokeOrphanAccess(
             operationContext, accountId, folderId, granteeId, "usr");
     assertTrue(result.isFailure());
   }

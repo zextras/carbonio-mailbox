@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -15,13 +15,13 @@ import javax.inject.Inject;
  * @author Dima Dymkovets
  * @since 23.10.0
  */
-public class RefreshFolderActionUseCase {
+public class RefreshFolderAction {
 
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
 
   @Inject
-  public RefreshFolderActionUseCase(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
+  public RefreshFolderAction(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;
   }

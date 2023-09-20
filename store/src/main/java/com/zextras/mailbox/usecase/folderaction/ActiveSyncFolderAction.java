@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -10,36 +10,54 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 /**
- * Use case class to set web offline sync days.
+ * Use case class to manage ActiveSync support on a folder.
  *
- * @author Dima Dymkovets
+ * @author Yuliya Aheeva
  * @since 23.10.0
  */
-public class SetWebOfflineSyncDaysFolderActionUseCase {
+public class ActiveSyncFolderAction {
+
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
 
   @Inject
-  public SetWebOfflineSyncDaysFolderActionUseCase(
-      MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
+  public ActiveSyncFolderAction(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;
   }
 
   /**
-   * This method is used to set web offline sync days.
+   * This method is used to enable ActiveSync on a folder.
    *
    * @param operationContext an {@link OperationContext}
    * @param accountId the target account zimbra id attribute
    * @param folderId the id of the folder (belonging to the accountId)
-   * @param days number of days
    * @return a {@link Try} object with the status of the operation
    */
-  public Try<Void> setWebOfflineSyncDays(
+  public Try<Void> enableActiveSync(
+      final OperationContext operationContext, final String accountId, final String folderId) {
+    return innerActiveSyncCall(operationContext, accountId, folderId, false);
+  }
+
+  /**
+   * This method is used to disable ActiveSync on a folder.
+   *
+   * @param operationContext an {@link OperationContext}
+   * @param accountId the target account which mailbox folder will be emptied
+   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
+   * @return a {@link Try} object with the status of the operation
+   */
+  public Try<Void> disableActiveSync(
+      final OperationContext operationContext, final String accountId, final String folderId) {
+    return innerActiveSyncCall(operationContext, accountId, folderId, true);
+  }
+
+  private Try<Void> innerActiveSyncCall(
       final OperationContext operationContext,
       final String accountId,
       final String folderId,
-      final int days) {
+      final boolean disableActiveSyncFlag) {
+
     return Try.run(
         () -> {
           final Mailbox userMailbox =
@@ -51,7 +69,8 @@ public class SetWebOfflineSyncDaysFolderActionUseCase {
 
           final ItemId itemId = itemIdFactory.create(folderId, accountId);
 
-          userMailbox.setFolderWebOfflineSyncDays(operationContext, itemId.getId(), days);
+          userMailbox.setActiveSyncDisabled(
+              operationContext, itemId.getId(), disableActiveSyncFlag);
         });
   }
 }

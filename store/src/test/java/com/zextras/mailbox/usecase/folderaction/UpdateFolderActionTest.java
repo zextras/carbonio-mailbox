@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,10 +29,10 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class UpdateFolderActionUseCaseTest {
+class UpdateFolderActionTest {
   private MailboxManager mailboxManager;
   private ItemIdFactory itemIdFactory;
-  private UpdateFolderActionUseCase updateFolderActionUseCase;
+  private UpdateFolderAction updateFolderAction;
   private Mailbox userMailbox;
   private OperationContext operationContext;
   private ItemId itemId;
@@ -56,8 +56,7 @@ class UpdateFolderActionUseCaseTest {
     itemId = mock(ItemId.class);
     aclUtil = mock(ACLUtil.class);
 
-    updateFolderActionUseCase =
-        new UpdateFolderActionUseCase(mailboxManager, itemIdFactory, aclUtil);
+    updateFolderAction = new UpdateFolderAction(mailboxManager, itemIdFactory, aclUtil);
   }
 
   @Test
@@ -68,7 +67,7 @@ class UpdateFolderActionUseCaseTest {
     when(operationContext.getmRequestedAccountId()).thenReturn(accountId);
 
     final Try<Void> operationResult =
-        updateFolderActionUseCase.update(
+        updateFolderAction.update(
             operationContext,
             accountId,
             folderId,
@@ -97,7 +96,7 @@ class UpdateFolderActionUseCaseTest {
     when(itemId.belongsTo(userMailbox)).thenReturn(true);
 
     final Try<Void> operationResult =
-        updateFolderActionUseCase.update(
+        updateFolderAction.update(
             operationContext,
             accountId,
             folderId,
@@ -125,7 +124,7 @@ class UpdateFolderActionUseCaseTest {
     when(itemId.belongsTo(userMailbox)).thenReturn(true);
 
     final Try<Void> operationResult =
-        updateFolderActionUseCase.update(
+        updateFolderAction.update(
             operationContext,
             accountId,
             folderId,
@@ -154,7 +153,7 @@ class UpdateFolderActionUseCaseTest {
     when(itemId.belongsTo(userMailbox)).thenReturn(true);
 
     final Try<Void> operationResult =
-        updateFolderActionUseCase.update(
+        updateFolderAction.update(
             operationContext,
             accountId,
             folderId,
@@ -189,7 +188,7 @@ class UpdateFolderActionUseCaseTest {
     when(itemId.belongsTo(userMailbox)).thenReturn(true);
 
     final Try<Void> operationResult =
-        updateFolderActionUseCase.update(
+        updateFolderAction.update(
             operationContext,
             accountId,
             folderId,
@@ -218,7 +217,7 @@ class UpdateFolderActionUseCaseTest {
     when(itemId.belongsTo(userMailbox)).thenReturn(true);
 
     final Try<Void> operationResult =
-        updateFolderActionUseCase.update(
+        updateFolderAction.update(
             operationContext,
             accountId,
             folderId,
@@ -246,7 +245,7 @@ class UpdateFolderActionUseCaseTest {
     when(itemId.belongsTo(userMailbox)).thenReturn(true);
 
     final Try<Void> operationResult =
-        updateFolderActionUseCase.update(
+        updateFolderAction.update(
             operationContext,
             accountId,
             folderId,
@@ -292,7 +291,7 @@ class UpdateFolderActionUseCaseTest {
         .thenReturn(acl);
 
     final Try<Void> operationResult =
-        updateFolderActionUseCase.update(
+        updateFolderAction.update(
             operationContext,
             accountId,
             folderId,

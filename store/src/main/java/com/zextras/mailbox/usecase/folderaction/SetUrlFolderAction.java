@@ -1,65 +1,45 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
+import com.google.common.base.Strings;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
-import com.zimbra.cs.mailbox.Flag;
-import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
 import java.util.Optional;
 import javax.inject.Inject;
 
 /**
- * Use case class to set checked folder tag.
+ * Use case class to set folder url.
  *
- * @author Yuliya Aheeva
+ * @author Dima Dymkovets
  * @since 23.10.0
  */
-public class CheckFolderActionUseCase {
-
+public class SetUrlFolderAction {
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
 
   @Inject
-  public CheckFolderActionUseCase(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
+  public SetUrlFolderAction(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;
   }
 
   /**
-   * This method is used to tag folder as checked.
+   * This method is used to set folder url.
    *
    * @param operationContext an {@link OperationContext}
    * @param accountId the target account zimbra id attribute
    * @param folderId the id of the folder (belonging to the accountId)
+   * @param url url
+   * @param excludeFreeBusy flag
    * @return a {@link Try} object with the status of the operation
    */
-  public Try<Void> check(
-      final OperationContext operationContext, final String accountId, final String folderId) {
-    return innerCheckCall(operationContext, accountId, folderId, true);
-  }
-
-  /**
-   * This method is used to tag folder as unchecked.
-   *
-   * @param operationContext an {@link OperationContext}
-   * @param accountId the target account zimbra id attribute
-   * @param folderId the id of the folder (belonging to the accountId)
-   * @return a {@link Try} object with the status of the operation
-   */
-  public Try<Void> uncheck(
-      final OperationContext operationContext, final String accountId, final String folderId) {
-    return innerCheckCall(operationContext, accountId, folderId, false);
-  }
-
-  private Try<Void> innerCheckCall(
+  public Try<Void> setFolderUrl(
       final OperationContext operationContext,
       final String accountId,
       final String folderId,
-      final boolean checkFlag) {
-
+      final String url,
+      final boolean excludeFreeBusy) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =
@@ -71,12 +51,19 @@ public class CheckFolderActionUseCase {
 
           final ItemId itemId = itemIdFactory.create(folderId, accountId);
 
+          userMailbox.setFolderUrl(operationContext, itemId.getId(), url);
+
+          if (Strings.isNullOrEmpty(url)) {
+            userMailbox.synchronizeFolder(operationContext, itemId.getId());
+            return;
+          }
+
           userMailbox.alterTag(
               operationContext,
               itemId.getId(),
               MailItem.Type.FOLDER,
-              Flag.FlagInfo.CHECKED,
-              checkFlag,
+              Flag.FlagInfo.EXCLUDE_FREEBUSY,
+              excludeFreeBusy,
               null);
         });
   }

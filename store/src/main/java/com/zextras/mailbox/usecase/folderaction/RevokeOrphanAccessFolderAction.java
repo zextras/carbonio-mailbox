@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zextras.mailbox.usecase.util.GrantType;
@@ -22,12 +22,12 @@ import javax.inject.Inject;
  * @author Dima Dymkovets
  * @since 23.10.0
  */
-public class RevokeOrphanAccessFolderActionUseCase {
+public class RevokeOrphanAccessFolderAction {
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
 
   @Inject
-  public RevokeOrphanAccessFolderActionUseCase(
+  public RevokeOrphanAccessFolderAction(
       MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;

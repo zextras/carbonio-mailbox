@@ -1,75 +1,71 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.mailbox.*;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SetUrlFolderActionUseCaseTest {
-
+class ActiveSyncFolderActionTest {
   private MailboxManager mailboxManager;
-  private SetUrlFolderActionUseCase setUrlFolderActionUseCase;
   private ItemIdFactory itemIdFactory;
+  private ActiveSyncFolderAction activeSyncFolderAction;
 
   @BeforeEach
   void setUp() {
     mailboxManager = mock(MailboxManager.class);
     itemIdFactory = mock(ItemIdFactory.class);
-    setUrlFolderActionUseCase = new SetUrlFolderActionUseCase(mailboxManager, itemIdFactory);
+
+    activeSyncFolderAction = new ActiveSyncFolderAction(mailboxManager, itemIdFactory);
   }
 
   @Test
-  void shouldBeSuccessAfterSetNonEmptyUrlOnFolder() throws ServiceException {
+  void shouldBeSuccessAfterEnableActiveSync() throws ServiceException {
     final String accountId = "account-id123";
     final String folderId = accountId + ":1";
-    final String url = "url";
     final Mailbox userMailbox = mock(Mailbox.class);
     final OperationContext operationContext = mock(OperationContext.class);
     final ItemId itemId = mock(ItemId.class);
-
     when(itemId.getId()).thenReturn(1);
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
-    Try<Void> result =
-        setUrlFolderActionUseCase.setFolderUrl(operationContext, accountId, folderId, url, true);
-    assertTrue(result.isSuccess());
-    verify(userMailbox, times(1)).setFolderUrl(operationContext, itemId.getId(), url);
-    verify(userMailbox, times(1))
-        .alterTag(
-            operationContext,
-            itemId.getId(),
-            MailItem.Type.FOLDER,
-            Flag.FlagInfo.EXCLUDE_FREEBUSY,
-            true,
-            null);
+    final Try<Void> operationResult =
+        activeSyncFolderAction.enableActiveSync(operationContext, accountId, folderId);
+
+    assertDoesNotThrow(operationResult::get);
+    assertTrue(operationResult.isSuccess(), "ActiveSync should be successfully enabled.");
+
+    verify(userMailbox, times(1)).setActiveSyncDisabled(operationContext, itemId.getId(), false);
   }
 
   @Test
-  void shouldBeSuccessSynchronizeAfterSetEmptyUrlOnFolder() throws ServiceException {
+  void shouldBeSuccessAfterDisableActiveSync() throws ServiceException {
     final String accountId = "account-id123";
     final String folderId = accountId + ":1";
-    final String url = "";
     final Mailbox userMailbox = mock(Mailbox.class);
     final OperationContext operationContext = mock(OperationContext.class);
     final ItemId itemId = mock(ItemId.class);
-
     when(itemId.getId()).thenReturn(1);
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
-    Try<Void> result =
-        setUrlFolderActionUseCase.setFolderUrl(operationContext, accountId, folderId, url, false);
-    assertTrue(result.isSuccess());
+    final Try<Void> operationResult =
+        activeSyncFolderAction.disableActiveSync(operationContext, accountId, folderId);
 
-    verify(userMailbox, times(1)).setFolderUrl(operationContext, itemId.getId(), url);
-    verify(userMailbox, times(1)).synchronizeFolder(operationContext, itemId.getId());
+    assertDoesNotThrow(operationResult::get);
+    assertTrue(operationResult.isSuccess(), "ActiveSync should be successfully enabled.");
+
+    verify(userMailbox, times(1)).setActiveSyncDisabled(operationContext, itemId.getId(), true);
   }
 }

@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -16,9 +16,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SetRetentionPolicyFolderActionUseCaseTest {
+class SetRetentionPolicyFolderActionTest {
   private MailboxManager mailboxManager;
-  private SetRetentionPolicyFolderActionUseCase setRetentionPolicyFolderActionUseCase;
+  private SetRetentionPolicyFolderAction setRetentionPolicyFolderAction;
   private ItemIdFactory itemIdFactory;
 
   @BeforeEach
@@ -26,8 +26,8 @@ class SetRetentionPolicyFolderActionUseCaseTest {
     mailboxManager = mock(MailboxManager.class);
     itemIdFactory = mock(ItemIdFactory.class);
 
-    setRetentionPolicyFolderActionUseCase =
-        new SetRetentionPolicyFolderActionUseCase(mailboxManager, itemIdFactory);
+    setRetentionPolicyFolderAction =
+        new SetRetentionPolicyFolderAction(mailboxManager, itemIdFactory);
   }
 
   @Test
@@ -47,7 +47,7 @@ class SetRetentionPolicyFolderActionUseCaseTest {
     RetentionPolicy retentionPolicy = new RetentionPolicy(keepPolicies, purgePolicies);
 
     final Try<Void> operationResult =
-        setRetentionPolicyFolderActionUseCase.setRetentionPolicy(
+        setRetentionPolicyFolderAction.setRetentionPolicy(
             operationContext, accountId, folderId, retentionPolicy);
 
     verify(userMailbox, times(1))

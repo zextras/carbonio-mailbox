@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,9 +22,9 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 @Execution(ExecutionMode.CONCURRENT)
-class EmptyFolderActionUseCaseTest {
+class EmptyFolderActionTest {
   private MailboxManager mailboxManager;
-  private EmptyFolderActionUseCase emptyFolderActionUseCase;
+  private EmptyFolderAction emptyFolderAction;
   private ItemIdFactory itemIdFactory;
 
   @BeforeEach
@@ -32,7 +32,7 @@ class EmptyFolderActionUseCaseTest {
     mailboxManager = mock(MailboxManager.class);
     itemIdFactory = mock(ItemIdFactory.class);
 
-    emptyFolderActionUseCase = new EmptyFolderActionUseCase(mailboxManager, itemIdFactory);
+    emptyFolderAction = new EmptyFolderAction(mailboxManager, itemIdFactory);
   }
 
   @Test
@@ -47,7 +47,7 @@ class EmptyFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     final Try<Void> operationResult =
-        emptyFolderActionUseCase.empty(operationContext, accountId, folderId);
+        emptyFolderAction.empty(operationContext, accountId, folderId);
 
     assertDoesNotThrow(operationResult::get);
     assertTrue(operationResult.isSuccess(), "Folder should be successfully emptied");
@@ -58,7 +58,7 @@ class EmptyFolderActionUseCaseTest {
     final String accountId = "nonExistingAccount";
     final String folderId = "folderName";
 
-    final Try<Void> operationResult = emptyFolderActionUseCase.empty(null, accountId, folderId);
+    final Try<Void> operationResult = emptyFolderAction.empty(null, accountId, folderId);
 
     assertTrue(
         operationResult.isFailure(),
@@ -75,7 +75,7 @@ class EmptyFolderActionUseCaseTest {
 
     when(mailboxManager.getMailboxByAccountId(null, true))
         .thenThrow(new IllegalArgumentException());
-    final Try<Void> operationResult = emptyFolderActionUseCase.empty(null, accountId, folderId);
+    final Try<Void> operationResult = emptyFolderAction.empty(null, accountId, folderId);
 
     assertTrue(
         operationResult.isFailure(), "Folder should not be emptied because account id is null");
@@ -100,7 +100,7 @@ class EmptyFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     final Try<Void> operationResult =
-        emptyFolderActionUseCase.empty(operationContext, accountId, folderId);
+        emptyFolderAction.empty(operationContext, accountId, folderId);
 
     assertTrue(
         operationResult.isFailure(),
@@ -131,7 +131,7 @@ class EmptyFolderActionUseCaseTest {
                 null));
 
     final Try<Void> operationResult =
-        emptyFolderActionUseCase.empty(operationContext, accountId, folderId);
+        emptyFolderAction.empty(operationContext, accountId, folderId);
 
     assertTrue(
         operationResult.isFailure(),
@@ -153,7 +153,7 @@ class EmptyFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
-    emptyFolderActionUseCase.empty(operationContext, accountId, folderId);
+    emptyFolderAction.empty(operationContext, accountId, folderId);
 
     verify(userMailbox, times(1)).emptyFolder(operationContext, itemId.getId(), false);
   }
@@ -170,7 +170,7 @@ class EmptyFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
-    emptyFolderActionUseCase.emptyRecursively(operationContext, accountId, folderId);
+    emptyFolderAction.emptyRecursively(operationContext, accountId, folderId);
 
     verify(userMailbox, times(1)).emptyFolder(operationContext, itemId.getId(), true);
   }
@@ -188,7 +188,7 @@ class EmptyFolderActionUseCaseTest {
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
-    emptyFolderActionUseCase.empty(operationContext, accountId, folderId);
+    emptyFolderAction.empty(operationContext, accountId, folderId);
 
     verify(userMailbox, times(1)).emptyFolder(operationContext, itemId.getId(), false);
     verify(userMailbox, times(1)).purgeImapDeleted(operationContext);

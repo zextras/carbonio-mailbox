@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.cs.fb.FreeBusyProvider;
@@ -14,14 +14,14 @@ import javax.inject.Inject;
  * @author Dima Dymkovets
  * @since 23.10.0
  */
-public class FreeBusyFolderActionUseCase {
+public class FreeBusyFolderAction {
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
   private static final boolean ENABLE_FREEBUSY = true;
   private static final boolean DISABLE_FREEBUSY = false;
 
   @Inject
-  public FreeBusyFolderActionUseCase(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
+  public FreeBusyFolderAction(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;
   }

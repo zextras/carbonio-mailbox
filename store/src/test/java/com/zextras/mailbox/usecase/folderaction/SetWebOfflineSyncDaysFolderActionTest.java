@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -12,9 +12,9 @@ import io.vavr.control.Try;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SetWebOfflineSyncDaysFolderActionUseCaseTest {
+class SetWebOfflineSyncDaysFolderActionTest {
   private MailboxManager mailboxManager;
-  private SetWebOfflineSyncDaysFolderActionUseCase setWebOfflineSyncDaysFolderActionUseCase;
+  private SetWebOfflineSyncDaysFolderAction setWebOfflineSyncDaysFolderAction;
   private ItemIdFactory itemIdFactory;
 
   @BeforeEach
@@ -22,8 +22,8 @@ class SetWebOfflineSyncDaysFolderActionUseCaseTest {
     mailboxManager = mock(MailboxManager.class);
     itemIdFactory = mock(ItemIdFactory.class);
 
-    setWebOfflineSyncDaysFolderActionUseCase =
-        new SetWebOfflineSyncDaysFolderActionUseCase(mailboxManager, itemIdFactory);
+    setWebOfflineSyncDaysFolderAction =
+        new SetWebOfflineSyncDaysFolderAction(mailboxManager, itemIdFactory);
   }
 
   @Test
@@ -39,7 +39,7 @@ class SetWebOfflineSyncDaysFolderActionUseCaseTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     final Try<Void> operationResult =
-        setWebOfflineSyncDaysFolderActionUseCase.setWebOfflineSyncDays(
+        setWebOfflineSyncDaysFolderAction.setWebOfflineSyncDays(
             operationContext, accountId, folderId, 1);
 
     verify(userMailbox, times(1)).setFolderWebOfflineSyncDays(operationContext, itemId.getId(), 1);

@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -10,54 +10,36 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 /**
- * Use case class to manage ActiveSync support on a folder.
+ * Use case class to import feed from remote datasource.
  *
  * @author Yuliya Aheeva
  * @since 23.10.0
  */
-public class ActiveSyncFolderActionUseCase {
+public class ImportFolderAction {
 
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
 
   @Inject
-  public ActiveSyncFolderActionUseCase(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
+  public ImportFolderAction(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;
   }
 
   /**
-   * This method is used to enable ActiveSync on a folder.
+   * This method is used to import feed from remote datasource.
    *
    * @param operationContext an {@link OperationContext}
    * @param accountId the target account zimbra id attribute
    * @param folderId the id of the folder (belonging to the accountId)
+   * @param url the url to retrieve feed from
    * @return a {@link Try} object with the status of the operation
    */
-  public Try<Void> enableActiveSync(
-      final OperationContext operationContext, final String accountId, final String folderId) {
-    return innerActiveSyncCall(operationContext, accountId, folderId, false);
-  }
-
-  /**
-   * This method is used to disable ActiveSync on a folder.
-   *
-   * @param operationContext an {@link OperationContext}
-   * @param accountId the target account which mailbox folder will be emptied
-   * @param folderId the id of the folder (belonging to the accountId) that will be emptied
-   * @return a {@link Try} object with the status of the operation
-   */
-  public Try<Void> disableActiveSync(
-      final OperationContext operationContext, final String accountId, final String folderId) {
-    return innerActiveSyncCall(operationContext, accountId, folderId, true);
-  }
-
-  private Try<Void> innerActiveSyncCall(
+  public Try<Void> importFeed(
       final OperationContext operationContext,
       final String accountId,
       final String folderId,
-      final boolean disableActiveSyncFlag) {
-
+      final String url) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =
@@ -68,9 +50,7 @@ public class ActiveSyncFolderActionUseCase {
                               "unable to locate the mailbox for the given accountId"));
 
           final ItemId itemId = itemIdFactory.create(folderId, accountId);
-
-          userMailbox.setActiveSyncDisabled(
-              operationContext, itemId.getId(), disableActiveSyncFlag);
+          userMailbox.importFeed(operationContext, itemId.getId(), url, false);
         });
   }
 }

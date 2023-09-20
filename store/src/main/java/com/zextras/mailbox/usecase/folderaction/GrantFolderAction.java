@@ -1,4 +1,4 @@
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.usecase.folderaction;
 
 import com.google.common.collect.Sets;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
@@ -29,7 +29,7 @@ import javax.inject.Inject;
  * @author Yuliya Aheeva, Davide Polonio, Dima Dymkovets
  * @since 23.10.0
  */
-public class GrantFolderActionUseCase {
+public class GrantFolderAction {
 
   private final MailboxManager mailboxManager;
   private final ItemActionUtil itemActionUtil;
@@ -38,7 +38,7 @@ public class GrantFolderActionUseCase {
   private final GranteeService granteeService;
 
   @Inject
-  public GrantFolderActionUseCase(
+  public GrantFolderAction(
       MailboxManager mailboxManager,
       ItemActionUtil itemActionUtil,
       AccountUtil accountUtil,
