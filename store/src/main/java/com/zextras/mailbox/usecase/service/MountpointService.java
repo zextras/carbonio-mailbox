@@ -1,17 +1,24 @@
 package com.zextras.mailbox.usecase.service;
 
+import com.zextras.mailbox.usecase.factory.ItemIdFactory;
+import com.zextras.mailbox.usecase.factory.OperationContextFactory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.SoapProtocol;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Mailbox.FolderNode;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Mountpoint;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.mail.ItemActionHelper;
 import com.zimbra.cs.service.util.ItemId;
+import io.vavr.control.Try;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.inject.Inject;
 
 /**
  * Service class to perform operations on {@link Mountpoint}.
@@ -20,6 +27,46 @@ import java.util.stream.Collectors;
  * @since 23.10.0
  */
 public class MountpointService {
+  private final ItemIdFactory itemIdFactory;
+  private final OperationContextFactory operationContextFactory;
+  private final Provisioning provisioning;
+
+  @Inject
+  public MountpointService(
+      ItemIdFactory itemIdFactory,
+      OperationContextFactory operationContextFactory,
+      Provisioning provisioning) {
+    this.itemIdFactory = itemIdFactory;
+    this.operationContextFactory = operationContextFactory;
+    this.provisioning = provisioning;
+  }
+
+  /**
+   * @param accountId
+   * @param folderId
+   * @param granteeId
+   * @return
+   */
+  public Try<Void> deleteMountpoints(
+      final String accountId, final String folderId, final String granteeId) {
+    return Try.run(
+        () -> {
+          final Account granteeAccount = provisioning.getAccountById(granteeId);
+          final OperationContext granteeContext = operationContextFactory.create(granteeAccount);
+          final Mailbox granteeMailbox =
+              MailboxManager.getInstance().getMailboxByAccountId(granteeId, false);
+          final ItemId granteeRootFolderId =
+              itemIdFactory.create(String.valueOf(Mailbox.ID_FOLDER_USER_ROOT), granteeId);
+
+          final List<Mountpoint> granteeMountpoints =
+              getMountpointsByPath(granteeMailbox, granteeContext, granteeRootFolderId);
+
+          final List<Integer> brokenMountsIds =
+              filterMountpointsByOwnerIdAndRemoteFolderId(granteeMountpoints, accountId, folderId);
+
+          deleteMountpointsByIds(granteeMailbox, granteeContext, brokenMountsIds);
+        });
+  }
 
   /**
    * This method is used to delete mountpoints by ids.
@@ -31,7 +78,7 @@ public class MountpointService {
    *     user)
    * @throws ServiceException if unable to delete mountpoints
    */
-  public void deleteMountpoints(
+  public void deleteMountpointsByIds(
       Mailbox mailbox, OperationContext operationContext, List<Integer> mountpointsIds)
       throws ServiceException {
     try {

@@ -1,17 +1,12 @@
 package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
-import com.zextras.mailbox.usecase.factory.OperationContextFactory;
 import com.zextras.mailbox.usecase.service.MountpointService;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.Mountpoint;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
-import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 
@@ -26,18 +21,15 @@ public class RevokeFolderAction {
   private final MailboxManager mailboxManager;
   private final MountpointService mountpointService;
   private final ItemIdFactory itemIdFactory;
-  private final OperationContextFactory operationContextFactory;
 
   @Inject
   public RevokeFolderAction(
       MailboxManager mailboxManager,
       MountpointService mountpointService,
-      ItemIdFactory itemIdFactory,
-      OperationContextFactory operationContextFactory) {
+      ItemIdFactory itemIdFactory) {
     this.mailboxManager = mailboxManager;
     this.mountpointService = mountpointService;
     this.itemIdFactory = itemIdFactory;
-    this.operationContextFactory = operationContextFactory;
   }
 
   /**
@@ -50,7 +42,7 @@ public class RevokeFolderAction {
    * @param granteeId grantee account zimbraId attribute
    * @return a {@link Try} object with the status of the operation
    */
-  public Try<Void> revoke(
+  public Try<Void> revokeAndDelete(
       final OperationContext operationContext,
       final String accountId,
       final String folderId,
@@ -68,22 +60,7 @@ public class RevokeFolderAction {
           final ItemId itemId = itemIdFactory.create(folderId, accountId);
           userMailbox.revokeAccess(operationContext, itemId.getId(), granteeId);
 
-          final Account granteeAccount = Provisioning.getInstance().getAccountById(granteeId);
-          final OperationContext granteeContext = operationContextFactory.create(granteeAccount);
-          final Mailbox granteeMailbox =
-              MailboxManager.getInstance().getMailboxByAccountId(granteeId, false);
-          final ItemId granteeRootFolderId =
-              itemIdFactory.create(String.valueOf(Mailbox.ID_FOLDER_USER_ROOT), granteeId);
-
-          final List<Mountpoint> granteeMountpoints =
-              mountpointService.getMountpointsByPath(
-                  granteeMailbox, granteeContext, granteeRootFolderId);
-
-          final List<Integer> brokenMountsIds =
-              mountpointService.filterMountpointsByOwnerIdAndRemoteFolderId(
-                  granteeMountpoints, accountId, folderId);
-
-          mountpointService.deleteMountpoints(granteeMailbox, granteeContext, brokenMountsIds);
+          mountpointService.deleteMountpoints(accountId, folderId, granteeId);
         });
   }
 }
