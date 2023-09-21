@@ -1982,11 +1982,6 @@ public class Invite {
 
   public void setItemType(MailItem.Type type) {
     this.type = type;
-    // If mStatus is set to default appointment status but we have a task
-    // invite, change to default task status.
-    if (IcalXmlStrMap.STATUS_CONFIRMED.equals(mStatus)) {
-      mStatus = IcalXmlStrMap.STATUS_NEEDS_ACTION;
-    }
   }
 
   private final TimeZoneMap mTzMap;
@@ -2732,16 +2727,6 @@ public class Invite {
 
       // PRIORITY
       if (mPriority != null) component.addProperty(new ZProperty(ICalTok.PRIORITY, mPriority));
-
-      // PERCENT-COMPLETE
-      if (mPercentComplete != null)
-        component.addProperty(new ZProperty(ICalTok.PERCENT_COMPLETE, mPercentComplete));
-
-      // COMPLETED
-      if (mCompleted != 0) {
-        ParsedDateTime completed = ParsedDateTime.fromUTCTime(mCompleted);
-        component.addProperty(completed.toProperty(ICalTok.COMPLETED, false));
-      }
 
       // CATEGORIES
       List<String> categories = getCategories();
