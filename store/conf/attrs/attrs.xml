@@ -4744,6 +4744,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 </attr>
 
 <attr id="1025" name="zimbraMailTrustedIP" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="5.0.17">
+  <globalConfigValue>127.0.0.1</globalConfigValue>
   <desc>
     In our web app, AJAX and standard html client, we have support for adding the HTTP
     client IP address as X-Originating-IP in an outbound message.  We also use
