@@ -48,6 +48,8 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,6 +101,7 @@ public class FileUploadServlet extends ZimbraServlet {
   /** Uploads time out after 15 minutes. */
   static final long UPLOAD_TIMEOUT_MSEC = 15 * Constants.MILLIS_PER_MINUTE;
 
+  static final HashMap<String, Upload> mPending = new HashMap<String, Upload>(100);
   private static final long serialVersionUID = -3156986245375108467L;
 
   /** The character separating server ID from upload ID */
@@ -107,7 +110,6 @@ public class FileUploadServlet extends ZimbraServlet {
   /** Purge uploads once every minute. */
   private static final long REAPER_INTERVAL_MSEC = 1 * Constants.MILLIS_PER_MINUTE;
 
-  static HashMap<String, Upload> mPending = new HashMap<String, Upload>(100);
   static Map<String, String> mProxiedUploadIds = MapUtil.newLruMap(100);
   static Log mLog = LogFactory.getLog(FileUploadServlet.class);
   private static String sUploadDir;
@@ -594,143 +596,207 @@ public class FileUploadServlet extends ZimbraServlet {
       mLog.info("File upload failed", e);
       drainRequestStream(req);
       returnError(resp, e);
+    } catch (IOException e) {
+      mLog.info("File upload failed", e);
+      drainRequestStream(req);
+      returnError(
+          resp, ServiceException.FAILURE("An IO exception occurred while processing file upload."));
     }
   }
 
-  @SuppressWarnings("unchecked")
   List<Upload> handleMultipartUpload(
-      HttpServletRequest req,
-      HttpServletResponse resp,
-      String fmt,
-      Account acct,
-      boolean limitByFileUploadMaxSize,
-      AuthToken at,
-      boolean csrfCheckComplete)
+      final HttpServletRequest request,
+      final HttpServletResponse response,
+      final String format,
+      final Account account,
+      final boolean limitByFileUploadMaxSize,
+      final AuthToken authToken,
+      final boolean csrfCheckComplete)
       throws IOException, ServiceException {
-    List<FileItem> items = null;
-    String reqId = null;
 
-    ServletFileUpload upload = getUploader2(limitByFileUploadMaxSize);
+    // parse upload items from the request
+    final List<FileItem> fileItems =
+        getFileItemsFromMultipartUploadRequest(
+            request,
+            response,
+            format,
+            account,
+            limitByFileUploadMaxSize,
+            authToken,
+            csrfCheckComplete);
+
+    if (fileItems.isEmpty()) {
+      mLog.info("No data in upload for reqId: %s", request);
+      sendResponse(response, HttpServletResponse.SC_NO_CONTENT, format, null, null, fileItems);
+    } else {
+      final String requestId = extractRequestId(fileItems);
+      final Map<FileItem, String> fileNames = extractFileNamesFromFormFields(fileItems);
+      final List<Upload> uploads = cacheUploadedFiles(fileItems, account, fileNames);
+      sendResponse(response, HttpServletResponse.SC_OK, format, requestId, uploads, fileItems);
+      return uploads;
+    }
+    return Collections.emptyList();
+  }
+
+  private String extractRequestId(final List<FileItem> fileItems) {
+    for (FileItem fileItem : fileItems) {
+      if (fileItem == null) {
+        continue;
+      }
+      if (fileItem.isFormField() && "requestId".equals(fileItem.getFieldName())) {
+        return fileItem.getString();
+      }
+    }
+    return null;
+  }
+
+  private Map<FileItem, String> extractFileNamesFromFormFields(final List<FileItem> fileItems)
+      throws UnsupportedEncodingException {
+    // process items parse requestId & filename from form fields if available and removing them if
+    // necessary
+    String suggestedCharset = StandardCharsets.UTF_8.toString();
+    final LinkedList<String> names = new LinkedList<>();
+    final HashMap<FileItem, String> fileNames = new HashMap<>();
+
+    final Iterator<FileItem> fileItemIterator = fileItems.iterator();
+    while (fileItemIterator.hasNext()) {
+      final FileItem fileItem = fileItemIterator.next();
+      if (fileItem == null) {
+        continue;
+      }
+
+      if (fileItem.isFormField()) {
+        if ("_charset_".equals(fileItem.getFieldName()) && !fileItem.getString().isEmpty()) {
+          suggestedCharset = fileItem.getString();
+        } else if (fileItem.getFieldName().startsWith("filename")) {
+          names.clear();
+          final String value = fileItem.getString(suggestedCharset);
+          if (!Strings.isNullOrEmpty(value)) {
+            Collections.addAll(
+                names, Arrays.stream(value.split("\n")).map(String::trim).toArray(String[]::new));
+          }
+        }
+        fileItemIterator.remove();
+      } else {
+        if (fileItem.getName() == null || fileItem.getName().trim().equals("")) {
+          fileItemIterator.remove();
+        } else if (!names.isEmpty()) {
+          fileNames.put(fileItem, names.remove());
+        } else {
+          fileNames.put(
+              fileItem,
+              getFileNameFromContentDisposition(
+                  fileItem.getHeaders().getHeader("content-disposition")));
+        }
+        names.clear();
+      }
+    }
+    return fileNames;
+  }
+
+  private List<FileItem> getFileItemsFromMultipartUploadRequest(
+      final HttpServletRequest request,
+      final HttpServletResponse response,
+      final String format,
+      final Account account,
+      final boolean limitByFileUploadMaxSize,
+      final AuthToken authToken,
+      final boolean csrfCheckComplete)
+      throws IOException {
+
+    List<FileItem> fileItems = new ArrayList<>();
+
+    final ServletFileUpload upload = getUploader2(limitByFileUploadMaxSize);
     try {
-      items = upload.parseRequest(req);
-
-      if (!csrfCheckComplete && !CsrfUtil.checkCsrfInMultipartFileUpload(items, at)) {
-        drainRequestStream(req);
+      fileItems = upload.parseRequest(request);
+      if (!csrfCheckComplete && !CsrfUtil.checkCsrfInMultipartFileUpload(fileItems, authToken)) {
         mLog.info(
             "CSRF token validation failed for account: %s, Auth token is CSRF enabled",
-            acct.getName());
-        sendResponse(resp, HttpServletResponse.SC_UNAUTHORIZED, fmt, null, null, items);
-        return Collections.emptyList();
+            account.getName());
+        sendResponse(response, HttpServletResponse.SC_UNAUTHORIZED, format, null, null, fileItems);
       }
-    } catch (FileUploadBase.SizeLimitExceededException e) {
-      // at least one file was over max allowed size
-      mLog.info("Exceeded maximum upload size of " + upload.getSizeMax() + " bytes: " + e);
-      drainRequestStream(req);
-      sendResponse(resp, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, fmt, reqId, null, items);
-      return Collections.emptyList();
-    } catch (FileUploadBase.InvalidContentTypeException e) {
-      // at least one file was of a type not allowed
-      mLog.info("File upload failed", e);
-      drainRequestStream(req);
-      sendResponse(resp, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, fmt, reqId, null, items);
-      return Collections.emptyList();
-    } catch (FileUploadException e) {
-      // parse of request failed for some other reason
-      mLog.info("File upload failed", e);
-      drainRequestStream(req);
-      sendResponse(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, fmt, reqId, null, items);
-      return Collections.emptyList();
+    } catch (FileUploadBase.SizeLimitExceededException sizeLimitExceededException) {
+      mLog.info(
+          "Exceeded maximum upload size of "
+              + upload.getSizeMax()
+              + " bytes: "
+              + sizeLimitExceededException);
+      drainRequestStream(request);
+      sendResponse(
+          response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, format, null, null, null);
+    } catch (FileUploadBase.InvalidContentTypeException invalidContentType) {
+      mLog.info("File upload failed", invalidContentType);
+      drainRequestStream(request);
+      sendResponse(
+          response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, format, null, null, null);
+    } catch (FileUploadException fileUploadException) {
+      mLog.info("File upload failed", fileUploadException);
+      drainRequestStream(request);
+      sendResponse(
+          response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, format, null, null, null);
     }
 
-    String charset = "utf-8";
-    LinkedList<String> names = new LinkedList<>();
-    HashMap<FileItem, String> filenames = new HashMap<>();
-    if (items != null) {
-      for (Iterator<FileItem> it = items.iterator(); it.hasNext(); ) {
-        FileItem fi = it.next();
-        if (fi == null) {
-          continue;
-        }
+    return fileItems;
+  }
 
-        if (fi.isFormField()) {
-          if (fi.getFieldName().equals("requestId")) {
-            // correlate this file upload session's request and response
-            reqId = fi.getString();
-          } else if (fi.getFieldName().equals("_charset_") && !fi.getString().equals("")) {
-            // get the form value charset, if specified
-            charset = fi.getString();
-          } else if (fi.getFieldName().startsWith("filename")) {
-            // allow a client to explicitly provide filenames for the uploads
-            names.clear();
-            String value = fi.getString(charset);
-            if (!Strings.isNullOrEmpty(value)) {
-              for (String name : value.split("\n")) {
-                names.add(name.trim());
-              }
-            }
-          }
-          // strip form fields out of the list of uploads
-          it.remove();
-        } else {
-          if (fi.getName() == null || fi.getName().trim().equals("")) {
-            it.remove();
-          } else {
-            // Check if the "Content-Disposition" header is available
-            final String contentDisposition = fi.getHeaders().getHeader("content-disposition");
-            if (contentDisposition != null) {
-              final String[] dispositionItems = contentDisposition.split(";");
-              for (String dispositionItem : dispositionItems) {
-                if (dispositionItem.trim().startsWith("filename")) {
-                  String filename = dispositionItem.split("=")[1].trim().replace("\"", "");
-
-                  if (filename.toLowerCase().startsWith("utf-8''")) {
-                    filename =
-                        java.net.URLDecoder.decode(filename.substring(7), StandardCharsets.UTF_8);
-                  }
-                  filenames.put(fi, filename);
-                }
-              }
-            }
-            names.clear();
-          }
-        }
-      }
-    }
-
-    // restrict requestId value for safety due to later use in javascript
-    if (reqId != null && reqId.length() != 0) {
-      if (!ALLOWED_REQUESTID_CHARS.matcher(reqId).matches()) {
-        mLog.info("Rejecting upload with invalid chars in reqId: %s", reqId);
-        sendResponse(resp, HttpServletResponse.SC_BAD_REQUEST, fmt, null, null, items);
-        return Collections.emptyList();
-      }
-    }
-
-    // empty upload is not a "success"
-    if (items == null || items.isEmpty()) {
-      mLog.info("No data in upload for reqId: %s", reqId);
-      sendResponse(resp, HttpServletResponse.SC_NO_CONTENT, fmt, reqId, null, items);
-      return Collections.emptyList();
-    }
-
-    // cache the uploaded files in the hash and construct the list of upload IDs
-    List<Upload> uploads = new ArrayList<>(items.size());
-    for (FileItem fi : items) {
-      String name = filenames.get(fi);
-      if (name == null || name.trim().equals("")) {
-        name = fi.getName();
-      }
-      Upload up = new Upload(acct.getId(), fi, name);
-
-      mLog.info("Received multipart: %s", up);
+  private List<Upload> cacheUploadedFiles(
+      final List<FileItem> fileItems, final Account account, final Map<FileItem, String> fileNames)
+      throws ServiceException {
+    final List<Upload> uploads = new ArrayList<>(fileItems.size());
+    for (FileItem fileItem : fileItems) {
+      final String fileName = fileNames.get(fileItem);
+      final Upload upload = new Upload(account.getId(), fileItem, fileName);
+      mLog.info("Received multipart: %s", upload);
       synchronized (mPending) {
-        mPending.put(up.uuid, up);
+        mPending.put(upload.uuid, upload);
       }
-      uploads.add(up);
+      uploads.add(upload);
     }
-
-    sendResponse(resp, HttpServletResponse.SC_OK, fmt, reqId, uploads, items);
     return uploads;
+  }
+
+  /**
+   * RFC-6266 compliant filename extraction helper method. Returns the filename from the given
+   * Content-Disposition header value following RFC-6266 specifications. Preference to the extended
+   * version of the filename <code>filename*=UTF-8''utf8EncodedFile</></code> is given. If extended
+   * filename is not specified in the content-disposition header, then the ascii valued filename is
+   * returned. If that is also not specified an empty string is returned.
+   *
+   * @param contentDisposition @{link String} value of the Content-Disposition header.
+   * @return the filename from the given Content-Disposition header or empty value if not found.
+   */
+  String getFileNameFromContentDisposition(final String contentDisposition) {
+    String fileName = "";
+    if (!StringUtil.isNullOrEmpty(contentDisposition)) {
+      final String dispositionItemsDelimiter = ";";
+      for (String dispositionItem : contentDisposition.split(dispositionItemsDelimiter)) {
+        fileName = getAsciiFileName(fileName, dispositionItem);
+        fileName = getExtendedFilename(fileName, dispositionItem);
+      }
+    }
+    return fileName;
+  }
+
+  private String getAsciiFileName(String fileName, String dispositionItem) {
+    if (dispositionItem.trim().toLowerCase().startsWith("filename=")) {
+      final String[] keyValue = dispositionItem.split("=");
+      if (keyValue.length >= 2) {
+        fileName = keyValue[1].trim().replace("\"", "");
+      }
+    }
+    return fileName;
+  }
+
+  private String getExtendedFilename(String fileName, String dispositionItem) {
+    if (dispositionItem.trim().toLowerCase().startsWith("filename*=")) {
+      final String[] keyValue = dispositionItem.split("=");
+      final String value = keyValue[1].trim();
+      final String delimiter = "utf-8''";
+      if (value.toLowerCase().startsWith(delimiter)) {
+        fileName = URLDecoder.decode(value.substring(delimiter.length()), StandardCharsets.UTF_8);
+      }
+    }
+    return fileName;
   }
 
   /**
