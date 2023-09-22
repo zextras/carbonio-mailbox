@@ -148,7 +148,6 @@ public class FolderAction extends ItemAction {
       Map<String, Object> context, Element request, String operation, Element result)
       throws ServiceException {
     Element action = request.getElement(MailConstants.E_ACTION);
-
     ZimbraSoapContext zsc = getZimbraSoapContext(context);
     Mailbox mbox = getRequestedMailbox(zsc);
     OperationContext octxt = getOperationContext(zsc, context);
