@@ -6,6 +6,7 @@
 package com.zimbra.cs.account.accesscontrol;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Supplier;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -22,30 +23,30 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.generated.UserRights;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.service.mail.ItemActionUtil;
 import com.zimbra.cs.util.AccountUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.inject.Inject;
 
 public final class ACLHelper {
   private static final String ACL_CACHE_KEY = "ENTRY.ACL_CACHE";
-  private final ItemActionUtil itemActionUtil;
   private final AccountUtil accountUtil;
+  private final Supplier<Long> timeNowSupplier;
 
   public ACLHelper() {
-    itemActionUtil = new ItemActionUtil();
+    timeNowSupplier = System::currentTimeMillis;
     accountUtil = new AccountUtil();
   }
 
   @Inject
-  public ACLHelper(ItemActionUtil itemActionUtil, AccountUtil accountUtil) {
-    this.itemActionUtil = itemActionUtil;
+  public ACLHelper(AccountUtil accountUtil, Supplier<Long> timeNowSupplier) {
     this.accountUtil = accountUtil;
+    this.timeNowSupplier = timeNowSupplier;
   }
 
   /**
@@ -231,6 +232,43 @@ public final class ACLHelper {
     return acl;
   }
 
+  /**
+   * Validates the grant expiry time against the maximum allowed expiry duration and returns the
+   * effective expiry time for the grant.
+   *
+   * <p>If current expiry time is null it generates a new value. The new value will be 0 if
+   * maxLifeTime is 0 (no lifetime)
+   *
+   * <p>If current expiry time is 0 and max lifetime more than 0 throws.
+   *
+   * <p>If current expiry time greater than zero, returns its value (still have time)
+   *
+   * @param grantExpiry Grant expiry XML attribute value
+   * @param maxLifetime Maximum allowed grant expiry duration
+   * @return Effective expiry time for the grant. Return value of 0 indicates that grant never
+   *     expires.
+   * @throws ServiceException If the grant expiry time is not valid according to the expiration
+   *     policy.
+   */
+  public long validateGrantExpiry(String grantExpiry, long maxLifetime) throws ServiceException {
+    long now = timeNowSupplier.get();
+    long grantedTime = now + maxLifetime;
+    if (Objects.isNull(grantExpiry)) {
+      if (Objects.equals(0L, maxLifetime)) {
+        return 0L;
+      }
+      return grantedTime;
+    }
+    final long grantExpiryLong = Long.parseLong(grantExpiry);
+    if (grantExpiryLong > grantedTime) {
+      throw ServiceException.PERM_DENIED("share expiration policy conflict");
+    }
+    if (Objects.equals(0L, grantExpiryLong) && maxLifetime > 0) {
+      throw ServiceException.PERM_DENIED("share expiration policy conflict");
+    }
+    return grantExpiryLong;
+  }
+
   public ACL parseACL(Element eAcl, MailItem.Type folderType, Account account)
       throws ServiceException {
     if (eAcl == null) {
@@ -238,11 +276,11 @@ public final class ACLHelper {
     }
 
     long internalGrantExpiry =
-        itemActionUtil.validateGrantExpiry(
+        validateGrantExpiry(
             eAcl.getAttribute(MailConstants.A_INTERNAL_GRANT_EXPIRY, null),
             AccountUtil.getMaxInternalShareLifetime(account, folderType));
     long guestGrantExpiry =
-        itemActionUtil.validateGrantExpiry(
+        validateGrantExpiry(
             eAcl.getAttribute(MailConstants.A_GUEST_GRANT_EXPIRY, null),
             AccountUtil.getMaxExternalShareLifetime(account, folderType));
     ACL acl = new ACL(internalGrantExpiry, guestGrantExpiry);
@@ -253,7 +291,7 @@ public final class ACLHelper {
       short rights = ACL.stringToRights(grant.getAttribute(MailConstants.A_RIGHTS));
       long expiry =
           gtype == ACL.GRANTEE_PUBLIC
-              ? itemActionUtil.validateGrantExpiry(
+              ? validateGrantExpiry(
                   grant.getAttribute(MailConstants.A_EXPIRY, null),
                   accountUtil.getMaxPublicShareLifetime(account, folderType))
               : grant.getAttributeLong(MailConstants.A_EXPIRY, 0);
@@ -282,11 +320,11 @@ public final class ACLHelper {
       throws ServiceException {
 
     long internalGrantExpiry =
-        itemActionUtil.validateGrantExpiry(
+        validateGrantExpiry(
             internalGrantExpiryString,
             AccountUtil.getMaxInternalShareLifetime(account, folderType));
     long guestGrantExpiry =
-        itemActionUtil.validateGrantExpiry(
+        validateGrantExpiry(
             guestGrantExpiryString, AccountUtil.getMaxExternalShareLifetime(account, folderType));
     ACL acl = new ACL(internalGrantExpiry, guestGrantExpiry);
 
@@ -296,7 +334,7 @@ public final class ACLHelper {
       short rights = grant.getRights();
       long expiry =
           granteeType == ACL.GRANTEE_PUBLIC
-              ? itemActionUtil.validateGrantExpiry(
+              ? validateGrantExpiry(
                   String.valueOf(grant.getGrantExpiry()),
                   accountUtil.getMaxPublicShareLifetime(account, folderType))
               : grant.getGrantExpiry();

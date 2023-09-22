@@ -47,7 +47,6 @@ import java.util.Set;
 
 public class FolderAction extends ItemAction {
 
-  private final ItemActionUtil itemActionUtil;
   private final ACLHelper aclHelper;
   private final AccountUtil accountUtil;
 
@@ -88,9 +87,8 @@ public class FolderAction extends ItemAction {
   public static final String OP_WEBOFFLINESYNCDAYS = "webofflinesyncdays";
 
   public FolderAction() {
-    itemActionUtil = new ItemActionUtil();
     accountUtil = new AccountUtil();
-    aclHelper = new ACLHelper(itemActionUtil, accountUtil);
+    aclHelper = new ACLHelper(accountUtil, System::currentTimeMillis);
   }
 
   private static final Set<String> FOLDER_OPS =
@@ -204,10 +202,12 @@ public class FolderAction extends ItemAction {
       } else if (gtype == ACL.GRANTEE_PUBLIC) {
         zid = GuestAccount.GUID_PUBLIC;
         expiry =
-            itemActionUtil.validateGrantExpiry(
-                grant.getAttribute(MailConstants.A_EXPIRY, null),
-                accountUtil.getMaxPublicShareLifetime(
-                    mbox.getAccount(), mbox.getFolderById(octxt, iid.getId()).getDefaultView()));
+            new ACLHelper()
+                .validateGrantExpiry(
+                    grant.getAttribute(MailConstants.A_EXPIRY, null),
+                    accountUtil.getMaxPublicShareLifetime(
+                        mbox.getAccount(),
+                        mbox.getFolderById(octxt, iid.getId()).getDefaultView()));
       } else if (gtype == ACL.GRANTEE_GUEST) {
         zid = grant.getAttribute(MailConstants.A_DISPLAY);
         if (zid == null || zid.indexOf('@') < 0)

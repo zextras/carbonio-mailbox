@@ -12,6 +12,7 @@ import com.zimbra.cs.account.GuestAccount;
 import com.zimbra.cs.account.MailTarget;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.accesscontrol.ACLHelper;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.ACL.Grant;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -357,13 +358,14 @@ public class GrantFolderAction {
           final ItemId itemId = itemIdFactory.create(folderId, accountId);
           String zimbraId = GuestAccount.GUID_PUBLIC;
           long validatedGrantExpiry =
-              itemActionUtil.validateGrantExpiry(
-                  String.valueOf(expiry),
-                  accountUtil.getMaxPublicShareLifetime(
-                      userMailbox.getAccount(),
-                      userMailbox
-                          .getFolderById(operationContext, itemId.getId())
-                          .getDefaultView()));
+              new ACLHelper()
+                  .validateGrantExpiry(
+                      String.valueOf(expiry),
+                      accountUtil.getMaxPublicShareLifetime(
+                          userMailbox.getAccount(),
+                          userMailbox
+                              .getFolderById(operationContext, itemId.getId())
+                              .getDefaultView()));
           Grant grantResult =
               grantAccess(
                   userMailbox,

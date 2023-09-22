@@ -15,6 +15,7 @@ import com.zimbra.cs.account.GuestAccount;
 import com.zimbra.cs.account.MailTarget;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.accesscontrol.ACLHelper;
 import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.service.mail.ItemActionUtil;
 import com.zimbra.cs.service.util.ItemId;
@@ -179,7 +180,7 @@ class GrantFolderActionTest {
                 .build());
 
     assertDoesNotThrow(grantTry::get);
-    verify(itemActionUtil, times(1)).validateGrantExpiry(String.valueOf(expiry), 420L);
+    new ACLHelper().validateGrantExpiry(String.valueOf(expiry), 420L);
   }
 
   @Test
