@@ -11,7 +11,12 @@ import com.zimbra.cs.service.util.ItemId;
 public interface ItemIdFactory {
 
   /**
-   * Creates {@link ItemId by folder is and account id}
+   * Creates {@link ItemId by folder is and account id}.
+   *
+   * <p>If the folderId is in the format accountId:id, then the item is selected from accountId
+   * mailbox.
+   *
+   * <p>If the folder is just an id, the item is selected from the defaultAccountId mailbox.
    *
    * @param folderId the id of the folder (belonging to the accountId)
    * @param defaultAccountId the target account zimbra id attribute
