@@ -18,7 +18,6 @@ import com.zimbra.cs.mailbox.ACL.Grant;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.service.mail.ItemActionUtil;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.AccountUtil;
 import io.vavr.control.Try;
@@ -34,7 +33,6 @@ import javax.inject.Inject;
 public class GrantFolderAction {
 
   private final MailboxManager mailboxManager;
-  private final ItemActionUtil itemActionUtil;
   private final AccountUtil accountUtil;
   private final ItemIdFactory itemIdFactory;
   private final GranteeService granteeService;
@@ -42,12 +40,10 @@ public class GrantFolderAction {
   @Inject
   public GrantFolderAction(
       MailboxManager mailboxManager,
-      ItemActionUtil itemActionUtil,
       AccountUtil accountUtil,
       ItemIdFactory itemIdFactory,
       GranteeService granteeService) {
     this.mailboxManager = mailboxManager;
-    this.itemActionUtil = itemActionUtil;
     this.accountUtil = accountUtil;
     this.itemIdFactory = itemIdFactory;
     this.granteeService = granteeService;

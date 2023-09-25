@@ -17,7 +17,6 @@ import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.ACLHelper;
 import com.zimbra.cs.mailbox.*;
-import com.zimbra.cs.service.mail.ItemActionUtil;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.AccountUtil;
 import io.vavr.control.Try;
@@ -31,7 +30,6 @@ class GrantFolderActionTest {
 
   private GrantFolderAction grantFolderAction;
   private MailboxManager mailboxManager;
-  private ItemActionUtil itemActionUtil;
   private AccountUtil accountUtil;
   private ItemIdFactory itemIdFactory;
   private GranteeService granteeService;
@@ -53,7 +51,6 @@ class GrantFolderActionTest {
   void setUp() {
 
     mailboxManager = mock(MailboxManager.class);
-    itemActionUtil = mock(ItemActionUtil.class);
     accountUtil = mock(AccountUtil.class);
     itemIdFactory = mock(ItemIdFactory.class);
     granteeService = mock(GranteeService.class);
@@ -72,8 +69,7 @@ class GrantFolderActionTest {
     when(folder.getDefaultView()).thenReturn(MailItem.Type.FOLDER);
 
     grantFolderAction =
-        new GrantFolderAction(
-            mailboxManager, itemActionUtil, accountUtil, itemIdFactory, granteeService);
+        new GrantFolderAction(mailboxManager, accountUtil, itemIdFactory, granteeService);
   }
 
   @Test
