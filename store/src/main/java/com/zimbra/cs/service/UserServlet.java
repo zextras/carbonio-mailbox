@@ -844,6 +844,7 @@ public class UserServlet extends ZimbraServlet {
 
     switch (type) {
       case APPOINTMENT:
+        return FormatType.ICS;
       case CONTACT:
         return context.target instanceof Folder ? FormatType.CSV : FormatType.VCF;
       default:
