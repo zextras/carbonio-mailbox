@@ -5,7 +5,6 @@ import com.zimbra.cs.fb.FreeBusyChangeNotifier;
 import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
-import java.util.Optional;
 import javax.inject.Inject;
 
 /**
@@ -62,25 +61,22 @@ public class FreeBusyFolderAction {
       final String accountId,
       final String folderId,
       final boolean excludeFreeBusy) {
-    return Try.run(
-        () -> {
-          final Mailbox userMailbox =
-              Optional.ofNullable(mailboxManager.getMailboxByAccountId(accountId, true))
-                  .orElseThrow(
-                      () ->
-                          new IllegalArgumentException(
-                              "unable to locate the mailbox for the given accountId"));
+    return mailboxManager
+        .tryGetMailboxByAccountId(accountId, true)
+        .flatMap(
+            userMailbox ->
+                Try.run(
+                    () -> {
+                      final ItemId itemId = itemIdFactory.create(folderId, accountId);
 
-          final ItemId itemId = itemIdFactory.create(folderId, accountId);
-
-          userMailbox.alterTag(
-              operationContext,
-              itemId.getId(),
-              MailItem.Type.FOLDER,
-              Flag.FlagInfo.EXCLUDE_FREEBUSY,
-              excludeFreeBusy,
-              null);
-          freeBusyChangeNotifier.mailboxChanged(accountId);
-        });
+                      userMailbox.alterTag(
+                          operationContext,
+                          itemId.getId(),
+                          MailItem.Type.FOLDER,
+                          Flag.FlagInfo.EXCLUDE_FREEBUSY,
+                          excludeFreeBusy,
+                          null);
+                      freeBusyChangeNotifier.mailboxChanged(accountId);
+                    }));
   }
 }

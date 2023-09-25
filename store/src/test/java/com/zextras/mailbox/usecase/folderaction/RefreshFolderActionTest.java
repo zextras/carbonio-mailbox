@@ -34,31 +34,32 @@ class RefreshFolderActionTest {
   void shouldReturnFailureIfTheMailboxDoesntExist() {
     final String accountId = "nonExistingAccount";
     final String folderId = "folderName";
-
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.failure(MailServiceException.NoSuchItemException.NO_SUCH_MBOX(accountId)));
     final Try<Void> operationResult = refreshFolderAction.refresh(null, accountId, folderId);
 
     assertTrue(
         operationResult.isFailure(),
         "Folder should not be refreshed because account id doesn't exist");
     final Throwable gotError = operationResult.getCause();
-    assertInstanceOf(IllegalArgumentException.class, gotError);
-    assertEquals("unable to locate the mailbox for the given accountId", gotError.getMessage());
+    assertInstanceOf(MailServiceException.NoSuchItemException.class, gotError);
+    assertEquals("no mailbox for account: " + accountId, gotError.getMessage());
   }
 
   @Test
-  void shouldReturnFailureIfAccountIdIsNull() throws Exception {
+  void shouldReturnFailureIfAccountIdIsNull() {
     final String accountId = null;
     final String folderId = "folderName";
 
-    when(mailboxManager.getMailboxByAccountId(null, true))
-        .thenThrow(new IllegalArgumentException());
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.failure(MailServiceException.NoSuchItemException.NO_SUCH_MBOX(accountId)));
     final Try<Void> operationResult = refreshFolderAction.refresh(null, accountId, folderId);
 
     assertTrue(
         operationResult.isFailure(), "Folder should not be refreshed because account id is null");
     final Throwable gotError = operationResult.getCause();
-    assertInstanceOf(IllegalArgumentException.class, gotError);
-    assertNull(gotError.getMessage());
+    assertInstanceOf(MailServiceException.NoSuchItemException.class, gotError);
+    assertEquals("no mailbox for account: " + accountId, gotError.getMessage());
   }
 
   @Test
@@ -70,7 +71,8 @@ class RefreshFolderActionTest {
     final ItemId itemId = mock(ItemId.class);
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     refreshFolderAction.refresh(operationContext, accountId, folderId);
@@ -90,7 +92,8 @@ class RefreshFolderActionTest {
     doThrow(MailServiceException.NO_SUCH_FOLDER(folderId))
         .when(userMailbox)
         .synchronizeFolder(operationContext, 1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     final Try<Void> operationResult =

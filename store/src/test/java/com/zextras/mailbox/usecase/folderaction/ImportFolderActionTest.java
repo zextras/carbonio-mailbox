@@ -23,7 +23,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 @Execution(ExecutionMode.CONCURRENT)
-public class ImportFolderActionTest {
+class ImportFolderActionTest {
   private MailboxManager mailboxManager;
   private ImportFolderAction importFolderAction;
   private ItemIdFactory itemIdFactory;
@@ -45,7 +45,8 @@ public class ImportFolderActionTest {
     final ItemId itemId = mock(ItemId.class);
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     importFolderAction.importFeed(operationContext, accountId, folderId, url);
@@ -64,7 +65,8 @@ public class ImportFolderActionTest {
     final Folder folder = mock(Folder.class);
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, itemId.getId())).thenReturn(folder);
     doThrow(ServiceException.RESOURCE_UNREACHABLE("IOException: ", new RuntimeException()))

@@ -37,7 +37,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-public class MountpointServiceTest {
+class MountpointServiceTest {
   private Provisioning provisioning;
   private static final String SERVER_NAME = "localhost";
   private static final int LDAP_PORT = 9091;
@@ -48,7 +48,6 @@ public class MountpointServiceTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-
     System.setProperty(
         "zimbra.config",
         Objects.requireNonNull(this.getClass().getResource("/localconfig-api-test.xml")).getFile());

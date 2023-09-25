@@ -169,48 +169,50 @@ public class GrantFolderAction {
       String zimbraId,
       String displayName,
       byte granteeType) {
-    return Try.of(
-        () -> {
-          final Mailbox userMailbox = getUserMailboxByAccountId(accountId);
-          final ItemId itemId = itemIdFactory.create(folderId, accountId);
-          NamedEntry namedEntry = null;
-          String calculatedZimbraId = zimbraId;
-          byte calculatedGranteeType = granteeType;
-          if (zimbraId != null) {
-            namedEntry = granteeService.lookupGranteeByZimbraId(zimbraId, granteeType);
-          } else {
-            try {
-              namedEntry =
-                  granteeService.lookupGranteeByName(displayName, granteeType, operationContext);
-              calculatedZimbraId = namedEntry.getId();
-              // make sure they didn't accidentally specify "usr" instead of "grp"
-              if (granteeType == ACL.GRANTEE_USER && namedEntry instanceof Group) {
-                calculatedGranteeType = ACL.GRANTEE_GROUP;
-              }
-            } catch (ServiceException e) {
-              if (AccountServiceException.NO_SUCH_ACCOUNT.equals(e.getCode())) {
-                // looks like the case of an internal user not yet provisioned
-                // we'll treat it as external sharing
-                calculatedGranteeType = ACL.GRANTEE_GUEST;
-                calculatedZimbraId = displayName;
+    return mailboxManager
+        .tryGetMailboxByAccountId(accountId, true)
+        .mapTry(
+            userMailbox -> {
+              final ItemId itemId = itemIdFactory.create(folderId, accountId);
+              NamedEntry namedEntry = null;
+              String calculatedZimbraId = zimbraId;
+              byte calculatedGranteeType = granteeType;
+              if (zimbraId != null) {
+                namedEntry = granteeService.lookupGranteeByZimbraId(zimbraId, granteeType);
               } else {
-                throw e;
+                try {
+                  namedEntry =
+                      granteeService.lookupGranteeByName(
+                          displayName, granteeType, operationContext);
+                  calculatedZimbraId = namedEntry.getId();
+                  // make sure they didn't accidentally specify "usr" instead of "grp"
+                  if (granteeType == ACL.GRANTEE_USER && namedEntry instanceof Group) {
+                    calculatedGranteeType = ACL.GRANTEE_GROUP;
+                  }
+                } catch (ServiceException e) {
+                  if (AccountServiceException.NO_SUCH_ACCOUNT.equals(e.getCode())) {
+                    // looks like the case of an internal user not yet provisioned
+                    // we'll treat it as external sharing
+                    calculatedGranteeType = ACL.GRANTEE_GUEST;
+                    calculatedZimbraId = displayName;
+                  } else {
+                    throw e;
+                  }
+                }
               }
-            }
-          }
-          Grant grantResult =
-              grantAccess(
-                  userMailbox,
-                  operationContext,
-                  itemId,
-                  calculatedZimbraId,
-                  calculatedGranteeType,
-                  rights,
-                  null,
-                  expiry);
+              Grant grantResult =
+                  grantAccess(
+                      userMailbox,
+                      operationContext,
+                      itemId,
+                      calculatedZimbraId,
+                      calculatedGranteeType,
+                      rights,
+                      null,
+                      expiry);
 
-          return new Result(namedEntry, grantResult, calculatedZimbraId);
-        });
+              return new Result(namedEntry, grantResult, calculatedZimbraId);
+            });
   }
 
   /**
@@ -234,23 +236,24 @@ public class GrantFolderAction {
       long expiry,
       String displayName,
       String secretAccessKey) {
-    return Try.of(
-        () -> {
-          final Mailbox userMailbox = getUserMailboxByAccountId(accountId);
-          final ItemId itemId = itemIdFactory.create(folderId, accountId);
-          Grant grantResult =
-              grantAccess(
-                  userMailbox,
-                  operationContext,
-                  itemId,
-                  displayName,
-                  ACL.GRANTEE_KEY,
-                  rights,
-                  secretAccessKey,
-                  expiry);
+    return mailboxManager
+        .tryGetMailboxByAccountId(accountId, true)
+        .mapTry(
+            userMailbox -> {
+              final ItemId itemId = itemIdFactory.create(folderId, accountId);
+              Grant grantResult =
+                  grantAccess(
+                      userMailbox,
+                      operationContext,
+                      itemId,
+                      displayName,
+                      ACL.GRANTEE_KEY,
+                      rights,
+                      secretAccessKey,
+                      expiry);
 
-          return new Result(null, grantResult, displayName);
-        });
+              return new Result(null, grantResult, displayName);
+            });
   }
 
   /**
@@ -276,59 +279,60 @@ public class GrantFolderAction {
       long expiry,
       String secretArgs,
       String secretPassword) {
-    return Try.of(
-        () -> {
-          final Mailbox userMailbox = getUserMailboxByAccountId(accountId);
-          final ItemId itemId = itemIdFactory.create(folderId, accountId);
-          if (displayName == null || displayName.indexOf('@') < 0) {
-            throw ServiceException.INVALID_REQUEST("invalid guest id or password", null);
-          }
-          // first make sure they didn't accidentally specify "guest" instead of "usr"
-          boolean guestGrantee = true;
-          String calculatedZimbraId = displayName;
-          byte calculatedGrantType = ACL.GRANTEE_GUEST;
-          NamedEntry namedEntry = null;
-          try {
-            namedEntry =
-                granteeService.lookupGranteeByName(
-                    calculatedZimbraId, ACL.GRANTEE_USER, operationContext);
-            if (namedEntry instanceof MailTarget) {
-              Domain domain = Provisioning.getInstance().getDomain(userMailbox.getAccount());
-              String granteeDomainName = ((MailTarget) namedEntry).getDomainName();
-              if (domain.isInternalSharingCrossDomainEnabled()
-                  || domain.getName().equals(granteeDomainName)
-                  || Sets.newHashSet(domain.getInternalSharingDomain())
-                      .contains(granteeDomainName)) {
-                guestGrantee = false;
-                calculatedZimbraId = namedEntry.getId();
-                calculatedGrantType =
-                    namedEntry instanceof Group ? ACL.GRANTEE_GROUP : ACL.GRANTEE_USER;
+    return mailboxManager
+        .tryGetMailboxByAccountId(accountId, true)
+        .mapTry(
+            userMailbox -> {
+              final ItemId itemId = itemIdFactory.create(folderId, accountId);
+              if (displayName == null || displayName.indexOf('@') < 0) {
+                throw ServiceException.INVALID_REQUEST("invalid guest id or password", null);
               }
-            }
-          } catch (ServiceException e) {
-            // this is the normal path, where lookupGranteeByName throws account.NO_SUCH_USER
-          }
-          String calculatedSecret = null;
-          if (guestGrantee) {
-            calculatedSecret = secretArgs;
-            // password is no longer required for external sharing
-            if (calculatedSecret == null) {
-              calculatedSecret = secretPassword;
-            }
-          }
-          Grant grantResult =
-              grantAccess(
-                  userMailbox,
-                  operationContext,
-                  itemId,
-                  calculatedZimbraId,
-                  calculatedGrantType,
-                  rights,
-                  calculatedSecret,
-                  expiry);
+              // first make sure they didn't accidentally specify "guest" instead of "usr"
+              boolean guestGrantee = true;
+              String calculatedZimbraId = displayName;
+              byte calculatedGrantType = ACL.GRANTEE_GUEST;
+              NamedEntry namedEntry = null;
+              try {
+                namedEntry =
+                    granteeService.lookupGranteeByName(
+                        calculatedZimbraId, ACL.GRANTEE_USER, operationContext);
+                if (namedEntry instanceof MailTarget) {
+                  Domain domain = Provisioning.getInstance().getDomain(userMailbox.getAccount());
+                  String granteeDomainName = ((MailTarget) namedEntry).getDomainName();
+                  if (domain.isInternalSharingCrossDomainEnabled()
+                      || domain.getName().equals(granteeDomainName)
+                      || Sets.newHashSet(domain.getInternalSharingDomain())
+                          .contains(granteeDomainName)) {
+                    guestGrantee = false;
+                    calculatedZimbraId = namedEntry.getId();
+                    calculatedGrantType =
+                        namedEntry instanceof Group ? ACL.GRANTEE_GROUP : ACL.GRANTEE_USER;
+                  }
+                }
+              } catch (ServiceException e) {
+                // this is the normal path, where lookupGranteeByName throws account.NO_SUCH_USER
+              }
+              String calculatedSecret = null;
+              if (guestGrantee) {
+                calculatedSecret = secretArgs;
+                // password is no longer required for external sharing
+                if (calculatedSecret == null) {
+                  calculatedSecret = secretPassword;
+                }
+              }
+              Grant grantResult =
+                  grantAccess(
+                      userMailbox,
+                      operationContext,
+                      itemId,
+                      calculatedZimbraId,
+                      calculatedGrantType,
+                      rights,
+                      calculatedSecret,
+                      expiry);
 
-          return new Result(namedEntry, grantResult, calculatedZimbraId);
-        });
+              return new Result(namedEntry, grantResult, calculatedZimbraId);
+            });
   }
 
   /**
@@ -348,33 +352,34 @@ public class GrantFolderAction {
       String folderId,
       short rights,
       long expiry) {
-    return Try.of(
-        () -> {
-          final Mailbox userMailbox = getUserMailboxByAccountId(accountId);
-          final ItemId itemId = itemIdFactory.create(folderId, accountId);
-          String zimbraId = GuestAccount.GUID_PUBLIC;
-          long validatedGrantExpiry =
-              new ACLHelper()
-                  .validateGrantExpiry(
-                      String.valueOf(expiry),
-                      accountUtil.getMaxPublicShareLifetime(
-                          userMailbox.getAccount(),
-                          userMailbox
-                              .getFolderById(operationContext, itemId.getId())
-                              .getDefaultView()));
-          Grant grantResult =
-              grantAccess(
-                  userMailbox,
-                  operationContext,
-                  itemId,
-                  zimbraId,
-                  ACL.GRANTEE_PUBLIC,
-                  rights,
-                  null,
-                  validatedGrantExpiry);
+    return mailboxManager
+        .tryGetMailboxByAccountId(accountId, true)
+        .mapTry(
+            userMailbox -> {
+              final ItemId itemId = itemIdFactory.create(folderId, accountId);
+              String zimbraId = GuestAccount.GUID_PUBLIC;
+              long validatedGrantExpiry =
+                  new ACLHelper()
+                      .validateGrantExpiry(
+                          String.valueOf(expiry),
+                          accountUtil.getMaxPublicShareLifetime(
+                              userMailbox.getAccount(),
+                              userMailbox
+                                  .getFolderById(operationContext, itemId.getId())
+                                  .getDefaultView()));
+              Grant grantResult =
+                  grantAccess(
+                      userMailbox,
+                      operationContext,
+                      itemId,
+                      zimbraId,
+                      ACL.GRANTEE_PUBLIC,
+                      rights,
+                      null,
+                      validatedGrantExpiry);
 
-          return new Result(null, grantResult, zimbraId);
-        });
+              return new Result(null, grantResult, zimbraId);
+            });
   }
 
   /**
@@ -394,24 +399,25 @@ public class GrantFolderAction {
       String folderId,
       short rights,
       long expiry) {
-    return Try.of(
-        () -> {
-          final Mailbox userMailbox = getUserMailboxByAccountId(accountId);
-          final ItemId itemId = itemIdFactory.create(folderId, accountId);
-          String zimbraId = GuestAccount.GUID_AUTHUSER;
-          Grant grantResult =
-              grantAccess(
-                  userMailbox,
-                  operationContext,
-                  itemId,
-                  zimbraId,
-                  ACL.GRANTEE_AUTHUSER,
-                  rights,
-                  null,
-                  expiry);
+    return mailboxManager
+        .tryGetMailboxByAccountId(accountId, true)
+        .mapTry(
+            userMailbox -> {
+              final ItemId itemId = itemIdFactory.create(folderId, accountId);
+              String zimbraId = GuestAccount.GUID_AUTHUSER;
+              Grant grantResult =
+                  grantAccess(
+                      userMailbox,
+                      operationContext,
+                      itemId,
+                      zimbraId,
+                      ACL.GRANTEE_AUTHUSER,
+                      rights,
+                      null,
+                      expiry);
 
-          return new Result(null, grantResult, zimbraId);
-        });
+              return new Result(null, grantResult, zimbraId);
+            });
   }
 
   private Mailbox getUserMailboxByAccountId(String accountId) throws ServiceException {

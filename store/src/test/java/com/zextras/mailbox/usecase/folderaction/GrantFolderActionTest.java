@@ -75,7 +75,8 @@ class GrantFolderActionTest {
   @Test
   void shouldGrantAccessToAFolder() throws Exception {
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
@@ -101,7 +102,8 @@ class GrantFolderActionTest {
   @Test
   void shouldSetZimbraIdToGUID_AUTHUSERwhenGrantee_AUTHUSER() throws Exception {
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
@@ -127,7 +129,8 @@ class GrantFolderActionTest {
   @Test
   void shouldSetZimbraIdToGUI_PUBLICwhenGrantee_PUBLIC() throws Exception {
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
@@ -154,7 +157,8 @@ class GrantFolderActionTest {
   @Test
   void shouldSetGrantExpirationWhenZimbraIdIsGUID_PUBLIC() throws Exception {
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(accountUtil.getMaxPublicShareLifetime(any(), eq(MailItem.Type.FOLDER))).thenReturn(420L);
@@ -182,7 +186,8 @@ class GrantFolderActionTest {
   @Test
   void shouldThrowServiceExceptionWhenGrantee_GUESTAndDisplayNull() throws Exception {
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
@@ -214,7 +219,8 @@ class GrantFolderActionTest {
   void shouldPerformLookupGranteeByNameWhenGrantee_GUEST() throws Exception {
     display = "guest@test.com";
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
@@ -248,7 +254,8 @@ class GrantFolderActionTest {
     NamedEntry namedEntry = mock(NamedEntry.class);
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
@@ -291,7 +298,8 @@ class GrantFolderActionTest {
     NamedEntry namedEntry = mock(NamedEntry.class);
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
@@ -341,7 +349,8 @@ class GrantFolderActionTest {
     Domain domain = mock(Domain.class);
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(userMailbox.getAccount()).thenReturn(account);
@@ -396,7 +405,8 @@ class GrantFolderActionTest {
     Domain domain = mock(Domain.class);
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(userMailbox.getAccount()).thenReturn(account);
@@ -436,7 +446,8 @@ class GrantFolderActionTest {
     display = "guest@test.com";
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
 
@@ -474,7 +485,8 @@ class GrantFolderActionTest {
     MailTarget namedEntry = mock(GuestAccount.class);
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(granteeService.lookupGranteeByZimbraId(zimbraId, ACL.GRANTEE_USER)).thenReturn(namedEntry);
@@ -509,7 +521,8 @@ class GrantFolderActionTest {
     MailTarget namedEntry = mock(GuestAccount.class);
     String namedEntryId = "namedEntryId";
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
@@ -545,7 +558,8 @@ class GrantFolderActionTest {
     MailTarget namedEntry = mock(Group.class);
     String namedEntryId = "namedEntryId";
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
@@ -587,7 +601,8 @@ class GrantFolderActionTest {
     MailTarget namedEntry = mock(Group.class);
     String namedEntryId = "namedEntryId";
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
@@ -622,7 +637,8 @@ class GrantFolderActionTest {
     MailTarget namedEntry = mock(Group.class);
     String namedEntryId = "namedEntryId";
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(userMailbox.getFolderById(operationContext, 1)).thenReturn(folder);
     when(granteeService.lookupGranteeByName(display, ACL.GRANTEE_USER, operationContext))
