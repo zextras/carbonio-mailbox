@@ -7,6 +7,7 @@ package com.zextras.mailbox.servlet;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.zextras.mailbox.filter.AuthorizationFilter;
+import com.zextras.mailbox.preview.resource.PreviewController;
 import javax.inject.Inject;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -22,7 +23,7 @@ public class PreviewResourceConfig extends ResourceConfig {
 
   @Inject
   public PreviewResourceConfig(ServiceLocator serviceLocator) {
-    packages("com.zextras.mailbox.preview.resource");
+    register(PreviewController.class);
     register(AuthorizationFilter.class);
     Injector injector = Guice.createInjector(new PreviewServletModule());
     initGuiceIntoHK2Bridge(serviceLocator, injector);
