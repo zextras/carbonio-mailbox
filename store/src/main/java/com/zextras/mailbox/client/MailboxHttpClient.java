@@ -95,7 +95,6 @@ public class MailboxHttpClient {
     }
     Header contentDispositionHeader = httpResponse.getFirstHeader(CONTENT_DISPOSITION);
     Header contentTypeHeader = httpResponse.getFirstHeader(CONTENT_TYPE);
-    // TODO: test failure
     String filename =
         contentDispositionHeader == null
             ? "unknown"
