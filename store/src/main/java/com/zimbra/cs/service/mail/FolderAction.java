@@ -27,7 +27,7 @@ import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.SearchDirectoryOptions;
 import com.zimbra.cs.account.accesscontrol.ACLHelper;
-import com.zimbra.cs.fb.FreeBusyProvider;
+import com.zimbra.cs.fb.FreeBusyChangeNotifier;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Flag;
@@ -166,7 +166,7 @@ public class FolderAction extends ItemAction {
       boolean fb = action.getAttributeBool(MailConstants.A_EXCLUDE_FREEBUSY, false);
       mbox.alterTag(
           octxt, iid.getId(), MailItem.Type.FOLDER, Flag.FlagInfo.EXCLUDE_FREEBUSY, fb, null);
-      FreeBusyProvider.mailboxChanged(zsc.getRequestedAccountId());
+      new FreeBusyChangeNotifier().mailboxChanged(zsc.getRequestedAccountId());
     } else if (operation.equals(OP_CHECK) || operation.equals(OP_UNCHECK)) {
       mbox.alterTag(
           octxt,

@@ -9,6 +9,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.StringUtil;
+import com.zimbra.cs.fb.FreeBusyChangeNotifier;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import java.util.HashMap;
@@ -241,7 +242,8 @@ public class AdminService implements DocumentService {
         AdminConstants.GET_ALL_FREE_BUSY_PROVIDERS_REQUEST, new GetAllFreeBusyProviders());
     dispatcher.registerHandler(
         AdminConstants.GET_FREE_BUSY_QUEUE_INFO_REQUEST, new GetFreeBusyQueueInfo());
-    dispatcher.registerHandler(AdminConstants.PUSH_FREE_BUSY_REQUEST, new PushFreeBusy());
+    dispatcher.registerHandler(
+        AdminConstants.PUSH_FREE_BUSY_REQUEST, new PushFreeBusy(new FreeBusyChangeNotifier()));
     dispatcher.registerHandler(
         AdminConstants.PURGE_FREE_BUSY_QUEUE_REQUEST, new PurgeFreeBusyQueue());
 

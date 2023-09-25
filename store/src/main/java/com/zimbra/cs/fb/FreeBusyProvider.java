@@ -42,8 +42,8 @@ public abstract class FreeBusyProvider {
 
     @Override
     public void notify(ChangeNotification notification) {
-      FreeBusyProvider.mailboxChanged(
-          notification.mailboxAccount.getId(), notification.mods.changedTypes);
+      new FreeBusyChangeNotifier()
+          .mailboxChanged(notification.mailboxAccount.getId(), notification.mods.changedTypes);
     }
 
     private static final Set<Type> TYPES = EnumSet.of(MailItem.Type.APPOINTMENT);
@@ -170,41 +170,6 @@ public abstract class FreeBusyProvider {
     }
   }
 
-  private static FreeBusySyncQueue startConsumerThread(FreeBusyProvider p) {
-    String name = p.getName();
-    FreeBusySyncQueue queue = sPUSHQUEUES.get(name);
-    if (queue != null) {
-      ZimbraLog.fb.warn("free/busy provider " + name + " has been already registered.");
-    }
-    queue = new FreeBusySyncQueue(p);
-    sPUSHQUEUES.put(name, queue);
-    new Thread(queue).start();
-    return queue;
-  }
-
-  public static void mailboxChanged(String accountId) {
-    mailboxChanged(accountId, EnumSet.of(MailItem.Type.APPOINTMENT));
-  }
-
-  public static void mailboxChanged(String accountId, Set<MailItem.Type> changedType) {
-    for (FreeBusyProvider prov : sPROVIDERS)
-      if (prov.registerForMailboxChanges(accountId)
-          && !Collections.disjoint(changedType, prov.registerForItemTypes())) {
-        FreeBusySyncQueue queue = sPUSHQUEUES.get(prov.getName());
-        if (queue == null) queue = startConsumerThread(prov);
-        synchronized (queue) {
-          if (queue.contains(accountId)) continue;
-          queue.addLast(accountId);
-          try {
-            queue.writeToDisk();
-          } catch (IOException e) {
-            ZimbraLog.fb.error("can't write to the queue " + queue.getFilename());
-          }
-          queue.notify();
-        }
-      }
-  }
-
   public void addResults(Element response) {
     for (FreeBusy fb : getResults()) ToXML.encodeFreeBusy(response, fb);
   }
@@ -312,8 +277,8 @@ public abstract class FreeBusyProvider {
     return ret;
   }
 
-  private static HashSet<FreeBusyProvider> sPROVIDERS;
-  private static HashMap<String, FreeBusySyncQueue> sPUSHQUEUES;
+  static HashSet<FreeBusyProvider> sPROVIDERS;
+  static HashMap<String, FreeBusySyncQueue> sPUSHQUEUES;
 
   static {
     sPROVIDERS = new HashSet<FreeBusyProvider>();

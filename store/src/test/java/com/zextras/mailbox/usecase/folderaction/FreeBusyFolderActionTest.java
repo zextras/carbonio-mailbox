@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
+import com.zimbra.cs.fb.FreeBusyChangeNotifier;
 import com.zimbra.cs.fb.FreeBusyProvider;
 import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.service.util.ItemId;
@@ -25,7 +26,8 @@ class FreeBusyFolderActionTest {
     mailboxManager = mock(MailboxManager.class);
     itemIdFactory = mock(ItemIdFactory.class);
 
-    freeBusyFolderAction = new FreeBusyFolderAction(mailboxManager, itemIdFactory);
+    freeBusyFolderAction =
+        new FreeBusyFolderAction(mailboxManager, itemIdFactory, new FreeBusyChangeNotifier());
     freeBusyProvider = mockStatic(FreeBusyProvider.class);
   }
 
@@ -46,7 +48,7 @@ class FreeBusyFolderActionTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     freeBusyProvider
-        .when(() -> FreeBusyProvider.mailboxChanged(accountId))
+        .when(() -> new FreeBusyChangeNotifier().mailboxChanged(accountId))
         .then(freeBusyProvider -> null);
     Try<Void> result =
         freeBusyFolderAction.excludeFreeBusyIntegration(operationContext, accountId, folderId);
@@ -73,7 +75,7 @@ class FreeBusyFolderActionTest {
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     freeBusyProvider
-        .when(() -> FreeBusyProvider.mailboxChanged(accountId))
+        .when(() -> new FreeBusyChangeNotifier().mailboxChanged(accountId))
         .then(freeBusyProvider -> null);
     Try<Void> result =
         freeBusyFolderAction.includeFreeBusyIntegration(operationContext, accountId, folderId);

@@ -1,7 +1,7 @@
 package com.zextras.mailbox.usecase.folderaction;
 
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
-import com.zimbra.cs.fb.FreeBusyProvider;
+import com.zimbra.cs.fb.FreeBusyChangeNotifier;
 import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
@@ -17,13 +17,18 @@ import javax.inject.Inject;
 public class FreeBusyFolderAction {
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
+  private final FreeBusyChangeNotifier freeBusyChangeNotifier;
   private static final boolean ENABLE_FREEBUSY = true;
   private static final boolean DISABLE_FREEBUSY = false;
 
   @Inject
-  public FreeBusyFolderAction(MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
+  public FreeBusyFolderAction(
+      MailboxManager mailboxManager,
+      ItemIdFactory itemIdFactory,
+      FreeBusyChangeNotifier freeBusyChangeNotifier) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;
+    this.freeBusyChangeNotifier = freeBusyChangeNotifier;
   }
 
   /**
@@ -75,7 +80,7 @@ public class FreeBusyFolderAction {
               Flag.FlagInfo.EXCLUDE_FREEBUSY,
               excludeFreeBusy,
               null);
-          FreeBusyProvider.mailboxChanged(accountId);
+          freeBusyChangeNotifier.mailboxChanged(accountId);
         });
   }
 }
