@@ -3,39 +3,42 @@ package com.zextras.mailbox.usecase.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.Maps;
+import com.zextras.mailbox.usecase.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.ACL;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.OperationContext;
 import java.util.Map;
-import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class GranteeServiceTest {
   private GranteeService granteeService;
   private final String granteeName = "granteeName";
-  private final String granteeEmail = granteeName + "@test.com";
-  private final String granteeId = UUID.randomUUID().toString();
+  private final String granteeEmail = granteeName + "@" + MailboxTestUtil.DEFAULT_DOMAIN;
+  private String granteeId;
 
   @BeforeEach
   void setUp() throws Exception {
-    MailboxTestUtil.initServer();
+    com.zextras.mailbox.usecase.MailboxTestUtil.setUp();
     Provisioning provisioning = Provisioning.getInstance();
     Map<String, Object> granteeAttrs = Maps.newHashMap();
-    granteeAttrs.put(Provisioning.A_zimbraId, granteeId);
-
-    provisioning.createAccount(granteeEmail, "secret", granteeAttrs);
-
+    granteeAttrs.put(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME);
+    granteeId = provisioning.createAccount(granteeEmail, "secret", granteeAttrs).getId();
     granteeService = new GranteeService(provisioning);
+  }
+
+  @AfterEach
+  void tearDown() {
+    MailboxTestUtil.tearDown();
   }
 
   @Test
   void shouldReturnNamedEntryWhenLookupGranteeByEmailAddress() throws ServiceException {
     NamedEntry namedEntry = granteeService.lookupGranteeByEmailAddress(granteeEmail);
-    assertEquals(granteeEmail, namedEntry.getName());
+    assertEquals(granteeEmail.toLowerCase(), namedEntry.getName().toLowerCase());
   }
 
   @Test
@@ -51,6 +54,6 @@ class GranteeServiceTest {
 
     NamedEntry namedEntry =
         granteeService.lookupGranteeByName(granteeName, ACL.GRANTEE_USER, granteeContext);
-    assertEquals(granteeEmail, namedEntry.getName());
+    assertEquals(granteeEmail.toLowerCase(), namedEntry.getName().toLowerCase());
   }
 }

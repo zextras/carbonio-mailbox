@@ -29,6 +29,8 @@ import io.vavr.control.Try;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class UpdateFolderActionTest {
   private MailboxManager mailboxManager;
@@ -39,7 +41,8 @@ class UpdateFolderActionTest {
   private ItemId itemId;
   private ACLHelper aclHelper;
   private final String accountId = "account-id123";
-  private final String folderId = accountId + ":1";
+  private final int realItemId = 1;
+  private final String folderId = accountId + ":" + realItemId;
   private String internalGrantExpiryString;
   private String guestGrantExpiryString;
   private List<GrantInput> grantInputList;
@@ -60,13 +63,18 @@ class UpdateFolderActionTest {
     updateFolderAction = new UpdateFolderAction(mailboxManager, itemIdFactory, aclHelper);
   }
 
-  @Test
-  void shouldReturnFailureIfFolderItemIdDoesntBelongToUserMailbox() throws ServiceException {
-    when(itemId.getId()).thenReturn(1);
+  private void setupDefaultMocks() throws ServiceException {
+    when(itemId.getId()).thenReturn(realItemId);
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(operationContext.getmRequestedAccountId()).thenReturn(accountId);
+    when(itemId.belongsTo(userMailbox)).thenReturn(true);
+  }
 
+  @Test
+  void shouldReturnFailureIfFolderItemIdDoesntBelongToUserMailbox() throws ServiceException {
+    setupDefaultMocks();
+    when(itemId.belongsTo(userMailbox)).thenReturn(false);
     final Try<Void> operationResult =
         updateFolderAction.update(
             operationContext,
@@ -90,14 +98,13 @@ class UpdateFolderActionTest {
     assertEquals("invalid request: cannot move folder between mailboxes", gotError.getMessage());
   }
 
-  @Test
-  void shouldReturnFailureIfNoSuchFolder() throws ServiceException {
-    when(itemId.getId()).thenReturn(0);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+  @ParameterizedTest
+  @ValueSource(ints = {0, -1})
+  void shouldThrowNoSuchFolderIfItemIdLessEqualThanZero(int id) throws ServiceException {
+    final String folderId = accountId + ":" + id;
+    setupDefaultMocks();
+    when(itemId.getId()).thenReturn(id);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
-    when(operationContext.getmRequestedAccountId()).thenReturn(accountId);
-    when(itemId.belongsTo(userMailbox)).thenReturn(true);
-
     final Try<Void> operationResult =
         updateFolderAction.update(
             operationContext,
@@ -122,11 +129,7 @@ class UpdateFolderActionTest {
   @Test
   void shouldBeSuccessAfterSetColor() throws ServiceException {
     color = 1;
-    when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
-    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
-    when(operationContext.getmRequestedAccountId()).thenReturn(accountId);
-    when(itemId.belongsTo(userMailbox)).thenReturn(true);
+    setupDefaultMocks();
 
     final Try<Void> operationResult =
         updateFolderAction.update(
@@ -153,11 +156,7 @@ class UpdateFolderActionTest {
   @Test
   void shouldBeSuccessAfterSetTags() throws ServiceException {
     flags = "flags";
-    when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
-    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
-    when(operationContext.getmRequestedAccountId()).thenReturn(accountId);
-    when(itemId.belongsTo(userMailbox)).thenReturn(true);
+    setupDefaultMocks();
 
     final Try<Void> operationResult =
         updateFolderAction.update(
@@ -190,11 +189,7 @@ class UpdateFolderActionTest {
   @Test
   void shouldBeSuccessAfterSetView() throws ServiceException {
     view = "view";
-    when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
-    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
-    when(operationContext.getmRequestedAccountId()).thenReturn(accountId);
-    when(itemId.belongsTo(userMailbox)).thenReturn(true);
+    setupDefaultMocks();
 
     final Try<Void> operationResult =
         updateFolderAction.update(
@@ -221,12 +216,7 @@ class UpdateFolderActionTest {
   @Test
   void shouldBeSuccessAfterRename() throws ServiceException {
     newName = "newName";
-    when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
-    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
-    when(operationContext.getmRequestedAccountId()).thenReturn(accountId);
-    when(itemId.belongsTo(userMailbox)).thenReturn(true);
-
+    setupDefaultMocks();
     final Try<Void> operationResult =
         updateFolderAction.update(
             operationContext,
@@ -251,11 +241,7 @@ class UpdateFolderActionTest {
 
   @Test
   void shouldBeSuccessAfterMove() throws ServiceException {
-    when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
-    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
-    when(operationContext.getmRequestedAccountId()).thenReturn(accountId);
-    when(itemId.belongsTo(userMailbox)).thenReturn(true);
+    setupDefaultMocks();
 
     final Try<Void> operationResult =
         updateFolderAction.update(
@@ -288,11 +274,7 @@ class UpdateFolderActionTest {
     ACL acl = mock(ACL.class);
     Account account = mock(Account.class);
     Folder folder = mock(Folder.class);
-    when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
-    when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
-    when(operationContext.getmRequestedAccountId()).thenReturn(accountId);
-    when(itemId.belongsTo(userMailbox)).thenReturn(true);
+    setupDefaultMocks();
     when(userMailbox.getFolderById(operationContext, itemId.getId())).thenReturn(folder);
     when(folder.getDefaultView()).thenReturn(Type.FOLDER);
 

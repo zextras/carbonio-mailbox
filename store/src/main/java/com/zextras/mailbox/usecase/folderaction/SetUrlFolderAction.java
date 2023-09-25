@@ -31,15 +31,13 @@ public class SetUrlFolderAction {
    * @param accountId the target account zimbra id attribute
    * @param folderId the id of the folder (belonging to the accountId)
    * @param url url
-   * @param excludeFreeBusy flag
    * @return a {@link Try} object with the status of the operation
    */
   public Try<Void> setFolderUrl(
       final OperationContext operationContext,
       final String accountId,
       final String folderId,
-      final String url,
-      final boolean excludeFreeBusy) {
+      final String url) {
     return Try.run(
         () -> {
           final Mailbox userMailbox =
@@ -55,16 +53,7 @@ public class SetUrlFolderAction {
 
           if (Strings.isNullOrEmpty(url)) {
             userMailbox.synchronizeFolder(operationContext, itemId.getId());
-            return;
           }
-
-          userMailbox.alterTag(
-              operationContext,
-              itemId.getId(),
-              MailItem.Type.FOLDER,
-              Flag.FlagInfo.EXCLUDE_FREEBUSY,
-              excludeFreeBusy,
-              null);
         });
   }
 }

@@ -38,18 +38,9 @@ class SetUrlFolderActionTest {
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
-    Try<Void> result =
-        setUrlFolderAction.setFolderUrl(operationContext, accountId, folderId, url, true);
+    Try<Void> result = setUrlFolderAction.setFolderUrl(operationContext, accountId, folderId, url);
     assertTrue(result.isSuccess());
     verify(userMailbox, times(1)).setFolderUrl(operationContext, itemId.getId(), url);
-    verify(userMailbox, times(1))
-        .alterTag(
-            operationContext,
-            itemId.getId(),
-            MailItem.Type.FOLDER,
-            Flag.FlagInfo.EXCLUDE_FREEBUSY,
-            true,
-            null);
   }
 
   @Test
@@ -65,8 +56,7 @@ class SetUrlFolderActionTest {
     when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
-    Try<Void> result =
-        setUrlFolderAction.setFolderUrl(operationContext, accountId, folderId, url, false);
+    Try<Void> result = setUrlFolderAction.setFolderUrl(operationContext, accountId, folderId, url);
     assertTrue(result.isSuccess());
 
     verify(userMailbox, times(1)).setFolderUrl(operationContext, itemId.getId(), url);

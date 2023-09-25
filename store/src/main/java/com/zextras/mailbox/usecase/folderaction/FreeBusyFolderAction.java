@@ -40,7 +40,7 @@ public class FreeBusyFolderAction {
    */
   public Try<Void> includeFreeBusyIntegration(
       final OperationContext operationContext, final String accountId, final String folderId) {
-    return excludeFreeBusy(operationContext, accountId, folderId, ENABLE_FREEBUSY);
+    return modifyFreeBusy(operationContext, accountId, folderId, ENABLE_FREEBUSY);
   }
 
   /**
@@ -53,10 +53,10 @@ public class FreeBusyFolderAction {
    */
   public Try<Void> excludeFreeBusyIntegration(
       final OperationContext operationContext, final String accountId, final String folderId) {
-    return excludeFreeBusy(operationContext, accountId, folderId, DISABLE_FREEBUSY);
+    return modifyFreeBusy(operationContext, accountId, folderId, DISABLE_FREEBUSY);
   }
 
-  private Try<Void> excludeFreeBusy(
+  private Try<Void> modifyFreeBusy(
       final OperationContext operationContext,
       final String accountId,
       final String folderId,

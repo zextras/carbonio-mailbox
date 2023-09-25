@@ -60,7 +60,7 @@ public class SyncFolderAction {
       final OperationContext operationContext,
       final String accountId,
       final String folderId,
-      final boolean syncFlag) {
+      final boolean enableSync) {
 
     return Try.run(
         () -> {
@@ -78,7 +78,7 @@ public class SyncFolderAction {
               itemId.getId(),
               MailItem.Type.FOLDER,
               Flag.FlagInfo.SYNC,
-              syncFlag,
+              enableSync,
               null);
         });
   }
