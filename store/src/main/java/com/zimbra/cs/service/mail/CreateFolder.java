@@ -28,9 +28,15 @@ import java.util.Map;
  */
 public class CreateFolder extends MailDocumentHandler {
 
+  private final ACLHelper aclHelper;
+
   private static final String[] TARGET_FOLDER_PATH =
       new String[] {MailConstants.E_FOLDER, MailConstants.A_FOLDER};
   private static final String[] RESPONSE_ITEM_PATH = new String[] {};
+
+  public CreateFolder(ACLHelper aclHelper) {
+    this.aclHelper = aclHelper;
+  }
 
   @Override
   protected String[] getProxiedIdPath(Element request) {
@@ -66,11 +72,8 @@ public class CreateFolder extends MailDocumentHandler {
     boolean fetchIfExists = t.getAttributeBool(MailConstants.A_FETCH_IF_EXISTS, false);
     boolean syncToUrl = t.getAttributeBool(MailConstants.A_SYNC, true);
     ACL acl =
-        new ACLHelper()
-            .parseACL(
-                t.getOptionalElement(MailConstants.E_ACL),
-                MailItem.Type.of(view),
-                mbox.getAccount());
+        aclHelper.parseACL(
+            t.getOptionalElement(MailConstants.E_ACL), MailItem.Type.of(view), mbox.getAccount());
 
     Folder folder;
     boolean alreadyExisted = false;
