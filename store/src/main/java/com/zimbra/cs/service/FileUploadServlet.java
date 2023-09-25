@@ -36,6 +36,7 @@ import com.zimbra.cs.ldap.LdapUtil;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.service.util.ContentDispositionParser;
 import com.zimbra.cs.service.util.JWTUtil;
 import com.zimbra.cs.servlet.CsrfFilter;
 import com.zimbra.cs.servlet.ZimbraServlet;
@@ -49,7 +50,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -653,7 +653,7 @@ public class FileUploadServlet extends ZimbraServlet {
 
   /**
    * Extract the requestId form field if present in one of the {@link FileItem}, return null if not
-   * present
+   * present.
    *
    * @param fileItems {@link List} of {@link FileItem}
    * @return {@link String} requestId
@@ -714,7 +714,7 @@ public class FileUploadServlet extends ZimbraServlet {
         } else {
           fileNames.put(
               fileItem,
-              getFileNameFromContentDisposition(
+              ContentDispositionParser.getFileNameFromContentDisposition(
                   fileItem.getHeaders().getHeader("content-disposition")));
         }
         names.clear();
@@ -802,70 +802,6 @@ public class FileUploadServlet extends ZimbraServlet {
       uploads.add(upload);
     }
     return uploads;
-  }
-
-  /**
-   * RFC-6266 compliant filename extraction helper method. Returns the filename from the given
-   * Content-Disposition header value following RFC-6266 specifications. Preference to the extended
-   * version of the filename <code>filename*=UTF-8''utf8EncodedFile</></code> is given. If extended
-   * filename is not specified in the content-disposition header, then the ascii valued filename is
-   * returned. If that is also not specified an empty string is returned.
-   *
-   * @param contentDisposition @{link String} value of the Content-Disposition header.
-   * @return the filename from the given Content-Disposition header or empty value if not found.
-   */
-  String getFileNameFromContentDisposition(final String contentDisposition) {
-    String fileName = "";
-    if (!StringUtil.isNullOrEmpty(contentDisposition)) {
-      final String dispositionItemsDelimiter = ";";
-      for (String dispositionItem : contentDisposition.split(dispositionItemsDelimiter)) {
-        fileName = getAsciiFileNameFromDispositionItem(fileName, dispositionItem);
-        fileName = getExtendedFilenameFromDispositionItem(fileName, dispositionItem);
-      }
-    }
-    return fileName;
-  }
-
-  /**
-   * Returns the filename from the given disposition item.
-   *
-   * @param defaultValue the fallback filename if filename is not specified in disposition item
-   * @param dispositionItem the disposition item
-   * @return the filename
-   */
-  private String getAsciiFileNameFromDispositionItem(
-      final String defaultValue, final String dispositionItem) {
-    String newFileName = defaultValue;
-
-    if (dispositionItem.trim().toLowerCase().startsWith("filename=")) {
-      final String[] keyValue = dispositionItem.split("=");
-      if (keyValue.length >= 2) {
-        newFileName = keyValue[1].trim().replace("\"", "");
-      }
-    }
-    return newFileName;
-  }
-
-  /**
-   * Returns the extended filename from the given disposition item.
-   *
-   * @param defaultValue the fallback filename if filename is not specified in disposition item
-   * @param dispositionItem the disposition item
-   * @return the filename
-   */
-  private String getExtendedFilenameFromDispositionItem(
-      final String defaultValue, final String dispositionItem) {
-    String newFileName = defaultValue;
-    if (dispositionItem.trim().toLowerCase().startsWith("filename*=")) {
-      final String[] keyValue = dispositionItem.split("=");
-      final String value = keyValue[1].trim();
-      final String delimiter = "utf-8''";
-      if (value.toLowerCase().startsWith(delimiter)) {
-        newFileName =
-            URLDecoder.decode(value.substring(delimiter.length()), StandardCharsets.UTF_8);
-      }
-    }
-    return newFileName;
   }
 
   /**
