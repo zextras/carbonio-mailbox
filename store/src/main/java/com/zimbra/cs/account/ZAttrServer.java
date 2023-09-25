@@ -18487,7 +18487,7 @@ public abstract class ZAttrServer extends NamedEntry {
      */
     @ZAttr(id=1025)
     public String[] getMailTrustedIP() {
-        return getMultiAttr(ZAttrProvisioning.A_zimbraMailTrustedIP, true, true);
+        String[] value = getMultiAttr(ZAttrProvisioning.A_zimbraMailTrustedIP, true, true); return value.length > 0 ? value : new String[] {"127.0.0.1"};
     }
 
     /**

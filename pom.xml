@@ -873,8 +873,6 @@
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <revision>23.10.0-SNAPSHOT</revision>
     <mockserver.version>5.13.0</mockserver.version>
-    <!-- Skip Dependency check by default -->
-    <dependency-check.skip>true</dependency-check.skip>
   </properties>
   <version>${revision}</version>
   <profiles>
@@ -957,22 +955,6 @@
           <artifactId>maven-antrun-plugin</artifactId>
           <groupId>org.apache.maven.plugins</groupId>
           <version>3.1.0</version>
-        </plugin>
-        <!-- Dependency Checker -->
-        <plugin>
-          <groupId>org.owasp</groupId>
-          <artifactId>dependency-check-maven</artifactId>
-          <version>8.2.1</version>
-          <configuration>
-            <outputDirectory>${dependency.check.report.dir}</outputDirectory>
-          </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>aggregate</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
         <!-- Testing -->
         <plugin>
@@ -1171,10 +1153,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
       </plugin>
     </plugins>
   </build>
