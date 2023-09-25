@@ -526,8 +526,6 @@ public class FileUploadServletTest {
       final String responseContent =
           EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
 
-      System.out.println(responseContent);
-
       final JSONArray jsonArray = new JSONArray("[" + responseContent + "]");
       assertEquals(200, jsonArray.getInt(0));
       assertEquals("null", jsonArray.getString(1));
@@ -585,8 +583,6 @@ public class FileUploadServletTest {
 
       final String responseContent =
           EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-
-      // System.out.println(responseContent);
 
       final JSONArray jsonArray = new JSONArray("[" + responseContent + "]");
       assertEquals(200, jsonArray.getInt(0));
@@ -664,6 +660,7 @@ public class FileUploadServletTest {
   }
 
   @Test
+  @DisplayName("Extended filename should be returned when present")
   void getFileNameFromContentDisposition_should_returnValidFileNameWithExtendedEncoding() {
     final String contentDisposition =
         "attachment; filename=\"Fruten.txt\";"
@@ -674,6 +671,8 @@ public class FileUploadServletTest {
   }
 
   @Test
+  @DisplayName(
+      "ASCII filename should be preferred when extended filename is missing in content-disposition")
   void getFileNameFromContentDisposition_should_returnValidFileNameWithoutExtendedEncoding() {
     final String contentDisposition = "attachment; filename=\"ang.txt\"";
     final String fileName = servlet.getFileNameFromContentDisposition(contentDisposition);
@@ -682,6 +681,7 @@ public class FileUploadServletTest {
   }
 
   @Test
+  @DisplayName("Null content-disposition should return empty filename")
   void getFileNameFromContentDisposition_should_returnEmptyFilenameForInvalidContentDisposition() {
     final String contentDisposition = null;
     final String fileName = servlet.getFileNameFromContentDisposition(contentDisposition);
@@ -690,8 +690,8 @@ public class FileUploadServletTest {
   }
 
   @Test
+  @DisplayName("Invalid encoding (missing '') should return empty filename")
   void getFileNameFromContentDisposition_should_returnEmptyFilenameForInvalidEncoding() {
-    // invalid encoding (missing "''")
     final String contentDisposition = "attachment; filename*=UTF-8,%E6%96%87%E4%BB%B6.txt";
     final String fileName = servlet.getFileNameFromContentDisposition(contentDisposition);
 

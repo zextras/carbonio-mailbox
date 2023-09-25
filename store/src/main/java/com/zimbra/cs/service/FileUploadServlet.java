@@ -604,6 +604,20 @@ public class FileUploadServlet extends ZimbraServlet {
     }
   }
 
+  /**
+   * Handles HTTP POST request which contains multipart upload items.
+   *
+   * @param request {@link HttpServletRequest} instance
+   * @param response {@link HttpServletResponse} instance
+   * @param format {@link String} format
+   * @param account {@link Account} account
+   * @param limitByFileUploadMaxSize whether to limit the file upload by max size
+   * @param authToken {@link AuthToken} auth token
+   * @param csrfCheckComplete whether to check the CSRF token
+   * @return {@link List} of {@link Upload} items
+   * @throws IOException if an I/O error occurs
+   * @throws ServiceException if an error occurs processing upload request
+   */
   List<Upload> handleMultipartUpload(
       final HttpServletRequest request,
       final HttpServletResponse response,
@@ -614,7 +628,6 @@ public class FileUploadServlet extends ZimbraServlet {
       final boolean csrfCheckComplete)
       throws IOException, ServiceException {
 
-    // parse upload items from the request
     final List<FileItem> fileItems =
         getFileItemsFromMultipartUploadRequest(
             request,
@@ -629,7 +642,7 @@ public class FileUploadServlet extends ZimbraServlet {
       mLog.info("No data in upload for reqId: %s", request);
       sendResponse(response, HttpServletResponse.SC_NO_CONTENT, format, null, null, fileItems);
     } else {
-      final String requestId = extractRequestId(fileItems);
+      final String requestId = extractRequestIdFromFormField(fileItems);
       final Map<FileItem, String> fileNames = extractFileNamesFromFormFields(fileItems);
       final List<Upload> uploads = cacheUploadedFiles(fileItems, account, fileNames);
       sendResponse(response, HttpServletResponse.SC_OK, format, requestId, uploads, fileItems);
@@ -638,7 +651,14 @@ public class FileUploadServlet extends ZimbraServlet {
     return Collections.emptyList();
   }
 
-  private String extractRequestId(final List<FileItem> fileItems) {
+  /**
+   * Extract the requestId form field if present in one of the {@link FileItem}, return null if not
+   * present
+   *
+   * @param fileItems {@link List} of {@link FileItem}
+   * @return {@link String} requestId
+   */
+  private String extractRequestIdFromFormField(final List<FileItem> fileItems) {
     for (FileItem fileItem : fileItems) {
       if (fileItem == null) {
         continue;
@@ -650,10 +670,19 @@ public class FileUploadServlet extends ZimbraServlet {
     return null;
   }
 
+  /**
+   * Extract file names from form fields if present and map them to the corresponding {@link
+   * FileItem}, the extraction supports: explicitly provide filenames in form fields and file name
+   * provided in Content-Disposition header.
+   *
+   * @param fileItems {@link List} of {@link FileItem} to be used for extracting file names
+   * @return {@link Map} of file names to corresponding {@link FileItem}
+   * @throws UnsupportedEncodingException if specified encoding using <code>_charset_</code> form
+   *     field is unsupported
+   */
   private Map<FileItem, String> extractFileNamesFromFormFields(final List<FileItem> fileItems)
       throws UnsupportedEncodingException {
-    // process items parse requestId & filename from form fields if available and removing them if
-    // necessary
+
     String suggestedCharset = StandardCharsets.UTF_8.toString();
     final LinkedList<String> names = new LinkedList<>();
     final HashMap<FileItem, String> fileNames = new HashMap<>();
@@ -694,6 +723,19 @@ public class FileUploadServlet extends ZimbraServlet {
     return fileNames;
   }
 
+  /**
+   * Parses {@link List} of {@link FileItem} from HTTP multipart upload request.
+   *
+   * @param request {@link HttpServletRequest} instance
+   * @param response {@link HttpServletResponse} instance
+   * @param format {@link String} format
+   * @param account {@link Account} account
+   * @param limitByFileUploadMaxSize whether to limit the file upload by max size
+   * @param authToken {@link AuthToken} auth token
+   * @param csrfCheckComplete whether to check the CSRF token
+   * @return {@link List} of {@link FileItem}
+   * @throws IOException if an I/O error occurs while parsing upload request
+   */
   private List<FileItem> getFileItemsFromMultipartUploadRequest(
       final HttpServletRequest request,
       final HttpServletResponse response,
@@ -739,6 +781,13 @@ public class FileUploadServlet extends ZimbraServlet {
     return fileItems;
   }
 
+  /**
+   * @param fileItems {@link List} of {@link FileItem} to be cached
+   * @param account {@link Account} account to be used
+   * @param fileNames {@link Map} {@link FileItem} objects with their names
+   * @return {@link List} of {@link Upload} instances
+   * @throws ServiceException if an error occurs
+   */
   private List<Upload> cacheUploadedFiles(
       final List<FileItem> fileItems, final Account account, final Map<FileItem, String> fileNames)
       throws ServiceException {
@@ -770,33 +819,53 @@ public class FileUploadServlet extends ZimbraServlet {
     if (!StringUtil.isNullOrEmpty(contentDisposition)) {
       final String dispositionItemsDelimiter = ";";
       for (String dispositionItem : contentDisposition.split(dispositionItemsDelimiter)) {
-        fileName = getAsciiFileName(fileName, dispositionItem);
-        fileName = getExtendedFilename(fileName, dispositionItem);
+        fileName = getAsciiFileNameFromDispositionItem(fileName, dispositionItem);
+        fileName = getExtendedFilenameFromDispositionItem(fileName, dispositionItem);
       }
     }
     return fileName;
   }
 
-  private String getAsciiFileName(String fileName, String dispositionItem) {
+  /**
+   * Returns the filename from the given disposition item.
+   *
+   * @param defaultValue the fallback filename if filename is not specified in disposition item
+   * @param dispositionItem the disposition item
+   * @return the filename
+   */
+  private String getAsciiFileNameFromDispositionItem(
+      final String defaultValue, final String dispositionItem) {
+    String newFileName = defaultValue;
+
     if (dispositionItem.trim().toLowerCase().startsWith("filename=")) {
       final String[] keyValue = dispositionItem.split("=");
       if (keyValue.length >= 2) {
-        fileName = keyValue[1].trim().replace("\"", "");
+        newFileName = keyValue[1].trim().replace("\"", "");
       }
     }
-    return fileName;
+    return newFileName;
   }
 
-  private String getExtendedFilename(String fileName, String dispositionItem) {
+  /**
+   * Returns the extended filename from the given disposition item.
+   *
+   * @param defaultValue the fallback filename if filename is not specified in disposition item
+   * @param dispositionItem the disposition item
+   * @return the filename
+   */
+  private String getExtendedFilenameFromDispositionItem(
+      final String defaultValue, final String dispositionItem) {
+    String newFileName = defaultValue;
     if (dispositionItem.trim().toLowerCase().startsWith("filename*=")) {
       final String[] keyValue = dispositionItem.split("=");
       final String value = keyValue[1].trim();
       final String delimiter = "utf-8''";
       if (value.toLowerCase().startsWith(delimiter)) {
-        fileName = URLDecoder.decode(value.substring(delimiter.length()), StandardCharsets.UTF_8);
+        newFileName =
+            URLDecoder.decode(value.substring(delimiter.length()), StandardCharsets.UTF_8);
       }
     }
-    return fileName;
+    return newFileName;
   }
 
   /**
