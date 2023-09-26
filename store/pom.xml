@@ -175,11 +175,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>yuicompressor</artifactId>
-      <groupId>com.yahoo.platform.yui</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>junixsocket-common</artifactId>
       <groupId>com.kohlschutter.junixsocket</groupId>
     </dependency>
@@ -217,11 +212,6 @@
     <dependency>
       <artifactId>libidn</artifactId>
       <groupId>org.gnu.inet</groupId>
-    </dependency>
-
-    <dependency>
-      <artifactId>java-semver</artifactId>
-      <groupId>com.github.zafarkhaja</groupId>
     </dependency>
 
     <dependency>
@@ -512,10 +502,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
-      </plugin>
       <!-- This is a hack: some code is generated from same module, so we compile, generate code,
         compile again, run tests, etc. TODO: find a way to move generator classes on another module -->
       <plugin>

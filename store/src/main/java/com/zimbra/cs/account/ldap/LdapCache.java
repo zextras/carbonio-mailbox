@@ -26,7 +26,6 @@ import com.zimbra.cs.account.cache.IMimeTypeCache;
 import com.zimbra.cs.account.cache.INamedEntryCache;
 import com.zimbra.cs.account.cache.NamedEntryCache;
 import com.zimbra.cs.account.ldap.entry.LdapCos;
-import com.zimbra.cs.account.ldap.entry.LdapZimlet;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,8 +46,6 @@ abstract class LdapCache {
   abstract IMimeTypeCache mimeTypeCache();
 
   abstract INamedEntryCache<Server> serverCache();
-
-  abstract INamedEntryCache<LdapZimlet> zimletCache();
 
   abstract INamedEntryCache<Group> groupCache();
 
@@ -85,11 +82,6 @@ abstract class LdapCache {
         new NamedEntryCache<Server>(
             LC.ldap_cache_server_maxsize.intValue(),
             LC.ldap_cache_server_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
-
-    private final INamedEntryCache<LdapZimlet> zimletCache =
-        new NamedEntryCache<LdapZimlet>(
-            LC.ldap_cache_zimlet_maxsize.intValue(),
-            LC.ldap_cache_zimlet_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
 
     private final INamedEntryCache<Group> groupCache =
         new NamedEntryCache<Group>(
@@ -140,11 +132,6 @@ abstract class LdapCache {
     INamedEntryCache<XMPPComponent> xmppComponentCache() {
       return xmppComponentCache;
     }
-
-    @Override
-    INamedEntryCache<LdapZimlet> zimletCache() {
-      return zimletCache;
-    }
   }
 
   /** NoopCache */
@@ -157,7 +144,6 @@ abstract class LdapCache {
     private final IDomainCache domainCache = new NoopDomainCache();
     private final IMimeTypeCache mimeTypeCache = new NoopMimeTypeCache();
     private final INamedEntryCache<Server> serverCache = new NoopNamedEntryCache<Server>();
-    private final INamedEntryCache<LdapZimlet> zimletCache = new NoopNamedEntryCache<LdapZimlet>();
     private final INamedEntryCache<Group> groupCache = new NoopNamedEntryCache<Group>();
     private final INamedEntryCache<XMPPComponent> xmppComponentCache =
         new NoopNamedEntryCache<XMPPComponent>();
@@ -353,11 +339,6 @@ abstract class LdapCache {
     @Override
     INamedEntryCache<XMPPComponent> xmppComponentCache() {
       return xmppComponentCache;
-    }
-
-    @Override
-    INamedEntryCache<LdapZimlet> zimletCache() {
-      return zimletCache;
     }
   }
 }

@@ -65,7 +65,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     ALL_SERVERS(SINGLETON.allServers()),
     ALL_SIGNATURES(SINGLETON.allSignatures()),
     ALL_XMPP_COMPONENTS(SINGLETON.allXMPPComponents()),
-    ALL_ZIMLETS(SINGLETON.allZimlets()),
     ANY_ENTRY(SINGLETON.anyEntry()),
     CALENDAR_RESOURCE_BY_FOREIGN_PRINCIPAL(
         SINGLETON.calendarResourceByForeignPrincipal("{FOREIGN-PRINCIPAL}")),
@@ -534,11 +533,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
   public abstract ZLdapFilter xmppComponentById(String id);
 
   /*
-   * zimlet
-   */
-  public abstract ZLdapFilter allZimlets();
-
-  /*
    * AD
    */
   public abstract ZLdapFilter memberOf(String dnOfGroup);
@@ -573,6 +567,7 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
   public abstract ZLdapFilter addressListById(String id);
 
   public abstract ZLdapFilter addressListByName(String name);
+
   /*
    * util
    */

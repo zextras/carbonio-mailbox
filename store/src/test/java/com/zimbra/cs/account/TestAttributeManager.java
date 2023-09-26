@@ -12,7 +12,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Version;
-import com.zimbra.cs.account.callback.AvailableZimlets;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
@@ -27,7 +26,6 @@ public class TestAttributeManager {
   public static final String ATTR_MULTI_SINCE = "multiSinceAttr";
   public static final String ATTR_FUTURE = "futureAttr";
   public static final String ATTR_ZIMBRAID = "zimbraId";
-  public static final String ATTR_ZIMLETDOMAIN = "zimbraZimletDomainAvailableZimlets";
 
   @BeforeEach
   public void setup() throws ServiceException {
@@ -75,42 +73,9 @@ public class TestAttributeManager {
     am.addAttribute(ai);
 
     requiredIn = null;
-    Set<AttributeClass> optionalIn =
-        Sets.newHashSet(AttributeClass.domain, AttributeClass.globalConfig);
-    flags = Sets.newHashSet(AttributeFlag.domainInherited);
-    List<Version> since = Lists.newArrayList(new Version("5.0.10"));
-    ai =
-        new AttributeInfo(
-            "zimbraZimletDomainAvailableZimlets",
-            710,
-            null,
-            0,
-            new AvailableZimlets(),
-            AttributeType.TYPE_STRING,
-            null,
-            "",
-            false,
-            null,
-            "256",
-            AttributeCardinality.multi,
-            requiredIn,
-            optionalIn,
-            flags,
-            null,
-            null,
-            null,
-            null,
-            null,
-            "List of Zimlets available to this domain.",
-            null,
-            since,
-            null);
-    am.addAttribute(ai);
-
-    requiredIn = null;
-    optionalIn = null;
+    Set<AttributeClass> optionalIn = null;
     flags = null;
-    since = Lists.newArrayList(new Version("8.0.8"), new Version("8.5.1"));
+    List<Version> since = Lists.newArrayList(new Version("8.0.8"), new Version("8.5.1"));
     ai =
         new AttributeInfo(
             ATTR_TWO_SINCE,
@@ -213,14 +178,6 @@ public class TestAttributeManager {
     assertTrue(am.inVersion(ATTR_ZIMBRAID, "0"));
     assertTrue(am.inVersion(ATTR_ZIMBRAID, "5.0.10"));
 
-    assertFalse(am.inVersion(ATTR_ZIMLETDOMAIN, "0"));
-    assertFalse(am.inVersion(ATTR_ZIMLETDOMAIN, "5.0.9"));
-
-    assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "5.0.10"));
-    assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "5.0.11"));
-    assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "5.5"));
-    assertTrue(am.inVersion(ATTR_ZIMLETDOMAIN, "6"));
-
     assertTrue(am.inVersion(ATTR_TWO_SINCE, "8.0.8"));
     assertTrue(am.inVersion(ATTR_TWO_SINCE, "8.0.9"));
     assertTrue(am.inVersion(ATTR_TWO_SINCE, "8.5.1"));
@@ -271,14 +228,6 @@ public class TestAttributeManager {
 
     assertTrue(am.beforeVersion(ATTR_ZIMBRAID, "0"));
     assertTrue(am.beforeVersion(ATTR_ZIMBRAID, "5.0.10"));
-
-    assertFalse(am.beforeVersion(ATTR_ZIMLETDOMAIN, "0"));
-    assertFalse(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.0.9"));
-    assertFalse(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.0.10"));
-
-    assertTrue(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.0.11"));
-    assertTrue(am.beforeVersion(ATTR_ZIMLETDOMAIN, "5.5"));
-    assertTrue(am.beforeVersion(ATTR_ZIMLETDOMAIN, "6"));
 
     assertTrue(am.beforeVersion(ATTR_TWO_SINCE, "8.0.9"));
     assertTrue(am.beforeVersion(ATTR_TWO_SINCE, "8.5.2"));
@@ -346,12 +295,10 @@ public class TestAttributeManager {
     assertFalse(am.isFuture(ATTR_MULTI_SINCE));
     assertFalse(am.isFuture(ATTR_TWO_SINCE));
     assertFalse(am.isFuture(ATTR_ZIMBRAID));
-    assertFalse(am.isFuture(ATTR_ZIMLETDOMAIN));
   }
 
   @Test
   void testAddedIn() throws ServiceException {
-    assertTrue(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0.10"));
 
     assertTrue(am.addedIn(ATTR_TWO_SINCE, "8.0.8"));
     assertTrue(am.addedIn(ATTR_TWO_SINCE, "8.5.1"));
@@ -360,12 +307,6 @@ public class TestAttributeManager {
     assertTrue(am.addedIn(ATTR_MULTI_SINCE, "8.0.8"));
     assertTrue(am.addedIn(ATTR_MULTI_SINCE, "7.2.8"));
     assertTrue(am.addedIn(ATTR_MULTI_SINCE, "8.5.2"));
-
-    assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0.11"));
-    assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0.9"));
-    assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "5.0"));
-    assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "6.0"));
-    assertFalse(am.addedIn(ATTR_ZIMLETDOMAIN, "7.0"));
 
     assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.3"));
     assertFalse(am.addedIn(ATTR_MULTI_SINCE, "8.5.1"));
