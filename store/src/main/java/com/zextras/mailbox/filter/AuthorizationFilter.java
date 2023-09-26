@@ -16,6 +16,8 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Authorization filter for Cookie authorization. Uses {@link AuthToken#getAuthToken(String)} to
@@ -27,6 +29,7 @@ import javax.ws.rs.ext.Provider;
 public class AuthorizationFilter implements ContainerRequestFilter {
 
   public static final String CTX_AUTH_TOKEN = "authToken";
+  private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationFilter.class);
 
   @Override
   public void filter(ContainerRequestContext ctx) throws IOException {
@@ -39,7 +42,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
           ctx.setProperty(CTX_AUTH_TOKEN, authToken);
           return;
         } catch (AuthTokenException e) {
-          // TODO: log
+          LOGGER.debug("Failed to get auth token: " + e.getMessage());
         }
       }
     }
