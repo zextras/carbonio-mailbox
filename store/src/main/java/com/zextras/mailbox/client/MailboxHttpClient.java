@@ -111,11 +111,11 @@ public class MailboxHttpClient {
   }
 
   /**
-   * Makes the Http call using the token as cookie.
+   * Makes an Http call using the token as cookie to authorize the request.
    *
-   * @param authToken Token used as cookie
-   * @param request request to make
-   * @return response from Mailbox
+   * @param authToken A {@link AuthToken} used as cookie
+   * @param request GET request
+   * @return HTTP response from Mailbox
    * @throws ServiceException
    */
   private HttpResponse doSendRequest(AuthToken authToken, HttpGet request)
