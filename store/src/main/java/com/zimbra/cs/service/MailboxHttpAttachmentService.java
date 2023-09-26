@@ -34,7 +34,7 @@ public class MailboxHttpAttachmentService implements AttachmentService {
     return Try.of(() -> UserServletRequest.buildRequest("co", String.valueOf(messageId), part))
         .mapTry(
             userServletRequest ->
-                mailboxHttpClient.callUserServlet(token, accountId, userServletRequest))
+                mailboxHttpClient.dolUserServletGetRequest(token, accountId, userServletRequest))
         .flatMap(Function.identity())
         .mapTry(
             userServletResponse -> {

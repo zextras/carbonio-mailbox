@@ -24,7 +24,6 @@ import io.vavr.control.Try;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
-import javax.mail.MessagingException;
 import org.apache.http.Header;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
@@ -51,8 +50,8 @@ public class MailboxHttpClient {
   }
 
   /**
-   * Returns URL for a {@link UserServlet} resource based on the target account ID
-   * and {@link UserServletRequest} parameters.
+   * Returns URL for a {@link UserServlet} resource based on the target account ID and {@link
+   * UserServletRequest} parameters.
    *
    * @param targetAccountId accountId of the requested account attachment
    * @param userServletRequest a {@link UserServlet} request
@@ -75,24 +74,26 @@ public class MailboxHttpClient {
   }
 
   /**
-   * Calls the UserServlet
+   * Makes a GET call to the UserServlet.
    *
    * @param authToken token of authenticated user
-   * @param accountId accountid of user servlet
-   * @return http response from {@link UserServlet}
+   * @param accountId id of the requested account for {@link UserServlet} resource
+   * @param userServletRequest parameters describing the request
+   * @return {@link Try} of {@link UserServletResponse}
    * @throws HttpException
    * @throws IOException
    * @throws ServiceException
-   * @throws MessagingException
    * @throws AuthTokenException
    */
-  public Try<UserServletResponse> callUserServlet(
+  public Try<UserServletResponse> dolUserServletGetRequest(
       AuthToken authToken, String accountId, UserServletRequest userServletRequest)
       throws HttpException, IOException, ServiceException, AuthTokenException {
     final HttpGet request = new HttpGet(getUserServletResourceUrl(accountId, userServletRequest));
     final HttpResponse httpResponse = this.doSendRequest(authToken, request);
-    if (!Objects.equals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode())) {
-      return Try.failure(ServiceException.FAILURE("Status code not 200.", null));
+    final int statusCode = httpResponse.getStatusLine().getStatusCode();
+    if (!Objects.equals(HttpStatus.SC_OK, statusCode)) {
+      return Try.failure(
+          ServiceException.FAILURE("Request failed with status code: " + statusCode, null));
     }
     final Header contentDispositionHeader = httpResponse.getFirstHeader(CONTENT_DISPOSITION);
     final Header contentTypeHeader = httpResponse.getFirstHeader(CONTENT_TYPE);

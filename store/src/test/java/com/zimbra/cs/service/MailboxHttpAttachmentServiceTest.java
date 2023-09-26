@@ -44,7 +44,7 @@ class MailboxHttpAttachmentServiceTest {
         new ByteArrayInputStream("hello.txt".getBytes(StandardCharsets.UTF_8));
     final InputStream expectedContent =
         new ByteArrayInputStream("hello.txt".getBytes(StandardCharsets.UTF_8));
-    when(mailboxHttpClient.callUserServlet(token, accountUuid, userServletRequest))
+    when(mailboxHttpClient.dolUserServletGetRequest(token, accountUuid, userServletRequest))
         .thenReturn(Try.of(() -> new UserServletResponse(contentType, fileName, content)));
     final MimePart attachment =
         attachmentService.getAttachment(accountUuid, token, messageId, part).get();
@@ -59,7 +59,7 @@ class MailboxHttpAttachmentServiceTest {
     final MailboxHttpClient mailboxHttpClient = mock(MailboxHttpClient.class);
     final MailboxHttpAttachmentService attachmentService =
         new MailboxHttpAttachmentService(mailboxHttpClient);
-    when(mailboxHttpClient.callUserServlet(any(), anyString(), any()))
+    when(mailboxHttpClient.dolUserServletGetRequest(any(), anyString(), any()))
         .thenThrow(new RuntimeException("failed!"));
     final Try<MimePart> attachmentTry =
         attachmentService.getAttachment(

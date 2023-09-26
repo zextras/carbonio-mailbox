@@ -13,9 +13,9 @@ import org.apache.commons.lang.StringUtils;
 /** Represents a {@link com.zimbra.cs.service.UserServlet} request */
 public class UserServletRequest {
 
-  final String authType;
-  final String itemId;
-  final String itemPart;
+  private final String authType;
+  private final String itemId;
+  private final String itemPart;
 
   private UserServletRequest(String authType, String itemId, String itemPart) {
     this.authType = authType;

@@ -6,11 +6,11 @@ package com.zextras.mailbox.client;
 
 import java.io.InputStream;
 
-/** Represent an answer from {@link com.zimbra.cs.service.UserServlet} */
+/** Represent a successful answer from {@link com.zimbra.cs.service.UserServlet} */
 public class UserServletResponse {
-  final String contentType;
-  final String fileName;
-  final InputStream content;
+  private final String contentType;
+  private final String fileName;
+  private final InputStream content;
 
   public UserServletResponse(String contentType, String fileName, InputStream content) {
     this.contentType = contentType;
