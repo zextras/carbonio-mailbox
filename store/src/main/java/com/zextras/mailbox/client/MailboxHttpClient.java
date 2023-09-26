@@ -56,7 +56,7 @@ public class MailboxHttpClient {
    *
    * @param targetAccountId accountId of the requested account attachment
    * @param userServletRequest request for {@link UserServlet}
-   * @return Try of attachment's URL {@link String} for content servlet
+   * @return URL string for the {@link UserServlet} resource.
    */
   private String getUserServletResourceUrl(
       String targetAccountId, UserServletRequest userServletRequest) {
