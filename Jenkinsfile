@@ -1,7 +1,16 @@
 def mvnCmd(String cmd) {
-    def extraOptions = ''
-    sh 'mvn -B -s settings-jenkins.xml ' + extraOptions + ' ' + cmd
+    def profile = ''
+    def revisionModifier = '-SNAPSHOT'
+    if (env.BRANCH_NAME == 'main' ) {
+        revisionModifier = ''
+        profile = '-Pprod'
+    }
+    else if (env.BRANCH_NAME == 'devel' ) {
+        profile = '-Pdev'
+    }
+    sh 'mvn -B -s settings-jenkins.xml -Drevision=$(cat maven_version.txt)' + revisionModifier + ' ' + profile + ' ' + cmd
 }
+
 pipeline {
     agent {
         node {
@@ -17,6 +26,7 @@ pipeline {
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
         MAVEN_OPTS = "-Xmx4g"
+        ENV_NAME = "${env.BRANCH_NAME == "devel" ? "development" : "production"}"
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
     }
@@ -91,14 +101,10 @@ pipeline {
         }
         stage('Publish SNAPSHOT to maven') {
               when {
-                anyOf {
                   branch 'devel';
-                  branch 'chore/maven-build';
-                  expression{env.CHANGE_BRANCH == 'chore/maven-build'}
-                }
               }
               steps {
-                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pdev')
+                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
               }
         }
         stage('Publish to maven') {
@@ -106,7 +112,7 @@ pipeline {
                 buildingTag()
             }
             steps {
-              mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pprod')
+              mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
             }
         }
         stage('Build deb/rpm') {
