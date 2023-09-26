@@ -76,8 +76,6 @@ class RevokeFolderActionTest {
     when(mountpoint.getRemoteId()).thenReturn(folderId);
     when(mountpointService.getMountpointsByPath(granteeId, granteeOpCtx, granteeRootItemId))
         .thenReturn(List.of(mountpoint));
-    //    when(mountpointService.deleteMountpointsByIds(accountId, granteeOpCtx,
-    // itemId)).thenReturn(List.of(mountpoint));
 
     final Try<Void> operationResult =
         revokeFolderAction.revokeAndDelete(

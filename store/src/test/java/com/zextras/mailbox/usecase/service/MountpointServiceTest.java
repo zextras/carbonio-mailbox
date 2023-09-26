@@ -38,7 +38,6 @@ class MountpointServiceTest {
     mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
     mountpointService = new MountpointService(mailboxManager);
-    provisioning.createDomain("test.com", new HashMap<>());
   }
 
   @AfterEach
