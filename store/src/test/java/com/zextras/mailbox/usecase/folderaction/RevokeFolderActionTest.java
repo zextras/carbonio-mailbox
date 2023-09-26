@@ -58,7 +58,8 @@ class RevokeFolderActionTest {
     final OperationContext operationContext = mock(OperationContext.class);
     final ItemId folderItemId = mock(ItemId.class);
     when(folderItemId.getId()).thenReturn(folderId);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(accountIdFolderId, accountId)).thenReturn(folderItemId);
 
     final OperationContext granteeOpCtx = mock(OperationContext.class);

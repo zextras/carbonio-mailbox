@@ -36,17 +36,20 @@ public class GrantFolderAction {
   private final AccountUtil accountUtil;
   private final ItemIdFactory itemIdFactory;
   private final GranteeService granteeService;
+  private final Provisioning provisioning;
 
   @Inject
   public GrantFolderAction(
       MailboxManager mailboxManager,
       AccountUtil accountUtil,
       ItemIdFactory itemIdFactory,
-      GranteeService granteeService) {
+      GranteeService granteeService,
+      Provisioning provisioning) {
     this.mailboxManager = mailboxManager;
     this.accountUtil = accountUtil;
     this.itemIdFactory = itemIdFactory;
     this.granteeService = granteeService;
+    this.provisioning = provisioning;
   }
 
   public static class Result {
@@ -297,7 +300,7 @@ public class GrantFolderAction {
                     granteeService.lookupGranteeByName(
                         calculatedZimbraId, ACL.GRANTEE_USER, operationContext);
                 if (namedEntry instanceof MailTarget) {
-                  Domain domain = Provisioning.getInstance().getDomain(userMailbox.getAccount());
+                  Domain domain = provisioning.getDomain(userMailbox.getAccount());
                   String granteeDomainName = ((MailTarget) namedEntry).getDomainName();
                   if (domain.isInternalSharingCrossDomainEnabled()
                       || domain.getName().equals(granteeDomainName)

@@ -14,6 +14,7 @@ import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
 import java.lang.reflect.Field;
 import java.util.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,8 +36,6 @@ class RevokeOrphanAccessFolderActionTest {
   void setUp() throws NoSuchFieldException, IllegalAccessException {
     mailboxManager = mock(MailboxManager.class);
     itemIdFactory = mock(ItemIdFactory.class);
-    revokeOrphanAccessFolderAction =
-        new RevokeOrphanAccessFolderAction(mailboxManager, itemIdFactory);
     Field zLdapInstanceFactory = ZLdapFilterFactory.class.getDeclaredField("SINGLETON");
     zLdapInstanceFactory.setAccessible(true);
     zLdapInstanceFactory.set(null, new DummyLdapFilterFactory());
@@ -48,7 +47,15 @@ class RevokeOrphanAccessFolderActionTest {
     acl = mock(ACL.class);
     grant = mock(ACL.Grant.class);
     provisioning = mock(Provisioning.class);
-    Provisioning.setInstance(provisioning);
+    revokeOrphanAccessFolderAction =
+        new RevokeOrphanAccessFolderAction(mailboxManager, itemIdFactory, provisioning);
+  }
+
+  @AfterEach
+  void tearDown() throws Exception {
+    Field zLdapInstanceFactory = ZLdapFilterFactory.class.getDeclaredField("SINGLETON");
+    zLdapInstanceFactory.setAccessible(true);
+    zLdapInstanceFactory.set(null, null);
   }
 
   @Test
@@ -62,7 +69,8 @@ class RevokeOrphanAccessFolderActionTest {
     when(userMailbox.getAccount())
         .thenReturn(new Account("test", accountId, new HashMap<>(), new HashMap<>(), provisioning));
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(userMailbox.getFolderTree(operationContext, itemId, true)).thenReturn(folderNode);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(folderNode.getFolder()).thenReturn(folder);
@@ -94,7 +102,8 @@ class RevokeOrphanAccessFolderActionTest {
     when(userMailbox.getAccount())
         .thenReturn(new Account("test", accountId, new HashMap<>(), new HashMap<>(), provisioning));
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(userMailbox.getFolderTree(operationContext, itemId, true)).thenReturn(folderNode);
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(folderNode.getFolder()).thenReturn(folder);

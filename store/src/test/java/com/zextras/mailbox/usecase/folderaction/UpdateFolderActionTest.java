@@ -65,7 +65,8 @@ class UpdateFolderActionTest {
 
   private void setupDefaultMocks() throws ServiceException {
     when(itemId.getId()).thenReturn(realItemId);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
     when(operationContext.getmRequestedAccountId()).thenReturn(accountId);
     when(itemId.belongsTo(userMailbox)).thenReturn(true);

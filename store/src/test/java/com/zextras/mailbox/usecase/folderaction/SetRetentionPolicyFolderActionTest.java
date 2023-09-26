@@ -39,7 +39,8 @@ class SetRetentionPolicyFolderActionTest {
     final ItemId itemId = mock(ItemId.class);
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     List<Policy> keepPolicies = List.of(Policy.newUserPolicy("10m"));

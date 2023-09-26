@@ -12,7 +12,6 @@ import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
 import java.util.List;
-import java.util.Optional;
 import javax.inject.Inject;
 
 /**
@@ -23,14 +22,17 @@ import javax.inject.Inject;
  * @since 23.10.0
  */
 public class RevokeOrphanAccessFolderAction {
+
   private final MailboxManager mailboxManager;
   private final ItemIdFactory itemIdFactory;
+  private final Provisioning provisioning;
 
   @Inject
   public RevokeOrphanAccessFolderAction(
-      MailboxManager mailboxManager, ItemIdFactory itemIdFactory) {
+      MailboxManager mailboxManager, ItemIdFactory itemIdFactory, Provisioning provisioning) {
     this.mailboxManager = mailboxManager;
     this.itemIdFactory = itemIdFactory;
+    this.provisioning = provisioning;
   }
 
   /**
@@ -49,36 +51,39 @@ public class RevokeOrphanAccessFolderAction {
       final String folderId,
       final String zimbraId,
       final String grantType) {
-    return Try.run(
-        () -> {
-          final Mailbox userMailbox =
-              Optional.ofNullable(mailboxManager.getMailboxByAccountId(accountId, true))
-                  .orElseThrow(
-                      () ->
-                          new IllegalArgumentException(
-                              "unable to locate the mailbox for the given accountId"));
-          final ItemId itemId = itemIdFactory.create(folderId, accountId);
-          final SearchDirectoryOptions searchDirectoryOptions = new SearchDirectoryOptions();
+    return mailboxManager
+        .tryGetMailboxByAccountId(accountId, true)
+        .flatMap(
+            userMailbox ->
+                Try.run(
+                    () -> {
+                      final ItemId itemId = itemIdFactory.create(folderId, accountId);
+                      final SearchDirectoryOptions searchDirectoryOptions =
+                          new SearchDirectoryOptions();
 
-          final String query = "(" + ZAttrProvisioning.A_zimbraId + "=" + zimbraId + ")";
-          searchDirectoryOptions.setFilterString(ZLdapFilterFactory.FilterId.SEARCH_GRANTEE, query);
-          searchDirectoryOptions.setOnMaster(true); // search the grantee on LDAP master
-          final List<NamedEntry> entries =
-              Provisioning.getInstance().searchDirectory(searchDirectoryOptions);
+                      final String query =
+                          "(" + ZAttrProvisioning.A_zimbraId + "=" + zimbraId + ")";
+                      searchDirectoryOptions.setFilterString(
+                          ZLdapFilterFactory.FilterId.SEARCH_GRANTEE, query);
+                      searchDirectoryOptions.setOnMaster(true); // search the grantee on LDAP master
+                      final List<NamedEntry> entries =
+                          provisioning.searchDirectory(searchDirectoryOptions);
 
-          if (!entries.isEmpty()) {
-            throw ServiceException.INVALID_REQUEST("grantee " + zimbraId + " exists", null);
-          }
+                      if (!entries.isEmpty()) {
+                        throw ServiceException.INVALID_REQUEST(
+                            "grantee " + zimbraId + " exists", null);
+                      }
 
-          final Mailbox.FolderNode rootNode =
-              userMailbox.getFolderTree(operationContext, itemId, true);
-          GranteeType.fromGranteeTypeName(grantType)
-              .mapTry(
-                  type -> {
-                    revokeOrphanGrants(operationContext, userMailbox, rootNode, zimbraId, type);
-                    return null;
-                  });
-        });
+                      final Mailbox.FolderNode rootNode =
+                          userMailbox.getFolderTree(operationContext, itemId, true);
+                      GranteeType.fromGranteeTypeName(grantType)
+                          .mapTry(
+                              type -> {
+                                revokeOrphanGrants(
+                                    operationContext, userMailbox, rootNode, zimbraId, type);
+                                return null;
+                              });
+                    }));
   }
 
   private void revokeOrphanGrants(

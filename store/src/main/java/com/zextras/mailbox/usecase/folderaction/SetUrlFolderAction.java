@@ -5,7 +5,6 @@ import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
-import java.util.Optional;
 import javax.inject.Inject;
 
 /**
@@ -38,22 +37,19 @@ public class SetUrlFolderAction {
       final String accountId,
       final String folderId,
       final String url) {
-    return Try.run(
-        () -> {
-          final Mailbox userMailbox =
-              Optional.ofNullable(mailboxManager.getMailboxByAccountId(accountId, true))
-                  .orElseThrow(
-                      () ->
-                          new IllegalArgumentException(
-                              "unable to locate the mailbox for the given accountId"));
+    return mailboxManager
+        .tryGetMailboxByAccountId(accountId, true)
+        .flatMap(
+            userMailbox ->
+                Try.run(
+                    () -> {
+                      final ItemId itemId = itemIdFactory.create(folderId, accountId);
 
-          final ItemId itemId = itemIdFactory.create(folderId, accountId);
+                      userMailbox.setFolderUrl(operationContext, itemId.getId(), url);
 
-          userMailbox.setFolderUrl(operationContext, itemId.getId(), url);
-
-          if (Strings.isNullOrEmpty(url)) {
-            userMailbox.synchronizeFolder(operationContext, itemId.getId());
-          }
-        });
+                      if (Strings.isNullOrEmpty(url)) {
+                        userMailbox.synchronizeFolder(operationContext, itemId.getId());
+                      }
+                    }));
   }
 }

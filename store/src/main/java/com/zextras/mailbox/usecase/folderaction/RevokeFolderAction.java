@@ -13,7 +13,6 @@ import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 
@@ -63,36 +62,39 @@ public class RevokeFolderAction {
       final String folderId,
       final String granteeId) {
 
-    return Try.run(
-        () -> {
-          final ItemId itemId = itemIdFactory.create(folderId, requestedAccountId);
-          final Mailbox userMailbox =
-              Optional.ofNullable(mailboxManager.getMailboxByAccountId(requestedAccountId, true))
-                  .orElseThrow(
-                      () ->
-                          new IllegalArgumentException(
-                              "unable to locate the mailbox for the given accountId"));
-          final Account granteeAccount = provisioning.getAccountById(granteeId);
-          final OperationContext granteeOpContext = operationContextFactory.create(granteeAccount);
-          final List<Integer> mountPointIds =
-              mountpointService
-                  .getMountpointsByPath(
-                      granteeId,
-                      granteeOpContext,
-                      itemIdFactory.create(String.valueOf(Mailbox.ID_FOLDER_USER_ROOT), granteeId))
-                  .stream()
-                  .filter(
-                      mpt ->
-                          mpt.getOwnerId().equals(requestedAccountId)
-                              && Objects.equals(mpt.getRemoteId(), itemId.getId()))
-                  .map(MailItem::getId)
-                  .collect(Collectors.toList());
-          // TODO: the delete action should be performed by the original user who made the request
-          // for security reasons.
-          // TODO: revoke probably belongs to another service if we have a mountpointservice (ACL
-          // service?)
-          userMailbox.revokeAccess(operationContext, itemId.getId(), granteeId);
-          mountpointService.deleteMountpointsByIds(granteeId, granteeOpContext, mountPointIds);
-        });
+    return mailboxManager
+        .tryGetMailboxByAccountId(requestedAccountId, true)
+        .flatMap(
+            userMailbox ->
+                Try.run(
+                    () -> {
+                      final ItemId itemId = itemIdFactory.create(folderId, requestedAccountId);
+                      final Account granteeAccount = provisioning.getAccountById(granteeId);
+                      final OperationContext granteeOpContext =
+                          operationContextFactory.create(granteeAccount);
+                      final List<Integer> mountPointIds =
+                          mountpointService
+                              .getMountpointsByPath(
+                                  granteeId,
+                                  granteeOpContext,
+                                  itemIdFactory.create(
+                                      String.valueOf(Mailbox.ID_FOLDER_USER_ROOT), granteeId))
+                              .stream()
+                              .filter(
+                                  mpt ->
+                                      mpt.getOwnerId().equals(requestedAccountId)
+                                          && Objects.equals(mpt.getRemoteId(), itemId.getId()))
+                              .map(MailItem::getId)
+                              .collect(Collectors.toList());
+                      // TODO: the delete action should be performed by the original user who made
+                      // the request
+                      //  for security reasons.
+                      // TODO: revoke probably belongs to another service if we have a
+                      // mountpointservice (ACL
+                      // service?)
+                      userMailbox.revokeAccess(operationContext, itemId.getId(), granteeId);
+                      mountpointService.deleteMountpointsByIds(
+                          granteeId, granteeOpContext, mountPointIds);
+                    }));
   }
 }

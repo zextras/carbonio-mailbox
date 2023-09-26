@@ -16,14 +16,15 @@ import org.junit.jupiter.api.Test;
 
 class GranteeServiceTest {
   private GranteeService granteeService;
+  private Provisioning provisioning;
   private final String granteeName = "granteeName";
   private final String granteeEmail = granteeName + "@" + MailboxTestUtil.DEFAULT_DOMAIN;
   private String granteeId;
 
   @BeforeEach
   void setUp() throws Exception {
-    com.zextras.mailbox.usecase.MailboxTestUtil.setUp();
-    Provisioning provisioning = Provisioning.getInstance();
+    MailboxTestUtil.setUp();
+    provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
     Map<String, Object> granteeAttrs = Maps.newHashMap();
     granteeAttrs.put(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME);
     granteeId = provisioning.createAccount(granteeEmail, "secret", granteeAttrs).getId();

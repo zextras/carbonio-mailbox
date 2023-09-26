@@ -35,7 +35,8 @@ class SetUrlFolderActionTest {
     final ItemId itemId = mock(ItemId.class);
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     Try<Void> result = setUrlFolderAction.setFolderUrl(operationContext, accountId, folderId, url);
@@ -53,7 +54,8 @@ class SetUrlFolderActionTest {
     final ItemId itemId = mock(ItemId.class);
 
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     Try<Void> result = setUrlFolderAction.setFolderUrl(operationContext, accountId, folderId, url);

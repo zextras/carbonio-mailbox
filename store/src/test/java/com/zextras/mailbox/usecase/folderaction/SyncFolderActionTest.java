@@ -40,7 +40,8 @@ class SyncFolderActionTest {
     final OperationContext operationContext = mock(OperationContext.class);
     final ItemId itemId = mock(ItemId.class);
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     final Try<Void> operationResult =
@@ -62,7 +63,8 @@ class SyncFolderActionTest {
     final OperationContext operationContext = mock(OperationContext.class);
     final ItemId itemId = mock(ItemId.class);
     when(itemId.getId()).thenReturn(1);
-    when(mailboxManager.getMailboxByAccountId(accountId, true)).thenReturn(userMailbox);
+    when(mailboxManager.tryGetMailboxByAccountId(accountId, true))
+        .thenReturn(Try.success(userMailbox));
     when(itemIdFactory.create(folderId, accountId)).thenReturn(itemId);
 
     final Try<Void> operationResult =

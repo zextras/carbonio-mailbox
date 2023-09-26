@@ -8,12 +8,10 @@ import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
-import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
-import java.util.Optional;
 import javax.inject.Inject;
 
 /**
@@ -51,80 +49,87 @@ public class UpdateFolderAction {
       final String accountId,
       final String folderId,
       final UpdateInput updateInput) {
-    return Try.run(
-        () -> {
-          final Mailbox userMailbox =
-              Optional.ofNullable(mailboxManager.getMailboxByAccountId(accountId, true))
-                  .orElseThrow(
-                      () ->
-                          new IllegalArgumentException(
-                              "unable to locate the mailbox for the given accountId"));
+    return mailboxManager
+        .tryGetMailboxByAccountId(accountId, true)
+        .flatMap(
+            userMailbox ->
+                Try.run(
+                    () -> {
+                      final ItemId itemId = itemIdFactory.create(folderId, accountId);
 
-          final ItemId itemId = itemIdFactory.create(folderId, accountId);
+                      final ItemId folderItemId =
+                          itemIdFactory.create(
+                              folderId == null ? "-1" : folderId,
+                              operationContext.getmRequestedAccountId() != null
+                                  ? operationContext.getmRequestedAccountId()
+                                  : operationContext.getmAuthTokenAccountId());
 
-          final ItemId folderItemId =
-              itemIdFactory.create(
-                  folderId == null ? "-1" : folderId,
-                  operationContext.getmRequestedAccountId() != null
-                      ? operationContext.getmRequestedAccountId()
-                      : operationContext.getmAuthTokenAccountId());
+                      if (!folderItemId.belongsTo(userMailbox)) {
+                        throw ServiceException.INVALID_REQUEST(
+                            "cannot move folder between mailboxes", null);
+                      } else if (folderId != null && folderItemId.getId() <= 0) {
+                        throw MailServiceException.NO_SUCH_FOLDER(folderItemId.getId());
+                      }
 
-          if (!folderItemId.belongsTo(userMailbox)) {
-            throw ServiceException.INVALID_REQUEST("cannot move folder between mailboxes", null);
-          } else if (folderId != null && folderItemId.getId() <= 0) {
-            throw MailServiceException.NO_SUCH_FOLDER(folderItemId.getId());
-          }
+                      if (updateInput.getInternalGrantExpiryString() != null
+                          && updateInput.getGuestGrantExpiryString() != null) {
+                        final ACL acl =
+                            aclHelper.parseACL(
+                                updateInput.getInternalGrantExpiryString(),
+                                updateInput.getGuestGrantExpiryString(),
+                                updateInput.getGrantInputList(),
+                                updateInput.getView() == null
+                                    ? userMailbox
+                                        .getFolderById(operationContext, itemId.getId())
+                                        .getDefaultView()
+                                    : MailItem.Type.of(updateInput.getView()),
+                                userMailbox.getAccount());
 
-          if (updateInput.getInternalGrantExpiryString() != null
-              && updateInput.getGuestGrantExpiryString() != null) {
-            final ACL acl =
-                aclHelper.parseACL(
-                    updateInput.getInternalGrantExpiryString(),
-                    updateInput.getGuestGrantExpiryString(),
-                    updateInput.getGrantInputList(),
-                    updateInput.getView() == null
-                        ? userMailbox
-                            .getFolderById(operationContext, itemId.getId())
-                            .getDefaultView()
-                        : MailItem.Type.of(updateInput.getView()),
-                    userMailbox.getAccount());
+                        userMailbox.setPermissions(operationContext, itemId.getId(), acl);
+                      }
 
-            userMailbox.setPermissions(operationContext, itemId.getId(), acl);
-          }
+                      if (updateInput.getColor() >= 0) {
+                        userMailbox.setColor(
+                            operationContext,
+                            itemId.getId(),
+                            MailItem.Type.FOLDER,
+                            updateInput.getColor());
+                      }
 
-          if (updateInput.getColor() >= 0) {
-            userMailbox.setColor(
-                operationContext, itemId.getId(), MailItem.Type.FOLDER, updateInput.getColor());
-          }
+                      if (updateInput.getFlags() != null) {
+                        userMailbox.setTags(
+                            operationContext,
+                            itemId.getId(),
+                            MailItem.Type.FOLDER,
+                            Flag.toBitmask(updateInput.getFlags()),
+                            null,
+                            null);
+                      }
 
-          if (updateInput.getFlags() != null) {
-            userMailbox.setTags(
-                operationContext,
-                itemId.getId(),
-                MailItem.Type.FOLDER,
-                Flag.toBitmask(updateInput.getFlags()),
-                null,
-                null);
-          }
+                      if (updateInput.getView() != null) {
+                        userMailbox.setFolderDefaultView(
+                            operationContext,
+                            itemId.getId(),
+                            MailItem.Type.of(updateInput.getView()));
+                      }
 
-          if (updateInput.getView() != null) {
-            userMailbox.setFolderDefaultView(
-                operationContext, itemId.getId(), MailItem.Type.of(updateInput.getView()));
-          }
+                      if (updateInput.getNewName() != null) {
+                        userMailbox.rename(
+                            operationContext,
+                            itemId.getId(),
+                            MailItem.Type.FOLDER,
+                            updateInput.getNewName(),
+                            folderItemId.getId());
+                      }
 
-          if (updateInput.getNewName() != null) {
-            userMailbox.rename(
-                operationContext,
-                itemId.getId(),
-                MailItem.Type.FOLDER,
-                updateInput.getNewName(),
-                folderItemId.getId());
-          }
-
-          if (folderItemId.getId() > 0) {
-            userMailbox.move(
-                operationContext, itemId.getId(), MailItem.Type.FOLDER, folderItemId.getId(), null);
-          }
-        });
+                      if (folderItemId.getId() > 0) {
+                        userMailbox.move(
+                            operationContext,
+                            itemId.getId(),
+                            MailItem.Type.FOLDER,
+                            folderItemId.getId(),
+                            null);
+                      }
+                    }));
   }
 }

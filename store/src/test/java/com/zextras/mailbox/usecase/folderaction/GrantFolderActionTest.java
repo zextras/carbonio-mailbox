@@ -32,6 +32,7 @@ class GrantFolderActionTest {
   private MailboxManager mailboxManager;
   private AccountUtil accountUtil;
   private ItemIdFactory itemIdFactory;
+  private Provisioning provisioning;
   private GranteeService granteeService;
   private ItemId itemId;
   private String zimbraId;
@@ -54,6 +55,7 @@ class GrantFolderActionTest {
     accountUtil = mock(AccountUtil.class);
     itemIdFactory = mock(ItemIdFactory.class);
     granteeService = mock(GranteeService.class);
+    provisioning = mock(Provisioning.class);
 
     zimbraId = "id123";
     expiry = 42L;
@@ -69,7 +71,8 @@ class GrantFolderActionTest {
     when(folder.getDefaultView()).thenReturn(MailItem.Type.FOLDER);
 
     grantFolderAction =
-        new GrantFolderAction(mailboxManager, accountUtil, itemIdFactory, granteeService);
+        new GrantFolderAction(
+            mailboxManager, accountUtil, itemIdFactory, granteeService, provisioning);
   }
 
   @Test
@@ -337,9 +340,6 @@ class GrantFolderActionTest {
 
   @Test
   void shouldGrantAccessToGroupWhenGrantee_GUEST() throws Exception {
-    Provisioning provisioning = mock(Provisioning.class);
-    Provisioning.setInstance(provisioning);
-
     display = "guest@test.com";
     String domainName = "test.com";
     String namedEntryId = "namedEntryId";
@@ -393,9 +393,6 @@ class GrantFolderActionTest {
 
   @Test
   void shouldGrantAccessToGuestAccountWhenGrantee_GUEST() throws Exception {
-    Provisioning provisioning = mock(Provisioning.class);
-    Provisioning.setInstance(provisioning);
-
     display = "guest@test.com";
     String domainName = "test.com";
     String namedEntryId = "namedEntryId";
