@@ -55,7 +55,7 @@ public class MailboxHttpClient {
    * and {@link UserServletRequest} parameters.
    *
    * @param targetAccountId accountId of the requested account attachment
-   * @param userServletRequest request for {@link UserServlet}
+   * @param userServletRequest a {@link UserServlet} request
    * @return URL string for the {@link UserServlet} resource.
    */
   private String getUserServletResourceUrl(
@@ -88,19 +88,19 @@ public class MailboxHttpClient {
    */
   public Try<UserServletResponse> callUserServlet(
       AuthToken authToken, String accountId, UserServletRequest userServletRequest)
-      throws HttpException, IOException, ServiceException, MessagingException, AuthTokenException {
-    HttpGet request = new HttpGet(getUserServletResourceUrl(accountId, userServletRequest));
+      throws HttpException, IOException, ServiceException, AuthTokenException {
+    final HttpGet request = new HttpGet(getUserServletResourceUrl(accountId, userServletRequest));
     final HttpResponse httpResponse = this.doSendRequest(authToken, request);
     if (!Objects.equals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode())) {
       return Try.failure(ServiceException.FAILURE("Status code not 200.", null));
     }
-    Header contentDispositionHeader = httpResponse.getFirstHeader(CONTENT_DISPOSITION);
-    Header contentTypeHeader = httpResponse.getFirstHeader(CONTENT_TYPE);
-    String filename =
+    final Header contentDispositionHeader = httpResponse.getFirstHeader(CONTENT_DISPOSITION);
+    final Header contentTypeHeader = httpResponse.getFirstHeader(CONTENT_TYPE);
+    final String filename =
         contentDispositionHeader == null
             ? "unknown"
             : new ContentDisposition(contentDispositionHeader.getValue()).getParameter("filename");
-    String contentType =
+    final String contentType =
         contentTypeHeader == null
             ? "unknown"
             : new ContentType(contentTypeHeader.getValue()).getContentType();

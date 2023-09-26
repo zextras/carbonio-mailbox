@@ -16,7 +16,7 @@ import java.util.Objects;
 public class PreviewQueryUtil {
 
   /**
-   * Creates a PreviewQuery from input parameters.
+   * Creates a {@link Query} from input parameters.
    *
    * @param area
    * @param outputFormat
@@ -25,7 +25,7 @@ public class PreviewQueryUtil {
    * @param crop
    * @param quality
    * @param shape
-   * @return {@link Query} fro preview
+   * @return {@link Query} for preview
    */
   public static Query getPreviewQuery(
       String area,
