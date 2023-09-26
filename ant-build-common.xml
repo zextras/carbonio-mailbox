@@ -63,7 +63,7 @@
   </target>
 
   <target name="carbonio-version">
-    <property name="carbonio.buildinfo.version" value="23.9.0_ZEXTRAS_202309"/>
+    <property name="carbonio.buildinfo.version" value="23.10.0_ZEXTRAS_202310"/>
     <fail
       message="Missing build version. Define proper ZCS version like -Dcarbonio.buildinfo.version">
       <condition>
@@ -75,6 +75,7 @@
   </target>
 
   <target name="set-dev-version" depends="require-version" >
+    <tstamp/>
     <antcontrib:if>
       <not>
         <isset property="jar.file"/>
@@ -138,7 +139,6 @@
         <property name="dev.version"
           value="${zimbra.buildinfo.majorversion}.${zimbra.buildinfo.minorversion}.${zimbra.buildinfo.microversion}"/>
         <property name="jar.file" value="${ant.project.name}-${dev.version}.jar"/>
-        <tstamp/>
       </then>
     </antcontrib:if>
   </target>

@@ -28,7 +28,6 @@ import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.Signature;
-import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -38,12 +37,8 @@ import com.zimbra.cs.service.admin.AdminAccessControl;
 import com.zimbra.cs.session.Session;
 import com.zimbra.cs.session.SoapSession;
 import com.zimbra.cs.util.BuildInfo;
-import com.zimbra.cs.zimlet.ZimletPresence;
-import com.zimbra.cs.zimlet.ZimletUserProperties;
-import com.zimbra.cs.zimlet.ZimletUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
-import com.zimbra.soap.account.type.Prop;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -224,13 +219,14 @@ public class GetInfo extends AccountDocumentHandler {
       Element attrs = response.addUniqueElement(AccountConstants.E_ATTRS);
       doAttrs(account, locale.toString(), attrs, attrMap);
     }
+
     if (sections.contains(Section.ZIMLETS)) {
       Element zimlets = response.addUniqueElement(AccountConstants.E_ZIMLETS);
-      doZimlets(zimlets, account);
+      // doZimlets(zimlets, account);
     }
     if (sections.contains(Section.PROPS)) {
       Element props = response.addUniqueElement(AccountConstants.E_PROPERTIES);
-      doProperties(props, account);
+      // doProperties(props, account);
     }
     if (sections.contains(Section.IDENTS)) {
       Element ids = response.addUniqueElement(AccountConstants.E_IDENTITIES);
@@ -325,40 +321,40 @@ public class GetInfo extends AccountDocumentHandler {
     }
   }
 
-  private static void doZimlets(Element response, Account acct) {
-    try {
-      // bug 34517
-      ZimletUtil.migrateUserPrefIfNecessary(acct);
-
-      ZimletPresence userZimlets = ZimletUtil.getUserZimlets(acct);
-      List<Zimlet> zimletList =
-          ZimletUtil.orderZimletsByPriority(userZimlets.getZimletNamesAsArray());
-      int priority = 0;
-      for (Zimlet z : zimletList) {
-        if (z.isEnabled() && !z.isExtension()) {
-          ZimletUtil.listZimlet(response, z, priority, userZimlets.getPresence(z.getName()));
-        }
-        priority++;
-      }
-
-      // load the zimlets in the dev directory and list them
-      ZimletUtil.listDevZimlets(response);
-    } catch (ServiceException se) {
-      ZimbraLog.account.error("can't get zimlets", se);
-    }
-  }
-
-  private static void doProperties(Element response, Account acct) {
-    ZimletUserProperties zp = ZimletUserProperties.getProperties(acct);
-    Set<? extends Prop> props = zp.getAllProperties();
-    for (Prop prop : props) {
-      Element elem = response.addElement(AccountConstants.E_PROPERTY);
-      elem.addAttribute(AccountConstants.A_ZIMLET, prop.getZimlet());
-      elem.addAttribute(AccountConstants.A_NAME, prop.getName());
-      elem.setText(prop.getValue());
-    }
-  }
-
+  //    private static void doZimlets(Element response, Account acct) {
+  //        try {
+  //            // bug 34517
+  //            ZimletUtil.migrateUserPrefIfNecessary(acct);
+  //
+  //            ZimletPresence userZimlets = ZimletUtil.getUserZimlets(acct);
+  //            List<Zimlet> zimletList =
+  // ZimletUtil.orderZimletsByPriority(userZimlets.getZimletNamesAsArray());
+  //            int priority = 0;
+  //            for (Zimlet z : zimletList) {
+  //                if (z.isEnabled() && !z.isExtension()) {
+  //                    ZimletUtil.listZimlet(response, z, priority,
+  // userZimlets.getPresence(z.getName()));
+  //                }
+  //                priority++;
+  //            }
+  //
+  //            // load the zimlets in the dev directory and list them
+  //            ZimletUtil.listDevZimlets(response);
+  //        } catch (ServiceException se) {
+  //            ZimbraLog.account.error("can't get zimlets", se);
+  //        }
+  //    }
+  //
+  //    private static void doProperties(Element response, Account acct) {
+  //        ZimletUserProperties zp = ZimletUserProperties.getProperties(acct);
+  //        Set<? extends Prop> props = zp.getAllProperties();
+  //        for (Prop prop : props) {
+  //            Element elem = response.addElement(AccountConstants.E_PROPERTY);
+  //            elem.addAttribute(AccountConstants.A_ZIMLET, prop.getZimlet());
+  //            elem.addAttribute(AccountConstants.A_NAME, prop.getName());
+  //            elem.setText(prop.getValue());
+  //        }
+  //    }
   private static void doIdentities(Element response, Account acct) {
     try {
       for (Identity i : Provisioning.getInstance().getAllIdentities(acct)) {

@@ -7,6 +7,10 @@ import java.util.ArrayList;
 
 class WebEwsSSLUpstreamServersVar extends ServersVar {
 
+  public WebEwsSSLUpstreamServersVar(String key, String description) {
+    super(key, description);
+  }
+
   public WebEwsSSLUpstreamServersVar() {
     super("web.ssl.upstream.ewsserver.:servers", "List of upstream EWS servers used by Web Proxy");
   }

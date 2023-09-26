@@ -636,6 +636,8 @@ public class UrlNamespace {
           }
           break;
         case APPOINTMENT:
+          resource = new CalendarObject.LocalCalendarObject(ctxt, (CalendarItem) item);
+          break;
         case MESSAGE:
           resource = getCalendarItemForMessage(ctxt, (Message) item);
           break;

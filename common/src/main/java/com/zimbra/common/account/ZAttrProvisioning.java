@@ -2813,6 +2813,24 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAdminUiLoginLogo = "carbonioAdminUiLoginLogo";
 
     /**
+     * Login URL for Carbonio Admin web client to send the user to upon
+     * failed login, auth expired, or no/invalid auth
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3138)
+    public static final String A_carbonioAdminUILoginURL = "carbonioAdminUILoginURL";
+
+    /**
+     * Logout URL for Carbonio Admin web client to send the user to upon
+     * explicit logging out
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3139)
+    public static final String A_carbonioAdminUILogoutURL = "carbonioAdminUILogoutURL";
+
+    /**
      * Admin Web UI Title preference for domain
      *
      * @since ZCS 22.11.0
@@ -3082,6 +3100,24 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3097)
     public static final String A_carbonioWebUiLoginLogo = "carbonioWebUiLoginLogo";
+
+    /**
+     * Login URL for Carbonio web client to send the user to upon failed
+     * login, auth expired, or no/invalid auth
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3136)
+    public static final String A_carbonioWebUILoginURL = "carbonioWebUILoginURL";
+
+    /**
+     * Logout URL for Carbonio web client to send the user to upon explicit
+     * logging out
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3137)
+    public static final String A_carbonioWebUILogoutURL = "carbonioWebUILogoutURL";
 
     /**
      * Web UI Primary Color preference for domain
@@ -7132,7 +7168,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureManageSMIMECertificateEnabled = "zimbraFeatureManageSMIMECertificateEnabled";
 
     /**
-     * enable end-user to manage zimlets
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: enable
+     * end-user to manage zimlets
      *
      * @since ZCS 6.0.2
      */
@@ -13489,6 +13526,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefDeleteInviteOnReply = "zimbraPrefDeleteInviteOnReply";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user does not want to see in the UI
      *
      * @since ZCS 6.0.5
@@ -14693,6 +14731,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefWhenSentToEnabled = "zimbraPrefWhenSentToEnabled";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user wants to see in the UI
      *
      * @since ZCS 6.0.0_BETA1
@@ -14701,6 +14740,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraPrefZimlets = "zimbraPrefZimlets";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether or not zimlet tree is expanded
      *
      * @since ZCS 5.0.5
@@ -17919,6 +17959,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraXMPPServerDialbackKey = "zimbraXMPPServerDialbackKey";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * ZimbraX compatible semantic version expression
      *
      * @since ZCS 8.8.9
@@ -17935,20 +17976,23 @@ public class ZAttrProvisioning {
     public static final String A_zimbraYahooId = "zimbraYahooId";
 
     /**
-     * List of Zimlets available to this COS Values can be prefixed with ! or
-     * + or - !: mandatory + (or no prefix): enabled by default -: disabled
-     * by default
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
+     * of Zimlets available to this COS Values can be prefixed with ! or + or
+     * - !: mandatory + (or no prefix): enabled by default -: disabled by
+     * default
      */
     @ZAttr(id=291)
     public static final String A_zimbraZimletAvailableZimlets = "zimbraZimletAvailableZimlets";
 
     /**
-     * The content object section in the Zimlet description
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: The
+     * content object section in the Zimlet description
      */
     @ZAttr(id=288)
     public static final String A_zimbraZimletContentObject = "zimbraZimletContentObject";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether zimlets that send sensitive data are disabled in
      * &quot;mixed&quot; zimbraMailMode
      *
@@ -17958,14 +18002,16 @@ public class ZAttrProvisioning {
     public static final String A_zimbraZimletDataSensitiveInMixedModeDisabled = "zimbraZimletDataSensitiveInMixedModeDisabled";
 
     /**
-     * Zimlet description
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: Zimlet
+     * description
      */
     @ZAttr(id=283)
     public static final String A_zimbraZimletDescription = "zimbraZimletDescription";
 
     /**
-     * List of Zimlets available to this domain. Zimlets available to
-     * accounts in the domain is the union of account/cos attribute
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
+     * of Zimlets available to this domain. Zimlets available to accounts in
+     * the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -17975,36 +18021,42 @@ public class ZAttrProvisioning {
     public static final String A_zimbraZimletDomainAvailableZimlets = "zimbraZimletDomainAvailableZimlets";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether this Zimlet is enabled
      */
     @ZAttr(id=301)
     public static final String A_zimbraZimletEnabled = "zimbraZimletEnabled";
 
     /**
-     * The handler class for server side Zimlet extension
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: The
+     * handler class for server side Zimlet extension
      */
     @ZAttr(id=286)
     public static final String A_zimbraZimletHandlerClass = "zimbraZimletHandlerClass";
 
     /**
-     * The global config for the Zimlet
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: The
+     * global config for the Zimlet
      */
     @ZAttr(id=287)
     public static final String A_zimbraZimletHandlerConfig = "zimbraZimletHandlerConfig";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether server side keyword indexing enabled
      */
     @ZAttr(id=284)
     public static final String A_zimbraZimletIndexingEnabled = "zimbraZimletIndexingEnabled";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether this zimlet is an extension
      */
     @ZAttr(id=304)
     public static final String A_zimbraZimletIsExtension = "zimbraZimletIsExtension";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to enable JSP compilation for Zimlets (i.e. for /zimlet
      * webapp)
      *
@@ -18014,13 +18066,14 @@ public class ZAttrProvisioning {
     public static final String A_zimbraZimletJspEnabled = "zimbraZimletJspEnabled";
 
     /**
-     * Server side object keyword used for indexing and search for this
-     * Zimlet
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: Server
+     * side object keyword used for indexing and search for this Zimlet
      */
     @ZAttr(id=281)
     public static final String A_zimbraZimletKeyword = "zimbraZimletKeyword";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to load zimlets synchronously in the web client. If set to
      * TRUE, users are not allowed to use the core app before zimlets are
      * loaded. If set to FALSE, zimlets are loaded in the background and
@@ -18033,37 +18086,43 @@ public class ZAttrProvisioning {
     public static final String A_zimbraZimletLoadSynchronously = "zimbraZimletLoadSynchronously";
 
     /**
-     * The panel item section in the Zimlet description
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: The
+     * panel item section in the Zimlet description
      */
     @ZAttr(id=289)
     public static final String A_zimbraZimletPanelItem = "zimbraZimletPanelItem";
 
     /**
-     * Object match priority
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: Object
+     * match priority
      */
     @ZAttr(id=302)
     public static final String A_zimbraZimletPriority = "zimbraZimletPriority";
 
     /**
-     * URL of extra scripts used by the Zimlet
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: URL of
+     * extra scripts used by the Zimlet
      */
     @ZAttr(id=290)
     public static final String A_zimbraZimletScript = "zimbraZimletScript";
 
     /**
-     * Regex of content object
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: Regex
+     * of content object
      */
     @ZAttr(id=292)
     public static final String A_zimbraZimletServerIndexRegex = "zimbraZimletServerIndexRegex";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether store is matched for this type
      */
     @ZAttr(id=285)
     public static final String A_zimbraZimletStoreMatched = "zimbraZimletStoreMatched";
 
     /**
-     * Zimlet target apps
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: Zimlet
+     * target apps
      *
      * @since ZCS 5.0.3
      */
@@ -18071,12 +18130,14 @@ public class ZAttrProvisioning {
     public static final String A_zimbraZimletTarget = "zimbraZimletTarget";
 
     /**
-     * User properties for Zimlets
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: User
+     * properties for Zimlets
      */
     @ZAttr(id=296)
     public static final String A_zimbraZimletUserProperties = "zimbraZimletUserProperties";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * maximum number of user properties for zimlet allowed on an account
      *
      * @since ZCS 8.7.0,9.0.0
@@ -18085,6 +18146,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraZimletUserPropertiesMaxNumEntries = "zimbraZimletUserPropertiesMaxNumEntries";
 
     /**
+     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Version of the Zimlet
      */
     @ZAttr(id=282)
