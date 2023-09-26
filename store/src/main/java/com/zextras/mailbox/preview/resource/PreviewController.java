@@ -9,15 +9,19 @@ import static javax.ws.rs.core.HttpHeaders.CONTENT_DISPOSITION;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
 import com.zextras.carbonio.preview.queries.Query;
+import com.zextras.mailbox.preview.usecase.PreviewError;
+import com.zextras.mailbox.preview.usecase.PreviewNotHealthy;
 import com.zextras.mailbox.preview.usecase.PreviewType;
 import com.zextras.mailbox.preview.usecase.PreviewUseCase;
 import com.zimbra.cs.account.AuthToken;
+import io.vavr.control.Try;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import org.apache.http.HttpStatus;
 import org.glassfish.jersey.message.internal.EntityInputStream;
 
 public class PreviewController implements PreviewApi {
@@ -74,6 +78,11 @@ public class PreviewController implements PreviewApi {
                                 attachmentAndPreview._1().getFileName(), StandardCharsets.UTF_8))
                     .header(CONTENT_TYPE, attachmentAndPreview._2().getMimeType())
                     .build())
+        .recoverWith(
+            PreviewNotHealthy.class,
+            ex -> Try.success(Response.status(HttpStatus.SC_NOT_FOUND).build()))
+        .recoverWith(
+            PreviewError.class, ex -> Try.success(Response.status(HttpStatus.SC_NOT_FOUND).build()))
         .getOrElseGet((Throwable error) -> Response.serverError().build());
   }
 

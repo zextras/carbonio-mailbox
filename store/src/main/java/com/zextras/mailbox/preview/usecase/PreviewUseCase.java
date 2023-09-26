@@ -11,6 +11,7 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AttachmentService;
 import io.vavr.Tuple2;
 import io.vavr.control.Try;
+import java.util.function.Function;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.mail.internet.MimePart;
@@ -34,13 +35,16 @@ public class PreviewUseCase {
       int messageId,
       String partNumber,
       Query query) {
+    if (!previewClient.healthLive()) {
+      return Try.failure(new PreviewNotHealthy());
+    }
 
     final Try<MimePart> tryAttachment =
         attachmentService.getAttachment(accountId, authToken, messageId, partNumber);
 
     final Try<BlobResponse> tryPreviewClientResponse =
         tryAttachment
-            .flatMap(
+            .mapTry(
                 attachment ->
                     Try.withResources(attachment::getInputStream)
                         .of(
@@ -48,11 +52,10 @@ public class PreviewUseCase {
                                 previewType
                                     .getFunction()
                                     .apply(
-                                        previewClient,
-                                        inputStream,
-                                        query,
-                                        attachment.getFileName())))
-            .flatMap(x -> x);
+                                        previewClient, inputStream, query, attachment.getFileName())
+                                    .getOrElseThrow(
+                                        throwable -> new PreviewError(throwable.getMessage()))))
+            .flatMap(Function.identity());
     return Try.of(() -> new Tuple2<>(tryAttachment.get(), tryPreviewClientResponse.get()));
   }
 }

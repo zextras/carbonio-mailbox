@@ -7,6 +7,8 @@ package com.zextras.mailbox.preview.resource;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -15,6 +17,8 @@ import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.Query;
 import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
+import com.zextras.mailbox.preview.usecase.PreviewError;
+import com.zextras.mailbox.preview.usecase.PreviewNotHealthy;
 import com.zextras.mailbox.preview.usecase.PreviewType;
 import com.zextras.mailbox.preview.usecase.PreviewUseCase;
 import com.zimbra.cs.account.AuthToken;
@@ -30,7 +34,9 @@ import java.util.stream.Stream;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimePart;
 import org.apache.http.entity.InputStreamEntity;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -38,7 +44,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 class PreviewUseCaseTest {
 
   private PreviewUseCase previewUseCase;
-  ;
+
   private AttachmentService attachmentService;
   private PreviewClient previewClient;
 
@@ -79,7 +85,7 @@ class PreviewUseCaseTest {
     final InputStreamEntity inputStreamEntity = new InputStreamEntity(attachment.getInputStream());
     inputStreamEntity.setContentType(attachment.getContentType());
     final BlobResponse previewResponse = new BlobResponse(inputStreamEntity);
-
+    when(previewClient.healthLive()).thenReturn(true);
     when(attachmentService.getAttachment(accountId, authToken, messageId, partNumber))
         .thenReturn(Try.of(() -> attachment));
     when(previewMethod.apply(previewClient, any(), eq(query), eq(fileName)))
@@ -93,5 +99,54 @@ class PreviewUseCaseTest {
 
     assertEquals(attachment, attachmentAndPreview._1());
     assertEquals(previewResponse, attachmentAndPreview._2());
+  }
+
+  private void setUpMockData() throws Exception {
+    final String fileName = "TestIt";
+    final byte[] byteContent = "Hello".getBytes(StandardCharsets.UTF_8);
+    final String contentType = "whatever";
+    final MimePart attachment = new MimeBodyPart(new ByteArrayInputStream(byteContent));
+    attachment.setFileName(fileName);
+    attachment.setHeader(CONTENT_TYPE, contentType);
+    final InputStreamEntity inputStreamEntity = new InputStreamEntity(attachment.getInputStream());
+    inputStreamEntity.setContentType(attachment.getContentType());
+
+    when(previewClient.healthLive()).thenReturn(true);
+    when(attachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
+        .thenReturn(Try.of(() -> attachment));
+  }
+
+  @Test
+  void shouldReturnFailureWhenPreviewServiceNotHealthy() throws Exception {
+    setUpMockData();
+    when(previewClient.healthLive()).thenReturn(false);
+    final Try<Tuple2<MimePart, BlobResponse>> attachmentAndPreview =
+        previewUseCase.getAttachmentAndPreview(
+            UUID.randomUUID().toString(),
+            new ZimbraAuthTokenEncoded(""),
+            PreviewType.PDF,
+            1,
+            "2",
+            null);
+    Assertions.assertTrue(attachmentAndPreview.isFailure());
+    Assertions.assertThrows(PreviewNotHealthy.class, attachmentAndPreview::get);
+  }
+
+  @Test
+  void shouldReturnFailureWhenPreviewClientError() throws Exception {
+    setUpMockData();
+    final PreviewType previewType = mock(PreviewType.class);
+    when(previewType.getFunction())
+        .thenReturn(Function4.constant(Try.failure(new RuntimeException(""))));
+    final Try<Tuple2<MimePart, BlobResponse>> attachmentAndPreview =
+        previewUseCase.getAttachmentAndPreview(
+            UUID.randomUUID().toString(),
+            new ZimbraAuthTokenEncoded(""),
+            previewType,
+            1,
+            "2",
+            null);
+    Assertions.assertTrue(attachmentAndPreview.isFailure());
+    Assertions.assertThrows(PreviewError.class, attachmentAndPreview::get);
   }
 }

@@ -17,6 +17,8 @@ import com.google.common.collect.Maps;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.enums.Format;
 import com.zextras.mailbox.filter.AuthorizationFilter;
+import com.zextras.mailbox.preview.usecase.PreviewError;
+import com.zextras.mailbox.preview.usecase.PreviewNotHealthy;
 import com.zextras.mailbox.preview.usecase.PreviewUseCase;
 import com.zextras.mailbox.resource.acceptance.MailboxJerseyTest;
 import com.zimbra.cs.account.Account;
@@ -48,6 +50,7 @@ import org.glassfish.jersey.test.DeploymentContext;
 import org.glassfish.jersey.test.ServletDeploymentContext;
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -161,5 +164,65 @@ class PreviewControllerTest extends MailboxJerseyTest {
     assertArrayEquals(previewContent, receivedContent.readAllBytes());
     assertEquals(previewResponse.getMimeType(), response.getHeaderString(HttpHeaders.CONTENT_TYPE));
     assertEquals(expectedContentDisposition, response.getHeaderString(CONTENT_DISPOSITION));
+  }
+
+  private static Stream<Arguments> getEndpoints() {
+    return Stream.of(
+        Arguments.of("/preview/pdf/abcdef:1/2"),
+        Arguments.of("/preview/image/abcdef:1/2/0x0"),
+        Arguments.of("/preview/document/abcdef:1/2"),
+        Arguments.of("/preview/document/abcdef:1/2/thumbnail"));
+  }
+
+  @ParameterizedTest
+  @MethodSource("getEndpoints")
+  public void shouldReturn404WhenPreviewNotHealthy(String endpoint) throws Exception {
+    final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
+    final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
+    when(previewUseCase.getAttachmentAndPreview(
+            anyString(), any(), any(), anyInt(), anyString(), any()))
+        .thenReturn(Try.failure(new PreviewNotHealthy()));
+
+    final Response response =
+        target(endpoint)
+            .request()
+            .cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded()))
+            .get();
+    Assertions.assertEquals(HttpStatus.SC_NOT_FOUND, response.getStatus());
+  }
+
+  @ParameterizedTest
+  @MethodSource("getEndpoints")
+  public void shouldReturn404WhenPreviewError(String endpoint) throws Exception {
+    final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
+    final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
+    when(previewUseCase.getAttachmentAndPreview(
+            anyString(), any(), any(), anyInt(), anyString(), any()))
+        .thenReturn(Try.failure(new PreviewError("Some preview database is down")));
+
+    final Response response =
+        target(endpoint)
+            .request()
+            .cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded()))
+            .get();
+    Assertions.assertEquals(HttpStatus.SC_NOT_FOUND, response.getStatus());
+  }
+
+  @ParameterizedTest
+  @MethodSource("getEndpoints")
+  public void shouldReturn500WhenNotPreviewFault(String endpoint) throws Exception {
+    final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
+    final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
+    when(previewUseCase.getAttachmentAndPreview(
+            anyString(), any(), any(), anyInt(), anyString(), any()))
+        .thenReturn(
+            Try.failure(new RuntimeException("Ooops, something wetn wrong withing the mailbox")));
+
+    final Response response =
+        target(endpoint)
+            .request()
+            .cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded()))
+            .get();
+    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatus());
   }
 }
