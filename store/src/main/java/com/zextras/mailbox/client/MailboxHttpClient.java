@@ -51,7 +51,8 @@ public class MailboxHttpClient {
   }
 
   /**
-   * Return the rest endpoint Url for content servlet using the provided account
+   * Returns URL for a {@link UserServlet} resource based on the target account ID
+   * and {@link UserServletRequest} parameters.
    *
    * @param targetAccountId accountId of the requested account attachment
    * @param userServletRequest request for {@link UserServlet}
