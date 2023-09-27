@@ -15,7 +15,7 @@ import io.vavr.control.Try;
 import javax.inject.Inject;
 
 /**
- * Use case class to update a folder.
+ * Use case class to update attributes on a {@link com.zimbra.cs.mailbox.Folder}.
  *
  * @author Yuliya Aheeva, Davide Polonio
  * @since 23.10.0

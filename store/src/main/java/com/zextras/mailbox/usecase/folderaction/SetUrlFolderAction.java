@@ -8,7 +8,7 @@ import io.vavr.control.Try;
 import javax.inject.Inject;
 
 /**
- * Use case class to set folder url.
+ * Use case class to set folder url on a {@link com.zimbra.cs.mailbox.Folder}.
  *
  * @author Dima Dymkovets
  * @since 23.10.0

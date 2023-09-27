@@ -8,7 +8,7 @@ import io.vavr.control.Try;
 import javax.inject.Inject;
 
 /**
- * Use case class to set web offline sync days.
+ * Use case class to set web offline sync days on a {@link com.zimbra.cs.mailbox.Folder}.
  *
  * @author Dima Dymkovets
  * @since 23.10.0

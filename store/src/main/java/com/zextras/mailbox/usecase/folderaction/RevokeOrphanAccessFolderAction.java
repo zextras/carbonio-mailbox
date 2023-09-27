@@ -15,8 +15,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Use case class to revoke orphan access from a folder. "Orphan grant" is a grant whose grantee
- * object is deleted/non-existing.
+ * Use case class to revoke orphan access from a {@link com.zimbra.cs.mailbox.Folder}. "Orphan
+ * grant" is a grant whose grantee object is deleted/non-existing.
  *
  * @author Dima Dymkovets
  * @since 23.10.0

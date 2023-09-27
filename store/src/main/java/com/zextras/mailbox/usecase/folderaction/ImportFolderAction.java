@@ -8,7 +8,7 @@ import io.vavr.control.Try;
 import javax.inject.Inject;
 
 /**
- * Use case class to import feed from remote datasource.
+ * Use case class to import feed from remote datasource to a {@link com.zimbra.cs.mailbox.Folder}.
  *
  * @author Yuliya Aheeva
  * @since 23.10.0

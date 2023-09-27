@@ -13,7 +13,7 @@ import io.vavr.control.Try;
 import javax.inject.Inject;
 
 /**
- * Use case class to empty a folder.
+ * Use case class to empty a {@link com.zimbra.cs.mailbox.Folder}.
  *
  * @author Davide Polonio
  * @since 23.10.0

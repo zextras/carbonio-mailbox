@@ -10,7 +10,7 @@ import io.vavr.control.Try;
 import javax.inject.Inject;
 
 /**
- * Use case class to manage synchronization on a folder.
+ * Use case class to manage synchronization on a {@link com.zimbra.cs.mailbox.Folder}.
  *
  * @author Yuliya Aheeva
  * @since 23.10.0

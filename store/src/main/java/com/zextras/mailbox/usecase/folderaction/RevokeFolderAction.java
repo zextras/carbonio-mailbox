@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 /**
- * Use case class to revoke access to a folder and remove revoked mountpoints.
+ * Use case class to revoke access from a {@link com.zimbra.cs.mailbox.Folder}.
  *
  * @author Yuliya Aheeva
  * @since 23.10.0

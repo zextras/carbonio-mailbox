@@ -8,7 +8,7 @@ import io.vavr.control.Try;
 import javax.inject.Inject;
 
 /**
- * Use case class to manage FreeBusy support on a folder.
+ * Use case class to manage FreeBusy support on a {@link com.zimbra.cs.mailbox.Folder}.
  *
  * @author Dima Dymkovets
  * @since 23.10.0

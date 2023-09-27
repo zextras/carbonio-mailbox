@@ -10,7 +10,7 @@ import io.vavr.control.Try;
 import javax.inject.Inject;
 
 /**
- * Use case class to set checked folder tag.
+ * Use case class to set a checked tag on a {@link com.zimbra.cs.mailbox.Folder}.
  *
  * @author Yuliya Aheeva
  * @since 23.10.0

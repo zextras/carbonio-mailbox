@@ -25,7 +25,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 /**
- * Use case class to grant access to a folder.
+ * Use case class to grant access on a {@link com.zimbra.cs.mailbox.Folder}.
  *
  * @author Yuliya Aheeva, Davide Polonio, Dima Dymkovets
  * @since 23.10.0
