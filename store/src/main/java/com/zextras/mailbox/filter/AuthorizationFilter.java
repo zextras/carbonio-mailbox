@@ -21,7 +21,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Authorization filter for Cookie authorization. Uses {@link AuthToken#getAuthToken(String)} to
- * validate the cookie.
+ * validate the cookie. Adds a {@link AuthToken} to the context {@link ContainerRequestContext} if
+ * authorization successful
  *
  * @author davidefrison
  */
