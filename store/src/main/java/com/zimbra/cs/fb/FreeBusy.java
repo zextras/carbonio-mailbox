@@ -45,6 +45,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
   public static FreeBusy emptyFreeBusy(String name, long start, long end) {
     return new FreeBusy(name, start, end);
   }
+
   // unknown (no data) from start to end
   public static FreeBusy nodataFreeBusy(String name, long start, long end) {
     IntervalList il = new IntervalList(start, end);
@@ -361,6 +362,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     Interval mPrev = null;
     String mStatus;
     LinkedHashSet<FBInstance> mInstances; // instances relevant to this interval
+
     // LinkedHashSet rather than generic
     // set to preserve insertion order
 
@@ -485,23 +487,22 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
   private static final String HTTP = "http:";
 
   /**
-   * Creates a VCalendar string representation from {@link FreeBusy} object, using also
-   * provided parameters in this method that may come from the original FreeBusy request.
+   * Creates a VCalendar string representation from {@link FreeBusy} object, using also provided
+   * parameters in this method that may come from the original FreeBusy request.
    *
-   * NOTE: attendee is required for METHOD == REQUEST || METHOD == REPLY
-   *       url is required for METHOD == PUBLISH || METHOD == REPLY
-   *       uid is optional, set it if original request provides it
+   * <p>NOTE: attendee is required for METHOD == REQUEST || METHOD == REPLY url is required for
+   * METHOD == PUBLISH || METHOD == REPLY uid is optional, set it if original request provides it
+   *
    * @param m method to add to VCalendar response
    * @param organizer organizer property to set
    * @param attendee attendee property to set
    * @param url ?
-   * @param uid uid of original request, if present. When present it must be returned.
-   *            Used to distinguish between multiple FreeBusy
-   *            requests according to https://www.ietf.org/rfc/rfc2445.txt
+   * @param uid uid of the VFREEBUSY component, according to https://www.ietf.org/rfc/rfc2445.txt
+   *     The uid is not set if empty or null. It was not decided to throw exception for
+   *     retro-compatibility reasons.
    * @return a string representation of VCalendar
    */
-  public String toVCalendar(Method m, String organizer, String attendee, String url,
-      String uid) {
+  public String toVCalendar(Method m, String organizer, String attendee, String url, String uid) {
     if (m == null || organizer == null) {
       throw new IllegalArgumentException("missing method or organizer");
     }
