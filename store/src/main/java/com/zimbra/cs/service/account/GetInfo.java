@@ -169,7 +169,7 @@ public class GetInfo extends AccountDocumentHandler {
     } catch (ServiceException e) {
     }
 
-    if (sections.contains(Section.MBOX) && Provisioning.onLocalServer(account)) {
+    if (sections.contains(Section.MBOX) && Provisioning.getInstance().onLocalServer(account)) {
       response.addAttribute(
           AccountConstants.E_REST, UserServlet.getRestUrl(account), Element.Disposition.CONTENT);
       response.addAttribute(

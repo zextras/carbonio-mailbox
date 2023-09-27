@@ -177,7 +177,7 @@ public class CtagInfoCache {
       ZimbraLog.calendar.warn("Invalid account %s during cache lookup", accountId);
       return null;
     }
-    if (Provisioning.onLocalServer(acct)) {
+    if (Provisioning.getInstance().onLocalServer(acct)) {
       Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
       Folder folder = mbox.getFolderById(null, folderId);
       if (folder != null) calInfo = new CtagInfo(folder);
