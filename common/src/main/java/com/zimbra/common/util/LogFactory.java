@@ -12,7 +12,8 @@ package com.zimbra.common.util;
  * @since 17.2
  *     <!-- Last commit on this file before mine -->
  * @see LogManager to interact and manage {@link Log} classes
- * @see org.apache.logging.log4j.core.config.ConfigurationFactory to see how {@link org.apache.logging.log4j.Logger} are configured
+ * @see org.apache.logging.log4j.core.config.ConfigurationFactory to see how {@link
+ *     org.apache.logging.log4j.Logger} are configured
  */
 public class LogFactory {
 
@@ -28,6 +29,7 @@ public class LogFactory {
 
   public static Log getLog(String name) {
     return LogManager.getGlobalLogMapper()
-        .computeIfAbsent(name, n -> new Log(org.apache.logging.log4j.LogManager.getLogger(n)));
+        .computeIfAbsent(
+            name, n -> new Log(org.apache.logging.log4j.LogManager.getContext().getLogger(name)));
   }
 }
