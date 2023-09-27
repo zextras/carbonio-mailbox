@@ -109,7 +109,7 @@ public class CsvStatsDumper implements Dumper {
               + ","
               + line;
       if (logLine.length() <= SYSLOG_ELIDING_THRESHOLD) {
-        ZimbraLog.slogger.info(logLine);
+        ZimbraLog.slogger.warn(logLine);
       } else {
         StringBuilder b = new StringBuilder(logLine);
         String lastUuid = null;
@@ -120,9 +120,9 @@ public class CsvStatsDumper implements Dumper {
             sub = ":::" + lastUuid + ":::" + sub;
           }
           lastUuid = UUID.randomUUID().toString();
-          ZimbraLog.slogger.info(sub + ":::" + lastUuid + ":::");
+          ZimbraLog.slogger.warn(sub + ":::" + lastUuid + ":::");
         } while (b.length() > SYSLOG_ELIDING_THRESHOLD);
-        ZimbraLog.slogger.info(":::" + lastUuid + ":::" + b);
+        ZimbraLog.slogger.warn(":::" + lastUuid + ":::" + b);
       }
     }
     return null;
