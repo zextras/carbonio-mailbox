@@ -21,7 +21,6 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.AccountUtil;
 import io.vavr.control.Try;
-import java.util.Optional;
 import javax.inject.Inject;
 
 /**
@@ -164,14 +163,14 @@ public class GrantFolderAction {
    * @return a {@link Try} result {@link Result} object with the status of the operation
    */
   public Try<Result> grantGranteeDefaultAccess(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      short rights,
-      long expiry,
-      String zimbraId,
-      String displayName,
-      byte granteeType) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final short rights,
+      final long expiry,
+      final String zimbraId,
+      final String displayName,
+      final byte granteeType) {
     return mailboxManager
         .tryGetMailboxByAccountId(accountId, true)
         .mapTry(
@@ -203,7 +202,7 @@ public class GrantFolderAction {
                   }
                 }
               }
-              Grant grantResult =
+              final Grant grantResult =
                   grantAccess(
                       userMailbox,
                       operationContext,
@@ -232,19 +231,19 @@ public class GrantFolderAction {
    * @return a {@link Try} result {@link Result} object with the status of the operation
    */
   public Try<Result> grantGranteeKeyAccess(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      short rights,
-      long expiry,
-      String displayName,
-      String secretAccessKey) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final short rights,
+      final long expiry,
+      final String displayName,
+      final String secretAccessKey) {
     return mailboxManager
         .tryGetMailboxByAccountId(accountId, true)
         .mapTry(
             userMailbox -> {
               final ItemId itemId = itemIdFactory.create(folderId, accountId);
-              Grant grantResult =
+              final Grant grantResult =
                   grantAccess(
                       userMailbox,
                       operationContext,
@@ -274,14 +273,14 @@ public class GrantFolderAction {
    * @return a {@link Try} result {@link Result} object with the status of the operation
    */
   public Try<Result> grantGranteeGuestAccess(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      String displayName,
-      short rights,
-      long expiry,
-      String secretArgs,
-      String secretPassword) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final String displayName,
+      final short rights,
+      final long expiry,
+      final String secretArgs,
+      final String secretPassword) {
     return mailboxManager
         .tryGetMailboxByAccountId(accountId, true)
         .mapTry(
@@ -323,7 +322,7 @@ public class GrantFolderAction {
                   calculatedSecret = secretPassword;
                 }
               }
-              Grant grantResult =
+              final Grant grantResult =
                   grantAccess(
                       userMailbox,
                       operationContext,
@@ -350,11 +349,11 @@ public class GrantFolderAction {
    * @return a {@link Try} result {@link Result} object with the status of the operation
    */
   public Try<Result> grantGranteePublicAccess(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      short rights,
-      long expiry) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final short rights,
+      final long expiry) {
     return mailboxManager
         .tryGetMailboxByAccountId(accountId, true)
         .mapTry(
@@ -370,7 +369,7 @@ public class GrantFolderAction {
                               userMailbox
                                   .getFolderById(operationContext, itemId.getId())
                                   .getDefaultView()));
-              Grant grantResult =
+              final Grant grantResult =
                   grantAccess(
                       userMailbox,
                       operationContext,
@@ -397,18 +396,18 @@ public class GrantFolderAction {
    * @return a {@link Try} result {@link Result} object with the status of the operation
    */
   public Try<Result> grantGranteeAuthUserAccess(
-      OperationContext operationContext,
-      String accountId,
-      String folderId,
-      short rights,
-      long expiry) {
+      final OperationContext operationContext,
+      final String accountId,
+      final String folderId,
+      final short rights,
+      final long expiry) {
     return mailboxManager
         .tryGetMailboxByAccountId(accountId, true)
         .mapTry(
             userMailbox -> {
               final ItemId itemId = itemIdFactory.create(folderId, accountId);
-              String zimbraId = GuestAccount.GUID_AUTHUSER;
-              Grant grantResult =
+              final String zimbraId = GuestAccount.GUID_AUTHUSER;
+              final Grant grantResult =
                   grantAccess(
                       userMailbox,
                       operationContext,
@@ -421,12 +420,6 @@ public class GrantFolderAction {
 
               return new Result(null, grantResult, zimbraId);
             });
-  }
-
-  private Mailbox getUserMailboxByAccountId(String accountId) throws ServiceException {
-    return Optional.ofNullable(mailboxManager.getMailboxByAccountId(accountId))
-        .orElseThrow(
-            () -> new IllegalArgumentException("Unable to retrieve a mailbox for this accountId"));
   }
 
   private Grant grantAccess(

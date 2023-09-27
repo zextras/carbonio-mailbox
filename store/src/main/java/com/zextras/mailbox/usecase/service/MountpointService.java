@@ -39,7 +39,9 @@ public class MountpointService {
    * @throws ServiceException if unable to delete mountpoints
    */
   public void deleteMountpointsByIds(
-      String ownerId, OperationContext operationContext, List<Integer> mountpointsIds)
+      final String ownerId,
+      final OperationContext operationContext,
+      final List<Integer> mountpointsIds)
       throws ServiceException {
     try {
       ItemActionHelper.HARD_DELETE(
@@ -66,14 +68,14 @@ public class MountpointService {
    * @throws ServiceException if unable to get folder tree
    */
   public List<Mountpoint> getMountpointsByPath(
-      String ownerId, OperationContext operationContext, ItemId rootFolderId)
+      final String ownerId, final OperationContext operationContext, final ItemId rootFolderId)
       throws ServiceException {
 
-    FolderNode folderTree =
+    final FolderNode folderTree =
         mailboxManager
             .getMailboxByAccountId(ownerId)
             .getFolderTree(operationContext, rootFolderId, false);
-    List<Mailbox.FolderNode> granteeSubFolders = folderTree.getSubFolders();
+    final List<Mailbox.FolderNode> granteeSubFolders = folderTree.getSubFolders();
 
     return granteeSubFolders.stream()
         .map(FolderNode::getFolder)

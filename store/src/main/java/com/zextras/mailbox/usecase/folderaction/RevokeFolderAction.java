@@ -3,6 +3,7 @@ package com.zextras.mailbox.usecase.folderaction;
 import com.zextras.mailbox.usecase.factory.ItemIdFactory;
 import com.zextras.mailbox.usecase.factory.OperationContextFactory;
 import com.zextras.mailbox.usecase.service.MountpointService;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailItem;
@@ -73,19 +74,8 @@ public class RevokeFolderAction {
                       final OperationContext granteeOpContext =
                           operationContextFactory.create(granteeAccount);
                       final List<Integer> mountPointIds =
-                          mountpointService
-                              .getMountpointsByPath(
-                                  granteeId,
-                                  granteeOpContext,
-                                  itemIdFactory.create(
-                                      String.valueOf(Mailbox.ID_FOLDER_USER_ROOT), granteeId))
-                              .stream()
-                              .filter(
-                                  mpt ->
-                                      mpt.getOwnerId().equals(requestedAccountId)
-                                          && Objects.equals(mpt.getRemoteId(), itemId.getId()))
-                              .map(MailItem::getId)
-                              .collect(Collectors.toList());
+                          findMountPointsByIds(
+                              requestedAccountId, granteeId, itemId, granteeOpContext);
                       // TODO: the delete action should be performed by the original user who made
                       // the request
                       //  for security reasons.
@@ -96,5 +86,25 @@ public class RevokeFolderAction {
                       mountpointService.deleteMountpointsByIds(
                           granteeId, granteeOpContext, mountPointIds);
                     }));
+  }
+
+  private List<Integer> findMountPointsByIds(
+      final String requestedAccountId,
+      final String granteeId,
+      final ItemId itemId,
+      final OperationContext granteeOpContext)
+      throws ServiceException {
+    return mountpointService
+        .getMountpointsByPath(
+            granteeId,
+            granteeOpContext,
+            itemIdFactory.create(String.valueOf(Mailbox.ID_FOLDER_USER_ROOT), granteeId))
+        .stream()
+        .filter(
+            mpt ->
+                mpt.getOwnerId().equals(requestedAccountId)
+                    && Objects.equals(mpt.getRemoteId(), itemId.getId()))
+        .map(MailItem::getId)
+        .collect(Collectors.toList());
   }
 }
