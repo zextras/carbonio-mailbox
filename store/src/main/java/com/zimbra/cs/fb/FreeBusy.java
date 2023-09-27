@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.fb;
 
+import com.google.common.base.Strings;
 import com.zimbra.common.calendar.ICalTimeZone;
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.calendar.TimeZoneMap;
@@ -483,12 +484,24 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
   private static final String MAILTO = "mailto:";
   private static final String HTTP = "http:";
 
-  /*
-   * attendee is required for METHOD == REQUEST || METHOD == REPLY
-   * url is required for METHOD == PUBLISH || METHOD == REPLY
+  /**
+   * Creates a VCalendar string representation from {@link FreeBusy} object, using also
+   * provided parameters in this method that may come from the original FreeBusy request.
    *
+   * NOTE: attendee is required for METHOD == REQUEST || METHOD == REPLY
+   *       url is required for METHOD == PUBLISH || METHOD == REPLY
+   *       uid is optional, set it if original request provides it
+   * @param m method to add to VCalendar response
+   * @param organizer organizer property to set
+   * @param attendee attendee property to set
+   * @param url ?
+   * @param uid uid of original request, if present. When present it must be returned.
+   *            Used to distinguish between multiple FreeBusy
+   *            requests according to https://www.ietf.org/rfc/rfc2445.txt
+   * @return a string representation of VCalendar
    */
-  public String toVCalendar(Method m, String organizer, String attendee, String url) {
+  public String toVCalendar(Method m, String organizer, String attendee, String url,
+      String uid) {
     if (m == null || organizer == null) {
       throw new IllegalArgumentException("missing method or organizer");
     }
@@ -501,6 +514,9 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     toRet.append("VERSION:").append(ZCalendar.sIcalVersion).append(NL);
     toRet.append("METHOD:").append(m.name()).append(NL);
     toRet.append("BEGIN:VFREEBUSY").append(NL);
+    if (!Strings.isNullOrEmpty(uid)) {
+      toRet.append("UID:").append(uid).append(NL);
+    }
 
     toRet.append("ORGANIZER:");
     if (!organizer.toLowerCase().startsWith(MAILTO) && !organizer.toLowerCase().startsWith(HTTP))

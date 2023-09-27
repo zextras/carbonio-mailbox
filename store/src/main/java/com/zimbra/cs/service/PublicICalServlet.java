@@ -150,7 +150,7 @@ public class PublicICalServlet extends ZimbraServlet {
         else
         	fb = FreeBusy.emptyFreeBusy(acctName, rangeStart, rangeEnd);
         String url = req.getRequestURL() + "?" + req.getQueryString();
-        String fbMsg = fb.toVCalendar(FreeBusy.Method.PUBLISH, acctName, null, url);
+        String fbMsg = fb.toVCalendar(FreeBusy.Method.PUBLISH, acctName, null, url, null);
         resp.getOutputStream().write(fbMsg.getBytes());
     }
 

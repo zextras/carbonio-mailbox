@@ -8,6 +8,7 @@ import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.dav.DavProtocol;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
 import com.zimbra.cs.service.AuthProvider;
@@ -15,12 +16,15 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Objects;
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.model.Calendar;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -40,10 +44,12 @@ class DavServletTest {
 
   private static Provisioning provisioning;
   private static Account organizer;
+  private static Account attendee;
   public String testName;
   public Server server;
   private static final int PORT = 8090;
   private static final String CALENDAR_UID = "95a5527e-df0a-4df2-b64a-7eee8e647efe";
+  private static final String FREE_BUSY_UID = "bb7bc421-bdde-4da6-987b-b17c5d343307";
   private static final String DAV_BASE_PATH = "/dav";
 
   @BeforeAll
@@ -83,6 +89,7 @@ class DavServletTest {
     server.start();
     provisioning = Provisioning.getInstance();
     organizer = provisioning.createAccount("test@test.com", "password", new HashMap<>());
+    attendee = provisioning.createAccount("attendee@test.com", "password", new HashMap<>());
   }
 
   private HttpResponse createAppointmentWithCalDAV() throws Exception {
@@ -93,6 +100,19 @@ class DavServletTest {
             Objects.requireNonNull(
                 this.getClass().getResourceAsStream(DavServletTest.CALENDAR_UID + ".ics"))));
     request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
+    return client.execute(request);
+  }
+
+  private HttpResponse requestAttendeeFreeBusy() throws Exception {
+    HttpClient client = createHttpClient();
+    HttpPost request = new HttpPost(getSentResourceUrl());
+    request.setEntity(
+        new InputStreamEntity(
+            Objects.requireNonNull(
+                this.getClass().getResourceAsStream("FreeBusyRequest_" + FREE_BUSY_UID + ".ics"))));
+    request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
+    request.setHeader(DavProtocol.HEADER_RECIPIENT, "mailto:" + attendee.getName());
+    request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + organizer.getName());
     return client.execute(request);
   }
 
@@ -125,6 +145,15 @@ class DavServletTest {
         + "/Calendar/"
         + DavServletTest.CALENDAR_UID
         + ".ics";
+  }
+
+  private String getSentResourceUrl() {
+    return "http://localhost:"
+        + PORT
+        + DAV_BASE_PATH
+        + "/home/"
+        + URLEncoder.encode(organizer.getName(), StandardCharsets.UTF_8)
+        + "/Sent";
   }
 
   private HttpClient createHttpClient() throws Exception {
@@ -170,5 +199,24 @@ class DavServletTest {
         HttpStatus.SC_NO_CONTENT, deleteAppointmentWithCalDAV().getStatusLine().getStatusCode());
     Assertions.assertEquals(
         HttpStatus.SC_NOT_FOUND, getAppointmentWithCalDAV().getStatusLine().getStatusCode());
+  }
+
+  /**
+   * Added for bug CO-823: request freebusy of attendee
+   *
+   * @throws Exception
+   */
+  @Test
+  void shouldReturnUIDWhenRequestingFreeBusyOfAttendee() throws Exception {
+    Calendar calendar = new CalendarBuilder().build(this.getClass().getResourceAsStream("FreeBusyRequest_" + FREE_BUSY_UID + ".ics"), StandardCharsets.UTF_8.toString());
+
+    Assertions.assertEquals(
+        HttpStatus.SC_CREATED, createAppointmentWithCalDAV().getStatusLine().getStatusCode());
+    final HttpResponse response = requestAttendeeFreeBusy();
+    Assertions.assertEquals(
+        HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    final String freeBusyResponse = new String(response.getEntity().getContent().readAllBytes());
+    System.out.println(freeBusyResponse);
+    Assertions.assertTrue(freeBusyResponse.contains("UID:" + FREE_BUSY_UID));
   }
 }
