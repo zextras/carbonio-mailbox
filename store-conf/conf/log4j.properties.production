@@ -206,8 +206,12 @@ logger.httpmethodbase.level = ERROR
 logger.memcached.name = net.spy.memcached
 logger.memcached.level = WARN
 
+# This logger will write to syslog only when zimbraLogHostname is defined.
+# Or else it won't write anywhere.
 logger.slogger.name = zimbra.slogger
-logger.slogger.level = warn
+logger.slogger.level = error
+logger.slogger.additivity = false
+%%uncomment VAR:zimbraLogHostname%%logger.slogger.appenderRef.SLOGGER.ref = sloggerAppender
 
 rootLogger.level=INFO
 
