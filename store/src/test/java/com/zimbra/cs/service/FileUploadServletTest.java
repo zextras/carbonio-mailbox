@@ -149,9 +149,6 @@ public class FileUploadServletTest {
     server.start();
 
     Provisioning prov = Provisioning.getInstance();
-    HashMap<String, Object> attrs = new HashMap<String, Object>();
-    //    attrs.put(Provisioning.A_zimbraAccountStatus, "pending");
-    prov.createAccount("testbug39481@zimbra.com", "secret", attrs);
     testAccount =
         prov.createAccount(
             "test@test.com",
@@ -162,7 +159,6 @@ public class FileUploadServletTest {
                 put(ZAttrProvisioning.A_zimbraId, UUID.randomUUID().toString());
               }
             });
-    // MailboxTestUtil.clearData();
   }
 
   @AfterEach
