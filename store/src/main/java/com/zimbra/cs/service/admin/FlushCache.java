@@ -20,6 +20,8 @@ import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.gal.GalGroup;
 import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.util.WebClientL10nUtil;
+import com.zimbra.cs.util.WebClientServiceUtil;
+import com.zimbra.cs.zimlet.ZimletUtil;
 import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.FlushCacheRequest;
@@ -38,6 +40,21 @@ import javax.servlet.ServletResponse;
 public class FlushCache extends AdminDocumentHandler {
 
   public static final String FLUSH_CACHE = "flushCache";
+  public static final String RES_AJXMSG_JS = "/res/AjxMsg.js";
+
+  /** must be careful and only allow deletes domain admin has access to */
+  @Override
+  public boolean domainAuthSufficient(Map<String, Object> context) {
+    return true;
+  }
+
+  @Override
+  public Element handle(Element request, Map<String, Object> context) throws ServiceException {
+    ZimbraSoapContext zsc = getZimbraSoapContext(context);
+    FlushCacheRequest req = zsc.elementToJaxb(request);
+    doFlushCache(this, context, req);
+    return zsc.jaxbToElement(new FlushCacheResponse());
+  }
 
   public static void doFlushCache(
       AdminDocumentHandler handler, Map<String, Object> context, FlushCacheRequest req)
@@ -77,6 +94,7 @@ public class FlushCache extends AdminDocumentHandler {
       Map<String, Object> context, CacheEntryType cacheType, CacheSelector cacheSelector)
       throws ServiceException {
 
+    String mailURL = Provisioning.getInstance().getLocalServer().getMailURL();
     switch (cacheType) {
       case acl:
         PermissionCache.invalidateCache();
@@ -88,6 +106,14 @@ public class FlushCache extends AdminDocumentHandler {
       case galgroup:
         GalGroup.flushCache(getCacheEntries(cacheSelector));
         break;
+      case uistrings:
+        if (WebClientServiceUtil.isServerInSplitMode()) {
+          WebClientServiceUtil.flushUistringsCache();
+        } else {
+          FlushCache.sendFlushRequest(context, mailURL, RES_AJXMSG_JS);
+          FlushCache.sendFlushRequest(context, "/zimbraAdmin", RES_AJXMSG_JS);
+        }
+        break;
       case locale:
         WebClientL10nUtil.flushCache();
         break;
@@ -96,15 +122,24 @@ public class FlushCache extends AdminDocumentHandler {
             CacheEntryType.config, cacheSelector); // refresh global config for parsed license
         Provisioning.getInstance().refreshValidators(); // refresh other bits of cached license data
         break;
-      default:
+      case zimlet:
+        ZimletUtil.flushDiskCache(context);
+        if (!WebClientServiceUtil.isServerInSplitMode()) {
+          flushAllZimlets(context);
+        }
         // fall through to also flush ldap entries
+      default:
         flushLdapCache(cacheType, cacheSelector);
     }
   }
 
+  public static void flushAllZimlets(Map<String, Object> context) {
+    FlushCache.sendFlushRequest(context, "/service", "/zimlet/res/all.js");
+  }
+
   private static CacheEntry[] getCacheEntries(CacheSelector cacheSelector) throws ServiceException {
     List<CacheEntrySelector> cacheEntrySelectors = cacheSelector.getEntries();
-    if (cacheEntrySelectors.isEmpty()) {
+    if (cacheEntrySelectors.size() < 1) {
       return null;
     }
     CacheEntry[] entries = new CacheEntry[cacheEntrySelectors.size()];
@@ -184,20 +219,6 @@ public class FlushCache extends AdminDocumentHandler {
             server.getName(), e);
       }
     }
-  }
-
-  /** must be careful and only allow deletes domain admin has access to */
-  @Override
-  public boolean domainAuthSufficient(Map<String, Object> context) {
-    return true;
-  }
-
-  @Override
-  public Element handle(Element request, Map<String, Object> context) throws ServiceException {
-    ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    FlushCacheRequest req = zsc.elementToJaxb(request);
-    doFlushCache(this, context, req);
-    return zsc.jaxbToElement(new FlushCacheResponse());
   }
 
   @Override
