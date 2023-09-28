@@ -19,7 +19,7 @@ public class LogFactory {
 
   private LogFactory() {}
 
-  public static Log getLog(Class<?> clazz) {
+  public static Log getLog(final Class<?> clazz) {
     if (clazz == null) {
       return null;
     }
@@ -27,7 +27,7 @@ public class LogFactory {
     return getLog(clazz.getName());
   }
 
-  public static Log getLog(String name) {
+  public static Log getLog(final String name) {
     return LogManager.getGlobalLogMapper()
         .computeIfAbsent(
             name, n -> new Log(org.apache.logging.log4j.LogManager.getContext().getLogger(n)));
