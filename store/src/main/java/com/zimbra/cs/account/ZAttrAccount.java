@@ -17239,8 +17239,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: enable
-     * end-user to manage zimlets
+     * enable end-user to manage zimlets
      *
      * @return zimbraFeatureManageZimlets, or true if unset
      *
@@ -17252,8 +17251,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: enable
-     * end-user to manage zimlets
+     * enable end-user to manage zimlets
      *
      * @param zimbraFeatureManageZimlets new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -17268,8 +17266,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: enable
-     * end-user to manage zimlets
+     * enable end-user to manage zimlets
      *
      * @param zimbraFeatureManageZimlets new value
      * @param attrs existing map to populate, or null to create a new map
@@ -17285,8 +17282,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: enable
-     * end-user to manage zimlets
+     * enable end-user to manage zimlets
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -17300,8 +17296,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: enable
-     * end-user to manage zimlets
+     * enable end-user to manage zimlets
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -44256,7 +44251,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user does not want to see in the UI
      *
      * @return zimbraPrefDisabledZimlets, or empty array if unset
@@ -44269,7 +44263,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user does not want to see in the UI
      *
      * @param zimbraPrefDisabledZimlets new value
@@ -44285,7 +44278,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user does not want to see in the UI
      *
      * @param zimbraPrefDisabledZimlets new value
@@ -44302,7 +44294,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user does not want to see in the UI
      *
      * @param zimbraPrefDisabledZimlets new to add to existing values
@@ -44318,7 +44309,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user does not want to see in the UI
      *
      * @param zimbraPrefDisabledZimlets new to add to existing values
@@ -44335,7 +44325,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user does not want to see in the UI
      *
      * @param zimbraPrefDisabledZimlets existing value to remove
@@ -44351,7 +44340,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user does not want to see in the UI
      *
      * @param zimbraPrefDisabledZimlets existing value to remove
@@ -44368,7 +44356,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user does not want to see in the UI
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -44383,7 +44370,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user does not want to see in the UI
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -57064,7 +57050,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether or not zimlet tree is expanded
      *
      * @return zimbraPrefZimletTreeOpen, or false if unset
@@ -57077,7 +57062,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether or not zimlet tree is expanded
      *
      * @param zimbraPrefZimletTreeOpen new value
@@ -57093,7 +57077,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether or not zimlet tree is expanded
      *
      * @param zimbraPrefZimletTreeOpen new value
@@ -57110,7 +57093,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether or not zimlet tree is expanded
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -57125,7 +57107,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether or not zimlet tree is expanded
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -57141,7 +57122,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user wants to see in the UI
      *
      * @return zimbraPrefZimlets, or empty array if unset
@@ -57154,7 +57134,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user wants to see in the UI
      *
      * @param zimbraPrefZimlets new value
@@ -57170,7 +57149,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user wants to see in the UI
      *
      * @param zimbraPrefZimlets new value
@@ -57187,7 +57165,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user wants to see in the UI
      *
      * @param zimbraPrefZimlets new to add to existing values
@@ -57203,7 +57180,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user wants to see in the UI
      *
      * @param zimbraPrefZimlets new to add to existing values
@@ -57220,7 +57196,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user wants to see in the UI
      *
      * @param zimbraPrefZimlets existing value to remove
@@ -57236,7 +57211,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user wants to see in the UI
      *
      * @param zimbraPrefZimlets existing value to remove
@@ -57253,7 +57227,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user wants to see in the UI
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -57268,7 +57241,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * zimlets user wants to see in the UI
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -62167,10 +62139,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this COS Values can be prefixed with ! or + or
-     * - !: mandatory + (or no prefix): enabled by default -: disabled by
-     * default
+     * List of Zimlets available to this COS Values can be prefixed with ! or
+     * + or - !: mandatory + (or no prefix): enabled by default -: disabled
+     * by default
      *
      * @return zimbraZimletAvailableZimlets, or empty array if unset
      */
@@ -62180,10 +62151,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this COS Values can be prefixed with ! or + or
-     * - !: mandatory + (or no prefix): enabled by default -: disabled by
-     * default
+     * List of Zimlets available to this COS Values can be prefixed with ! or
+     * + or - !: mandatory + (or no prefix): enabled by default -: disabled
+     * by default
      *
      * @param zimbraZimletAvailableZimlets new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -62196,10 +62166,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this COS Values can be prefixed with ! or + or
-     * - !: mandatory + (or no prefix): enabled by default -: disabled by
-     * default
+     * List of Zimlets available to this COS Values can be prefixed with ! or
+     * + or - !: mandatory + (or no prefix): enabled by default -: disabled
+     * by default
      *
      * @param zimbraZimletAvailableZimlets new value
      * @param attrs existing map to populate, or null to create a new map
@@ -62213,10 +62182,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this COS Values can be prefixed with ! or + or
-     * - !: mandatory + (or no prefix): enabled by default -: disabled by
-     * default
+     * List of Zimlets available to this COS Values can be prefixed with ! or
+     * + or - !: mandatory + (or no prefix): enabled by default -: disabled
+     * by default
      *
      * @param zimbraZimletAvailableZimlets new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -62229,10 +62197,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this COS Values can be prefixed with ! or + or
-     * - !: mandatory + (or no prefix): enabled by default -: disabled by
-     * default
+     * List of Zimlets available to this COS Values can be prefixed with ! or
+     * + or - !: mandatory + (or no prefix): enabled by default -: disabled
+     * by default
      *
      * @param zimbraZimletAvailableZimlets new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -62246,10 +62213,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this COS Values can be prefixed with ! or + or
-     * - !: mandatory + (or no prefix): enabled by default -: disabled by
-     * default
+     * List of Zimlets available to this COS Values can be prefixed with ! or
+     * + or - !: mandatory + (or no prefix): enabled by default -: disabled
+     * by default
      *
      * @param zimbraZimletAvailableZimlets existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -62262,10 +62228,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this COS Values can be prefixed with ! or + or
-     * - !: mandatory + (or no prefix): enabled by default -: disabled by
-     * default
+     * List of Zimlets available to this COS Values can be prefixed with ! or
+     * + or - !: mandatory + (or no prefix): enabled by default -: disabled
+     * by default
      *
      * @param zimbraZimletAvailableZimlets existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -62279,10 +62244,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this COS Values can be prefixed with ! or + or
-     * - !: mandatory + (or no prefix): enabled by default -: disabled by
-     * default
+     * List of Zimlets available to this COS Values can be prefixed with ! or
+     * + or - !: mandatory + (or no prefix): enabled by default -: disabled
+     * by default
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -62294,10 +62258,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this COS Values can be prefixed with ! or + or
-     * - !: mandatory + (or no prefix): enabled by default -: disabled by
-     * default
+     * List of Zimlets available to this COS Values can be prefixed with ! or
+     * + or - !: mandatory + (or no prefix): enabled by default -: disabled
+     * by default
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -62310,7 +62273,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to load zimlets synchronously in the web client. If set to
      * TRUE, users are not allowed to use the core app before zimlets are
      * loaded. If set to FALSE, zimlets are loaded in the background and
@@ -62327,7 +62289,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to load zimlets synchronously in the web client. If set to
      * TRUE, users are not allowed to use the core app before zimlets are
      * loaded. If set to FALSE, zimlets are loaded in the background and
@@ -62347,7 +62308,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to load zimlets synchronously in the web client. If set to
      * TRUE, users are not allowed to use the core app before zimlets are
      * loaded. If set to FALSE, zimlets are loaded in the background and
@@ -62368,7 +62328,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to load zimlets synchronously in the web client. If set to
      * TRUE, users are not allowed to use the core app before zimlets are
      * loaded. If set to FALSE, zimlets are loaded in the background and
@@ -62387,7 +62346,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * Whether to load zimlets synchronously in the web client. If set to
      * TRUE, users are not allowed to use the core app before zimlets are
      * loaded. If set to FALSE, zimlets are loaded in the background and
@@ -62407,8 +62365,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: User
-     * properties for Zimlets
+     * User properties for Zimlets
      *
      * @return zimbraZimletUserProperties, or empty array if unset
      */
@@ -62418,8 +62375,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: User
-     * properties for Zimlets
+     * User properties for Zimlets
      *
      * @param zimbraZimletUserProperties new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -62432,8 +62388,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: User
-     * properties for Zimlets
+     * User properties for Zimlets
      *
      * @param zimbraZimletUserProperties new value
      * @param attrs existing map to populate, or null to create a new map
@@ -62447,8 +62402,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: User
-     * properties for Zimlets
+     * User properties for Zimlets
      *
      * @param zimbraZimletUserProperties new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -62461,8 +62415,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: User
-     * properties for Zimlets
+     * User properties for Zimlets
      *
      * @param zimbraZimletUserProperties new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -62476,8 +62429,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: User
-     * properties for Zimlets
+     * User properties for Zimlets
      *
      * @param zimbraZimletUserProperties existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -62490,8 +62442,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: User
-     * properties for Zimlets
+     * User properties for Zimlets
      *
      * @param zimbraZimletUserProperties existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -62505,8 +62456,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: User
-     * properties for Zimlets
+     * User properties for Zimlets
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -62518,8 +62468,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: User
-     * properties for Zimlets
+     * User properties for Zimlets
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -62532,7 +62481,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * maximum number of user properties for zimlet allowed on an account
      *
      * @return zimbraZimletUserPropertiesMaxNumEntries, or 150 if unset
@@ -62545,7 +62493,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * maximum number of user properties for zimlet allowed on an account
      *
      * @param zimbraZimletUserPropertiesMaxNumEntries new value
@@ -62561,7 +62508,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * maximum number of user properties for zimlet allowed on an account
      *
      * @param zimbraZimletUserPropertiesMaxNumEntries new value
@@ -62578,7 +62524,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * maximum number of user properties for zimlet allowed on an account
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -62593,7 +62538,6 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * maximum number of user properties for zimlet allowed on an account
      *
      * @param attrs existing map to populate, or null to create a new map

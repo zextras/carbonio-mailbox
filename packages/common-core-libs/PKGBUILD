@@ -239,6 +239,8 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/xercesImpl-2.9.1-patch-01.jar"
   install -D carbonio-jetty-libs/target/dependencies/xmlschema-core-2.0.3.jar \
     "${pkgdir}/opt/zextras/lib/jars/xmlschema-core-2.0.3.jar"
+  install -D carbonio-jetty-libs/target/dependencies/yuicompressor-2.4.8.jar \
+    "${pkgdir}/opt/zextras/lib/jars/yuicompressor-2.4.8.jar"
   install -D carbonio-jetty-libs/target/dependencies/zm-ews-stub-2.0.jar \
     "${pkgdir}/opt/zextras/lib/jars/zm-ews-stub-2.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/ehcache-3.1.2.jar \
