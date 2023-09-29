@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.usecase;
+package com.zextras.mailbox.util;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class MailboxTestUtil {
+
   public static final int LDAP_PORT = 1389;
   public static final String SERVER_NAME = "localhost";
   public static final String DEFAULT_DOMAIN = "test.com";
@@ -73,10 +74,6 @@ public class MailboxTestUtil {
         .createAccount(
             UUID.randomUUID() + "@" + MailboxTestUtil.DEFAULT_DOMAIN,
             "password",
-            new HashMap<>() {
-              {
-                put(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME);
-              }
-            });
+            new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
   }
 }

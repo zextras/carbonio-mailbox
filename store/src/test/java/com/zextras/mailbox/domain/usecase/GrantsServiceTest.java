@@ -6,7 +6,7 @@ package com.zextras.mailbox.domain.usecase;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.usecase.MailboxTestUtil;
+import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
