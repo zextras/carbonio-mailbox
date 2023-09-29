@@ -11,8 +11,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * This class perform deletion of an user
- * 
+ * This class performs deletion of a user
+ *
  * @author Davide Polonio
  * @since 23.10.0
  */
@@ -33,11 +33,10 @@ public class DeleteUserUseCase {
   }
 
   /**
-   * Perform the deletion of an user given its id.
-   * 
-   * @param userId the {@link String} that represents an id of an user
-   * @return a {@link Try} of kind {@link Void}, stating if the output was 
-   *         successfull or not
+   * Perform the deletion of a user given its id.
+   *
+   * @param userId the {@link String} that represents an id of a user
+   * @return a {@link Try} of kind {@link Void}, stating if the output was successful or not
    */
   public Try<Void> delete(String userId) {
     return Try.of(
