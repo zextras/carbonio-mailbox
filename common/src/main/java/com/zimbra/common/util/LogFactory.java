@@ -19,6 +19,12 @@ public class LogFactory {
 
   private LogFactory() {}
 
+  /**
+   * Gets {@link Log} by class.
+   *
+   * @param clazz class to get log for.
+   * @return {@link Log}
+   */
   public static Log getLog(final Class<?> clazz) {
     if (clazz == null) {
       return null;
@@ -27,6 +33,12 @@ public class LogFactory {
     return getLog(clazz.getName());
   }
 
+  /**
+   * Gets {@link Log} by name.
+   *
+   * @param name logger category name.
+   * @return {@link Log}
+   */
   public static Log getLog(final String name) {
     return LogManager.getGlobalLogMapper()
         .computeIfAbsent(
