@@ -42,7 +42,7 @@ public class CreateDataSource extends AdminDocumentHandler {
 
         String id = request.getAttribute(AdminConstants.E_ID);
 
-        Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
+        Account account = prov.get(AccountBy.id, id);
         if (account == null)
             throw AccountServiceException.NO_SUCH_ACCOUNT(id);
 

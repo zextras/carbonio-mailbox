@@ -37,7 +37,7 @@ public abstract class GalDocumentHandler extends AccountDocumentHandler {
       String[] xpath = getProxiedAccountPath();
       String acctId = (xpath != null ? getXPath(request, xpath) : null);
       if (acctId != null) {
-        Account acct = prov.get(AccountBy.id, acctId, zsc.getAuthToken());
+        Account acct = prov.get(AccountBy.id, acctId);
         if (acct != null) {
           if (!Provisioning.getInstance().onLocalServer(acct)) {
             /*

@@ -67,7 +67,7 @@ public class DeleteAccount extends AdminDocumentHandler {
     }
 
     // Confirm that the account exists and that the mailbox is located on the current host
-    Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
+    Account account = prov.get(AccountBy.id, id);
     defendAgainstAccountHarvesting(account, AccountBy.id, id, zsc, Admin.R_deleteAccount);
 
     /*

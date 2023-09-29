@@ -17,7 +17,6 @@ import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.account.Key.DistributionListBy;
 import com.zimbra.soap.ZimbraSoapContext;
 
 public abstract class ShareInfoHandler extends AdminDocumentHandler {
@@ -63,7 +62,7 @@ public abstract class ShareInfoHandler extends AdminDocumentHandler {
         String key = eOwner.getAttribute(AdminConstants.A_BY);
         String value = eOwner.getText();
 
-        Account account = prov.get(AccountBy.fromString(key), value, zsc.getAuthToken());
+        Account account = prov.get(AccountBy.fromString(key), value);
 
         if (account == null)
             throw AccountServiceException.NO_SUCH_ACCOUNT(value);

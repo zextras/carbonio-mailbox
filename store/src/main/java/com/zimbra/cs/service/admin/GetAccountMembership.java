@@ -26,7 +26,6 @@ import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GetAccountMembershipRequest;
 
@@ -59,7 +58,7 @@ public class GetAccountMembership extends AdminDocumentHandler {
         GetAccountMembershipRequest req = zsc.elementToJaxb(request);
         AccountBy acctBy = req.getAccount().getBy().toKeyAccountBy();
         String accountSelectorKey = req.getAccount().getKey();
-        Account account = prov.get(acctBy, accountSelectorKey, zsc.getAuthToken());
+        Account account = prov.get(acctBy, accountSelectorKey);
         defendAgainstAccountHarvesting(account, acctBy, accountSelectorKey, zsc, Admin.R_getAccountMembership);
 
         HashMap<String,String> via = new HashMap<String, String>();

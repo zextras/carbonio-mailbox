@@ -215,9 +215,9 @@ public class RemoteFreeBusyProvider extends FreeBusyProvider {
                 req.addAttribute(MailConstants.A_UID, paramStr);
 
                 // hack: use the ID of the first user
-                Account acct = prov.get(AccountBy.name, idStrs[0], mSoapCtxt.getAuthToken());
+                Account acct = prov.get(AccountBy.name, idStrs[0]);
                 if (acct == null)
-                    acct = prov.get(AccountBy.id, idStrs[0], mSoapCtxt.getAuthToken());
+                    acct = prov.get(AccountBy.id, idStrs[0]);
                 if (acct != null) {
                     Element remoteResponse = proxyRequest(req, acct.getId(), mSoapCtxt);
                     for (Element thisElt : remoteResponse.listElements())

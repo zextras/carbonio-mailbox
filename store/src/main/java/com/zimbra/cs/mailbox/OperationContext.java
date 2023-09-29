@@ -64,7 +64,7 @@ public class OperationContext implements OpContext {
     authToken = auth;
     String accountId = auth.getAccountId();
     isAdmin = AuthToken.isAnyAdmin(auth);
-    authuser = Provisioning.getInstance().get(AccountBy.id, accountId, authToken);
+    authuser = Provisioning.getInstance().get(AccountBy.id, accountId);
     if (authuser == null || !auth.isZimbraUser()) {
       if (auth.getDigest() != null || auth.getAccessKey() != null) {
         authuser = new GuestAccount(auth);

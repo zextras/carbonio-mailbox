@@ -21,7 +21,6 @@ import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.type.AccountSelector;
@@ -65,7 +64,7 @@ public class GetAccount extends AdminDocumentHandler {
         String accountSelectorKey = acctSel.getKey();
         AccountBy by = acctSel.getBy().toKeyAccountBy();
 
-        Account account = prov.get(by, accountSelectorKey, zsc.getAuthToken());
+        Account account = prov.get(by, accountSelectorKey);
         defendAgainstAccountHarvesting(account, by, accountSelectorKey, zsc, Admin.R_getAccountInfo);
 
         AdminAccessControl aac = checkAccountRight(zsc, account, AdminRight.PR_ALWAYS_ALLOW);

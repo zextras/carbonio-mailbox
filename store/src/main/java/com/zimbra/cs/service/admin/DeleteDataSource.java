@@ -41,7 +41,7 @@ public class DeleteDataSource extends AdminDocumentHandler {
         String id = request.getAttribute(AdminConstants.E_ID);
         Map<String, Object> attrs = AdminService.getAttrs(request);
 
-        Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
+        Account account = prov.get(AccountBy.id, id);
         if (account == null)
             throw AccountServiceException.NO_SUCH_ACCOUNT(id);
 

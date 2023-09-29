@@ -75,7 +75,7 @@ public class ModifyAccount extends AdminDocumentHandler {
           "missing required attribute: " + AdminConstants.E_ID, null);
     }
 
-    Account account = prov.get(AccountBy.id, id, authToken);
+    Account account = prov.get(AccountBy.id, id);
 
     Map<String, Object> attrs = req.getAttrsAsOldMultimap();
     defendAgainstAccountHarvesting(account, AccountBy.id, id, zsc, attrs);
@@ -124,7 +124,7 @@ public class ModifyAccount extends AdminDocumentHandler {
     // get account again, in the case when zimbraCOSId or zimbraForeignPrincipal
     // is changed, the cache object(he one we are holding on to) would'd been
     // flushed out from cache. Get the account again to get the fresh one.
-    account = prov.get(AccountBy.id, id, zsc.getAuthToken());
+    account = prov.get(AccountBy.id, id);
 
     ZimbraLog.security.info(
         ZimbraLog.encodeAttrs(

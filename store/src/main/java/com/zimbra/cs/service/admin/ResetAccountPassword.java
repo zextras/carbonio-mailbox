@@ -44,7 +44,7 @@ public class ResetAccountPassword extends AdminDocumentHandler {
                 "no text specified for the " + AccountConstants.E_ACCOUNT + " element", null);
         }
         Provisioning prov = Provisioning.getInstance();
-        Account account = prov.get(AccountBy.fromString(key), value, zsc.getAuthToken());
+        Account account = prov.get(AccountBy.fromString(key), value);
 
         // prevent directory harvest attack, mask no such account as permission denied
         if (account == null)

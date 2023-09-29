@@ -236,14 +236,14 @@ public class UserServletContext {
 
         // see if we can get target account or not
         if (itemId != null && itemId.getAccountId() != null) {
-            targetAccount = prov.get(AccountBy.id, itemId.getAccountId(), authToken);
+            targetAccount = prov.get(AccountBy.id, itemId.getAccountId());
         } else if (accountPath.equals("~")) {
             // can't resolve this yet
         } else {
             if (accountPath.startsWith("~")) {
                 accountPath = accountPath.substring(1);
             }
-            targetAccount = prov.get(AccountBy.name, accountPath, authToken);
+            targetAccount = prov.get(AccountBy.name, accountPath);
         }
 
         String listParam = this.params.get(UserServlet.QP_LIST);
@@ -265,7 +265,7 @@ public class UserServletContext {
                 }
             }
             if (proxyAcct != null) {
-                targetAccount = prov.get(AccountBy.id, proxyAcct, authToken);
+                targetAccount = prov.get(AccountBy.id, proxyAcct);
             }
         }
 

@@ -82,7 +82,7 @@ public class ZimbraAuthenticator extends Authenticator {
         }
 
         // make sure that the authentication account is valid
-        Account authAccount = prov.get(at.isAdmin() ? Key.AccountBy.adminName : Key.AccountBy.name, authenticateId, at);
+        Account authAccount = prov.get(at.isAdmin() ? Key.AccountBy.adminName : Key.AccountBy.name, authenticateId);
         if (authAccount == null)
             return null;
 

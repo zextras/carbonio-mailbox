@@ -21,7 +21,6 @@ import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GetMailboxRequest;
 import com.zimbra.soap.admin.message.GetMailboxResponse;
@@ -59,7 +58,7 @@ public class GetMailbox extends AdminDocumentHandler {
         GetMailboxRequest req = zsc.elementToJaxb(request);
         String accountId = req.getMbox().getId();
 
-        Account account = Provisioning.getInstance().get(AccountBy.id, accountId, zsc.getAuthToken());
+        Account account = Provisioning.getInstance().get(AccountBy.id, accountId);
         defendAgainstAccountHarvesting(account, AccountBy.id, accountId, zsc, Admin.R_getMailboxInfo);
 
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);

@@ -135,7 +135,7 @@ public class PreAuthServlet extends ZimbraServlet {
     validateAuthToken(authToken);
 
     final boolean isAdmin = AuthToken.isAnyAdmin(authToken);
-    final Account acct = provisioning.get(AccountBy.id, authToken.getAccountId(), authToken);
+    final Account acct = provisioning.get(AccountBy.id, authToken.getAccountId());
 
     if (isAdmin || needReferral(acct, referMode, isRedirect)) {
       AuthToken updatedAuthToken = regenerateAuthToken(authToken);
@@ -201,7 +201,7 @@ public class PreAuthServlet extends ZimbraServlet {
     final AccountBy accountBy = AccountBy.fromString(accountByParam);
 
     boolean accountAutoProvisioned = false;
-    Account acct = provisioning.get(accountBy, accountParam, null);
+    Account acct = provisioning.get(accountBy, accountParam);
     final Map<String, Object> authContext = Utils.createAuthContext(accountParam, req);
 
     if (acct == null) {

@@ -73,7 +73,7 @@ public class ChangePrimaryEmail extends AdminDocumentHandler {
 
     String accountSelectorKey = acctSel.getKey();
     AccountBy by = acctSel.getBy().toKeyAccountBy();
-    Account account = prov.get(by, accountSelectorKey, zsc.getAuthToken());
+    Account account = prov.get(by, accountSelectorKey);
 
     defendAgainstAccountHarvesting(account, by, accountSelectorKey, zsc, Admin.R_renameAccount);
     defendAgainstAccountOrCalendarResourceHarvesting(

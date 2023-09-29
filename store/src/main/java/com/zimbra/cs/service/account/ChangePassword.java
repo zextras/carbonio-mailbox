@@ -71,7 +71,7 @@ public class ChangePassword extends AccountDocumentHandler {
       }
     }
 
-    Account acct = prov.get(AccountBy.name, name, zsc.getAuthToken());
+    Account acct = prov.get(AccountBy.name, name);
     if (acct == null)
       throw AuthFailedServiceException.AUTH_FAILED(name, namePassedIn, "account not found");
 

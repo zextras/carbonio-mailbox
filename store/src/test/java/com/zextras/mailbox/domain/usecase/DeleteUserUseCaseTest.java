@@ -23,6 +23,7 @@ public class DeleteUserUseCaseTest {
   private Log mockZimbraSecurityLog;
   private DeleteUserUseCase deleteUserUseCase;
   private Provisioning mockProvisioning;
+  private GrantsService grantsService;
   private File localConfig;
   private File tempDir;
 
@@ -31,8 +32,10 @@ public class DeleteUserUseCaseTest {
     mockProvisioning = mock(Provisioning.class);
     mockMailboxManager = mock(MailboxManager.class);
     mockZimbraSecurityLog = mock(Log.class);
+    grantsService = mock(GrantsService.class);
     deleteUserUseCase =
-        new DeleteUserUseCase(mockProvisioning, mockMailboxManager, mockZimbraSecurityLog);
+        new DeleteUserUseCase(mockProvisioning, mockMailboxManager, grantsService,
+            mockZimbraSecurityLog);
   }
 
   @Test
@@ -137,5 +140,21 @@ public class DeleteUserUseCaseTest {
     final ArgumentCaptor<String> logCaptor = ArgumentCaptor.forClass(String.class);
     verify(mockZimbraSecurityLog, times(1)).info(logCaptor.capture());
     assertEquals("cmd=DeleteAccount; name=example; id=id123;", logCaptor.getValue());
+  }
+
+  @Test
+  void shouldRevokeGrantsWhenMailboxOnLocalServer() throws Exception {
+    final String userId = "id123";
+    final Account mockAccount = mock(Account.class);
+    final Mailbox mockMailbox = mock(Mailbox.class);
+    when(mockMailboxManager.getMailboxByAccount(mockAccount, false)).thenReturn(mockMailbox);
+    when(mockProvisioning.getAccountById(userId)).thenReturn(mockAccount);
+    when(mockProvisioning.onLocalServer(mockAccount)).thenReturn(true);
+    doNothing().when(grantsService).revokeAllGrantsForAccountId(null, userId);
+
+    final Try<Void> deleteResult = deleteUserUseCase.delete(userId);
+
+    assertTrue(deleteResult.isSuccess());
+    verify(grantsService, times(1)).revokeAllGrantsForAccountId(null, userId);
   }
 }

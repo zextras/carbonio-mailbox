@@ -867,7 +867,7 @@ public class UserServlet extends ZimbraServlet {
 
   public static byte[] getRemoteContent(AuthToken authToken, ItemId iid, Map<String, String> params)
       throws ServiceException {
-    Account target = Provisioning.getInstance().get(AccountBy.id, iid.getAccountId(), authToken);
+    Account target = Provisioning.getInstance().get(AccountBy.id, iid.getAccountId());
     Map<String, String> pcopy = new HashMap<String, String>(params);
     pcopy.put(QP_ID, iid.toString());
     return getRemoteContent(authToken, target, (String) null, pcopy);
@@ -938,7 +938,7 @@ public class UserServlet extends ZimbraServlet {
 
     // fetch from remote store
     Provisioning prov = Provisioning.getInstance();
-    Account target = prov.get(AccountBy.id, iid.getAccountId(), at);
+    Account target = prov.get(AccountBy.id, iid.getAccountId());
     String url = getRemoteUrl(target, null, pcopy);
 
     Pair<Header[], HttpInputStream> response = getRemoteResourceAsStream(at.toZAuthToken(), url);

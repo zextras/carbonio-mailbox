@@ -64,7 +64,7 @@ public final class VerifyIndex extends AdminDocumentHandler {
         String accountId = mreq.getAttribute(AdminConstants.A_ACCOUNTID);
 
         Provisioning prov = Provisioning.getInstance();
-        Account account = prov.get(AccountBy.id, accountId, zsc.getAuthToken());
+        Account account = prov.get(AccountBy.id, accountId);
         if (account == null) {
             throw AccountServiceException.NO_SUCH_ACCOUNT(accountId);
         }

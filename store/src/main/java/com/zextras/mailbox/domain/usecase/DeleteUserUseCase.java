@@ -20,15 +20,18 @@ public class DeleteUserUseCase {
 
   private final Provisioning provisioning;
   private final MailboxManager mailboxManager;
+  private final GrantsService grantsService;
   private final Log log;
 
   @Inject
   public DeleteUserUseCase(
       @Named("defaultProvisioning") Provisioning provisioning,
       @Named("defaultMailboxManager") MailboxManager mailboxManager,
+      GrantsService grantsService,
       @Named("zimbraLogSecurity") Log log) {
     this.provisioning = provisioning;
     this.mailboxManager = mailboxManager;
+    this.grantsService = grantsService;
     this.log = log;
   }
 
@@ -49,6 +52,7 @@ public class DeleteUserUseCase {
                   account, ZAttrProvisioning.AccountStatus.maintenance.name());
 
               if (provisioning.onLocalServer(account)) {
+                grantsService.revokeAllGrantsForAccountId(null, userId);
                 mailboxManager.getMailboxByAccount(account, false).deleteMailbox();
               }
 

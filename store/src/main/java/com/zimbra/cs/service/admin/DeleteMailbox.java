@@ -42,7 +42,7 @@ public class DeleteMailbox extends AdminDocumentHandler {
         Element mreq = request.getElement(AdminConstants.E_MAILBOX);
         String accountId = mreq.getAttribute(AdminConstants.A_ACCOUNTID);
         
-        Account account = Provisioning.getInstance().get(AccountBy.id, accountId, zsc.getAuthToken());
+        Account account = Provisioning.getInstance().get(AccountBy.id, accountId);
         if (account == null) {
             // Note: isDomainAdminOnly *always* returns false for pure ACL based AccessManager 
             if (isDomainAdminOnly(zsc)) {

@@ -126,7 +126,7 @@ public class PublicICalServlet extends ZimbraServlet {
         ZimbraSoapContext zsc = null;
         if (at != null) {
             try {
-                authAccount = Provisioning.getInstance().get(AccountBy.id, at.getAccountId(), at);
+                authAccount = Provisioning.getInstance().get(AccountBy.id, at.getAccountId());
             } catch (ServiceException e) {
                 sLog.warn("Auth error: " + e.getMessage(), e);
             }

@@ -65,13 +65,13 @@ class GrantsServiceTest {
     final GrantsService grantsService = new GrantsService(mailboxManager, provisioning);
     grantsService.revokeAllGrantsForAccountId(null, target.getId());
     assertEquals(0, grantsService.getAllFolderGrantsForAccountId(null, target.getId()).size());
-    assertEquals(0, grantsService.getLDAPGrantsForAccountId(null, target.getId()).getACEs().size());
+    assertEquals(0, grantsService.getLDAPGrantsForAccountId(target.getId()).getACEs().size());
   }
 
   @Test
   void shouldReturnGrantsForGranteeAndTarget() throws ServiceException {
     final GrantsService grantsService = new GrantsService(mailboxManager, provisioning);
     assertEquals(1, grantsService.getAllFolderGrantsForAccountId(null, target.getId()).size());
-    assertEquals(1, grantsService.getLDAPGrantsForAccountId(null, target.getId()).getACEs().size());
+    assertEquals(1, grantsService.getLDAPGrantsForAccountId(target.getId()).getACEs().size());
   }
 }

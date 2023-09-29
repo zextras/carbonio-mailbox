@@ -69,7 +69,7 @@ public class GrantsService {
         Collections.singletonMap(Provisioning.A_zimbraACE, List.of()));
   }
 
-  public Grants getLDAPGrantsForAccountId(OperationContext operationContext, String accountId)
+  public Grants getLDAPGrantsForAccountId(String accountId)
       throws ServiceException {
     return provisioning.getGrants(
         TargetType.account.getCode(), TargetBy.id, accountId, null, null, null, false);

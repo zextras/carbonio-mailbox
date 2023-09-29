@@ -58,7 +58,7 @@ public class AddGalSyncDataSource extends AdminDocumentHandler {
 
     Account account = null;
     try {
-      account = prov.get(acctBy.toKeyAccountBy(), acctValue, zsc.getAuthToken());
+      account = prov.get(acctBy.toKeyAccountBy(), acctValue);
     } catch (ServiceException se) {
       ZimbraLog.gal.warn("error checking GalSyncAccount", se);
     }

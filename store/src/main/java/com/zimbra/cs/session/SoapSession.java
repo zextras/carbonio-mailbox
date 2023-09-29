@@ -1170,7 +1170,7 @@ public class SoapSession extends Session {
     }
     try {
       Provisioning prov = Provisioning.getInstance();
-      Account owner = prov.get(Key.AccountBy.id, mpt.getOwnerId(), octxt.getAuthToken());
+      Account owner = prov.get(Key.AccountBy.id, mpt.getOwnerId());
       if (owner == null || owner.getId().equals(mAuthenticatedAccountId)) {
         mountpoints.put(iidTarget, new Pair<Boolean, Element>(true, null));
         return;
@@ -1226,7 +1226,7 @@ public class SoapSession extends Session {
           continue;
         }
         Account owner =
-            prov.get(Key.AccountBy.id, mptinfo.getKey().getAccountId(), zsc.getAuthToken());
+            prov.get(Key.AccountBy.id, mptinfo.getKey().getAccountId());
         if (owner == null) {
           continue;
         }
