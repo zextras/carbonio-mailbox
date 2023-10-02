@@ -4,6 +4,8 @@
 
 package com.zimbra.cs.service.admin;
 
+import static com.zimbra.common.service.ServiceException.AUTH_REQUIRED;
+
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -17,6 +19,7 @@ import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.http.HttpResponse;
@@ -29,20 +32,19 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class DeleteAccountTest {
 
-  private Server mailboxServer;
-  private final int ADMIN_PORT = 7071;
+  private static Server mailboxServer;
+  private static final int ADMIN_PORT = 7071;
 
-  @BeforeEach
-  void setUp() throws Exception {
-    System.setProperty(
-        "java.library.path", "/home/davidefrison/IdeaProjects/carbonio-mailbox/native/target");
+  @BeforeAll
+  static void setUp() throws Exception {
+    System.setProperty("java.library.path", new File("./../").getAbsolutePath() + "/native/target");
     MailboxTestUtil.setUp();
     final ServletHolder firstServlet = new ServletHolder("FirstServlet", FirstServlet.class);
     firstServlet.setInitOrder(0);
@@ -59,10 +61,10 @@ class DeleteAccountTest {
     mailboxServer.start();
   }
 
-  @AfterEach
-  void tearDown() throws Exception {
-    MailboxTestUtil.tearDown();
+  @AfterAll
+  static void tearDown() throws Exception {
     mailboxServer.stop();
+    MailboxTestUtil.tearDown();
   }
 
   private HttpClient createHttpClientForAdminAccount(Account account) throws Exception {
@@ -77,18 +79,31 @@ class DeleteAccountTest {
   }
 
   @Test
-  void shouldDeleteUser() throws Exception {
+  void shouldDeleteUserAsAdmin() throws Exception {
     final Account adminAccount = MailboxTestUtil.createBasicAccount();
     final Account toDelete = MailboxTestUtil.createBasicAccount();
     adminAccount.modify(new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE")));
     final HttpPost httpPost = new HttpPost("http://localhost:" + ADMIN_PORT);
-
     final Element element = JaxbUtil.jaxbToElement(new DeleteAccountRequest(toDelete.getId()));
     Element envelope = SoapProtocol.Soap12.soapEnvelope(element, null);
     httpPost.setEntity(new StringEntity(envelope.toString()));
     final HttpClient httpClientForAccount = createHttpClientForAdminAccount(adminAccount);
     final HttpResponse response = httpClientForAccount.execute(httpPost);
-
     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  void shouldGet500WithAuthRequiredIfNoToken() throws Exception {
+    final Account toDelete = MailboxTestUtil.createBasicAccount();
+    final HttpPost httpPost = new HttpPost("http://localhost:" + ADMIN_PORT);
+    final Element element = JaxbUtil.jaxbToElement(new DeleteAccountRequest(toDelete.getId()));
+    Element envelope = SoapProtocol.Soap12.soapEnvelope(element, null);
+    httpPost.setEntity(new StringEntity(envelope.toString()));
+    final HttpClient httpClientForAccount = HttpClientBuilder.create().build();
+    final HttpResponse response = httpClientForAccount.execute(httpPost);
+    final String responseEnvelope = new String(response.getEntity().getContent().readAllBytes());
+    Assertions.assertTrue(responseEnvelope.contains("<Code>" + AUTH_REQUIRED + "</Code>"));
+    Assertions.assertEquals(
+        HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
   }
 }
