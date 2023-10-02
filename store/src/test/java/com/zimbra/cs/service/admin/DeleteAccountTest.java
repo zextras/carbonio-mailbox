@@ -5,6 +5,7 @@
 package com.zimbra.cs.service.admin;
 
 import static com.zimbra.common.service.ServiceException.AUTH_REQUIRED;
+import static com.zimbra.common.service.ServiceException.PERM_DENIED;
 
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
@@ -103,6 +104,22 @@ class DeleteAccountTest {
     final HttpResponse response = httpClientForAccount.execute(httpPost);
     final String responseEnvelope = new String(response.getEntity().getContent().readAllBytes());
     Assertions.assertTrue(responseEnvelope.contains("<Code>" + AUTH_REQUIRED + "</Code>"));
+    Assertions.assertEquals(
+        HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  void shouldGet500WithPerDeniedIfNotAnAdmin() throws Exception {
+    final Account standardAccount = MailboxTestUtil.createBasicAccount();
+    final Account toDelete = MailboxTestUtil.createBasicAccount();
+    final HttpPost httpPost = new HttpPost("http://localhost:" + ADMIN_PORT);
+    final Element element = JaxbUtil.jaxbToElement(new DeleteAccountRequest(toDelete.getId()));
+    Element envelope = SoapProtocol.Soap12.soapEnvelope(element, null);
+    httpPost.setEntity(new StringEntity(envelope.toString()));
+    final HttpClient httpClientForAccount = createHttpClientForAdminAccount(standardAccount);
+    final HttpResponse response = httpClientForAccount.execute(httpPost);
+    final String responseEnvelope = new String(response.getEntity().getContent().readAllBytes());
+    Assertions.assertTrue(responseEnvelope.contains("<Code>" + PERM_DENIED + "</Code>"));
     Assertions.assertEquals(
         HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
   }
