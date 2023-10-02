@@ -51,14 +51,19 @@ public class SoapServlet extends ZimbraServlet {
 
   /** context name of auth token extracted from cookie */
   public static final String ZIMBRA_AUTH_TOKEN = "zimbra.authToken";
+
   /** context name of servlet context */
   public static final String SERVLET_CONTEXT = "servlet.context";
+
   /** context name of servlet HTTP request */
   public static final String SERVLET_REQUEST = "servlet.request";
+
   /** context name of servlet HTTP response */
   public static final String SERVLET_RESPONSE = "servlet.response";
+
   /** If this is a request sent to the admin port */
   public static final String IS_ADMIN_REQUEST = "zimbra.isadminreq";
+
   /** Flag for requests that want to force invalidation of client cookies */
   public static final String INVALIDATE_COOKIES = "zimbra.invalidateCookies";
 
@@ -166,29 +171,14 @@ public class SoapServlet extends ZimbraServlet {
     addService(hi);
   }
 
-  /**
-   * Adds a service to the instance of <code>SoapServlet</code> with the given name. If the servlet
-   * has not been loaded, stores the service for later initialization.
-   */
-  public static void addService(String servletName, DocumentService service) {
-    synchronized (sExtraServices) {
-      ZimbraServlet servlet = ZimbraServlet.getServlet(servletName);
-      if (servlet != null) {
-        ((SoapServlet) servlet).addService(service);
-      } else {
-        sLog.debug(
-            "addService(%s, %s): servlet has not been initialized",
-            servletName, service.getClass().getSimpleName());
-        List<DocumentService> services = LoadingCacheUtil.get(sExtraServices, servletName);
-        services.add(service);
-      }
-    }
-  }
-
-  private void addService(DocumentService service) {
+  private void addService(DocumentService service) throws ServletException {
     ZimbraLog.soap.info(
         "Adding service %s to %s", service.getClass().getSimpleName(), getServletName());
-    service.registerHandlers(mEngine.getDocumentDispatcher());
+    try {
+      service.registerHandlers(mEngine.getDocumentDispatcher());
+    } catch (ServiceException exception) {
+      throw new ServletException("Failed to startup soap servlet: " + exception.getMessage());
+    }
   }
 
   @Override

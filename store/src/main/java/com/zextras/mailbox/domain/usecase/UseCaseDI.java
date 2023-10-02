@@ -28,4 +28,9 @@ public class UseCaseDI extends AbstractModule {
   Log getZimbraLogSecurity() {
     return ZimbraLog.security;
   }
+
+  @Provides
+  GrantsService getGrantsService(MailboxManager mailboxManager, Provisioning provisioning) {
+    return new GrantsService(mailboxManager, provisioning);
+  }
 }

@@ -48,6 +48,9 @@ public class GrantsService {
     final Mailbox targetMailbox = mailboxManager.getMailboxByAccountId(targetAccountId);
     final FolderNode rootFolder = targetMailbox.getFolderTree(operationContext, null, false);
     final Set<Folder> allFolders = FolderUtil.flattenAndSortFolderTree(rootFolder);
+    // TODO: should we split these into two different methods?
+    // What if deleting the mailbox deletes also the grants from the mailbox? Hence we could just
+    // delete from LDAP
     allFolders.forEach(
         folder ->
             folder
@@ -64,13 +67,13 @@ public class GrantsService {
                             e.getMessage());
                       }
                     }));
+
     provisioning.modifyAttrs(
         provisioning.getAccountById(targetAccountId),
         Collections.singletonMap(Provisioning.A_zimbraACE, List.of()));
   }
 
-  public Grants getLDAPGrantsForAccountId(String accountId)
-      throws ServiceException {
+  public Grants getLDAPGrantsForAccountId(String accountId) throws ServiceException {
     return provisioning.getGrants(
         TargetType.account.getCode(), TargetBy.id, accountId, null, null, null, false);
   }
