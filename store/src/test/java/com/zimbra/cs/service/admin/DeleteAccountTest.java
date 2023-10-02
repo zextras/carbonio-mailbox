@@ -48,8 +48,8 @@ import org.junit.jupiter.api.Test;
 
 class DeleteAccountTest {
 
-  private static Server mailboxServer;
   private static final int ADMIN_PORT = 7071;
+  private static Server mailboxServer;
 
   @BeforeAll
   static void setUp() throws Exception {
