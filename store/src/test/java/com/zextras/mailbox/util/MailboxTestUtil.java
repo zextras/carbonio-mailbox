@@ -15,6 +15,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.mailbox.ScheduledTaskManager;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ public class MailboxTestUtil {
   private static InMemoryDirectoryServer inMemoryDirectoryServer;
 
   public static void setUp() throws Exception {
+    System.setProperty("java.library.path", "../native/target");
     System.setProperty(
         "zimbra.config",
         Objects.requireNonNull(
@@ -54,6 +56,7 @@ public class MailboxTestUtil {
     RedoLogProvider.getInstance().startup();
     RightManager.getInstance();
     StoreManager.getInstance().startup();
+    ScheduledTaskManager.startup();
   }
 
   public static void tearDown() throws ServiceException {

@@ -227,6 +227,29 @@ public final class AdminConstants {
   public static final String E_RECALCULATE_MAILBOX_COUNTS_RESPONSE =
       "RecalculateMailboxCountsResponse";
 
+  public static final String E_GET_ZIMLET_REQUEST = "GetZimletRequest";
+  public static final String E_GET_ZIMLET_RESPONSE = "GetZimletResponse";
+  public static final String E_CREATE_ZIMLET_REQUEST = "CreateZimletRequest";
+  public static final String E_CREATE_ZIMLET_RESPONSE = "CreateZimletResponse";
+  public static final String E_DELETE_ZIMLET_REQUEST = "DeleteZimletRequest";
+  public static final String E_DELETE_ZIMLET_RESPONSE = "DeleteZimletResponse";
+  public static final String E_GET_ADMIN_EXTENSION_ZIMLETS_REQUEST =
+      "GetAdminExtensionZimletsRequest";
+  public static final String E_GET_ADMIN_EXTENSION_ZIMLETS_RESPONSE =
+      "GetAdminExtensionZimletsResponse";
+  public static final String E_GET_ALL_ZIMLETS_REQUEST = "GetAllZimletsRequest";
+  public static final String E_GET_ALL_ZIMLETS_RESPONSE = "GetAllZimletsResponse";
+  public static final String E_GET_ZIMLET_STATUS_REQUEST = "GetZimletStatusRequest";
+  public static final String E_GET_ZIMLET_STATUS_RESPONSE = "GetZimletStatusResponse";
+  public static final String E_DEPLOY_ZIMLET_REQUEST = "DeployZimletRequest";
+  public static final String E_DEPLOY_ZIMLET_RESPONSE = "DeployZimletResponse";
+  public static final String E_UNDEPLOY_ZIMLET_REQUEST = "UndeployZimletRequest";
+  public static final String E_UNDEPLOY_ZIMLET_RESPONSE = "UndeployZimletResponse";
+  public static final String E_CONFIGURE_ZIMLET_REQUEST = "ConfigureZimletRequest";
+  public static final String E_CONFIGURE_ZIMLET_RESPONSE = "ConfigureZimletResponse";
+  public static final String E_MODIFY_ZIMLET_REQUEST = "ModifyZimletRequest";
+  public static final String E_MODIFY_ZIMLET_RESPONSE = "ModifyZimletResponse";
+
   public static final String E_CREATE_CALENDAR_RESOURCE_REQUEST = "CreateCalendarResourceRequest";
   public static final String E_CREATE_CALENDAR_RESOURCE_RESPONSE = "CreateCalendarResourceResponse";
   public static final String E_DELETE_CALENDAR_RESOURCE_REQUEST = "DeleteCalendarResourceRequest";
@@ -792,6 +815,37 @@ public final class AdminConstants {
       QName.get(E_RECALCULATE_MAILBOX_COUNTS_REQUEST, NAMESPACE);
   public static final QName RECALCULATE_MAILBOX_COUNTS_RESPONSE =
       QName.get(E_RECALCULATE_MAILBOX_COUNTS_RESPONSE, NAMESPACE);
+
+  public static final QName GET_ZIMLET_REQUEST = QName.get(E_GET_ZIMLET_REQUEST, NAMESPACE);
+  public static final QName GET_ZIMLET_RESPONSE = QName.get(E_GET_ZIMLET_RESPONSE, NAMESPACE);
+  public static final QName CREATE_ZIMLET_REQUEST = QName.get(E_CREATE_ZIMLET_REQUEST, NAMESPACE);
+  public static final QName CREATE_ZIMLET_RESPONSE = QName.get(E_CREATE_ZIMLET_RESPONSE, NAMESPACE);
+  public static final QName DELETE_ZIMLET_REQUEST = QName.get(E_DELETE_ZIMLET_REQUEST, NAMESPACE);
+  public static final QName DELETE_ZIMLET_RESPONSE = QName.get(E_DELETE_ZIMLET_RESPONSE, NAMESPACE);
+  public static final QName GET_ADMIN_EXTENSION_ZIMLETS_REQUEST =
+      QName.get(E_GET_ADMIN_EXTENSION_ZIMLETS_REQUEST, NAMESPACE);
+  public static final QName GET_ADMIN_EXTENSION_ZIMLETS_RESPONSE =
+      QName.get(E_GET_ADMIN_EXTENSION_ZIMLETS_RESPONSE, NAMESPACE);
+  public static final QName GET_ALL_ZIMLETS_REQUEST =
+      QName.get(E_GET_ALL_ZIMLETS_REQUEST, NAMESPACE);
+  public static final QName GET_ALL_ZIMLETS_RESPONSE =
+      QName.get(E_GET_ALL_ZIMLETS_RESPONSE, NAMESPACE);
+  public static final QName GET_ZIMLET_STATUS_REQUEST =
+      QName.get(E_GET_ZIMLET_STATUS_REQUEST, NAMESPACE);
+  public static final QName GET_ZIMLET_STATUS_RESPONSE =
+      QName.get(E_GET_ZIMLET_STATUS_RESPONSE, NAMESPACE);
+  public static final QName DEPLOY_ZIMLET_REQUEST = QName.get(E_DEPLOY_ZIMLET_REQUEST, NAMESPACE);
+  public static final QName DEPLOY_ZIMLET_RESPONSE = QName.get(E_DEPLOY_ZIMLET_RESPONSE, NAMESPACE);
+  public static final QName UNDEPLOY_ZIMLET_REQUEST =
+      QName.get(E_UNDEPLOY_ZIMLET_REQUEST, NAMESPACE);
+  public static final QName UNDEPLOY_ZIMLET_RESPONSE =
+      QName.get(E_UNDEPLOY_ZIMLET_RESPONSE, NAMESPACE);
+  public static final QName CONFIGURE_ZIMLET_REQUEST =
+      QName.get(E_CONFIGURE_ZIMLET_REQUEST, NAMESPACE);
+  public static final QName CONFIGURE_ZIMLET_RESPONSE =
+      QName.get(E_CONFIGURE_ZIMLET_RESPONSE, NAMESPACE);
+  public static final QName MODIFY_ZIMLET_REQUEST = QName.get(E_MODIFY_ZIMLET_REQUEST, NAMESPACE);
+  public static final QName MODIFY_ZIMLET_RESPONSE = QName.get(E_MODIFY_ZIMLET_RESPONSE, NAMESPACE);
 
   public static final QName CREATE_CALENDAR_RESOURCE_REQUEST =
       QName.get(E_CREATE_CALENDAR_RESOURCE_REQUEST, NAMESPACE);
@@ -1455,6 +1509,7 @@ public final class AdminConstants {
   public static final String A_VERSION_INFO_RELNUM = "relnum";
   public static final String A_VERSION_INFO_BUILDNUM = "buildnum";
 
+  public static final String E_ZIMLET = "zimlet";
   public static final String E_ACL = "acl";
   public static final String E_PRIORITY = "priority";
   public static final String A_EXTENSION = "extension";

@@ -7720,8 +7720,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @return zimbraCsrfAllowedRefererHosts, or empty array if unset
      *
@@ -7733,8 +7734,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -7749,8 +7751,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new value
      * @param attrs existing map to populate, or null to create a new map
@@ -7766,8 +7769,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -7782,8 +7786,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -7799,8 +7804,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -7815,8 +7821,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -7832,8 +7839,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -7847,8 +7855,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -26911,7 +26920,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether zimlets that send sensitive data are disabled in
      * &quot;mixed&quot; zimbraMailMode
      *
@@ -26925,7 +26933,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether zimlets that send sensitive data are disabled in
      * &quot;mixed&quot; zimbraMailMode
      *
@@ -26942,7 +26949,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether zimlets that send sensitive data are disabled in
      * &quot;mixed&quot; zimbraMailMode
      *
@@ -26960,7 +26966,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether zimlets that send sensitive data are disabled in
      * &quot;mixed&quot; zimbraMailMode
      *
@@ -26976,7 +26981,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * whether zimlets that send sensitive data are disabled in
      * &quot;mixed&quot; zimbraMailMode
      *
@@ -26993,9 +26997,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this domain. Zimlets available to accounts in
-     * the domain is the union of account/cos attribute
+     * List of Zimlets available to this domain. Zimlets available to
+     * accounts in the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -27009,9 +27012,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this domain. Zimlets available to accounts in
-     * the domain is the union of account/cos attribute
+     * List of Zimlets available to this domain. Zimlets available to
+     * accounts in the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -27028,9 +27030,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this domain. Zimlets available to accounts in
-     * the domain is the union of account/cos attribute
+     * List of Zimlets available to this domain. Zimlets available to
+     * accounts in the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -27048,9 +27049,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this domain. Zimlets available to accounts in
-     * the domain is the union of account/cos attribute
+     * List of Zimlets available to this domain. Zimlets available to
+     * accounts in the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -27067,9 +27067,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this domain. Zimlets available to accounts in
-     * the domain is the union of account/cos attribute
+     * List of Zimlets available to this domain. Zimlets available to
+     * accounts in the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -27087,9 +27086,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this domain. Zimlets available to accounts in
-     * the domain is the union of account/cos attribute
+     * List of Zimlets available to this domain. Zimlets available to
+     * accounts in the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -27106,9 +27104,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this domain. Zimlets available to accounts in
-     * the domain is the union of account/cos attribute
+     * List of Zimlets available to this domain. Zimlets available to
+     * accounts in the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -27126,9 +27123,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this domain. Zimlets available to accounts in
-     * the domain is the union of account/cos attribute
+     * List of Zimlets available to this domain. Zimlets available to
+     * accounts in the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -27144,9 +27140,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc: List
-     * of Zimlets available to this domain. Zimlets available to accounts in
-     * the domain is the union of account/cos attribute
+     * List of Zimlets available to this domain. Zimlets available to
+     * accounts in the domain is the union of account/cos attribute
      * zimbraZimletAvailableZimlets and this attribute. See
      * zimbraZimletAvailableZimlets for value format.
      *
@@ -27163,7 +27158,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * maximum number of user properties for zimlet allowed on an account
      *
      * @return zimbraZimletUserPropertiesMaxNumEntries, or -1 if unset
@@ -27176,7 +27170,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * maximum number of user properties for zimlet allowed on an account
      *
      * @param zimbraZimletUserPropertiesMaxNumEntries new value
@@ -27192,7 +27185,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * maximum number of user properties for zimlet allowed on an account
      *
      * @param zimbraZimletUserPropertiesMaxNumEntries new value
@@ -27209,7 +27201,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * maximum number of user properties for zimlet allowed on an account
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -27224,7 +27215,6 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Deprecated since: 23.9.0. Zimlets are not supported. Orig desc:
      * maximum number of user properties for zimlet allowed on an account
      *
      * @param attrs existing map to populate, or null to create a new map

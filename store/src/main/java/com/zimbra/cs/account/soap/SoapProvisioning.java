@@ -59,6 +59,7 @@ import com.zimbra.cs.account.ShareInfoData;
 import com.zimbra.cs.account.ShareLocator;
 import com.zimbra.cs.account.Signature;
 import com.zimbra.cs.account.XMPPComponent;
+import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
@@ -980,6 +981,12 @@ public class SoapProvisioning extends Provisioning {
     return new SoapServer(resp.getServer(), this);
   }
 
+  /** Unsupported */
+  @Override
+  public Zimlet createZimlet(String name, Map<String, Object> attrs) throws ServiceException {
+    throw new UnsupportedOperationException();
+  }
+
   @Override
   public void deleteAccount(String zimbraId) throws ServiceException {
     invokeJaxb(new DeleteAccountRequest(zimbraId));
@@ -1023,6 +1030,12 @@ public class SoapProvisioning extends Provisioning {
   @Override
   public void deleteServer(String zimbraId) throws ServiceException {
     invokeJaxb(new DeleteServerRequest(zimbraId));
+  }
+
+  /** Unsupported */
+  @Override
+  public void deleteZimlet(String name) throws ServiceException {
+    throw new UnsupportedOperationException();
   }
 
   public static class DelegateAuthResponse {
@@ -1625,10 +1638,22 @@ public class SoapProvisioning extends Provisioning {
     }
   }
 
+  /** Unsupported */
+  @Override
+  public Zimlet getZimlet(String name) throws ServiceException {
+    throw new UnsupportedOperationException();
+  }
+
   @Override
   public boolean healthCheck() throws ServiceException {
     CheckHealthResponse resp = invokeJaxb(new CheckHealthRequest());
     return resp.isHealthy();
+  }
+
+  /** Unsupported */
+  @Override
+  public List<Zimlet> listAllZimlets() throws ServiceException {
+    throw new UnsupportedOperationException();
   }
 
   @Override

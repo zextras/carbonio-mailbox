@@ -399,6 +399,10 @@ public final class LC {
   public static final KnownKey ldap_cache_xmppcomponent_maxsize = KnownKey.newKey(100);
   public static final KnownKey ldap_cache_xmppcomponent_maxage = KnownKey.newKey(15);
 
+  @Supported public static final KnownKey ldap_cache_zimlet_maxsize = KnownKey.newKey(100);
+
+  @Supported public static final KnownKey ldap_cache_zimlet_maxage = KnownKey.newKey(15);
+
   public static final KnownKey ldap_cache_custom_dynamic_group_membership_maxage_ms =
       KnownKey.newKey(10 * Constants.MILLIS_PER_MINUTE);
 
@@ -549,6 +553,12 @@ public final class LC {
   public static final KnownKey ssl_disable_dh_cipher_suite = KnownKey.newKey(true);
 
   public static final KnownKey ssl_default_digest = KnownKey.newKey("sha256");
+
+  @Supported
+  public static final KnownKey zimlet_directory =
+      KnownKey.newKey("${zimbra_home}/zimlets-deployed");
+
+  public static final KnownKey zimlet_deploy_timeout = KnownKey.newKey("10"); // seconds
 
   @Supported
   public static final KnownKey calendar_outlook_compatible_allday_events = KnownKey.newKey(false);

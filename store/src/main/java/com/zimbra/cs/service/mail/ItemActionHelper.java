@@ -67,6 +67,7 @@ import java.util.Set;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import org.apache.http.HttpException;
+import org.dom4j.QName;
 
 public class ItemActionHelper {
 
@@ -749,7 +750,8 @@ public class ItemActionHelper {
     Account target = Provisioning.getInstance().get(Key.AccountBy.id, mIidFolder.getAccountId());
 
     AuthToken at = getAuthToken();
-    String pxyAuthToken = Provisioning.onLocalServer(target) ? null : at.getProxyAuthToken();
+    String pxyAuthToken =
+        Provisioning.getInstance().onLocalServer(target) ? null : at.getProxyAuthToken();
     ZAuthToken zat = null;
     if (pxyAuthToken == null) {
       zat = at.toZAuthToken();
@@ -906,6 +908,68 @@ public class ItemActionHelper {
           }
           break;
         case APPOINTMENT:
+          CalendarItem cal = (CalendarItem) item;
+          // private calendar item may not be moved by non-owner unless permission was granted
+          if (!cal.isPublic()) {
+            boolean asAdmin = mOpCtxt != null ? mOpCtxt.isUsingAdminPrivileges() : false;
+            if (!cal.allowPrivateAccess(mAuthenticatedAccount, asAdmin))
+              throw ServiceException.PERM_DENIED(
+                  "you do not have permission to move/copy a private calendar item from the current"
+                      + " folder/mailbox");
+          }
+
+          // Move the item to remote mailbox using SetAppointmentRequest/SetTaskRequest.
+          QName qname = MailConstants.SET_APPOINTMENT_REQUEST;
+          Element request =
+              new Element.XMLElement(qname)
+                  .addAttribute(MailConstants.A_FOLDER, folderStr)
+                  .addAttribute(MailConstants.A_FLAGS, flags);
+          ToXML.encodeAlarmTimes(request, cal);
+
+          Invite invDefault = cal.getDefaultInviteOrNull();
+
+          // Takeover as organizer if we're doing a MOVE and source mailbox is the organizer.
+          // Don't takeover in a COPY operation.
+          boolean takeoverAsOrganizer = false;
+          boolean blockMove = false;
+          if (Op.MOVE.equals(mOperation)) {
+            Invite inv = invDefault;
+            if (inv == null) {
+              // no default invite; let's use the first invite
+              Invite[] invs = cal.getInvites();
+              if (invs != null && invs.length > 0) inv = invs[0];
+            }
+            takeoverAsOrganizer = inv != null && inv.isOrganizer();
+            blockMove = takeoverAsOrganizer && inv.hasOtherAttendees();
+          }
+
+          if (blockMove) {
+            throw MailServiceException.INVALID_REQUEST(
+                "This operation requires change of organizer and it is not permitted", null);
+          }
+
+          if (invDefault != null) {
+            addCalendarPart(
+                request.addUniqueElement(MailConstants.A_DEFAULT),
+                cal,
+                invDefault,
+                zmbx,
+                target,
+                takeoverAsOrganizer);
+          }
+
+          for (Invite inv : cal.getInvites()) {
+            if (inv == null || inv == invDefault) continue;
+            String elem = inv.isCancel() ? MailConstants.E_CAL_CANCEL : MailConstants.E_CAL_EXCEPT;
+            addCalendarPart(
+                request.addNonUniqueElement(elem), cal, inv, zmbx, target, takeoverAsOrganizer);
+          }
+
+          ToXML.encodeCalendarReplies(request, cal);
+
+          createdId = zmbx.invoke(request).getAttribute(MailConstants.A_CAL_ID);
+          createdIds.add(createdId);
+          break;
         default:
           throw MailServiceException.CANNOT_COPY(item.getId());
       }

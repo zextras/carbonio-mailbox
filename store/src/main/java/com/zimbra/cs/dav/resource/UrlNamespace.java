@@ -435,7 +435,7 @@ public class UrlNamespace {
       throw new DavException("Request denied", HttpServletResponse.SC_NOT_FOUND, null);
     }
 
-    if (ctxt.getUser().compareTo(user) != 0 || !Provisioning.onLocalServer(account)) {
+    if (ctxt.getUser().compareTo(user) != 0 || !Provisioning.getInstance().onLocalServer(account)) {
       try {
         return new RemoteCollection(ctxt, path, account);
       } catch (MailServiceException.NoSuchItemException e) {
@@ -636,6 +636,8 @@ public class UrlNamespace {
           }
           break;
         case APPOINTMENT:
+          resource = new CalendarObject.LocalCalendarObject(ctxt, (CalendarItem) item);
+          break;
         case MESSAGE:
           resource = getCalendarItemForMessage(ctxt, (Message) item);
           break;
