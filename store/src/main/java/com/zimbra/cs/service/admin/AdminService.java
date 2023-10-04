@@ -5,11 +5,15 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zextras.mailbox.domain.usecase.AclService;
+import com.zextras.mailbox.domain.usecase.DeleteUserUseCase;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.StringUtil;
+import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import java.util.HashMap;
@@ -43,7 +47,14 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.GET_ALL_ADMIN_ACCOUNTS_REQUEST, new GetAllAdminAccounts());
     dispatcher.registerHandler(AdminConstants.MODIFY_ACCOUNT_REQUEST, new ModifyAccount());
-    dispatcher.registerHandler(AdminConstants.DELETE_ACCOUNT_REQUEST, new DeleteAccount());
+    dispatcher.registerHandler(
+        AdminConstants.DELETE_ACCOUNT_REQUEST,
+        new DeleteAccount(
+            new DeleteUserUseCase(
+                Provisioning.getInstance(),
+                MailboxManager.getInstance(),
+                new AclService(MailboxManager.getInstance(), Provisioning.getInstance()),
+                ZimbraLog.security)));
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
     dispatcher.registerHandler(
         AdminConstants.CHECK_PASSWORD_STRENGTH_REQUEST, new CheckPasswordStrength());
