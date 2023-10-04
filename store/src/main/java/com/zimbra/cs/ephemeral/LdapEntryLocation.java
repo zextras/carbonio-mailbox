@@ -18,6 +18,7 @@ import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.Signature;
 import com.zimbra.cs.account.XMPPComponent;
+import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.ldap.entry.LdapDynamicGroup.DynamicUnit;
 import com.zimbra.cs.account.ldap.entry.LdapDynamicGroup.StaticUnit;
 import com.zimbra.cs.account.ldap.entry.LdapMimeTypeBase;
@@ -79,6 +80,8 @@ public class LdapEntryLocation extends EphemeralLocation {
         return ((Signature) entry).getId();
       case XMPPCOMPONENT:
         return ((XMPPComponent) entry).getId();
+      case ZIMLET:
+        return ((Zimlet) entry).getId();
       default:
         return null;
     }

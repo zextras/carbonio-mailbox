@@ -113,7 +113,6 @@ public class ZimbraPerf {
 
   @Description("File descriptor cache hit rate")
   public static final String RTS_FD_CACHE_HIT_RATE = "fd_cache_hit_rate";
-
   // LDAP provisioning caches.
   @Description("LDAP ACL cache hit rate")
   public static final String RTS_ACL_CACHE_HIT_RATE = "acl_cache_hit_rate";
@@ -142,6 +141,12 @@ public class ZimbraPerf {
   @Description("LDAP server cache hit rate")
   public static final String RTS_SERVER_CACHE_HIT_RATE = "server_cache_hit_rate";
 
+  @Description("LDAP zimlet cache size")
+  public static final String RTS_ZIMLET_CACHE_SIZE = "zimlet_cache_size";
+
+  @Description("LDAP zimlet cache hit rate")
+  public static final String RTS_ZIMLET_CACHE_HIT_RATE = "zimlet_cache_hit_rate";
+
   @Description("LDAP group cache size")
   public static final String RTS_GROUP_CACHE_SIZE = "group_cache_size";
 
@@ -153,7 +158,6 @@ public class ZimbraPerf {
 
   @Description("LDAP XMPP cache hit rate")
   public static final String RTS_XMPP_CACHE_HIT_RATE = "xmpp_cache_hit_rate";
-
   // Accumulators.  To add a new accumulator, create a static instance here and
   // add it to sAccumulators.
   public static final Counter COUNTER_LMTP_RCVD_MSGS = new Counter();
@@ -225,6 +229,8 @@ public class ZimbraPerf {
         RTS_DOMAIN_CACHE_HIT_RATE,
         RTS_SERVER_CACHE_SIZE,
         RTS_SERVER_CACHE_HIT_RATE,
+        RTS_ZIMLET_CACHE_SIZE,
+        RTS_ZIMLET_CACHE_HIT_RATE,
         RTS_GROUP_CACHE_SIZE,
         RTS_GROUP_CACHE_HIT_RATE,
         RTS_XMPP_CACHE_SIZE,
@@ -337,7 +343,6 @@ public class ZimbraPerf {
 
   private static final StatsScheduler statsScheduler = StatsScheduler.getDefault();
   private static final long DUMP_FREQUENCY = Constants.MILLIS_PER_MINUTE;
-
   /**
    * The number of statements that were prepared, as reported by {@link
    * DbPool.DbConnection#prepareStatement}.
