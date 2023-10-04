@@ -9,6 +9,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.StringUtil;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import java.util.HashMap;
@@ -229,7 +230,9 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.MODIFY_ADMIN_SAVED_SEARCHES_REQUEST, new ModifyAdminSavedSearches());
 
-    dispatcher.registerHandler(AdminConstants.ADD_ACCOUNT_LOGGER_REQUEST, new AddAccountLogger());
+    dispatcher.registerHandler(
+        AdminConstants.ADD_ACCOUNT_LOGGER_REQUEST,
+        new AddAccountLogger(Provisioning.getInstance()));
     dispatcher.registerHandler(
         AdminConstants.REMOVE_ACCOUNT_LOGGER_REQUEST, new RemoveAccountLogger());
     dispatcher.registerHandler(AdminConstants.GET_ACCOUNT_LOGGERS_REQUEST, new GetAccountLoggers());

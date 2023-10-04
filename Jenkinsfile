@@ -127,7 +127,25 @@ pipeline {
                     }
                     post {
                         always {
-                        archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
+                        archiveArtifacts artifacts: 'artifacts/*focal*.deb', fingerprint: true
+                        }
+                    }
+                    }
+                    stage('Ubuntu 22.04') {
+                    agent {
+                        node {
+                        label 'pacur-agent-ubuntu-22.04-v1'
+                        }
+                    }
+                    steps {
+                        unstash 'staging'
+                        sh 'cp -r staging /tmp'
+                        sh 'sudo pacur build ubuntu-jammy /tmp/staging/packages'
+                        stash includes: 'artifacts/', name: 'artifacts-ubuntu-jammy'
+                    }
+                    post {
+                        always {
+                        archiveArtifacts artifacts: 'artifacts/*jammy*.deb', fingerprint: true
                         }
                     }
                     }
@@ -161,6 +179,7 @@ pipeline {
             }
             steps {
                 unstash 'artifacts-ubuntu-focal'
+                unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-rocky-8'
 
                     script {
@@ -173,6 +192,11 @@ pipeline {
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-devel/pool/",
                             "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/*jammy*.deb",
+                            "target": "ubuntu-devel/pool/",
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                         },
                         {
                             "pattern": "artifacts/(carbonio-appserver-conf)-(*).rpm",
@@ -240,6 +264,7 @@ pipeline {
             }
             steps {
                 unstash 'artifacts-ubuntu-focal'
+                unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-rocky-8'
 
                 script {
@@ -252,6 +277,11 @@ pipeline {
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-playground/pool/",
                             "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/*jammy*.deb",
+                            "target": "ubuntu-playground/pool/",
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                         },
                         {
                             "pattern": "artifacts/(carbonio-appserver-conf)-(*).rpm",
@@ -318,6 +348,7 @@ pipeline {
                 }
                 steps {
                     unstash 'artifacts-ubuntu-focal'
+                    unstash 'artifacts-ubuntu-jammy'
                     unstash 'artifacts-rocky-8'
 
                     script {
@@ -334,6 +365,11 @@ pipeline {
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-rc/pool/",
                             "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/*jammy*.deb",
+                            "target": "ubuntu-rc/pool/",
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                         }]
                         }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false

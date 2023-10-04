@@ -160,7 +160,7 @@ public class SendMsg extends MailDocumentHandler {
             }
 
             delegatedMailbox = mbox;
-            if (Provisioning.onLocalServer(delegatedAccount)) {
+            if (Provisioning.getInstance().onLocalServer(delegatedAccount)) {
               delegatedMailbox =
                   MailboxManager.getInstance().getMailboxByAccountId(delegatedAccount.getId());
             } else {
@@ -215,7 +215,7 @@ public class SendMsg extends MailDocumentHandler {
             Message msg = mbox.getMessageById(octxt, iidDraft.getId());
             mm = msg.getMimeMessage(false);
           } else {
-            if (Provisioning.onLocalServer(authAcct)) {
+            if (Provisioning.getInstance().onLocalServer(authAcct)) {
               Mailbox loggedUserMbox =
                   MailboxManager.getInstance().getMailboxByAccountId(authAcct.getId());
               mm =

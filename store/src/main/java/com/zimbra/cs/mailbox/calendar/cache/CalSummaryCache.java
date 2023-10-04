@@ -443,7 +443,7 @@ public class CalSummaryCache {
 
     Account targetAcct = Provisioning.getInstance().get(AccountBy.id, targetAcctId);
     if (targetAcct == null) return null;
-    boolean targetAcctOnLocalServer = Provisioning.onLocalServer(targetAcct);
+    boolean targetAcctOnLocalServer = Provisioning.getInstance().onLocalServer(targetAcct);
 
     CalendarDataResult result = new CalendarDataResult();
 

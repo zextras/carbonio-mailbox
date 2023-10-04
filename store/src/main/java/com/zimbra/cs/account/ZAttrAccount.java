@@ -8325,8 +8325,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * List of data associated with CSRF token for an account. The data
-     * format is CSRF token data:Auth token Key crumb:Auth Token Key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: List of data associated with CSRF token for an account. The
+     * data format is CSRF token data:Auth token Key crumb:Auth Token Key
      * expiration
      *
      * Ephemeral attribute - requests routed to EphemeralStore
@@ -8343,8 +8344,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * List of data associated with CSRF token for an account. The data
-     * format is CSRF token data:Auth token Key crumb:Auth Token Key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: List of data associated with CSRF token for an account. The
+     * data format is CSRF token data:Auth token Key crumb:Auth Token Key
      * expiration
      *
      * Ephemeral attribute - requests routed to EphemeralStore
@@ -8360,8 +8362,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * List of data associated with CSRF token for an account. The data
-     * format is CSRF token data:Auth token Key crumb:Auth Token Key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: List of data associated with CSRF token for an account. The
+     * data format is CSRF token data:Auth token Key crumb:Auth Token Key
      * expiration
      *
      * Ephemeral attribute - requests routed to EphemeralStore
@@ -8377,8 +8380,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * List of data associated with CSRF token for an account. The data
-     * format is CSRF token data:Auth token Key crumb:Auth Token Key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: List of data associated with CSRF token for an account. The
+     * data format is CSRF token data:Auth token Key crumb:Auth Token Key
      * expiration
      *
      * Ephemeral attribute - requests routed to EphemeralStore
@@ -8393,8 +8397,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * List of data associated with CSRF token for an account. The data
-     * format is CSRF token data:Auth token Key crumb:Auth Token Key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: List of data associated with CSRF token for an account. The
+     * data format is CSRF token data:Auth token Key crumb:Auth Token Key
      * expiration
      *
      * Ephemeral attribute - requests routed to EphemeralStore

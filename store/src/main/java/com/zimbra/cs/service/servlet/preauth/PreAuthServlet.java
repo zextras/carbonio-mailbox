@@ -436,7 +436,7 @@ public class PreAuthServlet extends ZimbraServlet {
     return (isRedirect
         || !Provisioning.MAIL_REFER_MODE_ALWAYS.equals(referMode)
             && (!Provisioning.MAIL_REFER_MODE_WRONGHOST.equals(referMode)
-                || Provisioning.onLocalServer(acct)));
+                || Provisioning.getInstance().onLocalServer(acct)));
   }
 
   /**

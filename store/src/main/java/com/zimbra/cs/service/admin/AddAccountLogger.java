@@ -33,28 +33,44 @@ import java.util.Map;
  * @author bburtin
  */
 public class AddAccountLogger extends AdminDocumentHandler {
+  private final Provisioning provisioning;
 
   protected static String CATEGORY_ALL = "all";
 
-  @Override
-  public Element handle(Element request, Map<String, Object> context) throws ServiceException {
-    ZimbraSoapContext zsc = getZimbraSoapContext(context);
+  public AddAccountLogger(Provisioning provisioning) {
+    this.provisioning = provisioning;
+  }
 
-    Server localServer = Provisioning.getInstance().getLocalServer();
+  /**
+   * Handles the request, checks if log category exists and adds a logger for a given account.
+   *
+   * @param request {@link Element} representation of {@link
+   *     com.zimbra.soap.admin.message.AddAccountLoggerRequest}
+   * @param context request context
+   * @return {@link Element} representation of {@link
+   *     com.zimbra.soap.admin.message.AddAccountLoggerResponse}
+   * @throws ServiceException in case of invalid request.
+   */
+  @Override
+  public Element handle(final Element request, final Map<String, Object> context)
+      throws ServiceException {
+    final ZimbraSoapContext zsc = getZimbraSoapContext(context);
+
+    final Server localServer = provisioning.getLocalServer();
     checkRight(zsc, context, localServer, Admin.R_manageAccountLogger);
 
     /* would be nice to use JAXB to process the request but probably need to accept different
      * cases for the levels ("TRACE" as well as "trace") and would need to update the JAXB class with
      * an adapter to sort that out.
      */
-    Account account = getAccountFromLoggerRequest(request);
+    final Account account = getAccountFromLoggerRequest(request);
 
-    Element eLogger = request.getElement(AdminConstants.E_LOGGER);
-    String category = eLogger.getAttribute(AdminConstants.A_CATEGORY);
-    String sLevel = eLogger.getAttribute(AdminConstants.A_LEVEL);
+    final Element eLogger = request.getElement(AdminConstants.E_LOGGER);
+    final String category = eLogger.getAttribute(AdminConstants.A_CATEGORY);
+    final String sLevel = eLogger.getAttribute(AdminConstants.A_LEVEL);
 
     // Handle level.
-    Level level = null;
+    final Level level;
     try {
       level = Level.valueOf(sLevel.toLowerCase());
     } catch (IllegalArgumentException e) {
@@ -69,10 +85,10 @@ public class AddAccountLogger extends AdminDocumentHandler {
       throw ServiceException.INVALID_REQUEST("Log category " + category + " does not exist.", null);
     }
 
-    Collection<Log> loggers = addAccountLogger(account, category, level);
+    final Collection<Log> loggers = addAccountLogger(account, category, level);
 
     // Build response.
-    List<LoggerInfo> loggerInfos = new ArrayList<>(loggers.size());
+    final List<LoggerInfo> loggerInfos = new ArrayList<>(loggers.size());
     for (Log log : loggers) {
       loggerInfos.add(
           LoggerInfo.createForCategoryAndLevel(log.getCategory(), LoggingLevel.toJaxb(level)));
@@ -80,9 +96,18 @@ public class AddAccountLogger extends AdminDocumentHandler {
     return zsc.jaxbToElement(AddAccountLoggerResponse.create(loggerInfos));
   }
 
-  public static Collection<Log> addAccountLogger(Account account, String category, Level level) {
+  /**
+   * Adds a logger for a requested account.
+   *
+   * @param account {@link Account} to add a logger to
+   * @param category {@link ZimbraLog} category
+   * @param level {@link Level}
+   * @return {@link Log} collection added to the account
+   */
+  public static Collection<Log> addAccountLogger(
+      final Account account, final String category, final Level level) {
     // Handle category.
-    Collection<Log> loggers;
+    final Collection<Log> loggers;
     if (category.equalsIgnoreCase(CATEGORY_ALL)) {
       loggers = LogManager.getAllLoggers();
     } else {
@@ -95,7 +120,6 @@ public class AddAccountLogger extends AdminDocumentHandler {
           account.getName(), category, level);
       log.addAccountLogger(account.getName(), level);
     }
-
     return loggers;
   }
 
@@ -103,25 +127,26 @@ public class AddAccountLogger extends AdminDocumentHandler {
    * Returns the <tt>Account</tt> object based on the &lt;id&gt; or &lt;account&gt; element owned by
    * the given request element.
    */
-  protected static Account getAccountFromLoggerRequest(Element request) throws ServiceException {
-    Account account = null;
-    Provisioning prov = Provisioning.getInstance();
-    Element idElement = request.getOptionalElement(AdminConstants.E_ID);
+  protected static Account getAccountFromLoggerRequest(final Element request)
+      throws ServiceException {
+    final Account account;
+    final Provisioning prov = Provisioning.getInstance();
+    final Element idElement = request.getOptionalElement(AdminConstants.E_ID);
 
     if (idElement != null) {
       // Handle deprecated <id> element.
       ZimbraLog.soap.info(
           "The <%s> element is deprecated for <%s>.  Use <%s> instead.",
           AdminConstants.E_ID, request.getName(), AdminConstants.E_ACCOUNT);
-      String id = idElement.getText();
+      final String id = idElement.getText();
       account = prov.get(AccountBy.id, id);
       if (account == null) {
         throw AccountServiceException.NO_SUCH_ACCOUNT(idElement.getText());
       }
     } else {
       // Handle <account> element.
-      Element accountElement = request.getElement(AdminConstants.E_ACCOUNT);
-      AccountBy by = AccountBy.fromString(accountElement.getAttribute(AdminConstants.A_BY));
+      final Element accountElement = request.getElement(AdminConstants.E_ACCOUNT);
+      final AccountBy by = AccountBy.fromString(accountElement.getAttribute(AdminConstants.A_BY));
       account = prov.get(by, accountElement.getText());
       if (account == null) {
         throw AccountServiceException.NO_SUCH_ACCOUNT(accountElement.getText());
@@ -131,7 +156,7 @@ public class AddAccountLogger extends AdminDocumentHandler {
   }
 
   @Override
-  public void docRights(List<AdminRight> relatedRights, List<String> notes) {
+  public void docRights(final List<AdminRight> relatedRights, final List<String> notes) {
     relatedRights.add(Admin.R_manageAccountLogger);
   }
 }

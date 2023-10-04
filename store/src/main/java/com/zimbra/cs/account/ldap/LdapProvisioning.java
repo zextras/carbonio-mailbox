@@ -5211,7 +5211,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
      *              server, so bug 46767 should not happen and the reload should never
      *              be triggered(good for bug 18981).
      */
-    if (!onLocalServer(acct)) {
+    if (!Provisioning.getInstance().onLocalServer(acct)) {
       reload(acct, false); // reload from the replica
     }
 
