@@ -8,8 +8,8 @@
  */
 package com.zimbra.cs.service.admin;
 
-import com.zextras.mailbox.domain.usecase.DeleteUserUseCase;
 import com.zimbra.common.account.Key.AccountBy;
+import com.zimbra.common.account.ZAttrProvisioning.AccountStatus;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -18,6 +18,8 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteAccountResponse;
@@ -30,12 +32,6 @@ import java.util.Map;
 public class DeleteAccount extends AdminDocumentHandler {
 
   private static final String[] TARGET_ACCOUNT_PATH = new String[] {AdminConstants.E_ID};
-
-  private final DeleteUserUseCase deleteUserUseCase;
-
-  public DeleteAccount(DeleteUserUseCase deleteUserUseCase) {
-    this.deleteUserUseCase = deleteUserUseCase;
-  }
 
   @Override
   protected String[] getProxiedAccountPath() {
@@ -85,7 +81,20 @@ public class DeleteAccount extends AdminDocumentHandler {
      * To prevent this race condition, put the account in "maintenance" mode
      * so mail delivery and any user action is blocked.
      */
-    deleteUserUseCase.delete(account.getId());
+    prov.modifyAccountStatus(account, AccountStatus.maintenance.name());
+
+    Mailbox mbox;
+    if (Provisioning.getInstance().onLocalServer(account)) {
+      mbox = MailboxManager.getInstance().getMailboxByAccount(account, false);
+    } else {
+      mbox = null;
+    }
+
+    if (mbox != null) {
+      mbox.deleteMailbox();
+    }
+
+    prov.deleteAccount(id);
 
     ZimbraLog.security.info(
         ZimbraLog.encodeAttrs(

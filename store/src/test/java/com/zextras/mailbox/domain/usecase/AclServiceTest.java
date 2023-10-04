@@ -19,6 +19,7 @@ import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,9 +34,9 @@ class AclServiceTest {
   void setUp() throws Exception {
     MailboxTestUtil.setUp();
     mailboxManager = MailboxManager.getInstance();
-    target = MailboxTestUtil.createBasicAccount();
+    target = MailboxTestUtil.createAccountDefaultDomain(Map.of());
     provisioning = Provisioning.getInstance();
-    final Account grantee = MailboxTestUtil.createBasicAccount();
+    final Account grantee = MailboxTestUtil.createAccountDefaultDomain(Map.of());
     final Mailbox granterMailbox = mailboxManager.getMailboxByAccount(target);
     final Folder inboxId = granterMailbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
 

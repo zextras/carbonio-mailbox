@@ -69,11 +69,12 @@ public class MailboxTestUtil {
    * @return created account
    * @throws ServiceException
    */
-  public static Account createBasicAccount() throws ServiceException {
+  public static Account createAccountDefaultDomain(Map<String, Object> extraAttrs)
+      throws ServiceException {
+    final HashMap<String, Object> attrs =
+        new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
+    attrs.putAll(extraAttrs);
     return Provisioning.getInstance()
-        .createAccount(
-            UUID.randomUUID() + "@" + MailboxTestUtil.DEFAULT_DOMAIN,
-            "password",
-            new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
+        .createAccount(UUID.randomUUID() + "@" + MailboxTestUtil.DEFAULT_DOMAIN, "password", attrs);
   }
 }

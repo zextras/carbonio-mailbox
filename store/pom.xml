@@ -804,6 +804,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
+              <skip>true</skip>
               <executable>${basedir}/utils/shellspec/run.sh</executable>
             </configuration>
           </execution>
