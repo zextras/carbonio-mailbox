@@ -1,5 +1,10 @@
-package com.zextras.mailbox.domain.usecase;
+// SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
 
+package com.zextras.mailbox.account.usecase;
+
+import com.zextras.mailbox.acl.AclService;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
@@ -52,6 +57,7 @@ public class DeleteUserUseCase {
                   account, ZAttrProvisioning.AccountStatus.maintenance.name());
 
               if (provisioning.onLocalServer(account)) {
+                // TODO: does deleting a mailbox automatically revokoe the grants?
                 aclService.revokeAllMailboxGrantsForAccountId(null, userId);
                 mailboxManager.getMailboxByAccount(account, false).deleteMailbox();
               }

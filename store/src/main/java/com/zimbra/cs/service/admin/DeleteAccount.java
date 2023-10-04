@@ -8,7 +8,7 @@
  */
 package com.zimbra.cs.service.admin;
 
-import com.zextras.mailbox.domain.usecase.DeleteUserUseCase;
+import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;

@@ -11,7 +11,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.zextras.mailbox.domain.usecase.UseCaseDI;
+import com.zextras.mailbox.account.usecase.UseCaseDI;
 import java.util.Collection;
 import java.util.Set;
 

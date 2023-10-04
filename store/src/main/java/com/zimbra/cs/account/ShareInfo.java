@@ -7,7 +7,7 @@ package com.zimbra.cs.account;
 
 import com.google.common.base.Strings;
 import com.sun.mail.smtp.SMTPMessage;
-import com.zextras.mailbox.domain.usecase.FolderUtil;
+import com.zextras.mailbox.account.usecase.FolderUtil;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.ZAttrProvisioning.AccountStatus;

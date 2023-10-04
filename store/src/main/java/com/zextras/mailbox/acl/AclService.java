@@ -2,8 +2,9 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.domain.usecase;
+package com.zextras.mailbox.acl;
 
+import com.zextras.mailbox.account.usecase.FolderUtil;
 import com.zimbra.common.mailbox.ACLGrant;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
