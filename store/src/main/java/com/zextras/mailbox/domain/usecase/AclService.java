@@ -22,35 +22,50 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Class to manage {@link com.zimbra.cs.mailbox.ACL.Grant} */
-public class GrantsService {
+/**
+ * Class to manage grants. It manages Grants applied on a {@link Mailbox}, see: {@link
+ * com.zimbra.cs.mailbox.ACL.Grant} and Grants applied on Entities on Ldap, see: {@link
+ * com.zimbra.cs.account.accesscontrol.ZimbraACE}
+ *
+ * @author davidefrison
+ */
+public class AclService {
 
-  private final Logger logger = LoggerFactory.getLogger(GrantsService.class);
+  private final Logger logger = LoggerFactory.getLogger(AclService.class);
 
   private final MailboxManager mailboxManager;
   private final Provisioning provisioning;
 
-  public GrantsService(MailboxManager mailboxManager, Provisioning provisioning) {
+  public AclService(MailboxManager mailboxManager, Provisioning provisioning) {
     this.mailboxManager = mailboxManager;
     this.provisioning = provisioning;
   }
 
   /**
-   * Removes all Grants targeting the user from LDAP and the user Mailbox
+   * Removes all Grants targeting an account.
    *
-   * @param operationContext {@link OperationContext} for the operation
    * @param targetAccountId account id identifying the target {@link com.zimbra.cs.account.Account}
    * @throws ServiceException
    */
-  public void revokeAllGrantsForAccountId(
+  public void revokeAllGrantsForAccountId(final String targetAccountId) throws ServiceException {
+    provisioning.modifyAttrs(
+        provisioning.getAccountById(targetAccountId),
+        Collections.singletonMap(Provisioning.A_zimbraACE, List.of()));
+  }
+
+  /**
+   * Revoke all Grants on Mailbox Folders owned by the requested account.
+   *
+   * @param operationContext operation details information
+   * @param targetAccountId owner of the mailbox
+   * @throws ServiceException
+   */
+  public void revokeAllMailboxGrantsForAccountId(
       final OperationContext operationContext, final String targetAccountId)
       throws ServiceException {
     final Mailbox targetMailbox = mailboxManager.getMailboxByAccountId(targetAccountId);
     final FolderNode rootFolder = targetMailbox.getFolderTree(operationContext, null, false);
     final Set<Folder> allFolders = FolderUtil.flattenAndSortFolderTree(rootFolder);
-    // TODO: should we split these into two different methods?
-    // What if deleting the mailbox deletes also the grants from the mailbox? Hence we could just
-    // delete from LDAP
     allFolders.forEach(
         folder ->
             folder
@@ -67,18 +82,29 @@ public class GrantsService {
                             e.getMessage());
                       }
                     }));
-
-    provisioning.modifyAttrs(
-        provisioning.getAccountById(targetAccountId),
-        Collections.singletonMap(Provisioning.A_zimbraACE, List.of()));
   }
 
-  public Grants getLDAPGrantsForAccountId(String accountId) throws ServiceException {
+  /**
+   * Returns all the grants targeting a user.
+   *
+   * @param accountId id of the target account
+   * @return {@link Grants} targeting the account
+   * @throws ServiceException
+   */
+  public Grants getGrantsTargetingAccount(String accountId) throws ServiceException {
     return provisioning.getGrants(
         TargetType.account.getCode(), TargetBy.id, accountId, null, null, null, false);
   }
 
-  public List<ACLGrant> getAllFolderGrantsForAccountId(
+  /**
+   * Returns all grants on all Mailbox folders owned by an account.
+   *
+   * @param operationContext identifies the operation
+   * @param targetAccountId target account owning the folders
+   * @return a list of {@link ACLGrant} for the folder is the mailbox identified by the account id
+   * @throws ServiceException
+   */
+  public List<ACLGrant> getMailboxFolderGrantsForAccountId(
       OperationContext operationContext, final String targetAccountId) throws ServiceException {
     final Mailbox grantorMailbox = mailboxManager.getMailboxByAccountId(targetAccountId);
 

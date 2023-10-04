@@ -30,7 +30,7 @@ public class UseCaseDI extends AbstractModule {
   }
 
   @Provides
-  GrantsService getGrantsService(MailboxManager mailboxManager, Provisioning provisioning) {
-    return new GrantsService(mailboxManager, provisioning);
+  AclService getGrantsService(MailboxManager mailboxManager, Provisioning provisioning) {
+    return new AclService(mailboxManager, provisioning);
   }
 }

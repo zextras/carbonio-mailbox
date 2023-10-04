@@ -5,8 +5,8 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zextras.mailbox.domain.usecase.AclService;
 import com.zextras.mailbox.domain.usecase.DeleteUserUseCase;
-import com.zextras.mailbox.domain.usecase.GrantsService;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -53,7 +53,7 @@ public class AdminService implements DocumentService {
             new DeleteUserUseCase(
                 Provisioning.getInstance(),
                 MailboxManager.getInstance(),
-                new GrantsService(MailboxManager.getInstance(), Provisioning.getInstance()),
+                new AclService(MailboxManager.getInstance(), Provisioning.getInstance()),
                 ZimbraLog.security)));
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
     dispatcher.registerHandler(

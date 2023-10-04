@@ -24,7 +24,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class GrantsServiceTest {
+class AclServiceTest {
   private Account target;
   private MailboxManager mailboxManager;
   private Provisioning provisioning;
@@ -39,7 +39,7 @@ class GrantsServiceTest {
     final Mailbox granterMailbox = mailboxManager.getMailboxByAccount(target);
     final Folder inboxId = granterMailbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
 
-    // LDAP grant
+    // User grant
     ACLUtil.grantRight(
         Provisioning.getInstance(),
         target,
@@ -50,7 +50,7 @@ class GrantsServiceTest {
                 UserRights.R_sendAs,
                 RightModifier.RM_CAN_DELEGATE,
                 "")));
-    // grant on mailbox item
+    // Grant on mailbox item (folder)
     granterMailbox.grantAccess(
         null, inboxId.getId(), grantee.getName(), ACL.GRANTEE_USER, ACL.stringToRights("r"), null);
   }
@@ -61,17 +61,30 @@ class GrantsServiceTest {
   }
 
   @Test
-  void shouldRevokeUserGrantsFromGrantedAccounts() throws ServiceException {
-    final GrantsService grantsService = new GrantsService(mailboxManager, provisioning);
-    grantsService.revokeAllGrantsForAccountId(null, target.getId());
-    assertEquals(0, grantsService.getAllFolderGrantsForAccountId(null, target.getId()).size());
-    assertEquals(0, grantsService.getLDAPGrantsForAccountId(target.getId()).getACEs().size());
+  void shouldRevokeAllMailboxFolderGrants() throws ServiceException {
+    final AclService grantsService = new AclService(mailboxManager, provisioning);
+    grantsService.revokeAllMailboxGrantsForAccountId(null, target.getId());
+    assertEquals(0, grantsService.getMailboxFolderGrantsForAccountId(null, target.getId()).size());
+    assertEquals(1, grantsService.getGrantsTargetingAccount(target.getId()).getACEs().size());
   }
 
   @Test
-  void shouldReturnGrantsForGranteeAndTarget() throws ServiceException {
-    final GrantsService grantsService = new GrantsService(mailboxManager, provisioning);
-    assertEquals(1, grantsService.getAllFolderGrantsForAccountId(null, target.getId()).size());
-    assertEquals(1, grantsService.getLDAPGrantsForAccountId(target.getId()).getACEs().size());
+  void shouldRevokeAllGrantsTargetingAccount() throws ServiceException {
+    final AclService grantsService = new AclService(mailboxManager, provisioning);
+    grantsService.revokeAllGrantsForAccountId(target.getId());
+    assertEquals(1, grantsService.getMailboxFolderGrantsForAccountId(null, target.getId()).size());
+    assertEquals(0, grantsService.getGrantsTargetingAccount(target.getId()).getACEs().size());
+  }
+
+  @Test
+  void shouldReturnAllGrantsOnMailboxFolders() throws ServiceException {
+    final AclService grantsService = new AclService(mailboxManager, provisioning);
+    assertEquals(1, grantsService.getMailboxFolderGrantsForAccountId(null, target.getId()).size());
+  }
+
+  @Test
+  void shouldReturnGrantsTargetingAccount() throws ServiceException {
+    final AclService grantsService = new AclService(mailboxManager, provisioning);
+    assertEquals(1, grantsService.getGrantsTargetingAccount(target.getId()).getACEs().size());
   }
 }
