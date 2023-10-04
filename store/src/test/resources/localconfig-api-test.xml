@@ -17,10 +17,13 @@
     <value>.</value>
   </key>
   <key name="zimbra_server_hostname">
-    <value>localhost</value>
+    <value>ldap.mail.local</value>
   </key>
   <key name="zimbra_ldap_password">
     <value>password</value>
+  </key>
+  <key name="zimbra_server_hostname">
+    <value>localhost</value>
   </key>
   <key name="mysql_bind_address">
     <value>localhost</value>
@@ -33,11 +36,5 @@
   </key>
   <key name="mailboxd_keystore_password">
     <value>zextras</value>
-  </key>
-  <key name="mailboxd_create_db_file">
-    <value>./db/create_database.sql</value>
-  </key>
-  <key name="zimbra_relative_volume_path">
-    <value>true</value>
   </key>
 </localconfig>

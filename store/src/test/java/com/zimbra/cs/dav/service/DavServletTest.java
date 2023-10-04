@@ -4,13 +4,10 @@
 
 package com.zimbra.cs.dav.service;
 
-import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
-
-import com.github.dockerjava.api.model.HealthCheck;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
@@ -18,21 +15,15 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool;
-import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
-import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.AuthProviderException;
-import com.zimbra.cs.store.StoreManager;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -50,50 +41,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.Container.ExecResult;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.utility.MountableFile;
 
-@Testcontainers
 class DavServletTest {
 
   private static final int PORT = 8090;
   private static GreenMail greenMail;
-
-  @Container
-  GenericContainer ldapContainer =
-      new GenericContainer<>(DockerImageName.parse("carbonio/ce-ldap-u20:latest"))
-          .withCreateContainerCmdModifier(
-              cmd -> {
-                cmd.withHostName("ldap.mail.local");
-                cmd.withHealthcheck(
-                    new HealthCheck().withTest(List.of("nc -z localhost 2812 || exit 1")));
-              })
-          .withStartupTimeout(Duration.ofMinutes(3L))
-          .withExposedPorts(389);
-
-  @Container
-  GenericContainer sqlContainer =
-      new GenericContainer<>(DockerImageName.parse("cytopia/mariadb-10.1"))
-          .withStartupTimeout(Duration.of(2, TimeUnit.MINUTES.toChronoUnit()))
-          .withEnv(
-              Map.of(
-                  "MYSQL_USER", "zextras",
-                  "MYSQL_PASSWORD", "zextras",
-                  "MYSQL_ROOT_PASSWORD", "password"))
-          .withStartupTimeout(Duration.ofMinutes(3L))
-          .withCopyFileToContainer(
-              MountableFile.forClasspathResource("/db.sql", 0744), "/root/db.sql")
-          .withExposedPorts(3306);
 
   private Server server;
   private Provisioning provisioning;
 
   @BeforeEach
   public void setUp() throws Exception {
+    MailboxTestUtil.setUp();
     greenMail =
         new GreenMail(
             new ServerSetup[] {
@@ -101,48 +60,27 @@ class DavServletTest {
                   SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
             });
     greenMail.start();
-    LC.mysql_port.setDefault(sqlContainer.getMappedPort(3306));
-    LC.ldap_port.setDefault(ldapContainer.getMappedPort(389));
-    System.setProperty("java.library.path", "../native/target");
-    System.setProperty("log4j.configuration", "log4j-test.properties");
-    System.setProperty(
-        "zimbra.config",
-        Objects.requireNonNull(this.getClass().getResource("/localconfig-api-test.xml")).getFile());
     provisioning = Provisioning.getInstance();
-    final ExecResult execResult =
-        sqlContainer.execInContainer("sh", "-c", "mysql -u root -ppassword < /root/db.sql");
-    if (execResult.getExitCode() != 0) {
-      throw new RuntimeException(execResult.getStderr());
-    }
-    DbPool.startup();
-    MailboxManager mailboxManager = MailboxManager.getInstance();
     server = JettyServerFactory.createDefault();
     server.start();
-    final String serverName = "localhost";
-    provisioning.createServer(
-        serverName,
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
-    RedoLogProvider.getInstance().startup();
-    StoreManager.getInstance().startup();
-    provisioning.createDomain("test.com", new HashMap<>());
     final Account organizer =
         provisioning.createAccount(
-            "organizer@test.com",
+            "organizer@" + MailboxTestUtil.DEFAULT_DOMAIN,
             "password",
-            new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, serverName)));
-    organizer.addAlias("alias@test.com");
+            new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
+    organizer.addAlias("alias@" + MailboxTestUtil.DEFAULT_DOMAIN);
     provisioning.createAccount(
-        "attendee1@test.com",
+        "attendee1@" + MailboxTestUtil.DEFAULT_DOMAIN,
         "password",
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, serverName)));
+        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
     provisioning.createAccount(
-        "attendee2@test.com",
+        "attendee2@" + MailboxTestUtil.DEFAULT_DOMAIN,
         "password",
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, serverName)));
+        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
     provisioning.createAccount(
-        "attendee3@test.com",
+        "attendee3@" + MailboxTestUtil.DEFAULT_DOMAIN,
         "password",
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, serverName)));
+        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
   }
 
   @AfterEach
