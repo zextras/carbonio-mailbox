@@ -17,6 +17,8 @@ public class JettyServerFactory {
   private JettyServerFactory() {}
 
   /**
+   * Creates a server instance (not yet started).
+   *
    * @param port listening port of the server
    * @param servlets {@link Map} of servlets with key path of servlet, value {@link ServletHolder}
    * @return {@link Server}
