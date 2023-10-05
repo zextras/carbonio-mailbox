@@ -907,7 +907,7 @@ public abstract class AuthProvider {
     // make sure that the authenticated account is still active and has not been deleted since the
     // last request
     String acctId = at.getAccountId();
-    Account acct = prov.get(AccountBy.id, acctId);
+    Account acct = prov.get(AccountBy.id, acctId, at);
 
     if (acct == null) {
       return null;

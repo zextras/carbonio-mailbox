@@ -23,6 +23,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.SetPasswordResult;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
+import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.SetPasswordRequest;
 import com.zimbra.soap.admin.message.SetPasswordResponse;
@@ -62,7 +63,7 @@ public class SetPassword extends AdminDocumentHandler {
         String id = req.getId();
         String newPassword = req.getNewPassword();
 
-        Account account = prov.get(AccountBy.id, id);
+        Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
         if (account == null) {
             try {
                 defendAgainstAccountOrCalendarResourceHarvestingWhenAbsent(AccountBy.id, id, zsc,

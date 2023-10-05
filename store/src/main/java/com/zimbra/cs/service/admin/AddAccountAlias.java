@@ -20,6 +20,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
+import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.AddAccountAliasRequest;
 import com.zimbra.soap.admin.message.AddAccountAliasResponse;
@@ -59,7 +60,7 @@ public class AddAccountAlias extends AdminDocumentHandler {
         String id = req.getId();
         String alias = req.getAlias();
 
-        Account account = prov.get(AccountBy.id, id);
+        Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
 
         defendAgainstAccountOrCalendarResourceHarvesting(account, AccountBy.id, id, zsc,
                 Admin.R_addAccountAlias, Admin.R_addCalendarResourceAlias);

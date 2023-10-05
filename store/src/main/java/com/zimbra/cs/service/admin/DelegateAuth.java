@@ -15,6 +15,7 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
@@ -54,9 +55,9 @@ public class DelegateAuth extends AdminDocumentHandler {
         Account account = null;
 
         if (key.equals(BY_NAME)) {
-            account = prov.get(AccountBy.name, value);
+            account = prov.get(AccountBy.name, value, zsc.getAuthToken());
         } else if (key.equals(BY_ID)) {
-            account = prov.get(AccountBy.id, value);
+            account = prov.get(AccountBy.id, value, zsc.getAuthToken());
         } else {
             throw ServiceException.INVALID_REQUEST("unknown value for by: "+key, null);
         }
@@ -75,7 +76,7 @@ public class DelegateAuth extends AdminDocumentHandler {
         // take the min of requested lifetime vs maxLifetime
         long expires = System.currentTimeMillis()+ Math.min(lifetime, maxLifetime);
         String token;
-        Account adminAcct = prov.get(AccountBy.id, zsc.getAuthtokenAccountId());
+        Account adminAcct = prov.get(AccountBy.id, zsc.getAuthtokenAccountId(), zsc.getAuthToken());
         if (adminAcct == null)
             throw AccountServiceException.NO_SUCH_ACCOUNT(zsc.getAuthtokenAccountId());
 

@@ -42,13 +42,13 @@ public abstract class AccessManager {
   public abstract boolean isAdequateAdminAccount(Account acct);
 
   public Account getAccount(AuthToken at) throws ServiceException {
-    return Provisioning.getInstance().get(AccountBy.id, at.getAccountId());
+    return Provisioning.getInstance().get(AccountBy.id, at.getAccountId(), at);
   }
 
   protected Account getAdminAccount(AuthToken at) throws ServiceException {
     String adminAcctId = at.getAdminAccountId();
     if (adminAcctId == null) return null;
-    else return Provisioning.getInstance().get(AccountBy.id, adminAcctId);
+    else return Provisioning.getInstance().get(AccountBy.id, adminAcctId, at);
   }
 
   public Domain getDomain(AuthToken at) throws ServiceException {

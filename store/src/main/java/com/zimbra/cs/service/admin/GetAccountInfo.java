@@ -22,6 +22,7 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.httpclient.URLUtil;
+import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GetAccountInfoRequest;
 
@@ -59,7 +60,7 @@ public class GetAccountInfo extends AdminDocumentHandler  {
         String accountSelectorKey = req.getAccount().getKey();
 
         Provisioning prov = Provisioning.getInstance();
-        Account account = prov.get(accountBy, accountSelectorKey);
+        Account account = prov.get(accountBy, accountSelectorKey, zsc.getAuthToken());
         defendAgainstAccountOrCalendarResourceHarvesting(account, accountBy, accountSelectorKey, zsc,
                 Admin.R_getAccountInfo, Admin.R_getCalendarResourceInfo);
         Element response = zsc.createElement(AdminConstants.GET_ACCOUNT_INFO_RESPONSE);

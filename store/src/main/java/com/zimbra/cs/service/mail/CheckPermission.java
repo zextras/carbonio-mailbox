@@ -46,7 +46,7 @@ public class CheckPermission extends MailDocumentHandler {
         
         if (TargetType.account == tt) {
             AccountBy acctBy = AccountBy.fromString(targetBy);
-            entry = prov.get(acctBy, targetValue);
+            entry = prov.get(acctBy, targetValue, zsc.getAuthToken());
             
             if (entry == null && acctBy == AccountBy.id) {
                 throw AccountServiceException.NO_SUCH_ACCOUNT(targetValue);

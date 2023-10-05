@@ -34,7 +34,7 @@ public class PushFreeBusy extends AdminDocumentHandler {
       while (accounts.hasNext()) {
         String accountId = accounts.next().getAttribute(AdminConstants.A_ID, null);
         if (accountId == null) continue;
-        Account acct = prov.get(Key.AccountBy.id, accountId);
+        Account acct = prov.get(Key.AccountBy.id, accountId, zsc.getAuthToken());
         if (acct == null) {
           ZimbraLog.misc.warn("invalid accountId: " + accountId);
           continue;

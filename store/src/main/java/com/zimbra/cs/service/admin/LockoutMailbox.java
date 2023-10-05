@@ -12,12 +12,14 @@ import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.LockoutMailboxRequest;
 import com.zimbra.soap.type.AccountNameSelector;
@@ -43,7 +45,7 @@ public class LockoutMailbox extends AdminDocumentHandler {
         String accountSelectorKey = acctSel.getKey();
         AccountBy by = acctSel.getBy().toKeyAccountBy();
         Provisioning prov = Provisioning.getInstance();
-        Account account = prov.get(by, accountSelectorKey);
+        Account account = prov.get(by, accountSelectorKey, zsc.getAuthToken());
         defendAgainstAccountOrCalendarResourceHarvesting(account, by, accountSelectorKey, zsc,
                 Admin.R_moveAccountMailbox, Admin.R_moveCalendarResourceMailbox);
 

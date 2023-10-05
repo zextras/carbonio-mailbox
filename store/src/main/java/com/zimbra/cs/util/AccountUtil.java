@@ -415,7 +415,7 @@ public class AccountUtil {
       Provisioning prov, String id, String nameKey, String idOnlyKey, AuthToken authToken) {
     Account acct = null;
     try {
-      acct = prov.get(Key.AccountBy.id, id);
+      acct = prov.get(Key.AccountBy.id, id, authToken);
     } catch (ServiceException se) {
       ZimbraLog.misc.warn("unable to lookup account for log, id: " + id, se);
     }

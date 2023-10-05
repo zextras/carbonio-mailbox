@@ -8,10 +8,6 @@
  */
 package com.zimbra.cs.service.admin;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
@@ -24,6 +20,9 @@ import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.type.AccountSelector;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author schemers
@@ -64,7 +63,7 @@ public class GetAccount extends AdminDocumentHandler {
         String accountSelectorKey = acctSel.getKey();
         AccountBy by = acctSel.getBy().toKeyAccountBy();
 
-        Account account = prov.get(by, accountSelectorKey);
+        Account account = prov.get(by, accountSelectorKey, zsc.getAuthToken());
         defendAgainstAccountHarvesting(account, by, accountSelectorKey, zsc, Admin.R_getAccountInfo);
 
         AdminAccessControl aac = checkAccountRight(zsc, account, AdminRight.PR_ALWAYS_ALLOW);

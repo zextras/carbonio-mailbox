@@ -48,7 +48,7 @@ public class CheckPasswordStrength extends AdminDocumentHandler {
         String id = request.getAttribute(AdminConstants.E_ID);
         String password = request.getAttribute(AdminConstants.E_PASSWORD);
 
-        Account account = prov.get(AccountBy.id, id);
+        Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
         if (account == null)
             throw AccountServiceException.NO_SUCH_ACCOUNT(id);
         

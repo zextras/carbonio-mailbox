@@ -174,7 +174,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     // the following call is ugly!
     if (at.isAdmin()) return true;
 
-    Account adminAccount = Provisioning.getInstance().get(Key.AccountBy.id, at.getAccountId());
+    Account adminAccount = Provisioning.getInstance().get(Key.AccountBy.id, at.getAccountId(), at);
     if (adminAccount == null) return false;
 
     // 0 is unlimited

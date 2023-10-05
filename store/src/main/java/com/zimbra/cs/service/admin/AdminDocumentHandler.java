@@ -1028,7 +1028,7 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
     }
     String accountSelectorKey = acctSel.getKey();
     AccountBy by = acctSel.getBy().toKeyAccountBy();
-    Account account = prov.get(by, accountSelectorKey);
+    Account account = prov.get(by, accountSelectorKey, zsc.getAuthToken());
 
     defendAgainstAccountHarvesting(account, by, accountSelectorKey, zsc, Admin.R_getAccountInfo);
     if (!canModifyOptions(zsc, account)) {

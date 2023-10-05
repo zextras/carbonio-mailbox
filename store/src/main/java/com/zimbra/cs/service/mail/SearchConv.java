@@ -108,7 +108,7 @@ public final class SearchConv extends Search {
         } else { // remote
             try {
                 Element proxyRequest = zsc.createElement(MailConstants.SEARCH_CONV_REQUEST);
-                Account target = Provisioning.getInstance().get(AccountBy.id, cid.getAccountId());
+                Account target = Provisioning.getInstance().get(AccountBy.id, cid.getAccountId(), zsc.getAuthToken());
 
                 if (target != null) {
                     params.setInlineRule(params.getInlineRule().toLegacyExpandResults(target.getServer()));

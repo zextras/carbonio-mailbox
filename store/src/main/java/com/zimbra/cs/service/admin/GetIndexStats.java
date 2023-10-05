@@ -53,7 +53,7 @@ public class GetIndexStats extends AdminDocumentHandler {
         String accountId = mreq.getAttribute(AdminConstants.A_ACCOUNTID);
 
         Provisioning prov = Provisioning.getInstance();
-        Account account = prov.get(AccountBy.id, accountId);
+        Account account = prov.get(AccountBy.id, accountId, zsc.getAuthToken());
         if (account == null) {
             throw AccountServiceException.NO_SUCH_ACCOUNT(accountId);
         }

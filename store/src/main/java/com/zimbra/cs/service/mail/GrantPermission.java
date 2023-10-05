@@ -151,7 +151,7 @@ public class GrantPermission extends MailDocumentHandler {
         Provisioning prov = Provisioning.getInstance();
         // for addresses, default to the authenticated user's domain
         if ((type == GranteeType.GT_USER || type == GranteeType.GT_GROUP) && name.indexOf('@') == -1) {
-            Account authacct = prov.get(AccountBy.id, zsc.getAuthtokenAccountId());
+            Account authacct = prov.get(AccountBy.id, zsc.getAuthtokenAccountId(), zsc.getAuthToken());
             String authname = (authacct == null ? null : authacct.getName());
             if (authacct != null)
                 name += authname.substring(authname.indexOf('@'));

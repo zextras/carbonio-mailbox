@@ -46,7 +46,7 @@ public class PurgeAccountCalendarCache extends AdminDocumentHandler {
     Provisioning prov = Provisioning.getInstance();
 
     String id = request.getAttribute(AdminConstants.A_ID);
-    Account account = prov.get(AccountBy.id, id);
+    Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
     if (account == null) throw AccountServiceException.NO_SUCH_ACCOUNT(id);
 
     if (!Provisioning.getInstance().onLocalServer(account))

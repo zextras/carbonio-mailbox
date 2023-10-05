@@ -36,7 +36,7 @@ public abstract class AdminGalDocumentHandler extends AdminDocumentHandler {
       String[] xpath = getProxiedAccountPath();
       String acctId = (xpath != null ? getXPath(request, xpath) : null);
       if (acctId != null) {
-        Account acct = prov.get(AccountBy.id, acctId);
+        Account acct = prov.get(AccountBy.id, acctId, zsc.getAuthToken());
         if (acct != null) {
           if (!Provisioning.getInstance().onLocalServer(acct)) {
             /*

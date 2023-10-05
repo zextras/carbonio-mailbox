@@ -155,7 +155,7 @@ public abstract class DocumentHandler {
       return new GuestAccount(at);
     }
 
-    Account acct = Provisioning.getInstance().get(AccountBy.id, id);
+    Account acct = Provisioning.getInstance().get(AccountBy.id, id, zsc.getAuthToken());
     if (acct == null && at == null) {
       throw ServiceException.AUTH_REQUIRED();
     }
@@ -165,7 +165,7 @@ public abstract class DocumentHandler {
   public static Account getRequestedAccount(ZimbraSoapContext zsc) throws ServiceException {
     String id = zsc.getRequestedAccountId();
 
-    Account acct = Provisioning.getInstance().get(AccountBy.id, id);
+    Account acct = Provisioning.getInstance().get(AccountBy.id, id, zsc.getAuthToken());
     if (acct == null) {
       if (zsc.isDelegatedRequest()) {
         throw ServiceException.DEFEND_ACCOUNT_HARVEST(id);

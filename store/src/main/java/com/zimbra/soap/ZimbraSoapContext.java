@@ -347,7 +347,7 @@ public final class ZimbraSoapContext {
         if (mAuthToken == null) {
           throw ServiceException.AUTH_REQUIRED();
         }
-        Account account = prov.get(AccountBy.name, value);
+        Account account = prov.get(AccountBy.name, value, mAuthToken);
         if (account == null) {
           if (!mAuthToken.isAdmin()) {
             throw ServiceException.DEFEND_ACCOUNT_HARVEST(value);
@@ -362,7 +362,7 @@ public final class ZimbraSoapContext {
         if (mAuthToken == null) {
           throw ServiceException.AUTH_REQUIRED();
         }
-        Account account = prov.get(AccountBy.id, value);
+        Account account = prov.get(AccountBy.id, value, mAuthToken);
         if (account == null) {
           if (!mAuthToken.isAdmin()) {
             throw ServiceException.DEFEND_ACCOUNT_HARVEST(value);

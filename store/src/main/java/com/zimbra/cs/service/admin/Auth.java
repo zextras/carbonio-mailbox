@@ -86,7 +86,7 @@ public class Auth extends AdminDocumentHandler {
                 throw ServiceException.AUTH_EXPIRED("authtoken is invalid");
 
             // make sure that the authenticated account is active and has not been deleted/disabled since the last request
-            acct = prov.get(AccountBy.id, at.getAccountId());
+            acct = prov.get(AccountBy.id, at.getAccountId(), at);
             if (acct == null || !acct.getAccountStatus(prov).equals(Provisioning.ACCOUNT_STATUS_ACTIVE))
                 throw ServiceException.AUTH_EXPIRED();
 
@@ -127,7 +127,7 @@ public class Auth extends AdminDocumentHandler {
                 if (by == AccountBy.name && value.indexOf("@") == -1) {
                     // first try to get by adminName, which resolves the account under cn=admins,cn=zimbra
                     // and does not need a domain
-                    acct = prov.get(AccountBy.adminName, value);
+                    acct = prov.get(AccountBy.adminName, value, zsc.getAuthToken());
 
                     // not found, try applying virtual host name
                     if (acct == null) {

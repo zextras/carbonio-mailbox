@@ -21,6 +21,7 @@ import com.zimbra.cs.account.DataSource;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
+import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GetDataSourcesRequest;
 
@@ -55,7 +56,7 @@ public class GetDataSources extends AdminDocumentHandler  {
         Provisioning prov = Provisioning.getInstance();
         GetDataSourcesRequest req = zsc.elementToJaxb(request);
         String id = req.getId();
-        Account account = prov.get(AccountBy.id, id);
+        Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
         defendAgainstAccountOrCalendarResourceHarvesting(account, AccountBy.id, id, zsc,
                 Admin.R_adminLoginAs, Admin.R_adminLoginCalendarResourceAs);
 

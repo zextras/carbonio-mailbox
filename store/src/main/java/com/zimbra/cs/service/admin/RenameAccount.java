@@ -61,7 +61,7 @@ public class RenameAccount extends AdminDocumentHandler {
     String id = req.getId();
     String newName = req.getNewName();
 
-    Account account = prov.get(AccountBy.id, id);
+    Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
     defendAgainstAccountHarvesting(account, AccountBy.id, id, zsc, Admin.R_renameAccount);
 
     String oldName = account.getName();

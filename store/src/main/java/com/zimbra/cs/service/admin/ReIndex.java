@@ -24,6 +24,7 @@ import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxIndex;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.ReIndexRequest;
 import com.zimbra.soap.admin.type.ReindexMailboxInfo;
@@ -82,7 +83,7 @@ public final class ReIndex extends AdminDocumentHandler {
         String accountId = reIndexMboxInfo.getAccountId();
 
         Provisioning prov = Provisioning.getInstance();
-        Account account = prov.get(AccountBy.id, accountId);
+        Account account = prov.get(AccountBy.id, accountId, zsc.getAuthToken());
         defendAgainstAccountOrCalendarResourceHarvesting(account, AccountBy.id, accountId, zsc,
                 Admin.R_reindexMailbox, Admin.R_reindexCalendarResourceMailbox);
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account, false);
