@@ -322,7 +322,7 @@ public final class DbMailbox {
       throws ServiceException {
     ZimbraLog.mailbox.debug("createMailboxDatabase(" + mailboxId + ")");
 
-    File file = new File(LC.mailboxd_create_db_file.value());
+    File file = new File(LC.mailboxd_directory.value() + "/../db/create_database.sql");
 
     boolean succeeded = false;
     PreparedStatement stmt = null;

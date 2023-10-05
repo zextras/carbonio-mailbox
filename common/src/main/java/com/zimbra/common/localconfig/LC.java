@@ -1378,10 +1378,6 @@ public final class LC {
   @Supported
   public static final KnownKey zimbra_remote_cmd_channel_timeout_min = KnownKey.newKey(10);
 
-  /** Location of mailbox create db script */
-  public static final KnownKey mailboxd_create_db_file =
-      KnownKey.newKey("${mailboxd_directory}/../db/create_database.sql");
-
   static {
     // Automatically set the key name with the variable name.
     for (Field field : LC.class.getFields()) {
