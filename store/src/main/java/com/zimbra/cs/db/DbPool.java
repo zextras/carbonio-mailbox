@@ -5,21 +5,6 @@
 
 package com.zimbra.cs.db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Iterator;
-import java.util.Properties;
-
-import java.util.concurrent.atomic.AtomicReference;
-import org.apache.commons.dbcp.ConnectionFactory;
-import org.apache.commons.dbcp.PoolableConnectionFactory;
-import org.apache.commons.dbcp.PoolingDataSource;
-import org.apache.commons.pool.impl.GenericObjectPool;
-
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SystemUtil;
@@ -28,6 +13,18 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.stats.ZimbraPerf;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Iterator;
+import java.util.Properties;
+import org.apache.commons.dbcp.ConnectionFactory;
+import org.apache.commons.dbcp.PoolableConnectionFactory;
+import org.apache.commons.dbcp.PoolingDataSource;
+import org.apache.commons.pool.impl.GenericObjectPool;
 
 /**
  * @since Apr 7, 2004
@@ -40,7 +37,7 @@ public class DbPool {
     private static GenericObjectPool sConnectionPool;
     private static boolean sIsInitialized;
 
-    private static volatile AtomicReference<Boolean> isShutdown = new AtomicReference<>(false);
+    private static boolean isShutdown;
     private static boolean isUsageWarningEnabled = true;
 
     static ValueCounter<String> sConnectionStackCounter = new ValueCounter<String>();
@@ -211,7 +208,7 @@ public class DbPool {
      *
      */
     public static synchronized void startup() {
-        isShutdown.set(false);
+        isShutdown = false;
         if (isInitialized()) {
             return;
         }
@@ -265,7 +262,7 @@ public class DbPool {
 
     /** Initializes the connection pool. */
     private static synchronized PoolingDataSource getPool() {
-        if (isShutdown.get())
+        if (isShutdown)
             throw new RuntimeException("DbPool permanently shutdown");
 
         if (sPoolingDataSource != null)
@@ -537,7 +534,7 @@ public class DbPool {
     }
 
     public static synchronized void shutdown() throws Exception {
-        isShutdown.set(true);
+        isShutdown = true;
         close();
     }
 
