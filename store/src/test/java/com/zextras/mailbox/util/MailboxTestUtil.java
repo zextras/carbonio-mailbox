@@ -1,7 +1,3 @@
-// SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
-//
-// SPDX-License-Identifier: AGPL-3.0-only
-
 package com.zextras.mailbox.util;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
@@ -23,15 +19,28 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * This utility class allows easy setup for the Mailbox environment using {@link #setUp()} method.
+ * To clean up th environment remember to call {@link #tearDown()}. It uses an {@link
+ * InMemoryDirectoryServer} and an in memory database using {@link HSQLDB} as dependencies.
+ */
 public class MailboxTestUtil {
-
   public static final int LDAP_PORT = 1389;
   public static final String SERVER_NAME = "localhost";
   public static final String DEFAULT_DOMAIN = "test.com";
   private static InMemoryDirectoryServer inMemoryDirectoryServer;
 
+  private MailboxTestUtil() {}
+
+  /**
+   * Sets up all possible environment variables to make the mailbox operate. - loads native library
+   * - Uses localconfig-api-test.xml as source for {@link LC} - creates a server with name {@link
+   * #SERVER_NAME} - creates a domain with name {@link #DEFAULT_DOMAIN} Starts LDAP and the database
+   * and all possible dependencies. If you find some are missing add them.
+   *
+   * @throws Exception
+   */
   public static void setUp() throws Exception {
-    System.setProperty("java.library.path", "../native/target");
     System.setProperty(
         "zimbra.config",
         Objects.requireNonNull(
@@ -48,17 +57,22 @@ public class MailboxTestUtil {
     DbPool.startup();
     HSQLDB.createDatabase("");
 
-    Provisioning provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
+    final Provisioning provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
     provisioning.createServer(
         SERVER_NAME,
         new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
     provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
+
     RedoLogProvider.getInstance().startup();
-    RightManager.getInstance();
     StoreManager.getInstance().startup();
+    RightManager.getInstance();
     ScheduledTaskManager.startup();
   }
 
+  /**
+   * Stops the {@link #inMemoryDirectoryServer} and {@link RedoLogProvider} The goal is to cleanup
+   * the system before starting another one. If some clean task is missing consider adding it.
+   */
   public static void tearDown() throws ServiceException {
     inMemoryDirectoryServer.clear();
     RedoLogProvider.getInstance().shutdown();
@@ -66,9 +80,11 @@ public class MailboxTestUtil {
   }
 
   /**
-   * Creates a basic account for domain {@link #DEFAULT_DOMAIN} and {@link #SERVER_NAME} You can
-   * alter the account properties later if you need to make it an admin.
+   * Creates a basic account with domain {@link #DEFAULT_DOMAIN} and {@link #SERVER_NAME}. You can
+   * pass extra attributes if needed, for example to make the user an admin. If you pass a {@link
+   * ZAttrProvisioning#A_zimbraMailHost} you will override the default server of the user.
    *
+   * @param extraAttrs attributes to add on top of default one
    * @return created account
    * @throws ServiceException
    */

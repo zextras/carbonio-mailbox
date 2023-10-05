@@ -6,6 +6,7 @@ package com.zimbra.cs.dav.service;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
@@ -14,7 +15,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.AuthProviderException;
@@ -35,10 +35,8 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -66,7 +64,9 @@ class DavServletTest {
             });
     greenMail.start();
     provisioning = Provisioning.getInstance();
-    server = JettyServerFactory.createDefault();
+    server =
+        JettyServerFactory.create(
+            PORT, Map.of(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class)));
     server.start();
     organizer =
         provisioning.createAccount(
@@ -92,10 +92,10 @@ class DavServletTest {
   public static void tearDown() throws Exception {
     server.stop();
     greenMail.stop();
-    DbPool.shutdown();
+    MailboxTestUtil.tearDown();
   }
 
-  private HttpResponse executeDavRequest(Account organizer)
+  private HttpResponse createInviteWithDavRequest(Account organizer)
       throws AuthProviderException, AuthTokenException, IOException {
     final AuthToken authToken = AuthProvider.getAuthToken(organizer);
     String url =
@@ -125,7 +125,7 @@ class DavServletTest {
   void shouldNotSendNotificationWhenScheduleAgentClient()
       throws IOException, ServiceException, AuthTokenException {
     final Account organizer = provisioning.getAccount("alias@test.com");
-    final HttpResponse response = executeDavRequest(organizer);
+    final HttpResponse response = createInviteWithDavRequest(organizer);
 
     Assertions.assertEquals(HttpStatus.SC_CREATED, response.getStatusLine().getStatusCode());
     Assertions.assertEquals(0, greenMail.getReceivedMessages().length);
@@ -216,19 +216,5 @@ class DavServletTest {
         HttpStatus.SC_NO_CONTENT, deleteAppointmentWithCalDAV().getStatusLine().getStatusCode());
     Assertions.assertEquals(
         HttpStatus.SC_NOT_FOUND, getAppointmentWithCalDAV().getStatusLine().getStatusCode());
-  }
-
-  private static class JettyServerFactory {
-
-    public static Server createDefault() throws Exception {
-      Server server = new Server();
-      ServerConnector connector = new ServerConnector(server);
-      connector.setPort(PORT);
-      ServletContextHandler servletHandler = new ServletContextHandler();
-      servletHandler.addServlet(DavServlet.class, DAV_BASE_PATH + "/*");
-      server.setHandler(servletHandler);
-      server.setConnectors(new Connector[] {connector});
-      return server;
-    }
   }
 }

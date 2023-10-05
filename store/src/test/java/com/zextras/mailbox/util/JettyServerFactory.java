@@ -14,6 +14,8 @@ import org.eclipse.jetty.servlet.ServletHolder;
 /** Test utility class to create a {@link Server} instance with custom port and servlets. */
 public class JettyServerFactory {
 
+  private JettyServerFactory() {}
+
   /**
    * @param port listening port of the server
    * @param servlets {@link Map} of servlets with key path of servlet, value {@link ServletHolder}

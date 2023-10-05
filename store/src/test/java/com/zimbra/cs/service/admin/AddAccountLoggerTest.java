@@ -1,10 +1,9 @@
 package com.zimbra.cs.service.admin;
 
-import static com.zextras.mailbox.usecase.MailboxTestUtil.DEFAULT_DOMAIN;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.usecase.MailboxTestUtil;
+import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -42,7 +41,7 @@ class AddAccountLoggerTest {
   }
 
   @AfterEach
-  void tearDown() {
+  void tearDown() throws ServiceException {
     MailboxTestUtil.tearDown();
   }
 
