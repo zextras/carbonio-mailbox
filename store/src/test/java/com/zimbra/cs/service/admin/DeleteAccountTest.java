@@ -100,65 +100,6 @@ class DeleteAccountTest {
   }
 
   private static Stream<Arguments> getHappyPathCases() throws ServiceException {
-
-    final Account delegatedAdminWithDeleteRight =
-        MailboxTestUtil.createAccountDefaultDomain(
-            Map.of(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE"));
-    ACLUtil.grantRight(
-        Provisioning.getInstance(),
-        provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
-        Set.of(
-            new ZimbraACE(
-                delegatedAdminWithDeleteRight.getId(),
-                GranteeType.GT_USER,
-                AdminRights.R_deleteAccount,
-                RightModifier.RM_CAN_DELEGATE,
-                null)));
-
-    final Account delegatedAdminFromOtherDomain =
-        provisioning.createAccount(
-            UUID.randomUUID() + "@" + OTHER_DOMAIN,
-            "password",
-            new HashMap<>(
-                Map.of(
-                    Provisioning.A_zimbraMailHost,
-                    MailboxTestUtil.SERVER_NAME,
-                    ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
-                    "TRUE")));
-    final Account toDeleteOther = MailboxTestUtil.createAccountDefaultDomain(Map.of());
-    ACLUtil.grantRight(
-        Provisioning.getInstance(),
-        toDeleteOther,
-        Set.of(
-            new ZimbraACE(
-                delegatedAdminFromOtherDomain.getId(),
-                GranteeType.GT_USER,
-                AdminRights.R_deleteAccount,
-                RightModifier.RM_CAN_DELEGATE,
-                null)));
-
-    final Account delegatedAdminFromOtherDomain2 =
-        provisioning.createAccount(
-            UUID.randomUUID() + "@" + OTHER_DOMAIN,
-            "password",
-            new HashMap<>(
-                Map.of(
-                    Provisioning.A_zimbraMailHost,
-                    MailboxTestUtil.SERVER_NAME,
-                    ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
-                    "TRUE")));
-
-    ACLUtil.grantRight(
-        Provisioning.getInstance(),
-        provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
-        Set.of(
-            new ZimbraACE(
-                delegatedAdminFromOtherDomain2.getId(),
-                GranteeType.GT_USER,
-                AdminRights.R_domainAdminRights,
-                RightModifier.RM_CAN_DELEGATE,
-                null)));
-
     return Stream.of(
         Arguments.of(
             MailboxTestUtil.createAccountDefaultDomain(
