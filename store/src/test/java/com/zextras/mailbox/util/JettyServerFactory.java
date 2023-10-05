@@ -25,7 +25,7 @@ public class JettyServerFactory {
    * @throws Exception
    */
   public static Server create(int port, Map<String, ServletHolder> servlets) throws Exception {
-    Server server = new Server();
+    final Server server = new Server();
     ServerConnector connector = new ServerConnector(server);
     connector.setPort(port);
     ServletContextHandler servletHandler = new ServletContextHandler();
