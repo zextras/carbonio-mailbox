@@ -55,7 +55,6 @@ public class MailboxTestUtil {
     LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
 
     DbPool.startup();
-    DbPool.shutdown();
     HSQLDB.createDatabase("");
 
     final Provisioning provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
