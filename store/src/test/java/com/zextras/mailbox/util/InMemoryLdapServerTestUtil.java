@@ -11,8 +11,19 @@ import com.unboundid.ldap.sdk.Modification;
 import com.unboundid.ldap.sdk.ModificationType;
 import com.zimbra.common.localconfig.LC;
 
+/** Util class to create an {@link InMemoryDirectoryServer} */
 public class InMemoryLdapServerTestUtil {
 
+  private InMemoryLdapServerTestUtil() {}
+
+  /**
+   * Creates Carbonio {@link InMemoryLdapServerTestUtil} on port. It also modifies the admin
+   * password to the one specified in localconfig {@link LC#zimbra_ldap_password}
+   *
+   * @param ldapPort port to listen on
+   * @return instance of {@link InMemoryDirectoryServer} not started yet
+   * @throws Exception
+   */
   public static InMemoryDirectoryServer createInMemoryDirectoryServer(int ldapPort)
       throws Exception {
     InMemoryDirectoryServerConfig ldapServerConfig =

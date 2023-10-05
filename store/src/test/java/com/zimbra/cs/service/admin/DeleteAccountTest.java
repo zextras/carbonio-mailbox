@@ -52,17 +52,52 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+@Tag("api")
 class DeleteAccountTest {
 
   private static final int ADMIN_PORT = 7071;
   private static final String OTHER_DOMAIN = "other.com";
   private static Server mailboxServer;
   private static Provisioning provisioning;
+
+  /**
+   * Sets up the environment using {@link MailboxTestUtil}. Also starts the SoapServlet with {@link
+   * AdminService} only Starts also {@link FirstServlet} since it is required to make the API work.
+   *
+   * @throws Exception
+   */
+  @BeforeAll
+  static void setUp() throws Exception {
+    System.setProperty("java.library.path", new File("./../").getAbsolutePath() + "/native/target");
+    MailboxTestUtil.setUp();
+    final ServletHolder firstServlet = new ServletHolder("FirstServlet", FirstServlet.class);
+    firstServlet.setInitOrder(0);
+    final ServletHolder adminServlet = new ServletHolder("AdminServlet", SoapServlet.class);
+    adminServlet.setInitParameter("allowed.ports", Integer.toString(ADMIN_PORT));
+    adminServlet.setInitOrder(1);
+    adminServlet.setInitParameter("engine.handler.0", "com.zimbra.cs.service.admin.AdminService");
+    provisioning = Provisioning.getInstance();
+    provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
+    mailboxServer =
+        JettyServerFactory.create(
+            ADMIN_PORT,
+            Map.of(
+                "/*", adminServlet,
+                "/firstServlet/*", firstServlet));
+    mailboxServer.start();
+  }
+
+  @AfterAll
+  static void tearDown() throws Exception {
+    mailboxServer.stop();
+    MailboxTestUtil.tearDown();
+  }
 
   private static Stream<Arguments> getHappyPathCases() throws ServiceException {
 
@@ -264,39 +299,6 @@ class DeleteAccountTest {
                   return Arguments.of(admin, toDelete);
                 })
             .get());
-  }
-
-  /**
-   * Sets up the environment using {@link MailboxTestUtil}. Also starts the SoapServlet with {@link
-   * AdminService} only Starts also {@link FirstServlet} since it is required to make the API work.
-   *
-   * @throws Exception
-   */
-  @BeforeAll
-  static void setUp() throws Exception {
-    System.setProperty("java.library.path", new File("./../").getAbsolutePath() + "/native/target");
-    MailboxTestUtil.setUp();
-    final ServletHolder firstServlet = new ServletHolder("FirstServlet", FirstServlet.class);
-    firstServlet.setInitOrder(0);
-    final ServletHolder adminServlet = new ServletHolder("AdminServlet", SoapServlet.class);
-    adminServlet.setInitParameter("allowed.ports", Integer.toString(ADMIN_PORT));
-    adminServlet.setInitOrder(1);
-    adminServlet.setInitParameter("engine.handler.0", "com.zimbra.cs.service.admin.AdminService");
-    provisioning = Provisioning.getInstance();
-    provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
-    mailboxServer =
-        JettyServerFactory.create(
-            ADMIN_PORT,
-            Map.of(
-                "/*", adminServlet,
-                "/firstServlet/*", firstServlet));
-    mailboxServer.start();
-  }
-
-  @AfterAll
-  static void tearDown() throws Exception {
-    mailboxServer.stop();
-    MailboxTestUtil.tearDown();
   }
 
   @ParameterizedTest
