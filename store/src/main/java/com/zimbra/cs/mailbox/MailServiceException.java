@@ -210,7 +210,7 @@ public class MailServiceException extends ServiceException {
   }
 
   public static MailServiceException NO_SUCH_MBOX(String accountId) {
-    return new MailServiceException(
+    return new NoSuchItemException(
         "no mailbox for account: " + accountId,
         NO_SUCH_MBOX,
         SENDERS_FAULT,

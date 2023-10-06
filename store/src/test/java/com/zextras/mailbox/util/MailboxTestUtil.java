@@ -47,7 +47,7 @@ public class MailboxTestUtil {
                 com.zimbra.cs.mailbox.MailboxTestUtil.class.getResource(
                     "/localconfig-api-test.xml"))
             .getFile());
-
+    LC.reload();
     inMemoryDirectoryServer = InMemoryLdapServerTestUtil.createInMemoryDirectoryServer(LDAP_PORT);
     inMemoryDirectoryServer.startListening();
 

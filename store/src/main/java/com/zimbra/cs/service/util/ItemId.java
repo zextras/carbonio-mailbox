@@ -8,6 +8,7 @@
  */
 package com.zimbra.cs.service.util;
 
+import com.google.inject.assistedinject.Assisted;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.mailbox.FolderStore;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.inject.Inject;
 
 public class ItemId implements java.io.Serializable {
   private static final long serialVersionUID = -9044615129495573523L;
@@ -78,7 +80,11 @@ public class ItemId implements java.io.Serializable {
     this(new ItemIdentifier(folder.getFolderIdAsString(), defaultAccountId));
   }
 
-  public ItemId(String encoded, String defaultAccountId) throws ServiceException {
+  @Inject
+  public ItemId(
+      @Assisted("encodedFolderId") String encoded,
+      @Assisted("defaultAccountId") String defaultAccountId)
+      throws ServiceException {
     this(new ItemIdentifier(encoded, defaultAccountId));
   }
 

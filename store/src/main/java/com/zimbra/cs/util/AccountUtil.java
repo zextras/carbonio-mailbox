@@ -73,9 +73,7 @@ public class AccountUtil {
   public static final String FN_SUBSCRIPTIONS = "subs";
   public static final String SN_IMAP = "imap";
 
-  private AccountUtil() {
-    throw new java.lang.UnsupportedOperationException("Utility class and cannot be instantiated");
-  }
+  public AccountUtil() {}
 
   /**
    * Returns effective quota for an account which is calculated as the minimum of account level
@@ -348,14 +346,6 @@ public class AccountUtil {
           account.getFileExternalShareLifetime(), account.getExternalShareLifetime());
     }
     return account.getExternalShareLifetime();
-  }
-
-  public static long getMaxPublicShareLifetime(Account account, MailItem.Type folderType) {
-    if (folderType == Type.UNKNOWN) {
-      return minShareLifetime(
-          account.getFilePublicShareLifetime(), account.getPublicShareLifetime());
-    }
-    return account.getPublicShareLifetime();
   }
 
   private static long minShareLifetime(long shareLifetime1, long shareLifetime2) {
@@ -707,6 +697,14 @@ public class AccountUtil {
       }
     }
     return null;
+  }
+
+  public long getMaxPublicShareLifetime(Account account, Type folderType) {
+    if (folderType == Type.UNKNOWN) {
+      return minShareLifetime(
+          account.getFilePublicShareLifetime(), account.getPublicShareLifetime());
+    }
+    return account.getPublicShareLifetime();
   }
 
   public static class AccountAddressMatcher {

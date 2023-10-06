@@ -7,6 +7,7 @@ package com.zimbra.cs.service.mail;
 
 import com.zextras.carbonio.files.FilesClient;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.cs.account.accesscontrol.ACLHelper;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
@@ -67,7 +68,8 @@ public final class MailService implements DocumentService {
 
     // folders
     dispatcher.registerHandler(MailConstants.GET_FOLDER_REQUEST, new GetFolder());
-    dispatcher.registerHandler(MailConstants.CREATE_FOLDER_REQUEST, new CreateFolder());
+    dispatcher.registerHandler(
+        MailConstants.CREATE_FOLDER_REQUEST, new CreateFolder(new ACLHelper()));
     dispatcher.registerHandler(MailConstants.FOLDER_ACTION_REQUEST, new FolderAction());
 
     // tags
