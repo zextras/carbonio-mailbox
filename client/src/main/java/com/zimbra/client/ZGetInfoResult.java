@@ -98,6 +98,11 @@ public class ZGetInfoResult implements ToZJSONObject {
     return MapUtil.multimapToMapOfLists(data.getAttrsMultimap());
   }
 
+  public Map<String, List<String>> getZimletProps() {
+    return MapUtil.multimapToMapOfLists(
+        data.getPropsMultimap(ZAttrProvisioning.A_zimbraZimletUserProperties));
+  }
+
   /***
    *
    * @return Set of all lowercased email addresses for this account, including primary name and any aliases.

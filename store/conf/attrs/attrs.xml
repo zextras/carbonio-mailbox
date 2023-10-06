@@ -1573,57 +1573,47 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>When creating self-signed SSL certs during an install, we also create a local Certificate Authority (CA) to sign these SSL certs.  This local CA-s own cert is then added to different applications "trusted CA-s" list/store.  This attribute should not be used in a system with real certs issued by well known CAs.</desc>
 </attr>
 
-<attr id="281" name="zimbraZimletKeyword" type="string" max="256" cardinality="single" optionalIn="zimletEntry" deprecatedSince="23.9.0">
+<attr id="281" name="zimbraZimletKeyword" type="string" max="256" cardinality="single" optionalIn="zimletEntry">
   <desc>Server side object keyword used for indexing and search for this Zimlet</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="282" name="zimbraZimletVersion" type="string" max="256" cardinality="single" requiredIn="zimletEntry" deprecatedSince="23.9.0">
+<attr id="282" name="zimbraZimletVersion" type="string" max="256" cardinality="single" requiredIn="zimletEntry">
   <desc>Version of the Zimlet</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="283" name="zimbraZimletDescription" type="string" max="256" cardinality="single" optionalIn="zimletEntry" deprecatedSince="23.9.0" >
+<attr id="283" name="zimbraZimletDescription" type="string" max="256" cardinality="single" optionalIn="zimletEntry">
   <desc>Zimlet description</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="284" name="zimbraZimletIndexingEnabled" type="boolean" cardinality="single" optionalIn="zimletEntry" deprecatedSince="23.9.0">
+<attr id="284" name="zimbraZimletIndexingEnabled" type="boolean" cardinality="single" optionalIn="zimletEntry">
   <desc>Whether server side keyword indexing enabled</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="285" name="zimbraZimletStoreMatched" type="boolean" cardinality="single" deprecatedSince="23.9.0">
+<attr id="285" name="zimbraZimletStoreMatched" type="boolean" cardinality="single">
   <desc>Whether store is matched for this type</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="286" name="zimbraZimletHandlerClass" type="cstring" max="256" cardinality="single" optionalIn="zimletEntry" deprecatedSince="23.9.0">
+<attr id="286" name="zimbraZimletHandlerClass" type="cstring" max="256" cardinality="single" optionalIn="zimletEntry">
   <desc>The handler class for server side Zimlet extension</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="287" name="zimbraZimletHandlerConfig" type="string" max="10240" cardinality="multi" optionalIn="zimletEntry" deprecatedSince="23.9.0">
+<attr id="287" name="zimbraZimletHandlerConfig" type="string" max="10240" cardinality="multi" optionalIn="zimletEntry">
   <desc>The global config for the Zimlet</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="288" name="zimbraZimletContentObject" type="string" max="10240" cardinality="single" deprecatedSince="23.9.0">
+<attr id="288" name="zimbraZimletContentObject" type="string" max="10240" cardinality="single">
   <desc>The content object section in the Zimlet description</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="289" name="zimbraZimletPanelItem" type="string" max="10240" cardinality="single" deprecatedSince="23.9.0">
+<attr id="289" name="zimbraZimletPanelItem" type="string" max="10240" cardinality="single">
   <desc>The panel item section in the Zimlet description</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="290" name="zimbraZimletScript" type="cstring" max="256" cardinality="multi" optionalIn="zimletEntry" deprecatedSince="23.9.0">
+<attr id="290" name="zimbraZimletScript" type="cstring" max="256" cardinality="multi" optionalIn="zimletEntry">
   <desc>URL of extra scripts used by the Zimlet</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="291" name="zimbraZimletAvailableZimlets" type="string" max="256" cardinality="multi" optionalIn="account,cos" flags="accountInfo,domainAdminModifiable,accountInherited" deprecatedSince="23.9.0" >
+<attr id="291" name="zimbraZimletAvailableZimlets" type="string" max="256" cardinality="multi" optionalIn="account,cos" flags="accountInfo,domainAdminModifiable,accountInherited" callback="AvailableZimlets">
   <desc>
       List of Zimlets available to this COS
       Values can be prefixed with ! or + or -
@@ -1631,12 +1621,10 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
       + (or no prefix): enabled by default
       -: disabled by default
   </desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="292" name="zimbraZimletServerIndexRegex" type="cstring" max="256" cardinality="single" optionalIn="zimletEntry" deprecatedSince="23.9.0">
+<attr id="292" name="zimbraZimletServerIndexRegex" type="cstring" max="256" cardinality="single" optionalIn="zimletEntry">
   <desc>Regex of content object</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="293" name="zimbraMimeHandlerExtension" type="cstring" cardinality="single" optionalIn="mimeEntry">
@@ -1651,9 +1639,8 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>mapping to foreign principal identifier</desc>
 </attr>
 
-<attr id="296" name="zimbraZimletUserProperties" type="cstring" max="51200" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" deprecatedSince="23.9.0">
+<attr id="296" name="zimbraZimletUserProperties" type="cstring" max="51200" cardinality="multi" optionalIn="account" flags="domainAdminModifiable">
   <desc>User properties for Zimlets</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="297" name="zimbraMessageCacheSize" type="integer" max="10000" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" callback="ServerConfig">
@@ -1674,14 +1661,12 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <deprecateDesc>deprecated in favor of the domainAdminAdminModifiable flag</deprecateDesc>
 </attr>
 
-<attr id="301" name="zimbraZimletEnabled" type="boolean" cardinality="single" requiredIn="zimletEntry" deprecatedSince="23.9.0">
+<attr id="301" name="zimbraZimletEnabled" type="boolean" cardinality="single" requiredIn="zimletEntry">
   <desc>whether this Zimlet is enabled</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
-<attr id="302" name="zimbraZimletPriority" type="string" max="32" cardinality="single" optionalIn="zimletEntry" deprecatedSince="23.9.0">
+<attr id="302" name="zimbraZimletPriority" type="string" max="32" cardinality="single" optionalIn="zimletEntry">
   <desc>Object match priority</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="303" name="zimbraProxyCacheableContentTypes" type="string" max="256" cardinality="multi" optionalIn="cos" deprecatedSince="7.2.1">
@@ -1691,9 +1676,8 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <deprecateDesc>Deprecated per bug 74769</deprecateDesc>
 </attr>
 
-<attr id="304" name="zimbraZimletIsExtension" type="boolean" cardinality="single" optionalIn="zimletEntry" deprecatedSince="23.9.0">
+<attr id="304" name="zimbraZimletIsExtension" type="boolean" cardinality="single" optionalIn="zimletEntry">
   <desc>Whether this zimlet is an extension</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="305" name="zimbraFeatureIMEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" deprecatedSince="8.7.0">
@@ -3232,9 +3216,8 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>set to 1 or 3 to specify customer care account tier level</desc>
 </attr>
 
-<attr id="606" name="zimbraZimletTarget" type="cstring" max="1024" cardinality="multi" optionalIn="zimletEntry" since="5.0.3" deprecatedSince="23.9.0">
+<attr id="606" name="zimbraZimletTarget" type="cstring" max="1024" cardinality="multi" optionalIn="zimletEntry" since="5.0.3">
   <desc>Zimlet target apps</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="607" name="zimbraFreebusyExchangeURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain,cos,account" flags="domainInherited,accountCosDomainInherited" callback="FreeBusyProviderURLCheck" since="5.0.3">
@@ -3427,10 +3410,9 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether or not folder tree is expanded</desc>
 </attr>
 
-<attr id="638" name="zimbraPrefZimletTreeOpen" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.5" deprecatedSince="23.9.0">
+<attr id="638" name="zimbraPrefZimletTreeOpen" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="5.0.5">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>whether or not zimlet tree is expanded</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="639" name="zimbraSSLExcludeCipherSuites" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="5.0.5">
@@ -3774,13 +3756,12 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>maximum number of revisions to keep for calendar items (appointments and tasks). 0 means unlimited.</desc>
 </attr>
 
-<attr id="710" name="zimbraZimletDomainAvailableZimlets" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" flags="domainInherited"  since="5.0.10" deprecatedSince="23.9.0">
+<attr id="710" name="zimbraZimletDomainAvailableZimlets" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" flags="domainInherited" callback="AvailableZimlets" since="5.0.10">
   <desc>
       List of Zimlets available to this domain.
       Zimlets available to accounts in the domain is the union of account/cos attribute zimbraZimletAvailableZimlets and this attribute. 
       See zimbraZimletAvailableZimlets for value format.
   </desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="711" name="zimbraFeatureGalSyncEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="5.0.10">
@@ -4076,9 +4057,8 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   </desc>
 </attr>
     
-<attr id="765" name="zimbraPrefZimlets" type="string" cardinality="multi" optionalIn="account,cos" flags="domainAdminModifiable" since="6.0.0_BETA1" deprecatedSince="23.9.0">
+<attr id="765" name="zimbraPrefZimlets" type="string" cardinality="multi" optionalIn="account,cos" flags="domainAdminModifiable" since="6.0.0_BETA1">
   <desc>zimlets user wants to see in the UI</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="766" name="zimbraConstraint" type="string" cardinality="multi" optionalIn="globalConfig,cos" since="6.0.0_BETA1">
@@ -4889,11 +4869,10 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether or not changing voicemail pin is enabled</desc>
 </attr>
 
-<attr id="1051" name="zimbraFeatureManageZimlets" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="6.0.2" deprecatedSince="23.9.0">
+<attr id="1051" name="zimbraFeatureManageZimlets" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="6.0.2">
   <defaultCOSValue>TRUE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>enable end-user to manage zimlets</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="1052" name="zimbraAllowNonLDHCharsInDomain" type="boolean" cardinality="single" optionalIn="globalConfig" since="6.0.2">
@@ -5029,9 +5008,8 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>URL for posting error report popped up in WEB client</desc>
 </attr>
 
-<attr id="1076" name="zimbraPrefDisabledZimlets" type="string" cardinality="multi" optionalIn="account,cos" flags="domainAdminModifiable" since="6.0.5" deprecatedSince="23.9.0">
+<attr id="1076" name="zimbraPrefDisabledZimlets" type="string" cardinality="multi" optionalIn="account,cos" flags="domainAdminModifiable" since="6.0.5">
   <desc>zimlets user does not want to see in the UI</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="1077" name="zimbraSmtpRestrictEnvelopeFrom" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="6.0.5">
@@ -6329,10 +6307,9 @@ TODO: delete them permanently from here
   <desc>the time in sec that proxy will reconnect the current server (as an upstream) after connection errors happened before</desc>
 </attr>
 
-<attr id="1269" name="zimbraZimletDataSensitiveInMixedModeDisabled" type="boolean" cardinality="single" optionalIn="domain,globalConfig" flags="domainInfo,domainInherited" since="7.1.3" deprecatedSince="23.9.0">
+<attr id="1269" name="zimbraZimletDataSensitiveInMixedModeDisabled" type="boolean" cardinality="single" optionalIn="domain,globalConfig" flags="domainInfo,domainInherited" since="7.1.3">
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>whether zimlets that send sensitive data are disabled in "mixed" zimbraMailMode</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="1271" name="zimbraFeaturePriorityInboxEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited"  since="8.0.0">
@@ -7069,14 +7046,13 @@ TODO: delete them permanently from here
   <desc>whether crash reporting is enabled in the IOS client</desc>
 </attr>
 
-<attr id="1391" name="zimbraZimletLoadSynchronously" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="7.2.0" deprecatedSince="23.9.0">
+<attr id="1391" name="zimbraZimletLoadSynchronously" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="7.2.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>
     Whether to load zimlets synchronously in the web client.  
     If set to TRUE, users are not allowed to use the core app before zimlets are loaded.
     If set to FALSE, zimlets are loaded in the background and users are allowed to use the core app before all zimlets finish loading.
   </desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="1392" name="zimbraProduct" type="enum" cardinality="single" value="ZCS" optionalIn="globalConfig" immutable="1" since="8.0.0">
@@ -7987,10 +7963,9 @@ TODO: delete them permanently from here
   <desc>Whether to allow a user to access EWS service</desc>
 </attr>
 
-<attr id="1575" name="zimbraZimletJspEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0" deprecatedSince="23.9.0">
+<attr id="1575" name="zimbraZimletJspEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>Whether to enable JSP compilation for Zimlets (i.e. for /zimlet webapp)</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="1576" name="zimbraPrefOutOfOfficeSuppressExternalReply" type="boolean" cardinality="single" optionalIn="account" since="8.5.0">
@@ -8292,35 +8267,40 @@ TODO: delete them permanently from here
 
 <attr id="1627" name="zimbraCsrfTokenKey" type="ostring" max="128"
   immutable="1" cardinality="multi" optionalIn="globalConfig"
-  requiresRestart="mailbox" since="8.5.0">
+  requiresRestart="mailbox" since="8.5.0" deprecatedSince="23.11.0">
   <desc>CSRF token secret key</desc>
+  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1628" name="zimbraCsrfTokenCheckEnabled" type="boolean"
-  cardinality="single" optionalIn="globalConfig" since="8.5.0">
+  cardinality="single" optionalIn="globalConfig" since="8.5.0" deprecatedSince="23.11.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>A flag to turn on or off CSRF token related check. When set to FALSE no CSRF check happens. When set to 
         true both CSRF referer and CSRF token change is effective.
   </desc>
+  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1629" name="zimbraCsrfTokenData" type="string"
-  cardinality="multi" optionalIn="account" since="8.5.0" flags="ephemeral,dynamic,expirable">
+  cardinality="multi" optionalIn="account" since="8.5.0" flags="ephemeral,dynamic,expirable" deprecatedSince="23.11.0">
   <desc>List of data associated with CSRF token for an account. The data format is
    CSRF token data:Auth token Key crumb:Auth Token Key expiration</desc>
+  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1630" name="zimbraCsrfAllowedRefererHosts" type="string"
-  cardinality="multi" optionalIn="globalConfig,domain" since="8.5.0">
+  cardinality="multi" optionalIn="globalConfig,domain" since="8.5.0" deprecatedSince="23.11.0">
   <desc>A list of hosts like www.abc.com, www.xyz.com. These are used while doing CSRF referer check.</desc>
+  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1631" name="zimbraCsrfRefererCheckEnabled" type="boolean"
-  cardinality="single" optionalIn="globalConfig" since="8.5.0">
+  cardinality="single" optionalIn="globalConfig" since="8.5.0" deprecatedSince="23.11.0">
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>A flag to turn on or off CSRF referer related check. When set to FALSE no CSRF referer check happens.
         When set to true CSRF referer type check happens.
   </desc>
+  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1632" name="zimbraPrefCalendarAllowedTargetsForInviteDeniedAutoReply" type="enum" value="internal,sameDomain,all" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="8.5.0">
@@ -9068,10 +9048,9 @@ TODO: delete them permanently from here
   <desc>Lifetime of auth tokens provisioned for completing the 2nd stage of enabling two-factor authentication</desc>
 </attr>
 
-<attr id="2027" name="zimbraZimletUserPropertiesMaxNumEntries" type="integer" min="0" cardinality="single" optionalIn="account,cos,domain" flags="accountCosDomainInherited,domainAdminModifiable" since="8.7.0,9.0.0" deprecatedSince="23.9.0">
+<attr id="2027" name="zimbraZimletUserPropertiesMaxNumEntries" type="integer" min="0" cardinality="single" optionalIn="account,cos,domain" flags="accountCosDomainInherited,domainAdminModifiable" since="8.7.0,9.0.0">
   <defaultCOSValue>150</defaultCOSValue>
   <desc>maximum number of user properties for zimlet allowed on an account</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="2029" name="zimbraMobileGatewayDefaultProxyAccountDomainId" type="id" cardinality="single" optionalIn="globalConfig" since="8.7.0,9.0.0">
@@ -9800,9 +9779,8 @@ TODO: delete them permanently from here
   <globalConfigValue>1518163473</globalConfigValue>
 </attr>
 
-<attr id="3024" name="zimbraXZimletCompatibleSemVer" type="string" max="256" cardinality="single" optionalIn="zimletEntry" since="8.8.9" deprecatedSince="23.9.0">
+<attr id="3024" name="zimbraXZimletCompatibleSemVer" type="string" max="256" cardinality="single" optionalIn="zimletEntry" since="8.8.9">
   <desc>ZimbraX compatible semantic version expression</desc>
-  <deprecateDesc>Zimlets are not supported</deprecateDesc>
 </attr>
 
 <attr id="3025" name="zimbraOAuthConsumerRedirectUri" type="string" cardinality="multi" optionalIn="globalConfig,domain" flags="domainInherited" since="8.8.9">

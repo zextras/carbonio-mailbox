@@ -254,7 +254,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   public static final String CONTACT_IMPORT_TYPE_CSV = "csv";
 
-  private static final Set<InfoSection> NOT_ZIMLETS =
+  private static Set<InfoSection> NOT_ZIMLETS =
       Collections.unmodifiableSet(EnumSet.complementOf(EnumSet.of(InfoSection.zimlets)));
 
   private ZAuthToken mAuthToken;

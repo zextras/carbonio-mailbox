@@ -1,4 +1,12 @@
 
+
+## [4.9.1](https://github.com/Zextras/carbonio-mailbox/compare/4.9.0...4.9.1) (2023-09-28)
+
+
+### Reverts
+
+* "feat: zimlet code cleanup ([#310](https://github.com/Zextras/carbonio-mailbox/issues/310))" ([#344](https://github.com/Zextras/carbonio-mailbox/issues/344)) ([93cead1](https://github.com/Zextras/carbonio-mailbox/commit/93cead1978c9c5bbc6dcbf097bd2ac7831a3e114))
+
 # [4.9.0](https://github.com/Zextras/carbonio-mailbox/compare/4.8.3...4.9.0) (2023-09-26)
 
 ### Bug Fixes

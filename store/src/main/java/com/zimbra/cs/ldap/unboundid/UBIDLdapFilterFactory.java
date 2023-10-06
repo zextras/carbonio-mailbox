@@ -53,6 +53,7 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
   private static Filter FILTER_ALL_SHARE_LOCATORS;
   private static Filter FILTER_ALL_SIGNATURES;
   private static Filter FILTER_ALL_XMPP_COMPONENTS;
+  private static Filter FILTER_ALL_ZIMLETS;
   private static Filter FILTER_ANY_ENTRY;
   private static Filter FILTER_DOMAIN_LABEL;
   private static Filter FILTER_HAS_SUBORDINATES;
@@ -151,6 +152,10 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
     FILTER_ALL_XMPP_COMPONENTS =
         Filter.createEqualityFilter(
             LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraXMPPComponent);
+
+    FILTER_ALL_ZIMLETS =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraZimletEntry);
 
     FILTER_ANY_ENTRY = Filter.createPresenceFilter(LdapConstants.ATTR_objectClass);
 
@@ -946,6 +951,14 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
         FilterId.XMPP_COMPONENT_BY_ID,
         Filter.createANDFilter(
             Filter.createEqualityFilter(Provisioning.A_zimbraId, id), FILTER_ALL_XMPP_COMPONENTS));
+  }
+
+  /*
+   * zimlet
+   */
+  @Override
+  public ZLdapFilter allZimlets() {
+    return new UBIDLdapFilter(FilterId.ALL_ZIMLETS, FILTER_ALL_ZIMLETS);
   }
 
   /*
