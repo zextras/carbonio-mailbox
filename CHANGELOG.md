@@ -1,14 +1,31 @@
 
 
-## [4.8.3](https://github.com/Zextras/carbonio-mailbox/compare/4.8.2...4.8.3) (2023-09-21)
+## [4.9.1](https://github.com/Zextras/carbonio-mailbox/compare/4.9.0...4.9.1) (2023-09-28)
 
+
+### Reverts
+
+* "feat: zimlet code cleanup ([#310](https://github.com/Zextras/carbonio-mailbox/issues/310))" ([#344](https://github.com/Zextras/carbonio-mailbox/issues/344)) ([93cead1](https://github.com/Zextras/carbonio-mailbox/commit/93cead1978c9c5bbc6dcbf097bd2ac7831a3e114))
+
+# [4.9.0](https://github.com/Zextras/carbonio-mailbox/compare/4.8.3...4.9.0) (2023-09-26)
+
+### Bug Fixes
+
+* API documentation ([#318](https://github.com/Zextras/carbonio-mailbox/issues/318)) ([b5bc120](https://github.com/Zextras/carbonio-mailbox/commit/b5bc1208e6ff2b7fea874c73a1ca52db205ca704))
+
+### Features
+
+* add 127.0.0.1 to MailTrustedIP to prevent loss of OIP ([#328](https://github.com/Zextras/carbonio-mailbox/issues/328)) ([9a4fc82](https://github.com/Zextras/carbonio-mailbox/commit/9a4fc82b42cdbf2633670c12cb0e225a647c1537))
+* allow admins to specify custom domain login and logout URL ([#301](https://github.com/Zextras/carbonio-mailbox/issues/301)) ([811fd87](https://github.com/Zextras/carbonio-mailbox/commit/811fd87fd6ce4659346f71c3602e07b5685c199e))
+* zimlet code cleanup ([#310](https://github.com/Zextras/carbonio-mailbox/issues/310)) ([8d8da00](https://github.com/Zextras/carbonio-mailbox/commit/8d8da00da1e08f1a02d677295eed1f1d1fba45db))
+
+## [4.8.3](https://github.com/Zextras/carbonio-mailbox/compare/4.8.2...4.8.3) (2023-09-21)
 
 ### Bug Fixes
 
 * delete CalDav appointment ([#332](https://github.com/Zextras/carbonio-mailbox/issues/332)) ([8324af6](https://github.com/Zextras/carbonio-mailbox/commit/8324af6e51977bac8960a2905fcc745ffb5ecffa))
 
 ## [4.8.2](https://github.com/Zextras/carbonio-mailbox/compare/4.8.1...4.8.2) (2023-09-20)
-
 
 ### Bug Fixes
 

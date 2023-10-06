@@ -239,7 +239,7 @@ public abstract class FreeBusyProvider {
 
   protected FreeBusy getFreeBusy(String accountId, int folderId) throws ServiceException {
     Account account = Provisioning.getInstance().getAccountById(accountId);
-    if (account == null || !Provisioning.onLocalServer(account)) return null;
+    if (account == null || !Provisioning.getInstance().onLocalServer(account)) return null;
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(accountId);
     if (mbox == null) return null;
     return mbox.getFreeBusy(

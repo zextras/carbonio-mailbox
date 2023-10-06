@@ -40,6 +40,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.lang.ref.SoftReference;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MailboxManager {
 
@@ -400,7 +411,7 @@ public class MailboxManager {
       throws ServiceException {
     Account account = Provisioning.getInstance().get(AccountBy.id, accountId);
     if (account == null) throw AccountServiceException.NO_SUCH_ACCOUNT(accountId);
-    if (!skipMailHostCheck && !Provisioning.onLocalServer(account))
+    if (!skipMailHostCheck && !Provisioning.getInstance().onLocalServer(account))
       throw ServiceException.WRONG_HOST(account.getMailHost(), null);
     return account;
   }
@@ -503,7 +514,7 @@ public class MailboxManager {
         // essentially a soft-deleted copy.  The WRONG_HOST
         // exception forces the clients to reconnect to the new
         // server.
-        if (!Provisioning.onLocalServer(account))
+        if (!Provisioning.getInstance().onLocalServer(account))
           throw ServiceException.WRONG_HOST(account.getMailHost(), null);
       }
 
@@ -857,7 +868,7 @@ public class MailboxManager {
       throws ServiceException {
     if (account == null)
       throw ServiceException.FAILURE("createMailbox: must specify an account", null);
-    if (!skipMailHostCheck && !Provisioning.onLocalServer(account))
+    if (!skipMailHostCheck && !Provisioning.getInstance().onLocalServer(account))
       throw ServiceException.WRONG_HOST(account.getMailHost(), null);
 
     // the awkward structure here is to avoid calling getMailboxById while holding the lock

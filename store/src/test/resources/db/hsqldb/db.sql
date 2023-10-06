@@ -9,6 +9,7 @@ CREATE SCHEMA zimbra;
 SET SCHEMA zimbra;
 SET INITIAL SCHEMA zimbra;
 
+
 CREATE TABLE volume (
    id                     IDENTITY,
    type                   TINYINT NOT NULL,
@@ -51,9 +52,9 @@ create table volume_blobs (
   revision INTEGER NOT NULL,
   blob_digest VARCHAR(44),
   processed BOOLEAN default false,
-  
+
   CONSTRAINT uc_blobinfo UNIQUE (volume_id,mailbox_id,item_id,revision)
-  
+
   -- FK constraints disabled for now; maybe enable them in 9.0 when we have time to deal with delete cases
   -- CONSTRAINT fk_volume_blobs_volume_id FOREIGN KEY (volume_id) REFERENCES volume(id),
   -- CONSTRAINT fk_volume_blobs_mailbox_id FOREIGN KEY (mailbox_id) REFERENCES mailbox(id)
@@ -80,7 +81,7 @@ CREATE TABLE mailbox (
    version             VARCHAR(16),
    last_purge_at       INTEGER DEFAULT 0 NOT NULL,
    itemcache_checkpoint       INTEGER DEFAULT 0 NOT NULL,
-   
+
    CONSTRAINT i_account_id UNIQUE (account_id),
    CONSTRAINT fk_mailbox_index_volume_id FOREIGN KEY (index_volume_id) REFERENCES volume(id)
 );
@@ -116,6 +117,10 @@ CREATE TABLE config (
    description  VARCHAR(255),
    modified     TIMESTAMP
 );
+
+
+INSERT INTO config (name, value, description, modified) VALUES ('db.version', '111', 'DB version', NOW());
+INSERT INTO config (name, value, description, modified) VALUES ('index.version', '2', 'Index version', NOW());
 
 CREATE TABLE table_maintenance (
    database_name       VARCHAR(64) NOT NULL,
@@ -172,7 +177,7 @@ CREATE TABLE mobile_devices (
    os_language         VARCHAR(64),
    phone_number        VARCHAR(64),
    unapproved_appl_list VARCHAR(512),
-   approved_appl_list   VARCHAR(512),  
+   approved_appl_list   VARCHAR(512),
 
    CONSTRAINT pk_mobile_devices PRIMARY KEY (mailbox_id, device_id),
    CONSTRAINT fk_mobile_mailbox_id FOREIGN KEY (mailbox_id) REFERENCES mailbox(id) ON DELETE CASCADE,
@@ -192,6 +197,4 @@ CREATE TABLE current_sessions (
 	id				INTEGER NOT NULL,
 	server_id		VARCHAR(127) NOT NULL,
 	PRIMARY KEY (id, server_id)
-); 
-
-
+);

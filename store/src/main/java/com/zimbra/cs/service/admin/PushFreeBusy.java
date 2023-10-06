@@ -46,7 +46,7 @@ public class PushFreeBusy extends AdminDocumentHandler {
           ZimbraLog.misc.warn("invalid accountId: " + accountId);
           continue;
         }
-        if (!Provisioning.onLocalServer(acct)) {
+        if (!Provisioning.getInstance().onLocalServer(acct)) {
           ZimbraLog.misc.warn("account is not on this server: " + accountId);
           continue;
         }
@@ -80,7 +80,7 @@ public class PushFreeBusy extends AdminDocumentHandler {
     }
 
     public void visit(NamedEntry entry) throws ServiceException {
-      if (entry instanceof Account && Provisioning.onLocalServer((Account) entry)) {
+      if (entry instanceof Account && Provisioning.getInstance().onLocalServer((Account) entry)) {
         Account acct = (Account) entry;
         String[] fps = acct.getForeignPrincipal();
         if (fps != null && fps.length > 0) {

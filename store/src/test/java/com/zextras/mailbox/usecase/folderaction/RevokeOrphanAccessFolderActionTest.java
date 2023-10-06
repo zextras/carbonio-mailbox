@@ -524,6 +524,11 @@ class DummyLdapFilterFactory extends ZLdapFilterFactory {
   }
 
   @Override
+  public ZLdapFilter allZimlets() {
+    return null;
+  }
+
+  @Override
   public ZLdapFilter memberOf(String dnOfGroup) {
     return new DummyFilter(FilterId.TODO);
   }

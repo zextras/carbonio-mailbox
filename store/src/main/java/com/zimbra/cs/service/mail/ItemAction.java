@@ -570,7 +570,7 @@ public class ItemAction extends MailDocumentHandler {
     ZAuthToken zat = null;
     while (hopCount < ZimbraSoapContext.MAX_HOP_COUNT) {
       owner = Provisioning.getInstance().getAccountById(iidFolder.getAccountId());
-      if (Provisioning.onLocalServer(owner)) {
+      if (Provisioning.getInstance().onLocalServer(owner)) {
         try {
           Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(owner);
           Folder folder = mbox.getFolderById(octxt, iidFolder.getId());

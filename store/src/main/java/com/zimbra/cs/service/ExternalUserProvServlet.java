@@ -46,6 +46,7 @@ import com.zimbra.cs.mailbox.acl.AclPushSerializer;
 import com.zimbra.cs.service.util.JWEUtil;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import com.zimbra.cs.util.AccountUtil;
+import com.zimbra.cs.util.WebClientServiceUtil;
 import com.zimbra.soap.mail.message.FolderActionRequest;
 import com.zimbra.soap.mail.type.FolderActionSelector;
 import java.io.IOException;
@@ -64,6 +65,12 @@ import org.apache.commons.codec.binary.Hex;
 
 public class ExternalUserProvServlet extends ZimbraServlet {
 
+  /** */
+  private static final long serialVersionUID = 6496379855218747384L;
+
+  private static final Log logger = LogFactory.getLog(ExternalUserProvServlet.class);
+  private static final String EXT_USER_PROV_ON_UI_NODE = "/fromservice/extuserprov";
+  private static final String PUBLIC_LOGIN_ON_UI_NODE = "/fromservice/publiclogin";
   public static final String PUBLIC_EXTUSERPROV_JSP = "/public/extuserprov.jsp";
   public static final String PUBLIC_ADDRESS_VERIFICATION_JSP = "/public/addressVerification.jsp";
   public static final String PUBLIC_LOGIN_JSP = "/public/login.jsp";
@@ -71,257 +78,6 @@ public class ExternalUserProvServlet extends ZimbraServlet {
   public static final String MESSAGE_KEY = "messageKey";
   public static final String ERROR_MESSAGE = "errorMessage";
   public static final String EXPIRED = "expired";
-
-  /** */
-  private static final long serialVersionUID = 6496379855218747384L;
-
-  private static final Log logger = LogFactory.getLog(ExternalUserProvServlet.class);
-  private static final String EXT_USER_PROV_ON_UI_NODE = "/fromservice/extuserprov";
-  private static final String PUBLIC_LOGIN_ON_UI_NODE = "/fromservice/publiclogin";
-
-  private static String getMountpointName(Account owner, Account grantee, String sharedFolderPath)
-      throws ServiceException {
-    if (sharedFolderPath.startsWith("/")) {
-      sharedFolderPath = sharedFolderPath.substring(1);
-    }
-    int index = sharedFolderPath.indexOf('/');
-    if (index != -1) {
-      // exclude the top level folder name, such as "Briefcase"
-      sharedFolderPath = sharedFolderPath.substring(index + 1);
-    }
-    return L10nUtil.getMessage(
-        L10nUtil.MsgKey.shareNameDefault,
-        grantee.getLocale(),
-        getDisplayName(owner),
-        sharedFolderPath.replace("/", " "));
-  }
-
-  private static String getDisplayName(Account owner) {
-    return owner.getDisplayName() != null ? owner.getDisplayName() : owner.getName();
-  }
-
-  private static String mapExtEmailToAcctName(String extUserEmail, Domain domain) {
-    return extUserEmail.replace("@", ".") + "@" + domain.getName();
-  }
-
-  private static void provisionVirtualAccountAndRedirect(
-      HttpServletRequest req,
-      HttpServletResponse resp,
-      String displayName,
-      String password,
-      String grantorId,
-      String extUserEmail)
-      throws ServiceException {
-    Provisioning prov = Provisioning.getInstance();
-    try {
-      Account owner = prov.getAccountById(grantorId);
-      Domain domain = prov.getDomain(owner);
-      Account grantee = prov.getAccountByName(mapExtEmailToAcctName(extUserEmail, domain));
-      if (grantee != null) {
-        throw AccountServiceException.ACCOUNT_EXISTS(extUserEmail);
-      }
-
-      // search all shares accessible to the external user
-      SearchAccountsOptions searchOpts =
-          new SearchAccountsOptions(
-              domain,
-              new String[] {
-                Provisioning.A_zimbraId, Provisioning.A_displayName, Provisioning.A_zimbraSharedItem
-              });
-      // get all groups extUserEmail belongs to
-      GuestAccount guestAcct = new GuestAccount(extUserEmail, null);
-      List<String> groupIds = prov.getGroupMembership(guestAcct, false).groupIds();
-      List<String> grantees = Lists.newArrayList(extUserEmail);
-      grantees.addAll(groupIds);
-      searchOpts.setFilter(
-          ZLdapFilterFactory.getInstance().accountsByGrants(grantees, false, false));
-      List<NamedEntry> accounts = prov.searchDirectory(searchOpts);
-
-      if (accounts.isEmpty()) {
-        throw AccountServiceException.NO_SHARE_EXISTS();
-      }
-
-      // create external account
-      Map<String, Object> attrs = new HashMap<String, Object>();
-      attrs.put(Provisioning.A_zimbraIsExternalVirtualAccount, ProvisioningConstants.TRUE);
-      attrs.put(Provisioning.A_zimbraExternalUserMailAddress, extUserEmail);
-      attrs.put(Provisioning.A_zimbraMailHost, prov.getLocalServer().getServiceHostname());
-      if (!StringUtil.isNullOrEmpty(displayName)) {
-        attrs.put(Provisioning.A_displayName, displayName);
-      }
-      attrs.put(Provisioning.A_zimbraHideInGal, ProvisioningConstants.TRUE);
-      attrs.put(Provisioning.A_zimbraMailStatus, Provisioning.MailStatus.disabled.toString());
-      if (!StringUtil.isNullOrEmpty(password)) {
-        attrs.put(
-            Provisioning.A_zimbraVirtualAccountInitialPasswordSet, ProvisioningConstants.TRUE);
-      }
-
-      // create external account mailbox
-      Mailbox granteeMbox;
-      try {
-        grantee = prov.createAccount(mapExtEmailToAcctName(extUserEmail, domain), password, attrs);
-        granteeMbox = MailboxManager.getInstance().getMailboxByAccount(grantee);
-      } catch (ServiceException e) {
-        // mailbox creation failed; delete the account also so that it is a clean state before
-        // the next attempt
-        if (grantee != null) {
-          prov.deleteAccount(grantee.getId());
-        }
-        throw e;
-      }
-
-      // create mountpoints
-      Set<MailItem.Type> viewTypes = new HashSet<MailItem.Type>();
-      for (NamedEntry ne : accounts) {
-        Account account = (Account) ne;
-        String[] sharedItems = account.getSharedItem();
-        for (String sharedItem : sharedItems) {
-          ShareInfoData shareData = AclPushSerializer.deserialize(sharedItem);
-          if (!granteeMatchesShare(shareData, grantee)) {
-            continue;
-          }
-          String sharedFolderPath = shareData.getPath();
-          String mountpointName = getMountpointName(account, grantee, sharedFolderPath);
-          MailItem.Type viewType = shareData.getFolderDefaultViewCode();
-          Mountpoint mtpt =
-              granteeMbox.createMountpoint(
-                  null,
-                  getMptParentFolderId(viewType, prov),
-                  mountpointName,
-                  account.getId(),
-                  shareData.getItemId(),
-                  shareData.getItemUuid(),
-                  viewType,
-                  0,
-                  MailItem.DEFAULT_COLOR,
-                  false);
-          if (viewType == MailItem.Type.APPOINTMENT) {
-            // make sure that the mountpoint is checked in the UI by default
-            granteeMbox.alterTag(
-                null, mtpt.getId(), mtpt.getType(), Flag.FlagInfo.CHECKED, true, null);
-          }
-          viewTypes.add(viewType);
-        }
-      }
-      enableAppFeatures(grantee, viewTypes);
-
-      setCookieAndRedirect(req, resp, grantee);
-    } catch (ServiceException e) {
-      ZimbraLog.account.debug("Exception while creating virtual account for %s", extUserEmail, e);
-      throw e;
-    } catch (Exception e) {
-      ZimbraLog.account.debug("Exception while creating virtual account for %s", extUserEmail, e);
-      throw ServiceException.TEMPORARILY_UNAVAILABLE();
-    }
-  }
-
-  private static boolean granteeMatchesShare(ShareInfoData shareData, Account acct)
-      throws ServiceException {
-    Provisioning prov = Provisioning.getInstance();
-    String grantee = shareData.getGranteeId();
-    byte granteeType = shareData.getGranteeTypeCode();
-    switch (granteeType) {
-      case ACL.GRANTEE_GROUP:
-        return prov.inACLGroup(acct, grantee);
-      case ACL.GRANTEE_GUEST:
-        return grantee.equalsIgnoreCase(acct.getExternalUserMailAddress());
-      default:
-        return false;
-    }
-  }
-
-  private static void setCookieAndRedirect(
-      HttpServletRequest req, HttpServletResponse resp, Account grantee)
-      throws ServiceException, IOException {
-    AuthToken authToken = AuthProvider.getAuthToken(grantee);
-    authToken.encode(resp, false, req.getScheme().equals("https"));
-    resp.sendRedirect("/");
-  }
-
-  private static void setResetPasswordCookieAndRedirect(
-      HttpServletRequest req, HttpServletResponse resp, Account account)
-      throws ServiceException, IOException {
-    AuthToken authToken = AuthProvider.getAuthToken(account, Usage.RESET_PASSWORD);
-    authToken.encode(resp, false, req.getScheme().equals("https"));
-    resp.sendRedirect("/?username=" + authToken.getAccount().getName());
-  }
-
-  private static void redirectOnResetPasswordError(
-      HttpServletRequest req, HttpServletResponse resp, Account account) throws IOException {
-    ZimbraCookie.clearCookie(resp, ZimbraCookie.COOKIE_ZM_AUTH_TOKEN);
-    resp.sendRedirect("/?errorCode=invalidLink");
-  }
-
-  private static int getMptParentFolderId(MailItem.Type viewType, Provisioning prov)
-      throws ServiceException {
-    return Mailbox.ID_FOLDER_USER_ROOT;
-  }
-
-  private static void enableAppFeatures(Account grantee, Set<MailItem.Type> viewTypes)
-      throws ServiceException {
-    Map<String, Object> appFeatureAttrs = new HashMap<String, Object>();
-    for (MailItem.Type type : viewTypes) {
-      switch (type) {
-        case APPOINTMENT:
-          appFeatureAttrs.put(
-              Provisioning.A_zimbraFeatureCalendarEnabled, ProvisioningConstants.TRUE);
-          break;
-        case CONTACT:
-          appFeatureAttrs.put(
-              Provisioning.A_zimbraFeatureContactsEnabled, ProvisioningConstants.TRUE);
-          break;
-        case MESSAGE:
-          appFeatureAttrs.put(Provisioning.A_zimbraFeatureMailEnabled, ProvisioningConstants.TRUE);
-          break;
-        default:
-          // we don't care about other types
-      }
-    }
-    grantee.modify(appFeatureAttrs);
-  }
-
-  public static Map<Object, Object> validatePrelimToken(String param) throws ServletException {
-    int pos = param.indexOf('_');
-    if (pos == -1) {
-      throw new ServletException("invalid token param");
-    }
-    String ver = param.substring(0, pos);
-    int pos2 = param.indexOf('_', pos + 1);
-    if (pos2 == -1) {
-      throw new ServletException("invalid token param");
-    }
-    String hmac = param.substring(pos + 1, pos2);
-    String data = param.substring(pos2 + 1);
-    Map<Object, Object> map;
-    try {
-      ExtAuthTokenKey key = ExtAuthTokenKey.getVersion(ver);
-      if (key == null) {
-        throw new ServletException("unknown key version");
-      }
-      String computedHmac = TokenUtil.getHmac(data, key.getKey());
-      if (!computedHmac.equals(hmac)) {
-        throw new ServletException("hmac failure");
-      }
-      String decoded = new String(Hex.decodeHex(data.toCharArray()));
-      map = BlobMetaData.decode(decoded);
-    } catch (Exception e) {
-      throw new ServletException(e);
-    }
-    Object expiry = map.get(AccountConstants.P_LINK_EXPIRY);
-    if (expiry != null) {
-      // check validity
-      if (System.currentTimeMillis() > Long.parseLong((String) expiry)) {
-        String addressVerification = (String) map.get(AccountConstants.P_ADDRESS_VERIFICATION);
-        String accountVerification = (String) map.get(AccountConstants.P_ACCOUNT_VERIFICATION);
-        if ("1".equals(addressVerification) || "1".equals(accountVerification)) {
-          map.put(EXPIRED, true);
-        } else {
-          throw new ServletException("url no longer valid");
-        }
-      }
-    }
-    return map;
-  }
 
   @Override
   public void init() throws ServletException {
@@ -570,6 +326,31 @@ public class ExternalUserProvServlet extends ZimbraServlet {
     return attrs;
   }
 
+  private static String getMountpointName(Account owner, Account grantee, String sharedFolderPath)
+      throws ServiceException {
+    if (sharedFolderPath.startsWith("/")) {
+      sharedFolderPath = sharedFolderPath.substring(1);
+    }
+    int index = sharedFolderPath.indexOf('/');
+    if (index != -1) {
+      // exclude the top level folder name, such as "Briefcase"
+      sharedFolderPath = sharedFolderPath.substring(index + 1);
+    }
+    return L10nUtil.getMessage(
+        L10nUtil.MsgKey.shareNameDefault,
+        grantee.getLocale(),
+        getDisplayName(owner),
+        sharedFolderPath.replace("/", " "));
+  }
+
+  private static String getDisplayName(Account owner) {
+    return owner.getDisplayName() != null ? owner.getDisplayName() : owner.getName();
+  }
+
+  private static String mapExtEmailToAcctName(String extUserEmail, Domain domain) {
+    return extUserEmail.replace("@", ".") + "@" + domain.getName();
+  }
+
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
@@ -628,11 +409,15 @@ public class ExternalUserProvServlet extends ZimbraServlet {
       String htmlResponsePage,
       String reqForwardPage)
       throws ServletException, IOException {
-
-    for (Map.Entry<String, String> entry : attrs.entrySet()) {
-      req.setAttribute(entry.getKey(), entry.getValue());
+    if (WebClientServiceUtil.isServerInSplitMode()) {
+      reqHeaders.putAll(attrs);
+      sendHtmlResponse(resp, reqHeaders, htmlResponsePage);
+    } else {
+      for (Map.Entry<String, String> entry : attrs.entrySet()) {
+        req.setAttribute(entry.getKey(), entry.getValue());
+      }
+      forward(req, resp, reqForwardPage);
     }
-    forward(req, resp, reqForwardPage);
   }
 
   private void forward(HttpServletRequest req, HttpServletResponse resp, String reqForwardPage)
@@ -645,5 +430,237 @@ public class ExternalUserProvServlet extends ZimbraServlet {
       logger.warn("Could not access servlet context url /zimbra");
       throw new ServletException("service temporarily unavailable");
     }
+  }
+
+  private void sendHtmlResponse(
+      HttpServletResponse resp, Map<String, String> reqHeaders, String htmlResponsePage)
+      throws ServletException, IOException {
+    String htmlresp = "";
+    try {
+      htmlresp =
+          WebClientServiceUtil.sendServiceRequestToOneRandomUiNode(htmlResponsePage, reqHeaders);
+    } catch (ServiceException e1) {
+      throw new ServletException("service temporarily unavailable");
+    }
+    resp.getWriter().print(htmlresp);
+  }
+
+  private static void provisionVirtualAccountAndRedirect(
+      HttpServletRequest req,
+      HttpServletResponse resp,
+      String displayName,
+      String password,
+      String grantorId,
+      String extUserEmail)
+      throws ServiceException {
+    Provisioning prov = Provisioning.getInstance();
+    try {
+      Account owner = prov.getAccountById(grantorId);
+      Domain domain = prov.getDomain(owner);
+      Account grantee = prov.getAccountByName(mapExtEmailToAcctName(extUserEmail, domain));
+      if (grantee != null) {
+        throw AccountServiceException.ACCOUNT_EXISTS(extUserEmail);
+      }
+
+      // search all shares accessible to the external user
+      SearchAccountsOptions searchOpts =
+          new SearchAccountsOptions(
+              domain,
+              new String[] {
+                Provisioning.A_zimbraId, Provisioning.A_displayName, Provisioning.A_zimbraSharedItem
+              });
+      // get all groups extUserEmail belongs to
+      GuestAccount guestAcct = new GuestAccount(extUserEmail, null);
+      List<String> groupIds = prov.getGroupMembership(guestAcct, false).groupIds();
+      List<String> grantees = Lists.newArrayList(extUserEmail);
+      grantees.addAll(groupIds);
+      searchOpts.setFilter(
+          ZLdapFilterFactory.getInstance().accountsByGrants(grantees, false, false));
+      List<NamedEntry> accounts = prov.searchDirectory(searchOpts);
+
+      if (accounts.isEmpty()) {
+        throw AccountServiceException.NO_SHARE_EXISTS();
+      }
+
+      // create external account
+      Map<String, Object> attrs = new HashMap<String, Object>();
+      attrs.put(Provisioning.A_zimbraIsExternalVirtualAccount, ProvisioningConstants.TRUE);
+      attrs.put(Provisioning.A_zimbraExternalUserMailAddress, extUserEmail);
+      attrs.put(Provisioning.A_zimbraMailHost, prov.getLocalServer().getServiceHostname());
+      if (!StringUtil.isNullOrEmpty(displayName)) {
+        attrs.put(Provisioning.A_displayName, displayName);
+      }
+      attrs.put(Provisioning.A_zimbraHideInGal, ProvisioningConstants.TRUE);
+      attrs.put(Provisioning.A_zimbraMailStatus, Provisioning.MailStatus.disabled.toString());
+      if (!StringUtil.isNullOrEmpty(password)) {
+        attrs.put(
+            Provisioning.A_zimbraVirtualAccountInitialPasswordSet, ProvisioningConstants.TRUE);
+      }
+
+      // create external account mailbox
+      Mailbox granteeMbox;
+      try {
+        grantee = prov.createAccount(mapExtEmailToAcctName(extUserEmail, domain), password, attrs);
+        granteeMbox = MailboxManager.getInstance().getMailboxByAccount(grantee);
+      } catch (ServiceException e) {
+        // mailbox creation failed; delete the account also so that it is a clean state before
+        // the next attempt
+        if (grantee != null) {
+          prov.deleteAccount(grantee.getId());
+        }
+        throw e;
+      }
+
+      // create mountpoints
+      Set<MailItem.Type> viewTypes = new HashSet<MailItem.Type>();
+      for (NamedEntry ne : accounts) {
+        Account account = (Account) ne;
+        String[] sharedItems = account.getSharedItem();
+        for (String sharedItem : sharedItems) {
+          ShareInfoData shareData = AclPushSerializer.deserialize(sharedItem);
+          if (!granteeMatchesShare(shareData, grantee)) {
+            continue;
+          }
+          String sharedFolderPath = shareData.getPath();
+          String mountpointName = getMountpointName(account, grantee, sharedFolderPath);
+          MailItem.Type viewType = shareData.getFolderDefaultViewCode();
+          Mountpoint mtpt =
+              granteeMbox.createMountpoint(
+                  null,
+                  getMptParentFolderId(viewType, prov),
+                  mountpointName,
+                  account.getId(),
+                  shareData.getItemId(),
+                  shareData.getItemUuid(),
+                  viewType,
+                  0,
+                  MailItem.DEFAULT_COLOR,
+                  false);
+          if (viewType == MailItem.Type.APPOINTMENT) {
+            // make sure that the mountpoint is checked in the UI by default
+            granteeMbox.alterTag(
+                null, mtpt.getId(), mtpt.getType(), Flag.FlagInfo.CHECKED, true, null);
+          }
+          viewTypes.add(viewType);
+        }
+      }
+      enableAppFeatures(grantee, viewTypes);
+
+      setCookieAndRedirect(req, resp, grantee);
+    } catch (ServiceException e) {
+      ZimbraLog.account.debug("Exception while creating virtual account for %s", extUserEmail, e);
+      throw e;
+    } catch (Exception e) {
+      ZimbraLog.account.debug("Exception while creating virtual account for %s", extUserEmail, e);
+      throw ServiceException.TEMPORARILY_UNAVAILABLE();
+    }
+  }
+
+  private static boolean granteeMatchesShare(ShareInfoData shareData, Account acct)
+      throws ServiceException {
+    Provisioning prov = Provisioning.getInstance();
+    String grantee = shareData.getGranteeId();
+    byte granteeType = shareData.getGranteeTypeCode();
+    switch (granteeType) {
+      case ACL.GRANTEE_GROUP:
+        return prov.inACLGroup(acct, grantee);
+      case ACL.GRANTEE_GUEST:
+        return grantee.equalsIgnoreCase(acct.getExternalUserMailAddress());
+      default:
+        return false;
+    }
+  }
+
+  private static void setCookieAndRedirect(
+      HttpServletRequest req, HttpServletResponse resp, Account grantee)
+      throws ServiceException, IOException {
+    AuthToken authToken = AuthProvider.getAuthToken(grantee);
+    authToken.encode(resp, false, req.getScheme().equals("https"));
+    resp.sendRedirect("/");
+  }
+
+  private static void setResetPasswordCookieAndRedirect(
+      HttpServletRequest req, HttpServletResponse resp, Account account)
+      throws ServiceException, IOException {
+    AuthToken authToken = AuthProvider.getAuthToken(account, Usage.RESET_PASSWORD);
+    authToken.encode(resp, false, req.getScheme().equals("https"));
+    resp.sendRedirect("/?username=" + authToken.getAccount().getName());
+  }
+
+  private static void redirectOnResetPasswordError(
+      HttpServletRequest req, HttpServletResponse resp, Account account) throws IOException {
+    ZimbraCookie.clearCookie(resp, ZimbraCookie.COOKIE_ZM_AUTH_TOKEN);
+    resp.sendRedirect("/?errorCode=invalidLink");
+  }
+
+  private static int getMptParentFolderId(MailItem.Type viewType, Provisioning prov)
+      throws ServiceException {
+    return Mailbox.ID_FOLDER_USER_ROOT;
+  }
+
+  private static void enableAppFeatures(Account grantee, Set<MailItem.Type> viewTypes)
+      throws ServiceException {
+    Map<String, Object> appFeatureAttrs = new HashMap<String, Object>();
+    for (MailItem.Type type : viewTypes) {
+      switch (type) {
+        case APPOINTMENT:
+          appFeatureAttrs.put(
+              Provisioning.A_zimbraFeatureCalendarEnabled, ProvisioningConstants.TRUE);
+          break;
+        case CONTACT:
+          appFeatureAttrs.put(
+              Provisioning.A_zimbraFeatureContactsEnabled, ProvisioningConstants.TRUE);
+          break;
+        case MESSAGE:
+          appFeatureAttrs.put(Provisioning.A_zimbraFeatureMailEnabled, ProvisioningConstants.TRUE);
+          break;
+        default:
+          // we don't care about other types
+      }
+    }
+    grantee.modify(appFeatureAttrs);
+  }
+
+  public static Map<Object, Object> validatePrelimToken(String param) throws ServletException {
+    int pos = param.indexOf('_');
+    if (pos == -1) {
+      throw new ServletException("invalid token param");
+    }
+    String ver = param.substring(0, pos);
+    int pos2 = param.indexOf('_', pos + 1);
+    if (pos2 == -1) {
+      throw new ServletException("invalid token param");
+    }
+    String hmac = param.substring(pos + 1, pos2);
+    String data = param.substring(pos2 + 1);
+    Map<Object, Object> map;
+    try {
+      ExtAuthTokenKey key = ExtAuthTokenKey.getVersion(ver);
+      if (key == null) {
+        throw new ServletException("unknown key version");
+      }
+      String computedHmac = TokenUtil.getHmac(data, key.getKey());
+      if (!computedHmac.equals(hmac)) {
+        throw new ServletException("hmac failure");
+      }
+      String decoded = new String(Hex.decodeHex(data.toCharArray()));
+      map = BlobMetaData.decode(decoded);
+    } catch (Exception e) {
+      throw new ServletException(e);
+    }
+    Object expiry = map.get(AccountConstants.P_LINK_EXPIRY);
+    if (expiry != null) {
+      // check validity
+      if (System.currentTimeMillis() > Long.parseLong((String) expiry)) {
+        String addressVerification = (String) map.get(AccountConstants.P_ADDRESS_VERIFICATION);
+        String accountVerification = (String) map.get(AccountConstants.P_ACCOUNT_VERIFICATION);
+        if ("1".equals(addressVerification) || "1".equals(accountVerification)) {
+          map.put(EXPIRED, true);
+        } else {
+          throw new ServletException("url no longer valid");
+        }
+      }
+    }
+    return map;
   }
 }
