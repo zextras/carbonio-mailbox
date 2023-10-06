@@ -525,7 +525,7 @@ class DummyLdapFilterFactory extends ZLdapFilterFactory {
 
   @Override
   public ZLdapFilter allZimlets() {
-    return null;
+    return new DummyFilter(FilterId.TODO);
   }
 
   @Override
