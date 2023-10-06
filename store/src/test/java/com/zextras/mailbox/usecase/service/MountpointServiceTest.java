@@ -3,8 +3,9 @@ package com.zextras.mailbox.usecase.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.zextras.mailbox.usecase.MailboxTestUtil;
+import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -41,7 +42,7 @@ class MountpointServiceTest {
   }
 
   @AfterEach
-  void tearDown() {
+  void tearDown() throws ServiceException {
     MailboxTestUtil.tearDown();
     itemActionHelper.close();
   }

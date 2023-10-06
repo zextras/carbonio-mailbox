@@ -3,7 +3,7 @@ package com.zextras.mailbox.usecase.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.Maps;
-import com.zextras.mailbox.usecase.MailboxTestUtil;
+import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
@@ -32,7 +32,7 @@ class GranteeServiceTest {
   }
 
   @AfterEach
-  void tearDown() {
+  void tearDown() throws ServiceException {
     MailboxTestUtil.tearDown();
   }
 
