@@ -21,6 +21,7 @@ import javax.mail.Part;
 import javax.mail.internet.MimePart;
 import org.apache.http.HttpStatus;
 
+/** Use case to get a preview, using {@link PreviewClient}, from a Mailbox email attachment. */
 @Singleton
 public class PreviewUseCase {
 
@@ -33,6 +34,17 @@ public class PreviewUseCase {
     this.attachmentService = attachmentService;
   }
 
+  /**
+   * Returns a preview of a requested attachment in an email.
+   *
+   * @param accountId account id of the owner of the attachment.
+   * @param authToken token used in the request. Used for security purposes
+   * @param previewType type of preview requested
+   * @param messageId id of the requested email
+   * @param partNumber part number of the email representing the attachment
+   * @param query query for {@link PreviewClient}
+   * @return a try of {@link AttachmentPreview}
+   */
   public Try<AttachmentPreview> getAttachmentAndPreview(
       String accountId,
       AuthToken authToken,
