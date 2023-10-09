@@ -284,6 +284,7 @@ public class ScheduleOutbox extends CalendarCollection {
 
     private void handleFreebusyRequest(DavContext ctxt, ZComponent vfreebusy, String originator, String rcpt, Element resp) throws DavException, ServiceException {
         ZProperty dtstartProp = vfreebusy.getProperty(ICalTok.DTSTART);
+        ZProperty uidProp = vfreebusy.getProperty(ICalTok.UID);
         ZProperty dtendProp = vfreebusy.getProperty(ICalTok.DTEND);
         ZProperty durationProp = vfreebusy.getProperty(ICalTok.DURATION);
         if (dtstartProp == null || dtendProp == null && durationProp == null)
@@ -314,7 +315,7 @@ public class ScheduleOutbox extends CalendarCollection {
                 fb = fbResult.iterator().next();
         }
         if (fb != null) {
-            String fbMsg = fb.toVCalendar(FreeBusy.Method.REPLY, originator, rcpt, null);
+            String fbMsg = fb.toVCalendar(FreeBusy.Method.REPLY, originator, rcpt, null, uidProp.getValue());
             resp.addElement(DavElements.E_RECIPIENT).addElement(DavElements.E_HREF).setText(rcpt);
             resp.addElement(DavElements.E_REQUEST_STATUS).setText("2.0;Success");
             resp.addElement(DavElements.E_CALENDAR_DATA).setText(fbMsg);
