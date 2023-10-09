@@ -7,14 +7,19 @@ package com.zextras.mailbox.preview.usecase;
 import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.Query;
+import com.zextras.mailbox.client.MailboxHttpClientException;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AttachmentService;
-import io.vavr.Tuple2;
+import io.vavr.API;
+import io.vavr.API.Match.Pattern0;
 import io.vavr.control.Try;
+import java.util.Objects;
 import java.util.function.Function;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.mail.Part;
 import javax.mail.internet.MimePart;
+import org.apache.http.HttpStatus;
 
 @Singleton
 public class PreviewUseCase {
@@ -28,7 +33,7 @@ public class PreviewUseCase {
     this.attachmentService = attachmentService;
   }
 
-  public Try<Tuple2<MimePart, BlobResponse>> getAttachmentAndPreview(
+  public Try<AttachmentPreview> getAttachmentAndPreview(
       String accountId,
       AuthToken authToken,
       PreviewType previewType,
@@ -40,7 +45,18 @@ public class PreviewUseCase {
     }
 
     final Try<MimePart> tryAttachment =
-        attachmentService.getAttachment(accountId, authToken, messageId, partNumber);
+        attachmentService
+            .getAttachment(accountId, authToken, messageId, partNumber)
+            .mapFailure(
+                API.Case(
+                    Pattern0.of(MailboxHttpClientException.class),
+                    (clientException) -> {
+                      if (Objects.equals(
+                          HttpStatus.SC_NOT_FOUND, clientException.getStatusCode())) {
+                        return new AttachmentNotFoundException();
+                      }
+                      return new RuntimeException(clientException.getMessage());
+                    }));
 
     final Try<BlobResponse> tryPreviewClientResponse =
         tryAttachment
@@ -53,9 +69,13 @@ public class PreviewUseCase {
                                     .getFunction()
                                     .apply(
                                         previewClient, inputStream, query, attachment.getFileName())
-                                    .getOrElseThrow(
-                                        throwable -> new PreviewError(throwable.getMessage()))))
+                                    .getOrElseThrow(ex -> new PreviewError(ex.getMessage()))))
             .flatMap(Function.identity());
-    return Try.of(() -> new Tuple2<>(tryAttachment.get(), tryPreviewClientResponse.get()));
+    final Try<String> tryFileName = tryAttachment.mapTry(Part::getFileName);
+    return API.For(tryFileName, tryPreviewClientResponse)
+        .yield(
+            (fileName, previewResponse) ->
+                new AttachmentPreview(
+                    fileName, previewResponse.getMimeType(), previewResponse.getContent()));
   }
 }

@@ -7,6 +7,7 @@ package com.zimbra.cs.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -19,6 +20,7 @@ import io.vavr.control.Try;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.UUID;
 import javax.mail.internet.MimePart;
 import org.apache.http.entity.ContentType;
@@ -44,7 +46,10 @@ class MailboxHttpAttachmentServiceTest {
         new ByteArrayInputStream("hello.txt".getBytes(StandardCharsets.UTF_8));
     final InputStream expectedContent =
         new ByteArrayInputStream("hello.txt".getBytes(StandardCharsets.UTF_8));
-    when(mailboxHttpClient.dolUserServletGetRequest(token, accountUuid, userServletRequest))
+    when(mailboxHttpClient.doUserServletGetRequest(
+            any(),
+            anyString(),
+            argThat(request -> Objects.equals(request.toString(), userServletRequest.toString()))))
         .thenReturn(Try.of(() -> new UserServletResponse(contentType, fileName, content)));
     final MimePart attachment =
         attachmentService.getAttachment(accountUuid, token, messageId, part).get();
@@ -59,7 +64,7 @@ class MailboxHttpAttachmentServiceTest {
     final MailboxHttpClient mailboxHttpClient = mock(MailboxHttpClient.class);
     final MailboxHttpAttachmentService attachmentService =
         new MailboxHttpAttachmentService(mailboxHttpClient);
-    when(mailboxHttpClient.dolUserServletGetRequest(any(), anyString(), any()))
+    when(mailboxHttpClient.doUserServletGetRequest(any(), anyString(), any()))
         .thenThrow(new RuntimeException("failed!"));
     final Try<MimePart> attachmentTry =
         attachmentService.getAttachment(

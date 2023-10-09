@@ -7,7 +7,6 @@ package com.zextras.mailbox.client;
 import com.zimbra.cs.service.UserServlet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import org.apache.commons.lang.StringUtils;
 
 /** Represents a {@link com.zimbra.cs.service.UserServlet} request */
@@ -45,10 +44,5 @@ public class UserServletRequest {
       queryList.add(UserServlet.QP_PART + "=" + itemPart);
     }
     return String.join("&", queryList);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return Objects.equals(this.toString(), o.toString());
   }
 }

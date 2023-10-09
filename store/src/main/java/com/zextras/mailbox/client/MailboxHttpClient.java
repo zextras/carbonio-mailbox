@@ -85,15 +85,14 @@ public class MailboxHttpClient {
    * @throws ServiceException
    * @throws AuthTokenException
    */
-  public Try<UserServletResponse> dolUserServletGetRequest(
+  public Try<UserServletResponse> doUserServletGetRequest(
       AuthToken authToken, String accountId, UserServletRequest userServletRequest)
       throws HttpException, IOException, ServiceException, AuthTokenException {
     final HttpGet request = new HttpGet(getUserServletResourceUrl(accountId, userServletRequest));
     final HttpResponse httpResponse = this.doSendRequest(authToken, request);
     final int statusCode = httpResponse.getStatusLine().getStatusCode();
     if (!Objects.equals(HttpStatus.SC_OK, statusCode)) {
-      return Try.failure(
-          ServiceException.FAILURE("Request failed with status code: " + statusCode, null));
+      return Try.failure(new MailboxHttpClientException(statusCode, ""));
     }
     final Header contentDispositionHeader = httpResponse.getFirstHeader(CONTENT_DISPOSITION);
     final Header contentTypeHeader = httpResponse.getFirstHeader(CONTENT_TYPE);

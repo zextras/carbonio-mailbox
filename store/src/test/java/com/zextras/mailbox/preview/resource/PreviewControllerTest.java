@@ -17,6 +17,8 @@ import com.google.common.collect.Maps;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.enums.Format;
 import com.zextras.mailbox.filter.AuthorizationFilter;
+import com.zextras.mailbox.preview.usecase.AttachmentNotFoundException;
+import com.zextras.mailbox.preview.usecase.AttachmentPreview;
 import com.zextras.mailbox.preview.usecase.PreviewError;
 import com.zextras.mailbox.preview.usecase.PreviewNotHealthy;
 import com.zextras.mailbox.preview.usecase.PreviewUseCase;
@@ -26,7 +28,6 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.AuthProvider;
-import io.vavr.Tuple2;
 import io.vavr.control.Try;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -36,7 +37,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimePart;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Response;
@@ -140,15 +140,16 @@ class PreviewControllerTest extends MailboxJerseyTest {
     attachment.attachFile(file);
     attachment.setFileName(fileName);
 
-    final Tuple2<MimePart, BlobResponse> attachmentAndPreview =
-        new Tuple2<>(attachment, previewResponse);
+    final AttachmentPreview attachmentPreview =
+        new AttachmentPreview(
+            fileName, previewResponse.getMimeType(), previewResponse.getContent());
 
     final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
     final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
 
     when(previewUseCase.getAttachmentAndPreview(
             anyString(), any(), any(), anyInt(), anyString(), any()))
-        .thenReturn(Try.of(() -> attachmentAndPreview));
+        .thenReturn(Try.of(() -> attachmentPreview));
 
     final String disposition = isInline ? "inline" : "attachment";
     WebTarget target =
@@ -199,6 +200,23 @@ class PreviewControllerTest extends MailboxJerseyTest {
     when(previewUseCase.getAttachmentAndPreview(
             anyString(), any(), any(), anyInt(), anyString(), any()))
         .thenReturn(Try.failure(new PreviewError("Some preview database is down")));
+
+    final Response response =
+        target(endpoint)
+            .request()
+            .cookie(new Cookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded()))
+            .get();
+    Assertions.assertEquals(HttpStatus.SC_NOT_FOUND, response.getStatus());
+  }
+
+  @ParameterizedTest
+  @MethodSource("getEndpoints")
+  public void shouldReturn404WhenAttachmentNotFound(String endpoint) throws Exception {
+    final Account accountByName = provisioning.getAccountByName(TEST_ACCOUNT_NAME);
+    final AuthToken authToken = AuthProvider.getAuthToken(accountByName);
+    when(previewUseCase.getAttachmentAndPreview(
+            anyString(), any(), any(), anyInt(), anyString(), any()))
+        .thenReturn(Try.failure(new AttachmentNotFoundException()));
 
     final Response response =
         target(endpoint)

@@ -99,7 +99,7 @@ class MailboxHttpClientTest {
     mailboxServer.when(expectedRequest).respond(expectedResponse.withStatusCode(200));
     final UserServletResponse userServletResponse =
         mailboxHttpClient
-            .dolUserServletGetRequest(
+            .doUserServletGetRequest(
                 token, accountUuid, UserServletRequest.buildRequest(auth, messageId, part))
             .get();
     mailboxServer.verify(1, expectedRequest);
@@ -133,7 +133,7 @@ class MailboxHttpClientTest {
 
     mailboxServer.when(expectedRequest).respond(expectedResponse);
     final Try<UserServletResponse> userServletResponse =
-        mailboxHttpClient.dolUserServletGetRequest(
+        mailboxHttpClient.doUserServletGetRequest(
             token, accountUuid, UserServletRequest.buildRequest(auth, messageId, part));
     Assertions.assertTrue(userServletResponse.isFailure());
   }

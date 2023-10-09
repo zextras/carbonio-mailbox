@@ -9,6 +9,7 @@ import static javax.ws.rs.core.HttpHeaders.CONTENT_DISPOSITION;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
 import com.zextras.carbonio.preview.queries.Query;
+import com.zextras.mailbox.preview.usecase.AttachmentNotFoundException;
 import com.zextras.mailbox.preview.usecase.PreviewError;
 import com.zextras.mailbox.preview.usecase.PreviewNotHealthy;
 import com.zextras.mailbox.preview.usecase.PreviewType;
@@ -66,20 +67,24 @@ public class PreviewController implements PreviewApi {
     }
     return previewUseCase
         .getAttachmentAndPreview(accountUuid, authToken, previewType, messageId, partNumber, query)
+        // content from preview, content type from preview, filename from attachment
         .mapTry(
-            attachmentAndPreview ->
+            attachmentPreview ->
                 Response.ok()
-                    .entity(new EntityInputStream(attachmentAndPreview._2().getContent()))
+                    .entity(new EntityInputStream(attachmentPreview.getContent()))
                     .header(
                         CONTENT_DISPOSITION,
                         disposition
                             + "; filename*=UTF-8''"
                             + URLEncoder.encode(
-                                attachmentAndPreview._1().getFileName(), StandardCharsets.UTF_8))
-                    .header(CONTENT_TYPE, attachmentAndPreview._2().getMimeType())
+                                attachmentPreview.getFileName(), StandardCharsets.UTF_8))
+                    .header(CONTENT_TYPE, attachmentPreview.getMimeType())
                     .build())
         .recoverWith(
             PreviewNotHealthy.class,
+            ex -> Try.success(Response.status(HttpStatus.SC_NOT_FOUND).build()))
+        .recoverWith(
+            AttachmentNotFoundException.class,
             ex -> Try.success(Response.status(HttpStatus.SC_NOT_FOUND).build()))
         .recoverWith(
             PreviewError.class, ex -> Try.success(Response.status(HttpStatus.SC_NOT_FOUND).build()))

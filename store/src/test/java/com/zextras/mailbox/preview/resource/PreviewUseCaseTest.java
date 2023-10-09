@@ -17,6 +17,9 @@ import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.Query;
 import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
+import com.zextras.mailbox.client.MailboxHttpClientException;
+import com.zextras.mailbox.preview.usecase.AttachmentNotFoundException;
+import com.zextras.mailbox.preview.usecase.AttachmentPreview;
 import com.zextras.mailbox.preview.usecase.PreviewError;
 import com.zextras.mailbox.preview.usecase.PreviewNotHealthy;
 import com.zextras.mailbox.preview.usecase.PreviewType;
@@ -25,7 +28,6 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.ZimbraAuthTokenEncoded;
 import com.zimbra.cs.service.AttachmentService;
 import io.vavr.Function4;
-import io.vavr.Tuple2;
 import io.vavr.control.Try;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +35,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimePart;
+import org.apache.http.HttpStatus;
 import org.apache.http.entity.InputStreamEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,14 +94,15 @@ class PreviewUseCaseTest {
     when(previewMethod.apply(previewClient, any(), eq(query), eq(fileName)))
         .thenReturn(Try.of(() -> previewResponse));
 
-    final Tuple2<MimePart, BlobResponse> attachmentAndPreview =
+    final AttachmentPreview attachmentPreview =
         previewUseCase
             .getAttachmentAndPreview(
                 accountId, authToken, previewType, messageId, partNumber, query)
             .get();
 
-    assertEquals(attachment, attachmentAndPreview._1());
-    assertEquals(previewResponse, attachmentAndPreview._2());
+    assertEquals(fileName, attachmentPreview.getFileName());
+    assertEquals(previewResponse.getContent(), attachmentPreview.getContent());
+    assertEquals(previewResponse.getMimeType(), attachmentPreview.getMimeType());
   }
 
   private void setUpMockData() throws Exception {
@@ -120,7 +124,7 @@ class PreviewUseCaseTest {
   void shouldReturnFailureWhenPreviewServiceNotHealthy() throws Exception {
     setUpMockData();
     when(previewClient.healthLive()).thenReturn(false);
-    final Try<Tuple2<MimePart, BlobResponse>> attachmentAndPreview =
+    final Try<AttachmentPreview> attachmentAndPreview =
         previewUseCase.getAttachmentAndPreview(
             UUID.randomUUID().toString(),
             new ZimbraAuthTokenEncoded(""),
@@ -138,7 +142,7 @@ class PreviewUseCaseTest {
     final PreviewType previewType = mock(PreviewType.class);
     when(previewType.getFunction())
         .thenReturn(Function4.constant(Try.failure(new RuntimeException(""))));
-    final Try<Tuple2<MimePart, BlobResponse>> attachmentAndPreview =
+    final Try<AttachmentPreview> attachmentAndPreview =
         previewUseCase.getAttachmentAndPreview(
             UUID.randomUUID().toString(),
             new ZimbraAuthTokenEncoded(""),
@@ -148,5 +152,26 @@ class PreviewUseCaseTest {
             null);
     Assertions.assertTrue(attachmentAndPreview.isFailure());
     Assertions.assertThrows(PreviewError.class, attachmentAndPreview::get);
+  }
+
+  @Test
+  void shouldReturnAttachmentNotFoundExceptionFailureWhenAttachmentNotFound() throws Exception {
+    setUpMockData();
+    final PreviewType previewType = mock(PreviewType.class);
+    when(attachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
+        .thenReturn(
+            Try.failure(
+                new MailboxHttpClientException(
+                    HttpStatus.SC_NOT_FOUND, "Unable to find requested attachment")));
+    final Try<AttachmentPreview> attachmentAndPreview =
+        previewUseCase.getAttachmentAndPreview(
+            UUID.randomUUID().toString(),
+            new ZimbraAuthTokenEncoded(""),
+            previewType,
+            1,
+            "2",
+            null);
+    Assertions.assertTrue(attachmentAndPreview.isFailure());
+    Assertions.assertThrows(AttachmentNotFoundException.class, attachmentAndPreview::get);
   }
 }
