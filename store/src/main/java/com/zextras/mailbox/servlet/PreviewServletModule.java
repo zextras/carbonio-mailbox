@@ -12,6 +12,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.cs.service.MailboxHttpAttachmentService;
 
+/** Provides dependencies to inject to make the preview module work. */
 public class PreviewServletModule extends AbstractModule {
 
   @Provides
