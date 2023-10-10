@@ -63,9 +63,9 @@
   </target>
 
   <target name="carbonio-version">
-    <property name="carbonio.buildinfo.version" value="23.10.0_ZEXTRAS_202310"/>
+    <property name="carbonio.buildinfo.version" value="23.11.0_ZEXTRAS_202311"/>
     <fail
-      message="Missing build version. Define proper ZCS version like -Dcarbonio.buildinfo.version">
+      message="Missing build version. Define proper version like -Dcarbonio.buildinfo.version">
       <condition>
         <not>
           <isset property="carbonio.buildinfo.version"/>
