@@ -96,16 +96,29 @@ public class SendMsgTest {
             "password",
             Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
     final Set<ZimbraACE> aces = new HashSet<>();
-    aces.add(new ZimbraACE(
-        sender.getId(),
-        GranteeType.GT_USER,
-        RightManager.getInstance().getRight(Right.RT_sendAs),
-        RightModifier.RM_CAN_DELEGATE,
-        null));
+    aces.add(
+        new ZimbraACE(
+            sender.getId(),
+            GranteeType.GT_USER,
+            RightManager.getInstance().getRight(Right.RT_sendAs),
+            RightModifier.RM_CAN_DELEGATE,
+            null));
+    aces.add(
+        new ZimbraACE(
+            sender.getId(),
+            GranteeType.GT_USER,
+            RightManager.getInstance().getRight(Right.RT_loginAs),
+            RightModifier.RM_CAN_DELEGATE,
+            null));
     final Mailbox sharedMailbox = MailboxManager.getInstance().getMailboxByAccount(shared);
 
     sharedMailbox.grantAccess(
-        null, Mailbox.ID_FOLDER_AUTO_CONTACTS, sender.getId(), ACL.GRANTEE_USER, ACL.stringToRights("rwi"), null);
+        null,
+        Mailbox.ID_FOLDER_AUTO_CONTACTS,
+        sender.getId(),
+        ACL.GRANTEE_USER,
+        ACL.stringToRights("rwi"),
+        null);
 
     ACLUtil.grantRight(Provisioning.getInstance(), shared, aces);
     receiver =
@@ -263,7 +276,9 @@ public class SendMsgTest {
   }
 
   @Test
-  @DisplayName("Email external user as shared account. Check it is added to shared account address book")
+  @DisplayName(
+      "Email external user as shared account with correct rights. Check it is added to shared"
+          + " account address book")
   void shouldSaveExternalAddressAsContactInSharedAccount() throws Exception {
     final String externalAddress = "external@something.com";
     final SendMsgRequest sendMsgRequest = new SendMsgRequest();
@@ -288,15 +303,17 @@ public class SendMsgTest {
 
     final GetContactsRequest getContactsRequest = new GetContactsRequest();
     final GetContactsResponse getContactsResponse =
-        JaxbUtil.elementToJaxb(new GetContacts()
-            .handle(
-                JaxbUtil.jaxbToElement(getContactsRequest), ServiceTestUtil.getRequestContext(sender)), GetContactsResponse.class);
+        JaxbUtil.elementToJaxb(
+            new GetContacts()
+                .handle(
+                    JaxbUtil.jaxbToElement(getContactsRequest),
+                    ServiceTestUtil.getRequestContext(sender)),
+            GetContactsResponse.class);
     Assertions.assertEquals(0, getContactsResponse.getContacts().size());
     final GetContactsResponse sharedAccountContacts =
-        JaxbUtil.elementToJaxb(new GetContacts()
-            .handle(
-                JaxbUtil.jaxbToElement(getContactsRequest), ServiceTestUtil.getRequestContext(shared)), GetContactsResponse.class);
+        JaxbUtil.elementToJaxb(
+            new GetContacts().handle(JaxbUtil.jaxbToElement(getContactsRequest), sharedCtx),
+            GetContactsResponse.class);
     Assertions.assertEquals(1, sharedAccountContacts.getContacts().size());
-
   }
 }
