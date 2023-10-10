@@ -85,7 +85,7 @@ public class IfbFormatter extends Formatter {
             fbMsg = fb.toVCalendarAsVEvents();
         } else {
             String url = context.req.getRequestURL() + "?" + context.req.getQueryString();
-            fbMsg = fb.toVCalendar(FreeBusy.Method.PUBLISH, acctName, null, url);
+            fbMsg = fb.toVCalendar(FreeBusy.Method.PUBLISH, acctName, null, url, null);
         }
         context.resp.getOutputStream().write(fbMsg.getBytes("UTF-8"));
     }

@@ -615,6 +615,26 @@ public final class MockProvisioning extends Provisioning {
   }
 
   @Override
+  public Zimlet getZimlet(String name) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public List<Zimlet> listAllZimlets() {
+    return Collections.emptyList();
+  }
+
+  @Override
+  public Zimlet createZimlet(String name, Map<String, Object> attrs) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void deleteZimlet(String name) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public CalendarResource createCalendarResource(
       String emailAddress, String password, Map<String, Object> attrs) {
     throw new UnsupportedOperationException();
