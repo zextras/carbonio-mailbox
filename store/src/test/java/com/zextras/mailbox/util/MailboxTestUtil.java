@@ -42,6 +42,8 @@ public class MailboxTestUtil {
    */
   public static void setUp() throws Exception {
     System.setProperty(
+        "java.library.path", "../native/target");
+    System.setProperty(
         "zimbra.config",
         Objects.requireNonNull(
                 com.zimbra.cs.mailbox.MailboxTestUtil.class.getResource(

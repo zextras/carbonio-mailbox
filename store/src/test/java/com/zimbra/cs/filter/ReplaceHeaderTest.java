@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.jsieve.EditHeaderExtension;
 import com.zimbra.cs.mailbox.DeliveryContext;
@@ -33,7 +32,7 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
-import com.zimbra.cs.service.mail.SendMsgTest.DirectInsertionMailboxManager;
+import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.util.ItemId;
 
 public class ReplaceHeaderTest {
