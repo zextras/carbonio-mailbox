@@ -26,7 +26,6 @@ pipeline {
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
         MAVEN_OPTS = "-Xmx4g"
-        ENV_NAME = "${env.BRANCH_NAME == "devel" ? "development" : "production"}"
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
     }
