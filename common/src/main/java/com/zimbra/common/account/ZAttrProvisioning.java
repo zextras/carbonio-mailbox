@@ -7105,7 +7105,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureInstantNotify = "zimbraFeatureInstantNotify";
 
     /**
-     * email features enabled
+     * Deprecated since: 23.11.0. deprecated per CO-759 as no longer used.
+     * Orig desc: email features enabled
      */
     @ZAttr(id=489)
     public static final String A_zimbraFeatureMailEnabled = "zimbraFeatureMailEnabled";
