@@ -29,12 +29,21 @@ import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.util.JMSession;
+import com.zimbra.soap.JaxbUtil;
+import com.zimbra.soap.mail.message.GetContactsRequest;
+import com.zimbra.soap.mail.message.GetContactsResponse;
+import com.zimbra.soap.mail.message.SendMsgRequest;
+import com.zimbra.soap.mail.type.EmailAddrInfo;
+import com.zimbra.soap.mail.type.MsgToSend;
+import com.zimbra.soap.type.KeyValuePair;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import javax.mail.Message.RecipientType;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
@@ -50,53 +59,68 @@ public class SendMsgTest {
   private static Account receiver;
   private static GreenMail mta;
 
-    @BeforeAll
-    public static void setUp() throws Exception {
-        MailboxTestUtil.setUp();
-        mta =
-            new GreenMail(
-                new ServerSetup[] {
-                    new ServerSetup(
-                        SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
-                });
-      mta.start();
-      final Provisioning provisioning = Provisioning.getInstance();
-        sender = provisioning.createAccount("test@" + MailboxTestUtil.DEFAULT_DOMAIN, "password",
+  @BeforeAll
+  public static void setUp() throws Exception {
+    MailboxTestUtil.setUp();
+    mta =
+        new GreenMail(
+            new ServerSetup[] {
+              new ServerSetup(
+                  SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
+            });
+    mta.start();
+    final Provisioning provisioning = Provisioning.getInstance();
+    sender =
+        provisioning.createAccount(
+            "test@" + MailboxTestUtil.DEFAULT_DOMAIN,
+            "password",
             Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-      receiver = provisioning.createAccount("rcpt@" + MailboxTestUtil.DEFAULT_DOMAIN, "password",
-          Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    }
+    receiver =
+        provisioning.createAccount(
+            "rcpt@" + MailboxTestUtil.DEFAULT_DOMAIN,
+            "password",
+            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
+  }
 
-    @AfterAll
-    public static void tearDown() throws Exception {
-      MailboxTestUtil.tearDown();
-      mta.stop();
-    }
-
+  @AfterAll
+  public static void tearDown() throws Exception {
+    MailboxTestUtil.tearDown();
+    mta.stop();
+  }
 
   @Test
   @DisplayName("Save Draft and send it with some changes -> verify sent and draft deleted")
- void shouldDeleteDraft() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(sender);
+  void shouldDeleteDraft() throws Exception {
+    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(sender);
 
-  // first, add draft message
-  MimeMessage mm = new MimeMessage(JMSession.getSmtpSession(sender));
-  mm.setText("foo");
-  ParsedMessage pm = new ParsedMessage(mm, false);
-  int draftId = mbox.saveDraft(null, pm, Mailbox.ID_AUTO_INCREMENT).getId();
+    // first, add draft message
+    MimeMessage mm = new MimeMessage(JMSession.getSmtpSession(sender));
+    mm.setText("foo");
+    ParsedMessage pm = new ParsedMessage(mm, false);
+    int draftId = mbox.saveDraft(null, pm, Mailbox.ID_AUTO_INCREMENT).getId();
 
-  // then send a message referencing the draft
-  Element request = new Element.JSONElement(MailConstants.SEND_MSG_REQUEST);
-  Element m = request.addElement(MailConstants.E_MSG).addAttribute(MailConstants.A_DRAFT_ID, draftId).addAttribute(MailConstants.E_SUBJECT, "dinner appt");
-  m.addUniqueElement(MailConstants.E_MIMEPART).addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain").addAttribute(MailConstants.E_CONTENT, "foo bar");
-  m.addElement(MailConstants.E_EMAIL).addAttribute(MailConstants.A_ADDRESS_TYPE, ToXML.EmailType.TO.toString()).addAttribute(MailConstants.A_ADDRESS, receiver.getName());
-  final Element response = new SendMsg().handle(request, ServiceTestUtil.getRequestContext(sender));
-  // make sure sent message exists
-  int sentId = (int) response.getElement(MailConstants.E_MSG).getAttributeLong(MailConstants.A_ID);
-  Message sent = mbox.getMessageById(null, sentId);
-  assertEquals(receiver.getName(), sent.getRecipients());
-  Assertions.assertThrows(NoSuchItemException.class, () -> mbox.getMessageById(null, draftId));
- }
+    // then send a message referencing the draft
+    Element request = new Element.JSONElement(MailConstants.SEND_MSG_REQUEST);
+    Element m =
+        request
+            .addElement(MailConstants.E_MSG)
+            .addAttribute(MailConstants.A_DRAFT_ID, draftId)
+            .addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+    m.addUniqueElement(MailConstants.E_MIMEPART)
+        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+        .addAttribute(MailConstants.E_CONTENT, "foo bar");
+    m.addElement(MailConstants.E_EMAIL)
+        .addAttribute(MailConstants.A_ADDRESS_TYPE, ToXML.EmailType.TO.toString())
+        .addAttribute(MailConstants.A_ADDRESS, receiver.getName());
+    final Element response =
+        new SendMsg().handle(request, ServiceTestUtil.getRequestContext(sender));
+    // make sure sent message exists
+    int sentId =
+        (int) response.getElement(MailConstants.E_MSG).getAttributeLong(MailConstants.A_ID);
+    Message sent = mbox.getMessageById(null, sentId);
+    assertEquals(receiver.getName(), sent.getRecipients());
+    Assertions.assertThrows(NoSuchItemException.class, () -> mbox.getMessageById(null, draftId));
+  }
 
   @Test
   @DisplayName("Save draft and send it as is -> verify sends same original data")
@@ -112,46 +136,96 @@ public class SendMsgTest {
 
     // then send a message referencing the draft
     Element request = new Element.JSONElement(MailConstants.SEND_MSG_REQUEST);
-    request.addElement(MailConstants.E_MSG).addAttribute(MailConstants.A_DRAFT_ID, draftId).addAttribute(MailConstants.A_SEND_FROM_DRAFT, true);
+    request
+        .addElement(MailConstants.E_MSG)
+        .addAttribute(MailConstants.A_DRAFT_ID, draftId)
+        .addAttribute(MailConstants.A_SEND_FROM_DRAFT, true);
     Element response = new SendMsg().handle(request, ServiceTestUtil.getRequestContext(sender));
 
     // make sure sent message exists
-    int sentId = (int) response.getElement(MailConstants.E_MSG).getAttributeLong(MailConstants.A_ID);
+    int sentId =
+        (int) response.getElement(MailConstants.E_MSG).getAttributeLong(MailConstants.A_ID);
     Message sent = mbox.getMessageById(null, sentId);
     assertEquals(pm.getRecipients(), sent.getRecipients());
 
     Assertions.assertThrows(NoSuchItemException.class, () -> mbox.getMessageById(null, draftId));
   }
 
- @Test
- @DisplayName("Upload a file in sender account and send it as email. Verify msg exists in receiver mailbox.")
- void shouldSendUploadedFile() throws Exception {
-  assertTrue(ZMimeMessage.usingZimbraParser(), "using Zimbra MIME parser");
+  @Test
+  @DisplayName(
+      "Upload a file in sender account and send it as email. Verify msg exists in receiver"
+          + " mailbox.")
+  void shouldSendUploadedFile() throws Exception {
+    assertTrue(ZMimeMessage.usingZimbraParser(), "using Zimbra MIME parser");
 
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(receiver);
+    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(receiver);
 
-  // Configure test timezones.ics file.
-  File tzFile = File.createTempFile("timezones-", ".ics");
-  BufferedWriter writer = new BufferedWriter(new FileWriter(tzFile));
-  writer.write("BEGIN:VCALENDAR\r\nEND:VCALENDAR");
-  writer.close();
-  LC.timezone_file.setDefault(tzFile.getAbsolutePath());
+    // Configure test timezones.ics file.
+    File tzFile = File.createTempFile("timezones-", ".ics");
+    BufferedWriter writer = new BufferedWriter(new FileWriter(tzFile));
+    writer.write("BEGIN:VCALENDAR\r\nEND:VCALENDAR");
+    writer.close();
+    LC.timezone_file.setDefault(tzFile.getAbsolutePath());
 
-  InputStream is = this.getClass().getResourceAsStream("bug-69862-invite.txt");
-  ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);
-  mbox.addMessage(null, pm, MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
+    InputStream is = this.getClass().getResourceAsStream("bug-69862-invite.txt");
+    ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);
+    mbox.addMessage(null, pm, MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
 
-  is = this.getClass().getResourceAsStream("bug-69862-reply.txt");
-  FileUploadServlet.Upload up = FileUploadServlet.saveUpload(is, "lslib32.bin", "message/rfc822", sender.getId());
+    is = this.getClass().getResourceAsStream("bug-69862-reply.txt");
+    FileUploadServlet.Upload up =
+        FileUploadServlet.saveUpload(is, "lslib32.bin", "message/rfc822", sender.getId());
 
-  Element request = new Element.JSONElement(MailConstants.SEND_MSG_REQUEST);
-  request.addAttribute(MailConstants.A_NEED_CALENDAR_SENTBY_FIXUP, true).addAttribute(MailConstants.A_NO_SAVE_TO_SENT, true);
-  request.addUniqueElement(MailConstants.E_MSG).addAttribute(MailConstants.A_ATTACHMENT_ID, up.getId());
-  new SendMsg().handle(request, ServiceTestUtil.getRequestContext(sender));
+    Element request = new Element.JSONElement(MailConstants.SEND_MSG_REQUEST);
+    request
+        .addAttribute(MailConstants.A_NEED_CALENDAR_SENTBY_FIXUP, true)
+        .addAttribute(MailConstants.A_NO_SAVE_TO_SENT, true);
+    request
+        .addUniqueElement(MailConstants.E_MSG)
+        .addAttribute(MailConstants.A_ATTACHMENT_ID, up.getId());
+    new SendMsg().handle(request, ServiceTestUtil.getRequestContext(sender));
 
-  mbox = MailboxManager.getInstance().getMailboxByAccount(receiver);
-  Message msg = (Message) mbox.getItemList(null, MailItem.Type.MESSAGE).get(0);
-  MimeMessage mm = msg.getMimeMessage();
-  assertEquals("multipart/alternative", new ZContentType(mm.getContentType()).getBaseType(), "correct top-level MIME type");
- }
+    mbox = MailboxManager.getInstance().getMailboxByAccount(receiver);
+    Message msg = (Message) mbox.getItemList(null, MailItem.Type.MESSAGE).get(0);
+    MimeMessage mm = msg.getMimeMessage();
+    assertEquals(
+        "multipart/alternative",
+        new ZContentType(mm.getContentType()).getBaseType(),
+        "correct top-level MIME type");
+  }
+
+  @Test
+  @DisplayName("Email external user. Check it is added to address book")
+  void shouldSaveExternalAddressAsContact() throws Exception {
+    final String externalAddress = "external@something.com";
+    final SendMsgRequest sendMsgRequest = new SendMsgRequest();
+    final MsgToSend msgToSend = new MsgToSend();
+    msgToSend.setSubject("Test");
+    final EmailAddrInfo rcptAddress = new EmailAddrInfo(externalAddress);
+    rcptAddress.setAddressType("t");
+    msgToSend.setEmailAddresses(List.of(rcptAddress));
+    msgToSend.setContent("Hello there");
+    sendMsgRequest.setMsg(msgToSend);
+    Element request = JaxbUtil.jaxbToElement(sendMsgRequest);
+    new SendMsg().handle(request, ServiceTestUtil.getRequestContext(sender));
+
+    final GetContactsRequest getContactsRequest = new GetContactsRequest();
+    final Element handle =
+        new GetContacts()
+            .handle(
+                JaxbUtil.jaxbToElement(getContactsRequest),
+                ServiceTestUtil.getRequestContext(sender));
+    final GetContactsResponse getContactsResponse =
+        JaxbUtil.elementToJaxb(handle, GetContactsResponse.class);
+    // Believe or not, ContactInfo email is null but "email" attribute is not, so we have to get it
+    // from there
+    final List<String> contacts =
+        getContactsResponse.getContacts().stream()
+            .flatMap(
+                contactInfo ->
+                    contactInfo.getAttrs().stream()
+                        .filter(attr -> attr.getKey().equals("email"))
+                        .map(KeyValuePair::getValue))
+            .collect(Collectors.toList());
+    Assertions.assertArrayEquals(List.of(externalAddress).toArray(), contacts.toArray());
+  }
 }
