@@ -8,7 +8,7 @@ def mvnCmd(String cmd) {
     else if (env.BRANCH_NAME == 'devel' ) {
         profile = '-Pdev'
     }
-    sh 'mvn -B -s settings-jenkins.xml -Drevision=$(cat maven_version.txt)' + revisionModifier + ' ' + profile + ' ' + cmd
+    sh 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
 }
 
 pipeline {
@@ -104,7 +104,7 @@ pipeline {
                   branch 'devel';
               }
               steps {
-                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
+                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pdev')
               }
         }
         stage('Publish to maven') {
@@ -112,7 +112,7 @@ pipeline {
                 buildingTag()
             }
             steps {
-              mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
+              mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pprod')
             }
         }
         stage('Build deb/rpm') {

@@ -876,6 +876,8 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
+    <modifier>-SNAPSHOT</modifier>
+    <revision>23.11.0${modifier}</revision>
     <mockserver.version>5.13.0</mockserver.version>
   </properties>
   <version>${revision}</version>
@@ -889,6 +891,9 @@
           <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
         </repository>
       </distributionManagement>
+      <properties>
+        <modifier></modifier>
+      </properties>
     </profile>
     <profile>
       <id>dev</id>
