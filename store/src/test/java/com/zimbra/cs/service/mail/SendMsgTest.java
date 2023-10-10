@@ -14,11 +14,19 @@ import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.zmime.ZContentType;
 import com.zimbra.common.zmime.ZMimeMessage;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.accesscontrol.ACLUtil;
+import com.zimbra.cs.account.accesscontrol.GranteeType;
+import com.zimbra.cs.account.accesscontrol.Right;
+import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.account.accesscontrol.RightModifier;
+import com.zimbra.cs.account.accesscontrol.ZimbraACE;
+import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -27,9 +35,12 @@ import com.zimbra.cs.mailbox.MailboxTest;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.mime.ParsedMessage;
+import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.util.JMSession;
 import com.zimbra.soap.JaxbUtil;
+import com.zimbra.soap.SoapEngine;
+import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.GetContactsRequest;
 import com.zimbra.soap.mail.message.GetContactsResponse;
 import com.zimbra.soap.mail.message.SendMsgRequest;
@@ -40,9 +51,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.mail.Message.RecipientType;
 import javax.mail.Session;
@@ -56,6 +70,7 @@ import org.junit.jupiter.api.Test;
 public class SendMsgTest {
 
   private static Account sender;
+  private static Account shared;
   private static Account receiver;
   private static GreenMail mta;
 
@@ -75,6 +90,24 @@ public class SendMsgTest {
             "test@" + MailboxTestUtil.DEFAULT_DOMAIN,
             "password",
             Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
+    shared =
+        provisioning.createAccount(
+            "shared@" + MailboxTestUtil.DEFAULT_DOMAIN,
+            "password",
+            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
+    final Set<ZimbraACE> aces = new HashSet<>();
+    aces.add(new ZimbraACE(
+        sender.getId(),
+        GranteeType.GT_USER,
+        RightManager.getInstance().getRight(Right.RT_sendAs),
+        RightModifier.RM_CAN_DELEGATE,
+        null));
+    final Mailbox sharedMailbox = MailboxManager.getInstance().getMailboxByAccount(shared);
+
+    sharedMailbox.grantAccess(
+        null, Mailbox.ID_FOLDER_AUTO_CONTACTS, sender.getId(), ACL.GRANTEE_USER, ACL.stringToRights("rwi"), null);
+
+    ACLUtil.grantRight(Provisioning.getInstance(), shared, aces);
     receiver =
         provisioning.createAccount(
             "rcpt@" + MailboxTestUtil.DEFAULT_DOMAIN,
@@ -227,5 +260,43 @@ public class SendMsgTest {
                         .map(KeyValuePair::getValue))
             .collect(Collectors.toList());
     Assertions.assertArrayEquals(List.of(externalAddress).toArray(), contacts.toArray());
+  }
+
+  @Test
+  @DisplayName("Email external user as shared account. Check it is added to shared account address book")
+  void shouldSaveExternalAddressAsContactInSharedAccount() throws Exception {
+    final String externalAddress = "external@something.com";
+    final SendMsgRequest sendMsgRequest = new SendMsgRequest();
+    final MsgToSend msgToSend = new MsgToSend();
+    msgToSend.setSubject("Test");
+    msgToSend.setIdentityId(shared.getId());
+    final EmailAddrInfo rcptAddress = new EmailAddrInfo(externalAddress);
+    rcptAddress.setAddressType("t");
+    msgToSend.setEmailAddresses(List.of(rcptAddress));
+    msgToSend.setContent("Hello there");
+    sendMsgRequest.setMsg(msgToSend);
+    Map<String, Object> sharedCtx = new HashMap<String, Object>();
+    ZimbraSoapContext zsc =
+        new ZimbraSoapContext(
+            AuthProvider.getAuthToken(sender),
+            shared.getId(),
+            SoapProtocol.Soap12,
+            SoapProtocol.Soap12);
+    sharedCtx.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+    Element request = JaxbUtil.jaxbToElement(sendMsgRequest);
+    new SendMsg().handle(request, sharedCtx);
+
+    final GetContactsRequest getContactsRequest = new GetContactsRequest();
+    final GetContactsResponse getContactsResponse =
+        JaxbUtil.elementToJaxb(new GetContacts()
+            .handle(
+                JaxbUtil.jaxbToElement(getContactsRequest), ServiceTestUtil.getRequestContext(sender)), GetContactsResponse.class);
+    Assertions.assertEquals(0, getContactsResponse.getContacts().size());
+    final GetContactsResponse sharedAccountContacts =
+        JaxbUtil.elementToJaxb(new GetContacts()
+            .handle(
+                JaxbUtil.jaxbToElement(getContactsRequest), ServiceTestUtil.getRequestContext(shared)), GetContactsResponse.class);
+    Assertions.assertEquals(1, sharedAccountContacts.getContacts().size());
+
   }
 }
