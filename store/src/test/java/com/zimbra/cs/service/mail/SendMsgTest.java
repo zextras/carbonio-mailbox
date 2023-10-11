@@ -286,10 +286,9 @@ public class SendMsgTest {
             .size());
 
     final MimeMessage sharedMsg = mta.getReceivedMessagesForDomain(sharedAddress.getAddress())[0];
-    // TODO: this should be 4. The shared account is missing notifier email info, while the standard
     // account has it, that's why there is no pop-up
     Assertions.assertEquals(
-        3,
+        4,
         this.getMsgRequest(
                 String.valueOf(this.saveMsgInInbox(sharedMbox, sharedMsg).getId()), sharedCtx)
             .getMsg()
