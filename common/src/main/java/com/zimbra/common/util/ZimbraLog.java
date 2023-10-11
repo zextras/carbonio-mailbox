@@ -5,6 +5,7 @@
 
 package com.zimbra.common.util;
 
+import com.google.common.base.Strings;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -19,14 +20,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 /**
  * Log categories.
@@ -343,25 +337,6 @@ public final class ZimbraLog {
   private static final ThreadLocal<String> sContextString = new ThreadLocal<String>();
 
   private static final Set<String> CONTEXT_KEY_ORDER = new LinkedHashSet<String>();
-  public static final String LOG_CONFIG_NAME = "CLI";
-  public static final String DEFAULT_APPENDER_NAME = "Stdout";
-  public static final String DEFAULT_APPENDER_TYPE = "CONSOLE";
-  public static final String DEFAULT_APPENDER_TARGET = "target";
-  public static final String APPENDER_NAME = "rolling";
-  public static final String APPENDER_TYPE = "RollingFile";
-  public static final String LAYOUT_TYPE = "PatternLayout";
-  public static final String LAYOUT_PATTERN = "pattern";
-  public static final String LAYOUT_PATTERN_VALUE_WITH_THREADS =
-      "%d [%t] %-5level: %msg%n%throwable";
-  public static final String LAYOUT_PATTERN_VALUE = "%d [%t] %-5level: %msg%n";
-  public static final String POLICY_TYPE = "Policies";
-  public static final String POLICY_TIME_TYPE = "TimeBasedTriggeringPolicy";
-  public static final String POLICY_TIME_TYPE_INTERVAL = "interval";
-  public static final String POLICY_TIME_TYPE_INTERVAL_VALUE = "1";
-  public static final String APPENDER_FILE_NAME = "fileName";
-  public static final String APPENDER_FILE_PATTERN = "filePattern";
-  public static final String LOGGER_NAME = "TestLogger";
-  public static final String LOGGER_ADDITIVITY = "additivity";
 
   static {
     CONTEXT_KEY_ORDER.add(C_NAME);
@@ -656,50 +631,16 @@ public final class ZimbraLog {
     if (level == null) {
       level = defaultLevel;
     }
-    ConfigurationBuilder<BuiltConfiguration> builder =
-        ConfigurationBuilderFactory.newConfigurationBuilder();
-    builder.setStatusLevel(Level.INFO);
-    builder.setConfigurationName(LOG_CONFIG_NAME);
-    // create a console appender
-    AppenderComponentBuilder appenderBuilder =
-        builder
-            .newAppender(DEFAULT_APPENDER_NAME, DEFAULT_APPENDER_TYPE)
-            .addAttribute(DEFAULT_APPENDER_TARGET, ConsoleAppender.Target.SYSTEM_OUT);
-    LayoutComponentBuilder layoutBuilder = builder.newLayout(LAYOUT_TYPE);
-    if (showThreads) {
-      layoutBuilder.addAttribute(LAYOUT_PATTERN, LAYOUT_PATTERN_VALUE_WITH_THREADS);
-    } else {
-      layoutBuilder.addAttribute(LAYOUT_PATTERN, LAYOUT_PATTERN_VALUE);
+    final DefaultLogConfigurationBuilder configurationBuilder =
+        new DefaultLogConfigurationBuilder().setShowThreads(showThreads).setLogFile(logFile);
+    if (!(Strings.isNullOrEmpty(level))) {
+      try {
+        configurationBuilder.setLevel(Level.valueOf(level));
+      } catch (IllegalArgumentException e) {
+        configurationBuilder.setLevel(Level.ERROR);
+      }
     }
-    builder.add(appenderBuilder.add(layoutBuilder));
-
-    if (null != logFile) {
-      // create a rolling file appender
-      ComponentBuilder policy =
-          builder
-              .newComponent(POLICY_TYPE)
-              .addComponent(
-                  builder
-                      .newComponent(POLICY_TIME_TYPE)
-                      .addAttribute(POLICY_TIME_TYPE_INTERVAL, POLICY_TIME_TYPE_INTERVAL_VALUE));
-      appenderBuilder =
-          builder
-              .newAppender(APPENDER_NAME, APPENDER_TYPE)
-              .addAttribute(APPENDER_FILE_NAME, logFile)
-              .addAttribute(APPENDER_FILE_PATTERN, logFile + "-%d{yyyy-MM-dd}")
-              .add(layoutBuilder)
-              .addComponent(policy);
-      builder.add(appenderBuilder);
-
-      // create the new logger
-      builder.add(
-          builder
-              .newLogger(LOGGER_NAME, level)
-              .add(builder.newAppenderRef(APPENDER_NAME))
-              .addAttribute(LOGGER_ADDITIVITY, false));
-    }
-    builder.add(builder.newRootLogger(level).add(builder.newAppenderRef(DEFAULT_APPENDER_NAME)));
-    Configurator.reconfigure(builder.build());
+    Configurator.reconfigure(configurationBuilder.createConfiguration());
   }
 
   /**
@@ -735,7 +676,7 @@ public final class ZimbraLog {
    * {@link #toolSetupLog4j(String, String)} will be used with given default level, no log file
    * option and showThreads false.
    *
-   * @deprecated see {@link #toolSetupLog4j(String, String)} for the reasons
+   * @deprecated see {@link #toolSetupLog4j(String, String, boolean)} for the reasons
    * @param defaultLevel default level
    * @param propsFile full path to log4j.properties file
    */
