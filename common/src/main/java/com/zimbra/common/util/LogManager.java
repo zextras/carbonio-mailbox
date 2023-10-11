@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
  * Utility class for managing {@link Log}
@@ -27,7 +28,7 @@ public class LogManager {
    * @return {@code true} if a logger with the given name exists.
    */
   public static boolean logExists(String name) {
-    return org.apache.logging.log4j.LogManager.exists(name);
+    return getContext().hasLogger(name);
   }
 
   /**
@@ -67,5 +68,9 @@ public class LogManager {
   public static void setThisLogAndRootToLevel(Logger logger, Level level) {
     Configurator.setRootLevel(level);
     Configurator.setLevel(logger, level);
+  }
+
+  public static LoggerContext getContext() {
+    return org.apache.logging.log4j.LogManager.getContext(false);
   }
 }

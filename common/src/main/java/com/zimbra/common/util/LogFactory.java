@@ -42,6 +42,6 @@ public class LogFactory {
   public static Log getLog(final String name) {
     return LogManager.getGlobalLogMapper()
         .computeIfAbsent(
-            name, n -> new Log(org.apache.logging.log4j.LogManager.getContext().getLogger(n)));
+            name, n -> new Log(org.apache.logging.log4j.LogManager.getContext(false).getLogger(n)));
   }
 }
