@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.google.common.collect.Maps;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,26 @@ public class ServiceTestUtil {
 
     public static Map<String, Object> getRequestContext(Account acct) throws Exception {
         return getRequestContext(acct, acct);
+    }
+
+    /**
+     * Creates a SOAP context for delegated requests.
+     * @param caller The caller/logged in account
+     * @param target the target account
+     * @return a context for the call to execute.
+     *
+     * @throws Exception
+     */
+    public static Map<String, Object> getSOAPDelegatedContext(Account caller, Account target) throws Exception {
+        Map<String, Object> delegatedCtx = Maps.newHashMap();
+        ZimbraSoapContext zsc =
+            new ZimbraSoapContext(
+                AuthProvider.getAuthToken(caller),
+                target.getId(),
+                SoapProtocol.Soap12,
+                SoapProtocol.Soap12);
+        delegatedCtx.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+        return delegatedCtx;
     }
 
     public static Map<String, Object> getExternalRequestContext(String externalEmail, Account targetAcct) throws Exception {
