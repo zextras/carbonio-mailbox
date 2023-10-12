@@ -27,7 +27,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.account.Auth;
-import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
+import com.zimbra.cs.service.mail.SendMsgTest.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
 
 import com.zimbra.soap.account.message.AuthRequest;

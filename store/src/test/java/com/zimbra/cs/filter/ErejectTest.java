@@ -5,11 +5,20 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.google.common.collect.Maps;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.DeliveryServiceException;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.jsieve.ErejectException;
@@ -20,15 +29,11 @@ import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
-import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.zimbra.cs.service.mail.SendMsgTest.DirectInsertionMailboxManager;
+import com.zimbra.cs.service.util.ItemId;
 
 public class ErejectTest {
 

@@ -24,7 +24,7 @@ import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
+import com.zimbra.cs.service.mail.SendMsgTest.DirectInsertionMailboxManager;
 
 /**
  * @author zimbra
