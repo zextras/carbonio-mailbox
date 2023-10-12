@@ -2303,6 +2303,7 @@ public class ProxyConfGen {
     }
 
     if (exitCode > 0) {
+      // TODO: maybe log at error level?
       LOG.info("Proxy configuration files generation is interrupted by errors");
       return exitCode;
     }
@@ -2446,6 +2447,7 @@ public class ProxyConfGen {
         LOG.info("Proxy configuration files are generated successfully");
         appendConfGenResultToConf("__SUCCESS__");
       } else {
+        // TODO: log at error level?
         LOG.info("Proxy configuration files generation is interrupted by errors");
       }
     }

@@ -19,7 +19,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 public class DefaultLogConfigurationBuilder {
 
-  public static final String LOG_CONFIG_NAME = "CLI";
+  public static final String LOG_CONFIG_NAME = "DefaultCarbonio";
   public static final String DEFAULT_APPENDER_NAME = "Stdout";
   public static final String DEFAULT_APPENDER_TYPE = "CONSOLE";
   public static final String DEFAULT_APPENDER_TARGET = "target";
