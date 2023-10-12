@@ -17,7 +17,13 @@ import org.apache.logging.log4j.core.config.builder.api.LoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
-public class DefaultLogConfigurationBuilder {
+/**
+ * Class to help create a default log4j configuration when none is provided. It relies on: - {@link
+ * #level} log level to optionally set as root log level and level for file appender - {@link
+ * #logFile} to optionally specify logging to file - {@link #showThreads} to optionally specify
+ * layout for handling threads
+ */
+public class DefaultLogConfigurationFactory {
 
   public static final String LOG_CONFIG_NAME = "DefaultCarbonio";
   public static final String DEFAULT_APPENDER_NAME = "Stdout";
@@ -36,20 +42,20 @@ public class DefaultLogConfigurationBuilder {
   public static final String POLICY_TIME_TYPE_INTERVAL_VALUE = "1";
   public static final String APPENDER_FILE_NAME = "fileName";
   public static final String APPENDER_FILE_PATTERN = "filePattern";
-  public static final String LOGGER_NAME = "TestLogger";
+  public static final String LOGGER_NAME = "DefaultLogger";
   public static final String LOGGER_ADDITIVITY = "additivity";
 
-  public DefaultLogConfigurationBuilder setShowThreads(boolean showThreads) {
+  public DefaultLogConfigurationFactory setShowThreads(boolean showThreads) {
     this.showThreads = showThreads;
     return this;
   }
 
-  public DefaultLogConfigurationBuilder setLogFile(String logFile) {
+  public DefaultLogConfigurationFactory setLogFile(String logFile) {
     this.logFile = logFile;
     return this;
   }
 
-  public DefaultLogConfigurationBuilder setLevel(Level level) {
+  public DefaultLogConfigurationFactory setLevel(Level level) {
     this.level = level;
     return this;
   }

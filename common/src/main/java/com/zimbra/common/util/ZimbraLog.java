@@ -631,8 +631,8 @@ public final class ZimbraLog {
     if (level == null) {
       level = defaultLevel;
     }
-    final DefaultLogConfigurationBuilder configurationBuilder =
-        new DefaultLogConfigurationBuilder().setShowThreads(showThreads).setLogFile(logFile);
+    final DefaultLogConfigurationFactory configurationBuilder =
+        new DefaultLogConfigurationFactory().setShowThreads(showThreads).setLogFile(logFile);
     if (!(Strings.isNullOrEmpty(level))) {
       try {
         configurationBuilder.setLevel(Level.valueOf(level));
