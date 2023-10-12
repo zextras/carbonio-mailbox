@@ -15,6 +15,7 @@ public enum CacheEntryType {
   // non ldap entries
   acl,
   locale,
+  uistrings,
   license,
 
   // ldap entries
@@ -27,9 +28,10 @@ public enum CacheEntryType {
   galgroup,
   group,
   mime,
-  server;
+  server,
+  zimlet;
 
-  private static final Joiner PIPE_JOINER = Joiner.on("|");
+  private static Joiner PIPE_JOINER = Joiner.on("|");
 
   public static CacheEntryType fromString(String s) throws ServiceException {
     try {

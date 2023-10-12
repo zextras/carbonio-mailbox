@@ -500,7 +500,7 @@ public abstract class DocumentHandler {
     if (acctId != null
         && zsc.getProxyTarget() == null
         && !isAdminCommand()
-        && !Provisioning.onLocalServer(getRequestedAccount(zsc), reasons)) {
+        && !Provisioning.getInstance().onLocalServer(getRequestedAccount(zsc), reasons)) {
       if (null == zsc.getSoapRequestId()) {
         zsc.setNewSoapRequestId();
       }

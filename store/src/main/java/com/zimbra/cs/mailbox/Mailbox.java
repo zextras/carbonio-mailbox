@@ -6475,7 +6475,7 @@ public class Mailbox implements MailboxStore {
           ZimbraLog.calendar.warn("Unknown organizer " + orgAddress + " in REPLY");
           continue;
         }
-        if (Provisioning.onLocalServer(orgAccount)) {
+        if (Provisioning.getInstance().onLocalServer(orgAccount)) {
           // Run in the context of organizer's mailbox.
           Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(orgAccount);
           OperationContext orgOctxt = new OperationContext(mbox);
@@ -9848,7 +9848,8 @@ public class Mailbox implements MailboxStore {
     Account shareOwner =
         Provisioning.getInstance().get(Key.AccountBy.id, shloc.getShareOwnerAccountId());
     AuthToken at = AuthToken.getCsrfUnsecuredAuthToken(octxt.getAuthToken());
-    String pxyAuthToken = Provisioning.onLocalServer(shareOwner) ? null : at.getProxyAuthToken();
+    String pxyAuthToken =
+        Provisioning.getInstance().onLocalServer(shareOwner) ? null : at.getProxyAuthToken();
     ZAuthToken zat = null;
     if (pxyAuthToken == null) {
       zat = at.toZAuthToken();

@@ -93,7 +93,7 @@ public abstract class DistributionListDocumentHandler extends AccountDocumentHan
       try {
         Account acct = prov.get(AccountBy.name, member);
         if (acct != null) {
-          if (Provisioning.onLocalServer(acct)) {
+          if (Provisioning.getInstance().onLocalServer(acct)) {
             // localAccts.add(new CacheEntry(CacheEntryBy.id, acct.getId()));
           } else {
             Server server = acct.getServer();

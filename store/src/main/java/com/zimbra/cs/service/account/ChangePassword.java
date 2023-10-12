@@ -78,7 +78,7 @@ public class ChangePassword extends AccountDocumentHandler {
     // proxyIfNecessary is called by the SOAP framework only for
     // requests that require auth.  ChangePassword does not require
     // an auth token.  Proxy here if this is not the home server of the account.
-    if (!Provisioning.onLocalServer(acct)) {
+    if (!Provisioning.getInstance().onLocalServer(acct)) {
       try {
         return proxyRequest(request, context, acct.getId());
       } catch (ServiceException e) {

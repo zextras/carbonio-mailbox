@@ -421,7 +421,8 @@ public class UserServlet extends ZimbraServlet {
     // this should handle both explicit /user/user-on-other-server/ and
     // /user/~/?id={account-id-on-other-server}:id
 
-    if (context.targetAccount != null && !Provisioning.onLocalServer(context.targetAccount)) {
+    if (context.targetAccount != null
+        && !Provisioning.getInstance().onLocalServer(context.targetAccount)) {
       try {
         proxyServletRequest(
             req,
@@ -468,7 +469,7 @@ public class UserServlet extends ZimbraServlet {
     Server targetServer = prov.getServer(targetAccount);
 
     // Avoid the soap call if its a local mailbox
-    if (Provisioning.onLocalServer(targetAccount)) {
+    if (Provisioning.getInstance().onLocalServer(targetAccount)) {
       Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccountId(targetAccount.getId());
       if (mailbox == null) {
         // no mailbox (shouldn't happen normally)
@@ -844,6 +845,7 @@ public class UserServlet extends ZimbraServlet {
 
     switch (type) {
       case APPOINTMENT:
+        return FormatType.ICS;
       case CONTACT:
         return context.target instanceof Folder ? FormatType.CSV : FormatType.VCF;
       default:

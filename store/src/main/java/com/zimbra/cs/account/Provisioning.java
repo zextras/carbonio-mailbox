@@ -153,6 +153,24 @@ public abstract class Provisioning extends ZAttrProvisioning {
   /** Forward/reply mail in the same format of message we are replying to */
   public static final String MAIL_FORWARDREPLY_FORMAT_SAME = "same";
 
+  public boolean onLocalServer(Account account) throws ServiceException {
+    return Provisioning.getInstance().onLocalServer(account, null);
+  }
+
+  public boolean onLocalServer(Account account, Reasons reasons) throws ServiceException {
+    String target = account.getAttr(Provisioning.A_zimbraMailHost);
+    String localhost = getInstance().getLocalServer().getAttr(Provisioning.A_zimbraServiceHostname);
+    boolean isLocal = (target != null && target.equalsIgnoreCase(localhost));
+    boolean onLocalSvr = isLocal;
+    if (!onLocalSvr && reasons != null) {
+      reasons.addReason(
+          String.format(
+              "onLocalSvr=%b isLocal=%b target=%s localhost=%s account=%s",
+              onLocalSvr, isLocal, target, localhost, account.getName()));
+    }
+    return onLocalSvr;
+  }
+
   /**
    * Possible values for zimbraMailMode and ZimbraReverseProxyMailMode. "mixed" means web server
    * should authenticate in HTTPS and redirect to HTTP (useful if all clients are on the intranet
@@ -1483,24 +1501,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     }
   }
 
-  public static boolean onLocalServer(Account account) throws ServiceException {
-    return onLocalServer(account, null);
-  }
-
-  public static boolean onLocalServer(Account account, Reasons reasons) throws ServiceException {
-    String target = account.getAttr(Provisioning.A_zimbraMailHost);
-    String localhost = getInstance().getLocalServer().getAttr(Provisioning.A_zimbraServiceHostname);
-    boolean isLocal = (target != null && target.equalsIgnoreCase(localhost));
-    boolean onLocalSvr = isLocal;
-    if (!onLocalSvr && reasons != null) {
-      reasons.addReason(
-          String.format(
-              "onLocalSvr=%b isLocal=%b target=%s localhost=%s account=%s",
-              onLocalSvr, isLocal, target, localhost, account.getName()));
-    }
-    return onLocalSvr;
-  }
-
   public static boolean canUseLocalIMAP(Account account) throws ServiceException {
     if (account == null) {
       return false;
@@ -1514,7 +1514,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       return Arrays.asList(upstreamIMAPServers)
           .contains(getInstance().getLocalServer().getServiceHostname());
     } else {
-      return onLocalServer(account);
+      return Provisioning.getInstance().onLocalServer(account);
     }
   }
 
@@ -1770,6 +1770,19 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public boolean inACLGroup(Account acct, String zimbraId) throws ServiceException {
     throw ServiceException.UNSUPPORTED();
   }
+
+  /*
+   * Zimlet
+   */
+
+  public abstract Zimlet getZimlet(String name) throws ServiceException;
+
+  public abstract List<Zimlet> listAllZimlets() throws ServiceException;
+
+  public abstract Zimlet createZimlet(String name, Map<String, Object> attrs)
+      throws ServiceException;
+
+  public abstract void deleteZimlet(String name) throws ServiceException;
 
   /**
    * Creates the specified calendar resource. The A_zimbraId and A_uid attributes are automatically

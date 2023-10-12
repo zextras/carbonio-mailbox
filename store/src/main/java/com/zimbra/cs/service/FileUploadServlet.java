@@ -568,7 +568,7 @@ public class FileUploadServlet extends ZimbraServlet {
       Account acct = AuthProvider.validateAuthToken(prov, at, true);
       if (!isAdminRequest) {
         // fetching the mailbox will except if it's in maintenance mode
-        if (Provisioning.onLocalServer(acct)) {
+        if (Provisioning.getInstance().onLocalServer(acct)) {
           Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct, false);
           if (mbox != null) {
             ZimbraLog.addMboxToContext(mbox.getId());

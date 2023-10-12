@@ -290,7 +290,7 @@ public class CalendarCollection extends Collection {
       throw new DavException.InvalidData(
           DavElements.E_SUPPORTED_CALENDAR_COMPONENT, "no event in the request");
 
-    if ((getDefaultView() == MailItem.Type.APPOINTMENT))
+    if (getDefaultView() == MailItem.Type.APPOINTMENT && itemType != getDefaultView())
       throw new DavException.InvalidData(
           DavElements.E_SUPPORTED_CALENDAR_COMPONENT,
           "resource type not supported in this collection");
@@ -753,6 +753,7 @@ public class CalendarCollection extends Collection {
             range.getEnd(),
             FreeBusyQuery.CALENDAR_FOLDER_ALL);
     return fb.toVCalendar(
-        FreeBusy.Method.REPLY, ctxt.getAuthAccount().getName(), mbox.getAccount().getName(), null);
+        FreeBusy.Method.REPLY, ctxt.getAuthAccount().getName(), mbox.getAccount().getName(), null,
+        null);
   }
 }
