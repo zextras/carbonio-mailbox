@@ -18,25 +18,48 @@ import jline.History;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 
+/** Cli utility class. */
 public class CliUtil {
+  private static final String DEFAULT_LOG_LEVEL = "INFO";
+
+  private CliUtil() {
+    throw new java.lang.UnsupportedOperationException("Utility class and cannot be instantiated");
+  }
+
+  /**
+   * Sets up root logger level configuration property with {@link CliUtil#DEFAULT_LOG_LEVEL} if
+   * System.getProperty("zimbra.log4j.level") is empty. See {@link CliUtil#toolSetup(String, String,
+   * boolean)}
+   */
   public static void toolSetup() {
-    toolSetup("INFO");
+    toolSetup(DEFAULT_LOG_LEVEL);
   }
 
-  public static void toolSetup(String defaultLogLevel) {
-    toolSetup(defaultLogLevel, null, false);
+  /**
+   * Sets up root logger level configuration property with provided level if
+   * System.getProperty("zimbra.log4j.level") is empty. See {@link CliUtil#toolSetup(String, String,
+   * boolean)}
+   *
+   * @param logLevel log level to set up root logger with
+   */
+  public static void toolSetup(final String logLevel) {
+    toolSetup(logLevel, null, false);
   }
 
-  public static void setupLog4j2(String defaultLogLevel) {
-    toolSetup(defaultLogLevel, null, false);
-  }
+  /**
+   * Performs a tool setup. Sets up Log4j configuration properties with provided vales, registers
+   * protocols for {@link SocketFactories}, disables HTTP soap client timeout (Bug: 47051).
+   *
+   * @param logLevel log level to set up root logger and optionally newly created logger (in case if
+   *     logfile was specified)
+   * @param logFile optionally specify a logging file
+   * @param showThreads specify if handling threads are needed
+   */
+  public static void toolSetup(final String logLevel, final String logFile, boolean showThreads) {
+    ZimbraLog.toolSetupLog4j(logLevel, logFile, showThreads);
 
-  public static void toolSetup(String defaultLogLevel, String logFile, boolean showThreads) {
-    ZimbraLog.toolSetupLog4j(defaultLogLevel, logFile, showThreads);
     SocketFactories.registerProtocols();
 
-    // Bug: 47051
-    // for the CLI utilities we need to disable HTTP soap client timeout.
     LC.httpclient_soaphttptransport_so_timeout.setDefault(
         LC.cli_httpclient_soaphttptransport_so_timeout.longValue());
   }

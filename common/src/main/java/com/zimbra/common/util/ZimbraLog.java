@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -35,15 +36,15 @@ public final class ZimbraLog {
   /** "oip" key for context. originating IP of request */
   private static final String C_OIP = "oip";
 
-  /** "id" key for context. Id of the target account */
+  /** "id" key for context. Target account id */
   public static final String C_ID = "id";
 
-  /** "name" key for context. Id of the target account */
+  /** "name" key for context. Target account id */
   public static final String C_NAME = "name";
 
   /**
-   * "aid" key for context. Id in the auth token. Only present if target id is different then auth
-   * token id.
+   * "aid" key for context. Auth token id. Only present if target id is different then auth token
+   * id.
    */
   public static final String C_AID = "aid";
 
@@ -60,8 +61,7 @@ public final class ZimbraLog {
   public static final String C_CONNECTIONID = "cid";
 
   /**
-   * "mid" key for context. Id of requested mailbox. Only present if request is dealing with a
-   * mailbox.
+   * "mid" key for context. Requested mailbox id. Only present if request is dealing with a mailbox.
    */
   public static final String C_MID = "mid";
 
@@ -322,7 +322,7 @@ public final class ZimbraLog {
       return Collections.emptySet();
     }
 
-    Set<String> names = new HashSet<String>();
+    Set<String> names = new HashSet<>();
     if (name != null) {
       names.add(name);
     }
@@ -332,11 +332,10 @@ public final class ZimbraLog {
     return names;
   }
 
-  private static final ThreadLocal<Map<String, String>> sContextMap =
-      new ThreadLocal<Map<String, String>>();
-  private static final ThreadLocal<String> sContextString = new ThreadLocal<String>();
+  private static final ThreadLocal<Map<String, String>> sContextMap = new ThreadLocal<>();
+  private static final ThreadLocal<String> sContextString = new ThreadLocal<>();
 
-  private static final Set<String> CONTEXT_KEY_ORDER = new LinkedHashSet<String>();
+  private static final Set<String> CONTEXT_KEY_ORDER = new LinkedHashSet<>();
 
   static {
     CONTEXT_KEY_ORDER.add(C_NAME);
@@ -346,7 +345,7 @@ public final class ZimbraLog {
 
     // Initialize log category descriptions. Categories that don't have a description
     // won't be listed in zmprov online help.
-    Map<String, String> descriptions = new TreeMap<String, String>();
+    Map<String, String> descriptions = new TreeMap<>();
     descriptions.put(misc.getCategory(), "Miscellaneous");
     descriptions.put(index.getCategory(), "Indexing operations");
     descriptions.put(search.getCategory(), "Search operations");
@@ -398,8 +397,8 @@ public final class ZimbraLog {
     return sContextString.get();
   }
 
-  // this is called from offline and only at LC init so we are taking chances with race
-  private static final Set<String> CONTEXT_FILTER = new HashSet<String>();
+  // this is called from offline and only at LC init, so we are taking chances with race
+  private static final Set<String> CONTEXT_FILTER = new HashSet<>();
 
   public static void addContextFilters(String filters) {
     CONTEXT_FILTER.addAll(Arrays.asList(filters.split(",")));
@@ -622,15 +621,17 @@ public final class ZimbraLog {
    * <p>If System.getProperty(zimbra.log4j.level) is set then log at that level. Else log at the
    * specified defaultLevel.
    *
-   * @deprecated Because with the switch to Log4j2, it is not more possible to use {@code
-   *     PropertyConfigurator}
+   * @param defaultLevel level to set default configuration
+   * @param logFile optionally specify file for logging
+   * @param showThreads
    */
-  @Deprecated(since = "23.7")
-  public static void toolSetupLog4j(String defaultLevel, String logFile, boolean showThreads) {
+  public static void toolSetupLog4j(
+      final String defaultLevel, final String logFile, final boolean showThreads) {
     String level = System.getProperty("zimbra.log4j.level");
-    if (level == null) {
+    if (Objects.isNull(level)) {
       level = defaultLevel;
     }
+
     final DefaultLogConfigurationFactory configurationBuilder =
         new DefaultLogConfigurationFactory().setShowThreads(showThreads).setLogFile(logFile);
     if (!(Strings.isNullOrEmpty(level))) {
@@ -640,14 +641,13 @@ public final class ZimbraLog {
         configurationBuilder.setLevel(Level.ERROR);
       }
     }
+
     Configurator.reconfigure(configurationBuilder.createConfiguration());
   }
 
   /**
-   * @deprecated see {@link #toolSetupLog4j(String, String, boolean)} for the reasons
-   * @param defaultLevel
-   * @param stderr
-   * @param showThreads
+   * @deprecated see {@link #toolSetupLog4j(String, String, boolean)} was using PropertyConfigurator
+   *     class which is not supported with Log4j2.
    */
   @Deprecated(since = "23.7")
   public static void toolSetupLog4jConsole(
@@ -673,15 +673,13 @@ public final class ZimbraLog {
 
   /**
    * Setup log4j2 for command line tool using specified log4j.properties file. If file doesn't exist
-   * {@link #toolSetupLog4j(String, String)} will be used with given default level, no log file
-   * option and showThreads false.
+   * {@link #toolSetupLog4j(String, String, boolean)} will be used with given default level, no log
+   * file option and showThreads false.
    *
-   * @deprecated see {@link #toolSetupLog4j(String, String, boolean)} for the reasons
    * @param defaultLevel default level
    * @param propsFile full path to log4j.properties file
    */
-  @Deprecated(since = "23.7")
-  public static void toolSetupLog4j(String defaultLevel, String propsFile) {
+  public static void toolSetupLog4j(final String defaultLevel, final String propsFile) {
     if (propsFile != null && new File(propsFile).exists()) {
       final LoggerContext context =
           (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext();
@@ -712,7 +710,7 @@ public final class ZimbraLog {
    * Take an array of Strings [ "name1", "value1", "name2", "value2", ...] and format them for
    * logging purposes.
    *
-   * @param args
+   * @param args arguments
    * @return formatted string
    */
   public static String encodeAttrs(String[] args) {
@@ -731,7 +729,7 @@ public final class ZimbraLog {
    * logging purposes into: <tt>name1=value1; name2=value;</tt>. Semicolons are escaped with two
    * semicolons (value a;b is encoded as a;;b).
    *
-   * @param args
+   * @param args arguments
    * @return formatted string
    */
   public static String encodeAttrs(String[] args, Map<String, ?> extraArgs) {

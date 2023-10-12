@@ -21,7 +21,7 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
  * Class to help create a default log4j configuration when none is provided. It relies on: - {@link
  * #level} log level to optionally set as root log level and level for file appender - {@link
  * #logFile} to optionally specify logging to file - {@link #showThreads} to optionally specify
- * layout for handling threads
+ * layout for handling threads.
  */
 public class DefaultLogConfigurationFactory {
 
@@ -45,35 +45,42 @@ public class DefaultLogConfigurationFactory {
   public static final String LOGGER_NAME = "DefaultLogger";
   public static final String LOGGER_ADDITIVITY = "additivity";
 
-  public DefaultLogConfigurationFactory setShowThreads(boolean showThreads) {
-    this.showThreads = showThreads;
-    return this;
-  }
-
-  public DefaultLogConfigurationFactory setLogFile(String logFile) {
-    this.logFile = logFile;
-    return this;
-  }
-
-  public DefaultLogConfigurationFactory setLevel(Level level) {
-    this.level = level;
-    return this;
-  }
-
   private boolean showThreads;
   private String logFile;
   private Level level;
 
+  public DefaultLogConfigurationFactory setShowThreads(final boolean showThreads) {
+    this.showThreads = showThreads;
+    return this;
+  }
+
+  public DefaultLogConfigurationFactory setLogFile(final String logFile) {
+    this.logFile = logFile;
+    return this;
+  }
+
+  public DefaultLogConfigurationFactory setLevel(final Level level) {
+    this.level = level;
+    return this;
+  }
+
+  /**
+   * Create a default log4j configuration. Uses a builder for creating generic components.
+   *
+   * @return {@link Configuration}
+   */
   public Configuration createConfiguration() {
-    ConfigurationBuilder<BuiltConfiguration> builder =
+    final ConfigurationBuilder<BuiltConfiguration> builder =
         ConfigurationBuilderFactory.newConfigurationBuilder();
     builder.setStatusLevel(Level.INFO);
     builder.setConfigurationName(LOG_CONFIG_NAME);
+
     AppenderComponentBuilder appenderBuilder =
         builder
             .newAppender(DEFAULT_APPENDER_NAME, DEFAULT_APPENDER_TYPE)
             .addAttribute(DEFAULT_APPENDER_TARGET, ConsoleAppender.Target.SYSTEM_OUT);
-    LayoutComponentBuilder layoutBuilder = builder.newLayout(LAYOUT_TYPE);
+
+    final LayoutComponentBuilder layoutBuilder = builder.newLayout(LAYOUT_TYPE);
     if (this.showThreads) {
       layoutBuilder.addAttribute(LAYOUT_PATTERN, LAYOUT_PATTERN_VALUE_WITH_THREADS);
     } else {
@@ -81,14 +88,15 @@ public class DefaultLogConfigurationFactory {
     }
     builder.add(appenderBuilder.add(layoutBuilder));
 
-    if (null != logFile) {
-      ComponentBuilder policy =
+    if (Objects.nonNull(logFile)) {
+      final ComponentBuilder policy =
           builder
               .newComponent(POLICY_TYPE)
               .addComponent(
                   builder
                       .newComponent(POLICY_TIME_TYPE)
                       .addAttribute(POLICY_TIME_TYPE_INTERVAL, POLICY_TIME_TYPE_INTERVAL_VALUE));
+
       appenderBuilder =
           builder
               .newAppender(APPENDER_NAME, APPENDER_TYPE)
@@ -98,27 +106,26 @@ public class DefaultLogConfigurationFactory {
               .addComponent(policy);
       builder.add(appenderBuilder);
 
-      LoggerComponentBuilder newLogger;
-      RootLoggerComponentBuilder rootLogger;
+      final LoggerComponentBuilder newLogger;
       if (Objects.isNull(this.level)) {
         newLogger = builder.newLogger(LOGGER_NAME);
       } else {
         newLogger = builder.newLogger(LOGGER_NAME, level);
       }
-
-      // create the new logger
       builder.add(
           newLogger
               .add(builder.newAppenderRef(APPENDER_NAME))
               .addAttribute(LOGGER_ADDITIVITY, false));
     }
-    RootLoggerComponentBuilder rootLogger;
+
+    final RootLoggerComponentBuilder rootLogger;
     if (Objects.isNull(this.level)) {
       rootLogger = builder.newRootLogger();
     } else {
       rootLogger = builder.newRootLogger(level);
     }
     builder.add(rootLogger.add(builder.newAppenderRef(DEFAULT_APPENDER_NAME)));
+
     return builder.build();
   }
 }

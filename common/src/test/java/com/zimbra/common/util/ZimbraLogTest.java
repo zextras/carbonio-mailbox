@@ -4,12 +4,13 @@
 
 package com.zimbra.common.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.util.Objects;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,21 +23,21 @@ class ZimbraLogTest {
   void shouldLogWithDefaultLevel(String level) {
     ZimbraLog.toolSetupLog4j(level, null, false);
     final ExtendedLogger test = LogManager.getContext(false).getLogger("test");
-    Assertions.assertEquals(level, test.getLevel().toString());
+    assertEquals(level, test.getLevel().toString());
   }
 
   @Test
   void shouldLogErrorIfLevelNull() {
     ZimbraLog.toolSetupLog4j(null, null, false);
     final ExtendedLogger test = LogManager.getContext(false).getLogger("test");
-    Assertions.assertEquals(Level.ERROR, test.getLevel());
+    assertEquals(Level.ERROR, test.getLevel());
   }
 
   @Test
   void shouldLogErrorIfUnknownLevel() {
     ZimbraLog.toolSetupLog4j("ABRACADABRA", null, false);
     final ExtendedLogger test = LogManager.getContext(false).getLogger("test");
-    Assertions.assertEquals(Level.ERROR, test.getLevel());
+    assertEquals(Level.ERROR, test.getLevel());
   }
 
   @ParameterizedTest
@@ -46,11 +47,12 @@ class ZimbraLogTest {
           + " default level.")
   void shouldLogUsingFileLevel(String defaultLevel) {
     final String file =
-        Objects.requireNonNull(
-            new File(this.getClass().getResource("log4j-test.properties").getFile())
-                .getAbsolutePath());
+        new File(
+                Objects.requireNonNull(this.getClass().getResource("log4j-test.properties"))
+                    .getFile())
+            .getAbsolutePath();
     ZimbraLog.toolSetupLog4j(defaultLevel, file);
     final ExtendedLogger test = LogManager.getContext(false).getLogger("test");
-    Assertions.assertEquals(Level.DEBUG, test.getLevel());
+    assertEquals(Level.DEBUG, test.getLevel());
   }
 }

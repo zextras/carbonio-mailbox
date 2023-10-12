@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -20,7 +19,7 @@ class CliUtilTest {
   void shouldLogInfo() {
     CliUtil.toolSetup();
     final ExtendedLogger test = LogManager.getContext(false).getLogger("test");
-    Assertions.assertEquals(Level.INFO, test.getLevel());
+    assertEquals(Level.INFO, test.getLevel());
   }
 
   @ParameterizedTest
@@ -29,7 +28,7 @@ class CliUtilTest {
     System.setProperty("zimbra.log4j.level", "WARN");
     CliUtil.toolSetup(level);
     final ExtendedLogger test = LogManager.getContext(false).getLogger("test");
-    Assertions.assertEquals(Level.WARN, test.getLevel());
+    assertEquals(Level.WARN, test.getLevel());
   }
 
   @ParameterizedTest
@@ -37,7 +36,7 @@ class CliUtilTest {
   void shouldLogUsingGivenLevelWhenNoPropertyDefined(String level) {
     CliUtil.toolSetup(level);
     final ExtendedLogger test = LogManager.getContext(false).getLogger("test");
-    Assertions.assertEquals(level, test.getLevel().toString());
+    assertEquals(level, test.getLevel().toString());
   }
 
   @ParameterizedTest
@@ -45,6 +44,6 @@ class CliUtilTest {
   void shouldLog(String level) {
     CliUtil.toolSetup(level, null, false);
     final ExtendedLogger test = LogManager.getContext(false).getLogger("test");
-    Assertions.assertEquals(level, test.getLevel().toString());
+    assertEquals(level, test.getLevel().toString());
   }
 }

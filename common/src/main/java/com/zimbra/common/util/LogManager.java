@@ -12,15 +12,17 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
- * Utility class for managing {@link Log}
+ * Utility class for managing {@link Log}.
  *
- * @author Davide
- * @since 23.7
+ * @author Davide Polonio
+ * @since 23.7.0
  * @see LogFactory in order to create Logs
  */
 public class LogManager {
 
-  private LogManager() {}
+  private LogManager() {
+    throw new java.lang.UnsupportedOperationException("Utility class and cannot be instantiated");
+  }
 
   private static final Map<String, Log> globalLogMapper = new ConcurrentHashMap<>();
 
