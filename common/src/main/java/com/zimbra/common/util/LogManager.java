@@ -29,7 +29,7 @@ public class LogManager {
   /**
    * @return {@code true} if a logger with the given name exists.
    */
-  public static boolean logExists(String name) {
+  public static boolean logExists(final String name) {
     return getContext().hasLogger(name);
   }
 
@@ -67,7 +67,7 @@ public class LogManager {
    * @param logger the logger you want to change the level
    * @param level the new level the passed logger and the root logger will have
    */
-  public static void setThisLogAndRootToLevel(Logger logger, Level level) {
+  public static void setThisLogAndRootToLevel(final Logger logger, final Level level) {
     Configurator.setRootLevel(level);
     Configurator.setLevel(logger, level);
   }
