@@ -10118,4 +10118,9 @@ TODO: delete them permanently from here
 <attr id="3139" name="carbonioAdminUILogoutURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.10.0">
   <desc>Logout URL for Carbonio Admin web client to send the user to upon explicit logging out</desc>
 </attr>
+
+<attr id="3140" name="carbonioClamAVReadTimeout" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mta,antivirus" since="23.11.0">
+  <globalConfigValue>900</globalConfigValue>
+  <desc>Waiting for data from a client socket connected to ClamAV will timeout after this time (seconds)</desc>
+</attr>
 </attrs>
