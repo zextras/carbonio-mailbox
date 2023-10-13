@@ -2303,10 +2303,10 @@ public class ProxyConfGen {
     }
 
     if (exitCode > 0) {
-      // TODO: maybe log at error level?
-      LOG.info("Proxy configuration files generation is interrupted by errors");
+      LOG.error("Proxy configuration files generation is interrupted by errors");
       return exitCode;
     }
+
     if (cl.hasOption('D')) {
       displayVariables();
       return (exitCode);
@@ -2442,15 +2442,16 @@ public class ProxyConfGen {
       handleException(pe);
       exitCode = 1;
     }
+
     if (!mDryRun) {
       if (exitCode == 0) {
         LOG.info("Proxy configuration files are generated successfully");
         appendConfGenResultToConf("__SUCCESS__");
       } else {
-        // TODO: log at error level?
-        LOG.info("Proxy configuration files generation is interrupted by errors");
+        LOG.error("Proxy configuration files generation is interrupted by errors");
       }
     }
+
     return (exitCode);
   }
 

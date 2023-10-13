@@ -27,18 +27,20 @@ public class CliUtil {
   }
 
   /**
-   * Sets up root logger level configuration property with {@link CliUtil#DEFAULT_LOG_LEVEL} if
-   * System.getProperty("zimbra.log4j.level") is empty. See {@link CliUtil#toolSetup(String, String,
-   * boolean)}
+   * Sets up root logger level in default configuration with provided level if
+   * System.getProperty("zimbra.log4j.level") is empty.
+   *
+   * <p>See {@link CliUtil#toolSetup(String, String,boolean)}.
    */
   public static void toolSetup() {
     toolSetup(DEFAULT_LOG_LEVEL);
   }
 
   /**
-   * Sets up root logger level configuration property with provided level if
-   * System.getProperty("zimbra.log4j.level") is empty. See {@link CliUtil#toolSetup(String, String,
-   * boolean)}
+   * Sets up root logger level in default configuration with provided level if
+   * System.getProperty("zimbra.log4j.level") is empty.
+   *
+   * <p>See {@link CliUtil#toolSetup(String, String,boolean)}.
    *
    * @param logLevel log level to set up root logger with
    */
@@ -47,8 +49,9 @@ public class CliUtil {
   }
 
   /**
-   * Performs a tool setup. Sets up Log4j configuration properties with provided vales, registers
-   * protocols for {@link SocketFactories}, disables HTTP soap client timeout (Bug: 47051).
+   * Performs a tool setup. Sets up Log4j default configuration properties with provided values,
+   * registers protocols for {@link SocketFactories}, disables HTTP soap client timeout (Bug:
+   * 47051).
    *
    * @param logLevel log level to set up root logger and optionally newly created logger (in case if
    *     logfile was specified)
