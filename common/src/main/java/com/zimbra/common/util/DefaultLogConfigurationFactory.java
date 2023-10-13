@@ -22,6 +22,9 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
  * #level} log level to optionally set as root log level and level for file appender - {@link
  * #logFile} to optionally specify logging to file - {@link #showThreads} to optionally specify
  * layout for handling threads.
+ *
+ * @author Davide Frison
+ * @since 23.11.0
  */
 public class DefaultLogConfigurationFactory {
 

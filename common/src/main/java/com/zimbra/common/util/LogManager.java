@@ -72,6 +72,17 @@ public class LogManager {
     Configurator.setLevel(logger, level);
   }
 
+  /**
+   * Gets the logger context.
+   *
+   * <p>Note: if currentContext false the LoggerContext appropriate for the caller of this method is
+   * returned. For example, in a web application if the caller is a class in WEB-INF/lib then one
+   * LoggerContext may be returned and if the caller is a class in the container's classpath then a
+   * different LoggerContext may be returned. If true then only a single LoggerContext will be
+   * returned.
+   *
+   * @return {@link org.apache.logging.log4j.spi.LoggerContext}
+   */
   public static LoggerContext getContext() {
     return org.apache.logging.log4j.LogManager.getContext(false);
   }
