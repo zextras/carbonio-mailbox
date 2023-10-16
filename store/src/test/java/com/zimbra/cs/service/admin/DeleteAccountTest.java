@@ -13,7 +13,6 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.ACLUtil;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
@@ -27,7 +26,6 @@ import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import io.vavr.control.Try;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -47,9 +45,9 @@ class DeleteAccountTest {
   private static DeleteAccount deleteAccount;
 
   /**
-   * Sets up the environment using {@link MailboxTestUtil}.
-   * Note: unfortunately it is not possible to start the SoapServlet with {@link
-   * AdminService}. The reason is some code calls System.exit(1) presumably, so the VM exits and maven fails.
+   * Sets up the environment using {@link MailboxTestUtil}. Note: unfortunately it is not possible
+   * to start the SoapServlet with {@link AdminService}. The reason is some code calls
+   * System.exit(1) presumably, so the VM exits and maven fails.
    *
    * @throws Exception
    */
@@ -58,8 +56,13 @@ class DeleteAccountTest {
     MailboxTestUtil.setUp();
     final MailboxManager mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance();
-    deleteAccount = new DeleteAccount(new DeleteUserUseCase(provisioning, mailboxManager,
-        new AclService(mailboxManager, provisioning), ZimbraLog.security));
+    deleteAccount =
+        new DeleteAccount(
+            new DeleteUserUseCase(
+                provisioning,
+                mailboxManager,
+                new AclService(mailboxManager, provisioning),
+                ZimbraLog.security));
     provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
   }
 
@@ -273,21 +276,12 @@ class DeleteAccountTest {
 
   @ParameterizedTest
   @MethodSource("getPermissionDeniedCases")
-  void shouldGetPermissionDenied(Account caller, Account toDelete)
-      throws ServiceException, AuthTokenException, IOException {
+  void shouldGetPermissionDenied(Account caller, Account toDelete) throws ServiceException {
     final String toDeleteId = toDelete.getId();
-    Assertions.assertThrows(ServiceException.class, () -> this.doDeleteAccount(caller, toDeleteId));
+    final ServiceException serviceException =
+        Assertions.assertThrows(
+            ServiceException.class, () -> this.doDeleteAccount(caller, toDeleteId));
+    Assertions.assertEquals(ServiceException.PERM_DENIED, serviceException.getCode());
     Assertions.assertNotNull(provisioning.getAccountById(toDeleteId));
   }
-
-//  @Test
-//  @DisplayName("No token when calling the API -> AUTH_REQUIRED")
-//  void shouldGet500WithAuthRequiredIfNoToken() throws Exception {
-//    final Account toDelete = MailboxTestUtil.createAccountDefaultDomain(Map.of());
-//    final HttpResponse response = this.client().build().execute(deleteRequest(toDelete.getId()));
-//    final String responseEnvelope = new String(response.getEntity().getContent().readAllBytes());
-//    Assertions.assertTrue(responseEnvelope.contains("<Code>" + AUTH_REQUIRED + "</Code>"));
-//    Assertions.assertEquals(
-//        HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
-//  }
 }

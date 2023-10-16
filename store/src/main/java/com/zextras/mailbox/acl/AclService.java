@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
  * com.zimbra.cs.mailbox.ACL.Grant} and Grants applied on Entities on Ldap, see: {@link
  * com.zimbra.cs.account.accesscontrol.ZimbraACE}
  *
+ * @since 23.11.0
  * @author davidefrison
  */
 public class AclService {

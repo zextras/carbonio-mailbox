@@ -12,8 +12,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
 import io.vavr.control.Try;
 import java.util.Optional;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * This class performs deletion of a user
@@ -28,12 +26,8 @@ public class DeleteUserUseCase {
   private final AclService aclService;
   private final Log log;
 
-  @Inject
   public DeleteUserUseCase(
-      @Named("defaultProvisioning") Provisioning provisioning,
-      @Named("defaultMailboxManager") MailboxManager mailboxManager,
-      AclService aclService,
-      @Named("zimbraLogSecurity") Log log) {
+      Provisioning provisioning, MailboxManager mailboxManager, AclService aclService, Log log) {
     this.provisioning = provisioning;
     this.mailboxManager = mailboxManager;
     this.aclService = aclService;
@@ -41,7 +35,7 @@ public class DeleteUserUseCase {
   }
 
   /**
-   * Perform the deletion of a user given its id.
+   * Performs the deletion of a user given its id.
    *
    * @param userId the {@link String} that represents an id of a user
    * @return a {@link Try} of kind {@link Void}, stating if the output was successful or not
@@ -57,7 +51,6 @@ public class DeleteUserUseCase {
                   account, ZAttrProvisioning.AccountStatus.maintenance.name());
 
               if (provisioning.onLocalServer(account)) {
-                // TODO: does deleting a mailbox automatically revokoe the grants?
                 aclService.revokeAllMailboxGrantsForAccountId(null, userId);
                 mailboxManager.getMailboxByAccount(account, false).deleteMailbox();
               }

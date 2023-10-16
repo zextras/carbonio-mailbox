@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Utility class for operation on folders. Methods were extracted from {@link
+ * Utility class for operations on folders. Methods were extracted from {@link
  * com.zimbra.cs.account.ShareInfo}
  */
 public class FolderUtil {
@@ -24,7 +24,7 @@ public class FolderUtil {
    * @param root start folder
    * @return {@link Set} of {@link Folder}
    */
-  public static Set<Folder> flattenAndSortFolderTree(FolderNode root) {
+  public static Set<Folder> flattenAndSortFolderTree(final FolderNode root) {
     Set<Folder> folders = new HashSet<Folder>();
     flattenAndSortFolderTree(root, folders);
     return folders;
@@ -39,7 +39,9 @@ public class FolderUtil {
    *     values
    */
   private static void flattenAndSortFolderTree(FolderNode node, Set<Folder> flattened) {
-    if (node.mFolder != null) flattened.add(node.mFolder);
+    if (node.mFolder != null) {
+      flattened.add(node.mFolder);
+    }
     for (FolderNode subNode : node.mSubfolders) flattenAndSortFolderTree(subNode, flattened);
   }
 }
