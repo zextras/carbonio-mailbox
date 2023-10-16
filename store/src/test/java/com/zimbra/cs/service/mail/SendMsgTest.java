@@ -26,7 +26,6 @@ import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
-import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -110,15 +109,6 @@ public class SendMsgTest {
             RightManager.getInstance().getRight(Right.RT_loginAs),
             RightModifier.RM_CAN_DELEGATE,
             null));
-    final Mailbox sharedMailbox = MailboxManager.getInstance().getMailboxByAccount(shared);
-
-    sharedMailbox.grantAccess(
-        null,
-        Mailbox.ID_FOLDER_AUTO_CONTACTS,
-        sender.getId(),
-        ACL.GRANTEE_USER,
-        ACL.stringToRights("rwi"),
-        null);
 
     ACLUtil.grantRight(Provisioning.getInstance(), shared, aces);
     receiver =
