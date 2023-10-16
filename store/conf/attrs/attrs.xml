@@ -2577,10 +2577,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
 </attr>
 
-<attr id="489" name="zimbraFeatureMailEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited">
+<attr id="489" name="zimbraFeatureMailEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited"  deprecatedSince="23.11.0">
   <defaultCOSValue>TRUE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>email features enabled</desc>
+  <deprecateDesc>deprecated per CO-759 as no longer used</deprecateDesc>
 </attr>
 
 <attr id="490" name="zimbraSignatureId" type="id" cardinality="single" requiredIn="signature" optionalIn="account">
