@@ -25,13 +25,11 @@ import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.mailbox.ACL;
-import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
-import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.GetMsg;
 import com.zimbra.cs.service.mail.SendMsg;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
@@ -44,10 +42,11 @@ import com.zimbra.soap.mail.message.SendMsgResponse;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.MsgSpec;
 import com.zimbra.soap.mail.type.MsgToSend;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.mail.internet.MimeMessage;
 import org.junit.jupiter.api.AfterAll;
@@ -70,10 +69,10 @@ public class GetMsgTest {
     MailboxTestUtil.setUp();
     mta =
         new GreenMail(
-            new ServerSetup[]{
-                new ServerSetup(
-                    SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP),
-                new ServerSetup(9000, "127.0.0.1", ServerSetup.PROTOCOL_IMAP)
+            new ServerSetup[] {
+              new ServerSetup(
+                  SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP),
+              new ServerSetup(9000, "127.0.0.1", ServerSetup.PROTOCOL_IMAP)
             });
     final Provisioning provisioning = Provisioning.getInstance();
     sender =
@@ -130,36 +129,46 @@ public class GetMsgTest {
 
   @Test
   void testMsgMaxAttr() throws Exception {
-    Mailbox mbox = MailboxManager.getInstance()
-        .getMailboxByAccount(testAccount);
-    MimeMessage message = new JavaMailMimeMessage(JMSession.getSession(),
-        new ZSharedFileInputStream(zimbraServerDir + "data/TestMailRaw/1"));
-    final Message msg = this.saveMsgInInbox(mbox, message);
+    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
+    MimeMessage message =
+        new JavaMailMimeMessage(
+            JMSession.getSession(),
+            new ZSharedFileInputStream(zimbraServerDir + "data/TestMailRaw/1"));
+    final Message msg = MailboxTestUtil.saveMsgInInbox(mbox, message);
     Element request = new Element.XMLElement(MailConstants.GET_MSG_REQUEST);
     Element action = request.addElement(MailConstants.E_MSG);
     action.addAttribute(MailConstants.A_ID, msg.getId());
     action.addAttribute(MailConstants.A_MAX_INLINED_LENGTH, 10);
 
-    Element response = new GetMsg().handle(request,
-        ServiceTestUtil.getRequestContext(mbox.getAccount())).getElement(MailConstants.E_MSG);
+    Element response =
+        new GetMsg()
+            .handle(request, ServiceTestUtil.getRequestContext(mbox.getAccount()))
+            .getElement(MailConstants.E_MSG);
     assertEquals(
-        response.getElement(MailConstants.E_MIMEPART).getElement(MailConstants.E_CONTENT).getText()
-            .length(), 10);
+        response
+            .getElement(MailConstants.E_MIMEPART)
+            .getElement(MailConstants.E_CONTENT)
+            .getText()
+            .length(),
+        10);
   }
 
   @Test
   void testMsgView() throws Exception {
-    Mailbox mbox = mailboxManager
-        .getMailboxByAccount(testAccount);
-    MimeMessage message = new JavaMailMimeMessage(JMSession.getSession(),
-        new ZSharedFileInputStream(zimbraServerDir + "data/unittest/email/bug_75163.txt"));
-    final Message msg = this.saveMsgInInbox(mbox, message);
+    Mailbox mbox = mailboxManager.getMailboxByAccount(testAccount);
+    MimeMessage message =
+        new JavaMailMimeMessage(
+            JMSession.getSession(),
+            new ZSharedFileInputStream(zimbraServerDir + "data/unittest/email/bug_75163.txt"));
+    final Message msg = MailboxTestUtil.saveMsgInInbox(mbox, message);
     Element request = new Element.XMLElement(MailConstants.GET_MSG_REQUEST);
     Element action = request.addElement(MailConstants.E_MSG);
     action.addAttribute(MailConstants.A_ID, msg.getId());
 
-    Element response = new GetMsg().handle(request,
-        ServiceTestUtil.getRequestContext(mbox.getAccount())).getElement(MailConstants.E_MSG);
+    Element response =
+        new GetMsg()
+            .handle(request, ServiceTestUtil.getRequestContext(mbox.getAccount()))
+            .getElement(MailConstants.E_MSG);
     List<Element> mimeParts = response.getElement(MailConstants.E_MIMEPART).listElements();
     // test plain text view
     for (Element elt : mimeParts) {
@@ -170,8 +179,10 @@ public class GetMsgTest {
     }
 
     action.addAttribute(MailConstants.A_WANT_HTML, 1);
-    response = new GetMsg().handle(request, ServiceTestUtil.getRequestContext(mbox.getAccount()))
-        .getElement(MailConstants.E_MSG);
+    response =
+        new GetMsg()
+            .handle(request, ServiceTestUtil.getRequestContext(mbox.getAccount()))
+            .getElement(MailConstants.E_MSG);
     mimeParts = response.getElement(MailConstants.E_MIMEPART).listElements();
     // test HTML view
     for (Element elt : mimeParts) {
@@ -184,89 +195,96 @@ public class GetMsgTest {
 
   @Test
   void testMsgHeaderN() throws Exception {
-    Mailbox mbox = MailboxManager.getInstance()
-        .getMailboxByAccount(testAccount);
-    MimeMessage message = new JavaMailMimeMessage(JMSession.getSession(),
-        new ZSharedFileInputStream(zimbraServerDir + "data/unittest/email/bug_75163.txt"));
-    final Message msg = this.saveMsgInInbox(mbox, message);
+    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
+    MimeMessage message =
+        new JavaMailMimeMessage(
+            JMSession.getSession(),
+            new ZSharedFileInputStream(zimbraServerDir + "data/unittest/email/bug_75163.txt"));
+    final Message msg = MailboxTestUtil.saveMsgInInbox(mbox, message);
     Element request = new Element.XMLElement(MailConstants.GET_MSG_REQUEST);
     Element action = request.addElement(MailConstants.E_MSG);
     action.addAttribute(MailConstants.A_ID, msg.getId());
-    action.addElement(MailConstants.A_HEADER)
+    action
+        .addElement(MailConstants.A_HEADER)
         .addAttribute(MailConstants.A_ATTRIBUTE_NAME, "Return-Path");
 
-    Element response = new GetMsg().handle(request,
-        ServiceTestUtil.getRequestContext(mbox.getAccount())).getElement(MailConstants.E_MSG);
+    Element response =
+        new GetMsg()
+            .handle(request, ServiceTestUtil.getRequestContext(mbox.getAccount()))
+            .getElement(MailConstants.E_MSG);
     List<Element> headerN = response.listElements(MailConstants.A_HEADER);
     for (Element elt : headerN) {
       assertEquals(elt.getText(), "foo@example.com");
     }
   }
 
-  @Test
-  void shouldReturnReadReceiptOnDelegatedRequest() throws Exception {
+  /**
+   * Sends a sample email with Disposition-Notification-To sender
+   *
+   * @param sender sender of email
+   * @param recipients recipients of the email
+   * @return {@link Element}
+   * @throws Exception
+   */
+  private SendMsgResponse sendSampleEmailWithNotification(Account sender, List<Account> recipients)
+      throws Exception {
     final SendMsgRequest sendMsgRequest = new SendMsgRequest();
     final MsgToSend msgToSend = new MsgToSend();
     msgToSend.setSubject("Test");
-    final EmailAddrInfo sharedAddress = new EmailAddrInfo(shared.getName());
-    sharedAddress.setAddressType("t");
-    final EmailAddrInfo receiverAddress = new EmailAddrInfo(receiver.getName());
-    receiverAddress.setAddressType("t");
     final EmailAddrInfo readReceiptAddress = new EmailAddrInfo(sender.getName());
     readReceiptAddress.setAddressType("n");
-    msgToSend.setEmailAddresses(List.of(sharedAddress, receiverAddress, readReceiptAddress));
+    final List<EmailAddrInfo> emailAddresses = new ArrayList<>();
+    emailAddresses.add(readReceiptAddress);
+    recipients.forEach(
+        rcpt -> {
+          final EmailAddrInfo emailAddrInfo = new EmailAddrInfo(rcpt.getName());
+          emailAddrInfo.setAddressType("t");
+          emailAddresses.add(emailAddrInfo);
+        });
+    msgToSend.setEmailAddresses(emailAddresses);
     msgToSend.setContent("Hello there");
     sendMsgRequest.setMsg(msgToSend);
     Element request = JaxbUtil.jaxbToElement(sendMsgRequest);
-    final Mailbox sharedMbox = mailboxManager.getMailboxByAccount(shared);
-    final Mailbox receiverMbox = mailboxManager.getMailboxByAccount(receiver);
-    JaxbUtil.elementToJaxb(
+    return JaxbUtil.elementToJaxb(
         new SendMsg().handle(request, ServiceTestUtil.getRequestContext(sender)),
         SendMsgResponse.class);
-    final MimeMessage receiverMsg =
-        mta.getReceivedMessagesForDomain(receiverAddress.getAddress())[0];
-    Assertions.assertEquals(
-        4,
-        this.getMsgRequest(
-                String.valueOf(this.saveMsgInInbox(receiverMbox, receiverMsg).getId()),
-                ServiceTestUtil.getRequestContext(receiver))
-            .getMsg()
-            .getEmails()
-            .size());
-    final MimeMessage sharedMsg = mta.getReceivedMessagesForDomain(sharedAddress.getAddress())[0];
-    Assertions.assertEquals(
-        4,
-        this.getMsgRequest(
-                String.valueOf(this.saveMsgInInbox(sharedMbox, sharedMsg).getId()),
-                ServiceTestUtil.getSOAPDelegatedContext(sender, shared))
-            .getMsg()
-            .getEmails()
-            .size());
+  }
 
+  @Test
+  void shouldReturnReadReceiptOnDelegatedRequest() throws Exception {
+    this.sendSampleEmailWithNotification(sender, List.of(receiver, shared));
+    final Mailbox sharedMbox = mailboxManager.getMailboxByAccount(shared);
+    final Mailbox receiverMbox = mailboxManager.getMailboxByAccount(receiver);
+    final MimeMessage receiverMsg = mta.getReceivedMessagesForDomain(receiver.getName())[0];
+    final GetMsgResponse receiverMessage =
+        this.getMsgRequest(
+            String.valueOf(MailboxTestUtil.saveMsgInInbox(receiverMbox, receiverMsg).getId()),
+            ServiceTestUtil.getRequestContext(receiver));
+    Assertions.assertEquals(
+        1,
+        (int)
+            receiverMessage.getMsg().getEmails().stream()
+                .filter(emailInfo -> Objects.equals("n", emailInfo.getAddressType()))
+                .count());
+    final MimeMessage sharedMsg = mta.getReceivedMessagesForDomain(shared.getName())[0];
+    final GetMsgResponse sharedAccountMessage =
+        this.getMsgRequest(
+            String.valueOf(MailboxTestUtil.saveMsgInInbox(sharedMbox, sharedMsg).getId()),
+            ServiceTestUtil.getSOAPDelegatedContext(sender, shared));
+
+    Assertions.assertEquals(
+        1,
+        (int)
+            sharedAccountMessage.getMsg().getEmails().stream()
+                .filter(emailInfo -> Objects.equals("n", emailInfo.getAddressType()))
+                .count());
     final Folder sharedInboxFolder = sharedMbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
     Assertions.assertEquals(1, sharedInboxFolder.getSize());
   }
 
   /**
-   * Saves a message in a mailbox.
-   * Used to simulate receiving of a message.
-   *
-   * @param mailbox mailbox where to save the message
-   * @param message message to save
-   * @return saved {@link javax.mail.Message}
-   * @throws ServiceException
-   * @throws IOException
-   */
-  private Message saveMsgInInbox(Mailbox mailbox, javax.mail.Message message)
-      throws ServiceException, IOException {
-    final ParsedMessage parsedMessage = new ParsedMessage((MimeMessage) message, false);
-    final DeliveryOptions deliveryOptions = new DeliveryOptions().setFolderId(
-        Mailbox.ID_FOLDER_INBOX);
-    return mailbox.addMessage(null, parsedMessage, deliveryOptions, null);
-  }
-
-  /**
    * Execute a {@link GetMsg} Request
+   *
    * @param messageId id of the message to get
    * @param ctxt context
    * @return {@link GetMsgResponse}
