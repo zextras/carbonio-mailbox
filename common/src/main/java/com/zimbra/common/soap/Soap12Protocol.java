@@ -9,14 +9,11 @@
 
 package com.zimbra.common.soap;
 
-import org.dom4j.Namespace;
-import org.dom4j.QName;
-
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.ZimbraNamespace;
-import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.util.ExceptionToString;
+import org.dom4j.Namespace;
+import org.dom4j.QName;
 
 /**
  * Interface to Soap 1.2 Protocol
@@ -119,9 +116,7 @@ class Soap12Protocol extends SoapProtocol {
 
     /** Return Content-Type header */
     public String getContentType() {
-        // should be using application/soap+xml, but Safari croaks
-        return "text/xml; charset=utf-8";
-        //return "application/soap+xml; charset=utf-8";
+        return "application/soap+xml; charset=utf-8";
     }
 
     /** Whether or not to include a HTTP SOAPActionHeader. */
