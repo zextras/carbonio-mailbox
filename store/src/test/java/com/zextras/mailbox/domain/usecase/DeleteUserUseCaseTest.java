@@ -1,15 +1,22 @@
 package com.zextras.mailbox.domain.usecase;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
+import com.zextras.mailbox.acl.AclService;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.util.Log;
-import com.zimbra.cs.account.*;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import io.vavr.control.Try;
-import java.io.File;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -23,16 +30,17 @@ public class DeleteUserUseCaseTest {
   private Log mockZimbraSecurityLog;
   private DeleteUserUseCase deleteUserUseCase;
   private Provisioning mockProvisioning;
-  private File localConfig;
-  private File tempDir;
+  private AclService mockAclService;
 
   @BeforeEach
   void setUp() {
     mockProvisioning = mock(Provisioning.class);
     mockMailboxManager = mock(MailboxManager.class);
     mockZimbraSecurityLog = mock(Log.class);
+    mockAclService = mock(AclService.class);
     deleteUserUseCase =
-        new DeleteUserUseCase(mockProvisioning, mockMailboxManager, mockZimbraSecurityLog);
+        new DeleteUserUseCase(
+            mockProvisioning, mockMailboxManager, mockAclService, mockZimbraSecurityLog);
   }
 
   @Test
@@ -137,5 +145,21 @@ public class DeleteUserUseCaseTest {
     final ArgumentCaptor<String> logCaptor = ArgumentCaptor.forClass(String.class);
     verify(mockZimbraSecurityLog, times(1)).info(logCaptor.capture());
     assertEquals("cmd=DeleteAccount; name=example; id=id123;", logCaptor.getValue());
+  }
+
+  @Test
+  void shouldRevokeGrantsWhenMailboxOnLocalServer() throws Exception {
+    final String userId = "id123";
+    final Account mockAccount = mock(Account.class);
+    final Mailbox mockMailbox = mock(Mailbox.class);
+    when(mockMailboxManager.getMailboxByAccount(mockAccount, false)).thenReturn(mockMailbox);
+    when(mockProvisioning.getAccountById(userId)).thenReturn(mockAccount);
+    when(mockProvisioning.onLocalServer(mockAccount)).thenReturn(true);
+    doNothing().when(mockAclService).revokeAllGrantsForAccountId(userId);
+
+    final Try<Void> deleteResult = deleteUserUseCase.delete(userId);
+
+    assertTrue(deleteResult.isSuccess());
+    verify(mockAclService, times(1)).revokeAllGrantsForAccountId(userId);
   }
 }

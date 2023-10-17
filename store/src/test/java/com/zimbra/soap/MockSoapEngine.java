@@ -5,10 +5,11 @@
 
 package com.zimbra.soap;
 
+import com.zimbra.common.service.ServiceException;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 public class MockSoapEngine extends SoapEngine {
-  public MockSoapEngine(DocumentService service) {
+  public MockSoapEngine(DocumentService service) throws ServiceException {
     super(new SimpleMeterRegistry());
     service.registerHandlers(getDocumentDispatcher());
   }
