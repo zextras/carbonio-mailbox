@@ -5,20 +5,6 @@
 
 package com.zimbra.cs.db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Iterator;
-import java.util.Properties;
-
-import org.apache.commons.dbcp.ConnectionFactory;
-import org.apache.commons.dbcp.PoolableConnectionFactory;
-import org.apache.commons.dbcp.PoolingDataSource;
-import org.apache.commons.pool.impl.GenericObjectPool;
-
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SystemUtil;
@@ -27,6 +13,18 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.stats.ZimbraPerf;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Iterator;
+import java.util.Properties;
+import org.apache.commons.dbcp.ConnectionFactory;
+import org.apache.commons.dbcp.PoolableConnectionFactory;
+import org.apache.commons.dbcp.PoolingDataSource;
+import org.apache.commons.pool.impl.GenericObjectPool;
 
 /**
  * @since Apr 7, 2004
@@ -206,8 +204,11 @@ public class DbPool {
     /**
      * Initializes the connection pool.  Applications that access the
      * database must call this method before calling {@link DbPool#getConnection}.
+     * If database was previously shutdown then {@link #isShutdown} is set to false.
+     *
      */
     public static synchronized void startup() {
+        isShutdown = false;
         if (isInitialized()) {
             return;
         }
