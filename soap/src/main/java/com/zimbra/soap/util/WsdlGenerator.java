@@ -44,8 +44,9 @@ public class WsdlGenerator {
 
   private static final String svcPrefix =
       "svc"; // Namespace prefix used for references to targetNamespace
+
   private static final Namespace nsSoap =
-      new Namespace("soap", "http://schemas.xmlsoap.org/wsdl/soap/");
+      new Namespace("soap", "http://schemas.xmlsoap.org/wsdl/soap12/");
   private static final Namespace nsXsd = new Namespace("xsd", XMLConstants.W3C_XML_SCHEMA_NS_URI);
   private static final Namespace nsWsdl = new Namespace("wsdl", "http://schemas.xmlsoap.org/wsdl/");
   private static final Namespace nsZimbra = new Namespace("zimbra", ZimbraNamespace.ZIMBRA_STR);
