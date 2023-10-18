@@ -20,14 +20,14 @@ SPDX-License-Identifier: AGPL-3.0-only
   </parent>
   <dependencies>
     <dependency>
-      <artifactId>jaxws-rt</artifactId>
       <groupId>com.sun.xml.ws</groupId>
-      <version>2.3.1</version>
+      <artifactId>jaxws-rt</artifactId>
+      <version>2.3.6</version>
     </dependency>
     <dependency>
-      <artifactId>jaxb-impl</artifactId>
       <groupId>com.sun.xml.bind</groupId>
-      <version>2.3.1</version>
+      <artifactId>jaxb-impl</artifactId>
+      <version>4.0.3</version>
     </dependency>
   </dependencies>
   <build>
