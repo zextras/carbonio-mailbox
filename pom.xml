@@ -853,7 +853,7 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
-    <module>mailbox-soap-client</module>
+    <module>mailbox-sdk</module>
     <module>carbonio-jetty-libs</module>
     <module>store-extra-runtime-dependencies</module>
   </modules>
