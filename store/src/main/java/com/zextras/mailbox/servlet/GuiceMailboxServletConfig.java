@@ -11,6 +11,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
+import com.zextras.mailbox.domain.usecase.UseCaseDI;
 import java.util.Collection;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ public class GuiceMailboxServletConfig extends GuiceServletContextListener {
    *     on how to solve possible dependencies
    */
   private static Collection<AbstractModule> getInjectionModules() {
-    return Set.of(new MetricsServletModule());
+    return Set.of(new MetricsServletModule(), new UseCaseDI());
   }
 
   /**

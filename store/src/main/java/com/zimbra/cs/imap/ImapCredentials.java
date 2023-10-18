@@ -90,7 +90,7 @@ public class ImapCredentials implements java.io.Serializable {
   protected ImapCredentials(Account acct, EnabledHack hack) throws ServiceException {
     mAccountId = acct.getId();
     mUsername = acct.getName();
-    mIsLocal = Provisioning.onLocalServer(acct);
+    mIsLocal = Provisioning.getInstance().onLocalServer(acct);
     mEnabledHack = (hack == null ? EnabledHack.NONE : hack);
   }
 

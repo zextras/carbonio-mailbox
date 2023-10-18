@@ -1472,6 +1472,7 @@ public class Invite {
   }
 
   private List<Attach> attaches = null;
+
   /**
    * Warning! Not always populated!
    *
@@ -1972,7 +1973,7 @@ public class Invite {
   }
 
   public boolean isTodo() {
-    return type == MailItem.Type.TASK;
+    return false;
   }
 
   public MailItem.Type getItemType() {
@@ -1981,11 +1982,6 @@ public class Invite {
 
   public void setItemType(MailItem.Type type) {
     this.type = type;
-    // If mStatus is set to default appointment status but we have a task
-    // invite, change to default task status.
-    if (type == MailItem.Type.TASK && IcalXmlStrMap.STATUS_CONFIRMED.equals(mStatus)) {
-      mStatus = IcalXmlStrMap.STATUS_NEEDS_ACTION;
-    }
   }
 
   private final TimeZoneMap mTzMap;
@@ -2171,14 +2167,9 @@ public class Invite {
       ZComponent comp = compIter.next();
       Invite newInv = null;
       try {
-        MailItem.Type type;
+        MailItem.Type type = MailItem.Type.APPOINTMENT;
         ICalTok compTypeTok = comp.getTok();
         if (compTypeTok == null) continue;
-        if (ICalTok.VTODO.equals(compTypeTok)) {
-          type = MailItem.Type.TASK;
-        } else {
-          type = MailItem.Type.APPOINTMENT;
-        }
         switch (compTypeTok) {
           case VEVENT:
           case VTODO:
@@ -2491,13 +2482,6 @@ public class Invite {
                     throw ServiceException.INVALID_REQUEST("recurrence used without DTSTART", null);
                   }
                 }
-                if (durationCalculated && newInv.getItemType() == MailItem.Type.TASK) {
-                  if (newInv.getStartTime() != null && !newInv.getStartTime().hasTime()) {
-                    duration = ParsedDuration.ONE_DAY;
-                  } else {
-                    duration = ParsedDuration.ONE_SECOND;
-                  }
-                }
               }
 
               InviteInfo inviteInfo = new InviteInfo(newInv);
@@ -2658,13 +2642,7 @@ public class Invite {
         ICalTok.REQUEST.equals(mMethod)
             || ICalTok.PUBLISH.equals(mMethod)
             || ICalTok.CANCEL.equals(mMethod);
-    ICalTok compTok;
-    if (type == MailItem.Type.TASK) {
-      compTok = ICalTok.VTODO;
-      useOutlookCompatAllDayEvents = false;
-    } else {
-      compTok = ICalTok.VEVENT;
-    }
+    ICalTok compTok = ICalTok.VEVENT;
     ZComponent component = new ZComponent(compTok);
 
     component.addProperty(new ZProperty(ICalTok.UID, getUid()));
@@ -2749,16 +2727,6 @@ public class Invite {
 
       // PRIORITY
       if (mPriority != null) component.addProperty(new ZProperty(ICalTok.PRIORITY, mPriority));
-
-      // PERCENT-COMPLETE
-      if (isTodo() && mPercentComplete != null)
-        component.addProperty(new ZProperty(ICalTok.PERCENT_COMPLETE, mPercentComplete));
-
-      // COMPLETED
-      if (isTodo() && mCompleted != 0) {
-        ParsedDateTime completed = ParsedDateTime.fromUTCTime(mCompleted);
-        component.addProperty(completed.toProperty(ICalTok.COMPLETED, false));
-      }
 
       // CATEGORIES
       List<String> categories = getCategories();

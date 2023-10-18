@@ -39,8 +39,6 @@ public class AccountConstants {
   public static final String E_GET_ALL_LOCALES_RESPONSE = "GetAllLocalesResponse";
   public static final String E_GET_AVAILABLE_LOCALES_REQUEST = "GetAvailableLocalesRequest";
   public static final String E_GET_AVAILABLE_LOCALES_RESPONSE = "GetAvailableLocalesResponse";
-  public static final String E_GET_AVAILABLE_SKINS_REQUEST = "GetAvailableSkinsRequest";
-  public static final String E_GET_AVAILABLE_SKINS_RESPONSE = "GetAvailableSkinsResponse";
   public static final String E_GET_AVAILABLE_CSV_FORMATS_REQUEST = "GetAvailableCsvFormatsRequest";
   public static final String E_GET_AVAILABLE_CSV_FORMATS_RESPONSE =
       "GetAvailableCsvFormatsResponse";
@@ -127,13 +125,6 @@ public class AccountConstants {
   public static final String E_GET_GCM_SENDER_ID_REQUEST = "GetGcmSenderIdRequest";
   public static final String E_GET_GCM_SENDER_ID_RESPONSE = "GetGcmSenderIdResponse";
 
-  // OAuth
-  public static final String E_OAUTH_CONSUMER = "OAuthConsumer";
-  public static final String E_GET_OAUTH_CONSUMERS_REQUEST = "GetOAuthConsumersRequest";
-  public static final String E_GET_OAUTH_CONSUMERS_RESPONSE = "GetOAuthConsumersResponse";
-  public static final String E_REVOKE_OAUTH_CONSUMER_REQUEST = "RevokeOAuthConsumerRequest";
-  public static final String E_REVOKE_OAUTH_CONSUMER_RESPONSE = "RevokeOAuthConsumerResponse";
-
   // AddressList
   public static final String E_GET_ALL_ADDRESS_LISTS_REQUEST = "GetAllAddressListsRequest";
   public static final String E_GET_ALL_ADDRESS_LISTS_RESPONSE = "GetAllAddressListsResponse";
@@ -179,10 +170,6 @@ public class AccountConstants {
       QName.get(E_GET_AVAILABLE_LOCALES_REQUEST, NAMESPACE);
   public static final QName GET_AVAILABLE_LOCALES_RESPONSE =
       QName.get(E_GET_AVAILABLE_LOCALES_RESPONSE, NAMESPACE);
-  public static final QName GET_AVAILABLE_SKINS_REQUEST =
-      QName.get(E_GET_AVAILABLE_SKINS_REQUEST, NAMESPACE);
-  public static final QName GET_AVAILABLE_SKINS_RESPONSE =
-      QName.get(E_GET_AVAILABLE_SKINS_RESPONSE, NAMESPACE);
   public static final QName GET_AVAILABLE_CSV_FORMATS_REQUEST =
       QName.get(E_GET_AVAILABLE_CSV_FORMATS_REQUEST, NAMESPACE);
   public static final QName GET_AVAILABLE_CSV_FORMATS_RESPONSE =
@@ -305,16 +292,6 @@ public class AccountConstants {
   public static final QName GET_SMIME_PUBLIC_CERTS_RESPONSE =
       QName.get(E_GET_SMIME_PUBLIC_CERTS_RESPONSE, NAMESPACE);
 
-  // OAuth
-  public static final QName GET_OAUTH_CONSUMERS_REQUEST =
-      QName.get(E_GET_OAUTH_CONSUMERS_REQUEST, NAMESPACE);
-  public static final QName GET_OAUTH_CONSUMERS_RESPONSE =
-      QName.get(E_GET_OAUTH_CONSUMERS_RESPONSE, NAMESPACE);
-  public static final QName REVOKE_OAUTH_CONSUMER_REQUEST =
-      QName.get(E_REVOKE_OAUTH_CONSUMER_REQUEST, NAMESPACE);
-  public static final QName REVOKE_OAUTH_CONSUMER_RESPONSE =
-      QName.get(E_REVOKE_OAUTH_CONSUMER_RESPONSE, NAMESPACE);
-
   // HAB
   public static final String E_GET_HAB_REQUEST = "GetHABRequest";
   public static final String E_GET_HAB_RESPONSE = "GetHABResponse";
@@ -373,7 +350,6 @@ public class AccountConstants {
   public static final String E_SOAP_URL = "soapURL";
   public static final String E_ADMIN_URL = "adminURL";
   public static final String E_PUBLIC_URL = "publicURL";
-  public static final String E_COMMUNITY_URL = "communityURL";
   public static final String E_CHANGE_PASSWORD_URL = "changePasswordURL";
   public static final String E_PREAUTH = "preauth";
   public static final String E_A = "a";
@@ -383,7 +359,6 @@ public class AccountConstants {
   public static final String E_ENTRY_SEARCH_FILTER_SINGLECOND = "cond";
   public static final String E_LOCALE = "locale";
   public static final String E_VIRTUAL_HOST = "virtualHost";
-  public static final String E_SKIN = "skin";
   public static final String E_HAB_ROOTS = "habRoots";
   public static final String E_HAB = "hab";
   public static final String E_IDENTITIES = "identities";
@@ -396,7 +371,6 @@ public class AccountConstants {
   public static final String E_CHILD_ACCOUNTS = "childAccounts";
   public static final String E_CHILD_ACCOUNT = "childAccount";
   public static final String E_CONTENT = "content";
-  public static final String E_REQUESTED_SKIN = "requestedSkin";
   public static final String E_REST = "rest";
   public static final String E_CSV = "csv";
   public static final String E_COS = "cos";
@@ -546,12 +520,6 @@ public class AccountConstants {
   public static final String A_LOG_OFF = "logoff";
   public static final String A_CLEAR_ALL_SOAP_SESSIONS = "all";
   public static final String A_EXCLUDE_CURRENT_SESSION = "excludeCurrent";
-
-  // oauth consumer attributes
-  public static final String A_ACCESS_TOKEN = "accessToken";
-  public static final String A_CONSUMER_APP_NAME = "appName";
-  public static final String A_APPROVED_ON = "approvedOn";
-  public static final String A_CONSUMER_DEVICE = "device";
 
   // ext user prov URL metadata constants
   public static final String P_ACCOUNT_ID = "aid";

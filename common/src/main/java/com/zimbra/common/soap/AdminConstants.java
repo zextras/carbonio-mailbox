@@ -171,12 +171,6 @@ public final class AdminConstants {
   public static final String E_EXPORT_AND_DELETE_ITEMS_RESPONSE = "ExportAndDeleteItemsResponse";
   public static final String E_DEDUPE_BLOBS_REQUEST = "DedupeBlobsRequest";
   public static final String E_DEDUPE_BLOBS_RESPONSE = "DedupeBlobsResponse";
-  public static final String E_GET_ALL_ACTIVE_SERVERS_REQUEST = "GetAllActiveServersRequest";
-  public static final String E_GET_ALL_ACTIVE_SERVERS_RESPONSE = "GetAllActiveServersResponse";
-  public static final String E_SET_SERVER_OFFLINE_REQUEST = "SetServerOfflineRequest";
-  public static final String E_SET_SERVER_OFFLINE_RESPONSE = "SetServerOfflineResponse";
-  public static final String E_SET_LOCAL_SERVER_ONLINE_REQUEST = "SetLocalServerOnlineRequest";
-  public static final String E_SET_LOCAL_SERVER_ONLINE_RESPONSE = "SetLocalServerOnlineResponse";
 
   public static final String E_CREATE_DISTRIBUTION_LIST_REQUEST = "CreateDistributionListRequest";
   public static final String E_CREATE_DISTRIBUTION_LIST_RESPONSE = "CreateDistributionListResponse";
@@ -526,11 +520,6 @@ public final class AdminConstants {
   public static final String E_VERIFY_STORE_MANAGER_REQUEST = "VerifyStoreManagerRequest";
   public static final String E_VERIFY_STORE_MANAGER_RESPONSE = "VerifyStoreManagerResponse";
 
-  // Skins
-  // Skins
-  public static final String E_GET_ALL_SKINS_REQUEST = "GetAllSkinsRequest";
-  public static final String E_GET_ALL_SKINS_RESPONSE = "GetAllSkinsResponse";
-
   public static final QName PING_REQUEST = QName.get(E_PING_REQUEST, NAMESPACE);
   public static final QName PING_RESPONSE = QName.get(E_PING_RESPONSE, NAMESPACE);
   public static final QName CHECK_HEALTH_REQUEST = QName.get(E_CHECK_HEALTH_REQUEST, NAMESPACE);
@@ -751,19 +740,6 @@ public final class AdminConstants {
       QName.get(E_EXPORT_AND_DELETE_ITEMS_RESPONSE, NAMESPACE);
   public static final QName DEDUPE_BLOBS_REQUEST = QName.get(E_DEDUPE_BLOBS_REQUEST, NAMESPACE);
   public static final QName DEDUPE_BLOBS_RESPONSE = QName.get(E_DEDUPE_BLOBS_RESPONSE, NAMESPACE);
-  public static final QName GET_ALL_ACTIVE_SERVERS_REQUEST =
-      QName.get(E_GET_ALL_ACTIVE_SERVERS_REQUEST, NAMESPACE);
-  public static final QName GET_ALL_ACTIVE_SERVERS_RESPONSE =
-      QName.get(E_GET_ALL_ACTIVE_SERVERS_RESPONSE, NAMESPACE);
-
-  public static final QName SET_SERVER_OFFLINE_REQUEST =
-      QName.get(E_SET_SERVER_OFFLINE_REQUEST, NAMESPACE);
-  public static final QName SET_SERVER_OFFLINE_RESPONSE =
-      QName.get(E_SET_SERVER_OFFLINE_RESPONSE, NAMESPACE);
-  public static final QName SET_LOCAL_SERVER_ONLINE_REQUEST =
-      QName.get(E_SET_LOCAL_SERVER_ONLINE_REQUEST, NAMESPACE);
-  public static final QName SET_LOCAL_SERVER_ONLINE_RESPONSE =
-      QName.get(E_SET_LOCAL_SERVER_ONLINE_RESPONSE, NAMESPACE);
 
   public static final QName CREATE_DISTRIBUTION_LIST_REQUEST =
       QName.get(E_CREATE_DISTRIBUTION_LIST_REQUEST, NAMESPACE);
@@ -1236,10 +1212,6 @@ public final class AdminConstants {
   public static final QName VERIFY_STORE_MANAGER_RESPONSE =
       QName.get(E_VERIFY_STORE_MANAGER_RESPONSE, NAMESPACE);
 
-  // Skins
-  public static final QName GET_ALL_SKINS_REQUEST = QName.get(E_GET_ALL_SKINS_REQUEST, NAMESPACE);
-  public static final QName GET_ALL_SKINS_RESPONSE = QName.get(E_GET_ALL_SKINS_RESPONSE, NAMESPACE);
-
   public static final String E_FILTER_RULES = "filterRules";
   public static final String E_FILTER_RULE = "filterRule";
   public static final String E_GET_FILTER_RULES_REQUEST = "GetFilterRulesRequest";
@@ -1395,7 +1367,6 @@ public final class AdminConstants {
   public static final String E_ENTRY = "entry";
   public static final String E_KEY = "key";
   public static final String E_PRINCIPAL = "principal";
-  public static final String E_SKIN = "skin";
   public static final String E_TOKEN = "token";
 
   // HAB

@@ -1882,10 +1882,9 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>serverId:mboxId of mailbox before being moved</desc>
 </attr>
 
-<attr id="347" name="zimbraFeatureMobileSyncEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" deprecatedSince="23.8.0">
+<attr id="347" name="zimbraFeatureMobileSyncEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>whether to permit mobile sync</desc>
-  <deprecateDesc>Zimbra Mobile Gateway feature has been removed</deprecateDesc>
 </attr>
 
 <attr id="348" name="zimbraImapProxyBindPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" callback="CheckPortConflict" requiresRestart="nginxproxy">
@@ -2578,10 +2577,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
 </attr>
 
-<attr id="489" name="zimbraFeatureMailEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited">
+<attr id="489" name="zimbraFeatureMailEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited"  deprecatedSince="23.11.0">
   <defaultCOSValue>TRUE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>email features enabled</desc>
+  <deprecateDesc>deprecated per CO-759 as no longer used</deprecateDesc>
 </attr>
 
 <attr id="490" name="zimbraSignatureId" type="id" cardinality="single" requiredIn="signature" optionalIn="account">
@@ -4725,6 +4725,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 </attr>
 
 <attr id="1025" name="zimbraMailTrustedIP" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mailbox" since="5.0.17">
+  <globalConfigValue>127.0.0.1</globalConfigValue>
   <desc>
     In our web app, AJAX and standard html client, we have support for adding the HTTP
     client IP address as X-Originating-IP in an outbound message.  We also use
@@ -5153,13 +5154,15 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>When a virus is detected quarantine message to this account</desc>
 </attr>
 
-<attr id="1101" name="zimbraAdminAccessControlMech" type="enum" cardinality="single" value="acl,global" optionalIn="globalConfig" since="6.0.9" requiresRestart="mailbox">
+<attr id="1101" name="zimbraAdminAccessControlMech" type="enum" cardinality="single" value="acl,global" optionalIn="globalConfig" since="6.0.9" requiresRestart="mailbox"
+deprecatedSince="23.9.0">
   <globalConfigValue>acl</globalConfigValue>
   <desc>
     access control mechanism for admin access
       acl: ACL based access control (a.k.a. delegated admin).
       global: allows only global admins.
   </desc>
+  <deprecateDesc>Access control mechanism cannot be modified as in managed only with ACLs.</deprecateDesc>
 </attr>
 
 <attr id="1102" name="zimbraPrefContactsExpandAppleContactGroups" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable"  since="7.0.0" deprecatedSince="8.0.0">
@@ -5296,7 +5299,8 @@ TODO: delete them permanently from here
   <desc>sieve script generated from user outgoing filter rules</desc>
 </attr>
 
-<attr id="1131" name="zimbraOAuthConsumerCredentials" type="ostring" cardinality="multi" optionalIn="globalConfig,domain" flags="domainInherited" since="7.0.0">
+<attr id="1131" name="zimbraOAuthConsumerCredentials" type="ostring" cardinality="multi" optionalIn="globalConfig,domain" flags="domainInherited" since="7.0.0" deprecatedSince="23.9.0">
+  <deprecateDesc>This OAuth implementation is not supported anymore</deprecateDesc>
   <desc>OAuth Consumer id, secret, and application name.  It is in the format of {consumer-id}:{secret}:{consumer-app-name}</desc>
 </attr>
 
@@ -5559,9 +5563,9 @@ TODO: delete them permanently from here
   <desc>show just the display name of email addresses in the message header area and compose pane</desc>
 </attr>
 
-<attr id="1174" name="zimbraFreebusyExchangeServerType" type="enum" value="webdav,ews" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainAdminModifiable" since="6.0.11">
+<attr id="1174" name="zimbraFreebusyExchangeServerType" type="enum" value="webdav" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainAdminModifiable" since="6.0.11">
   <globalConfigValue>webdav</globalConfigValue>
-  <desc>Can be set to either webdav for Exchange 2007 or older, or ews for 2010 and newer</desc>
+  <desc>Can be set to webdav for Exchange 2007 or older</desc>
 </attr>
 
 <attr id="1175" name="zimbraMailboxMoveTempDir" type="string" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="7.0.1">
@@ -7321,7 +7325,8 @@ TODO: delete them permanently from here
   <deprecateDesc>dropping always on cluster feature in whole</deprecateDesc>
 </attr>
 
-<attr id="1447" name="zimbraZookeeperClientServerList" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0">
+<attr id="1447" name="zimbraZookeeperClientServerList" type="string" cardinality="multi" optionalIn="globalConfig,server" flags="serverInherited" since="8.5.0" deprecatedSince="23.9.0">
+  <deprecateDesc>Not supported</deprecateDesc>
   <desc>list of host:port for zookeeper servers; set to empty value to disable the use of zookeeper</desc>
 </attr>
 
@@ -8263,35 +8268,40 @@ TODO: delete them permanently from here
 
 <attr id="1627" name="zimbraCsrfTokenKey" type="ostring" max="128"
   immutable="1" cardinality="multi" optionalIn="globalConfig"
-  requiresRestart="mailbox" since="8.5.0">
+  requiresRestart="mailbox" since="8.5.0" deprecatedSince="23.11.0">
   <desc>CSRF token secret key</desc>
+  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1628" name="zimbraCsrfTokenCheckEnabled" type="boolean"
-  cardinality="single" optionalIn="globalConfig" since="8.5.0">
+  cardinality="single" optionalIn="globalConfig" since="8.5.0" deprecatedSince="23.11.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>A flag to turn on or off CSRF token related check. When set to FALSE no CSRF check happens. When set to 
         true both CSRF referer and CSRF token change is effective.
   </desc>
+  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1629" name="zimbraCsrfTokenData" type="string"
-  cardinality="multi" optionalIn="account" since="8.5.0" flags="ephemeral,dynamic,expirable">
+  cardinality="multi" optionalIn="account" since="8.5.0" flags="ephemeral,dynamic,expirable" deprecatedSince="23.11.0">
   <desc>List of data associated with CSRF token for an account. The data format is
    CSRF token data:Auth token Key crumb:Auth Token Key expiration</desc>
+  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1630" name="zimbraCsrfAllowedRefererHosts" type="string"
-  cardinality="multi" optionalIn="globalConfig,domain" since="8.5.0">
+  cardinality="multi" optionalIn="globalConfig,domain" since="8.5.0" deprecatedSince="23.11.0">
   <desc>A list of hosts like www.abc.com, www.xyz.com. These are used while doing CSRF referer check.</desc>
+  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1631" name="zimbraCsrfRefererCheckEnabled" type="boolean"
-  cardinality="single" optionalIn="globalConfig" since="8.5.0">
+  cardinality="single" optionalIn="globalConfig" since="8.5.0" deprecatedSince="23.11.0">
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>A flag to turn on or off CSRF referer related check. When set to FALSE no CSRF referer check happens.
         When set to true CSRF referer type check happens.
   </desc>
+  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1632" name="zimbraPrefCalendarAllowedTargetsForInviteDeniedAutoReply" type="enum" value="internal,sameDomain,all" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="8.5.0">
@@ -8513,7 +8523,8 @@ TODO: delete them permanently from here
   <desc>whether or not an account represents a Mobile Gateway app</desc>
 </attr>
 
-<attr id="1761" name="zimbraDataSourceOAuthToken" type="string" cardinality="single" optionalIn="imapDataSource" since="8.7.0">
+<attr id="1761" name="zimbraDataSourceOAuthToken" type="string" cardinality="single" optionalIn="imapDataSource" since="8.7.0" deprecatedSince="23.9.0">
+  <deprecateDesc>This OAuth implementation is not supported anymore</deprecateDesc>
   <desc>OAuth token for authentication using OAuth</desc>
 </attr>
 
@@ -9008,19 +9019,23 @@ TODO: delete them permanently from here
   <desc>Subject prefix for the spam training messages used to sent to the zimbraSpamIsSpamAccount/zimbraSpamIsNotSpamAccount account.</desc>
 </attr>
 
-<attr id="2021" name="zimbraDataSourceOAuthClientId" type="string" cardinality="single" optionalIn="dataSource,imapDataSource" since="8.7.0,9.0.0">
+<attr id="2021" name="zimbraDataSourceOAuthClientId" type="string" cardinality="single" optionalIn="dataSource,imapDataSource" since="8.7.0,9.0.0" deprecatedSince="23.9.0">
+  <deprecateDesc>This OAuth implementation is not supported anymore</deprecateDesc>
   <desc>Client Id for OAuth token</desc>
 </attr>
 
-<attr id="2022" name="zimbraDataSourceOAuthClientSecret" type="string" cardinality="single" optionalIn="dataSource,imapDataSource" since="8.7.0,9.0.0">
+<attr id="2022" name="zimbraDataSourceOAuthClientSecret" type="string" cardinality="single" optionalIn="dataSource,imapDataSource" since="8.7.0,9.0.0" deprecatedSince="23.9.0">
+  <deprecateDesc>This OAuth implementation is not supported anymore</deprecateDesc>
   <desc>Client Secret for OAuth token</desc>
 </attr>
 
-<attr id="2023" name="zimbraDataSourceOAuthRefreshToken" type="string" cardinality="single" optionalIn="dataSource,imapDataSource" since="8.7.0,9.0.0">
+<attr id="2023" name="zimbraDataSourceOAuthRefreshToken" type="string" cardinality="single" optionalIn="dataSource,imapDataSource" since="8.7.0,9.0.0" deprecatedSince="23.9.0">
+  <deprecateDesc>This OAuth implementation is not supported anymore</deprecateDesc>
   <desc>Refresh token for authentication using OAuth</desc>
 </attr>
 
-<attr id="2024" name="zimbraDataSourceOAuthRefreshTokenUrl" type="string" cardinality="single" optionalIn="dataSource,imapDataSource" since="8.7.0,9.0.0">
+<attr id="2024" name="zimbraDataSourceOAuthRefreshTokenUrl" type="string" cardinality="single" optionalIn="dataSource,imapDataSource" since="8.7.0,9.0.0" deprecatedSince="23.9.0">
+  <deprecateDesc>This OAuth implementation is not supported anymore</deprecateDesc>
   <desc>Url for refreshing OAuth Token</desc>
 </attr>
 
@@ -9086,7 +9101,8 @@ TODO: delete them permanently from here
   <defaultCOSValue>TRUE</defaultCOSValue>
 </attr>
 
-<attr id="2049" name="zimbraOAuthAccessor" type="ostring" cardinality="multi" optionalIn="account" since="8.7.0,9.0.0">
+<attr id="2049" name="zimbraOAuthAccessor" type="ostring" cardinality="multi" optionalIn="account" since="8.7.0,9.0.0" deprecatedSince="23.9.0">
+  <deprecateDesc>This OAuth implementation is not supported anymore</deprecateDesc>
   <desc>Credentials associated with a successfully authorized OAuth Consumer</desc>
 </attr>
 
@@ -10075,5 +10091,31 @@ TODO: delete them permanently from here
     that will enforce CSP rule on the client side. Note: the value
     MUST be the entire header line (e.g. X-Foo: Bar, X-Zoo: "Bar1; Bar2").
   </desc>
+</attr>
+
+<attr id="3134" name="carbonioUserDocumentationUrl" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainInherited,domainAdminModifiable" since="23.9.0">
+  <globalConfigValue>https://docs.zextras.com/carbonio/html/usage.html</globalConfigValue>
+  <desc>Link to the Carbonio User Documentation</desc>
+</attr>
+
+<attr id="3135" name="carbonioAdminDocumentationUrl" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainInherited,domainAdminModifiable" since="23.9.0">
+  <globalConfigValue>https://docs.zextras.com/carbonio/html/adminpanel/introduction.html</globalConfigValue>
+  <desc>Link to the Carbonio Admin Documentation</desc>
+</attr>
+
+<attr id="3136" name="carbonioWebUILoginURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.10.0">
+  <desc>Login URL for Carbonio web client to send the user to upon failed login, auth expired, or no/invalid auth</desc>
+</attr>
+
+<attr id="3137" name="carbonioWebUILogoutURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.10.0">
+  <desc>Logout URL for Carbonio web client to send the user to upon explicit logging out</desc>
+</attr>
+
+<attr id="3138" name="carbonioAdminUILoginURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.10.0">
+  <desc>Login URL for Carbonio Admin web client to send the user to upon failed login, auth expired, or no/invalid auth</desc>
+</attr>
+
+<attr id="3139" name="carbonioAdminUILogoutURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.10.0">
+  <desc>Logout URL for Carbonio Admin web client to send the user to upon explicit logging out</desc>
 </attr>
 </attrs>

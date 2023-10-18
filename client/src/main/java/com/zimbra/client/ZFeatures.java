@@ -123,6 +123,10 @@ public class ZFeatures {
     return getBool(ZAttrProvisioning.A_zimbraFeatureMailForwardingInFiltersEnabled);
   }
 
+  public boolean getMobileSync() {
+    return getBool(ZAttrProvisioning.A_zimbraFeatureMobileSyncEnabled);
+  }
+
   public boolean getSkinChange() {
     return getBool(ZAttrProvisioning.A_zimbraFeatureSkinChangeEnabled);
   }

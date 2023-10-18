@@ -512,8 +512,7 @@ public class ZAttrProvisioning {
     }
 
     public enum FreebusyExchangeServerType {
-        webdav("webdav"),
-        ews("ews");
+        webdav("webdav");
         private final String mValue;
         FreebusyExchangeServerType(String value) { mValue = value; }
         @Override
@@ -525,7 +524,6 @@ public class ZAttrProvisioning {
              throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
         }
         public boolean isWebdav() { return this == webdav;}
-        public boolean isEws() { return this == ews;}
     }
 
     public enum GalLdapAuthMech {
@@ -2735,6 +2733,14 @@ public class ZAttrProvisioning {
     public static final String A_c = "c";
 
     /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public static final String A_carbonioAdminDocumentationUrl = "carbonioAdminDocumentationUrl";
+
+    /**
      * SSL proxy port for Carbonio admin console UI
      *
      * @since ZCS 9.0.0
@@ -2805,6 +2811,24 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3106)
     public static final String A_carbonioAdminUiLoginLogo = "carbonioAdminUiLoginLogo";
+
+    /**
+     * Login URL for Carbonio Admin web client to send the user to upon
+     * failed login, auth expired, or no/invalid auth
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3138)
+    public static final String A_carbonioAdminUILoginURL = "carbonioAdminUILoginURL";
+
+    /**
+     * Logout URL for Carbonio Admin web client to send the user to upon
+     * explicit logging out
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3139)
+    public static final String A_carbonioAdminUILogoutURL = "carbonioAdminUILogoutURL";
 
     /**
      * Admin Web UI Title preference for domain
@@ -2974,6 +2998,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioSendFullErrorStack = "carbonioSendFullErrorStack";
 
     /**
+     * Link to the Carbonio User Documentation
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public static final String A_carbonioUserDocumentationUrl = "carbonioUserDocumentationUrl";
+
+    /**
      * Enable video server recording for Carbonio
      *
      * @since ZCS 9.0.0
@@ -3068,6 +3100,24 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3097)
     public static final String A_carbonioWebUiLoginLogo = "carbonioWebUiLoginLogo";
+
+    /**
+     * Login URL for Carbonio web client to send the user to upon failed
+     * login, auth expired, or no/invalid auth
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3136)
+    public static final String A_carbonioWebUILoginURL = "carbonioWebUILoginURL";
+
+    /**
+     * Logout URL for Carbonio web client to send the user to upon explicit
+     * logging out
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3137)
+    public static final String A_carbonioWebUILogoutURL = "carbonioWebUILogoutURL";
 
     /**
      * Web UI Primary Color preference for domain
@@ -3423,8 +3473,10 @@ public class ZAttrProvisioning {
     public static final String A_zimbraAddressListLdapFilter = "zimbraAddressListLdapFilter";
 
     /**
-     * access control mechanism for admin access acl: ACL based access
-     * control (a.k.a. delegated admin). global: allows only global admins.
+     * Deprecated since: 23.9.0. Access control mechanism cannot be modified
+     * as in managed only with ACLs.. Orig desc: access control mechanism for
+     * admin access acl: ACL based access control (a.k.a. delegated admin).
+     * global: allows only global admins.
      *
      * @since ZCS 6.0.9
      */
@@ -5362,8 +5414,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraCreateTimestamp = "zimbraCreateTimestamp";
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @since ZCS 8.5.0
      */
@@ -5371,9 +5424,10 @@ public class ZAttrProvisioning {
     public static final String A_zimbraCsrfAllowedRefererHosts = "zimbraCsrfAllowedRefererHosts";
 
     /**
-     * A flag to turn on or off CSRF referer related check. When set to FALSE
-     * no CSRF referer check happens. When set to true CSRF referer type
-     * check happens.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF referer related check. When
+     * set to FALSE no CSRF referer check happens. When set to true CSRF
+     * referer type check happens.
      *
      * @since ZCS 8.5.0
      */
@@ -5381,9 +5435,10 @@ public class ZAttrProvisioning {
     public static final String A_zimbraCsrfRefererCheckEnabled = "zimbraCsrfRefererCheckEnabled";
 
     /**
-     * A flag to turn on or off CSRF token related check. When set to FALSE
-     * no CSRF check happens. When set to true both CSRF referer and CSRF
-     * token change is effective.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF token related check. When set
+     * to FALSE no CSRF check happens. When set to true both CSRF referer and
+     * CSRF token change is effective.
      *
      * @since ZCS 8.5.0
      */
@@ -5391,8 +5446,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraCsrfTokenCheckEnabled = "zimbraCsrfTokenCheckEnabled";
 
     /**
-     * List of data associated with CSRF token for an account. The data
-     * format is CSRF token data:Auth token Key crumb:Auth Token Key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: List of data associated with CSRF token for an account. The
+     * data format is CSRF token data:Auth token Key crumb:Auth Token Key
      * expiration
      *
      * @since ZCS 8.5.0
@@ -5401,7 +5457,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraCsrfTokenData = "zimbraCsrfTokenData";
 
     /**
-     * CSRF token secret key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: CSRF token secret key
      *
      * @since ZCS 8.5.0
      */
@@ -5700,7 +5757,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceName = "zimbraDataSourceName";
 
     /**
-     * Client Id for OAuth token
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Client Id for OAuth token
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5708,7 +5766,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthClientId = "zimbraDataSourceOAuthClientId";
 
     /**
-     * Client Secret for OAuth token
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Client Secret for OAuth token
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5716,7 +5775,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthClientSecret = "zimbraDataSourceOAuthClientSecret";
 
     /**
-     * Refresh token for authentication using OAuth
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Refresh token for authentication using OAuth
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5724,7 +5784,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthRefreshToken = "zimbraDataSourceOAuthRefreshToken";
 
     /**
-     * Url for refreshing OAuth Token
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Url for refreshing OAuth Token
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -5732,7 +5793,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraDataSourceOAuthRefreshTokenUrl = "zimbraDataSourceOAuthRefreshTokenUrl";
 
     /**
-     * OAuth token for authentication using OAuth
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth token for authentication using OAuth
      *
      * @since ZCS 8.7.0
      */
@@ -7043,7 +7105,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureInstantNotify = "zimbraFeatureInstantNotify";
 
     /**
-     * email features enabled
+     * Deprecated since: 23.11.0. deprecated per CO-759 as no longer used.
+     * Orig desc: email features enabled
      */
     @ZAttr(id=489)
     public static final String A_zimbraFeatureMailEnabled = "zimbraFeatureMailEnabled";
@@ -7160,8 +7223,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureMobilePolicyEnabled = "zimbraFeatureMobilePolicyEnabled";
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      */
     @ZAttr(id=347)
     public static final String A_zimbraFeatureMobileSyncEnabled = "zimbraFeatureMobileSyncEnabled";
@@ -7760,8 +7822,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFreebusyExchangeCachedIntervalStart = "zimbraFreebusyExchangeCachedIntervalStart";
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
      * @since ZCS 6.0.11
      */
@@ -12385,7 +12446,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraNotifySSLServerEnabled = "zimbraNotifySSLServerEnabled";
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -12403,8 +12466,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraOAuthConsumerAPIScope = "zimbraOAuthConsumerAPIScope";
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @since ZCS 7.0.0
      */
@@ -18069,8 +18133,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraZimletVersion = "zimbraZimletVersion";
 
     /**
-     * list of host:port for zookeeper servers; set to empty value to disable
-     * the use of zookeeper
+     * Deprecated since: 23.9.0. Not supported. Orig desc: list of host:port
+     * for zookeeper servers; set to empty value to disable the use of
+     * zookeeper
      *
      * @since ZCS 8.5.0
      */

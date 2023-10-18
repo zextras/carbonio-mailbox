@@ -36,6 +36,232 @@ public abstract class ZAttrDomain extends NamedEntry {
   ///// BEGIN-AUTO-GEN-REPLACE
 
     /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @return carbonioAdminDocumentationUrl, or "https://docs.zextras.com/carbonio/html/adminpanel/introduction.html" if unset
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public String getCarbonioAdminDocumentationUrl() {
+        return getAttr(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, "https://docs.zextras.com/carbonio/html/adminpanel/introduction.html", true);
+    }
+
+    /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @param carbonioAdminDocumentationUrl new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public void setCarbonioAdminDocumentationUrl(String carbonioAdminDocumentationUrl) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, carbonioAdminDocumentationUrl);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @param carbonioAdminDocumentationUrl new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public Map<String,Object> setCarbonioAdminDocumentationUrl(String carbonioAdminDocumentationUrl, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, carbonioAdminDocumentationUrl);
+        return attrs;
+    }
+
+    /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public void unsetCarbonioAdminDocumentationUrl() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Link to the Carbonio Admin Documentation
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3135)
+    public Map<String,Object> unsetCarbonioAdminDocumentationUrl(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminDocumentationUrl, "");
+        return attrs;
+    }
+
+    /**
+     * Login URL for Carbonio Admin web client to send the user to upon
+     * failed login, auth expired, or no/invalid auth
+     *
+     * @return carbonioAdminUILoginURL, or null if unset
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3138)
+    public String getCarbonioAdminUILoginURL() {
+        return getAttr(ZAttrProvisioning.A_carbonioAdminUILoginURL, null, true);
+    }
+
+    /**
+     * Login URL for Carbonio Admin web client to send the user to upon
+     * failed login, auth expired, or no/invalid auth
+     *
+     * @param carbonioAdminUILoginURL new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3138)
+    public void setCarbonioAdminUILoginURL(String carbonioAdminUILoginURL) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminUILoginURL, carbonioAdminUILoginURL);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Login URL for Carbonio Admin web client to send the user to upon
+     * failed login, auth expired, or no/invalid auth
+     *
+     * @param carbonioAdminUILoginURL new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3138)
+    public Map<String,Object> setCarbonioAdminUILoginURL(String carbonioAdminUILoginURL, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminUILoginURL, carbonioAdminUILoginURL);
+        return attrs;
+    }
+
+    /**
+     * Login URL for Carbonio Admin web client to send the user to upon
+     * failed login, auth expired, or no/invalid auth
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3138)
+    public void unsetCarbonioAdminUILoginURL() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminUILoginURL, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Login URL for Carbonio Admin web client to send the user to upon
+     * failed login, auth expired, or no/invalid auth
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3138)
+    public Map<String,Object> unsetCarbonioAdminUILoginURL(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminUILoginURL, "");
+        return attrs;
+    }
+
+    /**
+     * Logout URL for Carbonio Admin web client to send the user to upon
+     * explicit logging out
+     *
+     * @return carbonioAdminUILogoutURL, or null if unset
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3139)
+    public String getCarbonioAdminUILogoutURL() {
+        return getAttr(ZAttrProvisioning.A_carbonioAdminUILogoutURL, null, true);
+    }
+
+    /**
+     * Logout URL for Carbonio Admin web client to send the user to upon
+     * explicit logging out
+     *
+     * @param carbonioAdminUILogoutURL new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3139)
+    public void setCarbonioAdminUILogoutURL(String carbonioAdminUILogoutURL) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminUILogoutURL, carbonioAdminUILogoutURL);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Logout URL for Carbonio Admin web client to send the user to upon
+     * explicit logging out
+     *
+     * @param carbonioAdminUILogoutURL new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3139)
+    public Map<String,Object> setCarbonioAdminUILogoutURL(String carbonioAdminUILogoutURL, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminUILogoutURL, carbonioAdminUILogoutURL);
+        return attrs;
+    }
+
+    /**
+     * Logout URL for Carbonio Admin web client to send the user to upon
+     * explicit logging out
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3139)
+    public void unsetCarbonioAdminUILogoutURL() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminUILogoutURL, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Logout URL for Carbonio Admin web client to send the user to upon
+     * explicit logging out
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3139)
+    public Map<String,Object> unsetCarbonioAdminUILogoutURL(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAdminUILogoutURL, "");
+        return attrs;
+    }
+
+    /**
      * Admin Web UI App Logo preference for domain
      *
      * @return carbonioAdminUiAppLogo, or null if unset
@@ -1145,6 +1371,78 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
+     * Link to the Carbonio User Documentation
+     *
+     * @return carbonioUserDocumentationUrl, or "https://docs.zextras.com/carbonio/html/usage.html" if unset
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public String getCarbonioUserDocumentationUrl() {
+        return getAttr(ZAttrProvisioning.A_carbonioUserDocumentationUrl, "https://docs.zextras.com/carbonio/html/usage.html", true);
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @param carbonioUserDocumentationUrl new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public void setCarbonioUserDocumentationUrl(String carbonioUserDocumentationUrl) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, carbonioUserDocumentationUrl);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @param carbonioUserDocumentationUrl new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public Map<String,Object> setCarbonioUserDocumentationUrl(String carbonioUserDocumentationUrl, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, carbonioUserDocumentationUrl);
+        return attrs;
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public void unsetCarbonioUserDocumentationUrl() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Link to the Carbonio User Documentation
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.9.0
+     */
+    @ZAttr(id=3134)
+    public Map<String,Object> unsetCarbonioUserDocumentationUrl(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioUserDocumentationUrl, "");
+        return attrs;
+    }
+
+    /**
      * Enable video server recording for Carbonio
      *
      * @return carbonioVideoServerRecordingEnabled, or false if unset
@@ -1213,6 +1511,160 @@ public abstract class ZAttrDomain extends NamedEntry {
     public Map<String,Object> unsetCarbonioVideoServerRecordingEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_carbonioVideoServerRecordingEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Login URL for Carbonio web client to send the user to upon failed
+     * login, auth expired, or no/invalid auth
+     *
+     * @return carbonioWebUILoginURL, or null if unset
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3136)
+    public String getCarbonioWebUILoginURL() {
+        return getAttr(ZAttrProvisioning.A_carbonioWebUILoginURL, null, true);
+    }
+
+    /**
+     * Login URL for Carbonio web client to send the user to upon failed
+     * login, auth expired, or no/invalid auth
+     *
+     * @param carbonioWebUILoginURL new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3136)
+    public void setCarbonioWebUILoginURL(String carbonioWebUILoginURL) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWebUILoginURL, carbonioWebUILoginURL);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Login URL for Carbonio web client to send the user to upon failed
+     * login, auth expired, or no/invalid auth
+     *
+     * @param carbonioWebUILoginURL new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3136)
+    public Map<String,Object> setCarbonioWebUILoginURL(String carbonioWebUILoginURL, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWebUILoginURL, carbonioWebUILoginURL);
+        return attrs;
+    }
+
+    /**
+     * Login URL for Carbonio web client to send the user to upon failed
+     * login, auth expired, or no/invalid auth
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3136)
+    public void unsetCarbonioWebUILoginURL() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWebUILoginURL, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Login URL for Carbonio web client to send the user to upon failed
+     * login, auth expired, or no/invalid auth
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3136)
+    public Map<String,Object> unsetCarbonioWebUILoginURL(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWebUILoginURL, "");
+        return attrs;
+    }
+
+    /**
+     * Logout URL for Carbonio web client to send the user to upon explicit
+     * logging out
+     *
+     * @return carbonioWebUILogoutURL, or null if unset
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3137)
+    public String getCarbonioWebUILogoutURL() {
+        return getAttr(ZAttrProvisioning.A_carbonioWebUILogoutURL, null, true);
+    }
+
+    /**
+     * Logout URL for Carbonio web client to send the user to upon explicit
+     * logging out
+     *
+     * @param carbonioWebUILogoutURL new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3137)
+    public void setCarbonioWebUILogoutURL(String carbonioWebUILogoutURL) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWebUILogoutURL, carbonioWebUILogoutURL);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Logout URL for Carbonio web client to send the user to upon explicit
+     * logging out
+     *
+     * @param carbonioWebUILogoutURL new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3137)
+    public Map<String,Object> setCarbonioWebUILogoutURL(String carbonioWebUILogoutURL, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWebUILogoutURL, carbonioWebUILogoutURL);
+        return attrs;
+    }
+
+    /**
+     * Logout URL for Carbonio web client to send the user to upon explicit
+     * logging out
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3137)
+    public void unsetCarbonioWebUILogoutURL() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWebUILogoutURL, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Logout URL for Carbonio web client to send the user to upon explicit
+     * logging out
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.10.0
+     */
+    @ZAttr(id=3137)
+    public Map<String,Object> unsetCarbonioWebUILogoutURL(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWebUILogoutURL, "");
         return attrs;
     }
 
@@ -7268,8 +7720,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @return zimbraCsrfAllowedRefererHosts, or empty array if unset
      *
@@ -7281,8 +7734,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -7297,8 +7751,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new value
      * @param attrs existing map to populate, or null to create a new map
@@ -7314,8 +7769,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -7330,8 +7786,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -7347,8 +7804,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -7363,8 +7821,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -7380,8 +7839,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -7395,8 +7855,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -12526,10 +12987,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @return zimbraFreebusyExchangeServerType, or ZAttrProvisioning.FreebusyExchangeServerType.webdav if unset and/or has invalid value
      *
@@ -12541,10 +13001,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @return zimbraFreebusyExchangeServerType, or "webdav" if unset
      *
@@ -12556,10 +13015,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12574,10 +13032,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @param attrs existing map to populate, or null to create a new map
@@ -12593,10 +13050,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12611,10 +13067,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param zimbraFreebusyExchangeServerType new value
      * @param attrs existing map to populate, or null to create a new map
@@ -12630,10 +13085,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -12647,10 +13101,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Can be set to either webdav for Exchange 2007 or older, or ews for
-     * 2010 and newer
+     * Can be set to webdav for Exchange 2007 or older
      *
-     * <p>Valid values: [webdav, ews]
+     * <p>Valid values: [webdav]
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -18654,8 +19107,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @return zimbraOAuthConsumerCredentials, or empty array if unset
      *
@@ -18667,8 +19121,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -18683,8 +19138,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new value
      * @param attrs existing map to populate, or null to create a new map
@@ -18700,8 +19156,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -18716,8 +19173,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -18733,8 +19191,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -18749,8 +19208,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param zimbraOAuthConsumerCredentials existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -18766,8 +19226,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -18781,8 +19242,9 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * OAuth Consumer id, secret, and application name. It is in the format
-     * of {consumer-id}:{secret}:{consumer-app-name}
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: OAuth Consumer id, secret, and application name.
+     * It is in the format of {consumer-id}:{secret}:{consumer-app-name}
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

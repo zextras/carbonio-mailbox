@@ -175,16 +175,6 @@ public final class MailConstants {
       "DeclineCounterAppointmentResponse";
   public static final String E_IMPORT_APPOINTMENTS_REQUEST = "ImportAppointmentsRequest";
   public static final String E_IMPORT_APPOINTMENTS_RESPONSE = "ImportAppointmentsResponse";
-  public static final String E_GET_TASK_SUMMARIES_REQUEST = "GetTaskSummariesRequest";
-  public static final String E_GET_TASK_REQUEST = "GetTaskRequest";
-  public static final String E_SET_TASK_REQUEST = "SetTaskRequest";
-  public static final String E_CREATE_TASK_REQUEST = "CreateTaskRequest";
-  public static final String E_CREATE_TASK_EXCEPTION_REQUEST = "CreateTaskExceptionRequest";
-  public static final String E_MODIFY_TASK_REQUEST = "ModifyTaskRequest";
-  public static final String E_ADD_TASK_INVITE_REQUEST = "AddTaskInviteRequest";
-  public static final String E_ADD_TASK_INVITE_RESPONSE = "AddTaskInviteResponse";
-  public static final String E_CANCEL_TASK_REQUEST = "CancelTaskRequest";
-  public static final String E_COMPLETE_TASK_INSTANCE_REQUEST = "CompleteTaskInstanceRequest";
   public static final String E_GET_CALITEM_SUMMARIES_REQUEST = "GetCalendarItemSummariesRequest";
   public static final String E_SEND_INVITE_REPLY_REQUEST = "SendInviteReplyRequest";
   public static final String E_ICAL_REPLY_REQUEST = "ICalReplyRequest";
@@ -203,14 +193,6 @@ public final class MailConstants {
   public static final String E_GET_SPELL_DICTIONARIES_RESPONSE = "GetSpellDictionariesResponse";
   public static final String E_CHECK_SPELLING_REQUEST = "CheckSpellingRequest";
   public static final String E_CHECK_SPELLING_RESPONSE = "CheckSpellingResponse";
-  public static final String E_SAVE_DOCUMENT_REQUEST = "SaveDocumentRequest";
-  public static final String E_SAVE_DOCUMENT_RESPONSE = "SaveDocumentResponse";
-  public static final String E_DIFF_DOCUMENT_REQUEST = "DiffDocumentRequest";
-  public static final String E_DIFF_DOCUMENT_RESPONSE = "DiffDocumentResponse";
-  public static final String E_LIST_DOCUMENT_REVISIONS_REQUEST = "ListDocumentRevisionsRequest";
-  public static final String E_LIST_DOCUMENT_REVISIONS_RESPONSE = "ListDocumentRevisionsResponse";
-  public static final String E_PURGE_REVISION_REQUEST = "PurgeRevisionRequest";
-  public static final String E_PURGE_REVISION_RESPONSE = "PurgeRevisionResponse";
   public static final String E_CREATE_DATA_SOURCE_REQUEST = "CreateDataSourceRequest";
   public static final String E_CREATE_DATA_SOURCE_RESPONSE = "CreateDataSourceResponse";
   public static final String E_GET_DATA_SOURCES_REQUEST = "GetDataSourcesRequest";
@@ -486,22 +468,6 @@ public final class MailConstants {
       QName.get(E_IMPORT_APPOINTMENTS_REQUEST, NAMESPACE);
   public static final QName IMPORT_APPOINTMENTS_RESPONSE =
       QName.get(E_IMPORT_APPOINTMENTS_RESPONSE, NAMESPACE);
-
-  public static final QName GET_TASK_SUMMARIES_REQUEST =
-      QName.get(E_GET_TASK_SUMMARIES_REQUEST, NAMESPACE);
-  public static final QName GET_TASK_REQUEST = QName.get(E_GET_TASK_REQUEST, NAMESPACE);
-  public static final QName SET_TASK_REQUEST = QName.get(E_SET_TASK_REQUEST, NAMESPACE);
-  public static final QName CREATE_TASK_REQUEST = QName.get(E_CREATE_TASK_REQUEST, NAMESPACE);
-  public static final QName CREATE_TASK_EXCEPTION_REQUEST =
-      QName.get(E_CREATE_TASK_EXCEPTION_REQUEST, NAMESPACE);
-  public static final QName MODIFY_TASK_REQUEST = QName.get(E_MODIFY_TASK_REQUEST, NAMESPACE);
-  public static final QName ADD_TASK_INVITE_REQUEST =
-      QName.get(E_ADD_TASK_INVITE_REQUEST, NAMESPACE);
-  public static final QName ADD_TASK_INVITE_RESPONSE =
-      QName.get(E_ADD_TASK_INVITE_RESPONSE, NAMESPACE);
-  public static final QName CANCEL_TASK_REQUEST = QName.get(E_CANCEL_TASK_REQUEST, NAMESPACE);
-  public static final QName COMPLETE_TASK_INSTANCE_REQUEST =
-      QName.get(E_COMPLETE_TASK_INSTANCE_REQUEST, NAMESPACE);
 
   public static final QName GET_CALITEM_SUMMARIES_REQUEST =
       QName.get(E_GET_CALITEM_SUMMARIES_REQUEST, NAMESPACE);
@@ -998,7 +964,6 @@ public final class MailConstants {
   public static final String A_FIELD = "field";
   public static final String A_INCLUDE_TAG_DELETED = "includeTagDeleted";
   public static final String A_INCLUDE_TAG_MUTED = "includeTagMuted";
-  public static final String A_ALLOWABLE_TASK_STATUS = "allowableTaskStatus";
   public static final String A_IN_DUMPSTER = "inDumpster";
   public static final String A_WARMUP = "warmup";
   public static final String A_QUICK = "quick";
@@ -1039,7 +1004,6 @@ public final class MailConstants {
 
   // calendar / appointment
   public static final String E_APPOINTMENT = "appt";
-  public static final String E_TASK = "task";
   public static final String E_INVITE = "inv";
   public static final String E_INVITE_COMPONENT = "comp";
   public static final String E_CAL_DESCRIPTION = "desc";
@@ -1189,9 +1153,6 @@ public final class MailConstants {
   public static final String A_CAL_ATTENDEE = "at";
   public static final String A_CAL_PRIORITY = "priority";
   public static final String A_CAL_URL = "url";
-  public static final String A_TASK_PERCENT_COMPLETE = "percentComplete";
-  public static final String A_TASK_DUE_DATE = "dueDate";
-  public static final String A_TASK_COMPLETED = "completed";
   public static final String A_WAIT = "wait";
   public static final String A_DELEGATE = "delegate";
   public static final String A_TIMEOUT = "timeout";
@@ -1301,13 +1262,8 @@ public final class MailConstants {
   public static final String A_DS_REPLYTO_DISPLAY = "replyToDisplay";
   public static final String A_DS_IMPORT_CLASS = "importClass";
   public static final String A_DS_FAILING_SINCE = "failingSince";
-  public static final String A_DS_OAUTH_TOKEN = "oauthToken";
   public static final String A_DS_TEST = "test";
   public static final String A_DS_USAGE = "usage";
-  public static final String A_DS_CLIENT_ID = "clientId";
-  public static final String A_DS_CLIENT_SECRET = "clientSecret";
-  public static final String A_DS_REFRESH_TOKEN = "refreshToken";
-  public static final String A_DS_REFRESH_TOKEN_URL = "refreshTokenUrl";
 
   public static final String A_ACCT_RELATIVE_PATH = "acctRelPath";
 

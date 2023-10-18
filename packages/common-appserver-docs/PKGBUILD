@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-common-appserver-docs"
-pkgver="4.6.3"
+pkgver="4.9.1"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox Docs"
 pkgdesclong=(
@@ -20,8 +20,6 @@ package() {
 
   install -D "store/docs/Notification.md" \
     "${pkgdir}/opt/zextras/documentation/Notification.md"
-  install -D "store/docs/OAuthConsumer.txt" \
-    "${pkgdir}/opt/zextras/documentation/OAuthConsumer.txt"
   install -D "store/docs/RedoableOperations.txt" \
     "${pkgdir}/opt/zextras/documentation/RedoableOperations.txt"
   install -D "store/docs/ServerLocalization.txt" \

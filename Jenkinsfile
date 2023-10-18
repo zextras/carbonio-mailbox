@@ -1,6 +1,16 @@
 def mvnCmd(String cmd) {
-  sh 'mvn -B -s settings-jenkins.xml ' + cmd
+    def profile = ''
+    def revisionModifier = '-SNAPSHOT'
+    if (env.BRANCH_NAME == 'main' ) {
+        revisionModifier = ''
+        profile = '-Pprod'
+    }
+    else if (env.BRANCH_NAME == 'devel' ) {
+        profile = '-Pdev'
+    }
+    sh 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
 }
+
 pipeline {
     agent {
         node {
@@ -33,9 +43,25 @@ pipeline {
                 }
             }
         }
+        stage("Generate SBOM and submit"){
+            when {
+                anyOf {
+                    branch 'main'
+                }
+            }
+            steps{
+                sh '''
+                    curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b .
+                    ./syft . -o cyclonedx-json=sbom.cyclonedx.json
+                '''
+                dependencyTrackPublisher artifact: 'sbom.cyclonedx.json',
+                    synchronous: false,
+                    projectName: 'carbonio-mailbox',
+                    projectVersion: 'rc'
+            }
+        }
         stage('Build') {
             steps {
-
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
 
                 sh 'mkdir staging'
@@ -68,17 +94,13 @@ pipeline {
                 }
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS -Dsonar.dependencyCheck.htmlReportPath=target/dependency-check-report.html sonar:sonar")
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar")
                 }
             }
         }
         stage('Publish SNAPSHOT to maven') {
               when {
-                anyOf {
                   branch 'devel';
-                  branch 'chore/maven-build';
-                  expression{env.CHANGE_BRANCH == 'chore/maven-build'}
-                }
               }
               steps {
                 mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pdev')
@@ -110,7 +132,25 @@ pipeline {
                     }
                     post {
                         always {
-                        archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
+                        archiveArtifacts artifacts: 'artifacts/*focal*.deb', fingerprint: true
+                        }
+                    }
+                    }
+                    stage('Ubuntu 22.04') {
+                    agent {
+                        node {
+                        label 'pacur-agent-ubuntu-22.04-v1'
+                        }
+                    }
+                    steps {
+                        unstash 'staging'
+                        sh 'cp -r staging /tmp'
+                        sh 'sudo pacur build ubuntu-jammy /tmp/staging/packages'
+                        stash includes: 'artifacts/', name: 'artifacts-ubuntu-jammy'
+                    }
+                    post {
+                        always {
+                        archiveArtifacts artifacts: 'artifacts/*jammy*.deb', fingerprint: true
                         }
                     }
                     }
@@ -144,6 +184,7 @@ pipeline {
             }
             steps {
                 unstash 'artifacts-ubuntu-focal'
+                unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-rocky-8'
 
                     script {
@@ -156,6 +197,11 @@ pipeline {
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-devel/pool/",
                             "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/*jammy*.deb",
+                            "target": "ubuntu-devel/pool/",
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                         },
                         {
                             "pattern": "artifacts/(carbonio-appserver-conf)-(*).rpm",
@@ -223,6 +269,7 @@ pipeline {
             }
             steps {
                 unstash 'artifacts-ubuntu-focal'
+                unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-rocky-8'
 
                 script {
@@ -235,6 +282,11 @@ pipeline {
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-playground/pool/",
                             "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/*jammy*.deb",
+                            "target": "ubuntu-playground/pool/",
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                         },
                         {
                             "pattern": "artifacts/(carbonio-appserver-conf)-(*).rpm",
@@ -301,6 +353,7 @@ pipeline {
                 }
                 steps {
                     unstash 'artifacts-ubuntu-focal'
+                    unstash 'artifacts-ubuntu-jammy'
                     unstash 'artifacts-rocky-8'
 
                     script {
@@ -317,6 +370,11 @@ pipeline {
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-rc/pool/",
                             "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/*jammy*.deb",
+                            "target": "ubuntu-rc/pool/",
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                         }]
                         }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false

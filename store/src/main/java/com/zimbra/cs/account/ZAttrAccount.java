@@ -8325,8 +8325,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * List of data associated with CSRF token for an account. The data
-     * format is CSRF token data:Auth token Key crumb:Auth Token Key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: List of data associated with CSRF token for an account. The
+     * data format is CSRF token data:Auth token Key crumb:Auth Token Key
      * expiration
      *
      * Ephemeral attribute - requests routed to EphemeralStore
@@ -8343,8 +8344,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * List of data associated with CSRF token for an account. The data
-     * format is CSRF token data:Auth token Key crumb:Auth Token Key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: List of data associated with CSRF token for an account. The
+     * data format is CSRF token data:Auth token Key crumb:Auth Token Key
      * expiration
      *
      * Ephemeral attribute - requests routed to EphemeralStore
@@ -8360,8 +8362,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * List of data associated with CSRF token for an account. The data
-     * format is CSRF token data:Auth token Key crumb:Auth Token Key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: List of data associated with CSRF token for an account. The
+     * data format is CSRF token data:Auth token Key crumb:Auth Token Key
      * expiration
      *
      * Ephemeral attribute - requests routed to EphemeralStore
@@ -8377,8 +8380,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * List of data associated with CSRF token for an account. The data
-     * format is CSRF token data:Auth token Key crumb:Auth Token Key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: List of data associated with CSRF token for an account. The
+     * data format is CSRF token data:Auth token Key crumb:Auth Token Key
      * expiration
      *
      * Ephemeral attribute - requests routed to EphemeralStore
@@ -8393,8 +8397,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * List of data associated with CSRF token for an account. The data
-     * format is CSRF token data:Auth token Key crumb:Auth Token Key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: List of data associated with CSRF token for an account. The
+     * data format is CSRF token data:Auth token Key crumb:Auth Token Key
      * expiration
      *
      * Ephemeral attribute - requests routed to EphemeralStore
@@ -16611,7 +16616,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * email features enabled
+     * Deprecated since: 23.11.0. deprecated per CO-759 as no longer used.
+     * Orig desc: email features enabled
      *
      * @return zimbraFeatureMailEnabled, or true if unset
      */
@@ -16621,7 +16627,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * email features enabled
+     * Deprecated since: 23.11.0. deprecated per CO-759 as no longer used.
+     * Orig desc: email features enabled
      *
      * @param zimbraFeatureMailEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -16634,7 +16641,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * email features enabled
+     * Deprecated since: 23.11.0. deprecated per CO-759 as no longer used.
+     * Orig desc: email features enabled
      *
      * @param zimbraFeatureMailEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -16648,7 +16656,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * email features enabled
+     * Deprecated since: 23.11.0. deprecated per CO-759 as no longer used.
+     * Orig desc: email features enabled
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -16660,7 +16669,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * email features enabled
+     * Deprecated since: 23.11.0. deprecated per CO-759 as no longer used.
+     * Orig desc: email features enabled
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -17604,8 +17614,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      *
      * @return zimbraFeatureMobileSyncEnabled, or false if unset
      */
@@ -17615,8 +17624,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      *
      * @param zimbraFeatureMobileSyncEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -17629,8 +17637,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      *
      * @param zimbraFeatureMobileSyncEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -17644,8 +17651,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -17657,8 +17663,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Deprecated since: 23.8.0. Zimbra Mobile Gateway feature has been
-     * removed. Orig desc: whether to permit mobile sync
+     * whether to permit mobile sync
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -35204,7 +35209,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @return zimbraOAuthAccessor, or empty array if unset
      *
@@ -35216,7 +35223,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -35231,7 +35240,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new value
      * @param attrs existing map to populate, or null to create a new map
@@ -35247,7 +35258,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -35262,7 +35275,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -35278,7 +35293,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -35293,7 +35310,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param zimbraOAuthAccessor existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -35309,7 +35328,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -35323,7 +35344,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Credentials associated with a successfully authorized OAuth Consumer
+     * Deprecated since: 23.9.0. This OAuth implementation is not supported
+     * anymore. Orig desc: Credentials associated with a successfully
+     * authorized OAuth Consumer
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

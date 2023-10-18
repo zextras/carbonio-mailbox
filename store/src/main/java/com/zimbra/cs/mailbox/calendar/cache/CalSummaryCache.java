@@ -443,7 +443,7 @@ public class CalSummaryCache {
 
     Account targetAcct = Provisioning.getInstance().get(AccountBy.id, targetAcctId);
     if (targetAcct == null) return null;
-    boolean targetAcctOnLocalServer = Provisioning.onLocalServer(targetAcct);
+    boolean targetAcctOnLocalServer = Provisioning.getInstance().onLocalServer(targetAcct);
 
     CalendarDataResult result = new CalendarDataResult();
 
@@ -746,7 +746,7 @@ public class CalSummaryCache {
       Mailbox lastMbox = null;
       for (Map.Entry<ModificationKey, Change> entry : mods.deleted.entrySet()) {
         MailItem.Type type = (MailItem.Type) entry.getValue().what;
-        if (type == MailItem.Type.APPOINTMENT || type == MailItem.Type.TASK) {
+        if (type == MailItem.Type.APPOINTMENT) {
           // We only have item id.  Look up the folder id of the item in the cache.
           Mailbox mbox;
           String acctId = entry.getKey().getAccountId();

@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.zimbra.common.account.ZAttrProvisioning.DataSourceAuthMechanism;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -117,33 +116,6 @@ public class CreateDataSource extends MailDocumentHandler {
           Provisioning.A_zimbraDataSourceLeaveOnServer,
           LdapUtil.getLdapBooleanString(
               eDataSource.getAttributeBool(MailConstants.A_DS_LEAVE_ON_SERVER, true)));
-    }
-
-    value = eDataSource.getAttribute(MailConstants.A_DS_OAUTH_TOKEN, null);
-    if (value != null) {
-      dsAttrs.put(Provisioning.A_zimbraDataSourceOAuthToken, value);
-      dsAttrs.put(
-          Provisioning.A_zimbraDataSourceAuthMechanism, DataSourceAuthMechanism.XOAUTH2.name());
-    }
-
-    value = eDataSource.getAttribute(MailConstants.A_DS_CLIENT_ID, null);
-    if (value != null) {
-      dsAttrs.put(Provisioning.A_zimbraDataSourceOAuthClientId, value);
-    }
-
-    value = eDataSource.getAttribute(MailConstants.A_DS_CLIENT_SECRET, null);
-    if (value != null) {
-      dsAttrs.put(Provisioning.A_zimbraDataSourceOAuthClientSecret, value);
-    }
-
-    value = eDataSource.getAttribute(MailConstants.A_DS_REFRESH_TOKEN, null);
-    if (value != null) {
-      dsAttrs.put(Provisioning.A_zimbraDataSourceOAuthRefreshToken, value);
-    }
-
-    value = eDataSource.getAttribute(MailConstants.A_DS_REFRESH_TOKEN_URL, null);
-    if (value != null) {
-      dsAttrs.put(Provisioning.A_zimbraDataSourceOAuthRefreshTokenUrl, value);
     }
 
     DataSource ds;

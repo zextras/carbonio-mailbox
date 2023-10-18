@@ -51,7 +51,6 @@ import com.zimbra.cs.mailbox.Mountpoint;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.SearchFolder;
 import com.zimbra.cs.mailbox.Tag;
-import com.zimbra.cs.mailbox.Task;
 import com.zimbra.cs.mailbox.calendar.IcsImportParseHandler;
 import com.zimbra.cs.mailbox.calendar.IcsImportParseHandler.ImportInviteVisitor;
 import com.zimbra.cs.mailbox.calendar.Invite;
@@ -307,7 +306,6 @@ public abstract class ArchiveFormatter extends Formatter {
             MailItem.Type.MESSAGE,
             MailItem.Type.CONTACT,
             MailItem.Type.APPOINTMENT,
-            MailItem.Type.TASK,
             MailItem.Type.CHAT);
     ArchiveOutputStream aos = null;
     String types = context.getTypesString();
@@ -458,12 +456,6 @@ public abstract class ArchiveFormatter extends Formatter {
             calendarTypes.add(MailItem.Type.APPOINTMENT);
             typesMap.put(calendarTypes, calendarQuery);
           }
-          if (searchTypes.contains(MailItem.Type.TASK)) {
-            searchTypes.remove(MailItem.Type.TASK);
-            Set<MailItem.Type> taskTypes = new HashSet<MailItem.Type>();
-            taskTypes.add(MailItem.Type.TASK);
-            typesMap.put(taskTypes, (StringUtil.isNullOrEmpty(taskQuery)) ? "is:local" : taskQuery);
-          }
         }
         for (Map.Entry<Set<MailItem.Type>, String> entry : typesMap.entrySet()) {
           results =
@@ -560,7 +552,7 @@ public abstract class ArchiveFormatter extends Formatter {
       throws ServiceException {
 
     String ext = null, name = null;
-    StringBuilder extra = null;
+    StringBuilder extra = new StringBuilder();
     Integer fid = mi.getFolderId();
     String fldr;
     InputStream is = null;
@@ -640,16 +632,6 @@ public abstract class ArchiveFormatter extends Formatter {
           }
         }
         ext = "eml";
-        break;
-
-      case TASK:
-        Task task = (Task) mi;
-        if (!task.isPublic()
-            && !task.allowPrivateAccess(
-                context.getAuthAccount(), context.isUsingAdminPrivileges())) {
-          return aos;
-        }
-        ext = "task";
         break;
 
       case VIRTUAL_CONVERSATION:
@@ -1336,17 +1318,9 @@ public abstract class ArchiveFormatter extends Formatter {
 
       switch (mi.getType()) {
         case APPOINTMENT:
-        case TASK:
           CalendarItem ci = (CalendarItem) mi;
 
-          fldr =
-              createPath(
-                  context,
-                  fmap,
-                  path,
-                  ci.getType() == MailItem.Type.APPOINTMENT
-                      ? MailItem.Type.APPOINTMENT
-                      : MailItem.Type.TASK);
+          fldr = createPath(context, fmap, path, MailItem.Type.APPOINTMENT);
           if (!root || r != Resolve.Reset) {
             CalendarItem oldCI = null;
 
@@ -1402,7 +1376,6 @@ public abstract class ArchiveFormatter extends Formatter {
             }
           }
           break;
-
         case CHAT:
           Chat chat = (Chat) mi;
           byte[] content = readArchiveEntry(ais, aie);
@@ -1791,15 +1764,9 @@ public abstract class ArchiveFormatter extends Formatter {
         type = MailItem.Type.MESSAGE;
         view = MailItem.Type.MESSAGE;
       } else if (file.endsWith(".ics")) {
-        if (dir.startsWith("Tasks/")) {
-          defaultFldr = Mailbox.ID_FOLDER_TASKS;
-          type = MailItem.Type.TASK;
-          view = MailItem.Type.TASK;
-        } else {
-          defaultFldr = Mailbox.ID_FOLDER_CALENDAR;
-          type = MailItem.Type.APPOINTMENT;
-          view = MailItem.Type.APPOINTMENT;
-        }
+        defaultFldr = Mailbox.ID_FOLDER_CALENDAR;
+        type = MailItem.Type.APPOINTMENT;
+        view = MailItem.Type.APPOINTMENT;
       } else {
         throw ServiceException.FAILURE("Unable to identify file extension");
       }
@@ -1822,7 +1789,6 @@ public abstract class ArchiveFormatter extends Formatter {
       }
       switch (type) {
         case APPOINTMENT:
-        case TASK:
           boolean continueOnError = context.ignoreAndContinueOnError();
           boolean preserveExistingAlarms = context.preserveAlarms();
           InputStream is = ais.getInputStream();
