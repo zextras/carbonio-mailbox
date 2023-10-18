@@ -93,7 +93,12 @@ public class SoapServlet extends ZimbraServlet {
     int i = 0;
     String cname;
     while ((cname = getInitParameter(PARAM_ENGINE_HANDLER + i)) != null) {
-      loadHandler(cname);
+      try {
+        loadHandler(cname);
+      } catch (ServiceException e) {
+        throw new ServletException(
+            "Failed to startup SoapServlet. Cannot load handler " + cname + ": " + e.getMessage());
+      }
       i++;
     }
 
@@ -101,7 +106,13 @@ public class SoapServlet extends ZimbraServlet {
     synchronized (sExtraServices) {
       List<DocumentService> services = LoadingCacheUtil.get(sExtraServices, getServletName());
       for (DocumentService service : services) {
-        addService(service);
+        try {
+          service.registerHandlers(mEngine.getDocumentDispatcher());
+        } catch (ServiceException exception) {
+          throw new ServletException(
+              "Failed to startup SoapServlet. Cannot register service handlers: "
+                  + exception.getMessage());
+        }
         i++;
       }
     }
@@ -141,7 +152,7 @@ public class SoapServlet extends ZimbraServlet {
     super.destroy();
   }
 
-  private void loadHandler(String cname) throws ServletException {
+  private void loadHandler(String cname) throws ServletException, ServiceException {
     Class<?> dispatcherClass = null;
     try {
       dispatcherClass = Class.forName(cname);
@@ -171,14 +182,38 @@ public class SoapServlet extends ZimbraServlet {
     addService(hi);
   }
 
-  private void addService(DocumentService service) throws ServletException {
+  /**
+   * Note: this method is used by extensions loaded through {@link
+   * com.zimbra.cs.extension.ExtensionUtil} during {@link Zimbra#startup()}. An extension should not
+   * prevent application/servlet startup. If adding a service through extension fails we do not want
+   * to prevent startup of the servlet.
+   *
+   * <p>Adds a service to the instance of <code>SoapServlet</code> with the given name. If the
+   * servlet has not been loaded, stores the service for later initialization.
+   */
+  public static void addService(String servletName, DocumentService service) {
+    synchronized (sExtraServices) {
+      ZimbraServlet servlet = ZimbraServlet.getServlet(servletName);
+      if (servlet != null) {
+        try {
+          ((SoapServlet) servlet).addService(service);
+        } catch (ServiceException e) {
+          ZimbraLog.soap.error("Cannot add service", e);
+        }
+      } else {
+        sLog.debug(
+            "addService(%s, %s): servlet has not been initialized",
+            servletName, service.getClass().getSimpleName());
+        List<DocumentService> services = LoadingCacheUtil.get(sExtraServices, servletName);
+        services.add(service);
+      }
+    }
+  }
+
+  private void addService(DocumentService service) throws ServiceException {
     ZimbraLog.soap.info(
         "Adding service %s to %s", service.getClass().getSimpleName(), getServletName());
-    try {
-      service.registerHandlers(mEngine.getDocumentDispatcher());
-    } catch (ServiceException exception) {
-      throw new ServletException("Failed to startup soap servlet: " + exception.getMessage());
-    }
+    service.registerHandlers(mEngine.getDocumentDispatcher());
   }
 
   @Override
