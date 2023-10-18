@@ -409,6 +409,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>com.github.stefanbirkner</groupId>
+      <artifactId>system-lambda</artifactId>
+      <version>1.2.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
       <scope>provided</scope>

@@ -5,8 +5,8 @@
 
 package com.zimbra.cs.service.admin;
 
-import java.util.Map;
-
+import com.zimbra.common.account.Key;
+import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -15,10 +15,8 @@ import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.common.account.Key;
-import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.account.Key.DistributionListBy;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.util.Map;
 
 public abstract class ShareInfoHandler extends AdminDocumentHandler {
 

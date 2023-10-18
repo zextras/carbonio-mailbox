@@ -7,6 +7,7 @@ package com.zimbra.cs.account;
 
 import com.google.common.base.Strings;
 import com.sun.mail.smtp.SMTPMessage;
+import com.zextras.mailbox.account.usecase.FolderUtil;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.ZAttrProvisioning.AccountStatus;
@@ -44,7 +45,6 @@ import com.zimbra.soap.mail.message.SendShareNotificationRequest.Action;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -213,20 +213,9 @@ public class ShareInfo {
     if (folders == null) {
       FolderNode root = mbox.getFolderTree(octxt, null, false);
       // flatten it
-      folders = flattenAndSortFolderTree(root);
+      folders = FolderUtil.flattenAndSortFolderTree(root);
     }
     return folders;
-  }
-
-  private static Set<Folder> flattenAndSortFolderTree(FolderNode root) {
-    Set<Folder> folders = new HashSet<Folder>();
-    flattenAndSortFolderTree(root, folders);
-    return folders;
-  }
-
-  private static void flattenAndSortFolderTree(FolderNode node, Set<Folder> flattened) {
-    if (node.mFolder != null) flattened.add(node.mFolder);
-    for (FolderNode subNode : node.mSubfolders) flattenAndSortFolderTree(subNode, flattened);
   }
 
   /*
