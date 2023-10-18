@@ -403,7 +403,7 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
-        <artifactId>mailbox-soap-client</artifactId>
+        <artifactId>carbonio-mailbox-sdk</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>

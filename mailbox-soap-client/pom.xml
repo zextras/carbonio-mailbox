@@ -9,9 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-only
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <name>carbonio-mailbox-soap-client</name>
   <packaging>jar</packaging>
-  <artifactId>mailbox-soap-client</artifactId>
+  <artifactId>carbonio-mailbox-sdk</artifactId>
+  <name>carbonio-mailbox-soap-client</name>
 
   <parent>
     <groupId>zextras</groupId>
