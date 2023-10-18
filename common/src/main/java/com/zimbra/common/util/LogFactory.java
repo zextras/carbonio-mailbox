@@ -17,7 +17,9 @@ package com.zimbra.common.util;
  */
 public class LogFactory {
 
-  private LogFactory() {}
+  private LogFactory() {
+    throw new java.lang.UnsupportedOperationException("Utility class and cannot be instantiated");
+  }
 
   /**
    * Gets {@link Log} by class.
@@ -41,7 +43,6 @@ public class LogFactory {
    */
   public static Log getLog(final String name) {
     return LogManager.getGlobalLogMapper()
-        .computeIfAbsent(
-            name, n -> new Log(org.apache.logging.log4j.LogManager.getContext().getLogger(n)));
+        .computeIfAbsent(name, n -> new Log(LogManager.getContext().getLogger(n)));
   }
 }
