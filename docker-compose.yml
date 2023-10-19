@@ -1,6 +1,9 @@
 services:
   app:
     build: .
+    depends_on:
+      ldap:
+        condition: service_healthy
     ports:
       - "7070:7070"
       - "7071:7071"
@@ -10,6 +13,8 @@ services:
   ldap:
     image: carbonio/ce-ldap-u20
     hostname: ldap.mail.local
+    healthcheck:
+      test: nc -z localhost 2812 || exit 1 # check monit up and running
     ports:
       - "389:389"
     volumes:
