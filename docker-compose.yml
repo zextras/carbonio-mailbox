@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    depends_on: ldap
+    ports:
+      - "8080:80"
+      - "7071:7071"
+    volumes:
+      - "./:/app"
+      - "~/.m2:/root/.m2"
+  ldap:
+    image: carbonio/ce-ldap-u20
+    ports:
+      - "389:389"
+    volumes:
+      - "./store/build/ldap:/opt/zextras/common/etc/openldap/zimbra"
