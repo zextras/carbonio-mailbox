@@ -1375,6 +1375,83 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Waiting for data from a client socket connected to ClamAV will timeout
+     * after this time (seconds)
+     *
+     * @return carbonioClamAVReadTimeout, or 900 if unset
+     *
+     * @since ZCS 23.11.0
+     */
+    @ZAttr(id=3140)
+    public int getCarbonioClamAVReadTimeout() {
+        return getIntAttr(ZAttrProvisioning.A_carbonioClamAVReadTimeout, 900, true);
+    }
+
+    /**
+     * Waiting for data from a client socket connected to ClamAV will timeout
+     * after this time (seconds)
+     *
+     * @param carbonioClamAVReadTimeout new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.11.0
+     */
+    @ZAttr(id=3140)
+    public void setCarbonioClamAVReadTimeout(int carbonioClamAVReadTimeout) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioClamAVReadTimeout, Integer.toString(carbonioClamAVReadTimeout));
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Waiting for data from a client socket connected to ClamAV will timeout
+     * after this time (seconds)
+     *
+     * @param carbonioClamAVReadTimeout new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.11.0
+     */
+    @ZAttr(id=3140)
+    public Map<String,Object> setCarbonioClamAVReadTimeout(int carbonioClamAVReadTimeout, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioClamAVReadTimeout, Integer.toString(carbonioClamAVReadTimeout));
+        return attrs;
+    }
+
+    /**
+     * Waiting for data from a client socket connected to ClamAV will timeout
+     * after this time (seconds)
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.11.0
+     */
+    @ZAttr(id=3140)
+    public void unsetCarbonioClamAVReadTimeout() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioClamAVReadTimeout, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Waiting for data from a client socket connected to ClamAV will timeout
+     * after this time (seconds)
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.11.0
+     */
+    @ZAttr(id=3140)
+    public Map<String,Object> unsetCarbonioClamAVReadTimeout(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioClamAVReadTimeout, "");
+        return attrs;
+    }
+
+    /**
      * Logo URL for domain
      *
      * @return carbonioLogoUrl, or "https://www.zextras.com" if unset
