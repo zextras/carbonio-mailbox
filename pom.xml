@@ -991,7 +991,6 @@
               <exclude>com.zimbra.cs.util.tnef.mapi.TestTnefTimeZone.java</exclude>
               <!-- Exclude classes that were already excluded before maven migration -->
               <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
-              <exclude>com.zimbra.cs.service.mail.SendMsgTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>

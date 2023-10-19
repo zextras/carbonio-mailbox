@@ -11,13 +11,19 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.mailbox.DeliveryOptions;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
+import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import javax.mail.internet.MimeMessage;
 
 /**
  * This utility class allows easy setup for the Mailbox environment using {@link #setUp()} method.
@@ -41,6 +47,7 @@ public class MailboxTestUtil {
    * @throws Exception
    */
   public static void setUp() throws Exception {
+    System.setProperty("zimbra.native.required", "false");
     System.setProperty(
         "zimbra.config",
         Objects.requireNonNull(
@@ -95,5 +102,22 @@ public class MailboxTestUtil {
     attrs.putAll(extraAttrs);
     return Provisioning.getInstance()
         .createAccount(UUID.randomUUID() + "@" + MailboxTestUtil.DEFAULT_DOMAIN, "password", attrs);
+  }
+
+  /**
+   * Saves a message in a mailbox. Used to simulate receiving of a message.
+   *
+   * @param mailbox mailbox where to save the message
+   * @param message message to save
+   * @return saved {@link javax.mail.Message}
+   * @throws ServiceException
+   * @throws IOException
+   */
+  public static Message saveMsgInInbox(Mailbox mailbox, javax.mail.Message message)
+      throws ServiceException, IOException {
+    final ParsedMessage parsedMessage = new ParsedMessage((MimeMessage) message, false);
+    final DeliveryOptions deliveryOptions =
+        new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+    return mailbox.addMessage(null, parsedMessage, deliveryOptions, null);
   }
 }
