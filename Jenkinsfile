@@ -1,8 +1,6 @@
 def mvnCmd(String cmd) {
     def profile = ''
-    def revisionModifier = '-SNAPSHOT'
     if (env.BRANCH_NAME == 'main' ) {
-        revisionModifier = ''
         profile = '-Pprod'
     }
     else if (env.BRANCH_NAME == 'devel' ) {
