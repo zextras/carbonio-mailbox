@@ -31,6 +31,7 @@ import com.zimbra.cs.index.elasticsearch.ElasticSearchIndex;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.ParsedMessage;
+import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.MockStoreManager;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.http.HttpStoreManagerTest.MockHttpStoreManager;
@@ -153,6 +154,7 @@ public final class MailboxTestUtil {
 
     LC.zimbra_class_store.setDefault(storeManagerClass.getName());
     StoreManager.getInstance().startup();
+    RedoLogProvider.getInstance().startup();
   }
 
   /** Clears the database and index. */
