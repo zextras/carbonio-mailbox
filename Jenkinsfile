@@ -116,19 +116,19 @@ pipeline {
         }
         stage('Build deb/rpm') {
             stages {
-                stage('pacur') {
+                stage('yap') {
                 parallel {
                     stage('Ubuntu 20.04') {
                     agent {
                         node {
-                        label 'pacur-agent-ubuntu-20.04-v1'
+                        label 'yap-agent-ubuntu-20.04-v2'
                         }
                     }
                     steps {
                         unstash 'staging'
                         sh 'cp -r staging /tmp'
-                        sh 'sudo pacur build ubuntu-focal /tmp/staging/packages'
-                        stash includes: 'artifacts/', name: 'artifacts-ubuntu-focal'
+                        sh 'sudo yap build ubuntu-focal /tmp/staging/packages'
+                        stash includes: 'artifacts/*.deb', name: 'artifacts-ubuntu-focal'
                     }
                     post {
                         always {
@@ -139,36 +139,54 @@ pipeline {
                     stage('Ubuntu 22.04') {
                     agent {
                         node {
-                        label 'pacur-agent-ubuntu-22.04-v1'
+                        label 'yap-agent-ubuntu-22.04-v2'
                         }
                     }
                     steps {
                         unstash 'staging'
                         sh 'cp -r staging /tmp'
-                        sh 'sudo pacur build ubuntu-jammy /tmp/staging/packages'
-                        stash includes: 'artifacts/', name: 'artifacts-ubuntu-jammy'
+                        sh 'sudo yap build ubuntu-jammy /tmp/staging/packages'
+                        stash includes: 'artifacts/*.deb', name: 'artifacts-ubuntu-jammy'
                     }
                     post {
                         always {
-                        archiveArtifacts artifacts: 'artifacts/*jammy*.deb', fingerprint: true
+                        archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
                         }
                     }
                     }
                     stage('Rocky 8') {
                     agent {
                         node {
-                        label 'pacur-agent-rocky-8-v1'
+                        label 'yap-agent-rocky-8-v2'
                         }
                     }
                     steps {
                         unstash 'staging'
                         sh 'cp -r staging /tmp'
-                        sh 'sudo pacur build rocky-8 /tmp/staging/packages'
-                        stash includes: 'artifacts/', name: 'artifacts-rocky-8'
+                        sh 'sudo yap build rocky-8 /tmp/staging/packages'
+                        stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-rocky-8'
                     }
                     post {
                         always {
-                        archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
+                        archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
+                        }
+                    }
+                    }
+                    stage('Rocky 9') {
+                    agent {
+                        node {
+                        label 'yap-agent-rocky-9-v2'
+                        }
+                    }
+                    steps {
+                        unstash 'staging'
+                        sh 'cp -r staging /tmp'
+                        sh 'sudo yap build rocky-9 /tmp/staging/packages'
+                        stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-rocky-9'
+                    }
+                    post {
+                        always {
+                        archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
                         }
                     }
                     }
@@ -186,6 +204,7 @@ pipeline {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-rocky-8'
+                unstash 'artifacts-rocky-9'
 
                     script {
                     def server = Artifactory.server 'zextras-artifactory'
@@ -204,53 +223,103 @@ pipeline {
                             "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-appserver-conf)-(*).rpm",
-                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-conf)-(*).el8.x86_64.rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-appserver-service)-(*).rpm",
-                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-service)-(*).el8.x86_64.rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-appserver-war)-(*).rpm",
-                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-war)-(*).el8.x86_64.rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-conf)-(*).rpm",
-                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-conf)-(*).el8.x86_64.rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-db)-(*).rpm",
-                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-db)-(*).el8.x86_64.rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-docs)-(*).rpm",
-                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-docs)-(*).el8.x86_64.rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-native-lib)-(*).rpm",
-                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-native-lib)-(*).el8.x86_64.rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-core-jar)-(*).rpm",
-                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-jar)-(*).el8.x86_64.rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-appserver-store-libs)-(*).rpm",
-                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-store-libs)-(*).el8.x86_64.rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-core-libs)-(*).rpm",
-                            "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-libs)-(*).el8.x86_64.rpm",
+                            "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-conf)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-service)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-war)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-conf)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-db)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-docs)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-native-lib)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-jar)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-store-libs)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-libs)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         }
                         ]
@@ -271,6 +340,7 @@ pipeline {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-rocky-8'
+                unstash 'artifacts-rocky-9'
 
                 script {
                     def server = Artifactory.server 'zextras-artifactory'
@@ -289,53 +359,103 @@ pipeline {
                             "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-appserver-conf)-(*).rpm",
-                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-conf)-(*).el8.x86_64.rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-appserver-service)-(*).rpm",
-                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-service)-(*).el8.x86_64.rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-appserver-war)-(*).rpm",
-                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-war)-(*).el8.x86_64.rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-conf)-(*).rpm",
-                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-conf)-(*).el8.x86_64.rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-db)-(*).rpm",
-                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-db)-(*).el8.x86_64.rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-docs)-(*).rpm",
-                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-docs)-(*).el8.x86_64.rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-native-lib)-(*).rpm",
-                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-native-lib)-(*).el8.x86_64.rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-core-jar)-(*).rpm",
-                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-jar)-(*).el8.x86_64.rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-appserver-store-libs)-(*).rpm",
-                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-store-libs)-(*).el8.x86_64.rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-core-libs)-(*).rpm",
-                            "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-libs)-(*).el8.x86_64.rpm",
+                            "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-conf)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-service)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-war)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-conf)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-db)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-docs)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-native-lib)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-jar)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-store-libs)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-libs)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         }
                         ]
@@ -355,6 +475,7 @@ pipeline {
                     unstash 'artifacts-ubuntu-focal'
                     unstash 'artifacts-ubuntu-jammy'
                     unstash 'artifacts-rocky-8'
+                    unstash 'artifacts-rocky-9'
 
                     script {
                         def server = Artifactory.server 'zextras-artifactory'
@@ -392,58 +513,58 @@ pipeline {
                     Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: "Ubuntu Promotion to Release"
                     server.publishBuildInfo buildInfo
 
-                    //rocky8
+                    //rhel9
                     buildInfo = Artifactory.newBuildInfo()
                     buildInfo.name += '-centos8'
                     uploadSpec = '''{
                         "files": [{
-                            "pattern": "artifacts/(carbonio-appserver-conf)-(*).rpm",
-                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-conf)-(*).el8.x86_64.rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-appserver-service)-(*).rpm",
-                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-service)-(*).el8.x86_64.rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-appserver-war)-(*).rpm",
-                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-war)-(*).el8.x86_64.rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-conf)-(*).rpm",
-                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-conf)-(*).el8.x86_64.rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-db)-(*).rpm",
-                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-db)-(*).el8.x86_64.rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-docs)-(*).rpm",
-                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-docs)-(*).el8.x86_64.rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-appserver-native-lib)-(*).rpm",
-                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-native-lib)-(*).el8.x86_64.rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-core-jar)-(*).rpm",
-                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-jar)-(*).el8.x86_64.rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-appserver-store-libs)-(*).rpm",
-                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-store-libs)-(*).el8.x86_64.rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         },
                         {
-                            "pattern": "artifacts/(carbonio-common-core-libs)-(*).rpm",
-                            "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-libs)-(*).el8.x86_64.rpm",
+                            "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
                             "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                         }
                         ]
@@ -461,6 +582,77 @@ pipeline {
                         'failFast': true
                     ]
                     Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'Centos8 Promotion to Release'
+                    server.publishBuildInfo buildInfo
+
+                    //rhel9
+                    buildInfo = Artifactory.newBuildInfo()
+                    buildInfo.name += '-rhel9'
+                    uploadSpec = '''{
+                        "files": [{
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-conf)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-service)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-war)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-conf)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-db)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-docs)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-appserver-native-lib)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-jar)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-appserver-store-libs)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        },
+                        {
+                            "pattern": "artifacts/x86_64/(carbonio-common-core-libs)-(*).el9.x86_64.rpm",
+                            "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                            "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                        }
+                        ]
+                    }'''
+                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+                    config = [
+                        'buildName': buildInfo.name,
+                        'buildNumber': buildInfo.number,
+                        'sourceRepo': 'rhel9-rc',
+                        'targetRepo': 'rhel9-release',
+                        'comment': 'Do not change anything! Just press the button',
+                        'status': 'Released',
+                        'includeDependencies': false,
+                        'copy': true,
+                        'failFast': true
+                    ]
+                    Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'RHEL9 Promotion to Release'
                     server.publishBuildInfo buildInfo
                 }
             }
