@@ -82,7 +82,6 @@ public class MailboxTestUtil {
    */
   public static void tearDown() throws ServiceException {
     inMemoryDirectoryServer.clear();
-    RedoLogProvider.getInstance().shutdown();
     inMemoryDirectoryServer.shutDown(true);
   }
 
