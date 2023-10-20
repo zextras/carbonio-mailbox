@@ -1843,12 +1843,7 @@ public final class ToXML {
           m,
           Mime.parseAddressHeader(mm.getHeader("Resent-From", null), false),
           EmailType.RESENT_FROM);
-      // read-receipts only get sent by the mailbox's owner
-      if (!(octxt.isDelegatedRequest(msg.getMailbox())
-          && octxt.isOnBehalfOfRequest(msg.getMailbox()))) {
-        addEmails(
-            m, Mime.parseAddressHeader(mm, "Disposition-Notification-To"), EmailType.READ_RECEIPT);
-      }
+      addEmails(m, Mime.parseAddressHeader(mm, "Disposition-Notification-To"), EmailType.READ_RECEIPT);
 
       String calIntendedFor = msg.getCalendarIntendedFor();
       m.addAttribute(MailConstants.A_CAL_INTENDED_FOR, calIntendedFor);

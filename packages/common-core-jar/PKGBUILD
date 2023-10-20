@@ -1,15 +1,8 @@
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="carbonio-common-core-jar"
-pkgver="4.9.1"
+pkgver="4.10.0"
 pkgrel="1"
 pkgdesc="Carbonio Core Jars"
-pkgdesclong=(
-  "An open-source, community-driven email server"
-)
-arch="amd64"
+arch=('x86_64')
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"

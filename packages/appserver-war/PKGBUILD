@@ -1,11 +1,8 @@
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="carbonio-appserver-war"
-pkgver="4.9.1"
+pkgver="4.10.0"
 pkgrel="1"
-arch="amd64"
+pkgdesc="Carbonio Mailbox Service War"
+arch=('x86_64')
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 makedepends=(
@@ -13,13 +10,8 @@ makedepends=(
 )
 section="mail"
 priority="optional"
-pkgdesc="Carbonio Mailbox Service War"
-pkgdesclong=(
-  "Carbonio Mailbox Service War"
-)
 
 package() {
-
   cd "${srcdir}"/../../staging
 
   install -Ddm755 "${pkgdir}/opt/zextras/jetty_base/webapps/service"

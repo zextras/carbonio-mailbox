@@ -5,10 +5,15 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
+import com.zextras.mailbox.acl.AclService;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.StringUtil;
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import java.util.HashMap;
@@ -22,7 +27,7 @@ import java.util.Map;
 public class AdminService implements DocumentService {
 
   @Override
-  public void registerHandlers(DocumentDispatcher dispatcher) {
+  public void registerHandlers(DocumentDispatcher dispatcher) throws ServiceException {
     dispatcher.registerHandler(AdminConstants.PING_REQUEST, new Ping());
     dispatcher.registerHandler(AdminConstants.CHECK_HEALTH_REQUEST, new CheckHealth());
     dispatcher.registerHandler(AdminConstants.GET_ALL_LOCALES_REQUEST, new GetAllLocales());
@@ -42,7 +47,14 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.GET_ALL_ADMIN_ACCOUNTS_REQUEST, new GetAllAdminAccounts());
     dispatcher.registerHandler(AdminConstants.MODIFY_ACCOUNT_REQUEST, new ModifyAccount());
-    dispatcher.registerHandler(AdminConstants.DELETE_ACCOUNT_REQUEST, new DeleteAccount());
+    dispatcher.registerHandler(
+        AdminConstants.DELETE_ACCOUNT_REQUEST,
+        new DeleteAccount(
+            new DeleteUserUseCase(
+                Provisioning.getInstance(),
+                MailboxManager.getInstance(),
+                new AclService(MailboxManager.getInstance(), Provisioning.getInstance()),
+                ZimbraLog.security)));
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
     dispatcher.registerHandler(
         AdminConstants.CHECK_PASSWORD_STRENGTH_REQUEST, new CheckPasswordStrength());
@@ -229,7 +241,9 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.MODIFY_ADMIN_SAVED_SEARCHES_REQUEST, new ModifyAdminSavedSearches());
 
-    dispatcher.registerHandler(AdminConstants.ADD_ACCOUNT_LOGGER_REQUEST, new AddAccountLogger());
+    dispatcher.registerHandler(
+        AdminConstants.ADD_ACCOUNT_LOGGER_REQUEST,
+        new AddAccountLogger(Provisioning.getInstance()));
     dispatcher.registerHandler(
         AdminConstants.REMOVE_ACCOUNT_LOGGER_REQUEST, new RemoveAccountLogger());
     dispatcher.registerHandler(AdminConstants.GET_ACCOUNT_LOGGERS_REQUEST, new GetAccountLoggers());

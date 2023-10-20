@@ -1375,6 +1375,83 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Waiting for data from a client socket connected to ClamAV will timeout
+     * after this time (seconds)
+     *
+     * @return carbonioClamAVReadTimeout, or 900 if unset
+     *
+     * @since ZCS 23.11.0
+     */
+    @ZAttr(id=3140)
+    public int getCarbonioClamAVReadTimeout() {
+        return getIntAttr(ZAttrProvisioning.A_carbonioClamAVReadTimeout, 900, true);
+    }
+
+    /**
+     * Waiting for data from a client socket connected to ClamAV will timeout
+     * after this time (seconds)
+     *
+     * @param carbonioClamAVReadTimeout new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.11.0
+     */
+    @ZAttr(id=3140)
+    public void setCarbonioClamAVReadTimeout(int carbonioClamAVReadTimeout) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioClamAVReadTimeout, Integer.toString(carbonioClamAVReadTimeout));
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Waiting for data from a client socket connected to ClamAV will timeout
+     * after this time (seconds)
+     *
+     * @param carbonioClamAVReadTimeout new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.11.0
+     */
+    @ZAttr(id=3140)
+    public Map<String,Object> setCarbonioClamAVReadTimeout(int carbonioClamAVReadTimeout, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioClamAVReadTimeout, Integer.toString(carbonioClamAVReadTimeout));
+        return attrs;
+    }
+
+    /**
+     * Waiting for data from a client socket connected to ClamAV will timeout
+     * after this time (seconds)
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.11.0
+     */
+    @ZAttr(id=3140)
+    public void unsetCarbonioClamAVReadTimeout() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioClamAVReadTimeout, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Waiting for data from a client socket connected to ClamAV will timeout
+     * after this time (seconds)
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.11.0
+     */
+    @ZAttr(id=3140)
+    public Map<String,Object> unsetCarbonioClamAVReadTimeout(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioClamAVReadTimeout, "");
+        return attrs;
+    }
+
+    /**
      * Logo URL for domain
      *
      * @return carbonioLogoUrl, or "https://www.zextras.com" if unset
@@ -15017,8 +15094,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @return zimbraCsrfAllowedRefererHosts, or empty array if unset
      *
@@ -15030,8 +15108,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -15046,8 +15125,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new value
      * @param attrs existing map to populate, or null to create a new map
@@ -15063,8 +15143,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -15079,8 +15160,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -15096,8 +15178,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -15112,8 +15195,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param zimbraCsrfAllowedRefererHosts existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -15129,8 +15213,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -15144,8 +15229,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A list of hosts like www.abc.com, www.xyz.com. These are used while
-     * doing CSRF referer check.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A list of hosts like www.abc.com, www.xyz.com. These are
+     * used while doing CSRF referer check.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -15160,9 +15246,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A flag to turn on or off CSRF referer related check. When set to FALSE
-     * no CSRF referer check happens. When set to true CSRF referer type
-     * check happens.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF referer related check. When
+     * set to FALSE no CSRF referer check happens. When set to true CSRF
+     * referer type check happens.
      *
      * @return zimbraCsrfRefererCheckEnabled, or true if unset
      *
@@ -15174,9 +15261,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A flag to turn on or off CSRF referer related check. When set to FALSE
-     * no CSRF referer check happens. When set to true CSRF referer type
-     * check happens.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF referer related check. When
+     * set to FALSE no CSRF referer check happens. When set to true CSRF
+     * referer type check happens.
      *
      * @param zimbraCsrfRefererCheckEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -15191,9 +15279,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A flag to turn on or off CSRF referer related check. When set to FALSE
-     * no CSRF referer check happens. When set to true CSRF referer type
-     * check happens.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF referer related check. When
+     * set to FALSE no CSRF referer check happens. When set to true CSRF
+     * referer type check happens.
      *
      * @param zimbraCsrfRefererCheckEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -15209,9 +15298,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A flag to turn on or off CSRF referer related check. When set to FALSE
-     * no CSRF referer check happens. When set to true CSRF referer type
-     * check happens.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF referer related check. When
+     * set to FALSE no CSRF referer check happens. When set to true CSRF
+     * referer type check happens.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -15225,9 +15315,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A flag to turn on or off CSRF referer related check. When set to FALSE
-     * no CSRF referer check happens. When set to true CSRF referer type
-     * check happens.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF referer related check. When
+     * set to FALSE no CSRF referer check happens. When set to true CSRF
+     * referer type check happens.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -15242,9 +15333,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A flag to turn on or off CSRF token related check. When set to FALSE
-     * no CSRF check happens. When set to true both CSRF referer and CSRF
-     * token change is effective.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF token related check. When set
+     * to FALSE no CSRF check happens. When set to true both CSRF referer and
+     * CSRF token change is effective.
      *
      * @return zimbraCsrfTokenCheckEnabled, or false if unset
      *
@@ -15256,9 +15348,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A flag to turn on or off CSRF token related check. When set to FALSE
-     * no CSRF check happens. When set to true both CSRF referer and CSRF
-     * token change is effective.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF token related check. When set
+     * to FALSE no CSRF check happens. When set to true both CSRF referer and
+     * CSRF token change is effective.
      *
      * @param zimbraCsrfTokenCheckEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -15273,9 +15366,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A flag to turn on or off CSRF token related check. When set to FALSE
-     * no CSRF check happens. When set to true both CSRF referer and CSRF
-     * token change is effective.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF token related check. When set
+     * to FALSE no CSRF check happens. When set to true both CSRF referer and
+     * CSRF token change is effective.
      *
      * @param zimbraCsrfTokenCheckEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -15291,9 +15385,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A flag to turn on or off CSRF token related check. When set to FALSE
-     * no CSRF check happens. When set to true both CSRF referer and CSRF
-     * token change is effective.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF token related check. When set
+     * to FALSE no CSRF check happens. When set to true both CSRF referer and
+     * CSRF token change is effective.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -15307,9 +15402,10 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * A flag to turn on or off CSRF token related check. When set to FALSE
-     * no CSRF check happens. When set to true both CSRF referer and CSRF
-     * token change is effective.
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: A flag to turn on or off CSRF token related check. When set
+     * to FALSE no CSRF check happens. When set to true both CSRF referer and
+     * CSRF token change is effective.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -15324,7 +15420,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * CSRF token secret key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: CSRF token secret key
      *
      * @return zimbraCsrfTokenKey, or empty array if unset
      *
@@ -15336,7 +15433,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * CSRF token secret key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: CSRF token secret key
      *
      * @param zimbraCsrfTokenKey new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -15351,7 +15449,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * CSRF token secret key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: CSRF token secret key
      *
      * @param zimbraCsrfTokenKey new value
      * @param attrs existing map to populate, or null to create a new map
@@ -15367,7 +15466,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * CSRF token secret key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: CSRF token secret key
      *
      * @param zimbraCsrfTokenKey new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -15382,7 +15482,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * CSRF token secret key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: CSRF token secret key
      *
      * @param zimbraCsrfTokenKey new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -15398,7 +15499,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * CSRF token secret key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: CSRF token secret key
      *
      * @param zimbraCsrfTokenKey existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -15413,7 +15515,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * CSRF token secret key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: CSRF token secret key
      *
      * @param zimbraCsrfTokenKey existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -15429,7 +15532,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * CSRF token secret key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: CSRF token secret key
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -15443,7 +15547,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * CSRF token secret key
+     * Deprecated since: 23.11.0. deprecated as not being used in Carbonio.
+     * Orig desc: CSRF token secret key
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

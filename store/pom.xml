@@ -409,6 +409,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>com.github.stefanbirkner</groupId>
+      <artifactId>system-lambda</artifactId>
+      <version>1.2.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
       <scope>provided</scope>
@@ -792,7 +798,36 @@
           </webResources>
         </configuration>
       </plugin>
-
+      <plugin>
+        <artifactId>exec-maven-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <version>${maven-exec-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>acceptance-tests</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+              <executable>${basedir}/utils/shellspec/run.sh</executable>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven-clean-plugin.version}</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}/utils/shellspec/lib</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
     </plugins>
 
   </build>
@@ -808,6 +843,8 @@
     <!--    <war.classes.sieveConfig>${config.dir}/sieveConfig.xml</war.classes.sieveConfig>-->
     <war.classes.cxf>${config.dir}/cxf.xml</war.classes.cxf>
     <warfile.name>service</warfile.name>
+    <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
+    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
   </properties>
 
 </project>

@@ -1,7 +1,7 @@
 {
-  "name": "carbonio-mailbox",
+  "buildDir": "/tmp",
   "description": "Zextras Suite",
-  "build_dir": "/tmp",
+  "name": "carbonio-mailbox",
   "output": "artifacts",
   "projects": [
     {
@@ -9,6 +9,9 @@
     },
     {
       "name": "appserver-service"
+    },
+    {
+      "name": "appserver-store-libs"
     },
     {
       "name": "appserver-war"
@@ -27,9 +30,6 @@
     },
     {
       "name": "common-core-jar"
-    },
-    {
-      "name": "appserver-store-libs"
     },
     {
       "name": "common-core-libs"

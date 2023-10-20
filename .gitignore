@@ -30,3 +30,7 @@ build
 
 target/
 **/common-passwords.txt
+/store/opt/
+
+# Ignore asdf local config
+.tool-versions

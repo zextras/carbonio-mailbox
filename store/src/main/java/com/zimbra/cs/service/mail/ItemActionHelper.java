@@ -750,7 +750,8 @@ public class ItemActionHelper {
     Account target = Provisioning.getInstance().get(Key.AccountBy.id, mIidFolder.getAccountId());
 
     AuthToken at = getAuthToken();
-    String pxyAuthToken = Provisioning.onLocalServer(target) ? null : at.getProxyAuthToken();
+    String pxyAuthToken =
+        Provisioning.getInstance().onLocalServer(target) ? null : at.getProxyAuthToken();
     ZAuthToken zat = null;
     if (pxyAuthToken == null) {
       zat = at.toZAuthToken();
