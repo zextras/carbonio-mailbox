@@ -1,21 +1,14 @@
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="carbonio-common-appserver-native-lib"
 pkgver="4.9.1"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox Native Libs"
-pkgdesclong=(
-  "Carbonio Core Mailbox Native Libs"
-)
-arch="amd64"
+arch=('x86_64')
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
-depends:apt=(
+depends__apt=(
   "libc6"
 )
-depends:yum=(
+depends__yum=(
   "glibc"
 )
 section="mail"
