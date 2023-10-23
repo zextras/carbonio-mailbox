@@ -1,8 +1,11 @@
 services:
+
   app:
     build: .
     depends_on:
       ldap:
+        condition: service_healthy
+      db:
         condition: service_healthy
     ports:
       - "7070:7070"
@@ -10,6 +13,7 @@ services:
     volumes:
       - "./:/app"
       - "~/.m2:/root/.m2"
+
   ldap:
     image: carbonio/ce-ldap-u20
     hostname: ldap.mail.local
@@ -21,3 +25,16 @@ services:
       - "./store/build/ldap:/opt/zextras/common/etc/openldap/zimbra"
       - "./entrypoint-ldap.sh:/entrypoint-ldap.sh"
     entrypoint: ["/entrypoint-ldap.sh"]
+
+  db:
+    image: mariadb:10.9-jammy
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
+    environment:
+      MARIADB_USER: zextras
+      MARIADB_PASSWORD: zextras
+      MARIADB_ROOT_PASSWORD: zimbra
+    volumes:
+      - "./store/utils/docker/carbonio-db/scripts:/docker-entrypoint-initdb.d"
+    ports:
+      - "3306:3306"
