@@ -20,7 +20,16 @@
     <value>password</value>
   </key>
   <key name="mysql_bind_address">
-    <value>localhost</value>
+    <value>db</value>
+  </key>
+  <key name="mysql_port">
+    <value>3306</value>
+  </key>
+  <key name="zimbra_mysql_user">
+    <value>zextras</value>
+  </key>
+  <key name="zimbra_mysql_password">
+    <value>zextras</value>
   </key>
   <key name="timezone_file">
     <value>./src/test/resources/timezones-test.ics</value>
