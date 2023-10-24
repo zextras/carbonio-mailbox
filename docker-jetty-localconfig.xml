@@ -14,7 +14,7 @@
     <value>.</value>
   </key>
   <key name="zimbra_server_hostname">
-    <value>ldap.mail.local</value>
+    <value>docker.app.local</value>
   </key>
   <key name="zimbra_ldap_password">
     <value>password</value>
