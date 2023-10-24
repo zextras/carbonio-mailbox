@@ -666,6 +666,7 @@
             <!--Carbonio default policy allows API calls to be received on port 7070 -->
             <port>7070</port>
           </httpConnector>
+          <jettyXml>../jetty.xml</jettyXml>
           <scanIntervalSeconds>30</scanIntervalSeconds>
           <dumpOnStart>true</dumpOnStart>
           <webApp>

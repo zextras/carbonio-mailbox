@@ -1,0 +1,292 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
+<!-- =============================================================== -->
+<!-- Configure the Jetty Server                                      -->
+<!--                                                                 -->
+<!-- Documentation of this file format can be found at:              -->
+<!-- http://docs.codehaus.org/display/JETTY/jetty.xml                -->
+<!--                                                                 -->
+<!-- =============================================================== -->
+
+
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+
+    <New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
+        <Set name="outputBufferSize">32768</Set>
+        <Set name="requestHeaderSize">8192</Set>
+        <Set name="responseHeaderSize">8192</Set>
+        <Set name="sendServerVersion">false</Set>
+        <Set name="sendDateHeader">true</Set>
+        <Set name="headerCacheSize">512</Set>
+        <Set name="securePort">7443</Set>
+        <Call name="addCustomizer">
+            <Arg>
+                <New class="org.eclipse.jetty.server.ForwardedRequestCustomizer">
+                    <Set name="forwardedForHeader">bogus</Set>
+                </New>
+            </Arg>
+        </Call>
+        <Call name="addCustomizer">
+            <Arg>
+                <New class="org.eclipse.jetty.server.HostHeaderCustomizer">
+                    <Arg>devserver.local</Arg>
+                </New>
+            </Arg>
+        </Call>
+    </New>
+
+    <!-- =========================================================== -->
+    <!-- Set connectors -->
+    <!-- =========================================================== -->
+    <!-- One of each type! -->
+    <!-- =========================================================== -->
+
+    <Call id="httpConnector" name="addConnector">
+        <Arg>
+            <New id="http" class="org.eclipse.jetty.server.ServerConnector">
+                <Arg name="server">
+                    <Ref refid="Server" />
+                </Arg>
+                <Arg name="factories">
+                    <Array type="org.eclipse.jetty.server.ConnectionFactory">
+                        <Item>
+                            <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+                                <Arg name="config">
+                                    <Ref refid="httpConfig" />
+                                </Arg>
+                            </New>
+                        </Item>
+                    </Array>
+                </Arg>
+                <Set name="port">7070</Set>
+                <Set name="idleTimeout">60000</Set>
+            </New>
+        </Arg>
+    </Call>
+
+    <New id="zimbraSslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
+        <Set name="KeyStorePath">/docker-keystore</Set>
+        <Set name="KeyStorePassword">docker-keystore-pwd</Set>
+        <Set name="EndpointIdentificationAlgorithm">RSA</Set>
+        <Set name="renegotiationAllowed">true</Set>
+        <Set name="IncludeProtocols">
+            <Array type="java.lang.String">
+                <!-- <Item>SSLv3</Item> -->
+                <Item>TLSv1.2</Item>
+            </Array>
+        </Set>
+        <Set name="ExcludeCipherSuites">
+            <Array type="String">
+                <Item>SSL_RSA_WITH_DES_CBC_SHA</Item>
+                <Item>SSL_DHE_RSA_WITH_DES_CBC_SHA</Item>
+                <Item>SSL_DHE_DSS_WITH_DES_CBC_SHA</Item>
+                <Item>SSL_RSA_EXPORT_WITH_RC4_40_MD5</Item>
+                <Item>SSL_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
+                <Item>SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
+                <Item>SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</Item>
+            </Array>
+        </Set>
+    </New>
+
+    <New id="sslHttpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
+        <Arg>
+            <Ref refid="httpConfig" />
+        </Arg>
+        <Call name="addCustomizer">
+            <Arg>
+                <New class="org.eclipse.jetty.server.SecureRequestCustomizer" />
+            </Arg>
+        </Call>
+    </New>
+
+    <Call id="httpsConnector" name="addConnector">
+        <Arg>
+            <New id="ssl" class="org.eclipse.jetty.server.ServerConnector">
+                <Arg name="server">
+                    <Ref refid="Server" />
+                </Arg>
+                <Arg name="factories">
+                    <Array type="org.eclipse.jetty.server.ConnectionFactory">
+                        <Item>
+                            <New class="org.eclipse.jetty.server.SslConnectionFactory">
+                                <Arg name="next">http/1.1</Arg>
+                                <Arg name="sslContextFactory">
+                                    <Ref refid="zimbraSslContextFactory" />
+                                </Arg>
+                            </New>
+                        </Item>
+                        <Item>
+                            <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+                                <Arg name="config">
+                                    <Ref refid="sslHttpConfig" />
+                                </Arg>
+                            </New>
+                        </Item>
+                    </Array>
+                </Arg>
+                <Set name="port">7443</Set>
+                <Set name="idleTimeout">60000</Set>
+            </New>
+        </Arg>
+    </Call>
+
+    <New id="zimbraSslClientContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
+        <Set name="KeyStorePath">/docker-keystore</Set>
+        <Set name="KeyStorePassword">docker-keystore-pwd</Set>
+        <Set name="EndpointIdentificationAlgorithm">RSA</Set>
+        <Set name="ExcludeCipherSuites">
+            <Array type="String">
+                <Item>SSL_RSA_WITH_DES_CBC_SHA</Item>
+                <Item>SSL_DHE_RSA_WITH_DES_CBC_SHA</Item>
+                <Item>SSL_DHE_DSS_WITH_DES_CBC_SHA</Item>
+                <Item>SSL_RSA_EXPORT_WITH_RC4_40_MD5</Item>
+                <Item>SSL_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
+                <Item>SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
+                <Item>SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</Item>
+            </Array>
+        </Set>
+        <Set name="WantClientAuth">true</Set>
+        <Set name="NeedClientAuth">false</Set>
+    </New>
+
+    <Call id="httpsClientConnector" name="addConnector">
+        <Arg>
+            <New id="ssl-clientcert" class="org.eclipse.jetty.server.ServerConnector">
+                <Arg name="server">
+                    <Ref refid="Server" />
+                </Arg>
+                <Arg name="factories">
+                    <Array type="org.eclipse.jetty.server.ConnectionFactory">
+                        <Item>
+                            <New class="org.eclipse.jetty.server.SslConnectionFactory">
+                                <Arg name="next">http/1.1</Arg>
+                                <Arg name="sslContextFactory">
+                                    <Ref refid="zimbraSslClientContextFactory" />
+                                </Arg>
+                            </New>
+                        </Item>
+                        <Item>
+                            <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+                                <Arg name="config">
+                                    <Ref refid="sslHttpConfig" />
+                                </Arg>
+                            </New>
+                        </Item>
+                    </Array>
+                </Arg>
+                <Set name="port">9443</Set>
+                <Set name="idleTimeout">60000</Set>
+            </New>
+        </Arg>
+    </Call>
+
+    <Call id="adminHttpsConnector" name="addConnector">
+        <Arg>
+            <New id="admin" class="org.eclipse.jetty.server.ServerConnector">
+                <Arg name="server">
+                    <Ref refid="Server" />
+                </Arg>
+                <Arg name="factories">
+                    <Array type="org.eclipse.jetty.server.ConnectionFactory">
+                        <Item>
+                            <New class="org.eclipse.jetty.server.SslConnectionFactory">
+                                <Arg name="next">http/1.1</Arg>
+                                <Arg name="sslContextFactory">
+                                    <Ref refid="zimbraSslContextFactory" />
+                                </Arg>
+                            </New>
+                        </Item>
+                        <Item>
+                            <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+                                <Arg name="config">
+                                    <Ref refid="sslHttpConfig" />
+                                </Arg>
+                            </New>
+                        </Item>
+                    </Array>
+                </Arg>
+                <Set name="port">7071</Set>
+                <Set name="idleTimeout">60000</Set>
+            </New>
+        </Arg>
+    </Call>
+
+    <Call id="mtaAdminHttpsConnector" name="addConnector">
+        <Arg>
+            <New id="mtaAdmin" class="org.eclipse.jetty.server.ServerConnector">
+                <Arg name="server">
+                    <Ref refid="Server" />
+                </Arg>
+                <Arg name="factories">
+                    <Array type="org.eclipse.jetty.server.ConnectionFactory">
+                        <Item>
+                            <New class="org.eclipse.jetty.server.SslConnectionFactory">
+                                <Arg name="next">http/1.1</Arg>
+                                <Arg name="sslContextFactory">
+                                    <Ref refid="zimbraSslContextFactory" />
+                                </Arg>
+                            </New>
+                        </Item>
+                        <Item>
+                            <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+                                <Arg name="config">
+                                    <Ref refid="sslHttpConfig" />
+                                </Arg>
+                            </New>
+                        </Item>
+                    </Array>
+                </Arg>
+                <Set name="host"></Set>
+                <Set name="port">7073</Set>
+                <Set name="idleTimeout">60000</Set>
+            </New>
+        </Arg>
+    </Call>
+
+    <Call id="extConnector" name="addConnector">
+        <Arg>
+            <New id="ext" class="org.eclipse.jetty.server.ServerConnector">
+                <Arg name="server">
+                    <Ref refid="Server" />
+                </Arg>
+                <Arg name="factories">
+                    <Array type="org.eclipse.jetty.server.ConnectionFactory">
+                        <Item>
+                            <New class="org.eclipse.jetty.server.SslConnectionFactory">
+                                <Arg name="next">http/1.1</Arg>
+                                <Arg name="sslContextFactory">
+                                    <Ref refid="zimbraSslContextFactory" />
+                                </Arg>
+                            </New>
+                        </Item>
+                        <Item>
+                            <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+                                <Arg name="config">
+                                    <Ref refid="sslHttpConfig" />
+                                </Arg>
+                            </New>
+                        </Item>
+                    </Array>
+                </Arg>
+                <Set name="port">7072</Set>
+                <Set name="idleTimeout">60000</Set>
+            </New>
+        </Arg>
+    </Call>
+
+    <Ref id="http">
+        <Call name="open" />
+    </Ref>
+    <Ref id="ssl">
+        <Call name="open" />
+    </Ref>
+    <Ref id="ssl-clientcert">
+        <Call name="open"/>
+    </Ref>
+    <Ref id="admin">
+        <Call name="open" />
+    </Ref>
+    <Ref id="ext">
+        <Call name="open"/>
+    </Ref>
+</Configure>
