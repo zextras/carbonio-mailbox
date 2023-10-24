@@ -86,7 +86,7 @@ public final class Validators {
       if (d == null) return;
 
       String limit = d.getAttr(Provisioning.A_zimbraDomainMaxAccounts);
-      if (limit == null) return;
+      if (limit == null || "0".equals(limit)) return;
 
       long maxAccount = Long.parseLong(limit);
       long now = System.currentTimeMillis();
