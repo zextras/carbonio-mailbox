@@ -11,5 +11,6 @@ su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
 su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
 su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
 su - zextras -c "/opt/zextras/bin/ldap start"
-su - zextras -c "/opt/zextras/bin/zmprov cs docker.app.local"
+su - zextras -c "/opt/zextras/bin/zmprov cs docker.app.local zimbraServiceEnabled service"
+su - zextras -c "/opt/zextras/bin/zmprov ca docker-zextras@mail.local account-password zimbraIsAdminAccount TRUE zimbraMailTransport fake"
 monit -c /etc/monitrc

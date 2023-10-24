@@ -7,6 +7,7 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
+    hostname: docker.app.local
     ports:
       - "7070:7070"
       - "7071:7071"
