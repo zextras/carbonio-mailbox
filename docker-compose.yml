@@ -1,4 +1,11 @@
 services:
+  build:
+    build:
+      dockerfile: Dockerfile-build
+    profiles: [ "build" ]
+    volumes:
+      - "./:/app"
+      - "~/.m2:/root/.m2"
 
   app:
     build: .
