@@ -18,9 +18,13 @@ public class MailboxClient {
     this.wsdl = wsdl;
   }
 
-  public ServiceClient.Builder newServiceClient() {
+  public ServiceClient.Builder newServiceClientBuilder() {
     final var server = wsdl.getProtocol() + "://" + wsdl.getHost() + ":" + wsdl.getPort();
     return new ServiceClient.Builder(wsdl, server);
+  }
+
+  public ServiceClient newServiceClient() {
+    return newServiceClientBuilder().build();
   }
 
   public AdminServiceClient.Builder newAdminServiceClient() {

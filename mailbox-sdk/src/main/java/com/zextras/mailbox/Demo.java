@@ -21,22 +21,22 @@ public class Demo {
             .trustAllCertificates()
             .build();
 
-    ServiceClient accountClient = client.newServiceClient().withPool(5).build();
+    ServiceClient serviceClient = client.newServiceClientBuilder().withPool(5).build();
 
     AdminServiceClient adminClient = client.newAdminServiceClient().withPool(5).build();
 
     // ---
-    final var info = accountClient.send(ServiceRequests.Info.allSections().withAuthToken(token));
+    final var info = serviceClient.send(ServiceRequests.Info.allSections().withAuthToken(token));
 
     final var info2 =
-        accountClient.send(ServiceRequests.Info.sections("children", "attrs", "prefs").withAuthToken(token));
+        serviceClient.send(ServiceRequests.Info.sections("children", "attrs", "prefs").withAuthToken(token));
 
-    final var info3 = accountClient.send(ServiceRequests.Info.sections("children").withAuthToken(token));
+    final var info3 = serviceClient.send(ServiceRequests.Info.sections("children").withAuthToken(token));
 
-    final var accountInfo = accountClient.send(ServiceRequests.AccountInfo.byId(id).withAuthToken(token));
+    final var accountInfo = serviceClient.send(ServiceRequests.AccountInfo.byId(id).withAuthToken(token));
 
     final var accountInfo2 =
-        accountClient.send(ServiceRequests.AccountInfo.byEmail(email).withAuthToken(token));
+        serviceClient.send(ServiceRequests.AccountInfo.byEmail(email).withAuthToken(token));
 
     final var domainInfo =
         adminClient.send(AdminServiceRequests.DomainInfo.byName(domain).withAuthToken(tokenAdmin));
