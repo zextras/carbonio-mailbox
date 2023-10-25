@@ -2,7 +2,7 @@ services:
   build:
     build:
       dockerfile: Dockerfile-build
-    profiles: [ "build" ]
+    profiles: [ "do-not-start" ]
     volumes:
       - "./:/app"
       - "~/.m2:/root/.m2"
