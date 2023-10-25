@@ -12,5 +12,6 @@ su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
 su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
 su - zextras -c "/opt/zextras/bin/ldap start"
 su - zextras -c "/opt/zextras/bin/zmprov cs docker.app.local zimbraServiceEnabled service zimbraServiceEnabled mailbox"
-su - zextras -c "/opt/zextras/bin/zmprov ca docker-zextras@mail.local account-password zimbraIsAdminAccount TRUE"
+su - zextras -c "/opt/zextras/bin/zmprov ca docker-admin@mail.local admin-password zimbraIsAdminAccount TRUE"
+su - zextras -c "/opt/zextras/bin/zmprov ca docker-user@mail.local user-password"
 monit -c /etc/monitrc
