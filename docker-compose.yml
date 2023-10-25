@@ -20,6 +20,7 @@ services:
     hostname: ldap.mail.local
     healthcheck:
       test: nc -z localhost 2812 || exit 1 # check monit up and running
+      retries: 15
     ports:
       - "389:389"
     volumes:
@@ -31,6 +32,7 @@ services:
     image: mariadb:10.9-jammy
     healthcheck:
       test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
+      retries: 15
     environment:
       MARIADB_USER: zextras
       MARIADB_PASSWORD: zextras
