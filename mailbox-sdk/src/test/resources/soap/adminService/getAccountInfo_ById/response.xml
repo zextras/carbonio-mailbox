@@ -9,7 +9,7 @@
         <GetAccountInfoResponse xmlns="urn:zimbraAdmin">
             <name>foo@test.domain.io</name>
             <a n="zimbraId">846a6715-d0c8-452c-885c-869f7892d3f0</a>
-            <a n="zimbraMailHost">gk-dl.demo.zextras.io</a>
+            <a n="zimbraMailHost">server.test.domain.io</a>
             <cos name="default" id="e00428a1-0c00-11d9-836a-000d93afea2a" />
             <soapURL>http://server.test.domain.io:8080/service/soap/</soapURL>
             <adminSoapURL>http://server.test.domain.io:7071/service/admin/soap/</adminSoapURL>

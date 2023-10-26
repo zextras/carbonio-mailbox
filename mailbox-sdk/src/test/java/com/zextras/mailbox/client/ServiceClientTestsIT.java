@@ -4,9 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 import zimbra.NamedValue;
 
 class ServiceClientTestsIT {
@@ -39,7 +41,7 @@ class ServiceClientTestsIT {
         serviceClient.send(ServiceRequests.AccountInfo.byEmail(email).withAuthToken(authToken));
 
     assertEquals(email, result.getName());
-    assertEquals(id, readAttribute(result.getAttr(), "zimbraId"));
+    assertAttributeEquals(id, "zimbraId", result.getAttr());
   }
 
   @Test
@@ -50,15 +52,20 @@ class ServiceClientTestsIT {
         serviceClient.send(ServiceRequests.AccountInfo.byId(id).withAuthToken(authToken));
 
     assertEquals(email, result.getName());
-    assertEquals(id, readAttribute(result.getAttr(), "zimbraId"));
+    assertAttributeEquals(id, "zimbraId", result.getAttr());
+  }
+
+  public static void assertAttributeEquals(
+      String expected, String name, List<NamedValue> attributes) {
+    assertEquals(expected, readAttribute(attributes, name));
   }
 
   private static String readAttribute(List<NamedValue> attributes, String name) {
-    return attributes.stream()
-        .filter(x -> Objects.equals(x.getName(), name))
-        .findFirst()
-        .get()
-        .getValue();
+    Optional<NamedValue> attribute =
+        attributes.stream().filter(x -> Objects.equals(x.getName(), name)).findFirst();
+    if (attribute.isEmpty()) {
+      throw new AssertionFailedError("Attribute not found: " + name);
+    }
+    return attribute.get().getValue();
   }
-
 }
