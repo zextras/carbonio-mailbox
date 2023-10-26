@@ -3,6 +3,7 @@ package com.zextras.mailbox.client;
 import com.sun.xml.ws.api.message.Header;
 import com.sun.xml.ws.api.message.Headers;
 import com.sun.xml.ws.developer.WSBindingProvider;
+import com.zextras.mailbox.client.requests.Request;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Function;
@@ -11,8 +12,6 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import com.zextras.mailbox.client.requests.Request;
 import org.w3c.dom.Document;
 import zimbra.AuthTokenControl;
 import zimbra.HeaderContext;

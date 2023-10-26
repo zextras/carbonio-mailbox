@@ -11,13 +11,15 @@ public class AccountInfoRequests {
   public AuthRequest<ZcsPortType, GetAccountInfoResponse> byId(String id) {
     GetAccountInfoRequest request = new GetAccountInfoRequest();
     request.setAccount(selector(AccountBy.ID, id));
-    return AuthRequest.requireAuth((service, soapHeaderContext) -> service.getAccountInfoRequest(request, soapHeaderContext));
+    return AuthRequest.requireAuth(
+        (service, soapHeaderContext) -> service.getAccountInfoRequest(request, soapHeaderContext));
   }
 
   public AuthRequest<ZcsPortType, GetAccountInfoResponse> byEmail(String email) {
     GetAccountInfoRequest request = new GetAccountInfoRequest();
     request.setAccount(selector(AccountBy.NAME, email));
-    return AuthRequest.requireAuth((service, soapHeaderContext) -> service.getAccountInfoRequest(request, soapHeaderContext));
+    return AuthRequest.requireAuth(
+        (service, soapHeaderContext) -> service.getAccountInfoRequest(request, soapHeaderContext));
   }
 
   private static AccountSelector selector(AccountBy by, String value) {

@@ -85,7 +85,9 @@ public class MailboxServerSimulator implements AutoCloseable {
     try (InputStream resource = getClass().getClassLoader().getResourceAsStream(path)) {
       return IOUtils.toString(resource, StandardCharsets.UTF_8)
           // This replacement is necessary to remove the indentation and new lines
-          .replaceAll(">\\s+<", "><");
+          .replaceAll(">\\s+<", "><")
+          // This replacement is necessary to remove the end of file new line
+          .replaceAll("\n", "");
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
