@@ -6,7 +6,7 @@ import com.zextras.mailbox.client.ServiceRequests;
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
 import com.zextras.mailbox.client.admin.service.AdminServiceRequests;
 
-public class Demo {
+public class ExampleUsage {
   public static void main(String[] args) throws Exception {
     final var token = "...";
     final var tokenAdmin = "...";
