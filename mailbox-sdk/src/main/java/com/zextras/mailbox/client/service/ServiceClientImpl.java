@@ -1,6 +1,8 @@
-package com.zextras.mailbox.client;
+package com.zextras.mailbox.client.service;
 
 import com.sun.xml.ws.developer.WSBindingProvider;
+import com.zextras.mailbox.client.PooledClient;
+import com.zextras.mailbox.client.ServiceClient;
 import https.www_zextras_com.wsdl.zimbraservice.ZcsPortType;
 import https.www_zextras_com.wsdl.zimbraservice.ZcsService;
 import java.net.URL;

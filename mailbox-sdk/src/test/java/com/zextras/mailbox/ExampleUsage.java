@@ -1,8 +1,8 @@
 package com.zextras.mailbox;
 
 import com.zextras.mailbox.client.MailboxClient;
-import com.zextras.mailbox.client.ServiceClientImpl;
-import com.zextras.mailbox.client.ServiceRequests;
+import com.zextras.mailbox.client.service.ServiceClientImpl;
+import com.zextras.mailbox.client.service.ServiceRequests;
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
 import com.zextras.mailbox.client.admin.service.AdminServiceRequests;
 

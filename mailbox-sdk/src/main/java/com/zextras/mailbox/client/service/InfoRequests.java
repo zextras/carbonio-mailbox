@@ -1,4 +1,4 @@
-package com.zextras.mailbox.client;
+package com.zextras.mailbox.client.service;
 
 import com.zextras.mailbox.client.requests.AuthRequest;
 import https.www_zextras_com.wsdl.zimbraservice.ZcsPortType;
