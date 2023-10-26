@@ -31,14 +31,11 @@ class CreateDomainTest {
 
     @Test
     public void whenDomainMaxAccountIsNegative_creatingANewDomain_throwsAnExpectedException() throws Exception {
-        // Arrange
         final Map<String, Object> extraAttr = new HashMap<>();
         extraAttr.put(Provisioning.A_zimbraDomainMaxAccounts, "-1");
 
-        // Act
         final AccountServiceException actualException = assertThrows(AccountServiceException.class, () -> provisioning.createDomain("test.domain.com", extraAttr));
 
-        // Assert
         assertEquals("zimbraDomainMaxAccounts value(-1) smaller than minimum allowed: 0", actualException.getMessage());
     }
 }

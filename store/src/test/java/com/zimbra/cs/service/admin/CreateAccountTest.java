@@ -36,7 +36,6 @@ class CreateAccountTest {
 
     @Test
     public void whenDomainMaxAccountIsZero_creatingANewAccount_willCompleteTheOperationSuccessfully() throws Exception {
-        // Arrange
         final String domainName = provisionDomain("test.domain.com", "0");
         final String expectedAccountName = "testName@" + domainName;
         final Map<String, Object> context = provisionAdminContext();
@@ -46,10 +45,8 @@ class CreateAccountTest {
         final Element request = JaxbUtil.jaxbToElement(createAccountRequest);
 
 
-        // Act
         final Element createAccountResponseXML = creator.handle(request, context);
 
-        // Assert
         final CreateAccountResponse createAccountResponse = JaxbUtil.elementToJaxb(createAccountResponseXML);
         final AccountInfo accountInfo = createAccountResponse.getAccount();
         assertNotNull(accountInfo);
@@ -59,7 +56,6 @@ class CreateAccountTest {
 
     @Test
     public void whenDomainMaxAccountIsNull_creatingANewAccount_willCompleteTheOperationSuccessfully() throws Exception {
-        // Arrange
         final String domainName = provisionDomain("test.domain.com", null);
         final String expectedAccountName = "testName@" + domainName;
         final Map<String, Object> context = provisionAdminContext();
@@ -68,10 +64,8 @@ class CreateAccountTest {
         final CreateAccountRequest createAccountRequest = new CreateAccountRequest(expectedAccountName, "superSecretAccountPassword");
         final Element request = JaxbUtil.jaxbToElement(createAccountRequest);
 
-        // Act
         final Element createAccountResponseXML = creator.handle(request, context);
 
-        // Assert
         final CreateAccountResponse createAccountResponse = JaxbUtil.elementToJaxb(createAccountResponseXML);
         final AccountInfo accountInfo = createAccountResponse.getAccount();
         assertNotNull(accountInfo);
