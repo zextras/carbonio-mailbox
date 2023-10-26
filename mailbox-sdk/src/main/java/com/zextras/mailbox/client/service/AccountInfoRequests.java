@@ -9,22 +9,21 @@ import zimbraaccount.GetAccountInfoResponse;
 
 public class AccountInfoRequests {
   public AuthRequest<ZcsPortType, GetAccountInfoResponse> byId(String id) {
-    AccountSelector selector = new AccountSelector();
-    selector.setBy(AccountBy.ID);
-    selector.setValue(id);
-
     GetAccountInfoRequest request = new GetAccountInfoRequest();
-    request.setAccount(selector);
+    request.setAccount(selector(AccountBy.ID, id));
     return AuthRequest.requireAuth((service, soapHeaderContext) -> service.getAccountInfoRequest(request, soapHeaderContext));
   }
 
   public AuthRequest<ZcsPortType, GetAccountInfoResponse> byEmail(String email) {
-    AccountSelector selector = new AccountSelector();
-    selector.setBy(AccountBy.NAME);
-    selector.setValue(email);
-
     GetAccountInfoRequest request = new GetAccountInfoRequest();
-    request.setAccount(selector);
+    request.setAccount(selector(AccountBy.NAME, email));
     return AuthRequest.requireAuth((service, soapHeaderContext) -> service.getAccountInfoRequest(request, soapHeaderContext));
+  }
+
+  private static AccountSelector selector(AccountBy by, String value) {
+    AccountSelector selector = new AccountSelector();
+    selector.setBy(by);
+    selector.setValue(value);
+    return selector;
   }
 }
