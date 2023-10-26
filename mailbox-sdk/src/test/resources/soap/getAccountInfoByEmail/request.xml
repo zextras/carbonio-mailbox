@@ -1,8 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope">
     <S:Header>
-        <ns5:context xmlns="urn:zimbraAdminExt"
-                     xmlns:ns4="urn:zimbraAccount" xmlns:ns5="urn:zimbra">
+        <ns5:context xmlns="urn:zimbraAdminExt" xmlns:ns2="urn:zimbraAdmin" xmlns:ns3="urn:zimbraMail" xmlns:ns4="urn:zimbraAccount" xmlns:ns5="urn:zimbra">
             <ns5:authToken>dummy-token</ns5:authToken>
             <ns5:authTokenControl voidOnExpired="true"/>
         </ns5:context>
@@ -11,8 +10,7 @@
         </context>
     </S:Header>
     <S:Body>
-        <ns4:GetAccountInfoRequest xmlns="urn:zimbraAdminExt"
-                                   xmlns:ns4="urn:zimbraAccount" xmlns:ns5="urn:zimbra">
+        <ns4:GetAccountInfoRequest xmlns="urn:zimbraAdminExt" xmlns:ns2="urn:zimbraAdmin" xmlns:ns3="urn:zimbraMail" xmlns:ns4="urn:zimbraAccount" xmlns:ns5="urn:zimbra">
             <ns4:account by="name">foo@test.domain.io</ns4:account>
         </ns4:GetAccountInfoRequest>
     </S:Body>

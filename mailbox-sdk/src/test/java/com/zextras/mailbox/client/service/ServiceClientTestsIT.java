@@ -1,7 +1,6 @@
 package com.zextras.mailbox.client.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockserver.matchers.Times.*;
 import static org.mockserver.model.HttpRequest.*;
 import static org.mockserver.model.HttpResponse.*;
 
@@ -23,6 +22,7 @@ import org.mockserver.model.HttpStatusCode;
 class ServiceClientTestsIT {
 
   private final int PORT = 10_000;
+  private final String authToken = "dummy-token";
   private ClientAndServer mailboxMockServer;
   private ServiceClient serviceClient;
 
@@ -46,7 +46,6 @@ class ServiceClientTestsIT {
       mailboxMockServer.close();
     }
   }
-
   private void setUpWsdlResponse() throws IOException {
     final var wsdl =
         Files.readAllBytes(
@@ -61,56 +60,34 @@ class ServiceClientTestsIT {
   }
 
   @Test
-  void getAccountInfo() throws Exception {
-//    final var request = getXmlFile("soap/GetAccountInfoRequest.xml");
-    final var response = getXmlFile("soap/GetAccountInfoResponse.xml");
+  void getAccountInfoByEmail() throws Exception {
+    final var request = getXmlFile("soap/getAccountInfoByEmail/request.xml");
+    final var response = getXmlFile("soap/getAccountInfoByEmail/response.xml");
 
     mailboxMockServer
         .when(
             request()
                 .withMethod(HttpMethod.POST.toString())
                 .withPath("/service/soap/")
-//                .withBody(request)
-        )
-        .respond(
-            response()
-                .withStatusCode(HttpStatusCode.OK_200.code())
-                .withBody(response)
-        );
+                .withBody(request))
+        .respond(response().withStatusCode(HttpStatusCode.OK_200.code()).withBody(response));
 
-    final var token = "dummy-token";
     final var email = "foo@test.domain.io";
 
-    final var accountInfo2 =
-        serviceClient.send(ServiceRequests.AccountInfo.byEmail(email).withAuthToken(token));
+    final var result =
+        serviceClient.send(ServiceRequests.AccountInfo.byEmail(email).withAuthToken(authToken));
 
-    assertEquals(email , accountInfo2.getName());
-
-//    HttpRequest[] httpRequests = mailboxMockServer.retrieveRecordedRequests(null);
-//    HttpRequest httpRequest = httpRequests[1];
+    assertEquals(email, result.getName());
   }
 
   private String getXmlFile(String path) {
     try (InputStream resource = getClass().getClassLoader().getResourceAsStream(path)) {
       return IOUtils.toString(resource, StandardCharsets.UTF_8)
-//          .replaceAll("\n( *)<", "<") // This replacement is necessary to remove the XML indentation
-          .replaceAll(">[\\s]+<", "><")
-      ;
+          // This replacement is necessary to remove the indentation and new lines
+          .replaceAll(">\\s+<", "><");
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  void mockServerWorksHttps() throws Exception {
-    final var httpRequest =
-        request()
-            .withSecure(true) // Abilita HTTPS
-            .withMethod("GET")
-            .withPath("/example");
-    final var httpResponse =
-        response()
-            .withStatusCode(HttpStatusCode.OK_200.code())
-            .withBody("Hello, World!");
-    mailboxMockServer.when(httpRequest).respond(httpResponse);
-  }
 }
