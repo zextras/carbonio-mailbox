@@ -2,11 +2,11 @@ package com.zextras.mailbox.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.zextras.mailbox.client.service.ServiceClient;
+import com.zextras.mailbox.client.service.ServiceRequests;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import com.zextras.mailbox.client.service.ServiceRequests;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

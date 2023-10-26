@@ -1,10 +1,10 @@
 package com.zextras.mailbox;
 
 import com.zextras.mailbox.client.MailboxClient;
-import com.zextras.mailbox.client.service.ServiceClientImpl;
-import com.zextras.mailbox.client.service.ServiceRequests;
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
 import com.zextras.mailbox.client.admin.service.AdminServiceRequests;
+import com.zextras.mailbox.client.service.ServiceClient;
+import com.zextras.mailbox.client.service.ServiceRequests;
 
 public class ExampleUsage {
   public static void main(String[] args) throws Exception {
@@ -21,7 +21,7 @@ public class ExampleUsage {
             .trustAllCertificates()
             .build();
 
-    ServiceClientImpl serviceClient = client.newServiceClientBuilder().withPool(5).build();
+    ServiceClient serviceClient = client.newServiceClientBuilder().withPool(5).build();
 
     AdminServiceClient adminClient = client.newAdminServiceClientBuilder().withPool(5).build();
 

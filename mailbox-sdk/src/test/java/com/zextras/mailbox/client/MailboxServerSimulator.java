@@ -4,6 +4,7 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
+import com.zextras.mailbox.client.service.ServiceClient;
 import io.swagger.models.HttpMethod;
 import java.io.IOException;
 import java.io.InputStream;

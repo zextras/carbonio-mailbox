@@ -1,9 +1,9 @@
 package com.zextras.mailbox.client;
 
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
-import com.zextras.mailbox.client.admin.service.AdminServiceClientImpl;
-import com.zextras.mailbox.client.service.ServiceClientImpl;
-
+import com.zextras.mailbox.client.admin.service.AdminServiceClientBuilderImpl;
+import com.zextras.mailbox.client.service.ServiceClient;
+import com.zextras.mailbox.client.service.ServiceClientBuilderImpl;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -19,25 +19,32 @@ public class MailboxClient {
     this.wsdl = wsdl;
   }
 
-  public ServiceClientImpl.Builder newServiceClientBuilder() {
-    final var server = wsdl.getProtocol() + "://" + wsdl.getHost() + ":" + wsdl.getPort();
-    return new ServiceClientImpl.Builder(wsdl, server);
+  public ServiceClient.Builder newServiceClientBuilder() {
+    return new ServiceClientBuilderImpl(wsdl, serviceServer());
   }
 
-  public ServiceClientImpl newServiceClient() {
+  public ServiceClient newServiceClient() {
     return newServiceClientBuilder().build();
   }
 
-  public AdminServiceClientImpl.Builder newAdminServiceClientBuilder() {
-    final var server = "https://" + wsdl.getHost() + ":7071";
-    return new AdminServiceClientImpl.Builder(wsdl, server);
+  public AdminServiceClient.Builder newAdminServiceClientBuilder() {
+    return new AdminServiceClientBuilderImpl(wsdl, adminServiceServer());
   }
 
   public AdminServiceClient newAdminServiceClient() {
     return newAdminServiceClientBuilder().build();
   }
 
+  private String serviceServer() {
+    return wsdl.getProtocol() + "://" + wsdl.getHost() + ":" + wsdl.getPort();
+  }
+
+  private String adminServiceServer() {
+    return "https://" + wsdl.getHost() + ":7071";
+  }
+
   public static class Builder {
+
     private boolean trustAllCertificates;
     private String server = "http://localhost:7070";
 
@@ -53,6 +60,9 @@ public class MailboxClient {
 
     public MailboxClient build()
         throws MalformedURLException, NoSuchAlgorithmException, KeyManagementException {
+      if (server == null || server.isEmpty()) {
+        throw new IllegalArgumentException("Server parameter is required");
+      }
 
       if (trustAllCertificates) {
         disableSslCertificatesCheck();
