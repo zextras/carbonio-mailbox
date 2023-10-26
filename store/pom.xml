@@ -667,7 +667,7 @@
           <dumpOnStart>true</dumpOnStart>
           <webApp>
             <descriptor>${project.basedir}/conf/web.xml</descriptor>
-            <contextPath>/</contextPath>
+            <contextPath>/service/</contextPath>
           </webApp>
           <systemProperties>
             <systemProperty>
