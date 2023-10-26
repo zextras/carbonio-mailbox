@@ -1,6 +1,7 @@
 package com.zextras.mailbox.client;
 
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
+import com.zextras.mailbox.client.admin.service.AdminServiceClientImpl;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -16,18 +17,18 @@ public class MailboxClient {
     this.wsdl = wsdl;
   }
 
-  public ServiceClient.Builder newServiceClientBuilder() {
+  public ServiceClientImpl.Builder newServiceClientBuilder() {
     final var server = wsdl.getProtocol() + "://" + wsdl.getHost() + ":" + wsdl.getPort();
-    return new ServiceClient.Builder(wsdl, server);
+    return new ServiceClientImpl.Builder(wsdl, server);
   }
 
-  public ServiceClient newServiceClient() {
+  public ServiceClientImpl newServiceClient() {
     return newServiceClientBuilder().build();
   }
 
-  public AdminServiceClient.Builder newAdminServiceClientBuilder() {
+  public AdminServiceClientImpl.Builder newAdminServiceClientBuilder() {
     final var server = "https://" + wsdl.getHost() + ":7071";
-    return new AdminServiceClient.Builder(wsdl, server);
+    return new AdminServiceClientImpl.Builder(wsdl, server);
   }
 
   public AdminServiceClient newAdminServiceClient() {

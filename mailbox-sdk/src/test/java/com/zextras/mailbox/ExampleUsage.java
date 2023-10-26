@@ -1,7 +1,7 @@
 package com.zextras.mailbox;
 
 import com.zextras.mailbox.client.MailboxClient;
-import com.zextras.mailbox.client.ServiceClient;
+import com.zextras.mailbox.client.ServiceClientImpl;
 import com.zextras.mailbox.client.ServiceRequests;
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
 import com.zextras.mailbox.client.admin.service.AdminServiceRequests;
@@ -21,7 +21,7 @@ public class ExampleUsage {
             .trustAllCertificates()
             .build();
 
-    ServiceClient serviceClient = client.newServiceClientBuilder().withPool(5).build();
+    ServiceClientImpl serviceClient = client.newServiceClientBuilder().withPool(5).build();
 
     AdminServiceClient adminClient = client.newAdminServiceClientBuilder().withPool(5).build();
 

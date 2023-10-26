@@ -17,7 +17,7 @@ import zimbra.AuthTokenControl;
 import zimbra.HeaderContext;
 import zimbra.ObjectFactory;
 
-public abstract class PooledClient<Service> {
+public abstract class PooledClient<Service> implements Client<Service> {
   private final ConcurrentLinkedQueue<Service> servicePool;
   protected final HeaderContext soapHeaderContext;
 
@@ -29,6 +29,7 @@ public abstract class PooledClient<Service> {
     soapHeaderContext.setAuthTokenControl(tokenControl);
   }
 
+  @Override
   public <Res> Res send(Request<Service, Res> request) {
     return usingPool(service -> request.call(service, soapHeaderContext));
   }
