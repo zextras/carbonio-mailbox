@@ -20,7 +20,7 @@ class DomainAccountValidatorTest {
     private final Domain domainMock = Mockito.mock(Domain.class);
 
     @AfterEach
-    void tearDown() throws ServiceException {
+    void tearDown() {
         Mockito.reset(provisioningMock, domainMock);
     }
 
