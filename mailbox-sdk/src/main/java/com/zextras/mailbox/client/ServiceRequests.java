@@ -1,4 +1,4 @@
-package com.zextras.mailbox.client.service;
+package com.zextras.mailbox.client;
 
 public class ServiceRequests {
   public static final AccountInfoRequests AccountInfo = new AccountInfoRequests();

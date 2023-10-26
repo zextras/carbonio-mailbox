@@ -1,10 +1,9 @@
-package com.zextras.mailbox.client.service;
+package com.zextras.mailbox.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockserver.model.HttpRequest.*;
 import static org.mockserver.model.HttpResponse.*;
 
-import com.zextras.mailbox.client.MailboxClient;
 import io.swagger.models.HttpMethod;
 import java.io.IOException;
 import java.io.InputStream;

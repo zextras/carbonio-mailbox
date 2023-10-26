@@ -3,8 +3,8 @@ package com.zextras.mailbox;
 import com.zextras.mailbox.client.MailboxClient;
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
 import com.zextras.mailbox.client.admin.service.AdminServiceRequests;
-import com.zextras.mailbox.client.service.ServiceClient;
-import com.zextras.mailbox.client.service.ServiceRequests;
+import com.zextras.mailbox.client.ServiceClient;
+import com.zextras.mailbox.client.ServiceRequests;
 
 public class Demo {
   public static void main(String[] args) throws Exception {

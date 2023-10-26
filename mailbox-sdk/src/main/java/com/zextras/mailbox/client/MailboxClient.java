@@ -1,7 +1,6 @@
 package com.zextras.mailbox.client;
 
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
-import com.zextras.mailbox.client.service.ServiceClient;
 
 import java.net.MalformedURLException;
 import java.net.URL;
