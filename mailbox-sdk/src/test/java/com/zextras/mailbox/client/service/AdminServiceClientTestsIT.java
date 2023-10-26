@@ -5,6 +5,8 @@ import static org.mockserver.model.HttpRequest.*;
 import static org.mockserver.model.HttpResponse.*;
 
 import com.zextras.mailbox.client.MailboxClient;
+import com.zextras.mailbox.client.admin.service.AdminServiceClient;
+import com.zextras.mailbox.client.admin.service.AdminServiceRequests;
 import io.swagger.models.HttpMethod;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,16 +25,16 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.BinaryBody;
 import org.mockserver.model.HttpStatusCode;
-import zimbra.NamedValue;
+import zimbraadmin.Attr;
 
-class ServiceClientTestsIT {
+class AdminServiceClientTestsIT {
 
-  private final int PORT = 10_000;
+  private final int PORT = 10_001;
   private final String authToken = "dummy-token";
   private final String email = "foo@test.domain.io";
   private final String id = "846a6715-d0c8-452c-885c-869f7892d3f0";
   private ClientAndServer mailboxMockServer;
-  private ServiceClient serviceClient;
+  private AdminServiceClient adminServiceClient;
 
   @BeforeEach
   void setUp() throws Exception {
@@ -53,10 +55,11 @@ class ServiceClientTestsIT {
     setupServerFor("getAccountInfo_ByEmail");
 
     final var result =
-        serviceClient.send(ServiceRequests.AccountInfo.byEmail(email).withAuthToken(authToken));
+        adminServiceClient.send(
+            AdminServiceRequests.AccountInfo.byEmail(email).withAuthToken(authToken));
 
     assertEquals(email, result.getName());
-    assertEquals(id, readAttribute(result.getAttr(), "zimbraId"));
+    assertEquals(id, readAttribute(result.getA(), "zimbraId"));
   }
 
   @Test
@@ -64,15 +67,15 @@ class ServiceClientTestsIT {
     setupServerFor("getAccountInfo_ById");
 
     final var result =
-        serviceClient.send(ServiceRequests.AccountInfo.byId(id).withAuthToken(authToken));
+        adminServiceClient.send(AdminServiceRequests.AccountInfo.byId(id).withAuthToken(authToken));
 
     assertEquals(email, result.getName());
-    assertEquals(id, readAttribute(result.getAttr(), "zimbraId"));
+    assertEquals(id, readAttribute(result.getA(), "zimbraId"));
   }
 
-  private static String readAttribute(List<NamedValue> attributes, String name) {
+  private static String readAttribute(List<Attr> attributes, String name) {
     return attributes.stream()
-        .filter(x -> Objects.equals(x.getName(), name))
+        .filter(x -> Objects.equals(x.getN(), name))
         .findFirst()
         .get()
         .getValue();
@@ -86,7 +89,7 @@ class ServiceClientTestsIT {
         .when(
             request()
                 .withMethod(HttpMethod.POST.toString())
-                .withPath("/service/soap/")
+                .withPath("/service/admin/soap/")
                 .withBody(request))
         .respond(response().withStatusCode(HttpStatusCode.OK_200.code()).withBody(response));
   }
@@ -100,7 +103,7 @@ class ServiceClientTestsIT {
   }
 
   private String fullPathFor(String name, String type) {
-    return String.format("soap/service/%s/%s.xml", name, type);
+    return String.format("soap/adminService/%s/%s.xml", name, type);
   }
 
   private String getXmlFile(String path) {
@@ -129,9 +132,8 @@ class ServiceClientTestsIT {
   private void setUpClient()
       throws MalformedURLException, NoSuchAlgorithmException, KeyManagementException {
     String server = String.format("http://localhost:%s", PORT);
-
     final var client = new MailboxClient.Builder().withServer(server).build();
 
-    serviceClient = client.newServiceClientBuilder().withServer(server).build();
+    adminServiceClient = client.newAdminServiceClientBuilder().withServer(server).build();
   }
 }

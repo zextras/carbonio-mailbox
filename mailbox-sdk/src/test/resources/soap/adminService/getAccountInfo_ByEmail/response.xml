@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+    <soap:Header>
+        <context xmlns="urn:zimbra">
+            <change token="2463"/>
+        </context>
+    </soap:Header>
+    <soap:Body>
+        <GetAccountInfoResponse xmlns="urn:zimbraAdmin">
+            <name>foo@test.domain.io</name>
+            <a n="zimbraId">846a6715-d0c8-452c-885c-869f7892d3f0</a>
+            <a n="zimbraMailHost">gk-dl.demo.zextras.io</a>
+            <cos name="default" id="e00428a1-0c00-11d9-836a-000d93afea2a" />
+            <soapURL>http://server.test.domain.io:8080/service/soap/</soapURL>
+            <adminSoapURL>http://server.test.domain.io:7071/service/admin/soap/</adminSoapURL>
+            <publicMailURL>http://server.test.domain.io</publicMailURL>
+        </GetAccountInfoResponse>
+    </soap:Body>
+</soap:Envelope>

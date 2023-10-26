@@ -27,9 +27,13 @@ public class MailboxClient {
     return newServiceClientBuilder().build();
   }
 
-  public AdminServiceClient.Builder newAdminServiceClient() {
+  public AdminServiceClient.Builder newAdminServiceClientBuilder() {
     final var server = "https://" + wsdl.getHost() + ":7071";
     return new AdminServiceClient.Builder(wsdl, server);
+  }
+
+  public AdminServiceClient newAdminServiceClient() {
+    return newAdminServiceClientBuilder().build();
   }
 
   public static class Builder {
