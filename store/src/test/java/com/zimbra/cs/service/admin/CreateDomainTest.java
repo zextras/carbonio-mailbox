@@ -30,7 +30,7 @@ class CreateDomainTest {
     }
 
     @Test
-    public void whenDomainMaxAccountIsNegative_creatingANewDomain_throwsAnExpectedException() throws Exception {
+    void whenDomainMaxAccountIsNegative_creatingANewDomain_throwsAnExpectedException() throws Exception {
         final Map<String, Object> extraAttr = new HashMap<>();
         extraAttr.put(Provisioning.A_zimbraDomainMaxAccounts, "-1");
 

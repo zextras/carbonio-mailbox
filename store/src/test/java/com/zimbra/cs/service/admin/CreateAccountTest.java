@@ -35,7 +35,7 @@ class CreateAccountTest {
     }
 
     @Test
-    public void whenDomainMaxAccountIsZero_creatingANewAccount_willCompleteTheOperationSuccessfully() throws Exception {
+    void whenDomainMaxAccountIsZero_creatingANewAccount_willCompleteTheOperationSuccessfully() throws Exception {
         final String domainName = provisionDomain("test.domain.com", "0");
         final String expectedAccountName = "testName@" + domainName;
         final Map<String, Object> context = provisionAdminContext();
@@ -55,7 +55,7 @@ class CreateAccountTest {
     }
 
     @Test
-    public void whenDomainMaxAccountIsNull_creatingANewAccount_willCompleteTheOperationSuccessfully() throws Exception {
+    void whenDomainMaxAccountIsNull_creatingANewAccount_willCompleteTheOperationSuccessfully() throws Exception {
         final String domainName = provisionDomain("test.domain.com", null);
         final String expectedAccountName = "testName@" + domainName;
         final Map<String, Object> context = provisionAdminContext();

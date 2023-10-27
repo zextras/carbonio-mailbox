@@ -25,14 +25,14 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withoutArguments_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withoutArguments_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         final Validators.DomainAccountValidator validator = new Validators.DomainAccountValidator();
 
         validator.validate(provisioningMock, Provisioning.ProvisioningValidator.CREATE_ACCOUNT);
     }
 
     @Test
-    public void withOneArgumentAndWrongAction_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withOneArgumentAndWrongAction_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         final Validators.DomainAccountValidator validator = new Validators.DomainAccountValidator();
         final Object[] conditionArguments = new Object[]{
                 "0",
@@ -42,7 +42,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withOneNonStringArgument_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withOneNonStringArgument_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         final Validators.DomainAccountValidator validator = new Validators.DomainAccountValidator();
         final Object[] conditionArguments = new Object[]{
                 0
@@ -52,7 +52,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withMoreArgumentsAndReturnCondition1_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withMoreArgumentsAndReturnCondition1_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         final Validators.DomainAccountValidator validator = new Validators.DomainAccountValidator();
         final Object[] conditionArguments = new Object[]{
                 "0",
@@ -63,7 +63,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withMoreArgumentsAndReturnConditionSystemProperty_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withMoreArgumentsAndReturnConditionSystemProperty_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         final Validators.DomainAccountValidator validator = new Validators.DomainAccountValidator();
         final Object[] conditionArguments = new Object[]{
                 "0",
@@ -75,7 +75,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withMoreArgumentsAndReturnConditionSystemPropertyObjClass_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withMoreArgumentsAndReturnConditionSystemPropertyObjClass_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         final Validators.DomainAccountValidator validator = new Validators.DomainAccountValidator();
         final Object[] conditionArguments = new Object[]{
                 "0",
@@ -87,7 +87,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withMoreArgumentsAndReturnConditionExternalVirtualAccount_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withMoreArgumentsAndReturnConditionExternalVirtualAccount_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         final Validators.DomainAccountValidator validator = new Validators.DomainAccountValidator();
         final Object[] conditionArguments = new Object[]{
                 "0",
@@ -99,7 +99,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withMoreArgumentsAndReturnConditionNullDomain_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withMoreArgumentsAndReturnConditionNullDomain_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         final Validators.DomainAccountValidator validator = new Validators.DomainAccountValidator();
         final Object[] conditionArguments = new Object[]{
                 "shouldHaveBeenAnEmailAddress",
@@ -110,7 +110,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withMoreArgumentsAndReturnConditionNullDomain2_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withMoreArgumentsAndReturnConditionNullDomain2_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         Mockito.when(provisioningMock.get(Mockito.any(Key.DomainBy.class), Mockito.anyString())).thenReturn(null);
         final Validators.DomainAccountValidator validator = new Validators.DomainAccountValidator();
         final Object[] conditionArguments = new Object[]{
@@ -122,7 +122,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withMoreArgumentsAndReturnConditionMaxAccountLimitNull_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withMoreArgumentsAndReturnConditionMaxAccountLimitNull_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         Mockito.when(domainMock.getAttr(Provisioning.A_zimbraDomainMaxAccounts)).thenReturn(null);
         Mockito.when(provisioningMock.get(Mockito.any(Key.DomainBy.class), Mockito.anyString())).thenReturn(domainMock);
 
@@ -136,7 +136,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withMoreArgumentsAndReturnConditionMaxAccountLimitZero_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withMoreArgumentsAndReturnConditionMaxAccountLimitZero_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         Mockito.when(domainMock.getAttr(Provisioning.A_zimbraDomainMaxAccounts)).thenReturn("0");
         Mockito.when(provisioningMock.get(Mockito.any(Key.DomainBy.class), Mockito.anyString())).thenReturn(domainMock);
 
@@ -150,7 +150,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withMoreArgumentsAndReturnConditionMaxAccountLimitValid_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
+    void withMoreArgumentsAndReturnConditionMaxAccountLimitValid_validateAccountCreation_returnsWithoutFailing() throws ServiceException {
         Mockito.when(domainMock.getAttr(Provisioning.A_zimbraDomainMaxAccounts)).thenReturn("3");
         Mockito.when(provisioningMock.get(Mockito.any(Key.DomainBy.class), Mockito.anyString())).thenReturn(domainMock);
         Mockito.when(provisioningMock.countObjects(CountObjectsType.internalUserAccount, domainMock)).thenReturn(1L);
@@ -165,7 +165,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withValidArgumentsAndProvisionExceptionTimeout_validateAccountCreation_throwsExpectedException() throws ServiceException {
+    void withValidArgumentsAndProvisionExceptionTimeout_validateAccountCreation_throwsExpectedException() throws ServiceException {
         final String expectedExceptionMessage = "system failure: The directory may not be responding or is responding slowly.  The directory may" +
                 " need tuning or the LDAP read timeout may need to be raised.  Otherwise," +
                 " removing the zimbraDomainMaxAccounts restriction will avoid this check.";
@@ -188,7 +188,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withValidArgumentsAndProvisionExceptionCounting_validateAccountCreation_throwsExpectedException() throws ServiceException {
+    void withValidArgumentsAndProvisionExceptionCounting_validateAccountCreation_throwsExpectedException() throws ServiceException {
         final String expectedMaxAccounts = "3";
         final String expectedDomainName = "domain.test";
         final String expectedExceptionMessage = "system failure: Unable to count users for setting zimbraDomainMaxAccounts=" + expectedMaxAccounts + " in domain " + expectedDomainName;
@@ -212,7 +212,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withValidArgumentsAndProvisionExceptionCountingNullCauseMessage_validateAccountCreation_throwsExpectedException() throws ServiceException {
+    void withValidArgumentsAndProvisionExceptionCountingNullCauseMessage_validateAccountCreation_throwsExpectedException() throws ServiceException {
         final String expectedMaxAccounts = "3";
         final String expectedDomainName = "domain.test";
         final String expectedExceptionMessage = "system failure: Unable to count users for setting zimbraDomainMaxAccounts=" + expectedMaxAccounts + " in domain " + expectedDomainName;
@@ -236,7 +236,7 @@ class DomainAccountValidatorTest {
     }
 
     @Test
-    public void withValidArgumentsAndMaxAccountLessThenLastUserCount_validateAccountCreation_throwsExpectedException() throws ServiceException {
+    void withValidArgumentsAndMaxAccountLessThenLastUserCount_validateAccountCreation_throwsExpectedException() throws ServiceException {
         final String expectedMaxAccounts = "3";
         final long expectedObjectCounted = Long.parseLong(expectedMaxAccounts) + 1;
         final String expectedDomainName = "domain.test";
