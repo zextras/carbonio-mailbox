@@ -4,6 +4,7 @@ import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.soap.JaxbUtil;
@@ -11,8 +12,12 @@ import com.zimbra.soap.admin.message.CreateAccountRequest;
 import com.zimbra.soap.admin.message.CreateAccountResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +39,11 @@ class CreateAccountTest {
         MailboxTestUtil.tearDown();
     }
 
-    @Test
-    void whenDomainMaxAccountIsZero_creatingANewAccount_willCompleteTheOperationSuccessfully() throws Exception {
-        final String domainName = provisionDomain("test.domain.com", "0");
+    @ParameterizedTest
+    @ValueSource(strings = {"0"})
+    @NullSource
+    void whenDomainMaxAccountIsNullOrZero_creatingANewAccount_willCompleteTheOperationSuccessfully(String maxAccount) throws Exception {
+        final String domainName = provisionDomain("test.domain.com", maxAccount);
         final String expectedAccountName = "testName@" + domainName;
         final Map<String, Object> context = provisionAdminContext();
 
@@ -55,8 +62,8 @@ class CreateAccountTest {
     }
 
     @Test
-    void whenDomainMaxAccountIsNull_creatingANewAccount_willCompleteTheOperationSuccessfully() throws Exception {
-        final String domainName = provisionDomain("test.domain.com", null);
+    void whenDomainMaxAccountIsReached_creatingANewAccount_willThrowKnownException() throws Exception {
+        final String domainName = provisionDomain("test.domain.com", "1");
         final String expectedAccountName = "testName@" + domainName;
         final Map<String, Object> context = provisionAdminContext();
 
@@ -64,13 +71,9 @@ class CreateAccountTest {
         final CreateAccountRequest createAccountRequest = new CreateAccountRequest(expectedAccountName, "superSecretAccountPassword");
         final Element request = JaxbUtil.jaxbToElement(createAccountRequest);
 
-        final Element createAccountResponseXML = creator.handle(request, context);
+        final AccountServiceException actualException = Assertions.assertThrows(AccountServiceException.class, () -> creator.handle(request, context));
 
-        final CreateAccountResponse createAccountResponse = JaxbUtil.elementToJaxb(createAccountResponseXML);
-        final AccountInfo accountInfo = createAccountResponse.getAccount();
-        assertNotNull(accountInfo);
-        assertNotEquals(expectedAccountName, accountInfo.getName(), "Account name incorrect");
-        assertEquals(expectedAccountName.toLowerCase(), accountInfo.getName(), "Account name incorrect");
+        assertEquals("number of accounts reached the limit: domain=test.domain.com (1)", actualException.getMessage());
     }
 
     private String provisionDomain(String domain, String domainMaxAccounts) throws ServiceException {
