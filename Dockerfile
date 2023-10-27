@@ -8,4 +8,6 @@ RUN keytool -genkey \
     -keyalg RSA -keysize 2048 -validity 365000 \
     -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown"
 
+ENV MAVEN_OPTS="-Xdebug -agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n"
+
 CMD ["mvn", "jetty:run", "-Dmaven.compile.skip=true", "-Dmaven.test.skip=true", "-Dmaven.main.skip=true", "-Dmaven.antrun.skip=true", "-Dzimbra.config=../docker-jetty-localconfig.xml"]
