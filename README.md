@@ -36,6 +36,14 @@ This repository contains the source code of Carbonio Mailbox which consists of s
   - run docker-compose up in [store/utils/docker](store/utils/docker) (starts carbonio-db and carbonio LDAP)
   - run mvn jetty:run from store module
 
+## Testing Packages
+
+You can test packages by running [test_e2e.sh](test_e2e.sh)
+The script will:
+- Build packages from built code
+- Create a local image with new packages installed
+- Run the carbonio-ce container with the updated packages
+
 ## Contribute to Carbonio Mailbox
 
 All contributions are accepted! Please refer to the CONTRIBUTING file (if present in this repository) for more details on how to contribute. If the repository has a Code of Conduct, we kindly ask to follow that as well.
