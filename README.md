@@ -37,12 +37,10 @@ This repository contains the source code of Carbonio Mailbox which consists of s
   - run mvn jetty:run from store module
 
 ## Testing Packages
-
-You can test packages by running [test_e2e.sh](test_e2e.sh)
-The script will:
-- Build packages from built code
-- Create a local image with new packages installed
-- Run the carbonio-ce container with the updated packages
+To start build packages by running [build_packages.sh](build_packages.sh)
+Then run docker compose against [Dockerfile](Dockerfile):
+`docker compose up --build`
+It will build and start a carbonio-ce instance using built packages.
 
 ## Contribute to Carbonio Mailbox
 

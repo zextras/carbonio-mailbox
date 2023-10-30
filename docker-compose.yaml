@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  carbonio.carbonio-system.svc.cluster.local:
+    build: .
+    entrypoint: "entrypoint"
+    extra_hosts:
+      - "carbonio-system.svc.cluster.local:127.0.0.1"
+    healthcheck:
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      test: nc -z localhost 443 || exit 1
+      timeout: 10s
+    hostname: carbonio.carbonio-system.svc.cluster.local
+    ports:
+      - "25:25"
+      - "110:110"
+      - "443:443"
+      - "465:465"
+      - "587:587"
+      - "6071:6071"
+      - "7071:7071"
+      - "8080:8080"
+    user: zextras
