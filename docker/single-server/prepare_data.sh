@@ -6,6 +6,8 @@
 #
 set -x
 
+cd /opt/zextras/bin || exit
+
 DOMAIN="carbonio-system.svc.cluster.local"
 # Update zextras password
 carbonio prov sp zextras password

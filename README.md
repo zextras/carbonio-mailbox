@@ -38,7 +38,8 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
 ## Testing Packages
 To start build packages by running [build_packages.sh](build_packages.sh)
-Then run docker compose against [Dockerfile](Dockerfile):
+
+Then cd into [docker/single-server](docker/single-server) and run:
 `docker compose up --build`
 It will build and start a carbonio-ce instance using built packages.
 

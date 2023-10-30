@@ -2,8 +2,10 @@ version: "3.9"
 
 services:
   carbonio.carbonio-system.svc.cluster.local:
-    build: .
-    entrypoint: "entrypoint"
+    build:
+      context: ./../../
+      dockerfile: docker/single-server/Dockerfile
+    entrypoint: "/opt/zextras/entrypoint.sh"
     extra_hosts:
       - "carbonio-system.svc.cluster.local:127.0.0.1"
     healthcheck:
