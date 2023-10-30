@@ -20,24 +20,24 @@ class ServiceClientTestsIT {
   private final String email = "foo@test.domain.io";
   private final String id = "846a6715-d0c8-452c-885c-869f7892d3f0";
   private ServiceClient serviceClient;
-  private MailboxServerSimulator mailboxServerSimulator;
+  private MailboxSOAPSimulator mailboxSOAPSimulator;
 
   @BeforeEach
   void setUp() throws Exception {
-    mailboxServerSimulator = MailboxServerSimulator.startService(PORT);
-    serviceClient = mailboxServerSimulator.createServiceClient();
+    mailboxSOAPSimulator = MailboxSOAPSimulator.startService(PORT);
+    serviceClient = mailboxSOAPSimulator.createServiceClient();
   }
 
   @AfterEach
   void tearDown() throws Exception {
-    if (mailboxServerSimulator != null) {
-      mailboxServerSimulator.close();
+    if (mailboxSOAPSimulator != null) {
+      mailboxSOAPSimulator.close();
     }
   }
 
   @Test
   void getAccountInfoByEmail() throws Exception {
-    mailboxServerSimulator.setupServerFor("getAccountInfo_ByEmail");
+    mailboxSOAPSimulator.setupServerFor("getAccountInfo_ByEmail");
 
     final var result =
         serviceClient.send(ServiceRequests.AccountInfo.byEmail(email).withAuthToken(authToken));
@@ -48,7 +48,7 @@ class ServiceClientTestsIT {
 
   @Test
   void getAccountInfoById() throws Exception {
-    mailboxServerSimulator.setupServerFor("getAccountInfo_ById");
+    mailboxSOAPSimulator.setupServerFor("getAccountInfo_ById");
 
     final var result =
         serviceClient.send(ServiceRequests.AccountInfo.byId(id).withAuthToken(authToken));

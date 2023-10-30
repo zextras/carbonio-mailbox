@@ -16,32 +16,30 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.BinaryBody;
 import org.mockserver.model.HttpStatusCode;
 
-public class MailboxServerSimulator implements AutoCloseable {
+public class MailboxSOAPSimulator implements AutoCloseable {
 
   private static final String SERVICE_TYPE = "service";
   private static final String ADMIN_SERVICE_TYPE = "adminService";
 
-  private final int port;
   private final ClientAndServer mailboxMockServer;
   private final String type;
   private final String server;
   private final MailboxClient client;
 
-  private MailboxServerSimulator(int port, String type) throws Exception {
-    this.port = port;
+  private MailboxSOAPSimulator(int port, String type) throws Exception {
     this.type = type;
     mailboxMockServer = ClientAndServer.startClientAndServer(port);
     setUpWsdlResponse();
-    server = String.format("http://localhost:%s", this.port);
+    server = String.format("http://localhost:%s", port);
     client = new MailboxClient.Builder().withServer(server).build();
   }
 
-  public static MailboxServerSimulator startService(int port) throws Exception {
-    return new MailboxServerSimulator(port, SERVICE_TYPE);
+  public static MailboxSOAPSimulator startService(int port) throws Exception {
+    return new MailboxSOAPSimulator(port, SERVICE_TYPE);
   }
 
-  public static MailboxServerSimulator startAdminService(int port) throws Exception {
-    return new MailboxServerSimulator(port, ADMIN_SERVICE_TYPE);
+  public static MailboxSOAPSimulator startAdminService(int port) throws Exception {
+    return new MailboxSOAPSimulator(port, ADMIN_SERVICE_TYPE);
   }
 
   public ServiceClient createServiceClient() {
