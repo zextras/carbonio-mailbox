@@ -11,12 +11,12 @@ import com.zextras.mailbox.client.service.ServiceClient;
 import com.zextras.mailbox.client.service.ServiceRequests;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 import zimbra.NamedValue;
+import zimbraaccount.Attr;
 
 class ServiceClientTestsIT {
 
@@ -48,7 +48,7 @@ class ServiceClientTestsIT {
         serviceClient.send(ServiceRequests.AccountInfo.byEmail(email).withAuthToken(authToken));
 
     assertEquals(email, result.getName());
-    assertAttributeEquals(id, "zimbraId", result.getAttr());
+    assertNamedValueEquals(id, "zimbraId", result.getAttr());
   }
 
   @Test
@@ -59,7 +59,7 @@ class ServiceClientTestsIT {
         serviceClient.send(ServiceRequests.AccountInfo.byId(id).withAuthToken(authToken));
 
     assertEquals(email, result.getName());
-    assertAttributeEquals(id, "zimbraId", result.getAttr());
+    assertNamedValueEquals(id, "zimbraId", result.getAttr());
   }
 
   @Test
@@ -70,6 +70,7 @@ class ServiceClientTestsIT {
         serviceClient.send(ServiceRequests.Info.allSections().withAuthToken(authToken));
 
     assertEquals(email, result.getName());
+    assertAttrEquals(id, "zimbraId", result.getAttrs().getAttr());
   }
 
   @Test
@@ -82,19 +83,25 @@ class ServiceClientTestsIT {
                 .withAuthToken(authToken));
 
     assertEquals(email, result.getName());
+    assertAttrEquals(id, "zimbraId", result.getAttrs().getAttr());
   }
 
-  public static void assertAttributeEquals(
+  private static void assertNamedValueEquals(
       String expected, String name, List<NamedValue> attributes) {
-    assertEquals(expected, readAttribute(attributes, name));
-  }
-
-  private static String readAttribute(List<NamedValue> attributes, String name) {
-    Optional<NamedValue> attribute =
+    final var attribute =
         attributes.stream().filter(x -> Objects.equals(x.getName(), name)).findFirst();
     if (attribute.isEmpty()) {
       throw new AssertionFailedError("Attribute not found: " + name);
     }
-    return attribute.get().getValue();
+    assertEquals(expected, attribute.get().getValue());
+  }
+
+  private static void assertAttrEquals(String expected, String name, List<Attr> attributes) {
+    final var attribute =
+        attributes.stream().filter(x -> Objects.equals(x.getName(), name)).findFirst();
+    if (attribute.isEmpty()) {
+      throw new AssertionFailedError("Attribute not found: " + name);
+    }
+    assertEquals(expected, attribute.get().getValue());
   }
 }

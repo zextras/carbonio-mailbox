@@ -10,7 +10,6 @@ import com.zextras.mailbox.client.admin.service.AdminServiceClient;
 import com.zextras.mailbox.client.admin.service.AdminServiceRequests;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +47,7 @@ class AdminServiceClientTestsIT {
             AdminServiceRequests.AccountInfo.byEmail(email).withAuthToken(authToken));
 
     assertEquals(email, result.getName());
-    assertAttributeEquals(id, "zimbraId", result.getA());
+    assertAttrEquals(id, "zimbraId", result.getA());
   }
 
   @Test
@@ -59,19 +58,15 @@ class AdminServiceClientTestsIT {
         adminServiceClient.send(AdminServiceRequests.AccountInfo.byId(id).withAuthToken(authToken));
 
     assertEquals(email, result.getName());
-    assertAttributeEquals(id, "zimbraId", result.getA());
+    assertAttrEquals(id, "zimbraId", result.getA());
   }
 
-  public static void assertAttributeEquals(String expected, String name, List<Attr> attributes) {
-    assertEquals(expected, readAttribute(attributes, name));
-  }
-
-  private static String readAttribute(List<Attr> attributes, String name) {
-    Optional<Attr> attribute =
+  public static void assertAttrEquals(String expected, String name, List<Attr> attributes) {
+    final var attribute =
         attributes.stream().filter(x -> Objects.equals(x.getN(), name)).findFirst();
     if (attribute.isEmpty()) {
       throw new AssertionFailedError("Attribute not found: " + name);
     }
-    return attribute.get().getValue();
+    assertEquals(expected, attribute.get().getValue());
   }
 }
