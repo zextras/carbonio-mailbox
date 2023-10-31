@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.mail.Message.RecipientType;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
@@ -252,17 +251,13 @@ public class SendMsgTest {
                 ServiceTestUtil.getRequestContext(sender));
     final GetContactsResponse getContactsResponse =
         JaxbUtil.elementToJaxb(handle, GetContactsResponse.class);
-    // Believe or not, ContactInfo email is null but "email" attribute is not, so we have to get it
-    // from there
-    final List<String> contacts =
+    Assertions.assertArrayEquals(List.of(externalAddress).toArray(),
         getContactsResponse.getContacts().stream()
             .flatMap(
                 contactInfo ->
                     contactInfo.getAttrs().stream()
                         .filter(attr -> attr.getKey().equals("email"))
-                        .map(KeyValuePair::getValue))
-            .collect(Collectors.toList());
-    Assertions.assertArrayEquals(List.of(externalAddress).toArray(), contacts.toArray());
+                        .map(KeyValuePair::getValue)).toArray());
   }
 
   @Test
@@ -280,7 +275,7 @@ public class SendMsgTest {
     msgToSend.setEmailAddresses(List.of(rcptAddress));
     msgToSend.setContent("Hello there");
     sendMsgRequest.setMsg(msgToSend);
-    Map<String, Object> sharedCtx = new HashMap<String, Object>();
+    Map<String, Object> sharedCtx = new HashMap<>();
     ZimbraSoapContext zsc =
         new ZimbraSoapContext(
             AuthProvider.getAuthToken(sender),
