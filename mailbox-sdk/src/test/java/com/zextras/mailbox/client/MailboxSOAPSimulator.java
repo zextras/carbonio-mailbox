@@ -10,11 +10,13 @@ import static org.mockserver.model.HttpResponse.response;
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
 import com.zextras.mailbox.client.service.ServiceClient;
 import io.swagger.models.HttpMethod;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import org.apache.commons.io.IOUtils;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.BinaryBody;
@@ -86,6 +88,9 @@ public class MailboxSOAPSimulator implements AutoCloseable {
 
   private String getXmlFile(String path) {
     try (InputStream resource = getClass().getClassLoader().getResourceAsStream(path)) {
+      if (Objects.isNull(resource))
+        throw new FileNotFoundException("Missing test resource: " + path);
+
       return IOUtils.toString(resource, StandardCharsets.UTF_8)
           // This replacement is necessary to remove the indentation and new lines
           .replaceAll(">\\s+<", "><")
