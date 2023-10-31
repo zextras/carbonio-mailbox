@@ -37,7 +37,7 @@ services:
     entrypoint: ["/entrypoint-ldap.sh"]
 
   db:
-    image: mariadb:10.9-jammy
+    image: mariadb:10.4.31-focal
     healthcheck:
       test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
       retries: 20

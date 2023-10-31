@@ -487,6 +487,7 @@ public final class LC {
 
   @Supported
   public static final KnownKey mailboxd_directory = KnownKey.newKey("${zimbra_home}/mailboxd");
+  public static final KnownKey create_db_sql_file = KnownKey.newKey("${mailboxd_directory}/../db/create_database.sql");
 
   @Supported public static final KnownKey mailboxd_java_heap_size = KnownKey.newKey(null);
 
