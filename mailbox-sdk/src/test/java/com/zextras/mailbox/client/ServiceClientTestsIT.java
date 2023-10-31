@@ -6,6 +6,7 @@ package com.zextras.mailbox.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.zextras.mailbox.client.service.InfoRequests.Sections;
 import com.zextras.mailbox.client.service.ServiceClient;
 import com.zextras.mailbox.client.service.ServiceRequests;
 import java.util.List;
@@ -67,6 +68,18 @@ class ServiceClientTestsIT {
 
     final var result =
         serviceClient.send(ServiceRequests.Info.allSections().withAuthToken(authToken));
+
+    assertEquals(email, result.getName());
+  }
+
+  @Test
+  void getInfoSomeSections() throws Exception {
+    mailboxSOAPSimulator.setupServerFor("getInfo_SomeSections");
+
+    final var result =
+        serviceClient.send(
+            ServiceRequests.Info.sections(Sections.children, Sections.attrs)
+                .withAuthToken(authToken));
 
     assertEquals(email, result.getName());
   }
