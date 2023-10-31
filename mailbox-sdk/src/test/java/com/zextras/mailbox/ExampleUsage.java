@@ -19,18 +19,20 @@ public class ExampleUsage {
     final var email = "foo@demo.zextras.io";
     final var domain = "demo.zextras.io";
 
-    // ---
+    // create the main mailbox client
     MailboxClient client =
         new MailboxClient.Builder()
             .withServer("http://localhost:8080")
             .trustAllCertificates()
             .build();
 
+    // create the service client from the main one (share the same WSDL)
     ServiceClient serviceClient = client.newServiceClientBuilder().withPool(5).build();
 
+    // create the admin service client from the main one (share the same WSDL)
     AdminServiceClient adminClient = client.newAdminServiceClientBuilder().withPool(5).build();
 
-    // ---
+    // send demo requests
     final var info = serviceClient.send(ServiceRequests.Info.allSections().withAuthToken(token));
 
     final var info2 =
@@ -60,7 +62,7 @@ public class ExampleUsage {
     final var domainInfo3 =
         adminClient.send(AdminServiceRequests.AccountInfo.byEmail(email).withAuthToken(tokenAdmin));
 
-    // ---
+    // prints all responses
     System.out.println(info);
     System.out.println(info2);
     System.out.println(info3);
