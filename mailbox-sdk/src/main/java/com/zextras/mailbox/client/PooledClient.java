@@ -25,7 +25,7 @@ public abstract class PooledClient<Service> implements Client<Service> {
   private final ConcurrentLinkedQueue<Service> servicePool;
   protected final HeaderContext soapHeaderContext;
 
-  public PooledClient(List<Service> services) {
+  protected PooledClient(List<Service> services) {
     this.servicePool = new ConcurrentLinkedQueue<>(services);
     AuthTokenControl tokenControl = new AuthTokenControl();
     tokenControl.setVoidOnExpired(true);
