@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
-import org.apache.commons.io.IOUtils;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.BinaryBody;
 import org.mockserver.model.HttpStatusCode;
@@ -92,7 +91,7 @@ public class MailboxSOAPSimulator implements AutoCloseable {
       if (Objects.isNull(resource))
         throw new FileNotFoundException("Missing test resource: " + path);
 
-      return IOUtils.toString(resource, StandardCharsets.UTF_8)
+      return new String(resource.readAllBytes(), StandardCharsets.UTF_8)
           // This replacement is necessary to remove the indentation and new lines
           .replaceAll(">\\s+<", "><")
           // This replacement is necessary to remove the end of file new line
