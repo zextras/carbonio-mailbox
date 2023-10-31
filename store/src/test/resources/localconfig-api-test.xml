@@ -37,4 +37,7 @@
   <key name="mailboxd_keystore_password">
     <value>zextras</value>
   </key>
+  <key name="ldap_noop_search_supported">
+    <value>false</value>
+  </key>
 </localconfig>

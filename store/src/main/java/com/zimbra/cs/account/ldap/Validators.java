@@ -8,24 +8,14 @@ package com.zimbra.cs.account.ldap;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.AccountServiceException;
-import com.zimbra.cs.account.AttributeClass;
-import com.zimbra.cs.account.Cos;
-import com.zimbra.cs.account.Domain;
-import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.*;
 import com.zimbra.cs.ldap.IAttributes;
 import com.zimbra.cs.ldap.SearchLdapOptions.SearchLdapVisitor;
 import com.zimbra.cs.ldap.ZLdapFilter;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.soap.admin.type.CountObjectsType;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 public final class Validators {
 
@@ -56,11 +46,11 @@ public final class Validators {
     public void validate(Provisioning prov, String action, Object... args) throws ServiceException {
       if (args.length < 1) return;
       if (!(action.equals(CREATE_ACCOUNT) || action.equals(RENAME_ACCOUNT))
-          || !(args[0] instanceof String)) return;
+              || !(args[0] instanceof String)) return;
 
       if (args.length > 1
-          && args[1] instanceof String[]
-          && Arrays.asList((String[]) args[1]).contains(AttributeClass.OC_zimbraCalendarResource)) {
+              && args[1] instanceof String[]
+              && Arrays.asList((String[]) args[1]).contains(AttributeClass.OC_zimbraCalendarResource)) {
         return; // as in LicenseManager, don't want to count calendar resources
       }
 
@@ -86,7 +76,9 @@ public final class Validators {
       if (d == null) return;
 
       String limit = d.getAttr(Provisioning.A_zimbraDomainMaxAccounts);
-      if (limit == null) return;
+      if (limit == null || "0".equals(limit)) {
+        return;
+      }
 
       long maxAccount = Long.parseLong(limit);
       long now = System.currentTimeMillis();
@@ -94,26 +86,23 @@ public final class Validators {
         try {
           mLastUserCount = prov.countObjects(CountObjectsType.internalUserAccount, d);
         } catch (ServiceException e) {
-          Throwable cause = e.getCause();
-          String causeMsg = cause.getMessage();
-
-          if (causeMsg != null && causeMsg.contains("timeout"))
+          if (e.getCause() != null && e.getCause().getMessage() != null && e.getCause().getMessage().contains("timeout")) {
             throw ServiceException.FAILURE(
-                "The directory may not be responding or is responding slowly.  The directory may"
-                    + " need tuning or the LDAP read timeout may need to be raised.  Otherwise,"
-                    + " removing the zimbraDomainMaxAccounts restriction will avoid this check.",
-                e);
-          else
+                    "The directory may not be responding or is responding slowly.  The directory may"
+                            + " need tuning or the LDAP read timeout may need to be raised.  Otherwise,"
+                            + " removing the zimbraDomainMaxAccounts restriction will avoid this check.",
+                    e);
+          } else {
             throw ServiceException.FAILURE(
-                "Unable to count users for setting zimbraDomainMaxAccounts="
-                    + limit
-                    + ""
-                    + " in domain "
-                    + d.getName(),
-                e);
+                    "Unable to count users for setting zimbraDomainMaxAccounts="
+                            + limit
+                            + " in domain "
+                            + d.getName(),
+                    e);
+          }
         }
         long nextCheck =
-            (maxAccount - mLastUserCount) > NUM_ACCT_THRESHOLD ? LDAP_CHECK_INTERVAL : 0;
+                (maxAccount - mLastUserCount) > NUM_ACCT_THRESHOLD ? LDAP_CHECK_INTERVAL : 0;
         setNextCheck(nextCheck);
       }
 
