@@ -2871,6 +2871,15 @@ public class ZAttrProvisioning {
     public static final String A_carbonioClamAVDatabaseCustomURL = "carbonioClamAVDatabaseCustomURL";
 
     /**
+     * Waiting for data from a client socket connected to ClamAV will timeout
+     * after this time (seconds)
+     *
+     * @since ZCS 23.11.0
+     */
+    @ZAttr(id=3140)
+    public static final String A_carbonioClamAVReadTimeout = "carbonioClamAVReadTimeout";
+
+    /**
      * Whether the Chat App usages enabled for account or COS
      *
      * @since ZCS 23.1.0
@@ -7105,7 +7114,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureInstantNotify = "zimbraFeatureInstantNotify";
 
     /**
-     * email features enabled
+     * Deprecated since: 23.11.0. deprecated per CO-759 as no longer used.
+     * Orig desc: email features enabled
      */
     @ZAttr(id=489)
     public static final String A_zimbraFeatureMailEnabled = "zimbraFeatureMailEnabled";

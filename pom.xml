@@ -403,6 +403,11 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
+        <artifactId>carbonio-mailbox-sdk</artifactId>
+        <version>${revision}</version>
+      </dependency>
+      <dependency>
+        <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
         <version>${revision}</version>
         <classifier>classes</classifier>
@@ -848,6 +853,7 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
+    <module>mailbox-sdk</module>
     <module>carbonio-jetty-libs</module>
     <module>store-extra-runtime-dependencies</module>
   </modules>
@@ -985,7 +991,6 @@
               <exclude>com.zimbra.cs.util.tnef.mapi.TestTnefTimeZone.java</exclude>
               <!-- Exclude classes that were already excluded before maven migration -->
               <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
-              <exclude>com.zimbra.cs.service.mail.SendMsgTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>

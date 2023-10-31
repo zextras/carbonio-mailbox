@@ -2577,10 +2577,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
 </attr>
 
-<attr id="489" name="zimbraFeatureMailEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited">
+<attr id="489" name="zimbraFeatureMailEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited"  deprecatedSince="23.11.0">
   <defaultCOSValue>TRUE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>email features enabled</desc>
+  <deprecateDesc>deprecated per CO-759 as no longer used</deprecateDesc>
 </attr>
 
 <attr id="490" name="zimbraSignatureId" type="id" cardinality="single" requiredIn="signature" optionalIn="account">
@@ -10116,5 +10117,10 @@ TODO: delete them permanently from here
 
 <attr id="3139" name="carbonioAdminUILogoutURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInfo,domainAdminModifiable" requiresRestart="nginxproxy" since="23.10.0">
   <desc>Logout URL for Carbonio Admin web client to send the user to upon explicit logging out</desc>
+</attr>
+
+<attr id="3140" name="carbonioClamAVReadTimeout" type="integer" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="mta,antivirus" since="23.11.0">
+  <globalConfigValue>900</globalConfigValue>
+  <desc>Waiting for data from a client socket connected to ClamAV will timeout after this time (seconds)</desc>
 </attr>
 </attrs>

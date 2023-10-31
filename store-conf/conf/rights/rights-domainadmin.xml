@@ -711,7 +711,13 @@
     <r n="domainAdminCalendarResourceRights"/>
     <r n="domainAdminDistributionListRights"/>
     <r n="domainAdminDomainRights"/>
-    
+    <r n="set.domain.zimbraPublicServiceHostname"/>
+    <r n="set.domain.zimbraVirtualHostname"/>
+    <r n="set.domain.zimbraSSLCertificate"/>
+    <r n="set.domain.zimbraSSLPrivateKey"/>
+    <r n="set.domain.zimbraPublicServicePort"/>
+    <r n="set.domain.zimbraPublicServiceProtocol"/>
+
     <!-- not generated, put here manually -->
     <r n="listAlias"/>
   </rights>
