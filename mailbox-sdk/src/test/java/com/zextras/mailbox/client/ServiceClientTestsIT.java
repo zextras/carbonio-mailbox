@@ -61,6 +61,16 @@ class ServiceClientTestsIT {
     assertAttributeEquals(id, "zimbraId", result.getAttr());
   }
 
+  @Test
+  void getInfoAllSections() throws Exception {
+    mailboxSOAPSimulator.setupServerFor("getInfo_AllSections");
+
+    final var result =
+        serviceClient.send(ServiceRequests.Info.allSections().withAuthToken(authToken));
+
+    assertEquals(email, result.getName());
+  }
+
   public static void assertAttributeEquals(
       String expected, String name, List<NamedValue> attributes) {
     assertEquals(expected, readAttribute(attributes, name));

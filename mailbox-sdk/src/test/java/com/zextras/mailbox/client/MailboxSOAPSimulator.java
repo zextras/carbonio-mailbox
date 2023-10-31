@@ -72,7 +72,7 @@ public class MailboxSOAPSimulator implements AutoCloseable {
     }
   }
 
-  private String requestFor(String name) {
+  public String requestFor(String name) {
     return getXmlFile(fullPathFor(name, "request"));
   }
 
