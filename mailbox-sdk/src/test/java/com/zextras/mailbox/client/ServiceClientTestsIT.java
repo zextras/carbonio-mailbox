@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zextras.mailbox.client.service.InfoRequests.Sections;
 import com.zextras.mailbox.client.service.ServiceClient;
 import com.zextras.mailbox.client.service.ServiceRequests;
+import com.zextras.mailbox.support.MailboxSOAPSimulator;
 import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
