@@ -7,6 +7,7 @@ package com.zextras.mailbox;
 import com.zextras.mailbox.client.MailboxClient;
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
 import com.zextras.mailbox.client.admin.service.AdminServiceRequests;
+import com.zextras.mailbox.client.service.InfoRequests;
 import com.zextras.mailbox.client.service.ServiceClient;
 import com.zextras.mailbox.client.service.ServiceRequests;
 
@@ -34,10 +35,15 @@ public class ExampleUsage {
 
     final var info2 =
         serviceClient.send(
-            ServiceRequests.Info.sections("children", "attrs", "prefs").withAuthToken(token));
+            ServiceRequests.Info.sections(
+                    InfoRequests.Sections.children,
+                    InfoRequests.Sections.attrs,
+                    InfoRequests.Sections.prefs)
+                .withAuthToken(token));
 
     final var info3 =
-        serviceClient.send(ServiceRequests.Info.sections("children").withAuthToken(token));
+        serviceClient.send(
+            ServiceRequests.Info.sections(InfoRequests.Sections.children).withAuthToken(token));
 
     final var accountInfo =
         serviceClient.send(ServiceRequests.AccountInfo.byId(id).withAuthToken(token));

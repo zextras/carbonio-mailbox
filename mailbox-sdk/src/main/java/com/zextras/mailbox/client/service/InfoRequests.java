@@ -14,15 +14,29 @@ import zimbraaccount.GetInfoResponse;
 
 public class InfoRequests {
 
+  public enum Sections {
+    mbox,
+    prefs,
+    attrs,
+    zimlets,
+    props,
+    idents,
+    sigs,
+    dsrcs,
+    children
+  }
+
   public AuthRequest<ZcsPortType, GetInfoResponse> allSections() {
     GetInfoRequest request = new GetInfoRequest();
     return AuthRequest.requireAuth(
         (service, soapHeaderContext) -> service.getInfoRequest(request, soapHeaderContext));
   }
 
-  public AuthRequest<ZcsPortType, GetInfoResponse> sections(String first, String... rest) {
+  public AuthRequest<ZcsPortType, GetInfoResponse> sections(Sections first, Sections... rest) {
     final var sections =
-        Stream.concat(Stream.of(first), Arrays.stream(rest)).collect(Collectors.toList());
+        Stream.concat(Stream.of(first), Arrays.stream(rest))
+            .map(Enum::toString)
+            .collect(Collectors.toList());
     final var joined = String.join(",", sections);
 
     GetInfoRequest request = new GetInfoRequest();
