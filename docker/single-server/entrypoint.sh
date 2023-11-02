@@ -16,37 +16,11 @@ zmprov -l mcf zimbraSmtpHostname 127.0.0.1
 
 zmcontrol start
 
-# Wait until mailbox up
-echo mailboxIsHealthy
-HEALTHCHECK="false"
-
-until [ $HEALTHCHECK == "true" ] || command; do
-    echo "Checking mailbox health..."
-    HEALTHCHECK=mailboxIsHealthy
-done
-
-echo "Mailbox healthy"
-
-function mailboxIsHealthy() {
-    return $(curl -X POST -k https://localhost:7071/service/admin/soap -d '
-    {
-        "Body": {
-            "CheckHealthRequest": {
-                "_jsns": "urn:zimbraAdmin",
-            }
-        }
-    }' | jq ".Body.CheckHealthResponse.healthy")
-}
-
-curl -s -X POST -k https://localhost:7071/service/admin/soap -d '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:zimbra" xmlns:urn1="urn:zimbraAdmin">
-   <soapenv:Body>
-      <urn1:CheckHealthRequest/>
-   </soapenv:Body>
-</soapenv:Envelope>' | grep -i healthy=\"0\"
+# Wait until mailbox become available
+/opt/zextras/mailbox_health_check.sh; wait
 
 # Populate with some data
 /opt/zextras/prepare_data.sh
 
 echo "Keeping the container up..."
-
 tail -f /dev/null
