@@ -251,18 +251,20 @@ public class SendMsgTest {
                 ServiceTestUtil.getRequestContext(sender));
     final GetContactsResponse getContactsResponse =
         JaxbUtil.elementToJaxb(handle, GetContactsResponse.class);
-    Assertions.assertArrayEquals(List.of(externalAddress).toArray(),
+    Assertions.assertArrayEquals(
+        List.of(externalAddress).toArray(),
         getContactsResponse.getContacts().stream()
             .flatMap(
                 contactInfo ->
                     contactInfo.getAttrs().stream()
                         .filter(attr -> attr.getKey().equals("email"))
-                        .map(KeyValuePair::getValue)).toArray());
+                        .map(KeyValuePair::getValue))
+            .toArray());
   }
 
   @Test
   @DisplayName(
-      "Email external user as shared account with correct rights. Check it is added to shared"
+      "Email external user acting as shared account. Check address is added to shared"
           + " account address book")
   void shouldSaveExternalAddressAsContactInSharedAccount() throws Exception {
     final String externalAddress = "external@something.com";
