@@ -13,4 +13,8 @@ package() {
 
   install -D "store/target/versions-init.sql" \
     "${pkgdir}/opt/zextras/db/versions-init.sql"
+  install -D "store/db/db.sql" \
+      "${pkgdir}/opt/zextras/db/db.sql"
+  install -D "store/db/create_database.sql" \
+      "${pkgdir}/opt/zextras/db/create_database.sql"
 }
