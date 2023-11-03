@@ -11,8 +11,7 @@ source /opt/zextras/.bashrc
 ldap start
 
 zmprov -l ms $(zmhostname) -zimbraServiceEnabled antivirus -zimbraServiceEnabled amavis -zimbraServiceEnabled stats
-zmprov -l mcf zimbraSmtpPort 25
-zmprov -l mcf zimbraSmtpHostname 127.0.0.1
+zmprov -l mcf zimbraSmtpPort 25 zimbraSmtpHostname 127.0.0.1
 
 zmcontrol start
 
