@@ -717,7 +717,7 @@
     <r n="set.domain.zimbraSSLPrivateKey"/>
     <r n="set.domain.zimbraPublicServicePort"/>
     <r n="set.domain.zimbraPublicServiceProtocol"/>
-
+    <r n="set.domain.zimbraMailTransport"/>
     <!-- not generated, put here manually -->
     <r n="listAlias"/>
   </rights>
