@@ -15,7 +15,19 @@ JAVA_HOME_ = $(subst /bin/javac,,$(realpath $(shell which javac)))
 endif
 
 SHARED := -shared
+
+PLATFORM = $(uname -m)
+
+buildbegin:
+	@echo $(PLATFORM)
+
+ifeq ($(PLATFORM), 'arm64')
+JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/darwin
+else
 JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/linux
+# JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/darwin
+endif
+
 SHARED_EXT := so
 PUSHED_EXT := so.Linux.i386
 CF := -fPIC -g
