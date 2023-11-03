@@ -19,7 +19,7 @@ carbonio prov ca test@"${DOMAIN}" password
 carbonio prov ca admin@"${DOMAIN}" password zimbraIsAdminAccount TRUE
 
 # Create shared account
-carbonio prov ca shared@"${DOMAIN}" password displayName "Shared"
+carbonio prov ca shared@"${DOMAIN}" password displayName "Shared account"
 
 carbonio prov grantRight account shared@"${DOMAIN}" usr test@"${DOMAIN}" sendAs
 zmmailbox -z -m shared@"${DOMAIN}" mfg / account test@"${DOMAIN}" rwidx
