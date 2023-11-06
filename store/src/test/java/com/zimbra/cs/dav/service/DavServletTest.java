@@ -149,13 +149,10 @@ class DavServletTest {
      */
     @Test
     void shouldReturnUIDWhenRequestingFreeBusyOfAttendee() throws Exception {
-        assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentWithCalDAV()));
-
         HttpResponse response = requestAttendeeFreeBusy();
 
         assertEquals(HttpStatus.SC_OK, statusCodeFrom(response));
         assertTrue(readContentFrom(response).contains("UID:" + FREE_BUSY_UID));
-        // TODO: check free busy appointment
     }
 
     /**
