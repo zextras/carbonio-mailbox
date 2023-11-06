@@ -166,12 +166,16 @@ class DavServletTest {
      * @throws Exception exception during making requests
      */
     @Test
-    void shouldReturnFreeBusyStatusWhenRequestMissesRecipientHeader() throws Exception {
+    void shouldProperlyHandleFreeBusyRequestWithoutRecipientHeader() throws Exception {
         HttpResponse response = requestAttendeeFreeBusyWithoutRecipientHeader("FreeBusyRequest_Apple_iCal.ics");
 
         assertEquals(HttpStatus.SC_OK, statusCodeFrom(response));
-        assertTrue(readContentFrom(response).contains("UID:" + FREE_BUSY_UID));
-        // TODO: check ERROR zimbra.fb - can't find free/busy provider for user davide@demo.zextras.io
+        String responseContent = readContentFrom(response);
+        assertTrue(responseContent.contains("UID:" + FREE_BUSY_UID));
+        assertTrue(responseContent.contains("ORGANIZER:mailto:organizer@test.com"));
+        assertTrue(responseContent.contains("ATTENDEE:mailto:attendee@test.com"));
+        assertTrue(responseContent.contains("DTSTART:20231011T220000Z"));
+        assertTrue(responseContent.contains("DTEND:20231012T215959Z"));
     }
 
     private HttpResponse createInviteWithDavRequest(Account organizer)
