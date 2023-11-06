@@ -1,5 +1,34 @@
 
 
+# [4.10.0](https://github.com/Zextras/carbonio-mailbox/compare/4.9.1...4.10.0) (2023-10-20)
+
+
+### Bug Fixes
+
+*  CO-823 FreeBusy missing uid parameter in CalDav request ([#343](https://github.com/Zextras/carbonio-mailbox/issues/343)) ([bc11447](https://github.com/Zextras/carbonio-mailbox/commit/bc11447882a485cd10d999141b4abdcc7e400ab1))
+* [CO-817] ProxyConfGen is not able to show debug output to stdout ([#353](https://github.com/Zextras/carbonio-mailbox/issues/353)) ([6158d24](https://github.com/Zextras/carbonio-mailbox/commit/6158d2452cf2ad91cd39f399f1254b1916e5a1f2))
+* [CO-861] mailbox wsdl generator uses soap 12 soap protocol wrong content type ([#356](https://github.com/Zextras/carbonio-mailbox/issues/356)) ([98ac447](https://github.com/Zextras/carbonio-mailbox/commit/98ac447bb32c36670f8c78af4b1667906c0c9e1d))
+* add more tests ([1eb54d6](https://github.com/Zextras/carbonio-mailbox/commit/1eb54d6c2836907f0a4e8f4a3a1ebc8ad6b02042))
+* log category does not exist ([#346](https://github.com/Zextras/carbonio-mailbox/issues/346)) ([50a6d18](https://github.com/Zextras/carbonio-mailbox/commit/50a6d18e2ed20712f59e69c373eed12f7cdb6fe6))
+* put back addService ([#359](https://github.com/Zextras/carbonio-mailbox/issues/359)) ([4f5e8e5](https://github.com/Zextras/carbonio-mailbox/commit/4f5e8e578eb0c842038bafb25dedfb69647ab71b))
+
+
+### Features
+
+* [CO-825] add attribute to manage ClamAv ReadTimeout ([#355](https://github.com/Zextras/carbonio-mailbox/issues/355)) ([157600a](https://github.com/Zextras/carbonio-mailbox/commit/157600ad7bafe0e1e37c93d4c0eba28cf5546414))
+* [CO-844] delete user should revoke all grants ([#348](https://github.com/Zextras/carbonio-mailbox/issues/348)) ([32537c9](https://github.com/Zextras/carbonio-mailbox/commit/32537c9d0eb4ce4c064267a3a371c2e4a51ae6ef))
+* [CO-850] show Disposition-Notification on GetMsg delegated requests ([#354](https://github.com/Zextras/carbonio-mailbox/issues/354)) ([f8cbb88](https://github.com/Zextras/carbonio-mailbox/commit/f8cbb88dc094701de0806eb31a69ebfb9907f5f6))
+* [COR-975] define domain admin rights ([#357](https://github.com/Zextras/carbonio-mailbox/issues/357)) ([5b68cd2](https://github.com/Zextras/carbonio-mailbox/commit/5b68cd2223c66dfce6d4e8596dc9c6f1ac33dc87))
+* add ubuntu 22.04 (jammy jellyfish) support ([#347](https://github.com/Zextras/carbonio-mailbox/issues/347)) ([a75e8d7](https://github.com/Zextras/carbonio-mailbox/commit/a75e8d717372ec6c5a5cf270a4bbd7ae1c84131e))
+* bump carbonio-preview-sdk for gif support ([96e0f7f](https://github.com/Zextras/carbonio-mailbox/commit/96e0f7f7d09dd2a8e7b91bbc04420236725a6c96))
+* deprecate CSRF-related LDAP-attributes ([cde0515](https://github.com/Zextras/carbonio-mailbox/commit/cde0515fc681031287df3e39ace61c8bdb1c3cf6))
+* follow RFC-6266 to parse extended filename from uploads ([#335](https://github.com/Zextras/carbonio-mailbox/issues/335)) ([4b8b114](https://github.com/Zextras/carbonio-mailbox/commit/4b8b114be32fcc74346c2b4908bd94e0dbe31a4b))
+* move to yap agent and add rhel9 support ([#361](https://github.com/Zextras/carbonio-mailbox/issues/361)) ([4098739](https://github.com/Zextras/carbonio-mailbox/commit/4098739e07acadf180cc30fb668e242a9b29b3c2))
+* **test:** add shellcheck first complete test ([792f08f](https://github.com/Zextras/carbonio-mailbox/commit/792f08f5437b8f3694b19a5f4deafac9b4c95e65))
+* **tests:** add Characterization tests for user deletion ([0d0e6fd](https://github.com/Zextras/carbonio-mailbox/commit/0d0e6fddefa298a871f72de34c51bfd611cfa0fa))
+* **tests:** add shellspec for BDD testing ([49516ca](https://github.com/Zextras/carbonio-mailbox/commit/49516ca7e49ef70c09c42e54e305b82be9135724))
+* updated sdk version in javadoc ([c70aa6d](https://github.com/Zextras/carbonio-mailbox/commit/c70aa6df329573428ecf487594509ff42506bb5c))
+
 ## [4.9.1](https://github.com/Zextras/carbonio-mailbox/compare/4.9.0...4.9.1) (2023-09-28)
 
 
