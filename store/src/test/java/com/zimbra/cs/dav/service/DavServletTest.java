@@ -55,7 +55,6 @@ class DavServletTest {
     private static Provisioning provisioning;
     private static Account organizer;
     private static Account attendee;
-    public String testName;
     private static Server server;
     private static final int PORT = 8090;
     private static final String CALENDAR_UID = "95a5527e-df0a-4df2-b64a-7eee8e647efe";
@@ -108,8 +107,8 @@ class DavServletTest {
 
     @Test
     void shouldNotSendNotificationWhenScheduleAgentClient() throws IOException, ServiceException, AuthTokenException {
-        final Account organizer = provisioning.getAccount("alias@test.com");
-        final HttpResponse response = createInviteWithDavRequest(organizer);
+        Account organizer = provisioning.getAccount("alias@test.com");
+        HttpResponse response = createInviteWithDavRequest(organizer);
 
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
         assertEquals(0, greenMail.getReceivedMessages().length);
@@ -122,11 +121,11 @@ class DavServletTest {
      */
     @Test
     void shouldCreateAppointmentUsingCalDAV() throws Exception {
-        final HttpResponse createResponse = createAppointmentWithCalDAV();
+        HttpResponse createResponse = createAppointmentWithCalDAV();
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createResponse));
-        final HttpResponse appointmentWithCalDAV = getAppointmentWithCalDAV();
+        HttpResponse appointmentWithCalDAV = getAppointmentWithCalDAV();
         assertEquals(HttpStatus.SC_OK, statusCodeFrom(appointmentWithCalDAV));
-        final String createdAppointment = readContentFrom(getAppointmentWithCalDAV());
+        String createdAppointment = readContentFrom(getAppointmentWithCalDAV());
         assertTrue(createdAppointment.contains(CALENDAR_UID));
     }
 
@@ -177,7 +176,7 @@ class DavServletTest {
 
     private HttpResponse createInviteWithDavRequest(Account organizer)
             throws AuthProviderException, AuthTokenException, IOException {
-        final AuthToken authToken = AuthProvider.getAuthToken(organizer);
+        AuthToken authToken = AuthProvider.getAuthToken(organizer);
         String url =
                 "http://localhost:"
                         + PORT
@@ -278,7 +277,7 @@ class DavServletTest {
     }
 
     private HttpClient createHttpClient() throws Exception {
-        final AuthToken authToken = AuthProvider.getAuthToken(organizer);
+        AuthToken authToken = AuthProvider.getAuthToken(organizer);
         BasicCookieStore cookieStore = new BasicCookieStore();
         BasicClientCookie cookie = new BasicClientCookie(ZimbraCookie.authTokenCookieName(false), authToken.getEncoded());
         cookie.setDomain("localhost");
