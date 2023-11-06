@@ -11,6 +11,9 @@
       "name": "appserver-service"
     },
     {
+      "name": "appserver-db"
+    },
+    {
       "name": "appserver-store-libs"
     },
     {
@@ -18,9 +21,6 @@
     },
     {
       "name": "common-appserver-conf"
-    },
-    {
-      "name": "common-appserver-db"
     },
     {
       "name": "common-appserver-docs"
