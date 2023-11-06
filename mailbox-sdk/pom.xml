@@ -9,57 +9,97 @@ SPDX-License-Identifier: AGPL-3.0-only
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <packaging>jar</packaging>
+    <groupId>com.zextras</groupId>
     <artifactId>carbonio-mailbox-sdk</artifactId>
     <name>carbonio-mailbox-sdk</name>
+    <packaging>jar</packaging>
+    <version>1.0.0-SNAPSHOT</version>
 
-    <parent>
-        <groupId>zextras</groupId>
-        <version>${revision}</version>
-        <artifactId>zm-mailbox</artifactId>
-    </parent>
+    <properties>
+        <!--
+          This is the newest version to use since the latest version of jaxws-maven-plugin generates
+          imports with javax instead of jakarta. Don't bump it!
+        -->
+        <jaxws-rt.version>2.3.6</jaxws-rt.version>
+        <jaxb-runtime.version>2.3.8</jaxb-runtime.version>
+        <jaxb-impl.version>4.0.3</jaxb-impl.version>
+        <no-class-def-found-resolver.version>20050927</no-class-def-found-resolver.version>
+
+        <!-- TESTS  -->
+        <junit.version>5.10.0</junit.version>
+        <mockserver.version>5.15.0</mockserver.version>
+
+        <!-- Other properties -->
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
             <artifactId>jaxws-rt</artifactId>
-            <version>2.3.6</version>
+            <version>${jaxws-rt.version}</version>
+            <!--
+              The jaxb-runtime version included on jaxws-rt uses reflection, and it is not compatible
+              with the latest version of the JDK.
+            -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-runtime</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>4.0.3</version>
+            <version>${jaxb-impl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>${jaxb-runtime.version}</version>
+        </dependency>
+        <!--
+          Dependency necessary to resolve runtime NoClassDefFound of
+          com/sun/org/apache/xml/internal/resolver/CatalogManager
+        -->
+        <dependency>
+            <groupId>com.sun.org.apache.xml.internal</groupId>
+            <artifactId>resolver</artifactId>
+            <version>${no-class-def-found-resolver.version}</version>
         </dependency>
 
         <!--  TESTS  -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-netty</artifactId>
+            <version>${mockserver.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-client-java</artifactId>
+            <version>${mockserver.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.8</version>
+            <version>${mockserver.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -93,18 +133,44 @@ SPDX-License-Identifier: AGPL-3.0-only
             <plugin>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo</groupId>
+                <version>2.6</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.1</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.10</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
