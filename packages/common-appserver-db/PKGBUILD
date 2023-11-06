@@ -8,6 +8,10 @@ url="https://zextras.com"
 section="mail"
 priority="optional"
 
+depends=(
+  "carbonio-core"
+)
+
 makedepends=(
   "rsync"
 )
