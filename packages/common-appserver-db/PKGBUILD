@@ -4,7 +4,15 @@ pkgrel="1"
 pkgdesc="Carbonio Core Mailbox DB Files"
 arch=('x86_64')
 maintainer="Zextras <packages@zextras.com>"
-url="https://zextras.com"
+copyright=(
+  "2022, Zextras <https://www.zextras.com>"
+  "2022, Synacor, Inc."
+)
+license=(
+  "AGPL-3.0-only"
+  "GPL-2.0-only"
+)
+url="https://github.com/zextras"
 section="mail"
 priority="optional"
 
