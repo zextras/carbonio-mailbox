@@ -1,0 +1,783 @@
+<?xml version="1.0" encoding="UTF-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="urn:zimbraMail" xmlns:tns="urn:zimbra" xmlns:zimbra="urn:zimbra" elementFormDefault="qualified" targetNamespace="urn:zimbra" version="1.0">
+
+  <xs:import namespace="urn:zimbraMail" schemaLocation="zimbraMail.xsd"/>
+
+  <xs:element name="a" type="tns:accountWithModifications"/>
+
+  <xs:element name="context" type="tns:HeaderContext"/>
+
+  <xs:complexType name="accountSelector">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="by" type="tns:accountBy" use="required"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="keyValuePair">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="n" type="xs:string" use="required"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="contactAttr">
+
+    <xs:simpleContent>
+
+      <xs:extension base="tns:keyValuePair">
+
+        <xs:attribute name="part" type="xs:string"/>
+
+        <xs:attribute name="ct" type="xs:string"/>
+
+        <xs:attribute name="s" type="xs:int"/>
+
+        <xs:attribute name="filename" type="xs:string"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="distributionListSelector">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="by" type="tns:distributionListBy" use="required"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="namedValue">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="name" type="xs:string" use="required"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="namedElement">
+
+    <xs:sequence/>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="granteeChooser">
+
+    <xs:sequence/>
+
+    <xs:attribute name="type" type="xs:string"/>
+
+    <xs:attribute name="id" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="shareInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="ownerId" type="xs:string" use="required"/>
+
+    <xs:attribute name="ownerEmail" type="xs:string" use="required"/>
+
+    <xs:attribute name="ownerName" type="xs:string" use="required"/>
+
+    <xs:attribute name="folderId" type="xs:int" use="required"/>
+
+    <xs:attribute name="folderUuid" type="xs:string" use="required"/>
+
+    <xs:attribute name="folderPath" type="xs:string" use="required"/>
+
+    <xs:attribute name="view" type="xs:string" use="required"/>
+
+    <xs:attribute name="rights" type="xs:string" use="required"/>
+
+    <xs:attribute name="granteeType" type="xs:string" use="required"/>
+
+    <xs:attribute name="granteeId" type="xs:string" use="required"/>
+
+    <xs:attribute name="granteeName" type="xs:string" use="required"/>
+
+    <xs:attribute name="granteeDisplayName" type="xs:string" use="required"/>
+
+    <xs:attribute name="mid" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="opValue">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="op" type="xs:string"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="id">
+
+    <xs:sequence/>
+
+    <xs:attribute name="id" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType abstract="true" name="attributeSelectorImpl">
+
+    <xs:sequence/>
+
+    <xs:attribute name="attrs" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType final="extension restriction" name="cursorInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="id" type="xs:string"/>
+
+    <xs:attribute name="sortVal" type="xs:string"/>
+
+    <xs:attribute name="endSortVal" type="xs:string"/>
+
+    <xs:attribute name="includeOffset" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="waitSetAddSpec">
+
+    <xs:sequence/>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+    <xs:attribute name="id" type="xs:string"/>
+
+    <xs:attribute name="token" type="xs:string"/>
+
+    <xs:attribute name="types" type="xs:string"/>
+
+    <xs:attribute name="folderInterests" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="idAndType">
+
+    <xs:sequence/>
+
+    <xs:attribute name="id" type="xs:string" use="required"/>
+
+    <xs:attribute name="type" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountWithModifications">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="mods" type="ns1:pendingFolderModifications"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="id" type="xs:string"/>
+
+    <xs:attribute name="changeid" type="xs:int" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="tzOnsetInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="week" type="xs:int"/>
+
+    <xs:attribute name="wkday" type="xs:int"/>
+
+    <xs:attribute name="mon" type="xs:int" use="required"/>
+
+    <xs:attribute name="mday" type="xs:int"/>
+
+    <xs:attribute name="hour" type="xs:int" use="required"/>
+
+    <xs:attribute name="min" type="xs:int" use="required"/>
+
+    <xs:attribute name="sec" type="xs:int" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountNameSelector">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="by" type="tns:accountBy"/>
+
+        <xs:attribute name="name" type="xs:string"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="attributeName">
+
+    <xs:sequence/>
+
+    <xs:attribute name="n" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="sectionAttr">
+
+    <xs:sequence/>
+
+    <xs:attribute name="section" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="urlAndValue">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="url" type="xs:string"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="wildcardExpansionQueryInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="str" type="xs:string" use="required"/>
+
+    <xs:attribute name="expanded" type="xs:boolean" use="required"/>
+
+    <xs:attribute name="numExpanded" type="xs:int" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="simpleSearchHit">
+
+    <xs:sequence/>
+
+    <xs:attribute name="id" type="xs:string"/>
+
+    <xs:attribute name="sf" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="HeaderContext">
+
+    <xs:all>
+
+      <xs:element minOccurs="0" name="authToken" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="session" type="tns:headerSessionInfo"/>
+
+      <xs:element minOccurs="0" name="sessionId" type="tns:headerSessionInfo"/>
+
+      <xs:element minOccurs="0" name="nosession" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="account" type="tns:headerAccountInfo"/>
+
+      <xs:element minOccurs="0" name="change" type="tns:headerChangeInfo"/>
+
+      <xs:element minOccurs="0" name="targetServer" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="userAgent" type="tns:headerUserAgentInfo"/>
+
+      <xs:element minOccurs="0" name="authTokenControl" type="tns:authTokenControl"/>
+
+      <xs:element minOccurs="0" name="format" type="tns:headerFormatInfo"/>
+
+      <xs:element minOccurs="0" name="notify" type="tns:headerNotifyInfo"/>
+
+      <xs:element minOccurs="0" name="nonotify" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="noqualify" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="via" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="soapId" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="csrfToken" type="xs:string"/>
+
+    </xs:all>
+
+    <xs:attribute name="hops" type="xs:int"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="headerSessionInfo">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="proxy" type="xs:boolean"/>
+
+        <xs:attribute name="id" type="xs:string"/>
+
+        <xs:attribute name="seq" type="xs:int"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="headerAccountInfo">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="by" type="xs:string"/>
+
+        <xs:attribute name="link" type="xs:boolean"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="headerChangeInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="token" type="xs:string"/>
+
+    <xs:attribute name="type" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="headerUserAgentInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+    <xs:attribute name="version" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType final="extension restriction" name="authTokenControl">
+
+    <xs:sequence/>
+
+    <xs:attribute name="voidOnExpired" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="headerFormatInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="type" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="headerNotifyInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="seq" type="xs:int"/>
+
+  </xs:complexType>
+
+  <xs:simpleType name="zmBoolean">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="0"/>
+
+      <xs:enumeration value="1"/>
+
+      <xs:enumeration value="false"/>
+
+      <xs:enumeration value="true"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="accountBy">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="adminName"/>
+
+      <xs:enumeration value="appAdminName"/>
+
+      <xs:enumeration value="id"/>
+
+      <xs:enumeration value="foreignPrincipal"/>
+
+      <xs:enumeration value="name"/>
+
+      <xs:enumeration value="krb5Principal"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="galSearchType">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="all"/>
+
+      <xs:enumeration value="account"/>
+
+      <xs:enumeration value="resource"/>
+
+      <xs:enumeration value="group"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="targetType">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="account"/>
+
+      <xs:enumeration value="calresource"/>
+
+      <xs:enumeration value="cos"/>
+
+      <xs:enumeration value="dl"/>
+
+      <xs:enumeration value="group"/>
+
+      <xs:enumeration value="domain"/>
+
+      <xs:enumeration value="server"/>
+
+      <xs:enumeration value="xmppcomponent"/>
+
+      <xs:enumeration value="zimlet"/>
+
+      <xs:enumeration value="config"/>
+
+      <xs:enumeration value="global"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="targetBy">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="id"/>
+
+      <xs:enumeration value="name"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="distributionListBy">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="id"/>
+
+      <xs:enumeration value="name"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="granteeType">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="usr"/>
+
+      <xs:enumeration value="grp"/>
+
+      <xs:enumeration value="egp"/>
+
+      <xs:enumeration value="all"/>
+
+      <xs:enumeration value="dom"/>
+
+      <xs:enumeration value="edom"/>
+
+      <xs:enumeration value="gst"/>
+
+      <xs:enumeration value="key"/>
+
+      <xs:enumeration value="pub"/>
+
+      <xs:enumeration value="email"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="distributionListGranteeBy">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="id"/>
+
+      <xs:enumeration value="name"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="storeLookupOpt">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="ANY"/>
+
+      <xs:enumeration value="ALL"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="sourceLookupOpt">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="ANY"/>
+
+      <xs:enumeration value="ALL"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="smimeStoreType">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="CONTACT"/>
+
+      <xs:enumeration value="GAL"/>
+
+      <xs:enumeration value="LDAP"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="loggingLevel">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="error"/>
+
+      <xs:enumeration value="warn"/>
+
+      <xs:enumeration value="info"/>
+
+      <xs:enumeration value="debug"/>
+
+      <xs:enumeration value="trace"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="autoProvPrincipalBy">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="dn"/>
+
+      <xs:enumeration value="name"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="zeroOrOne">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="0"/>
+
+      <xs:enumeration value="1"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="mailboxMoveType">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="out"/>
+
+      <xs:enumeration value="in"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="wantRecipsSetting">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="0"/>
+
+      <xs:enumeration value="1"/>
+
+      <xs:enumeration value="2"/>
+
+      <xs:enumeration value="false"/>
+
+      <xs:enumeration value="true"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="grantGranteeType">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="usr"/>
+
+      <xs:enumeration value="grp"/>
+
+      <xs:enumeration value="cos"/>
+
+      <xs:enumeration value="pub"/>
+
+      <xs:enumeration value="all"/>
+
+      <xs:enumeration value="dom"/>
+
+      <xs:enumeration value="guest"/>
+
+      <xs:enumeration value="key"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="searchSortBy">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="dateDesc"/>
+
+      <xs:enumeration value="dateAsc"/>
+
+      <xs:enumeration value="idDesc"/>
+
+      <xs:enumeration value="idAsc"/>
+
+      <xs:enumeration value="subjDesc"/>
+
+      <xs:enumeration value="subjAsc"/>
+
+      <xs:enumeration value="nameDesc"/>
+
+      <xs:enumeration value="nameAsc"/>
+
+      <xs:enumeration value="durDesc"/>
+
+      <xs:enumeration value="durAsc"/>
+
+      <xs:enumeration value="none"/>
+
+      <xs:enumeration value="taskDueAsc"/>
+
+      <xs:enumeration value="taskDueDesc"/>
+
+      <xs:enumeration value="taskStatusAsc"/>
+
+      <xs:enumeration value="taskStatusDesc"/>
+
+      <xs:enumeration value="taskPercCompletedAsc"/>
+
+      <xs:enumeration value="taskPercCompletedDesc"/>
+
+      <xs:enumeration value="rcptAsc"/>
+
+      <xs:enumeration value="rcptDesc"/>
+
+      <xs:enumeration value="readAsc"/>
+
+      <xs:enumeration value="readDesc"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="msgContent">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="full"/>
+
+      <xs:enumeration value="original"/>
+
+      <xs:enumeration value="both"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="channel">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="email"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+</xs:schema>

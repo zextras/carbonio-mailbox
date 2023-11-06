@@ -1,0 +1,2958 @@
+<?xml version="1.0" encoding="UTF-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:account="urn:zimbraAccount" xmlns:ns1="urn:zimbra" xmlns:ns2="urn:zimbraAdmin" xmlns:tns="urn:zimbraAccount" elementFormDefault="qualified" targetNamespace="urn:zimbraAccount" version="1.0">
+
+  <xs:import namespace="urn:zimbra" schemaLocation="zimbra.xsd"/>
+
+  <xs:import namespace="urn:zimbraAdmin" schemaLocation="zimbraAdmin.xsd"/>
+
+  <xs:element name="AuthRequest" type="tns:authRequest"/>
+
+  <xs:element name="AuthResponse" type="tns:authResponse"/>
+
+  <xs:element name="AutoCompleteGalRequest" type="tns:autoCompleteGalRequest"/>
+
+  <xs:element name="AutoCompleteGalResponse" type="tns:autoCompleteGalResponse"/>
+
+  <xs:element name="ChangePasswordRequest" type="tns:changePasswordRequest"/>
+
+  <xs:element name="ChangePasswordResponse" type="tns:changePasswordResponse"/>
+
+  <xs:element name="CheckRightsRequest" type="tns:checkRightsRequest"/>
+
+  <xs:element name="CheckRightsResponse" type="tns:checkRightsResponse"/>
+
+  <xs:element name="ClientInfoRequest" type="tns:clientInfoRequest"/>
+
+  <xs:element name="ClientInfoResponse" type="tns:clientInfoResponse"/>
+
+  <xs:element name="CreateDistributionListRequest" type="tns:createDistributionListRequest"/>
+
+  <xs:element name="CreateDistributionListResponse" type="tns:createDistributionListResponse"/>
+
+  <xs:element name="CreateIdentityRequest" type="tns:createIdentityRequest"/>
+
+  <xs:element name="CreateIdentityResponse" type="tns:createIdentityResponse"/>
+
+  <xs:element name="CreateSignatureRequest" type="tns:createSignatureRequest"/>
+
+  <xs:element name="CreateSignatureResponse" type="tns:createSignatureResponse"/>
+
+  <xs:element name="DeleteIdentityRequest" type="tns:deleteIdentityRequest"/>
+
+  <xs:element name="DeleteIdentityResponse" type="tns:deleteIdentityResponse"/>
+
+  <xs:element name="DeleteSignatureRequest" type="tns:deleteSignatureRequest"/>
+
+  <xs:element name="DeleteSignatureResponse" type="tns:deleteSignatureResponse"/>
+
+  <xs:element name="DiscoverRightsRequest" type="tns:discoverRightsRequest"/>
+
+  <xs:element name="DiscoverRightsResponse" type="tns:discoverRightsResponse"/>
+
+  <xs:element name="DistributionListActionRequest" type="tns:distributionListActionRequest"/>
+
+  <xs:element name="DistributionListActionResponse" type="tns:distributionListActionResponse"/>
+
+  <xs:element name="EndSessionRequest" type="tns:endSessionRequest"/>
+
+  <xs:element name="EndSessionResponse" type="tns:endSessionResponse"/>
+
+  <xs:element name="GetAccountDistributionListsRequest" type="tns:getAccountDistributionListsRequest"/>
+
+  <xs:element name="GetAccountDistributionListsResponse" type="tns:getAccountDistributionListsResponse"/>
+
+  <xs:element name="GetAccountInfoRequest" type="tns:getAccountInfoRequest"/>
+
+  <xs:element name="GetAccountInfoResponse" type="tns:getAccountInfoResponse"/>
+
+  <xs:element name="GetAddressListMembersRequest" type="tns:getAddressListMembersRequest"/>
+
+  <xs:element name="GetAddressListMembersResponse" type="tns:getAddressListMemberResponse"/>
+
+  <xs:element name="GetAllAddressListsRequest" type="tns:getAllAddressListsRequest"/>
+
+  <xs:element name="GetAllAddressListsResponse" type="tns:getAllAddressListsResponse"/>
+
+  <xs:element name="GetAllLocalesRequest" type="tns:getAllLocalesRequest"/>
+
+  <xs:element name="GetAllLocalesResponse" type="tns:getAllLocalesResponse"/>
+
+  <xs:element name="GetAvailableCsvFormatsRequest" type="tns:getAvailableCsvFormatsRequest"/>
+
+  <xs:element name="GetAvailableCsvFormatsResponse" type="tns:getAvailableCsvFormatsResponse"/>
+
+  <xs:element name="GetAvailableLocalesRequest" type="tns:getAvailableLocalesRequest"/>
+
+  <xs:element name="GetAvailableLocalesResponse" type="tns:getAvailableLocalesResponse"/>
+
+  <xs:element name="GetDistributionListMembersRequest" type="tns:getDistributionListMembersRequest"/>
+
+  <xs:element name="GetDistributionListMembersResponse" type="tns:getDistributionListMembersResponse"/>
+
+  <xs:element name="GetDistributionListRequest" type="tns:getDistributionListRequest"/>
+
+  <xs:element name="GetDistributionListResponse" type="tns:getDistributionListResponse"/>
+
+  <xs:element name="GetHABRequest" type="tns:getHABRequest"/>
+
+  <xs:element name="GetHABResponse" type="tns:getHABResponse"/>
+
+  <xs:element name="GetIdentitiesRequest" type="tns:getIdentitiesRequest"/>
+
+  <xs:element name="GetIdentitiesResponse" type="tns:getIdentitiesResponse"/>
+
+  <xs:element name="GetInfoRequest" type="tns:getInfoRequest"/>
+
+  <xs:element name="GetInfoResponse" type="tns:getInfoResponse"/>
+
+  <xs:element name="GetPrefsRequest" type="tns:getPrefsRequest"/>
+
+  <xs:element name="GetPrefsResponse" type="tns:getPrefsResponse"/>
+
+  <xs:element name="GetRightsRequest" type="tns:getRightsRequest"/>
+
+  <xs:element name="GetRightsResponse" type="tns:getRightsResponse"/>
+
+  <xs:element name="GetSMIMEPublicCertsRequest" type="tns:getSMIMEPublicCertsRequest"/>
+
+  <xs:element name="GetSMIMEPublicCertsResponse" type="tns:getSMIMEPublicCertsResponse"/>
+
+  <xs:element name="GetShareInfoRequest" type="tns:getShareInfoRequest"/>
+
+  <xs:element name="GetShareInfoResponse" type="tns:getShareInfoResponse"/>
+
+  <xs:element name="GetSignaturesRequest" type="tns:getSignaturesRequest"/>
+
+  <xs:element name="GetSignaturesResponse" type="tns:getSignaturesResponse"/>
+
+  <xs:element name="GetSmimeCertificateInfoRequest" type="tns:getSmimeCertificateInfoRequest"/>
+
+  <xs:element name="GetSmimeCertificateInfoResponse" type="tns:getSmimeCertificateInfoResponse"/>
+
+  <xs:element name="GetVersionInfoRequest" type="tns:getVersionInfoRequest"/>
+
+  <xs:element name="GetVersionInfoResponse" type="tns:getVersionInfoResponse"/>
+
+  <xs:element name="GetWhiteBlackListRequest" type="tns:getWhiteBlackListRequest"/>
+
+  <xs:element name="GetWhiteBlackListResponse" type="tns:getWhiteBlackListResponse"/>
+
+  <xs:element name="GrantRightsRequest" type="tns:grantRightsRequest"/>
+
+  <xs:element name="GrantRightsResponse" type="tns:grantRightsResponse"/>
+
+  <xs:element name="ModifyIdentityRequest" type="tns:modifyIdentityRequest"/>
+
+  <xs:element name="ModifyIdentityResponse" type="tns:modifyIdentityResponse"/>
+
+  <xs:element name="ModifyPrefsRequest" type="tns:modifyPrefsRequest"/>
+
+  <xs:element name="ModifyPrefsResponse" type="tns:modifyPrefsResponse"/>
+
+  <xs:element name="ModifyPropertiesRequest" type="tns:modifyPropertiesRequest"/>
+
+  <xs:element name="ModifyPropertiesResponse" type="tns:modifyPropertiesResponse"/>
+
+  <xs:element name="ModifySignatureRequest" type="tns:modifySignatureRequest"/>
+
+  <xs:element name="ModifySignatureResponse" type="tns:modifySignatureResponse"/>
+
+  <xs:element name="ModifyWhiteBlackListRequest" type="tns:modifyWhiteBlackListRequest"/>
+
+  <xs:element name="ModifyWhiteBlackListResponse" type="tns:modifyWhiteBlackListResponse"/>
+
+  <xs:element name="ModifyZimletPrefsRequest" type="tns:modifyZimletPrefsRequest"/>
+
+  <xs:element name="ModifyZimletPrefsResponse" type="tns:modifyZimletPrefsResponse"/>
+
+  <xs:element name="ResetPasswordRequest" type="tns:resetPasswordRequest"/>
+
+  <xs:element name="ResetPasswordResponse" type="tns:resetPasswordResponse"/>
+
+  <xs:element name="RevokeRightsRequest" type="tns:revokeRightsRequest"/>
+
+  <xs:element name="RevokeRightsResponse" type="tns:revokeRightsResponse"/>
+
+  <xs:element name="SaveSmimeCertificateRequest" type="tns:saveSmimeCertificateRequest"/>
+
+  <xs:element name="SaveSmimeCertificateResponse" type="tns:saveSmimeCertificateResponse"/>
+
+  <xs:element name="SearchCalendarResourcesRequest" type="tns:searchCalendarResourcesRequest"/>
+
+  <xs:element name="SearchCalendarResourcesResponse" type="tns:searchCalendarResourcesResponse"/>
+
+  <xs:element name="SearchGalRequest" type="tns:searchGalRequest"/>
+
+  <xs:element name="SearchGalResponse" type="tns:searchGalResponse"/>
+
+  <xs:element name="SyncGalRequest" type="tns:syncGalRequest"/>
+
+  <xs:element name="SyncGalResponse" type="tns:syncGalResponse"/>
+
+  <xs:element name="accountDataSource" type="tns:accountDataSource"/>
+
+  <xs:element name="certificate" type="tns:certificateInfo"/>
+
+  <xs:element name="cos" type="tns:dlInfo"/>
+
+  <xs:element name="dl" type="tns:distributionListInfo"/>
+
+  <xs:element name="include" type="tns:accountZimletInclude"/>
+
+  <xs:element name="includeCSS" type="tns:accountZimletIncludeCSS"/>
+
+  <xs:element name="meta" type="tns:accountCustomMetadata"/>
+
+  <xs:element name="serverExtension" type="tns:zimletServerExtension"/>
+
+  <xs:element name="signature" type="tns:signature"/>
+
+  <xs:element name="target" type="tns:accountZimletTarget"/>
+
+  <xs:complexType name="authRequest">
+
+    <xs:all>
+
+      <xs:element minOccurs="0" name="account" type="ns1:accountSelector"/>
+
+      <xs:element minOccurs="0" name="password" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="recoveryCode" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="preauth" type="tns:preAuth"/>
+
+      <xs:element minOccurs="0" name="authToken" type="tns:authToken"/>
+
+      <xs:element minOccurs="0" name="jwtToken" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="virtualHost" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="prefs">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="pref" type="tns:pref"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="attrs">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="attr" type="tns:attr"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+    </xs:all>
+
+    <xs:attribute name="persistAuthTokenCookie" type="xs:boolean"/>
+
+    <xs:attribute name="csrfTokenSecured" type="xs:boolean"/>
+
+    <xs:attribute name="tokenType" type="xs:string"/>
+
+    <xs:attribute name="productQuery" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="preAuth">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="timestamp" type="xs:long" use="required"/>
+
+        <xs:attribute name="expires" type="xs:long"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="authToken">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="verifyAccount" type="xs:boolean"/>
+
+        <xs:attribute name="lifetime" type="xs:long"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="pref">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="name" type="xs:string" use="required"/>
+
+        <xs:attribute name="modified" type="xs:long"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="attr">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="name" type="xs:string" use="required"/>
+
+        <xs:attribute name="pd" type="xs:boolean"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="authResponse">
+
+    <xs:all>
+
+      <xs:element minOccurs="0" name="prefs">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="pref" type="tns:pref"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="attrs">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="attr" type="tns:attr"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element name="authToken" type="xs:string"/>
+
+      <xs:element name="lifetime" type="xs:long"/>
+
+      <xs:element minOccurs="0" name="trustLifetime" type="xs:long"/>
+
+      <xs:element minOccurs="0" name="session" type="tns:session"/>
+
+      <xs:element minOccurs="0" name="refer" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="csrfToken" type="xs:string"/>
+
+    </xs:all>
+
+  </xs:complexType>
+
+  <xs:complexType name="session">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="type" type="xs:string"/>
+
+        <xs:attribute name="id" type="xs:string" use="required"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="autoCompleteGalRequest">
+
+    <xs:sequence/>
+
+    <xs:attribute name="needExp" type="xs:boolean"/>
+
+    <xs:attribute name="name" type="xs:string" use="required"/>
+
+    <xs:attribute name="type" type="ns1:galSearchType"/>
+
+    <xs:attribute name="galAcctId" type="xs:string"/>
+
+    <xs:attribute name="limit" type="xs:int"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="autoCompleteGalResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="cn" type="tns:contactInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="more" type="xs:boolean"/>
+
+    <xs:attribute name="tokenizeKey" type="xs:boolean"/>
+
+    <xs:attribute name="paginationSupported" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="contactInfo">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" ref="tns:meta"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="a" type="ns1:contactAttr"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="m" type="tns:contactGroupMember"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="sf" type="xs:string"/>
+
+    <xs:attribute name="exp" type="xs:boolean"/>
+
+    <xs:attribute name="id" type="xs:string" use="required"/>
+
+    <xs:attribute name="l" type="xs:string"/>
+
+    <xs:attribute name="f" type="xs:string"/>
+
+    <xs:attribute name="t" type="xs:string"/>
+
+    <xs:attribute name="tn" type="xs:string"/>
+
+    <xs:attribute name="md" type="xs:long"/>
+
+    <xs:attribute name="ms" type="xs:int"/>
+
+    <xs:attribute name="d" type="xs:long"/>
+
+    <xs:attribute name="rev" type="xs:int"/>
+
+    <xs:attribute name="fileAsStr" type="xs:string"/>
+
+    <xs:attribute name="email" type="xs:string"/>
+
+    <xs:attribute name="email2" type="xs:string"/>
+
+    <xs:attribute name="email3" type="xs:string"/>
+
+    <xs:attribute name="type" type="xs:string"/>
+
+    <xs:attribute name="dlist" type="xs:string"/>
+
+    <xs:attribute name="ref" type="xs:string"/>
+
+    <xs:attribute name="tooManyMembers" type="xs:boolean"/>
+
+    <xs:attribute name="isOwner" type="xs:boolean"/>
+
+    <xs:attribute name="isMember" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountCustomMetadata">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountKeyValuePairs">
+
+        <xs:sequence/>
+
+        <xs:attribute name="section" type="xs:string"/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountKeyValuePairs">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="a" type="ns1:keyValuePair"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="contactGroupMember">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="cn" type="tns:contactInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="type" type="xs:string" use="required"/>
+
+    <xs:attribute name="value" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="changePasswordRequest">
+
+    <xs:all>
+
+      <xs:element name="account" type="ns1:accountSelector"/>
+
+      <xs:element name="oldPassword" type="xs:string"/>
+
+      <xs:element name="password" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="virtualHost" type="xs:string"/>
+
+      <xs:element name="dryRun" type="xs:boolean"/>
+
+    </xs:all>
+
+  </xs:complexType>
+
+  <xs:complexType name="changePasswordResponse">
+
+    <xs:all>
+
+      <xs:element name="authToken" type="xs:string"/>
+
+      <xs:element name="lifetime" type="xs:long"/>
+
+    </xs:all>
+
+  </xs:complexType>
+
+  <xs:complexType name="checkRightsRequest">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" name="target" type="tns:checkRightsTargetSpec"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="checkRightsTargetSpec">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" name="right" type="xs:string"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="type" type="ns1:targetType" use="required"/>
+
+    <xs:attribute name="by" type="ns1:targetBy" use="required"/>
+
+    <xs:attribute name="key" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="checkRightsResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" name="target" type="tns:checkRightsTargetInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="checkRightsTargetInfo">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" name="right" type="tns:checkRightsRightInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="type" type="ns1:targetType" use="required"/>
+
+    <xs:attribute name="by" type="ns1:targetBy" use="required"/>
+
+    <xs:attribute name="key" type="xs:string" use="required"/>
+
+    <xs:attribute name="allow" type="xs:boolean" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="checkRightsRightInfo">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="allow" type="xs:boolean" use="required"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="clientInfoRequest">
+
+    <xs:sequence>
+
+      <xs:element name="domain" type="ns2:domainSelector"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="clientInfoResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="a" type="ns2:attr"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="createDistributionListRequest">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountKeyValuePairs">
+
+        <xs:sequence/>
+
+        <xs:attribute name="name" type="xs:string" use="required"/>
+
+        <xs:attribute name="dynamic" type="xs:boolean"/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="createDistributionListResponse">
+
+    <xs:sequence>
+
+      <xs:element name="dl" type="tns:dlInfo"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="dlInfo">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:objectInfo">
+
+        <xs:all/>
+
+        <xs:attribute name="ref" type="xs:string" use="required"/>
+
+        <xs:attribute name="d" type="xs:string"/>
+
+        <xs:attribute name="dynamic" type="xs:boolean"/>
+
+        <xs:attribute name="via" type="xs:string"/>
+
+        <xs:attribute name="isOwner" type="xs:boolean"/>
+
+        <xs:attribute name="isMember" type="xs:boolean"/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="objectInfo">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="a" type="ns1:keyValuePair"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="name" type="xs:string" use="required"/>
+
+    <xs:attribute name="id" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="createIdentityRequest">
+
+    <xs:sequence>
+
+      <xs:element name="identity" type="tns:identity"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="identity">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:attrsImpl">
+
+        <xs:sequence/>
+
+        <xs:attribute name="name" type="xs:string"/>
+
+        <xs:attribute name="id" type="xs:string"/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType abstract="true" name="attrsImpl">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="a" type="tns:attr"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="createIdentityResponse">
+
+    <xs:sequence>
+
+      <xs:element name="identity" type="tns:identity"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="createSignatureRequest">
+
+    <xs:sequence>
+
+      <xs:element ref="tns:signature"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="signature">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="content" type="tns:signatureContent"/>
+
+      <xs:element minOccurs="0" name="cid" type="xs:string"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="id" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="signatureContent">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="type" type="xs:string"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="createSignatureResponse">
+
+    <xs:sequence>
+
+      <xs:element name="signature" type="tns:nameId"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="nameId">
+
+    <xs:sequence/>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+    <xs:attribute name="id" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="deleteIdentityRequest">
+
+    <xs:sequence>
+
+      <xs:element name="identity" type="tns:nameId"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="deleteIdentityResponse">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="deleteSignatureRequest">
+
+    <xs:sequence>
+
+      <xs:element name="signature" type="tns:nameId"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="deleteSignatureResponse">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="discoverRightsRequest">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" name="right" type="xs:string"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="discoverRightsResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="targets" type="tns:discoverRightsInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="discoverRightsInfo">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" name="target" type="tns:discoverRightsTarget"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="right" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="discoverRightsTarget">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="email" type="tns:discoverRightsEmail"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="type" type="ns1:targetType" use="required"/>
+
+    <xs:attribute name="id" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+    <xs:attribute name="d" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="discoverRightsEmail">
+
+    <xs:sequence/>
+
+    <xs:attribute name="addr" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="distributionListActionRequest">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:attrsImpl">
+
+        <xs:sequence>
+
+          <xs:element name="dl" type="ns1:distributionListSelector"/>
+
+          <xs:element name="action" type="tns:distributionListAction"/>
+
+        </xs:sequence>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="distributionListAction">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountKeyValuePairs">
+
+        <xs:sequence>
+
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="dlm" type="xs:string"/>
+
+          <xs:element minOccurs="0" name="newName" type="xs:string"/>
+
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="owner" type="tns:distributionListGranteeSelector"/>
+
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="right" type="tns:distributionListRightSpec"/>
+
+        </xs:sequence>
+
+        <xs:attribute name="op" type="tns:operation" use="required"/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="distributionListGranteeSelector">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="type" type="ns1:granteeType" use="required"/>
+
+        <xs:attribute name="by" type="ns1:distributionListGranteeBy" use="required"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="distributionListRightSpec">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="grantee" type="tns:distributionListGranteeSelector"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="right" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="distributionListActionResponse">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="endSessionRequest">
+
+    <xs:sequence/>
+
+    <xs:attribute name="logoff" type="xs:boolean"/>
+
+    <xs:attribute name="all" type="xs:boolean"/>
+
+    <xs:attribute name="excludeCurrent" type="xs:boolean"/>
+
+    <xs:attribute name="sessionId" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="endSessionResponse">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAccountDistributionListsRequest">
+
+    <xs:sequence/>
+
+    <xs:attribute name="ownerOf" type="xs:boolean"/>
+
+    <xs:attribute name="memberOf" type="tns:memberOfSelector"/>
+
+    <xs:attribute name="attrs" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAccountDistributionListsResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="dl" type="tns:dlInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="getAccountInfoRequest">
+
+    <xs:sequence>
+
+      <xs:element name="account" type="ns1:accountSelector"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAccountInfoResponse">
+
+    <xs:sequence>
+
+      <xs:element name="name" type="xs:string"/>
+
+      <xs:element maxOccurs="unbounded" name="attr" type="ns1:namedValue"/>
+
+      <xs:element minOccurs="0" name="soapURL" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="publicURL" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="changePasswordURL" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="adminURL" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="boshURL" type="xs:string"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAllLocalesRequest">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAllLocalesResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="locale" type="tns:localeInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="localeInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="id" type="xs:string" use="required"/>
+
+    <xs:attribute name="name" type="xs:string" use="required"/>
+
+    <xs:attribute name="localName" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAvailableCsvFormatsRequest">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAvailableCsvFormatsResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="csv" type="ns1:namedElement"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="getAvailableLocalesRequest">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAvailableLocalesResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="locale" type="tns:localeInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="getDistributionListMembersRequest">
+
+    <xs:sequence>
+
+      <xs:element name="dl" type="xs:string"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="limit" type="xs:int"/>
+
+    <xs:attribute name="offset" type="xs:int"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getDistributionListMembersResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="dlm" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="groupMembers">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="groupMember" type="tns:habGroupMember"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+    </xs:sequence>
+
+    <xs:attribute name="more" type="xs:boolean"/>
+
+    <xs:attribute name="total" type="xs:int"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="habGroupMember">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:habMember">
+
+        <xs:sequence>
+
+          <xs:element maxOccurs="unbounded" name="attr" type="ns1:namedValue"/>
+
+        </xs:sequence>
+
+        <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType abstract="true" name="habMember">
+
+    <xs:sequence>
+
+      <xs:element name="name" type="xs:string"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="seniorityIndex" type="xs:int" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getDistributionListRequest">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:attrsImpl">
+
+        <xs:sequence>
+
+          <xs:element name="dl" type="ns1:distributionListSelector"/>
+
+        </xs:sequence>
+
+        <xs:attribute name="needOwners" type="xs:boolean"/>
+
+        <xs:attribute name="needRights" type="xs:string"/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="getDistributionListResponse">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" ref="tns:dl"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="distributionListInfo">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:objectInfo">
+
+        <xs:sequence>
+
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="dlm" type="xs:string"/>
+
+          <xs:element minOccurs="0" name="owners">
+
+            <xs:complexType>
+
+              <xs:sequence>
+
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="owner" type="tns:distributionListGranteeInfo"/>
+
+              </xs:sequence>
+
+              <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+            </xs:complexType>
+
+          </xs:element>
+
+          <xs:element minOccurs="0" name="rights">
+
+            <xs:complexType>
+
+              <xs:sequence>
+
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="right" type="tns:distributionListRightInfo"/>
+
+              </xs:sequence>
+
+              <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+            </xs:complexType>
+
+          </xs:element>
+
+        </xs:sequence>
+
+        <xs:attribute name="isOwner" type="xs:boolean"/>
+
+        <xs:attribute name="isMember" type="xs:boolean"/>
+
+        <xs:attribute name="dynamic" type="xs:boolean"/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="distributionListGranteeInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="type" type="ns1:granteeType" use="required"/>
+
+    <xs:attribute name="id" type="xs:string" use="required"/>
+
+    <xs:attribute name="name" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="distributionListRightInfo">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="grantee" type="tns:distributionListGranteeInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="right" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getIdentitiesRequest">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getIdentitiesResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="identity" type="tns:identity"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="getInfoRequest">
+
+    <xs:sequence/>
+
+    <xs:attribute name="rights" type="xs:string"/>
+
+    <xs:attribute name="sections" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType final="extension restriction" name="getInfoResponse">
+
+    <xs:sequence>
+
+      <xs:element name="version" type="xs:string"/>
+
+      <xs:element name="id" type="xs:string"/>
+
+      <xs:element name="profileImageId" type="xs:int"/>
+
+      <xs:element name="name" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="crumb" type="xs:string"/>
+
+      <xs:element name="lifetime" type="xs:long"/>
+
+      <xs:element minOccurs="0" name="adminDelegated" type="xs:boolean"/>
+
+      <xs:element minOccurs="0" name="rest" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="used" type="xs:long"/>
+
+      <xs:element minOccurs="0" name="isTrackingIMAP" type="xs:boolean"/>
+
+      <xs:element minOccurs="0" name="prevSession" type="xs:long"/>
+
+      <xs:element minOccurs="0" name="accessed" type="xs:long"/>
+
+      <xs:element minOccurs="0" name="recent" type="xs:int"/>
+
+      <xs:element minOccurs="0" name="cos" type="tns:cos"/>
+
+      <xs:element minOccurs="0" name="prefs">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="pref" type="tns:pref"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="attrs">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="attr" type="tns:attr"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="zimlets">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="zimlet" type="tns:accountZimletInfo"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="props">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="prop" type="tns:prop"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="identities">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="identity" type="tns:identity"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="signatures">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" ref="tns:signature"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="dataSources">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+
+              <xs:element name="imap" type="tns:accountImapDataSource"/>
+
+              <xs:element name="pop3" type="tns:accountPop3DataSource"/>
+
+              <xs:element name="caldav" type="tns:accountCaldavDataSource"/>
+
+              <xs:element name="yab" type="tns:accountYabDataSource"/>
+
+              <xs:element name="rss" type="tns:accountRssDataSource"/>
+
+              <xs:element name="gal" type="tns:accountGalDataSource"/>
+
+              <xs:element name="cal" type="tns:accountCalDataSource"/>
+
+              <xs:element name="unknown" type="tns:accountUnknownDataSource"/>
+
+            </xs:choice>
+
+          </xs:sequence>
+
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="childAccounts">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="childAccount" type="tns:childAccount"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="rights">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="targets" type="tns:discoverRightsInfo"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="soapURL" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="publicURL" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="changePasswordURL" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="adminURL" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="boshURL" type="xs:string"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="attSizeLimit" type="xs:long"/>
+
+    <xs:attribute name="docSizeLimit" type="xs:long"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="cos">
+
+    <xs:sequence/>
+
+    <xs:attribute name="id" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountZimletInfo">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="zimletContext" type="tns:accountZimletContext"/>
+
+      <xs:element minOccurs="0" name="zimlet" type="tns:accountZimletDesc"/>
+
+      <xs:element minOccurs="0" name="zimletConfig" type="tns:accountZimletConfigInfo"/>
+
+      <xs:any namespace="##other" processContents="skip"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountZimletContext">
+
+    <xs:sequence/>
+
+    <xs:attribute name="baseUrl" type="xs:string" use="required"/>
+
+    <xs:attribute name="priority" type="xs:int"/>
+
+    <xs:attribute name="presence" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountZimletDesc">
+
+    <xs:sequence>
+
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+
+        <xs:element ref="tns:serverExtension"/>
+
+        <xs:element ref="tns:include"/>
+
+        <xs:element ref="tns:includeCSS"/>
+
+        <xs:element ref="tns:target"/>
+
+        <xs:any namespace="##other" processContents="skip"/>
+
+      </xs:choice>
+
+    </xs:sequence>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+    <xs:attribute name="version" type="xs:string"/>
+
+    <xs:attribute name="description" type="xs:string"/>
+
+    <xs:attribute name="extension" type="xs:string"/>
+
+    <xs:attribute name="target" type="xs:string"/>
+
+    <xs:attribute name="label" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="zimletServerExtension">
+
+    <xs:sequence/>
+
+    <xs:attribute name="hasKeyword" type="xs:string"/>
+
+    <xs:attribute name="extensionClass" type="xs:string"/>
+
+    <xs:attribute name="regex" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:simpleType name="accountZimletInclude">
+
+    <xs:restriction base="xs:string"/>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="accountZimletIncludeCSS">
+
+    <xs:restriction base="xs:string"/>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="accountZimletTarget">
+
+    <xs:restriction base="xs:string"/>
+
+  </xs:simpleType>
+
+  <xs:complexType name="accountZimletConfigInfo">
+
+    <xs:all>
+
+      <xs:element minOccurs="0" name="global" type="tns:accountZimletGlobalConfigInfo"/>
+
+      <xs:element minOccurs="0" name="host" type="tns:accountZimletHostConfigInfo"/>
+
+    </xs:all>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+    <xs:attribute name="version" type="xs:string"/>
+
+    <xs:attribute name="description" type="xs:string"/>
+
+    <xs:attribute name="extension" type="xs:string"/>
+
+    <xs:attribute name="target" type="xs:string"/>
+
+    <xs:attribute name="label" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountZimletGlobalConfigInfo">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="property" type="tns:accountZimletProperty"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="accountZimletProperty">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="name" type="xs:string"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountZimletHostConfigInfo">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="property" type="tns:accountZimletProperty"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="prop">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="zimlet" type="xs:string" use="required"/>
+
+        <xs:attribute name="name" type="xs:string" use="required"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountImapDataSource">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountDataSource">
+
+        <xs:all/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountDataSource">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="lastError" type="xs:string"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="a" type="xs:string"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="id" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+    <xs:attribute name="l" type="xs:string"/>
+
+    <xs:attribute name="isEnabled" type="xs:boolean"/>
+
+    <xs:attribute name="importOnly" type="xs:boolean"/>
+
+    <xs:attribute name="host" type="xs:string"/>
+
+    <xs:attribute name="port" type="xs:int"/>
+
+    <xs:attribute name="connectionType" type="tns:adsConnectionType"/>
+
+    <xs:attribute name="username" type="xs:string"/>
+
+    <xs:attribute name="password" type="xs:string"/>
+
+    <xs:attribute name="pollingInterval" type="xs:string"/>
+
+    <xs:attribute name="emailAddress" type="xs:string"/>
+
+    <xs:attribute name="useAddressForForwardReply" type="xs:boolean"/>
+
+    <xs:attribute name="defaultSignature" type="xs:string"/>
+
+    <xs:attribute name="forwardReplySignature" type="xs:string"/>
+
+    <xs:attribute name="fromDisplay" type="xs:string"/>
+
+    <xs:attribute name="replyToAddress" type="xs:string"/>
+
+    <xs:attribute name="replyToDisplay" type="xs:string"/>
+
+    <xs:attribute name="importClass" type="xs:string"/>
+
+    <xs:attribute name="failingSince" type="xs:long"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountPop3DataSource">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountDataSource">
+
+        <xs:all/>
+
+        <xs:attribute name="leaveOnServer" type="xs:boolean"/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountCaldavDataSource">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountDataSource">
+
+        <xs:sequence/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountYabDataSource">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountDataSource">
+
+        <xs:sequence/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountRssDataSource">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountDataSource">
+
+        <xs:all/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountGalDataSource">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountDataSource">
+
+        <xs:sequence/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountCalDataSource">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountDataSource">
+
+        <xs:all/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="accountUnknownDataSource">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountDataSource">
+
+        <xs:sequence/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="childAccount">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="attrs">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="attr" type="tns:attr"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+    </xs:sequence>
+
+    <xs:attribute name="id" type="xs:string" use="required"/>
+
+    <xs:attribute name="name" type="xs:string" use="required"/>
+
+    <xs:attribute name="visible" type="xs:boolean" use="required"/>
+
+    <xs:attribute name="active" type="xs:boolean" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getPrefsRequest">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="pref" type="tns:pref"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="getPrefsResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="pref" type="tns:pref"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="getRightsRequest">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="ace" type="tns:right"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="right">
+
+    <xs:sequence/>
+
+    <xs:attribute name="right" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getRightsResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="ace" type="tns:accountACEInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="accountACEInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="zid" type="xs:string"/>
+
+    <xs:attribute name="gt" type="ns1:granteeType" use="required"/>
+
+    <xs:attribute name="right" type="xs:string" use="required"/>
+
+    <xs:attribute name="d" type="xs:string"/>
+
+    <xs:attribute name="key" type="xs:string"/>
+
+    <xs:attribute name="pw" type="xs:string"/>
+
+    <xs:attribute name="deny" type="xs:boolean"/>
+
+    <xs:attribute name="chkgt" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getSMIMEPublicCertsRequest">
+
+    <xs:sequence>
+
+      <xs:element name="store" type="tns:smimePublicCertsStoreSpec"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="email" type="xs:string"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="smimePublicCertsStoreSpec">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="storeLookupOpt" type="ns1:storeLookupOpt"/>
+
+        <xs:attribute name="sourceLookupOpt" type="ns1:sourceLookupOpt"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="getSMIMEPublicCertsResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="certs" type="tns:smimePublicCertsInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="smimePublicCertsInfo">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="cert" type="tns:smimePublicCertInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="email" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="smimePublicCertInfo">
+
+    <xs:simpleContent>
+
+      <xs:extension base="xs:string">
+
+        <xs:attribute name="store" type="ns1:smimeStoreType" use="required"/>
+
+        <xs:attribute name="field" type="xs:string" use="required"/>
+
+      </xs:extension>
+
+    </xs:simpleContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="getShareInfoRequest">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="grantee" type="ns1:granteeChooser"/>
+
+      <xs:element minOccurs="0" name="owner" type="ns1:accountSelector"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="internal" type="xs:boolean"/>
+
+    <xs:attribute name="includeSelf" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getShareInfoResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="share" type="ns1:shareInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="getSignaturesRequest">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getSignaturesResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" ref="tns:signature"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="getSmimeCertificateInfoRequest">
+
+    <xs:sequence/>
+
+    <xs:attribute name="certId" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getSmimeCertificateInfoResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" ref="tns:certificate"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="certificateInfo">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="errorCode" type="xs:string"/>
+
+      <xs:element name="emailAddress" type="xs:string"/>
+
+      <xs:element name="issuedTo" type="tns:certificateDN"/>
+
+      <xs:element minOccurs="0" name="issuedBy" type="tns:certificateDN"/>
+
+      <xs:element minOccurs="0" name="validity" type="tns:certificateValidity"/>
+
+      <xs:element minOccurs="0" name="signature" type="tns:certificateSignature"/>
+
+      <xs:element minOccurs="0" name="subjectAltName" type="tns:certificateAltNames"/>
+
+      <xs:element minOccurs="0" name="issuerAltName" type="tns:certificateAltNames"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="pubCertId" type="xs:string" use="required"/>
+
+    <xs:attribute name="pvtKeyId" type="xs:string" use="required"/>
+
+    <xs:attribute name="default" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="certificateDN">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="emailAddress" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="c" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="st" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="l" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="o" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="ou" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="cn" type="xs:string"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="certificateValidity">
+
+    <xs:sequence>
+
+      <xs:element name="startDate" type="xs:long"/>
+
+      <xs:element name="endDate" type="xs:long"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="certificateSignature">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="serialNo" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="algorithm" type="xs:string"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="certificateAltNames">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="otherName" type="xs:string"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="rfc822Name" type="xs:string"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="dNSName" type="xs:string"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="x400Address" type="xs:string"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="directoryName" type="xs:string"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="ediPartyName" type="xs:string"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="uniformResourceIdentifier" type="xs:string"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="iPAddress" type="xs:string"/>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="registeredID" type="xs:string"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="getVersionInfoRequest">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getVersionInfoResponse">
+
+    <xs:sequence>
+
+      <xs:element name="info" type="tns:versionInfo"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="versionInfo">
+
+    <xs:sequence/>
+
+    <xs:attribute name="version" type="xs:string" use="required"/>
+
+    <xs:attribute name="release" type="xs:string" use="required"/>
+
+    <xs:attribute name="buildDate" type="xs:string" use="required"/>
+
+    <xs:attribute name="host" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getWhiteBlackListRequest">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getWhiteBlackListResponse">
+
+    <xs:sequence>
+
+      <xs:element name="whiteList">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="addr" type="xs:string"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element name="blackList">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="addr" type="xs:string"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="grantRightsRequest">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="ace" type="tns:accountACEInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="grantRightsResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="ace" type="tns:accountACEInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="modifyIdentityRequest">
+
+    <xs:sequence>
+
+      <xs:element name="identity" type="tns:identity"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="modifyIdentityResponse">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="modifyPrefsRequest">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="pref" type="tns:pref"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="modifyPrefsResponse">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="modifyPropertiesRequest">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" name="prop" type="tns:prop"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="modifyPropertiesResponse">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="modifySignatureRequest">
+
+    <xs:sequence>
+
+      <xs:element ref="tns:signature"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="modifySignatureResponse">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="modifyWhiteBlackListRequest">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="whiteList">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="addr" type="ns1:opValue"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+      <xs:element minOccurs="0" name="blackList">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="addr" type="ns1:opValue"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="modifyWhiteBlackListResponse">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="modifyZimletPrefsRequest">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="zimlet" type="tns:modifyZimletPrefsSpec"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="modifyZimletPrefsSpec">
+
+    <xs:sequence/>
+
+    <xs:attribute name="name" type="xs:string" use="required"/>
+
+    <xs:attribute name="presence" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="modifyZimletPrefsResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="zimlet" type="xs:string"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="resetPasswordRequest">
+
+    <xs:sequence>
+
+      <xs:element name="password" type="xs:string"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="resetPasswordResponse">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="attrs">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="attr" type="tns:attr"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="revokeRightsRequest">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="ace" type="tns:accountACEInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="revokeRightsResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="ace" type="tns:accountACEInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="saveSmimeCertificateRequest">
+
+    <xs:sequence>
+
+      <xs:element name="upload" type="ns1:id"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="password" type="xs:string"/>
+
+    <xs:attribute name="replaceId" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="saveSmimeCertificateResponse">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" ref="tns:certificate"/>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="searchCalendarResourcesRequest">
+
+    <xs:complexContent>
+
+      <xs:extension base="ns1:attributeSelectorImpl">
+
+        <xs:sequence>
+
+          <xs:element minOccurs="0" name="locale" type="xs:string"/>
+
+          <xs:element minOccurs="0" name="cursor" type="ns1:cursorInfo"/>
+
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+
+          <xs:element minOccurs="0" name="searchFilter" type="tns:entrySearchFilterInfo"/>
+
+        </xs:sequence>
+
+        <xs:attribute name="quick" type="xs:boolean"/>
+
+        <xs:attribute name="sortBy" type="xs:string"/>
+
+        <xs:attribute name="limit" type="xs:int"/>
+
+        <xs:attribute name="offset" type="xs:int"/>
+
+        <xs:attribute name="galAcctId" type="xs:string"/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="entrySearchFilterInfo">
+
+    <xs:sequence>
+
+      <xs:choice minOccurs="0">
+
+        <xs:element name="conds" type="tns:entrySearchFilterMultiCond"/>
+
+        <xs:element name="cond" type="tns:entrySearchFilterSingleCond"/>
+
+      </xs:choice>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="entrySearchFilterMultiCond">
+
+    <xs:sequence>
+
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+
+        <xs:element name="conds" type="tns:entrySearchFilterMultiCond"/>
+
+        <xs:element name="cond" type="tns:entrySearchFilterSingleCond"/>
+
+      </xs:choice>
+
+    </xs:sequence>
+
+    <xs:attribute name="not" type="xs:boolean"/>
+
+    <xs:attribute name="or" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="entrySearchFilterSingleCond">
+
+    <xs:sequence/>
+
+    <xs:attribute name="not" type="xs:boolean"/>
+
+    <xs:attribute name="attr" type="xs:string" use="required"/>
+
+    <xs:attribute name="op" type="xs:string" use="required"/>
+
+    <xs:attribute name="value" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="searchCalendarResourcesResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="calresource" type="tns:calendarResourceInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="sortBy" type="xs:string"/>
+
+    <xs:attribute name="offset" type="xs:int"/>
+
+    <xs:attribute name="more" type="xs:boolean"/>
+
+    <xs:attribute name="paginationSupported" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="calendarResourceInfo">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:accountKeyValuePairs">
+
+        <xs:sequence/>
+
+        <xs:attribute name="name" type="xs:string" use="required"/>
+
+        <xs:attribute name="id" type="xs:string" use="required"/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="searchGalRequest">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="locale" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="cursor" type="ns1:cursorInfo"/>
+
+      <xs:element minOccurs="0" name="query" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="searchFilter" type="tns:entrySearchFilterInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="ref" type="xs:string"/>
+
+    <xs:attribute name="name" type="xs:string"/>
+
+    <xs:attribute name="type" type="ns1:galSearchType"/>
+
+    <xs:attribute name="needExp" type="xs:boolean"/>
+
+    <xs:attribute name="needIsOwner" type="xs:boolean"/>
+
+    <xs:attribute name="needIsMember" type="tns:memberOfSelector"/>
+
+    <xs:attribute name="needSMIMECerts" type="xs:boolean"/>
+
+    <xs:attribute name="galAcctId" type="xs:string"/>
+
+    <xs:attribute name="quick" type="xs:boolean"/>
+
+    <xs:attribute name="sortBy" type="xs:string"/>
+
+    <xs:attribute name="limit" type="xs:int"/>
+
+    <xs:attribute name="offset" type="xs:int"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="searchGalResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="cn" type="tns:contactInfo"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="sortBy" type="xs:string"/>
+
+    <xs:attribute name="offset" type="xs:int"/>
+
+    <xs:attribute name="more" type="xs:boolean"/>
+
+    <xs:attribute name="paginationSupported" type="xs:boolean"/>
+
+    <xs:attribute name="tokenizeKey" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="syncGalRequest">
+
+    <xs:sequence/>
+
+    <xs:attribute name="token" type="xs:string"/>
+
+    <xs:attribute name="galAcctId" type="xs:string"/>
+
+    <xs:attribute name="idOnly" type="xs:boolean"/>
+
+    <xs:attribute name="getCount" type="xs:boolean"/>
+
+    <xs:attribute name="limit" type="xs:int"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="syncGalResponse">
+
+    <xs:sequence>
+
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+
+        <xs:element name="cn" type="tns:contactInfo"/>
+
+        <xs:element name="deleted" type="ns1:id"/>
+
+      </xs:choice>
+
+    </xs:sequence>
+
+    <xs:attribute name="more" type="xs:boolean"/>
+
+    <xs:attribute name="token" type="xs:string"/>
+
+    <xs:attribute name="galDefinitionLastModified" type="xs:string"/>
+
+    <xs:attribute name="throttled" type="xs:boolean"/>
+
+    <xs:attribute name="fullSyncRecommended" type="xs:boolean"/>
+
+    <xs:attribute name="remain" type="xs:int"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAllAddressListsRequest">
+
+    <xs:sequence/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAllAddressListsResponse">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="addressLists">
+
+        <xs:complexType>
+
+          <xs:sequence>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="addressList" type="tns:addressListInfo"/>
+
+          </xs:sequence>
+
+          <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+        </xs:complexType>
+
+      </xs:element>
+
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="addressListInfo">
+
+    <xs:sequence>
+
+      <xs:element minOccurs="0" name="galFilter" type="xs:string"/>
+
+      <xs:element minOccurs="0" name="ldapFilter" type="xs:string"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="id" type="xs:string" use="required"/>
+
+    <xs:attribute name="name" type="xs:string" use="required"/>
+
+    <xs:attribute name="description" type="xs:string"/>
+
+    <xs:attribute name="active" type="xs:boolean"/>
+
+    <xs:attribute name="dn" type="xs:string"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getHABRequest">
+
+    <xs:all/>
+
+    <xs:attribute name="habRootGroupId" type="xs:string" use="required"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getHABResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="habGroups" type="tns:habGroup"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="unusedCodeGenHelper" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="habGroup">
+
+    <xs:complexContent>
+
+      <xs:extension base="tns:habMember">
+
+        <xs:sequence>
+
+          <xs:element minOccurs="0" name="id" type="xs:string"/>
+
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="habGroups" type="tns:habGroup"/>
+
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="attr" type="tns:attr"/>
+
+        </xs:sequence>
+
+        <xs:attribute name="rootHabGroup" type="xs:boolean"/>
+
+        <xs:attribute name="parentHabGroupId" type="xs:string"/>
+
+      </xs:extension>
+
+    </xs:complexContent>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAddressListMembersRequest">
+
+    <xs:sequence/>
+
+    <xs:attribute name="limit" type="xs:int" use="required"/>
+
+    <xs:attribute name="offset" type="xs:int" use="required"/>
+
+    <xs:attribute name="id" type="xs:string" use="required"/>
+
+    <xs:attribute name="countOnly" type="xs:boolean"/>
+
+  </xs:complexType>
+
+  <xs:complexType name="getAddressListMemberResponse">
+
+    <xs:sequence>
+
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="alm" type="xs:string"/>
+
+    </xs:sequence>
+
+    <xs:attribute name="more" type="xs:boolean"/>
+
+    <xs:attribute name="total" type="xs:int" use="required"/>
+
+  </xs:complexType>
+
+  <xs:simpleType name="operation">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="delete"/>
+
+      <xs:enumeration value="modify"/>
+
+      <xs:enumeration value="rename"/>
+
+      <xs:enumeration value="addOwners"/>
+
+      <xs:enumeration value="removeOwners"/>
+
+      <xs:enumeration value="setOwners"/>
+
+      <xs:enumeration value="grantRights"/>
+
+      <xs:enumeration value="revokeRights"/>
+
+      <xs:enumeration value="setRights"/>
+
+      <xs:enumeration value="addMembers"/>
+
+      <xs:enumeration value="removeMembers"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="memberOfSelector">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="all"/>
+
+      <xs:enumeration value="directOnly"/>
+
+      <xs:enumeration value="none"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="adsConnectionType">
+
+    <xs:restriction base="xs:string">
+
+      <xs:enumeration value="cleartext"/>
+
+      <xs:enumeration value="ssl"/>
+
+      <xs:enumeration value="tls"/>
+
+      <xs:enumeration value="tls_is_available"/>
+
+    </xs:restriction>
+
+  </xs:simpleType>
+
+</xs:schema>
