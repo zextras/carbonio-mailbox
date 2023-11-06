@@ -38,9 +38,11 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
 ## Testing Packages
 To start build packages by running [build_packages.sh](build_packages.sh)
+By default it build ubuntu-focal packages.
+To build rocky-8 packages run : `./build-packages.sh rocky-8`
 
 Then cd into [docker/single-server](docker/single-server) and run:
-`docker compose up --build`
+`docker compose --profile ubuntu-focal up --build ubuntu-focal` (or rocky-8)
 It will build and start a carbonio-ce instance using built packages.
 
 ## Contribute to Carbonio Mailbox
