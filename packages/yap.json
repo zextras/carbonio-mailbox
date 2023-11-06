@@ -8,10 +8,10 @@
       "name": "appserver-conf"
     },
     {
-      "name": "appserver-service"
+      "name": "appserver-db"
     },
     {
-      "name": "appserver-db"
+      "name": "appserver-service"
     },
     {
       "name": "appserver-store-libs"
