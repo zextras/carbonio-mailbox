@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                             <arg>-XadditionalHeaders</arg>
                         </args>
                         <extension>true</extension>
-                        <wsdlDirectory>${project.parent.basedir}/soap/target/classes/com/zimbra/soap/</wsdlDirectory>
+                        <wsdlDirectory>${project.basedir}/schemas/</wsdlDirectory>
                     </configuration>
                     <executions>
                         <execution>
