@@ -8,11 +8,11 @@
     <soap:Body>
         <GetInfoResponse docSizeLimit="10485760" attSizeLimit="10240000" xmlns="urn:zimbraAccount">
             <version>23.10.0_ZEXTRAS_202310 carbonio 20230928-1518 FOSS</version>
-            <id>846a6715-d0c8-452c-885c-869f7892d3f0</id>
-            <name>foo@test.domain.io</name>
+            <id>%ACCOUNT_ID%</id>
+            <name>%ACCOUNT_EMAIL%</name>
             <crumb>759be86c05e3bdd5cdb8cf01f574a592</crumb>
             <lifetime>172619486</lifetime>
-            <rest>http://server.test.domain.io/home/foo@test.domain.io</rest>
+            <rest>http://server.%ACCOUT_DOMAIN%/home/%ACCOUNT_EMAIL%</rest>
             <used>17012895</used>
             <isTrackingIMAP>0</isTrackingIMAP>
             <prevSession>1698072780000</prevSession>
@@ -20,6 +20,7 @@
             <recent>4</recent>
             <cos name="default" id="e00428a1-0c00-11d9-836a-000d93afea2a" />
             <prefs>
+                <pref name="zimbraPrefLocale">%ACCOUNT_LOCALE%</pref>
                 <pref name="zimbraPrefCalendarReminderMobile">FALSE</pref>
                 <pref name="zimbraPrefIMLogChats">TRUE</pref>
                 <pref name="zimbraPrefFileSharingApplication">briefcase</pref>
@@ -172,6 +173,7 @@
                 <pref name="zimbraPrefCalenderScaling">30</pref>
             </prefs>
             <attrs>
+                <attr name="displayName">%ACCOUNT_NAME%</attr>
                 <attr name="zimbraDeviceLockWhenInactive">FALSE</attr>
                 <attr name="zimbraFeatureImportFolderEnabled">TRUE</attr>
                 <attr name="zimbraFeatureOptionsEnabled">TRUE</attr>
@@ -400,7 +402,7 @@
                 <identity name="DEFAULT" id="846a6715-d0c8-452c-885c-869f7892d3f0">
                     <a name="zimbraPrefForwardIncludeOriginalText">includeBody</a>
                     <a name="zimbraPrefForwardReplyPrefixChar">></a>
-                    <a name="zimbraPrefFromAddress">foo@test.domain.io</a>
+                    <a name="zimbraPrefFromAddress">%ACCOUNT_EMAIL%</a>
                     <a name="zimbraPrefSentMailFolder">sent</a>
                     <a name="zimbraPrefSaveToSent">TRUE</a>
                     <a name="zimbraPrefIdentityId">846a6715-d0c8-452c-885c-869f7892d3f0</a>
@@ -413,8 +415,8 @@
             </identities>
             <signatures />
             <dataSources />
-            <soapURL>http://server.test.domain.io/service/soap/</soapURL>
-            <publicURL>http://server.test.domain.io</publicURL>
+            <soapURL>http://server.%ACCOUNT_DOMAIN%/service/soap/</soapURL>
+            <publicURL>http://server.%ACCOUNT_DOMAIN%</publicURL>
             <pasteitcleanedEnabled>0</pasteitcleanedEnabled>
         </GetInfoResponse>
     </soap:Body>

@@ -23,6 +23,10 @@ class AdminServiceClientTestsIT {
   private final String authToken = "dummy-token";
   private final String email = "foo@test.domain.io";
   private final String id = "846a6715-d0c8-452c-885c-869f7892d3f0";
+  private final String domain = "test.domain.io";
+  private final String publicUrl = "http://server." + domain;
+  private final String name = "foo";
+  private final String locale = "pt_BR";
   private AdminServiceClient adminServiceClient;
   private MailboxSOAPSimulator mailboxSOAPSimulator;
 
@@ -41,25 +45,33 @@ class AdminServiceClientTestsIT {
 
   @Test
   void getAccountInfoByEmail() throws Exception {
-    mailboxSOAPSimulator.setupServerFor("getAccountInfo_ByEmail");
+    mailboxSOAPSimulator.setupServerFor(
+        mailboxSOAPSimulator.request().getAccountInfo_ByEmail(authToken, email),
+        mailboxSOAPSimulator.response().getAccountInfo_ByEmail(id, email, domain, name));
 
     final var result =
         adminServiceClient.send(
             AdminServiceRequests.AccountInfo.byEmail(email).withAuthToken(authToken));
 
     assertEquals(email, result.getName());
+    assertEquals(publicUrl, result.getPublicMailURL());
     assertAttrEquals(id, "zimbraId", result.getA());
+    assertAttrEquals(name, "displayName", result.getA());
   }
 
   @Test
   void getAccountInfoById() throws Exception {
-    mailboxSOAPSimulator.setupServerFor("getAccountInfo_ById");
+    mailboxSOAPSimulator.setupServerFor(
+        mailboxSOAPSimulator.request().getAccountInfo_ById(authToken, id),
+        mailboxSOAPSimulator.response().getAccountInfo_ById(id, email, domain, name));
 
     final var result =
         adminServiceClient.send(AdminServiceRequests.AccountInfo.byId(id).withAuthToken(authToken));
 
     assertEquals(email, result.getName());
+    assertEquals(publicUrl, result.getPublicMailURL());
     assertAttrEquals(id, "zimbraId", result.getA());
+    assertAttrEquals(name, "displayName", result.getA());
   }
 
   public static void assertAttrEquals(String expected, String name, List<Attr> attributes) {

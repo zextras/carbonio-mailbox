@@ -7,13 +7,14 @@
     </soap:Header>
     <soap:Body>
         <GetAccountInfoResponse xmlns="urn:zimbraAdmin">
-            <name>foo@test.domain.io</name>
-            <a n="zimbraId">846a6715-d0c8-452c-885c-869f7892d3f0</a>
-            <a n="zimbraMailHost">server.test.domain.io</a>
+            <name>%ACCOUNT_EMAIL%</name>
+            <a n="zimbraId">%ACCOUNT_ID%</a>
+            <a n="zimbraMailHost">%ACCOUNT_DOMAIN%</a>
+            <a n="displayName">%ACCOUNT_NAME%</a>
             <cos name="default" id="e00428a1-0c00-11d9-836a-000d93afea2a" />
-            <soapURL>http://server.test.domain.io:8080/service/soap/</soapURL>
-            <adminSoapURL>http://server.test.domain.io:7071/service/admin/soap/</adminSoapURL>
-            <publicMailURL>http://server.test.domain.io</publicMailURL>
+            <soapURL>http://server.%ACCOUNT_DOMAIN%:8080/service/soap/</soapURL>
+            <adminSoapURL>http://server.%ACCOUNT_DOMAIN%:7071/service/admin/soap/</adminSoapURL>
+            <publicMailURL>http://server.%ACCOUNT_DOMAIN%</publicMailURL>
         </GetAccountInfoResponse>
     </soap:Body>
 </soap:Envelope>

@@ -4,9 +4,6 @@
 
 package com.zextras.mailbox.support;
 
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-
 import com.zextras.mailbox.client.MailboxClient;
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
 import com.zextras.mailbox.client.service.ServiceClient;
@@ -20,6 +17,8 @@ import java.nio.file.Path;
 import java.util.Objects;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.BinaryBody;
+import org.mockserver.model.HttpRequest;
+import org.mockserver.model.HttpResponse;
 import org.mockserver.model.HttpStatusCode;
 
 public class MailboxSOAPSimulator implements AutoCloseable {
@@ -27,7 +26,7 @@ public class MailboxSOAPSimulator implements AutoCloseable {
   private static final String SERVICE_TYPE = "service";
   private static final String ADMIN_SERVICE_TYPE = "adminService";
 
-  private final ClientAndServer mailboxMockServer;
+  public final ClientAndServer mailboxMockServer;
   private final String type;
   private final String server;
   private final MailboxClient client;
@@ -59,12 +58,35 @@ public class MailboxSOAPSimulator implements AutoCloseable {
   public void setupServerFor(String name) {
     mailboxMockServer
         .when(
-            request()
+            HttpRequest.request()
                 .withMethod(HttpMethod.POST.toString())
                 .withPath(soapUrl())
                 .withBody(requestFor(name)))
         .respond(
-            response().withStatusCode(HttpStatusCode.OK_200.code()).withBody(responseFor(name)));
+            HttpResponse.response()
+                .withStatusCode(HttpStatusCode.OK_200.code())
+                .withBody(responseFor(name)));
+  }
+
+  public void setupServerFor(String request, String response) {
+    mailboxMockServer
+        .when(
+            HttpRequest.request()
+                .withMethod(HttpMethod.POST.toString())
+                .withPath(soapUrl())
+                .withBody(request))
+        .respond(
+            HttpResponse.response()
+                .withStatusCode(HttpStatusCode.OK_200.code())
+                .withBody(response));
+  }
+
+  public ScenarioRequest request() {
+    return new ScenarioRequest(xmlFolder());
+  }
+
+  public ScenarioResponse response() {
+    return new ScenarioResponse(xmlFolder());
   }
 
   @Override
@@ -74,7 +96,7 @@ public class MailboxSOAPSimulator implements AutoCloseable {
     }
   }
 
-  public String requestFor(String name) {
+  private String requestFor(String name) {
     return getXmlFile(fullPathFor(name, "request"));
   }
 
@@ -84,6 +106,17 @@ public class MailboxSOAPSimulator implements AutoCloseable {
 
   private String fullPathFor(String name, String type) {
     return String.format("soap/%s/%s/%s.xml", xmlFolder(), name, type);
+  }
+
+  private void setUpWsdlResponse() throws IOException {
+    final var wsdl = Files.readAllBytes(Path.of("schemas/ZimbraService.wsdl"));
+
+    mailboxMockServer
+        .when(
+            HttpRequest.request()
+                .withMethod(HttpMethod.GET.toString())
+                .withPath("/service/wsdl/ZimbraService.wsdl"))
+        .respond(HttpResponse.response().withStatusCode(200).withBody(BinaryBody.binary(wsdl)));
   }
 
   private String getXmlFile(String path) {
@@ -101,17 +134,6 @@ public class MailboxSOAPSimulator implements AutoCloseable {
     }
   }
 
-  private void setUpWsdlResponse() throws IOException {
-    final var wsdl = Files.readAllBytes(Path.of("schemas/ZimbraService.wsdl"));
-
-    mailboxMockServer
-        .when(
-            request()
-                .withMethod(HttpMethod.GET.toString())
-                .withPath("/service/wsdl/ZimbraService.wsdl"))
-        .respond(response().withStatusCode(200).withBody(BinaryBody.binary(wsdl)));
-  }
-
   private String xmlFolder() {
     if (SERVICE_TYPE.equals(type)) {
       return "service";
@@ -119,7 +141,7 @@ public class MailboxSOAPSimulator implements AutoCloseable {
     return "adminService";
   }
 
-  private String soapUrl() {
+  public String soapUrl() {
     if (SERVICE_TYPE.equals(type)) {
       return "/service/soap/";
     }

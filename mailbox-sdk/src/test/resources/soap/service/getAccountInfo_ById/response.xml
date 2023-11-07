@@ -7,12 +7,12 @@
     </soap:Header>
     <soap:Body>
         <GetAccountInfoResponse xmlns="urn:zimbraAccount">
-            <name>foo@test.domain.io</name>
-            <attr name="zimbraId">846a6715-d0c8-452c-885c-869f7892d3f0</attr>
-            <attr name="zimbraMailHost">server.test.domain.io</attr>
-            <attr name="displayName"/>
-            <soapURL>http://server.test.domain.io/service/soap/</soapURL>
-            <publicURL>http://server.test.domain.io</publicURL>
+            <name>%ACCOUNT_EMAIL%</name>
+            <attr name="zimbraId">%ACCOUNT_ID%</attr>
+            <attr name="zimbraMailHost">%ACCOUNT_DOMAIN%</attr>
+            <attr name="displayName">%ACCOUNT_NAME%</attr>
+            <soapURL>http://server.%ACCOUNT_DOMAIN%/service/soap/</soapURL>
+            <publicURL>http://server.%ACCOUNT_DOMAIN%</publicURL>
         </GetAccountInfoResponse>
     </soap:Body>
 </soap:Envelope>
