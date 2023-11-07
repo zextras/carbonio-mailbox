@@ -3,8 +3,8 @@ FROM carbonio/ce-single-rhel8:23.10.0
 USER root
 
 COPY artifacts/x86_64/*el8.x86_64.rpm /packages/
-RUN yum --help
-RUN yum install /packages/*.rpm -y --noautoremove
+
+RUN yum install /packages/*.rpm -y
 
 COPY docker/single-server/mailbox_health_check.sh /opt/zextras/
 COPY docker/single-server/prepare_data.sh /opt/zextras/

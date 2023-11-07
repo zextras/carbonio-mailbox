@@ -1,0 +1,14 @@
+pkgname="carbonio-common-appserver-db"
+pkgver="4.10.0"
+pkgrel="1"
+pkgdesc="Carbonio Core Mailbox DB Files"
+pkgdesclong="Transactional package - replaced by carbonio-appserver-db - will be removed in next Carbonio release 24.1.0"
+arch=('x86_64')
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="mail"
+priority="optional"
+
+package() {
+    cd "${srcdir}"
+}

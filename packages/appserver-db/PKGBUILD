@@ -11,9 +11,6 @@ priority="optional"
 depends=(
   "carbonio-core"
 )
-conflicts=(
-  "carbonio-common-appserver-db"
-)
 
 makedepends=(
   "rsync"
