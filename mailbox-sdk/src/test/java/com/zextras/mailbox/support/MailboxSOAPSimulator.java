@@ -102,9 +102,7 @@ public class MailboxSOAPSimulator implements AutoCloseable {
   }
 
   private void setUpWsdlResponse() throws IOException {
-    final var wsdl =
-        Files.readAllBytes(
-            Path.of("../", "soap/target/classes/com/zimbra/soap/ZimbraService.wsdl"));
+    final var wsdl = Files.readAllBytes(Path.of("schemas/ZimbraService.wsdl"));
 
     mailboxMockServer
         .when(
