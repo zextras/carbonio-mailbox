@@ -8,13 +8,9 @@ import com.zextras.mailbox.client.MailboxClient;
 import com.zextras.mailbox.client.admin.service.AdminServiceClient;
 import com.zextras.mailbox.client.service.ServiceClient;
 import io.swagger.models.HttpMethod;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.BinaryBody;
 import org.mockserver.model.HttpRequest;
@@ -55,19 +51,6 @@ public class MailboxSOAPSimulator implements AutoCloseable {
     return client.newAdminServiceClientBuilder().withServer(server).build();
   }
 
-  public void setupServerFor(String name) {
-    mailboxMockServer
-        .when(
-            HttpRequest.request()
-                .withMethod(HttpMethod.POST.toString())
-                .withPath(soapUrl())
-                .withBody(requestFor(name)))
-        .respond(
-            HttpResponse.response()
-                .withStatusCode(HttpStatusCode.OK_200.code())
-                .withBody(responseFor(name)));
-  }
-
   public void setupServerFor(String request, String response) {
     mailboxMockServer
         .when(
@@ -96,18 +79,6 @@ public class MailboxSOAPSimulator implements AutoCloseable {
     }
   }
 
-  private String requestFor(String name) {
-    return getXmlFile(fullPathFor(name, "request"));
-  }
-
-  private String responseFor(String name) {
-    return getXmlFile(fullPathFor(name, "response"));
-  }
-
-  private String fullPathFor(String name, String type) {
-    return String.format("soap/%s/%s/%s.xml", xmlFolder(), name, type);
-  }
-
   private void setUpWsdlResponse() throws IOException {
     final var wsdl = Files.readAllBytes(Path.of("schemas/ZimbraService.wsdl"));
 
@@ -117,21 +88,6 @@ public class MailboxSOAPSimulator implements AutoCloseable {
                 .withMethod(HttpMethod.GET.toString())
                 .withPath("/service/wsdl/ZimbraService.wsdl"))
         .respond(HttpResponse.response().withStatusCode(200).withBody(BinaryBody.binary(wsdl)));
-  }
-
-  private String getXmlFile(String path) {
-    try (InputStream resource = getClass().getClassLoader().getResourceAsStream(path)) {
-      if (Objects.isNull(resource))
-        throw new FileNotFoundException("Missing test resource: " + path);
-
-      return new String(resource.readAllBytes(), StandardCharsets.UTF_8)
-          // This replacement is necessary to remove the indentation and new lines
-          .replaceAll(">\\s+<", "><")
-          // This replacement is necessary to remove the end of file new line
-          .replaceAll("\n", "");
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   private String xmlFolder() {
