@@ -2,9 +2,27 @@ FROM carbonio/ce-single-rhel8:23.10.0
 
 USER root
 
+RUN printf '[centos-8-stream]\n\
+name=Centos 8 stream - $basearch\n\
+baseurl=https://www.rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/\n\
+enabled=1\n\
+gpgcheck=1\n\
+gpgkey=https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official' > /etc/yum.repos.d/centos8.repo
+
+RUN yum update -y
+RUN yum install createrepo -y
+
 COPY artifacts/x86_64/*el8.x86_64.rpm /packages/
 
-RUN yum install /packages/*.rpm -y
+RUN createrepo /packages
+
+RUN printf '[local-repo]\n\
+name=My Repository\n\
+baseurl=file:///packages/\n\
+enabled=1\n\
+gpgcheck=0' > /etc/yum.repos.d/local.repo
+
+RUN yum update -y
 
 COPY docker/single-server/mailbox_health_check.sh /opt/zextras/
 COPY docker/single-server/prepare_data.sh /opt/zextras/
