@@ -81,18 +81,6 @@ class DavServletTest {
             "organizer@" + DEFAULT_DOMAIN,
             "password",
             new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    provisioning.createAccount(
-        "attendee1@" + DEFAULT_DOMAIN,
-        "password",
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    provisioning.createAccount(
-        "attendee2@" + DEFAULT_DOMAIN,
-        "password",
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    provisioning.createAccount(
-        "attendee3@" + DEFAULT_DOMAIN,
-        "password",
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
   }
 
   @AfterAll
