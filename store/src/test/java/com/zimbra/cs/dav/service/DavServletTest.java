@@ -4,6 +4,7 @@
 
 package com.zimbra.cs.dav.service;
 
+import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
@@ -46,10 +47,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 @Tag("api")
 class DavServletTest {
@@ -80,20 +78,19 @@ class DavServletTest {
     server.start();
     organizer =
         provisioning.createAccount(
-            "organizer@" + MailboxTestUtil.DEFAULT_DOMAIN,
+            "organizer@" + DEFAULT_DOMAIN,
             "password",
             new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    organizer.addAlias("alias@" + MailboxTestUtil.DEFAULT_DOMAIN);
     provisioning.createAccount(
-        "attendee1@" + MailboxTestUtil.DEFAULT_DOMAIN,
+        "attendee1@" + DEFAULT_DOMAIN,
         "password",
         new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
     provisioning.createAccount(
-        "attendee2@" + MailboxTestUtil.DEFAULT_DOMAIN,
+        "attendee2@" + DEFAULT_DOMAIN,
         "password",
         new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
     provisioning.createAccount(
-        "attendee3@" + MailboxTestUtil.DEFAULT_DOMAIN,
+        "attendee3@" + DEFAULT_DOMAIN,
         "password",
         new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
   }
@@ -105,20 +102,27 @@ class DavServletTest {
     MailboxTestUtil.tearDown();
   }
 
+  @BeforeEach
+  void beforeEach() {
+    greenMail.reset();
+  }
+
   @Test
   void shouldNotSendNotificationWhenScheduleAgentClient() throws Exception {
-    Account organizer = provisioning.getAccount("alias@test.com");
+    Account organizer = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    organizer.addAlias("alias@" + DEFAULT_DOMAIN);
     Account attendee1 = MailboxTestUtil.createRandomAccountForDefaultDomain();
     Account attendee2 = MailboxTestUtil.createRandomAccountForDefaultDomain();
     Account attendee3 = MailboxTestUtil.createRandomAccountForDefaultDomain();
     final HttpPut request =
         new CreateAppointmentRequestBuilder(DAV_BASE_URL)
-            .organizer(organizer)
+            .organizer("alias@" + DEFAULT_DOMAIN)
             .scheduleAgent(ScheduleAgent.CLIENT)
             .addAttendee(attendee1)
             .addAttendee(attendee2)
             .addAttendee(attendee3)
             .build();
+
     HttpResponse response = createHttpClientWith(organizer).execute(request);
 
     assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
@@ -311,7 +315,7 @@ class DavServletTest {
 
 class CreateAppointmentRequestBuilder {
   private UUID uuid = UUID.randomUUID();
-  private Account organizer = MailboxTestUtil.createRandomAccountForDefaultDomain();
+  private String organizer = MailboxTestUtil.createRandomAccountForDefaultDomain().getName();
   private ScheduleAgent scheduleAgent;
   private List<Account> attendees = new ArrayList<>();
   private String start = "20231207T124500";
@@ -327,9 +331,13 @@ class CreateAppointmentRequestBuilder {
     return this;
   }
 
-  public CreateAppointmentRequestBuilder organizer(Account value) {
+  public CreateAppointmentRequestBuilder organizer(String value) {
     this.organizer = value;
     return this;
+  }
+
+  public CreateAppointmentRequestBuilder organizer(Account value) {
+    return this.organizer(value.getName());
   }
 
   public CreateAppointmentRequestBuilder timeslot(String start, String end) {
@@ -346,7 +354,7 @@ class CreateAppointmentRequestBuilder {
   }
 
   private String buildUrl() {
-    String name = URLEncoder.encode(organizer.getName(), StandardCharsets.UTF_8);
+    String name = URLEncoder.encode(organizer, StandardCharsets.UTF_8);
     return baseUrl + "/home/" + name + "/Calendar/" + uuid.toString() + ".ics";
   }
 
@@ -372,7 +380,7 @@ class CreateAppointmentRequestBuilder {
         + "\n"
         + "SUMMARY:Test\n"
         + "ORGANIZER:mailto:"
-        + organizer.getName()
+        + organizer
         + "\n"
         + buildAttendees()
         + "\n"
