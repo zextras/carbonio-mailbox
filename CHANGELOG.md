@@ -1,5 +1,7 @@
 
 
+## [4.10.1](https://github.com/Zextras/carbonio-mailbox/compare/4.10.0...4.10.1) (2023-11-09)
+
 # [4.10.0](https://github.com/Zextras/carbonio-mailbox/compare/4.9.1...4.10.0) (2023-10-20)
 
 
