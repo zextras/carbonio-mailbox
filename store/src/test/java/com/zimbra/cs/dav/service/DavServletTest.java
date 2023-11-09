@@ -4,6 +4,9 @@
 
 package com.zimbra.cs.dav.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.util.JettyServerFactory;
@@ -134,8 +137,8 @@ class DavServletTest {
     final Account organizer = provisioning.getAccount("alias@test.com");
     final HttpResponse response = createInviteWithDavRequest(organizer);
 
-    Assertions.assertEquals(HttpStatus.SC_CREATED, response.getStatusLine().getStatusCode());
-    Assertions.assertEquals(0, greenMail.getReceivedMessages().length);
+    assertEquals(HttpStatus.SC_CREATED, response.getStatusLine().getStatusCode());
+    assertEquals(0, greenMail.getReceivedMessages().length);
   }
 
   private HttpResponse createAppointmentWithCalDAV() throws Exception {
@@ -158,6 +161,18 @@ class DavServletTest {
                 this.getClass().getResourceAsStream("FreeBusyRequest_" + FREE_BUSY_UID + ".ics"))));
     request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
     request.setHeader(DavProtocol.HEADER_RECIPIENT, "mailto:" + attendee.getName());
+    request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + organizer.getName());
+    return client.execute(request);
+  }
+
+  private HttpResponse requestAttendeeFreeBusyWithoutRecipientHeader(String inputFilePath) throws Exception {
+    HttpClient client = createHttpClient();
+    HttpPost request = new HttpPost(getSentResourceUrl());
+    request.setEntity(
+        new InputStreamEntity(
+            Objects.requireNonNull(
+                this.getClass().getResourceAsStream(inputFilePath))));
+    request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
     request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + organizer.getName());
     return client.execute(request);
   }
@@ -221,13 +236,13 @@ class DavServletTest {
   @Test
   void shouldCreateAppointmentUsingCalDAV() throws Exception {
     final HttpResponse createResponse = createAppointmentWithCalDAV();
-    Assertions.assertEquals(HttpStatus.SC_CREATED, createResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_CREATED, createResponse.getStatusLine().getStatusCode());
     final HttpResponse appointmentWithCalDAV = getAppointmentWithCalDAV();
-    Assertions.assertEquals(
+    assertEquals(
         HttpStatus.SC_OK, appointmentWithCalDAV.getStatusLine().getStatusCode());
     final String createdAppointment =
         new String(getAppointmentWithCalDAV().getEntity().getContent().readAllBytes());
-    Assertions.assertTrue(createdAppointment.contains(CALENDAR_UID));
+    assertTrue(createdAppointment.contains(CALENDAR_UID));
   }
 
   /**
@@ -237,13 +252,13 @@ class DavServletTest {
    */
   @Test
   void shouldDeleteAppointmentUsingCalDAV() throws Exception {
-    Assertions.assertEquals(
+    assertEquals(
         HttpStatus.SC_CREATED, createAppointmentWithCalDAV().getStatusLine().getStatusCode());
-    Assertions.assertEquals(
+    assertEquals(
         HttpStatus.SC_OK, getAppointmentWithCalDAV().getStatusLine().getStatusCode());
-    Assertions.assertEquals(
+    assertEquals(
         HttpStatus.SC_NO_CONTENT, deleteAppointmentWithCalDAV().getStatusLine().getStatusCode());
-    Assertions.assertEquals(
+    assertEquals(
         HttpStatus.SC_NOT_FOUND, getAppointmentWithCalDAV().getStatusLine().getStatusCode());
   }
 
@@ -254,13 +269,32 @@ class DavServletTest {
    */
   @Test
   void shouldReturnUIDWhenRequestingFreeBusyOfAttendee() throws Exception {
-    Assertions.assertEquals(
+    assertEquals(
         HttpStatus.SC_CREATED, createAppointmentWithCalDAV().getStatusLine().getStatusCode());
     final HttpResponse response = requestAttendeeFreeBusy();
-    Assertions.assertEquals(
+    assertEquals(
         HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
     final String freeBusyResponse = new String(response.getEntity().getContent().readAllBytes());
     System.out.println(freeBusyResponse);
-    Assertions.assertTrue(freeBusyResponse.contains("UID:" + FREE_BUSY_UID));
+    assertTrue(freeBusyResponse.contains("UID:" + FREE_BUSY_UID));
+  }
+
+  /**
+   * Added for bug CO-860: FreeBusy status request without recipient http header fails to return FB status
+   *
+   * For example: Apple's iCalendar do not send Recipients header in the FreeBusy status request
+   * @throws Exception exception during making requests
+   */
+  @Test
+  void shouldReturnFreeBusyStatusWhenRequestMissesRecipientHeader() throws Exception {
+
+    HttpResponse freeBusyStatusResponse = requestAttendeeFreeBusyWithoutRecipientHeader(
+        "FreeBusyRequest_Apple_iCal.ics");
+
+    assertEquals(HttpStatus.SC_OK, freeBusyStatusResponse.getStatusLine().getStatusCode());
+
+    String freeBusyResponse = new String(freeBusyStatusResponse.getEntity().getContent().readAllBytes());
+
+    assertTrue(freeBusyResponse.contains("UID:" + FREE_BUSY_UID));
   }
 }
