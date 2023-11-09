@@ -19,10 +19,7 @@ import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import javax.mail.internet.MimeMessage;
 
 /**
@@ -95,13 +92,16 @@ public class MailboxTestUtil {
    * @return created account
    * @throws ServiceException
    */
-  public static Account createAccountDefaultDomain(Map<String, Object> extraAttrs)
-      throws ServiceException {
+  public static Account createAccountDefaultDomain(Map<String, Object> extraAttrs) throws ServiceException {
     final HashMap<String, Object> attrs =
         new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
     attrs.putAll(extraAttrs);
     return Provisioning.getInstance()
         .createAccount(UUID.randomUUID() + "@" + MailboxTestUtil.DEFAULT_DOMAIN, "password", attrs);
+  }
+
+  public static Account createAccountDefaultDomain() throws ServiceException {
+    return createAccountDefaultDomain(Collections.emptyMap());
   }
 
   /**

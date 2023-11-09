@@ -158,22 +158,24 @@ class DavServletTest {
 
     @Test
     void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
+        Account busyPerson = MailboxTestUtil.createAccountDefaultDomain();
         HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder()
-                .organizer(organizer)
-                .attendee(organizer)
+                .organizer(busyPerson)
+                .attendee(busyPerson)
                 .start("20231207T124500")
                 .end("20231207T144500")
                 .build();
-        HttpResponse createAppointmentResponse = createHttpClientWith(organizer).execute(createAppointmentRequest);
+        HttpResponse createAppointmentResponse = createHttpClientWith(busyPerson).execute(createAppointmentRequest);
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
 
+        Account calendarViewer = MailboxTestUtil.createAccountDefaultDomain();
         HttpPost freeBusyRequest = new FreeBusyRequestBuilder()
-                .originator(attendee)
-                .recipient(organizer)
+                .originator(calendarViewer)
+                .recipient(busyPerson)
                 .start("20231206T114500")
                 .end("20231208T154500")
                 .build();
-        HttpResponse freeBusyResponse = createHttpClientWith(attendee).execute(freeBusyRequest);
+        HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
 
         assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
         assertTrue(readContentFrom(freeBusyResponse).contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
@@ -299,7 +301,7 @@ class DavServletTest {
     }
 
     private String getSentResourceUrl(Account account) {
-        return getSentResourceUrl(account.toString());
+        return getSentResourceUrl(account.getName());
     }
 
     private String getSentResourceUrl(String account) {
@@ -331,10 +333,13 @@ class DavServletTest {
 
     class CreateAppointmentRequestBuilder {
         private UUID uuid = UUID.randomUUID();
-        private String organizer = "organizer@test.com";
-        private String attendee = "attendee@test.com";
+        private Account organizer = MailboxTestUtil.createAccountDefaultDomain();
+        private Account attendee = MailboxTestUtil.createAccountDefaultDomain();
         private String start = "20231207T124500";
         private String end = "20231207T144500";
+
+        CreateAppointmentRequestBuilder() throws ServiceException {
+        }
 
         public CreateAppointmentRequestBuilder uuid(UUID uuid) {
             this.uuid = uuid;
@@ -342,12 +347,12 @@ class DavServletTest {
         }
 
         public CreateAppointmentRequestBuilder organizer(Account value) {
-            this.organizer = value.getName();
+            this.organizer = value;
             return this;
         }
 
         public CreateAppointmentRequestBuilder attendee(Account value) {
-            this.attendee = value.getName();
+            this.attendee = value;
             return this;
         }
 
@@ -387,8 +392,8 @@ class DavServletTest {
                     "DTSTAMP:20230918T130107Z\n" +
                     "UID:" + uuid.toString() + "\n" +
                     "SUMMARY:Test\n" +
-                    "ORGANIZER:mailto:" + organizer + "\n" +
-                    "ATTENDEE:mailto:" + attendee + "\n" +
+                    "ORGANIZER:mailto:" + organizer.getName() + "\n" +
+                    "ATTENDEE:mailto:" + attendee.getName() + "\n" +
                     "DTSTART:" + start + "\n" +
                     "DTEND:" + end + "\n" +
                     "TRANSP:OPAQUE\n" +
@@ -400,10 +405,13 @@ class DavServletTest {
 
     class FreeBusyRequestBuilder {
         private UUID uuid = UUID.randomUUID();
-        private String originator = "organizer@test.com";
-        private String recipient = "attendee@test.com";
+        private Account originator = MailboxTestUtil.createAccountDefaultDomain();
+        private Account recipient = MailboxTestUtil.createAccountDefaultDomain();
         private String start = "20231206T114500";
         private String end = "20231208T154500";
+
+        FreeBusyRequestBuilder() throws ServiceException {
+        }
 
         public FreeBusyRequestBuilder uuid(UUID uuid) {
             this.uuid = uuid;
@@ -411,12 +419,12 @@ class DavServletTest {
         }
 
         public FreeBusyRequestBuilder originator(Account value) {
-            this.originator = value.getName();
+            this.originator = value;
             return this;
         }
 
         public FreeBusyRequestBuilder recipient(Account value) {
-            this.recipient = value.getName();
+            this.recipient = value;
             return this;
         }
 
@@ -434,8 +442,8 @@ class DavServletTest {
             HttpPost request = new HttpPost(getSentResourceUrl(originator));
             request.setEntity(new StringEntity(buildBody()));
             request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-            request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + originator);
-            request.setHeader(DavProtocol.HEADER_RECIPIENT, "mailto:" + recipient);
+            request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + originator.getName());
+            request.setHeader(DavProtocol.HEADER_RECIPIENT, "mailto:" + recipient.getName());
             return request;
         }
 
@@ -450,8 +458,8 @@ class DavServletTest {
                     "DTSTAMP:20231107T113758Z\n" +
                     "DTSTART:" + start + "\n" +
                     "DTEND:" + end + "\n" +
-                    "ORGANIZER:mailto:" + originator +"\n" +
-                    "ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;CUTYPE=INDIVIDUAL:mailto:" + recipient + "\n" +
+                    "ORGANIZER:mailto:" + originator.getName() +"\n" +
+                    "ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;CUTYPE=INDIVIDUAL:mailto:" + recipient.getName() + "\n" +
                     "END:VFREEBUSY\n" +
                     "END:VCALENDAR";
         }
