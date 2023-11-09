@@ -54,13 +54,11 @@ class DavServletTest {
 
     private static Provisioning provisioning;
     private static Account organizer;
-    private static Account attendee;
     private static Server server;
     private static final int PORT = 8090;
     private static final String DAV_BASE_PATH = "/dav";
     private static final String DAV_BASE_URL = "http://localhost:" + PORT + DAV_BASE_PATH;
     private static final String CALENDAR_UID = "95a5527e-df0a-4df2-b64a-7eee8e647efe";
-    private static final String FREE_BUSY_UID = "bb7bc421-bdde-4da6-987b-b17c5d343307";
     private static GreenMail greenMail;
 
     @BeforeAll
@@ -83,7 +81,6 @@ class DavServletTest {
                         "organizer@" + MailboxTestUtil.DEFAULT_DOMAIN,
                         "password",
                         new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-        attendee = provisioning.createAccount("attendee@test.com", "password", new HashMap<>());
         organizer.addAlias("alias@" + MailboxTestUtil.DEFAULT_DOMAIN);
         provisioning.createAccount(
                 "attendee1@" + MailboxTestUtil.DEFAULT_DOMAIN,
@@ -149,21 +146,6 @@ class DavServletTest {
      * @throws Exception
      */
     @Test
-    void shouldReturnUIDWhenRequestingFreeBusyOfAttendee() throws Exception {
-        Account aPerson = MailboxTestUtil.createRandomAccountForDefaultDomain();
-        UUID calendarId = UUID.randomUUID();
-        HttpPost freeBusyRequest = new FreeBusyRequestBuilder(DAV_BASE_URL)
-                .uuid(calendarId)
-                .originator(aPerson)
-                .build();
-
-        HttpResponse response = createHttpClientWith(aPerson).execute(freeBusyRequest);
-
-        assertEquals(HttpStatus.SC_OK, statusCodeFrom(response));
-        assertTrue(readContentFrom(response).contains("UID:" + calendarId));
-    }
-
-    @Test
     void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
         Account busyPerson = MailboxTestUtil.createRandomAccountForDefaultDomain();
         HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
@@ -174,9 +156,11 @@ class DavServletTest {
         HttpResponse createAppointmentResponse = createHttpClientWith(busyPerson).execute(createAppointmentRequest);
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
 
+        UUID calendarId = UUID.randomUUID();
         Account calendarViewer = MailboxTestUtil.createRandomAccountForDefaultDomain();
         HttpPost freeBusyRequest = new FreeBusyRequestBuilder(DAV_BASE_URL)
                 .asThunderbird()
+                .uuid(calendarId)
                 .originator(calendarViewer)
                 .recipient(busyPerson)
                 .timeslot("20231206T114500", "20231208T154500")
@@ -184,9 +168,18 @@ class DavServletTest {
         HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
 
         assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
-        assertTrue(readContentFrom(freeBusyResponse).contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
+        String content = readContentFrom(freeBusyResponse);
+        assertTrue(content.contains("UID:" + calendarId));
+        assertTrue(content.contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
     }
 
+    /**
+     * Added for bug CO-860: FreeBusy status request without recipient and originator http headers fails to return FB status
+     * <p>
+     * For example: Apple's iCalendar do not send Recipients header in the FreeBusy status request
+     *
+     * @throws Exception exception during making requests
+     */
     @Test
     void createAnAppointmentAndFindThatSlotAsBusyStatusUsingICalendar() throws Exception {
         Account busyPerson = MailboxTestUtil.createRandomAccountForDefaultDomain();
@@ -209,26 +202,6 @@ class DavServletTest {
 
         assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
         assertTrue(readContentFrom(freeBusyResponse).contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
-    }
-
-    /**
-     * Added for bug CO-860: FreeBusy status request without recipient http header fails to return FB status
-     * <p>
-     * For example: Apple's iCalendar do not send Recipients header in the FreeBusy status request
-     *
-     * @throws Exception exception during making requests
-     */
-    @Test
-    void shouldProperlyHandleFreeBusyRequestWithoutRecipientHeader() throws Exception {
-        HttpResponse response = requestAttendeeFreeBusyWithoutRecipientHeader("FreeBusyRequest_Apple_iCal.ics");
-
-        assertEquals(HttpStatus.SC_OK, statusCodeFrom(response));
-        String responseContent = readContentFrom(response);
-        assertTrue(responseContent.contains("UID:" + FREE_BUSY_UID));
-        assertTrue(responseContent.contains("ORGANIZER:mailto:organizer@test.com"));
-        assertTrue(responseContent.contains("ATTENDEE:mailto:attendee@test.com"));
-        assertTrue(responseContent.contains("DTSTART:20231011T220000Z"));
-        assertTrue(responseContent.contains("DTEND:20231012T215959Z"));
     }
 
     private HttpResponse createInviteWithDavRequest(Account organizer)
@@ -268,18 +241,6 @@ class DavServletTest {
         return client.execute(request);
     }
 
-    private HttpResponse requestAttendeeFreeBusyWithoutRecipientHeader(String resourceFileName) throws Exception {
-        HttpClient client = createHttpClientWith(organizer);
-        HttpPost request = new HttpPost(getSentResourceUrl(organizer));
-        request.setEntity(
-                new InputStreamEntity(
-                        Objects.requireNonNull(
-                                this.getClass().getResourceAsStream(resourceFileName))));
-        request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-        request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + organizer.getName());
-        return client.execute(request);
-    }
-
     private HttpResponse deleteAppointmentWithCalDAV() throws Exception {
         HttpClient client = createHttpClientWith(organizer);
         HttpDelete request = new HttpDelete(getCalDavResourceUrl(organizer, DavServletTest.CALENDAR_UID));
@@ -311,15 +272,6 @@ class DavServletTest {
                 + "/Calendar/"
                 + calendarUUID
                 + ".ics";
-    }
-
-    private String getSentResourceUrl(Account account) {
-        return "http://localhost:"
-                + PORT
-                + DAV_BASE_PATH
-                + "/home/"
-                + URLEncoder.encode(account.getName(), StandardCharsets.UTF_8)
-                + "/Sent";
     }
 
     private HttpClient createHttpClientWith(Account account) throws Exception {
