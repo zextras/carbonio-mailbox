@@ -107,7 +107,6 @@ class DavServletTest {
     }
 
     @Test
-    @Disabled("FIXME: it should not depend on other tests run")
     void shouldNotSendNotificationWhenScheduleAgentClient() throws IOException, ServiceException, AuthTokenException {
         Account organizer = provisioning.getAccount("alias@test.com");
         HttpResponse response = createInviteWithDavRequest(organizer);
@@ -184,7 +183,6 @@ class DavServletTest {
     }
 
     @Test
-    @Disabled("FIXME: we should handle the originator missing header")
     void createAnAppointmentAndFindThatSlotAsBusyStatusUsingICalendar() throws Exception {
         Account busyPerson = MailboxTestUtil.createRandomAccountForDefaultDomain();
         HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder()

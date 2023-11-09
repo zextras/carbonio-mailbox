@@ -224,6 +224,10 @@ public class ScheduleOutbox extends CalendarCollection {
                 .ifPresent(rcptArray::add);
         }
 
+        if (delegationInfo.getOriginator() == null) {
+            delegationInfo.setOriginator(organizer);
+        }
+
         Element scheduleResponse = ctxt.getDavResponse().getTop(DavElements.E_SCHEDULE_RESPONSE);
         for (String rcpt : rcptArray) {
             ZimbraLog.dav.debug("recipient email: "+rcpt);
