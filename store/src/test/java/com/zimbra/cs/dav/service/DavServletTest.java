@@ -158,7 +158,7 @@ class DavServletTest {
 
     @Test
     void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
-        Account busyPerson = MailboxTestUtil.createAccountDefaultDomain();
+        Account busyPerson = MailboxTestUtil.createRandomAccountForDefaultDomain();
         HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder()
                 .organizer(busyPerson)
                 .attendee(busyPerson)
@@ -168,7 +168,7 @@ class DavServletTest {
         HttpResponse createAppointmentResponse = createHttpClientWith(busyPerson).execute(createAppointmentRequest);
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
 
-        Account calendarViewer = MailboxTestUtil.createAccountDefaultDomain();
+        Account calendarViewer = MailboxTestUtil.createRandomAccountForDefaultDomain();
         HttpPost freeBusyRequest = new FreeBusyRequestBuilder()
                 .originator(calendarViewer)
                 .recipient(busyPerson)
@@ -333,8 +333,8 @@ class DavServletTest {
 
     class CreateAppointmentRequestBuilder {
         private UUID uuid = UUID.randomUUID();
-        private Account organizer = MailboxTestUtil.createAccountDefaultDomain();
-        private Account attendee = MailboxTestUtil.createAccountDefaultDomain();
+        private Account organizer = MailboxTestUtil.createRandomAccountForDefaultDomain();
+        private Account attendee = MailboxTestUtil.createRandomAccountForDefaultDomain();
         private String start = "20231207T124500";
         private String end = "20231207T144500";
 
@@ -405,8 +405,8 @@ class DavServletTest {
 
     class FreeBusyRequestBuilder {
         private UUID uuid = UUID.randomUUID();
-        private Account originator = MailboxTestUtil.createAccountDefaultDomain();
-        private Account recipient = MailboxTestUtil.createAccountDefaultDomain();
+        private Account originator = MailboxTestUtil.createRandomAccountForDefaultDomain();
+        private Account recipient = MailboxTestUtil.createRandomAccountForDefaultDomain();
         private String start = "20231206T114500";
         private String end = "20231208T154500";
 

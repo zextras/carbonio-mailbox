@@ -35,9 +35,9 @@ class AclServiceTest {
   void setUp() throws Exception {
     MailboxTestUtil.setUp();
     mailboxManager = MailboxManager.getInstance();
-    target = MailboxTestUtil.createAccountDefaultDomain(Map.of());
+    target = MailboxTestUtil.createRandomAccountForDefaultDomain();
     provisioning = Provisioning.getInstance();
-    final Account grantee = MailboxTestUtil.createAccountDefaultDomain(Map.of());
+    final Account grantee = MailboxTestUtil.createRandomAccountForDefaultDomain();
     final Mailbox granterMailbox = mailboxManager.getMailboxByAccount(target);
     final Folder inboxId = granterMailbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
 
