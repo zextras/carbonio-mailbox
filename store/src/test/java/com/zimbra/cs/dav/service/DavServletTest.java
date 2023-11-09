@@ -66,7 +66,7 @@ class DavServletTest {
                 new GreenMail(
                         new ServerSetup[]{
                                 new ServerSetup(
-                                        SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
+                                        SmtpConfig.DEFAULT_PORT, "localhost", ServerSetup.PROTOCOL_SMTP)
                         });
         greenMail.start();
         provisioning = Provisioning.getInstance();
