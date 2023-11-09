@@ -1,14 +1,17 @@
 services:
   build:
     build:
-      dockerfile: Dockerfile-build
+      context: ./../../
+      dockerfile: ./docker/jetty-run/Dockerfile-build
     profiles: [ "do-not-start" ]
     volumes:
-      - "./:/app"
+      - "./../../:/app"
       - "~/.m2:/root/.m2"
 
   app:
-    build: .
+    build:
+      context: ./../../
+      dockerfile: ./docker/jetty-run/Dockerfile
     depends_on:
       ldap:
         condition: service_healthy
@@ -20,7 +23,7 @@ services:
       - "7071:7071"
       - "5005:5005"
     volumes:
-      - "./:/app"
+      - "./../../:/app"
       - "~/.m2:/root/.m2"
 
   ldap:
@@ -32,7 +35,7 @@ services:
     ports:
       - "389:389"
     volumes:
-      - "./store/build/ldap:/opt/zextras/common/etc/openldap/zimbra"
+      - "./../../store/build/ldap:/opt/zextras/common/etc/openldap/zimbra"
       - "./entrypoint-ldap.sh:/entrypoint-ldap.sh"
     entrypoint: ["/entrypoint-ldap.sh"]
 
@@ -46,6 +49,6 @@ services:
       MARIADB_PASSWORD: zextras
       MARIADB_ROOT_PASSWORD: zimbra
     volumes:
-      - "./store/utils/docker/carbonio-db/scripts:/docker-entrypoint-initdb.d"
+      - "../../store/utils/docker/carbonio-db/scripts:/docker-entrypoint-initdb.d"
     ports:
       - "3306:3306"

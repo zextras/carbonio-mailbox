@@ -662,7 +662,7 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
         <configuration>
-          <jettyXml>../jetty.xml</jettyXml>
+          <jettyXml>jetty.xml</jettyXml>
           <scanIntervalSeconds>30</scanIntervalSeconds>
           <dumpOnStart>true</dumpOnStart>
           <webApp>

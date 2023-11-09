@@ -10,4 +10,4 @@ RUN keytool -genkey \
 
 ENV MAVEN_OPTS="-Xdebug -agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n"
 
-CMD ["mvn", "jetty:run", "-Dmaven.compile.skip=true", "-Dmaven.test.skip=true", "-Dmaven.main.skip=true", "-Dmaven.antrun.skip=true", "-Dzimbra.config=../docker-jetty-localconfig.xml"]
+CMD ["mvn", "jetty:run", "-Dmaven.compile.skip=true", "-Dmaven.test.skip=true", "-Dmaven.main.skip=true", "-Dmaven.antrun.skip=true", "-Dzimbra.config=./../docker/jetty-run/docker-jetty-localconfig.xml"]
