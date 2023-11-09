@@ -151,11 +151,12 @@ class DavServletTest {
     @Test
     void shouldReturnUIDWhenRequestingFreeBusyOfAttendee() throws Exception {
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentWithCalDAV()));
-        final HttpResponse response = requestAttendeeFreeBusy();
+
+        HttpResponse response = requestAttendeeFreeBusy();
+
         assertEquals(HttpStatus.SC_OK, statusCodeFrom(response));
-        final String freeBusyResponse = readContentFrom(response);
-        System.out.println(freeBusyResponse);
-        assertTrue(freeBusyResponse.contains("UID:" + FREE_BUSY_UID));
+        assertTrue(readContentFrom(response).contains("UID:" + FREE_BUSY_UID));
+        // TODO: check free busy appointment
     }
 
     /**
@@ -171,6 +172,7 @@ class DavServletTest {
 
         assertEquals(HttpStatus.SC_OK, statusCodeFrom(response));
         assertTrue(readContentFrom(response).contains("UID:" + FREE_BUSY_UID));
+        // TODO: check ERROR zimbra.fb - can't find free/busy provider for user davide@demo.zextras.io
     }
 
     private HttpResponse createInviteWithDavRequest(Account organizer)
