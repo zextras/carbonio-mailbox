@@ -14,7 +14,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.dav.CalDavCreateAppointmentRequestBuilder;
 import com.zimbra.cs.dav.CalDavFreeBusyRequestBuilder;
-import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.service.AuthProvider;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -110,11 +109,6 @@ class DavServletTest {
     assertEquals(3, greenMail.getReceivedMessages().length);
   }
 
-  /**
-   * Added for bug CO-839 (create appointment with CalDAV)
-   *
-   * @throws Exception
-   */
   @Test
   void shouldCreateAppointment() throws Exception {
     Account organizer = createRandomAccountForDefaultDomain();
@@ -141,11 +135,6 @@ class DavServletTest {
     assertTrue(readContentFrom(getAppointmentResponse).contains("UID:" + calendarUUID));
   }
 
-  /**
-   * Added for bug CO-840 (delete appointment with CalDAV)
-   *
-   * @throws Exception
-   */
   @Test
   void shouldDeleteAppointment() throws Exception {
     Account organizer = createRandomAccountForDefaultDomain();
@@ -158,11 +147,6 @@ class DavServletTest {
     assertEquals(HttpStatus.SC_NOT_FOUND, statusCodeFrom(getAppointment(organizer, calendarUUID)));
   }
 
-  /**
-   * Added for bug CO-823: request freebusy of addAttendee
-   *
-   * @throws Exception
-   */
   @Test
   void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
     Account busyPerson = createRandomAccountForDefaultDomain();
