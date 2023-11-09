@@ -150,10 +150,17 @@ class DavServletTest {
      */
     @Test
     void shouldReturnUIDWhenRequestingFreeBusyOfAttendee() throws Exception {
-        HttpResponse response = requestAttendeeFreeBusy("FreeBusyRequest_" + FREE_BUSY_UID + ".ics");
+        Account aPerson = MailboxTestUtil.createRandomAccountForDefaultDomain();
+        UUID calendarId = UUID.randomUUID();
+        HttpPost freeBusyRequest = new FreeBusyRequestBuilder(DAV_BASE_URL)
+                .uuid(calendarId)
+                .originator(aPerson)
+                .build();
+
+        HttpResponse response = createHttpClientWith(aPerson).execute(freeBusyRequest);
 
         assertEquals(HttpStatus.SC_OK, statusCodeFrom(response));
-        assertTrue(readContentFrom(response).contains("UID:" + FREE_BUSY_UID));
+        assertTrue(readContentFrom(response).contains("UID:" + calendarId));
     }
 
     @Test
@@ -258,19 +265,6 @@ class DavServletTest {
                         Objects.requireNonNull(
                                 this.getClass().getResourceAsStream(resourceFileName))));
         request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-        return client.execute(request);
-    }
-
-    private HttpResponse requestAttendeeFreeBusy(String resourceFileName) throws Exception {
-        HttpClient client = createHttpClientWith(organizer);
-        HttpPost request = new HttpPost(getSentResourceUrl(organizer));
-        request.setEntity(
-                new InputStreamEntity(
-                        Objects.requireNonNull(
-                                this.getClass().getResourceAsStream(resourceFileName))));
-        request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-        request.setHeader(DavProtocol.HEADER_RECIPIENT, "mailto:" + attendee.getName());
-        request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + organizer.getName());
         return client.execute(request);
     }
 
