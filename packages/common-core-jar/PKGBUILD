@@ -1,5 +1,5 @@
 pkgname="carbonio-common-core-jar"
-pkgver="4.10.0"
+pkgver="4.10.1"
 pkgrel="1"
 pkgdesc="Carbonio Core Jars"
 arch=('x86_64')
