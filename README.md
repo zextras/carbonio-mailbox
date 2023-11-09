@@ -49,4 +49,4 @@ All contributions are accepted! Please refer to the CONTRIBUTING file (if presen
 
 ## License
 
-See [COPYING](COPYING) file for details
+See [COPYING](COPYING-AGPL-3.0-only) file for details
