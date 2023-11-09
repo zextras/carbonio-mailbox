@@ -1,5 +1,5 @@
-From: rcpt@zimbra.com
-To: <test@zimbra.com>
+From: rcpt@test.com
+To: <test@test.com>
 Subject: Accepted: from ajax 1
 Date: Tue, 24 Apr 2012 15:38:01 -0700 (PDT)
 Message-ID: <0bec6dce.0000097c.00000018@PC7632>
@@ -65,7 +65,7 @@ TZOFFSETTO:-0700
 END:DAYLIGHT
 END:VTIMEZONE
 BEGIN:VEVENT
-ATTENDEE;PARTSTAT=ACCEPTED:mailto:rcpt@zimbra.com
+ATTENDEE;PARTSTAT=ACCEPTED:mailto:rcpt@test.com
 CLASS:PUBLIC
 COMMENT:\n
 CREATED:20120424T224611Z

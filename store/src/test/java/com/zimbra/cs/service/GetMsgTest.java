@@ -117,7 +117,7 @@ public class GetMsgTest {
             "rcpt@" + MailboxTestUtil.DEFAULT_DOMAIN,
             "password",
             Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    testAccount = MailboxTestUtil.createAccountDefaultDomain(Maps.newHashMap());
+    testAccount = MailboxTestUtil.createRandomAccountForDefaultDomain();
     mta.start();
   }
 

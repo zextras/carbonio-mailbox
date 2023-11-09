@@ -1,10 +1,18 @@
 pkgname="carbonio-appserver-war"
-pkgver="4.9.1"
+pkgver="4.10.1"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Service War"
 arch=('x86_64')
 maintainer="Zextras <packages@zextras.com>"
-url="https://zextras.com"
+copyright=(
+  "2022, Zextras <https://www.zextras.com>"
+  "2022, Synacor, Inc."
+)
+license=(
+  "AGPL-3.0-only"
+  "GPL-2.0-only"
+)
+url="https://github.com/zextras"
 makedepends=(
   "unzip"
 )

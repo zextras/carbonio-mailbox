@@ -403,11 +403,6 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
-        <artifactId>carbonio-mailbox-sdk</artifactId>
-        <version>${revision}</version>
-      </dependency>
-      <dependency>
-        <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
         <version>${revision}</version>
         <classifier>classes</classifier>
@@ -853,7 +848,6 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
-    <module>mailbox-sdk</module>
     <module>carbonio-jetty-libs</module>
     <module>store-extra-runtime-dependencies</module>
   </modules>
@@ -882,8 +876,7 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <modifier>-SNAPSHOT</modifier>
-    <revision>23.11.0${modifier}</revision>
+    <revision>23.11.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
   </properties>
   <version>${revision}</version>

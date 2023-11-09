@@ -68,6 +68,14 @@ public class Service implements java.io.Serializable {
     }
 
     public Command addCommand(Command cmd) {
+        if (cmd == null) {
+            return null;
+        }
+
+        if (DocExcludedServices.isExclude(cmd.getName())) {
+            return cmd;
+        }
+
         this.commands.add(cmd);
         return cmd;
     }
