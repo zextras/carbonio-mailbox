@@ -169,12 +169,11 @@ class DavServletTest {
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
 
         Account calendarViewer = MailboxTestUtil.createRandomAccountForDefaultDomain();
-        HttpPost freeBusyRequest = new FreeBusyRequestBuilder().baseUrl(DAV_BASE_URL)
+        HttpPost freeBusyRequest = new FreeBusyRequestBuilder(DAV_BASE_URL)
                 .asThunderbird()
                 .originator(calendarViewer)
                 .recipient(busyPerson)
-                .start("20231206T114500")
-                .end("20231208T154500")
+                .timeslot("20231206T114500", "20231208T154500")
                 .build();
         HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
 
@@ -195,12 +194,11 @@ class DavServletTest {
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
 
         Account calendarViewer = MailboxTestUtil.createRandomAccountForDefaultDomain();
-        HttpPost freeBusyRequest = new FreeBusyRequestBuilder().baseUrl(DAV_BASE_URL)
+        HttpPost freeBusyRequest = new FreeBusyRequestBuilder(DAV_BASE_URL)
                 .asICalendar()
                 .originator(calendarViewer)
                 .recipient(busyPerson)
-                .start("20231206T114500")
-                .end("20231208T154500")
+                .timeslot("20231206T114500", "20231208T154500")
                 .build();
         HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
 
@@ -430,14 +428,10 @@ class FreeBusyRequestBuilder {
     private String start = "20231206T114500";
     private String end = "20231208T154500";
     private Mode mode = Mode.THUNDERBIRD;
-    private String davBaseUrl = "http://localhost:8090/dav";
+    private final String davBaseUrl;
 
-    FreeBusyRequestBuilder() throws ServiceException {
-    }
-
-    public FreeBusyRequestBuilder baseUrl(String value) {
-        this.davBaseUrl = value;
-        return this;
+    FreeBusyRequestBuilder(String baseUrl) throws ServiceException {
+        this.davBaseUrl = baseUrl;
     }
 
     public FreeBusyRequestBuilder uuid(UUID uuid) {
@@ -455,13 +449,9 @@ class FreeBusyRequestBuilder {
         return this;
     }
 
-    public FreeBusyRequestBuilder start(String value) {
-        this.start = value;
-        return this;
-    }
-
-    public FreeBusyRequestBuilder end(String value) {
-        this.end = value;
+    public FreeBusyRequestBuilder timeslot(String start, String end) {
+        this.start = start;
+        this.end = end;
         return this;
     }
 
