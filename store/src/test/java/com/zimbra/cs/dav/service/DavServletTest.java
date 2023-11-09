@@ -57,9 +57,10 @@ class DavServletTest {
     private static Account attendee;
     private static Server server;
     private static final int PORT = 8090;
+    private static final String DAV_BASE_PATH = "/dav";
+    private static final String DAV_BASE_URL = "http://localhost:" + PORT + DAV_BASE_PATH;
     private static final String CALENDAR_UID = "95a5527e-df0a-4df2-b64a-7eee8e647efe";
     private static final String FREE_BUSY_UID = "bb7bc421-bdde-4da6-987b-b17c5d343307";
-    private static final String DAV_BASE_PATH = "/dav";
     private static GreenMail greenMail;
 
     @BeforeAll
@@ -169,7 +170,35 @@ class DavServletTest {
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
 
         Account calendarViewer = MailboxTestUtil.createRandomAccountForDefaultDomain();
-        HttpPost freeBusyRequest = new FreeBusyRequestBuilder()
+        HttpPost freeBusyRequest = new FreeBusyRequestBuilder().baseUrl(DAV_BASE_URL)
+                .asThunderbird()
+                .originator(calendarViewer)
+                .recipient(busyPerson)
+                .start("20231206T114500")
+                .end("20231208T154500")
+                .build();
+        HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
+
+        assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
+        assertTrue(readContentFrom(freeBusyResponse).contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
+    }
+
+    @Test
+    @Disabled("FIXME: we should handle the originator missing header")
+    void createAnAppointmentAndFindThatSlotAsBusyStatusUsingICalendar() throws Exception {
+        Account busyPerson = MailboxTestUtil.createRandomAccountForDefaultDomain();
+        HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder()
+                .organizer(busyPerson)
+                .attendee(busyPerson)
+                .start("20231207T124500")
+                .end("20231207T144500")
+                .build();
+        HttpResponse createAppointmentResponse = createHttpClientWith(busyPerson).execute(createAppointmentRequest);
+        assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
+
+        Account calendarViewer = MailboxTestUtil.createRandomAccountForDefaultDomain();
+        HttpPost freeBusyRequest = new FreeBusyRequestBuilder().baseUrl(DAV_BASE_URL)
+                .asICalendar()
                 .originator(calendarViewer)
                 .recipient(busyPerson)
                 .start("20231206T114500")
@@ -286,30 +315,22 @@ class DavServletTest {
      * @return url endpoint to make the request
      */
     private String getCalDavResourceUrl(Account account, String calendarUUID) {
-        return getCalDavResourceUrl(account.getName(), calendarUUID);
-    }
-
-    private String getCalDavResourceUrl(String account, String calendarUUID) {
         return "http://localhost:"
                 + PORT
                 + DAV_BASE_PATH
                 + "/home/"
-                + URLEncoder.encode(account, StandardCharsets.UTF_8)
+                + URLEncoder.encode(account.getName(), StandardCharsets.UTF_8)
                 + "/Calendar/"
                 + calendarUUID
                 + ".ics";
     }
 
     private String getSentResourceUrl(Account account) {
-        return getSentResourceUrl(account.getName());
-    }
-
-    private String getSentResourceUrl(String account) {
         return "http://localhost:"
                 + PORT
                 + DAV_BASE_PATH
                 + "/home/"
-                + URLEncoder.encode(account, StandardCharsets.UTF_8)
+                + URLEncoder.encode(account.getName(), StandardCharsets.UTF_8)
                 + "/Sent";
     }
 
@@ -402,66 +423,97 @@ class DavServletTest {
                     "END:VCALENDAR";
         }
     }
+}
 
-    class FreeBusyRequestBuilder {
-        private UUID uuid = UUID.randomUUID();
-        private Account originator = MailboxTestUtil.createRandomAccountForDefaultDomain();
-        private Account recipient = MailboxTestUtil.createRandomAccountForDefaultDomain();
-        private String start = "20231206T114500";
-        private String end = "20231208T154500";
+class FreeBusyRequestBuilder {
+    private UUID uuid = UUID.randomUUID();
+    private Account originator = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    private Account recipient = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    private String start = "20231206T114500";
+    private String end = "20231208T154500";
+    private Mode mode = Mode.THUNDERBIRD;
+    private String davBaseUrl = "http://localhost:8090/dav";
 
-        FreeBusyRequestBuilder() throws ServiceException {
-        }
+    FreeBusyRequestBuilder() throws ServiceException {
+    }
 
-        public FreeBusyRequestBuilder uuid(UUID uuid) {
-            this.uuid = uuid;
-            return this;
-        }
+    public FreeBusyRequestBuilder baseUrl(String value) {
+        this.davBaseUrl = value;
+        return this;
+    }
 
-        public FreeBusyRequestBuilder originator(Account value) {
-            this.originator = value;
-            return this;
-        }
+    public FreeBusyRequestBuilder uuid(UUID uuid) {
+        this.uuid = uuid;
+        return this;
+    }
 
-        public FreeBusyRequestBuilder recipient(Account value) {
-            this.recipient = value;
-            return this;
-        }
+    public FreeBusyRequestBuilder originator(Account value) {
+        this.originator = value;
+        return this;
+    }
 
-        public FreeBusyRequestBuilder start(String value) {
-            this.start = value;
-            return this;
-        }
+    public FreeBusyRequestBuilder recipient(Account value) {
+        this.recipient = value;
+        return this;
+    }
 
-        public FreeBusyRequestBuilder end(String value) {
-            this.end = value;
-            return this;
-        }
+    public FreeBusyRequestBuilder start(String value) {
+        this.start = value;
+        return this;
+    }
 
-        public HttpPost build() throws UnsupportedEncodingException {
-            HttpPost request = new HttpPost(getSentResourceUrl(originator));
-            request.setEntity(new StringEntity(buildBody()));
-            request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
+    public FreeBusyRequestBuilder end(String value) {
+        this.end = value;
+        return this;
+    }
+
+    public FreeBusyRequestBuilder asThunderbird() {
+        this.mode = Mode.THUNDERBIRD;
+        return this;
+    }
+
+    public FreeBusyRequestBuilder asICalendar() {
+        this.mode = Mode.ICALENDAR;
+        return this;
+    }
+
+    public HttpPost build() throws UnsupportedEncodingException {
+        HttpPost request = new HttpPost(getSentResourceUrl(originator));
+        request.setEntity(new StringEntity(buildBody()));
+        request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
+
+        if (mode == Mode.THUNDERBIRD) {
             request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + originator.getName());
             request.setHeader(DavProtocol.HEADER_RECIPIENT, "mailto:" + recipient.getName());
-            return request;
         }
 
-        private String buildBody() {
-            return "BEGIN:VCALENDAR\n" +
-                    "PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN\n" +
-                    "VERSION:2.0\n" +
-                    "METHOD:REQUEST\n" +
-                    "BEGIN:VFREEBUSY\n" +
-                    "TZID:Europe/Rome\n" +
-                    "UID:" + uuid + "\n" +
-                    "DTSTAMP:20231107T113758Z\n" +
-                    "DTSTART:" + start + "\n" +
-                    "DTEND:" + end + "\n" +
-                    "ORGANIZER:mailto:" + originator.getName() +"\n" +
-                    "ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;CUTYPE=INDIVIDUAL:mailto:" + recipient.getName() + "\n" +
-                    "END:VFREEBUSY\n" +
-                    "END:VCALENDAR";
-        }
+        return request;
+    }
+
+    private String getSentResourceUrl(Account account) {
+        return davBaseUrl + "/home/" + URLEncoder.encode(account.getName(), StandardCharsets.UTF_8) + "/Sent";
+    }
+
+    private String buildBody() {
+        return "BEGIN:VCALENDAR\n" +
+                "PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN\n" +
+                "VERSION:2.0\n" +
+                "METHOD:REQUEST\n" +
+                "BEGIN:VFREEBUSY\n" +
+                "TZID:Europe/Rome\n" +
+                "UID:" + uuid + "\n" +
+                "DTSTAMP:20231107T113758Z\n" +
+                "DTSTART:" + start + "\n" +
+                "DTEND:" + end + "\n" +
+                "ORGANIZER:mailto:" + originator.getName() +"\n" +
+                ((mode == Mode.ICALENDAR) ? ("ATTENDEE:mailto:" + originator.getName() + "\n")  : "") +
+                "ATTENDEE:mailto:" + recipient.getName() + "\n" +
+                "END:VFREEBUSY\n" +
+                "END:VCALENDAR";
+    }
+
+    private enum Mode {
+        THUNDERBIRD,
+        ICALENDAR
     }
 }
