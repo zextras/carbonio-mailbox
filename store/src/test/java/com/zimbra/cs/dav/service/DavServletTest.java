@@ -158,7 +158,10 @@ class DavServletTest {
     void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
         HttpClient organizerClient = createHttpClientWith(organizer);
         HttpPut createAppointmentRequest = new HttpPut(getCalDavResourceUrl());
-        createAppointmentRequest.setEntity(new StringEntity(new CreateAppointmentRequestBuilder().build()));
+        createAppointmentRequest.setEntity(new StringEntity(new CreateAppointmentRequestBuilder()
+                .organizer(organizer)
+                .attendee(organizer)
+                .build()));
         createAppointmentRequest.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
         HttpResponse createAppointmentResponse = organizerClient.execute(createAppointmentRequest);
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
@@ -320,6 +323,19 @@ class DavServletTest {
     }
 
     class CreateAppointmentRequestBuilder {
+        private String organizer = "organizer@test.com";
+        private String attendee = "attendee@test.com";
+
+        public CreateAppointmentRequestBuilder organizer(Account organizer) {
+            this.organizer = organizer.getName();
+            return this;
+        }
+
+        public CreateAppointmentRequestBuilder attendee(Account attendee) {
+            this.attendee = attendee.getName();
+            return this;
+        }
+
         public String build() {
             return "BEGIN:VCALENDAR\n" +
                     "PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN\n" +
@@ -339,8 +355,8 @@ class DavServletTest {
                     "DTSTAMP:20230918T130107Z\n" +
                     "UID:95a5527e-df0a-4df2-b64a-7eee8e647efe\n" +
                     "SUMMARY:Test\n" +
-                    "ORGANIZER;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;SENT-BY=\"mailto:organizer@test.com\";SCHEDULE-AGENT=CLIENT:mailto:organizer@test.com\n" +
-                    "ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;SCHEDULE-AGENT=CLIENT:mailto:organizer@test.com\n" +
+                    "ORGANIZER:mailto:" + organizer + "\n" +
+                    "ATTENDEE:mailto:" + attendee + "\n" +
                     "DTSTART:20231207T124500\n" +
                     "DTEND:20231207T144500\n" +
                     "TRANSP:OPAQUE\n" +
