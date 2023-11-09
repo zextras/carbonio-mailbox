@@ -24,6 +24,7 @@ import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.AuthProviderException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -157,18 +158,13 @@ class DavServletTest {
 
     @Test
     void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
-        UUID appointmentUUID = UUID.randomUUID();
-        HttpClient organizerClient = createHttpClientWith(organizer);
-        HttpPut createAppointmentRequest = new HttpPut(getCalDavResourceUrl(organizer, appointmentUUID.toString()));
-        createAppointmentRequest.setEntity(new StringEntity(new CreateAppointmentRequestBuilder()
-                .uuid(appointmentUUID)
+        HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder()
                 .start("20231207T124500")
                 .end("20231207T144500")
                 .organizer(organizer)
                 .attendee(organizer)
-                .build()));
-        createAppointmentRequest.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-        HttpResponse createAppointmentResponse = organizerClient.execute(createAppointmentRequest);
+                .build();
+        HttpResponse createAppointmentResponse = createHttpClientWith(organizer).execute(createAppointmentRequest);
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
 
         // ========================================
@@ -187,6 +183,7 @@ class DavServletTest {
         assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
         assertTrue(readContentFrom(freeBusyResponse).contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
     }
+
     /**
      * Added for bug CO-860: FreeBusy status request without recipient http header fails to return FB status
      * <p>
@@ -287,16 +284,20 @@ class DavServletTest {
      * Returns CalDav Resource URL for this test suite {@link #organizer} and calendar {@link
      * #CALENDAR_UID}
      *
-     * @return url endpoint to make the request
      * @param account
      * @param calendarUUID
+     * @return url endpoint to make the request
      */
     private String getCalDavResourceUrl(Account account, String calendarUUID) {
+        return getCalDavResourceUrl(account.getName(), calendarUUID);
+    }
+
+    private String getCalDavResourceUrl(String account, String calendarUUID) {
         return "http://localhost:"
                 + PORT
                 + DAV_BASE_PATH
                 + "/home/"
-                + URLEncoder.encode(account.getName(), StandardCharsets.UTF_8)
+                + URLEncoder.encode(account, StandardCharsets.UTF_8)
                 + "/Calendar/"
                 + calendarUUID
                 + ".ics";
@@ -330,11 +331,11 @@ class DavServletTest {
     }
 
     class CreateAppointmentRequestBuilder {
+        private UUID uuid = UUID.randomUUID();
         private String organizer = "organizer@test.com";
         private String attendee = "attendee@test.com";
         private String start = "20231207T124500";
         private String end = "20231207T144500";
-        private UUID uuid = UUID.randomUUID();
 
         public CreateAppointmentRequestBuilder uuid(UUID uuid) {
             this.uuid = uuid;
@@ -361,7 +362,14 @@ class DavServletTest {
             return this;
         }
 
-        public String build() {
+        public HttpPut build() throws UnsupportedEncodingException {
+            HttpPut createAppointmentRequest = new HttpPut(getCalDavResourceUrl(organizer, uuid.toString()));
+            createAppointmentRequest.setEntity(new StringEntity(buildBody()));
+            createAppointmentRequest.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
+            return createAppointmentRequest;
+        }
+
+        private String buildBody() {
             return "BEGIN:VCALENDAR\n" +
                     "PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN\n" +
                     "VERSION:2.0\n" +
