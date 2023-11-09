@@ -5,6 +5,7 @@
 package com.zimbra.cs.dav.service;
 
 import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
@@ -363,21 +364,12 @@ class CreateAppointmentRequestBuilder {
         + "CREATED:20230918T125911Z\n"
         + "LAST-MODIFIED:20230918T130107Z\n"
         + "DTSTAMP:20230918T130107Z\n"
-        + "UID:"
-        + uuid.toString()
-        + "\n"
+        + format("UID:%s\n", uuid)
         + "SUMMARY:Test\n"
-        + "ORGANIZER:mailto:"
-        + organizer
-        + "\n"
+        + format("ORGANIZER:mailto:%s\n", organizer)
         + buildAttendees()
-        + "\n"
-        + "DTSTART:"
-        + start
-        + "\n"
-        + "DTEND:"
-        + end
-        + "\n"
+        + format("DTSTART:%s\n", start)
+        + format("DTEND:%s\n", end)
         + "TRANSP:OPAQUE\n"
         + "DESCRIPTION;ALTREP=\"data:text/html,%3Cbody%3ETest%3C%2Fbody%3E\":Test\n"
         + "END:VEVENT\n"
@@ -393,7 +385,7 @@ class CreateAppointmentRequestBuilder {
               }
               return "ATTENDEE;SCHEDULE-AGENT=" + scheduleAgent + ":mailto:" + attendee.getName();
             })
-        .collect(Collectors.joining("\n"));
+        .collect(Collectors.joining("\n")) + "\n";
   }
 
   public CreateAppointmentRequestBuilder addAttendee(Account attendee) {
@@ -476,25 +468,22 @@ class FreeBusyRequestBuilder {
         + "METHOD:REQUEST\n"
         + "BEGIN:VFREEBUSY\n"
         + "TZID:Europe/Rome\n"
-        + "UID:"
-        + uuid
-        + "\n"
+        + format("UID:%s\n", uuid)
         + "DTSTAMP:20231107T113758Z\n"
-        + "DTSTART:"
-        + start
-        + "\n"
-        + "DTEND:"
-        + end
-        + "\n"
-        + "ORGANIZER:mailto:"
-        + originator.getName()
-        + "\n"
-        + ((mode == Mode.ICALENDAR) ? ("ATTENDEE:mailto:" + originator.getName() + "\n") : "")
-        + "ATTENDEE:mailto:"
-        + recipient.getName()
-        + "\n"
+        + format("DTSTART:%s\n", start)
+        + format("DTEND:%s\n", end)
+        + format("ORGANIZER:mailto:%s\n", originator.getName())
+        + originatorAsAttendee()
+        + format("ATTENDEE:mailto:%s\n", recipient.getName())
         + "END:VFREEBUSY\n"
         + "END:VCALENDAR";
+  }
+
+  private String originatorAsAttendee() {
+      if (mode == Mode.ICALENDAR) {
+          return format("ATTENDEE:mailto:%s\n", originator.getName());
+      }
+      return "";
   }
 
   private enum Mode {
