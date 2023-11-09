@@ -159,26 +159,21 @@ class DavServletTest {
     @Test
     void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
         HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder()
-                .start("20231207T124500")
-                .end("20231207T144500")
                 .organizer(organizer)
                 .attendee(organizer)
+                .start("20231207T124500")
+                .end("20231207T144500")
                 .build();
         HttpResponse createAppointmentResponse = createHttpClientWith(organizer).execute(createAppointmentRequest);
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
 
-        // ========================================
-
-        HttpClient attendeeClient = createHttpClientWith(attendee);
-        HttpPost request = new HttpPost(getSentResourceUrl(attendee));
-        request.setEntity(
-                new InputStreamEntity(
-                        Objects.requireNonNull(
-                                this.getClass().getResourceAsStream("FreeBusyRequest_Thunderbird.ics"))));
-        request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-        request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + attendee.getName());
-        request.setHeader(DavProtocol.HEADER_RECIPIENT, "mailto:" + organizer.getName());
-        HttpResponse freeBusyResponse = attendeeClient.execute(request);
+        HttpPost freeBusyRequest = new FreeBusyRequestBuilder()
+                .originator(attendee)
+                .recipient(organizer)
+                .start("20231206T114500")
+                .end("20231208T154500")
+                .build();
+        HttpResponse freeBusyResponse = createHttpClientWith(attendee).execute(freeBusyRequest);
 
         assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
         assertTrue(readContentFrom(freeBusyResponse).contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
@@ -304,11 +299,15 @@ class DavServletTest {
     }
 
     private String getSentResourceUrl(Account account) {
+        return getSentResourceUrl(account.toString());
+    }
+
+    private String getSentResourceUrl(String account) {
         return "http://localhost:"
                 + PORT
                 + DAV_BASE_PATH
                 + "/home/"
-                + URLEncoder.encode(account.getName(), StandardCharsets.UTF_8)
+                + URLEncoder.encode(account, StandardCharsets.UTF_8)
                 + "/Sent";
     }
 
@@ -395,6 +394,65 @@ class DavServletTest {
                     "TRANSP:OPAQUE\n" +
                     "DESCRIPTION;ALTREP=\"data:text/html,%3Cbody%3ETest%3C%2Fbody%3E\":Test\n" +
                     "END:VEVENT\n" +
+                    "END:VCALENDAR";
+        }
+    }
+
+    class FreeBusyRequestBuilder {
+        private UUID uuid = UUID.randomUUID();
+        private String originator = "organizer@test.com";
+        private String recipient = "attendee@test.com";
+        private String start = "20231206T114500";
+        private String end = "20231208T154500";
+
+        public FreeBusyRequestBuilder uuid(UUID uuid) {
+            this.uuid = uuid;
+            return this;
+        }
+
+        public FreeBusyRequestBuilder originator(Account value) {
+            this.originator = value.getName();
+            return this;
+        }
+
+        public FreeBusyRequestBuilder recipient(Account value) {
+            this.recipient = value.getName();
+            return this;
+        }
+
+        public FreeBusyRequestBuilder start(String value) {
+            this.start = value;
+            return this;
+        }
+
+        public FreeBusyRequestBuilder end(String value) {
+            this.end = value;
+            return this;
+        }
+
+        public HttpPost build() throws UnsupportedEncodingException {
+            HttpPost request = new HttpPost(getSentResourceUrl(originator));
+            request.setEntity(new StringEntity(buildBody()));
+            request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
+            request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + originator);
+            request.setHeader(DavProtocol.HEADER_RECIPIENT, "mailto:" + recipient);
+            return request;
+        }
+
+        private String buildBody() {
+            return "BEGIN:VCALENDAR\n" +
+                    "PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN\n" +
+                    "VERSION:2.0\n" +
+                    "METHOD:REQUEST\n" +
+                    "BEGIN:VFREEBUSY\n" +
+                    "TZID:Europe/Rome\n" +
+                    "UID:" + uuid + "\n" +
+                    "DTSTAMP:20231107T113758Z\n" +
+                    "DTSTART:" + start + "\n" +
+                    "DTEND:" + end + "\n" +
+                    "ORGANIZER:mailto:" + originator +"\n" +
+                    "ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;CUTYPE=INDIVIDUAL:mailto:" + recipient + "\n" +
+                    "END:VFREEBUSY\n" +
                     "END:VCALENDAR";
         }
     }
