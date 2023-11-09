@@ -4,16 +4,10 @@
 
 package com.zimbra.cs.dav.service;
 
-import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
-import static com.zextras.mailbox.util.MailboxTestUtil.createRandomAccountForDefaultDomain;
-import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
-import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraCookie;
@@ -23,18 +17,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.dav.DavProtocol;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.service.AuthProvider;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -51,11 +33,25 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.*;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
+import static com.zextras.mailbox.util.MailboxTestUtil.createRandomAccountForDefaultDomain;
+import static java.lang.String.format;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @Tag("api")
 class DavServletTest {
 
-  private static Provisioning provisioning;
-  private static Account organizer;
   private static Server server;
   private static final int PORT = 8090;
   private static final String DAV_BASE_PATH = "/dav";
@@ -72,16 +68,8 @@ class DavServletTest {
                     SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
             });
     greenMail.start();
-    provisioning = Provisioning.getInstance();
-    server =
-        JettyServerFactory.create(
-            PORT, Map.of(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class)));
+    server = JettyServerFactory.create(PORT, Map.of(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class)));
     server.start();
-    organizer =
-        provisioning.createAccount(
-            "organizer@" + DEFAULT_DOMAIN,
-            "password",
-            new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
   }
 
   @AfterAll
@@ -138,6 +126,7 @@ class DavServletTest {
    */
   @Test
   void shouldCreateAppointment() throws Exception {
+    Account organizer = createRandomAccountForDefaultDomain();
     UUID calendarUUID = UUID.randomUUID();
     HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
         .uuid(calendarUUID)
@@ -151,6 +140,7 @@ class DavServletTest {
 
   @Test
   void shouldGetACreatedAppointment() throws Exception {
+    Account organizer = createRandomAccountForDefaultDomain();
     UUID calendarUUID = UUID.randomUUID();
     createAppointment(organizer, calendarUUID);
 
@@ -167,6 +157,7 @@ class DavServletTest {
    */
   @Test
   void shouldDeleteAppointment() throws Exception {
+    Account organizer = createRandomAccountForDefaultDomain();
     UUID calendarUUID = UUID.randomUUID();
     createAppointment(organizer, calendarUUID);
 
@@ -363,15 +354,12 @@ class CreateAppointmentRequestBuilder {
   }
 
   private String buildAttendees() {
-    return attendees.stream()
-        .map(
-            attendee -> {
-              if (scheduleAgent == null) {
-                return "ATTENDEE:mailto:" + attendee.getName();
-              }
-              return "ATTENDEE;SCHEDULE-AGENT=" + scheduleAgent + ":mailto:" + attendee.getName();
-            })
-        .collect(Collectors.joining("\n")) + "\n";
+    return attendees.stream().map(attendee -> {
+      if (scheduleAgent == null) {
+        return "ATTENDEE:mailto:" + attendee.getName();
+      }
+      return "ATTENDEE;SCHEDULE-AGENT=" + scheduleAgent + ":mailto:" + attendee.getName();
+    }).collect(Collectors.joining("\n")) + "\n";
   }
 }
 
