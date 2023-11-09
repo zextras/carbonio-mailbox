@@ -25,12 +25,49 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 - Build the code:
  `mvn install`
 
-## Testing Packages
-To start build packages by running [build_packages.sh](build_packages.sh)
 
-Then cd into [docker/single-server](docker/single-server) and run:
-`docker compose up --build`
-It will build and start a carbonio-ce instance using built packages.
+## Run Locally for development
+There are 2 alternatives to run Carbonio Mailbox locally.
+
+### 1. Full Carbonio Mailbox
+It builds and installs the carbonio mailbox packages. Then it starts the services.
+
+1. Build the project:
+   ```shell
+   mvn install -DskipTests
+   ```
+2. Build packages locally [build_packages.sh](build_packages.sh)
+    ```shell
+    ./build_packages.sh
+    ```
+3. Enter in [docker/single-server](docker/single-server) folder
+    ```shell
+    cd ./docker/single-server
+    ```
+4. Run it:
+   ```shell
+   docker compose up
+   ```
+
+### 2. Minimal jetty instance
+It builds and starts a minimal setup with only SOAP and REST APIs.
+
+1. Build the project running one of the following commands:
+   ```shell
+   mvn install -DskipTests
+   ```
+   or
+   ```shell
+   docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
+   ```
+2. Enter in [docker/jetty-run](docker/jetty-run) folder
+    ```shell
+    cd ./docker/jetty-run
+    ```
+3. Run it
+    ```
+    $ docker compose up
+    ```
 
 ## Contribute to Carbonio Mailbox
 
