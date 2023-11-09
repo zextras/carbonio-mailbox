@@ -215,6 +215,19 @@ public class ScheduleOutbox extends CalendarCollection {
             }
         }
 
+        // Get recipient from Attendee if Recipient header is not present
+        if (rcptArray.isEmpty() && !attendees.isEmpty()) {
+            final String originalOrganizer = organizer;
+            attendees.stream()
+                .filter(attendee -> !attendee.equalsIgnoreCase(originalOrganizer))
+                .findFirst()
+                .ifPresent(rcptArray::add);
+        }
+
+        if (delegationInfo.getOriginator() == null) {
+            delegationInfo.setOriginator(organizer);
+        }
+
         Element scheduleResponse = ctxt.getDavResponse().getTop(DavElements.E_SCHEDULE_RESPONSE);
         for (String rcpt : rcptArray) {
             ZimbraLog.dav.debug("recipient email: "+rcpt);
