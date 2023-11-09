@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -156,9 +157,11 @@ class DavServletTest {
 
     @Test
     void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
+        UUID appointmentUUID = UUID.randomUUID();
         HttpClient organizerClient = createHttpClientWith(organizer);
-        HttpPut createAppointmentRequest = new HttpPut(getCalDavResourceUrl());
+        HttpPut createAppointmentRequest = new HttpPut(getCalDavResourceUrl(organizer, appointmentUUID.toString()));
         createAppointmentRequest.setEntity(new StringEntity(new CreateAppointmentRequestBuilder()
+                .uuid(appointmentUUID)
                 .start("20231207T124500")
                 .end("20231207T144500")
                 .organizer(organizer)
@@ -232,7 +235,7 @@ class DavServletTest {
 
     private HttpResponse createAppointmentWithCalDAV(String resourceFileName) throws Exception {
         HttpClient client = createHttpClientWith(organizer);
-        HttpPut request = new HttpPut(getCalDavResourceUrl());
+        HttpPut request = new HttpPut(getCalDavResourceUrl(organizer, DavServletTest.CALENDAR_UID));
         request.setEntity(
                 new InputStreamEntity(
                         Objects.requireNonNull(
@@ -268,14 +271,14 @@ class DavServletTest {
 
     private HttpResponse deleteAppointmentWithCalDAV() throws Exception {
         HttpClient client = createHttpClientWith(organizer);
-        HttpDelete request = new HttpDelete(getCalDavResourceUrl());
+        HttpDelete request = new HttpDelete(getCalDavResourceUrl(organizer, DavServletTest.CALENDAR_UID));
         request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
         return client.execute(request);
     }
 
     private HttpResponse getAppointmentWithCalDAV() throws Exception {
         HttpClient client = createHttpClientWith(organizer);
-        HttpGet request = new HttpGet(getCalDavResourceUrl());
+        HttpGet request = new HttpGet(getCalDavResourceUrl(organizer, DavServletTest.CALENDAR_UID));
         request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
         return client.execute(request);
     }
@@ -285,15 +288,17 @@ class DavServletTest {
      * #CALENDAR_UID}
      *
      * @return url endpoint to make the request
+     * @param account
+     * @param calendarUUID
      */
-    private String getCalDavResourceUrl() {
+    private String getCalDavResourceUrl(Account account, String calendarUUID) {
         return "http://localhost:"
                 + PORT
                 + DAV_BASE_PATH
                 + "/home/"
-                + URLEncoder.encode(organizer.getName(), StandardCharsets.UTF_8)
+                + URLEncoder.encode(account.getName(), StandardCharsets.UTF_8)
                 + "/Calendar/"
-                + DavServletTest.CALENDAR_UID
+                + calendarUUID
                 + ".ics";
     }
 
@@ -329,6 +334,12 @@ class DavServletTest {
         private String attendee = "attendee@test.com";
         private String start = "20231207T124500";
         private String end = "20231207T144500";
+        private UUID uuid = UUID.randomUUID();
+
+        public CreateAppointmentRequestBuilder uuid(UUID uuid) {
+            this.uuid = uuid;
+            return this;
+        }
 
         public CreateAppointmentRequestBuilder organizer(Account value) {
             this.organizer = value.getName();
@@ -367,7 +378,7 @@ class DavServletTest {
                     "CREATED:20230918T125911Z\n" +
                     "LAST-MODIFIED:20230918T130107Z\n" +
                     "DTSTAMP:20230918T130107Z\n" +
-                    "UID:95a5527e-df0a-4df2-b64a-7eee8e647efe\n" +
+                    "UID:" + uuid.toString() + "\n" +
                     "SUMMARY:Test\n" +
                     "ORGANIZER:mailto:" + organizer + "\n" +
                     "ATTENDEE:mailto:" + attendee + "\n" +
