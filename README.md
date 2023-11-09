@@ -18,23 +18,12 @@ This repository contains the source code of Carbonio Mailbox which consists of s
 
 - Build Requirements:
   - JDK version 11, to confirm run `javac -version`
-
 - Clone the carbonio-mailbox repository:
-
-    `git clone https://github.com/Zextras/carbonio-mailbox.git`
-
+  `git clone https://github.com/Zextras/carbonio-mailbox.git`
 - Enter into source directory:
-
-    `cd carbonio-mailbox/`
-
+  `cd carbonio-mailbox/`
 - Build the code:
-
  `mvn install`
-
-- Run mailbox Jetty service locally (experimental):
-  - build carbonio-db Docker image locally [store/utils/docker/carbonio-db](store/utils/docker/carbonio-db)
-  - run docker-compose up in [store/utils/docker](store/utils/docker) (starts carbonio-db and carbonio LDAP)
-  - run mvn jetty:run from store module
 
 ## Testing Packages
 To start build packages by running [build_packages.sh](build_packages.sh)
