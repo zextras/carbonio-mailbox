@@ -23,6 +23,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.dav.DavProtocol;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.service.AuthProvider;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -65,9 +67,9 @@ class DavServletTest {
     MailboxTestUtil.setUp();
     greenMail =
         new GreenMail(
-            new ServerSetup[] {
-              new ServerSetup(
-                  SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
+            new ServerSetup[]{
+                new ServerSetup(
+                    SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
             });
     greenMail.start();
     provisioning = Provisioning.getInstance();
@@ -100,12 +102,12 @@ class DavServletTest {
     organizer.addAlias("alias@" + DEFAULT_DOMAIN);
 
     final HttpPut request = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
-            .organizer("alias@" + DEFAULT_DOMAIN)
-            .scheduleAgent(ScheduleAgent.CLIENT)
-            .addAttendee(createRandomAccountForDefaultDomain())
-            .addAttendee(createRandomAccountForDefaultDomain())
-            .addAttendee(createRandomAccountForDefaultDomain())
-            .build();
+        .organizer("alias@" + DEFAULT_DOMAIN)
+        .scheduleAgent(ScheduleAgent.CLIENT)
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .build();
     HttpResponse response = createHttpClientWith(organizer).execute(request);
 
     assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
@@ -117,12 +119,12 @@ class DavServletTest {
     Account organizer = createRandomAccountForDefaultDomain();
 
     final HttpPut request = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
-            .organizer(organizer)
-            .scheduleAgent(ScheduleAgent.SERVER)
-            .addAttendee(createRandomAccountForDefaultDomain())
-            .addAttendee(createRandomAccountForDefaultDomain())
-            .addAttendee(createRandomAccountForDefaultDomain())
-            .build();
+        .organizer(organizer)
+        .scheduleAgent(ScheduleAgent.SERVER)
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .build();
     HttpResponse response = createHttpClientWith(organizer).execute(request);
 
     assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
@@ -138,9 +140,9 @@ class DavServletTest {
   void shouldCreateAppointment() throws Exception {
     UUID calendarUUID = UUID.randomUUID();
     HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
-            .uuid(calendarUUID)
-            .organizer(organizer)
-            .build();
+        .uuid(calendarUUID)
+        .organizer(organizer)
+        .build();
 
     HttpResponse createAppointmentResponse = createHttpClientWith(organizer).execute(createAppointmentRequest);
 
@@ -152,9 +154,7 @@ class DavServletTest {
     UUID calendarUUID = UUID.randomUUID();
     createAppointment(organizer, calendarUUID);
 
-    HttpGet request = new HttpGet(getCalDavResourceUrl(organizer, calendarUUID.toString()));
-    request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-    HttpResponse getAppointmentResponse = createHttpClientWith(organizer).execute(request);
+    HttpResponse getAppointmentResponse = getAppointment(organizer, calendarUUID);
 
     assertEquals(HttpStatus.SC_OK, statusCodeFrom(getAppointmentResponse));
     assertTrue(readContentFrom(getAppointmentResponse).contains("UID:" + calendarUUID));
@@ -170,10 +170,10 @@ class DavServletTest {
     UUID calendarUUID = UUID.randomUUID();
     createAppointment(organizer, calendarUUID);
 
-    HttpResponse deleteAppointmentResponse = deleteAppointment(organizer, calendarUUID.toString());
+    HttpResponse deleteAppointmentResponse = deleteAppointment(organizer, calendarUUID);
 
     assertEquals(HttpStatus.SC_NO_CONTENT, statusCodeFrom(deleteAppointmentResponse));
-    assertEquals(HttpStatus.SC_NOT_FOUND, statusCodeFrom(getAppointment(organizer, calendarUUID.toString())));
+    assertEquals(HttpStatus.SC_NOT_FOUND, statusCodeFrom(getAppointment(organizer, calendarUUID)));
   }
 
   /**
@@ -184,26 +184,22 @@ class DavServletTest {
   @Test
   void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
     Account busyPerson = createRandomAccountForDefaultDomain();
-    HttpPut createAppointmentRequest =
-        new CreateAppointmentRequestBuilder(DAV_BASE_URL)
-            .organizer(busyPerson)
-            .addAttendee(busyPerson)
-            .timeslot("20231207T124500", "20231207T144500")
-            .build();
-    HttpResponse createAppointmentResponse =
-        createHttpClientWith(busyPerson).execute(createAppointmentRequest);
-    assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
+    HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
+        .organizer(busyPerson)
+        .addAttendee(busyPerson)
+        .timeslot("20231207T124500", "20231207T144500")
+        .build();
+    createHttpClientWith(busyPerson).execute(createAppointmentRequest);
 
     UUID calendarId = UUID.randomUUID();
     Account calendarViewer = createRandomAccountForDefaultDomain();
-    HttpPost freeBusyRequest =
-        new FreeBusyRequestBuilder(DAV_BASE_URL)
-            .asThunderbird()
-            .uuid(calendarId)
-            .originator(calendarViewer)
-            .recipient(busyPerson)
-            .timeslot("20231206T114500", "20231208T154500")
-            .build();
+    HttpPost freeBusyRequest = new FreeBusyRequestBuilder(DAV_BASE_URL)
+        .asThunderbird()
+        .uuid(calendarId)
+        .originator(calendarViewer)
+        .recipient(busyPerson)
+        .timeslot("20231206T114500", "20231208T154500")
+        .build();
     HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
 
     assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
@@ -212,82 +208,54 @@ class DavServletTest {
     assertTrue(content.contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
   }
 
-  /**
-   * Added for bug CO-860: FreeBusy status request without recipient and originator http headers
-   * fails to return FB status
-   *
-   * <p>For example: Apple's iCalendar do not send Recipients header in the FreeBusy status request
-   *
-   * @throws Exception exception during making requests
-   */
   @Test
   void createAnAppointmentAndFindThatSlotAsBusyStatusUsingICalendar() throws Exception {
     Account busyPerson = createRandomAccountForDefaultDomain();
-    HttpPut createAppointmentRequest =
-        new CreateAppointmentRequestBuilder(DAV_BASE_URL)
-            .organizer(busyPerson)
-            .addAttendee(busyPerson)
-            .timeslot("20231207T124500", "20231207T144500")
-            .build();
-    HttpResponse createAppointmentResponse =
-        createHttpClientWith(busyPerson).execute(createAppointmentRequest);
-    assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
+    HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
+        .organizer(busyPerson)
+        .addAttendee(busyPerson)
+        .timeslot("20231207T124500", "20231207T144500")
+        .build();
+    createHttpClientWith(busyPerson).execute(createAppointmentRequest);
 
     Account calendarViewer = createRandomAccountForDefaultDomain();
-    HttpPost freeBusyRequest =
-        new FreeBusyRequestBuilder(DAV_BASE_URL)
-            .asICalendar()
-            .originator(calendarViewer)
-            .recipient(busyPerson)
-            .timeslot("20231206T114500", "20231208T154500")
-            .build();
+    HttpPost freeBusyRequest = new FreeBusyRequestBuilder(DAV_BASE_URL)
+        .asICalendar()
+        .originator(calendarViewer)
+        .recipient(busyPerson)
+        .timeslot("20231206T114500", "20231208T154500")
+        .build();
     HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
 
     assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
-    assertTrue(
-        readContentFrom(freeBusyResponse)
-            .contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
+    assertTrue(readContentFrom(freeBusyResponse).contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
   }
 
   private void createAppointment(Account organizer, UUID calendarUUID) throws Exception {
     HttpPut request = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
-            .uuid(calendarUUID)
-            .organizer(organizer)
-            .build();
+        .uuid(calendarUUID)
+        .organizer(organizer)
+        .build();
     HttpResponse response = createHttpClientWith(organizer).execute(request);
     assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
   }
 
-  private HttpResponse deleteAppointment(Account organizer, String calendarUUID) throws Exception {
+  private HttpResponse deleteAppointment(Account organizer, UUID calendarUUID) throws Exception {
     HttpClient client = createHttpClientWith(organizer);
-    HttpDelete request = new HttpDelete(getCalDavResourceUrl(organizer, calendarUUID));
+    HttpDelete request = new HttpDelete(getAccountCalendarUrl(organizer, calendarUUID));
     request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
     return client.execute(request);
   }
 
-  private HttpResponse getAppointment(Account organizer, String calendarUUID) throws Exception {
-    HttpGet request = new HttpGet(getCalDavResourceUrl(organizer, calendarUUID));
+  private HttpResponse getAppointment(Account organizer, UUID calendarUUID) throws Exception {
+    HttpGet request = new HttpGet(getAccountCalendarUrl(organizer, calendarUUID));
     request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
     return createHttpClientWith(organizer).execute(request);
   }
 
-  /**
-   * Returns CalDav Resource URL for this test suite {@link #organizer} and calendar {@link
-   * #CALENDAR_UID}
-   *
-   * @param account
-   * @param calendarUUID
-   * @return url endpoint to make the request
-   */
-  private String getCalDavResourceUrl(Account account, String calendarUUID) {
-    return "http://localhost:"
-        + PORT
-        + DAV_BASE_PATH
-        + "/home/"
-        + URLEncoder.encode(account.getName(), StandardCharsets.UTF_8)
-        + "/Calendar/"
-        + calendarUUID
-        + ".ics";
+  private String getAccountCalendarUrl(Account account, UUID calendarUUID) {
+    String accountEmail = URLEncoder.encode(account.getName(), StandardCharsets.UTF_8);
+    return DAV_BASE_URL + "/home/" + accountEmail + "/Calendar/" + calendarUUID + ".ics";
   }
 
   private HttpClient createHttpClientWith(Account account) throws Exception {
@@ -488,10 +456,10 @@ class FreeBusyRequestBuilder {
   }
 
   private String originatorAsAttendee() {
-      if (mode == Mode.ICALENDAR) {
-          return format("ATTENDEE:mailto:%s\n", originator.getName());
-      }
-      return "";
+    if (mode == Mode.ICALENDAR) {
+      return format("ATTENDEE:mailto:%s\n", originator.getName());
+    }
+    return "";
   }
 
   private enum Mode {
