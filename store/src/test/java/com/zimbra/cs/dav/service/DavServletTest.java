@@ -159,6 +159,8 @@ class DavServletTest {
         HttpClient organizerClient = createHttpClientWith(organizer);
         HttpPut createAppointmentRequest = new HttpPut(getCalDavResourceUrl());
         createAppointmentRequest.setEntity(new StringEntity(new CreateAppointmentRequestBuilder()
+                .start("20231207T124500")
+                .end("20231207T144500")
                 .organizer(organizer)
                 .attendee(organizer)
                 .build()));
@@ -325,14 +327,26 @@ class DavServletTest {
     class CreateAppointmentRequestBuilder {
         private String organizer = "organizer@test.com";
         private String attendee = "attendee@test.com";
+        private String start = "20231207T124500";
+        private String end = "20231207T144500";
 
-        public CreateAppointmentRequestBuilder organizer(Account organizer) {
-            this.organizer = organizer.getName();
+        public CreateAppointmentRequestBuilder organizer(Account value) {
+            this.organizer = value.getName();
             return this;
         }
 
-        public CreateAppointmentRequestBuilder attendee(Account attendee) {
-            this.attendee = attendee.getName();
+        public CreateAppointmentRequestBuilder attendee(Account value) {
+            this.attendee = value.getName();
+            return this;
+        }
+
+        public CreateAppointmentRequestBuilder start(String value) {
+            this.start = value;
+            return this;
+        }
+
+        public CreateAppointmentRequestBuilder end(String value) {
+            this.end = value;
             return this;
         }
 
@@ -357,8 +371,8 @@ class DavServletTest {
                     "SUMMARY:Test\n" +
                     "ORGANIZER:mailto:" + organizer + "\n" +
                     "ATTENDEE:mailto:" + attendee + "\n" +
-                    "DTSTART:20231207T124500\n" +
-                    "DTEND:20231207T144500\n" +
+                    "DTSTART:" + start + "\n" +
+                    "DTEND:" + end + "\n" +
                     "TRANSP:OPAQUE\n" +
                     "DESCRIPTION;ALTREP=\"data:text/html,%3Cbody%3ETest%3C%2Fbody%3E\":Test\n" +
                     "END:VEVENT\n" +
