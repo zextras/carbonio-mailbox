@@ -58,7 +58,6 @@ class DavServletTest {
   private static final int PORT = 8090;
   private static final String DAV_BASE_PATH = "/dav";
   private static final String DAV_BASE_URL = "http://localhost:" + PORT + DAV_BASE_PATH;
-  private static final String CALENDAR_UID = "95a5527e-df0a-4df2-b64a-7eee8e647efe";
   private static GreenMail greenMail;
 
   @BeforeAll
@@ -136,14 +135,29 @@ class DavServletTest {
    * @throws Exception
    */
   @Test
-  void shouldCreateAppointmentUsingCalDAV() throws Exception {
+  void shouldCreateAppointment() throws Exception {
     UUID calendarUUID = UUID.randomUUID();
-    HttpResponse createResponse = createAppointmentWithCalDAV(organizer, calendarUUID);
-    assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createResponse));
+    HttpPut createAppointmentRequest = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
+            .uuid(calendarUUID)
+            .organizer(organizer)
+            .build();
 
-    HttpResponse response = getAppointmentWithCalDAV(organizer, calendarUUID.toString());
-    assertEquals(HttpStatus.SC_OK, statusCodeFrom(response));
-    assertTrue(readContentFrom(response).contains(calendarUUID.toString()));
+    HttpResponse createAppointmentResponse = createHttpClientWith(organizer).execute(createAppointmentRequest);
+
+    assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
+  }
+
+  @Test
+  void shouldGetACreatedAppointment() throws Exception {
+    UUID calendarUUID = UUID.randomUUID();
+    createAppointment(organizer, calendarUUID);
+
+    HttpGet request = new HttpGet(getCalDavResourceUrl(organizer, calendarUUID.toString()));
+    request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
+    HttpResponse getAppointmentResponse = createHttpClientWith(organizer).execute(request);
+
+    assertEquals(HttpStatus.SC_OK, statusCodeFrom(getAppointmentResponse));
+    assertTrue(readContentFrom(getAppointmentResponse).contains("UID:" + calendarUUID));
   }
 
   /**
@@ -152,12 +166,14 @@ class DavServletTest {
    * @throws Exception
    */
   @Test
-  void shouldDeleteAppointmentUsingCalDAV() throws Exception {
+  void shouldDeleteAppointment() throws Exception {
     UUID calendarUUID = UUID.randomUUID();
-    assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentWithCalDAV(organizer, calendarUUID)));
-    assertEquals(HttpStatus.SC_OK, statusCodeFrom(getAppointmentWithCalDAV(organizer, calendarUUID.toString())));
-    assertEquals(HttpStatus.SC_NO_CONTENT, statusCodeFrom(deleteAppointmentWithCalDAV(calendarUUID.toString())));
-    assertEquals(HttpStatus.SC_NOT_FOUND, statusCodeFrom(getAppointmentWithCalDAV(organizer, calendarUUID.toString())));
+    createAppointment(organizer, calendarUUID);
+
+    HttpResponse deleteAppointmentResponse = deleteAppointment(organizer, calendarUUID.toString());
+
+    assertEquals(HttpStatus.SC_NO_CONTENT, statusCodeFrom(deleteAppointmentResponse));
+    assertEquals(HttpStatus.SC_NOT_FOUND, statusCodeFrom(getAppointment(organizer, calendarUUID.toString())));
   }
 
   /**
@@ -233,33 +249,26 @@ class DavServletTest {
             .contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
   }
 
-  private HttpResponse createAppointmentWithCalDAV(Account account, UUID calendarUUID) throws Exception {
-    HttpClient client = createHttpClientWith(account);
+  private void createAppointment(Account organizer, UUID calendarUUID) throws Exception {
     HttpPut request = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
             .uuid(calendarUUID)
-            .organizer(account)
-            .addAttendee(createRandomAccountForDefaultDomain())
-            .addAttendee(createRandomAccountForDefaultDomain())
-            .addAttendee(createRandomAccountForDefaultDomain())
-            .timeslot("20230918T034500", "20230918T044500")
+            .organizer(organizer)
             .build();
-
-    return client.execute(request);
+    HttpResponse response = createHttpClientWith(organizer).execute(request);
+    assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
   }
 
-  private HttpResponse deleteAppointmentWithCalDAV(String calendarUUID) throws Exception {
+  private HttpResponse deleteAppointment(Account organizer, String calendarUUID) throws Exception {
     HttpClient client = createHttpClientWith(organizer);
-    HttpDelete request =
-        new HttpDelete(getCalDavResourceUrl(organizer, calendarUUID));
+    HttpDelete request = new HttpDelete(getCalDavResourceUrl(organizer, calendarUUID));
     request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
     return client.execute(request);
   }
 
-  private HttpResponse getAppointmentWithCalDAV(Account account, String calendarUUID) throws Exception {
-    HttpClient client = createHttpClientWith(account);
-    HttpGet request = new HttpGet(getCalDavResourceUrl(account, calendarUUID));
+  private HttpResponse getAppointment(Account organizer, String calendarUUID) throws Exception {
+    HttpGet request = new HttpGet(getCalDavResourceUrl(organizer, calendarUUID));
     request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-    return client.execute(request);
+    return createHttpClientWith(organizer).execute(request);
   }
 
   /**
