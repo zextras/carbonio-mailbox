@@ -39,6 +39,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
@@ -157,10 +158,7 @@ class DavServletTest {
     void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
         HttpClient organizerClient = createHttpClientWith(organizer);
         HttpPut createAppointmentRequest = new HttpPut(getCalDavResourceUrl());
-        createAppointmentRequest.setEntity(
-                new InputStreamEntity(
-                        Objects.requireNonNull(
-                                this.getClass().getResourceAsStream("CreateAppointmentRequest.ics"))));
+        createAppointmentRequest.setEntity(new StringEntity(new CreateAppointmentRequestBuilder().build()));
         createAppointmentRequest.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
         HttpResponse createAppointmentResponse = organizerClient.execute(createAppointmentRequest);
         assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
@@ -319,5 +317,36 @@ class DavServletTest {
 
     private static String readContentFrom(HttpResponse response) throws IOException {
         return new String(response.getEntity().getContent().readAllBytes());
+    }
+
+    class CreateAppointmentRequestBuilder {
+        public String build() {
+            return "BEGIN:VCALENDAR\n" +
+                    "PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN\n" +
+                    "VERSION:2.0\n" +
+                    "BEGIN:VTIMEZONE\n" +
+                    "TZID:Europe/Rome\n" +
+                    "BEGIN:STANDARD\n" +
+                    "DTSTART:16010101T000000\n" +
+                    "TZOFFSETTO:+0530\n" +
+                    "TZOFFSETFROM:+0530\n" +
+                    "TZNAME:IST\n" +
+                    "END:STANDARD\n" +
+                    "END:VTIMEZONE\n" +
+                    "BEGIN:VEVENT\n" +
+                    "CREATED:20230918T125911Z\n" +
+                    "LAST-MODIFIED:20230918T130107Z\n" +
+                    "DTSTAMP:20230918T130107Z\n" +
+                    "UID:95a5527e-df0a-4df2-b64a-7eee8e647efe\n" +
+                    "SUMMARY:Test\n" +
+                    "ORGANIZER;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;SENT-BY=\"mailto:organizer@test.com\";SCHEDULE-AGENT=CLIENT:mailto:organizer@test.com\n" +
+                    "ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;SCHEDULE-AGENT=CLIENT:mailto:organizer@test.com\n" +
+                    "DTSTART:20231207T124500\n" +
+                    "DTEND:20231207T144500\n" +
+                    "TRANSP:OPAQUE\n" +
+                    "DESCRIPTION;ALTREP=\"data:text/html,%3Cbody%3ETest%3C%2Fbody%3E\":Test\n" +
+                    "END:VEVENT\n" +
+                    "END:VCALENDAR";
+        }
     }
 }
