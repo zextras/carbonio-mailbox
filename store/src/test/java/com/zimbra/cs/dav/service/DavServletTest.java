@@ -5,6 +5,7 @@
 package com.zimbra.cs.dav.service;
 
 import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
+import static com.zextras.mailbox.util.MailboxTestUtil.createRandomAccountForDefaultDomain;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,24 +99,37 @@ class DavServletTest {
 
   @Test
   void shouldNotSendNotificationWhenScheduleAgentClient() throws Exception {
-    Account organizer = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    Account organizer = createRandomAccountForDefaultDomain();
     organizer.addAlias("alias@" + DEFAULT_DOMAIN);
-    Account attendee1 = MailboxTestUtil.createRandomAccountForDefaultDomain();
-    Account attendee2 = MailboxTestUtil.createRandomAccountForDefaultDomain();
-    Account attendee3 = MailboxTestUtil.createRandomAccountForDefaultDomain();
-    final HttpPut request =
-        new CreateAppointmentRequestBuilder(DAV_BASE_URL)
+
+    final HttpPut request = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
             .organizer("alias@" + DEFAULT_DOMAIN)
             .scheduleAgent(ScheduleAgent.CLIENT)
-            .addAttendee(attendee1)
-            .addAttendee(attendee2)
-            .addAttendee(attendee3)
+            .addAttendee(createRandomAccountForDefaultDomain())
+            .addAttendee(createRandomAccountForDefaultDomain())
+            .addAttendee(createRandomAccountForDefaultDomain())
             .build();
-
     HttpResponse response = createHttpClientWith(organizer).execute(request);
 
     assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
     assertEquals(0, greenMail.getReceivedMessages().length);
+  }
+
+  @Test
+  void shouldSendNotificationsForEachAttendeeWhenScheduleAgentIsServer() throws Exception {
+    Account organizer = createRandomAccountForDefaultDomain();
+
+    final HttpPut request = new CreateAppointmentRequestBuilder(DAV_BASE_URL)
+            .organizer(organizer)
+            .scheduleAgent(ScheduleAgent.SERVER)
+            .addAttendee(createRandomAccountForDefaultDomain())
+            .addAttendee(createRandomAccountForDefaultDomain())
+            .addAttendee(createRandomAccountForDefaultDomain())
+            .build();
+    HttpResponse response = createHttpClientWith(organizer).execute(request);
+
+    assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
+    assertEquals(3, greenMail.getReceivedMessages().length);
   }
 
   /**
@@ -154,7 +168,7 @@ class DavServletTest {
    */
   @Test
   void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
-    Account busyPerson = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    Account busyPerson = createRandomAccountForDefaultDomain();
     HttpPut createAppointmentRequest =
         new CreateAppointmentRequestBuilder(DAV_BASE_URL)
             .organizer(busyPerson)
@@ -166,7 +180,7 @@ class DavServletTest {
     assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
 
     UUID calendarId = UUID.randomUUID();
-    Account calendarViewer = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    Account calendarViewer = createRandomAccountForDefaultDomain();
     HttpPost freeBusyRequest =
         new FreeBusyRequestBuilder(DAV_BASE_URL)
             .asThunderbird()
@@ -193,7 +207,7 @@ class DavServletTest {
    */
   @Test
   void createAnAppointmentAndFindThatSlotAsBusyStatusUsingICalendar() throws Exception {
-    Account busyPerson = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    Account busyPerson = createRandomAccountForDefaultDomain();
     HttpPut createAppointmentRequest =
         new CreateAppointmentRequestBuilder(DAV_BASE_URL)
             .organizer(busyPerson)
@@ -204,7 +218,7 @@ class DavServletTest {
         createHttpClientWith(busyPerson).execute(createAppointmentRequest);
     assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
 
-    Account calendarViewer = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    Account calendarViewer = createRandomAccountForDefaultDomain();
     HttpPost freeBusyRequest =
         new FreeBusyRequestBuilder(DAV_BASE_URL)
             .asICalendar()
@@ -304,7 +318,7 @@ class DavServletTest {
 
 class CreateAppointmentRequestBuilder {
   private UUID uuid = UUID.randomUUID();
-  private String organizer = MailboxTestUtil.createRandomAccountForDefaultDomain().getName();
+  private String organizer = createRandomAccountForDefaultDomain().getName();
   private ScheduleAgent scheduleAgent;
   private List<Account> attendees = new ArrayList<>();
   private String start = "20231207T124500";
@@ -332,6 +346,16 @@ class CreateAppointmentRequestBuilder {
   public CreateAppointmentRequestBuilder timeslot(String start, String end) {
     this.start = start;
     this.end = end;
+    return this;
+  }
+
+  public CreateAppointmentRequestBuilder addAttendee(Account attendee) {
+    attendees.add(attendee);
+    return this;
+  }
+
+  public CreateAppointmentRequestBuilder scheduleAgent(ScheduleAgent value) {
+    scheduleAgent = value;
     return this;
   }
 
@@ -387,22 +411,12 @@ class CreateAppointmentRequestBuilder {
             })
         .collect(Collectors.joining("\n")) + "\n";
   }
-
-  public CreateAppointmentRequestBuilder addAttendee(Account attendee) {
-    attendees.add(attendee);
-    return this;
-  }
-
-  public CreateAppointmentRequestBuilder scheduleAgent(ScheduleAgent value) {
-    scheduleAgent = value;
-    return this;
-  }
 }
 
 class FreeBusyRequestBuilder {
   private UUID uuid = UUID.randomUUID();
-  private Account originator = MailboxTestUtil.createRandomAccountForDefaultDomain();
-  private Account recipient = MailboxTestUtil.createRandomAccountForDefaultDomain();
+  private Account originator = createRandomAccountForDefaultDomain();
+  private Account recipient = createRandomAccountForDefaultDomain();
   private String start = "20231206T114500";
   private String end = "20231208T154500";
   private Mode mode = Mode.THUNDERBIRD;
