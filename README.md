@@ -58,7 +58,7 @@ packages, and then starts the services.
    $ mvn install -DskipTests
    ```
 2. Build packages using [build_packages.sh](build_packages.sh):
-    ```shell
+   ```shell
     $ ./build_packages.sh
     ```
 3. Navigate to the [docker/single-server](docker/single-server) directory:

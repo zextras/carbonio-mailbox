@@ -8,6 +8,9 @@
       "name": "appserver-conf"
     },
     {
+      "name": "appserver-db"
+    },
+    {
       "name": "appserver-service"
     },
     {
