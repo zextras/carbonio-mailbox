@@ -49,6 +49,7 @@ services:
       MARIADB_PASSWORD: zextras
       MARIADB_ROOT_PASSWORD: zimbra
     volumes:
-      - "../../store/utils/docker/carbonio-db/scripts:/docker-entrypoint-initdb.d"
+      - "../../store/db/db.sql:/docker-entrypoint-initdb.d/01-db.sql"
+      - "../../store/db/docker_update_config_db_and_index_version.sql:/docker-entrypoint-initdb.d/02-docker_update_config_db_and_index_version.sql"
     ports:
       - "3306:3306"
