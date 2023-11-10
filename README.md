@@ -26,46 +26,48 @@ This repository contains the source code of Carbonio Mailbox which consists of s
  `mvn install`
 
 
-## Run Locally for development
-There are 2 alternatives to run Carbonio Mailbox locally.
+## Run Carbonio Mailbox locally (for Development)
+Following guide provides two different ways to run Carbonio Mailbox locally for Development:
 
 ### 1. Full Carbonio Mailbox
-It builds and installs the carbonio mailbox packages. Then it starts the services.
+This option compiles the code, packages the artifacts, installs all the built Carbonio Mailbox
+packages, and then starts the services.
 
 1. Build the project:
    ```shell
-   mvn install -DskipTests
+   $ mvn install -DskipTests
    ```
-2. Build packages locally [build_packages.sh](build_packages.sh)
+2. Build packages using [build_packages.sh](build_packages.sh):
     ```shell
-    ./build_packages.sh
+    $ ./build_packages.sh
     ```
-3. Enter in [docker/single-server](docker/single-server) folder
+3. Enter in [docker/single-server](docker/single-server) directory:
     ```shell
-    cd ./docker/single-server
+    $ cd ./docker/single-server
     ```
 4. Run it:
    ```shell
-   docker compose up
+   $ docker compose up
    ```
 
-### 2. Minimal jetty instance
-It builds and starts a minimal setup with only SOAP and REST APIs.
+### 2. Minimal Jetty Instance
+This option compiles the code and launches the mailbox with a minimal setup, ideal for developing
+and testing SOAP and REST APIs exposed by Mailbox.
 
-1. Build the project running one of the following commands:
+1. Build the project using local mvn command (skipping tests `-DskipTests`):
    ```shell
-   mvn install -DskipTests
+   $ mvn install -DskipTests
    ```
-   or
+   or build the project using docker container:
    ```shell
-   docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
+   $ docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
    ```
-2. Enter in [docker/jetty-run](docker/jetty-run) folder
+2. Enter in [docker/jetty-run](docker/jetty-run) directory:
     ```shell
-    cd ./docker/jetty-run
+    $ cd ./docker/jetty-run
     ```
-3. Run it
-    ```
+3. Run it:
+    ```shell
     $ docker compose up
     ```
 
