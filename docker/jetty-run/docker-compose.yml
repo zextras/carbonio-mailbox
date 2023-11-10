@@ -50,6 +50,6 @@ services:
       MARIADB_ROOT_PASSWORD: zimbra
     volumes:
       - "../../store/db/db.sql:/docker-entrypoint-initdb.d/01-db.sql"
-      - "../../store/db/docker_update_config_db_and_index_version.sql:/docker-entrypoint-initdb.d/02-docker_update_config_db_and_index_version.sql"
+      - "../../store/target/versions-init.sql:/docker-entrypoint-initdb.d/02-versions-init.sql"
     ports:
       - "3306:3306"
