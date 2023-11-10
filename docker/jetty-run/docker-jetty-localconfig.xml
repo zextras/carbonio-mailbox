@@ -14,7 +14,7 @@
     <value>.</value>
   </key>
   <key name="create_db_sql_file">
-    <value>./conf/db/create_database.sql</value>
+    <value>./db/create_database.sql</value>
   </key>
   <key name="zimbra_server_hostname">
     <value>docker.app.local</value>
