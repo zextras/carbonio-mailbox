@@ -6,25 +6,45 @@
 
 Mailbox is the core component of Carbonio.
 
-This repository contains the source code of Carbonio Mailbox which consists of several subcomponents and their roles are as follows
+This repository contains the source code of Carbonio Mailbox which consists of several subcomponents
+and their roles:
 
 - **client**: client package to interact with the mailbox
 - **common**: package providing classes of common use, like utilities, clients and common parameters
 - **native**: package to load native libraries
 - **soap**: package describing SOAP APIs and tools to generate wsdl documentation
-- **store**: WAR package that defines the service. It also includes core functionalities like SOAP APIs, LDAP, Krb5, IMAP, POP3 and CLI functions
+- **store**: WAR package that defines the service. It also includes core functionalities like SOAP
+APIs, LDAP, Krb5, IMAP, POP3 and CLI functions
 
 ## Building Carbonio Mailbox from source
 
-- Build Requirements:
-  - JDK version 11, to confirm run `javac -version`
-- Clone the carbonio-mailbox repository:
-  `git clone https://github.com/Zextras/carbonio-mailbox.git`
-- Enter into source directory:
-  `cd carbonio-mailbox/`
-- Build the code:
- `mvn install`
+### 1. Build using local mvn command
 
+1. Build Requirements:
+Ensure you have JDK version 11 installed. Confirm by running:
+   ```shell
+   $ javac -version
+   ```
+  
+2. Clone the Carbonio Mailbox Repository:
+   ```shell
+   $ git clone https://github.com/Zextras/carbonio-mailbox.git
+   ```
+
+3. Navigate to the Source Directory:
+   ```shell
+   $ cd carbonio-mailbox/
+   ```
+
+4. Build the Code:
+   ```shell
+   $ mvn install
+   ```
+
+### 2. Build the source code inside a docker container
+```shell
+$ docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
+```
 
 ## Run Carbonio Mailbox locally (for Development)
 Following guide provides two different ways to run Carbonio Mailbox locally for Development:
@@ -41,7 +61,7 @@ packages, and then starts the services.
     ```shell
     $ ./build_packages.sh
     ```
-3. Enter in [docker/single-server](docker/single-server) directory:
+3. Navigate to the [docker/single-server](docker/single-server) directory:
     ```shell
     $ cd ./docker/single-server
     ```
@@ -62,7 +82,7 @@ and testing SOAP and REST APIs exposed by Mailbox.
    ```shell
    $ docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
    ```
-2. Enter in [docker/jetty-run](docker/jetty-run) directory:
+2. Navigate to the [docker/jetty-run](docker/jetty-run) directory:
     ```shell
     $ cd ./docker/jetty-run
     ```
@@ -73,8 +93,11 @@ and testing SOAP and REST APIs exposed by Mailbox.
 
 ## Contribute to Carbonio Mailbox
 
-All contributions are accepted! Please refer to the CONTRIBUTING file (if present in this repository) for more details on how to contribute. If the repository has a Code of Conduct, we kindly ask to follow that as well.
+All contributions are accepted! Please refer to the CONTRIBUTING file (if present in this repository)
+for more detail on how to contribute. If the repository has a Code of Conduct, 
+we kindly ask to follow that as well.
 
-## License
+## License(s)
 
-See [COPYING](COPYING-AGPL-3.0-only) file for details
+See [COPYING-AGPL-3.0-only](COPYING-AGPL-3.0-only) and [COPYING-GPL-2.0-only](COPYING-GPL-2.0-only) 
+file for detail.
