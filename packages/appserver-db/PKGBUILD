@@ -1,0 +1,32 @@
+pkgname="carbonio-appserver-db"
+pkgver="4.10.0"
+pkgrel="1"
+pkgdesc="Carbonio Appserver DB Files"
+arch=('x86_64')
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="mail"
+priority="optional"
+
+depends=(
+  "carbonio-core"
+)
+
+makedepends=(
+  "rsync"
+)
+
+package() {
+  cd "${srcdir}"/../../staging
+
+  install -D "store/target/versions-init.sql" \
+    "${pkgdir}/opt/zextras/db/versions-init.sql"
+  install -D "store/db/db.sql" \
+      "${pkgdir}/opt/zextras/db/db.sql"
+  install -D "store/db/create_database.sql" \
+        "${pkgdir}/opt/zextras/db/create_database.sql"
+
+  mkdir -p "${pkgdir}/opt/zextras/libexec/scripts/migrations"
+  rsync -a "store/db/migration/" \
+      "${pkgdir}/opt/zextras/libexec/scripts/migrations"
+}
