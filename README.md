@@ -58,16 +58,18 @@ packages, and then starts the services.
    $ mvn install -DskipTests
    ```
 2. Build packages using [build_packages.sh](build_packages.sh):
+   The following commands will build the packages for ubuntu-focal, see 
+   [build_packages.sh](build_packages.sh) for other supported targets.
    ```shell
-    $ ./build_packages.sh
+    $ ./build_packages.sh ubuntu-focal
     ```
 3. Navigate to the [docker/single-server](docker/single-server) directory:
     ```shell
     $ cd ./docker/single-server
     ```
-4. Run it:
+4. Start Carbonio-CE `Ubuntu Focal` docker image with built Carbonio Mailbox packages:
    ```shell
-   $ docker compose up
+   $ docker compose --profile ubuntu-focal up 
    ```
 
 ### 2. Minimal Jetty Instance
