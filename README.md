@@ -69,8 +69,9 @@ packages, and then starts the services.
     ```
 4. Start Carbonio-CE `Ubuntu Focal` docker image with built Carbonio Mailbox packages:
    ```shell
-   $ docker compose --profile ubuntu-focal up 
+   $ docker compose --profile ubuntu-focal up --build
    ```
+   **NB**: don't forget to use the `--build` flag, otherwise it will not load the new changes
 
 ### 2. Minimal Jetty Instance
 This option compiles the code and launches the mailbox with a minimal setup, ideal for developing
