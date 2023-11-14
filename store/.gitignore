@@ -10,3 +10,6 @@ build/
 bin/
 .DS_Store
 lib/
+
+data/mailboxd/
+redolog/

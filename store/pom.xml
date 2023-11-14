@@ -662,15 +662,12 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
         <configuration>
-          <httpConnector>
-            <!--Carbonio default policy allows API calls to be received on port 7070 -->
-            <port>7070</port>
-          </httpConnector>
+          <jettyXml>jetty.xml</jettyXml>
           <scanIntervalSeconds>30</scanIntervalSeconds>
           <dumpOnStart>true</dumpOnStart>
           <webApp>
             <descriptor>${project.basedir}/conf/web.xml</descriptor>
-            <contextPath>/</contextPath>
+            <contextPath>/service/</contextPath>
           </webApp>
           <systemProperties>
             <systemProperty>
