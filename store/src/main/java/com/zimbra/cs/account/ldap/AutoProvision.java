@@ -22,7 +22,6 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.Address;
 import javax.mail.MessagingException;
-import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -67,10 +66,14 @@ import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.ldap.ZSearchResultEntry;
 import com.zimbra.cs.ldap.ZSearchScope;
 import com.zimbra.cs.util.AccountUtil;
-import com.zimbra.cs.util.JMSession;
 
 public abstract class AutoProvision {
 
+    private static final String AT_SIGN = "@";
+    private static final int DOMAIN_INDEX = 1;
+    private static final int EMAIL_INDEX = 0;
+    private static final String SEARCH_BY_MAIL = "mail";
+    private static final String SEARCH_BY_USER_PRINCIPAL_NAME = "userPrincipalName";
     protected LdapProv prov;
     protected Domain domain;
 
@@ -252,32 +255,58 @@ public abstract class AutoProvision {
     /**
      * map external name to zimbra name for the account to be created in Zimbra.
      *
-     * @param externalAttrs
-     * @return
+     * @param externalAttrs ZAttributes
+     * @return String
      * @throws ServiceException
      */
     protected String mapName(ZAttributes externalAttrs, String loginName)
     throws ServiceException {
-        String localpart = null;
+        String localPartAttr = domain.getAutoProvAccountNameMap();
 
-        String localpartAttr = domain.getAutoProvAccountNameMap();
-        if (localpartAttr != null) {
-            localpart = externalAttrs.getAttrString(localpartAttr);
-            if (localpart == null) {
-                throw ServiceException.FAILURE(
-                        "AutoProvision: unable to get localpart: " + loginName, null);
-            }
-        } else {
+        if (localPartAttr == null) {
+
             if (loginName == null) {
                 throw ServiceException.FAILURE(
                         "AutoProvision: unable to map acount name, must configure " +
-                        Provisioning.A_zimbraAutoProvAccountNameMap, null);
+                        Provisioning.A_zimbraAutoProvAccountNameMap);
             }
-            EmailAddress emailAddr = new EmailAddress(loginName, false);
-            localpart = emailAddr.getLocalPart();
+
+            return new EmailAddress(loginName, false).getLocalPart() + AT_SIGN + domain.getName();
         }
 
-        return localpart + "@" + domain.getName();
+        String localPart = externalAttrs.getAttrString(localPartAttr);
+
+        if (localPart == null) {
+            throw ServiceException.FAILURE("AutoProvision: unable to get localPart: " + loginName);
+        }
+
+        if (localPart.contains(AT_SIGN)) {
+            String[] localPartArr = localPart.split(AT_SIGN);
+
+            if (localPartArr.length > DOMAIN_INDEX) {
+
+                switch (localPartAttr) {
+
+                    case SEARCH_BY_MAIL:
+
+                        if (domain.getName().equals(localPartArr[DOMAIN_INDEX])) {
+                            localPart = localPartArr[EMAIL_INDEX];
+
+                        } else {
+                            throw ServiceException.FAILURE(localPart + " can not be provisioned for domain " + domain.getName());
+                        }
+
+                        break;
+
+                    case SEARCH_BY_USER_PRINCIPAL_NAME:
+                        localPart = localPartArr[EMAIL_INDEX];
+                        break;
+                }
+            }
+
+        }
+
+        return localPart + AT_SIGN + domain.getName();
 
     }
 
