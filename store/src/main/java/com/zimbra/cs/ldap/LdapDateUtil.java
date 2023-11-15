@@ -42,7 +42,7 @@ public class LdapDateUtil {
         return toGeneralizedTime(date, ZIMBRA_LDAP_GENERALIZED_TIME_FORMAT_WITH_MS);
     }
 
-    private static String toGeneralizedTime(Date date, String format) {
+    public static String toGeneralizedTime(Date date, String format) {
         SimpleDateFormat fmt = new SimpleDateFormat(format);
         TimeZone tz = fmt.getCalendar().getTimeZone();
         Date gmtDate;
