@@ -10123,4 +10123,8 @@ TODO: delete them permanently from here
   <globalConfigValue>900</globalConfigValue>
   <desc>Waiting for data from a client socket connected to ClamAV will timeout after this time (seconds)</desc>
 </attr>
+<attr id="3141" name="carbonioAutoProvTimestampFormat" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" callback="CheckAutoProvTimestampFormat" since="23.12.0">
+  <globalConfigValue>yyyyMMddHHmmss.SSS'Z'</globalConfigValue>
+  <desc>AD/Ldap timestamp format</desc>
+</attr>
 </attrs>
