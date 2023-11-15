@@ -2863,6 +2863,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAmavisDisableVirusCheck = "carbonioAmavisDisableVirusCheck";
 
     /**
+     * AD/LDAP timestamp format
+     *
+     * @since ZCS 23.12.0
+     */
+    @ZAttr(id=3141)
+    public static final String A_carbonioAutoProvTimestampFormat = "carbonioAutoProvTimestampFormat";
+
+    /**
      * Database Custom Urls for freshclam configuration file.
      *
      * @since ZCS 23.1.0

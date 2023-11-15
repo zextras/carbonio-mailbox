@@ -982,6 +982,78 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
+     * AD/LDAP timestamp format
+     *
+     * @return carbonioAutoProvTimestampFormat, or "yyyyMMddHHmmss.SSS'Z'" if unset
+     *
+     * @since ZCS 23.12.0
+     */
+    @ZAttr(id=3141)
+    public String getCarbonioAutoProvTimestampFormat() {
+        return getAttr(ZAttrProvisioning.A_carbonioAutoProvTimestampFormat, "yyyyMMddHHmmss.SSS'Z'", true);
+    }
+
+    /**
+     * AD/LDAP timestamp format
+     *
+     * @param carbonioAutoProvTimestampFormat new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.12.0
+     */
+    @ZAttr(id=3141)
+    public void setCarbonioAutoProvTimestampFormat(String carbonioAutoProvTimestampFormat) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimestampFormat, carbonioAutoProvTimestampFormat);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * AD/LDAP timestamp format
+     *
+     * @param carbonioAutoProvTimestampFormat new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.12.0
+     */
+    @ZAttr(id=3141)
+    public Map<String,Object> setCarbonioAutoProvTimestampFormat(String carbonioAutoProvTimestampFormat, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimestampFormat, carbonioAutoProvTimestampFormat);
+        return attrs;
+    }
+
+    /**
+     * AD/LDAP timestamp format
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 23.12.0
+     */
+    @ZAttr(id=3141)
+    public void unsetCarbonioAutoProvTimestampFormat() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimestampFormat, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * AD/LDAP timestamp format
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 23.12.0
+     */
+    @ZAttr(id=3141)
+    public Map<String,Object> unsetCarbonioAutoProvTimestampFormat(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimestampFormat, "");
+        return attrs;
+    }
+
+    /**
      * Logo URL for domain
      *
      * @return carbonioLogoUrl, or "https://www.zextras.com" if unset
