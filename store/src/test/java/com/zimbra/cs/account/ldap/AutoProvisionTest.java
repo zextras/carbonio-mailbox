@@ -5,17 +5,20 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.ZAttributes;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AutoProvisionTest {
+class AutoProvisionTest {
 
     @Test
-    void mapName_should_throw_service_exception_when_externalAttrs_loocalpart_is_null() {
+    void mapName_should_throw_service_exception_when_externalAttrs_localpart_is_null() {
         Domain domain = mock(Domain.class);
         ZAttributes zAttributes = mock(ZAttributes.class);
         when(domain.getAutoProvAccountNameMap()).thenReturn("x");
@@ -48,7 +51,7 @@ public class AutoProvisionTest {
                 }.mapName(zAttributes, null),
                 "Expected mapName() to throw, but it didn't"
         );
-        assertEquals("system failure: AutoProvision: unable to map acount name, must configure zimbraAutoProvAccountNameMap"
+        assertEquals("system failure: AutoProvision: unable to map account name, must configure zimbraAutoProvAccountNameMap"
                 , serviceException.getMessage());
 
     }
@@ -89,52 +92,28 @@ public class AutoProvisionTest {
 
     }
 
-    @Test
-    void mapName_should_return_email_when_searchByMail_and_domain_is_same() throws ServiceException {
+    @DisplayName("mapName should return email when account name is mapped with mail, userPrincipalName and other")
+    @ParameterizedTest(name = "autoProvAccountNameMap={0}, attrValue={1}, domainName={2}")
+    @CsvSource({
+            "mail, x@abc.com, abc.com",
+            "userPrincipalName, x@abc.com, abc.com",
+            "other, x, abc.com"
+    })
+    void mapName_should_return_email_when_domain_is_same(String autoProvAccountNameMap,
+                                                         String attrValue, String domainName)
+            throws ServiceException {
         Domain domain = mock(Domain.class);
         ZAttributes zAttributes = mock(ZAttributes.class);
-        when(domain.getAutoProvAccountNameMap()).thenReturn("mail");
-        when(zAttributes.getAttrString("mail")).thenReturn("x@abc.com");
-        when(domain.getName()).thenReturn("abc.com");
-        assertEquals("x@abc.com", new AutoProvision(null, domain) {
-                    @Override
-                    Account handle() throws ServiceException {
-                        return null;
-                    }
-                }.mapName(zAttributes, null));
+        when(domain.getAutoProvAccountNameMap()).thenReturn(autoProvAccountNameMap);
+        when(zAttributes.getAttrString(autoProvAccountNameMap)).thenReturn(attrValue);
+        when(domain.getName()).thenReturn(domainName);
 
-    }
-
-    @Test
-    void mapName_should_return_email_when_searchByUserPrinciple_and_domain_is_same() throws ServiceException {
-        Domain domain = mock(Domain.class);
-        ZAttributes zAttributes = mock(ZAttributes.class);
-        when(domain.getAutoProvAccountNameMap()).thenReturn("userPrincipalName");
-        when(zAttributes.getAttrString("userPrincipalName")).thenReturn("x@abc.com");
-        when(domain.getName()).thenReturn("abc.com");
         assertEquals("x@abc.com", new AutoProvision(null, domain) {
             @Override
-            Account handle() throws ServiceException {
+            Account handle() {
                 return null;
             }
         }.mapName(zAttributes, null));
-
-    }
-
-    @Test
-    void mapName_should_return_email_when_searchByOthere_and_domain_is_same() throws ServiceException {
-        Domain domain = mock(Domain.class);
-        ZAttributes zAttributes = mock(ZAttributes.class);
-        when(domain.getAutoProvAccountNameMap()).thenReturn("other");
-        when(zAttributes.getAttrString("other")).thenReturn("x");
-        when(domain.getName()).thenReturn("abc.com");
-        assertEquals("x@abc.com", new AutoProvision(null, domain) {
-            @Override
-            Account handle() throws ServiceException {
-                return null;
-            }
-        }.mapName(zAttributes, null));
-
     }
 
 }

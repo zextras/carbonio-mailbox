@@ -260,54 +260,38 @@ public abstract class AutoProvision {
      * @throws ServiceException
      */
     protected String mapName(ZAttributes externalAttrs, String loginName)
-    throws ServiceException {
+            throws ServiceException {
         String localPartAttr = domain.getAutoProvAccountNameMap();
-
         if (localPartAttr == null) {
-
             if (loginName == null) {
                 throw ServiceException.FAILURE(
-                        "AutoProvision: unable to map acount name, must configure " +
-                        Provisioning.A_zimbraAutoProvAccountNameMap);
+                        "AutoProvision: unable to map account name, must configure " +
+                                Provisioning.A_zimbraAutoProvAccountNameMap);
             }
-
             return new EmailAddress(loginName, false).getLocalPart() + AT_SIGN + domain.getName();
         }
-
         String localPart = externalAttrs.getAttrString(localPartAttr);
-
         if (localPart == null) {
             throw ServiceException.FAILURE("AutoProvision: unable to get localPart: " + loginName);
         }
-
         if (localPart.contains(AT_SIGN)) {
             String[] localPartArr = localPart.split(AT_SIGN);
-
             if (localPartArr.length > DOMAIN_INDEX) {
-
                 switch (localPartAttr) {
-
                     case SEARCH_BY_MAIL:
-
                         if (domain.getName().equals(localPartArr[DOMAIN_INDEX])) {
                             localPart = localPartArr[EMAIL_INDEX];
-
                         } else {
                             throw ServiceException.FAILURE(localPart + " can not be provisioned for domain " + domain.getName());
                         }
-
                         break;
-
                     case SEARCH_BY_USER_PRINCIPAL_NAME:
                         localPart = localPartArr[EMAIL_INDEX];
                         break;
                 }
             }
-
         }
-
         return localPart + AT_SIGN + domain.getName();
-
     }
 
     protected Map<String, Object> mapAttrs(ZAttributes externalAttrs)
