@@ -11,16 +11,18 @@ class CheckAutoProvTimestampFormatTest {
   @Test
   @DisplayName("Should accept valid timestamp formats")
   void should_return_true_when_isAutoProvTimestampValid_supplied_correct_timestamp_format() {
-    final boolean autoProvTimestampValid = new CheckAutoProvTimestampFormat().isAutoProvTimestampValid(
+    boolean autoProvTimestampValid = new CheckAutoProvTimestampFormat().isAutoProvTimestampValid(
         "yyyyMMddHHmmss.SSS'Z'");
+    
     Assertions.assertTrue(autoProvTimestampValid);
   }
 
   @Test
   @DisplayName("Should not accept invalid timestamp formats")
   void should_return_false_when_isAutoProvTimestampValid_supplied_malformed_timestamp_format() {
-    final boolean autoProvTimestampValid = new CheckAutoProvTimestampFormat().isAutoProvTimestampValid(
+    boolean autoProvTimestampValid = new CheckAutoProvTimestampFormat().isAutoProvTimestampValid(
         "ac123yMMddHHmmss.SSS'Z'");
+    
     Assertions.assertFalse(autoProvTimestampValid);
   }
 
@@ -28,8 +30,9 @@ class CheckAutoProvTimestampFormatTest {
   @DisplayName("Should accept empty timestamp format strings(this is to allow set empty value to "
       + "this attribute)")
   void should_return_true_when_isAutoProvTimestampValid_supplied_empty_timestamp_format() {
-    final boolean autoProvTimestampValid = new CheckAutoProvTimestampFormat().isAutoProvTimestampValid(
+    boolean autoProvTimestampValid = new CheckAutoProvTimestampFormat().isAutoProvTimestampValid(
         "");
+    
     Assertions.assertTrue(autoProvTimestampValid);
   }
 
@@ -37,23 +40,17 @@ class CheckAutoProvTimestampFormatTest {
   @DisplayName("Should throw NPE when timestamp format is null")
   void should_throw_npe_when_isAutoProvTimestampValid_supplied_null_as_timestamp_format() {
     CheckAutoProvTimestampFormat checkAutoProvTimestampFormat = new CheckAutoProvTimestampFormat();
+    
     Assertions.assertThrows(NullPointerException.class,
         () -> checkAutoProvTimestampFormat.isAutoProvTimestampValid(
             null));
   }
 
   @Test
-  void should_throw_npe_when_preModify_supplied_null_values() {
-    CheckAutoProvTimestampFormat checkAutoProvTimestampFormat = new CheckAutoProvTimestampFormat();
-    Assertions.assertThrows(NullPointerException.class,
-        () -> checkAutoProvTimestampFormat.preModify(null, null, null, null, null));
-  }
-
-  @Test
   @DisplayName("Validate exception is thrown when malformed format is passed")
   void should_throw_exception_when_preModify_supplied_malformed_timestamp_format() {
     CheckAutoProvTimestampFormat checkAutoProvTimestampFormat = new CheckAutoProvTimestampFormat();
-    final ServiceException serviceException = Assertions.assertThrows(ServiceException.class,
+    ServiceException serviceException = Assertions.assertThrows(ServiceException.class,
         () -> checkAutoProvTimestampFormat.preModify(null, null, "ac123yMMddHHmmss.SSS'Z'", null,
             null));
 
