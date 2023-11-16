@@ -186,7 +186,7 @@ public class AutoProvisionEager extends AutoProvision {
         //       See how TestLdapProvAutoProvision.eagerMode() does it.
         //
         if (!hitSizeLimitExceededException) {
-            String lastPolledAt = LdapDateUtil.toGeneralizedTimeWithMs(new Date(polledAt));
+            String lastPolledAt = LdapDateUtil.toGeneralizedTime(new Date(polledAt), domain.getCarbonioAutoProvTimestampFormat());
             ZimbraLog.autoprov.info("Auto Provisioning has finished for now, setting last polled timestamp: " + lastPolledAt);
             domain.setAutoProvLastPolledTimestampAsString(lastPolledAt);
         }
