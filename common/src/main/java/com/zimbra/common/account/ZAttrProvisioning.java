@@ -2863,7 +2863,8 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAmavisDisableVirusCheck = "carbonioAmavisDisableVirusCheck";
 
     /**
-     * AD/LDAP timestamp format
+     * AD/LDAP timestamp format. For example:
+     * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
      * @since ZCS 23.12.0
      */

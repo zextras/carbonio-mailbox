@@ -1241,7 +1241,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * AD/LDAP timestamp format
+     * AD/LDAP timestamp format. For example:
+     * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
      * @return carbonioAutoProvTimestampFormat, or "yyyyMMddHHmmss.SSS'Z'" if unset
      *
@@ -1253,7 +1254,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * AD/LDAP timestamp format
+     * AD/LDAP timestamp format. For example:
+     * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
      * @param carbonioAutoProvTimestampFormat new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -1268,7 +1270,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * AD/LDAP timestamp format
+     * AD/LDAP timestamp format. For example:
+     * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
      * @param carbonioAutoProvTimestampFormat new value
      * @param attrs existing map to populate, or null to create a new map
@@ -1284,7 +1287,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * AD/LDAP timestamp format
+     * AD/LDAP timestamp format. For example:
+     * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -1298,7 +1302,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * AD/LDAP timestamp format
+     * AD/LDAP timestamp format. For example:
+     * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
