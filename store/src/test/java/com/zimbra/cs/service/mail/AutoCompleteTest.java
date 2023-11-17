@@ -26,7 +26,6 @@ import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.mail.message.AutoCompleteRequest;
 import com.zimbra.soap.mail.message.AutoCompleteResponse;
 import com.zimbra.soap.mail.message.CreateContactRequest;
-import com.zimbra.soap.mail.message.FullAutocompleteResponse;
 import com.zimbra.soap.mail.type.ContactSpec;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -100,7 +99,7 @@ public class AutoCompleteTest {
  }
 
   @Test
-  @DisplayName("Account 1 Executes FullAutocomplete requesting account 2, without READ permission on ROOT, get 500 permission denied.")
+  @DisplayName("Account 1, without READ permission on ROOT, requests account 2 contacts, get 500 permission denied.")
   void shouldThrowCannotAccessAccountFolderIfNoReadGrant() throws Exception {
     final String prefix = "test-";
     final Account account1 = accountCreatorFactory.get().create();
@@ -152,7 +151,7 @@ public class AutoCompleteTest {
     final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
         StandardCharsets.UTF_8);
     final AutoCompleteResponse autoCompleteResponse = JaxbUtil.elementToJaxb(Element.parseXML(responseBody).getElement("Body").getElement(
-        MailConstants.AUTO_COMPLETE_RESPONSE),FullAutocompleteResponse.class);
+        MailConstants.AUTO_COMPLETE_RESPONSE), AutoCompleteResponse.class);
     Assertions.assertEquals(2, autoCompleteResponse.getMatches().size());
     Assertions.assertEquals(HttpStatus.SC_OK, execute.getStatusLine().getStatusCode());
   }
