@@ -8,6 +8,18 @@ def mvnCmd(String cmd) {
     }
     sh 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
 }
+def buildDebPackages(String flavor) {
+    unstash 'staging'
+    sh 'cp -r staging /tmp'
+    sh 'sudo yap build ' + flavor + ' /tmp/staging/packages'
+    stash includes: 'artifacts/*.deb', name: 'artifacts-' + flavor
+}
+def buildRpmPackages(String flavor) {
+    unstash 'staging'
+    sh 'cp -r staging /tmp'
+    sh 'sudo yap build ' + flavor + ' /tmp/staging/packages'
+    stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-' + flavor
+}
 
 pipeline {
     agent {
@@ -145,10 +157,7 @@ pipeline {
                         }
                     }
                     steps {
-                        unstash 'staging'
-                        sh 'cp -r staging /tmp'
-                        sh 'sudo yap build ubuntu-focal /tmp/staging/packages'
-                        stash includes: 'artifacts/*.deb', name: 'artifacts-ubuntu-focal'
+                        buildDebPackages("ubuntu-focal")
                     }
                     post {
                         always {
@@ -163,10 +172,7 @@ pipeline {
                         }
                     }
                     steps {
-                        unstash 'staging'
-                        sh 'cp -r staging /tmp'
-                        sh 'sudo yap build ubuntu-jammy /tmp/staging/packages'
-                        stash includes: 'artifacts/*.deb', name: 'artifacts-ubuntu-jammy'
+                        buildDebPackages("ubuntu-jammy")
                     }
                     post {
                         always {
@@ -181,10 +187,7 @@ pipeline {
                         }
                     }
                     steps {
-                        unstash 'staging'
-                        sh 'cp -r staging /tmp'
-                        sh 'sudo yap build rocky-8 /tmp/staging/packages'
-                        stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-rocky-8'
+                        buildRpmPackages("rocky-8")
                     }
                     post {
                         always {
@@ -199,10 +202,7 @@ pipeline {
                         }
                     }
                     steps {
-                        unstash 'staging'
-                        sh 'cp -r staging /tmp'
-                        sh 'sudo yap build rocky-9 /tmp/staging/packages'
-                        stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-rocky-9'
+                        buildRpmPackages("rocky-9")
                     }
                     post {
                         always {
