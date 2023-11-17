@@ -8,9 +8,11 @@ import static com.zextras.mailbox.util.MailboxTestUtil.SERVER_NAME;
 
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
@@ -24,12 +26,14 @@ import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.mail.message.AutoCompleteRequest;
 import com.zimbra.soap.mail.message.CreateContactRequest;
 import com.zimbra.soap.mail.message.FullAutocompleteRequest;
+import com.zimbra.soap.mail.message.FullAutocompleteResponse;
 import com.zimbra.soap.mail.type.ContactSpec;
 import com.zimbra.soap.mail.type.NewContactAttr;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
@@ -82,38 +86,105 @@ class FullAutoCompleteTest {
 
   @AfterAll
   static void afterAll() throws Exception {
+    server.stop();
     MailboxTestUtil.tearDown();
   }
 
 
   @Test
   void shouldReturnContactsOfAuthenticatedUserOnly() throws Exception {
+    final String domain = "abc.com";
+    final String prefix = "test-";
     final Account account = MailboxTestUtil.createRandomAccountForDefaultDomain();
-    final String contactEmail = "test@abc.com";
-    final AutoCompleteRequest autoCompleteRequest = new AutoCompleteRequest(contactEmail);
-    String soapUrl = URLUtil.getSoapURL(account.getServer(), true);
+    doCreateContact(account, prefix + UUID.randomUUID() + "@" + domain);
+    doCreateContact(account, prefix + UUID.randomUUID() + "@" + domain);
+    final AutoCompleteRequest autoCompleteRequest = new AutoCompleteRequest(prefix);
     final FullAutocompleteRequest fullAutocompleteRequest = new FullAutocompleteRequest(autoCompleteRequest);
 
-    final ContactSpec contactSpec = new ContactSpec();
-    contactSpec.addAttr(NewContactAttr.fromNameAndValue("email", contactEmail));
-
-    // create contact
-    final CreateContactRequest createContactRequest = new CreateContactRequest(contactSpec);
-    final Element requestContact = JaxbUtil.jaxbToElement(createContactRequest);
-    final HttpResponse contactResponse = doExecuteSoap(account, soapUrl, requestContact);
-    Assertions.assertEquals(HttpStatus.SC_OK, contactResponse.getStatusLine().getStatusCode(), "API: Was unable to create contact " + contactEmail + " for account " + account.getId());
-
-    // make the call
     final Element request = JaxbUtil.jaxbToElement(fullAutocompleteRequest);
-    final HttpResponse execute = doExecuteSoap(account, soapUrl, request);
+    final HttpResponse execute = doExecuteSoap(account, request);
     Assertions.assertEquals(HttpStatus.SC_OK, execute.getStatusLine().getStatusCode());
     final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
         StandardCharsets.UTF_8);
+    final Element rootElement = Element.parseXML(responseBody).getElement("Body").getElement(
+        MailConstants.FULL_AUTO_COMPLETE_RESPONSE);
+    final FullAutocompleteResponse fullAutocompleteResponse = JaxbUtil.elementToJaxb(rootElement,
+        FullAutocompleteResponse.class);
     System.out.println("Received: " + responseBody);
+    Assertions.assertEquals(2, fullAutocompleteResponse.getMatches().size());
   }
 
-  private HttpResponse doExecuteSoap(Account account, String soapUrl, Element soapBody) throws Exception {
+  @Test
+  void shouldReturnContactsOfAuthenticatedUserAndRequestedAccounts() throws Exception {
+
+    final String prefix = "test-";
+    final Account account = new AccountCreator(provisioning).withUsername(prefix + "user1-" + UUID.randomUUID()).create();
+    doCreateContact(account, prefix + UUID.randomUUID() + "something.com");
+
+    final Account account2 = new AccountCreator(provisioning).withUsername(prefix + "user2-" + UUID.randomUUID()).create();
+    MailboxTestUtil.doShareAccount(account2, account);
+    doCreateContact(account2, prefix + UUID.randomUUID() + "something.com");
+
+    final Account account3 = new AccountCreator(provisioning).withUsername(prefix + "user3-" + UUID.randomUUID()).create();
+    MailboxTestUtil.doShareAccount(account3, account);
+    doCreateContact(account3, prefix + UUID.randomUUID() + "something.com");
+    doCreateContact(account3, prefix + UUID.randomUUID() + "something.com");
+
+    final AutoCompleteRequest autoCompleteRequest = new AutoCompleteRequest(prefix);
+
+    final FullAutocompleteRequest fullAutocompleteRequest = new FullAutocompleteRequest(autoCompleteRequest);
+    fullAutocompleteRequest.addAccount(account2.getId());
+    fullAutocompleteRequest.addAccount(account3.getId());
+
+    // make the call
+    final Element request = JaxbUtil.jaxbToElement(fullAutocompleteRequest);
+    final HttpResponse execute = doExecuteSoap(account, request);
+    final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
+        StandardCharsets.UTF_8);
+    System.out.println("Received: " + responseBody);
+    Assertions.assertEquals(HttpStatus.SC_OK, execute.getStatusLine().getStatusCode());
+    final Element rootElement = Element.parseXML(responseBody).getElement("Body").getElement(
+        MailConstants.FULL_AUTO_COMPLETE_RESPONSE);
+    final FullAutocompleteResponse fullAutocompleteResponse = JaxbUtil.elementToJaxb(rootElement,
+        FullAutocompleteResponse.class);
+    Assertions.assertEquals(4, fullAutocompleteResponse.getMatches().size());
+  }
+
+  @Test
+  void shouldThrowCannotAccessAccountIfNoGrantsGiven() throws Exception {
+    final String prefix = "test-";
+    final String commonContact = prefix + UUID.randomUUID() + "@abc.com";
+    final Account account = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    doCreateContact(account, commonContact);
+    final Account account2 = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    doCreateContact(account2, commonContact);
+    doCreateContact(account2, prefix + UUID.randomUUID() + "something.com");
+    final AutoCompleteRequest autoCompleteRequest = new AutoCompleteRequest(commonContact);
+
+    final FullAutocompleteRequest fullAutocompleteRequest = new FullAutocompleteRequest(autoCompleteRequest);
+    fullAutocompleteRequest.addAccount(account2.getId());
+
+    // make the call
+    final Element request = JaxbUtil.jaxbToElement(fullAutocompleteRequest);
+    final HttpResponse execute = doExecuteSoap(account, request);
+    final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
+        StandardCharsets.UTF_8);
+    System.out.println("Received: " + responseBody);
+    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, execute.getStatusLine().getStatusCode());
+    Assertions.assertTrue(responseBody.contains("permission denied: can not access account " + account2.getId()));
+  }
+
+  private HttpResponse doCreateContact(Account account, String contactEmail) throws Exception {
+    final ContactSpec contactSpec = new ContactSpec();
+    contactSpec.addAttr(NewContactAttr.fromNameAndValue("email", contactEmail));
+    final CreateContactRequest createContactRequest = new CreateContactRequest(contactSpec);
+    final Element request = JaxbUtil.jaxbToElement(createContactRequest);
+    return doExecuteSoap(account, request);
+  }
+
+  private HttpResponse doExecuteSoap(Account account, Element soapBody) throws Exception {
     AuthToken authToken = AuthProvider.getAuthToken(account);
+    final String soapUrl = URLUtil.getSoapURL(account.getServer(), true);
     BasicCookieStore cookieStore = new BasicCookieStore();
     BasicClientCookie cookie =
         new BasicClientCookie(ZimbraCookie.authTokenCookieName(false), authToken.getEncoded());

@@ -17,7 +17,6 @@ import com.zimbra.soap.mail.message.AutoCompleteResponse;
 import com.zimbra.soap.mail.message.FullAutocompleteRequest;
 import com.zimbra.soap.mail.message.FullAutocompleteResponse;
 import com.zimbra.soap.mail.type.AutoCompleteMatch;
-import io.vavr.control.Try;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,26 +36,29 @@ public class FullAutoComplete extends MailDocumentHandler {
     final List<AutoCompleteResponse> autoCompleteResponses = new ArrayList<>();
     final FullAutocompleteRequest fullAutocompleteRequest = JaxbUtil.elementToJaxb(request);
 
+    final Account authenticatedAccount = zsc.getAuthToken().getAccount();
     final ZAuthToken zAuthToken = zsc.getAuthToken().toZAuthToken();
     final AutoCompleteRequest autoCompleteRequest = fullAutocompleteRequest.getAutoCompleteRequest();
 
-    final AutoCompleteResponse selfAutoComplete;
     try {
-      selfAutoComplete = doSelfAutoComplete(zsc.getAuthToken().getAccount(), zAuthToken,
+      final AutoCompleteResponse selfAutoComplete;
+      selfAutoComplete = doSelfAutoComplete(authenticatedAccount, zAuthToken,
           autoCompleteRequest);
       autoCompleteResponses.add(selfAutoComplete);
     } catch (IOException e) {
-      ServiceException.FAILURE(e.getMessage());
+      throw ServiceException.FAILURE(e.getMessage());
     }
 
     for (String requestedAccountId: fullAutocompleteRequest.getExtraAccountIds()) {
-      final AutoCompleteResponse accountAutoComplete = doAutoCompleteOnAccount(zAuthToken,
-          requestedAccountId, autoCompleteRequest).getOrElseThrow(
-          e -> ServiceException.FAILURE(e.getMessage()));
+      final AutoCompleteResponse accountAutoComplete;
+      try {
+        accountAutoComplete = doAutoCompleteOnAccount(authenticatedAccount, zAuthToken,
+            requestedAccountId, autoCompleteRequest);
+      } catch (IOException e) {
+        throw  ServiceException.FAILURE(e.getMessage());
+      }
       autoCompleteResponses.add(accountAutoComplete);
     }
-
-
 
     List<AutoCompleteMatch> autoCompleteMatches = new ArrayList<>();
     autoCompleteResponses.forEach(
@@ -78,21 +80,16 @@ public class FullAutoComplete extends MailDocumentHandler {
    * @param autoCompleteRequest the request to execute against requested target
    * @return {@link AutoCompleteResponse}
    */
-  private Try<AutoCompleteResponse> doAutoCompleteOnAccount(ZAuthToken zAuthToken, String requestedAccountId, AutoCompleteRequest autoCompleteRequest) {
-
-    //TODO: use current server -> maybe LC.zimbra_server_hostname.value() ?
-    return Try.of(() ->
-        JaxbUtil.jaxbToElement(autoCompleteRequest)
-    ).mapTry(
-        autoCompleteElementRequest -> new SoapHttpTransport(zAuthToken, "").invoke(
-            autoCompleteElementRequest, requestedAccountId)
-    ).mapTry(
-        elementResponse -> JaxbUtil.elementToJaxb(elementResponse, AutoCompleteResponse.class));
+  private AutoCompleteResponse doAutoCompleteOnAccount(Account authenticatedAccount, ZAuthToken zAuthToken, String requestedAccountId, AutoCompleteRequest autoCompleteRequest)
+      throws ServiceException, IOException {
+    String soapUrl = URLUtil.getSoapURL(authenticatedAccount.getServer(), true);
+    final Element autocompleteRequestElement = JaxbUtil.jaxbToElement(autoCompleteRequest);
+    return JaxbUtil.elementToJaxb(new SoapHttpTransport(zAuthToken, soapUrl).invoke(
+            autocompleteRequestElement, requestedAccountId));
   }
 
   private AutoCompleteResponse doSelfAutoComplete(Account authenticatedAccount, ZAuthToken zAuthToken, AutoCompleteRequest autoCompleteRequest) throws ServiceException, IOException {
     String soapUrl = URLUtil.getSoapURL(authenticatedAccount.getServer(), true);
-
     final Element autocompleteRequestElement = JaxbUtil.jaxbToElement(autoCompleteRequest);
     return JaxbUtil.elementToJaxb(new SoapHttpTransport(zAuthToken, soapUrl).invoke(
         autocompleteRequestElement),  AutoCompleteResponse.class);

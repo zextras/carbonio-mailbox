@@ -72,8 +72,8 @@ public class AutoComplete extends MailDocumentHandler {
 
     protected AutoCompleteResult query(Element request, ZimbraSoapContext zsc, Account account,
             boolean excludeGal, String name, int limit, GalSearchType type, boolean needCanExpand, OperationContext octxt) throws ServiceException {
-       if (!canAccessAccount(zsc, account))
-            throw ServiceException.PERM_DENIED("can not access account");
+//       if (!canAccessAccount(zsc, account))
+//            throw ServiceException.PERM_DENIED("can not access account");
 
        ArrayList<Integer> folders = csvToArray(request.getAttribute(MailConstants.A_FOLDERS, null));
        ContactAutoComplete autoComplete = new ContactAutoComplete(account, zsc, octxt);

@@ -8,18 +8,31 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.accesscontrol.ACLUtil;
+import com.zimbra.cs.account.accesscontrol.GranteeType;
+import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.account.accesscontrol.RightModifier;
+import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import javax.mail.internet.MimeMessage;
 
 /**
@@ -93,15 +106,83 @@ public class MailboxTestUtil {
    * @throws ServiceException
    */
   public static Account createRandomAccountForDefaultDomain(Map<String, Object> extraAttrs) throws ServiceException {
+    return createAccountWithDefaultDomain(UUID.randomUUID().toString(), extraAttrs);
+  }
+
+  public static class AccountCreator {
+
+    private final Provisioning provisioning;
+    private String username = UUID.randomUUID().toString();
+    private String password = "password";
+    private String domain = DEFAULT_DOMAIN;
+    private Map<String, Object> defaultAttributes = new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
+    private Map<String, Object> extraAttributes = Collections.emptyMap();
+
+    public AccountCreator(Provisioning provisioning) {
+      this.provisioning = provisioning;
+    }
+
+    public AccountCreator withUsername(String username) {
+      this.username = username;
+      return this;
+    }
+
+    public AccountCreator withPassword(String password) {
+      this.password = password;
+      return this;
+    }
+
+    public AccountCreator withDomain(String domain) {
+      this.domain = domain;
+      return this;
+    }
+
+    public AccountCreator withExtraAttributes(Map<String, Object> extraAttributes) {
+      this.extraAttributes = extraAttributes;
+      return this;
+    }
+
+    public AccountCreator withDefaultAttributes(Map<String, Object> defaultAttributes) {
+      this.defaultAttributes = defaultAttributes;
+      return this;
+    }
+
+    public Account create() throws ServiceException {
+      final Map<String, Object> attributes = new HashMap<String, Object>(defaultAttributes);
+      attributes.putAll(extraAttributes);
+      defaultAttributes.putAll(extraAttributes);
+      return provisioning
+          .createAccount(this.username + "@" + this.domain, password, attributes);
+    }
+  }
+
+  public static Account createAccountWithDefaultDomain(String username, Map<String, Object> extraAttrs) throws ServiceException {
     final HashMap<String, Object> attrs =
         new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
     attrs.putAll(extraAttrs);
     return Provisioning.getInstance()
-        .createAccount(UUID.randomUUID() + "@" + MailboxTestUtil.DEFAULT_DOMAIN, "password", attrs);
+        .createAccount(username + "@" + MailboxTestUtil.DEFAULT_DOMAIN, "password", attrs);
   }
 
   public static Account createRandomAccountForDefaultDomain() throws ServiceException {
     return createRandomAccountForDefaultDomain(Collections.emptyMap());
+  }
+
+  public static void doShareAccount(Account toShare, Account shareOwner) throws ServiceException {
+    final Set<ZimbraACE> aces = new HashSet<>();
+    aces.add(
+        new ZimbraACE(
+            shareOwner.getId(),
+            GranteeType.GT_USER,
+            RightManager.getInstance().getRight(Right.RT_sendAs),
+            RightModifier.RM_CAN_DELEGATE,
+            null));
+    final MailboxManager mailboxManager = MailboxManager.getInstance();
+    final Mailbox sharedMailbox = mailboxManager.getMailboxByAccount(toShare);
+    sharedMailbox.grantAccess(
+        null, Mailbox.ID_FOLDER_ROOT, shareOwner.getId(), ACL.GRANTEE_USER, ACL.stringToRights("rw"), null);
+    ACLUtil.grantRight(Provisioning.getInstance(), toShare, aces);
+
   }
 
   /**
