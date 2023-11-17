@@ -69,7 +69,7 @@ pipeline {
 
             }
         }
-        stage('UT & IT + Coverage') {
+        stage('UT & IT') {
             when {
                 expression {
                 params.SKIP_TEST_WITH_COVERAGE == false
@@ -77,10 +77,32 @@ pipeline {
             }
             steps {
 
-                mvnCmd("$BUILD_PROPERTIES_PARAMS test")
+                mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dexcludegroups=api")
 
                 publishCoverage adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: true
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+            }
+        }
+        stage('API Testing') {
+            when {
+                expression {
+                    params.SKIP_TEST_WITH_COVERAGE == false
+                }
+            }
+            steps {
+                mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dgroups=api")
+            }
+        }
+        stage('Publish Coverage') {
+            when {
+                expression {
+                    params.SKIP_TEST_WITH_COVERAGE == false
+                }
+            }
+            steps {
+                publishCoverage adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: true
+                junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+                mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dgroups=api")
             }
         }
         stage('Sonarqube Analysis') {
