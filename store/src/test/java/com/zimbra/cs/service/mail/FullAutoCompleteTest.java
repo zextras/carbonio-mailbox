@@ -19,7 +19,9 @@ import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.httpclient.URLUtil;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.soap.JaxbUtil;
@@ -55,12 +57,17 @@ class FullAutoCompleteTest {
 
   private static Server server;
   private static Provisioning provisioning;
+  private static AccountAction.Factory accountActionFactory;
+  private static AccountCreator.Factory accountCreatorFactory;
   private static final int PORT = 8090;
 
   @BeforeAll
   static void beforeAll() throws Exception {
     MailboxTestUtil.setUp();
     provisioning = Provisioning.getInstance();
+    accountActionFactory = new AccountAction.Factory(
+        MailboxManager.getInstance(), RightManager.getInstance());
+    accountCreatorFactory = new AccountCreator.Factory(provisioning);
     provisioning.getServerByName(SERVER_NAME).modify(
         new HashMap<>(
             Map.of(
@@ -120,16 +127,17 @@ class FullAutoCompleteTest {
   @DisplayName("Account has account 2, account 3 shared with it. Execute FullAutocomplete, get also matching contacts from account2 and 3.")
   void shouldReturnContactsOfAuthenticatedUserAndRequestedAccounts() throws Exception {
 
+
     final String prefix = "test-";
-    final Account account = new AccountCreator(provisioning).withUsername(prefix + "user1-" + UUID.randomUUID()).create();
+    final Account account = accountCreatorFactory.get().withUsername(prefix + "user1-" + UUID.randomUUID()).create();
     doCreateContact(account, prefix + UUID.randomUUID() + "something.com");
 
-    final Account account2 = new AccountCreator(provisioning).withUsername(prefix + "user2-" + UUID.randomUUID()).create();
-    AccountAction.forAccount(account2).shareWith(account);
+    final Account account2 = accountCreatorFactory.get().withUsername(prefix + "user2-" + UUID.randomUUID()).create();
+    accountActionFactory.forAccount(account2).shareWith(account);
     doCreateContact(account2, prefix + UUID.randomUUID() + "something.com");
 
-    final Account account3 = new AccountCreator(provisioning).withUsername(prefix + "user3-" + UUID.randomUUID()).create();
-    AccountAction.forAccount(account3).shareWith(account);
+    final Account account3 = accountCreatorFactory.get().withUsername(prefix + "user3-" + UUID.randomUUID()).create();
+    accountActionFactory.forAccount(account3).shareWith(account);
     doCreateContact(account3, prefix + UUID.randomUUID() + "something.com");
     doCreateContact(account3, prefix + UUID.randomUUID() + "something.com");
 

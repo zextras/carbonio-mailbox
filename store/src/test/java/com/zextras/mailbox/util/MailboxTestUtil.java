@@ -118,14 +118,27 @@ public class MailboxTestUtil {
 
     private final Account account;
     private final MailboxManager mailboxManager;
+    private final RightManager rightManager;
 
-    public static AccountAction forAccount(Account account) throws ServiceException {
-      return new AccountAction(account, MailboxManager.getInstance());
+    public static class Factory {
+      private final MailboxManager mailboxManager;
+      private final RightManager rightManager;
+
+      public Factory(MailboxManager mailboxManager,
+          RightManager rightManager) {
+        this.mailboxManager = mailboxManager;
+        this.rightManager = rightManager;
+      }
+
+      public AccountAction forAccount(Account account) {
+        return new AccountAction(account, mailboxManager, rightManager);
+      }
     }
 
-    private AccountAction(Account account, MailboxManager mailboxManager) {
+    private AccountAction(Account account, MailboxManager mailboxManager, RightManager rightManager) {
       this.account = account;
       this.mailboxManager = mailboxManager;
+      this.rightManager = rightManager;
     }
 
     /**
@@ -134,15 +147,14 @@ public class MailboxTestUtil {
      * @throws ServiceException
      */
     public AccountAction shareWith(Account target) throws ServiceException {
-      grantRightTo(target, RightManager.getInstance().getRight(Right.RT_sendAs));
+      grantRightTo(target, rightManager.getRight(Right.RT_sendAs));
       grantFolderRightTo(target, "rw", Mailbox.ID_FOLDER_ROOT);
       return this;
     }
 
     public AccountAction grantFolderRightTo(Account target, String rights, int folderId)
         throws ServiceException {
-      final Mailbox sharedMailbox = mailboxManager.getMailboxByAccount(account);
-      sharedMailbox.grantAccess(
+      mailboxManager.getMailboxByAccount(account).grantAccess(
           null, folderId, target.getId(), ACL.GRANTEE_USER, ACL.stringToRights(rights), null);
       return this;
     }
@@ -172,8 +184,20 @@ public class MailboxTestUtil {
     private Map<String, Object> defaultAttributes = new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
     private Map<String, Object> extraAttributes = Collections.emptyMap();
 
-    public AccountCreator(Provisioning provisioning) {
+    private AccountCreator(Provisioning provisioning) {
       this.provisioning = provisioning;
+    }
+
+    public static class Factory {
+      private final Provisioning provisioning;
+
+      public AccountCreator get() {
+        return new AccountCreator(provisioning);
+      }
+
+      public Factory(Provisioning provisioning) {
+        this.provisioning = provisioning;
+      }
     }
 
     public AccountCreator withUsername(String username) {
