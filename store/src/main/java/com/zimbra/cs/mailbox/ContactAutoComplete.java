@@ -544,7 +544,6 @@ public class ContactAutoComplete {
 
     /**
      *  Add contact entry to result
-     *  @see com.zimbra.cs.mailbox.OfflineGalContactAutoComplete
      */
     protected void addEntry(ContactEntry entry, AutoCompleteResult result) {
         result.addEntry(entry);
@@ -746,17 +745,31 @@ public class ContactAutoComplete {
         }
     }
 
+    /**
+     * Returns Folders of type {@link com.zimbra.cs.mailbox.MailItem.Type#CONTACT} and Mountpoints.
+     * In case of delegated request mountpoints are skipped.
+     * If a list of folderIds is provided it will search directly on them, else starting from root folder recursively.
+     *
+     * @param folderIDs list of folder ids where to search on
+     * @return list of local folders and mountpoints where to search for contacts
+     *
+     * @throws ServiceException
+     */
     private Pair<List<Folder>, Map<ItemId, Mountpoint>> getLocalRemoteContactFolders(Collection<Integer> folderIDs) throws ServiceException {
         List<Folder> folders = new ArrayList<Folder>();
         Map<ItemId, Mountpoint> mountpoints = new HashMap<ItemId, Mountpoint>();
         Pair<List<Folder>, Map<ItemId, Mountpoint>> pair = new Pair<List<Folder>, Map<ItemId,Mountpoint>>(folders, mountpoints);
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(getRequestedAcctId());
         if (folderIDs == null) {
+            if (!mbox.canAccessFolder(octxt, Mailbox.ID_FOLDER_ROOT)) {
+                throw ServiceException.FAILURE("Permission denied: cannot access requested folder", null);
+            }
             final ItemId rootItemId = new ItemId(mbox, Mailbox.ID_FOLDER_ROOT);
-            for (Folder folder : FolderUtil.flattenAndSortFolderTree(mbox.getFolderTree(octxt, rootItemId, true)) ) {
+            final Set<Folder> allFolders = FolderUtil.flattenAndSortFolderTree(mbox.getFolderTree(octxt, rootItemId, true));
+            for (Folder folder : allFolders) {
                 if (folder.getDefaultView() != MailItem.Type.CONTACT || folder.inTrash()) {
                     continue;
-                } else if (folder instanceof Mountpoint) {
+                } else if (folder instanceof Mountpoint && !(octxt.isDelegatedRequest(mbox))) {
                     Mountpoint mp = (Mountpoint) folder;
                     mountpoints.put(mp.getTarget(), mp);
                     if (mIncludeSharedFolders) {
