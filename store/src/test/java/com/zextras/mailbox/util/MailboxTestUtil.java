@@ -156,6 +156,12 @@ public class MailboxTestUtil {
     }
   }
 
+  /**
+   * @return {@link Account}
+   * @deprecated should use {@link AccountCreator}
+   * @throws ServiceException
+   */
+  @Deprecated()
   public static Account createAccountWithDefaultDomain(String username, Map<String, Object> extraAttrs) throws ServiceException {
     final HashMap<String, Object> attrs =
         new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
@@ -164,6 +170,12 @@ public class MailboxTestUtil {
         .createAccount(username + "@" + MailboxTestUtil.DEFAULT_DOMAIN, "password", attrs);
   }
 
+  /**
+   * @return {@link Account}
+   * @deprecated should use {@link AccountCreator}
+   * @throws ServiceException
+   */
+  @Deprecated()
   public static Account createRandomAccountForDefaultDomain() throws ServiceException {
     return createRandomAccountForDefaultDomain(Collections.emptyMap());
   }
