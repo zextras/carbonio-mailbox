@@ -134,20 +134,33 @@ public class MailboxTestUtil {
      * @throws ServiceException
      */
     public AccountAction shareWith(Account target) throws ServiceException {
+      grantRightTo(target, RightManager.getInstance().getRight(Right.RT_sendAs));
+      grantFolderRightTo(target, "rw", Mailbox.ID_FOLDER_ROOT);
+      return this;
+    }
+
+    public AccountAction grantFolderRightTo(Account target, String rights, int folderId)
+        throws ServiceException {
+      final Mailbox sharedMailbox = mailboxManager.getMailboxByAccount(account);
+      sharedMailbox.grantAccess(
+          null, folderId, target.getId(), ACL.GRANTEE_USER, ACL.stringToRights(rights), null);
+      return this;
+    }
+
+    public AccountAction grantRightTo(Account target, Right right)
+        throws ServiceException {
       final Set<ZimbraACE> aces = new HashSet<>();
       aces.add(
           new ZimbraACE(
               account.getId(),
               GranteeType.GT_USER,
-              RightManager.getInstance().getRight(Right.RT_sendAs),
+              RightManager.getInstance().getRight(right.getName()),
               RightModifier.RM_CAN_DELEGATE,
               null));
-      final Mailbox sharedMailbox = mailboxManager.getMailboxByAccount(account);
-      sharedMailbox.grantAccess(
-          null, Mailbox.ID_FOLDER_ROOT, target.getId(), ACL.GRANTEE_USER, ACL.stringToRights("rw"), null);
       ACLUtil.grantRight(Provisioning.getInstance(), target, aces);
       return this;
     }
+
   }
 
   public static class AccountCreator {
