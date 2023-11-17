@@ -109,6 +109,47 @@ public class MailboxTestUtil {
     return createAccountWithDefaultDomain(UUID.randomUUID().toString(), extraAttrs);
   }
 
+  /**
+   * Performs actions on an account.
+   * Start with {@link #shareWith(Account)}
+   *
+   */
+  public static class AccountAction {
+
+    private final Account account;
+    private final MailboxManager mailboxManager;
+
+    public static AccountAction forAccount(Account account) throws ServiceException {
+      return new AccountAction(account, MailboxManager.getInstance());
+    }
+
+    private AccountAction(Account account, MailboxManager mailboxManager) {
+      this.account = account;
+      this.mailboxManager = mailboxManager;
+    }
+
+    /**
+     * Shares current account with target
+     * @param target AKA "delegated"
+     * @throws ServiceException
+     */
+    public AccountAction shareWith(Account target) throws ServiceException {
+      final Set<ZimbraACE> aces = new HashSet<>();
+      aces.add(
+          new ZimbraACE(
+              account.getId(),
+              GranteeType.GT_USER,
+              RightManager.getInstance().getRight(Right.RT_sendAs),
+              RightModifier.RM_CAN_DELEGATE,
+              null));
+      final Mailbox sharedMailbox = mailboxManager.getMailboxByAccount(account);
+      sharedMailbox.grantAccess(
+          null, Mailbox.ID_FOLDER_ROOT, target.getId(), ACL.GRANTEE_USER, ACL.stringToRights("rw"), null);
+      ACLUtil.grantRight(Provisioning.getInstance(), target, aces);
+      return this;
+    }
+  }
+
   public static class AccountCreator {
 
     private final Provisioning provisioning;
@@ -178,23 +219,6 @@ public class MailboxTestUtil {
   @Deprecated()
   public static Account createRandomAccountForDefaultDomain() throws ServiceException {
     return createRandomAccountForDefaultDomain(Collections.emptyMap());
-  }
-
-  public static void doShareAccount(Account toShare, Account shareOwner) throws ServiceException {
-    final Set<ZimbraACE> aces = new HashSet<>();
-    aces.add(
-        new ZimbraACE(
-            shareOwner.getId(),
-            GranteeType.GT_USER,
-            RightManager.getInstance().getRight(Right.RT_sendAs),
-            RightModifier.RM_CAN_DELEGATE,
-            null));
-    final MailboxManager mailboxManager = MailboxManager.getInstance();
-    final Mailbox sharedMailbox = mailboxManager.getMailboxByAccount(toShare);
-    sharedMailbox.grantAccess(
-        null, Mailbox.ID_FOLDER_ROOT, shareOwner.getId(), ACL.GRANTEE_USER, ACL.stringToRights("rw"), null);
-    ACLUtil.grantRight(Provisioning.getInstance(), toShare, aces);
-
   }
 
   /**

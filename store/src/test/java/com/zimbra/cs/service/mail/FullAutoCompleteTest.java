@@ -8,6 +8,7 @@ import static com.zextras.mailbox.util.MailboxTestUtil.SERVER_NAME;
 
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.AccountConstants;
@@ -124,11 +125,11 @@ class FullAutoCompleteTest {
     doCreateContact(account, prefix + UUID.randomUUID() + "something.com");
 
     final Account account2 = new AccountCreator(provisioning).withUsername(prefix + "user2-" + UUID.randomUUID()).create();
-    MailboxTestUtil.doShareAccount(account2, account);
+    AccountAction.forAccount(account2).shareWith(account);
     doCreateContact(account2, prefix + UUID.randomUUID() + "something.com");
 
     final Account account3 = new AccountCreator(provisioning).withUsername(prefix + "user3-" + UUID.randomUUID()).create();
-    MailboxTestUtil.doShareAccount(account3, account);
+    AccountAction.forAccount(account3).shareWith(account);
     doCreateContact(account3, prefix + UUID.randomUUID() + "something.com");
     doCreateContact(account3, prefix + UUID.randomUUID() + "something.com");
 
