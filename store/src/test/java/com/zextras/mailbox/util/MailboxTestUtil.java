@@ -120,6 +120,24 @@ public class MailboxTestUtil {
     private final MailboxManager mailboxManager;
     private final RightManager rightManager;
 
+    /**
+     * Saves a message in current Account mailbox.
+     * It is useful when you want to "simulate" receiving of a message.
+     *
+     * @param mailbox mailbox where to save the message
+     * @param message message to save
+     * @return saved {@link javax.mail.Message}
+     * @throws ServiceException
+     * @throws IOException
+     */
+    public Message saveMsgInInbox(javax.mail.Message message)
+        throws ServiceException, IOException {
+      final ParsedMessage parsedMessage = new ParsedMessage((MimeMessage) message, false);
+      final DeliveryOptions deliveryOptions =
+          new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+      return mailboxManager.getMailboxByAccount(account).addMessage(null, parsedMessage, deliveryOptions, null);
+    }
+
     public static class Factory {
       private final MailboxManager mailboxManager;
       private final RightManager rightManager;
@@ -258,20 +276,4 @@ public class MailboxTestUtil {
     return createRandomAccountForDefaultDomain(Collections.emptyMap());
   }
 
-  /**
-   * Saves a message in a mailbox. Used to simulate receiving of a message.
-   *
-   * @param mailbox mailbox where to save the message
-   * @param message message to save
-   * @return saved {@link javax.mail.Message}
-   * @throws ServiceException
-   * @throws IOException
-   */
-  public static Message saveMsgInInbox(Mailbox mailbox, javax.mail.Message message)
-      throws ServiceException, IOException {
-    final ParsedMessage parsedMessage = new ParsedMessage((MimeMessage) message, false);
-    final DeliveryOptions deliveryOptions =
-        new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-    return mailbox.addMessage(null, parsedMessage, deliveryOptions, null);
-  }
 }
