@@ -97,8 +97,9 @@ public class SoapHttpTransport extends SoapTransport {
     }
 
     /**
-     * Create a new SoapHttpTransport object for the specified URI
+     * Create a new SoapHttpTransport object with specified URI and token
      *
+     * @param token token to use when making requests
      * @param uri the origin server URL
      */
     public SoapHttpTransport(ZAuthToken token, String uri) {
