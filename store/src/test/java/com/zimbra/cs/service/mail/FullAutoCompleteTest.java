@@ -47,6 +47,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class FullAutoCompleteTest {
@@ -115,6 +116,7 @@ class FullAutoCompleteTest {
   }
 
   @Test
+  @DisplayName("Account has account 2, account 3 shared with it. Execute FullAutocomplete, get also matching contacts from account2 and 3.")
   void shouldReturnContactsOfAuthenticatedUserAndRequestedAccounts() throws Exception {
 
     final String prefix = "test-";
@@ -151,6 +153,7 @@ class FullAutoCompleteTest {
   }
 
   @Test
+  @DisplayName("Account Executes FullAutocomplete against account 2, which is not shared, get 500 permission denied.")
   void shouldThrowCannotAccessAccountIfNoGrantsGiven() throws Exception {
     final String prefix = "test-";
     final String commonContact = prefix + UUID.randomUUID() + "@abc.com";
@@ -164,7 +167,6 @@ class FullAutoCompleteTest {
     final FullAutocompleteRequest fullAutocompleteRequest = new FullAutocompleteRequest(autoCompleteRequest);
     fullAutocompleteRequest.addAccount(account2.getId());
 
-    // make the call
     final Element request = JaxbUtil.jaxbToElement(fullAutocompleteRequest);
     final HttpResponse execute = doExecuteSoap(account, request);
     final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
