@@ -396,7 +396,7 @@ pipeline {
                     buildInfo = Artifactory.newBuildInfo()
                     buildInfo.name += '-rhel9'
                     uploadSpec = '''{
-                        "files": [{'''
+                        "files": ['''
                         + getRpmSpec("rhel9-rc", "9") +
                                 '''
                         ]
