@@ -12,6 +12,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * @zm-api-command-auth-required true
+ * @zm-api-command-admin-auth-required false
+ * @zm-api-command-description FullAutoComplete
+ * This API executes an AutoComplete on current logged in account and all extra requested accounts.
+ * If one of the requests in extra accounts fails, the whole API will fail.
+ * The API returns the same content of AutoComplete by merging the result and discarding duplicates
+ * following the order of requested accounts, starting from logged user response.
+ *
+ */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name= MailConstants.E_FULL_AUTO_COMPLETE_REQUEST)
 public class FullAutocompleteRequest {
