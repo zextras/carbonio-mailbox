@@ -24,7 +24,7 @@ public class FullAutocompleteRequest {
   }
 
 
-  @XmlElement(name=MailConstants.E_AUTO_COMPLETE_REQUEST /* name */, required=false)
+  @XmlElement(name=MailConstants.E_AUTO_COMPLETE_REQUEST, required=true)
   private AutoCompleteRequest autoCompleteRequest;
 
   public AutoCompleteRequest getAutoCompleteRequest() {
@@ -39,7 +39,7 @@ public class FullAutocompleteRequest {
    * @zm-api-field-tag extraAccountIds
    * @zm-api-field-description Extra accounts where to execute the autocomplete on
    */
-  @XmlElement(name=MailConstants.E_ACCOUNT /* name */, required=false)
+  @XmlElement(name=MailConstants.E_ACCOUNT, required=false)
   private final List<String> extraAccountIds = new ArrayList<>();
 
   public void addAccount(String account) {
