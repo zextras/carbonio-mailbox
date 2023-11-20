@@ -19,6 +19,7 @@ import com.zimbra.soap.mail.message.FullAutocompleteResponse;
 import com.zimbra.soap.mail.type.AutoCompleteMatch;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class FullAutoComplete extends MailDocumentHandler {
     final Account authenticatedAccount = zsc.getAuthToken().getAccount();
     final ZAuthToken zAuthToken = zsc.getAuthToken().toZAuthToken();
     final AutoCompleteRequest autoCompleteRequest = fullAutocompleteRequest.getAutoCompleteRequest();
-
+    Map<String, AutoCompleteMatch> matchesComparator = new HashMap<>();
     try {
       final AutoCompleteResponse selfAutoComplete;
       selfAutoComplete = doSelfAutoComplete(authenticatedAccount, zAuthToken,
@@ -60,13 +61,14 @@ public class FullAutoComplete extends MailDocumentHandler {
       autoCompleteResponses.add(accountAutoComplete);
     }
 
-    List<AutoCompleteMatch> autoCompleteMatches = new ArrayList<>();
     autoCompleteResponses.forEach(
-        autoCompleteResponse -> autoCompleteMatches.addAll(autoCompleteResponse.getMatches())
+        autoCompleteResponse -> autoCompleteResponse.getMatches().forEach(
+            match -> matchesComparator.putIfAbsent(match.getEmail(), match)
+        )
     );
 
     AutoCompleteResponse autoCompleteResponse = new FullAutocompleteResponse();
-    autoCompleteResponse.setMatches(autoCompleteMatches);
+    autoCompleteResponse.setMatches(matchesComparator.values());
     autoCompleteResponse.setCanBeCached(false);
     return JaxbUtil.jaxbToElement(autoCompleteResponse);
 

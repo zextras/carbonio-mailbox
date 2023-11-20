@@ -115,16 +115,19 @@ class FullAutoCompleteTest {
   }
 
   @Test
-  @DisplayName("Account has account 2, account 3 shared with it. Execute FullAutocomplete, get also matching contacts from account2 and 3.")
+  @DisplayName("Account has account 2, account 3 shared with it. "
+      + "Execute FullAutocomplete, get also matching contacts from account2 and 3. No duplicates.")
   void shouldReturnContactsOfAuthenticatedUserAndRequestedAccounts() throws Exception {
 
 
     final String prefix = "test-";
+    final String commonMail = prefix + UUID.randomUUID() + "something.com";
     final Account account = accountCreatorFactory.get().withUsername(prefix + "user1-" + UUID.randomUUID()).create();
-    soapClient.executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com")));
+    soapClient.executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(commonMail)));
 
     final Account account2 = accountCreatorFactory.get().withUsername(prefix + "user2-" + UUID.randomUUID()).create();
     accountActionFactory.forAccount(account2).shareWith(account);
+    soapClient.executeSoap(account2, new CreateContactRequest(new ContactSpec().addEmail(commonMail)));
     soapClient.executeSoap(account2, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com")));
 
     final Account account3 = accountCreatorFactory.get().withUsername(prefix + "user3-" + UUID.randomUUID()).create();
