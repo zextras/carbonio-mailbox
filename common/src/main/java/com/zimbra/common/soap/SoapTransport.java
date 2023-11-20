@@ -399,6 +399,16 @@ public abstract class SoapTransport {
         return invoke(document, false, false, null);
     }
 
+    /**
+     * Performs a delegated request SOAP API
+     *
+     * @param document request body as document
+     * @param requestedAccountId requested account id
+     * @return element body of response
+     *
+     * @throws IOException
+     * @throws ServiceException
+     */
     public final Element invoke(Element document, String requestedAccountId) throws IOException, ServiceException {
         return invoke(document, false, false, requestedAccountId);
     }
