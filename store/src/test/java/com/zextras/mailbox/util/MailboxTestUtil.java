@@ -166,7 +166,7 @@ public class MailboxTestUtil {
      */
     public AccountAction shareWith(Account target) throws ServiceException {
       grantRightTo(target, rightManager.getRight(Right.RT_sendAs));
-      grantFolderRightTo(target, "rw", Mailbox.ID_FOLDER_ROOT);
+      grantFolderRightTo(target, "rw", Mailbox.ID_FOLDER_USER_ROOT);
       return this;
     }
 

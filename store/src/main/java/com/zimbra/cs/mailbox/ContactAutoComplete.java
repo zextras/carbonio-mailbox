@@ -761,10 +761,10 @@ public class ContactAutoComplete {
         Pair<List<Folder>, Map<ItemId, Mountpoint>> pair = new Pair<List<Folder>, Map<ItemId,Mountpoint>>(folders, mountpoints);
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(getRequestedAcctId());
         if (folderIDs == null) {
-            if (!mbox.canAccessFolder(octxt, Mailbox.ID_FOLDER_ROOT)) {
+            if (!mbox.canAccessFolder(octxt, Mailbox.ID_FOLDER_USER_ROOT)) {
                 throw ServiceException.FAILURE("Permission denied: cannot access requested folder", null);
             }
-            final ItemId rootItemId = new ItemId(mbox, Mailbox.ID_FOLDER_ROOT);
+            final ItemId rootItemId = new ItemId(mbox, Mailbox.ID_FOLDER_USER_ROOT);
             final Set<Folder> allFolders = FolderUtil.flattenAndSortFolderTree(mbox.getFolderTree(octxt, rootItemId, true));
             for (Folder folder : allFolders) {
                 if (folder.getDefaultView() != MailItem.Type.CONTACT || folder.inTrash()) {
