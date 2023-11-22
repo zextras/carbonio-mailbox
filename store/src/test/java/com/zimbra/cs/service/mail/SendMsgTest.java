@@ -71,10 +71,12 @@ public class SendMsgTest {
   private static Account shared;
   private static Account receiver;
   private static GreenMail mta;
+  private static MailboxManager mailboxManager;
 
   @BeforeAll
   public static void setUp() throws Exception {
     MailboxTestUtil.setUp();
+    mailboxManager = MailboxManager.getInstance();
     mta =
         new GreenMail(
             new ServerSetup[] {
@@ -126,7 +128,7 @@ public class SendMsgTest {
   @Test
   @DisplayName("Save Draft and send it with some changes -> verify sent and draft deleted")
   void shouldDeleteDraft() throws Exception {
-    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(sender);
+    Mailbox mbox = mailboxManager.getMailboxByAccount(sender);
 
     // first, add draft message
     MimeMessage mm = new MimeMessage(JMSession.getSmtpSession(sender));
@@ -160,7 +162,7 @@ public class SendMsgTest {
   @Test
   @DisplayName("Save draft and send it as is -> verify sends same original data")
   void shouldSendFromDraft() throws Exception {
-    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(sender);
+    Mailbox mbox = mailboxManager.getMailboxByAccount(sender);
 
     // first, add draft message
     MimeMessage mm = new MimeMessage(Session.getInstance(new Properties()));
@@ -193,7 +195,7 @@ public class SendMsgTest {
   void shouldSendUploadedFile() throws Exception {
     assertTrue(ZMimeMessage.usingZimbraParser(), "using Zimbra MIME parser");
 
-    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(receiver);
+    Mailbox mbox = mailboxManager.getMailboxByAccount(receiver);
 
     // Configure test timezones.ics file.
     File tzFile = File.createTempFile("timezones-", ".ics");
@@ -219,7 +221,7 @@ public class SendMsgTest {
         .addAttribute(MailConstants.A_ATTACHMENT_ID, up.getId());
     new SendMsg().handle(request, ServiceTestUtil.getRequestContext(sender));
 
-    mbox = MailboxManager.getInstance().getMailboxByAccount(receiver);
+    mbox = mailboxManager.getMailboxByAccount(receiver);
     Message msg = (Message) mbox.getItemList(null, MailItem.Type.MESSAGE).get(0);
     MimeMessage mm = msg.getMimeMessage();
     assertEquals(
@@ -229,7 +231,7 @@ public class SendMsgTest {
   }
 
   @Test
-  @DisplayName("Email external user. Check it is added to address book")
+  @DisplayName("Email external user. Check it is added to emailed contacts")
   void shouldSaveExternalAddressAsContact() throws Exception {
     final String externalAddress = "external@something.com";
     final SendMsgRequest sendMsgRequest = new SendMsgRequest();
@@ -260,12 +262,16 @@ public class SendMsgTest {
                         .filter(attr -> attr.getKey().equals("email"))
                         .map(KeyValuePair::getValue))
             .toArray());
+
+    final Mailbox sharedMbox = mailboxManager.getMailboxByAccount(sender);
+    Assertions.assertEquals(1, sharedMbox.getFolderById(null, Mailbox.ID_FOLDER_AUTO_CONTACTS).getSize());
+    Assertions.assertEquals(0, sharedMbox.getFolderById(null, Mailbox.ID_FOLDER_CONTACTS).getSize());
   }
 
   @Test
   @DisplayName(
       "Email external user acting as shared account. Check address is added to shared"
-          + " account address book")
+          + " account emailed contacts")
   void shouldSaveExternalAddressAsContactInSharedAccount() throws Exception {
     final String externalAddress = "external@something.com";
     final SendMsgRequest sendMsgRequest = new SendMsgRequest();
@@ -302,5 +308,8 @@ public class SendMsgTest {
             new GetContacts().handle(JaxbUtil.jaxbToElement(getContactsRequest), sharedCtx),
             GetContactsResponse.class);
     Assertions.assertEquals(1, sharedAccountContacts.getContacts().size());
+    final Mailbox sharedMbox = mailboxManager.getMailboxByAccount(shared);
+    Assertions.assertEquals(1, sharedMbox.getFolderById(null, Mailbox.ID_FOLDER_AUTO_CONTACTS).getSize());
+    Assertions.assertEquals(0, sharedMbox.getFolderById(null, Mailbox.ID_FOLDER_CONTACTS).getSize());
   }
 }

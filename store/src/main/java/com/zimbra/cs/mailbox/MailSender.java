@@ -846,7 +846,7 @@ public class MailSender {
       // save new contacts and update rankings
       if (!sentAddresses.isEmpty() && octxt != null) {
         try {
-          ContactRankings.increment(octxt.getAuthenticatedUser().getId(), sentAddresses);
+          ContactRankings.increment(mbox.getAccountId(), sentAddresses);
         } catch (Exception e) {
           ZimbraLog.smtp.error("Failed to update contact rankings", e);
         }
