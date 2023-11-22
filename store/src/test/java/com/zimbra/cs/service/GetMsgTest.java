@@ -7,10 +7,11 @@ package com.zimbra.cs.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.google.common.collect.Maps;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.mime.shim.JavaMailMimeMessage;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -18,13 +19,7 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.zmime.ZSharedFileInputStream;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.ACLUtil;
-import com.zimbra.cs.account.accesscontrol.GranteeType;
-import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightManager;
-import com.zimbra.cs.account.accesscontrol.RightModifier;
-import com.zimbra.cs.account.accesscontrol.ZimbraACE;
-import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -43,11 +38,9 @@ import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.MsgSpec;
 import com.zimbra.soap.mail.type.MsgToSend;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import javax.mail.internet.MimeMessage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -62,11 +55,16 @@ public class GetMsgTest {
   private static Account receiver;
   private static Account shared;
   private static GreenMail mta;
+  private static AccountAction.Factory accountActionFactory;
+  private static AccountCreator.Factory accountCreatorFactory;
   private static MailboxManager mailboxManager;
 
   @BeforeAll
   public static void setUp() throws Exception {
     MailboxTestUtil.setUp();
+    mailboxManager = MailboxManager.getInstance();
+    accountActionFactory = new AccountAction.Factory(mailboxManager, RightManager.getInstance());
+    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
     mta =
         new GreenMail(
             new ServerSetup[] {
@@ -75,49 +73,11 @@ public class GetMsgTest {
               new ServerSetup(9000, "127.0.0.1", ServerSetup.PROTOCOL_IMAP)
             });
     final Provisioning provisioning = Provisioning.getInstance();
-    sender =
-        provisioning.createAccount(
-            "test@" + MailboxTestUtil.DEFAULT_DOMAIN,
-            "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    shared =
-        provisioning.createAccount(
-            "shared@" + MailboxTestUtil.DEFAULT_DOMAIN,
-            "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    final Set<ZimbraACE> aces = new HashSet<>();
-    aces.add(
-        new ZimbraACE(
-            sender.getId(),
-            GranteeType.GT_USER,
-            RightManager.getInstance().getRight(Right.RT_sendAs),
-            RightModifier.RM_CAN_DELEGATE,
-            null));
-    aces.add(
-        new ZimbraACE(
-            sender.getId(),
-            GranteeType.GT_USER,
-            RightManager.getInstance().getRight(Right.RT_loginAs),
-            RightModifier.RM_CAN_DELEGATE,
-            null));
-    mailboxManager = MailboxManager.getInstance();
-    final Mailbox sharedMailbox = mailboxManager.getMailboxByAccount(shared);
-
-    sharedMailbox.grantAccess(
-        null,
-        Mailbox.ID_FOLDER_AUTO_CONTACTS,
-        sender.getId(),
-        ACL.GRANTEE_USER,
-        ACL.stringToRights("rwi"),
-        null);
-
-    ACLUtil.grantRight(Provisioning.getInstance(), shared, aces);
-    receiver =
-        provisioning.createAccount(
-            "rcpt@" + MailboxTestUtil.DEFAULT_DOMAIN,
-            "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    testAccount = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    sender = accountCreatorFactory.get().withUsername("test").create();
+    shared = accountCreatorFactory.get().withUsername("shared").create();
+    accountActionFactory.forAccount(shared).shareWith(sender);
+    receiver = accountCreatorFactory.get().withUsername("rcpt").create();
+    testAccount = accountCreatorFactory.get().create();
     mta.start();
   }
 
@@ -129,12 +89,11 @@ public class GetMsgTest {
 
   @Test
   void testMsgMaxAttr() throws Exception {
-    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
     MimeMessage message =
         new JavaMailMimeMessage(
             JMSession.getSession(),
             new ZSharedFileInputStream(zimbraServerDir + "data/TestMailRaw/1"));
-    final Message msg = MailboxTestUtil.saveMsgInInbox(mbox, message);
+    final Message msg = accountActionFactory.forAccount(testAccount).saveMsgInInbox(message);
     Element request = new Element.XMLElement(MailConstants.GET_MSG_REQUEST);
     Element action = request.addElement(MailConstants.E_MSG);
     action.addAttribute(MailConstants.A_ID, msg.getId());
@@ -142,7 +101,7 @@ public class GetMsgTest {
 
     Element response =
         new GetMsg()
-            .handle(request, ServiceTestUtil.getRequestContext(mbox.getAccount()))
+            .handle(request, ServiceTestUtil.getRequestContext(testAccount))
             .getElement(MailConstants.E_MSG);
     assertEquals(
         response
@@ -155,19 +114,18 @@ public class GetMsgTest {
 
   @Test
   void testMsgView() throws Exception {
-    Mailbox mbox = mailboxManager.getMailboxByAccount(testAccount);
     MimeMessage message =
         new JavaMailMimeMessage(
             JMSession.getSession(),
             new ZSharedFileInputStream(zimbraServerDir + "data/unittest/email/bug_75163.txt"));
-    final Message msg = MailboxTestUtil.saveMsgInInbox(mbox, message);
+    final Message msg = accountActionFactory.forAccount(testAccount).saveMsgInInbox(message);
     Element request = new Element.XMLElement(MailConstants.GET_MSG_REQUEST);
     Element action = request.addElement(MailConstants.E_MSG);
     action.addAttribute(MailConstants.A_ID, msg.getId());
 
     Element response =
         new GetMsg()
-            .handle(request, ServiceTestUtil.getRequestContext(mbox.getAccount()))
+            .handle(request, ServiceTestUtil.getRequestContext(testAccount))
             .getElement(MailConstants.E_MSG);
     List<Element> mimeParts = response.getElement(MailConstants.E_MIMEPART).listElements();
     // test plain text view
@@ -181,7 +139,7 @@ public class GetMsgTest {
     action.addAttribute(MailConstants.A_WANT_HTML, 1);
     response =
         new GetMsg()
-            .handle(request, ServiceTestUtil.getRequestContext(mbox.getAccount()))
+            .handle(request, ServiceTestUtil.getRequestContext(testAccount))
             .getElement(MailConstants.E_MSG);
     mimeParts = response.getElement(MailConstants.E_MIMEPART).listElements();
     // test HTML view
@@ -195,12 +153,11 @@ public class GetMsgTest {
 
   @Test
   void testMsgHeaderN() throws Exception {
-    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
     MimeMessage message =
         new JavaMailMimeMessage(
             JMSession.getSession(),
             new ZSharedFileInputStream(zimbraServerDir + "data/unittest/email/bug_75163.txt"));
-    final Message msg = MailboxTestUtil.saveMsgInInbox(mbox, message);
+    final Message msg = accountActionFactory.forAccount(testAccount).saveMsgInInbox(message);
     Element request = new Element.XMLElement(MailConstants.GET_MSG_REQUEST);
     Element action = request.addElement(MailConstants.E_MSG);
     action.addAttribute(MailConstants.A_ID, msg.getId());
@@ -210,7 +167,7 @@ public class GetMsgTest {
 
     Element response =
         new GetMsg()
-            .handle(request, ServiceTestUtil.getRequestContext(mbox.getAccount()))
+            .handle(request, ServiceTestUtil.getRequestContext(testAccount))
             .getElement(MailConstants.E_MSG);
     List<Element> headerN = response.listElements(MailConstants.A_HEADER);
     for (Element elt : headerN) {
@@ -254,11 +211,10 @@ public class GetMsgTest {
   void shouldReturnReadReceiptOnDelegatedRequest() throws Exception {
     this.sendSampleEmailWithNotification(sender, List.of(receiver, shared));
     final Mailbox sharedMbox = mailboxManager.getMailboxByAccount(shared);
-    final Mailbox receiverMbox = mailboxManager.getMailboxByAccount(receiver);
     final MimeMessage receiverMsg = mta.getReceivedMessagesForDomain(receiver.getName())[0];
     final GetMsgResponse receiverMessage =
         this.getMsgRequest(
-            String.valueOf(MailboxTestUtil.saveMsgInInbox(receiverMbox, receiverMsg).getId()),
+            String.valueOf(accountActionFactory.forAccount(receiver).saveMsgInInbox(receiverMsg).getId()),
             ServiceTestUtil.getRequestContext(receiver));
     Assertions.assertEquals(
         1,
@@ -269,7 +225,7 @@ public class GetMsgTest {
     final MimeMessage sharedMsg = mta.getReceivedMessagesForDomain(shared.getName())[0];
     final GetMsgResponse sharedAccountMessage =
         this.getMsgRequest(
-            String.valueOf(MailboxTestUtil.saveMsgInInbox(sharedMbox, sharedMsg).getId()),
+            String.valueOf(accountActionFactory.forAccount(shared).saveMsgInInbox(sharedMsg).getId()),
             ServiceTestUtil.getSOAPDelegatedContext(sender, shared));
 
     Assertions.assertEquals(

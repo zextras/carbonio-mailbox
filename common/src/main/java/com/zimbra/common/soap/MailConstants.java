@@ -10,6 +10,8 @@ import org.dom4j.QName;
 
 public final class MailConstants {
 
+  public static final String E_EXTRA_ACCOUNT_ID = "extraAccountId";
+
   public static final class ShareConstants {
     public static final String NAMESPACE_STR = "urn:zimbraShare";
     public static final String VERSION = "0.2";
@@ -227,6 +229,10 @@ public final class MailConstants {
       "GetEffectiveFolderPermsResponse";
   public static final String E_AUTO_COMPLETE_REQUEST = "AutoCompleteRequest";
   public static final String E_AUTO_COMPLETE_RESPONSE = "AutoCompleteResponse";
+
+  public static final String E_FULL_AUTO_COMPLETE_REQUEST = "FullAutocompleteRequest";
+  public static final String E_FULL_AUTO_COMPLETE_RESPONSE = "FullAutocompleteResponse";
+
   public static final String E_RANKING_ACTION_REQUEST = "RankingActionRequest";
   public static final String E_RANKING_ACTION_RESPONSE = "RankingActionResponse";
   public static final String E_GET_SHARE_NOTIFICATIONS_REQUEST = "GetShareNotificationsRequest";
@@ -585,6 +591,9 @@ public final class MailConstants {
   // autocomplete
   public static final QName AUTO_COMPLETE_REQUEST = QName.get(E_AUTO_COMPLETE_REQUEST, NAMESPACE);
   public static final QName AUTO_COMPLETE_RESPONSE = QName.get(E_AUTO_COMPLETE_RESPONSE, NAMESPACE);
+
+  public static final QName FULL_AUTO_COMPLETE_REQUEST = QName.get(E_FULL_AUTO_COMPLETE_REQUEST, NAMESPACE);
+  public static final QName FULL_AUTO_COMPLETE_RESPONSE = QName.get(E_FULL_AUTO_COMPLETE_RESPONSE, NAMESPACE);
 
   // contact ranking mgmt
   public static final QName RANKING_ACTION_REQUEST = QName.get(E_RANKING_ACTION_REQUEST, NAMESPACE);

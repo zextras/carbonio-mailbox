@@ -285,6 +285,23 @@ public class Mailbox implements MailboxStore {
 
   public static final String CONF_PREVIOUS_MAILBOX_IDS = "prev_mbox_ids";
 
+  /**
+   * Checks if folder can be accessed using current operation context.
+   *
+   * @param octxt current operation context, used for security checks
+   * @param folderId id of the requested folder
+   * @return if can or cannot access folder
+   */
+  public boolean canAccessFolder(OperationContext octxt, int folderId) {
+    try {
+      this.getItemById(octxt, folderId, Type.FOLDER);
+    } catch (ServiceException e) {
+      ZimbraLog.security.warn(e.getMessage());
+      return false;
+    }
+    return true;
+  }
+
   public static final class MailboxData implements Cloneable {
     public int id;
     public int schemaGroupId;

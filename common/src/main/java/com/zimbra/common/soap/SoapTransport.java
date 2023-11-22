@@ -27,7 +27,7 @@ public abstract class SoapTransport {
     private SoapProtocol mRequestProto;
     private SoapProtocol mResponseProto;
     private boolean mPrettyPrint;
-    private ZAuthToken mAuthToken;
+    protected ZAuthToken mAuthToken;
     private String mTargetAcctId = null;
     private String mTargetAcctName = null;
     private String mSessionId = null;
@@ -65,6 +65,7 @@ public abstract class SoapTransport {
         mRequestProto = SoapProtocol.Soap12;
         mPrettyPrint = false;
     }
+
 
     public void setDebugListener(DebugListener listener) {
         mDebugListener = listener;
@@ -396,6 +397,20 @@ public abstract class SoapTransport {
      */
     public final Element invoke(Element document) throws IOException, ServiceException {
         return invoke(document, false, false, null);
+    }
+
+    /**
+     * Performs a delegated request SOAP API
+     *
+     * @param document request body as document
+     * @param requestedAccountId requested account id
+     * @return element body of response
+     *
+     * @throws IOException
+     * @throws ServiceException
+     */
+    public final Element invoke(Element document, String requestedAccountId) throws IOException, ServiceException {
+        return invoke(document, false, false, requestedAccountId);
     }
 
     /**
