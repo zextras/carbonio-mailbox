@@ -24,7 +24,7 @@ makedepends=(
 )
 
 package() {
- cd "${srcdir}"/../../
+ cd "${srcdir}"/../../staging
  install -D store/ldap/conf/externaldirsync/Exchange2000.xml                      ${pkgdir}/opt/zextras/conf/externaldirsync/Exchange2000.xml
  install -D store/ldap/conf/externaldirsync/Exchange2003.xml                      ${pkgdir}/opt/zextras/conf/externaldirsync/Exchange2003.xml
  install -D store/ldap/conf/externaldirsync/Exchange5.5.xml                       ${pkgdir}/opt/zextras/conf/externaldirsync/Exchange5.5.xml
