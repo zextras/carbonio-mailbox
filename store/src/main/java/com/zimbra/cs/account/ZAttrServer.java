@@ -10111,13 +10111,13 @@ public abstract class ZAttrServer extends NamedEntry {
     /**
      * Whether to enable http debug handler on a server
      *
-     * @return zimbraHttpDebugHandlerEnabled, or true if unset
+     * @return zimbraHttpDebugHandlerEnabled, or false if unset
      *
      * @since ZCS 6.0.0_GA
      */
     @ZAttr(id=1043)
     public boolean isHttpDebugHandlerEnabled() {
-        return getBooleanAttr(ZAttrProvisioning.A_zimbraHttpDebugHandlerEnabled, true, true);
+        return getBooleanAttr(ZAttrProvisioning.A_zimbraHttpDebugHandlerEnabled, false, true);
     }
 
     /**
