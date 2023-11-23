@@ -36,6 +36,9 @@
     },
     {
       "name": "common-core-libs"
+    },
+    {
+      "name": "directory-server"
     }
   ]
 }

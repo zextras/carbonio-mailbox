@@ -1,0 +1,67 @@
+pkgname="carbonio-directory-server"
+pkgver="4.0.33"
+pkgrel="1"
+pkgdesc="An open-source, community-driven email server"
+maintainer="Zextras <packages@zextras.com>"
+copyright=(
+  "2022, Zextras <https://www.zextras.com>"
+  "2022, Synacor, Inc."
+)
+license=(
+  "AGPL-3.0-only"
+  "GPL-2.0-only"
+)
+url="https://github.com/zextras"
+section="mail"
+priority="optional"
+arch=('x86_64')
+depends=(
+  "carbonio-core"
+  "carbonio-prometheus-openldap-exporter"
+)
+makedepends=(
+  "rsync"
+)
+
+package() {
+  cd "${srcdir}"/../../
+  install -Ddm755 store/build/ldap ${pkgDir}/opt/zextras/common/etc/openldap/zimbra
+  rsync -a store/build/ldap \
+    "${pkgdir}/opt/zextras/common/etc/openldap/zimbra"
+}
+
+postinst__apt() {
+  mkdir -p /opt/zextras/data/ldap/state/run
+  mkdir -p /opt/zextras/data/ldap/config
+  mkdir -p /opt/zextras/data/ldap/mdb/db
+  chown -R zextras:zextras /opt/zextras/data/ldap
+
+  chown -R root:root /opt/zextras/common/etc/openldap
+
+  if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
+    echo "*Starting LDAP upgrade..."
+    su - zextras -c "/opt/zextras/bin/ldap stop"
+    su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
+    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
+    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
+    su - zextras -c "/opt/zextras/bin/ldap restart"
+  fi
+}
+
+postinst__yum() {
+  mkdir -p /opt/zextras/data/ldap/state/run
+  mkdir -p /opt/zextras/data/ldap/config
+  mkdir -p /opt/zextras/data/ldap/mdb/db
+  chown -R zextras:zextras /opt/zextras/data/ldap
+
+  chown -R root:root /opt/zextras/common/etc/openldap
+
+  if [ "$1" -eq 2 ]; then
+    echo "*Starting LDAP upgrade..."
+    su - zextras -c "/opt/zextras/bin/ldap stop"
+    su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
+    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
+    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
+    su - zextras -c "/opt/zextras/bin/ldap restart"
+  fi
+}
